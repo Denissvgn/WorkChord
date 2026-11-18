@@ -208,7 +208,8 @@ async def test_project_iteration_and_portfolio_share_metric_definitions(delivery
         assert iteration.remaining_working_days is not None and 0 <= iteration.remaining_working_days <= iteration.working_days
 
 
-async def test_late_start_does_not_overwrite_committed_baseline(delivery_store):
+async def test_late_start_does_not_overwrite_committed_baseline(delivery_store, monkeypatch):
+    monkeypatch.setattr("app.services.work_metrics.utc_now", lambda: datetime(2026, 1, 7, 12, tzinfo=timezone.utc))
     factory, scenario, _ = delivery_store
     async with factory() as db:
         from app.models.team_member import TeamMember
@@ -221,10 +222,12 @@ async def test_late_start_does_not_overwrite_committed_baseline(delivery_store):
         assert all(baseline)
         assert baseline[0].isoformat() >= "2026-01-07"
         version = task.version
+        monkeypatch.setattr("app.services.work_metrics.utc_now", lambda: datetime(2026, 1, 20, 12, tzinfo=timezone.utc))
         changed, _, _ = await TaskService(db).change_status(task.id, "active", expected_version=version)
         assert (changed.baseline_start_date, changed.baseline_end_date) == baseline
         assert changed.started_at is not None
         assert changed.actual_start_date is not None
+        assert changed.actual_start_date > baseline[0]
         assert await db.scalar(select(func.count()).select_from(TaskScheduleBaseline).where(TaskScheduleBaseline.task_id == task.id)) == 1
 
 

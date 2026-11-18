@@ -150,6 +150,12 @@ export const agentService = {
         return response.data;
     },
 
+    /** Reusable agent profile presets; a preset's display name is the name of the profile the server creates from it. */
+    async getProfilePresets(): Promise<{ key: string; display_name: string }[]> {
+        const response = await api.get<{ key: string; display_name: string }[]>('/agent/profile-presets');
+        return response.data;
+    },
+
     async getModelCatalog(includeDisabled = false): Promise<AgentModelCatalogEntry[]> {
         const response = await api.get<AgentModelCatalogEntry[]>('/agent/model-catalog', {
             params: { include_disabled: includeDisabled },

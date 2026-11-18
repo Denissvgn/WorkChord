@@ -35,7 +35,7 @@ export interface GanttTask {
         status: string;
         target_date?: string | null;
     } | null;
-    assignee?: { id: number; name: string } | null;
+    assignee?: { id: number; name: string; kind?: 'human' | 'agent' | 'hybrid' | null } | null;
     assignees: Array<{ id: number; name: string }>;
     children: GanttTask[];
     dependencies: number[];

@@ -37,7 +37,7 @@ const StepResult = ({ step, progress }: { step: FirstRunStep; progress: FirstRun
     }
 };
 
-const StepBody = ({ step, isNext }: { step: FirstRunStep; isNext: boolean }) => {
+const StepBody = ({ step, isNext, progress }: { step: FirstRunStep; isNext: boolean; progress: FirstRunProgress }) => {
     const { t } = useTranslation();
     const scopeLink = useScopeLink();
     const identityContext = useIdentity();
@@ -83,7 +83,8 @@ const StepBody = ({ step, isNext }: { step: FirstRunStep; isNext: boolean }) => 
         <>
             <p className="plan-section-waiting">{t(`firstRun.steps.${step.id}.body`)}</p>
             <div className="plan-section-owner">
-                <ButtonLink variant={primary ? 'primary' : 'secondary'} to={scopeLink(firstRunPlanHref(checkpoint))}>
+                <ButtonLink variant={primary ? 'primary' : 'secondary'} to={scopeLink(firstRunPlanHref(checkpoint),
+                    progress.plannedIteration ? { project: progress.plannedIteration.project_id ?? 'all', iteration: progress.plannedIteration.id } : undefined)}>
                     {t('firstRun.openPlan')}
                     <ArrowRight aria-hidden="true" size={14} />
                 </ButtonLink>
@@ -136,7 +137,7 @@ const StepRow = ({ step, open, isNext, onToggle, progress }: {
             </div>
             {open && (
                 <div id={bodyId} className="plan-section-body" role="region" aria-labelledby={headingId}>
-                    <StepBody step={step} isNext={isNext} />
+                    <StepBody step={step} isNext={isNext} progress={progress} />
                 </div>
             )}
         </li>

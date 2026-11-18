@@ -12,6 +12,7 @@ export type SampleKind = 'project' | 'milestone' | 'iteration' | 'profile' | 'me
 export interface SampleRecord { kind: SampleKind; id: number; name: string; parentId?: number }
 export interface SampleManifest { owner: string; records: SampleRecord[]; complete: boolean; previousScope?: WorkScope }
 export type SaveSample = (manifest: SampleManifest) => void;
+export class SampleWindowUnavailableError extends Error {}
 const revisions = async (kind: 'project' | 'iteration' | 'profile' | 'member', id: number) =>
     (await planningInputService.readInitial(kind, id)).expected_revisions;
 
@@ -34,7 +35,7 @@ const availableFixture = async (profileId: number, language: string) => {
         if (window.length === 26 && days.has(fixture.start) && days.has(fixture.end)
             && window.every(day => day.allocated_hours === 0 && day.committed_effort_hours === 0)) return fixture;
     }
-    throw new Error('No unallocated date window is available for the sample.');
+    throw new SampleWindowUnavailableError('No unallocated date window is available for the sample.');
 };
 
 /** Keep the receipt after each successful call, including before any subsequent call can fail. */

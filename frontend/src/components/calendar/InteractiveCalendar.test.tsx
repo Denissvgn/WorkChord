@@ -2,6 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { InteractiveCalendar } from './InteractiveCalendar';
+import { DateChip } from '../settings/WorkCalendarSettings';
+import { enUS } from 'date-fns/locale';
 
 const renderCalendar = () => {
     const handlers = {
@@ -36,5 +38,39 @@ describe('calendar day editing without right-click', () => {
         expect(screen.getByRole('button', { name: 'Thursday, 8 January 2026: working day' })).toHaveFocus();
         await user.keyboard('{Enter}');
         expect(handlers.onAddHoliday).toHaveBeenCalledWith('2026-01-08');
+    });
+});
+
+describe('calendar mark colours', () => {
+    it('uses neutral colours for holiday and short-day marks and their legend in English', () => {
+        const { container } = renderWithProviders(<InteractiveCalendar year={2026} month={0}
+            holidays={['2026-01-01']} shortDays={['2026-01-02']} weekendDays={[5, 6]}
+            onYearChange={vi.fn()} onMonthChange={vi.fn()} onAddHoliday={vi.fn()} onRemoveHoliday={vi.fn()}
+            onAddShortDay={vi.fn()} onRemoveShortDay={vi.fn()} onToggleWeekend={vi.fn()} />);
+        const holiday = screen.getByRole('button', { name: 'Thursday, 1 January 2026: holiday' });
+        const shortDay = screen.getByRole('button', { name: 'Friday, 2 January 2026: short day' });
+        expect(holiday.className).toContain('repeating-linear-gradient');
+        expect(shortDay.className).toContain('border-2');
+        expect(holiday.className + shortDay.className).not.toMatch(/feedback-(danger|warning)/);
+        const legendHoliday = screen.getAllByText('Holiday').find(element => element.tagName === 'SPAN')?.previousElementSibling;
+        const legendShortDay = screen.getByText('Short day (-1h)').previousElementSibling;
+        expect(legendHoliday?.className).toContain('repeating-linear-gradient');
+        expect(legendShortDay?.className).toContain('border-2');
+        expect(holiday.className + shortDay.className + legendHoliday?.className + legendShortDay?.className).not.toMatch(/feedback-(danger|warning)|status-|text-action/);
+        expect(container.textContent).toContain('Holiday');
+    });
+
+    it('uses neutral markers for holiday and short-day override chips', () => {
+        const { container } = renderWithProviders(<>
+            <DateChip dateKey="2026-01-01" locale={enUS} label="Holiday" onRemove={vi.fn()} />
+            <DateChip dateKey="2026-01-02" locale={enUS} label="Short day" onRemove={vi.fn()} />
+        </>);
+        const markers = container.querySelectorAll('.rounded-full');
+        expect(markers).toHaveLength(2);
+        markers.forEach(marker => {
+            expect(marker.className).toContain('bg-surface-subtle');
+            expect(marker.className).toContain('border-border');
+            expect(marker.className).not.toMatch(/feedback-(danger|warning)/);
+        });
     });
 });

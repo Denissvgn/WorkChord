@@ -137,8 +137,8 @@ export const isOpenIteration = (iteration: Pick<Iteration, 'start_date' | 'end_d
 );
 
 /**
- * The iterations Overview counts: the one in scope, or with All projects every
- * iteration that is open today, earliest first.
+ * The iterations Overview counts: the one in scope. With All projects and no iteration chosen,
+ * every iteration that is open today, earliest first; with All projects and Backlog, none.
  */
 export const iterationsInView = (
     iterations: Iteration[],
@@ -146,7 +146,7 @@ export const iterationsInView = (
     iteration: ScopeIteration | undefined,
     today: string,
 ): Iteration[] => {
-    if (project === 'all') {
+    if (project === 'all' && iteration === undefined) {
         return iterations
             .filter(item => isOpenIteration(item, today))
             .sort((left, right) => left.start_date.localeCompare(right.start_date) || left.id - right.id);

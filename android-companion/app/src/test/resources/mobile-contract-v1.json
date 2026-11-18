@@ -3,6 +3,672 @@
     "api_version": "1.8.0",
     "components": {
       "schemas": {
+        "AgentModelBindingCreate": {
+          "additionalProperties": false,
+          "description": "Create payload for an actor-model binding.",
+          "properties": {
+            "actor_id": {
+              "minimum": 1.0,
+              "title": "Actor Id",
+              "type": "integer"
+            },
+            "data_policy_tags": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Data Policy Tags",
+              "type": "array"
+            },
+            "enabled": {
+              "default": true,
+              "title": "Enabled",
+              "type": "boolean"
+            },
+            "is_default": {
+              "default": false,
+              "title": "Is Default",
+              "type": "boolean"
+            },
+            "model_catalog_id": {
+              "minimum": 1.0,
+              "title": "Model Catalog Id",
+              "type": "integer"
+            },
+            "revision": {
+              "const": 1,
+              "default": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "tool_tags": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Tool Tags",
+              "type": "array"
+            }
+          },
+          "required": [
+            "actor_id",
+            "model_catalog_id"
+          ],
+          "title": "AgentModelBindingCreate",
+          "type": "object"
+        },
+        "AgentModelBindingDisable": {
+          "additionalProperties": false,
+          "description": "Optimistic soft-disable command for an actor-model binding.",
+          "properties": {
+            "expected_revision": {
+              "minimum": 1.0,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "reconcile_live_assignments": {
+              "default": false,
+              "title": "Reconcile Live Assignments",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "expected_revision"
+          ],
+          "title": "AgentModelBindingDisable",
+          "type": "object"
+        },
+        "AgentModelBindingResponse": {
+          "additionalProperties": false,
+          "description": "Persisted binding projection.",
+          "properties": {
+            "actor_id": {
+              "minimum": 1.0,
+              "title": "Actor Id",
+              "type": "integer"
+            },
+            "created_at": {
+              "format": "date-time",
+              "title": "Created At",
+              "type": "string"
+            },
+            "data_policy_tags": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Data Policy Tags",
+              "type": "array"
+            },
+            "enabled": {
+              "default": true,
+              "title": "Enabled",
+              "type": "boolean"
+            },
+            "historical_assignment_count": {
+              "default": 0,
+              "title": "Historical Assignment Count",
+              "type": "integer"
+            },
+            "id": {
+              "title": "Id",
+              "type": "integer"
+            },
+            "is_default": {
+              "default": false,
+              "title": "Is Default",
+              "type": "boolean"
+            },
+            "live_assignment_count": {
+              "default": 0,
+              "title": "Live Assignment Count",
+              "type": "integer"
+            },
+            "model_catalog": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/AgentModelCatalogResponse"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "model_catalog_id": {
+              "minimum": 1.0,
+              "title": "Model Catalog Id",
+              "type": "integer"
+            },
+            "model_catalog_key": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Model Catalog Key"
+            },
+            "revision": {
+              "default": 1,
+              "minimum": 1.0,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "run_reference_count": {
+              "default": 0,
+              "title": "Run Reference Count",
+              "type": "integer"
+            },
+            "selectable": {
+              "default": false,
+              "title": "Selectable",
+              "type": "boolean"
+            },
+            "tool_tags": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Tool Tags",
+              "type": "array"
+            },
+            "updated_at": {
+              "format": "date-time",
+              "title": "Updated At",
+              "type": "string"
+            }
+          },
+          "required": [
+            "actor_id",
+            "model_catalog_id",
+            "id",
+            "created_at",
+            "updated_at"
+          ],
+          "title": "AgentModelBindingResponse",
+          "type": "object"
+        },
+        "AgentModelBindingUpdate": {
+          "additionalProperties": false,
+          "description": "Optimistic partial update for one actor-model binding.",
+          "properties": {
+            "data_policy_tags": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Data Policy Tags"
+            },
+            "enabled": {
+              "anyOf": [
+                {
+                  "const": true,
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Enabled"
+            },
+            "expected_revision": {
+              "minimum": 1.0,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "is_default": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Is Default"
+            },
+            "reconcile_live_assignments": {
+              "default": false,
+              "title": "Reconcile Live Assignments",
+              "type": "boolean"
+            },
+            "tool_tags": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tool Tags"
+            }
+          },
+          "required": [
+            "expected_revision"
+          ],
+          "title": "AgentModelBindingUpdate",
+          "type": "object"
+        },
+        "AgentModelCatalogCreate": {
+          "additionalProperties": false,
+          "description": "Create payload for a catalog entry.",
+          "properties": {
+            "configured_model_alias": {
+              "maxLength": 255,
+              "minLength": 1,
+              "title": "Configured Model Alias",
+              "type": "string"
+            },
+            "context_tier": {
+              "$ref": "#/components/schemas/ContextTier"
+            },
+            "cost_tier": {
+              "$ref": "#/components/schemas/CostTier"
+            },
+            "enabled": {
+              "default": true,
+              "title": "Enabled",
+              "type": "boolean"
+            },
+            "key": {
+              "maxLength": 120,
+              "minLength": 1,
+              "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+              "title": "Key",
+              "type": "string"
+            },
+            "last_verified_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last Verified At"
+            },
+            "latency_tier": {
+              "$ref": "#/components/schemas/LatencyTier"
+            },
+            "modality_tags": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Modality Tags",
+              "type": "array"
+            },
+            "provider": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Provider",
+              "type": "string"
+            },
+            "reasoning_tier": {
+              "$ref": "#/components/schemas/ReasoningTier"
+            },
+            "revision": {
+              "const": 1,
+              "default": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "key",
+            "provider",
+            "configured_model_alias",
+            "reasoning_tier",
+            "context_tier",
+            "cost_tier",
+            "latency_tier"
+          ],
+          "title": "AgentModelCatalogCreate",
+          "type": "object"
+        },
+        "AgentModelCatalogDisable": {
+          "additionalProperties": false,
+          "description": "Optimistic soft-disable command for a catalog entry.",
+          "properties": {
+            "expected_revision": {
+              "minimum": 1.0,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "reconcile_live_assignments": {
+              "default": false,
+              "title": "Reconcile Live Assignments",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "expected_revision"
+          ],
+          "title": "AgentModelCatalogDisable",
+          "type": "object"
+        },
+        "AgentModelCatalogResponse": {
+          "additionalProperties": false,
+          "description": "Persisted catalog projection.",
+          "properties": {
+            "configured_model_alias": {
+              "maxLength": 255,
+              "minLength": 1,
+              "title": "Configured Model Alias",
+              "type": "string"
+            },
+            "context_tier": {
+              "$ref": "#/components/schemas/ContextTier"
+            },
+            "cost_tier": {
+              "$ref": "#/components/schemas/CostTier"
+            },
+            "created_at": {
+              "format": "date-time",
+              "title": "Created At",
+              "type": "string"
+            },
+            "enabled": {
+              "default": true,
+              "title": "Enabled",
+              "type": "boolean"
+            },
+            "id": {
+              "title": "Id",
+              "type": "integer"
+            },
+            "key": {
+              "maxLength": 120,
+              "minLength": 1,
+              "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+              "title": "Key",
+              "type": "string"
+            },
+            "last_verified_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last Verified At"
+            },
+            "latency_tier": {
+              "$ref": "#/components/schemas/LatencyTier"
+            },
+            "modality_tags": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Modality Tags",
+              "type": "array"
+            },
+            "provider": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Provider",
+              "type": "string"
+            },
+            "reasoning_tier": {
+              "$ref": "#/components/schemas/ReasoningTier"
+            },
+            "revision": {
+              "default": 1,
+              "minimum": 1.0,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "updated_at": {
+              "format": "date-time",
+              "title": "Updated At",
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "provider",
+            "configured_model_alias",
+            "reasoning_tier",
+            "context_tier",
+            "cost_tier",
+            "latency_tier",
+            "id",
+            "created_at",
+            "updated_at"
+          ],
+          "title": "AgentModelCatalogResponse",
+          "type": "object"
+        },
+        "AgentModelCatalogUpdate": {
+          "additionalProperties": false,
+          "description": "Optimistic partial update for one catalog entry.",
+          "properties": {
+            "configured_model_alias": {
+              "anyOf": [
+                {
+                  "maxLength": 255,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Configured Model Alias"
+            },
+            "context_tier": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ContextTier"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "cost_tier": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/CostTier"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "enabled": {
+              "anyOf": [
+                {
+                  "const": true,
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Enabled"
+            },
+            "expected_revision": {
+              "minimum": 1.0,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "last_verified_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last Verified At"
+            },
+            "latency_tier": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/LatencyTier"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "modality_tags": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modality Tags"
+            },
+            "provider": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Provider"
+            },
+            "reasoning_tier": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ReasoningTier"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "reconcile_live_assignments": {
+              "default": false,
+              "title": "Reconcile Live Assignments",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "expected_revision"
+          ],
+          "title": "AgentModelCatalogUpdate",
+          "type": "object"
+        },
+        "AgentModelMutationReceipt": {
+          "additionalProperties": false,
+          "description": "Durable, replay-safe receipt for an operator model mutation.\n\n``actor_id`` is null when the operator's admin key made the change; that\nreceipt is returned once and not stored for replay.",
+          "properties": {
+            "actor_id": {
+              "anyOf": [
+                {
+                  "minimum": 1.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Actor Id"
+            },
+            "audit_event_ids": {
+              "items": {
+                "type": "integer"
+              },
+              "title": "Audit Event Ids",
+              "type": "array"
+            },
+            "authoritative_revision": {
+              "minimum": 1.0,
+              "title": "Authoritative Revision",
+              "type": "integer"
+            },
+            "correlation_id": {
+              "maxLength": 255,
+              "minLength": 1,
+              "title": "Correlation Id",
+              "type": "string"
+            },
+            "idempotency_key": {
+              "maxLength": 255,
+              "minLength": 1,
+              "title": "Idempotency Key",
+              "type": "string"
+            },
+            "invalidated_assignment_ids": {
+              "items": {
+                "type": "integer"
+              },
+              "title": "Invalidated Assignment Ids",
+              "type": "array"
+            },
+            "operation": {
+              "maxLength": 100,
+              "minLength": 1,
+              "title": "Operation",
+              "type": "string"
+            },
+            "rationale": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Rationale",
+              "type": "string"
+            },
+            "result": {
+              "additionalProperties": true,
+              "title": "Result",
+              "type": "object"
+            },
+            "target_id": {
+              "minimum": 1.0,
+              "title": "Target Id",
+              "type": "integer"
+            },
+            "target_type": {
+              "enum": [
+                "model_catalog",
+                "model_binding"
+              ],
+              "title": "Target Type",
+              "type": "string"
+            }
+          },
+          "required": [
+            "operation",
+            "actor_id",
+            "target_type",
+            "target_id",
+            "idempotency_key",
+            "rationale",
+            "correlation_id",
+            "authoritative_revision",
+            "result"
+          ],
+          "title": "AgentModelMutationReceipt",
+          "type": "object"
+        },
         "Body_import_iteration_api_iterations__iteration_id__import_post": {
           "properties": {
             "file": {
@@ -204,6 +870,26 @@
           "title": "CascadeUpdateInfo",
           "type": "object"
         },
+        "ContextTier": {
+          "description": "Closed context-capacity tiers ordered by increasing capacity.",
+          "enum": [
+            "small",
+            "medium",
+            "large"
+          ],
+          "title": "ContextTier",
+          "type": "string"
+        },
+        "CostTier": {
+          "description": "Closed relative cost tiers; exact prices are deliberately excluded.",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "title": "CostTier",
+          "type": "string"
+        },
         "CriterionProgress": {
           "additionalProperties": false,
           "properties": {
@@ -264,6 +950,403 @@
             "review"
           ],
           "title": "CurrentTaskReviewResponse",
+          "type": "object"
+        },
+        "DeliveryMetricsResponse": {
+          "properties": {
+            "acceptance_events": {
+              "default": 0,
+              "title": "Acceptance Events",
+              "type": "integer"
+            },
+            "accepted_leaf_tasks": {
+              "default": 0,
+              "title": "Accepted Leaf Tasks",
+              "type": "integer"
+            },
+            "canceled_leaf_tasks": {
+              "default": 0,
+              "title": "Canceled Leaf Tasks",
+              "type": "integer"
+            },
+            "contract_version": {
+              "default": 1,
+              "title": "Contract Version",
+              "type": "integer"
+            },
+            "coverage": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "title": "Coverage",
+              "type": "object"
+            },
+            "cycle_time": {
+              "$ref": "#/components/schemas/DurationSamples"
+            },
+            "lead_time": {
+              "$ref": "#/components/schemas/DurationSamples"
+            },
+            "queues_truncated": {
+              "default": false,
+              "title": "Queues Truncated",
+              "type": "boolean"
+            },
+            "recovery_queue": {
+              "items": {
+                "$ref": "#/components/schemas/DeliveryQueueItem"
+              },
+              "title": "Recovery Queue",
+              "type": "array"
+            },
+            "rejection_events": {
+              "default": 0,
+              "title": "Rejection Events",
+              "type": "integer"
+            },
+            "reopened_events": {
+              "default": 0,
+              "title": "Reopened Events",
+              "type": "integer"
+            },
+            "review_delay": {
+              "$ref": "#/components/schemas/DurationSamples"
+            },
+            "review_queue": {
+              "items": {
+                "$ref": "#/components/schemas/DeliveryQueueItem"
+              },
+              "title": "Review Queue",
+              "type": "array"
+            },
+            "scope_basis": {
+              "default": "scope_at_observation",
+              "title": "Scope Basis",
+              "type": "string"
+            },
+            "window_end": {
+              "format": "date-time",
+              "title": "Window End",
+              "type": "string"
+            },
+            "window_start": {
+              "format": "date-time",
+              "title": "Window Start",
+              "type": "string"
+            }
+          },
+          "required": [
+            "window_start",
+            "window_end",
+            "lead_time",
+            "cycle_time",
+            "review_delay"
+          ],
+          "title": "DeliveryMetricsResponse",
+          "type": "object"
+        },
+        "DeliveryQueueItem": {
+          "properties": {
+            "age_seconds": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Age Seconds"
+            },
+            "reason": {
+              "title": "Reason",
+              "type": "string"
+            },
+            "task_id": {
+              "title": "Task Id",
+              "type": "integer"
+            },
+            "title": {
+              "title": "Title",
+              "type": "string"
+            }
+          },
+          "required": [
+            "task_id",
+            "title",
+            "reason",
+            "age_seconds"
+          ],
+          "title": "DeliveryQueueItem",
+          "type": "object"
+        },
+        "DurationSamples": {
+          "properties": {
+            "censored_count": {
+              "default": 0,
+              "title": "Censored Count",
+              "type": "integer"
+            },
+            "mean": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Mean"
+            },
+            "median": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Median"
+            },
+            "sample_count": {
+              "default": 0,
+              "title": "Sample Count",
+              "type": "integer"
+            },
+            "unit": {
+              "default": "elapsed_seconds",
+              "title": "Unit",
+              "type": "string"
+            },
+            "unknown_count": {
+              "default": 0,
+              "title": "Unknown Count",
+              "type": "integer"
+            }
+          },
+          "title": "DurationSamples",
+          "type": "object"
+        },
+        "ExecutionUsageSummary": {
+          "properties": {
+            "accepted_task_identities": {
+              "title": "Accepted Task Identities",
+              "type": "integer"
+            },
+            "advisory_budget": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Advisory Budget"
+            },
+            "estimated_cost": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "title": "Estimated Cost",
+              "type": "object"
+            },
+            "expected_runs": {
+              "title": "Expected Runs",
+              "type": "integer"
+            },
+            "human_effort_reports": {
+              "title": "Human Effort Reports",
+              "type": "integer"
+            },
+            "independently_reconciled": {
+              "const": false,
+              "default": false,
+              "title": "Independently Reconciled",
+              "type": "boolean"
+            },
+            "known_cost_reports": {
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "title": "Known Cost Reports",
+              "type": "object"
+            },
+            "linked_delivery": {
+              "additionalProperties": true,
+              "title": "Linked Delivery",
+              "type": "object"
+            },
+            "measured_report_count": {
+              "default": 0,
+              "title": "Measured Report Count",
+              "type": "integer"
+            },
+            "partial_reports": {
+              "title": "Partial Reports",
+              "type": "integer"
+            },
+            "provider_reported_cost": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "title": "Provider Reported Cost",
+              "type": "object"
+            },
+            "reported_human_effort_minutes": {
+              "anyOf": [
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Reported Human Effort Minutes"
+            },
+            "reported_runs": {
+              "title": "Reported Runs",
+              "type": "integer"
+            },
+            "reported_units": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "title": "Reported Units",
+              "type": "object"
+            },
+            "reports_linked_to_accepted_tasks": {
+              "title": "Reports Linked To Accepted Tasks",
+              "type": "integer"
+            },
+            "scope_basis": {
+              "default": "scope_at_first_report",
+              "title": "Scope Basis",
+              "type": "string"
+            },
+            "simulated_estimated_cost": {
+              "additionalProperties": {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              "title": "Simulated Estimated Cost",
+              "type": "object"
+            },
+            "simulated_reported_cost": {
+              "additionalProperties": {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              "title": "Simulated Reported Cost",
+              "type": "object"
+            },
+            "simulated_reports": {
+              "title": "Simulated Reports",
+              "type": "integer"
+            },
+            "simulated_units": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "title": "Simulated Units",
+              "type": "object"
+            },
+            "unavailable_reports": {
+              "title": "Unavailable Reports",
+              "type": "integer"
+            },
+            "unit_report_counts": {
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "title": "Unit Report Counts",
+              "type": "object"
+            },
+            "unknown_cost_reports": {
+              "title": "Unknown Cost Reports",
+              "type": "integer"
+            },
+            "unreported_runs": {
+              "title": "Unreported Runs",
+              "type": "integer"
+            },
+            "window_basis": {
+              "default": "run_start_or_report_receipt",
+              "title": "Window Basis",
+              "type": "string"
+            },
+            "window_end": {
+              "format": "date-time",
+              "title": "Window End",
+              "type": "string"
+            },
+            "window_start": {
+              "format": "date-time",
+              "title": "Window Start",
+              "type": "string"
+            }
+          },
+          "required": [
+            "window_start",
+            "window_end",
+            "expected_runs",
+            "reported_runs",
+            "unreported_runs",
+            "partial_reports",
+            "unavailable_reports",
+            "simulated_reports",
+            "provider_reported_cost",
+            "estimated_cost",
+            "known_cost_reports",
+            "unknown_cost_reports",
+            "accepted_task_identities",
+            "reports_linked_to_accepted_tasks",
+            "reported_human_effort_minutes",
+            "human_effort_reports"
+          ],
+          "title": "ExecutionUsageSummary",
           "type": "object"
         },
         "ExternalLinkResponse": {
@@ -683,6 +1766,108 @@
           "title": "IterationPage",
           "type": "object"
         },
+        "IterationPlanningReadinessSummary": {
+          "description": "Compact planning inputs used by persistent navigation.",
+          "properties": {
+            "assigned_hours": {
+              "default": 0.0,
+              "title": "Assigned Hours",
+              "type": "number"
+            },
+            "calendar_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Calendar Name"
+            },
+            "checkpoints": {
+              "items": {
+                "$ref": "#/components/schemas/PlanCheckpoint"
+              },
+              "title": "Checkpoints",
+              "type": "array"
+            },
+            "checkpoints_done": {
+              "default": 0,
+              "title": "Checkpoints Done",
+              "type": "integer"
+            },
+            "checkpoints_total": {
+              "default": 6,
+              "title": "Checkpoints Total",
+              "type": "integer"
+            },
+            "has_schedule": {
+              "title": "Has Schedule",
+              "type": "boolean"
+            },
+            "iteration_id": {
+              "title": "Iteration Id",
+              "type": "integer"
+            },
+            "planned_hours": {
+              "default": 0.0,
+              "title": "Planned Hours",
+              "type": "number"
+            },
+            "risk_count": {
+              "title": "Risk Count",
+              "type": "integer"
+            },
+            "task_count": {
+              "title": "Task Count",
+              "type": "integer"
+            },
+            "tasks_agent_without_capacity": {
+              "default": 0,
+              "title": "Tasks Agent Without Capacity",
+              "type": "integer"
+            },
+            "tasks_without_assignee": {
+              "title": "Tasks Without Assignee",
+              "type": "integer"
+            },
+            "tasks_without_effort": {
+              "title": "Tasks Without Effort",
+              "type": "integer"
+            },
+            "team_agent_count": {
+              "default": 0,
+              "title": "Team Agent Count",
+              "type": "integer"
+            },
+            "team_capacity_hours": {
+              "title": "Team Capacity Hours",
+              "type": "number"
+            },
+            "team_member_count": {
+              "title": "Team Member Count",
+              "type": "integer"
+            },
+            "team_members_no_capacity": {
+              "title": "Team Members No Capacity",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "iteration_id",
+            "team_member_count",
+            "team_capacity_hours",
+            "team_members_no_capacity",
+            "task_count",
+            "tasks_without_assignee",
+            "tasks_without_effort",
+            "has_schedule",
+            "risk_count"
+          ],
+          "title": "IterationPlanningReadinessSummary",
+          "type": "object"
+        },
         "IterationProjectSummary": {
           "description": "Compact project identity embedded in iteration responses.",
           "properties": {
@@ -794,6 +1979,16 @@
           "title": "IterationResponse",
           "type": "object"
         },
+        "LatencyTier": {
+          "description": "Closed relative latency tiers.",
+          "enum": [
+            "fast",
+            "balanced",
+            "slow"
+          ],
+          "title": "LatencyTier",
+          "type": "string"
+        },
         "MemberPlanningIntent": {
           "properties": {
             "csv_text": {
@@ -871,6 +2066,90 @@
             "message"
           ],
           "title": "MessageResponse",
+          "type": "object"
+        },
+        "MetricMatchItem": {
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "integer"
+            },
+            "iteration_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Iteration Name"
+            },
+            "project_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Project Name"
+            },
+            "status": {
+              "title": "Status",
+              "type": "string"
+            },
+            "title": {
+              "title": "Title",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "status",
+            "project_name",
+            "iteration_name"
+          ],
+          "title": "MetricMatchItem",
+          "type": "object"
+        },
+        "MetricMatchPage": {
+          "properties": {
+            "has_more": {
+              "title": "Has More",
+              "type": "boolean"
+            },
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/MetricMatchItem"
+              },
+              "title": "Items",
+              "type": "array"
+            },
+            "metric": {
+              "title": "Metric",
+              "type": "string"
+            },
+            "next_after_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Next After Id"
+            }
+          },
+          "required": [
+            "metric",
+            "items",
+            "has_more"
+          ],
+          "title": "MetricMatchPage",
           "type": "object"
         },
         "NativeApprovalResponse": {
@@ -1095,6 +2374,53 @@
             "renewable_until"
           ],
           "title": "NativeTokenResponse",
+          "type": "object"
+        },
+        "PlanCheckpoint": {
+          "description": "One of the six plan checkpoints, in the order people and the PM work them.",
+          "properties": {
+            "counts": {
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "title": "Counts",
+              "type": "object"
+            },
+            "id": {
+              "enum": [
+                "iteration",
+                "team",
+                "work",
+                "blockers",
+                "schedule",
+                "review"
+              ],
+              "title": "Id",
+              "type": "string"
+            },
+            "reason_codes": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Reason Codes",
+              "type": "array"
+            },
+            "state": {
+              "enum": [
+                "done",
+                "warn",
+                "todo",
+                "blocked"
+              ],
+              "title": "State",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "state"
+          ],
+          "title": "PlanCheckpoint",
           "type": "object"
         },
         "PlanningInputContext": {
@@ -1763,6 +3089,16 @@
           "title": "ProjectTargetDateRisk",
           "type": "string"
         },
+        "ReasoningTier": {
+          "description": "Closed provider-neutral reasoning capability tiers.",
+          "enum": [
+            1,
+            2,
+            3
+          ],
+          "title": "ReasoningTier",
+          "type": "integer"
+        },
         "TaskActionAvailability": {
           "properties": {
             "action": {
@@ -2022,6 +3358,23 @@
             "id": {
               "title": "Id",
               "type": "integer"
+            },
+            "kind": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "human",
+                    "agent",
+                    "hybrid"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kind of the assignee's profile. Read-only; null when it is not known.",
+              "title": "Kind"
             },
             "name": {
               "title": "Name",
@@ -3987,8 +5340,14 @@
           "type": "object"
         },
         "TeamMemberProfileCompact": {
-          "description": "Compact profile data embedded in team-member responses.",
+          "description": "Compact profile data embedded in team-member responses.\n\nA reader who may read the team row but not the profile itself gets the id, display name,\nkind, automation flag, assignment modes and agent_connected; email, headline and skills\nare then null or empty.",
           "properties": {
+            "agent_connected": {
+              "default": false,
+              "description": "True when an enabled agent is bound to this profile. Read-only; names no agent.",
+              "title": "Agent Connected",
+              "type": "boolean"
+            },
             "assignment_modes": {
               "items": {
                 "type": "string"
@@ -5451,6 +6810,977 @@
     },
     "openapi": "3.1.0",
     "paths": {
+      "/api/agent/model-bindings": {
+        "get": {
+          "description": "Return actor binding evidence without credentials or runtime logs.",
+          "operationId": "list_agent_model_bindings_api_agent_model_bindings_get",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "actor_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Actor Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "include_disabled",
+              "required": false,
+              "schema": {
+                "default": false,
+                "title": "Include Disabled",
+                "type": "boolean"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Agent-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/AgentModelBindingResponse"
+                    },
+                    "title": "Response List Agent Model Bindings Api Agent Model Bindings Get",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "List Agent Model Bindings",
+          "tags": [
+            "Agent Catalog"
+          ]
+        },
+        "post": {
+          "description": "Bind an existing actor to one existing catalog entry.",
+          "operationId": "create_agent_model_binding_api_agent_model_bindings_post",
+          "parameters": [
+            {
+              "in": "header",
+              "name": "X-Agent-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Agent-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "Idempotency-Key",
+              "required": true,
+              "schema": {
+                "title": "Idempotency-Key",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-Rationale",
+              "required": true,
+              "schema": {
+                "title": "X-Agent-Rationale",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Correlation-ID",
+              "required": true,
+              "schema": {
+                "title": "X-Correlation-Id",
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelBindingCreate"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "201": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Create Agent Model Binding",
+          "tags": [
+            "Agent Catalog"
+          ]
+        }
+      },
+      "/api/agent/model-bindings/{binding_id}": {
+        "get": {
+          "description": "Return one binding, including disabled historical evidence.",
+          "operationId": "get_agent_model_binding_api_agent_model_bindings__binding_id__get",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "binding_id",
+              "required": true,
+              "schema": {
+                "title": "Binding Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Agent-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AgentModelBindingResponse"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Get Agent Model Binding",
+          "tags": [
+            "Agent Catalog"
+          ]
+        },
+        "patch": {
+          "description": "Optimistically update one actor model binding.",
+          "operationId": "update_agent_model_binding_api_agent_model_bindings__binding_id__patch",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "binding_id",
+              "required": true,
+              "schema": {
+                "title": "Binding Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Agent-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "Idempotency-Key",
+              "required": true,
+              "schema": {
+                "title": "Idempotency-Key",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-Rationale",
+              "required": true,
+              "schema": {
+                "title": "X-Agent-Rationale",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Correlation-ID",
+              "required": true,
+              "schema": {
+                "title": "X-Correlation-Id",
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelBindingUpdate"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Update Agent Model Binding",
+          "tags": [
+            "Agent Catalog"
+          ]
+        }
+      },
+      "/api/agent/model-bindings/{binding_id}/disable": {
+        "post": {
+          "description": "Soft-disable a binding without deleting assignment or run evidence.",
+          "operationId": "disable_agent_model_binding_api_agent_model_bindings__binding_id__disable_post",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "binding_id",
+              "required": true,
+              "schema": {
+                "title": "Binding Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Agent-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "Idempotency-Key",
+              "required": true,
+              "schema": {
+                "title": "Idempotency-Key",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-Rationale",
+              "required": true,
+              "schema": {
+                "title": "X-Agent-Rationale",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Correlation-ID",
+              "required": true,
+              "schema": {
+                "title": "X-Correlation-Id",
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelBindingDisable"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Disable Agent Model Binding",
+          "tags": [
+            "Agent Catalog"
+          ]
+        }
+      },
+      "/api/agent/model-catalog": {
+        "get": {
+          "description": "Return bounded secret-free provider-neutral model declarations.",
+          "operationId": "list_agent_model_catalog_api_agent_model_catalog_get",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "include_disabled",
+              "required": false,
+              "schema": {
+                "default": false,
+                "title": "Include Disabled",
+                "type": "boolean"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Agent-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/AgentModelCatalogResponse"
+                    },
+                    "title": "Response List Agent Model Catalog Api Agent Model Catalog Get",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "List Agent Model Catalog",
+          "tags": [
+            "Agent Catalog"
+          ]
+        },
+        "post": {
+          "description": "Create a model declaration as an admin actor or the operator.",
+          "operationId": "create_agent_model_catalog_entry_api_agent_model_catalog_post",
+          "parameters": [
+            {
+              "in": "header",
+              "name": "X-Agent-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Agent-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "Idempotency-Key",
+              "required": true,
+              "schema": {
+                "title": "Idempotency-Key",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-Rationale",
+              "required": true,
+              "schema": {
+                "title": "X-Agent-Rationale",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Correlation-ID",
+              "required": true,
+              "schema": {
+                "title": "X-Correlation-Id",
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelCatalogCreate"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "201": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Create Agent Model Catalog Entry",
+          "tags": [
+            "Agent Catalog"
+          ]
+        }
+      },
+      "/api/agent/model-catalog/{catalog_id}": {
+        "patch": {
+          "description": "Optimistically update a model declaration.",
+          "operationId": "update_agent_model_catalog_entry_api_agent_model_catalog__catalog_id__patch",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "catalog_id",
+              "required": true,
+              "schema": {
+                "title": "Catalog Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Agent-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "Idempotency-Key",
+              "required": true,
+              "schema": {
+                "title": "Idempotency-Key",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-Rationale",
+              "required": true,
+              "schema": {
+                "title": "X-Agent-Rationale",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Correlation-ID",
+              "required": true,
+              "schema": {
+                "title": "X-Correlation-Id",
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelCatalogUpdate"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Update Agent Model Catalog Entry",
+          "tags": [
+            "Agent Catalog"
+          ]
+        }
+      },
+      "/api/agent/model-catalog/{catalog_id}/disable": {
+        "post": {
+          "description": "Soft-disable a declaration after explicit live-work reconciliation.",
+          "operationId": "disable_agent_model_catalog_entry_api_agent_model_catalog__catalog_id__disable_post",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "catalog_id",
+              "required": true,
+              "schema": {
+                "title": "Catalog Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Agent-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "Idempotency-Key",
+              "required": true,
+              "schema": {
+                "title": "Idempotency-Key",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-Rationale",
+              "required": true,
+              "schema": {
+                "title": "X-Agent-Rationale",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Correlation-ID",
+              "required": true,
+              "schema": {
+                "title": "X-Correlation-Id",
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelCatalogDisable"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Disable Agent Model Catalog Entry",
+          "tags": [
+            "Agent Catalog"
+          ]
+        }
+      },
+      "/api/agent/profile-presets": {
+        "get": {
+          "description": "Return reusable human-reviewable agent profile presets.",
+          "operationId": "get_agent_profile_presets_api_agent_profile_presets_get",
+          "parameters": [
+            {
+              "in": "header",
+              "name": "X-Agent-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Agent-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    },
+                    "title": "Response Get Agent Profile Presets Api Agent Profile Presets Get",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Get Agent Profile Presets",
+          "tags": [
+            "Agent Catalog"
+          ]
+        }
+      },
       "/api/auth/logout": {
         "post": {
           "operationId": "logout_api_auth_logout_post",
@@ -6170,6 +8500,49 @@
           ]
         }
       },
+      "/api/iterations/{iteration_id}/planning-readiness": {
+        "get": {
+          "description": "Get the compact aggregate used by persistent planning navigation.",
+          "operationId": "get_iteration_planning_readiness_api_iterations__iteration_id__planning_readiness_get",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "iteration_id",
+              "required": true,
+              "schema": {
+                "title": "Iteration Id",
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IterationPlanningReadinessSummary"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Get Iteration Planning Readiness",
+          "tags": [
+            "Iterations"
+          ]
+        }
+      },
       "/api/iterations/{iteration_id}/tasks": {
         "get": {
           "description": "Get all tasks for an iteration (tree structure).",
@@ -6573,6 +8946,274 @@
           ]
         }
       },
+      "/api/tasks/delivery-metrics": {
+        "get": {
+          "operationId": "delivery_metrics_api_tasks_delivery_metrics_get",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "project_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Project Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "iteration_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Iteration Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "lookback_days",
+              "required": false,
+              "schema": {
+                "default": 30,
+                "maximum": 366,
+                "minimum": 1,
+                "title": "Lookback Days",
+                "type": "integer"
+              }
+            },
+            {
+              "description": "Only this project's work with no iteration, using scope at observation for history.",
+              "in": "query",
+              "name": "backlog",
+              "required": false,
+              "schema": {
+                "default": false,
+                "description": "Only this project's work with no iteration, using scope at observation for history.",
+                "title": "Backlog",
+                "type": "boolean"
+              }
+            },
+            {
+              "description": "Aggregate all accessible projects; omit project_id, iteration_id and backlog filters.",
+              "in": "query",
+              "name": "all_projects",
+              "required": false,
+              "schema": {
+                "default": false,
+                "description": "Aggregate all accessible projects; omit project_id, iteration_id and backlog filters.",
+                "title": "All Projects",
+                "type": "boolean"
+              }
+            },
+            {
+              "description": "With all_projects, include only work with no iteration; history uses recorded scope.",
+              "in": "query",
+              "name": "all_projects_backlog",
+              "required": false,
+              "schema": {
+                "default": false,
+                "description": "With all_projects, include only work with no iteration; history uses recorded scope.",
+                "title": "All Projects Backlog",
+                "type": "boolean"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DeliveryMetricsResponse"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Delivery Metrics",
+          "tags": [
+            "Task domain"
+          ]
+        }
+      },
+      "/api/tasks/execution-usage": {
+        "get": {
+          "operationId": "execution_usage_summary_api_tasks_execution_usage_get",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "project_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Project Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "iteration_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Iteration Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "lookback_days",
+              "required": false,
+              "schema": {
+                "default": 30,
+                "maximum": 366,
+                "minimum": 1,
+                "title": "Lookback Days",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "query",
+              "name": "budget_amount",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,19}0*$)\\d{0,12}\\.\\d{0,6}0*$)",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Budget Amount"
+              }
+            },
+            {
+              "in": "query",
+              "name": "budget_currency",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "pattern": "^[A-Z]{3}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Budget Currency"
+              }
+            },
+            {
+              "description": "Only this project's work with no iteration, using recorded scope for history.",
+              "in": "query",
+              "name": "backlog",
+              "required": false,
+              "schema": {
+                "default": false,
+                "description": "Only this project's work with no iteration, using recorded scope for history.",
+                "title": "Backlog",
+                "type": "boolean"
+              }
+            },
+            {
+              "description": "Aggregate all accessible projects; omit project_id, iteration_id and backlog filters.",
+              "in": "query",
+              "name": "all_projects",
+              "required": false,
+              "schema": {
+                "default": false,
+                "description": "Aggregate all accessible projects; omit project_id, iteration_id and backlog filters.",
+                "title": "All Projects",
+                "type": "boolean"
+              }
+            },
+            {
+              "description": "With all_projects, include only work with no iteration; history uses recorded scope.",
+              "in": "query",
+              "name": "all_projects_backlog",
+              "required": false,
+              "schema": {
+                "default": false,
+                "description": "With all_projects, include only work with no iteration; history uses recorded scope.",
+                "title": "All Projects Backlog",
+                "type": "boolean"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ExecutionUsageSummary"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Execution Usage Summary",
+          "tags": [
+            "Task domain"
+          ]
+        }
+      },
       "/api/tasks/lookup": {
         "get": {
           "operationId": "lookup_tasks_api_tasks_lookup_get",
@@ -6726,6 +9367,130 @@
             }
           },
           "summary": "Lookup Tasks",
+          "tags": [
+            "Task domain"
+          ]
+        }
+      },
+      "/api/tasks/metric-matches": {
+        "get": {
+          "description": "The tasks behind one work-metric count, chosen by the predicate that counts them.",
+          "operationId": "metric_matches_api_tasks_metric_matches_get",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "metric",
+              "required": true,
+              "schema": {
+                "maxLength": 40,
+                "title": "Metric",
+                "type": "string"
+              }
+            },
+            {
+              "in": "query",
+              "name": "project_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Project Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "iteration_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Iteration Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "release_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Release Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "limit",
+              "required": false,
+              "schema": {
+                "default": 200,
+                "maximum": 500,
+                "minimum": 1,
+                "title": "Limit",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "query",
+              "name": "after_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "After Id"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MetricMatchPage"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Metric Matches",
           "tags": [
             "Task domain"
           ]

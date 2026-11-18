@@ -9,17 +9,18 @@ from app.main import app
 
 
 CLIENT_PATHS = (
+    "/api/tasks/delivery-metrics", "/api/tasks/execution-usage",
     "/api/auth/me", "/api/auth/logout", "/api/auth/native-token", "/api/auth/native-connections/start",
     "/api/auth/native-connections/exchange", "/api/auth/native-connections/{request_id}",
     "/api/auth/native-connections/{request_id}/approve", "/api/tasks/capabilities", "/api/tasks/my-work",
     "/api/tasks/review-queue", "/api/tasks/{task_id}/reviews", "/api/tasks/{task_id}/reviews/current", "/api/projects", "/api/iterations",
-    "/api/session/whoami", "/api/iterations/{iteration_id}/tasks", "/api/tasks/{task_id}",
+    "/api/session/whoami", "/api/iterations/{iteration_id}/planning-readiness", "/api/iterations/{iteration_id}/tasks", "/api/tasks/{task_id}",
     "/api/tasks/{task_id}/status", "/api/tasks/{task_id}/move",
     "/api/triage/{triage_item_id}/convert-to-task",
     "/api/triage/{triage_item_id}/convert-to-backlog", "/api/projects/{project_id}/backlog",
     "/api/tasks/{task_id}/actions", "/api/tasks/{task_id}/commands", "/api/tasks/{task_id}/brief",
     "/api/tasks/{task_id}/brief/convert", "/api/tasks/{task_id}/progress", "/api/tasks/{task_id}/review",
-    "/api/tasks/{task_id}/detail", "/api/tasks/lookup",
+    "/api/tasks/{task_id}/detail", "/api/tasks/lookup", "/api/tasks/metric-matches",
     "/api/tasks/planning-inputs/{kind}/{resource_id}/context",
     "/api/tasks/planning-inputs/member/{resource_id}/context",
     "/api/iterations/import-context", "/api/iterations/{iteration_id}/import-context",
@@ -29,6 +30,10 @@ CLIENT_PATHS = (
     "/api/time-entries/capabilities", "/api/time-entries", "/api/time-entries/{entry_id}",
     "/api/time-entries/{entry_id}/void", "/api/time-entries/{entry_id}/history",
     "/api/time-entries/report", "/api/time-entries/export",
+    "/api/agent/model-catalog", "/api/agent/model-catalog/{catalog_id}",
+    "/api/agent/model-catalog/{catalog_id}/disable",
+    "/api/agent/model-bindings", "/api/agent/model-bindings/{binding_id}",
+    "/api/agent/model-bindings/{binding_id}/disable", "/api/agent/profile-presets",
 )
 DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "backend/tests/fixtures/client-contract-v1.json"
 

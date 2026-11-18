@@ -33,6 +33,8 @@ class SavedViewValidationError(ValueError):
 TASK_FILTER_DEFAULTS: dict[str, Any] = {
     "assigneeId": None,
     "projectId": None,
+    "milestoneId": None,
+    "needsAttention": None,
     "priority": None,
     "status": None,
     "hasDependency": None,
@@ -264,6 +266,10 @@ class SavedViewService:
                 normalized["assigneeId"] = self._normalize_nullable_int(filters["assigneeId"], "assigneeId")
             if "projectId" in filters:
                 normalized["projectId"] = self._normalize_nullable_int(filters["projectId"], "projectId")
+            if "milestoneId" in filters:
+                normalized["milestoneId"] = self._normalize_nullable_int(filters["milestoneId"], "milestoneId", 1)
+            if "needsAttention" in filters:
+                normalized["needsAttention"] = self._normalize_nullable_bool(filters["needsAttention"], "needsAttention")
             if "priority" in filters:
                 normalized["priority"] = self._normalize_nullable_int(filters["priority"], "priority", 1, 10)
             if "status" in filters:

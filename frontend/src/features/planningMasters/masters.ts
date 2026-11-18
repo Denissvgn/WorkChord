@@ -1,16 +1,7 @@
-import { PLANNING_STEP_IDS } from './planningReturn';
 import type { PlanningStepId } from './planningReturn';
 import type { PlanningTaskIssue } from './planningTaskIssues';
 
-// Readiness inputs and the wording of each checkpoint's status.
-
-type StepState = 'done' | 'warn' | 'blocked' | 'todo';
-
-interface StepStatus {
-    state: StepState;
-    summary?: string;
-    missing?: string[];
-}
+// Readiness inputs and the recovery action each checkpoint offers. Checkpoint states come from the server.
 
 // ── Readiness data (from real API) ──────────────────────────────────────────
 
@@ -35,8 +26,6 @@ export interface PlanReadiness {
     ganttLastBuilt: string;
     riskCount: number;
     inboxCount: number;
-    /** Server-owned checkpoint states; when present they decide each step's state. */
-    checkpointStates?: Partial<Record<PlanningStepId, StepState>>;
 }
 
 type PlanningRecoveryKind =
@@ -56,74 +45,6 @@ interface PlanningRecoveryAction {
     count?: number;
     planningIssue?: PlanningTaskIssue;
     query?: Record<string, string>;
-}
-
-// ── Status derivation (mirrors design's deriveStatus) ───────────────────────
-
-export function deriveStatus(r: PlanReadiness): Record<string, StepStatus> {
-    const out: Record<string, StepStatus> = {};
-
-    // iteration
-    out.iteration = !r.hasCurrentIteration
-        ? {
-            state: 'todo',
-            missing: ['No planning period selected'],
-          }
-        : {
-            state: 'done',
-            summary: `${r.currentIterationName} · ${r.currentIterationStart}–${r.currentIterationEnd}`,
-          };
-
-    // team
-    out.team = r.teamMemberCount === 0
-        ? { state: out.iteration.state === 'done' ? 'todo' : 'blocked', missing: ['No people on this iteration'] }
-        : r.teamMembersNoCap > 0
-            ? { state: 'warn', missing: [`${r.teamMembersNoCap} person without allocation`] }
-            : { state: 'done', summary: `${r.teamMemberCount} people · ${r.teamCapacity}h cap` };
-
-    // work
-    out.work = r.taskCount === 0
-        ? { state: out.iteration.state === 'done' ? 'todo' : 'blocked', missing: ['No tasks for this iteration'] }
-        : { state: 'done', summary: `${r.taskCount} tasks added` };
-
-    // blockers
-    const blockerDetails = [
-        r.tasksWithoutAssignee > 0 ? `${r.tasksWithoutAssignee} unassigned` : null,
-        r.tasksWithoutEffort > 0 ? `${r.tasksWithoutEffort} missing effort` : null,
-        (r.tasksAgentWithoutCapacity ?? 0) > 0 ? `${r.tasksAgentWithoutCapacity} agent working, no capacity row` : null,
-    ].filter(Boolean) as string[];
-    out.blockers = r.taskCount === 0
-        ? { state: 'blocked', missing: ['Add work first'] }
-        : blockerDetails.length > 0
-            ? { state: 'warn', missing: blockerDetails }
-            : { state: 'done', summary: 'No blockers' };
-
-    // schedule
-    const canBuild = [
-        out.iteration,
-        out.team,
-        out.work,
-        out.blockers,
-    ].every(step => step.state === 'done');
-    out.schedule = !canBuild
-        ? { state: 'blocked', missing: ['Complete earlier steps first'] }
-        : !r.hasGanttSchedule
-            ? { state: 'todo', missing: ['Schedule not built'] }
-            : { state: 'done', summary: r.ganttLastBuilt ? `Built ${r.ganttLastBuilt}` : 'Schedule built' };
-
-    // review
-    out.review = out.schedule.state !== 'done'
-        ? { state: 'blocked', missing: ['Build the schedule first'] }
-        : r.riskCount > 0
-            ? { state: 'warn', missing: [`${r.riskCount} risk${r.riskCount === 1 ? '' : 's'} to acknowledge`] }
-            : { state: 'done', summary: 'Plan ready to share' };
-
-    // People and the PM agent read the same server checkpoints, so the server's
-    // state wins; the local inputs above only supply the wording.
-    for (const [id, state] of Object.entries(r.checkpointStates ?? {})) {
-        if (state && out[id] && out[id].state !== state) out[id] = { ...out[id], state };
-    }
-    return out;
 }
 
 const rankedTaskRecovery = (
@@ -256,16 +177,3 @@ export const derivePlanningRecovery = (
         route: '/gantt',
     };
 };
-
-export function nextStep(status: Record<string, StepStatus>): string {
-    for (const id of PLANNING_STEP_IDS) {
-        if (status[id].state !== 'done') return id;
-    }
-    return 'review';
-}
-
-export function readiness(status: Record<string, StepStatus>): { done: number; total: number; pct: number } {
-    const total = PLANNING_STEP_IDS.length;
-    const done = PLANNING_STEP_IDS.filter(id => status[id].state === 'done').length;
-    return { done, total, pct: Math.round((done / total) * 100) };
-}

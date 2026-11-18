@@ -1670,7 +1670,9 @@ class TaskService:
 
         assignee = None
         if loaded_assignee:
-            assignee = TaskAssignee(id=loaded_assignee.id, name=loaded_assignee.name)
+            # Read without a lazy load: a row created in this session has not read its kind yet.
+            assignee = TaskAssignee(id=loaded_assignee.id, name=loaded_assignee.name,
+                                    kind=loaded_assignee.__dict__.get("assignee_kind"))
 
         project = None
         if loaded_project:

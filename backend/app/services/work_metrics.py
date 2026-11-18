@@ -155,7 +155,7 @@ METRIC_MATCHES = ("total", "planned", "active", "resolved", "closed", "implement
 
 
 async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_ids=None, group_by=None, task_ids=None, zone_map=None, now=None,
-                            matching=None, limit=200):
+                            matching=None, limit=200, after_id=None):
     """Aggregate all authorized leaves in SQL, including inherited scheduling facets.
 
     With ``matching``, return the tasks behind one count instead, chosen by the
@@ -242,8 +242,13 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
             .select_from(joined).where(predicates[matching])
         if task_ids is not None:
             query = query.where(t.c.id.in_(task_ids))
+        if after_id is not None:
+            query = query.where(t.c.id > after_id)
         rows = (await db.execute(query.order_by(t.c.id).limit(limit + 1))).mappings().all()
-        return {"metric": matching, "items": [dict(row) for row in rows[:limit]], "has_more": len(rows) > limit}
+        result = {"metric": matching, "items": [dict(row) for row in rows[:limit]], "has_more": len(rows) > limit}
+        if after_id is not None:
+            result["next_after_id"] = rows[limit - 1]["id"] if len(rows) > limit else None
+        return result
     def count(predicate, name):
         return func.coalesce(func.sum(case((predicate, 1), else_=0)), 0).label(name)
     columns = [count(predicates["total"], "total_tasks"), count(required, "required_tasks"), count(and_(included, tree.c.optional), "optional_tasks"),

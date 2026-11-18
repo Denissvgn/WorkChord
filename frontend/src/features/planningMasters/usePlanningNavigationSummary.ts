@@ -3,8 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { iterationService } from '../../services/iterationService';
 import { useIterationStore } from '../../store/iterationStore';
 import type { Iteration, IterationPlanningReadinessSummary } from '../../types/iteration';
-import { deriveStatus, nextStep, readiness } from './masters';
-import type { PlanReadiness } from './masters';
+import { PLANNING_STEP_IDS } from './planningReturn';
 
 export const planningNavigationSummaryKey = (iterationId?: number) => (
     iterationId === undefined
@@ -13,38 +12,29 @@ export const planningNavigationSummaryKey = (iterationId?: number) => (
 );
 
 /**
- * How far one iteration's plan is, from its planning readiness response: the checkpoints
- * done of the total, and the first checkpoint that is not complete.
+ * How far one iteration's plan is, read from its planning readiness response: the server's
+ * count of checkpoints done of the total, and the first checkpoint that is not complete.
+ *
+ * Null without an iteration or without a complete response (all six checkpoints and the
+ * server's done and total counts): there is no progress to show, and nothing is counted in
+ * the browser.
  */
 export const planProgress = (
     iteration: Iteration | null,
-    iterationCount: number,
     summary: IterationPlanningReadinessSummary | undefined,
 ) => {
-    const readinessData: PlanReadiness = {
-        iterationCount,
-        hasCurrentIteration: iteration !== null,
-        currentIterationName: iteration?.name ?? '',
-        currentIterationStart: iteration?.start_date ?? '',
-        currentIterationEnd: iteration?.end_date ?? '',
-        currentIterationDays: iteration?.working_days ?? 0,
-        teamMemberCount: summary?.team_member_count ?? 0,
-        teamCapacity: summary?.team_capacity_hours ?? 0,
-        teamMembersNoCap: summary?.team_members_no_capacity ?? 0,
-        taskCount: summary?.task_count ?? 0,
-        tasksWithoutAssignee: summary?.tasks_without_assignee ?? 0,
-        tasksWithoutEffort: summary?.tasks_without_effort ?? 0,
-        tasksAgentWithoutCapacity: summary?.tasks_agent_without_capacity ?? 0,
-        teamAgentCount: summary?.team_agent_count ?? 0,
-        hasGanttSchedule: summary?.has_schedule ?? false,
-        ganttLastBuilt: '',
-        riskCount: summary?.risk_count ?? 0,
-        inboxCount: 0,
-        checkpointStates: Object.fromEntries((summary?.checkpoints ?? []).map(item => [item.id, item.state])),
+    if (iteration === null || !summary?.checkpoints) return null;
+    const { checkpoints_done: done, checkpoints_total: total } = summary;
+    if (typeof done !== 'number' || typeof total !== 'number' || total <= 0) return null;
+    const byId = new Map(summary.checkpoints.map(item => [item.id, item.state]));
+    if (PLANNING_STEP_IDS.some(id => !byId.has(id))) return null;
+    return {
+        ready: { done, total, pct: Math.round((done / total) * 100) },
+        nextId: PLANNING_STEP_IDS.find(id => byId.get(id) !== 'done') ?? '',
     };
-    const status = deriveStatus(readinessData);
-    return { ready: readiness(status), nextId: nextStep(status) };
 };
+
+const NO_PROGRESS = { done: 0, total: PLANNING_STEP_IDS.length, pct: 0 };
 
 export const usePlanningNavigationSummary = () => {
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
@@ -70,9 +60,9 @@ export const usePlanningNavigationSummary = () => {
         staleTime: 60000,
     });
 
-    const { ready, nextId } = useMemo(
-        () => planProgress(currentIteration, iterations.length, summaryQuery.data),
-        [currentIteration, iterations.length, summaryQuery.data],
+    const progress = useMemo(
+        () => planProgress(currentIteration, summaryQuery.data),
+        [currentIteration, summaryQuery.data],
     );
 
     const refetch = async () => Promise.allSettled([
@@ -85,9 +75,9 @@ export const usePlanningNavigationSummary = () => {
         currentIteration,
         selectedIterationId,
         selectIteration: setSelectedIterationId,
-        ready,
+        ready: progress?.ready ?? NO_PROGRESS,
         /** The first checkpoint that is not complete. */
-        nextId,
+        nextId: progress?.nextId ?? '',
         isIterationsLoading: iterationsQuery.isLoading,
         isIterationsError: iterationsQuery.isError && iterationsQuery.data === undefined,
         isIterationsFetching: iterationsQuery.isFetching,
@@ -98,9 +88,9 @@ export const usePlanningNavigationSummary = () => {
             && summaryQuery.data === undefined
         ),
         isReadinessFetching: hasCurrentIteration && summaryQuery.isFetching,
-        // True only once an iteration is resolved and its readiness response has arrived;
+        // True only once an iteration is resolved and a complete readiness response has arrived;
         // `ready` is not a real count before that.
-        isPlanProgressKnown: hasCurrentIteration && summaryQuery.data !== undefined,
+        isPlanProgressKnown: hasCurrentIteration && progress !== null,
         refetch,
     };
 };

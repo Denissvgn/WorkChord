@@ -4,6 +4,7 @@ import type { ObservedRevisions } from '../../services/planningInputService';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CalendarRange, ListChecks, Repeat, Save } from 'lucide-react';
 import { Button } from '../common/Button';
@@ -21,7 +22,7 @@ import type {
     IterationSeriesCreate,
     IterationUpdate,
 } from '../../types/iteration';
-import { getApiErrorMessage } from '../../utils/apiError';
+import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 import { formatDate } from '../../utils/formatDate';
 
 interface IterationFormProps {
@@ -155,11 +156,16 @@ const seriesDraftsMatch = (left: SeriesDraft, right: SeriesDraft) => (
 );
 
 /** The calendar the iteration counts its working days in; it loads only once More is opened. */
-const CalendarField = ({ value, onChange }: { value: string; onChange: (value: string) => void }) => {
+const CalendarField = ({ value, onChange, startDate, endDate }: { value: string; onChange: (value: string) => void; startDate: string; endDate: string }) => {
     const { t } = useTranslation();
     // feedback-policy: query loading,error,retry,empty - without the list the iteration keeps its calendar; the field says so.
     const calendars = useQuery({ queryKey: ['calendars'], queryFn: calendarService.getAll, staleTime: 60_000 });
+    const selectedYear = calendars.data?.find(calendar => String(calendar.id) === value)?.year;
+    const startYear = startDate.slice(0, 4);
+    const endYear = endDate.slice(0, 4);
+    const year = selectedYear && String(selectedYear) === startYear && endYear !== startYear ? endYear : startYear;
     return (
+        <>
         <Select
             label={t('iterations.calendar')}
             value={value}
@@ -171,6 +177,8 @@ const CalendarField = ({ value, onChange }: { value: string; onChange: (value: s
                 <option key={calendar.id} value={calendar.id}>{calendar.name}</option>
             ))}
         </Select>
+        <Link className="plan-evidence-link text-sm" to={`/settings?tab=work_calendar&create=1${/^\d{4}$/.test(year) ? `&year=${year}` : ''}`}>{t('plan.page.createCoveringCalendar')}</Link>
+        </>
     );
 };
 
@@ -181,8 +189,8 @@ const IterationFormEditor = ({
     defaultProjectId,
     onSuccess,
     onCancel,
-    onStateChange, revisions, contextControls,
-}: IterationFormProps & { revisions?: ObservedRevisions; contextControls?: ReactNode }) => {
+    onStateChange, revisions, contextControls, onConflict, conflictUnresolved = false,
+}: IterationFormProps & { revisions?: ObservedRevisions; contextControls?: ReactNode; onConflict?: () => void; conflictUnresolved?: boolean }) => {
     const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
     const isActive = useActiveMount();
@@ -311,6 +319,7 @@ const IterationFormEditor = ({
         && singleDraft.start_date
         && singleDraft.end_date
         && isOrderedRange(singleDraft.start_date, singleDraft.end_date)
+        && !conflictUnresolved
         && !isSaving,
     );
     const seriesValid = Boolean(
@@ -341,7 +350,7 @@ const IterationFormEditor = ({
         }
 
         if (initialData) {
-            updateMutation.mutate(payload);
+            updateMutation.mutate(payload, { onError: error => { if ([409, 412].includes(getApiErrorStatus(error) ?? 0)) onConflict?.(); } });
             return;
         }
 
@@ -373,7 +382,9 @@ const IterationFormEditor = ({
                         : seriesPreview.length > MAX_SERIES_ITERATIONS ? t('iterationForm.tooManyInSeries', { count: MAX_SERIES_ITERATIONS }) : null)
         : (!singleDraft.name.trim() ? t('iterationForm.needName')
             : !singleDraft.start_date || !singleDraft.end_date ? t('iterationForm.needDates')
-                : !isOrderedRange(singleDraft.start_date, singleDraft.end_date) ? t('iterationForm.needOrderedDates') : null);
+                : !isOrderedRange(singleDraft.start_date, singleDraft.end_date) ? t('iterationForm.needOrderedDates')
+                    // Saving now would send the draft against a server version the person has not accepted.
+                    : conflictUnresolved ? t('iterationForm.resolveConflictFirst') : null);
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
     const handleCancel = () => {
         if (!isDirty) { onCancel(); return; }
@@ -603,6 +614,8 @@ const IterationFormEditor = ({
                 )}
 
                 <CalendarField
+                    startDate={mode === 'series' ? seriesDraft.start_date : singleDraft.start_date}
+                    endDate={mode === 'series' ? seriesDraft.start_date : singleDraft.end_date}
                     value={mode === 'series' ? seriesDraft.calendar_id : singleDraft.calendar_id}
                     onChange={value => {
                         if (mode === 'series') {
@@ -672,7 +685,15 @@ export const IterationForm = (props: IterationFormProps) => {
     ].join(':');
 
     if (!props.initialData) return <IterationFormEditor key={formKey} {...props} />;
-    return <PlanningInputBoundary<Iteration> key={formKey} onCancel={props.onCancel} kind="iteration" resourceId={props.initialData.id}>
-        {(observed, controls) => <IterationFormEditor {...props} initialData={observed.resource} revisions={observed.expected_revisions} contextControls={controls} />}
+    return <IterationEditBoundary key={formKey} {...props} initialData={props.initialData} />;
+};
+
+const IterationEditBoundary = (props: IterationFormProps & { initialData: Iteration }) => {
+    // The form keeps the iteration it was opened with until the person loads the latest version. A later
+    // refetch of the caller's list must not replace it: the conflict prompt compares the server against
+    // what the form shows, and a refreshed copy would hide a change the form would then overwrite.
+    const [opened] = useState(props.initialData);
+    return <PlanningInputBoundary<Iteration> onCancel={props.onCancel} kind="iteration" resourceId={opened.id} draft={opened}>
+        {(observed, controls, _saved, conflict, reloaded, unresolved) => <IterationFormEditor {...props} initialData={reloaded ? observed.resource : opened} revisions={observed.expected_revisions} contextControls={controls} onConflict={conflict} conflictUnresolved={unresolved} />}
     </PlanningInputBoundary>;
 };

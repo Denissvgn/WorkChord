@@ -32,6 +32,8 @@ export const filtersFromSavedView = (view: SavedView): TaskFilters => {
         planningIssue: parsePlanningTaskIssue(raw.planningIssue),
         assigneeId: nullableNumberFromValue(raw.assigneeId),
         projectId: nullableNumberFromValue(raw.projectId),
+        milestoneId: nullableNumberFromValue(raw.milestoneId),
+        needsAttention: nullableBooleanFromValue(raw.needsAttention),
         priority: nullableNumberFromValue(raw.priority),
         status: nullableStringFromValue(raw.status),
         hasDependency: nullableBooleanFromValue(raw.hasDependency),

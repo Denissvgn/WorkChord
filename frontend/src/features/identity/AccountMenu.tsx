@@ -14,6 +14,7 @@ import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 import { ADMIN_API_KEY_CHANGED_EVENT, clearAdminApiKey, hasAdminApiKey, setAdminApiKey } from '../../utils/adminAccess';
 import { useAdminAccess } from '../../hooks/useAdminAccess';
 import api from '../../services/api';
+import { verifyAdminApiKey } from '../../services/adminAccessService';
 import { useIdentity } from './identityContext';
 import { identityService } from './identityService';
 import { LocalProfilePicker } from './LocalProfilePicker';
@@ -29,7 +30,7 @@ export const IdentityBadge = () => {
     const context = useIdentity();
     const { t } = useTranslation();
     const queryClient = useQueryClient();
-    const { hasAdminKey } = useAdminAccess();
+    const { hasAdminKey, actingAsOperator } = useAdminAccess();
     const accountMenuRow = useContext(AccountMenuRowContext);
     const panelId = useId();
     const [open, setOpen] = useState(false);
@@ -89,7 +90,7 @@ export const IdentityBadge = () => {
     if (!context?.identity) return null;
     const { identity } = context;
     const local = identity.mode === 'trusted_local' && !identity.principal;
-    const name = identity.principal?.display_name
+    const name = actingAsOperator ? t('identity.operatorEditingUnlocked') : identity.principal?.display_name
         ?? (local && identity.profile ? t('identity.workingAs', { name: identity.profile.display_name }) : t('identity.localMode'));
     const signedIn = identity.mode === 'managed' && identity.authenticated;
     // The browser sends the admin key only outside a person's own session (see services/api.ts), so a signed-in person unlocks by role.
@@ -121,7 +122,7 @@ export const IdentityBadge = () => {
             // One protected read tells whether the server accepts the key. The key is sent with this request
             // only and stored after the server accepts it: storing it remounts the app under IdentityProvider,
             // which would drop this menu and any message it shows.
-            await api.get('/scheduling-rules', { headers: { 'X-Admin-API-Key': key }, skipIdentityExpiry: true });
+            await verifyAdminApiKey(key);
             setAdminApiKey(key);
             removeProtectedQueries();
             setDraftKey('');
@@ -157,7 +158,7 @@ export const IdentityBadge = () => {
             <section className="space-y-2" aria-labelledby={`${panelId}-working`}>
                 <h3 id={`${panelId}-working`} className="font-semibold">{t('identity.workingAsHeading')}</h3>
                 {local ? <>
-                    <p className="font-medium">{identity.profile ? t('identity.workingAs', { name: identity.profile.display_name }) : t('identity.notWorkingAs')}</p>
+                    <p className="font-medium">{actingAsOperator ? name : identity.profile ? t('identity.workingAs', { name: identity.profile.display_name }) : t('identity.notWorkingAs')}</p>
                     <LocalProfilePicker current={identity.profile} onChosen={context.refresh} />
                 </> : <>
                     <p>{identity.profile ? t('identity.linkedProfile', { name: identity.profile.display_name }) : t('identity.profileUnlinked')}</p>
@@ -202,7 +203,7 @@ export const IdentityBadge = () => {
                         {t('identity.editing', { state: hasAdminKey ? t('identity.editingUnlocked') : t('identity.editingLocked') })}
                     </h3>
                     {hasAdminKey
-                        ? lockable && <Button size="sm" variant="secondary" onClick={lock}>{t('identity.lock')}</Button>
+                        ? lockable && !actingAsOperator && <Button size="sm" variant="secondary" onClick={lock}>{t('identity.lock')}</Button>
                         : !signedInPerson && !unlockOpen && <Button size="sm" variant="secondary" aria-expanded={unlockOpen} aria-controls={`${panelId}-unlock`}
                             onClick={() => setUnlockOpen(true)}>{t('identity.unlock')}</Button>}
                 </div>

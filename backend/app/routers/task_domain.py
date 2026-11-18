@@ -3,6 +3,8 @@
 from typing import Annotated
 from typing import Literal
 
+from pydantic import BaseModel
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -67,23 +69,46 @@ from app.services.execution_usage_service import ExecutionUsageService
 
 @router.get("/tasks/delivery-metrics", response_model=DeliveryMetricsResponse)
 async def delivery_metrics(db: DB, project_id: int | None = Query(default=None, ge=1),
-    iteration_id: int | None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366)):
-    return await domain_result(DeliveryMetricsService(db).report(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days))
+    iteration_id: int | None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366),
+    backlog: bool = Query(default=False, description="Only this project's work with no iteration, using scope at observation for history."),
+    all_projects: bool = Query(default=False, description="Aggregate all accessible projects; omit project_id, iteration_id and backlog filters."),
+    all_projects_backlog: bool = Query(default=False, description="With all_projects, include only work with no iteration; history uses recorded scope.")):
+    return await domain_result(DeliveryMetricsService(db).report(project_id=project_id, iteration_id=iteration_id,
+        lookback_days=lookback_days, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog))
 
 
 @router.get("/tasks/execution-usage", response_model=ExecutionUsageSummary)
 async def execution_usage_summary(db: DB, project_id: int | None = Query(default=None, ge=1),
     iteration_id: int | None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366),
     budget_amount: Decimal | None = Query(default=None, ge=0, max_digits=18, decimal_places=6),
-    budget_currency: str | None = Query(default=None, pattern=r"^[A-Z]{3}$")):
+    budget_currency: str | None = Query(default=None, pattern=r"^[A-Z]{3}$"),
+    backlog: bool = Query(default=False, description="Only this project's work with no iteration, using recorded scope for history."),
+    all_projects: bool = Query(default=False, description="Aggregate all accessible projects; omit project_id, iteration_id and backlog filters."),
+    all_projects_backlog: bool = Query(default=False, description="With all_projects, include only work with no iteration; history uses recorded scope.")):
     return await domain_result(ExecutionUsageService(db).summary(project_id=project_id, iteration_id=iteration_id,
-        lookback_days=lookback_days, budget_amount=budget_amount, budget_currency=budget_currency))
+        lookback_days=lookback_days, budget_amount=budget_amount, budget_currency=budget_currency,
+        backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog))
 
 
-@router.get("/tasks/metric-matches")
+class MetricMatchItem(BaseModel):
+    id: int
+    title: str
+    status: str
+    project_name: str | None
+    iteration_name: str | None
+
+
+class MetricMatchPage(BaseModel):
+    metric: str
+    items: list[MetricMatchItem]
+    has_more: bool
+    next_after_id: int | None = None
+
+
+@router.get("/tasks/metric-matches", response_model=MetricMatchPage, response_model_exclude_unset=True)
 async def metric_matches(db: DB, metric: str = Query(max_length=40), project_id: int | None = Query(default=None, ge=1),
                          iteration_id: int | None = Query(default=None, ge=1), release_id: int | None = Query(default=None, ge=1),
-                         limit: int = Query(default=200, ge=1, le=500)):
+                         limit: int = Query(default=200, ge=1, le=500), after_id: int | None = Query(default=None, ge=0)):
     """The tasks behind one work-metric count, chosen by the predicate that counts them."""
     from app.authority import require_project
     from app.models.project import Project
@@ -102,7 +127,7 @@ async def metric_matches(db: DB, metric: str = Query(max_length=40), project_id:
         project_id = release.project_id
         task_ids, _ = await releases.metric_task_ids(release)
         require_project(db, project_id)
-        return await aggregate_metrics(db, project_id=project_id, task_ids=task_ids, matching=metric, limit=limit)
+        return await aggregate_metrics(db, project_id=project_id, task_ids=task_ids, matching=metric, limit=limit, after_id=after_id)
     if project_id is not None:
         require_project(db, project_id)
         project = await db.get(Project, project_id)
@@ -110,7 +135,7 @@ async def metric_matches(db: DB, metric: str = Query(max_length=40), project_id:
             raise HTTPException(404, detail="Project not found")
         zone_map = {project.id: project.timezone}
     # The same scope and time zones as the summary that shows the count.
-    return await aggregate_metrics(db, project_id=project_id, iteration_id=iteration_id, zone_map=zone_map, matching=metric, limit=limit)
+    return await aggregate_metrics(db, project_id=project_id, iteration_id=iteration_id, zone_map=zone_map, matching=metric, limit=limit, after_id=after_id)
 
 
 @router.get("/tasks/lookup", response_model=TaskReferencePage)

@@ -1,5 +1,6 @@
 """Team member service with business logic."""
 
+from app.authority import internal_authority
 from app.commands import atomic_command, commit_or_flush, schedule_input_command
 import csv
 from datetime import date
@@ -21,6 +22,7 @@ from app.schemas.team import (
     TeamMemberProfileSkillUpdate,
     TeamMemberProfileUpdate,
     TeamMemberOptionResponse,
+    TeamMemberProfileCompact,
     TeamMemberUpdate,
     VacationCreate,
     VacationUpdate,
@@ -49,6 +51,33 @@ class TeamService:
             selectinload(TeamMember.vacations),
             selectinload(TeamMember.profile).selectinload(TeamMemberProfile.skills),
         )
+
+    async def _attach_assignee_profiles(self, members: Sequence[TeamMember]) -> None:
+        """Give rows whose profile the reader cannot read the part every team reader may see.
+
+        A reader without workspace access reads the team rows of its projects but not their
+        profiles. To show an assignee it still needs to know whether the row is an agent and
+        whether that agent is connected, so those rows carry the profile's identity and
+        assignment facts. Email, headline and skills stay withheld.
+        """
+        hidden = {member.profile_id for member in members if member.profile_id is not None and member.profile is None}
+        if not hidden:
+            return
+        with internal_authority(self.db):
+            rows = (await self.db.execute(
+                select(
+                    TeamMemberProfile.id,
+                    TeamMemberProfile.display_name,
+                    TeamMemberProfile.automation_enabled,
+                    TeamMemberProfile.profile_kind,
+                    TeamMemberProfile.assignment_modes,
+                    TeamMemberProfile.agent_connected,
+                ).where(TeamMemberProfile.id.in_(hidden))
+            )).mappings().all()
+        projections = {row["id"]: TeamMemberProfileCompact(**row) for row in rows}
+        for member in members:
+            if member.profile_id in projections and member.profile is None:
+                member.assignee_profile = projections[member.profile_id]
 
     def _normalize_text_key(self, value: str | None) -> str:
         """Return a lowercase matching key for display names and emails."""
@@ -296,6 +325,7 @@ class TeamService:
                 "iteration team member list",
                 MAX_BOUNDED_LIST_ITEMS,
             )
+        await self._attach_assignee_profiles(members)
         return members
 
     async def get_all_unique_members(self) -> list[dict]:
@@ -349,7 +379,10 @@ class TeamService:
             )
             .where(TeamMember.id == member_id)
         )
-        return result.scalar_one_or_none()
+        member = result.scalar_one_or_none()
+        if member is not None:
+            await self._attach_assignee_profiles([member])
+        return member
 
     @schedule_input_command("member")
     async def create(

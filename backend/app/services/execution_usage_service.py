@@ -19,7 +19,7 @@ from app.models.task import Task
 from app.query_limits import CollectionLimitExceededError
 from app.schemas.execution_usage import ExecutionUsageResponse, ExecutionUsageSummary, ExecutionUsageWrite
 from app.services.agent_service import AgentConflictError, AgentPermissionError, actor_has_scope
-from app.services.delivery_metrics_service import DeliveryMetricsService
+from app.services.delivery_metrics_service import DeliveryMetricsService, validate_report_scope
 from app.utils.time import as_utc, utc_now
 
 MAX_USAGE_REVISIONS = 32
@@ -152,11 +152,11 @@ class ExecutionUsageService:
             approved.discard(authorization)
         return self.response(row)
 
-    async def summary(self, *, project_id=None, iteration_id=None, lookback_days=30, budget_amount=None, budget_currency=None):
+    async def summary(self, *, project_id=None, iteration_id=None, lookback_days=30, budget_amount=None, budget_currency=None,
+                      backlog=False, all_projects=False, all_projects_backlog=False):
         if not 1 <= lookback_days <= 366:
             raise ValueError("Observation window must be between 1 and 366 elapsed days")
-        if project_id is None and iteration_id is None:
-            raise ValueError("Select a project or an iteration")
+        validate_report_scope(project_id, iteration_id, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)
         if project_id is not None:
             require_project(self.db, project_id)
             if await self.db.get(Project, project_id) is None:
@@ -176,6 +176,12 @@ class ExecutionUsageService:
             records = records.where(ExecutionUsageRecord.iteration_id == iteration_id)
             runs = runs.where(Task.iteration_id == iteration_id)
             outcomes = outcomes.where(DeliveryObservation.iteration_id == iteration_id)
+        if backlog or all_projects_backlog:
+            records = records.where(ExecutionUsageRecord.iteration_id.is_(None),
+                                    ExecutionUsageRecord.original_iteration_id.is_(None))
+            runs = runs.where(Task.iteration_id.is_(None))
+            outcomes = outcomes.where(DeliveryObservation.iteration_id.is_(None),
+                                      DeliveryObservation.original_iteration_id.is_(None))
         rows = list((await self.db.scalars(records.order_by(ExecutionUsageRecord.id).limit(MAX_USAGE_RECORDS + 1))).all())
         known_runs = list((await self.db.scalars(runs.order_by(AgentRun.id).limit(MAX_USAGE_RECORDS + 1))).all())
         accepted_rows = list((await self.db.scalars(outcomes.limit(MAX_USAGE_RECORDS + 1))).all())
@@ -229,7 +235,8 @@ class ExecutionUsageService:
             if report.reported_human_effort_minutes is not None:
                 human_minutes += report.reported_human_effort_minutes
                 human_reports += 1
-        delivery = await DeliveryMetricsService(self.db).report(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days, now=end)
+        delivery = await DeliveryMetricsService(self.db).report(project_id=project_id, iteration_id=iteration_id,
+            lookback_days=lookback_days, now=end, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)
         budget = None
         if budget_amount is not None:
             if budget_amount < 0 or not budget_amount.is_finite() or budget_currency is None or len(budget_currency) != 3 or not budget_currency.isascii() or not budget_currency.isupper():

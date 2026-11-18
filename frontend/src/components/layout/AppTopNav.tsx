@@ -16,7 +16,26 @@ import { ScopeBar } from './ScopeBar';
 import { Button } from '../../components/common/Button';
 const MOBILE_NAV_TITLE_ID = 'mobile-primary-navigation-title';
 
+const PHONE_QUERY = '(max-width: 767px)';
+
+/** True while the top bar has no room for the scope bar, so the drawer carries it. */
+const usePhoneWidth = () => {
+    const [phone, setPhone] = useState(
+        () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia(PHONE_QUERY).matches,
+    );
+    useEffect(() => {
+        if (typeof window === 'undefined' || !window.matchMedia) return undefined;
+        const query = window.matchMedia(PHONE_QUERY);
+        const update = () => setPhone(query.matches);
+        update();
+        query.addEventListener('change', update);
+        return () => query.removeEventListener('change', update);
+    }, []);
+    return phone;
+};
+
 export const AppTopNav = () => {
+    const phoneWidth = usePhoneWidth();
     const { t } = useTranslation();
     const location = useLocation();
     const scopeLink = useScopeLink();
@@ -37,7 +56,7 @@ export const AppTopNav = () => {
     useEffect(() => {
         if (typeof window === 'undefined' || !window.matchMedia) return undefined;
 
-        const drawerBreakpoint = window.matchMedia('(max-width: 1180px)');
+        const drawerBreakpoint = window.matchMedia('(max-width: 1023px)');
         const closeDrawerOnDesktop = (event: MediaQueryListEvent) => {
             if (event.matches) return;
             setMobileMenuOpen(wasOpen => {
@@ -87,7 +106,7 @@ export const AppTopNav = () => {
             </Link>
 
             <div className="topnav-center">
-                {/* Below 1180px the sidebar folds into the drawer; the bar still names where you are. */}
+                {/* Below 1024px the sidebar folds into the drawer; the bar still names where you are. */}
                 <p className="topnav-location" data-testid="topnav-location">{currentPageName}</p>
                 <div className="topnav-scope" data-slot="scope-bar" data-testid="topnav-scope-slot">
                     <ScopeBar />
@@ -150,6 +169,11 @@ export const AppTopNav = () => {
                             </Button>
                         </div>
                         <div className="mobile-nav-content">
+                            {phoneWidth && (
+                                <div className="mobile-nav-scope" data-testid="mobile-nav-scope">
+                                    <ScopeBar />
+                                </div>
+                            )}
                             <nav aria-label={t('nav.primaryNavigation')}>
                                 <SidebarContent onNavigate={closeForNavigation} />
                             </nav>

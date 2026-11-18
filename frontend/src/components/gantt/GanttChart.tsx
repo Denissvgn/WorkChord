@@ -924,7 +924,7 @@ export const GanttChart = ({
                     <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded border border-action bg-surface-card ring-2 ring-focus" />{t('surfaces.ganttChart.legendChanged')}</li>
                     <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-0.5 bg-action" />{t('surfaces.ganttChart.legendToday')}</li>
                     <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded bg-surface-muted" />{t('surfaces.ganttChart.legendWeekend')}</li>
-                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded bg-feedback-danger-muted" />{t('surfaces.ganttChart.legendHoliday')}</li>
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded bg-[repeating-linear-gradient(135deg,rgb(var(--color-surface-muted))_0_2px,rgb(var(--color-surface-card))_2px_4px)]" />{t('surfaces.ganttChart.legendHoliday')}</li>
                     <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded border border-dashed border-border-strong bg-surface-muted" />{t('surfaces.ganttChart.legendProvisional')}</li>
                     <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded border border-dashed border-border-strong" />{t('surfaces.ganttChart.legendNoDates')}</li>
                     <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-1.5 w-5 rounded-full bg-content-tertiary" />{t('surfaces.ganttChart.legendGroupSpan')}</li>
@@ -1040,7 +1040,7 @@ export const GanttChart = ({
                                     key={virtualColumn.index}
                                     className={clsx(
                                         "absolute top-0 bottom-0 border-r border-border-subtle flex flex-col items-center justify-center text-wc-micro",
-                                        isSameDay(day, new Date()) ? "bg-action-muted font-semibold text-action" : isHol ? "bg-feedback-danger-muted text-feedback-danger-foreground" : isWknd ? "bg-surface-muted text-content-tertiary" : "bg-surface-card text-content-secondary"
+                                        isSameDay(day, new Date()) ? "bg-action-muted font-semibold text-action" : isHol ? "bg-[repeating-linear-gradient(135deg,rgb(var(--color-surface-muted))_0_2px,rgb(var(--color-surface-card))_2px_4px)] text-content-secondary" : isWknd ? "bg-surface-muted text-content-tertiary" : "bg-surface-card text-content-secondary"
                                     )}
                                     style={{
                                         left: `${SIDEBAR_WIDTH + virtualColumn.start}px`,
@@ -1128,7 +1128,7 @@ export const GanttChart = ({
                                     key={`grid-${virtualColumn.index}`}
                                     className={clsx(
                                         "absolute top-0 bottom-0 h-full border-r border-border-subtle/50",
-                                        isHol ? "bg-feedback-danger-muted/50" : isWknd ? "bg-surface-muted" : "bg-transparent"
+                                        isHol ? "bg-[repeating-linear-gradient(135deg,rgb(var(--color-surface-muted))_0_2px,rgb(var(--color-surface-card))_2px_4px)]" : isWknd ? "bg-surface-muted" : "bg-transparent"
                                     )}
                                     style={{
                                         left: `${SIDEBAR_WIDTH + virtualColumn.start}px`,

@@ -1,6 +1,6 @@
 """Shared person capacity, calendar arithmetic and private availability boundaries."""
 
-from datetime import date
+from datetime import UTC, date, datetime
 
 import pytest
 import pytest_asyncio
@@ -264,10 +264,11 @@ async def test_overallocated_person_can_preview_but_cannot_commit(db_session):
 
 
 @pytest.mark.asyncio
-async def test_two_planners_cannot_commit_the_same_shared_revision(db_session):
+async def test_two_planners_cannot_commit_the_same_shared_revision(db_session, monkeypatch):
     import asyncio
     from app.models.task import Task
     from app.services.scheduler_service import SchedulerService
+    monkeypatch.setattr("app.services.work_metrics.utc_now", lambda: datetime(2026, 9, 28, 12, tzinfo=UTC))
     profile = TeamMemberProfile(display_name="Sam")
     first = await allocation(db_session, profile=profile)
     second = await allocation(db_session, profile=profile)

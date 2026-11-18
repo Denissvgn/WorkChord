@@ -53,9 +53,19 @@ export const hasPositivePlanningEffort = (value: number | null): value is number
 /** Resolved and closed work is finished, so it is never at risk. */
 export const isFinished = (task: Pick<Task, 'status'>) => task.status === 'resolved' || task.status === 'closed';
 
+type DeliveryFields = Pick<Task, 'is_overdue' | 'is_delayed' | 'is_outside_constraints'>
+    & Partial<Pick<Task, 'start_date' | 'end_date' | 'min_start_date' | 'max_end_date'>>;
+
+/** The flag the schedule view sends, or the same rule from the dates the Tasks list receives. */
+export const isOutsideDateLimits = (task: DeliveryFields) => Boolean(
+    task.is_outside_constraints
+    || (task.start_date && task.min_start_date && task.start_date < task.min_start_date)
+    || (task.end_date && task.max_end_date && task.end_date > task.max_end_date),
+);
+
 /** A late, unstarted or out-of-limits schedule signal. */
-export const hasDeliverySignal = (task: Pick<Task, 'is_overdue' | 'is_delayed' | 'is_outside_constraints'>) => (
-    Boolean(task.is_overdue || task.is_delayed || task.is_outside_constraints)
+export const hasDeliverySignal = (task: DeliveryFields) => (
+    Boolean(task.is_overdue || task.is_delayed || isOutsideDateLimits(task))
 );
 
 export const taskMatchesPlanningIssue = (

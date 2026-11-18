@@ -2,6 +2,7 @@ import { ButtonLink } from '../components/common/ButtonLink';
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { ArrowRight, Check, ChevronDown, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
@@ -16,10 +17,9 @@ import { PlanWorkSection } from '../components/planning/PlanWorkSection';
 import { PlanBlockersSection } from '../components/planning/PlanBlockersSection';
 import { PageHeader, PageLayout } from '../components/ui';
 import { NextStepEmptyState } from '../features/firstRun/NextStepEmptyState';
-import { firstRunPlanHref } from '../features/firstRun/firstRunSteps';
 import { useFirstRunProgress } from '../features/firstRun/useFirstRunProgress';
+import { firstRunPlanHref } from '../features/firstRun/firstRunSteps';
 import {
-    checkpointsDone,
     firstIncompleteCheckpoint,
     planCheckpointSections,
 } from '../features/planningMasters/planCheckpoints';
@@ -32,6 +32,7 @@ import {
 } from '../features/planningMasters/planningReturn';
 import type { PlanningStepId } from '../features/planningMasters/planningReturn';
 import { usePlanningReadiness } from '../features/planningMasters/usePlanningReadiness';
+import { planProgress } from '../features/planningMasters/usePlanningNavigationSummary';
 import type { PlanningQueryFeedback } from '../features/planningMasters/usePlanningReadiness';
 import { useScopeLink } from '../features/scope/useScopeLink';
 import { SetupReturnBar } from '../features/firstRun/SetupReturnBar';
@@ -164,7 +165,9 @@ const CheckpointBody = ({
     }
 
     if (section.id === 'iteration') {
-        return <PlanIterationCheckpoint iteration={readiness.currentIteration} done={section.state === 'done'} />;
+        return <PlanIterationCheckpoint iteration={readiness.currentIteration} done={section.state === 'done'}
+            calendarOutsideYear={section.reasonCodes.includes('calendar_outside_year')}
+            readinessCalendarName={readiness.planningSummary?.calendar_name} />;
     }
 
     const queries = bodyQueries(section.id, readiness.queryStates).filter(query => query.enabled);
@@ -204,7 +207,7 @@ const CheckpointBody = ({
     }
     if (section.id === 'schedule' && readiness.currentIteration) {
         return <PlanScheduleSection key={iterationId} iteration={readiness.currentIteration} members={readiness.teamMembers}
-            gantt={readiness.gantt} done={section.state === 'done'} />;
+            gantt={readiness.gantt} tasks={readiness.allTasks} done={section.state === 'done'} />;
     }
     if (section.id === 'review' && readiness.currentIteration) {
         return <PlanReviewSection key={iterationId} iteration={readiness.currentIteration} members={readiness.teamMembers}
@@ -299,6 +302,7 @@ const PlanCheckpoints = () => {
     const { currentIteration, hasCurrentIteration, planningSummary, queryStates, refetch, isFetching } = readiness;
     const scopeLink = useScopeLink();
     const setupProgress = useFirstRunProgress();
+    const queryClient = useQueryClient();
     const [refreshStatus, setRefreshStatus] = useState<'idle' | 'success' | 'error'>('idle');
     // Opening or closing a section by hand wins over the default for the rest of the visit to that
     // iteration; another iteration in scope starts again from its first incomplete checkpoint.
@@ -376,18 +380,22 @@ const PlanCheckpoints = () => {
     const refresh = async () => {
         if (isFetching) return;
         setRefreshStatus('idle');
-        const results = await refetch();
-        const failed = results.some(result => result.status === 'rejected'
+        // The Schedule section's hours per assignee is read outside the readiness hook, so Refresh re-reads it too.
+        const workloads = queryClient.refetchQueries({ queryKey: ['plan-schedule-workloads'] }, { throwOnError: true })
+            .then(() => true, () => false);
+        const [results, workloadsRead] = await Promise.all([refetch(), workloads]);
+        const failed = !workloadsRead || results.some(result => result.status === 'rejected'
             || Boolean((result.value as { isError?: boolean } | undefined)?.isError));
         setRefreshStatus(failed ? 'error' : 'success');
     };
 
-    // With no iteration, the page offers one next step: before a profile or project exists, that step
-    // alone; once an iteration is the next step, the Iteration checkpoint's New iteration is that step.
+    // With no iteration there is no readiness to read: the page offers the one next step and shows no
+    // checkpoint states. Before a profile or project exists, that step alone.
     const noIteration = queryStates.iterations.hasData && !hasCurrentIteration;
     const setupFirst = noIteration && setupProgress.known && (setupProgress.nextId === 'profile' || setupProgress.nextId === 'project');
     const iterationIsNext = noIteration && setupProgress.known && setupProgress.nextId === 'iteration';
-    const done = sections ? checkpointsDone(sections) : null;
+    // The server's own count; no count without a complete response.
+    const progress = sections && hasCurrentIteration ? planProgress(currentIteration, planningSummary)?.ready ?? null : null;
     const header = (
         <PageHeader
             title={t('plan.title')}
@@ -395,8 +403,8 @@ const PlanCheckpoints = () => {
             meta={(
                 <span className="plan-page-meta">
                     <span>{currentIteration?.name ?? t('plan.page.noIteration')}</span>
-                    {done !== null && (
-                        <span className="tnum">{t('plan.page.progress', { done, total: PLANNING_STEP_IDS.length })}</span>
+                    {progress !== null && (
+                        <span className="tnum">{t('plan.page.progress', { done: progress.done, total: progress.total })}</span>
                     )}
                     {refreshStatus !== 'idle' && (
                         <span role={refreshStatus === 'error' ? 'alert' : 'status'}>
@@ -435,6 +443,24 @@ const PlanCheckpoints = () => {
                 description={t('emptyStates.plan.body')}
                 fallback={{ label: t('firstRun.steps.iteration.title'), to: scopeLink(firstRunPlanHref('iteration')) }}
             />
+        );
+    } else if (noIteration) {
+        // No iteration, so no readiness to read: the Iteration step offers New iteration and
+        // carries no state.
+        content = (
+            <ol className="plan-sections" aria-label={t('plan.page.checkpoints')}>
+                <li className="plan-section is-open" data-testid="plan-section-iteration">
+                    <div className="plan-section-head">
+                        <span className="plan-section-number" aria-hidden="true">1</span>
+                        <h2 id="plan-section-iteration-title" className="plan-section-title">
+                            {t('plan.steps.iteration.title')}
+                        </h2>
+                    </div>
+                    <div className="plan-section-body" role="region" aria-labelledby="plan-section-iteration-title">
+                        <PlanIterationCheckpoint iteration={null} done={false} />
+                    </div>
+                </li>
+            </ol>
         );
     } else if (!sections && queryStates.checkpoints.isLoading) {
         content = <QueryLoadingState message={t('plan.master.planningDataLoading')} />;

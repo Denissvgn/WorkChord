@@ -238,9 +238,11 @@ class TaskStatusService:
             task.executed_by_principal_id = getattr(authority, "principal_id", None) or task.executed_by_principal_id
             task.accepted_at = task.accepted_by_principal_id = task.accepted_version = None
         elif new_status == TaskStatus.CLOSED.value:
+            from app.services.identity_service import acting_principal_id
+            acceptor = await acting_principal_id(self.db)
             task.actual_end_date = today
             task.accepted_at = now
-            task.accepted_by_principal_id = getattr(authority, "principal_id", None)
+            task.accepted_by_principal_id = acceptor
 
         task.status = new_status
         if reserve_version:

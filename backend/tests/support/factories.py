@@ -7,7 +7,7 @@ from pathlib import Path
 import sqlite3
 from typing import Any
 
-from sqlalchemy import Boolean, Date, DateTime, Float, Integer, JSON, LargeBinary, Numeric
+from sqlalchemy import Boolean, Column, Date, DateTime, Float, Integer, JSON, LargeBinary, Numeric
 from sqlalchemy import inspect as sa_inspect
 from sqlalchemy.sql.sqltypes import String
 from sqlalchemy.types import TypeDecorator
@@ -61,6 +61,9 @@ class MappedModelFactory:
         values: dict[str, Any] = {}
         for column in mapper.columns:
             key = column.key
+            # A computed attribute (column_property over an expression) is read, never written.
+            if not isinstance(column, Column):
+                continue
             if key in overrides:
                 values[key] = overrides.pop(key)
                 continue

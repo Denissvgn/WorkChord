@@ -38,7 +38,14 @@ const readinessResponse = {
     team_agent_count: 0,
     has_schedule: false,
     risk_count: 0,
-    checkpoints: [],
+    checkpoints: ['iteration', 'team', 'work', 'blockers', 'schedule', 'review'].map((id, index) => ({
+        id,
+        state: index < 2 ? 'done' : 'todo',
+        reason_codes: [],
+        counts: {},
+    })),
+    checkpoints_done: 2,
+    checkpoints_total: 6,
 };
 
 const planLink = () => within(screen.getByRole('navigation', { name: 'Primary navigation' }))
@@ -74,7 +81,41 @@ describe('Plan counter with the real planning summary', () => {
         expect(planLink()).toHaveTextContent(/^Plan$/);
 
         resolveReadiness(readinessResponse);
-        await within(planLink()).findByText(/^\d\/6$/);
+        await within(planLink()).findByText('2/6');
+    });
+
+    it('shows no counter for a partial readiness response, and 6/6 for a complete plan', async () => {
+        useIterationStore.setState({ selectedIterationId: iteration.id });
+        services.getPlanningReadiness.mockResolvedValue({
+            ...readinessResponse,
+            checkpoints: readinessResponse.checkpoints.slice(0, 3),
+        });
+        const { unmount } = renderWithProviders(<AppSidebar />, { initialEntries: ['/settings'] });
+        await vi.waitFor(() => expect(services.getPlanningReadiness).toHaveBeenCalled());
+        await new Promise(resolve => setTimeout(resolve, 20));
+        expect(planLink()).toHaveTextContent(/^Plan$/);
+        unmount();
+
+        // All six checkpoints but without the server's done and total counts: still no counter.
+        services.getPlanningReadiness.mockResolvedValue({
+            ...readinessResponse,
+            checkpoints_done: undefined,
+            checkpoints_total: undefined,
+            checkpoints: readinessResponse.checkpoints.map(item => ({ ...item, state: 'done' })),
+        });
+        const second = renderWithProviders(<AppSidebar />, { initialEntries: ['/settings'] });
+        await vi.waitFor(() => expect(services.getPlanningReadiness).toHaveBeenCalledTimes(2));
+        await new Promise(resolve => setTimeout(resolve, 20));
+        expect(planLink()).toHaveTextContent(/^Plan$/);
+        second.unmount();
+
+        services.getPlanningReadiness.mockResolvedValue({
+            ...readinessResponse,
+            checkpoints: readinessResponse.checkpoints.map(item => ({ ...item, state: 'done' })),
+            checkpoints_done: 6,
+        });
+        renderWithProviders(<AppSidebar />, { initialEntries: ['/settings'] });
+        await within(planLink()).findByText('6/6');
     });
 
     it('shows no counter when the readiness request fails', async () => {

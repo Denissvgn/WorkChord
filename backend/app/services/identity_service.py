@@ -61,6 +61,47 @@ async def local_work_profile(db, profile_id):
     return profile if profile is not None and profile.profile_kind == "human" else None
 
 
+# A local person profile's own principal is keyed by this issuer, which no sign-in
+# provider uses, so it can never be signed in to and never takes the profile's link.
+LOCAL_PROFILE_ISSUER = "urn:workchord:local-profile"
+
+
+async def acting_principal_id(db):
+    """The principal a command is recorded under.
+
+    A trusted-local session that chose a person profile has no principal of its own;
+    it is recorded under that profile's local principal, created on first use, so
+    the record names who acted just as a signed-in person's would."""
+    authority = db.info.get("authority")
+    if authority is None or authority.principal_id is not None:
+        return getattr(authority, "principal_id", None)
+    if not authority.local or authority.read_only or authority.profile_id is None:
+        return None
+    profile = await local_work_profile(db, authority.profile_id)
+    if profile is None:
+        return None
+    lookup = select(IdentitySubject.principal_id).where(IdentitySubject.issuer == LOCAL_PROFILE_ISSUER,
+                                                        IdentitySubject.subject == str(profile.id))
+    # The caller's own pending changes are authorized as the caller, never inside the identity boundary.
+    await db.flush()
+    with internal_authority(db):
+        principal_id = await db.scalar(lookup)
+        if principal_id is not None:
+            return principal_id
+        require_identity_writes()
+        try:
+            async with db.begin_nested():
+                principal = Principal(kind="human", display_name=profile.display_name)
+                db.add(principal)
+                await db.flush()
+                db.add(IdentitySubject(principal_id=principal.id, issuer=LOCAL_PROFILE_ISSUER, subject=str(profile.id)))
+                await db.flush()
+            return principal.id
+        except IntegrityError:
+            # Another request created it first.
+            return await db.scalar(lookup)
+
+
 def safe_return_path(value: str) -> str:
     decoded = value
     for _ in range(4):

@@ -4,7 +4,7 @@ from app.schemas.work_metrics import TaskMetricSignals
 from datetime import date
 from typing import Literal, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.schemas.iteration import IterationResponse
 from app.schemas.task import TaskBatchUpdateItem
@@ -14,6 +14,10 @@ class GanttAssignee(BaseModel):
     """Assignee info for Gantt task."""
     id: int
     name: str
+    kind: Optional[Literal["human", "agent", "hybrid"]] = Field(
+        default=None,
+        description="Kind of the assignee's profile. Read-only; null when it is not known.",
+    )
 
 
 class GanttMilestone(BaseModel):

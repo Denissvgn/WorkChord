@@ -17,6 +17,8 @@ const labelServiceMock = vi.hoisted(() => ({
     getGroups: vi.fn(), getLabels: vi.fn(), createGroup: vi.fn(), updateGroup: vi.fn(), createLabel: vi.fn(), updateLabel: vi.fn(),
 }));
 const rulesServiceMock = vi.hoisted(() => ({ getRules: vi.fn(), updateRules: vi.fn(), resetRules: vi.fn() }));
+const verifyKey = vi.hoisted(() => vi.fn());
+vi.mock('../services/adminAccessService', () => ({ verifyAdminApiKey: verifyKey }));
 const webhookServiceMock = vi.hoisted(() => ({
     getTargets: vi.fn(), createTarget: vi.fn(), updateTarget: vi.fn(), deleteTarget: vi.fn(),
     testTarget: vi.fn(), getDeliveries: vi.fn(), retryDelivery: vi.fn(),
@@ -109,6 +111,7 @@ const unlock = async (user: ReturnType<typeof renderSettings>['user']) => {
     await user.type(screen.getByLabelText('Admin key'), 'operator-key');
     await user.click(screen.getByRole('button', { name: 'Save key' }));
     expect(await screen.findByText('Editing unlocked')).toBeVisible();
+    expect(verifyKey).toHaveBeenCalledWith('operator-key');
 };
 
 const menuItem = (name: string) => screen.getByRole('menuitem', { name });
@@ -121,6 +124,7 @@ describe('SettingsPage read-only panels', () => {
         templateServiceMock.getAll.mockResolvedValue([template(1, 'Bug report', 'task'), template(2, 'Client launch', 'project')]);
         labelServiceMock.getGroups.mockResolvedValue([labelGroup]);
         rulesServiceMock.getRules.mockResolvedValue(rules);
+        verifyKey.mockResolvedValue(undefined);
         webhookServiceMock.getTargets.mockResolvedValue([webhookTarget]);
         webhookServiceMock.getDeliveries.mockResolvedValue([]);
         githubServiceMock.getStatusAutomationRules.mockResolvedValue([githubRule]);

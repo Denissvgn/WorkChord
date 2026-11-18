@@ -478,12 +478,12 @@ class SchedulerService:
             task.start_date = None
             task.end_date = None
         planned_leaf_ids = {task.id for task in all_leaf_tasks if task.status == TaskStatus.PLANNED.value}
+        planning_start = self._planning_start(iteration)
 
         # Calculate earliest_start for each leaf task
         def get_task_earliest_start(task: Task) -> date:
             """Get earliest possible start date for a task."""
-            # Start with iteration start
-            base = iteration.start_date
+            base = planning_start
             if follow_date is not None and follow_date > base:
                 base = follow_date
 
@@ -851,8 +851,8 @@ class SchedulerService:
             if task.start_date is not None and task.end_date is not None:
                 continue
             if self._effective_flags(task)["effective_is_deferred"]:
-                reason = "deferred"
-            elif task.blocked_reason:
+                continue
+            if task.blocked_reason:
                 reason = "blocked"
             elif task.id in known_reasons:
                 reason = known_reasons[task.id]
@@ -1029,6 +1029,14 @@ class SchedulerService:
         from app.services.work_metrics import effective_work_flags
         return getattr(self, "_work_flags", {}).get(task.id) or effective_work_flags(task)
 
+    @staticmethod
+    def _planning_start(iteration: Iteration) -> date:
+        """Keep new forecasts on or after the workspace's current working date."""
+        from app.services.work_metrics import working_today
+
+        zone = iteration.project.timezone if iteration.project else iteration.calendar.timezone
+        return max(iteration.start_date, working_today(zone))
+
     async def _schedule_leaf_task(
         self,
         task: Task,
@@ -1063,6 +1071,8 @@ class SchedulerService:
             task_min_start = task.min_start_date or iteration.start_date
             if task_min_start > earliest_start:
                 earliest_start = task_min_start
+
+        earliest_start = max(earliest_start, self._planning_start(iteration))
 
         # Calculate real duration - round UP to full days
         # Apply professionalism coefficient: higher coefficient = faster work = shorter duration

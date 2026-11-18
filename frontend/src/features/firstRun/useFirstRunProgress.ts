@@ -3,8 +3,9 @@ import { useQuery } from '@tanstack/react-query';
 import { useIdentity } from '../identity/identityContext';
 import { iterationService } from '../../services/iterationService';
 import { projectService } from '../../services/projectService';
-import { useWorkScope } from '../scope/useWorkScope';
 import { planningNavigationSummaryKey } from '../planningMasters/usePlanningNavigationSummary';
+import { pickDefaultIteration } from '../scope/workScope';
+import type { Iteration } from '../../types/iteration';
 import { firstRunSteps, nextFirstRunStep, type FirstRunFacts, type FirstRunStep, type FirstRunStepId } from './firstRunSteps';
 
 export interface FirstRunProgress {
@@ -18,6 +19,7 @@ export interface FirstRunProgress {
     facts: FirstRunFacts;
     /** The project's name when there is exactly one. */
     projectName: string | null;
+    plannedIteration: Iteration | null;
 }
 
 /**
@@ -28,16 +30,14 @@ export interface FirstRunProgress {
 export const useFirstRunProgress = (): FirstRunProgress => {
     const identityContext = useIdentity();
     const identity = identityContext?.identity;
-    const { iteration: scopeIteration } = useWorkScope();
-    const selectedIterationId = typeof scopeIteration === 'number' ? scopeIteration : 0;
     // feedback-policy: query loading,error,retry,empty - the panel stays hidden until the projects are known.
     const projects = useQuery({ queryKey: ['projects'], queryFn: () => projectService.getAll(), staleTime: 60000 });
     // feedback-policy: query loading,error,retry,empty - the panel stays hidden until the iterations are known.
     const iterations = useQuery({ queryKey: ['iterations'], queryFn: iterationService.getAll, staleTime: 60000 });
     const iterationList = iterations.data;
-    // The iteration Plan opens: the one in scope, by the same rule as Plan. Backlog, or a project
-    // without iterations, opens none, so no other iteration's capacity, tasks or schedule count.
-    const iterationId = iterationList?.some(item => item.id === selectedIterationId) ? selectedIterationId : 0;
+    // Setup progress follows the workspace's default iteration, even when the visible scope is Backlog.
+    const plannedIteration = iterationList ? pickDefaultIteration(iterationList) ?? null : null;
+    const iterationId = plannedIteration?.id ?? 0;
     // feedback-policy: query loading,error,retry,empty - the panel stays hidden until readiness is known.
     const readiness = useQuery({
         queryKey: planningNavigationSummaryKey(iterationId),
@@ -68,5 +68,5 @@ export const useFirstRunProgress = (): FirstRunProgress => {
 
     const projectName = projects.data?.length === 1 ? projects.data[0].name : null;
 
-    return { known, applies, steps, nextId, complete: nextId === null, facts, projectName };
+    return { known, applies, steps, nextId, complete: nextId === null, facts, projectName, plannedIteration };
 };
