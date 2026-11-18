@@ -79,9 +79,13 @@ other secret in evidence, reasons, or rationale.
 ## Accept Or Request Changes
 
 - **Accept** only when every current criterion has completed progress and
-  evidence you checked, and no unaccepted risk remains.
+  evidence you checked, the task's branch, commit, and pull-request links exist
+  and match the diff you reviewed (or the task states why it changed no
+  repository), and no unaccepted risk remains. Follow
+  [Check The Delivery Trace](references/review-packet-and-verdict.md#check-the-delivery-trace).
 - **Request changes** when any criterion fails, evidence is missing or cannot be
-  trusted, or the work went outside its scope. Name each failed criterion, what
+  trusted, the delivery trace is missing or does not match, or the work went
+  outside its scope. Name each failed criterion, what
   you expected, what you observed, and the minimum change required.
 - Send rework to the worker the PM named, or else to the worker whose submission
   you reviewed. Stop and ask the PM when that worker is unknown or disabled.

@@ -2065,6 +2065,28 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def workspace_create_release_github_link(
+        release_id: int,
+        url: str,
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any] | None:
+        """Link a GitHub pull request, commit, or tag to a release with an exact actor-attributed receipt."""
+        return await _tool_call(
+            "planning:write",
+            lambda db, actor: mcp_agent_tools.create_release_github_link(
+                db,
+                actor,
+                release_id,
+                url,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
     @mcp.tool(annotations=REMOVAL_TOOL)
     async def workspace_delete_external_link(
         link_id: int,

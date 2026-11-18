@@ -23,7 +23,9 @@ Supply the server-advertised atomic begin action with:
 - queue revision from the work decision;
 - one deterministic idempotency key for this begin attempt;
 - requested lease within advertised limits;
-- trace/correlation data and run metadata that contain no secrets.
+- trace/correlation data and run metadata that contain no secrets;
+- the task's branch URL as `branch_url`, as described in
+  [Record Where The Code Went](#record-where-the-code-went).
 
 ### Record The Harness Session
 
@@ -44,6 +46,51 @@ session reports a different identifier, add the same `harness` object to the
 payload of your next checkpoint event. The value is your declaration so an
 independent observer can match your run to its session; WorkChord does not
 verify it.
+
+### Record Where The Code Went
+
+Keep the trace from a task to its code in WorkChord, so a person can open the
+task and find its branch, commits, and pull request, and can start from a commit
+or pull request and find the task. The trace key is the WorkChord task ID,
+written `WC-<task-id>`; people see the same task as "Task #<task-id>".
+
+1. **Name the branch with the key** before begin: `wc-<task-id>-<short-slug>`,
+   lowercase, under the repository's own branch prefix when it has one (for
+   example `feature/wc-42-export-csv`).
+2. **Record the branch at begin.** When the live capability response
+   advertises `work-delivery-links-v1` and the repository is on GitHub, send the
+   branch URL as `branch_url` in begin:
+   `https://github.com/<owner>/<repo>/tree/<branch>`. WorkChord links it to the
+   task; the begin response returns it in `task.external_links`.
+3. **Put the key in commit and pull-request text.** End every commit message
+   with the trailer `WorkChord-Task: WC-<task-id>`, and name `WC-<task-id>` in
+   the pull request's title or first line, with a link to the task when the
+   workspace has a URL people can open. Follow the repository's own rules for
+   everything else. When those rules forbid task references in commit or
+   pull-request text, leave the text out, keep the links below, and say so in
+   the submit evidence.
+4. **Record the commits and the pull request at submit.** Push the branch
+   first. With `work-delivery-links-v1`, send `branch_url` again, `commit_urls`
+   with one URL per commit the task produced
+   (`https://github.com/<owner>/<repo>/commit/<full-sha>`, the full 40- or
+   64-character SHA from `git log --format=%H <base>..HEAD`), and `pr_url` when a
+   pull request exists. WorkChord links each one to the task and skips a link
+   the task already has, so resending the branch or an earlier commit is safe.
+5. **Repeat the trace in the evidence.** Add a `delivery_trace` object to the
+   submit `evidence`: `branch`, `commits` (full SHAs), and `pull_request`
+   (URL or `null`), so a reviewer reads the trace next to the
+   acceptance-criterion evidence.
+6. **Without the feature or outside GitHub**, send no `branch_url` or
+   `commit_urls`: an older server refuses unknown fields. Put the branch,
+   commit, and pull-request URLs in `artifact_links`, the pull request in
+   `pr_url`, and the same values in `delivery_trace`.
+7. **When the task changes no repository** (an analysis, a decision, a review,
+   or content kept outside version control), record no links and give the
+   reason as `delivery_trace: {"none": "<why no commit or pull request exists>"}`.
+   Never invent a commit or pull request to fill the trace.
+
+For rework, keep the same branch when the repository allows it, and send the new
+commits at the next submit; the links from earlier attempts stay on the task.
 
 Before the call, compare the task/version returned in complete context with the
 assignment's bound task/version. Atomic begin does not accept a caller-supplied
@@ -93,7 +140,10 @@ Re-fetch context, then supply atomic submit with:
 - assignment, task, current version, claim/fence, and run IDs;
 - deterministic submit idempotency key;
 - criterion-by-criterion evidence and concise summary;
-- artifact links, commit URL, and pull-request URL when applicable;
+- the branch, commit, and pull-request links described in
+  [Record Where The Code Went](#record-where-the-code-went), with
+  `delivery_trace` in the evidence;
+- other artifact links when applicable;
 - disclosed residual risks.
 
 Accept only a response that consistently finishes the run, changes

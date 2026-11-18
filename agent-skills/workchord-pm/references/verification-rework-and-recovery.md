@@ -7,6 +7,7 @@ Use this reference to route resolved work to an independent reviewer, follow its
 - [Route work to review](#route-work-to-review)
 - [Handle model evidence and escalation](#handle-model-evidence-and-escalation)
 - [Read the verdict](#read-the-verdict)
+- [Close work with its delivery trace](#close-work-with-its-delivery-trace)
 - [Return work for rework](#return-work-for-rework)
 - [Recover stale or inconsistent execution](#recover-stale-or-inconsistent-execution)
 - [Triage discoveries](#triage-discoveries)
@@ -17,7 +18,7 @@ Use this reference to route resolved work to an independent reviewer, follow its
 
 1. Confirm the task is Implemented (`resolved`), no run remains active, and no worker still holds a live execution lease.
 2. Choose a reviewer actor with the `verifier` role who did not do or report this work. Require a person or a separately scoped reviewer when independence cannot be established; the server refuses a non-independent verdict with `independent_review_required`.
-3. Confirm the typed brief, criterion progress, and artifacts are current enough to review. When `task.brief` exists, evidence from an older `brief_revision` or `artifact_revision` cannot support acceptance; return incomplete submissions to the worker through recovery instead of routing them to review.
+3. Confirm the typed brief, criterion progress, artifacts, and delivery trace are current enough to review: the task carries its branch, commit, and pull-request links, or the submission states in `delivery_trace.none` why no repository changed. When `task.brief` exists, evidence from an older `brief_revision` or `artifact_revision` cannot support acceptance; return incomplete submissions to the worker through recovery instead of routing them to review.
 4. Name the rework owner in the assignment reason when it should differ from the worker who submitted; otherwise the reviewer hands rework back to that worker.
 
 Create a verification-purpose assignment only after the task is `resolved`, its
@@ -81,6 +82,38 @@ The reviewer records Accept (`pass`) or Request changes (`reject`) through the t
 In supervised v0, let the accountable person transition `resolved -> closed` with the current task version and reason after reviewing the evidence. Re-read the response because closure sets actual end data and can roll up parents.
 
 Do not close partially accepted work. Split follow-up work only when the original criterion can be truthfully accepted without it; otherwise the reviewer requests changes on the current task.
+
+## Close Work With Its Delivery Trace
+
+Every finished task leads to the code it produced. Before you report a task as
+Accepted, close it in supervised v0, or count it toward a milestone, release, or
+project update, read the task's external links
+(`workspace_list_external_links` with `entity_type` `task`) and require one of:
+
+- at least one GitHub `commit` or `pull_request` link, or, on a server without
+  `work-delivery-links-v1` or outside GitHub, the same URLs in the run's
+  artifact links; or
+- a stated reason in the submission's `delivery_trace.none` why no commit or
+  pull request exists, such as a docs-only change kept outside version control,
+  an analysis, or a recorded no-change decision.
+
+When neither is present, the task is not finished. For work still to be
+reviewed or in rework, ask the reviewer to request changes or the worker to
+record the trace at the next submit. For work already Accepted, find the
+commit or pull request in the repository by its `WC-<task-id>` key (the
+`WorkChord-Task: WC-<task-id>` commit trailer or the `wc-<task-id>` branch name)
+and link it with `workspace_create_task_github_link`; when you cannot find it,
+report the gap in the project update instead of inventing a link. Add a link
+yourself only while no execution run is active on the task: a link changes the
+task version, and the worker's submit then fails as a scope change.
+
+When a release ships, link the release to the code it shipped: its merge pull
+request or its release tag
+(`https://github.com/<owner>/<repo>/releases/tag/<tag>`), through
+`workspace_create_release_github_link`. Re-read it with
+`workspace_list_external_links` (`entity_type` `release`) and name the link in
+the release's project update. A release without either link is not reported as
+shipped.
 
 ## Return Work for Rework
 
@@ -231,7 +264,7 @@ the human owner and state clearly that no durable update was written.
 **Preconditions**
 
 - Require a resolved task for normal verification.
-- Require a terminal execution run, released claim, submitted artifacts, current versions, and an independent reviewer.
+- Require a terminal execution run, released claim, submitted artifacts, a delivery trace (commit or pull-request links, or a stated reason why none exists), current versions, and an independent reviewer.
 
 **Required reads**
 
@@ -254,6 +287,9 @@ the human owner and state clearly that no durable update was written.
   snapshots/model evidence, pipeline, milestone/project progress, project update
   freshness, and new rework/recovery ownership.
 - Leave every rejected or recovered task with one explicit next owner.
+- Leave every Accepted task with a commit or pull-request link or a stated
+  reason why none exists, and every shipped release with its merge pull-request
+  or tag link.
 
 **Evidence and stop rules**
 

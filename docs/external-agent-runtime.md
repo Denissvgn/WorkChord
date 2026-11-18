@@ -215,6 +215,26 @@ assignments. Like usage reports, the harness session is the actor's
 declaration: it lets an independent observer match a run to the session that
 performed it, and WorkChord stores it without verifying it.
 
+## Link the work to its code
+
+When the server advertises `work-delivery-links-v1`, a worker records where a
+task's code went. Begin takes an optional `branch_url`
+(`https://github.com/<owner>/<repo>/tree/<branch>`); submit takes `branch_url`,
+`commit_urls` (one `.../commit/<full-sha>` URL per commit) and the existing
+`pr_url`. WorkChord links each URL to the task as a GitHub external link in the
+same command, skips a URL the task already has, and refuses a URL of the wrong
+kind or a short commit SHA. The older `commit_url` field still accepts any
+reviewable URL; only a GitHub commit URL there becomes a link. Without the
+feature, send none of the new fields, because the server refuses unknown fields.
+
+The role skills name the branch `wc-<task-id>-<slug>`, end each commit message
+with `WorkChord-Task: WC-<task-id>`, and name `WC-<task-id>` in the pull
+request, so a commit or pull request also leads back to its task. A reviewer
+checks the links against the reviewed diff before accepting. A PM counts a task
+as done only with a commit or pull-request link or a stated reason why none
+exists, and links a shipped release to its merge pull request or tag with
+`workspace_create_release_github_link`.
+
 ## Record usage and evaluate outcomes
 
 Follow [execution usage](execution-usage.md): report attempt totals with an

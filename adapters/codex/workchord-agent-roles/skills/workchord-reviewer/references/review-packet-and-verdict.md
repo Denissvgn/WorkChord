@@ -7,6 +7,7 @@ changes, and hand rework to an explicit owner.
 
 - [Confirm the review is yours](#confirm-the-review-is-yours)
 - [Build the review packet](#build-the-review-packet)
+- [Check the delivery trace](#check-the-delivery-trace)
 - [Check model evidence](#check-model-evidence)
 - [Accept](#accept)
 - [Request changes](#request-changes)
@@ -49,7 +50,9 @@ Read the complete context with the review assignment ID, then record:
    result, and limitations.
 7. Scope: look for silent expansion, missing deliverables, skipped tests, and
    unresolved risks or warnings.
-8. Plan fit: read the task's assignee, dates, and milestone, and any
+8. Delivery trace: check the task's GitHub links against the diff you
+   reviewed, as in [Check The Delivery Trace](#check-the-delivery-trace).
+9. Plan fit: read the task's assignee, dates, and milestone, and any
    `plan_gaps` the worker reported. Note a task that was done without an
    assignee, without calculated dates, or outside its milestone. These are
    notes for the PM under `limitations`; they are not criteria and never decide
@@ -58,12 +61,40 @@ Read the complete context with the review assignment ID, then record:
 Do not treat a succeeded run, a green local check, a commit link, or the
 worker's summary as enough by itself. Check the task's stated outcome.
 
-Shape `evidence` as one entry per criterion, for example
+Shape `evidence` as one entry per criterion plus the trace check, for example
 `{"criteria": [{"id": "...", "revision": 1, "result": "pass", "note": "..."}],
-"limitations": "..."}`, within 100 bounded fields. `result` is `pass`, `fail`,
+"delivery_trace": {"result": "pass", "note": "..."}, "limitations": "..."}`,
+within 100 bounded fields. `result` is `pass`, `fail`,
 or `not_checked`, and `note` says what you checked or what must change. People
 who review in WorkChord record the same `criteria` packet, so a worker reads one
 rework format.
+
+## Check The Delivery Trace
+
+A task that changed a repository must lead to its code, and its code back to
+the task. Read `task.external_links` in the complete context and the worker's
+`delivery_trace` in the submission evidence, then confirm:
+
+1. **The links exist.** GitHub links with `metadata_json.github_type`
+   `branch`, `commit` (one per commit), and `pull_request` when the worker
+   opened one. A server without `work-delivery-links-v1`, or a repository
+   outside GitHub, carries the same URLs in the run's artifact links instead.
+2. **They match the diff you reviewed.** The commits you inspected are exactly
+   the linked commits (compare full SHAs), they are on the linked branch, and
+   the linked pull request's head is that branch. A commit you reviewed that is
+   not linked, or a linked commit you did not review, is a mismatch.
+3. **The key goes both ways.** The branch name holds `wc-<task-id>`, and the
+   commit messages and the pull request name `WC-<task-id>`, unless the worker
+   stated that the repository's rules forbid it.
+
+When the task changes no repository, accept an empty link list only with a
+stated reason in `delivery_trace.none` that fits the task's brief.
+
+Record the check as `delivery_trace` in your evidence. A missing or mismatched
+link, or a missing reason, is a Request changes: name what is missing and the
+minimum change, such as "link commit <sha> at the next submit". Never create,
+change, or remove a link yourself; your role has no link scope, and the trace
+must come from the worker's submission.
 
 ## Check Model Evidence
 
@@ -83,14 +114,16 @@ report that to the PM.
 ## Accept
 
 Accept (`verdict: "pass"`) only when every current criterion passes with
-evidence you checked and no unaccepted risk remains. Accept atomically makes
+evidence you checked, the delivery trace passes, and no unaccepted risk
+remains. Accept atomically makes
 the task Accepted (`closed`) and fulfills your review assignment. Re-read the
 task from the response and report the result.
 
 ## Request Changes
 
 Request changes (`verdict: "reject"`) when any criterion fails, evidence is
-missing or untrustworthy, or the work exceeded its scope. Never accept part of
+missing or untrustworthy, the delivery trace is missing or does not match the
+reviewed diff, or the work exceeded its scope. Never accept part of
 a task.
 
 Write the `reason` and `evidence` with:

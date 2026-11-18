@@ -1,14 +1,14 @@
 """External link service."""
 
+from app.authority import require_project
 from app.commands import commit_or_flush
-from dataclasses import dataclass
-from typing import Any, Optional, Sequence
-from urllib.parse import urlparse
+from typing import Optional, Sequence
 
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.external_link import ExternalLink, ExternalLinkEntityType as ModelExternalLinkEntityType
+from app.models.release import Release
 from app.models.task import Task
 from app.schemas.external_link import (
     ExternalLinkCreate,
@@ -21,6 +21,7 @@ from app.schemas.external_link import (
 )
 from app.services.outbound_webhook_service import emit_outbound_webhook_event
 from app.services.task_context_revision_service import reserve_task_context_revision
+from app.utils.github_links import GitHubLinkError, ParsedGitHubLink, parse_github_url
 
 
 class ExternalLinkValidationError(ValueError):
@@ -29,36 +30,6 @@ class ExternalLinkValidationError(ValueError):
 
 class ExternalLinkConflictError(Exception):
     """Raised when a provider-specific link already exists for an entity."""
-
-
-@dataclass(frozen=True)
-class ParsedGitHubLink:
-    """Normalized GitHub link details ready for persistence."""
-
-    github_type: str
-    owner: str
-    repo: str
-    repo_full_name: str
-    number: Optional[int]
-    branch: Optional[str]
-    external_key: str
-    url: str
-    title: str
-
-    @property
-    def metadata_json(self) -> dict[str, Any]:
-        """Return the public metadata stored with the external link."""
-        metadata: dict[str, Any] = {
-            "github_type": self.github_type,
-            "owner": self.owner,
-            "repo": self.repo,
-            "repo_full_name": self.repo_full_name,
-        }
-        if self.number is not None:
-            metadata["number"] = self.number
-        if self.branch is not None:
-            metadata["branch"] = self.branch
-        return metadata
 
 
 class ExternalLinkService:
@@ -72,79 +43,11 @@ class ExternalLinkService:
         return value.value if hasattr(value, "value") else value
 
     def parse_github_url(self, raw_url: str) -> ParsedGitHubLink:
-        """Parse common GitHub PR, issue, and branch URLs."""
-        url = raw_url.strip()
-        if not url:
-            raise ExternalLinkValidationError("GitHub URL is required")
-
-        parsed = urlparse(url if "://" in url else f"https://{url}")
-        hostname = (parsed.hostname or "").lower()
-        if parsed.scheme not in {"http", "https"} or hostname not in {
-            "github.com",
-            "www.github.com",
-        }:
-            raise ExternalLinkValidationError(
-                "Only GitHub PR, issue, and branch URLs are supported"
-            )
-
-        parts = [part for part in parsed.path.strip("/").split("/") if part]
-        if len(parts) < 4:
-            raise ExternalLinkValidationError(
-                "Only GitHub PR, issue, and branch URLs are supported"
-            )
-
-        owner, repo, link_type = parts[0], parts[1], parts[2]
-        repo_full_name = f"{owner}/{repo}"
-
-        if link_type == "pull" and parts[3].isdigit():
-            number = int(parts[3])
-            normalized_url = f"https://github.com/{repo_full_name}/pull/{number}"
-            return ParsedGitHubLink(
-                github_type="pull_request",
-                owner=owner,
-                repo=repo,
-                repo_full_name=repo_full_name,
-                number=number,
-                branch=None,
-                external_key=f"{repo_full_name}#{number}",
-                url=normalized_url,
-                title=f"{repo_full_name} PR #{number}",
-            )
-
-        if link_type == "issues" and parts[3].isdigit():
-            number = int(parts[3])
-            normalized_url = f"https://github.com/{repo_full_name}/issues/{number}"
-            return ParsedGitHubLink(
-                github_type="issue",
-                owner=owner,
-                repo=repo,
-                repo_full_name=repo_full_name,
-                number=number,
-                branch=None,
-                external_key=f"{repo_full_name}#{number}",
-                url=normalized_url,
-                title=f"{repo_full_name} issue #{number}",
-            )
-
-        if link_type == "tree":
-            branch = "/".join(parts[3:]).strip("/")
-            if branch:
-                normalized_url = f"https://github.com/{repo_full_name}/tree/{branch}"
-                return ParsedGitHubLink(
-                    github_type="branch",
-                    owner=owner,
-                    repo=repo,
-                    repo_full_name=repo_full_name,
-                    number=None,
-                    branch=branch,
-                    external_key=f"{repo_full_name}@{branch}",
-                    url=normalized_url,
-                    title=f"{repo_full_name} branch {branch}",
-                )
-
-        raise ExternalLinkValidationError(
-            "Only GitHub PR, issue, and branch URLs are supported"
-        )
+        """Parse GitHub pull request, issue, branch, commit, and tag URLs."""
+        try:
+            return parse_github_url(raw_url)
+        except GitHubLinkError as exc:
+            raise ExternalLinkValidationError(str(exc)) from exc
 
     async def task_exists(self, task_id: int) -> bool:
         """Return whether a task exists."""
@@ -279,20 +182,139 @@ class ExternalLinkService:
         self,
         task_id: int,
         parsed: ParsedGitHubLink,
+        *,
+        entity_type: str = ModelExternalLinkEntityType.TASK.value,
     ) -> bool:
-        """Return whether the normalized GitHub link already exists for a task."""
+        """Return whether the normalized GitHub link already exists for an entity."""
         result = await self.db.execute(
             select(ExternalLink.id).where(
-                ExternalLink.entity_type == ModelExternalLinkEntityType.TASK.value,
+                ExternalLink.entity_type == entity_type,
                 ExternalLink.entity_id == task_id,
                 ExternalLink.provider == ExternalLinkProvider.GITHUB.value,
                 (
                     (ExternalLink.url == parsed.url)
                     | (ExternalLink.external_key == parsed.external_key)
                 ),
-            )
+            ).limit(1)
         )
         return result.scalar_one_or_none() is not None
+
+    async def _emit_github_created(
+        self,
+        link: ExternalLink,
+        parsed: ParsedGitHubLink,
+    ) -> None:
+        data = {
+            "external_link_id": link.id,
+            "github_type": parsed.github_type,
+            "repo_full_name": parsed.repo_full_name,
+            "number": parsed.number,
+            "branch": parsed.branch,
+            "url": parsed.url,
+        }
+        if link.entity_type == ModelExternalLinkEntityType.TASK.value:
+            data["task_id"] = link.entity_id
+        else:
+            data["entity_type"] = link.entity_type
+            data["entity_id"] = link.entity_id
+        await emit_outbound_webhook_event(
+            self.db,
+            commit=False,
+            event_type="external_link.github_created",
+            entity_type=link.entity_type,
+            entity_id=link.entity_id,
+            data=data,
+        )
+
+    async def create_release_github_link(
+        self,
+        release_id: int,
+        url: str,
+        *,
+        commit: bool = True,
+    ) -> Optional[ExternalLink]:
+        """Parse and link a GitHub pull request, commit, branch, or tag to a release."""
+        row = (await self.db.execute(select(Release.id, Release.project_id).where(Release.id == release_id))).first()
+        if row is None:
+            return None
+        require_project(self.db, row.project_id, "edit")
+        parsed = self.parse_github_url(url)
+        release_type = ModelExternalLinkEntityType.RELEASE.value
+        if await self.github_link_exists(release_id, parsed, entity_type=release_type):
+            raise ExternalLinkConflictError("GitHub link already exists for this release")
+        try:
+            link = await self.create(
+                ExternalLinkCreate(
+                    entity_type=ExternalLinkEntityType.RELEASE,
+                    entity_id=release_id,
+                    provider=ExternalLinkProvider.GITHUB,
+                    external_key=parsed.external_key,
+                    url=parsed.url,
+                    title=parsed.title,
+                    status=None,
+                    metadata_json=parsed.metadata_json,
+                ),
+                commit=False,
+            )
+            await self._emit_github_created(link, parsed)
+            if commit:
+                await commit_or_flush(self.db)
+                await self.db.refresh(link)
+        except Exception:
+            if commit:
+                await self.db.rollback()
+            raise
+        return link
+
+    async def record_work_github_links(
+        self,
+        task_id: int,
+        urls: Sequence[str],
+    ) -> list[ExternalLink]:
+        """Link a worker's GitHub branch, commits, and pull request to its task.
+
+        Runs inside a begin or submit command, which already validated the
+        worker's fence and reserved the new task version, so recording the links
+        reserves no other version and the worker's execute permission covers
+        them. A URL already linked to the task is skipped, so a repeated submit
+        adds nothing.
+        """
+        created: list[ExternalLink] = []
+        for url in urls:
+            parsed = self.parse_github_url(url)
+            if await self.github_link_exists(task_id, parsed):
+                continue
+            link = ExternalLink(
+                entity_type=ModelExternalLinkEntityType.TASK.value,
+                entity_id=task_id,
+                provider=ExternalLinkProvider.GITHUB.value,
+                external_key=parsed.external_key,
+                url=parsed.url,
+                title=parsed.title,
+                status=None,
+                metadata_json=parsed.metadata_json,
+            )
+            self.db.info.setdefault("work_link_authorizations", set()).add((task_id, parsed.url))
+            self.db.add(link)
+            await self.db.flush()
+            await emit_outbound_webhook_event(
+                self.db,
+                commit=False,
+                event_type="external_link.created",
+                entity_type=link.entity_type,
+                entity_id=link.entity_id,
+                data={
+                    "external_link_id": link.id,
+                    "entity_type": link.entity_type,
+                    "entity_id": link.entity_id,
+                    "provider": link.provider,
+                    "external_key": link.external_key,
+                    "url": link.url,
+                },
+            )
+            await self._emit_github_created(link, parsed)
+            created.append(link)
+        return created
 
     async def create_task_github_link(
         self,
@@ -324,22 +346,7 @@ class ExternalLinkService:
             )
             if link is None:
                 return None
-            await emit_outbound_webhook_event(
-                self.db,
-                commit=False,
-                event_type="external_link.github_created",
-                entity_type="task",
-                entity_id=task_id,
-                data={
-                    "external_link_id": link.id,
-                    "task_id": task_id,
-                    "github_type": parsed.github_type,
-                    "repo_full_name": parsed.repo_full_name,
-                    "number": parsed.number,
-                    "branch": parsed.branch,
-                    "url": parsed.url,
-                },
-            )
+            await self._emit_github_created(link, parsed)
             if commit:
                 await commit_or_flush(self.db)
                 await self.db.refresh(link)

@@ -139,6 +139,8 @@ Read [claim-run-and-task-state.md](references/claim-run-and-task-state.md).
   required model evidence, or switch models unilaterally. Effective `off` or
   `shadow`, a stale binding, mismatch, unavailable assigned runtime, or unknown
   required field is `attention_required`, not permission to continue.
+- Name the branch `wc-<task-id>-<short-slug>` and record it at begin, as in
+  [Record Where The Code Went](references/claim-run-and-task-state.md#record-where-the-code-went).
 - Replace cached assignment, task version, claim/fence, expiry, and run values
   with every authoritative response.
 - For normal work, accept only the server-owned `planned -> active` transition.
@@ -175,7 +177,11 @@ state.
 2. Confirm that the assignment, task version, live claim/fence, and running run
    still match.
 3. Prefer atomic submit to record final evidence, finish the run, transition
-   `active -> resolved`, fulfill the assignment, and release the claim.
+   `active -> resolved`, fulfill the assignment, and release the claim. Send
+   the branch, every commit, and the pull request when one exists, and put the
+   task's `WC-<task-id>` key in commit and pull-request text, as in
+   [Record Where The Code Went](references/claim-run-and-task-state.md#record-where-the-code-went).
+   A task that changes no repository states why in `delivery_trace.none`.
 4. On failure or cancellation, use the typed terminal action so the run,
    release, and PM recovery signal remain consistent.
 5. In supervised v0, use the documented multi-call sequence and surface every

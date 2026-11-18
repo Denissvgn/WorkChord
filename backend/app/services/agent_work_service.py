@@ -108,6 +108,7 @@ from app.services.project_service import ProjectService
 from app.schemas.project import ProjectUpdateEntryCreate
 from app.schemas.triage import TriageItemCreate
 from app.services.triage_service import TriageService
+from app.utils.github_links import GitHubLinkError, parse_github_url
 from app.utils.time import as_utc, utc_now
 
 
@@ -2301,6 +2302,8 @@ class AgentWorkService:
             await self._follow_actual_dates(task, started=True)
         else:
             await self.task_service.reserve_task_version(task, task.version)
+        if data.branch_url:
+            await self._record_work_links(task, [data.branch_url])
         task.claim_generation += 1
         task.claim_id = secrets.token_hex(24)
         task.execution_mode = "scheduled"
@@ -2656,6 +2659,7 @@ class AgentWorkService:
             if task is None:
                 raise AgentConflictError("Task could not be resolved")
             await self._follow_actual_dates(task, started=False)
+            await self._record_work_links(task, self._submitted_github_links(data))
             assignment.state = "fulfilled"
             event_type = "agent.work_submitted"
         else:
@@ -4133,6 +4137,37 @@ class AgentWorkService:
         if record.request_hash != request_hash:
             raise AgentConflictError("idempotency_mismatch")
         return _json_loads(record.response_payload, {})
+
+    async def _record_work_links(self, task: Task, urls: list[str]) -> None:
+        """Link the worker's GitHub branch, commits, and pull request to its task."""
+        if not urls:
+            return
+        from app.services.external_link_service import ExternalLinkService
+
+        if await ExternalLinkService(self.db).record_work_github_links(task.id, urls):
+            await self.db.refresh(task, attribute_names=["external_links"])
+
+    @staticmethod
+    def _submitted_github_links(data: AgentWorkSubmit) -> list[str]:
+        """Return the submitted GitHub URLs to link, branch first, then commits, then the PR.
+
+        The older single ``commit_url`` and ``pr_url`` fields accept any
+        reviewable URL; only a GitHub commit or pull request URL is linked.
+        """
+        urls: list[str] = []
+        if data.branch_url:
+            urls.append(data.branch_url)
+        urls.extend(data.commit_urls)
+        for value, github_type in ((data.commit_url, "commit"), (data.pr_url, "pull_request")):
+            if not value:
+                continue
+            try:
+                parsed = parse_github_url(value)
+            except GitHubLinkError:
+                continue
+            if parsed.github_type == github_type and parsed.url not in urls:
+                urls.append(parsed.url)
+        return urls
 
     @staticmethod
     def _live_fence_receipt(response: AgentWorkBeginResponse) -> dict[str, Any]:

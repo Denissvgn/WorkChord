@@ -44,7 +44,7 @@ RELEASE_BASELINE_FILENAME = "release-baseline.json"
 CATALOG_SCHEMA = "workchord-agent-skills/v1"
 RELEASE_SCHEMA = "workchord-agent-skills-release/v1"
 RELEASE_BASELINE_SCHEMA = "workchord-agent-skills-baseline/v2"
-CATALOG_VERSION = "1.17.1"
+CATALOG_VERSION = "1.18.0"
 API_CONTRACT = "workchord-agent/v1"
 SERVER_COMPATIBILITY = ">=1.8.0,<2.0.0"
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
@@ -476,6 +476,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
                 "model",
                 "tool_name",
                 "metadata",
+                "branch_url",
             ),
             header_required=("Idempotency-Key",),
             tool_required=("payload", "idempotency_key"),
@@ -495,7 +496,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
                 "model_binding_revision",
                 "resolved_model_id",
             ),
-            body_optional=("lease_seconds", "trace_id", "tool_name", "metadata"),
+            body_optional=("lease_seconds", "trace_id", "tool_name", "metadata", "branch_url"),
             header_required=("Idempotency-Key",),
             tool_required=("payload", "idempotency_key"),
             required_feature=MODEL_AWARE_ROUTING_FEATURE,
@@ -613,7 +614,14 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
                 "summary",
                 "evidence",
             ),
-            body_optional=("criterion_progress", "artifact_links", "commit_url", "pr_url"),
+            body_optional=(
+                "criterion_progress",
+                "artifact_links",
+                "commit_url",
+                "pr_url",
+                "branch_url",
+                "commit_urls",
+            ),
             header_required=("Idempotency-Key",),
             tool_required=("payload", "idempotency_key"),
         ),
@@ -768,7 +776,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
 ROLE_METADATA: dict[str, dict[str, Any]] = {
     "workchord-pm": {
         "role": "pm",
-        "version": "1.15.2",
+        "version": "1.16.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -808,7 +816,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-worker": {
         "role": "worker",
-        "version": "1.15.1",
+        "version": "1.16.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -835,7 +843,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-reviewer": {
         "role": "verifier",
-        "version": "1.3.2",
+        "version": "1.4.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,

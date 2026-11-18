@@ -359,6 +359,10 @@ def authorize_domain_writes(session, _flush_context, _instances):
             action = "read"
         if protocol and table == "agent_runs" and obj.actor_id == authority.actor_id:
             action = "execute"
+        if (protocol and table == "external_links" and obj in session.new and obj.entity_type == "task"
+                and (obj.entity_id, obj.url) in session.info.get("work_link_authorizations", set())):
+            # A fenced begin or submit records the worker's own branch, commits, and pull request.
+            action = "execute"
         if protocol and table == "agent_task_assignments":
             if obj.actor_id == authority.actor_id and obj not in session.new:
                 action = "review" if obj.purpose == "verification" else "execute"
