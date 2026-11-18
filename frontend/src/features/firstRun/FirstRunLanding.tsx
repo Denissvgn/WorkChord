@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useNavigationType } from 'react-router-dom';
 import { OPEN_SETUP_GUIDE_EVENT } from '../../components/layout/setupGuideEvents';
 import { projectService } from '../../services/projectService';
+import { consumeCredentialRemount } from '../identity/credentialRemount';
 import { useGetStartedVisibility } from './getStartedVisibility';
 import { useSetupReturn } from './setupReturn';
 
@@ -21,7 +22,8 @@ export const FirstRunLanding = () => {
     const navigationType = useNavigationType();
     const firstLocation = useRef(location.key);
     const movedOn = useRef(false);
-    const decided = useRef(false);
+    // A rebuild after a key was saved or cleared is not a fresh visit: the page stays.
+    const decided = useRef(consumeCredentialRemount());
     // A page that rewrites its own address (scope parameters, a renamed path) replaces it; only
     // a new entry or Back and Forward mean someone has moved on.
     useEffect(() => {

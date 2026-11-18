@@ -12,6 +12,7 @@ import { ADMIN_API_KEY_CHANGED_EVENT } from '../../utils/adminAccess';
 import { AGENT_API_KEY_CHANGED_EVENT } from '../../utils/agentAccess';
 import { createWorkspaceQueryClient, installWorkspaceQueryPolicy } from '../workspaceQueryPolicy';
 import { setSessionIntegrity, IDENTITY_EXPIRED_EVENT } from '../../services/api';
+import { markCredentialRemount } from './credentialRemount';
 import { identityService } from './identityService';
 import { useScopeStore } from '../scope/scopeStore';
 import type { WorkspaceIdentity } from './identityService';
@@ -65,7 +66,7 @@ export const IdentityProvider = ({ children, navigateAfterSignOut = target => wi
         return installWorkspaceQueryPolicy(workClient);
     }, [workClient]);
     useEffect(() => {
-        const changed = () => setCredentialEpoch(value => value + 1);
+        const changed = () => { markCredentialRemount(); setCredentialEpoch(value => value + 1); };
         window.addEventListener(ADMIN_API_KEY_CHANGED_EVENT, changed);
         window.addEventListener(AGENT_API_KEY_CHANGED_EVENT, changed);
         return () => {
