@@ -959,9 +959,11 @@ export const GanttChart = ({
                     )}
                 </section>
             ) : (
+                // The chart keeps its sticky header and task column above its bars, so it is its own
+                // stacking context: those layers must not cover menus opened from the page or the toolbar.
                 <div
                     ref={scrollContainerRef}
-                    className="flex-1 overflow-auto relative select-none"
+                    className="flex-1 overflow-auto relative isolate select-none"
                     style={{ '--gantt-task-column': `${SIDEBAR_WIDTH}px` } as CSSProperties}
                     role="region"
                     tabIndex={0}
