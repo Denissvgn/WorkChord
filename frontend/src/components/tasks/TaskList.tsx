@@ -1,9 +1,11 @@
 import { isGraphLimitError } from '../../utils/graphLimitError';
+import { atRiskReasons } from '../../features/planningMasters/atRiskReasons';
 import { PagedTaskBrowser } from './PagedTaskBrowser';
 import { statusTextClassName } from '../ui/tone';
 import { LabelChip } from '../labels/LabelChip';
 import { Fragment, useCallback, useEffect, useId, useLayoutEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -88,6 +90,8 @@ interface TaskListProps {
     groupByStatus?: boolean;
     /** A row shown above the tasks, inside the list, such as quick add. */
     leadingRow?: ReactNode;
+    /** Where the bulk bar shows while tasks are selected, in place of the toolbar; it sits above the list when this is left out. */
+    selectionBarHost?: HTMLElement | null;
     hasActiveFilters?: boolean;
     activeViewName?: string;
     onClearFilters?: () => void;
@@ -107,6 +111,7 @@ export const TaskList = ({
     sortKey,
     groupByStatus = true,
     leadingRow,
+    selectionBarHost,
     hasActiveFilters = false,
     activeViewName,
     onClearFilters,
@@ -335,9 +340,10 @@ export const TaskList = ({
     });
     const rowItems = useMemo<RowItem[]>(() => {
         if (!grouped) return filteredAndSortedTasks.map(task => ({ kind: 'task' as const, task }));
-        const order = [...STATUS_GROUP_ORDER, ...new Set(filteredAndSortedTasks.map(task => task.status).filter(status => !STATUS_GROUP_ORDER.includes(status)))];
+        const groupStatus = (status: string) => status === 'in_progress' ? 'active' : status;
+        const order = [...STATUS_GROUP_ORDER, ...new Set(filteredAndSortedTasks.map(task => groupStatus(task.status)).filter(status => !STATUS_GROUP_ORDER.includes(status)))];
         return order.flatMap(status => {
-            const inGroup = filteredAndSortedTasks.filter(task => task.status === status);
+            const inGroup = filteredAndSortedTasks.filter(task => groupStatus(task.status) === status);
             if (inGroup.length === 0) return [];
             const collapsed = collapsedGroups.has(status);
             return [{ kind: 'group' as const, status, count: inGroup.length, collapsed },
@@ -398,7 +404,6 @@ export const TaskList = ({
         nowMs,
         selectedIds: selection.selectedIds,
         selectableIds,
-        selectionActive: selectedTasks.length > 0,
         onToggleSelect: selection.toggle,
         collapsedParents,
         onToggleParent: toggleParent,
@@ -406,18 +411,32 @@ export const TaskList = ({
         agentFacts,
         onAssign: (task: Task, assigneeId: number | null) => rowEdits.assign(task, assigneeId),
         onStatusChange: (task: Task, status: TaskStatus) => rowEdits.changeStatus(task, status),
+        showRiskReasons: filters?.planningIssue === 'at-risk',
     };
     const renderRowItem = (item: RowItem) => item.kind === 'group' ? (
         <h2 className="m-0">
             <Button data-page-chrome-control="button" type="button" aria-expanded={!item.collapsed} onClick={() => toggleGroup(item.status)}
-                className="flex min-h-9 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-focus" variant="plain">
+                className="flex min-h-7 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-focus" variant="plain">
                 {item.collapsed ? <ChevronRight aria-hidden="true" className="h-4 w-4" /> : <ChevronDown aria-hidden="true" className="h-4 w-4" />}
-                <span className={statusTextClassName[item.status as Task['status']]}>{t(`statuses.${item.status}`, { defaultValue: item.status })}</span>
+                <span className={statusTextClassName[item.status as Task['status']]}>
+                    {t(`statuses.${item.status}`, { defaultValue: item.status })}
+                </span>
                 <span className="tabular-nums font-normal text-content-secondary">{t('taskList.groupCount', { count: item.count })}</span>
             </Button>
         </h2>
     ) : (
         <TaskItemContent task={item.task} level={0} ctx={rowContext} />
+    );
+
+    const selectionBarNode = selectedTasks.length > 0 && (
+        <TaskSelectionBar
+            iterationId={iterationId}
+            selectedTasks={selectedTasks}
+            matchingCount={visibleTasks.length}
+            onSelectAll={selection.selectAll}
+            onClearSelection={clearSelection}
+            openAssign={preselectAllInBulk}
+        />
     );
 
     if (isGraphLimitError(tasksError)) return <PagedTaskBrowser key={iterationId} iterationId={iterationId} />;
@@ -459,16 +478,7 @@ export const TaskList = ({
                     }}
                 />
             )}
-            {selectedTasks.length > 0 && (
-                <TaskSelectionBar
-                    iterationId={iterationId}
-                    selectedTasks={selectedTasks}
-                    matchingCount={visibleTasks.length}
-                    onSelectAll={selection.selectAll}
-                    onClearSelection={clearSelection}
-                    openAssign={preselectAllInBulk}
-                />
-            )}
+            {selectionBarHost ? (selectionBarNode && createPortal(selectionBarNode, selectionBarHost)) : selectionBarNode}
 
             <div ref={setRowsNode} className="rounded-lg border border-border bg-surface-card">
             {leadingRow && <div className="task-list-leading-row">{leadingRow}</div>}
@@ -608,7 +618,6 @@ interface RowContext {
     nowMs: number;
     selectedIds: Set<number>;
     selectableIds: Set<number>;
-    selectionActive: boolean;
     onToggleSelect: (taskId: number, shiftKey: boolean) => void;
     collapsedParents: Set<number>;
     onToggleParent: (taskId: number) => void;
@@ -616,6 +625,8 @@ interface RowContext {
     agentFacts: AgentRowFacts;
     onAssign: (task: Task, assigneeId: number | null) => void;
     onStatusChange: (task: Task, status: TaskStatus) => void;
+    /** Names why each task is at risk, when the list was opened from Plan's at-risk signals. */
+    showRiskReasons: boolean;
 }
 
 interface TaskItemProps {
@@ -728,8 +739,9 @@ const TaskItemContent = ({ task, level, ctx, dragHandleProps, dragging = false }
                 onOpen={() => ctx.onOpen(task)}
                 onStatusChange={status => ctx.onStatusChange(task, status)}
                 selected={ctx.selectedIds.has(task.id)}
-                selectionActive={ctx.selectionActive}
                 onToggleSelect={isSelectable ? ({ shiftKey }) => ctx.onToggleSelect(task.id, shiftKey) : undefined}
+                selectDisabledReason={isSelectable ? undefined : t('taskList.selectParentUnavailable')}
+                reasons={ctx.showRiskReasons ? atRiskReasons(task, t) : undefined}
                 overdue={task.is_overdue}
                 deferred={task.is_deferred}
                 menuItems={[

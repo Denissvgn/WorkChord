@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { priorityChipClassName } from '../components/ui/tone';
 
 const css = readFileSync(resolve(process.cwd(), 'src/styles/globals.css'), 'utf8');
+const sourceText = (path: string) => readFileSync(resolve(process.cwd(), path), 'utf8');
 
 /** The tokens one theme ends up with: the light defaults plus that theme's own block. */
 const themeTokens = (theme: string) => {
@@ -57,5 +58,32 @@ describe('color roles', () => {
             expect(priorityChipClassName(priority)).not.toMatch(/feedback-|status-|action/);
         }
         expect(priorityChipClassName(1)).not.toBe(priorityChipClassName(7));
+    });
+
+    it('source-level check keeps every metadata badge, holiday, and mail icon neutral', () => {
+        const interfaceSettings = sourceText('src/components/settings/InterfaceLanguageSettings.tsx');
+        const runtimeSettings = sourceText('src/components/settings/RuntimeConfigSettings.tsx');
+        const templates = sourceText('src/components/settings/TemplateLabelSettings.tsx');
+        const gantt = sourceText('src/components/gantt/GanttChart.tsx');
+        const email = sourceText('src/components/settings/EmailSettingsPanel.tsx');
+        const forbidden = /(?:action|feedback-(?:danger|warning)|status-(?:planned|active|resolved|closed))/;
+
+        for (const settings of [interfaceSettings, runtimeSettings, email]) {
+            const sourceMap = settings.match(/const sourceClass:[\s\S]*?\n};/)?.[0];
+            expect(sourceMap).toBeDefined();
+            expect(sourceMap).not.toMatch(forbidden);
+        }
+        const seededBadges = templates.match(/(?:template|group)\.seed_key && \([\s\S]*?\n\s*\)/g);
+        expect(seededBadges).toHaveLength(2);
+        for (const badge of seededBadges ?? []) expect(badge).not.toMatch(forbidden);
+        const holidayLegend = gantt.match(/className="([^"]+)" \/>\{t\('surfaces\.ganttChart\.legendHoliday'\)\}/)?.[1];
+        expect(holidayLegend).toBeDefined();
+        expect(holidayLegend).not.toMatch(forbidden);
+        expect(gantt.match(/isHol \? "([^"]+)"/g)?.join(' ')).not.toMatch(forbidden);
+        const holidayGradient = 'repeating-linear-gradient(135deg,rgb(var(--color-surface-muted))_0_2px,rgb(var(--color-surface-card))_2px_4px)';
+        expect(gantt.match(/isHol \? "([^"]+)"/g)?.join(' ')).toContain(holidayGradient);
+        expect(holidayLegend).toContain(holidayGradient);
+        expect(email.match(/<Mail[\s\S]*?\/>/)?.[0]).not.toMatch(forbidden);
+        expect(email.match(/enabled \? '([^']+)'/)?.[1]).not.toMatch(forbidden);
     });
 });

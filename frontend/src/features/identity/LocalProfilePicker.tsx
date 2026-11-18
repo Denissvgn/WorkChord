@@ -8,6 +8,8 @@ import { teamService } from '../../services/teamService';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { identityService } from './identityService';
 import type { WorkProfile } from './identityService';
+import { useAdminAccess } from '../../hooks/useAdminAccess';
+import { OperatorIdentityNotice } from './OperatorIdentityNotice';
 
 /**
  * Lets a trusted-local session say which person it works as. The choice is
@@ -15,13 +17,14 @@ import type { WorkProfile } from './identityService';
  */
 export const LocalProfilePicker = ({ current, onChosen }: { current: WorkProfile | null; onChosen: () => void }) => {
     const { t } = useTranslation();
+    const { actingAsOperator } = useAdminAccess();
     const ids = useId();
     const [profileId, setProfileId] = useState(current ? String(current.id) : '');
     const [name, setName] = useState('');
     // A profile created by "Add me" whose choice then failed: a retry chooses it instead of creating another.
     const createdProfile = useRef<number | null>(null);
     // feedback-policy: query loading,error,retry,empty
-    const profiles = useQuery({ queryKey: ['teamMemberProfiles'], queryFn: teamService.getProfiles });
+    const profiles = useQuery({ queryKey: ['teamMemberProfiles'], queryFn: teamService.getProfiles, enabled: !actingAsOperator });
     // feedback-policy: mutation pending,inline
     const choose = useMutation({ mutationFn: (id: number | null) => identityService.chooseLocalProfile(id), onSuccess: onChosen });
     // feedback-policy: mutation pending,inline
@@ -39,6 +42,8 @@ export const LocalProfilePicker = ({ current, onChosen }: { current: WorkProfile
     const failure = choose.error ?? addMe.error;
     const submitChoice = (event: FormEvent) => { event.preventDefault(); if (profileId) choose.mutate(Number(profileId)); };
     const submitName = (event: FormEvent) => { event.preventDefault(); if (name.trim()) addMe.mutate(name.trim()); };
+
+    if (actingAsOperator) return <OperatorIdentityNotice />;
 
     return <div className="space-y-3 text-sm">
         <p className="text-content-secondary">{t('identity.localProfileHelp')}</p>

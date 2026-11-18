@@ -1,8 +1,9 @@
 import api from './api';
 import type { DeliveryMetrics } from '../types/deliveryMetrics';
+import type { AnalyticsScope } from '../types/analyticsScope';
 
 export const deliveryMetricsService = {
-    get: async (scope: { project_id?: number; iteration_id?: number; lookback_days: number }) => (
+    get: async (scope: AnalyticsScope) => (
         await api.get<DeliveryMetrics>('/tasks/delivery-metrics', { params: scope })
     ).data,
 };

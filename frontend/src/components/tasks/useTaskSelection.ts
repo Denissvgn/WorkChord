@@ -52,7 +52,6 @@ export const useTaskSelection = ({ selectableIds, order, iterationOf }: TaskSele
 
     return {
         selectedIds,
-        selectionActive: selectedIds.size > 0,
         toggle,
         /** Whether this task can be added to the selection now; false for a task of another iteration. */
         canAdd: (taskId: number) => selectableIds.has(taskId) && inScope(taskId),

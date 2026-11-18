@@ -14,6 +14,13 @@ from app.models.team_member import TeamMember, TeamMemberProfile, Vacation
 from app.services.scheduler_service import SchedulerService
 
 
+@pytest.fixture(autouse=True)
+def fixed_working_date(monkeypatch):
+    from app.services import work_metrics
+
+    monkeypatch.setattr(work_metrics, "utc_now", lambda: datetime(2026, 1, 5, 12, tzinfo=timezone.utc))
+
+
 async def make_plan(db, rows, assignments, edges, *, end=date(2026, 12, 31)):
     calendar = Calendar(name="Working week", year=2026, nominal_day_hours=8,
                         holidays=[], short_days=[], weekend_days=[5, 6])

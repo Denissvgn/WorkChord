@@ -265,7 +265,7 @@ export const taskService = {
     },
 
     /** The tasks behind one work-metric count, chosen by the predicate that counts them. */
-    metricMatches: async (params: MetricScope & { metric: WorkMetricName }, signal?: AbortSignal) => {
+    metricMatches: async (params: MetricScope & { metric: WorkMetricName; limit?: number; after_id?: number }, signal?: AbortSignal) => {
         const response = await api.get<MetricMatchPage>('/tasks/metric-matches', { params, signal });
         return response.data;
     },
@@ -278,4 +278,5 @@ export interface MetricMatchPage {
     metric: WorkMetricName;
     items: Array<{ id: number; title: string; status: string; project_name: string | null; iteration_name: string | null }>;
     has_more: boolean;
+    next_after_id?: number | null;
 }

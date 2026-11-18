@@ -1,5 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { createMemoryRouter, RouterProvider, useLocation } from 'react-router-dom';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { render } from '@testing-library/react';
+import { createTestQueryClient } from '../../test/renderWithProviders';
+import { DraftDismissalDialog } from '../../components/tasks/DraftDismissalDialog';
+import { useDraftDismissal } from '../../components/tasks/useDraftDismissal';
+import userEvent from '@testing-library/user-event';
 import { act, cleanup, screen, waitFor, within } from '@testing-library/react';
 import { renderWithProviders as renderTestProviders } from '../../test/renderWithProviders';
 import { IdentityContext } from '../identity/identityContext';
@@ -11,6 +18,7 @@ import { sampleProjectFixture } from './sampleProject.fixture';
 import { SampleProjectAction } from './SampleProjectAction';
 import { useSampleProject } from './sampleProjectStore';
 import { changeAppLanguage } from '../../i18n/i18n';
+import i18n from '../../i18n/i18n';
 import { RoadmapView } from '../../components/projects/RoadmapView';
 import type { Project } from '../../types/project';
 import { formatDate } from '../../utils/formatDate';
@@ -28,6 +36,7 @@ let revision: number;
 let writes: string[];
 let applied: boolean;
 let failIteration: boolean;
+let capacityYear: number | null;
 const person = { id: 1, display_name: 'Robin' };
 const identity: WorkspaceIdentity = { mode: 'trusted_local', principal: null, profile: person, access: 'full',
     authenticated: false, configured: true, workspace_role: null, projects: {}, csrf_token: null };
@@ -71,7 +80,7 @@ const WorkspaceSetup = () => {
 beforeEach(async () => {
     vi.resetAllMocks();
     await changeAppLanguage('en');
-    rows = new Map(); nextId = 10; revision = 1; writes = []; applied = false; failIteration = false;
+    rows = new Map(); nextId = 10; revision = 1; writes = []; applied = false; failIteration = false; capacityYear = null;
     localStorage.clear();
     sessionStorage.clear();
     useSampleProject.setState({ manifest: null, busy: false });
@@ -130,7 +139,7 @@ beforeEach(async () => {
                 });
                 days.push({ date, allocated_hours: allocated ? 8 : 0, committed_effort_hours: 0 });
             }
-            return { data: { calendar_year: null, days } };
+            return { data: { calendar_year: capacityYear, days } };
         }
         if (path.includes('/planning-inputs/')) {
             const kind = parts[3]; const resourceId = Number(parts[4]);
@@ -173,7 +182,72 @@ afterEach(() => {
     sessionStorage.clear();
 });
 
+const OpenDraft = ({ mode }: { mode: 'dirty' | 'pending' }) => {
+    const guard = useDraftDismissal(() => undefined);
+    useEffect(() => {
+        if (mode === 'dirty') guard.setDirty(true); else guard.setPending(true);
+    }, [guard, mode]);
+    return <DraftDismissalDialog guard={guard} />;
+};
+/** The app's router, with a task draft open that would normally ask before leaving the page. */
+const renderInDataRouter = (entry: string, mode: 'dirty' | 'pending') => {
+    const queryClient = createTestQueryClient();
+    queryClients.add(queryClient);
+    const router = createMemoryRouter([{ path: '*', element: <IdentityContext.Provider value={{ identity, refresh: vi.fn(), signOut: vi.fn() }}>
+        <SampleProjectAction /><OpenDraft mode={mode} /><Location /></IdentityContext.Provider> }], { initialEntries: [entry] });
+    render(<QueryClientProvider client={queryClient}><RouterProvider router={router} /></QueryClientProvider>);
+    return { router, queryClient };
+};
+/** Collects every uncaught error and console error until stop() is called. */
+const watchForErrors = () => {
+    const errors: string[] = [];
+    const onError = (event: ErrorEvent) => { errors.push(String(event.error ?? event.message)); event.preventDefault(); };
+    const onRejection = (event: PromiseRejectionEvent) => { errors.push(String(event.reason)); event.preventDefault(); };
+    window.addEventListener('error', onError);
+    window.addEventListener('unhandledrejection', onRejection);
+    const consoleError = vi.spyOn(console, 'error').mockImplementation((...args) => { errors.push(args.map(String).join(' ')); });
+    return { errors, stop: () => {
+        window.removeEventListener('error', onError);
+        window.removeEventListener('unhandledrejection', onRejection);
+        consoleError.mockRestore();
+    } };
+};
+
 describe('sample project lifecycle', () => {
+    it('explains when no calendar-year window is free and creates no records', async () => {
+        capacityYear = 1900;
+        renderAction();
+        await userEvent.setup().click(await screen.findByRole('button', { name: 'Load a sample project' }));
+        expect(await screen.findByRole('alert')).toHaveTextContent(i18n.t('firstRun.sample.noWindow'));
+        expect(writes).toEqual([]);
+        expect(screen.queryByText(i18n.t('firstRun.sample.exists', { count: 0 }))).toBeNull();
+    });
+
+    it.each(['dirty', 'pending'] as const)('logs no uncaught error and opens the plan without asking when the sample loads over a %s draft', async mode => {
+        const watch = watchForErrors();
+        try {
+            renderInDataRouter('/overview', mode);
+            await userEvent.setup().click(await screen.findByRole('button', { name: 'Load a sample project' }));
+            await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent('/plan?project='));
+            await act(() => new Promise(resolve => setTimeout(resolve, 50)));
+            expect(screen.queryByRole('dialog')).toBeNull();
+            expect(watch.errors).toEqual([]);
+        } finally { watch.stop(); }
+    });
+
+    it('logs no uncaught error when a draft is discarded to leave the page', async () => {
+        const watch = watchForErrors();
+        try {
+            const { router } = renderInDataRouter('/overview', 'dirty');
+            const user = userEvent.setup();
+            await act(async () => { void router.navigate('/elsewhere'); });
+            await user.click(await screen.findByRole('button', { name: /discard/i }));
+            await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent('/elsewhere'));
+            await act(() => new Promise(resolve => setTimeout(resolve, 50)));
+            expect(watch.errors).toEqual([]);
+        } finally { watch.stop(); }
+    });
+
     it('loads a dated Roadmap project, two milestones and an applied iteration at 6 of 6', async () => {
         const receipt = fresh();
         const result = await loadSampleProject(receipt, person, 'en', vi.fn());
@@ -292,6 +366,39 @@ describe('sample project lifecycle', () => {
             } else expect(rows.has(`project:${sampleProjectId}`)).toBe(false);
         },
     );
+
+    it('moves the scope off the deleted project before anything refetches or the result is shown', async () => {
+        const project = record('project', { name: 'Workspace project' });
+        const iteration = record('iteration', { name: 'Workspace iteration', project_id: project.id,
+            start_date: '2026-01-01', end_date: '2026-01-30', scheduled: true });
+        const { user, queryClient } = renderWithProviders(<IdentityContext.Provider value={{ identity, refresh: vi.fn(), signOut: vi.fn() }}>
+            <WorkspaceSetup />
+        </IdentityContext.Provider>, { initialEntries: [`/overview?project=${project.id}&iteration=${iteration.id}`] });
+        await screen.findByTestId('get-started-panel');
+        await user.click(screen.getByRole('button', { name: 'Load a sample project' }));
+        await waitFor(() => expect(useSampleProject.getState().manifest?.complete).toBe(true));
+        const sampleProjectId = useSampleProject.getState().manifest!.records.find(row => row.kind === 'project')!.id;
+        const sampleIterationId = useSampleProject.getState().manifest!.records.find(row => row.kind === 'iteration')!.id;
+        await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent(`project=${sampleProjectId}&iteration=${sampleIterationId}`));
+        await waitFor(() => expect(useSampleProject.getState().busy).toBe(false));
+        // Everything that refetches after a deletion must already find the scope off the deleted records.
+        const namingDeleted: string[] = [];
+        const original = queryClient.invalidateQueries.bind(queryClient);
+        vi.spyOn(queryClient, 'invalidateQueries').mockImplementation((...args) => {
+            if (!rows.has(`project:${sampleProjectId}`)) {
+                const { project: p, iteration: i } = useScopeStore.getState();
+                if (p === sampleProjectId || i === sampleIterationId) namingDeleted.push(`${p}/${i}`);
+            }
+            return original(...args);
+        });
+        await user.click(screen.getByRole('button', { name: 'Remove sample data' }));
+        await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Remove sample data' }));
+        await waitFor(() => expect(useSampleProject.getState().busy).toBe(false));
+        expect(rows.has(`project:${sampleProjectId}`)).toBe(false);
+        expect(namingDeleted).toEqual([]);
+        expect(screen.getByTestId('scope')).toHaveTextContent(JSON.stringify({ project: project.id, iteration: iteration.id }));
+        expect(screen.getByTestId('location')).toHaveTextContent(`project=${project.id}&iteration=${iteration.id}`);
+    });
 
     it('applies a schedule at 6 of 6 when the person already has overlapping 100% capacity', async () => {
         const original = sampleProjectFixture('en');

@@ -96,7 +96,7 @@ export const CapacitySection = ({ iteration, iterations, members, primary }: {
                 onCancel={() => setEditing(null)} onSuccess={() => { setEditing(null); void refreshCapacity(client); }} /></div>
         </SlideOverDrawer>}
         {connecting && <SlideOverDrawer open title={t('teamPage.connectAgent')} onClose={closeConnect}>
-            <div className="p-5"><ConnectAgentSteps /></div>
+            <div className="p-5"><ConnectAgentSteps showTitle={false} /></div>
         </SlideOverDrawer>}
         {importing && <ImportTeamModal iterationId={iteration.id} onClose={() => setImporting(false)} onSuccess={() => { setImporting(false); void refreshCapacity(client); }} />}
     </div>;

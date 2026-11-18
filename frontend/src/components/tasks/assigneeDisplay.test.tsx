@@ -13,11 +13,9 @@ import { PipelineView } from './PipelineView';
 import type { usePipeline } from './usePipeline';
 import { defaultFilters } from '../../utils/taskFilterDefaults';
 
-const services = vi.hoisted(() => ({ team: vi.fn(), detail: vi.fn(), task: vi.fn(), roster: vi.fn() }));
+const services = vi.hoisted(() => ({ team: vi.fn(), detail: vi.fn(), task: vi.fn() }));
 vi.mock('../../services/teamService', () => ({ teamService: { getByIteration: services.team } }));
 vi.mock('../../services/taskService', () => ({ taskService: { getDetail: services.detail, getById: services.task } }));
-vi.mock('../../services/agentService', () => ({ agentService: { getActorRoster: services.roster } }));
-vi.mock('../../features/identity/identityContext', () => ({ useIdentity: () => ({ identity: { workspace_role: 'owner' } }) }));
 vi.mock('./TaskWorkPanel', () => ({ TaskWorkPanel: () => null }));
 vi.mock('./DeliveryDependencies', () => ({ DeliveryDependencies: () => null }));
 vi.mock('./TaskDiscussion', () => ({ TaskDiscussion: () => null }));
@@ -37,27 +35,31 @@ const base = {
     is_composite: false, is_optional: false, is_deferred: false, is_overdue: false, is_delayed: false,
     agent_working: false, claimed_by: null, agent_readiness: { is_ready: true, blockers: [], warnings: [], criteria: [] },
 } as unknown as Task;
-const options = [{ id: 7, name: 'Builder', kind: 'agent' as const, profileId: 9 }];
+const options = [{ id: 7, name: 'Builder', kind: 'agent' as const, profileId: 9, agentConnected: false }];
+const listOptions = [...options];
 const ListRow = ({ task }: { task: Task }) => {
     const facts = useAgentRowFacts([task]);
-    return <TaskRow id={task.id} title={task.title} status={task.status} assignee={task.assignee} assigneeOptions={options}
-        {...agentRowValues(task, options, facts)} onOpen={vi.fn()} menuItems={[]} />;
+    return <TaskRow id={task.id} title={task.title} status={task.status} assignee={task.assignee} assigneeOptions={listOptions}
+        {...agentRowValues(task, listOptions, facts)} onOpen={vi.fn()} menuItems={[]} />;
 };
 const readView = (task: Task) => <TaskReadView task={task} draftKey={null} onTaskUpdated={vi.fn()} onEditAll={vi.fn()} onDirty={vi.fn()} onPending={vi.fn()} onReload={vi.fn()} />;
 
 beforeEach(() => {
-    services.team.mockResolvedValue([{ id: 7, name: 'Builder', profile_id: 9, profile: { profile_kind: 'agent' } }]);
-    services.roster.mockResolvedValue([]);
+    services.team.mockResolvedValue([{ id: 7, name: 'Builder', profile_id: 9, profile: { profile_kind: 'agent', agent_connected: false } }]);
     services.detail.mockResolvedValue({ reviewer_name: 'Morgan' });
 });
 
 describe('assignee consistency across task views', () => {
     it.each([
         ['No agent connected', 'planned', false, null],
+        ['Not sent to the agent yet', 'planned', false, null],
         ['Queued', 'planned', true, null],
         ['Working', 'active', true, { id: 4, name: 'runtime', display_name: 'Runtime connection' }],
         ['Waiting for review', 'resolved', false, null],
     ] as const)('shows the same assignee and %s in list, board, Gantt, pipeline and read view', async (label, status, agent_working, claimed_by) => {
+        const connected = label !== 'No agent connected';
+        services.team.mockResolvedValue([{ id: 7, name: 'Builder', profile_id: 9, profile: { profile_kind: 'agent', agent_connected: connected } }]);
+        listOptions.splice(0, 1, { ...options[0], agentConnected: connected });
         const task: Task = { ...base, status, agent_working, claimed_by };
         services.task.mockResolvedValue(task);
         const pipeline: AgentPipeline = { needs_definition: [], ready_to_assign: [], assigned_waiting: [], start_ready: [], executing: [], verification_required: [], recovery_required: [] };
@@ -91,20 +93,136 @@ describe('assignee consistency across task views', () => {
         expect(screen.getByText('Owner')).toBeInTheDocument();
     });
 
-    it('shows Owner when the assignee profile cannot be read', async () => {
+    it('hides Owner when the assignee profile cannot be read', async () => {
         services.team.mockRejectedValue(new Error('Capacity unavailable'));
         const { queryClient } = renderWithProviders(readView({ ...base, owner_profile_id: 11, owner: { id: 11, name: 'Priya' } }));
         await waitFor(() => expect(queryClient.getQueryState(['team', 2])?.status).toBe('error'));
-        expect(await screen.findByText('Owner')).toBeInTheDocument();
-        expect(screen.getByText('Priya')).toBeInTheDocument();
+        expect(screen.queryByText('Owner')).not.toBeInTheDocument();
+        expect(screen.queryByText('Priya')).not.toBeInTheDocument();
     });
 
-    it('shows Owner when the loaded team has no row for the assignee', async () => {
-        services.team.mockResolvedValue([{ id: 8, name: 'Priya', profile_id: 11, profile: { profile_kind: 'human' } }]);
+    it('hides Owner while the assignee profile is still loading', async () => {
+        services.team.mockReturnValue(new Promise(() => undefined));
+        const { queryClient } = renderWithProviders(readView({ ...base, owner_profile_id: 11, owner: { id: 11, name: 'Priya' } }));
+        await waitFor(() => expect(queryClient.getQueryState(['team', 2])?.fetchStatus).toBe('fetching'));
+        expect(screen.getByText('Builder', { selector: '[data-assignee-cell] *' })).toBeInTheDocument();
+        expect(screen.queryByText('Owner')).not.toBeInTheDocument();
+    });
+
+    it('hides Owner when the loaded team has no row for the assignee', async () => {
+        services.team.mockResolvedValue([{ id: 8, name: 'Priya', profile_id: 11, profile: { profile_kind: 'human', agent_connected: false } }]);
         const { queryClient } = renderWithProviders(readView(base));
         await waitFor(() => expect(queryClient.getQueryState(['team', 2])?.status).toBe('success'));
-        expect(await screen.findByText('Owner')).toBeInTheDocument();
-        expect(screen.getByText('Owner')).toHaveTextContent('Owner Builder');
+        expect(screen.queryByText('Owner')).not.toBeInTheDocument();
+    });
+
+    it('shows Owner on a task with no assignee', async () => {
+        renderWithProviders(readView({ ...base, assignee: null, owner_profile_id: 11, owner: { id: 11, name: 'Priya' } }));
+        expect(await screen.findByText('Owner')).toHaveTextContent('Owner Priya');
+    });
+
+    it('offers Send to the agent instead of Start work for a connected agent not sent the task yet', async () => {
+        services.team.mockResolvedValue([{ id: 7, name: 'Builder', profile_id: 9, profile: { profile_kind: 'agent', agent_connected: true } }]);
+        renderWithProviders(readView(base), { initialEntries: ['/tasks?project=1&iteration=2&task=101'] });
+        expect(await screen.findByText('Not sent to the agent yet')).toBeInTheDocument();
+        const send = screen.getByRole('link', { name: 'Send to the agent' });
+        expect(send).toHaveAttribute('href', expect.stringContaining('layout=pipeline'));
+        expect(send).toHaveAttribute('href', expect.stringContaining('task=101'));
+        expect(screen.queryByRole('button', { name: 'Start work' })).not.toBeInTheDocument();
+        expect(document.querySelectorAll('[data-agent-dispatch]')).toHaveLength(1);
+    });
+
+    it('leaves Send to the agent out inside the pipeline, where its dispatch panel already shows', async () => {
+        services.team.mockResolvedValue([{ id: 7, name: 'Builder', profile_id: 9, profile: { profile_kind: 'agent', agent_connected: true } }]);
+        renderWithProviders(readView(base), { initialEntries: ['/tasks?layout=pipeline&task=101'] });
+        expect(await screen.findByText('Not sent to the agent yet')).toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: 'Send to the agent' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Start work' })).not.toBeInTheDocument();
+    });
+
+    it('reads the task for a pipeline card that leaves the live assignment unset', async () => {
+        services.team.mockResolvedValue([{ id: 7, name: 'Builder', profile_id: 9, profile: { profile_kind: 'agent', agent_connected: true } }]);
+        services.task.mockClear();
+        services.task.mockResolvedValue({ ...base, agent_working: false });
+        const card = { ...base, agent_working: null } as Task;
+        const pipeline: AgentPipeline = { needs_definition: [card], ready_to_assign: [], assigned_waiting: [], start_ready: [], executing: [], verification_required: [], recovery_required: [] };
+        renderWithProviders(<PipelineView query={{ pipeline, usableData: pipeline, canRead: true, isPending: false, isError: false } as ReturnType<typeof usePipeline>} project={undefined} iteration={undefined} search="" agent="" filters={defaultFilters} labelGroups={[]} onOpenTask={vi.fn()} />,
+            { initialEntries: ['/tasks?layout=pipeline&stage=needs_definition'] });
+        await waitFor(() => expect(document.querySelector('[data-agent-dispatch]')).toHaveTextContent('Not sent to the agent yet'));
+        expect(services.task).toHaveBeenCalledWith(101);
+    });
+
+    it('keeps Start work for an agent with no agent connected', async () => {
+        renderWithProviders(readView(base));
+        expect(await screen.findByText('No agent connected')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Start work' })).toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: 'Send to the agent' })).not.toBeInTheDocument();
+    });
+
+    it('shows no status line on a closed task', async () => {
+        const { queryClient } = renderWithProviders(readView({ ...base, status: 'closed' }));
+        await waitFor(() => expect(queryClient.getQueryState(['team', 2])?.status).toBe('success'));
+        expect(screen.getByText('Builder', { selector: '[data-assignee-cell] *' })).toBeInTheDocument();
+        expect(document.querySelector('[data-agent-dispatch]')).toBeNull();
+    });
+
+    it('says Agent status unknown when the team read cannot say whether the agent is connected', async () => {
+        services.team.mockResolvedValue([{ id: 7, name: 'Builder', profile_id: 9, profile: { profile_kind: 'agent' } }]);
+        renderWithProviders(readView(base));
+        expect(await screen.findByText('Agent status unknown')).toBeInTheDocument();
+        expect(document.querySelectorAll('[data-agent-dispatch]')).toHaveLength(1);
+    });
+
+    const teamReads = [
+        ['pending', () => new Promise(() => undefined)],
+        ['failed', () => Promise.reject(new Error('Capacity unavailable'))],
+    ] as const;
+    const settled = (state: 'pending' | 'failed') => (query: { fetchStatus: string; status: string } | undefined) =>
+        state === 'pending' ? query?.fetchStatus === 'fetching' : query?.status === 'error';
+    const agentTask: Task = { ...base, assignee: { id: 7, name: 'Builder', kind: 'agent' } };
+
+    it.each(teamReads)('says Agent status unknown for an open agent task while the team read is %s', async (state, read) => {
+        services.team.mockImplementation(read);
+        const gantt = { ...agentTask } as unknown as GanttTask;
+        const { queryClient } = renderWithProviders(<>
+            <section aria-label="Board"><KanbanCard task={agentTask} /></section>
+            <section aria-label="Gantt"><GanttChart iterationId={2} startDate="2026-11-16" endDate="2026-11-30" tasks={[gantt]} weekends={[]} holidays={[]} memberVacations={{}} /></section>
+            <section aria-label="Read view">{readView(agentTask)}</section>
+        </>);
+        await waitFor(() => expect(settled(state)(queryClient.getQueryState(['team', 2]))).toBe(true));
+        for (const name of ['Board', 'Gantt', 'Read view']) {
+            const region = screen.getByRole('region', { name });
+            await waitFor(() => expect(region.querySelectorAll('[data-agent-dispatch]')).toHaveLength(1));
+            expect(region.querySelector('[data-agent-dispatch]')).toHaveTextContent('Agent status unknown');
+            expect(region.querySelector('[data-assignee-cell]')).toHaveTextContent('Builder');
+        }
+        // Nothing says the agent is connected, so the task view keeps its manual action and offers no dispatch.
+        expect(screen.queryByRole('link', { name: 'Send to the agent' })).not.toBeInTheDocument();
+    });
+
+    it('says Agent status unknown on a list row of an open agent task while the team read has given no assignee options', () => {
+        const Row = () => {
+            const facts = useAgentRowFacts([agentTask]);
+            return <TaskRow id={agentTask.id} title={agentTask.title} status={agentTask.status} assignee={agentTask.assignee}
+                assigneeOptions={undefined} {...agentRowValues(agentTask, undefined, facts)} onOpen={vi.fn()} menuItems={[]} />;
+        };
+        renderWithProviders(<Row />);
+        expect(document.querySelectorAll('[data-agent-dispatch]')).toHaveLength(1);
+        expect(document.querySelector('[data-agent-dispatch]')).toHaveTextContent('Agent status unknown');
+        // The icon also follows the task's own word that the assignee is an agent.
+        expect(document.querySelector('[data-assignee-cell] svg.lucide-bot')).not.toBeNull();
+    });
+
+    it.each(teamReads)('keeps what the task says while the team read is %s', async (state, read) => {
+        services.team.mockImplementation(read);
+        const { queryClient, rerender } = renderWithProviders(readView({ ...agentTask, status: 'resolved' }));
+        await waitFor(() => expect(settled(state)(queryClient.getQueryState(['team', 2]))).toBe(true));
+        expect(await screen.findByText('Waiting for review', { selector: '[data-agent-dispatch]' })).toBeInTheDocument();
+        rerender(readView({ ...agentTask, status: 'closed' }));
+        await waitFor(() => expect(document.querySelector('[data-agent-dispatch]')).toBeNull());
+        rerender(readView({ ...base, assignee: { id: 8, name: 'Priya', kind: 'human' } }));
+        await waitFor(() => expect(screen.getByText('Priya', { selector: '[data-assignee-cell] *' })).toBeInTheDocument());
+        expect(document.querySelector('[data-agent-dispatch]')).toBeNull();
     });
 
     it('requests task detail on the Gantt only for rows whose assignee is an agent', async () => {

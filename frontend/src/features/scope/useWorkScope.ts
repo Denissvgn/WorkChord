@@ -159,7 +159,11 @@ export const useWorkScope = (): WorkScopeValue => {
     // changed while the URL stayed the same (an older control set it) is written to the URL.
     // It runs as a layout effect, before the effects of the page below the shell, so a page
     // that changes the iteration on opening changes it after the URL is remembered, not before.
+    // Writing the URL can land after other updates, such as the iterations refetching. The search that
+    // was replaced stays in `staleSearch` until the URL changes, so the remembered scope keeps winning
+    // instead of the old URL undoing it.
     const lastSeen = useRef<{ search: string; remembered: RememberedScope } | null>(null);
+    const staleSearch = useRef<string | null>(null);
     useLayoutEffect(() => {
         if (!iterations) return;
         forgetCompletedSearchUnless(search);
@@ -168,9 +172,12 @@ export const useWorkScope = (): WorkScopeValue => {
         const rememberedChangedAlone = previous !== null
             && previous.search === search
             && !sameScope(previous.remembered, remembered);
-        const written = commit(rememberedChangedAlone
+        const rememberedWins = rememberedChangedAlone
+            || (previous !== null && previous.search === search && staleSearch.current === search);
+        const written = commit(rememberedWins
             ? resolveWorkScope(remembered, {}, iterations)
             : resolveWorkScope(urlScope, remembered, iterations));
+        staleSearch.current = rememberedWins && written !== null ? search : null;
         if (written !== null && urlScope.iteration === undefined) recordCompletedSearch(written);
     }, [commit, iterations, remembered, search, urlScope]);
 

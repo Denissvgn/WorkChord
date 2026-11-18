@@ -144,15 +144,20 @@ describe('account menu', () => {
         await user.type(within(menu).getByLabelText('Admin key'), 'right-key');
         await user.click(within(menu).getByRole('button', { name: 'Unlock' }));
         await waitFor(() => expect(hasAdminApiKey()).toBe(true));
+        expect(screen.getByRole('button', { name: 'Account and access' })).toHaveTextContent('Operator (editing unlocked)');
         expect(server.mock.calls[1][0].headers.get('X-Admin-API-Key')).toBe('right-key');
 
         // The accepted key remounts the app, so the menu opens again to show the unlocked state.
         await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Account and access' })).not.toBeInTheDocument());
         menu = await openMenu(user);
         expect(within(menu).getByText('Editing: unlocked')).toBeInTheDocument();
+        expect(within(menu).getByText('The admin key in this tab replaces the chosen person. You are acting as the operator. Lock editing to use your person profile.')).toBeInTheDocument();
+        expect(within(menu).queryByLabelText('Person profile')).not.toBeInTheDocument();
+        expect(within(menu).queryByText('Working as: Ada')).not.toBeInTheDocument();
 
         await user.click(within(menu).getByRole('button', { name: 'Lock' }));
         expect(hasAdminApiKey()).toBe(false);
+        expect(screen.getByRole('button', { name: 'Account and access' })).toHaveTextContent('Working as: Ada');
         menu = await openMenu(user);
         expect(within(menu).getByText('Editing: locked')).toBeInTheDocument();
     });

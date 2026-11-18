@@ -28,6 +28,11 @@ from app.models.agent import (
     AgentTaskAssignment,
     TaskEvent,
 )
+from app.models.identity import (
+    Principal,
+    WorkspaceAuthorityState,
+    WorkspaceMembership,
+)
 from app.models.team_member import TeamMemberProfile, TeamMemberProfileSkill
 from app.routers import agent as agent_router
 from app.routers import agent_planning
@@ -262,6 +267,346 @@ async def test_rest_and_mcp_model_authorization_idempotency_and_conflicts(
     finally:
         await client.aclose()
         main_app.dependency_overrides.clear()
+
+
+OPERATOR_KEY = "model-catalog-operator-fixture"
+
+
+def _command_headers(command_key: str) -> dict[str, str]:
+    return {
+        "Idempotency-Key": command_key,
+        "X-Agent-Rationale": "Operator-approved model configuration change.",
+        "X-Correlation-ID": f"correlation-{command_key}",
+    }
+
+
+async def _catalog_round_trip(
+    client: httpx.AsyncClient,
+    credential: dict[str, str],
+    catalog_key: str,
+) -> dict[str, httpx.Response]:
+    """Create, update, disable and read one entry with one credential."""
+
+    responses: dict[str, httpx.Response] = {}
+    responses["create"] = await client.post(
+        "/api/agent/model-catalog",
+        headers={**credential, **_command_headers(f"{catalog_key}-create")},
+        json=_catalog_values(catalog_key),
+    )
+    target_id = responses["create"].json().get("target_id", 1)
+    responses["update"] = await client.patch(
+        f"/api/agent/model-catalog/{target_id}",
+        headers={**credential, **_command_headers(f"{catalog_key}-update")},
+        json={"expected_revision": 1, "cost_tier": "high"},
+    )
+    responses["disable"] = await client.post(
+        f"/api/agent/model-catalog/{target_id}/disable",
+        headers={**credential, **_command_headers(f"{catalog_key}-disable")},
+        json={"expected_revision": 2},
+    )
+    responses["read"] = await client.get(
+        "/api/agent/model-catalog",
+        headers=credential,
+        params={"include_disabled": "true"},
+    )
+    return responses
+
+
+@pytest.mark.sqlite
+@pytest.mark.asyncio
+@pytest.mark.parametrize("auth_mode", ["managed", "trusted_local"])
+async def test_model_catalog_routes_accept_admin_key_agent_key_and_refuse_neither(
+    db_session: AsyncSession,
+    monkeypatch: pytest.MonkeyPatch,
+    auth_mode: str,
+) -> None:
+    agent_key = "model-catalog-admin-agent-key"
+    reader_key = "model-catalog-reader-key"
+    agent = AgentActor(
+        name="model-catalog-admin-agent",
+        display_name="Model Catalog Admin Agent",
+        api_key_hash=hash_api_key(agent_key),
+        scopes='["admin"]',
+        enabled=True,
+        role="pm",
+    )
+    db_session.add_all([
+        agent,
+        AgentActor(
+            name="model-catalog-reader",
+            display_name="Model Catalog Reader",
+            api_key_hash=hash_api_key(reader_key),
+            scopes='["planning:read"]',
+            enabled=True,
+            role="pm",
+        ),
+    ])
+    await db_session.flush()
+    # A managed workspace lets an agent change global settings only through
+    # an operator membership; trusted-local ignores it.
+    agent_principal = Principal(
+        kind="agent",
+        display_name=agent.display_name,
+        agent_actor_id=agent.id,
+    )
+    db_session.add(agent_principal)
+    await db_session.flush()
+    db_session.add(
+        WorkspaceMembership(principal_id=agent_principal.id, role="operator")
+    )
+    if await db_session.get(WorkspaceAuthorityState, 1) is None:
+        operator = Principal(kind="system", display_name="Operator API")
+        db_session.add(operator)
+        await db_session.flush()
+        db_session.add(
+            WorkspaceAuthorityState(id=1, operator_principal_id=operator.id)
+        )
+    await db_session.commit()
+    agent_id = agent.id
+
+    monkeypatch.setenv("WORKCHORD_ADMIN_API_KEY", OPERATOR_KEY)
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", auth_mode)
+    get_settings.cache_clear()
+    client = await _http_client(main_app, db_session)
+    try:
+        with_admin = await _catalog_round_trip(
+            client, {"X-Admin-API-Key": OPERATOR_KEY}, "operator-code"
+        )
+        admin_retry = await client.post(
+            "/api/agent/model-catalog",
+            headers={
+                "X-Admin-API-Key": OPERATOR_KEY,
+                **_command_headers("operator-code-create"),
+            },
+            json=_catalog_values("operator-code"),
+        )
+        with_agent = await _catalog_round_trip(
+            client, {"X-Agent-API-Key": agent_key}, "agent-code"
+        )
+        with_neither = await _catalog_round_trip(client, {}, "anonymous-code")
+        with_wrong_admin = await _catalog_round_trip(
+            client, {"X-Admin-API-Key": "not-the-operator-key"}, "wrong-code"
+        )
+        reader_with_admin = await client.post(
+            "/api/agent/model-catalog",
+            headers={
+                "X-Agent-API-Key": reader_key,
+                "X-Admin-API-Key": OPERATOR_KEY,
+                **_command_headers("reader-code-create"),
+            },
+            json=_catalog_values("reader-code"),
+        )
+        final_read = await client.get(
+            "/api/agent/model-catalog",
+            headers={"X-Agent-API-Key": reader_key},
+            params={"include_disabled": "true"},
+        )
+    finally:
+        await client.aclose()
+        main_app.dependency_overrides.clear()
+        db_session.info.pop("authority", None)
+        monkeypatch.undo()
+        get_settings.cache_clear()
+    audit = (
+        await db_session.execute(
+            select(TaskEvent)
+            .where(TaskEvent.event_type == "agent.model_configuration_changed")
+            .order_by(TaskEvent.id)
+        )
+    ).scalars().all()
+
+    expected_status = {"create": 201, "update": 200, "disable": 200, "read": 200}
+    for name, response in with_admin.items():
+        assert response.status_code == expected_status[name], (name, response.text)
+    for name, response in with_agent.items():
+        assert response.status_code == expected_status[name], (name, response.text)
+    for responses in (with_neither, with_wrong_admin):
+        for name, response in responses.items():
+            assert response.status_code == 401, (name, response.text)
+
+    assert with_admin["create"].json()["actor_id"] is None
+    assert with_admin["disable"].json()["result"]["enabled"] is False
+    assert with_agent["create"].json()["actor_id"] == agent_id
+    assert with_agent["disable"].json()["result"]["enabled"] is False
+    assert [entry["key"] for entry in with_admin["read"].json()] == [
+        "operator-code"
+    ]
+    assert with_agent["read"].json() == final_read.json()
+    _assert_secret_free(final_read.json())
+
+    # A retried admin-key create cannot add a second entry.
+    assert admin_retry.status_code == 409
+    assert admin_retry.json()["detail"]["code"] == "agent_model_catalog_key_conflict"
+    # A valid admin key never lifts a read-only agent key sent beside it.
+    assert reader_with_admin.status_code in {401, 403}, reader_with_admin.text
+    assert {entry["key"] for entry in final_read.json()} == {
+        "operator-code",
+        "agent-code",
+    }
+    assert [(event.actor_type, event.actor_id) for event in audit] == [
+        ("operator", None),
+        ("operator", None),
+        ("operator", None),
+        ("agent", agent_id),
+        ("agent", agent_id),
+        ("agent", agent_id),
+    ]
+
+
+@pytest.mark.sqlite
+@pytest.mark.asyncio
+@pytest.mark.parametrize("auth_mode", ["managed", "trusted_local"])
+@pytest.mark.parametrize(
+    ("credential", "mutation_status", "read_status"),
+    [
+        ("admin", 200, 200),
+        ("agent", 200, 200),
+        ("reader", 403, 200),
+        ("reader_with_admin", 401, 401),
+        ("none", 401, 401),
+        ("wrong_admin", 401, 401),
+        ("wrong_agent", 401, 401),
+    ],
+)
+async def test_binding_and_preset_routes_preserve_credential_permissions(
+    db_session: AsyncSession,
+    monkeypatch: pytest.MonkeyPatch,
+    auth_mode: str,
+    credential: str,
+    mutation_status: int,
+    read_status: int,
+) -> None:
+    admin_agent = AgentActor(
+        name="binding-admin-agent",
+        display_name="Binding Admin Agent",
+        api_key_hash=hash_api_key("binding-admin-agent-key"),
+        scopes='["admin"]',
+        enabled=True,
+        role="pm",
+    )
+    reader = AgentActor(
+        name="binding-reader",
+        display_name="Binding Reader",
+        api_key_hash=hash_api_key("binding-reader-key"),
+        scopes='["planning:read"]',
+        enabled=True,
+        role="worker",
+    )
+    catalog = AgentModelCatalogEntry(**_catalog_values("binding-code"))
+    other_catalog = AgentModelCatalogEntry(**_catalog_values("other-binding-code"))
+    db_session.add_all([admin_agent, reader, catalog, other_catalog])
+    await db_session.flush()
+    principal = Principal(
+        kind="agent", display_name=admin_agent.display_name,
+        agent_actor_id=admin_agent.id,
+    )
+    db_session.add(principal)
+    await db_session.flush()
+    db_session.add(WorkspaceMembership(principal_id=principal.id, role="operator"))
+    if await db_session.get(WorkspaceAuthorityState, 1) is None:
+        operator = Principal(kind="system", display_name="Operator API")
+        db_session.add(operator)
+        await db_session.flush()
+        db_session.add(WorkspaceAuthorityState(id=1, operator_principal_id=operator.id))
+    binding = AgentModelBinding(
+        actor_id=reader.id, model_catalog_id=catalog.id, enabled=True,
+        is_default=True, tool_tags=[], data_policy_tags=[], revision=1,
+    )
+    db_session.add(binding)
+    await db_session.commit()
+    admin_agent_id, reader_id = admin_agent.id, reader.id
+    binding_id, other_catalog_id = binding.id, other_catalog.id
+    credentials = {
+        "admin": {"X-Admin-API-Key": OPERATOR_KEY},
+        "agent": {"X-Agent-API-Key": "binding-admin-agent-key"},
+        "reader": {"X-Agent-API-Key": "binding-reader-key"},
+        "reader_with_admin": {
+            "X-Agent-API-Key": "binding-reader-key", "X-Admin-API-Key": OPERATOR_KEY,
+        },
+        "none": {},
+        "wrong_admin": {"X-Admin-API-Key": "invalid-operator-key"},
+        "wrong_agent": {"X-Agent-API-Key": "invalid-agent-key"},
+    }[credential]
+    monkeypatch.setenv("WORKCHORD_ADMIN_API_KEY", OPERATOR_KEY)
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", auth_mode)
+    get_settings.cache_clear()
+    client = await _http_client(main_app, db_session)
+    try:
+        created = await client.post(
+            "/api/agent/model-bindings",
+            headers={**credentials, **_command_headers("binding-create")},
+            json={"actor_id": reader_id, "model_catalog_id": other_catalog_id},
+        )
+        assert created.status_code == (201 if mutation_status == 200 else mutation_status), created.text
+        if mutation_status == 200:
+            receipt = created.json()
+            binding_id = receipt["target_id"]
+            assert receipt["actor_id"] == (admin_agent_id if credential == "agent" else None)
+            assert receipt["authoritative_revision"] == 1
+            assert receipt["result"]["actor_id"] == reader_id
+            replay = await client.post(
+                "/api/agent/model-bindings",
+                headers={**credentials, **_command_headers("binding-create")},
+                json={"actor_id": reader_id, "model_catalog_id": other_catalog_id},
+            )
+            if credential == "agent":
+                assert replay.status_code == 201
+                assert replay.json() == receipt
+            else:
+                assert replay.status_code == 409
+                assert replay.json()["detail"]["code"] == "agent_model_binding_conflict"
+        updated = await client.patch(
+            f"/api/agent/model-bindings/{binding_id}",
+            headers={**credentials, **_command_headers("binding-update")},
+            json={"expected_revision": 1, "tool_tags": ["shell"]},
+        )
+        assert updated.status_code == mutation_status, updated.text
+        if mutation_status == 200:
+            assert updated.json()["result"]["tool_tags"] == ["shell"]
+            assert updated.json()["authoritative_revision"] == 2
+            stale = await client.patch(
+                f"/api/agent/model-bindings/{binding_id}",
+                headers={**credentials, **_command_headers("binding-stale")},
+                json={"expected_revision": 1, "tool_tags": []},
+            )
+            assert stale.status_code == 409
+            assert stale.json()["detail"]["current_revision"] == 2
+        disabled = await client.post(
+            f"/api/agent/model-bindings/{binding_id}/disable",
+            headers={**credentials, **_command_headers("binding-disable")},
+            json={"expected_revision": 2 if mutation_status == 200 else 1},
+        )
+        assert disabled.status_code == mutation_status, disabled.text
+        read = await client.get(f"/api/agent/model-bindings/{binding_id}", headers=credentials)
+        listed = await client.get(
+            "/api/agent/model-bindings", headers=credentials,
+            params={"actor_id": reader_id, "include_disabled": "true"},
+        )
+        presets = await client.get("/api/agent/profile-presets", headers=credentials)
+        for response in (read, listed, presets):
+            assert response.status_code == read_status, response.text
+        if read_status == 200:
+            assert read.json() in listed.json()
+            assert any(item["key"] == "backend-implementation-agent" for item in presets.json())
+            _assert_secret_free(listed.json())
+        if mutation_status == 200:
+            assert disabled.json()["authoritative_revision"] == 3
+            assert read.json() == disabled.json()["result"]
+            assert read.json()["enabled"] is False
+            assert len(listed.json()) == 2
+            audit = (await db_session.execute(
+                select(TaskEvent).where(
+                    TaskEvent.event_type == "agent.model_configuration_changed"
+                ).order_by(TaskEvent.id)
+            )).scalars().all()
+            attribution = ("agent", admin_agent_id) if credential == "agent" else ("operator", None)
+            assert [(event.actor_type, event.actor_id) for event in audit] == [attribution] * 3
+    finally:
+        await client.aclose()
+        main_app.dependency_overrides.clear()
+        db_session.info.pop("authority", None)
+        monkeypatch.undo()
+        get_settings.cache_clear()
 
 
 @pytest.mark.sqlite

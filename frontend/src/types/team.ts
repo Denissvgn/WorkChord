@@ -82,6 +82,8 @@ export interface TeamMemberProfileCompact {
     profile_kind: TeamMemberProfileKind;
     assignment_modes: TeamMemberAssignmentMode[];
     skills: TeamMemberProfileSkill[];
+    /** An enabled agent is bound to this profile; missing from servers that do not report it. */
+    agent_connected?: boolean;
 }
 
 export interface TeamMemberProfileCreate {

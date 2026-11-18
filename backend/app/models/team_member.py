@@ -3,8 +3,8 @@ from datetime import date, datetime
 from uuid import uuid4
 from typing import TYPE_CHECKING, Any, Optional
 
-from sqlalchemy import Boolean, CheckConstraint, Date, Float, ForeignKey, Index, Integer, JSON, String, Text, UniqueConstraint
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Boolean, CheckConstraint, Date, Float, ForeignKey, Index, Integer, JSON, String, Text, UniqueConstraint, select
+from sqlalchemy.orm import Mapped, column_property, mapped_column, relationship
 
 from app.database import Base
 from app.utils.time import UTCDateTime, utc_now
@@ -186,3 +186,16 @@ class Vacation(Base):
 
     # Relationships
     team_member: Mapped["TeamMember"] = relationship("TeamMember", back_populates="vacations")
+
+
+# The kind of the row's profile, read with the row. A task names its assignee by this row, and
+# every reader of the task needs to know whether that assignee is an agent, including readers
+# who may not read the profile itself. The subquery reads the profile table directly so that
+# only this one column is read; it carries no personal profile details.
+_profiles = TeamMemberProfile.__table__
+TeamMember.assignee_kind = column_property(
+    select(_profiles.c.profile_kind)
+    .where(_profiles.c.id == TeamMember.__table__.c.profile_id)
+    .correlate_except(_profiles)
+    .scalar_subquery()
+)

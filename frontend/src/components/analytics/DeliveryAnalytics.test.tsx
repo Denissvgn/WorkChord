@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createTestQueryClient, renderWithProviders } from '../../test/renderWithProviders';
 import { DeliveryAnalytics } from './DeliveryAnalytics';
@@ -30,7 +30,6 @@ const report: DeliveryMetrics = { contract_version: 1, window_start: '2026-09-01
 
 const unavailable = 'Delivery metrics are available for one iteration or one project. Choose an iteration in the scope bar.';
 const renderReport = (entry: string) => renderWithProviders(<><ScopeBar /><DeliveryAnalytics days={30} /></>, { initialEntries: [entry] });
-const settle = () => act(() => new Promise(resolve => setTimeout(resolve, 30)));
 
 describe('Delivery evidence', () => {
     beforeEach(() => {
@@ -64,41 +63,35 @@ describe('Delivery evidence', () => {
 
         await user.click(screen.getByRole('combobox', { name: 'Iteration' }));
         await user.click(await screen.findByRole('option', { name: /^Backlog/ }));
-        expect(await screen.findByText(unavailable)).toBeVisible();
-        expect(screen.queryByRole('link', { name: 'Ready artifact' })).not.toBeInTheDocument();
-        expect(metrics.get).toHaveBeenCalledTimes(2);
-        expect(metrics.get).not.toHaveBeenCalledWith(expect.objectContaining({ project_id: expect.anything() }));
+        await waitFor(() => expect(metrics.get).toHaveBeenLastCalledWith({ project_id: 1, backlog: true, lookback_days: 30 }));
+        expect(await screen.findByRole('link', { name: 'Ready artifact' })).toBeVisible();
+        expect(screen.queryByText(unavailable)).not.toBeInTheDocument();
 
         await user.click(screen.getByRole('combobox', { name: 'Project' }));
         await user.click(await screen.findByRole('option', { name: /Grove/ }));
         await waitFor(() => expect(metrics.get).toHaveBeenLastCalledWith({ iteration_id: 30, lookback_days: 30 }));
     });
 
-    it('requests nothing and says so when the scope is the Backlog of a project', async () => {
-        renderReport('/analytics?project=2&iteration=backlog');
-        expect(await screen.findByText(unavailable)).toBeVisible();
-        await settle();
-        expect(metrics.get).not.toHaveBeenCalled();
-        expect(screen.queryByRole('link', { name: 'Ready artifact' })).not.toBeInTheDocument();
+    it.each([
+        ['/analytics?project=2&iteration=backlog', { project_id: 2, backlog: true, lookback_days: 30 }],
+        ['/analytics?project=all&iteration=backlog', { all_projects: true, all_projects_backlog: true, lookback_days: 30 }],
+        ['/analytics?project=all&iteration=9', { all_projects: true, all_projects_backlog: true, lookback_days: 30 }],
+    ])('shows delivery evidence for %s', async (entry, scope) => {
+        renderReport(entry);
+        expect(await screen.findByRole('link', { name: 'Ready artifact' })).toBeVisible();
+        expect(metrics.get).toHaveBeenLastCalledWith(scope);
+        expect(screen.queryByText(unavailable)).not.toBeInTheDocument();
     });
 
-    it('requests nothing and says so when the scope is All projects', async () => {
-        renderReport('/analytics?project=all&iteration=backlog');
-        expect(await screen.findByText(unavailable)).toBeVisible();
-        await settle();
-        expect(metrics.get).not.toHaveBeenCalled();
-    });
-
-    it('says so in Russian', async () => {
+    it('shows backlog delivery evidence in Russian', async () => {
         await changeAppLanguage('ru');
         try {
             renderReport('/analytics?project=2&iteration=backlog');
-            expect(await screen.findByText('Показатели доставки доступны для одной итерации или одного проекта. Выберите итерацию в панели области.')).toBeVisible();
-            await settle();
-            expect(metrics.get).not.toHaveBeenCalled();
+            expect(await screen.findByRole('link', { name: 'Ready artifact' })).toBeVisible();
+            expect(metrics.get).toHaveBeenCalledWith({ project_id: 2, backlog: true, lookback_days: 30 });
+            expect(screen.queryByText(/Показатели доставки доступны для одной итерации/)).not.toBeInTheDocument();
         } finally { await changeAppLanguage('en'); }
     });
-
 
     it('hides cached private queues after a failed read and offers retry', async () => {
         const queryClient = createTestQueryClient();

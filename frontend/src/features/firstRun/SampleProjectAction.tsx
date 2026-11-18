@@ -7,11 +7,12 @@ import { ButtonLink } from '../../components/common/ButtonLink';
 import { ConfirmDialog } from '../../components/common/ConfirmDialog';
 import { useAdminAccess } from '../../hooks/useAdminAccess';
 import { useIdentity } from '../identity/identityContext';
-import { loadSampleProject, removeSampleProject, type SampleManifest } from './sampleProject';
+import { loadSampleProject, removeSampleProject, SampleWindowUnavailableError, type SampleManifest } from './sampleProject';
 import { useSampleProject } from './sampleProjectStore';
 import { useSetWorkScope } from '../scope/useWorkScope';
 import { resolveWorkScope, sameScope, type ScopeIterationRecord, type WorkScope } from '../scope/workScope';
 import { useScopeStore } from '../scope/scopeStore';
+import { navigateWithoutLeaveGuards } from '../../components/common/leaveGuardBypass';
 import { parseScope } from '../../navigation/scopeParams';
 import { projectService } from '../../services/projectService';
 import { iterationService } from '../../services/iterationService';
@@ -33,7 +34,7 @@ export const SampleProjectAction = () => {
             iteration: urlScope.iteration ?? remembered.iteration ?? scope.iteration };
     }, [urlScope.project, urlScope.iteration, remembered.project, remembered.iteration, scope.project, scope.iteration]);
     const { manifest, busy, save, setBusy } = useSampleProject();
-    const [error, setError] = useState(false);
+    const [error, setError] = useState<'failed' | 'noWindow' | null>(null);
     const [removalFailed, setRemovalFailed] = useState(false);
     const [confirming, setConfirming] = useState(false);
     const locked = useRef(false);
@@ -50,7 +51,7 @@ export const SampleProjectAction = () => {
         if (locked.current || useSampleProject.getState().busy) return;
         locked.current = true;
         setBusy(true);
-        setError(false);
+        setError(null);
         setRemovalFailed(false);
         const receipt: SampleManifest = { owner, records: [...records], complete: own?.complete ?? false,
             previousScope: remove ? own?.previousScope : scope };
@@ -61,9 +62,12 @@ export const SampleProjectAction = () => {
                 } finally {
                     const removed = records.filter(record => !receipt.records.some(item => item.kind === record.kind && item.id === record.id));
                     const selected = currentScope.current;
-                    await client.invalidateQueries();
-                    if (removed.some(record => record.kind === 'project' && record.id === selected?.project
-                        || record.kind === 'iteration' && record.id === selected?.iteration)) {
+                    // Move the scope off the deleted records before any page refetches them.
+                    // Scope validation may already have dropped the deleted iteration to Backlog while the
+                    // removal ran, so a scope that still sits inside the sample counts as well.
+                    const inSample = records.some(record => record.kind === 'project' && record.id === selected?.project
+                        || record.kind === 'iteration' && record.id === selected?.iteration);
+                    if (inSample && removed.some(record => record.kind === 'project' || record.kind === 'iteration')) {
                         let restored: WorkScope = { project: 'all', iteration: 'backlog' };
                         let repaired = selected;
                         try {
@@ -80,6 +84,7 @@ export const SampleProjectAction = () => {
                             || record.kind === 'iteration' && record.id === currentScope.current.iteration);
                         if (sameScope(currentScope.current, selected) || sameScope(currentScope.current, repaired) || stillRemoved) setScope(restored);
                     }
+                    await client.invalidateQueries();
                 }
                 setConfirming(false);
             } else if (identity.profile) {
@@ -88,9 +93,12 @@ export const SampleProjectAction = () => {
                 const result = await loadSampleProject(receipt, identity.profile, i18n.language, save);
                 // Scope validation must know the new iteration before its URL is opened.
                 await client.invalidateQueries({ queryKey: ['iterations'] });
-                navigate(`/plan?project=${result.projectId}&iteration=${result.iterationId}`);
+                navigateWithoutLeaveGuards(() => navigate(`/plan?project=${result.projectId}&iteration=${result.iterationId}`));
             }
-        } catch { setError(true); setRemovalFailed(remove); }
+        } catch (caught) {
+            setError(caught instanceof SampleWindowUnavailableError ? 'noWindow' : 'failed');
+            setRemovalFailed(remove);
+        }
         finally {
             if (!remove) await client.invalidateQueries();
             setBusy(false);
@@ -118,14 +126,14 @@ export const SampleProjectAction = () => {
                     <Button variant="secondary" disabled={busy} onClick={() => setConfirming(true)}>{t('firstRun.sample.remove')}</Button>
                 </div>
             </>}
-            {error && <p role="alert" className="text-sm text-feedback-danger-foreground">{t('firstRun.sample.failed')}</p>}
+            {error && <p role="alert" className="text-sm text-feedback-danger-foreground">{t(error === 'noWindow' ? 'firstRun.sample.noWindow' : 'firstRun.sample.failed')}</p>}
             {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- The scrollable record list must be keyboard-accessible. */}
             <ConfirmDialog open={confirming} title={t('firstRun.sample.remove')} description={<div className="max-h-[50vh] space-y-3 overflow-y-auto" role="region" tabIndex={0}
                 aria-label={t('firstRun.sample.exists', { count: records.length })}>
                 <p>{t('firstRun.sample.confirm')}</p>{inventory}
                 {removalFailed && <p role="alert">{t('firstRun.sample.removeFailed')}</p>}
             </div>} confirmLabel={t('firstRun.sample.remove')} cancelLabel={t('actions.cancel')} closeLabel={t('actions.close')}
-                pending={busy} onCancel={() => { if (!busy) { setConfirming(false); setError(false); } }} onConfirm={() => void run(true)} />
+                pending={busy} onCancel={() => { if (!busy) { setConfirming(false); setError(null); } }} onConfirm={() => void run(true)} />
         </div>
     );
 };

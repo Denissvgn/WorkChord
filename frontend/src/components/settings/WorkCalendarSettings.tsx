@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { eachDayOfInterval, format, parseISO } from 'date-fns';
 import type { Locale } from 'date-fns';
@@ -94,6 +95,10 @@ const mergeDate = (values: string[], dateKey: string) => (
 
 const WorkCalendarSettings = () => {
     const { t, i18n } = useTranslation();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const requestedYear = searchParams.get('year');
+    const createRequested = searchParams.get('create') === '1';
+    const validYear = requestedYear && /^\d{4}$/.test(requestedYear) && Number(requestedYear) >= 2000 && Number(requestedYear) <= 2100 ? requestedYear : String(new Date().getFullYear());
     const locale = dateFnsLocale(i18n.language);
     const queryClient = useQueryClient();
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
@@ -106,9 +111,16 @@ const WorkCalendarSettings = () => {
     const currentCompletion = (context?: { calendarId: number; generation: number }) => Boolean(context &&
         activeCalendar.current === context.calendarId && draftGeneration.current === context.generation);
     const [selectedCalendarId, setSelectedCalendarId] = useState<number | null>(null);
-    const [isCreatingCalendar, setIsCreatingCalendar] = useState(false);
-    const [newCalendarName, setNewCalendarName] = useState('');
-    const [newCalendarYear, setNewCalendarYear] = useState('');
+    const [isCreatingCalendar, setIsCreatingCalendar] = useState(createRequested);
+    const [newCalendarName, setNewCalendarName] = useState(() => createRequested && validYear ? t('calendar.defaultCalendarName', { year: validYear }) : '');
+    const [newCalendarYear, setNewCalendarYear] = useState(createRequested ? validYear : '');
+    useEffect(() => {
+        if (!createRequested) return;
+        const next = new URLSearchParams(searchParams);
+        next.delete('create');
+        next.delete('year');
+        setSearchParams(next, { replace: true });
+    }, [createRequested, searchParams, setSearchParams]);
     const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
     const [visibleMonth, setVisibleMonth] = useState(0);
     const [manualDate, setManualDate] = useState('');
@@ -888,7 +900,6 @@ const WorkCalendarSettings = () => {
                                     key={day}
                                     dateKey={day}
                                     locale={locale}
-                                    iconTone="amber"
                                     label={t('calendar.shortDay')}
                                     onRemove={() => removeShortDay(day)}
                                 />
@@ -945,7 +956,6 @@ const DateList = ({
                             key={day}
                             dateKey={day}
                             locale={locale}
-                            iconTone="red"
                             label={t('calendar.companyDay')}
                             onRemove={() => onRemoveHoliday(day)}
                         />
@@ -965,7 +975,6 @@ const DateList = ({
                             key={day}
                             dateKey={day}
                             locale={locale}
-                            iconTone="amber"
                             label={t('calendar.shortDay')}
                             onRemove={() => onRemoveShortDay(day)}
                         />
@@ -984,15 +993,14 @@ const DateList = ({
 interface DateChipProps {
     dateKey: string;
     locale: Locale;
-    iconTone: 'red' | 'amber';
     label: string;
     onRemove: () => void;
 }
 
-const DateChip = ({ dateKey, locale, iconTone, label, onRemove }: DateChipProps) => (
+export const DateChip = ({ dateKey, locale, label, onRemove }: DateChipProps) => (
     <div className="flex items-center justify-between rounded-lg border bg-surface-card p-2 text-sm text-content-primary">
         <span>
-            <span className={`mr-2 inline-flex h-2.5 w-2.5 rounded-full ${iconTone === 'red' ? 'bg-feedback-danger' : 'bg-feedback-warning'}`} />
+            <span className="mr-2 inline-flex h-2.5 w-2.5 rounded-full border border-border bg-surface-subtle" />
             {formatDate(dateKey, locale)}
             <span className="ml-2 text-xs text-content-tertiary">{label}</span>
         </span>

@@ -81,6 +81,7 @@ from app.schemas.agent_planning import AgentPlanningCommandContext
 from app.schemas.task import TaskResponse
 from app.utils.time import utc_now
 from app.services.agent_service import (
+    ADMIN_KEY_PRINCIPAL_NAME,
     AgentConflictError,
     AgentPermissionError,
     AgentService,
@@ -187,7 +188,7 @@ def _admin_header_actor() -> AgentActor:
     """Build a transient actor for authenticated human control-plane access."""
     return AgentActor(
         id=0,
-        name="admin-api-key",
+        name=ADMIN_KEY_PRINCIPAL_NAME,
         display_name="Admin API Key",
         api_key_hash="admin",
         scopes=json.dumps(["admin"]),

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
 import { useLocation } from 'react-router-dom';
 import { renderWithProviders } from '../../test/renderWithProviders';
@@ -6,9 +6,9 @@ import type { Task } from '../../types/task';
 import { emptyTaskBrief } from './taskEditorContract';
 import { TaskReadView } from './TaskReadView';
 
-const service = vi.hoisted(() => ({ writeBrief: vi.fn() }));
+const service = vi.hoisted(() => ({ writeBrief: vi.fn(), actions: vi.fn(), command: vi.fn() }));
 vi.mock('../../services/taskService', () => ({ taskService: service }));
-vi.mock('./TaskWorkPanel', () => ({ TaskWorkPanel: ({ initialAction }: { initialAction?: string }) => <p>Work panel {initialAction ?? 'none'}</p> }));
+vi.mock('./TaskWorkPanel', () => ({ TaskWorkPanel: () => <p>Work panel</p> }));
 vi.mock('./DeliveryDependencies', () => ({ DeliveryDependencies: () => null }));
 vi.mock('./TaskDiscussion', () => ({ TaskDiscussion: () => <p>Discussion</p> }));
 vi.mock('./TimeEntriesPanel', () => ({ TimeEntriesPanel: () => null }));
@@ -35,6 +35,14 @@ const renderView = (overrides: Partial<Parameters<typeof TaskReadView>[0]> = {})
     <Location />
 </>, { initialEntries: ['/tasks?task=312'] });
 
+const actionsAllowing = (...allowed: string[]) => ({ task_id: 312, version: 4, claim_generation: 0, running_run_ids: [], live_assignment_ids: [],
+    actions: ['start_manual', 'resolve_manual', 'review'].map(action => ({ action, allowed: allowed.includes(action), blockers: [] })) });
+
+beforeEach(() => {
+    vi.clearAllMocks();
+    service.actions.mockResolvedValue(actionsAllowing('resolve_manual'));
+});
+
 describe('read-first task view', () => {
     it('reads the brief without any input and links to the evidence', () => {
         renderView();
@@ -44,10 +52,10 @@ describe('read-first task view', () => {
         expect(screen.getByText('Sam Ortiz')).toBeInTheDocument();
     });
 
-    it('keeps the part in the URL and sends the header transition to Work & review', async () => {
+    it('keeps the part in the URL', async () => {
         const { user } = renderView();
-        await user.click(screen.getByRole('button', { name: 'Submit for review' }));
-        expect(screen.getByText('Work panel resolve_manual')).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Work & review · 1 of 2 criteria' }));
+        expect(screen.getByText('Work panel')).toBeInTheDocument();
         expect(screen.getByTestId('location')).toHaveTextContent('task=312&part=work');
         await user.click(screen.getByRole('button', { name: 'Activity' }));
         expect(screen.getByText('Discussion')).toBeInTheDocument();
@@ -63,5 +71,90 @@ describe('read-first task view', () => {
         await user.click(screen.getByRole('button', { name: 'Save brief' }));
         await waitFor(() => expect(service.writeBrief).toHaveBeenCalledWith(312, 4, expect.objectContaining({ goal: 'Load a year of holidays from a CSV file.' })));
         await waitFor(() => expect(onTaskUpdated).toHaveBeenCalledWith(expect.objectContaining({ version: 5 })));
+    });
+});
+
+describe('header status change', () => {
+    const planned = { ...task, status: 'planned' } as Task;
+
+    it('starts a planned task in one click when no reason is required', async () => {
+        const onTaskUpdated = vi.fn();
+        service.actions.mockResolvedValue(actionsAllowing('start_manual'));
+        service.command.mockResolvedValue({ ...planned, status: 'active', version: 5 });
+        const { user } = renderView({ task: planned, onTaskUpdated });
+        const start = screen.getByRole('button', { name: 'Start work' });
+        await waitFor(() => expect(start).toBeEnabled());
+        await user.click(start);
+        await waitFor(() => expect(onTaskUpdated).toHaveBeenCalledWith(expect.objectContaining({ status: 'active', version: 5 })));
+        expect(service.command).toHaveBeenCalledTimes(1);
+        expect(service.command).toHaveBeenCalledWith(312, expect.objectContaining({ action: 'start_manual', expected_version: 4, reason: 'Started from the task view.' }));
+        expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+        expect(screen.queryByText('Save or discard your edits to change status.')).not.toBeInTheDocument();
+        expect(screen.getByTestId('location')).toHaveTextContent('task=312');
+        expect(screen.getByTestId('location')).not.toHaveTextContent('part=work');
+    });
+
+    it('asks for one inline reason only when the server requires one', async () => {
+        const onTaskUpdated = vi.fn();
+        service.actions.mockResolvedValue(actionsAllowing('start_manual'));
+        service.command
+            .mockRejectedValueOnce({ response: { status: 422, data: { detail: [{ type: 'value_error', loc: ['body', 'reason'], msg: 'A reason is required' }] } } })
+            .mockResolvedValueOnce({ ...planned, status: 'active', version: 5 });
+        const { user } = renderView({ task: planned, onTaskUpdated });
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Start work' })).toBeEnabled());
+        await user.click(screen.getByRole('button', { name: 'Start work' }));
+        const reason = await screen.findByRole('textbox', { name: /Reason for the action or review/ });
+        expect(screen.getByText('This change needs a reason. Add one, then confirm.')).toBeInTheDocument();
+        expect(screen.queryByText('Save or discard your edits to change status.')).not.toBeInTheDocument();
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+        await user.type(reason, 'The customer asked us to begin');
+        const confirm = screen.getAllByRole('button', { name: 'Start work' }).find(button => button.getAttribute('type') === 'submit')!;
+        await user.click(confirm);
+        await waitFor(() => expect(onTaskUpdated).toHaveBeenCalledWith(expect.objectContaining({ status: 'active' })));
+        expect(service.command).toHaveBeenCalledTimes(2);
+        expect(service.command.mock.lastCall?.[1]).toEqual(expect.objectContaining({ action: 'start_manual', reason: 'The customer asked us to begin' }));
+        expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    });
+
+    it('shows a refusal that is not about the reason inline, without a reason field', async () => {
+        service.actions.mockResolvedValue(actionsAllowing('start_manual'));
+        service.command.mockRejectedValue({ response: { status: 409, data: { detail: { message: 'Another editor changed this task' } } } });
+        const { user } = renderView({ task: planned });
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Start work' })).toBeEnabled());
+        await user.click(screen.getByRole('button', { name: 'Start work' }));
+        expect(await screen.findByRole('alert')).toHaveTextContent('Another editor changed this task');
+        expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    });
+
+    it('submits for review in one click when the task has criteria', async () => {
+        const onTaskUpdated = vi.fn();
+        service.command.mockResolvedValue({ ...task, status: 'resolved', version: 5 });
+        const { user } = renderView({ onTaskUpdated });
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Submit for review' })).toBeEnabled());
+        await user.click(screen.getByRole('button', { name: 'Submit for review' }));
+        await waitFor(() => expect(onTaskUpdated).toHaveBeenCalledWith(expect.objectContaining({ status: 'resolved' })));
+        expect(service.command).toHaveBeenCalledWith(312, expect.objectContaining({ action: 'resolve_manual', reason: 'Submitted for review from the task view.' }));
+    });
+
+    it('opens Work & review instead of submitting a task without criteria', async () => {
+        const noCriteria = { ...task, brief: { ...task.brief!, acceptance_criteria: [] } } as Task;
+        const { user } = renderView({ task: noCriteria });
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Submit for review' })).toBeEnabled());
+        await user.click(screen.getByRole('button', { name: 'Submit for review' }));
+        expect(screen.getByTestId('location')).toHaveTextContent('task=312&part=work');
+        expect(service.command).not.toHaveBeenCalled();
+    });
+
+    it('opens Review without claiming unsaved edits', async () => {
+        const resolved = { ...task, status: 'resolved' } as Task;
+        const onDirty = vi.fn();
+        const { user } = renderView({ task: resolved, onDirty });
+        await user.click(screen.getByRole('button', { name: 'Review' }));
+        expect(screen.getByText('Work panel')).toBeInTheDocument();
+        expect(screen.getByTestId('location')).toHaveTextContent('task=312&part=work');
+        expect(screen.queryByText('Save or discard your edits to change status.')).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Review' })).toBeEnabled();
+        expect(onDirty).not.toHaveBeenCalledWith(true);
+        expect(service.command).not.toHaveBeenCalled();
     });
 });

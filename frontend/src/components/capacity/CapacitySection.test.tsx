@@ -29,7 +29,7 @@ const capacityApi = vi.hoisted(() => ({
 }));
 vi.mock('../../services/teamService', () => ({ teamService: { getByIteration: capacityApi.getByIteration, create: capacityApi.create } }));
 vi.mock('../../services/planningInputService', () => ({ planningInputService: { readInitial: capacityApi.readInitial } }));
-vi.mock('../team/ConnectAgentSteps', () => ({ ConnectAgentSteps: () => <p>Five questions to connect an agent</p> }));
+vi.mock('../team/ConnectAgentSteps', () => ({ ConnectAgentSteps: ({ showTitle }: { showTitle?: boolean }) => <p>Five questions to connect an agent{showTitle === false ? ' (no own title)' : ''}</p> }));
 
 const withProfile = (ui: ReactElement) => (
     <IdentityContext.Provider value={{
@@ -54,7 +54,7 @@ it('adds the chosen profile with Add me and connects an agent without leaving Pl
     // Plan links to a full page only for Tasks and Gantt: the agent is connected in a drawer over Plan.
     await view.user.click(screen.getByRole('button', { name: i18n.t('teamPage.connectAgent') }));
     const drawer = await screen.findByRole('dialog', { name: i18n.t('teamPage.connectAgent') });
-    expect(drawer).toHaveTextContent('Five questions to connect an agent');
+    expect(drawer).toHaveTextContent('Five questions to connect an agent (no own title)');
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
 });
 
@@ -79,5 +79,5 @@ it('keeps the Connect drawer in the address, so it is still open after the page 
     // Saving the admin key inside the drawer redraws the whole app; the address brings the drawer back.
     renderWithProviders(<CapacitySection iteration={iteration} iterations={[iteration]} members={[]} primary />,
         { initialEntries: ['/plan?project=1&iteration=9&step=team&connect=1'] });
-    expect(await screen.findByRole('dialog', { name: i18n.t('teamPage.connectAgent') })).toHaveTextContent('Five questions to connect an agent');
+    expect(await screen.findByRole('dialog', { name: i18n.t('teamPage.connectAgent') })).toHaveTextContent('Five questions to connect an agent (no own title)');
 });

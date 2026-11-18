@@ -20,7 +20,7 @@ describe('counts that open their tasks', () => {
         expect(await within(dialog).findByText('2 tasks')).toBeInTheDocument();
         expect(within(dialog).getByRole('link', { name: '#4 · Wire the importer' })).toHaveAttribute('href', '/tasks?task=4');
         expect(within(dialog).getByText(/Planned · Calendar · Backlog/)).toBeInTheDocument();
-        expect(service.metricMatches).toHaveBeenCalledWith({ project_id: 3, metric: 'blocked' }, expect.anything());
+        expect(service.metricMatches).toHaveBeenCalledWith({ project_id: 3, metric: 'blocked', after_id: 0 }, expect.anything());
     });
 
     it('stays plain text without a scope, and the metrics line links non-zero counts only', () => {

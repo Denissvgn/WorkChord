@@ -44,7 +44,7 @@ interface TemplateFormState {
     default_title: string;
     default_description: string;
     default_priority: string;
-    default_effort_days: string;
+    default_effort_hours: string;
     default_labels: string[];
     default_checklist: string;
     default_payload: string;
@@ -90,6 +90,9 @@ const splitLines = (value: string) => (
     value.split('\n').map(item => item.trim()).filter(Boolean)
 );
 
+// Templates have no calendar, so the working-day hint uses the nominal workday the other forms use.
+const TEMPLATE_DAY_HOURS = 8;
+
 const formatJson = (value: Record<string, unknown>) => (
     JSON.stringify(value && typeof value === 'object' ? value : {}, null, 2)
 );
@@ -101,7 +104,7 @@ const emptyTemplateForm = (templateType: TemplateType, sortOrder: number): Templ
     default_title: '',
     default_description: '',
     default_priority: '',
-    default_effort_days: '',
+    default_effort_hours: '',
     default_labels: [],
     default_checklist: '',
     default_payload: '{}',
@@ -116,7 +119,7 @@ const templateToForm = (template: WorkTemplate): TemplateFormState => ({
     default_title: template.default_title ?? '',
     default_description: template.default_description ?? '',
     default_priority: template.default_priority != null ? String(template.default_priority) : '',
-    default_effort_days: template.default_effort_days != null ? String(template.default_effort_days) : '',
+    default_effort_hours: template.default_effort_days != null ? String(template.default_effort_days * TEMPLATE_DAY_HOURS) : '',
     default_labels: template.default_labels ?? [],
     default_checklist: (template.default_checklist ?? []).join('\n'),
     default_payload: formatJson(template.default_payload),
@@ -146,7 +149,7 @@ const parseTemplatePayload = (
         default_title: optionalText(form.default_title),
         default_description: optionalText(form.default_description),
         default_priority: form.default_priority === '' ? null : Number(form.default_priority),
-        default_effort_days: form.default_effort_days === '' ? null : Number(form.default_effort_days),
+        default_effort_days: form.default_effort_hours === '' ? null : Number(form.default_effort_hours) / TEMPLATE_DAY_HOURS,
         default_labels: form.default_labels,
         default_checklist: splitLines(form.default_checklist),
         default_payload: parsedPayload as Record<string, unknown>,
@@ -249,7 +252,7 @@ const TemplateRow = ({ isBusy, readOnly, template, isFirst, isLast, onEdit, onTo
                     <div className="flex flex-wrap items-center gap-2">
                         <h4 id={headingId} className="font-medium text-content-primary">{display.name}</h4>
                         {template.seed_key && (
-                            <span className="rounded-full bg-action-muted px-2 py-0.5 text-xs font-medium text-action">{t('surfaces.templateLabels.seeded')}</span>
+                            <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-content-secondary">{t('surfaces.templateLabels.seeded')}</span>
                         )}
                     </div>
                     {display.description && (
@@ -302,7 +305,7 @@ const TemplateRow = ({ isBusy, readOnly, template, isFirst, isLast, onEdit, onTo
 };
 
 export const TemplateLabelSettings = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
     const toast = useToast();
     // Without the admin key, tabs, template types and "Include archived" still work and each
@@ -771,14 +774,20 @@ export const TemplateLabelSettings = () => {
                                         value={templateForm.state.default_priority}
                                         onChange={event => updateTemplateForm('default_priority', event.target.value)}
                                     />
-                                    <Input
-                                        type="number"
-                                        label={t('surfaces.templateLabels.effortDays')}
-                                        min="0.1"
-                                        step="0.1"
-                                        value={templateForm.state.default_effort_days}
-                                        onChange={event => updateTemplateForm('default_effort_days', event.target.value)}
-                                    />
+                                    <div>
+                                        <Input
+                                            type="number"
+                                            label={t('surfaces.taskForm.effortHours')}
+                                            min="0.8"
+                                            step="any"
+                                            value={templateForm.state.default_effort_hours}
+                                            onChange={event => updateTemplateForm('default_effort_hours', event.target.value)}
+                                        />
+                                        <p className="mt-1 text-sm text-content-secondary">{t('surfaces.taskForm.effortDaysHint', {
+                                            days: templateForm.state.default_effort_hours === '' ? 'n' : (Number(templateForm.state.default_effort_hours) / TEMPLATE_DAY_HOURS).toLocaleString(i18n.language, { maximumFractionDigits: 1 }),
+                                            hours: TEMPLATE_DAY_HOURS,
+                                        })}</p>
+                                    </div>
                                 </div>
                                 <LabelSelector
                                     value={templateForm.state.default_labels}
@@ -892,7 +901,7 @@ export const TemplateLabelSettings = () => {
                                                         <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs font-medium text-content-secondary">{t('surfaces.templateLabels.archived')}</span>
                                                     )}
                                                     {group.seed_key && (
-                                                        <span className="rounded-full bg-action-muted px-2 py-0.5 text-xs font-medium text-action">{t('surfaces.templateLabels.seeded')}</span>
+                                                        <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-content-secondary">{t('surfaces.templateLabels.seeded')}</span>
                                                     )}
                                                 </div>
                                                 {labelGroupDisplay(group).description && (

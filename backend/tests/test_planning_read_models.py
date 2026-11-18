@@ -57,6 +57,7 @@ async def test_schedule_preview_does_not_allocate_inherited_deferred_leaf(db_ses
         leaf = await db_session.get(Task, leaf_id)
         assert leaf.start_date is None and leaf.end_date is None
         assert leaf_id not in {decision.task_id for decision in result.decisions}
+        assert leaf_id not in {item.task_id for item in result.unscheduled}
     assert (await db_session.get(Task, leaf_id)).version == before
 
 

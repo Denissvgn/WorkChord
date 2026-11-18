@@ -118,7 +118,6 @@ export const ProjectTaskTree = ({ sections, dependencyTasks }: ProjectTaskTreePr
                                         onStatusChange={status => rowEdits.changeStatus(task, status)}
                                         menuItems={[{ label: t('taskList.openTask'), onSelect: () => setSelectedTask(task.id) }]}
                                         selected={selection.selectedIds.has(task.id)}
-                                        selectionActive={selection.selectionActive}
                                         onToggleSelect={canPick ? ({ shiftKey }) => selection.toggle(task.id, shiftKey) : undefined}
                                         selectDisabledReason={canPick && !selection.canAdd(task.id) ? t('taskList.selectOneIteration') : undefined}
                                     />
