@@ -12,6 +12,32 @@ Acquire::https::Timeout "15";
 APT::Update::Error-Mode "any";
 '''
 
+# Repositories the hosted runner image preinstalls and no job here installs from. With the strict update
+# mode above, a rate-limited response from one of them (HTTP 429) would fail the whole job.
+UNUSED_RUNNER_HOSTS = frozenset({'packages.microsoft.com'})
+
+
+def _repository_hosts(text: str) -> set[str]:
+    """Hosts named by the repository lines of a one-line or deb822 source file."""
+    hosts = set()
+    for line in text.splitlines():
+        line = line.strip()
+        if line.startswith(('deb ', 'deb-src ')) or line.lower().startswith('uris:'):
+            hosts.update(re.findall(r'https?://([^/\s:]+)', line))
+    return hosts
+
+
+def disable_unused_sources(root: Path) -> None:
+    """Set aside source files whose every repository is an unused runner repository."""
+    directory = root / 'sources.list.d'
+    for path in sorted([*directory.glob('*.list'), *directory.glob('*.sources')]):
+        if not path.is_file():
+            continue
+        hosts = _repository_hosts(path.read_text())
+        if hosts and hosts <= UNUSED_RUNNER_HOSTS:
+            path.rename(path.with_name(path.name + '.disabled'))
+            print(f'Disabled unused runner repository {path}')
+
 
 def prepare(root: Path, architecture: str) -> None:
     """Replace the direct or mirror-list Ubuntu source; retain suites and signing."""
@@ -19,6 +45,7 @@ def prepare(root: Path, architecture: str) -> None:
         raise ValueError(f'Unsupported runner architecture: {architecture}')
     archive = ('https://archive.ubuntu.com/ubuntu' if architecture == 'amd64'
                else 'https://ports.ubuntu.com/ubuntu-ports')
+    disable_unused_sources(root)
     paths = [root / 'sources.list']
     paths += sorted((root / 'sources.list.d').glob('*.list'))
     paths += sorted((root / 'sources.list.d').glob('*.sources'))

@@ -57,6 +57,33 @@ class AptPreparation(unittest.TestCase):
                     apt_runtime.prepare(root, architecture)
                     self.assertEqual(source.read_text(), original.replace('mirror+file:/etc/apt/apt-mirrors.txt', archive))
 
+    def test_unused_runner_repositories_are_set_aside_and_others_kept(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            listing = root / 'sources.list.d'
+            listing.mkdir()
+            files = {
+                'microsoft-prod.list': 'deb [arch=amd64,arm64,armhf] https://packages.microsoft.com/ubuntu/24.04/prod noble main\n',
+                'microsoft-tools.sources': ('Types: deb\nURIs: https://packages.microsoft.com/repos/tools/\n'
+                                            'Suites: noble\nComponents: main\nSigned-By: /usr/share/keyrings/microsoft.gpg\n'),
+                'mixed.list': ('deb https://packages.microsoft.com/ubuntu/24.04/prod noble main\n'
+                               'deb https://apt.postgresql.org/pub/repos/apt noble-pgdg main\n'),
+                'pgdg.list': 'deb https://apt.postgresql.org/pub/repos/apt noble-pgdg main\n',
+                'comment-only.list': '# deb https://packages.microsoft.com/ubuntu/24.04/prod noble main\n',
+                'lookalike.list': 'deb https://packages.microsoft.com.example/ubuntu noble main\n',
+            }
+            for name, text in files.items():
+                (listing / name).write_text(text)
+            apt_runtime.prepare(root, 'amd64')
+            for name in ('microsoft-prod.list', 'microsoft-tools.sources'):
+                self.assertFalse((listing / name).exists())
+                self.assertEqual((listing / (name + '.disabled')).read_text(), files[name])
+            for name in ('mixed.list', 'pgdg.list', 'comment-only.list', 'lookalike.list'):
+                self.assertEqual((listing / name).read_text(), files[name])
+            before = sorted(path.name for path in listing.iterdir())
+            apt_runtime.prepare(root, 'amd64')
+            self.assertEqual(sorted(path.name for path in listing.iterdir()), before)
+
     def test_unsupported_architecture_does_not_mutate_configuration(self):
         with tempfile.TemporaryDirectory() as directory:
             with self.assertRaises(ValueError):
