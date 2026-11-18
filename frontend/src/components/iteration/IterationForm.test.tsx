@@ -226,6 +226,7 @@ describe('IterationForm hardening', () => {
         await user.type(screen.getByLabelText('End date'), '2026-08-14');
         await user.click(screen.getByRole('button', { name: 'More' }));
         await screen.findByRole('option', { name: 'Berlin calendar' });
+        expect(screen.getByRole('link', { name: /Create a calendar in Settings/ })).toHaveAttribute('href', expect.stringContaining('/settings?tab=work_calendar&create=1'));
         await user.selectOptions(screen.getByLabelText('Calendar'), 'Berlin calendar');
         await user.click(screen.getByRole('button', { name: 'Save iteration' }));
         await waitFor(() => expect(iterationServiceMock.create).toHaveBeenCalledTimes(1));

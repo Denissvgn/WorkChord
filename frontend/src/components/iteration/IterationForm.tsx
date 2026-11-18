@@ -4,6 +4,7 @@ import type { ObservedRevisions } from '../../services/planningInputService';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CalendarRange, ListChecks, Repeat, Save } from 'lucide-react';
 import { Button } from '../common/Button';
@@ -155,11 +156,16 @@ const seriesDraftsMatch = (left: SeriesDraft, right: SeriesDraft) => (
 );
 
 /** The calendar the iteration counts its working days in; it loads only once More is opened. */
-const CalendarField = ({ value, onChange }: { value: string; onChange: (value: string) => void }) => {
+const CalendarField = ({ value, onChange, startDate, endDate }: { value: string; onChange: (value: string) => void; startDate: string; endDate: string }) => {
     const { t } = useTranslation();
     // feedback-policy: query loading,error,retry,empty - without the list the iteration keeps its calendar; the field says so.
     const calendars = useQuery({ queryKey: ['calendars'], queryFn: calendarService.getAll, staleTime: 60_000 });
+    const selectedYear = calendars.data?.find(calendar => String(calendar.id) === value)?.year;
+    const startYear = startDate.slice(0, 4);
+    const endYear = endDate.slice(0, 4);
+    const year = selectedYear && String(selectedYear) === startYear && endYear !== startYear ? endYear : startYear;
     return (
+        <>
         <Select
             label={t('iterations.calendar')}
             value={value}
@@ -171,6 +177,8 @@ const CalendarField = ({ value, onChange }: { value: string; onChange: (value: s
                 <option key={calendar.id} value={calendar.id}>{calendar.name}</option>
             ))}
         </Select>
+        <Link className="plan-evidence-link text-sm" to={`/settings?tab=work_calendar&create=1${/^\d{4}$/.test(year) ? `&year=${year}` : ''}`}>{t('plan.page.createCoveringCalendar')}</Link>
+        </>
     );
 };
 
@@ -606,6 +614,8 @@ const IterationFormEditor = ({
                 )}
 
                 <CalendarField
+                    startDate={mode === 'series' ? seriesDraft.start_date : singleDraft.start_date}
+                    endDate={mode === 'series' ? seriesDraft.start_date : singleDraft.end_date}
                     value={mode === 'series' ? seriesDraft.calendar_id : singleDraft.calendar_id}
                     onChange={value => {
                         if (mode === 'series') {
