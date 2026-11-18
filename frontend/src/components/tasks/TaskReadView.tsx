@@ -19,6 +19,8 @@ import { formatDate } from '../../utils/formatDate';
 import { pillToneClassName, STATUS_TONE } from '../ui/tone';
 import { TaskBriefEditor } from './TaskBriefEditor';
 import { TaskWorkPanel } from './TaskWorkPanel';
+import { useAdminAccess } from '../../hooks/useAdminAccess';
+import { clearAdminApiKey } from '../../utils/adminAccess';
 import { DeliveryDependencies } from './DeliveryDependencies';
 import { TaskDiscussion } from './TaskDiscussion';
 import { TimeEntriesPanel } from './TimeEntriesPanel';
@@ -144,6 +146,10 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
     // A connected agent that has not been sent the task gets it through dispatch, not a manual start,
     // in the header and in Work & review alike. The link opens the pipeline's dispatch panel; in the
     // pipeline that panel is already above.
+    // With the admin key the server treats the browser as an operator, and manual start and submit are
+    // taken as a person, so those two are not offered until editing is locked again.
+    const { actingAsOperator } = useAdminAccess();
+    const operatorKeyBlocksNext = actingAsOperator && (next?.action === 'start_manual' || next?.action === 'resolve_manual');
     const offerDispatch = task.status === 'planned' && assigneeDisplay.dispatch === 'notSentYet';
     const dispatchShown = params.get('layout') === 'pipeline';
     // Owner is shown only when it is known to differ from the assignee's profile: with no assignee,
@@ -183,13 +189,19 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
                     {offerDispatch && !dispatchShown && (locked
                         ? <Button type="button" size="sm" disabled>{t('taskView.sendToAgent')}</Button>
                         : <ButtonLink size="sm" to={scopeLink(`/tasks?layout=pipeline&task=${task.id}`)}>{t('taskView.sendToAgent')}</ButtonLink>)}
-                    {next && !offerDispatch && (
+                    {next && !offerDispatch && !operatorKeyBlocksNext && (
                         <Button type="button" size="sm" disabled={locked || reasonDraft !== null || (Boolean(next.reasonKey) && actions.isLoading)}
                             isLoading={transition.isPending && reasonDraft === null} onClick={runNext}>
                             {t(next.labelKey)}
                         </Button>
                     )}
                 </div>
+                {next && !offerDispatch && operatorKeyBlocksNext && (
+                    <div role="status" className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-md bg-surface-muted px-3 py-2 text-sm text-content-secondary">
+                        <span>{t('taskView.takenAsPerson')}</span>
+                        <Button type="button" size="sm" variant="secondary" onClick={clearAdminApiKey}>{t('taskView.lockEditing')}</Button>
+                    </div>
+                )}
                 {locked && <p role="status" className="rounded-md bg-surface-muted px-3 py-2 text-sm text-content-secondary">{t('taskView.saveToChangeStatus')}</p>}
                 {next && reasonDraft !== null && (
                     <form className="flex flex-col gap-2 rounded-md border border-border px-3 py-3"

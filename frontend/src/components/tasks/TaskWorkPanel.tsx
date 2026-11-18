@@ -17,6 +17,7 @@ import { TaskReviewer } from './TaskReviewer';
 import { useTaskReviewer } from './useTaskReviewer';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
+import { useAdminAccess } from '../../hooks/useAdminAccess';
 import { Select } from '../../components/common/Select';
 
 const DRAFT_TTL_MS = 86400000;
@@ -176,10 +177,12 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
     };
     const run = (operation: 'progress' | 'command' | 'accept' | 'reject') => { onPending(true); command.mutate(operation); };
     const pending = command.isPending;
+    const { actingAsOperator } = useAdminAccess();
     const canReview = actions.data?.actions.find(item => item.action === 'review')?.allowed;
     const canAccept = actions.data?.actions.find(item => item.action === 'accept_review')?.allowed;
     const manualActions = ['start_manual', 'resolve_manual', 'block', 'unblock', 'cancel', 'reopen', 'commit', 'uncommit']
-        .filter(item => !(offerDispatch && item === 'start_manual'));
+        .filter(item => !(offerDispatch && item === 'start_manual'))
+        .filter(item => !(actingAsOperator && (item === 'start_manual' || item === 'resolve_manual')));
     const available = actions.data?.actions.filter(item => item.allowed && manualActions.includes(item.action)) ?? [];
     return <section className="space-y-4 border-t border-border pt-4" aria-labelledby={`${id}-heading`}>
         <h3 id={`${id}-heading`} className="text-base font-semibold text-content-primary">{t('domain.workAndReview')}</h3>
