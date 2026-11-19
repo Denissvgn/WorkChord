@@ -18,6 +18,8 @@ class CommandState:
     snapshots: set[int | tuple[str, int]] = field(default_factory=set)
     tasks: dict[int, int] = field(default_factory=dict)
     backlog_projects: set[int] = field(default_factory=set)
+    # One authorized flush per (dispatching PM, queue owner, resulting revision).
+    dispatch_queue_revisions: set[tuple[int, int, int]] = field(default_factory=set)
     failed: bool = False
     planning_revision: int | None = None
 

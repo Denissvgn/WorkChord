@@ -13,11 +13,12 @@ import math
 import secrets
 from typing import Any, Sequence
 
-from sqlalchemy import func, select, text
+from sqlalchemy import func, select, text, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.authority import require_project
 from app.config import get_settings
 from app.models.agent import (
     AgentActor,
@@ -274,10 +275,7 @@ class AgentRoutingService:
 
     async def _lock_task(self, task_id: int) -> Task | None:
         if self.db.get_bind().dialect.name == "sqlite":
-            await self.db.execute(
-                text("UPDATE tasks SET id = id WHERE id = :task_id"),
-                {"task_id": task_id},
-            )
+            await self.lock_selection_inputs(task_id)
         result = await self.db.execute(
             select(Task.id).where(Task.id == task_id).with_for_update()
         )
@@ -297,12 +295,20 @@ class AgentRoutingService:
         dialect = self.db.get_bind().dialect.name
         if dialect == "sqlite":
             await self.db.execute(
-                text("UPDATE tasks SET id = id WHERE id = :task_id"),
-                {"task_id": task_id},
+                update(Task).where(Task.id == task_id)
+                .values(id=Task.id, updated_at=Task.updated_at)
+                .execution_options(synchronize_session=False)
             )
             return
         if dialect == "postgresql":
-            await self.db.execute(
+            task_scope = (await self.db.execute(select(Task.project_id).where(Task.id == task_id))).one_or_none()
+            if task_scope is None:
+                return
+            require_project(self.db, task_scope.project_id, "edit")
+            # Only the fixed lock statement uses the connection. All routing reads
+            # and mutations still pass through the principal-bound ORM session.
+            connection = await self.db.connection()
+            await connection.execute(
                 text(
                     "LOCK TABLE "
                     "calendars, iterations, team_member_profiles, "
