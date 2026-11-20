@@ -397,6 +397,11 @@ def authorize_domain_writes(session, _flush_context, _instances):
             rollup = obj.id in session.info.get("derived_rollups", set()) and obj.is_summary
             if history.has_changes() and obj.status in {"active", "resolved"}:
                 action = "review" if obj.id in session.info.get("review_rework_tasks", set()) and obj.status == "active" else "execute"
+                command = session.info.get("command")
+                if (protocol and authority.actor_role == "pm" and "recovery:write" in authority.scopes
+                        and obj.status == "active" and "resolved" in history.deleted and command is not None
+                        and (authority.actor_id, obj.id) in command.evidence_returns):
+                    action = "manage"
             if history.has_changes() and obj.status == "closed" and not rollup:
                 action = "review"
                 if authority.kind == "system" and obj.accepted_at is not None and (not authority.review_override or not authority.reason):

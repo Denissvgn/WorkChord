@@ -43,22 +43,6 @@ from app.services.agent_service import AgentService, actor_has_scope
 router = APIRouter()
 
 
-@router.post("/agent/model-catalog/execution-provenance/{run_id}/reconcile")
-async def reconcile_run_provenance(
-    run_id: int,
-    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
-    apply: bool = False,
-    archived_acknowledgement: AgentTeamRuntimeAcknowledgement | None = None,
-):
-    """Inspect historical server receipts or apply their verified facts as a workspace operator."""
-    from app.services.execution_reconciliation import reconcile_execution
-    try:
-        archived = archived_acknowledgement.model_dump(mode="json", exclude={"expected_previous_acknowledgement_digest"}) if archived_acknowledgement else None
-        return await reconcile_execution(db, run_id, apply=apply, archived_ack=archived)
-    except ValueError as exc:
-        raise HTTPException(status_code=422, detail=str(exc)) from exc
-
-
 async def get_agent_model_catalog_service(
     db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ) -> AgentModelCatalogService:
@@ -83,6 +67,30 @@ async def get_model_catalog_principal(
     if not agent_api_key and admin_api_key_is_valid(admin_api_key):
         return _admin_header_actor()
     return await get_agent_actor(service, agent_api_key)
+
+
+@router.post("/agent/model-catalog/execution-provenance/{run_id}/reconcile")
+async def reconcile_run_provenance(
+    run_id: int,
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+    apply: bool = False,
+    expected_evidence_digest: Annotated[str | None, Query(pattern="^[a-f0-9]{64}$")] = None,
+    archived_acknowledgement: AgentTeamRuntimeAcknowledgement | None = None,
+    idempotency_key: Annotated[str | None, Header(alias="Idempotency-Key")] = None,
+    rationale: Annotated[str | None, Header(alias="X-Agent-Rationale")] = None,
+    correlation_id: Annotated[str | None, Header(alias="X-Correlation-ID")] = None,
+):
+    """Preview historical evidence or atomically apply that preview as a workspace operator."""
+    from app.services.execution_reconciliation import reconcile_execution_request
+    try:
+        return await reconcile_execution_request(db, actor, run_id, apply=apply,
+            expected_evidence_digest=expected_evidence_digest, archived_acknowledgement=archived_acknowledgement,
+            idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except (AgentModelConflictError, LookupError) as exc:
+        _handle_model_error(exc)
 
 
 def _handle_model_error(exc: Exception) -> NoReturn:

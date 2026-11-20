@@ -1,6 +1,6 @@
 {
   "api_contract": "workchord-agent/v1",
-  "catalog_version": "1.19.0",
+  "catalog_version": "1.20.0",
   "schema_version": "workchord-agent-skills/v1",
   "skills": [
     {
@@ -8,23 +8,23 @@
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-pm-1.17.0.tar.gz",
-          "sha256": "899b1fb3586f8c6c6a8be7e67b4a38d81c0540d572cc97240485df13546b084c",
+          "path": "workchord-pm-1.18.0.tar.gz",
+          "sha256": "bc0bff6344693f543b8a88d7d7fb51726478fbd462af3a17830e4c465e4609ea",
           "size": 194593
         },
         {
           "format": "zip",
-          "path": "workchord-pm-1.17.0.zip",
-          "sha256": "2f679ce9d5f9a50d95a421f482a0762ef1d93775feff666b139e246057a38b28",
-          "size": 184297
+          "path": "workchord-pm-1.18.0.zip",
+          "sha256": "f02523eb5bf68f79866de941299768e4574d1f8cc3cb67c5b338ac48c1ec3735",
+          "size": 185500
         }
       ],
       "entrypoint": "SKILL.md",
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "282e3e569648f82d93d3433a61d382bf979bb5dbd347032ecaa4caca912df335",
-          "size": 18686
+          "sha256": "a9574244edb5c9ede260169afc18b8eb89b410552a7da9fdf2c27705828f0d95",
+          "size": 18711
         },
         {
           "path": "agents/openai.yaml",
@@ -33,8 +33,8 @@
         },
         {
           "path": "references/api-and-mcp.md",
-          "sha256": "bd5ab7d4684de855a834dfeffa57603612657b67c89935ece28367602963aaff",
-          "size": 44155
+          "sha256": "059df25fa1786095f13594bfca09b7e4f093e0ed77f7cc58a8de5bfb1089c2fd",
+          "size": 44260
         },
         {
           "path": "references/assignment-scheduling-and-delivery-control.md",
@@ -63,8 +63,8 @@
         },
         {
           "path": "references/verification-rework-and-recovery.md",
-          "sha256": "37d8c27d6d041a7bf06538c108d15d4e61877ce405f91abbcae3a5df67d57ec4",
-          "size": 20968
+          "sha256": "4f993d2a3968eab83d0b631d23de339da3940b903ad3b7ce4452d654bd74c9c6",
+          "size": 22041
         },
         {
           "path": "references/workflow-and-names.md",
@@ -94,6 +94,7 @@
         "fenced-claims",
         "my-work-v1",
         "pm-control-v1",
+        "review-provenance-v1",
         "snapshot-pagination-v1",
         "typed-rework-recovery",
         "verification-v1",
@@ -113,30 +114,30 @@
       ],
       "role": "pm",
       "server_compatibility": ">=1.8.0,<2.0.0",
-      "version": "1.17.0"
+      "version": "1.18.0"
     },
     {
       "api_contract": "workchord-agent/v1",
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-reviewer-1.5.0.tar.gz",
-          "sha256": "ec0a4a58ac3a3f14368448c9e89676a04251806daffde247ff2bd00f7a1ef564",
+          "path": "workchord-reviewer-1.6.0.tar.gz",
+          "sha256": "1a4e1b41cf67f37115c83066dfd3d55419a717431e99d1d1b0d0bde7a57ecce7",
           "size": 51223
         },
         {
           "format": "zip",
-          "path": "workchord-reviewer-1.5.0.zip",
-          "sha256": "2348c0b66a8db597bce94dc19df9d88fe1148dadd3cc400ae7069ad3ea30ea58",
-          "size": 46161
+          "path": "workchord-reviewer-1.6.0.zip",
+          "sha256": "bcc6b91cf075e2fe25fa295a158c965830771ab23d25a08f1fc773349daccfa6",
+          "size": 46998
         }
       ],
       "entrypoint": "SKILL.md",
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "039e292504a4ba935a6e9989b4dd5df42011b740b0a7d66efe5bcaaa15cb5cc5",
-          "size": 5945
+          "sha256": "5fc1d466c4d85d1a2edc8d724a1b5b6c4a229b360f480a524c576e530a33b05f",
+          "size": 5970
         },
         {
           "path": "agents/openai.yaml",
@@ -145,13 +146,13 @@
         },
         {
           "path": "references/api-and-mcp.md",
-          "sha256": "7a8641e9c934c2ac38971aa5d5ca4e6100a2791d552511fd5a82d3f57688bd53",
-          "size": 18651
+          "sha256": "18dd0c3cd513a90d5629e0aae57d39a01a1626a6756a846f62ae10ebf6a36dfc",
+          "size": 18756
         },
         {
           "path": "references/review-packet-and-verdict.md",
-          "sha256": "b6781221c7c463f5f57f3a5c3fd880f36d90e0cb29ee9fb8690cea3118101c52",
-          "size": 8846
+          "sha256": "bbcaca788b6dd3793d78a5fcca4c934635014defb14c8dc4d6d58590e5d0aa63",
+          "size": 9553
         },
         {
           "path": "references/workflow-and-names.md",
@@ -171,6 +172,7 @@
         "agent-team-master-v1",
         "canonical-task-brief-v1",
         "complete-task-context",
+        "review-provenance-v1",
         "snapshot-pagination-v1",
         "typed-rework-recovery",
         "verification-v1"
@@ -182,30 +184,30 @@
       ],
       "role": "verifier",
       "server_compatibility": ">=1.8.0,<2.0.0",
-      "version": "1.5.0"
+      "version": "1.6.0"
     },
     {
       "api_contract": "workchord-agent/v1",
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-worker-1.17.0.tar.gz",
-          "sha256": "735c82b1d0b5700af45720c7718cc3962ec81043bc339126b4cdbb80c1763173",
+          "path": "workchord-worker-1.18.0.tar.gz",
+          "sha256": "a1a819985f40c3abe6b01438650e4c28067558a986327b9ecaf382c27a45ceb6",
           "size": 102428
         },
         {
           "format": "zip",
-          "path": "workchord-worker-1.17.0.zip",
-          "sha256": "550fba5857c030afb474dd08826022699f0b6dd3bea97f32c8183e917fd0fd41",
-          "size": 91325
+          "path": "workchord-worker-1.18.0.zip",
+          "sha256": "59fdaf226357db28058f32a7692b9329aa5a9692b2f0c922d1de32d3358af946",
+          "size": 92456
         }
       ],
       "entrypoint": "SKILL.md",
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "254ab00c3e85dc6f24011751019611db40837f24afeffcbde99fd9ea5d6958a1",
-          "size": 11230
+          "sha256": "c3f8ca90e0cb4f7c5ecacac091d0042fd76e8ff2b946040472077272bfdf9749",
+          "size": 11255
         },
         {
           "path": "agents/openai.yaml",
@@ -214,13 +216,13 @@
         },
         {
           "path": "references/api-and-mcp.md",
-          "sha256": "de0a27b98bc5a5f106cd6d091800488fa7ac6102e28e38de18e89186635f2874",
-          "size": 24977
+          "sha256": "b7386c20ca1950940a8982f872cb674089521ebf6fa47c07052db741bac8aa87",
+          "size": 25082
         },
         {
           "path": "references/claim-run-and-task-state.md",
-          "sha256": "9853c761ac37ae777c728e0d24015869b2c5b7d8953feb9dc96481519d860c2b",
-          "size": 12484
+          "sha256": "08e76710bfc352de35e3db3b814763d86a3d7679bc60c863ba03aef45bd52b1b",
+          "size": 13485
         },
         {
           "path": "references/events-errors-and-recovery.md",
@@ -261,6 +263,7 @@
         "complete-task-context",
         "fenced-claims",
         "my-work-v1",
+        "review-provenance-v1",
         "snapshot-pagination-v1",
         "typed-rework-recovery",
         "work-etag-v1"
@@ -274,8 +277,8 @@
       ],
       "role": "worker",
       "server_compatibility": ">=1.8.0,<2.0.0",
-      "version": "1.17.0"
+      "version": "1.18.0"
     }
   ],
-  "source_revision": "sha256:f5f9573bc994697dbc5ca0c4ffa1f6f74540a47dde6a916fc97a24b819d9309a"
+  "source_revision": "sha256:d53eda199ceb3cd59be622bccfb0327ba44f6d92cf6646a75ea347aab1f3f6d7"
 }

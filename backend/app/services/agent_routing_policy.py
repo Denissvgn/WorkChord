@@ -240,6 +240,10 @@ class RoutingBlockerCode(StrEnum):
     VERIFICATION_PUBLISHER_UNVERIFIABLE = "verification_publisher_unverifiable"
     VERIFICATION_PUBLISHER_NOT_INDEPENDENT = "verification_publisher_not_independent"
     VERIFICATION_CANDIDATE_UNVERIFIABLE = "verification_candidate_unverifiable"
+    VERIFICATION_CANDIDATE_STALE = "verification_candidate_stale"
+    VERIFICATION_CONTRIBUTORS_UNVERIFIABLE = "verification_contributors_unverifiable"
+    EXECUTION_PUBLISHER_UNVERIFIABLE = "execution_publisher_unverifiable"
+    EXECUTION_OUTPUT_CONFLICT = "execution_output_conflict"
     VERIFICATION_PROFILE_NOT_INDEPENDENT = "verification_profile_not_independent"
     VERIFICATION_INDEPENDENCE_UNVERIFIABLE = (
         "verification_independence_unverifiable"

@@ -529,9 +529,11 @@ class ProjectService:
             return None
 
         update_data = data.model_dump(exclude_unset=True, exclude={"expected_revisions"})
-        if "require_different_review_publisher" in update_data:
+        policy = update_data.pop("require_different_review_publisher", None)
+        if policy is not None and policy != project.require_different_review_publisher:
             from app.authority import require_operator
             require_operator(self.db)
+            update_data["require_different_review_publisher"] = policy
         await self._normalize_owner_update_data(update_data)
         if "initiative_id" in update_data:
             await self._require_initiative_exists(update_data["initiative_id"])

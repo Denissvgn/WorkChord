@@ -24,6 +24,7 @@ class CommandState:
     worker_blockers: set[tuple[int, int, int, str]] = field(default_factory=set)
     failed: bool = False
     verified_publishers: set[tuple[int, int, int, int]] = field(default_factory=set)
+    evidence_returns: set[tuple[int, int]] = field(default_factory=set)
     planning_revision: int | None = None
 
 

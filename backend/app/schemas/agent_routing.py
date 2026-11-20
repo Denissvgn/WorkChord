@@ -1129,6 +1129,7 @@ class AgentRoutingExclusion(RoutingContractModel):
 class AgentRoutingPreviewResponse(RoutingContractModel):
     """Expiring non-dispatch result over a digest-bound routing input snapshot."""
 
+    acceptance_blocker_codes: list[RoutingBlockerCode] = Field(default_factory=list)
     runtime_availability: Literal["unknown"] = "unknown"
     eligibility_basis: Literal["task_policy_and_configuration"] = "task_policy_and_configuration"
     model_attestation: Literal["not_independently_attested"] = "not_independently_attested"

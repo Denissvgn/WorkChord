@@ -558,6 +558,19 @@ def create_mcp_server() -> FastMCP:
         )
 
     @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_reconcile_run_provenance(
+        run_id: int, apply: bool = False, expected_evidence_digest: str | None = None,
+        archived_acknowledgement: dict[str, Any] | None = None, idempotency_key: str | None = None,
+        rationale: str | None = None, correlation_id: str | None = None,
+    ) -> Any:
+        """Inspect or apply bounded run evidence as an authenticated workspace operator."""
+        from app.services.execution_reconciliation import reconcile_execution_request
+        return await _tool_call("admin:write", lambda db, actor: reconcile_execution_request(
+            db, actor, run_id, apply=apply, expected_evidence_digest=expected_evidence_digest,
+            archived_acknowledgement=archived_acknowledgement, idempotency_key=idempotency_key,
+            rationale=rationale, correlation_id=correlation_id), preview=not apply)
+
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_model_catalog_entry(
         payload: dict[str, Any],
         idempotency_key: str,

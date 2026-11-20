@@ -44,11 +44,12 @@ RELEASE_BASELINE_FILENAME = "release-baseline.json"
 CATALOG_SCHEMA = "workchord-agent-skills/v1"
 RELEASE_SCHEMA = "workchord-agent-skills-release/v1"
 RELEASE_BASELINE_SCHEMA = "workchord-agent-skills-baseline/v2"
-CATALOG_VERSION = "1.19.0"
+CATALOG_VERSION = "1.20.0"
 API_CONTRACT = "workchord-agent/v1"
 SERVER_COMPATIBILITY = ">=1.8.0,<2.0.0"
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
 AGENT_TEAM_MASTER_FEATURE = "agent-team-master-v1"
+REVIEW_PROVENANCE_FEATURE = "review-provenance-v1"
 ARTIFACT_LICENSE = "MIT"
 NORMALIZED_FILE_MODE = 0o644
 
@@ -518,7 +519,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
                 "claim_generation",
                 "expected_task_version",
             ),
-            body_optional=("lease_seconds",),
+            body_optional=("lease_seconds", "interruption_checkpoint"),
             header_required=("Idempotency-Key",),
             tool_required=("payload", "idempotency_key"),
         ),
@@ -619,6 +620,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             body_optional=(
                 "criterion_progress",
                 "observed_model",
+                "base_commit_url",
                 "artifact_links",
                 "commit_url",
                 "pr_url",
@@ -645,7 +647,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
                 "status",
                 "evidence",
             ),
-            body_optional=("summary", "error", "observed_model"),
+            body_optional=("summary", "error", "observed_model", "output_state", "commit_urls"),
             header_required=("Idempotency-Key",),
             tool_required=("payload", "idempotency_key"),
         ),
@@ -712,7 +714,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
                 "expected_claim_generation",
                 "reason",
             ),
-            body_optional=("queue_rank",),
+            body_optional=("queue_rank", "return_for_evidence"),
             path_required=("task_id",),
             header_required=(
                 "Idempotency-Key",
@@ -779,10 +781,11 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
 ROLE_METADATA: dict[str, dict[str, Any]] = {
     "workchord-pm": {
         "role": "pm",
-        "version": "1.17.0",
+        "version": "1.18.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
+            REVIEW_PROVENANCE_FEATURE,
             "actor-roster-v1",
             "actor-task-assignments",
             "atomic-begin-submit",
@@ -819,10 +822,11 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-worker": {
         "role": "worker",
-        "version": "1.17.0",
+        "version": "1.18.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
+            REVIEW_PROVENANCE_FEATURE,
             "actor-task-assignments",
             "agent-discovery-triage-v1",
             "atomic-begin-submit",
@@ -846,10 +850,11 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-reviewer": {
         "role": "verifier",
-        "version": "1.5.0",
+        "version": "1.6.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
+            REVIEW_PROVENANCE_FEATURE,
             "actor-task-assignments",
             "canonical-task-brief-v1",
             "complete-task-context",

@@ -132,7 +132,7 @@ class ProjectCreate(BaseModel):
 class ProjectUpdate(PlanningInputRevisions):
     """Schema for updating a project."""
     timezone: WorkingZone | None = None
-    require_different_review_publisher: bool = False
+    require_different_review_publisher: bool | None = None
 
     name: Optional[str] = Field(default=None, min_length=1, max_length=255)
     description: Optional[str] = None

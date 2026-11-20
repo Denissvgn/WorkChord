@@ -311,6 +311,10 @@ class TaskDomainService:
         for assignment in assignments:
             assignment.state, assignment.reason = "cancelled", data.reason
         for run in runs:
+            from app.services.review_provenance import different_publisher_required, mark_server_interruption
+            if ((run.execution_provenance or {}).get("different_publisher_required") or
+                    await different_publisher_required(self.db, task.project_id)):
+                await mark_server_interruption(self.db, run)
             run.status, run.ended_at, run.error = "cancelled", utc_now(), data.reason
         task.claimed_by = task.claim_id = task.claim_expires_at = None
         task.claim_generation += 1

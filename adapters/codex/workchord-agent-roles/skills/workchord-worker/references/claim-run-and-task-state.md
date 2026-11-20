@@ -18,6 +18,23 @@ through the interrupted-work command with the final observed model and
 evidence of the work retained. This preserves both contributing publishers
 for the next review.
 
+With `review-provenance-v1`, strict projects require `observed_model`
+on failures as well as submissions. If the execution has stopped, you can
+seal its final observation on a fenced renewal using
+`interruption_checkpoint`. Supply the model actually observed,
+`output_state` of `no_output` or `retained`, and any retained
+`commit_urls`. Keep the receipt. Further submissions on that sealed fence
+are refused. PM recovery uses the original authenticated receipt. When the
+process stops before recording one, any retained contribution remains
+unknown. Report `no_output` only after verifying that this execution
+produced no candidate artifacts.
+
+For a PR, submit every commit your run contributed in `commit_urls` and the
+immutable head in `commit_url`. For a commit-only delivery, also submit the
+immutable `base_commit_url` delimiting your reviewed range. For a document
+or dashboard, submit the artifact link with the version or artifact evidence
+the reviewer needs to identify what they inspected.
+
 For code, submit the immutable candidate in `commit_url` and its PR in
 `pr_url` when available. Keep evidence of retained work from earlier
 attempts. A recovered supervised assignment can return `start_assigned`

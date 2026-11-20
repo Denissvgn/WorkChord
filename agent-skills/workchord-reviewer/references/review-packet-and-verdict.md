@@ -113,6 +113,17 @@ exact candidate. A changed head needs a fresh submission and review.
 Indeterminate model identity or unbound co-author evidence keeps the verdict
 pending. Report the returned blocker to the PM.
 
+Every PR commit, or every commit after the submitted immutable base in a
+commit-only delivery, must be attributed to contributing runs. A shared Git
+account or an unbound co-author trailer cannot establish authorship.
+For a non-repository artifact, open the submitted document or dashboard and
+inspect the version identified in the worker's submission. An independent
+reviewer can request rework when the candidate has changed or the artifact
+cannot be verified. Send your observed model, the failed criterion or
+evidence, a reason and an eligible rework actor. The publisher and actor
+independence rules apply to rejections as well as acceptances. An unresolved
+publisher belongs with the PM or operator.
+
 When the review or execution assignment is model-aware, read the selected
 binding and the run's observed model and trust state:
 

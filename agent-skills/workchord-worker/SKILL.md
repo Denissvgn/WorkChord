@@ -51,6 +51,7 @@ Assigned mode (`assigned-work v1`) requires every one of these live features; th
 - `complete-task-context`
 - `fenced-claims`
 - `my-work-v1`
+- `review-provenance-v1`
 - `snapshot-pagination-v1`
 - `typed-rework-recovery`
 - `work-etag-v1`

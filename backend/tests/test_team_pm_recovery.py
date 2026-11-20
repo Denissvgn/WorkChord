@@ -38,7 +38,7 @@ async def recovery_api(transport, factory, monkeypatch):
                 if payload is not None:
                     args.update(payload=payload, idempotency_key=receipt)
                     headers["Idempotency-Key"] = receipt
-                if tool == "agent_requeue_recovery":
+                if tool in {"agent_requeue_recovery", "agent_create_assignment", "agent_submit_review_verdict"}:
                     rationale = "Resume interrupted work with the selected worker"
                     args.update(rationale=rationale, correlation_id=receipt)
                     headers.update({"X-Agent-Rationale": rationale, "X-Correlation-ID": receipt})
@@ -59,7 +59,7 @@ async def recovery_api(transport, factory, monkeypatch):
                 if error:
                     assert response.status_code == 409 and error in response.text, response.text
                     return
-                assert response.status_code == 200, response.text
+                assert response.status_code in {200, 201}, response.text
                 return response.json()
 
             yield call

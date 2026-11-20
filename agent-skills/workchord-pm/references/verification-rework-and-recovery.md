@@ -47,12 +47,29 @@ verification assignment can select a specific eligible binding with
 reviewer, submitted candidate and contributors. Use the current task version
 and the worker's own submission evidence.
 
-If a historical profile, publisher or candidate is missing, give the operator
-the affected run and task IDs. An operator can inspect the original
-receipts with `POST /api/agent/model-catalog/execution-provenance/{run_id}/reconcile`
-and apply a proven result with `?apply=true`. A report lists each missing fact
-and preserves the original run's model trust state. Keep the review pending
-when evidence is incomplete.
+When the server advertises `review-provenance-v1`, an eligible independent
+reviewer can return a defective or unavailable candidate for rework.
+`review_selection.acceptance_blockers` lists problems with accepting that
+candidate. Both formal verdicts require an independently attributable
+reviewer. If attribution itself is missing, the same-team PM can return
+released, resolved work to execution using the typed recovery command with
+`return_for_evidence: true`, the exact ownership tuple and a reason. This
+administrative action records zero verdicts. Cancel or finish any outstanding
+verification assignment separately.
+
+Give the operator the affected task and run IDs and the named missing facts.
+The operator can preview with
+`POST /api/agent/model-catalog/execution-provenance/{run_id}/reconcile`
+or `agent_reconcile_run_provenance(run_id)`. A retained acknowledgement can
+be supplied for comparison with the original server digest. An apply request
+uses `apply=true` and `expected_evidence_digest` from that preview. REST
+also requires the `Idempotency-Key`, `X-Agent-Rationale` and
+`X-Correlation-ID` headers. The MCP operator supplies `idempotency_key`,
+`rationale` and `correlation_id`. Retain the returned source receipts and
+operator event ID. A missing terminal model requires an authenticated final
+checkpoint from the same execution fence. Older records with missing model
+publisher evidence remain unresolved. Reconciliation preserves the run's
+original model trust state.
 
 For interrupted work, take the exact version, claim generation, live assignment
 IDs and running run IDs from the recovery queue. The primary controller can

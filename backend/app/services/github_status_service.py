@@ -132,21 +132,51 @@ class GitHubStatusService:
 
         return response.json()
 
-    async def verify_review_commit(self, commit):
-        payload = await self._fetch_resource(f"{self.api_url}/repos/{commit.owner}/{commit.repo}/commits/{commit.sha}")
-        if payload.get("sha") != commit.sha:
-            return "verification_candidate_unverifiable"
-        metadata = payload.get("commit", {})
-        if not metadata.get("author", {}).get("email") or any(
-                line.strip().casefold().startswith("co-authored-by:") for line in metadata.get("message", "").splitlines()):
-            return "verification_contributors_unverifiable"
+    @staticmethod
+    def _check_review_commits(commits, count, expected_sha, attributed_commits):
+        if len(commits) != count or not commits or commits[-1].get("sha") != expected_sha:
+            return "verification_candidate_stale"
+        seen = set()
+        for item in commits:
+            sha = item.get("sha")
+            if sha in seen or not attributed_commits.get(sha):
+                return "verification_contributors_unverifiable"
+            seen.add(sha)
+            message = item.get("commit", {}).get("message")
+            if not isinstance(message, str) or any(line.strip().casefold().startswith("co-authored-by:") for line in message.splitlines()):
+                return "verification_contributors_unverifiable"
         return None
 
-    async def verify_review_head(self, pr, expected_sha, attributed_commits):
+    async def verify_review_range(self, base, head, attributed_commits):
+        """Verify every commit after the submitted immutable base."""
+        endpoint = f"{self.api_url}/repos/{head.owner}/{head.repo}/compare/{base.sha}...{head.sha}"
+        commits = []
+        expected_count = None
+        for page in range(1, 4):
+            comparison = await self._fetch_resource(f"{endpoint}?per_page=100&page={page}")
+            count = comparison.get("total_commits")
+            if (comparison.get("status") != "ahead" or comparison.get("base_commit", {}).get("sha") != base.sha
+                    or comparison.get("merge_base_commit", {}).get("sha") != base.sha
+                    or type(count) is not int or not 0 < count <= 250
+                    or expected_count is not None and expected_count != count):
+                return "verification_candidate_unverifiable"
+            expected_count = count
+            batch = comparison.get("commits")
+            if not isinstance(batch, list):
+                return "verification_candidate_unverifiable"
+            commits.extend(batch)
+            if len(commits) >= count:
+                return self._check_review_commits(commits, count, head.sha, attributed_commits)
+        return "verification_candidate_unverifiable"
+
+    async def verify_review_head(self, pr, expected_sha, attributed_commits, *, expected_repository=None):
         """Observe the exact PR candidate and flag additional, unbound authors."""
         pull = await self._fetch_pull_request(pr.owner, pr.repo, pr.number)
         if pull.get("head", {}).get("sha") != expected_sha:
             return "verification_candidate_stale"
+        if expected_repository and expected_repository.casefold() != pr.repo_full_name.casefold():
+            if (pull.get("head", {}).get("repo") or {}).get("full_name", "").casefold() != expected_repository.casefold():
+                return "verification_candidate_stale"
         count = pull.get("commits")
         if type(count) is not int or not 0 < count <= 250:
             return "verification_contributors_unverifiable"
@@ -156,25 +186,9 @@ class GitHubStatusService:
             if not isinstance(batch, list):
                 return "verification_candidate_unverifiable"
             commits.extend(batch)
-        if len(commits) != count or commits[-1].get("sha") != expected_sha:
-            return "verification_candidate_stale"
-        author_commits = {}
-        for item in commits:
-            commit = item.get("commit", {})
-            author = commit.get("author", {}).get("email")
-            if not isinstance(author, str) or not author.strip():
-                return "verification_contributors_unverifiable"
-            author_commits.setdefault(author.strip().casefold(), set()).add(item.get("sha"))
-            if any(line.strip().casefold().startswith("co-authored-by:") for line in commit.get("message", "").splitlines()):
-                return "verification_contributors_unverifiable"
-        if len(author_commits) > 1:
-            attributed_actors = set()
-            for commits_by_author in author_commits.values():
-                actors = {actor for sha in commits_by_author for actor in attributed_commits.get(sha, ())}
-                if (len(actors) != 1 or actors & attributed_actors or
-                        any(sha not in attributed_commits for sha in commits_by_author)):
-                    return "verification_contributors_unverifiable"
-                attributed_actors.update(actors)
+        blocker = self._check_review_commits(commits, count, expected_sha, attributed_commits)
+        if blocker:
+            return blocker
         current = await self._fetch_pull_request(pr.owner, pr.repo, pr.number)
         return None if current.get("head", {}).get("sha") == expected_sha else "verification_candidate_stale"
 

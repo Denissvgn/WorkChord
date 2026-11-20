@@ -115,7 +115,12 @@ class TaskStatusService:
         if new_status_value in {"active", "resolved"} and not review_rework and effective_work_flags(task)["effective_is_deferred"]:
             raise PlanningConflict("task_deferred", "Remove deferral before executing work.")
         from app.authority import require_project
-        require_project(self.db, task.project_id, "review" if new_status_value == "closed" or review_rework else "execute")
+        from app.commands import current_command
+        command = current_command(self.db)
+        evidence_return = (authority is not None and command is not None and task.status == "resolved" and
+                           new_status_value == "active" and (authority.actor_id, task.id) in command.evidence_returns)
+        require_project(self.db, task.project_id, "manage" if evidence_return else
+                        "review" if new_status_value == "closed" or review_rework else "execute")
         if review_rework:
             if task.status != "resolved" or new_status_value != "active":
                 raise ValueError("Review rework requires a resolved-to-active transition")

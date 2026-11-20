@@ -1059,9 +1059,30 @@ class AgentWorkBeginResponse(BaseModel):
     queue_revision: int
 
 
+class AgentInterruptionCheckpoint(BaseModel):
+    """The worker has stopped producing output under this fence."""
+    model_config = ConfigDict(extra="forbid")
+
+    observed_model: str = Field(min_length=1, max_length=255)
+    output_state: Literal["no_output", "retained"]
+    commit_urls: list[str] = Field(default_factory=list, max_length=MAX_AGENT_ARTIFACT_LINKS)
+
+    @field_validator("commit_urls")
+    @classmethod
+    def validate_commits(cls, value):
+        return _github_link_list(value, "commit")
+
+    @model_validator(mode="after")
+    def validate_output(self):
+        if self.output_state == "no_output" and self.commit_urls:
+            raise ValueError("A no-output checkpoint cannot contain produced commits.")
+        return self
+
+
 class AgentWorkRenew(BaseModel):
     """Renew the live fence for one accepted assignment and running run."""
     model_config = ConfigDict(extra="forbid")
+    interruption_checkpoint: AgentInterruptionCheckpoint | None = None
 
 
     assignment_id: int
@@ -1079,6 +1100,12 @@ class AgentWorkSubmit(BaseModel):
     """Atomically submit an active assignment for verification."""
     criterion_progress: list[CriterionProgress] = Field(default_factory=list, max_length=100)
     observed_model: str | None = Field(default=None, min_length=1, max_length=255)
+    base_commit_url: str | None = Field(default=None, max_length=1000)
+
+    @field_validator("base_commit_url")
+    @classmethod
+    def validate_base_commit(cls, value):
+        return _github_link_or_none(value, "commit")
     model_config = ConfigDict(extra="forbid")
 
 
@@ -1138,6 +1165,13 @@ class AgentWorkTerminal(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     observed_model: str | None = Field(default=None, min_length=1, max_length=255)
+    output_state: Literal["no_output", "retained"] | None = None
+    commit_urls: list[str] = Field(default_factory=list, max_length=MAX_AGENT_ARTIFACT_LINKS)
+
+    @field_validator("commit_urls")
+    @classmethod
+    def validate_retained_commits(cls, value):
+        return _github_link_list(value, "commit")
 
     assignment_id: int
     run_id: int
@@ -1201,6 +1235,7 @@ class AgentReviewVerdictResponse(BaseModel):
 class AgentRecoveryRequeue(BaseModel):
     """PM command to replace stale execution ownership with recovery work."""
     model_config = ConfigDict(extra="forbid")
+    return_for_evidence: bool = False
 
 
     actor_id: int

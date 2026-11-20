@@ -1546,8 +1546,6 @@ class AgentRoutingService:
         contributors = history.contributors if history else []
         execution_actor_ids = [row["actor_id"] for row in contributors]
         execution_profile_ids = [row["profile_id"] for row in contributors]
-        if strict_review and not history.candidate:
-            global_blockers.append(RoutingBlockerCode.VERIFICATION_CANDIDATE_UNVERIFIABLE.value)
         eligible_rows: list[tuple[tuple[Any, ...], dict[str, Any]]] = []
         exclusion_rows: list[dict[str, Any]] = []
         examined_pairs = 0
@@ -1974,6 +1972,8 @@ class AgentRoutingService:
                 0,
             ),
             "hard_blocker_codes": hard_blocker_codes,
+            "acceptance_blocker_codes": [RoutingBlockerCode.VERIFICATION_CANDIDATE_UNVERIFIABLE.value]
+                if strict_review and not history.candidate else [],
         }
         # Cardinality limits alone are insufficient because evidence strings
         # vary in size. Trim the deterministic tail until the full packet,

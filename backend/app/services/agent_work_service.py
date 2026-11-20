@@ -351,6 +351,8 @@ class AgentWorkService:
         for field in ("review_binding_id", "observed_model", "reviewed_candidate_digest"):
             if payload.get(field) is None:
                 payload.pop(field, None)
+        if payload.get("return_for_evidence") is False:
+            payload.pop("return_for_evidence")
         return command, {
             "command": {
                 "rationale": command.rationale,
@@ -2390,9 +2392,9 @@ class AgentWorkService:
         assignment.task_version = task.version
         actor.queue_revision += 1
         observed_model = resolved_model_id if model_aware_request else data.model
-        provenance = await actor_provenance(self.db, actor, observed_model=observed_model or "",
-                                            binding_id=selected_binding.id if selected_binding else None)
         strict_review = await different_publisher_required(self.db, task.project_id)
+        provenance = await actor_provenance(self.db, actor, observed_model=observed_model or "",
+                                            binding_id=selected_binding.id if selected_binding else None, lock=strict_review)
         if strict_review and not (provenance["publisher_key"] and provenance["profile_id"]):
             raise AgentRoutingConflictError("execution_publisher_unverifiable",
                 "The authenticated worker must report a uniquely bound model with a known publisher.")
@@ -2545,6 +2547,8 @@ class AgentWorkService:
         if assignment is None or assignment.actor_id != actor.id:
             raise AgentPermissionError("Assignment does not belong to this actor")
         request_payload = data.model_dump(mode="json")
+        if data.interruption_checkpoint is None:
+            request_payload.pop("interruption_checkpoint")
         replay = await self._idempotent_replay(
             actor,
             "work.renew",
@@ -2583,6 +2587,16 @@ class AgentWorkService:
                 self.task_service._metadata_from_task(task),
             )
         self._require_current_execution_policy(task)
+        if data.interruption_checkpoint:
+            from app.services.review_provenance import record_terminal_observation
+            previous = (run.execution_provenance or {}).get("interruption_checkpoint")
+            if previous:
+                raise AgentConflictError("The worker already sealed this execution. Replay its original checkpoint.")
+            checkpoint = data.interruption_checkpoint
+            await record_terminal_observation(self.db, actor, run, checkpoint.observed_model, submitting=False,
+                output_state=checkpoint.output_state, commit_urls=checkpoint.commit_urls, checkpoint=True)
+            captured = dict(run.execution_provenance["interruption_checkpoint"], renew_key=idempotency_key)
+            run.execution_provenance = {**run.execution_provenance, "interruption_checkpoint": captured}
         await self.task_service.reserve_task_version(task, task.version)
         now = utc_now()
         task.claim_expires_at = now + timedelta(seconds=data.lease_seconds)
@@ -2680,6 +2694,13 @@ class AgentWorkService:
         request_payload = data.model_dump(mode="json")
         if data.observed_model is None:
             request_payload.pop("observed_model")
+        if request_payload.get("base_commit_url") is None:
+            request_payload.pop("base_commit_url", None)
+        if not success:
+            if data.output_state is None:
+                request_payload.pop("output_state")
+            if not data.commit_urls:
+                request_payload.pop("commit_urls")
         replay = await self._idempotent_replay(
             actor,
             operation,
@@ -2725,10 +2746,12 @@ class AgentWorkService:
             )
         if success:
             self._require_current_execution_policy(task)
-        if ((run.execution_provenance or {}).get("different_publisher_required") or
+        if ((run.execution_provenance or {}).get("interruption_checkpoint") or
+                (run.execution_provenance or {}).get("different_publisher_required") or
                 await different_publisher_required(self.db, task.project_id)):
             from app.services.review_provenance import record_terminal_observation
-            await record_terminal_observation(self.db, actor, run, data.observed_model, submitting=success)
+            await record_terminal_observation(self.db, actor, run, data.observed_model, submitting=success,
+                output_state=getattr(data, "output_state", None), commit_urls=data.commit_urls, evidence=data.evidence)
         now = utc_now()
         run.status = "succeeded" if success else data.status
         run.ended_at = now
@@ -2744,6 +2767,8 @@ class AgentWorkService:
             run.artifact_links = json.dumps(data.artifact_links, ensure_ascii=False)
             if data.commit_urls and run.execution_provenance:
                 run.execution_provenance = {**run.execution_provenance, "submitted_commit_urls": data.commit_urls}
+            if data.base_commit_url and run.execution_provenance:
+                run.execution_provenance = {**run.execution_provenance, "submitted_base_commit_url": data.base_commit_url}
             run.commit_url = data.commit_url
             run.pr_url = data.pr_url
             task, _, _ = await self.task_service.change_status(
@@ -2825,7 +2850,7 @@ class AgentWorkService:
         if hint[1] != actor.id and not actor_has_scope(actor, "admin"):
             raise AgentPermissionError("Review belongs to another actor")
         from app.services.review_provenance import observe_review_candidate
-        observed_candidate = await observe_review_candidate(self.db, data.assignment_id, actor.id)
+        observed_candidate = await observe_review_candidate(self.db, data.assignment_id, actor.id) if data.verdict == "pass" else None
         task = await self._lock_task(hint[0])
         if task is None:
             raise ValueError("Review assignment or task not found")
@@ -3520,6 +3545,21 @@ class AgentWorkService:
                 "PM must cancel or complete verification separately"
             )
         affected_owners = {item.actor_id for item in live_assignments}
+        if data.return_for_evidence:
+            if (task.status != TaskStatus.RESOLVED.value or live_assignments or stale_runs or task.claimed_by is not None
+                    or boundary is None or boundary.primary_actor_id != principal.id or principal.role != "pm"
+                    or not await different_publisher_required(self.db, task.project_id)):
+                raise AgentConflictError("A same-team PM can return released, resolved strict-project work for evidence.")
+            submitted_owners = {item.actor_id for item in task_assignments if item.purpose == "execution" and item.state == "fulfilled"}
+            submitted_run = await self.db.scalar(select(AgentRun.id).join(AgentTaskAssignment,
+                AgentTaskAssignment.id == AgentRun.assignment_id).where(
+                    AgentRun.task_id == task.id, AgentRun.status == "succeeded", AgentRun.claim_generation.is_not(None),
+                    AgentTaskAssignment.task_id == task.id, AgentTaskAssignment.actor_id == AgentRun.actor_id,
+                    AgentTaskAssignment.purpose == "execution", AgentTaskAssignment.state == "fulfilled").limit(1))
+            if not submitted_owners or submitted_run is None:
+                raise AgentConflictError("No attributable execution submission is available to return.")
+            affected_owners.update(submitted_owners)
+            affected_owners.update((await self.db.scalars(select(AgentRun.actor_id).where(AgentRun.task_id == task.id))).all())
         affected_owners.update(run.actor_id for run in stale_runs)
         if task.claimed_by is not None:
             affected_owners.add(task.claimed_by)
@@ -3561,7 +3601,7 @@ class AgentWorkService:
             and stale_runs[0].claim_generation == task.claim_generation
             and accepted_assignments[0].task_version == task.version
         )
-        if healthy_execution:
+        if healthy_execution and not (stale_runs[0].execution_provenance or {}).get("interruption_checkpoint"):
             raise AgentConflictError(
                 "Recovery cannot cancel a healthy accepted assignment, claim, and run"
             )
@@ -3580,6 +3620,7 @@ class AgentWorkService:
             and not stale_assignments
             and not stale_runs
             and not live_claim
+            and not data.return_for_evidence
         ):
             raise AgentConflictError(
                 "Resolved task has no inconsistent execution ownership to recover"
@@ -3595,16 +3636,25 @@ class AgentWorkService:
                 self._advance_dispatch_queue(principal, owner, boundary, scope="recovery:write")
 
         for run in stale_runs:
+            from app.services.review_provenance import mark_server_interruption
+            if ((run.execution_provenance or {}).get("different_publisher_required") or
+                    await different_publisher_required(self.db, task.project_id)):
+                await mark_server_interruption(self.db, run)
             run.status = "canceled"
             run.ended_at = now
             run.heartbeat_at = now
             run.error = f"Reconciled by PM recovery: {data.reason}"
 
         if task.status == TaskStatus.RESOLVED.value:
+            if data.return_for_evidence:
+                command_state = current_command(self.db)
+                assert command_state is not None
+                command_state.evidence_returns.add((principal.id, task.id))
             task, _, _ = await self.task_service.change_status(
                 task.id,
                 TaskStatus.ACTIVE,
-                reason=f"PM recovery reopened inconsistent resolved work: {data.reason}",
+                reason=f"PM returned the work for evidence: {data.reason}" if data.return_for_evidence else
+                       f"PM recovery reopened inconsistent resolved work: {data.reason}",
                 actor_type="agent",
                 actor_id=principal.id,
                 correlation_id=command.correlation_id,
@@ -3697,6 +3747,7 @@ class AgentWorkService:
                 "task_version": task.version,
                 "reason": data.reason,
                 "routing_selection_pending": not supervised,
+                "returned_for_evidence": data.return_for_evidence,
                 "routing_lineage_digest": hashlib.sha256(
                     canonical_routing_json_bytes(recovery_snapshot)
                 ).hexdigest(),
