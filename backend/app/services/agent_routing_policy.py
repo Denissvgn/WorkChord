@@ -1204,6 +1204,7 @@ def evaluate_assignment_compatibility(
     reviewer_profile_id: int | None = None,
     execution_actor_ids: Iterable[int | None] = (),
     execution_profile_ids: Iterable[int | None] = (),
+    manual_executor_profile_ids: Iterable[int] | None = None,
     review_mode: str = ReviewMode.NONE.value,
     required_specialist_skill_levels: Mapping[str, int] | None = None,
 ) -> RoutingEligibilityDecision:
@@ -1273,8 +1274,9 @@ def evaluate_assignment_compatibility(
             for value in implementation_profile_values
             if value is not None
         }
+        known_implementation_profiles.update(manual_executor_profile_ids or ())
         if (
-            not implementation_actor_values
+            (not implementation_actor_values and manual_executor_profile_ids is None)
             or len(implementation_actor_values)
             != len(implementation_profile_values)
             or any(value is None for value in implementation_actor_values)

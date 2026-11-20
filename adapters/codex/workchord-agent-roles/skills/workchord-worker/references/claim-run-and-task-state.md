@@ -35,6 +35,14 @@ immutable `base_commit_url` delimiting your reviewed range. For a document
 or dashboard, submit the artifact link with the version or artifact evidence
 the reviewer needs to identify what they inspected.
 
+On strict projects, any `Co-authored-by:` trailer on a submitted commit
+holds formal acceptance. The server records the offending SHA. Preserve
+legitimate credit and the original history when reporting that hold.
+Keep the contributor evidence for an ownership-preserving review, or agree
+on a genuinely independent implementation with a new candidate. A shared
+Git account or editing an existing credit cannot establish who produced the
+candidate. Other projects retain their configured review policy.
+
 For code, submit the immutable candidate in `commit_url` and its PR in
 `pr_url` when available. Keep evidence of retained work from earlier
 attempts. A recovered supervised assignment can return `start_assigned`

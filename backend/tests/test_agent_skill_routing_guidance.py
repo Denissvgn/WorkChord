@@ -344,10 +344,10 @@ def test_role_versions_are_new_frozen_identities() -> None:
     }
     catalogs = {catalog["version"] for catalog in baseline["catalogs"]}
 
-    assert build_agent_skills.CATALOG_VERSION == "1.20.0"
-    assert build_agent_skills.ROLE_METADATA["workchord-pm"]["version"] == "1.18.0"
-    assert build_agent_skills.ROLE_METADATA["workchord-worker"]["version"] == "1.18.0"
-    assert build_agent_skills.ROLE_METADATA["workchord-reviewer"]["version"] == "1.6.0"
+    assert build_agent_skills.CATALOG_VERSION == "1.21.0"
+    assert build_agent_skills.ROLE_METADATA["workchord-pm"]["version"] == "1.19.0"
+    assert build_agent_skills.ROLE_METADATA["workchord-worker"]["version"] == "1.19.0"
+    assert build_agent_skills.ROLE_METADATA["workchord-reviewer"]["version"] == "1.7.0"
     assert ("workchord-pm", "1.3.0") in releases
     assert ("workchord-worker", "1.2.0") in releases
     assert "1.3.0" in catalogs
@@ -416,6 +416,10 @@ def test_role_versions_are_new_frozen_identities() -> None:
     assert ("workchord-worker", "1.18.0") in releases
     assert ("workchord-reviewer", "1.6.0") in releases
     assert "1.20.0" in catalogs
+    assert ("workchord-pm", "1.19.0") in releases
+    assert ("workchord-worker", "1.19.0") in releases
+    assert ("workchord-reviewer", "1.7.0") in releases
+    assert "1.21.0" in catalogs
     assert all("review-provenance-v1" in role["required_features"] for role in build_agent_skills.ROLE_METADATA.values())
     assert "review-provenance-v1" in agent_contract_features(include_skill_bundles=True)
 

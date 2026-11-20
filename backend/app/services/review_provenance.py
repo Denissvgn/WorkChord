@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from dataclasses import dataclass
+from urllib.parse import urlsplit
 import httpx
 
 from sqlalchemy import select
@@ -12,11 +14,14 @@ from sqlalchemy.orm import selectinload
 
 from app.models.agent import AgentIdempotencyRecord, AgentModelBinding, AgentModelCatalogEntry, AgentRun, AgentRunEvent, TaskEvent
 from app.models.external_link import ExternalLink
+from app.models.identity import Principal
 from app.models.project import Project
+from app.models.task_brief import TaskProgressRecord
 from app.models.team_member import TeamMemberProfile
 from app.query_limits import CollectionLimitExceededError, MAX_BOUNDED_LIST_ITEMS
 from app.services.agent_routing_policy import ROUTING_DECISION_AUTHORITY, canonical_routing_json_bytes
 from app.utils.github_links import GitHubLinkError, parse_github_url
+from app.utils.url_policy import normalize_stored_display_url
 
 
 def _conflict(code, message, **details):
@@ -208,13 +213,95 @@ async def mark_server_interruption(db, run):
 class ReviewHistory:
     contributors: list[dict]
     candidate: dict | None
+    manual_execution: dict | None = None
+    missing_manual_fact: str | None = None
 
     def publisher_blockers(self, publisher):
-        if not self.contributors or not publisher or any(not row.get("publisher_key") for row in self.contributors):
+        if (not self.contributors and self.manual_execution is None or not publisher
+                or any(not row.get("publisher_key") for row in self.contributors)):
             return ["verification_publisher_unverifiable"]
         if any(row["publisher_key"] == publisher for row in self.contributors):
             return ["verification_publisher_not_independent"]
         return []
+
+
+async def _manual_history(db, task):
+    """Verify an actual human executor and immutable evidence, independently of the planned owner."""
+    principal_id = task.executed_by_principal_id
+    if task.status != "resolved" or task.execution_mode != "manual" or not principal_id:
+        return ReviewHistory([], None, missing_manual_fact="authenticated_manual_execution")
+    human = await db.scalar(select(Principal.id).where(Principal.id == principal_id, Principal.kind == "human",
+                                                       Principal.agent_actor_id.is_(None)))
+    if human is None:
+        return ReviewHistory([], None, missing_manual_fact="authenticated_human_executor")
+    prior_agent = await db.scalar(select(TaskEvent.id).where(TaskEvent.task_id == task.id,
+        TaskEvent.event_type.in_(("agent.work_began", "agent.work_renewed", "agent.work_submitted",
+                                  "agent.work_recovery_required", "agent.run_created", "agent.run_finished"))).limit(1))
+    if prior_agent is not None:
+        return ReviewHistory([], None, missing_manual_fact="prior_agent_execution")
+    events = {}
+    for kind in ("task_start_manual", "task_resolve_manual", "status_changed"):
+        event = await db.scalar(select(TaskEvent).where(TaskEvent.task_id == task.id, TaskEvent.event_type == kind)
+                                .order_by(TaskEvent.id.desc()).limit(1))
+        if event is None or event.actor_type != "user" or event.actor_id is not None:
+            return ReviewHistory([], None, missing_manual_fact=kind)
+        try:
+            payload = json.loads(event.payload or "{}")
+        except (TypeError, ValueError):
+            return ReviewHistory([], None, missing_manual_fact=kind)
+        if (not isinstance(payload, dict) or payload.get("principal_id") != principal_id
+                or type(payload.get("version")) is not int):
+            return ReviewHistory([], None, missing_manual_fact=kind)
+        events[kind] = (event.id, payload)
+    start_id, start = events["task_start_manual"]
+    resolve_id, resolved = events["task_resolve_manual"]
+    status_id, status = events["status_changed"]
+    if (not start_id < status_id < resolve_id or status.get("from_status") != "active"
+            or status.get("to_status") != "resolved" or status["version"] != resolved["version"]
+            or not start["version"] < resolved["version"] <= task.version):
+        return ReviewHistory([], None, missing_manual_fact="authenticated_manual_resolution")
+    record = await db.scalar(select(TaskProgressRecord).where(TaskProgressRecord.task_id == task.id,
+        TaskProgressRecord.original_task_id == task.id, TaskProgressRecord.artifact_revision == task.artifact_revision))
+    if (record is None or record.principal_id != principal_id or record.brief_revision != task.brief_revision
+            or not start["version"] < record.task_version <= resolved["version"]
+            or not isinstance(record.payload, dict) or record.payload != task.progress
+            or not record.payload.get("artifacts")):
+        return ReviewHistory([], None, missing_manual_fact="current_human_artifact")
+    artifacts = record.payload["artifacts"]
+    if not isinstance(artifacts, list) or len(artifacts) > 50 or not all(isinstance(url, str) and url.strip() for url in artifacts):
+        return ReviewHistory([], None, missing_manual_fact="current_human_artifact")
+    commits, comparisons = [], []
+    for url in artifacts:
+        try:
+            normalize_stored_display_url(url)
+            parsed = urlsplit(url)
+            hostname = parsed.hostname
+        except ValueError:
+            return ReviewHistory([], None, missing_manual_fact="current_human_artifact")
+        if hostname in {"github.com", "www.github.com"} and "/compare/" in parsed.path:
+            comparisons.append(parsed)
+        try:
+            link = parse_github_url(url)
+        except GitHubLinkError:
+            continue
+        if link.github_type == "commit":
+            commits.append(link.url)
+    profile_ids = sorted({entry["executor_profile_id"] for entry in (start, resolved)
+                          if type(entry.get("executor_profile_id")) is int and entry["executor_profile_id"] > 0})
+    proof = {"principal_id": principal_id, "profile_ids": profile_ids, "start_event_id": start_id, "resolution_event_id": resolve_id,
+             "progress_record_id": record.id, "commit_urls": commits}
+    source = {"manual_progress_record_id": record.id, "submission_sha256": digest({"identity": proof, "progress": record.payload})}
+    submitted = {"artifact_links": artifacts, "commit_url": commits[0] if commits else None}
+    if comparisons:
+        match = re.fullmatch(r"/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)/compare/([0-9a-f]{40}|[0-9a-f]{64})\.\.\.([0-9a-f]{40}|[0-9a-f]{64})/?", comparisons[0].path)
+        if (len(comparisons) != 1 or not match or comparisons[0].scheme != "https"
+                or comparisons[0].query or comparisons[0].fragment):
+            return ReviewHistory([], None, manual_execution=proof)
+        prefix = f"https://github.com/{match[1]}/{match[2]}/commit/"
+        if prefix + match[4] not in commits:
+            return ReviewHistory([], None, manual_execution=proof)
+        submitted.update(commit_url=prefix + match[4], execution_provenance={"submitted_base_commit_url": prefix + match[3]})
+    return ReviewHistory([], await _submission_candidate(db, task, submitted, source), manual_execution=proof)
 
 
 async def review_history(db, task, assignments, *, strict):
@@ -224,6 +311,8 @@ async def review_history(db, task, assignments, *, strict):
     runs = (await db.scalars(query)).all()
     if len(runs) > MAX_BOUNDED_LIST_ITEMS:
         raise CollectionLimitExceededError("task execution provenance", MAX_BOUNDED_LIST_ITEMS)
+    if strict and not runs and not executions:
+        return await _manual_history(db, task)
     contributors = []
     represented = set()
     for run in runs:
@@ -288,7 +377,15 @@ async def review_history(db, task, assignments, *, strict):
                 or response["task"].get("artifact_revision", 0) != task.artifact_revision
                 or response["task"].get("brief_revision", 0) != task.brief_revision):
             return ReviewHistory(contributors, None)
-        submitted_run = response["run"]
+    except (KeyError, TypeError, ValueError):
+        return ReviewHistory(contributors, None)
+    candidate = await _submission_candidate(db, task, response["run"], {"run_id": latest.id, "submission_sha256": receipts[0].request_hash})
+    return ReviewHistory(contributors, candidate)
+
+
+async def _submission_candidate(db, task, submitted_run, source):
+    """Use identical repository and revision checks for authenticated worker or human artifact records."""
+    try:
         pr = parse_github_url(submitted_run["pr_url"]) if submitted_run.get("pr_url") else None
         commit = parse_github_url(submitted_run["commit_url"]) if submitted_run.get("commit_url") else None
         base_url = (submitted_run.get("execution_provenance") or {}).get("submitted_base_commit_url")
@@ -321,22 +418,22 @@ async def review_history(db, task, assignments, *, strict):
                     if link.github_type == "pull_request":
                         artifact_prs.add(link.url)
             if len(artifact_prs) > 1:
-                return ReviewHistory(contributors, None)
+                return None
             if artifact_prs:
                 pr = parse_github_url(artifact_prs.pop())
         if repository_artifact and commit is None:
-            return ReviewHistory(contributors, None)
+            return None
         if ((commit and commit.github_type != "commit") or (pr and (pr.github_type != "pull_request" or not commit))
                 or (base and (not commit or base.github_type != "commit" or base.repo_full_name.casefold() != commit.repo_full_name.casefold()))
                 or (commit and not pr and not base)):
-            return ReviewHistory(contributors, None)
+            return None
     except (KeyError, TypeError, ValueError, GitHubLinkError):
-        return ReviewHistory(contributors, None)
+        return None
     basis = {"task_id": task.id, "task_version": task.version, "brief_revision": task.brief_revision,
-             "artifact_revision": task.artifact_revision, "run_id": latest.id, "submission_sha256": receipts[0].request_hash,
+             "artifact_revision": task.artifact_revision, **source,
              "commit_url": commit.url if commit else None, "pr_url": pr.url if pr else None,
              "base_commit_url": base.url if base else None}
-    return ReviewHistory(contributors, {**basis, "digest": digest(basis)})
+    return {**basis, "digest": digest(basis)}
 
 
 async def select_reviewer(db, task, assignments, reviewer, *, binding_id=None, reviewer_profile_id=None):
@@ -349,17 +446,29 @@ async def select_reviewer(db, task, assignments, reviewer, *, binding_id=None, r
                  missing=[{"run_id": r["run_id"], "facts": r.get("missing", ["profile_id"])} for r in history.contributors if r["profile_id"] is None])
     if reviewer_profile_id is not None and receipt["profile_id"] != reviewer_profile_id:
         _conflict("reviewer_profile_mismatch", "The selected reviewer must hold the requested profile.")
+    if history.manual_execution:
+        profile = (await db.execute(select(TeamMemberProfile.profile_kind, TeamMemberProfile.automation_enabled,
+            TeamMemberProfile.assignment_modes).where(TeamMemberProfile.id == receipt["profile_id"]))).one_or_none()
+        if (profile is None or profile.profile_kind not in {"agent", "hybrid"} or not profile.automation_enabled
+                or "verification" not in (profile.assignment_modes or ()) or receipt["profile_id"] in history.manual_execution["profile_ids"]):
+            _conflict("verification_profile_not_independent", "Assign a separate automation-enabled verifier profile for the human submission.")
     if any(row["actor_id"] == reviewer.id for row in history.contributors):
         _conflict("verification_actor_not_independent", "An implementation actor cannot verify this candidate.")
     if any(row["profile_id"] == receipt["profile_id"] for row in history.contributors):
         _conflict("verification_profile_not_independent", "The review profile contributed to this task.")
     blockers = history.publisher_blockers(receipt["publisher_key"])
     if blockers:
+        if history.missing_manual_fact:
+            _conflict(blockers[0], "An authenticated human must record manual execution and its current artifact, or an agent must supply attributable execution evidence.",
+                      missing=[{"task_id": task.id, "facts": [history.missing_manual_fact]}])
         _conflict(blockers[0], "Review requires a known publisher distinct from every contributing publisher.",
                  missing=[{"run_id": r["run_id"], "facts": r.get("missing", ["publisher_key"])}
                           for r in history.contributors if not r.get("publisher_key")])
-    return {"reviewer": receipt, "candidate": history.candidate, "contributors": history.contributors,
-            "acceptance_blockers": [] if history.candidate else ["verification_candidate_unverifiable"]}
+    selection = {"reviewer": receipt, "candidate": history.candidate, "contributors": history.contributors,
+                 "acceptance_blockers": [] if history.candidate else ["verification_candidate_unverifiable"]}
+    if history.manual_execution:
+        selection["manual_execution"] = history.manual_execution
+    return selection
 
 
 async def observe_review_candidate(db, assignment_id, actor_id):
@@ -374,9 +483,16 @@ async def observe_review_candidate(db, assignment_id, actor_id):
         return None
     candidate = selection["candidate"]
     commit = parse_github_url(candidate["commit_url"])
+    failure_context = {}
     try:
         github = await GitHubStatusService.from_runtime(db)
         attributed = {}
+        human = selection.get("manual_execution")
+        if human:
+            for url in human["commit_urls"]:
+                source = parse_github_url(url)
+                if source.github_type == "commit" and source.repo_full_name.casefold() == commit.repo_full_name.casefold():
+                    attributed.setdefault(source.sha, set()).add(("human", human["principal_id"]))
         for row in selection["contributors"]:
             urls = row.get("commit_urls", ())
             for url in urls:
@@ -385,12 +501,13 @@ async def observe_review_candidate(db, assignment_id, actor_id):
                     attributed.setdefault(source.sha, set()).add(row["actor_id"])
         if candidate["pr_url"]:
             blocker = await github.verify_review_head(parse_github_url(candidate["pr_url"]), commit.sha, attributed,
-                                                      expected_repository=commit.repo_full_name)
+                                                      expected_repository=commit.repo_full_name, failure_context=failure_context)
         else:
-            blocker = await github.verify_review_range(parse_github_url(candidate["base_commit_url"]), commit, attributed)
+            blocker = await github.verify_review_range(parse_github_url(candidate["base_commit_url"]), commit, attributed,
+                                                       failure_context=failure_context)
     except (httpx.HTTPError, ValueError, KeyError, TypeError, AttributeError):
         blocker = "verification_candidate_unverifiable"
-    return candidate["digest"], blocker
+    return candidate["digest"], blocker, failure_context
 
 
 async def verify_verdict(db, task, assignments, assignment, actor, data, observed_candidate):
@@ -413,7 +530,8 @@ async def verify_verdict(db, task, assignments, assignment, actor, data, observe
         if not observed_candidate or observed_candidate[0] != current["candidate"]["digest"]:
             _conflict("verification_candidate_stale", "The selected PR candidate changed during review.")
         if observed_candidate[1] is not None:
-            _conflict(observed_candidate[1], "The PR head and all contributing authors must be verifiable for this review.")
+            _conflict(observed_candidate[1], "The candidate head and all contributing authors must be verifiable for this review.",
+                      **observed_candidate[2])
     command = current_command(db)
     assert command is not None
     command.verified_publishers.add((task.id, task.version, task.brief_revision, task.artifact_revision))

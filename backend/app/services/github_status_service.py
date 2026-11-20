@@ -3,6 +3,7 @@
 from app.commands import commit_or_flush
 from datetime import datetime, timezone
 import logging
+import re
 from typing import Any, Optional
 
 import httpx
@@ -133,21 +134,27 @@ class GitHubStatusService:
         return response.json()
 
     @staticmethod
-    def _check_review_commits(commits, count, expected_sha, attributed_commits):
+    def _check_review_commits(commits, count, expected_sha, attributed_commits, failure_context=None):
         if len(commits) != count or not commits or commits[-1].get("sha") != expected_sha:
             return "verification_candidate_stale"
         seen = set()
         for item in commits:
             sha = item.get("sha")
+            if not isinstance(sha, str) or re.fullmatch(r"(?:[0-9a-f]{40}|[0-9a-f]{64})", sha) is None:
+                return "verification_candidate_unverifiable"
             if sha in seen or not attributed_commits.get(sha):
+                if failure_context is not None:
+                    failure_context.update(offending_sha=sha, attribution_gap="commit_attribution")
                 return "verification_contributors_unverifiable"
             seen.add(sha)
             message = item.get("commit", {}).get("message")
             if not isinstance(message, str) or any(line.strip().casefold().startswith("co-authored-by:") for line in message.splitlines()):
+                if failure_context is not None:
+                    failure_context.update(offending_sha=sha, attribution_gap="coauthor_trailer" if isinstance(message, str) else "commit_metadata")
                 return "verification_contributors_unverifiable"
         return None
 
-    async def verify_review_range(self, base, head, attributed_commits):
+    async def verify_review_range(self, base, head, attributed_commits, *, failure_context=None):
         """Verify every commit after the submitted immutable base."""
         endpoint = f"{self.api_url}/repos/{head.owner}/{head.repo}/compare/{base.sha}...{head.sha}"
         commits = []
@@ -166,10 +173,10 @@ class GitHubStatusService:
                 return "verification_candidate_unverifiable"
             commits.extend(batch)
             if len(commits) >= count:
-                return self._check_review_commits(commits, count, head.sha, attributed_commits)
+                return self._check_review_commits(commits, count, head.sha, attributed_commits, failure_context)
         return "verification_candidate_unverifiable"
 
-    async def verify_review_head(self, pr, expected_sha, attributed_commits, *, expected_repository=None):
+    async def verify_review_head(self, pr, expected_sha, attributed_commits, *, expected_repository=None, failure_context=None):
         """Observe the exact PR candidate and flag additional, unbound authors."""
         pull = await self._fetch_pull_request(pr.owner, pr.repo, pr.number)
         if pull.get("head", {}).get("sha") != expected_sha:
@@ -186,7 +193,7 @@ class GitHubStatusService:
             if not isinstance(batch, list):
                 return "verification_candidate_unverifiable"
             commits.extend(batch)
-        blocker = self._check_review_commits(commits, count, expected_sha, attributed_commits)
+        blocker = self._check_review_commits(commits, count, expected_sha, attributed_commits, failure_context)
         if blocker:
             return blocker
         current = await self._fetch_pull_request(pr.owner, pr.repo, pr.number)

@@ -32,7 +32,7 @@ from app.models.iteration import Iteration
 from app.models.task import Task, TaskStatus
 from app.models.team_member import TeamMember, TeamMemberProfile
 from app.query_limits import CollectionLimitExceededError
-from app.services.review_provenance import different_publisher_required, review_history
+from app.services.review_provenance import different_publisher_required, historical_profile, review_history
 from app.schemas.agent_planning import AgentPlanningCommandContext
 from app.schemas.agent_routing import (
     AgentRoutingCandidate,
@@ -1200,6 +1200,7 @@ class AgentRoutingService:
         task: Task,
         assessment: TaskRoutingAssessment,
         purpose: str,
+        strict_review: bool,
         reviewer_profile_id: int | None,
         iteration: Iteration,
         members: Sequence[TeamMember],
@@ -1330,7 +1331,7 @@ class AgentRoutingService:
                                 {
                                     "id": binding.model_catalog.id,
                                     "key": binding.model_catalog.key,
-                                    "publisher_key": binding.model_catalog.publisher_key,
+                                    **({"publisher_key": binding.model_catalog.publisher_key} if strict_review else {}),
                                     "revision": binding.model_catalog.revision,
                                     "enabled": binding.model_catalog.enabled,
                                     "configured_model_alias": (
@@ -1489,10 +1490,12 @@ class AgentRoutingService:
             iteration=iteration,
             members=members,
         )
+        strict_review = data.purpose == "verification" and await different_publisher_required(self.db, task.project_id)
         input_evidence = self._routing_input_evidence(
             task=task,
             assessment=assessment,
             purpose=data.purpose,
+            strict_review=strict_review,
             reviewer_profile_id=data.reviewer_profile_id,
             iteration=iteration,
             members=members,
@@ -1514,10 +1517,9 @@ class AgentRoutingService:
             if topology_boundary is not None
             else None
         )
-        strict_review = data.purpose == "verification" and await different_publisher_required(self.db, task.project_id)
         history = None
-        if data.purpose == "verification":
-            history = await review_history(self.db, task, task_assignments, strict=strict_review)
+        if strict_review:
+            history = await review_history(self.db, task, task_assignments, strict=True)
             input_evidence["review_history"] = {
                 "different_publisher_required": strict_review, "contributors": history.contributors, "candidate": history.candidate,
             }
@@ -1543,9 +1545,16 @@ class AgentRoutingService:
             )
             global_blockers = sorted(set(global_blockers))
 
-        contributors = history.contributors if history else []
-        execution_actor_ids = [row["actor_id"] for row in contributors]
-        execution_profile_ids = [row["profile_id"] for row in contributors]
+        if history is None:
+            fulfilled = [
+                assignment for assignment in task_assignments
+                if assignment.purpose == "execution" and assignment.state == "fulfilled"
+            ]
+            execution_actor_ids = [assignment.actor_id for assignment in fulfilled]
+            execution_profile_ids = [historical_profile(assignment) for assignment in fulfilled]
+        else:
+            execution_actor_ids = [row["actor_id"] for row in history.contributors]
+            execution_profile_ids = [row["profile_id"] for row in history.contributors]
         eligible_rows: list[tuple[tuple[Any, ...], dict[str, Any]]] = []
         exclusion_rows: list[dict[str, Any]] = []
         examined_pairs = 0
@@ -1588,6 +1597,7 @@ class AgentRoutingService:
                 reviewer_profile_id=reviewer_profile_id,
                 execution_actor_ids=execution_actor_ids,
                 execution_profile_ids=execution_profile_ids,
+                manual_executor_profile_ids=history.manual_execution["profile_ids"] if history and history.manual_execution else None,
                 review_mode=assessment.review_mode,
                 required_specialist_skill_levels=assessment.required_skill_levels,
             )
@@ -1972,9 +1982,11 @@ class AgentRoutingService:
                 0,
             ),
             "hard_blocker_codes": hard_blocker_codes,
-            "acceptance_blocker_codes": [RoutingBlockerCode.VERIFICATION_CANDIDATE_UNVERIFIABLE.value]
-                if strict_review and not history.candidate else [],
         }
+        if strict_review:
+            response_values["acceptance_blocker_codes"] = (
+                [] if history.candidate else [RoutingBlockerCode.VERIFICATION_CANDIDATE_UNVERIFIABLE.value]
+            )
         # Cardinality limits alone are insufficient because evidence strings
         # vary in size. Trim the deterministic tail until the full packet,
         # including its digest field, stays within the durable boundary.

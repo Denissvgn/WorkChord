@@ -187,6 +187,9 @@ def scope_orm_operation(state):
         return
     if authority.read_only and (state.is_insert or state.is_update or state.is_delete):
         raise AuthorityError("read_only_credential", "This credential can only read.")
+    if (not authority.operator and (state.is_insert or state.is_update)
+            and getattr(getattr(state.statement, "table", None), "name", None) == "projects"):
+        _guard_bulk_project_review_policy(state)
     if isinstance(state.statement, TextClause) and not authority.operator and not authority.local:
         raise AuthorityError("unscoped_query_denied", "This operation requires an explicit resource scope.")
     if authority.operator or authority.local:
@@ -204,6 +207,30 @@ def scope_orm_operation(state):
             state.statement = state.statement.where(conditions[mapper.class_])
         elif not authority.operator:
             raise AuthorityError("unscoped_write_denied", "This write requires an explicit resource scope.")
+
+
+def _guard_bulk_project_review_policy(state):
+    """Protect policy columns in explicit SQLAlchemy writes as well as ORM flushes."""
+    column = "require_different_review_publisher"
+    statement = state.statement
+    pairs = list((getattr(statement, "_values", {}) or {}).items())
+    pairs.extend(getattr(statement, "_ordered_values", ()) or ())
+    for group in getattr(statement, "_multi_values", ()) or ():
+        for row in group:
+            if isinstance(row, dict):
+                pairs.extend(row.items())
+    parameters = state.parameters
+    if parameters:
+        for row in parameters if isinstance(parameters, (list, tuple)) else [parameters]:
+            if isinstance(row, dict):
+                pairs.extend(row.items())
+    for key, value in pairs:
+        if getattr(key, "key", key) == column:
+            # Existing-row changes and expression-valued inserts need the operator.
+            if state.is_update or getattr(value, "value", value) is not False:
+                raise AuthorityError("operator_required", "Changing the project's review publisher policy requires an operator.")
+    if column in (getattr(statement, "_select_names", None) or ()):
+        raise AuthorityError("operator_required", "Importing the project's review publisher policy requires an operator.")
 
 
 def _check_bulk_write(state, authority):
@@ -326,6 +353,10 @@ def authorize_domain_writes(session, _flush_context, _instances):
             continue
         table = inspect(type(obj)).local_table.name
         changed = {attr.key for attr in inspect(obj).attrs if attr.history.has_changes()}
+        if table == "projects" and not authority.operator and obj not in session.deleted:
+            if (obj in session.new and obj.require_different_review_publisher
+                    or obj not in session.new and "require_different_review_publisher" in changed):
+                raise AuthorityError("operator_required", "Changing the project's review publisher policy requires an operator.")
         if (table == "agent_actors" and obj in session.dirty and obj not in session.deleted
                 and changed <= {"queue_revision", "updated_at"}):
             if obj.id in session.info.get("domain_queue_actors", set()):

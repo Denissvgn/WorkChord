@@ -51,11 +51,25 @@ When the server advertises `review-provenance-v1`, an eligible independent
 reviewer can return a defective or unavailable candidate for rework.
 `review_selection.acceptance_blockers` lists problems with accepting that
 candidate. Both formal verdicts require an independently attributable
-reviewer. If attribution itself is missing, the same-team PM can return
-released, resolved work to execution using the typed recovery command with
-`return_for_evidence: true`, the exact ownership tuple and a reason. This
-administrative action records zero verdicts. Cancel or finish any outstanding
-verification assignment separately.
+reviewer. Only a topology's primary controller acting as PM can use
+`return_for_evidence: true` on released, resolved strict-project work. It
+requires a previous fulfilled execution assignment with a successful,
+claim-fenced run from the same team, the current ownership tuple and a
+reason. This administrative action records zero verdicts. Cancel or finish
+any outstanding verification assignment separately.
+
+An owner performing manual work signs in, starts the task with
+`start_manual`, writes current progress with at least one artifact link,
+and submits with `resolve_manual` under the same human identity. Before
+assigning a reviewer, check the manual execution and artifact receipt. The
+server allows this route only when it can establish the human executor and
+finds no agent execution assignments, runs or conflicting execution evidence.
+The independent assigned agent still supplies its own observed model and a
+known publisher. The human owner and workspace operator cannot give a formal
+verdict on the strict project. An unverified owner name, a planned assignment
+or an empty run list is insufficient. The administrative return command
+requires a previous agent submission and cannot reopen human-only work.
+Refresh existing verification previews after an upgrade.
 
 Give the operator the affected task and run IDs and the named missing facts.
 The operator can preview with

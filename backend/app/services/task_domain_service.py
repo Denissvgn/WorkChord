@@ -290,7 +290,11 @@ class TaskDomainService:
                     self.db.add(TaskStatusLog(task_id=task.id, from_status=old_status, to_status=task.status, reason=data.reason, triggered_by="user"))
                 if task.parent_id:
                     await self.tasks.status_service.reconcile_parent_chain(task.parent_id, commit=False)
-        await self.tasks.record_task_event(task.id, f"task_{data.action}", {"reason": data.reason, "version": task.version})
+        payload = {"reason": data.reason, "version": task.version}
+        authority = self.db.info.get("authority")
+        if data.action in {"start_manual", "resolve_manual"} and authority and authority.kind == "human" and authority.profile_id:
+            payload["executor_profile_id"] = authority.profile_id
+        await self.tasks.record_task_event(task.id, f"task_{data.action}", payload)
         await self.db.flush()
         return await self.tasks.get_by_id(task.id)
 

@@ -269,7 +269,7 @@ class TaskBriefService:
             command = current_command(self.db)
             key = (task.id, task.version, task.brief_revision, task.artifact_revision)
             if command is None or key not in command.verified_publishers:
-                raise AuthorityError("verified_publisher_review_required", "Use an assigned reviewer with verified independence for this candidate.")
+                raise AuthorityError("verified_publisher_review_required", "Use an assigned agent verifier for formal review. Work requires attributable agent execution or an authenticated manual executor and current artifact evidence.")
         authority = self.db.info.get("authority")
         principal = getattr(authority, "principal_id", None)
         override = bool(authority and authority.operator and authority.review_override and authority.reason)

@@ -1,6 +1,6 @@
 {
   "api_contract": "workchord-agent/v1",
-  "catalog_version": "1.20.0",
+  "catalog_version": "1.21.0",
   "schema_version": "workchord-agent-skills/v1",
   "skills": [
     {
@@ -8,15 +8,15 @@
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-pm-1.18.0.tar.gz",
-          "sha256": "bc0bff6344693f543b8a88d7d7fb51726478fbd462af3a17830e4c465e4609ea",
+          "path": "workchord-pm-1.19.0.tar.gz",
+          "sha256": "a406b919f34ab3e5ff83b3e78f072a512a29aa9391ec540fee8976faa93192bf",
           "size": 194593
         },
         {
           "format": "zip",
-          "path": "workchord-pm-1.18.0.zip",
-          "sha256": "f02523eb5bf68f79866de941299768e4574d1f8cc3cb67c5b338ac48c1ec3735",
-          "size": 185500
+          "path": "workchord-pm-1.19.0.zip",
+          "sha256": "d296e5d4a76f73c69c9334ec8d7ff8b5b1298f45b30a0e1b4e487e12262bfe95",
+          "size": 186443
         }
       ],
       "entrypoint": "SKILL.md",
@@ -63,8 +63,8 @@
         },
         {
           "path": "references/verification-rework-and-recovery.md",
-          "sha256": "4f993d2a3968eab83d0b631d23de339da3940b903ad3b7ce4452d654bd74c9c6",
-          "size": 22041
+          "sha256": "e136743a574aaf9a87f461394c424863c6a3bbb724e23e08aa9dd54aac141159",
+          "size": 22984
         },
         {
           "path": "references/workflow-and-names.md",
@@ -114,22 +114,22 @@
       ],
       "role": "pm",
       "server_compatibility": ">=1.8.0,<2.0.0",
-      "version": "1.18.0"
+      "version": "1.19.0"
     },
     {
       "api_contract": "workchord-agent/v1",
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-reviewer-1.6.0.tar.gz",
-          "sha256": "1a4e1b41cf67f37115c83066dfd3d55419a717431e99d1d1b0d0bde7a57ecce7",
-          "size": 51223
+          "path": "workchord-reviewer-1.7.0.tar.gz",
+          "sha256": "77e45571291431e12e5160582e97b157656bc5bfe0ad9d9a6c64ee6bdf945a93",
+          "size": 61463
         },
         {
           "format": "zip",
-          "path": "workchord-reviewer-1.6.0.zip",
-          "sha256": "bcc6b91cf075e2fe25fa295a158c965830771ab23d25a08f1fc773349daccfa6",
-          "size": 46998
+          "path": "workchord-reviewer-1.7.0.zip",
+          "sha256": "b5e235473be1ac63a866c368d919f94621d1dd00b47440865fc2fa9925158b1b",
+          "size": 47853
         }
       ],
       "entrypoint": "SKILL.md",
@@ -151,8 +151,8 @@
         },
         {
           "path": "references/review-packet-and-verdict.md",
-          "sha256": "bbcaca788b6dd3793d78a5fcca4c934635014defb14c8dc4d6d58590e5d0aa63",
-          "size": 9553
+          "sha256": "91eb9e602e7e561db2eb3ce642a1143fe903cd4b27bd1d2cad1d630db63d29af",
+          "size": 10408
         },
         {
           "path": "references/workflow-and-names.md",
@@ -184,22 +184,22 @@
       ],
       "role": "verifier",
       "server_compatibility": ">=1.8.0,<2.0.0",
-      "version": "1.6.0"
+      "version": "1.7.0"
     },
     {
       "api_contract": "workchord-agent/v1",
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-worker-1.18.0.tar.gz",
-          "sha256": "a1a819985f40c3abe6b01438650e4c28067558a986327b9ecaf382c27a45ceb6",
+          "path": "workchord-worker-1.19.0.tar.gz",
+          "sha256": "bd21ac7657d922d7c6a2b3f3d7d78319a1c2920cb8195650282935bc4422f53b",
           "size": 102428
         },
         {
           "format": "zip",
-          "path": "workchord-worker-1.18.0.zip",
-          "sha256": "59fdaf226357db28058f32a7692b9329aa5a9692b2f0c922d1de32d3358af946",
-          "size": 92456
+          "path": "workchord-worker-1.19.0.zip",
+          "sha256": "1e59c1239accda14d1926e8c5d2478a6eae657f29c34360d98b615f39b19ea98",
+          "size": 92959
         }
       ],
       "entrypoint": "SKILL.md",
@@ -221,8 +221,8 @@
         },
         {
           "path": "references/claim-run-and-task-state.md",
-          "sha256": "08e76710bfc352de35e3db3b814763d86a3d7679bc60c863ba03aef45bd52b1b",
-          "size": 13485
+          "sha256": "64da3143ac650c9355af3622179197ea779e83704284b4aebc7fdd0ae09124aa",
+          "size": 13988
         },
         {
           "path": "references/events-errors-and-recovery.md",
@@ -277,8 +277,8 @@
       ],
       "role": "worker",
       "server_compatibility": ">=1.8.0,<2.0.0",
-      "version": "1.18.0"
+      "version": "1.19.0"
     }
   ],
-  "source_revision": "sha256:d53eda199ceb3cd59be622bccfb0327ba44f6d92cf6646a75ea347aab1f3f6d7"
+  "source_revision": "sha256:1b9e26314c0d43a829901e6012e82833a4662e6969f17704900a6c2fb53f4f07"
 }
