@@ -407,6 +407,14 @@ def authorize_domain_writes(session, _flush_context, _instances):
                 action = "review" if obj.purpose == "verification" else "execute"
             elif obj in session.new and obj.task_id in session.info.get("review_rework_tasks", set()):
                 action = "review"
+        if protocol and table == "triage_items" and obj in session.new:
+            announced = session.info.get("claim_bound_discovery") or {}
+            if (announced.get("remaining", 0) > 0 and announced.get("actor_id") == authority.actor_id
+                    and "triage:write" in authority.scopes and obj.source == "agent-discovery"
+                    and obj.project_hint_id == announced.get("project_hint_id")
+                    and obj.iteration_hint_id == announced.get("iteration_hint_id")):
+                announced["remaining"] -= 1
+                action = "execute"
         derived = table in {"task_comments", "task_comment_revisions", "task_brief_revisions", "task_progress_records", "task_review_records", "task_status_logs", "task_events", "outbound_webhook_events", "outbound_webhook_deliveries", "application_snapshots", "task_routing_assessments", "agent_run_events"}
         if derived and not authority.allows(project_id, action):
             action = "execute" if authority.allows(project_id, "execute") else "review"

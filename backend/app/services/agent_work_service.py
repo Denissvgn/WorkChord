@@ -3940,6 +3940,14 @@ class AgentWorkService:
                 self.task_service._metadata_from_task(task),
             )
         labels = list(dict.fromkeys(["agent-discovery", *data.suggested_labels]))
+        # The checks above tie this one item to the actor's accepted assignment and live fence;
+        # the write guard admits exactly that item and nothing else.
+        self.db.info["claim_bound_discovery"] = {
+            "actor_id": actor.id,
+            "project_hint_id": task.project_id,
+            "iteration_hint_id": task.iteration_id,
+            "remaining": 1,
+        }
         item = await TriageService(self.db).create(
             TriageItemCreate(
                 title=data.title,
