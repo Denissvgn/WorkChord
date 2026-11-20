@@ -5,6 +5,26 @@ procedure low-freedom.
 
 ## Keep State Independent
 
+Report the model identifier your runtime actually observed when beginning
+assigned work. The supervised request uses `model`. Enforced routing uses
+`resolved_model_id` and the selected binding revision. The begin response's
+`execution_provenance` records the profile and model publisher the server
+could establish at that time. An ambiguous or missing observation leaves the
+publisher unresolved. The original run trust state is retained.
+
+On a project requiring different publishers for review, include the actual
+final `observed_model` in the submit payload. Report a runtime model change
+through the interrupted-work command with the final observed model and
+evidence of the work retained. This preserves both contributing publishers
+for the next review.
+
+For code, submit the immutable candidate in `commit_url` and its PR in
+`pr_url` when available. Keep evidence of retained work from earlier
+attempts. A recovered supervised assignment can return `start_assigned`
+in shadow mode. Begin that assignment with its exact queue revision.
+For `agent.blocker`, provide the live claim ID and generation. The event
+preserves the task version. The authorized PM or person clears the blocker.
+
 - Assignment answers who was dispatched and in what queue position.
 - Claim/fence answers who may write now.
 - Run answers which execution attempt produced events and artifacts.

@@ -18,9 +18,12 @@ class CommandState:
     snapshots: set[int | tuple[str, int]] = field(default_factory=set)
     tasks: dict[int, int] = field(default_factory=dict)
     backlog_projects: set[int] = field(default_factory=set)
-    # One authorized flush per (dispatching PM, queue owner, resulting revision).
-    dispatch_queue_revisions: set[tuple[int, int, int]] = field(default_factory=set)
+    # Each (PM, queue owner, resulting revision) is authorized for one command scope.
+    dispatch_queue_revisions: dict[tuple[int, int, int], str] = field(default_factory=dict)
+    # A fenced task event may set exactly its own bounded reason.
+    worker_blockers: set[tuple[int, int, int, str]] = field(default_factory=set)
     failed: bool = False
+    verified_publishers: set[tuple[int, int, int, int]] = field(default_factory=set)
     planning_revision: int | None = None
 
 

@@ -36,6 +36,30 @@ def sync_engine(database_url: str):
 @pytest.mark.postgresql
 @pytest.mark.integration
 @pytest.mark.allow_network
+def test_existing_projects_keep_their_review_policy_on_upgrade(postgres_database, configure_database):
+    from alembic import command
+
+    configure_database(postgres_database.url)
+    engine = sync_engine(postgres_database.url)
+    try:
+        with engine.begin() as connection:
+            config = alembic_config(connection=connection)
+            command.upgrade(config, "20261116_0017")
+            project_id = connection.scalar(text(
+                "INSERT INTO projects (name, status, health, sort_order, created_at, updated_at) "
+                "VALUES ('Historical project', 'active', 'unknown', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id"))
+            command.upgrade(config, "head")
+            assert connection.scalar(text("SELECT require_different_review_publisher FROM projects WHERE id=:id"),
+                                     {"id": project_id}) is False
+            columns = {column["name"] for column in inspect(connection).get_columns("agent_runs")}
+            assert "execution_provenance" in columns
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.postgresql
+@pytest.mark.integration
+@pytest.mark.allow_network
 def test_fresh_postgresql_schema_only_bootstrap(postgres_database, configure_database) -> None:
     configure_database(postgres_database.url)
 

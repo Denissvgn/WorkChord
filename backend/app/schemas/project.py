@@ -115,6 +115,7 @@ class ProjectInitiativeSummary(BaseModel):
 class ProjectCreate(BaseModel):
     """Schema for creating a project."""
     timezone: WorkingZone = "UTC"
+    require_different_review_publisher: bool = False
 
     name: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = None
@@ -131,6 +132,7 @@ class ProjectCreate(BaseModel):
 class ProjectUpdate(PlanningInputRevisions):
     """Schema for updating a project."""
     timezone: WorkingZone | None = None
+    require_different_review_publisher: bool = False
 
     name: Optional[str] = Field(default=None, min_length=1, max_length=255)
     description: Optional[str] = None
@@ -276,6 +278,7 @@ class ProjectMilestoneTaskGroup(WorkMetricSummary):
 class ProjectResponse(BaseModel):
     """Schema for project response."""
     timezone: str = "UTC"
+    require_different_review_publisher: bool = False
 
     id: int
     name: str

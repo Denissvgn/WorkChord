@@ -237,6 +237,9 @@ class RoutingBlockerCode(StrEnum):
     REVIEWER_PROFILE_MISSING = "reviewer_profile_missing"
     REVIEWER_PROFILE_MISMATCH = "reviewer_profile_mismatch"
     VERIFICATION_ACTOR_NOT_INDEPENDENT = "verification_actor_not_independent"
+    VERIFICATION_PUBLISHER_UNVERIFIABLE = "verification_publisher_unverifiable"
+    VERIFICATION_PUBLISHER_NOT_INDEPENDENT = "verification_publisher_not_independent"
+    VERIFICATION_CANDIDATE_UNVERIFIABLE = "verification_candidate_unverifiable"
     VERIFICATION_PROFILE_NOT_INDEPENDENT = "verification_profile_not_independent"
     VERIFICATION_INDEPENDENCE_UNVERIFIABLE = (
         "verification_independence_unverifiable"

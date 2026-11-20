@@ -44,7 +44,7 @@ RELEASE_BASELINE_FILENAME = "release-baseline.json"
 CATALOG_SCHEMA = "workchord-agent-skills/v1"
 RELEASE_SCHEMA = "workchord-agent-skills-release/v1"
 RELEASE_BASELINE_SCHEMA = "workchord-agent-skills-baseline/v2"
-CATALOG_VERSION = "1.18.0"
+CATALOG_VERSION = "1.19.0"
 API_CONTRACT = "workchord-agent/v1"
 SERVER_COMPATIBILITY = ">=1.8.0,<2.0.0"
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
@@ -289,6 +289,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
                 "purpose",
                 "team_member_id",
                 "reviewer_profile_id",
+                "review_binding_id",
                 "queue_class",
                 "queue_rank",
                 "not_before",
@@ -319,6 +320,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             body_optional=(
                 "actor_id",
                 "reviewer_profile_id",
+                "review_binding_id",
                 "queue_rank",
                 "not_before",
                 "state",
@@ -616,6 +618,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             ),
             body_optional=(
                 "criterion_progress",
+                "observed_model",
                 "artifact_links",
                 "commit_url",
                 "pr_url",
@@ -642,7 +645,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
                 "status",
                 "evidence",
             ),
-            body_optional=("summary", "error"),
+            body_optional=("summary", "error", "observed_model"),
             header_required=("Idempotency-Key",),
             tool_required=("payload", "idempotency_key"),
         ),
@@ -670,7 +673,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
                 "expected_task_version",
                 "evidence",
             ),
-            body_optional=("reason", "rework_actor_id", "rework_queue_rank"),
+            body_optional=("reason", "rework_actor_id", "rework_queue_rank", "observed_model", "reviewed_candidate_digest"),
             header_required=(
                 "Idempotency-Key",
                 "X-Agent-Rationale",
@@ -776,7 +779,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
 ROLE_METADATA: dict[str, dict[str, Any]] = {
     "workchord-pm": {
         "role": "pm",
-        "version": "1.16.0",
+        "version": "1.17.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -816,7 +819,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-worker": {
         "role": "worker",
-        "version": "1.16.0",
+        "version": "1.17.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -843,7 +846,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-reviewer": {
         "role": "verifier",
-        "version": "1.4.0",
+        "version": "1.5.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,

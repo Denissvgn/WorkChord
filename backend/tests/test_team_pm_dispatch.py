@@ -175,7 +175,7 @@ async def test_dispatch_queue_permission_is_single_use_and_excludes_actor_admini
                 db.info["authority"] = await IdentityService(db).actor_context(pm, source="agent_rest")
                 target = await db.get(AgentActor, worker.id)
                 target.queue_revision += 1
-                command.dispatch_queue_revisions.add((pm.id, target.id, target.queue_revision))
+                command.dispatch_queue_revisions[pm.id, target.id, target.queue_revision] = "assignments:write"
                 if change == "identity":
                     target.display_name = "Renamed actor"
                 elif change == "scopes":

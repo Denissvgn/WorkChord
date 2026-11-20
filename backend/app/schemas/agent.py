@@ -460,6 +460,7 @@ class AgentRunEventResponse(BaseModel):
 
 class AgentRunResponse(BaseModel):
     """Agent run response."""
+    execution_provenance: dict[str, Any] | None = None
     id: int
     task_id: Optional[int]
     actor_id: int
@@ -565,6 +566,7 @@ class AgentTaskAssignmentCreate(BaseModel):
     actor_id: int
     team_member_id: Optional[int] = None
     purpose: AgentAssignmentPurpose = "execution"
+    review_binding_id: int | None = Field(default=None, ge=1)
     queue_class: AgentAssignmentQueueClass = "normal"
     queue_rank: int = Field(default=1000, ge=0)
     not_before: Optional[datetime] = None
@@ -600,6 +602,8 @@ class AgentTaskAssignmentCreate(BaseModel):
         """Freeze the four supported purpose/queue-class combinations."""
 
         assignment_intent(self.purpose, self.queue_class)
+        if self.review_binding_id is not None and self.purpose != "verification":
+            raise ValueError("A review binding is available only for verification.")
         return self
 
 
@@ -654,6 +658,7 @@ class AgentTaskAssignmentUpdate(BaseModel):
 
 
     actor_id: Optional[int] = None
+    review_binding_id: int | None = Field(default=None, ge=1)
     queue_rank: Optional[int] = Field(default=None, ge=0)
     not_before: Optional[datetime] = None
     reviewer_profile_id: Optional[int] = None
@@ -700,6 +705,7 @@ class ModelAwareAgentTaskAssignmentUpdate(BaseModel):
 class AgentTaskAssignmentResponse(BaseModel):
     """Durable agent task assignment response."""
 
+    review_selection: dict[str, Any] | None = None
     id: int
     task_id: int
     actor_id: int
@@ -1072,6 +1078,7 @@ from app.schemas.task_brief import CriterionProgress
 class AgentWorkSubmit(BaseModel):
     """Atomically submit an active assignment for verification."""
     criterion_progress: list[CriterionProgress] = Field(default_factory=list, max_length=100)
+    observed_model: str | None = Field(default=None, min_length=1, max_length=255)
     model_config = ConfigDict(extra="forbid")
 
 
@@ -1130,6 +1137,7 @@ class AgentWorkTerminal(BaseModel):
     """Atomically fail or cancel an active assignment."""
     model_config = ConfigDict(extra="forbid")
 
+    observed_model: str | None = Field(default=None, min_length=1, max_length=255)
 
     assignment_id: int
     run_id: int
@@ -1162,6 +1170,8 @@ class AgentReviewVerdict(BaseModel):
     """Verifier-scoped pass or rejection command."""
     model_config = ConfigDict(extra="forbid")
 
+    observed_model: str | None = Field(default=None, min_length=1, max_length=255)
+    reviewed_candidate_digest: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
 
     assignment_id: int
     verdict: Literal["pass", "reject"]

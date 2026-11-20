@@ -98,6 +98,21 @@ must come from the worker's submission.
 
 ## Check Model Evidence
 
+When your queue assignment contains `review_selection`, inspect its
+`candidate`, `contributors` and `reviewer` fields. Open the submitted
+candidate and review that revision. For a PR, check its repository and full
+head SHA against `candidate.commit_url`. Capture your own runtime's observed
+model when performing the review.
+
+On `POST /api/agent/me/reviews/verdict`, or in the
+`agent_submit_review_verdict` MCP payload, send your actual `observed_model`
+and the `reviewed_candidate_digest` from the candidate you inspected, along
+with the assignment ID, current expected task version, verdict and evidence.
+The server rechecks contributor independence, the selected reviewer and the
+exact candidate. A changed head needs a fresh submission and review.
+Indeterminate model identity or unbound co-author evidence keeps the verdict
+pending. Report the returned blocker to the PM.
+
 When the review or execution assignment is model-aware, read the selected
 binding and the run's observed model and trust state:
 

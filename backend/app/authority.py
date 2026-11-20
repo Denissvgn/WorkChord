@@ -332,12 +332,11 @@ def authorize_domain_writes(session, _flush_context, _instances):
                 continue
             if protocol and (obj.id == authority.actor_id or obj.id in rework_actors):
                 continue
-            if (protocol and authority.actor_role == "pm" and "assignments:write" in authority.scopes
-                    and "queue_revision" in changed):
+            if protocol and authority.actor_role == "pm" and "queue_revision" in changed:
                 command = session.info.get("command")
                 advance = (authority.actor_id, obj.id, obj.queue_revision)
-                if command is not None and advance in command.dispatch_queue_revisions:
-                    command.dispatch_queue_revisions.remove(advance)
+                if command is not None and command.dispatch_queue_revisions.get(advance) in authority.scopes:
+                    del command.dispatch_queue_revisions[advance]
                     continue
         if table == "agent_actors" and obj.id == authority.actor_id and changed <= {"last_seen_at"} and obj not in session.deleted and obj not in session.new:
             continue
@@ -381,6 +380,13 @@ def authorize_domain_writes(session, _flush_context, _instances):
         if derived and not authority.allows(project_id, action):
             action = "execute" if authority.allows(project_id, "execute") else "review"
         if isinstance(obj, Task):
+            if (protocol and obj in session.dirty and obj not in session.deleted
+                    and changed == {"blocked_reason"} and obj.claimed_by == authority.actor_id):
+                command = session.info.get("command")
+                blocker = (authority.actor_id, obj.id, obj.claim_generation, obj.blocked_reason)
+                if command is not None and blocker in command.worker_blockers:
+                    command.worker_blockers.remove(blocker)
+                    action = "execute"
             claim_fields = {"claimed_by", "claim_id", "claim_generation", "claim_expires_at", "version", "updated_at", "execution_mode"}
             prior_claims = inspect(obj).attrs.claimed_by.history.deleted
             if protocol and changed <= claim_fields and ("execution_mode" not in changed or obj.execution_mode == "scheduled") and obj.claimed_by in {None, authority.actor_id} and all(prior in {None, authority.actor_id} for prior in prior_claims):

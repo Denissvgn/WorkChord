@@ -38,6 +38,29 @@ execution capacity while the task is still active.
 
 ## Handle Model Evidence and Escalation
 
+When a project requires a different model publisher for review, dispatch a
+verification actor whose profile and publisher allow it to review every
+contributing implementation attempt. The server compares historical run
+receipts, including interrupted or reworked executions. A supervised
+verification assignment can select a specific eligible binding with
+`review_binding_id`. The returned `review_selection` identifies the selected
+reviewer, submitted candidate and contributors. Use the current task version
+and the worker's own submission evidence.
+
+If a historical profile, publisher or candidate is missing, give the operator
+the affected run and task IDs. An operator can inspect the original
+receipts with `POST /api/agent/model-catalog/execution-provenance/{run_id}/reconcile`
+and apply a proven result with `?apply=true`. A report lists each missing fact
+and preserves the original run's model trust state. Keep the review pending
+when evidence is incomplete.
+
+For interrupted work, take the exact version, claim generation, live assignment
+IDs and running run IDs from the recovery queue. The primary controller can
+requeue an eligible worker on its own team. A supervised recovery in shadow
+mode can immediately offer `start_assigned`. For `routing_selection_pending`,
+complete the governed selection on the existing assignment. Preserve any
+independent verification ownership.
+
 Use `agent_get_execution_usage_summary` or `/api/tasks/execution-usage` for an
 authorized project/iteration and stated observation window. Compare reports
 with accepted task identities, rejection/reopen events and review/recovery

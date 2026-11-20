@@ -32,6 +32,7 @@ from app.models.iteration import Iteration
 from app.models.task import Task, TaskStatus
 from app.models.team_member import TeamMember, TeamMemberProfile
 from app.query_limits import CollectionLimitExceededError
+from app.services.review_provenance import different_publisher_required, review_history
 from app.schemas.agent_planning import AgentPlanningCommandContext
 from app.schemas.agent_routing import (
     AgentRoutingCandidate,
@@ -53,7 +54,6 @@ from app.services.agent_routing_policy import (
     MIN_ROUTING_ASSESSMENT_CONFIDENCE,
     MODEL_FAILURE_CATEGORIES,
     REVIEW_MODE_ORDER,
-    ROUTING_DECISION_AUTHORITY,
     ROUTING_DECISION_LINEAGE_FIELDS,
     ROUTING_LINEAGE_AUTHORITY,
     ROUTING_POLICY_VERSION,
@@ -1330,6 +1330,7 @@ class AgentRoutingService:
                                 {
                                     "id": binding.model_catalog.id,
                                     "key": binding.model_catalog.key,
+                                    "publisher_key": binding.model_catalog.publisher_key,
                                     "revision": binding.model_catalog.revision,
                                     "enabled": binding.model_catalog.enabled,
                                     "configured_model_alias": (
@@ -1513,6 +1514,13 @@ class AgentRoutingService:
             if topology_boundary is not None
             else None
         )
+        strict_review = data.purpose == "verification" and await different_publisher_required(self.db, task.project_id)
+        history = None
+        if data.purpose == "verification":
+            history = await review_history(self.db, task, task_assignments, strict=strict_review)
+            input_evidence["review_history"] = {
+                "different_publisher_required": strict_review, "contributors": history.contributors, "candidate": history.candidate,
+            }
         input_digest = hashlib.sha256(
             canonical_routing_json_bytes(input_evidence)
         ).hexdigest()
@@ -1535,37 +1543,11 @@ class AgentRoutingService:
             )
             global_blockers = sorted(set(global_blockers))
 
-        execution_assignments = [
-            assignment
-            for assignment in task_assignments
-            if assignment.purpose == "execution"
-            and assignment.state == "fulfilled"
-        ]
-        execution_actor_ids = [
-            assignment.actor_id for assignment in execution_assignments
-        ]
-        execution_profile_ids: list[int | None] = []
-        for assignment in execution_assignments:
-            historical_snapshot = _json_value(
-                assignment.routing_snapshot,
-                {},
-            )
-            historical_profile_id = (
-                historical_snapshot.get("profile_id")
-                if (
-                    historical_snapshot.get("schema_version")
-                    == "routing-decision-snapshot-v1"
-                    and historical_snapshot.get("authority")
-                    == ROUTING_DECISION_AUTHORITY
-                )
-                else None
-            )
-            execution_profile_ids.append(
-                historical_profile_id
-                if isinstance(historical_profile_id, int)
-                and historical_profile_id > 0
-                else None
-            )
+        contributors = history.contributors if history else []
+        execution_actor_ids = [row["actor_id"] for row in contributors]
+        execution_profile_ids = [row["profile_id"] for row in contributors]
+        if strict_review and not history.candidate:
+            global_blockers.append(RoutingBlockerCode.VERIFICATION_CANDIDATE_UNVERIFIABLE.value)
         eligible_rows: list[tuple[tuple[Any, ...], dict[str, Any]]] = []
         exclusion_rows: list[dict[str, Any]] = []
         examined_pairs = 0
@@ -1771,9 +1753,8 @@ class AgentRoutingService:
                     actual_tool_tags=binding.tool_tags or (),
                     actual_data_policy_tags=binding.data_policy_tags or (),
                 )
-                blockers = sorted(
-                    set((*actor_blockers, *model.hard_blocker_codes))
-                )
+                publisher_blockers = history.publisher_blockers(catalog.publisher_key if catalog else None) if strict_review else []
+                blockers = sorted(set((*actor_blockers, *model.hard_blocker_codes, *publisher_blockers)))
                 schedule_delay_days = (
                     float(
                         max(

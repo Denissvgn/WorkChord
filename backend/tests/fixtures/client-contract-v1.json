@@ -313,6 +313,21 @@
             "title": "Provider",
             "type": "string"
           },
+          "publisher_key": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Operator-verified canonical model publisher, independent of serving provider.",
+            "title": "Publisher Key"
+          },
           "reasoning_tier": {
             "$ref": "#/components/schemas/ReasoningTier"
           },
@@ -420,6 +435,21 @@
             "minLength": 1,
             "title": "Provider",
             "type": "string"
+          },
+          "publisher_key": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Operator-verified canonical model publisher, independent of serving provider.",
+            "title": "Publisher Key"
           },
           "reasoning_tier": {
             "$ref": "#/components/schemas/ReasoningTier"
@@ -553,6 +583,20 @@
               }
             ],
             "title": "Provider"
+          },
+          "publisher_key": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publisher Key"
           },
           "reasoning_tier": {
             "anyOf": [
@@ -2560,6 +2604,11 @@
             ],
             "title": "Owner Profile Id"
           },
+          "require_different_review_publisher": {
+            "default": false,
+            "title": "Require Different Review Publisher",
+            "type": "boolean"
+          },
           "sort_order": {
             "default": 0,
             "title": "Sort Order",
@@ -3008,6 +3057,11 @@
               }
             ],
             "title": "Owner Profile Id"
+          },
+          "require_different_review_publisher": {
+            "default": false,
+            "title": "Require Different Review Publisher",
+            "type": "boolean"
           },
           "sort_order": {
             "default": 0,

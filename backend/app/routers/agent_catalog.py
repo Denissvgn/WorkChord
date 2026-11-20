@@ -17,6 +17,7 @@ from app.routers.agent_planning import (
     get_agent_planning_command_context,
 )
 from app.schemas.agent_planning import AgentPlanningCommandContext
+from app.schemas.agent_team_setup import AgentTeamRuntimeAcknowledgement
 from app.schemas.agent_routing import (
     AgentModelBindingCreate,
     AgentModelBindingDisable,
@@ -40,6 +41,22 @@ from app.services.agent_service import AgentService, actor_has_scope
 
 
 router = APIRouter()
+
+
+@router.post("/agent/model-catalog/execution-provenance/{run_id}/reconcile")
+async def reconcile_run_provenance(
+    run_id: int,
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+    apply: bool = False,
+    archived_acknowledgement: AgentTeamRuntimeAcknowledgement | None = None,
+):
+    """Inspect historical server receipts or apply their verified facts as a workspace operator."""
+    from app.services.execution_reconciliation import reconcile_execution
+    try:
+        archived = archived_acknowledgement.model_dump(mode="json", exclude={"expected_previous_acknowledgement_digest"}) if archived_acknowledgement else None
+        return await reconcile_execution(db, run_id, apply=apply, archived_ack=archived)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 async def get_agent_model_catalog_service(

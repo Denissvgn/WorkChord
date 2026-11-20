@@ -106,7 +106,16 @@ class GitHubStatusService:
         number: int,
     ) -> dict[str, Any]:
         """Fetch one pull request payload from GitHub."""
-        url = f"{self.api_url}/repos/{owner}/{repo}/pulls/{number}"
+        payload = await self._fetch_pr_resource(owner, repo, number)
+        if not isinstance(payload, dict):
+            raise ValueError("GitHub response was not a JSON object")
+        return payload
+
+    async def _fetch_pr_resource(self, owner, repo, number, suffix=""):
+        url = f"{self.api_url}/repos/{owner}/{repo}/pulls/{number}{suffix}"
+        return await self._fetch_resource(url)
+
+    async def _fetch_resource(self, url):
         client_kwargs: dict[str, Any] = {"timeout": self.timeout_seconds}
         if self.transport is not None:
             client_kwargs["transport"] = self.transport
@@ -121,10 +130,53 @@ class GitHubStatusService:
                 response=response,
             )
 
-        payload = response.json()
-        if not isinstance(payload, dict):
-            raise ValueError("GitHub response was not a JSON object")
-        return payload
+        return response.json()
+
+    async def verify_review_commit(self, commit):
+        payload = await self._fetch_resource(f"{self.api_url}/repos/{commit.owner}/{commit.repo}/commits/{commit.sha}")
+        if payload.get("sha") != commit.sha:
+            return "verification_candidate_unverifiable"
+        metadata = payload.get("commit", {})
+        if not metadata.get("author", {}).get("email") or any(
+                line.strip().casefold().startswith("co-authored-by:") for line in metadata.get("message", "").splitlines()):
+            return "verification_contributors_unverifiable"
+        return None
+
+    async def verify_review_head(self, pr, expected_sha, attributed_commits):
+        """Observe the exact PR candidate and flag additional, unbound authors."""
+        pull = await self._fetch_pull_request(pr.owner, pr.repo, pr.number)
+        if pull.get("head", {}).get("sha") != expected_sha:
+            return "verification_candidate_stale"
+        count = pull.get("commits")
+        if type(count) is not int or not 0 < count <= 250:
+            return "verification_contributors_unverifiable"
+        commits = []
+        for page in range(1, (count + 99) // 100 + 1):
+            batch = await self._fetch_pr_resource(pr.owner, pr.repo, pr.number, f"/commits?per_page=100&page={page}")
+            if not isinstance(batch, list):
+                return "verification_candidate_unverifiable"
+            commits.extend(batch)
+        if len(commits) != count or commits[-1].get("sha") != expected_sha:
+            return "verification_candidate_stale"
+        author_commits = {}
+        for item in commits:
+            commit = item.get("commit", {})
+            author = commit.get("author", {}).get("email")
+            if not isinstance(author, str) or not author.strip():
+                return "verification_contributors_unverifiable"
+            author_commits.setdefault(author.strip().casefold(), set()).add(item.get("sha"))
+            if any(line.strip().casefold().startswith("co-authored-by:") for line in commit.get("message", "").splitlines()):
+                return "verification_contributors_unverifiable"
+        if len(author_commits) > 1:
+            attributed_actors = set()
+            for commits_by_author in author_commits.values():
+                actors = {actor for sha in commits_by_author for actor in attributed_commits.get(sha, ())}
+                if (len(actors) != 1 or actors & attributed_actors or
+                        any(sha not in attributed_commits for sha in commits_by_author)):
+                    return "verification_contributors_unverifiable"
+                attributed_actors.update(actors)
+        current = await self._fetch_pull_request(pr.owner, pr.repo, pr.number)
+        return None if current.get("head", {}).get("sha") == expected_sha else "verification_candidate_stale"
 
     def _provider_error_message(self, error: Exception) -> str:
         """Convert provider exceptions into a safe cached message."""

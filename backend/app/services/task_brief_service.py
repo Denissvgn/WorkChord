@@ -263,6 +263,13 @@ class TaskBriefService:
     async def require_review(self, task: Task, *, accepting: bool):
         """One independence and evidence boundary for human and assigned-agent review."""
         require_project(self.db, task.project_id, "review")
+        from app.commands import current_command
+        from app.services.review_provenance import different_publisher_required
+        if await different_publisher_required(self.db, task.project_id):
+            command = current_command(self.db)
+            key = (task.id, task.version, task.brief_revision, task.artifact_revision)
+            if command is None or key not in command.verified_publishers:
+                raise AuthorityError("verified_publisher_review_required", "Use an assigned reviewer with verified independence for this candidate.")
         authority = self.db.info.get("authority")
         principal = getattr(authority, "principal_id", None)
         override = bool(authority and authority.operator and authority.review_override and authority.reason)
