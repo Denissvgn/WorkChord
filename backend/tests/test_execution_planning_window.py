@@ -3,12 +3,14 @@
 from contextlib import nullcontext
 from datetime import datetime, timedelta, timezone
 import asyncio
+from copy import deepcopy
 import json
+from time import perf_counter_ns
 from unittest.mock import patch
 
 import httpx
 import pytest
-from sqlalchemy import select, text, update
+from sqlalchemy import event as sqlalchemy_event, select, text, update
 from sqlalchemy.exc import DBAPIError
 
 from app.config import get_settings
@@ -34,6 +36,119 @@ from tests import test_team_pm_dispatch
 from tests.test_team_pm_recovery import recovery_api
 
 db_session_factory = test_team_pm_dispatch.db_session_factory
+
+
+def test_cached_snapshot_requires_the_actual_unchanged_payload_bytes(tmp_path):
+    from types import SimpleNamespace
+    from datetime import date
+    from app.services import planning_window_reconciliation as planning
+    from app.services.execution_planning_window import digest
+
+    iteration = {
+        "id": 818,
+        "project_id": 19,
+        "calendar_id": 1,
+        "name": "Notes",
+        "manager_email": None,
+        "start_date": "2026-07-01",
+    }
+    original = {"id": 22, "version": 4, "status": "active", "title": "Original notes", "children": []}
+    data = {
+        "snapshot_info": {"reason": "before_planning_input_change"},
+        "iteration": {**iteration, "end_date": "2026-08-01"},
+        "tasks": [original, {"id": 23, "title": "Another note", "children": []}],
+    }
+    row = SimpleNamespace(
+        id=tmp_path.stat().st_ino,
+        checksum=planning._canonical_snapshot_checksum(data),
+        raw_payload=json.dumps(data),
+    )
+    context = digest({k: v for k, v in original.items() if k != "version"})
+
+    def observe(allow_cache):
+        return planning._snapshot_task(
+            row, 22, 4, context, digest(iteration), date(2026, 8, 12), cache_reads=allow_cache
+        )
+
+    with patch.object(
+        planning, "_canonical_snapshot_checksum", wraps=planning._canonical_snapshot_checksum
+    ) as canonical:
+        assert observe(True)[1] is None and canonical.call_count == 1
+        assert observe(True)[1] is None and canonical.call_count == 1
+        assert observe(False)[1] is None and canonical.call_count == 2
+        changed = deepcopy(data)
+        changed["tasks"][1]["title"] = "Changed outside the selected task"
+        row.raw_payload = json.dumps(changed)
+        assert observe(True)[1] == "matching_iteration_cutoff" and canonical.call_count == 3
+        assert observe(False)[1] == "matching_iteration_cutoff" and canonical.call_count == 4
+
+
+async def measured_pending_polls(call, work, worker_key, db, record_property):
+    from app.services import planning_window_reconciliation as planning, retained_planning_output as retained
+
+    engine = db.bind.sync_engine
+    selects = 0
+    authority_durations = []
+    actual_stamp = retained.authority_stamp
+
+    def count(_conn, _cursor, sql, _params, _context, _many):
+        nonlocal selects
+        selects += int(sql.lstrip().upper().startswith("SELECT"))
+
+    async def timed_authority(*args, **kwargs):
+        start = perf_counter_ns()
+        try:
+            return await actual_stamp(*args, **kwargs)
+        finally:
+            authority_durations.append(perf_counter_ns() - start)
+
+    sqlalchemy_event.listen(engine, "before_cursor_execute", count)
+    try:
+        with (
+            patch.object(
+                planning, "_canonical_snapshot_checksum", wraps=planning._canonical_snapshot_checksum
+            ) as checksum,
+            patch.object(retained, "authority_stamp", side_effect=timed_authority),
+        ):
+            start = perf_counter_ns()
+            first = await call(*work, worker_key)
+            cold_ns = perf_counter_ns() - start
+            cold_selects, cold_hashes = selects, checksum.call_count
+            start = perf_counter_ns()
+            second = await call(*work, worker_key)
+            warm_ns = perf_counter_ns() - start
+            warm_selects = selects - cold_selects
+            assert first["state"] == second["state"] == "attention_required"
+            assert cold_hashes == 1 and checksum.call_count == 1 and len(authority_durations) == 2
+            assert (
+                first["next"]["assignment"]["routing_snapshot"]
+                == second["next"]["assignment"]["routing_snapshot"]
+            )
+        baseline_start = selects
+        with patch.object(retained, "recovery_attestation_hint", return_value=None):
+            baseline = await call(*work, worker_key)
+        base_selects = selects - baseline_start
+        assert baseline["state"] == "start_assigned"
+    finally:
+        sqlalchemy_event.remove(engine, "before_cursor_execute", count)
+    assert cold_selects == warm_selects + (db.get_bind().dialect.name == "postgresql")
+    # Both native engines measured 25 additional bounded selects here. Keep a
+    # small allowance for transport instrumentation while catching another traversal.
+    assert 0 < warm_selects - base_selects <= 32
+    for key, value in {
+        "cold_selects": cold_selects,
+        "warm_selects": warm_selects,
+        "without_hint_selects": base_selects,
+        "cold_canonical_hashes": 1,
+        "warm_canonical_hashes": 0,
+        "fresh_authority_reads_per_poll": 1,
+        "cold_poll_ms": round(cold_ns / 1e6, 3),
+        "warm_poll_ms": round(warm_ns / 1e6, 3),
+        "cold_authority_ms": round(authority_durations[0] / 1e6, 3),
+        "warm_authority_ms": round(authority_durations[1] / 1e6, 3),
+    }.items():
+        record_property("planning_poll_" + key, str(value))
+    return first
 
 
 @pytest.mark.parametrize(
@@ -353,6 +468,10 @@ async def cancel_unconfirmable(http, transport, pm_key, assignment, queue_revisi
         "legacy_drained",
         "legacy_unconfirmable",
         "legacy_no_checkpoint",
+        "queued_normal",
+        "queued_recovery",
+        "legacy_queued_normal",
+        "legacy_queued_recovery",
     ],
 )
 @pytest.mark.usefixtures("deployed_agent_skill_release")
@@ -375,9 +494,9 @@ async def test_date_only_reservation(
     await db.commit()
     legacy = case.startswith("legacy_")
     lane = case.removeprefix("legacy_")
-    recovered_original = lane == "recovered_rework"
+    recovered_original = lane in {"recovered_rework", "queued_recovery"}
     post_expiry = lane in {"drained", "unconfirmable", "no_checkpoint"}
-    if recovered_original:
+    if lane == "recovered_rework":
         lane = "rework"
     if legacy:
         operator_key = "isolated-planning-recovery-operator"
@@ -510,16 +629,20 @@ async def test_date_only_reservation(
             )
             assigned = recovered["assignment"]
         queue = await call(*work, wk)
-        running = await call(
-            *begin,
-            wk,
-            payload={
-                "assignment_id": assigned["id"],
-                "queue_revision": queue["queue_revision"],
-                "lease_seconds": 60 if post_expiry else 3600,
-                "model": member.default_model_binding_key,
-            },
-            receipt="begin-notes",
+        running = (
+            None
+            if lane in {"queued_normal", "queued_recovery"}
+            else await call(
+                *begin,
+                wk,
+                payload={
+                    "assignment_id": assigned["id"],
+                    "queue_revision": queue["queue_revision"],
+                    "lease_seconds": 60 if post_expiry else 3600,
+                    "model": member.default_model_binding_key,
+                },
+                receipt="begin-notes",
+            )
         )
         retained = {
             "summary": "Delivery notes complete",
@@ -627,6 +750,32 @@ async def test_date_only_reservation(
             live = await read.get(AgentTaskAssignment, live_id)
             assert (live.task_version, live.routing_snapshot, live.review_selection) == original
             assert bool(current.execution_planning_window) == (not legacy and lane != "substantive")
+            if case == "running":
+                evidence = current.execution_planning_window["evidence"]
+                assert set(evidence) == {
+                    "iteration_id",
+                    "previous_end",
+                    "new_end",
+                    "snapshot_id",
+                    "snapshot_sha256",
+                    "input_revision",
+                }
+                saved = await read.get(ApplicationSnapshot, evidence["snapshot_id"])
+                assert (saved.checksum, saved.input_revision, saved.iteration_id) == (
+                    evidence["snapshot_sha256"],
+                    revision,
+                    iteration.id,
+                )
+                assert len(json.dumps(evidence).encode()) < 512
+                event = await read.scalar(
+                    select(TaskEvent).where(
+                        TaskEvent.task_id == task.id, TaskEvent.event_type == "task.execution_planning_window"
+                    )
+                )
+                event_payload = json.loads(event.payload)
+                assert {key: event_payload[key] for key in evidence} == evidence and len(
+                    event.payload.encode()
+                ) < 1024
             if cohort:
                 observed = (await read.scalars(select(Task).where(Task.id.in_(cohort)))).all()
                 assert len(observed) == 88
@@ -720,8 +869,10 @@ async def test_date_only_reservation(
                     json={
                         "event_type": "agent.checkpoint",
                         "payload": {
-                            "run_id": "not-an-integer",
-                            "summary": "Ordinary checkpoint without a final artifact",
+                            **mark,
+                            "pr_url": {"foreign": "value"}
+                            if transport == "rest"
+                            else "https://example.invalid/notes/pull/1",
                         }
                         if lane == "no_checkpoint"
                         else mark,
@@ -779,11 +930,25 @@ async def test_date_only_reservation(
                     "confirmed_final_output": True,
                 }
                 replacement_id = recovery["assignment"]["id"]
-                before = await call(*work, wk)
+                before = (
+                    await measured_pending_polls(call, work, wk, db, record_property)
+                    if lane == "drained"
+                    else await call(*work, wk)
+                )
                 old_etag = (await http.get("/api/agent/me/work", headers={"X-Agent-API-Key": wk})).headers[
                     "etag"
                 ]
                 if lane == "no_checkpoint":
+                    context = await call(
+                        "agent_get_complete_task_context",
+                        f"/api/agent/tasks/{task.id}/context",
+                        wk,
+                        task_id=task.id,
+                    )
+                    assert (
+                        context["start_ready"]
+                        and "retained_output_attestation_required" not in context["blocker_codes"]
+                    )
                     assert (
                         before["state"] == "start_assigned"
                         and before["next"]["assignment"]["id"] == replacement_id
@@ -845,17 +1010,24 @@ async def test_date_only_reservation(
                     not context["start_ready"]
                     and context["assignment"]["routing_snapshot"]["retained_output_attestation"] == hint
                 )
-                await call(
-                    *begin,
-                    wk,
-                    payload={
-                        "assignment_id": replacement_id,
-                        "queue_revision": before["queue_revision"],
-                        "model": member.default_model_binding_key,
-                    },
-                    receipt="ordinary-begin-held",
-                    error="retained_output_attestation_required",
-                )
+                from app.services import planning_window_reconciliation as planning
+
+                with patch.object(
+                    planning, "_canonical_snapshot_checksum", wraps=planning._canonical_snapshot_checksum
+                ) as locked_checksum:
+                    await call(
+                        *begin,
+                        wk,
+                        payload={
+                            "assignment_id": replacement_id,
+                            "queue_revision": before["queue_revision"],
+                            "model": member.default_model_binding_key,
+                        },
+                        receipt="ordinary-begin-held",
+                        error="retained_output_attestation_required",
+                    )
+                    assert locked_checksum.call_count == 1
+                    record_property("locked_begin_verified_current_snapshot", True)
                 async with db_session_factory() as check:
                     assert not await check.scalar(
                         select(AgentRun.id).where(AgentRun.assignment_id == replacement_id)
@@ -927,6 +1099,35 @@ async def test_date_only_reservation(
                     record_property("unconfirmable_task_canceled_unrelated_began", True)
                     return
                 other = team.sink.keys[team.manifest.workers[1].actor_key]
+                async with db_session_factory() as corrupt:
+                    snap = await corrupt.scalar(
+                        select(ApplicationSnapshot).where(
+                            ApplicationSnapshot.iteration_id == iteration.id,
+                            ApplicationSnapshot.input_revision == revision,
+                        )
+                    )
+                    saved_payload = deepcopy(snap.payload)
+                    snap.payload = {**saved_payload, "content_integrity_control": "other bytes"}
+                    await corrupt.commit()
+                unproved = await call(*work, wk)
+                assert (
+                    unproved["state"] == "start_assigned"
+                    and "retained_output_attestation"
+                    not in unproved["next"]["assignment"]["routing_snapshot"]
+                )
+                await worker_attest(
+                    http,
+                    transport,
+                    wk,
+                    running["run"]["id"],
+                    body,
+                    "uncorroborated-snapshot",
+                    error="planning_matching_iteration_cutoff",
+                )
+                async with db_session_factory() as restored:
+                    restored_snapshot = await restored.get(ApplicationSnapshot, snap.id)
+                    restored_snapshot.payload = saved_payload
+                    await restored.commit()
                 await worker_attest(
                     http,
                     transport,
@@ -944,6 +1145,24 @@ async def test_date_only_reservation(
                     {**body, "git_tree": "c" * 40},
                     "wrong-tree",
                     error="must all match",
+                )
+                await worker_attest(
+                    http,
+                    transport,
+                    wk,
+                    running["run"]["id"],
+                    {**body, "pr_url": "https://example.invalid/notes/pull/1"},
+                    "invalid-pr",
+                    error="checkpoint_receipt_or_repository",
+                )
+                await worker_attest(
+                    http,
+                    transport,
+                    wk,
+                    running["run"]["id"],
+                    {**body, "commit_url": "not-a-github-commit"},
+                    "invalid-commit",
+                    error="checkpoint_receipt_or_repository",
                 )
                 from app.services.retained_planning_output import _authenticate_checkpoint
 
@@ -1238,13 +1457,67 @@ async def test_date_only_reservation(
                 },
                 receipt="begin-correction",
             )
-            assert (
-                next_run["run"]["execution_provenance"]["supervised_rework"]["reviewer_profile_id"]
-                == reviewer.profile_id
-            )
-            if recovered_original:
+            if lane == "rework":
+                assert (
+                    next_run["run"]["execution_provenance"]["supervised_rework"]["reviewer_profile_id"]
+                    == reviewer.profile_id
+                )
+            if recovered_original and lane == "rework":
                 lineage = next_run["run"]["execution_provenance"]["supervised_rework"]
                 assert (
                     lineage["contributor_count"] == 2
                     and lineage["source_recovery"]["assignment_id"] == assigned["id"]
                 )
+            assert next_run["assignment"]["task_version"] == next_run["task"]["version"] > current.version
+            renewed = await call(
+                "agent_renew_my_work",
+                "/api/agent/me/work/renew",
+                wk,
+                payload=fence(next_run),
+                receipt="renew-correction",
+            )
+            assert renewed["assignment"]["task_version"] == renewed["task"]["version"]
+            delivered = await call(
+                *submit, wk, payload={**fence(renewed), **retained}, receipt="deliver-correction"
+            )
+            assert (
+                delivered["run"]["status"] == "succeeded" and delivered["run"]["id"] == next_run["run"]["id"]
+            )
+            review = await call(
+                *dispatch,
+                pk,
+                payload={
+                    "actor_id": reviewer.id,
+                    "task_id": task.id,
+                    "purpose": "verification",
+                    "reviewer_profile_id": reviewer.profile_id,
+                    "expected_task_version": delivered["task"]["version"],
+                },
+                receipt="verify-completed-window",
+            )
+            expected = {next_run["run"]["id"]: worker.id}
+            if running:
+                expected[running["run"]["id"]] = worker.id
+            if recovered_original:
+                expected[previous["run"]["id"]] = earlier_actor.id
+            selection = review["review_selection"]
+            assert len(selection["contributors"]) == len(expected)
+            assert {r["run_id"]: r["actor_id"] for r in selection["contributors"]} == expected
+            assert {r["publisher_key"] for r in selection["contributors"]} == {"first-publisher"}
+            assert selection["reviewer"]["publisher_key"] == "second-publisher"
+            decision = await call(
+                *verdict,
+                rk,
+                payload={
+                    "assignment_id": review["id"],
+                    "verdict": "pass",
+                    "reason": "Verified the submitted notes and each recorded contributor",
+                    "observed_model": verifier.default_model_binding_key,
+                    "reviewed_candidate_digest": selection["candidate"]["digest"],
+                    "expected_task_version": delivered["task"]["version"],
+                    "evidence": {"criteria": "complete"},
+                },
+                receipt="accept-completed-window",
+            )
+            assert decision["task"]["status"] == "closed"
+            record_property("closed_after_window_renew_submit_review", len(expected))

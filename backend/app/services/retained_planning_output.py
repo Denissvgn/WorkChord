@@ -67,12 +67,16 @@ async def _authenticate_checkpoint(db, actor, run, task, data, before_version):
             AgentIdempotencyRecord.idempotency_key == event.idempotency_key,
         )
     )
-    content = json.loads(event.payload)
-    commit = parse_github_url(data.commit_url)
-    pull = parse_github_url(data.pr_url)
+    try:
+        content = json.loads(event.payload)
+        recorded = json.loads(receipt.response_payload) if receipt else {}
+        commit = parse_github_url(data.commit_url)
+        pull = parse_github_url(data.pr_url)
+    except (ValueError, TypeError, AttributeError):
+        _unverified("checkpoint_receipt_or_repository")
     if (
-        not receipt
-        or json.loads(receipt.response_payload).get("event_id") != event.id
+        not isinstance(recorded, dict)
+        or recorded.get("event_id") != event.id
         or commit.github_type != "commit"
         or pull.github_type != "pull_request"
         or commit.repo_full_name.casefold() != pull.repo_full_name.casefold()
@@ -227,7 +231,9 @@ async def _retained_witness(db, task, actor, assignments, run, data, *, lock):
         or restored.assignment.routing_snapshot != json.loads(replacement.routing_snapshot)
     ):
         _unverified("unchanged_replacement")
-    proof, missing = await _planning_proof(db, task, planning_id, after_recovery=True)
+    proof, missing = await _planning_proof(
+        db, task, planning_id, after_recovery=True, cache_reads=not lock, lock=lock
+    )
     if missing:
         _unverified("planning_" + missing)
     plan, snapshot, old = proof
@@ -432,6 +438,10 @@ async def recovery_attestation_hint(db, task, replacement, cache, *, lock=False)
             or type(facts.get("assignment_id")) is not int
             or facts["assignment_id"] != original.id
             or facts.get("output_state") != "retained"
+            or not isinstance(facts.get("pr_url"), str)
+            or not 0 < len(facts["pr_url"]) <= 2048
+            or not isinstance(facts.get("observed_model"), str)
+            or not 0 < len(facts["observed_model"]) <= 255
             or any(
                 not isinstance(facts.get(k), str) or not re.fullmatch("[0-9a-f]{40}([0-9a-f]{24})?", facts[k])
                 for k in ("candidate", "git_tree")

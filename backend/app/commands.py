@@ -261,10 +261,12 @@ async def planning_input_reservation(db, kind, values):
     from app.services.execution_planning_window import current_window, extension_input, live_assignments, make_window, seal_authority, task_context
     extension = await extension_input(db, values, ids) if kind == "iteration" and parent is None else None
     for iteration_id in ids:
-        snapshot = await SnapshotService(db).create_snapshot(iteration_id, 'before_planning_input_change')
-        if extension:
-            extension["input_revision"] = current_command(db).iterations[iteration_id]
-            extension["snapshot"] = snapshot
+        filename = await SnapshotService(db).create_snapshot(iteration_id, 'before_planning_input_change')
+        if extension and filename:
+            from app.models.recovery import ApplicationSnapshot
+            snapshot = (await db.execute(select(ApplicationSnapshot.id, ApplicationSnapshot.checksum, ApplicationSnapshot.input_revision)
+                .where(ApplicationSnapshot.iteration_id == iteration_id, ApplicationSnapshot.filename == filename))).one()
+            extension.update(snapshot_id=snapshot.id, snapshot_sha256=snapshot.checksum, input_revision=snapshot.input_revision)
     tasks = list((await db.scalars(select(Task).where(Task.iteration_id.in_(ids), Task.status != 'closed').order_by(Task.id))).all())
     service = TaskService(db)
     issued = await live_assignments(db, [task.id for task in tasks], lock=True) if extension else {}
@@ -274,7 +276,7 @@ async def planning_input_reservation(db, kind, values):
     db.info['planning_input_scope'] = parent if parent is not None else set(ids)
     try:
         yield db.info['planning_input_scope']
-        if extension and extension["snapshot"] and current_command(db).mode == "apply":
+        if extension and extension.get("snapshot_id") and current_command(db).mode == "apply":
             for task in tasks:
                 if task.id not in before:
                     continue

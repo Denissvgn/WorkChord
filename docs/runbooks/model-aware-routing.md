@@ -103,6 +103,9 @@ A date-only extension reserves the iteration and every open task version.
 Existing ownership can continue when the task, assignment, model bindings,
 team, capacity owner and project review policy still match. Workers read
 their assigned queue and current task version before renewing or submitting.
+The recorded planning evidence identifies the snapshot by its ID, SHA-256
+and input revision. A worker command verifies current authority and the
+applicable historical evidence under its operation’s locks.
 Verification uses the originally selected artifact and reviewer. A rework
 begin still checks its independent rejection and the original submitter.
 

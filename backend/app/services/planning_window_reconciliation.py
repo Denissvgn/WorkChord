@@ -1,12 +1,16 @@
 """Reconcile existing ownership only from an authenticated date-only command and its preimage."""
 
 from contextlib import nullcontext
-from datetime import date
+from collections import OrderedDict
+from dataclasses import dataclass
+from datetime import date, datetime
 import hashlib
 import json
 import secrets
+from threading import Lock
 
-from sqlalchemy import select, update
+from sqlalchemy import Text, cast, func, literal, literal_column, select, update
+from app.config import get_settings
 
 from app.authority import AuthorityError, require_operator
 from app.commands import command_transaction
@@ -26,6 +30,117 @@ from app.services.task_service import TaskService
 
 
 ACTION = "agent.planning_window_reconciled"
+_SCOPE_FIELDS = ("id", "project_id", "calendar_id", "name", "manager_email", "start_date")
+
+
+@dataclass(frozen=True)
+class SnapshotIdentity:
+    id: int
+    checksum: str
+    input_revision: int
+    created_at: datetime
+    previous_end: str
+
+
+@dataclass(frozen=True)
+class _SavedTask:
+    version: int
+    context_digest: str
+    iteration_digest: str
+    previous_end: str
+
+
+# Each entry is content-bound and retains only dates, versions and digests.
+# No task text, snapshot payload or authority decision is kept in this cache.
+_SNAPSHOT_CACHE: OrderedDict[tuple, OrderedDict[int, _SavedTask]] = OrderedDict()
+_CACHE_LOCK = Lock()
+_MAX_SNAPSHOTS = 16
+_MAX_TASKS_PER_SNAPSHOT = 32
+
+
+def _cached_task(key, task_id):
+    with _CACHE_LOCK:
+        tasks = _SNAPSHOT_CACHE.get(key)
+        if tasks is None:
+            return False, None
+        _SNAPSHOT_CACHE.move_to_end(key)
+        return True, tasks.get(task_id)
+
+
+def _remember_task(key, task_id, view):
+    with _CACHE_LOCK:
+        tasks = _SNAPSHOT_CACHE.setdefault(key, OrderedDict())
+        _SNAPSHOT_CACHE.move_to_end(key)
+        tasks[task_id] = view
+        if len(tasks) > _MAX_TASKS_PER_SNAPSHOT:
+            tasks.popitem(last=False)
+        if len(_SNAPSHOT_CACHE) > _MAX_SNAPSHOTS:
+            _SNAPSHOT_CACHE.popitem(last=False)
+
+
+def _canonical_snapshot_checksum(payload):
+    return hashlib.sha256(SnapshotService._encode(payload)).hexdigest()
+
+
+def _snapshot_task(
+    snapshot,
+    task_id,
+    expected_version,
+    expected_context,
+    expected_scope,
+    next_end,
+    *,
+    cache_reads,
+    source_text=None,
+):
+    # CAST(... AS TEXT) supplies the actual bytes represented by the current
+    # row on either engine. A changed payload paired with an old stored
+    # checksum thus cannot hit a prior cache entry.
+    raw = source_text if source_text is not None else snapshot.raw_payload
+    encoded = raw.encode("utf-8") if isinstance(raw, str) else None
+    if encoded is not None and len(encoded) > get_settings().snapshot_max_bytes * 6 + 1024:
+        return None, "valid_before_image"
+    native_fingerprint = getattr(snapshot, "raw_fingerprint", None)
+    fingerprint = bytes(native_fingerprint) if native_fingerprint is not None else None
+    if encoded is not None and (cache_reads or fingerprint is not None):
+        fetched = hashlib.sha256(encoded).digest()
+        if fingerprint is not None and fetched != fingerprint:
+            return None, "matching_iteration_cutoff"
+        fingerprint = fetched
+    key = (snapshot.id, snapshot.checksum, fingerprint) if cache_reads and fingerprint is not None else None
+    verified, view = _cached_task(key, task_id) if key else (False, None)
+    try:
+        if view is None:
+            if encoded is None:
+                return None, "snapshot_payload_required"
+            payload = json.loads(encoded)
+            scope = payload["iteration"]
+            if payload["snapshot_info"]["reason"] != "before_planning_input_change":
+                return None, "matching_iteration_cutoff"
+            rows = _saved_tasks(payload["tasks"], task_id)
+            if len(rows) != 1 or rows[0]["status"] == "closed":
+                return None, "one_task_reservation"
+            view = _SavedTask(
+                rows[0]["version"],
+                digest({k: v for k, v in rows[0].items() if k != "version"}),
+                digest({field: scope.get(field) for field in _SCOPE_FIELDS}),
+                scope["end_date"],
+            )
+        if type(view.version) is not int or view.version != expected_version:
+            return None, "one_task_reservation"
+        if view.context_digest != expected_context:
+            return None, "unchanged_saved_task"
+        if view.iteration_digest != expected_scope:
+            return None, "matching_iteration_scope"
+        if not date.fromisoformat(view.previous_end) < next_end:
+            return None, "matching_iteration_cutoff"
+        if not verified and _canonical_snapshot_checksum(payload) != snapshot.checksum:
+            return None, "matching_iteration_cutoff"
+    except (TypeError, ValueError, KeyError):
+        return None, "valid_before_image"
+    if key:
+        _remember_task(key, task_id, view)
+    return view, None
 
 
 async def source_receipt_id(db, operation, target_type, target_id, *, receipt_id, actor_id, command_key):
@@ -61,7 +176,7 @@ def _saved_tasks(roots, task_id):
     return matches
 
 
-async def _planning_proof(db, task, receipt_id, *, after_recovery=False):
+async def _planning_proof(db, task, receipt_id, *, after_recovery=False, cache_reads=False, lock=False):
     if not receipt_id:
         return None, "planning_receipt"
     issued = await db.get(AgentIdempotencyRecord, receipt_id)
@@ -104,55 +219,80 @@ async def _planning_proof(db, task, receipt_id, *, after_recovery=False):
             return None, "end_date_only_request"
     except (TypeError, ValueError, KeyError):
         return None, "planning_receipt"
+    iteration = await db.get(Iteration, task.iteration_id)
+    if (
+        not iteration
+        or iteration.end_date != next_end
+        or result.get("id") != iteration.id
+        or result.get("project_id") != task.project_id
+        or iteration.project_id != task.project_id
+    ):
+        return None, "matching_iteration_cutoff"
+    current_scope = {}
+    for field in _SCOPE_FIELDS:
+        value = getattr(iteration, field)
+        current_scope[field] = value.isoformat() if isinstance(value, date) else value
+    if any(result.get(field) != value for field, value in current_scope.items()):
+        return None, "matching_iteration_scope"
+    if task.status == "closed" or task.children:
+        return None, "unchanged_saved_task"
+    current = SnapshotService(db)._task_to_export(task)
+    current_context = digest({field: value for field, value in current.items() if field != "version"})
     principal = await db.scalar(select(Principal.id).where(Principal.agent_actor_id == issued.actor_id))
-    matches = (
-        await db.scalars(
-            select(ApplicationSnapshot)
-            .where(
-                ApplicationSnapshot.iteration_id == task.iteration_id,
-                ApplicationSnapshot.input_revision == revision,
-                ApplicationSnapshot.provenance == "command",
-                ApplicationSnapshot.schema_version == 2,
-                ApplicationSnapshot.created_by_principal_id == principal,
-                ApplicationSnapshot.created_at <= issued.created_at,
-            )
-            .limit(2)
+    raw_column = cast(ApplicationSnapshot.payload, Text)
+    database_fingerprint = cache_reads and not lock and db.get_bind().dialect.name == "postgresql"
+    query = (
+        select(
+            ApplicationSnapshot.id,
+            ApplicationSnapshot.checksum,
+            ApplicationSnapshot.input_revision,
+            ApplicationSnapshot.created_at,
+            (literal(None) if database_fingerprint else raw_column).label("raw_payload"),
+            (
+                func.sha256(func.convert_to(raw_column, literal_column("'UTF8'")))
+                if database_fingerprint
+                else literal(None)
+            ).label("raw_fingerprint"),
         )
-    ).all()
+        .where(
+            ApplicationSnapshot.iteration_id == task.iteration_id,
+            ApplicationSnapshot.input_revision == revision,
+            ApplicationSnapshot.provenance == "command",
+            ApplicationSnapshot.schema_version == 2,
+            ApplicationSnapshot.created_by_principal_id == principal,
+            ApplicationSnapshot.created_at <= issued.created_at,
+        )
+        .limit(2)
+    )
+    matches = (await db.execute(query.with_for_update(read=True) if lock else query)).all()
     if not principal or len(matches) != 1:
         return None, "unique_server_snapshot"
-    snapshot = matches[0]
-    payload = snapshot.payload
-    iteration = await db.get(Iteration, task.iteration_id)
-    try:
-        if (
-            hashlib.sha256(SnapshotService._encode(payload)).hexdigest() != snapshot.checksum
-            or payload["snapshot_info"]["reason"] != "before_planning_input_change"
-            or not date.fromisoformat(payload["iteration"]["end_date"]) < next_end
-            or iteration.end_date != next_end
-            or result["id"] != iteration.id
-            or result["project_id"] != task.project_id
-            or iteration.project_id != task.project_id
-        ):
-            return None, "matching_iteration_cutoff"
-        for key in ("id", "project_id", "calendar_id", "name", "manager_email", "start_date"):
-            value = getattr(iteration, key)
-            current = value.isoformat() if isinstance(value, date) else value
-            if payload["iteration"].get(key) != current or result.get(key) != current:
-                return None, "matching_iteration_scope"
-        rows = _saved_tasks(payload["tasks"], task.id)
-        if (
-            len(rows) != 1
-            or rows[0]["status"] == "closed"
-            or rows[0]["version"] + (2 if after_recovery else 1) != task.version
-        ):
-            return None, "one_task_reservation"
-        current = SnapshotService(db)._task_to_export(task)
-        if current != {**rows[0], "version": task.version} or current["children"]:
-            return None, "unchanged_saved_task"
-    except (KeyError, TypeError, ValueError):
-        return None, "valid_before_image"
-    return (issued, snapshot, rows[0]["version"]), None
+    row = matches[0]
+    arguments = (
+        row,
+        task.id,
+        task.version - (2 if after_recovery else 1),
+        current_context,
+        digest(current_scope),
+        next_end,
+    )
+    view, missing = _snapshot_task(*arguments, cache_reads=cache_reads and not lock)
+    if database_fingerprint and missing == "snapshot_payload_required":
+        # PostgreSQL can check row content without sending the full snapshot to
+        # the API on a warm poll. Recheck the bytes after a cold two-query read
+        # so an intervening update or retention cleanup cannot populate the cache.
+        raw = await db.scalar(
+            select(raw_column).where(
+                ApplicationSnapshot.id == row.id, ApplicationSnapshot.checksum == row.checksum
+            )
+        )
+        if raw is None:
+            return None, "unique_server_snapshot"
+        view, missing = _snapshot_task(*arguments, cache_reads=True, source_text=raw)
+    if missing:
+        return None, missing
+    identity = SnapshotIdentity(row.id, row.checksum, row.input_revision, row.created_at, view.previous_end)
+    return (issued, identity, view.version), None
 
 
 async def reconcile_window(
@@ -240,7 +380,7 @@ async def reconcile_window(
         task = await TaskService(db).get_by_id(task_id)
         if task is None:
             raise LookupError("Task not found")
-        proof, missing = await _planning_proof(db, task, receipt_id)
+        proof, missing = await _planning_proof(db, task, receipt_id, lock=apply)
         window = None
         sources = {}
         if not missing:
@@ -251,7 +391,7 @@ async def reconcile_window(
                 "snapshot_id": snapshot.id,
                 "snapshot_sha256": snapshot.checksum,
                 "input_revision": snapshot.input_revision,
-                "previous_end": snapshot.payload["iteration"]["end_date"],
+                "previous_end": snapshot.previous_end,
                 "new_end": json.loads(issued.response_payload)["response"]["result"]["end_date"],
             }
             for assignment in assignments:
