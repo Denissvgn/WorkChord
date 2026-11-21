@@ -1,6 +1,6 @@
 # AgentRun
 
-**Location:** `backend/app/models/agent.py:1031`
+**Location:** `backend/app/models/agent.py:1047`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)
@@ -20,6 +20,7 @@ Trace record for one automated agent execution.
 | `claim_generation` | `Mapped[Optional[int]]` | `mapped_column(Integer, nullable=True)` | — |
 | `status` | `Mapped[str]` | `mapped_column(String(50), default='running', nullable=False, index=True)` | — |
 | `trace_id` | `Mapped[Optional[str]]` | `mapped_column(String(255), nullable=True, index=True)` | — |
+| `execution_provenance` | `Mapped[Optional[dict]]` | `mapped_column(JSON(none_as_null=True))` | — |
 | `model_binding_id` | `Mapped[Optional[int]]` | `mapped_column(Integer, ForeignKey('agent_model_bindings.id', ondelete='RESTRICT'), nullable=True, index=True)` | — |
 | `model_binding_revision` | `Mapped[Optional[int]]` | `mapped_column(Integer, nullable=True)` | — |
 | `configured_model_alias` | `Mapped[Optional[str]]` | `mapped_column(String(255), nullable=True)` | — |
@@ -102,7 +103,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_agent](../modules/models_agent.md) | 0 | `actor`, `actor_id`, `artifact_links`, `assignment`, `assignment_id`, `claim_generation`, `commit_url`, `configured_model_alias`, `ended_at`, `error`, `events`, `harness_kind` |
+| [models_agent](../modules/models_agent.md) | 0 | `actor`, `actor_id`, `artifact_links`, `assignment`, `assignment_id`, `claim_generation`, `commit_url`, `configured_model_alias`, `ended_at`, `error`, `events`, `execution_provenance` |
 
 ### Structure
 
@@ -127,4 +128,4 @@ flowchart LR
 | `AgentService.append_run_event` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `AgentService.finish_run` | type_reference | [agent_service](../modules/agent_service.md) | — |
 
-> References: showing 12 of 47 logical references; 35 omitted by the 12-row generated summary limit.
+> References: showing 12 of 60 logical references; 48 omitted by the 12-row generated summary limit.

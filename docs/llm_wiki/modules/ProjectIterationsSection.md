@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/projects/ProjectIterationsSection.
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
 | `../../services/iterationService` | `iterationService` | — | compiler-dependent |
 | `../../services/planningInputService` | `ObservedRevisions` | Specifier | compiler-dependent |
@@ -22,7 +23,7 @@ _Auto-generated from `frontend/src/components/projects/ProjectIterationsSection.
 | `../common/Modal` | `Modal` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `../iteration/IterationForm` | `IterationForm` | — | compiler-dependent |
-| `../ui` | `InlineEmptyState`, `SectionCard` | — | compiler-dependent |
+| `../ui` | `InlineEmptyState`, `SectionCard`, `SlideOverDrawer` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `lucide-react` | `CalendarDays`, `Link2`, `Pencil`, `Plus`, `Unlink` | — | compiler-dependent |
 | `react` | `useMemo`, `useState` | — | compiler-dependent |
@@ -43,7 +44,6 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 flowchart LR
     n0["frontend"]
     n1["frontend/src/components/projects/ProjectIterationsSection.tsx"]
-    n0 --> n1
     n1 --> n0
     click n1 "../modules/ProjectIterationsSection.md"
 ```
@@ -54,8 +54,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (1) |
-| Outbound | `frontend` (12) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -69,8 +68,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ProjectIterationsSectionProps](../entities/ProjectIterationsSectionProps.md) | Interface | 18 | — | — |
-| [IterationEditorState](../entities/IterationEditorState.md) | Type alias | 25 | <pre><code>&#124; &#123; mode&#58; &#39;create&#39;&#59; iteration&#58; null &#125;&#10;    &#124; &#123; mode&#58; &#39;edit&#39;&#59; iteration&#58; Iteration &#125;</code></pre> | — |
+| [ProjectIterationsSectionProps](../entities/ProjectIterationsSectionProps.md) | Interface | 19 | — | — |
+| [IterationEditorState](../entities/IterationEditorState.md) | Type alias | 26 | <pre><code>&#124; &#123; mode&#58; &#39;create&#39;&#59; iteration&#58; null &#125;&#10;    &#124; &#123; mode&#58; &#39;edit&#39;&#59; iteration&#58; Iteration &#125;</code></pre> | — |
 
 ## Functions
 

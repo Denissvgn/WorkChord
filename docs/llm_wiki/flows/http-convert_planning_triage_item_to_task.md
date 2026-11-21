@@ -101,9 +101,9 @@ sequenceDiagram
     p0-->>p30: data.model_dump (backend/app/routers/agent…nning_triage_item_to_task)(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 394 interactions; 364 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 395 interactions; 365 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 102 (101 omitted); unresolved 1 of 169 (168 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 102 (101 omitted); unresolved 1 of 170 (169 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -210,16 +210,16 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | convert_planning_triage_item_to_task | require_scope | 823 | `require_scope(actor, 'planning:write')` |
-| require_scope | actor_has_scope | 101 | `actor_has_scope(actor, scope)` |
+| require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
-| require_scope | AgentPermissionError | 102 | `AgentPermissionError(...)` |
+| require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
 | convert_planning_triage_item_to_task | convert_triage_to_task | 824 | `mcp_agent_tools.convert_triage_to_task(db, actor, triage_item_id, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
 | convert_triage_to_task | _triage_command_context | 2546 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 | _triage_command_context | validate_idempotency_key | 221 | `validate_idempotency_key(idempotency_key, required=True)` |
-| validate_idempotency_key | ValueError (backend/app/services/agen…:validate_idempotency_key) | 111 | `ValueError('Idempotency-Key is required')` |
-| validate_idempotency_key | value.strip | 115 | `value.strip(data not statically known)` |
+| validate_idempotency_key | ValueError (backend/app/services/agen…:validate_idempotency_key) | 123 | `ValueError('Idempotency-Key is required')` |
+| validate_idempotency_key | value.strip | 127 | `value.strip(data not statically known)` |
 
 ### Boundary effects
 
@@ -231,8 +231,8 @@ flowchart LR
 |---|---|---|---:|
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | external_call | `actor_scopes` | `isinstance` | 90 |
-| external_call | `validate_idempotency_key` | `ValueError` | 111 |
-| unresolved_call | `validate_idempotency_key` | `value.strip` | 115 |
+| external_call | `validate_idempotency_key` | `ValueError` | 123 |
+| unresolved_call | `validate_idempotency_key` | `value.strip` | 127 |
 | step_limit | `convert_planning_triage_item_to_task` | `first 12 steps` | 0 |
 | truncated_flow | `convert_planning_triage_item_to_task` | `depth limit` | 0 |
 

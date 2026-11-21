@@ -42,17 +42,20 @@ flowchart LR
     n2["create_saved_view (backend/app/routers/saved_views.py)"]
     n3["backend/app/schemas/__init__.py"]
     n4["SavedViewService.create_for_session (backend/app/services/saved_view_service.py)"]
-    n5["test_task_planning_issue_filter_persists_in_saved_view (backend/tests/test_saved_view_service.py)"]
+    n5["test_task_milestone_and_attention_filters_persist_in_saved_view (backend/tests/test_saved_view_service.py)"]
+    n6["test_task_planning_issue_filter_persists_in_saved_view (backend/tests/test_saved_view_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
+    n6 --> n0
     click n0 "../modules/schemas_saved_view.md"
     click n2 "../modules/saved_views.md"
     click n3 "../modules/schemas___init__.md"
     click n4 "../modules/saved_view_service.md"
     click n5 "../modules/test_saved_view_service.md"
+    click n6 "../modules/test_saved_view_service.md"
 ```
 
 ### Summary
@@ -74,4 +77,5 @@ flowchart LR
 | `create_saved_view` | type_reference | [saved_views](../modules/saved_views.md) | — |
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `SavedViewService.create_for_session` | type_reference | [saved_view_service](../modules/saved_view_service.md) | — |
+| `test_task_milestone_and_attention_filters_persist_in_saved_view` | call | [test_saved_view_service](../modules/test_saved_view_service.md) | 1 |
 | `test_task_planning_issue_filter_persists_in_saved_view` | call | [test_saved_view_service](../modules/test_saved_view_service.md) | 1 |

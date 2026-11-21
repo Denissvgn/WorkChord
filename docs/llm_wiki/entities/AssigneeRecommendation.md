@@ -1,6 +1,6 @@
 # AssigneeRecommendation
 
-**Location:** `frontend/src/types/team.ts:169`
+**Location:** `frontend/src/types/team.ts:171`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_team](../modules/types_team.md)

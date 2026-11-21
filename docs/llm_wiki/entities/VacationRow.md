@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # VacationRow
 
 **Location:** `frontend/src/pages/CalendarPage.tsx:48`

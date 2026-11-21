@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # CurrentTaskModal.test Module
 
 **Path:** `frontend/src/components/tasks/CurrentTaskModal.test.tsx`

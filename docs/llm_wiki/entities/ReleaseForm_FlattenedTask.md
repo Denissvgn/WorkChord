@@ -1,6 +1,6 @@
 # FlattenedTask
 
-**Location:** `frontend/src/components/releases/ReleaseForm.tsx:32`
+**Location:** `frontend/src/components/releases/ReleaseForm.tsx:33`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [ReleaseForm](../modules/ReleaseForm.md)

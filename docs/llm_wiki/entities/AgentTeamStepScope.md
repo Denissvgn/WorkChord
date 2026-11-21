@@ -1,6 +1,6 @@
 # AgentTeamStepScope
 
-**Location:** `frontend/src/components/settings/AgentTeamStepList.tsx:6`
+**Location:** `frontend/src/components/settings/AgentTeamStepList.tsx:7`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [AgentTeamStepList](../modules/AgentTeamStepList.md)

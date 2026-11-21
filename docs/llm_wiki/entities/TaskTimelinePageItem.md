@@ -1,6 +1,6 @@
 # TaskTimelinePageItem
 
-**Location:** `backend/app/schemas/agent.py:504`
+**Location:** `backend/app/schemas/agent.py:521`
 **Kind:** Pydantic model
 **Bases:** `TaskTimelineItem`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

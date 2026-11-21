@@ -1,6 +1,6 @@
 # Verdict
 
-**Location:** `frontend/src/components/analytics/OnTrackSummary.tsx:9`
+**Location:** `frontend/src/components/analytics/OnTrackSummary.tsx:10`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [OnTrackSummary](../modules/OnTrackSummary.md)

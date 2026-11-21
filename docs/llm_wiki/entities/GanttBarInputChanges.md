@@ -1,6 +1,6 @@
 # GanttBarInputChanges
 
-**Location:** `frontend/src/components/gantt/GanttBarInputs.tsx:9`
+**Location:** `frontend/src/components/gantt/GanttBarInputs.tsx:10`
 **Kind:** Interface
 **Bases:** —
 **Module:** [GanttBarInputs](../modules/GanttBarInputs.md)
@@ -14,7 +14,7 @@ _Auto-generated from `GanttBarInputChanges` in `frontend/src/components/gantt/Ga
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `assignee` | `{ id: number; name: string } \| null` | Yes | — | — |
-| `effort_days` | `number \| null` | Yes | — | — |
+| `effort_hours` | `number \| null` | Yes | — | — |
 | `min_start_date` | `string \| null` | Yes | — | — |
 | `max_end_date` | `string \| null` | Yes | — | — |
 | `dependencies` | `number[]` | Yes | — | — |
@@ -32,4 +32,4 @@ _Auto-generated from `GanttBarInputChanges` in `frontend/src/components/gantt/Ga
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [GanttBarInputs](../modules/GanttBarInputs.md) | 0 | `assignee`, `dependencies`, `effort_days`, `max_end_date`, `min_start_date` |
+| [GanttBarInputs](../modules/GanttBarInputs.md) | 0 | `assignee`, `dependencies`, `effort_hours`, `max_end_date`, `min_start_date` |

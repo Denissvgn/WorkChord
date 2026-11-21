@@ -97,9 +97,9 @@ sequenceDiagram
     p2-->>p30: TaskBriefService(…).write(task_id, BriefWrite.model_validate(...))
 ```
 
-> Call sequence diagram shows 30 of 360 interactions; 330 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 361 interactions; 331 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 101 (100 omitted); unresolved 1 of 145 (144 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 101 (100 omitted); unresolved 1 of 146 (145 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -203,7 +203,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_write_task_brief | _tool_call | 1052 | `_tool_call('tasks:write', ...)` |
+| agent_write_task_brief | _tool_call | 1065 | `_tool_call('tasks:write', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

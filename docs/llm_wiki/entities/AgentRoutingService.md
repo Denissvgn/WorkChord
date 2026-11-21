@@ -1,6 +1,6 @@
 # AgentRoutingService
 
-**Location:** `backend/app/services/agent_routing_service.py:201`
+**Location:** `backend/app/services/agent_routing_service.py:202`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_routing_service](../modules/agent_routing_service.md)
@@ -38,7 +38,7 @@ Create immutable assessments and deterministic exact-actor previews.
 | `_preview_context` | *(async)* `(task: Task) -> tuple[Iteration, list[TeamMember], list[AgentActor], list[AgentTaskAssignment], list[AgentRun], dict[int, tuple[int, int]], dict[int, int]]` | — | — |
 | `_capacity_inputs` | *(async)* `(*, task: Task, iteration: Iteration, members: Sequence[TeamMember]) -> dict[int, dict[str, Any]]` | — | — |
 | `_member_for_candidate` | `(*, task: Task, purpose: str, profile_id: int \| None, members: Sequence[TeamMember]) -> TeamMember \| None` | `@staticmethod` | — |
-| `_routing_input_evidence` | `(*, task: Task, assessment: TaskRoutingAssessment, purpose: str, reviewer_profile_id: int \| None, iteration: Iteration, members: Sequence[TeamMember], actors: Sequence[AgentActor], task_assignments: Sequence[AgentTaskAssignment], running_task_runs: Sequence[AgentRun], assignment_counts: dict[int, tuple[int, int]], running_counts: dict[int, int], capacity: dict[int, dict[str, Any]]) -> dict[str, Any]` | `@staticmethod` | — |
+| `_routing_input_evidence` | `(*, task: Task, assessment: TaskRoutingAssessment, purpose: str, strict_review: bool, reviewer_profile_id: int \| None, iteration: Iteration, members: Sequence[TeamMember], actors: Sequence[AgentActor], task_assignments: Sequence[AgentTaskAssignment], running_task_runs: Sequence[AgentRun], assignment_counts: dict[int, tuple[int, int]], running_counts: dict[int, int], capacity: dict[int, dict[str, Any]]) -> dict[str, Any]` | `@staticmethod` | — |
 | `_build_preview` | *(async)* `(*, task: Task, data: AgentRoutingPreviewCreate, generated_at: datetime, requesting_actor_id: int) -> AgentRoutingPreviewResponse` | — | — |
 | `preview_task_routing` | *(async)* `(task_id: int, actor: AgentActor, data: AgentRoutingPreviewCreate, *, now: datetime \| None = None) -> AgentRoutingPreviewResponse` | — | Return a deterministic preview and stage bounded shadow/audit evidence. |
 | `_completed_prior_lineage` | `(existing_assignment: AgentTaskAssignment \| None, *, selected_reasoning_tier: int, selected_context_tier: str) -> dict[str, Any] \| None` | `@staticmethod` | Compact pending lineage and record the governed tier comparison. |
@@ -106,4 +106,4 @@ flowchart LR
 | `get_task_routing_assessment` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 | `list_task_routing_assessments` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 
-> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.
+> References: showing 12 of 27 logical references; 15 omitted by the 12-row generated summary limit.

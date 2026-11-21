@@ -34,4 +34,4 @@ _Auto-generated from `frontend/src/components/ui/StickyRail.tsx`._
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `StickyRail` | <pre><code>&#40;&#123;&#10;    children&#44;&#10;    className&#44;&#10;&#125;&#58; &#123;&#10;    children&#58; ReactNode&#59;&#10;    className&#63;&#58; string&#59;&#10;&#125;&#41;</code></pre> | — | — |
+| `StickyRail` | <pre><code>&#40;&#123;&#10;    children&#44;&#10;    className&#44;&#10;    label&#44;&#10;&#125;&#58; &#123;&#10;    children&#58; ReactNode&#59;&#10;    className&#63;&#58; string&#59;&#10;    label&#58; string&#59;&#10;&#125;&#41;</code></pre> | — | A complementary landmark beside the page content; the label names it for screen readers. |

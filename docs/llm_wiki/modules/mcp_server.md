@@ -26,6 +26,7 @@ MCP uses the shared principal/project authority and command owner. Its establish
 | `app.services.agent_routing_service` | `AgentRoutingConflictError` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `AgentService`, `actor_has_scope`, `require_scope` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupConflictError` |
+| `app.services.execution_reconciliation` | `reconcile_execution_request` |
 | `app.services.identity_service` | `IdentityService` |
 | `app.services.task_service` | `TaskVersionConflictError` |
 | `app.services.triage_service` | `TriageConflictError` |
@@ -65,8 +66,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (11) |
-| Outbound | `backend` (17) |
+| Inbound | `backend` (14) |
+| Outbound | `backend` (18) |
 
 ### External packages
 
@@ -74,7 +75,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

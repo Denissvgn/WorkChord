@@ -35,7 +35,6 @@ flowchart LR
     n4["frontend/src/services/planningInputService.ts"]
     n0 --> n3
     n0 --> n4
-    n1 --> n0
     n1 --> n3
     n1 --> n4
     n3 --> n2

@@ -34,7 +34,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (12) |
+| Inbound | `backend` (13) |
 | Outbound | `backend` (2) |
 
 ### External packages
@@ -43,7 +43,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -59,4 +59,4 @@ flowchart LR
 | [IterationSummary](../entities/schemas_iteration_IterationSummary.md) | 94 | `WorkMetricSummary` | Summary statistics for an iteration. |
 | [PlanCheckpoint](../entities/schemas_iteration_PlanCheckpoint.md) | 116 | `BaseModel` | One of the six plan checkpoints, in the order people and the PM work them. |
 | [IterationPlanningReadinessSummary](../entities/schemas_iteration_IterationPlanningReadinessSummary.md) | 124 | `BaseModel` | Compact planning inputs used by persistent navigation. |
-| [IterationPage](../entities/IterationPage.md) | 147 | `BaseModel` | — |
+| [IterationPage](../entities/IterationPage.md) | 148 | `BaseModel` | — |

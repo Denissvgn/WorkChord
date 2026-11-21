@@ -208,9 +208,9 @@ flowchart LR
 | mutation | `run.validators.append` | `main` | 188 |
 | filesystem_write | `shutil.copytree` | `main` | 191 |
 | filesystem_write | `shutil.copyfile` | `main` | 195 |
-| filesystem_write | `shutil.copyfile` | `main` | 210 |
-| filesystem_write | `shutil.copyfile` | `main` | 212 |
-| mutation | `app_env.update` | `main` | 218 |
+| filesystem_write | `shutil.copyfile` | `main` | 211 |
+| filesystem_write | `shutil.copyfile` | `main` | 213 |
+| mutation | `app_env.update` | `main` | 219 |
 
 ### Static analysis gaps
 

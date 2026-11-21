@@ -1,6 +1,6 @@
 # AgentCollectionPageMetadata
 
-**Location:** `backend/app/schemas/agent.py:915`
+**Location:** `backend/app/schemas/agent.py:937`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

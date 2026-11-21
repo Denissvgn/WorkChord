@@ -46,21 +46,24 @@ flowchart LR
     n2["frontend/src/components/analytics/IterationOutlook.test.tsx"]
     n3["OnTrackSummary (frontend/src/components/analytics/OnTrackSummary.tsx)"]
     n4["StatusDistribution (frontend/src/components/analytics/StatusDistribution.tsx)"]
-    n5["frontend/src/pages/OverviewPage.test.tsx"]
-    n6["frontend/src/services/iterationService.ts"]
+    n5["frontend/src/components/layout/planProgressPlacement.test.tsx"]
+    n6["frontend/src/features/scope/planningLinks.test.tsx"]
+    n7["frontend/src/services/iterationService.ts"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/types_iteration.md"
     click n1 "../modules/workMetrics.md"
     click n2 "../modules/IterationOutlook.test.md"
     click n3 "../modules/OnTrackSummary.md"
     click n4 "../modules/StatusDistribution.md"
-    click n5 "../modules/OverviewPage.test.md"
-    click n6 "../modules/iterationService.md"
+    click n5 "../modules/planProgressPlacement.test.md"
+    click n6 "../modules/planningLinks.test.md"
+    click n7 "../modules/iterationService.md"
 ```
 
 ### Summary
@@ -82,5 +85,6 @@ flowchart LR
 | `IterationOutlook.test` | import | [IterationOutlook.test](../modules/IterationOutlook.test.md) | — |
 | `OnTrackSummary` | type_reference | [OnTrackSummary](../modules/OnTrackSummary.md) | — |
 | `StatusDistribution` | type_reference | [StatusDistribution](../modules/StatusDistribution.md) | — |
-| `OverviewPage.test` | import | [OverviewPage.test](../modules/OverviewPage.test.md) | — |
+| `planProgressPlacement.test` | import | [planProgressPlacement.test](../modules/planProgressPlacement.test.md) | — |
+| `planningLinks.test` | import | [planningLinks.test](../modules/planningLinks.test.md) | — |
 | `iterationService` | import | [iterationService](../modules/iterationService.md) | — |

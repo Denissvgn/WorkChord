@@ -38,10 +38,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (25) |
+| Inbound | `frontend` (50) |
 | Outbound | `frontend` (1) |
 
-> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 51 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -55,5 +55,5 @@ flowchart LR
 | [IterationSeriesResponse](../entities/types_iteration_IterationSeriesResponse.md) | Interface | 55 | — | — |
 | [IterationSummary](../entities/types_iteration_IterationSummary.md) | Interface | 59 | `WorkMetrics` | — |
 | [IterationPlanningReadinessSummary](../entities/types_iteration_IterationPlanningReadinessSummary.md) | Interface | 82 | — | — |
-| [PlanCheckpoint](../entities/types_iteration_PlanCheckpoint.md) | Interface | 103 | — | — |
+| [PlanCheckpoint](../entities/types_iteration_PlanCheckpoint.md) | Interface | 104 | — | — |
 | [IterationSeriesStop](../entities/types_iteration_IterationSeriesStop.md) | Type alias | 41 | <pre><code>&#124; &#123; mode&#58; &#39;count&#39;&#59; count&#58; number &#125;&#10;    &#124; &#123; mode&#58; &#39;until&#95;date&#39;&#59; until&#95;date&#58; string &#125;</code></pre> | — |

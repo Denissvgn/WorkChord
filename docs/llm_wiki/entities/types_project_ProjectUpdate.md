@@ -35,10 +35,13 @@ _Auto-generated from `ProjectUpdate` in `frontend/src/types/project.ts`._
 ```mermaid
 flowchart LR
     n0["ProjectUpdate (frontend/src/types/project.ts)"]
-    n1["frontend/src/services/projectService.ts"]
+    n1["frontend/src/components/projects/ProjectHeaderFields.tsx"]
+    n2["frontend/src/services/projectService.ts"]
     n1 --> n0
+    n2 --> n0
     click n0 "../modules/types_project.md"
-    click n1 "../modules/projectService.md"
+    click n1 "../modules/ProjectHeaderFields.md"
+    click n2 "../modules/projectService.md"
 ```
 
 ### Summary
@@ -51,4 +54,5 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `ProjectHeaderFields` | import | [ProjectHeaderFields](../modules/ProjectHeaderFields.md) | — |
 | `projectService` | import | [projectService](../modules/projectService.md) | — |

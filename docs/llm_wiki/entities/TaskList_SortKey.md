@@ -1,6 +1,6 @@
 # SortKey
 
-**Location:** `frontend/src/components/tasks/TaskList.tsx:52`
+**Location:** `frontend/src/components/tasks/TaskList.tsx:64`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TaskList](../modules/TaskList.md)
@@ -28,16 +28,25 @@ _Auto-generated from `SortKey` in `frontend/src/components/tasks/TaskList.tsx`._
 ```mermaid
 flowchart LR
     n0["SortKey (frontend/src/components/tasks/TaskList.tsx)"]
-    n1["frontend/src/components/tasks/SavedViewsControl.tsx"]
-    n2["sortKeyFromSavedView (frontend/src/features/savedViews/taskViewState.ts)"]
-    n3["frontend/src/pages/TasksPage.tsx"]
+    n1["TaskViewOptions (frontend/src/components/tasks/TaskViewOptions.tsx)"]
+    n2["frontend/src/components/tasks/useSavedViewManager.tsx"]
+    n3["sortKeyFromSearchParams (frontend/src/features/savedViews/taskViewParams.ts)"]
+    n4["writeSortKeyToSearchParams (frontend/src/features/savedViews/taskViewParams.ts)"]
+    n5["sortKeyFromSavedView (frontend/src/features/savedViews/taskViewState.ts)"]
+    n6["frontend/src/pages/TasksPage.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
+    n4 --> n0
+    n5 --> n0
+    n6 --> n0
     click n0 "../modules/TaskList.md"
-    click n1 "../modules/SavedViewsControl.md"
-    click n2 "../modules/taskViewState.md"
-    click n3 "../modules/TasksPage.md"
+    click n1 "../modules/TaskViewOptions.md"
+    click n2 "../modules/useSavedViewManager.md"
+    click n3 "../modules/taskViewParams.md"
+    click n4 "../modules/taskViewParams.md"
+    click n5 "../modules/taskViewState.md"
+    click n6 "../modules/TasksPage.md"
 ```
 
 ### Summary
@@ -50,6 +59,9 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `SavedViewsControl` | import | [SavedViewsControl](../modules/SavedViewsControl.md) | — |
+| `TaskViewOptions` | type_reference | [TaskViewOptions](../modules/TaskViewOptions.md) | — |
+| `useSavedViewManager` | import | [useSavedViewManager](../modules/useSavedViewManager.md) | — |
+| `sortKeyFromSearchParams` | type_reference | [taskViewParams](../modules/taskViewParams.md) | — |
+| `writeSortKeyToSearchParams` | type_reference | [taskViewParams](../modules/taskViewParams.md) | — |
 | `sortKeyFromSavedView` | type_reference | [taskViewState](../modules/taskViewState.md) | — |
 | `TasksPage` | import | [TasksPage](../modules/TasksPage.md) | — |

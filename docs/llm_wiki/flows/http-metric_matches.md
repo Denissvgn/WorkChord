@@ -82,9 +82,9 @@ sequenceDiagram
     p1-->>p27: result.scalar_one_or_none
 ```
 
-> Call sequence diagram shows 30 of 313 interactions; 283 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 315 interactions; 285 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 6 of 122 (116 omitted); unresolved 7 of 164 (157 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 6 of 123 (117 omitted); unresolved 7 of 165 (158 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -96,7 +96,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/work_metrics.py:scoped_metric_tasks` | 16 | - | unresolved | 6 |
 | `backend/app/services/release_service.py:ReleaseService._attach_work_metrics` | 14 | [backend/app/services/work_metrics.py](../modules/services_work_metrics.md) | internal | 1 |
 | `backend/app/utils/time.py:utc_now` | 28 | - | external | 1 |
-| `backend/app/services/work_metrics.py:aggregate_metrics` | 27 | - | unresolved | 113 |
+| `backend/app/services/work_metrics.py:aggregate_metrics` | 27 | - | unresolved | 114 |
 | `backend/app/authority.py:_scope_conditions` | 32 | - | external | 36 |
 > Omission summary shows 8 of 20 groups; 12 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
@@ -111,7 +111,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 28; effect analysis evaluated: 19, partial: 3, unavailable: 6. Counts include steps omitted from the displayed trace.
 
-Collector observations for 22 source steps with known totals: observed: 132, emitted: 126, omitted: 6. Unavailable totals are excluded.
+Collector observations for 22 source steps with known totals: observed: 139, emitted: 130, omitted: 9. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -119,7 +119,7 @@ Collector observations for 22 source steps with known totals: observed: 132, emi
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
-| `metric_matches` | `available` | `evaluated` | `available` | `8` | `8` | `0` |
+| `metric_matches` | `available` | `evaluated` | `available` | `9` | `9` | `0` |
 | `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `sum (backend/app/routers/task_domain.py:metric_matches)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
@@ -167,7 +167,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `metric_matches` | `db: DB`, `metric: str`, `project_id: int \| None`, `iteration_id: int \| None`, `release_id: int \| None`, `limit: int` | - | - | `...`, `...` |
+| `metric_matches` | `db: DB`, `metric: str`, `project_id: int \| None`, `iteration_id: int \| None`, `release_id: int \| None`, `limit: int`, `after_id: int \| None` | - | - | `...`, `...` |
 | `HTTPException` | - | - | - | - |
 | `sum (backend/app/routers/task_domain.py:metric_matches)` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
@@ -184,11 +184,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| metric_matches | HTTPException | 92 | `HTTPException(422, detail=[...])` |
-| metric_matches | sum (backend/app/routers/task_domain.py:metric_matches) | 93 | `sum(...)` |
-| metric_matches | HTTPException | 94 | `HTTPException(422, detail=[...])` |
-| metric_matches | ReleaseService | 98 | `ReleaseService(db)` |
-| metric_matches | ReleaseService.get_by_id | 99 | `releases.get_by_id(release_id)` |
+| metric_matches | HTTPException | 117 | `HTTPException(422, detail=[...])` |
+| metric_matches | sum (backend/app/routers/task_domain.py:metric_matches) | 118 | `sum(...)` |
+| metric_matches | HTTPException | 119 | `HTTPException(422, detail=[...])` |
+| metric_matches | ReleaseService | 123 | `ReleaseService(db)` |
+| metric_matches | ReleaseService.get_by_id | 124 | `releases.get_by_id(release_id)` |
 | ReleaseService.get_by_id | self.db.execute | 117 | `self.db.execute(...)` |
 | ReleaseService.get_by_id | select(…).options(…).where | 118 | `select(Release).options(*self._release_options()).where(...)` |
 | ReleaseService.get_by_id | select(…).options | 118 | `select(Release).options(...)` |
@@ -204,9 +204,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `metric_matches` | `HTTPException` | 92 |
-| external_call | `metric_matches` | `sum` | 93 |
-| external_call | `metric_matches` | `HTTPException` | 94 |
+| external_call | `metric_matches` | `HTTPException` | 117 |
+| external_call | `metric_matches` | `sum` | 118 |
+| external_call | `metric_matches` | `HTTPException` | 119 |
 | unresolved_call | `ReleaseService.get_by_id` | `self.db.execute` | 117 |
 | unresolved_call | `ReleaseService.get_by_id` | `select(Release).options(*self._release_options()).where` | 118 |
 | unresolved_call | `ReleaseService.get_by_id` | `select(Release).options` | 118 |

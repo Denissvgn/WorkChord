@@ -10,18 +10,22 @@ One structured brief owns goal, context, scope, exclusions, stable criteria, ver
 
 Actual dependency changes invalidate current progress and acceptance through general updates and individual add/remove commands. Immutable evidence history remains available, a command reserves one task version, and no-op dependency requests retain their current version. Locked graph relationships are loaded explicitly before applying a dependency update.
 
+Formal review on a project with the different-publisher policy requires the assigned verifier’s command to have checked the current task, brief and artifact revisions. A new artifact or changed task version requires a new candidate check before acceptance.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
 | `app.authority` | `AuthorityError`, `require_project` |
 | `app.autonomy.canonical` | `sha256_hex` |
-| `app.commands` | `atomic_command`, `command_transaction` |
+| `app.commands` | `atomic_command`, `command_transaction`, `current_command` |
 | `app.models.autonomy` | `AgentWorkPackage` |
 | `app.models.task` | `Task` |
 | `app.models.task_brief` | `TaskBriefRevision`, `TaskProgressRecord`, `TaskReviewRecord` |
 | `app.schemas.task_brief` | `TaskBrief`, `ProgressWrite`, `TaskReviewWrite`, `BriefCriterion` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
+| `app.services.identity_service` | `acting_principal_id` |
+| `app.services.review_provenance` | `different_publisher_required` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_service` | `TaskService` |
 | `copy` | `copy` |
@@ -47,8 +51,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (18) |
-| Outbound | `backend` (10) |
+| Inbound | `backend` (20) |
+| Outbound | `backend` (12) |
 
 ### External packages
 
@@ -56,7 +60,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -1,6 +1,6 @@
 # Absence
 
-**Location:** `frontend/src/components/tasks/PersonCapacity.tsx:10`
+**Location:** `frontend/src/components/tasks/PersonCapacity.tsx:11`
 **Kind:** Interface
 **Bases:** —
 **Module:** [PersonCapacity](../modules/PersonCapacity.md)

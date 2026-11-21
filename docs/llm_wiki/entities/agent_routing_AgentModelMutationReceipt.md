@@ -1,6 +1,6 @@
 # AgentModelMutationReceipt
 
-**Location:** `backend/app/schemas/agent_routing.py:487`
+**Location:** `backend/app/schemas/agent_routing.py:489`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -9,12 +9,15 @@
 
 Durable, replay-safe receipt for an operator model mutation.
 
+``actor_id`` is null when the operator's admin key made the change; that
+receipt is returned once and not stored for replay.
+
 ## Attributes
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `operation` | `str` | `operation` | Yes | No | — | max_length=100; min_length=1 | — | — |
-| `actor_id` | `int` | `actor_id` | Yes | No | — | ge=1 | — | — |
+| `actor_id` | `int \| None` | `actor_id` | Yes | Yes | — | ge=1 | — | — |
 | `target_type` | `Literal['model_catalog', 'model_binding']` | `target_type` | Yes | No | — | — | — | — |
 | `target_id` | `int` | `target_id` | Yes | No | — | ge=1 | — | — |
 | `idempotency_key` | `str` | `idempotency_key` | Yes | No | — | max_length=255; min_length=1 | — | — |
@@ -103,4 +106,4 @@ flowchart LR
 | `AgentModelCatalogService.create_catalog` | type_reference | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | — |
 | `AgentModelCatalogService.disable_binding` | type_reference | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | — |
 
-> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.
+> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.

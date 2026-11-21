@@ -44,9 +44,11 @@ flowchart LR
     n2["frontend/src/components/settings/TemplateLabelSettings.tsx"]
     n3["frontend/src/components/tasks/TaskForm.test.tsx"]
     n4["frontend/src/components/tasks/TaskForm.tsx"]
-    n5["templateDisplay (frontend/src/i18n/seedDisplay.ts)"]
-    n6["frontend/src/pages/TriagePage.tsx"]
-    n7["frontend/src/services/templateService.ts"]
+    n5["frontend/src/components/triage/CreateTriageDrawer.tsx"]
+    n6["templateDisplay (frontend/src/i18n/seedDisplay.ts)"]
+    n7["frontend/src/pages/SettingsPage.labels.test.tsx"]
+    n8["frontend/src/pages/SettingsPage.readOnlyPanels.test.tsx"]
+    n9["frontend/src/services/templateService.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -54,14 +56,18 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
+    n9 --> n0
     click n0 "../modules/types_template.md"
     click n1 "../modules/ProjectForm.md"
     click n2 "../modules/TemplateLabelSettings.md"
     click n3 "../modules/TaskForm.test.md"
     click n4 "../modules/TaskForm.md"
-    click n5 "../modules/seedDisplay.md"
-    click n6 "../modules/TriagePage.md"
-    click n7 "../modules/templateService.md"
+    click n5 "../modules/CreateTriageDrawer.md"
+    click n6 "../modules/seedDisplay.md"
+    click n7 "../modules/SettingsPage.labels.test.md"
+    click n8 "../modules/SettingsPage.readOnlyPanels.test.md"
+    click n9 "../modules/templateService.md"
 ```
 
 ### Summary
@@ -78,6 +84,8 @@ flowchart LR
 | `TemplateLabelSettings` | import | [TemplateLabelSettings](../modules/TemplateLabelSettings.md) | — |
 | `TaskForm.test` | import | [TaskForm.test](../modules/TaskForm.test.md) | — |
 | `TaskForm` | import | [TaskForm](../modules/TaskForm.md) | — |
+| `CreateTriageDrawer` | import | [CreateTriageDrawer](../modules/CreateTriageDrawer.md) | — |
 | `templateDisplay` | type_reference | [seedDisplay](../modules/seedDisplay.md) | — |
-| `TriagePage` | import | [TriagePage](../modules/TriagePage.md) | — |
+| `SettingsPage.labels.test` | import | [SettingsPage.labels.test](../modules/SettingsPage.labels.test.md) | — |
+| `SettingsPage.readOnlyPanels.test` | import | [SettingsPage.readOnlyPanels.test](../modules/SettingsPage.readOnlyPanels.test.md) | — |
 | `templateService` | import | [templateService](../modules/templateService.md) | — |

@@ -1,6 +1,6 @@
 # UnscheduledReason
 
-**Location:** `backend/app/schemas/gantt.py:69`
+**Location:** `backend/app/schemas/gantt.py:73`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)

@@ -35,18 +35,18 @@ _Auto-generated from `Iteration` in `frontend/src/types/iteration.ts`._
 ```mermaid
 flowchart LR
     n0["Iteration (frontend/src/types/iteration.ts)"]
-    n1["frontend/src/components/iteration/IterationForm.test.tsx"]
-    n2["IterationForm (frontend/src/components/iteration/IterationForm.tsx)"]
-    n3["IterationList (frontend/src/components/iteration/IterationList.tsx)"]
-    n4["IterationSelector (frontend/src/components/iteration/IterationSelector.tsx)"]
-    n5["frontend/src/components/planning/PlanQuickAddCapacity.test.tsx"]
-    n6["PlanQuickAddCapacity (frontend/src/components/planning/PlanQuickAddCapacity.tsx)"]
-    n7["ProjectIterationsSection (frontend/src/components/projects/ProjectIterationsSection.tsx)"]
-    n8["frontend/src/components/tasks/TaskForm.tsx"]
-    n9["frontend/src/components/tasks/TaskWorkPanel.tsx"]
-    n10["frontend/src/features/planningMasters/usePlanningNavigationSummary.ts"]
-    n11["frontend/src/features/planningMasters/usePlanningReadiness.test.tsx"]
-    n12["enrichPlanningTeamMembers (frontend/src/features/planningMasters/usePlanningReadiness.ts)"]
+    n1["frontend/src/components/capacity/CapacitySection.test.tsx"]
+    n2["CapacitySection (frontend/src/components/capacity/CapacitySection.tsx)"]
+    n3["frontend/src/components/capacity/PlanQuickAddCapacity.test.tsx"]
+    n4["PlanQuickAddCapacity (frontend/src/components/capacity/PlanQuickAddCapacity.tsx)"]
+    n5["AllIterationsDrawer (frontend/src/components/iteration/AllIterationsDrawer.tsx)"]
+    n6["IterationEditorDrawer (frontend/src/components/iteration/IterationEditorDrawer.tsx)"]
+    n7["frontend/src/components/iteration/IterationForm.test.tsx"]
+    n8["IterationForm (frontend/src/components/iteration/IterationForm.tsx)"]
+    n9["IterationList (frontend/src/components/iteration/IterationList.tsx)"]
+    n10["frontend/src/components/layout/planProgressPlacement.test.tsx"]
+    n11["frontend/src/components/layout/ScopeBar.tsx"]
+    n12["PlanIterationCheckpoint (frontend/src/components/planning/PlanIterationCheckpoint.tsx)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -60,18 +60,18 @@ flowchart LR
     n11 --> n0
     n12 --> n0
     click n0 "../modules/types_iteration.md"
-    click n1 "../modules/IterationForm.test.md"
-    click n2 "../modules/IterationForm.md"
-    click n3 "../modules/IterationList.md"
-    click n4 "../modules/IterationSelector.md"
-    click n5 "../modules/PlanQuickAddCapacity.test.md"
-    click n6 "../modules/PlanQuickAddCapacity.md"
-    click n7 "../modules/ProjectIterationsSection.md"
-    click n8 "../modules/TaskForm.md"
-    click n9 "../modules/TaskWorkPanel.md"
-    click n10 "../modules/usePlanningNavigationSummary.md"
-    click n11 "../modules/usePlanningReadiness.test.md"
-    click n12 "../modules/usePlanningReadiness.md"
+    click n1 "../modules/CapacitySection.test.md"
+    click n2 "../modules/CapacitySection.md"
+    click n3 "../modules/PlanQuickAddCapacity.test.md"
+    click n4 "../modules/PlanQuickAddCapacity.md"
+    click n5 "../modules/AllIterationsDrawer.md"
+    click n6 "../modules/IterationEditorDrawer.md"
+    click n7 "../modules/IterationForm.test.md"
+    click n8 "../modules/IterationForm.md"
+    click n9 "../modules/IterationList.md"
+    click n10 "../modules/planProgressPlacement.test.md"
+    click n11 "../modules/ScopeBar.md"
+    click n12 "../modules/PlanIterationCheckpoint.md"
 ```
 
 ### Summary
@@ -84,17 +84,17 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `CapacitySection.test` | import | [CapacitySection.test](../modules/CapacitySection.test.md) | — |
+| `CapacitySection` | type_reference | [CapacitySection](../modules/CapacitySection.md) | — |
+| `PlanQuickAddCapacity.test` | import | [PlanQuickAddCapacity.test](../modules/PlanQuickAddCapacity.test.md) | — |
+| `PlanQuickAddCapacity` | type_reference | [PlanQuickAddCapacity](../modules/PlanQuickAddCapacity.md) | — |
+| `AllIterationsDrawer` | type_reference | [AllIterationsDrawer](../modules/AllIterationsDrawer.md) | — |
+| `IterationEditorDrawer` | type_reference | [IterationEditorDrawer](../modules/IterationEditorDrawer.md) | — |
 | `IterationForm.test` | import | [IterationForm.test](../modules/IterationForm.test.md) | — |
 | `IterationForm` | type_reference | [IterationForm](../modules/IterationForm.md) | — |
 | `IterationList` | type_reference | [IterationList](../modules/IterationList.md) | — |
-| `IterationSelector` | type_reference | [IterationSelector](../modules/IterationSelector.md) | — |
-| `PlanQuickAddCapacity.test` | import | [PlanQuickAddCapacity.test](../modules/PlanQuickAddCapacity.test.md) | — |
-| `PlanQuickAddCapacity` | type_reference | [PlanQuickAddCapacity](../modules/PlanQuickAddCapacity.md) | — |
-| `ProjectIterationsSection` | type_reference | [ProjectIterationsSection](../modules/ProjectIterationsSection.md) | — |
-| `TaskForm` | import | [TaskForm](../modules/TaskForm.md) | — |
-| `TaskWorkPanel` | import | [TaskWorkPanel](../modules/TaskWorkPanel.md) | — |
-| `usePlanningNavigationSummary` | import | [usePlanningNavigationSummary](../modules/usePlanningNavigationSummary.md) | — |
-| `usePlanningReadiness.test` | import | [usePlanningReadiness.test](../modules/usePlanningReadiness.test.md) | — |
-| `enrichPlanningTeamMembers` | type_reference | [usePlanningReadiness](../modules/usePlanningReadiness.md) | — |
+| `planProgressPlacement.test` | import | [planProgressPlacement.test](../modules/planProgressPlacement.test.md) | — |
+| `ScopeBar` | import | [ScopeBar](../modules/ScopeBar.md) | — |
+| `PlanIterationCheckpoint` | type_reference | [PlanIterationCheckpoint](../modules/PlanIterationCheckpoint.md) | — |
 
-> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.
+> References: showing 12 of 44 logical references; 32 omitted by the 12-row generated summary limit.

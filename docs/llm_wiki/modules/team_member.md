@@ -21,8 +21,8 @@ Person profiles carry stable unique lifetime tokens as well as nonreusing numeri
 | `app.models.task` | `Task` |
 | `app.utils.time` | `UTCDateTime`, `utc_now` |
 | `datetime` | `date`, `datetime` |
-| `sqlalchemy` | `Boolean`, `CheckConstraint`, `Date`, `Float`, `ForeignKey`, `Index`, `Integer`, `JSON`, `String`, `Text`, `UniqueConstraint` |
-| `sqlalchemy.orm` | `Mapped`, `mapped_column`, `relationship` |
+| `sqlalchemy` | `Boolean`, `CheckConstraint`, `Date`, `Float`, `ForeignKey`, `Index`, `Integer`, `JSON`, `String`, `Text`, `UniqueConstraint`, `select` |
+| `sqlalchemy.orm` | `Mapped`, `column_property`, `mapped_column`, `relationship` |
 | `typing` | `TYPE_CHECKING`, `Any`, `Optional` |
 | `uuid` | `uuid4` |
 
@@ -44,7 +44,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (55) |
+| Inbound | `backend` (61) |
 | Outbound | `backend` (6) |
 
 ### External packages
@@ -53,7 +53,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 57 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 63 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

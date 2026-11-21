@@ -189,10 +189,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| record_runtime_observation | _refuse_agents | 1521 | `_refuse_agents(db, agent_api_key)` |
-| _refuse_agents | service_db.info.get | 1501 | `service_db.info.get('authority')` |
-| _refuse_agents | HTTPException | 1503 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Runtime observations are advisory and are not available to agents.')` |
-| record_runtime_observation | RuntimeObservationService.record | 1522 | `RuntimeObservationService(db).record(data)` |
+| record_runtime_observation | _refuse_agents | 1522 | `_refuse_agents(db, agent_api_key)` |
+| _refuse_agents | service_db.info.get | 1502 | `service_db.info.get('authority')` |
+| _refuse_agents | HTTPException | 1504 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Runtime observations are advisory and are not available to agents.')` |
+| record_runtime_observation | RuntimeObservationService.record | 1523 | `RuntimeObservationService(db).record(data)` |
 | RuntimeObservationService.record | RuntimeObservationService._writer | 66 | `self._writer(data not statically known)` |
 | RuntimeObservationService._writer | self.db.info.get | 31 | `self.db.info.get('authority')` |
 | RuntimeObservationService._writer | AuthorityError | 33 | `AuthorityError('observer_required', 'Only a paired observer or an operator records runtime observations.')` |
@@ -211,8 +211,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `_refuse_agents` | `service_db.info.get` | 1501 |
-| external_call | `_refuse_agents` | `HTTPException` | 1503 |
+| unresolved_call | `_refuse_agents` | `service_db.info.get` | 1502 |
+| external_call | `_refuse_agents` | `HTTPException` | 1504 |
 | unresolved_call | `RuntimeObservationService._writer` | `self.db.info.get` | 31 |
 | unresolved_call | `internal_authority` | `db.info.get` | 92 |
 | unresolved_call | `RuntimeObservationService._references` | `self.db.get` | 40 |

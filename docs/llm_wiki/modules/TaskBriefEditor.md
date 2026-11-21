@@ -14,6 +14,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskBriefEditor.tsx`._
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `./taskEditorContract` | `newCriterion` | — | compiler-dependent |
 | `lucide-react` | `ArrowDown`, `ArrowUp`, `Plus`, `Trash2` | — | compiler-dependent |
+| `react` | `ReactNode` | Specifier | compiler-dependent |
 | `react` | `useId` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 
@@ -36,7 +37,7 @@ flowchart LR
     n3["frontend/src/components/tasks/taskEditorContract.ts"]
     n4["frontend/src/components/tasks/TaskForm.tsx"]
     n5["frontend/src/components/tasks/TaskReadView.tsx"]
-    n6["frontend/src/pages/TriagePage.tsx"]
+    n6["frontend/src/components/triage/ConvertTriageDrawer.tsx"]
     n7["frontend/src/types/task.ts"]
     n1 --> n2
     n1 --> n3
@@ -50,18 +51,18 @@ flowchart LR
     n4 --> n7
     n5 --> n0
     n5 --> n2
+    n5 --> n3
     n5 --> n7
     n6 --> n0
     n6 --> n2
     n6 --> n3
-    n6 --> n7
     click n0 "../modules/Button.md"
     click n1 "../modules/TaskBriefEditor.test.md"
     click n2 "../modules/TaskBriefEditor.md"
     click n3 "../modules/taskEditorContract.md"
     click n4 "../modules/TaskForm.md"
     click n5 "../modules/TaskReadView.md"
-    click n6 "../modules/TriagePage.md"
+    click n6 "../modules/ConvertTriageDrawer.md"
     click n7 "../modules/types_task.md"
 ```
 
@@ -72,7 +73,7 @@ flowchart LR
 | Inbound | [TaskBriefEditor.test](../modules/TaskBriefEditor.test.md) |
 | Inbound | [TaskForm](../modules/TaskForm.md) |
 | Inbound | [TaskReadView](../modules/TaskReadView.md) |
-| Inbound | [TriagePage](../modules/TriagePage.md) |
+| Inbound | [ConvertTriageDrawer](../modules/ConvertTriageDrawer.md) |
 | Outbound | [Button](../modules/Button.md) |
 | Outbound | [taskEditorContract](../modules/taskEditorContract.md) |
 | Outbound | [types_task](../modules/types_task.md) |
@@ -87,4 +88,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskBriefEditor` | <pre><code>&#40;&#123; value&#44; onChange&#44; disabled &#61; false&#44; hideContext &#61; false &#125;&#58; &#123;&#10;    value&#58; TaskBrief&#59; onChange&#58; &#40;value&#58; TaskBrief&#41; &#61;&#62; void&#59; disabled&#63;&#58; boolean&#59; hideContext&#63;&#58; boolean&#59;&#10;&#125;&#41;</code></pre> | — | — |
+| `TaskBriefEditor` | <pre><code>&#40;&#123; value&#44; onChange&#44; disabled &#61; false&#44; hideContext &#61; false&#44; part &#61; &#39;all&#39;&#44; actions &#125;&#58; &#123;&#10;    value&#58; TaskBrief&#59; onChange&#58; &#40;value&#58; TaskBrief&#41; &#61;&#62; void&#59; disabled&#63;&#58; boolean&#59; hideContext&#63;&#58; boolean&#59;&#10;    part&#63;&#58; &#39;all&#39; &#124; &#39;essential&#39; &#124; &#39;details&#39;&#59; actions&#63;&#58; ReactNode&#59;&#10;&#125;&#41;</code></pre> | — | `part` splits the brief for a short create form: `essential` is the goal and the acceptance criteria, |

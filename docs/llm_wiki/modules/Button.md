@@ -10,7 +10,8 @@ _Auto-generated from `frontend/src/components/common/Button.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `clsx` | `clsx` | — | compiler-dependent |
+| `./buttonStyles` | `ButtonSize`, `ButtonVariant` | Specifier | compiler-dependent |
+| `./buttonStyles` | `buttonClassName` | — | compiler-dependent |
 | `lucide-react` | `Loader2` | — | compiler-dependent |
 | `react` | `ButtonHTMLAttributes` | Declaration | erased |
 | `react` | `Children`, `forwardRef` | — | compiler-dependent |
@@ -26,11 +27,14 @@ _Auto-generated from `frontend/src/components/common/Button.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
     n1["frontend/src/components/common/Button.tsx"]
     n0 --> n1
+    n1 --> n0
     click n1 "../modules/Button.md"
 ```
 
@@ -40,15 +44,16 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (86) |
+| Inbound | `frontend` (160) |
+| Outbound | `frontend` (1) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 3 | 0 |
+| typescript | 2 | 0 |
 
-> All 86 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 161 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

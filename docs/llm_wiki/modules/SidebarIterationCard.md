@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # SidebarIterationCard Module
 
 **Path:** `frontend/src/components/layout/SidebarIterationCard.tsx`

@@ -12,7 +12,7 @@ The supervision pipeline places every open task in exactly one stage, in the ord
 
 | Source | Symbols |
 |--------|---------|
-| `app.commands` | `commit_or_flush` |
+| `app.commands` | `atomic_command`, `commit_or_flush`, `current_command` |
 | `app.config` | `get_settings` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRun`, `AgentRunEvent`, `AgentTaskAssignment`, `TaskEvent` |
 | `app.models.identity` | `Principal` |
@@ -32,7 +32,7 @@ The supervision pipeline places every open task in exactly one stage, in the ord
 | `hashlib` | `hashlib` |
 | `json` | `json` |
 | `secrets` | `secrets` |
-| `sqlalchemy` | `select`, `text`, `and_`, `select` |
+| `sqlalchemy` | `select`, `text`, `update`, `and_`, `select` |
 | `sqlalchemy.exc` | `IntegrityError` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `sqlalchemy.orm` | `selectinload`, `selectinload` |
@@ -56,7 +56,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (32) |
+| Inbound | `backend` (35) |
 | Outbound | `backend` (16) |
 
 ### External packages
@@ -65,7 +65,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 46 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 49 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -73,7 +73,7 @@ flowchart LR
 |-------|------|-------|-------------|
 | [AgentConflictError](../entities/AgentConflictError.md) | 71 | `Exception` | Raised when an agent operation conflicts with current task state. |
 | [AgentPermissionError](../entities/AgentPermissionError.md) | 75 | `Exception` | Raised when an agent lacks a required scope. |
-| [AgentService](../entities/AgentService.md) | 125 | — | Service for agent authentication, task control, and run tracing. |
+| [AgentService](../entities/AgentService.md) | 137 | — | Service for agent authentication, task control, and run tracing. |
 
 ## Functions
 
@@ -83,5 +83,6 @@ flowchart LR
 | `hash_api_key` | `(api_key: str) -> str` | — | Hash an agent API key for storage and lookup. |
 | `actor_scopes` | `(actor: AgentActor) -> list[str]` | — | Parse an actor scope list. |
 | `actor_has_scope` | `(actor: AgentActor, scope: str) -> bool` | — | Return whether an actor has the requested scope. |
+| `is_admin_key_principal` | `(actor: AgentActor) -> bool` | — | Return whether the actor is the transient operator behind the admin key. |
 | `require_scope` | `(actor: AgentActor, scope: str) -> None` | — | Raise if actor does not have scope. |
 | `validate_idempotency_key` | `(value: Optional[str], *, required: bool = False) -> Optional[str]` | — | Validate one persistence-safe, log-safe idempotency key. |

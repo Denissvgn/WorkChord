@@ -39,50 +39,42 @@ flowchart LR
     n1["frontend/src/components/common/DisabledReason.tsx"]
     n2["frontend/src/components/common/Modal.tsx"]
     n3["frontend/src/components/feedback/QueryState.tsx"]
-    n4["frontend/src/components/iteration/IterationImportDialog.tsx"]
-    n5["frontend/src/components/iteration/IterationList.tsx"]
+    n4["frontend/src/components/iteration/AllIterationsDrawer.tsx"]
+    n5["frontend/src/components/iteration/IterationImportDialog.tsx"]
     n6["frontend/src/components/tasks/useDraftDismissal.ts"]
-    n7["frontend/src/pages/IterationsPage.tsx"]
-    n8["frontend/src/services/exportService.ts"]
-    n9["frontend/src/services/planningInputService.ts"]
-    n10["frontend/src/utils/apiError.ts"]
+    n7["frontend/src/services/exportService.ts"]
+    n8["frontend/src/services/planningInputService.ts"]
+    n9["frontend/src/utils/apiError.ts"]
     n3 --> n0
-    n3 --> n10
+    n3 --> n9
     n4 --> n0
-    n4 --> n1
-    n4 --> n2
-    n4 --> n3
-    n4 --> n6
-    n4 --> n8
-    n4 --> n9
-    n4 --> n10
+    n4 --> n5
     n5 --> n0
-    n5 --> n4
+    n5 --> n1
+    n5 --> n2
+    n5 --> n3
+    n5 --> n6
+    n5 --> n7
     n5 --> n8
     n5 --> n9
-    n5 --> n10
-    n7 --> n4
-    n7 --> n5
-    n8 --> n9
+    n7 --> n8
     click n0 "../modules/Button.md"
     click n1 "../modules/DisabledReason.md"
     click n2 "../modules/Modal.md"
     click n3 "../modules/QueryState.md"
-    click n4 "../modules/IterationImportDialog.md"
-    click n5 "../modules/IterationList.md"
+    click n4 "../modules/AllIterationsDrawer.md"
+    click n5 "../modules/IterationImportDialog.md"
     click n6 "../modules/useDraftDismissal.md"
-    click n7 "../modules/IterationsPage.md"
-    click n8 "../modules/exportService.md"
-    click n9 "../modules/planningInputService.md"
-    click n10 "../modules/apiError.md"
+    click n7 "../modules/exportService.md"
+    click n8 "../modules/planningInputService.md"
+    click n9 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [IterationList](../modules/IterationList.md) |
-| Inbound | [IterationsPage](../modules/IterationsPage.md) |
+| Inbound | [AllIterationsDrawer](../modules/AllIterationsDrawer.md) |
 | Outbound | [Button](../modules/Button.md) |
 | Outbound | [DisabledReason](../modules/DisabledReason.md) |
 | Outbound | [Modal](../modules/Modal.md) |

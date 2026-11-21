@@ -1,6 +1,6 @@
 # HelpRelatedLink
 
-**Location:** `frontend/src/navigation/helpContexts.ts:12`
+**Location:** `frontend/src/navigation/helpContexts.ts:18`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [helpContexts](../modules/helpContexts.md)
@@ -11,7 +11,6 @@
     to: string;
     labelKey: string;
     defaultLabel: string;
-    descriptionKey?: string;
 }
 ```
 

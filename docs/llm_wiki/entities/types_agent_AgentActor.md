@@ -38,7 +38,7 @@ _Auto-generated from `AgentActor` in `frontend/src/types/agent.ts`._
 flowchart LR
     n0["AgentActor (frontend/src/types/agent.ts)"]
     n1["AgentActorRosterItem (frontend/src/types/agent.ts)"]
-    n2["frontend/src/components/settings/AgentModelAdministration.test.tsx"]
+    n2["frontend/src/components/team/AgentModelAdministration.test.tsx"]
     n1 --> n0
     n2 --> n0
     click n0 "../modules/types_agent.md"

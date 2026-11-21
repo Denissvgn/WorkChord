@@ -1,13 +1,13 @@
 # VacationManagerProps
 
-**Location:** `frontend/src/components/team/VacationManager.tsx:19`
+**Location:** `frontend/src/components/capacity/VacationManager.tsx:19`
 **Kind:** Interface
 **Bases:** —
 **Module:** [VacationManager](../modules/VacationManager.md)
 
 ## Description
 
-_Auto-generated from `VacationManagerProps` in `frontend/src/components/team/VacationManager.tsx`._
+_Auto-generated from `VacationManagerProps` in `frontend/src/components/capacity/VacationManager.tsx`._
 
 ## Attributes
 
@@ -25,8 +25,8 @@ _Auto-generated from `VacationManagerProps` in `frontend/src/components/team/Vac
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["VacationManagerProps (frontend/src/components/team/VacationManager.tsx)"]
-    n1["VacationManager (frontend/src/components/team/VacationManager.tsx)"]
+    n0["VacationManagerProps (frontend/src/components/capacity/VacationManager.tsx)"]
+    n1["VacationManager (frontend/src/components/capacity/VacationManager.tsx)"]
     n1 --> n0
     click n0 "../modules/VacationManager.md"
     click n1 "../modules/VacationManager.md"

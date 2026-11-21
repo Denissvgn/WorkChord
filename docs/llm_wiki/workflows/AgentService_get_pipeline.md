@@ -13,7 +13,7 @@
 3. `agent_work_service.AgentWorkService`
 4. `agent_work_service.AgentWorkService._start_blockers`
 5. `time.as_utc`
-6. `agent_work_service.AgentWorkService._has_pending_recovery_signal`
+6. `agent_work_service.AgentWorkService._pending_recovery_signal`
 
 ## Touches
 

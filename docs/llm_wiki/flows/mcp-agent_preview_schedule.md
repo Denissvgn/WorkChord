@@ -200,7 +200,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_preview_schedule | _tool_call | 1535 | `_tool_call('planning:write', ..., preview=True)` |
+| agent_preview_schedule | _tool_call | 1548 | `_tool_call('planning:write', ..., preview=True)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

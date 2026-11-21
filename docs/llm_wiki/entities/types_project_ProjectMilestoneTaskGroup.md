@@ -33,10 +33,10 @@ _Auto-generated from `ProjectMilestoneTaskGroup` in `frontend/src/types/project.
 ```mermaid
 flowchart LR
     n0["ProjectMilestoneTaskGroup (frontend/src/types/project.ts)"]
-    n1["frontend/src/pages/ProjectDetailPage.tsx"]
+    n1["MilestonesSection (frontend/src/components/projects/MilestonesSection.tsx)"]
     n1 --> n0
     click n0 "../modules/types_project.md"
-    click n1 "../modules/ProjectDetailPage.md"
+    click n1 "../modules/MilestonesSection.md"
 ```
 
 ### Summary
@@ -49,4 +49,4 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `ProjectDetailPage` | import | [ProjectDetailPage](../modules/ProjectDetailPage.md) | — |
+| `MilestonesSection` | type_reference | [MilestonesSection](../modules/MilestonesSection.md) | — |

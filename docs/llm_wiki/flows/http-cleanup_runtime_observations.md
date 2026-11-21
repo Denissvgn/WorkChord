@@ -154,7 +154,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| cleanup_runtime_observations | RuntimeObservationService.cleanup | 1560 | `RuntimeObservationService(db).cleanup(limit=limit)` |
+| cleanup_runtime_observations | RuntimeObservationService.cleanup | 1561 | `RuntimeObservationService(db).cleanup(limit=limit)` |
 | RuntimeObservationService.cleanup | require_operator | 115 | `require_operator(self.db)` |
 | require_operator | db.info.get (backend/app/authority.py:require_operator) | 84 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 86 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |

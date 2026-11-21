@@ -1,6 +1,6 @@
 # AgentTeamTopology
 
-**Location:** `backend/app/models/agent.py:284`
+**Location:** `backend/app/models/agent.py:299`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)

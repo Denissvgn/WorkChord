@@ -1,6 +1,6 @@
 # TemplateRowProps
 
-**Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:221`
+**Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:226`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TemplateLabelSettings](../modules/TemplateLabelSettings.md)
@@ -14,6 +14,7 @@ _Auto-generated from `TemplateRowProps` in `frontend/src/components/settings/Tem
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `isBusy` | `boolean` | Yes | — | — |
+| `readOnly` | `boolean` | Yes | — | — |
 | `template` | `WorkTemplate` | Yes | — | — |
 | `isFirst` | `boolean` | Yes | — | — |
 | `isLast` | `boolean` | Yes | — | — |
@@ -34,4 +35,4 @@ _Auto-generated from `TemplateRowProps` in `frontend/src/components/settings/Tem
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TemplateLabelSettings](../modules/TemplateLabelSettings.md) | 0 | `isBusy`, `isFirst`, `isLast`, `onEdit`, `onMove`, `onToggleActive`, `template` |
+| [TemplateLabelSettings](../modules/TemplateLabelSettings.md) | 0 | `isBusy`, `isFirst`, `isLast`, `onEdit`, `onMove`, `onToggleActive`, `readOnly`, `template` |

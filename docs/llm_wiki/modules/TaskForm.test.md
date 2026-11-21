@@ -22,7 +22,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskForm.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `api` |
-| Module calls | `api = hoisted`, `mock`, `describe` |
+| Module calls | `api = hoisted`, `mock`, `describe`, `describe` |
 
 ## Local dependency map
 

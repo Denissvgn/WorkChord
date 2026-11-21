@@ -1,6 +1,6 @@
 # Availability
 
-**Location:** `frontend/src/components/tasks/PersonCapacity.tsx:11`
+**Location:** `frontend/src/components/tasks/PersonCapacity.tsx:12`
 **Kind:** Interface
 **Bases:** —
 **Module:** [PersonCapacity](../modules/PersonCapacity.md)

@@ -10,6 +10,8 @@ _Auto-generated from `frontend/src/components/calendar/InteractiveCalendar.tsx`.
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Button` | `Button` | — | compiler-dependent |
+| `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../i18n/dateLocale` | `dateFnsLocale` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
 | `date-fns` | `format`, `startOfMonth`, `endOfMonth`, `eachDayOfInterval`, `getDay` | — | compiler-dependent |
@@ -30,16 +32,25 @@ _Auto-generated from `frontend/src/components/calendar/InteractiveCalendar.tsx`.
 flowchart LR
     n0["frontend/src/components/calendar/InteractiveCalendar.test.tsx"]
     n1["frontend/src/components/calendar/InteractiveCalendar.tsx"]
-    n2["frontend/src/i18n/dateLocale.ts"]
-    n3["frontend/src/pages/CalendarPage.tsx"]
+    n2["frontend/src/components/common/Button.tsx"]
+    n3["frontend/src/components/common/Select.tsx"]
+    n4["frontend/src/components/settings/WorkCalendarSettings.tsx"]
+    n5["frontend/src/i18n/dateLocale.ts"]
     n0 --> n1
+    n0 --> n4
     n1 --> n2
-    n3 --> n1
-    n3 --> n2
+    n1 --> n3
+    n1 --> n5
+    n4 --> n1
+    n4 --> n2
+    n4 --> n3
+    n4 --> n5
     click n0 "../modules/InteractiveCalendar.test.md"
     click n1 "../modules/InteractiveCalendar.md"
-    click n2 "../modules/dateLocale.md"
-    click n3 "../modules/CalendarPage.md"
+    click n2 "../modules/Button.md"
+    click n3 "../modules/Select.md"
+    click n4 "../modules/WorkCalendarSettings.md"
+    click n5 "../modules/dateLocale.md"
 ```
 
 ### Internal neighbors
@@ -47,7 +58,9 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [InteractiveCalendar.test](../modules/InteractiveCalendar.test.md) |
-| Inbound | [CalendarPage](../modules/CalendarPage.md) |
+| Inbound | [WorkCalendarSettings](../modules/WorkCalendarSettings.md) |
+| Outbound | [Button](../modules/Button.md) |
+| Outbound | [Select](../modules/Select.md) |
 | Outbound | [dateLocale](../modules/dateLocale.md) |
 
 ### External packages
@@ -60,8 +73,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CalendarPeriodNavigatorProps](../entities/CalendarPeriodNavigatorProps.md) | Interface | 11 | — | — |
-| [InteractiveCalendarProps](../entities/InteractiveCalendarProps.md) | Interface | 21 | — | — |
+| [CalendarPeriodNavigatorProps](../entities/CalendarPeriodNavigatorProps.md) | Interface | 13 | — | — |
+| [InteractiveCalendarProps](../entities/InteractiveCalendarProps.md) | Interface | 23 | — | — |
 
 ## Functions
 

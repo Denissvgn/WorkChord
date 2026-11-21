@@ -119,4 +119,4 @@ flowchart LR
 | `create_saved_view` | type_reference | [saved_views](../modules/saved_views.md) | — |
 | `delete_saved_view` | type_reference | [saved_views](../modules/saved_views.md) | — |
 
-> References: showing 12 of 49 logical references; 37 omitted by the 12-row generated summary limit.
+> References: showing 12 of 51 logical references; 39 omitted by the 12-row generated summary limit.

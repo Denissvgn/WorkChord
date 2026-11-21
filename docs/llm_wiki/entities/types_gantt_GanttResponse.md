@@ -31,19 +31,28 @@ _Auto-generated from `GanttResponse` in `frontend/src/types/gantt.ts`._
 ```mermaid
 flowchart LR
     n0["GanttResponse (frontend/src/types/gantt.ts)"]
-    n1["frontend/src/features/planningMasters/usePlanningReadiness.test.tsx"]
-    n2["enrichPlanningTeamMembers (frontend/src/features/planningMasters/usePlanningReadiness.ts)"]
-    n3["frontend/src/pages/GanttPage.test.tsx"]
-    n4["frontend/src/services/ganttService.ts"]
+    n1["PlanReviewSection (frontend/src/components/planning/PlanReviewSection.tsx)"]
+    n2["PlanScheduleSection (frontend/src/components/planning/PlanScheduleSection.tsx)"]
+    n3["frontend/src/features/planningMasters/usePlanningReadiness.test.tsx"]
+    n4["frontend/src/features/planningMasters/usePlanningReadiness.ts"]
+    n5["frontend/src/pages/GanttPage.test.tsx"]
+    n6["frontend/src/services/ganttService.ts"]
+    n7["frontend/src/test/ganttChrome.test.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
+    n6 --> n0
+    n7 --> n0
     click n0 "../modules/types_gantt.md"
-    click n1 "../modules/usePlanningReadiness.test.md"
-    click n2 "../modules/usePlanningReadiness.md"
-    click n3 "../modules/GanttPage.test.md"
-    click n4 "../modules/ganttService.md"
+    click n1 "../modules/PlanReviewSection.md"
+    click n2 "../modules/PlanScheduleSection.md"
+    click n3 "../modules/usePlanningReadiness.test.md"
+    click n4 "../modules/usePlanningReadiness.md"
+    click n5 "../modules/GanttPage.test.md"
+    click n6 "../modules/ganttService.md"
+    click n7 "../modules/ganttChrome.test.md"
 ```
 
 ### Summary
@@ -56,7 +65,10 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `PlanReviewSection` | type_reference | [PlanReviewSection](../modules/PlanReviewSection.md) | — |
+| `PlanScheduleSection` | type_reference | [PlanScheduleSection](../modules/PlanScheduleSection.md) | — |
 | `usePlanningReadiness.test` | import | [usePlanningReadiness.test](../modules/usePlanningReadiness.test.md) | — |
-| `enrichPlanningTeamMembers` | type_reference | [usePlanningReadiness](../modules/usePlanningReadiness.md) | — |
+| `usePlanningReadiness` | import | [usePlanningReadiness](../modules/usePlanningReadiness.md) | — |
 | `GanttPage.test` | import | [GanttPage.test](../modules/GanttPage.test.md) | — |
 | `ganttService` | import | [ganttService](../modules/ganttService.md) | — |
+| `ganttChrome.test` | import | [ganttChrome.test](../modules/ganttChrome.test.md) | — |

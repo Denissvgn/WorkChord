@@ -12,6 +12,7 @@ The optional task/project disclosure retains scoped personal drafts and creation
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` | — | compiler-dependent |
 | `../../features/timeEntries/useTimeEntries` | `useTimeEntries` | — | compiler-dependent |
 | `../../features/useLiveWindow` | `useLiveWindow` | — | compiler-dependent |
@@ -60,7 +61,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (4) |
-| Outbound | `frontend` (13) |
+| Outbound | `frontend` (14) |
 
 ### External packages
 
@@ -68,13 +69,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Draft](../entities/Draft.md) | Type alias | 22 | <pre><code>&#123; work&#95;date&#58; string&#59; timezone&#58; string&#59; minutes&#58; string&#59; note&#58; string&#59; reason&#58; string&#59;&#10;    task&#58; string&#59; request&#58; string&#59; editing&#63;&#58; Pick&#60;TimeEntry&#44; &#39;id&#39; &#124; &#39;version&#39;&#62; &#125;</code></pre> | — |
+| [Draft](../entities/Draft.md) | Type alias | 23 | <pre><code>&#123; work&#95;date&#58; string&#59; timezone&#58; string&#59; minutes&#58; string&#59; note&#58; string&#59; reason&#58; string&#59;&#10;    task&#58; string&#59; request&#58; string&#59; editing&#63;&#58; Pick&#60;TimeEntry&#44; &#39;id&#39; &#124; &#39;version&#39;&#62; &#125;</code></pre> | — |
 
 ## Functions
 

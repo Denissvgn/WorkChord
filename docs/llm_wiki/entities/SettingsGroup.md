@@ -1,6 +1,6 @@
 # SettingsGroup
 
-**Location:** `frontend/src/pages/SettingsPage.tsx:62`
+**Location:** `frontend/src/pages/SettingsPage.tsx:75`
 **Kind:** Interface
 **Bases:** —
 **Module:** [SettingsPage](../modules/SettingsPage.md)
@@ -15,7 +15,7 @@ _Auto-generated from `SettingsGroup` in `frontend/src/pages/SettingsPage.tsx`._
 |------|------|----------|---------|-------------|
 | `id` | `SettingsGroupId` | Yes | — | — |
 | `labelKey` | `string` | Yes | — | — |
-| `items` | `SettingsDestination[]` | Yes | — | — |
+| `items` | `SettingsSection[]` | Yes | — | — |
 
 ## Methods
 

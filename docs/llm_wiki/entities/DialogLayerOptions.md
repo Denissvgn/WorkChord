@@ -17,6 +17,7 @@ _Auto-generated from `DialogLayerOptions` in `frontend/src/components/common/dia
 | `onClose` | `() => void` | Yes | — | — |
 | `initialFocusRef` | `RefObject<HTMLElement \| null>` | No | — | — |
 | `restoreFocusRef` | `RefObject<HTMLElement \| null>` | No | — | — |
+| `fallbackFocusRef` | `RefObject<HTMLElement \| null>` | No | — | — |
 | `closeDisabled` | `boolean` | No | — | — |
 
 ## Methods
@@ -39,7 +40,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [dialogLayer](../modules/dialogLayer.md) | 0 | `closeDisabled`, `initialFocusRef`, `onClose`, `open`, `restoreFocusRef` |
+| [dialogLayer](../modules/dialogLayer.md) | 0 | `closeDisabled`, `fallbackFocusRef`, `initialFocusRef`, `onClose`, `open`, `restoreFocusRef` |
 
 ### References
 

@@ -12,30 +12,19 @@ Preserves authenticated saved-view ownership and legacy predicate adaptation. It
 |--------|---------|-----------|------------------|
 | `../../i18n/i18n` | `i18n` | — | compiler-dependent |
 | `../../i18n/seedDisplay` | `savedViewDisplay` | — | compiler-dependent |
-| `../../services/savedViewService` | `savedViewService` | — | compiler-dependent |
-| `../../services/sessionService` | `sessionService` | — | compiler-dependent |
-| `../../types/savedView` | `SavedView`, `SavedViewScope` | Declaration | erased |
-| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
-| `../../utils/savedViewState` | `savedViewModified` | — | compiler-dependent |
+| `../../types/savedView` | `SavedViewScope` | Declaration | erased |
 | `../common/Button` | `Button` | — | compiler-dependent |
-| `../common/Input` | `Input` | — | compiler-dependent |
-| `../common/Modal` | `Modal` | — | compiler-dependent |
-| `../common/Select` | `Select` | — | compiler-dependent |
-| `../common/Textarea` | `Textarea` | — | compiler-dependent |
-| `../common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
-| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
-| `./TaskFiltersBar` | `TaskFilters` | Declaration | erased |
-| `./TaskList` | `SortKey` | Declaration | erased |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
-| `lucide-react` | `AlertTriangle`, `Copy`, `Save`, `Trash2` | — | compiler-dependent |
-| `react` | `FormEvent` | Declaration | erased |
-| `react` | `useMemo`, `useRef`, `useState` | — | compiler-dependent |
+| `./useSavedViewManager` | `SavedViewManager` | Declaration | erased |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `Check`, `ChevronDown`, `Copy`, `RotateCcw`, `Save`, `Trash2` | — | compiler-dependent |
+| `react` | `KeyboardEvent`, `ReactNode` | Declaration | erased |
+| `react` | `useEffect`, `useId`, `useRef`, `useState` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
-| Exports | `SavedViewsControl` |
+| Exports | `SavedViewPicker` |
 | Constants | `t` |
 | Module calls | `t = bind` |
 
@@ -46,21 +35,47 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend"]
+    n0["frontend/src/components/common/Button.tsx"]
     n1["frontend/src/components/tasks/SavedViewsControl.tsx"]
-    n0 --> n1
+    n2["frontend/src/components/tasks/useSavedViewManager.tsx"]
+    n3["frontend/src/i18n/i18n.ts"]
+    n4["frontend/src/i18n/seedDisplay.ts"]
+    n5["frontend/src/pages/TasksPage.tsx"]
+    n6["frontend/src/types/savedView.ts"]
     n1 --> n0
+    n1 --> n2
+    n1 --> n3
+    n1 --> n4
+    n1 --> n6
+    n2 --> n0
+    n2 --> n3
+    n2 --> n6
+    n4 --> n3
+    n4 --> n6
+    n5 --> n0
+    n5 --> n1
+    n5 --> n2
+    n5 --> n4
+    n5 --> n6
+    click n0 "../modules/Button.md"
     click n1 "../modules/SavedViewsControl.md"
+    click n2 "../modules/useSavedViewManager.md"
+    click n3 "../modules/i18n.md"
+    click n4 "../modules/seedDisplay.md"
+    click n5 "../modules/TasksPage.md"
+    click n6 "../modules/savedView.md"
 ```
-
-> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (1) |
-| Outbound | `frontend` (16) |
+| Inbound | [TasksPage](../modules/TasksPage.md) |
+| Outbound | [Button](../modules/Button.md) |
+| Outbound | [useSavedViewManager](../modules/useSavedViewManager.md) |
+| Outbound | [i18n](../modules/i18n.md) |
+| Outbound | [seedDisplay](../modules/seedDisplay.md) |
+| Outbound | [savedView](../modules/savedView.md) |
 
 ### External packages
 
@@ -68,18 +83,14 @@ flowchart LR
 |---|---:|---:|
 | typescript | 3 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
-
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SavedViewsControlProps](../entities/SavedViewsControlProps.md) | Interface | 27 | — | — |
-| [EditableScope](../entities/EditableScope.md) | Type alias | 24 | `Exclude<SavedViewScope, 'system'>` | — |
-| [FormMode](../entities/FormMode.md) | Type alias | 25 | `'create' \| 'duplicate'` | — |
+| [PickerItem](../entities/PickerItem.md) | Type alias | 19 | <pre><code>&#124; &#123; kind&#58; &#39;view&#39;&#59; key&#58; string&#59; label&#58; ReactNode&#59; checked&#58; boolean&#59; disabled&#63;&#58; boolean&#59; onSelect&#58; &#40;&#41; &#61;&#62; void &#125;&#10;    &#124; &#123; kind&#58; &#39;action&#39;&#59; key&#58; string&#59; label&#58; ReactNode&#59; icon&#58; ReactNode&#59; disabled&#63;&#58; boolean&#59; tone&#63;&#58; &#39;danger&#39;&#59; onSelect&#58; &#40;&#41; &#61;&#62; void &#125;</code></pre> | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `SavedViewsControl` | <pre><code>&#40;&#123;&#10;    filters&#44;&#10;    sortKey&#44;&#10;    selectedViewId&#44;&#10;    onSelectedViewIdChange&#44;&#10;    onApplyView&#44;&#10;&#125;&#58; SavedViewsControlProps&#41;</code></pre> | — | — |
+| `SavedViewPicker` | `({ manager, label }: { manager: SavedViewManager; label: string })` | — | The page title of Tasks: the name of the view shown, opening a menu with every saved view and |

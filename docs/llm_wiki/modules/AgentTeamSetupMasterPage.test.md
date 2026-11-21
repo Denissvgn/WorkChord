@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # AgentTeamSetupMasterPage.test Module
 
 **Path:** `frontend/src/pages/AgentTeamSetupMasterPage.test.tsx`

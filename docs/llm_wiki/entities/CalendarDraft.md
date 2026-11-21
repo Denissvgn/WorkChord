@@ -1,13 +1,13 @@
 # CalendarDraft
 
-**Location:** `frontend/src/pages/CalendarPage.tsx:41`
+**Location:** `frontend/src/components/settings/WorkCalendarSettings.tsx:47`
 **Kind:** Interface
 **Bases:** —
-**Module:** [CalendarPage](../modules/CalendarPage.md)
+**Module:** [WorkCalendarSettings](../modules/WorkCalendarSettings.md)
 
 ## Description
 
-_Auto-generated from `CalendarDraft` in `frontend/src/pages/CalendarPage.tsx`._
+_Auto-generated from `CalendarDraft` in `frontend/src/components/settings/WorkCalendarSettings.tsx`._
 
 ## Attributes
 
@@ -31,4 +31,4 @@ _Auto-generated from `CalendarDraft` in `frontend/src/pages/CalendarPage.tsx`._
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [CalendarPage](../modules/CalendarPage.md) | 0 | `holidays`, `short_days`, `weekend_days`, `year` |
+| [WorkCalendarSettings](../modules/WorkCalendarSettings.md) | 0 | `holidays`, `short_days`, `weekend_days`, `year` |

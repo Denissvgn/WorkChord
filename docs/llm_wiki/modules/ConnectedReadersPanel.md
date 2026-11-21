@@ -50,6 +50,7 @@ flowchart LR
     n2 --> n6
     n2 --> n7
     n3 --> n4
+    n5 --> n0
     n5 --> n2
     click n0 "../modules/Button.md"
     click n1 "../modules/ConnectedReadersPanel.test.md"

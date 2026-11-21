@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/features/agentTeamSetup/manifestLocations.tes
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `./manifestLocations` | `fieldIssues`, `lineForPath`, `lineRange`, `manifestPathLines`, `pathIssue`, `syntaxIssue` | — | compiler-dependent |
+| `./manifestLocations` | `fieldIssues`, `lineForPath`, `lineRange`, `pathIssue`, `syntaxIssue` | — | compiler-dependent |
 | `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals

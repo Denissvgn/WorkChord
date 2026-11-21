@@ -1,6 +1,6 @@
 # AgentCapabilitiesResponse
 
-**Location:** `backend/app/schemas/agent.py:793`
+**Location:** `backend/app/schemas/agent.py:815`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

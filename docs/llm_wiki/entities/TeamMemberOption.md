@@ -1,6 +1,6 @@
 # TeamMemberOption
 
-**Location:** `frontend/src/types/team.ts:124`
+**Location:** `frontend/src/types/team.ts:126`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_team](../modules/types_team.md)

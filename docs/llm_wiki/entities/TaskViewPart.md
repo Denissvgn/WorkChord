@@ -1,6 +1,6 @@
 # TaskViewPart
 
-**Location:** `frontend/src/components/tasks/TaskReadView.tsx:21`
+**Location:** `frontend/src/components/tasks/TaskReadView.tsx:30`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TaskReadView](../modules/TaskReadView.md)

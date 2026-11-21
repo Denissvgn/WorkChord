@@ -1,13 +1,13 @@
 # ViewMode
 
-**Location:** `frontend/src/pages/TasksPage.tsx:69`
+**Location:** `frontend/src/pages/TasksPage.tsx:95`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TasksPage](../modules/TasksPage.md)
 **Target:**
 
 ```typescript
-'list' | 'board'
+'list' | 'board' | 'pipeline'
 ```
 
 ## Description

@@ -1,6 +1,6 @@
 # SortKey
 
-**Location:** `frontend/src/pages/ProjectsPage.tsx:106`
+**Location:** `frontend/src/pages/ProjectsPage.tsx:109`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [ProjectsPage](../modules/ProjectsPage.md)

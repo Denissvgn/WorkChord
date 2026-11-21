@@ -38,10 +38,12 @@ flowchart LR
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
     n3["backend/app/routers/task_domain.py"]
-    n4["TaskBriefService.write_progress (backend/app/services/task_brief_service.py)"]
-    n5["backend/app/services/task_recovery_service.py"]
-    n6["backend/tests/test_task_domain.py"]
-    n7["backend/tests/test_task_domain_integrity.py"]
+    n4["backend/app/services/review_provenance.py"]
+    n5["TaskBriefService.write_progress (backend/app/services/task_brief_service.py)"]
+    n6["backend/app/services/task_recovery_service.py"]
+    n7["backend/tests/test_manual_review_provenance.py"]
+    n8["backend/tests/test_task_domain.py"]
+    n9["backend/tests/test_task_domain_integrity.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -49,14 +51,18 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
+    n9 --> n0
     click n0 "../modules/models_task_brief.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/routers_task_domain.md"
-    click n4 "../modules/task_brief_service.md"
-    click n5 "../modules/task_recovery_service.md"
-    click n6 "../modules/test_task_domain.md"
-    click n7 "../modules/test_task_domain_integrity.md"
+    click n4 "../modules/review_provenance.md"
+    click n5 "../modules/task_brief_service.md"
+    click n6 "../modules/task_recovery_service.md"
+    click n7 "../modules/test_manual_review_provenance.md"
+    click n8 "../modules/test_task_domain.md"
+    click n9 "../modules/test_task_domain_integrity.md"
 ```
 
 ### Summary
@@ -77,7 +83,9 @@ flowchart LR
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `task_domain` | import | [routers_task_domain](../modules/routers_task_domain.md) | — |
+| `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |
 | `TaskBriefService.write_progress` | call | [task_brief_service](../modules/task_brief_service.md) | 1 |
 | `task_recovery_service` | import | [task_recovery_service](../modules/task_recovery_service.md) | — |
+| `test_manual_review_provenance` | import | [test_manual_review_provenance](../modules/test_manual_review_provenance.md) | — |
 | `test_task_domain` | import | [test_task_domain](../modules/test_task_domain.md) | — |
 | `test_task_domain_integrity` | import | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | — |

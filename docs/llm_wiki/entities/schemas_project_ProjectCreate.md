@@ -14,6 +14,7 @@ Schema for creating a project.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `timezone` | `WorkingZone` | `timezone` | No | No | `'UTC'` | — | — | — |
+| `require_different_review_publisher` | `bool` | `require_different_review_publisher` | No | No | `False` | — | — | — |
 | `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `status` | `ProjectStatus` | `status` | No | No | `ProjectStatus.PLANNED` | — | — | — |
@@ -71,7 +72,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_project](../modules/schemas_project.md) | 0 | `description`, `health`, `initiative_id`, `name`, `owner_id`, `owner_profile_id`, `sort_order`, `start_date`, `status`, `target_date`, `timezone` |
+| [schemas_project](../modules/schemas_project.md) | 0 | `description`, `health`, `initiative_id`, `name`, `owner_id`, `owner_profile_id`, `require_different_review_publisher`, `sort_order`, `start_date`, `status`, `target_date`, `timezone` |
 
 ### Structure
 

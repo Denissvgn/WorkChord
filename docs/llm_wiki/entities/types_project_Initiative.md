@@ -36,18 +36,27 @@ _Auto-generated from `Initiative` in `frontend/src/types/project.ts`._
 flowchart LR
     n0["Initiative (frontend/src/types/project.ts)"]
     n1["InitiativeForm (frontend/src/components/projects/InitiativeForm.tsx)"]
-    n2["frontend/src/pages/ProjectsPage.tsx"]
-    n3["frontend/src/pages/RoadmapPage.tsx"]
-    n4["frontend/src/services/projectService.ts"]
+    n2["compareInitiatives (frontend/src/components/projects/projectPortfolio.ts)"]
+    n3["groupByInitiative (frontend/src/components/projects/projectPortfolio.ts)"]
+    n4["frontend/src/components/projects/RoadmapView.test.tsx"]
+    n5["RoadmapView (frontend/src/components/projects/RoadmapView.tsx)"]
+    n6["frontend/src/pages/ProjectsPage.tsx"]
+    n7["frontend/src/services/projectService.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
+    n6 --> n0
+    n7 --> n0
     click n0 "../modules/types_project.md"
     click n1 "../modules/InitiativeForm.md"
-    click n2 "../modules/ProjectsPage.md"
-    click n3 "../modules/RoadmapPage.md"
-    click n4 "../modules/projectService.md"
+    click n2 "../modules/projectPortfolio.md"
+    click n3 "../modules/projectPortfolio.md"
+    click n4 "../modules/RoadmapView.test.md"
+    click n5 "../modules/RoadmapView.md"
+    click n6 "../modules/ProjectsPage.md"
+    click n7 "../modules/projectService.md"
 ```
 
 ### Summary
@@ -61,6 +70,9 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `InitiativeForm` | type_reference | [InitiativeForm](../modules/InitiativeForm.md) | — |
+| `compareInitiatives` | type_reference | [projectPortfolio](../modules/projectPortfolio.md) | — |
+| `groupByInitiative` | type_reference | [projectPortfolio](../modules/projectPortfolio.md) | — |
+| `RoadmapView.test` | import | [RoadmapView.test](../modules/RoadmapView.test.md) | — |
+| `RoadmapView` | type_reference | [RoadmapView](../modules/RoadmapView.md) | — |
 | `ProjectsPage` | import | [ProjectsPage](../modules/ProjectsPage.md) | — |
-| `RoadmapPage` | import | [RoadmapPage](../modules/RoadmapPage.md) | — |
 | `projectService` | import | [projectService](../modules/projectService.md) | — |

@@ -6,6 +6,8 @@
 
 GitHub pull request status refresh service.
 
+Candidate verification reads a pull request’s current head or compares an immutable base and head in the submitted repository. Every commit in the bounded range must have attributable evidence. Incomplete pagination, an unexpected head or unattributed contributors prevent a passing candidate observation.
+
 ## Imports
 
 | Source | Symbols |
@@ -20,6 +22,7 @@ GitHub pull request status refresh service.
 | `datetime` | `datetime`, `timezone` |
 | `httpx` | `httpx` |
 | `logging` | `logging` |
+| `re` | `re` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `typing` | `Any`, `Optional` |
 
@@ -28,65 +31,21 @@ GitHub pull request status refresh service.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/commands.py"]
-    n1["backend/app/config.py"]
-    n2["backend/app/models/external_link.py"]
-    n3["backend/app/routers/tasks.py"]
-    n4["backend/app/services/external_link_service.py"]
-    n5["backend/app/services/github_status_service.py"]
-    n6["backend/app/services/github_webhook_service.py"]
-    n7["backend/app/services/system_settings_service.py"]
-    n8["backend/app/services/task_context_revision_service.py"]
-    n9["backend/app/utils/url_policy.py"]
-    n3 --> n0
-    n3 --> n4
-    n3 --> n5
-    n4 --> n0
-    n4 --> n2
-    n4 --> n8
-    n5 --> n0
-    n5 --> n1
-    n5 --> n2
-    n5 --> n4
-    n5 --> n7
-    n5 --> n8
-    n5 --> n9
-    n6 --> n0
-    n6 --> n1
-    n6 --> n2
-    n6 --> n5
-    n6 --> n7
-    n6 --> n8
-    n7 --> n0
-    n7 --> n1
-    n7 --> n9
-    n8 --> n0
-    n9 --> n1
-    click n0 "../modules/commands.md"
-    click n1 "../modules/config.md"
-    click n2 "../modules/models_external_link.md"
-    click n3 "../modules/tasks.md"
-    click n4 "../modules/external_link_service.md"
-    click n5 "../modules/github_status_service.md"
-    click n6 "../modules/github_webhook_service.md"
-    click n7 "../modules/system_settings_service.md"
-    click n8 "../modules/task_context_revision_service.md"
-    click n9 "../modules/url_policy.md"
+    n0["backend"]
+    n1["backend/app/services/github_status_service.py"]
+    n0 --> n1
+    n1 --> n0
+    click n1 "../modules/github_status_service.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [tasks](../modules/tasks.md) |
-| Inbound | [github_webhook_service](../modules/github_webhook_service.md) |
-| Outbound | [commands](../modules/commands.md) |
-| Outbound | [config](../modules/config.md) |
-| Outbound | [models_external_link](../modules/models_external_link.md) |
-| Outbound | [external_link_service](../modules/external_link_service.md) |
-| Outbound | [system_settings_service](../modules/system_settings_service.md) |
-| Outbound | [task_context_revision_service](../modules/task_context_revision_service.md) |
-| Outbound | [url_policy](../modules/url_policy.md) |
+| Inbound | `backend` (6) |
+| Outbound | `backend` (7) |
 
 ### External packages
 
@@ -94,8 +53,10 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [GitHubStatusService](../entities/GitHubStatusService.md) | 24 | — | Refresh cached GitHub pull request metadata for external links. |
+| [GitHubStatusService](../entities/GitHubStatusService.md) | 25 | — | Refresh cached GitHub pull request metadata for external links. |

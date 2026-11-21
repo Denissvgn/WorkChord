@@ -16,13 +16,15 @@ Assigned normal execution compares scheduled starts with the project working dat
 
 A calculated start date in the future does not hold assigned work back. Work may begin once its dependencies are done; only a planning period that has not begun and a real earliest-start date hold it. After an atomic begin or submit, the planned work of the iteration is recalculated around the actual dates inside the same command.
 
+A team controller can advance another actor’s queue only for the revision and scope authorized by the current dispatch or recovery command. Recovery checks the selected worker and every owner whose assignment, run or claim would change. A successful retry returns the original assignment receipt without consuming another planning revision.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
 | `app.authority` | `internal_authority`, `internal_authority` |
-| `app.commands` | `atomic_command`, `commit_or_flush` |
+| `app.commands` | `atomic_command`, `commit_or_flush`, `current_command` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord`, `AgentModelBinding`, `AgentRun`, `AgentTaskAssignment`, `TaskEvent` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project`, `ProjectUpdateEntry` |
@@ -41,14 +43,17 @@ A calculated start date in the future does not hold assigned work back. Work may
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutError`, `AgentRoutingRolloutMode`, `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
 | `app.services.agent_routing_service` | `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingService`, `AgentRoutingService`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key`, `AgentService` |
-| `app.services.agent_team_setup_service` | `AgentTeamSetupService`, `AgentTeamSetupService`, `AgentTeamSetupService` |
+| `app.services.agent_team_setup_service` | `AgentTeamMembershipBoundary`, `AgentTeamSetupService`, `AgentTeamSetupService`, `AgentTeamSetupConflictError`, `AgentTeamSetupService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
+| `app.services.external_link_service` | `ExternalLinkService` |
 | `app.services.project_service` | `ProjectService` |
+| `app.services.review_provenance` | `actor_provenance`, `different_publisher_required`, `select_reviewer`, `record_terminal_observation`, `record_terminal_observation`, `observe_review_candidate`, `verify_verdict`, `mark_server_interruption` |
 | `app.services.scheduler_service` | `SchedulerService` |
 | `app.services.task_brief_service` | `TaskBriefService`, `TaskBriefService`, `brief_definition_blockers`, `brief_definition_blockers` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.services.triage_service` | `TriageService` |
 | `app.services.work_metrics` | `effective_work_flags`, `working_today`, `effective_work_flags`, `effective_work_flags`, `effective_work_flags` |
+| `app.utils.github_links` | `GitHubLinkError`, `parse_github_url` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `base64` | `base64` |
 | `binascii` | `binascii` |
@@ -60,7 +65,7 @@ A calculated start date in the future does not hold assigned work back. Work may
 | `sqlalchemy` | `func`, `or_`, `select`, `text` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `sqlalchemy.orm` | `selectinload` |
-| `typing` | `Any`, `Callable`, `Iterable`, `Optional` |
+| `typing` | `TYPE_CHECKING`, `Any`, `Callable`, `Iterable`, `Optional` |
 
 ## Local dependency map
 
@@ -80,8 +85,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (18) |
-| Outbound | `backend` (29) |
+| Inbound | `backend` (22) |
+| Outbound | `backend` (32) |
 
 ### External packages
 
@@ -89,13 +94,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 45 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 52 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentWorkService](../entities/AgentWorkService.md) | 176 | — | Coordinate PM dispatch and low-freedom worker lifecycle commands. |
+| [AgentWorkService](../entities/AgentWorkService.md) | 181 | — | Coordinate PM dispatch and low-freedom worker lifecycle commands. |
 
 ## Functions
 

@@ -1,6 +1,6 @@
 # GanttBarInputsProps
 
-**Location:** `frontend/src/components/gantt/GanttBarInputs.tsx:17`
+**Location:** `frontend/src/components/gantt/GanttBarInputs.tsx:18`
 **Kind:** Interface
 **Bases:** —
 **Module:** [GanttBarInputs](../modules/GanttBarInputs.md)
@@ -15,6 +15,7 @@ _Auto-generated from `GanttBarInputsProps` in `frontend/src/components/gantt/Gan
 |------|------|----------|---------|-------------|
 | `task` | `GanttTask` | Yes | — | — |
 | `iterationId` | `number` | Yes | — | — |
+| `hoursPerDay` | `number` | Yes | — | — |
 | `taskOptions` | `Array<{ id: number; title: string }>` | Yes | — | — |
 | `anchor` | `{ top: number; left: number }` | Yes | — | — |
 | `onApply` | `(changes: GanttBarInputChanges) => void` | Yes | — | — |
@@ -41,7 +42,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [GanttBarInputs](../modules/GanttBarInputs.md) | 0 | `anchor`, `iterationId`, `onApply`, `onClose`, `onMoreFields`, `task`, `taskOptions` |
+| [GanttBarInputs](../modules/GanttBarInputs.md) | 0 | `anchor`, `hoursPerDay`, `iterationId`, `onApply`, `onClose`, `onMoreFields`, `task`, `taskOptions` |
 
 ### References
 

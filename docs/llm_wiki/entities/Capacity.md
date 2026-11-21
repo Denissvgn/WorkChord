@@ -1,6 +1,6 @@
 # Capacity
 
-**Location:** `frontend/src/components/tasks/PersonCapacity.tsx:12`
+**Location:** `frontend/src/components/tasks/PersonCapacity.tsx:13`
 **Kind:** Interface
 **Bases:** —
 **Module:** [PersonCapacity](../modules/PersonCapacity.md)

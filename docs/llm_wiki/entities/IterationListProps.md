@@ -1,6 +1,6 @@
 # IterationListProps
 
-**Location:** `frontend/src/components/iteration/IterationList.tsx:20`
+**Location:** `frontend/src/components/iteration/IterationList.tsx:19`
 **Kind:** Interface
 **Bases:** —
 **Module:** [IterationList](../modules/IterationList.md)
@@ -13,7 +13,9 @@ _Auto-generated from `IterationListProps` in `frontend/src/components/iteration/
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
-| `onEdit` | `(iteration: Iteration) => void` | No | — | — |
+| `onOpen` | `(iteration: Iteration) => void` | Yes | — | — |
+| `onEdit` | `(iteration: Iteration) => void` | Yes | — | — |
+| `projectId` | `number` | No | — | — |
 
 ## Methods
 
@@ -35,7 +37,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [IterationList](../modules/IterationList.md) | 0 | `onEdit` |
+| [IterationList](../modules/IterationList.md) | 0 | `onEdit`, `onOpen`, `projectId` |
 
 ### References
 

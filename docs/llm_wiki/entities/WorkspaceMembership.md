@@ -35,11 +35,11 @@ flowchart LR
     n6["backend/app/services/discussion_service.py"]
     n7["backend/app/services/identity_service.py"]
     n8["backend/app/services/task_domain_service.py"]
-    n9["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
-    n10["test_shared_iteration_snapshots_cannot_reveal_another_project (backend/tests/test_identity_lifecycle.py)"]
-    n11["create_empty_project_as_owner (backend/tests/test_managed_authority.py)"]
-    n12["test_project_deletion_refuses_live_assignment_scope_without_partial_detach (backend/tests/test_managed_authority.py)"]
-    n13["test_workspace_owner_deletes_empty_project_with_retained_audit (backend/tests/test_managed_authority.py)"]
+    n9["test_binding_and_preset_routes_preserve_credential_permissions (backend/tests/test_agent_model_catalog_api.py)"]
+    n10["test_model_catalog_routes_accept_admin_key_agent_key_and_refuse_neither (backend/tests/test_agent_model_catalog_api.py)"]
+    n11["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
+    n12["test_reconciliation_uses_operator_and_archived_catalog (backend/tests/test_execution_reconciliation.py)"]
+    n13["test_shared_iteration_snapshots_cannot_reveal_another_project (backend/tests/test_identity_lifecycle.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -62,11 +62,11 @@ flowchart LR
     click n6 "../modules/discussion_service.md"
     click n7 "../modules/identity_service.md"
     click n8 "../modules/task_domain_service.md"
-    click n9 "../modules/test_agent_team_setup.md"
-    click n10 "../modules/test_identity_lifecycle.md"
-    click n11 "../modules/test_managed_authority.md"
-    click n12 "../modules/test_managed_authority.md"
-    click n13 "../modules/test_managed_authority.md"
+    click n9 "../modules/test_agent_model_catalog_api.md"
+    click n10 "../modules/test_agent_model_catalog_api.md"
+    click n11 "../modules/test_agent_team_setup.md"
+    click n12 "../modules/test_execution_reconciliation.md"
+    click n13 "../modules/test_identity_lifecycle.md"
 ```
 
 ### Summary
@@ -92,10 +92,10 @@ flowchart LR
 | `discussion_service` | import | [discussion_service](../modules/discussion_service.md) | — |
 | `identity_service` | import | [identity_service](../modules/identity_service.md) | — |
 | `task_domain_service` | import | [task_domain_service](../modules/task_domain_service.md) | — |
+| `test_binding_and_preset_routes_preserve_credential_permissions` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 1 |
+| `test_model_catalog_routes_accept_admin_key_agent_key_and_refuse_neither` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 1 |
 | `test_fresh_apply_replay_onboarding_and_runtime_readiness` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 1 |
+| `test_reconciliation_uses_operator_and_archived_catalog` | call | [test_execution_reconciliation](../modules/test_execution_reconciliation.md) | 3 |
 | `test_shared_iteration_snapshots_cannot_reveal_another_project` | call | [test_identity_lifecycle](../modules/test_identity_lifecycle.md) | 1 |
-| `create_empty_project_as_owner` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
-| `test_project_deletion_refuses_live_assignment_scope_without_partial_detach` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
-| `test_workspace_owner_deletes_empty_project_with_retained_audit` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
 
-> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.
+> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.

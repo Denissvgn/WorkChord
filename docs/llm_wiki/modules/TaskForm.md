@@ -16,12 +16,14 @@ An unresolved write freezes its submitted draft and every write target. Its pers
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
 | `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
 | `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
 | `../../i18n/seedDisplay` | `templateDisplay` | — | compiler-dependent |
 | `../../services/iterationService` | `iterationService` | — | compiler-dependent |
+| `../../services/planningInputService` | `planningInputService` | — | compiler-dependent |
 | `../../services/projectService` | `projectService` | — | compiler-dependent |
 | `../../services/taskService` | `taskService` | — | compiler-dependent |
 | `../../services/teamService` | `teamService` | — | compiler-dependent |
@@ -29,6 +31,7 @@ An unresolved write freezes its submitted draft and every write target. Its pers
 | `../../services/triageService` | `triageService` | — | compiler-dependent |
 | `../../types/iteration` | `Iteration` | Declaration | erased |
 | `../../types/task` | `GroundedAISuggestionResponse`, `TaskAISuggestRequest`, `TaskCreate`, `Task`, `TaskUpdate` | Declaration | erased |
+| `../../types/team` | `TeamMemberProfile` | Declaration | erased |
 | `../../types/template` | `WorkTemplate` | Declaration | erased |
 | `../../types/triage` | `TriageItemCreate` | Declaration | erased |
 | `../../utils/apiError` | `getApiErrorMessage`, `getApiErrorStatus` | — | compiler-dependent |
@@ -41,11 +44,13 @@ An unresolved write freezes its submitted draft and every write target. Its pers
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `../labels/LabelSelector` | `LabelSelector` | — | compiler-dependent |
 | `../team/AssigneeRecommendationsPanel` | `AssigneeRecommendationsPanel` | — | compiler-dependent |
+| `./AssigneePicker` | `AssigneePicker` | — | compiler-dependent |
 | `./DeliveryDependencies` | `DeliveryDependencies` | — | compiler-dependent |
 | `./PersonCapacity` | `PersonCapacity` | — | compiler-dependent |
 | `./StatusChangeControl` | `StatusChangeControl` | — | compiler-dependent |
 | `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` | — | compiler-dependent |
 | `./TaskBriefEditor` | `TaskBriefEditor` | — | compiler-dependent |
+| `./TaskCreateSections` | `TaskCreateSections` | — | compiler-dependent |
 | `./TaskDependencySelector` | `TaskDependencySelector` | — | compiler-dependent |
 | `./TaskDiscussion` | `TaskDiscussion` | — | compiler-dependent |
 | `./TaskTimelinePanel` | `TaskTimelinePanel` | — | compiler-dependent |
@@ -86,8 +91,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (3) |
-| Outbound | `frontend` (37) |
+| Inbound | `frontend` (6) |
+| Outbound | `frontend` (42) |
 
 ### External packages
 
@@ -95,13 +100,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 48 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskFormProps](../entities/TaskFormProps.md) | Interface | 58 | — | — |
+| [TaskFormProps](../entities/TaskFormProps.md) | Interface | 63 | — | — |
 
 ## Functions
 

@@ -27,10 +27,13 @@ A linked profile is verified; a trusted-local session's own choice is not.
 ```mermaid
 flowchart LR
     n0["WorkProfile (frontend/src/features/identity/identityService.ts)"]
-    n1["LocalProfilePicker (frontend/src/features/identity/LocalProfilePicker.tsx)"]
+    n1["loadSampleProject (frontend/src/features/firstRun/sampleProject.ts)"]
+    n2["LocalProfilePicker (frontend/src/features/identity/LocalProfilePicker.tsx)"]
     n1 --> n0
+    n2 --> n0
     click n0 "../modules/identityService.md"
-    click n1 "../modules/LocalProfilePicker.md"
+    click n1 "../modules/sampleProject.md"
+    click n2 "../modules/LocalProfilePicker.md"
 ```
 
 ### Summary
@@ -43,4 +46,5 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `loadSampleProject` | type_reference | [sampleProject](../modules/sampleProject.md) | — |
 | `LocalProfilePicker` | type_reference | [LocalProfilePicker](../modules/LocalProfilePicker.md) | — |

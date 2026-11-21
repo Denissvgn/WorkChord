@@ -1,6 +1,6 @@
 # ProjectUpdateEntryCreate
 
-**Location:** `backend/app/schemas/project.py:148`
+**Location:** `backend/app/schemas/project.py:150`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_project](../modules/schemas_project.md)

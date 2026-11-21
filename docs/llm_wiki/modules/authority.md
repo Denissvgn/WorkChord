@@ -16,6 +16,8 @@ Deletion fences are internal recovery metadata and are excluded from ordinary ma
 
 Project removal requires management permission. Audit append checks live scope existence after the owning flush, retaining deleted scope identifiers in details and using null live foreign keys. Project domain changes, audit attribution and queued outbox records remain in the same transaction, and ordinary ORM commands cannot rewrite audit details.
 
+A validated controller command grants one queue-revision update for a named actor. A worker’s live claim can grant one change to the blocked reason reported by its event. These grants are consumed during the write. Workspace operators control changes to the project’s review-publisher policy.
+
 ## Imports
 
 | Source | Symbols |
@@ -54,7 +56,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (58) |
+| Inbound | `backend` (68) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (6) |
 
@@ -64,7 +66,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 65 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 75 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -82,6 +84,7 @@ flowchart LR
 | `internal_authority` | `(db)` | `@contextmanager` | Allow identity resolution or verified automation inside a trusted server boundary. |
 | `_scope_conditions` | `(authority)` | — | — |
 | `scope_orm_operation` | `(state)` | `@event.listens_for(Session, 'do_orm_execute')` | — |
+| `_guard_bulk_project_review_policy` | `(state)` | — | Protect policy columns in explicit SQLAlchemy writes as well as ORM flushes. |
 | `_check_bulk_write` | `(state, authority)` | — | — |
 | `_object_project` | `(session, obj)` | — | — |
 | `authorize_domain_writes` | `(session, _flush_context, _instances)` | `@event.listens_for(Session, 'before_flush')` | — |

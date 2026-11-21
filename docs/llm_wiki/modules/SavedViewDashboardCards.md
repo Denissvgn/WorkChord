@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # SavedViewDashboardCards Module
 
 **Path:** `frontend/src/components/dashboard/SavedViewDashboardCards.tsx`

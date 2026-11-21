@@ -1,6 +1,6 @@
 # CalendarPeriodNavigatorProps
 
-**Location:** `frontend/src/components/calendar/InteractiveCalendar.tsx:11`
+**Location:** `frontend/src/components/calendar/InteractiveCalendar.tsx:13`
 **Kind:** Interface
 **Bases:** —
 **Module:** [InteractiveCalendar](../modules/InteractiveCalendar.md)

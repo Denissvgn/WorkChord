@@ -1,6 +1,6 @@
 # RouteErrorBoundary
 
-**Location:** `frontend/src/components/layout/RouteErrorBoundary.tsx:18`
+**Location:** `frontend/src/components/layout/RouteErrorBoundary.tsx:19`
 **Kind:** Class
 **Bases:** `Component<RouteErrorBoundaryProps, RouteErrorBoundaryState>`
 **Module:** [RouteErrorBoundary](../modules/RouteErrorBoundary.md)
@@ -32,16 +32,19 @@ flowchart LR
     n0["RouteErrorBoundary (frontend/src/components/layout/RouteErrorBoundary.tsx)"]
     n1["Component#60;RouteErrorBoundaryProps, RouteErrorBoundaryState#62;"]
     n2["frontend/src/components/layout/AppShell.tsx"]
-    n3["RouteErrorBoundary.componentDidUpdate (frontend/src/components/layout/RouteErrorBoundary.tsx)"]
-    n4["RouteErrorBoundary.getDerivedStateFromError (frontend/src/components/layout/RouteErrorBoundary.tsx)"]
+    n3["frontend/src/components/layout/BareLayout.tsx"]
+    n4["RouteErrorBoundary.componentDidUpdate (frontend/src/components/layout/RouteErrorBoundary.tsx)"]
+    n5["RouteErrorBoundary.getDerivedStateFromError (frontend/src/components/layout/RouteErrorBoundary.tsx)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/RouteErrorBoundary.md"
     click n2 "../modules/AppShell.md"
-    click n3 "../modules/RouteErrorBoundary.md"
+    click n3 "../modules/BareLayout.md"
     click n4 "../modules/RouteErrorBoundary.md"
+    click n5 "../modules/RouteErrorBoundary.md"
 ```
 
 ### Summary
@@ -61,5 +64,6 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `AppShell` | import | [AppShell](../modules/AppShell.md) | — |
+| `BareLayout` | import | [BareLayout](../modules/BareLayout.md) | — |
 | `RouteErrorBoundary.componentDidUpdate` | type_reference | [RouteErrorBoundary](../modules/RouteErrorBoundary.md) | — |
 | `RouteErrorBoundary.getDerivedStateFromError` | type_reference | [RouteErrorBoundary](../modules/RouteErrorBoundary.md) | — |

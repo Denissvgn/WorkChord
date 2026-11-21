@@ -34,13 +34,19 @@ _Auto-generated from `ProjectUpdateEntry` in `frontend/src/types/project.ts`._
 ```mermaid
 flowchart LR
     n0["ProjectUpdateEntry (frontend/src/types/project.ts)"]
-    n1["frontend/src/pages/ProjectDetailPage.tsx"]
-    n2["frontend/src/services/projectService.ts"]
+    n1["updateDetailFields (frontend/src/components/projects/projectDetailShared.ts)"]
+    n2["ProjectSummaryTab (frontend/src/components/projects/ProjectSummaryTab.tsx)"]
+    n3["ProjectUpdatesTab (frontend/src/components/projects/ProjectUpdatesTab.tsx)"]
+    n4["frontend/src/services/projectService.ts"]
     n1 --> n0
     n2 --> n0
+    n3 --> n0
+    n4 --> n0
     click n0 "../modules/types_project.md"
-    click n1 "../modules/ProjectDetailPage.md"
-    click n2 "../modules/projectService.md"
+    click n1 "../modules/projectDetailShared.md"
+    click n2 "../modules/ProjectSummaryTab.md"
+    click n3 "../modules/ProjectUpdatesTab.md"
+    click n4 "../modules/projectService.md"
 ```
 
 ### Summary
@@ -53,5 +59,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `ProjectDetailPage` | import | [ProjectDetailPage](../modules/ProjectDetailPage.md) | — |
+| `updateDetailFields` | type_reference | [projectDetailShared](../modules/projectDetailShared.md) | — |
+| `ProjectSummaryTab` | type_reference | [ProjectSummaryTab](../modules/ProjectSummaryTab.md) | — |
+| `ProjectUpdatesTab` | type_reference | [ProjectUpdatesTab](../modules/ProjectUpdatesTab.md) | — |
 | `projectService` | import | [projectService](../modules/projectService.md) | — |

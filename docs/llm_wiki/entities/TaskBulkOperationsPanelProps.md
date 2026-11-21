@@ -1,6 +1,6 @@
 # TaskBulkOperationsPanelProps
 
-**Location:** `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx:25`
+**Location:** `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx:22`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md)
@@ -14,11 +14,12 @@ _Auto-generated from `TaskBulkOperationsPanelProps` in `frontend/src/components/
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `iterationId` | `number` | Yes | — | — |
-| `selectedTasks` | `Task[]` | Yes | — | — |
-| `selectedTaskIds` | `number[]` | Yes | — | — |
+| `selectedTasks` | `BulkSelectedTask[]` | Yes | — | — |
+| `matchingCount` | `number` | Yes | — | — |
+| `onSelectAll` | `() => void` | Yes | — | — |
 | `onClearSelection` | `() => void` | Yes | — | — |
-| `onApplied` | `() => void` | Yes | — | — |
-| `focusAssignee` | `boolean` | No | — | — |
+| `onMerge` | `() => void` | No | — | — |
+| `openAssign` | `boolean` | No | — | — |
 
 ## Methods
 
@@ -40,7 +41,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md) | 0 | `focusAssignee`, `iterationId`, `onApplied`, `onClearSelection`, `selectedTaskIds`, `selectedTasks` |
+| [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md) | 0 | `iterationId`, `matchingCount`, `onClearSelection`, `onMerge`, `onSelectAll`, `openAssign`, `selectedTasks` |
 
 ### References
 

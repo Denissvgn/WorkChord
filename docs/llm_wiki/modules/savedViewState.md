@@ -18,7 +18,7 @@ Compares effective saved-view filters and ordering against current defaults, tre
 
 | Signal | Values |
 |--------|--------|
-| Exports | `filterSignature`, `savedViewModified` |
+| Exports | `filterSignature`, `savedViewFilters`, `savedViewModified` |
 
 ## Local dependency map
 
@@ -27,44 +27,36 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/tasks/SavedViewsControl.tsx"]
-    n1["frontend/src/components/tasks/TaskFiltersBar.tsx"]
-    n2["frontend/src/pages/TasksPage.tsx"]
-    n3["frontend/src/types/savedView.ts"]
-    n4["frontend/src/utils/savedViewState.test.ts"]
-    n5["frontend/src/utils/savedViewState.ts"]
-    n6["frontend/src/utils/taskFilterDefaults.ts"]
-    n0 --> n1
-    n0 --> n3
+    n0["frontend/src/components/tasks/TaskFiltersBar.tsx"]
+    n1["frontend/src/components/tasks/useSavedViewManager.tsx"]
+    n2["frontend/src/types/savedView.ts"]
+    n3["frontend/src/utils/savedViewState.test.ts"]
+    n4["frontend/src/utils/savedViewState.ts"]
+    n5["frontend/src/utils/taskFilterDefaults.ts"]
     n0 --> n5
-    n1 --> n6
-    n2 --> n0
-    n2 --> n1
-    n2 --> n3
-    n2 --> n5
-    n2 --> n6
-    n4 --> n3
+    n1 --> n0
+    n1 --> n2
+    n1 --> n4
+    n3 --> n2
+    n3 --> n4
+    n3 --> n5
+    n4 --> n0
+    n4 --> n2
     n4 --> n5
-    n4 --> n6
-    n5 --> n1
-    n5 --> n3
-    n5 --> n6
-    n6 --> n1
-    click n0 "../modules/SavedViewsControl.md"
-    click n1 "../modules/TaskFiltersBar.md"
-    click n2 "../modules/TasksPage.md"
-    click n3 "../modules/savedView.md"
-    click n4 "../modules/savedViewState.test.md"
-    click n5 "../modules/savedViewState.md"
-    click n6 "../modules/taskFilterDefaults.md"
+    n5 --> n0
+    click n0 "../modules/TaskFiltersBar.md"
+    click n1 "../modules/useSavedViewManager.md"
+    click n2 "../modules/savedView.md"
+    click n3 "../modules/savedViewState.test.md"
+    click n4 "../modules/savedViewState.md"
+    click n5 "../modules/taskFilterDefaults.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [SavedViewsControl](../modules/SavedViewsControl.md) |
-| Inbound | [TasksPage](../modules/TasksPage.md) |
+| Inbound | [useSavedViewManager](../modules/useSavedViewManager.md) |
 | Inbound | [savedViewState.test](../modules/savedViewState.test.md) |
 | Outbound | [TaskFiltersBar](../modules/TaskFiltersBar.md) |
 | Outbound | [savedView](../modules/savedView.md) |
@@ -74,5 +66,6 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `savedViewFilters` | `(filters: TaskFilters) -> Record<string, unknown>` | — | The filters a saved view stores. |
 | `filterSignature` | `(raw: Record<string, unknown> \| TaskFilters)` | — | — |
-| `savedViewModified` | `(view: SavedView \| null \| undefined, filters: TaskFilters, sortKey: string)` | — | — |
+| `savedViewModified` | `(view: SavedView \| null \| undefined, filters: TaskFilters, sortKey: string, systemFilters: Partial<TaskFilters> = {})` | — | Whether the shown filters or sort differ from the saved view (or from no filters when none is chosen). |

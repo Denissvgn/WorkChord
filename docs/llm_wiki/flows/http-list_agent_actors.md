@@ -131,17 +131,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_agent_actors | service.list_actor_roster | 699 | `service.list_actor_roster(actor, include_disabled=include_disabled)` |
-| list_agent_actors | _handle_agent_error | 704 | `_handle_agent_error(exc, structured=True)` |
-| _handle_agent_error | isinstance | 326 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 328 | `str(exc)` |
-| _handle_agent_error | str | 330 | `str(exc)` |
-| _handle_agent_error | HTTPException | 332 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
-| _handle_agent_error | isinstance | 333 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 334 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 334 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 335 | `isinstance(exc, AgentTeamSetupConflictError)` |
-| _handle_agent_error | HTTPException | 336 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| list_agent_actors | service.list_actor_roster | 700 | `service.list_actor_roster(actor, include_disabled=include_disabled)` |
+| list_agent_actors | _handle_agent_error | 705 | `_handle_agent_error(exc, structured=True)` |
+| _handle_agent_error | isinstance | 327 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | str | 329 | `str(exc)` |
+| _handle_agent_error | str | 331 | `str(exc)` |
+| _handle_agent_error | HTTPException | 333 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
+| _handle_agent_error | isinstance | 334 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException | 335 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 335 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 336 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| _handle_agent_error | HTTPException | 337 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
 
 ### Boundary effects
 
@@ -151,14 +151,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `list_agent_actors` | `service.list_actor_roster` | 699 |
-| external_call | `_handle_agent_error` | `isinstance` | 326 |
-| external_call | `_handle_agent_error` | `HTTPException` | 332 |
-| external_call | `_handle_agent_error` | `isinstance` | 333 |
-| external_call | `_handle_agent_error` | `HTTPException` | 334 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 334 |
-| external_call | `_handle_agent_error` | `isinstance` | 335 |
-| external_call | `_handle_agent_error` | `HTTPException` | 336 |
+| unresolved_call | `list_agent_actors` | `service.list_actor_roster` | 700 |
+| external_call | `_handle_agent_error` | `isinstance` | 327 |
+| external_call | `_handle_agent_error` | `HTTPException` | 333 |
+| external_call | `_handle_agent_error` | `isinstance` | 334 |
+| external_call | `_handle_agent_error` | `HTTPException` | 335 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 335 |
+| external_call | `_handle_agent_error` | `isinstance` | 336 |
+| external_call | `_handle_agent_error` | `HTTPException` | 337 |
 | step_limit | `list_agent_actors` | `first 12 steps` | 0 |
 
 ## Behavior

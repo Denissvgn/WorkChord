@@ -12,14 +12,14 @@ _Auto-generated from `frontend/src/pages/LandingPage.test.tsx`._
 |--------|---------|-----------|------------------|
 | `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
 | `./LandingPage` | `LandingPage` | — | compiler-dependent |
-| `@testing-library/react` | `screen` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `within` | — | compiler-dependent |
 | `vitest` | `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
-| Module calls | `it` |
+| Module calls | `it`, `it` |
 
 ## Local dependency map
 

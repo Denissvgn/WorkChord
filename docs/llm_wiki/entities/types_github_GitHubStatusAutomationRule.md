@@ -38,16 +38,22 @@ flowchart LR
     n1["frontend/src/components/settings/GitHubSettingsPanel.test.tsx"]
     n2["frontend/src/components/settings/GitHubSettingsPanel.tsx"]
     n3["githubRuleDisplay (frontend/src/i18n/seedDisplay.ts)"]
-    n4["frontend/src/services/githubService.ts"]
+    n4["frontend/src/pages/SettingsPage.labels.test.tsx"]
+    n5["frontend/src/pages/SettingsPage.readOnlyPanels.test.tsx"]
+    n6["frontend/src/services/githubService.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
+    n6 --> n0
     click n0 "../modules/types_github.md"
     click n1 "../modules/GitHubSettingsPanel.test.md"
     click n2 "../modules/GitHubSettingsPanel.md"
     click n3 "../modules/seedDisplay.md"
-    click n4 "../modules/githubService.md"
+    click n4 "../modules/SettingsPage.labels.test.md"
+    click n5 "../modules/SettingsPage.readOnlyPanels.test.md"
+    click n6 "../modules/githubService.md"
 ```
 
 ### Summary
@@ -63,4 +69,6 @@ flowchart LR
 | `GitHubSettingsPanel.test` | import | [GitHubSettingsPanel.test](../modules/GitHubSettingsPanel.test.md) | — |
 | `GitHubSettingsPanel` | import | [GitHubSettingsPanel](../modules/GitHubSettingsPanel.md) | — |
 | `githubRuleDisplay` | type_reference | [seedDisplay](../modules/seedDisplay.md) | — |
+| `SettingsPage.labels.test` | import | [SettingsPage.labels.test](../modules/SettingsPage.labels.test.md) | — |
+| `SettingsPage.readOnlyPanels.test` | import | [SettingsPage.readOnlyPanels.test](../modules/SettingsPage.readOnlyPanels.test.md) | — |
 | `githubService` | import | [githubService](../modules/githubService.md) | — |

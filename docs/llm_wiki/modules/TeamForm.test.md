@@ -1,10 +1,10 @@
 # TeamForm.test Module
 
-**Path:** `frontend/src/components/team/TeamForm.test.tsx`
+**Path:** `frontend/src/components/capacity/TeamForm.test.tsx`
 
 ## Description
 
-_Auto-generated from `frontend/src/components/team/TeamForm.test.tsx`._
+_Auto-generated from `frontend/src/components/capacity/TeamForm.test.tsx`._
 
 ## Imports
 
@@ -30,8 +30,8 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/team/TeamForm.test.tsx"]
-    n1["frontend/src/components/team/TeamForm.tsx"]
+    n0["frontend/src/components/capacity/TeamForm.test.tsx"]
+    n1["frontend/src/components/capacity/TeamForm.tsx"]
     n2["frontend/src/test/renderWithProviders.tsx"]
     n3["frontend/src/types/team.ts"]
     n0 --> n1

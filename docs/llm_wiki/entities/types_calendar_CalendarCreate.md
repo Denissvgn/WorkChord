@@ -29,12 +29,12 @@ _Auto-generated from `CalendarCreate` in `frontend/src/types/calendar.ts`._
 ```mermaid
 flowchart LR
     n0["CalendarCreate (frontend/src/types/calendar.ts)"]
-    n1["frontend/src/pages/CalendarPage.tsx"]
+    n1["frontend/src/components/settings/WorkCalendarSettings.tsx"]
     n2["frontend/src/services/calendarService.ts"]
     n1 --> n0
     n2 --> n0
     click n0 "../modules/types_calendar.md"
-    click n1 "../modules/CalendarPage.md"
+    click n1 "../modules/WorkCalendarSettings.md"
     click n2 "../modules/calendarService.md"
 ```
 
@@ -48,5 +48,5 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `CalendarPage` | import | [CalendarPage](../modules/CalendarPage.md) | — |
+| `WorkCalendarSettings` | import | [WorkCalendarSettings](../modules/WorkCalendarSettings.md) | — |
 | `calendarService` | import | [calendarService](../modules/calendarService.md) | — |

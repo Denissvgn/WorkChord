@@ -1,6 +1,6 @@
 # WorkspaceMetadata
 
-**Location:** `frontend/src/navigation/workspaces.ts:31`
+**Location:** `frontend/src/navigation/workspaces.ts:28`
 **Kind:** Interface
 **Bases:** —
 **Module:** [workspaces](../modules/workspaces.md)
@@ -32,13 +32,10 @@ _Auto-generated from `WorkspaceMetadata` in `frontend/src/navigation/workspaces.
 ```mermaid
 flowchart LR
     n0["WorkspaceMetadata (frontend/src/navigation/workspaces.ts)"]
-    n1["frontend/src/components/layout/AppTopNav.tsx"]
-    n2["getWorkspaceForPath (frontend/src/navigation/workspaces.ts)"]
+    n1["getWorkspaceForPath (frontend/src/navigation/workspaces.ts)"]
     n1 --> n0
-    n2 --> n0
     click n0 "../modules/workspaces.md"
-    click n1 "../modules/AppTopNav.md"
-    click n2 "../modules/workspaces.md"
+    click n1 "../modules/workspaces.md"
 ```
 
 ### Summary
@@ -51,5 +48,4 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `AppTopNav` | import | [AppTopNav](../modules/AppTopNav.md) | — |
 | `getWorkspaceForPath` | type_reference | [workspaces](../modules/workspaces.md) | — |

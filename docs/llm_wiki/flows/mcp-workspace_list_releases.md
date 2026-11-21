@@ -95,9 +95,9 @@ sequenceDiagram
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 556 interactions; 526 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 558 interactions; 528 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 186 (185 omitted); unresolved 1 of 273 (272 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 187 (186 omitted); unresolved 1 of 274 (273 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -126,7 +126,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 98; effect analysis evaluated: 67, partial: 3, unavailable: 28. Counts include steps omitted from the displayed trace.
 
-Collector observations for 70 source steps with known totals: observed: 298, emitted: 286, omitted: 12. Unavailable totals are excluded.
+Collector observations for 70 source steps with known totals: observed: 300, emitted: 287, omitted: 13. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -201,7 +201,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_list_releases | _tool_call | 1993 | `_tool_call('tasks:read', ...)` |
+| workspace_list_releases | _tool_call | 2006 | `_tool_call('tasks:read', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

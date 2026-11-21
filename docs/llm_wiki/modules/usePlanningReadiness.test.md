@@ -15,10 +15,11 @@ _Auto-generated from `frontend/src/features/planningMasters/usePlanningReadiness
 | `../../types/iteration` | `Iteration` | Declaration | erased |
 | `../../types/task` | `Task` | Declaration | erased |
 | `../../types/team` | `TeamMember` | Declaration | erased |
-| `./usePlanningReadiness` | `countPlanningExceptions`, `enrichPlanningTeamMembers`, `hasSavedPlanningSchedule`, `planningLeafTasks`, `usePlanningReadiness` | — | compiler-dependent |
+| `./usePlanningReadiness` | `usePlanningReadiness` | — | compiler-dependent |
 | `@tanstack/react-query` | `QueryClient`, `QueryClientProvider` | — | compiler-dependent |
 | `@testing-library/react` | `act`, `renderHook`, `waitFor` | — | compiler-dependent |
 | `react` | `ReactNode` | Declaration | erased |
+| `react-router-dom` | `MemoryRouter` | — | compiler-dependent |
 | `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
@@ -26,7 +27,7 @@ _Auto-generated from `frontend/src/features/planningMasters/usePlanningReadiness
 | Signal | Values |
 |--------|--------|
 | Constants | `serviceMocks`, `iteration`, `member` |
-| Module calls | `serviceMocks = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `describe`, `describe` |
+| Module calls | `serviceMocks = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `describe` |
 
 ## Local dependency map
 
@@ -48,7 +49,6 @@ flowchart LR
     n0 --> n4
     n0 --> n5
     n0 --> n6
-    n1 --> n2
     n1 --> n3
     n1 --> n4
     n1 --> n5
@@ -80,4 +80,4 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 4 | 0 |
+| typescript | 5 | 0 |

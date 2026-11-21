@@ -1,9 +1,9 @@
 # GuideItem
 
-**Location:** `frontend/src/components/planning/PlanningWorkflowGuide.tsx:20`
+**Location:** `frontend/src/components/planning/PlanningWorkflowHelpContent.tsx:17`
 **Kind:** Type alias
 **Bases:** —
-**Module:** [PlanningWorkflowGuide](../modules/PlanningWorkflowGuide.md)
+**Module:** [PlanningWorkflowHelpContent](../modules/PlanningWorkflowHelpContent.md)
 **Target:**
 
 ```typescript
@@ -16,7 +16,7 @@
 
 ## Description
 
-_Auto-generated from `GuideItem` in `frontend/src/components/planning/PlanningWorkflowGuide.tsx`._
+_Auto-generated from `GuideItem` in `frontend/src/components/planning/PlanningWorkflowHelpContent.tsx`._
 
 ## Attributes
 
@@ -35,4 +35,4 @@ _Auto-generated from `GuideItem` in `frontend/src/components/planning/PlanningWo
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [PlanningWorkflowGuide](../modules/PlanningWorkflowGuide.md) | 0 | — |
+| [PlanningWorkflowHelpContent](../modules/PlanningWorkflowHelpContent.md) | 0 | — |

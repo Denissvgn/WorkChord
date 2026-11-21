@@ -50,15 +50,15 @@ flowchart LR
     n2["backend/app/mcp_agent_tools.py"]
     n3["task_command (backend/app/routers/task_domain.py)"]
     n4["TaskDomainService.command (backend/app/services/task_domain_service.py)"]
-    n5["test_dependency_requires_current_acceptance_and_blocks_manual_start (backend/tests/test_delivery_dependencies.py)"]
-    n6["accepted_work (backend/tests/test_delivery_metrics.py)"]
-    n7["test_observations_survive_hierarchy_moves_reopen_and_deletion (backend/tests/test_delivery_metrics.py)"]
-    n8["test_deep_ancestor_deferral_clearing_and_unscheduled_manual_freedom (backend/tests/test_effective_deferral.py)"]
-    n9["test_stale_session_cannot_ignore_a_committed_ancestor_deferral (backend/tests/test_effective_deferral.py)"]
-    n10["test_scheduled_agent_start_and_human_dates_reconcile (backend/tests/test_execution_working_dates.py)"]
-    n11["test_project_zone_drives_actual_manual_day_and_metric_day (backend/tests/test_project_working_timezone.py)"]
-    n12["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
-    n13["test_cancel_requires_current_execution_ownership_and_invalidates_fence (backend/tests/test_task_domain.py)"]
+    n5["resolved_work (backend/tests/test_acceptance_attribution.py)"]
+    n6["test_dependency_requires_current_acceptance_and_blocks_manual_start (backend/tests/test_delivery_dependencies.py)"]
+    n7["accepted_work (backend/tests/test_delivery_metrics.py)"]
+    n8["test_observations_survive_hierarchy_moves_reopen_and_deletion (backend/tests/test_delivery_metrics.py)"]
+    n9["test_deep_ancestor_deferral_clearing_and_unscheduled_manual_freedom (backend/tests/test_effective_deferral.py)"]
+    n10["test_stale_session_cannot_ignore_a_committed_ancestor_deferral (backend/tests/test_effective_deferral.py)"]
+    n11["test_scheduled_agent_start_and_human_dates_reconcile (backend/tests/test_execution_working_dates.py)"]
+    n12["test_project_zone_drives_actual_manual_day_and_metric_day (backend/tests/test_project_working_timezone.py)"]
+    n13["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -76,14 +76,14 @@ flowchart LR
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_task_domain.md"
     click n4 "../modules/task_domain_service.md"
-    click n5 "../modules/test_delivery_dependencies.md"
-    click n6 "../modules/test_delivery_metrics.md"
+    click n5 "../modules/test_acceptance_attribution.md"
+    click n6 "../modules/test_delivery_dependencies.md"
     click n7 "../modules/test_delivery_metrics.md"
-    click n8 "../modules/test_effective_deferral.md"
+    click n8 "../modules/test_delivery_metrics.md"
     click n9 "../modules/test_effective_deferral.md"
-    click n10 "../modules/test_execution_working_dates.md"
-    click n11 "../modules/test_project_working_timezone.md"
-    click n12 "../modules/test_task_domain.md"
+    click n10 "../modules/test_effective_deferral.md"
+    click n11 "../modules/test_execution_working_dates.md"
+    click n12 "../modules/test_project_working_timezone.md"
     click n13 "../modules/test_task_domain.md"
 ```
 
@@ -106,6 +106,7 @@ flowchart LR
 | `mcp_agent_tools` | import | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `task_command` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `TaskDomainService.command` | type_reference | [task_domain_service](../modules/task_domain_service.md) | — |
+| `resolved_work` | call | [test_acceptance_attribution](../modules/test_acceptance_attribution.md) | 2 |
 | `test_dependency_requires_current_acceptance_and_blocks_manual_start` | call | [test_delivery_dependencies](../modules/test_delivery_dependencies.md) | 1 |
 | `accepted_work` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 2 |
 | `test_observations_survive_hierarchy_moves_reopen_and_deletion` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 1 |
@@ -114,6 +115,5 @@ flowchart LR
 | `test_scheduled_agent_start_and_human_dates_reconcile` | call | [test_execution_working_dates](../modules/test_execution_working_dates.md) | 1 |
 | `test_project_zone_drives_actual_manual_day_and_metric_day` | call | [test_project_working_timezone](../modules/test_project_working_timezone.md) | 1 |
 | `test_backlog_manual_execution_independent_review_and_reopen` | call | [test_task_domain](../modules/test_task_domain.md) | 3 |
-| `test_cancel_requires_current_execution_ownership_and_invalidates_fence` | call | [test_task_domain](../modules/test_task_domain.md) | 3 |
 
-> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.
+> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.

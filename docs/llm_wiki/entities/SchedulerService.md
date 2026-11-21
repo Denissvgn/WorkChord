@@ -1,6 +1,6 @@
 # SchedulerService
 
-**Location:** `backend/app/services/scheduler_service.py:307`
+**Location:** `backend/app/services/scheduler_service.py:314`
 **Kind:** Class
 **Bases:** —
 **Module:** [scheduler_service](../modules/scheduler_service.md)
@@ -20,16 +20,15 @@ Service for automatic task scheduling.
 | `__init__` | `(db: AsyncSession)` | — | — |
 | `schedule_iteration` | *(async)* `(iteration_id: int, *, commit: bool = True, expected_revision: int \| None = None, expected_planning_revision: int \| None = None, commit_baseline: bool = False, rebaseline_reason: str \| None = None, follow_date: date \| None = None, anchor_task_id: int \| None = None) -> ScheduleResult` | `@atomic_command` | Schedule an iteration, optionally leaving commit ownership to the caller. |
 | `follow_actual_dates` | *(async)* `(task: Task, today: date, *, started: bool = False) -> list[int]` | — | Move planned work to what really happened after ``task`` started or finished. |
-| `_unscheduled_tasks` | `(all_tasks: Sequence[Task], member_schedules: dict[int, 'MemberSchedule'], known_reasons: dict[int, str]) -> list[UnscheduledTask]` | — | Planned leaf tasks still without dates, each with the first cause that applies. |
+| `_unscheduled_tasks` | `(all_tasks: Sequence[Task], member_schedules: dict[int, 'MemberSchedule'], known_reasons: dict[int, str], messages: dict[int, str] \| None = None) -> list[UnscheduledTask]` | — | Planned leaf tasks still without dates, each with the first cause that applies. |
 | `_build_member_schedules` | *(async)* `(iteration: Iteration, team_members: Sequence[TeamMember]) -> dict[int, MemberSchedule]` | — | Build schedule tracking for each team member. |
 | `_topological_sort` | `(tasks: list[Task]) -> list[Task]` | — | Sort tasks respecting dependencies. |
 | `_topological_sort_children` | `(children: list[Task], child_ids: set[int]) -> list[Task]` | — | Sort child tasks respecting internal dependencies, then by (is_optional, priority). |
 | `_get_dependency_depth` | `(task: Task, all_tasks: Sequence[Task]) -> int` | — | Get the depth of a task in dependency chain. |
 | `_calculate_adjusted_effort` | `(task: Task) -> int` | — | Calculate adjusted effort days after applying assignee coefficients. |
 | `_build_task_context` | `(task: Task, task_can_fit_before_vacation: dict[int, bool]) -> dict` | — | Build task context dictionary for YAML pass filters and sorting. |
-| `_build_assignee_dependency_graph` | `(tasks: list[Task]) -> tuple[dict[int, set[int]], set[int]]` | — | Build cross-assignee dependency graph. |
-| `_topological_sort_assignees` | `(assignee_deps: dict[int, set[int]]) -> list[set[int]]` | — | Group dependent assignees into levels for sequential processing. |
 | `_effective_flags` | `(task)` | — | — |
+| `_planning_start` | `(iteration: Iteration) -> date` | `@staticmethod` | Keep new forecasts on or after the workspace's current working date. |
 | `_schedule_leaf_task` | *(async)* `(task: Task, iteration: Iteration, member_schedules: dict[int, MemberSchedule], decisions: list[SchedulingDecision], task_map: dict[int, Task], earliest_start: Optional[date] = None)` | — | Schedule a leaf task (no children). |
 | `_schedule_composite_task` | *(async)* `(task: Task, iteration: Iteration, member_schedules: dict[int, MemberSchedule], decisions: list[SchedulingDecision], task_map: dict[int, Task], parent_earliest_start: Optional[date] = None)` | — | Schedule a composite task (with children). |
 | `_get_earliest_start` | `(task: Task, iteration_start: date, task_map: dict[int, Task]) -> date` | — | Get earliest possible start date based on dependencies. |
@@ -79,7 +78,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [scheduler_service](../modules/scheduler_service.md) | 18 | — |
+| [scheduler_service](../modules/scheduler_service.md) | 17 | — |
 
 ### References
 
@@ -98,4 +97,4 @@ flowchart LR
 | `IncrementalScheduler.__init__` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `test_incremental_schedule_excludes_inherited_deferred_work` | call | [test_planning_read_models](../modules/test_planning_read_models.md) | 1 |
 
-> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
+> References: showing 12 of 42 logical references; 30 omitted by the 12-row generated summary limit.

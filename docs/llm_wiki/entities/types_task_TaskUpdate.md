@@ -1,6 +1,6 @@
 # TaskUpdate
 
-**Location:** `frontend/src/types/task.ts:196`
+**Location:** `frontend/src/types/task.ts:198`
 **Kind:** Interface
 **Bases:** `Partial<TaskCreate>`
 **Module:** [types_task](../modules/types_task.md)
@@ -27,8 +27,8 @@ _Auto-generated from `TaskUpdate` in `frontend/src/types/task.ts`._
 flowchart LR
     n0["TaskUpdate (frontend/src/types/task.ts)"]
     n1["Partial#60;TaskCreate#62;"]
-    n2["frontend/src/components/gantt/TaskEditModal.test.tsx"]
-    n3["frontend/src/components/gantt/TaskEditModal.tsx"]
+    n2["frontend/src/components/gantt/TaskEditDrawer.test.tsx"]
+    n3["frontend/src/components/gantt/TaskEditDrawer.tsx"]
     n4["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
     n5["toTaskUpdate (frontend/src/components/tasks/taskEditorContract.ts)"]
     n6["TaskEditorDrawer (frontend/src/components/tasks/TaskEditorDrawer.tsx)"]
@@ -47,8 +47,8 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     click n0 "../modules/types_task.md"
-    click n2 "../modules/TaskEditModal.test.md"
-    click n3 "../modules/TaskEditModal.md"
+    click n2 "../modules/TaskEditDrawer.test.md"
+    click n3 "../modules/TaskEditDrawer.md"
     click n4 "../modules/KanbanBoard.md"
     click n5 "../modules/taskEditorContract.md"
     click n6 "../modules/TaskEditorDrawer.md"
@@ -74,8 +74,8 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `TaskEditModal.test` | import | [TaskEditModal.test](../modules/TaskEditModal.test.md) | — |
-| `TaskEditModal` | import | [TaskEditModal](../modules/TaskEditModal.md) | — |
+| `TaskEditDrawer.test` | import | [TaskEditDrawer.test](../modules/TaskEditDrawer.test.md) | — |
+| `TaskEditDrawer` | import | [TaskEditDrawer](../modules/TaskEditDrawer.md) | — |
 | `KanbanBoard` | import | [KanbanBoard](../modules/KanbanBoard.md) | — |
 | `toTaskUpdate` | type_reference | [taskEditorContract](../modules/taskEditorContract.md) | — |
 | `TaskEditorDrawer` | type_reference | [TaskEditorDrawer](../modules/TaskEditorDrawer.md) | — |

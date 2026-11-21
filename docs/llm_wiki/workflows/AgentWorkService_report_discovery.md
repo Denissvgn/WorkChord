@@ -34,4 +34,4 @@
 
 ## Behavior
 
-This workflow starts at `agent_work_service.AgentWorkService.report_discovery`. The generated sequence is a bounded static projection; runtime ordering, branching, and side effects require source-level confirmation.
+An assigned worker can report a discovery while it holds the live task claim. The service verifies the accepted assignment, running execution and task version, then permits one agent-discovery triage item with the task’s project and iteration hints. The item records its source task, assignment, run and actor so the controller can assess it separately.

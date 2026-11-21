@@ -13,6 +13,7 @@ _Auto-generated from `frontend/src/components/settings/AdminAccessGate.tsx`._
 | `../../hooks/useAdminAccess` | `useAdminAccess`, `useKeylessReader` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `./AdminAccessPanel` | `AdminAccessPanel` | — | compiler-dependent |
+| `./sharedUnlock` | `SettingsReadOnlyContext`, `useSharedUnlock` | — | compiler-dependent |
 | `lucide-react` | `LockKeyhole` | — | compiler-dependent |
 | `react` | `ReactNode` | Declaration | erased |
 | `react` | `useId`, `useState` | — | compiler-dependent |
@@ -34,34 +35,41 @@ flowchart LR
     n2["frontend/src/components/settings/AdminAccessGate.tsx"]
     n3["frontend/src/components/settings/AdminAccessPanel.tsx"]
     n4["frontend/src/components/settings/GitHubSettingsPanel.tsx"]
-    n5["frontend/src/hooks/useAdminAccess.ts"]
-    n6["frontend/src/pages/AgentPipelinePage.tsx"]
-    n7["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
-    n8["frontend/src/pages/SettingsPage.tsx"]
+    n5["frontend/src/components/settings/sharedUnlock.ts"]
+    n6["frontend/src/components/tasks/PipelineView.tsx"]
+    n7["frontend/src/components/team/AgentManifestWorkflow.tsx"]
+    n8["frontend/src/hooks/useAdminAccess.ts"]
+    n9["frontend/src/pages/SettingsPage.tsx"]
     n1 --> n2
     n2 --> n0
     n2 --> n3
     n2 --> n5
+    n2 --> n8
     n3 --> n0
-    n3 --> n5
+    n3 --> n8
     n4 --> n0
     n4 --> n2
+    n4 --> n5
+    n6 --> n0
     n6 --> n2
-    n6 --> n5
+    n7 --> n0
     n7 --> n2
-    n8 --> n2
-    n8 --> n3
-    n8 --> n4
-    n8 --> n5
+    n9 --> n0
+    n9 --> n2
+    n9 --> n3
+    n9 --> n4
+    n9 --> n5
+    n9 --> n8
     click n0 "../modules/Button.md"
     click n1 "../modules/AdminAccessGate.test.md"
     click n2 "../modules/AdminAccessGate.md"
     click n3 "../modules/AdminAccessPanel.md"
     click n4 "../modules/GitHubSettingsPanel.md"
-    click n5 "../modules/useAdminAccess.md"
-    click n6 "../modules/AgentPipelinePage.md"
-    click n7 "../modules/AgentTeamSetupMasterPage.md"
-    click n8 "../modules/SettingsPage.md"
+    click n5 "../modules/sharedUnlock.md"
+    click n6 "../modules/PipelineView.md"
+    click n7 "../modules/AgentManifestWorkflow.md"
+    click n8 "../modules/useAdminAccess.md"
+    click n9 "../modules/SettingsPage.md"
 ```
 
 ### Internal neighbors
@@ -70,11 +78,12 @@ flowchart LR
 |---|---|
 | Inbound | [AdminAccessGate.test](../modules/AdminAccessGate.test.md) |
 | Inbound | [GitHubSettingsPanel](../modules/GitHubSettingsPanel.md) |
-| Inbound | [AgentPipelinePage](../modules/AgentPipelinePage.md) |
-| Inbound | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) |
+| Inbound | [PipelineView](../modules/PipelineView.md) |
+| Inbound | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) |
 | Inbound | [SettingsPage](../modules/SettingsPage.md) |
 | Outbound | [Button](../modules/Button.md) |
 | Outbound | [AdminAccessPanel](../modules/AdminAccessPanel.md) |
+| Outbound | [sharedUnlock](../modules/sharedUnlock.md) |
 | Outbound | [useAdminAccess](../modules/useAdminAccess.md) |
 
 ### External packages
@@ -87,10 +96,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [AdminAccessGateProps](../entities/AdminAccessGateProps.md) | Interface | 9 | — | — |
+| [AdminAccessGateProps](../entities/AdminAccessGateProps.md) | Interface | 10 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `AdminAccessGate` | <pre><code>&#40;&#123;&#10;    children&#44;&#10;    showPanel &#61; true&#44;&#10;    recovery&#44;&#10;    accessGranted&#44;&#10;    headingLevel &#61; 3&#44;&#10;    readable &#61; false&#44;&#10;&#125;&#58; AdminAccessGateProps&#41;</code></pre> | — | — |
+| `AdminAccessGate` | <pre><code>&#40;&#123;&#10;    children&#44;&#10;    showPanel &#61; true&#44;&#10;    recovery&#44;&#10;    accessGranted&#44;&#10;    headingLevel &#61; 3&#44;&#10;    saveVariant &#61; &#39;primary&#39;&#44;&#10;    readable &#61; false&#44;&#10;    managesReadOnly &#61; false&#44;&#10;&#125;&#58; AdminAccessGateProps&#41;</code></pre> | — | — |

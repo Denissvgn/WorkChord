@@ -19,7 +19,7 @@ For scheduled work, the forecast follows what happened: a start moves the task t
 | Source | Symbols |
 |--------|---------|
 | `app.authority` | `AuthorityError`, `require_project`, `internal_authority` |
-| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `PlanningConflict` |
+| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `PlanningConflict`, `current_command` |
 | `app.models.calendar` | `Calendar` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project` |
@@ -27,6 +27,7 @@ For scheduled work, the forecast follows what happened: a start moves the task t
 | `app.models.task_status_log` | `TaskStatusLog` |
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_BOUNDED_LIST_ITEMS` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
+| `app.services.identity_service` | `acting_principal_id` |
 | `app.services.language_service` | `automatic_child_status_reason`, `incomplete_dependency_message`, `resolve_runtime_ui_language`, `task_requires_schedule_message` |
 | `app.services.outbound_webhook_service` | `OutboundWebhookService` |
 | `app.services.scheduler_service` | `rebind_queued_assignments` |
@@ -63,7 +64,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (2) |
-| Outbound | `backend` (18) |
+| Outbound | `backend` (19) |
 
 ### External packages
 
@@ -71,7 +72,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

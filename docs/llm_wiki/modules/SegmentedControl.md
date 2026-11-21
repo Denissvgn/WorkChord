@@ -11,7 +11,8 @@ _Auto-generated from `frontend/src/components/ui/SegmentedControl.tsx`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `clsx` | `clsx` | — | compiler-dependent |
-| `react` | `ReactNode` | Declaration | erased |
+| `react` | `KeyboardEvent`, `ReactNode` | Declaration | erased |
+| `react` | `useRef` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -22,16 +23,21 @@ _Auto-generated from `frontend/src/components/ui/SegmentedControl.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Select.test.tsx"]
     n1["frontend/src/components/notifications/NotificationsPanel.tsx"]
     n2["frontend/src/components/ui/SegmentedControl.tsx"]
+    n3["frontend/src/components/ui/ViewSwitch.tsx"]
     n0 --> n2
     n1 --> n2
+    n3 --> n2
     click n0 "../modules/Select.test.md"
     click n1 "../modules/NotificationsPanel.md"
     click n2 "../modules/SegmentedControl.md"
+    click n3 "../modules/ViewSwitch.md"
 ```
 
 ### Internal neighbors
@@ -40,6 +46,7 @@ flowchart LR
 |---|---|
 | Inbound | [Select.test](../modules/Select.test.md) |
 | Inbound | [NotificationsPanel](../modules/NotificationsPanel.md) |
+| Inbound | [ViewSwitch](../modules/ViewSwitch.md) |
 
 ### External packages
 
@@ -51,10 +58,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SegmentedOption](../entities/SegmentedOption.md) | Interface | 4 | — | — |
+| [SegmentedOption](../entities/SegmentedOption.md) | Interface | 5 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `SegmentedControl` | <pre><code>&#60;T extends string&#62;&#40;&#123; label&#44; options&#44; value&#44; onChange&#44; disabled&#44; className &#125;&#58; &#123;&#10;    label&#58; string&#59;&#10;    options&#58; SegmentedOption&#60;T&#62;&#91;&#93;&#59;&#10;    value&#58; T&#59;&#10;    onChange&#58; &#40;value&#58; T&#41; &#61;&#62; void&#59;&#10;    disabled&#63;&#58; boolean&#59;&#10;    className&#63;&#58; string&#59;&#10;&#125;&#41;</code></pre> | — | One choice among a few, each a button with a pressed state, named as a group. |
+| `SegmentedControl` | <pre><code>&#60;T extends string&#62;&#40;&#123; label&#44; options&#44; value&#44; onChange&#44; disabled&#44; className&#44; arrowKeys &#61; false &#125;&#58; &#123;&#10;    label&#58; string&#59;&#10;    options&#58; SegmentedOption&#60;T&#62;&#91;&#93;&#59;&#10;    value&#58; T&#59;&#10;    onChange&#58; &#40;value&#58; T&#41; &#61;&#62; void&#59;&#10;    disabled&#63;&#58; boolean&#59;&#10;    className&#63;&#58; string&#59;&#10;    arrowKeys&#63;&#58; boolean&#59;&#10;&#125;&#41;</code></pre> | — | One choice among a few, each a button with a pressed state, named as a group. |

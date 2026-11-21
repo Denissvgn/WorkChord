@@ -1,6 +1,6 @@
 # PlanningConflict
 
-**Location:** `backend/app/commands.py:41`
+**Location:** `backend/app/commands.py:47`
 **Kind:** Class
 **Bases:** `RuntimeError`
 **Module:** [commands](../modules/commands.md)

@@ -12,13 +12,18 @@ _Auto-generated from `frontend/src/pages/ProjectsPage.tsx`._
 |--------|---------|-----------|------------------|
 | `../components/common/Button` | `Button` | — | compiler-dependent |
 | `../components/common/Input` | `Input` | — | compiler-dependent |
-| `../components/common/Modal` | `Modal` | — | compiler-dependent |
 | `../components/common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
 | `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState`, `QueryStaleState` | — | compiler-dependent |
 | `../components/projects/InitiativeForm` | `InitiativeForm` | — | compiler-dependent |
+| `../components/projects/InitiativeGroupHeader` | `InitiativeGroupHeader` | — | compiler-dependent |
 | `../components/projects/ProjectForm` | `ProjectForm` | — | compiler-dependent |
-| `../components/projects/projectStatusStyles` | `projectStatusBadgeClassName` | — | compiler-dependent |
-| `../components/ui` | `InlineEmptyState`, `OverflowMenu`, `PageHeader`, `PageLayout`, `TableFrame` | — | compiler-dependent |
+| `../components/projects/RoadmapView` | `RoadmapView` | — | compiler-dependent |
+| `../components/projects/projectPortfolio` | `PortfolioFilters`, `PortfolioView` | Specifier | compiler-dependent |
+| `../components/projects/projectPortfolio` | `HEALTH_NEEDS_ATTENTION`, `NONE_VALUE`, `PORTFOLIO_PARAMS`, `PROJECT_HEALTHS`, `PROJECT_STATUSES`, `groupByInitiative`, `hasActiveFilters`, `matchesPortfolioFilters`, `ownerKeyForProject`, `readPortfolioFilters`, `readPortfolioView`, `readSavedViewId`, `readTimelineWindow` | — | compiler-dependent |
+| `../components/projects/projectStatusStyles` | `projectHealthBadgeClassName`, `projectStatusBadgeClassName` | — | compiler-dependent |
+| `../components/ui` | `FilterBarFilter` | Specifier | compiler-dependent |
+| `../components/ui` | `FilterBar`, `InlineEmptyState`, `OverflowMenu`, `PageHeader`, `PageLayout`, `PageToolbar`, `SegmentedControl`, `SlideOverDrawer`, `TableFrame`, `ViewSwitch` | — | compiler-dependent |
+| `../features/firstRun/NextStepEmptyState` | `NextStepEmptyState` | — | compiler-dependent |
 | `../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
 | `../services/projectService` | `projectService` | — | compiler-dependent |
@@ -31,7 +36,8 @@ _Auto-generated from `frontend/src/pages/ProjectsPage.tsx`._
 | `../utils/workNumbers` | `formatEffortDays` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
-| `lucide-react` | `AlertTriangle`, `ChevronDown`, `FolderOpen`, `LoaderCircle`, `Plus`, `Search`, `Target` | — | compiler-dependent |
+| `date-fns` | `addMonths`, `endOfMonth`, `endOfQuarter`, `endOfYear`, `format`, `startOfMonth`, `startOfQuarter`, `startOfYear` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `FolderOpen`, `List`, `LoaderCircle`, `Map`, `Plus`, `Search`, `Target` | — | compiler-dependent |
 | `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 | `react-router-dom` | `Link`, `useNavigate`, `useSearchParams` | — | compiler-dependent |
@@ -41,7 +47,7 @@ _Auto-generated from `frontend/src/pages/ProjectsPage.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `default` |
-| Constants | `projectStatusLabelKeys`, `projectHealthLabelKeys`, `riskLabelKeys`, `SORT_COLUMNS`, `RISK_ORDER` |
+| Constants | `projectStatusLabelKeys`, `projectHealthLabelKeys`, `SORT_COLUMNS`, `RISK_ORDER`, `FILTER_PARAM`, `ALL_FILTER_PARAMS`, `WINDOW_PRESETS` |
 
 ## Local dependency map
 
@@ -63,19 +69,20 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (1) |
-| Outbound | `frontend` (18) |
+| Inbound | `frontend` (2) |
+| Outbound | `frontend` (21) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 6 | 0 |
+| typescript | 7 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SortKey](../entities/ProjectsPage_SortKey.md) | Type alias | 106 | `'name' \| 'status' \| 'owner' \| 'target' \| 'tasks' \| 'effort' \| 'signals'` | — |
+| [SortKey](../entities/ProjectsPage_SortKey.md) | Type alias | 109 | `'name' \| 'status' \| 'owner' \| 'target' \| 'tasks' \| 'effort' \| 'signals'` | — |
+| [WindowPreset](../entities/WindowPreset.md) | Type alias | 137 | `'quarter' \| 'sixMonths' \| 'year' \| 'fit'` | — |

@@ -31,6 +31,7 @@ flowchart LR
     n8["backend/tests/test_planning_input_context.py"]
     n9["backend/tests/test_profile_capacity.py"]
     n10["backend/tests/test_task_discussion.py"]
+    n11["backend/tests/test_team_pm_recovery.py"]
     n0 --> n3
     n0 --> n6
     n1 --> n0
@@ -60,6 +61,8 @@ flowchart LR
     n9 --> n7
     n10 --> n0
     n10 --> n3
+    n11 --> n1
+    n11 --> n3
     click n0 "../modules/commands.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -71,6 +74,7 @@ flowchart LR
     click n8 "../modules/test_planning_input_context.md"
     click n9 "../modules/test_profile_capacity.md"
     click n10 "../modules/test_task_discussion.md"
+    click n11 "../modules/test_team_pm_recovery.md"
 ```
 
 ### Internal neighbors
@@ -86,6 +90,7 @@ flowchart LR
 | Inbound | [test_planning_input_context](../modules/test_planning_input_context.md) |
 | Inbound | [test_profile_capacity](../modules/test_profile_capacity.md) |
 | Inbound | [test_task_discussion](../modules/test_task_discussion.md) |
+| Inbound | [test_team_pm_recovery](../modules/test_team_pm_recovery.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 
 ### External packages

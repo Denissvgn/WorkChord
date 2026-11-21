@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # IterationsPage Module
 
 **Path:** `frontend/src/pages/IterationsPage.tsx`

@@ -21,14 +21,18 @@ flowchart LR
     n1["backend/tests/test_agent_routing_service.py"]
     n2["backend/tests/test_agent_routing_wave6_qualification.py"]
     n3["backend/tests/test_agent_team_setup_qualification.py"]
+    n4["backend/tests/test_review_provenance.py"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n3 --> n2
+    n4 --> n0
+    n4 --> n1
     click n0 "../modules/transactions.md"
     click n1 "../modules/test_agent_routing_service.md"
     click n2 "../modules/test_agent_routing_wave6_qualification.md"
     click n3 "../modules/test_agent_team_setup_qualification.md"
+    click n4 "../modules/test_review_provenance.md"
 ```
 
 ### Internal neighbors
@@ -38,6 +42,7 @@ flowchart LR
 | Inbound | [test_agent_routing_service](../modules/test_agent_routing_service.md) |
 | Inbound | [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md) |
 | Inbound | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) |
+| Inbound | [test_review_provenance](../modules/test_review_provenance.md) |
 
 ### External packages
 

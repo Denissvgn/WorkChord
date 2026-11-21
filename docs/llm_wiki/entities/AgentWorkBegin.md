@@ -1,6 +1,6 @@
 # AgentWorkBegin
 
-**Location:** `backend/app/schemas/agent.py:954`
+**Location:** `backend/app/schemas/agent.py:976`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -20,6 +20,7 @@ Atomically accept and start a server-selected work assignment.
 | Method | Scope | Fields | Mode | Options |
 |--------|-------|--------|------|---------|
 | `validate_metadata_size` | field | metadata | after | — |
+| `validate_branch_url` | field | branch_url | after | — |
 
 ## Attributes
 
@@ -32,12 +33,14 @@ Atomically accept and start a server-selected work assignment.
 | `model` | `Optional[str]` | `model` | No | Yes | `None` | max_length=255 | — | — |
 | `tool_name` | `Optional[str]` | `tool_name` | No | Yes | `None` | max_length=255 | — | — |
 | `metadata` | `dict[str, Any]` | `metadata` | No | No | factory: `dict` | max_length=unknown (MAX_AGENT_JSON_FIELDS) | — | — |
+| `branch_url` | `Optional[str]` | `branch_url` | No | Yes | `None` | max_length=1000 | — | GitHub branch URL of the work; WorkChord links it to the task. |
 
 ## Methods
 
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
 | `validate_metadata_size` | `(value: dict[str, Any]) -> dict[str, Any]` | `@field_validator('metadata')`, `@classmethod` | — |
+| `validate_branch_url` | `(value: Optional[str]) -> Optional[str]` | `@field_validator('branch_url')`, `@classmethod` | — |
 
 ## Relationships
 
@@ -56,6 +59,8 @@ flowchart LR
     n9["backend/tests/support/runtime_peer.py"]
     n10["backend/tests/test_agent_model_catalog_api.py"]
     n11["begins (backend/tests/test_harness_session_metadata.py)"]
+    n12["test_supervised_execution_and_exact_independent_review (backend/tests/test_review_provenance.py)"]
+    n13["test_unassigned_run_remains_unknown_and_optional_supervisor_needs_no_profile (backend/tests/test_review_provenance.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -67,6 +72,8 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
+    n13 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
@@ -78,13 +85,15 @@ flowchart LR
     click n9 "../modules/runtime_peer.md"
     click n10 "../modules/test_agent_model_catalog_api.md"
     click n11 "../modules/test_harness_session_metadata.md"
+    click n12 "../modules/test_review_provenance.md"
+    click n13 "../modules/test_review_provenance.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 1 | `assignment_id`, `lease_seconds`, `metadata`, `model`, `queue_revision`, `tool_name`, `trace_id` |
+| [schemas_agent](../modules/schemas_agent.md) | 2 | `assignment_id`, `branch_url`, `lease_seconds`, `metadata`, `model`, `queue_revision`, `tool_name`, `trace_id` |
 
 ### Structure
 
@@ -106,3 +115,7 @@ flowchart LR
 | `runtime_peer` | import | [runtime_peer](../modules/runtime_peer.md) | — |
 | `test_agent_model_catalog_api` | import | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | — |
 | `begins` | call | [test_harness_session_metadata](../modules/test_harness_session_metadata.md) | 1 |
+| `test_supervised_execution_and_exact_independent_review` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
+| `test_unassigned_run_remains_unknown_and_optional_supervisor_needs_no_profile` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

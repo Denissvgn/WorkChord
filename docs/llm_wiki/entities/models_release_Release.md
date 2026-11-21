@@ -43,13 +43,15 @@ flowchart LR
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
     n3["backend/app/models/project.py"]
-    n4["ReleaseService._emit_release_shipped_events (backend/app/services/release_service.py)"]
-    n5["ReleaseService._is_shipped (backend/app/services/release_service.py)"]
-    n6["ReleaseService._release_shipped_payload (backend/app/services/release_service.py)"]
-    n7["ReleaseService.create_for_project (backend/app/services/release_service.py)"]
-    n8["ReleaseService.get_by_id (backend/app/services/release_service.py)"]
-    n9["ReleaseService.list_for_project (backend/app/services/release_service.py)"]
-    n10["ReleaseService.update (backend/app/services/release_service.py)"]
+    n4["backend/app/services/external_link_service.py"]
+    n5["ReleaseService._emit_release_shipped_events (backend/app/services/release_service.py)"]
+    n6["ReleaseService._is_shipped (backend/app/services/release_service.py)"]
+    n7["ReleaseService._release_shipped_payload (backend/app/services/release_service.py)"]
+    n8["ReleaseService.create_for_project (backend/app/services/release_service.py)"]
+    n9["ReleaseService.get_by_id (backend/app/services/release_service.py)"]
+    n10["ReleaseService.list_for_project (backend/app/services/release_service.py)"]
+    n11["ReleaseService.update (backend/app/services/release_service.py)"]
+    n12["test_a_pm_links_a_release_to_its_merge_pull_request_and_tag (backend/tests/test_work_delivery_links.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -60,17 +62,21 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
+    n12 --> n0
     click n0 "../modules/models_release.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/models_project.md"
-    click n4 "../modules/release_service.md"
+    click n4 "../modules/external_link_service.md"
     click n5 "../modules/release_service.md"
     click n6 "../modules/release_service.md"
     click n7 "../modules/release_service.md"
     click n8 "../modules/release_service.md"
     click n9 "../modules/release_service.md"
     click n10 "../modules/release_service.md"
+    click n11 "../modules/release_service.md"
+    click n12 "../modules/test_work_delivery_links.md"
 ```
 
 ### Summary
@@ -91,6 +97,7 @@ flowchart LR
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `project` | import | [models_project](../modules/models_project.md) | — |
+| `external_link_service` | import | [external_link_service](../modules/external_link_service.md) | — |
 | `ReleaseService._emit_release_shipped_events` | type_reference | [release_service](../modules/release_service.md) | — |
 | `ReleaseService._is_shipped` | type_reference | [release_service](../modules/release_service.md) | — |
 | `ReleaseService._release_shipped_payload` | type_reference | [release_service](../modules/release_service.md) | — |
@@ -99,3 +106,4 @@ flowchart LR
 | `ReleaseService.get_by_id` | type_reference | [release_service](../modules/release_service.md) | — |
 | `ReleaseService.list_for_project` | type_reference | [release_service](../modules/release_service.md) | — |
 | `ReleaseService.update` | type_reference | [release_service](../modules/release_service.md) | — |
+| `test_a_pm_links_a_release_to_its_merge_pull_request_and_tag` | call | [test_work_delivery_links](../modules/test_work_delivery_links.md) | 1 |

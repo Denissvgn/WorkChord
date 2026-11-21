@@ -35,16 +35,19 @@ _Auto-generated from `AgentModelCatalogCreate` in `frontend/src/types/agent.ts`.
 ```mermaid
 flowchart LR
     n0["AgentModelCatalogCreate (frontend/src/types/agent.ts)"]
-    n1["frontend/src/components/settings/AgentModelAdministration.tsx"]
-    n2["frontend/src/services/agentService.test.ts"]
-    n3["frontend/src/services/agentService.ts"]
+    n1["frontend/src/components/team/AgentModelAdministration.tsx"]
+    n2["frontend/src/components/team/ConnectAgentSteps.tsx"]
+    n3["frontend/src/services/agentService.test.ts"]
+    n4["frontend/src/services/agentService.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
+    n4 --> n0
     click n0 "../modules/types_agent.md"
     click n1 "../modules/AgentModelAdministration.md"
-    click n2 "../modules/agentService.test.md"
-    click n3 "../modules/agentService.md"
+    click n2 "../modules/ConnectAgentSteps.md"
+    click n3 "../modules/agentService.test.md"
+    click n4 "../modules/agentService.md"
 ```
 
 ### Summary
@@ -58,5 +61,6 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `AgentModelAdministration` | import | [AgentModelAdministration](../modules/AgentModelAdministration.md) | — |
+| `ConnectAgentSteps` | import | [ConnectAgentSteps](../modules/ConnectAgentSteps.md) | — |
 | `agentService.test` | import | [agentService.test](../modules/agentService.test.md) | — |
 | `agentService` | import | [agentService](../modules/agentService.md) | — |

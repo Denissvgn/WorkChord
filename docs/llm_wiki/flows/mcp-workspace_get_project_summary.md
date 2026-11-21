@@ -97,9 +97,9 @@ sequenceDiagram
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 604 interactions; 574 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 606 interactions; 576 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 201 (200 omitted); unresolved 1 of 293 (292 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 202 (201 omitted); unresolved 1 of 294 (293 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -128,7 +128,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 111; effect analysis evaluated: 76, partial: 5, unavailable: 30. Counts include steps omitted from the displayed trace.
 
-Collector observations for 81 source steps with known totals: observed: 395, emitted: 372, omitted: 23. Unavailable totals are excluded.
+Collector observations for 81 source steps with known totals: observed: 399, emitted: 374, omitted: 25. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -203,7 +203,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_get_project_summary | _tool_call | 1715 | `_tool_call('tasks:read', ...)` |
+| workspace_get_project_summary | _tool_call | 1728 | `_tool_call('tasks:read', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

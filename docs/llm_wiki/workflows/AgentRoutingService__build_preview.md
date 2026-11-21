@@ -1,7 +1,7 @@
 # AgentRoutingService__build_preview
 
 **Entry point:** `agent_routing_service.AgentRoutingService._build_preview`
-**Modules involved:** [agent_routing](../modules/agent_routing.md), [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), [agent_team_setup_service](../modules/agent_team_setup_service.md), [query_limits](../modules/query_limits.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
+**Modules involved:** [agent_routing](../modules/agent_routing.md), [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), [agent_team_setup_service](../modules/agent_team_setup_service.md), [query_limits](../modules/query_limits.md), [review_provenance](../modules/review_provenance.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
 
 ## Sequence
 
@@ -12,19 +12,22 @@
 4. `query_limits.CollectionLimitExceededError`
 5. `task_service.TaskVersionConflictError`
 6. `agent_routing.TaskRoutingAssessmentResponse.from_record`
-7. `agent_routing_policy.canonical_routing_json_bytes`
-8. `agent_routing_policy.evaluate_actor_authorization`
-9. `agent_service.actor_scopes`
-10. `agent_routing_policy.evaluate_assignment_compatibility`
-11. `agent_routing_policy.evaluate_required_skills`
-12. `query_limits.CollectionLimitExceededError`
-13. `agent_routing_policy.evaluate_model_envelope`
-14. `agent_routing_policy.routing_candidate_rank_key`
-15. `time.as_utc`
-16. `agent_routing_policy.canonical_routing_json_bytes`
-17. `agent_routing_policy.canonical_routing_json_bytes`
-18. `agent_routing.AgentRoutingPreviewResponse`
-19. `agent_routing_policy.validate_routing_packet_size`
+7. `review_provenance.different_publisher_required`
+8. `review_provenance.review_history`
+9. `agent_routing_policy.canonical_routing_json_bytes`
+10. `review_provenance.historical_profile`
+11. `agent_routing_policy.evaluate_actor_authorization`
+12. `agent_service.actor_scopes`
+13. `agent_routing_policy.evaluate_assignment_compatibility`
+14. `agent_routing_policy.evaluate_required_skills`
+15. `query_limits.CollectionLimitExceededError`
+16. `agent_routing_policy.evaluate_model_envelope`
+17. `agent_routing_policy.routing_candidate_rank_key`
+18. `time.as_utc`
+19. `agent_routing_policy.canonical_routing_json_bytes`
+20. `agent_routing_policy.canonical_routing_json_bytes`
+21. `agent_routing.AgentRoutingPreviewResponse`
+22. `agent_routing_policy.validate_routing_packet_size`
 
 ## Touches
 
@@ -34,6 +37,7 @@
 - [agent_service](../modules/agent_service.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [query_limits](../modules/query_limits.md)
+- [review_provenance](../modules/review_provenance.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 

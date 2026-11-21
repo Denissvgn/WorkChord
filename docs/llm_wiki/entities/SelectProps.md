@@ -13,6 +13,7 @@ _Auto-generated from `SelectProps` in `frontend/src/components/common/Select.tsx
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
+| `plain` | `boolean` | No | — | — |
 | `label` | `ReactNode` | No | — | — |
 | `help` | `ReactNode` | No | — | — |
 | `error` | `string` | No | — | — |
@@ -36,7 +37,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [Select](../modules/Select.md) | 0 | `error`, `help`, `label` |
+| [Select](../modules/Select.md) | 0 | `error`, `help`, `label`, `plain` |
 
 ### Structure
 

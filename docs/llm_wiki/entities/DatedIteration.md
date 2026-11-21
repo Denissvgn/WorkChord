@@ -1,9 +1,9 @@
 # DatedIteration
 
-**Location:** `frontend/src/store/iterationStore.ts:21`
+**Location:** `frontend/src/features/scope/workScope.ts:56`
 **Kind:** Type alias
 **Bases:** —
-**Module:** [iterationStore](../modules/iterationStore.md)
+**Module:** [workScope](../modules/workScope.md)
 **Target:**
 
 ```typescript
@@ -12,7 +12,7 @@
 
 ## Description
 
-_Auto-generated from `DatedIteration` in `frontend/src/store/iterationStore.ts`._
+_Auto-generated from `DatedIteration` in `frontend/src/features/scope/workScope.ts`._
 
 ## Attributes
 
@@ -31,4 +31,4 @@ _Auto-generated from `DatedIteration` in `frontend/src/store/iterationStore.ts`.
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [iterationStore](../modules/iterationStore.md) | 0 | — |
+| [workScope](../modules/workScope.md) | 0 | — |

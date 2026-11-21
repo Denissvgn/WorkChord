@@ -31,12 +31,12 @@ A calculation may also follow actual dates. Given the day a task started or was 
 | `app.services.scheduling_rules_service` | `SchedulingRulesService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.team_service` | `TeamService` |
-| `app.services.work_metrics` | `effective_work_flags`, `effective_work_flags`, `effective_work_flags` |
-| `asyncio` | `asyncio` |
-| `collections` | `defaultdict`, `defaultdict`, `defaultdict` |
+| `app.services.work_metrics` | `effective_work_flags`, `effective_work_flags`, `working_today`, `effective_work_flags` |
+| `collections` | `defaultdict` |
 | `dataclasses` | `dataclass`, `field` |
 | `datetime` | `date`, `timedelta` |
 | `enum` | `Enum` |
+| `heapq` | `heapq` |
 | `logging` | `logging` |
 | `math` | `math` |
 | `sqlalchemy` | `select` |
@@ -61,7 +61,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (11) |
+| Inbound | `backend` (13) |
 | Outbound | `backend` (18) |
 
 ### External packages
@@ -70,18 +70,18 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ChangeType](../entities/ChangeType.md) | Enum | 26 | `Enum` | Types of changes that trigger incremental rescheduling. |
-| [TaskChange](../entities/TaskChange.md) | Class | 40 | — | Represents a change to a task for incremental rescheduling. |
-| [RescheduleResult](../entities/RescheduleResult.md) | Class | 51 | — | Result of an incremental reschedule operation. |
-| [MemberSchedule](../entities/MemberSchedule.md) | Class | 61 | — | Optimized schedule tracking with O(D) slot finding using sliding window. |
-| [SchedulerService](../entities/SchedulerService.md) | Class | 307 | — | Service for automatic task scheduling. |
-| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1497 | — | Handles incremental rescheduling when a single task changes. |
+| [ChangeType](../entities/ChangeType.md) | Enum | 27 | `Enum` | Types of changes that trigger incremental rescheduling. |
+| [TaskChange](../entities/TaskChange.md) | Class | 41 | — | Represents a change to a task for incremental rescheduling. |
+| [RescheduleResult](../entities/RescheduleResult.md) | Class | 52 | — | Result of an incremental reschedule operation. |
+| [MemberSchedule](../entities/MemberSchedule.md) | Class | 62 | — | Optimized schedule tracking with O(D) slot finding using sliding window. |
+| [SchedulerService](../entities/SchedulerService.md) | Class | 314 | — | Service for automatic task scheduling. |
+| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1273 | — | Handles incremental rescheduling when a single task changes. |
 
 ## Functions
 

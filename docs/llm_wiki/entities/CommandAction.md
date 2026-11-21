@@ -1,6 +1,6 @@
 # CommandAction
 
-**Location:** `frontend/src/components/layout/CommandMenu.tsx:37`
+**Location:** `frontend/src/components/layout/CommandMenu.tsx:44`
 **Kind:** Interface
 **Bases:** —
 **Module:** [CommandMenu](../modules/CommandMenu.md)
@@ -22,6 +22,9 @@ _Auto-generated from `CommandAction` in `frontend/src/components/layout/CommandM
 | `shortcut` | `string` | No | — | — |
 | `ariaShortcut` | `string` | No | — | — |
 | `to` | `string` | Yes | — | — |
+| `picker` | `'project' \| 'iteration'` | No | — | — |
+| `project` | `ScopeProject` | No | — | — |
+| `iteration` | `ScopeIteration` | No | — | — |
 
 ## Methods
 
@@ -36,4 +39,4 @@ _Auto-generated from `CommandAction` in `frontend/src/components/layout/CommandM
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [CommandMenu](../modules/CommandMenu.md) | 0 | `ariaShortcut`, `description`, `group`, `icon`, `id`, `keywords`, `label`, `shortcut`, `to` |
+| [CommandMenu](../modules/CommandMenu.md) | 0 | `ariaShortcut`, `description`, `group`, `icon`, `id`, `iteration`, `keywords`, `label`, `picker`, `project`, `shortcut`, `to` |

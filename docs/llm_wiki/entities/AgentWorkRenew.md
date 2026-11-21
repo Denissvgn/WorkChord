@@ -1,6 +1,6 @@
 # AgentWorkRenew
 
-**Location:** `backend/app/schemas/agent.py:1018`
+**Location:** `backend/app/schemas/agent.py:1082`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -19,6 +19,7 @@ Renew the live fence for one accepted assignment and running run.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `interruption_checkpoint` | `AgentInterruptionCheckpoint \| None` | `interruption_checkpoint` | No | Yes | `None` | — | — | — |
 | `assignment_id` | `int` | `assignment_id` | Yes | No | — | — | — | — |
 | `run_id` | `int` | `run_id` | Yes | No | — | — | — | — |
 | `claim_id` | `str` | `claim_id` | Yes | No | — | max_length=64; min_length=16 | — | — |
@@ -57,7 +58,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 0 | `assignment_id`, `claim_generation`, `claim_id`, `expected_task_version`, `lease_seconds`, `run_id` |
+| [schemas_agent](../modules/schemas_agent.md) | 0 | `assignment_id`, `claim_generation`, `claim_id`, `expected_task_version`, `interruption_checkpoint`, `lease_seconds`, `run_id` |
 
 ### Structure
 

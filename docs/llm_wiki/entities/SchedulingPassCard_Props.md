@@ -1,6 +1,6 @@
 # Props
 
-**Location:** `frontend/src/components/settings/SchedulingPassCard.tsx:12`
+**Location:** `frontend/src/components/settings/SchedulingPassCard.tsx:16`
 **Kind:** Interface
 **Bases:** —
 **Module:** [SchedulingPassCard](../modules/SchedulingPassCard.md)

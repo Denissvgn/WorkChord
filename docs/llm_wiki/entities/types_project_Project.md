@@ -41,13 +41,18 @@ _Auto-generated from `Project` in `frontend/src/types/project.ts`._
 ```mermaid
 flowchart LR
     n0["Project (frontend/src/types/project.ts)"]
-    n1["frontend/src/components/projects/ProjectForm.test.tsx"]
-    n2["ProjectForm (frontend/src/components/projects/ProjectForm.tsx)"]
-    n3["frontend/src/pages/ProjectDetailPage.tsx"]
-    n4["frontend/src/pages/ProjectsPage.tsx"]
-    n5["frontend/src/pages/RoadmapPage.tsx"]
-    n6["frontend/src/pages/TriagePage.tsx"]
-    n7["frontend/src/services/projectService.ts"]
+    n1["frontend/src/components/layout/ScopeBar.tsx"]
+    n2["AddMilestoneModal (frontend/src/components/projects/AddMilestoneModal.tsx)"]
+    n3["frontend/src/components/projects/ProjectForm.test.tsx"]
+    n4["ProjectForm (frontend/src/components/projects/ProjectForm.tsx)"]
+    n5["ProjectHeaderFields (frontend/src/components/projects/ProjectHeaderFields.tsx)"]
+    n6["groupByInitiative (frontend/src/components/projects/projectPortfolio.ts)"]
+    n7["matchesPortfolioFilters (frontend/src/components/projects/projectPortfolio.ts)"]
+    n8["ownerKeyForProject (frontend/src/components/projects/projectPortfolio.ts)"]
+    n9["ProjectSummaryTab (frontend/src/components/projects/ProjectSummaryTab.tsx)"]
+    n10["frontend/src/components/projects/RoadmapView.test.tsx"]
+    n11["RoadmapView (frontend/src/components/projects/RoadmapView.tsx)"]
+    n12["SetDatesPopover (frontend/src/components/projects/SetDatesPopover.tsx)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -55,14 +60,24 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
+    n9 --> n0
+    n10 --> n0
+    n11 --> n0
+    n12 --> n0
     click n0 "../modules/types_project.md"
-    click n1 "../modules/ProjectForm.test.md"
-    click n2 "../modules/ProjectForm.md"
-    click n3 "../modules/ProjectDetailPage.md"
-    click n4 "../modules/ProjectsPage.md"
-    click n5 "../modules/RoadmapPage.md"
-    click n6 "../modules/TriagePage.md"
-    click n7 "../modules/projectService.md"
+    click n1 "../modules/ScopeBar.md"
+    click n2 "../modules/AddMilestoneModal.md"
+    click n3 "../modules/ProjectForm.test.md"
+    click n4 "../modules/ProjectForm.md"
+    click n5 "../modules/ProjectHeaderFields.md"
+    click n6 "../modules/projectPortfolio.md"
+    click n7 "../modules/projectPortfolio.md"
+    click n8 "../modules/projectPortfolio.md"
+    click n9 "../modules/ProjectSummaryTab.md"
+    click n10 "../modules/RoadmapView.test.md"
+    click n11 "../modules/RoadmapView.md"
+    click n12 "../modules/SetDatesPopover.md"
 ```
 
 ### Summary
@@ -75,10 +90,17 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `ScopeBar` | import | [ScopeBar](../modules/ScopeBar.md) | — |
+| `AddMilestoneModal` | type_reference | [AddMilestoneModal](../modules/AddMilestoneModal.md) | — |
 | `ProjectForm.test` | import | [ProjectForm.test](../modules/ProjectForm.test.md) | — |
 | `ProjectForm` | type_reference | [ProjectForm](../modules/ProjectForm.md) | — |
-| `ProjectDetailPage` | import | [ProjectDetailPage](../modules/ProjectDetailPage.md) | — |
-| `ProjectsPage` | import | [ProjectsPage](../modules/ProjectsPage.md) | — |
-| `RoadmapPage` | import | [RoadmapPage](../modules/RoadmapPage.md) | — |
-| `TriagePage` | import | [TriagePage](../modules/TriagePage.md) | — |
-| `projectService` | import | [projectService](../modules/projectService.md) | — |
+| `ProjectHeaderFields` | type_reference | [ProjectHeaderFields](../modules/ProjectHeaderFields.md) | — |
+| `groupByInitiative` | type_reference | [projectPortfolio](../modules/projectPortfolio.md) | — |
+| `matchesPortfolioFilters` | type_reference | [projectPortfolio](../modules/projectPortfolio.md) | — |
+| `ownerKeyForProject` | type_reference | [projectPortfolio](../modules/projectPortfolio.md) | — |
+| `ProjectSummaryTab` | type_reference | [ProjectSummaryTab](../modules/ProjectSummaryTab.md) | — |
+| `RoadmapView.test` | import | [RoadmapView.test](../modules/RoadmapView.test.md) | — |
+| `RoadmapView` | type_reference | [RoadmapView](../modules/RoadmapView.md) | — |
+| `SetDatesPopover` | type_reference | [SetDatesPopover](../modules/SetDatesPopover.md) | — |
+
+> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.

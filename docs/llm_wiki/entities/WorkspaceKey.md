@@ -1,6 +1,6 @@
 # WorkspaceKey
 
-**Location:** `frontend/src/navigation/workspaces.ts:21`
+**Location:** `frontend/src/navigation/workspaces.ts:18`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [workspaces](../modules/workspaces.md)
@@ -25,23 +25,10 @@ _Auto-generated from `WorkspaceKey` in `frontend/src/navigation/workspaces.ts`._
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-```mermaid
-flowchart LR
-    n0["WorkspaceKey (frontend/src/navigation/workspaces.ts)"]
-    n1["getWorkspaceFromPath (frontend/src/navigation/workspaces.ts)"]
-    n1 --> n0
-    click n0 "../modules/workspaces.md"
-    click n1 "../modules/workspaces.md"
-```
+*No generated relationships detected.*
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
 | [workspaces](../modules/workspaces.md) | 0 | — |
-
-### References
-
-| Reference | Kind | Source | Call sites |
-|---|---|---|---:|
-| `getWorkspaceFromPath` | type_reference | [workspaces](../modules/workspaces.md) | — |

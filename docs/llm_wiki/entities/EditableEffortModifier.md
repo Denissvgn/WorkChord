@@ -1,6 +1,6 @@
 # EditableEffortModifier
 
-**Location:** `frontend/src/components/settings/SchedulingRulesSettings.tsx:38`
+**Location:** `frontend/src/components/settings/SchedulingRulesSettings.tsx:40`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SchedulingRulesSettings](../modules/SchedulingRulesSettings.md)

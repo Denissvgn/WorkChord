@@ -1,6 +1,6 @@
 # RouteMetadata
 
-**Location:** `frontend/src/navigation/routeModules.ts:30`
+**Location:** `frontend/src/navigation/routeModules.ts:26`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [routeModules](../modules/routeModules.md)

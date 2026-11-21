@@ -17,26 +17,22 @@ _Auto-generated from `frontend/src/components/ui/MasterProgress.tsx`._
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/ui/MasterProgress.test.tsx"]
-    n1["frontend/src/components/ui/MasterProgress.tsx"]
-    n2["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
-    n3["frontend/src/pages/PlanMasterPage.tsx"]
-    n0 --> n1
-    n2 --> n1
-    n3 --> n1
-    click n0 "../modules/MasterProgress.test.md"
-    click n1 "../modules/MasterProgress.md"
-    click n2 "../modules/AgentTeamSetupMasterPage.md"
-    click n3 "../modules/PlanMasterPage.md"
+    n0["frontend/src/components/team/AgentManifestWorkflow.tsx"]
+    n1["frontend/src/components/ui/MasterProgress.test.tsx"]
+    n2["frontend/src/components/ui/MasterProgress.tsx"]
+    n0 --> n2
+    n1 --> n2
+    click n0 "../modules/AgentManifestWorkflow.md"
+    click n1 "../modules/MasterProgress.test.md"
+    click n2 "../modules/MasterProgress.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) |
 | Inbound | [MasterProgress.test](../modules/MasterProgress.test.md) |
-| Inbound | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) |
-| Inbound | [PlanMasterPage](../modules/PlanMasterPage.md) |
 
 ## Classes
 

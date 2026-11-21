@@ -10,7 +10,7 @@ _Auto-generated from `frontend/vitest.config.ts`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `vitest/config` | `defineConfig` | — | compiler-dependent |
+| `vitest/config` | `configDefaults`, `defineConfig` | — | compiler-dependent |
 
 ## Module Signals
 

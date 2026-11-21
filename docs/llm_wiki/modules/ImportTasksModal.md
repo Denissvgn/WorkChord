@@ -42,49 +42,60 @@ flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
     n1["frontend/src/components/common/Modal.tsx"]
     n2["frontend/src/components/feedback/QueryState.tsx"]
-    n3["frontend/src/components/tasks/ImportTasksModal.tsx"]
-    n4["frontend/src/components/tasks/TaskTextEditorModal.test.tsx"]
-    n5["frontend/src/features/mutationFeedback.ts"]
-    n6["frontend/src/pages/TasksPage.tsx"]
-    n7["frontend/src/services/iterationService.ts"]
-    n8["frontend/src/services/taskService.ts"]
-    n9["frontend/src/types/task.ts"]
-    n10["frontend/src/utils/apiError.ts"]
+    n3["frontend/src/components/planning/PlanWorkSection.tsx"]
+    n4["frontend/src/components/tasks/ImportTasksModal.tsx"]
+    n5["frontend/src/components/tasks/TaskTextEditorModal.test.tsx"]
+    n6["frontend/src/features/mutationFeedback.ts"]
+    n7["frontend/src/pages/TasksPage.tsx"]
+    n8["frontend/src/services/iterationService.ts"]
+    n9["frontend/src/services/taskService.ts"]
+    n10["frontend/src/types/task.ts"]
+    n11["frontend/src/utils/apiError.ts"]
     n2 --> n0
-    n2 --> n10
+    n2 --> n11
     n3 --> n0
     n3 --> n1
     n3 --> n2
-    n3 --> n5
-    n3 --> n7
+    n3 --> n4
     n3 --> n8
     n3 --> n9
     n3 --> n10
-    n4 --> n3
-    n6 --> n0
-    n6 --> n2
-    n6 --> n3
-    n6 --> n7
-    n6 --> n8
-    n6 --> n9
-    n8 --> n9
+    n3 --> n11
+    n4 --> n0
+    n4 --> n1
+    n4 --> n2
+    n4 --> n6
+    n4 --> n8
+    n4 --> n9
+    n4 --> n10
+    n4 --> n11
+    n5 --> n4
+    n7 --> n0
+    n7 --> n2
+    n7 --> n4
+    n7 --> n8
+    n7 --> n9
+    n7 --> n10
+    n9 --> n10
     click n0 "../modules/Button.md"
     click n1 "../modules/Modal.md"
     click n2 "../modules/QueryState.md"
-    click n3 "../modules/ImportTasksModal.md"
-    click n4 "../modules/TaskTextEditorModal.test.md"
-    click n5 "../modules/mutationFeedback.md"
-    click n6 "../modules/TasksPage.md"
-    click n7 "../modules/iterationService.md"
-    click n8 "../modules/taskService.md"
-    click n9 "../modules/types_task.md"
-    click n10 "../modules/apiError.md"
+    click n3 "../modules/PlanWorkSection.md"
+    click n4 "../modules/ImportTasksModal.md"
+    click n5 "../modules/TaskTextEditorModal.test.md"
+    click n6 "../modules/mutationFeedback.md"
+    click n7 "../modules/TasksPage.md"
+    click n8 "../modules/iterationService.md"
+    click n9 "../modules/taskService.md"
+    click n10 "../modules/types_task.md"
+    click n11 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [PlanWorkSection](../modules/PlanWorkSection.md) |
 | Inbound | [TaskTextEditorModal.test](../modules/TaskTextEditorModal.test.md) |
 | Inbound | [TasksPage](../modules/TasksPage.md) |
 | Outbound | [Button](../modules/Button.md) |

@@ -31,25 +31,33 @@ flowchart LR
     n5["backend/app/services/external_link_service.py"]
     n6["backend/app/services/github_status_service.py"]
     n7["backend/app/services/github_webhook_service.py"]
-    n8["backend/app/utils/time.py"]
+    n8["backend/app/services/review_provenance.py"]
+    n9["backend/app/utils/time.py"]
+    n10["backend/tests/test_work_delivery_links.py"]
     n1 --> n2
     n1 --> n3
     n1 --> n4
     n2 --> n0
-    n2 --> n8
+    n2 --> n9
     n3 --> n0
     n3 --> n2
     n3 --> n4
-    n3 --> n8
+    n3 --> n9
     n4 --> n0
     n4 --> n2
-    n4 --> n8
+    n4 --> n9
     n5 --> n2
+    n5 --> n3
     n5 --> n4
     n6 --> n2
     n6 --> n5
     n7 --> n2
     n7 --> n6
+    n8 --> n2
+    n8 --> n6
+    n10 --> n2
+    n10 --> n3
+    n10 --> n4
     click n0 "../modules/app_database.md"
     click n1 "../modules/models___init__.md"
     click n2 "../modules/models_external_link.md"
@@ -58,7 +66,9 @@ flowchart LR
     click n5 "../modules/external_link_service.md"
     click n6 "../modules/github_status_service.md"
     click n7 "../modules/github_webhook_service.md"
-    click n8 "../modules/time.md"
+    click n8 "../modules/review_provenance.md"
+    click n9 "../modules/time.md"
+    click n10 "../modules/test_work_delivery_links.md"
 ```
 
 ### Internal neighbors
@@ -71,6 +81,8 @@ flowchart LR
 | Inbound | [external_link_service](../modules/external_link_service.md) |
 | Inbound | [github_status_service](../modules/github_status_service.md) |
 | Inbound | [github_webhook_service](../modules/github_webhook_service.md) |
+| Inbound | [review_provenance](../modules/review_provenance.md) |
+| Inbound | [test_work_delivery_links](../modules/test_work_delivery_links.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [time](../modules/time.md) |
 

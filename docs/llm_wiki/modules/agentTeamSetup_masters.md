@@ -16,7 +16,7 @@ _Auto-generated from `frontend/src/features/agentTeamSetup/masters.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `AGENT_TEAM_STEP_DEFINITIONS`, `AGENT_TEAM_STEP_IDS`, `AgentTeamStepDefinition`, `AgentTeamStepId`, `stateTone`, `stepProgress`, `stepsById` |
+| Exports | `AGENT_TEAM_STEP_DEFINITIONS`, `AgentTeamStepId`, `stateTone`, `stepProgress`, `stepsById` |
 | Constants | `AGENT_TEAM_STEP_IDS`, `AGENT_TEAM_STEP_DEFINITIONS` |
 | Module calls | `AGENT_TEAM_STEP_DEFINITIONS = map` |
 
@@ -28,27 +28,31 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 ```mermaid
 flowchart LR
     n0["frontend/src/components/settings/AgentTeamStepList.tsx"]
-    n1["frontend/src/features/agentTeamSetup/masters.test.ts"]
-    n2["frontend/src/features/agentTeamSetup/masters.ts"]
-    n3["frontend/src/features/agentTeamSetup/useAgentTeamReadiness.ts"]
-    n4["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
-    n5["frontend/src/types/agent.ts"]
-    n0 --> n2
-    n0 --> n3
-    n1 --> n2
+    n1["frontend/src/components/team/AgentManifestWorkflow.tsx"]
+    n2["frontend/src/components/team/ConnectAgentSteps.test.tsx"]
+    n3["frontend/src/features/agentTeamSetup/masters.test.ts"]
+    n4["frontend/src/features/agentTeamSetup/masters.ts"]
+    n5["frontend/src/features/agentTeamSetup/useAgentTeamReadiness.ts"]
+    n6["frontend/src/types/agent.ts"]
+    n0 --> n4
+    n0 --> n5
+    n1 --> n0
+    n1 --> n4
     n1 --> n5
-    n2 --> n5
-    n3 --> n2
-    n4 --> n0
-    n4 --> n2
-    n4 --> n3
-    n4 --> n5
+    n1 --> n6
+    n2 --> n4
+    n2 --> n6
+    n3 --> n4
+    n3 --> n6
+    n4 --> n6
+    n5 --> n4
     click n0 "../modules/AgentTeamStepList.md"
-    click n1 "../modules/agentTeamSetup_masters.test.md"
-    click n2 "../modules/agentTeamSetup_masters.md"
-    click n3 "../modules/useAgentTeamReadiness.md"
-    click n4 "../modules/AgentTeamSetupMasterPage.md"
-    click n5 "../modules/types_agent.md"
+    click n1 "../modules/AgentManifestWorkflow.md"
+    click n2 "../modules/ConnectAgentSteps.test.md"
+    click n3 "../modules/agentTeamSetup_masters.test.md"
+    click n4 "../modules/agentTeamSetup_masters.md"
+    click n5 "../modules/useAgentTeamReadiness.md"
+    click n6 "../modules/types_agent.md"
 ```
 
 ### Internal neighbors
@@ -56,9 +60,10 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [AgentTeamStepList](../modules/AgentTeamStepList.md) |
+| Inbound | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) |
+| Inbound | [ConnectAgentSteps.test](../modules/ConnectAgentSteps.test.md) |
 | Inbound | [agentTeamSetup_masters.test](../modules/agentTeamSetup_masters.test.md) |
 | Inbound | [useAgentTeamReadiness](../modules/useAgentTeamReadiness.md) |
-| Inbound | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) |
 | Outbound | [types_agent](../modules/types_agent.md) |
 
 ## Classes

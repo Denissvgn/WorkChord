@@ -1,6 +1,6 @@
 # RoutingSelectionValidation
 
-**Location:** `backend/app/services/agent_routing_service.py:134`
+**Location:** `backend/app/services/agent_routing_service.py:135`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_routing_service](../modules/agent_routing_service.md)

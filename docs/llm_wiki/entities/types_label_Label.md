@@ -41,23 +41,20 @@ flowchart LR
     n3["frontend/src/components/settings/TemplateLabelSettings.tsx"]
     n4["frontend/src/components/tasks/TaskList.tsx"]
     n5["labelDisplay (frontend/src/i18n/seedDisplay.ts)"]
-    n6["labelGroupDisplay (frontend/src/i18n/seedDisplay.ts)"]
-    n7["frontend/src/services/labelService.ts"]
+    n6["frontend/src/services/labelService.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
-    n7 --> n0
     click n0 "../modules/types_label.md"
     click n1 "../modules/LabelSelector.md"
     click n2 "../modules/TemplateLabelSettings.test.md"
     click n3 "../modules/TemplateLabelSettings.md"
     click n4 "../modules/TaskList.md"
     click n5 "../modules/seedDisplay.md"
-    click n6 "../modules/seedDisplay.md"
-    click n7 "../modules/labelService.md"
+    click n6 "../modules/labelService.md"
 ```
 
 ### Summary
@@ -75,5 +72,4 @@ flowchart LR
 | `TemplateLabelSettings` | import | [TemplateLabelSettings](../modules/TemplateLabelSettings.md) | — |
 | `TaskList` | import | [TaskList](../modules/TaskList.md) | — |
 | `labelDisplay` | type_reference | [seedDisplay](../modules/seedDisplay.md) | — |
-| `labelGroupDisplay` | type_reference | [seedDisplay](../modules/seedDisplay.md) | — |
 | `labelService` | import | [labelService](../modules/labelService.md) | — |

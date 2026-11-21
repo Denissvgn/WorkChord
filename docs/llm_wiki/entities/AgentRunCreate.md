@@ -1,6 +1,6 @@
 # AgentRunCreate
 
-**Location:** `backend/app/schemas/agent.py:352`
+**Location:** `backend/app/schemas/agent.py:368`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

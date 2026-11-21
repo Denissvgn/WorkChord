@@ -21,51 +21,21 @@
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/analytics/OnTrackSummary.tsx"]
-    n1["frontend/src/components/analytics/StatusDistribution.tsx"]
-    n2["frontend/src/components/iteration/IterationCapacityLine.tsx"]
-    n3["frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx"]
-    n4["frontend/src/components/tasks/WorkMetricsLine.tsx"]
-    n5["frontend/src/components/team/TeamList.tsx"]
-    n6["frontend/src/pages/OverviewPage.tsx"]
-    n7["frontend/src/pages/ProjectDetailPage.tsx"]
-    n8["frontend/src/pages/ProjectsPage.tsx"]
-    n9["frontend/src/utils/workNumbers.ts"]
-    n0 --> n9
-    n1 --> n9
-    n2 --> n9
-    n3 --> n9
-    n4 --> n9
-    n5 --> n9
-    n6 --> n4
-    n6 --> n9
-    n7 --> n9
-    n8 --> n9
-    click n0 "../modules/OnTrackSummary.md"
-    click n1 "../modules/StatusDistribution.md"
-    click n2 "../modules/IterationCapacityLine.md"
-    click n3 "../modules/KanbanCard.md"
-    click n4 "../modules/WorkMetricsLine.md"
-    click n5 "../modules/TeamList.md"
-    click n6 "../modules/OverviewPage.md"
-    click n7 "../modules/ProjectDetailPage.md"
-    click n8 "../modules/ProjectsPage.md"
-    click n9 "../modules/workNumbers.md"
+    n0["frontend"]
+    n1["frontend/src/utils/workNumbers.ts"]
+    n0 --> n1
+    click n1 "../modules/workNumbers.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [OnTrackSummary](../modules/OnTrackSummary.md) |
-| Inbound | [StatusDistribution](../modules/StatusDistribution.md) |
-| Inbound | [IterationCapacityLine](../modules/IterationCapacityLine.md) |
-| Inbound | [KanbanCard](../modules/KanbanCard.md) |
-| Inbound | [WorkMetricsLine](../modules/WorkMetricsLine.md) |
-| Inbound | [TeamList](../modules/TeamList.md) |
-| Inbound | [OverviewPage](../modules/OverviewPage.md) |
-| Inbound | [ProjectDetailPage](../modules/ProjectDetailPage.md) |
-| Inbound | [ProjectsPage](../modules/ProjectsPage.md) |
+| Inbound | `frontend` (14) |
+
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

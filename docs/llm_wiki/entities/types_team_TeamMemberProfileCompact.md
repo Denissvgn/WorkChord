@@ -21,6 +21,7 @@ _Auto-generated from `TeamMemberProfileCompact` in `frontend/src/types/team.ts`.
 | `profile_kind` | `TeamMemberProfileKind` | Yes | — | — |
 | `assignment_modes` | `TeamMemberAssignmentMode[]` | Yes | — | — |
 | `skills` | `TeamMemberProfileSkill[]` | Yes | — | — |
+| `agent_connected` | `boolean` | No | — | — |
 
 ## Methods
 
@@ -45,7 +46,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_team](../modules/types_team.md) | 0 | `assignment_modes`, `automation_enabled`, `display_name`, `email`, `headline`, `id`, `profile_kind`, `skills` |
+| [types_team](../modules/types_team.md) | 0 | `agent_connected`, `assignment_modes`, `automation_enabled`, `display_name`, `email`, `headline`, `id`, `profile_kind`, `skills` |
 
 ### References
 

@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # ShareFocusIntent
 
 **Location:** `frontend/src/pages/PlanMasterPage.tsx:84`

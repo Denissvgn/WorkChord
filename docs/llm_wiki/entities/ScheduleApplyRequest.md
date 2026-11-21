@@ -1,6 +1,6 @@
 # ScheduleApplyRequest
 
-**Location:** `backend/app/schemas/gantt.py:120`
+**Location:** `backend/app/schemas/gantt.py:124`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)
@@ -29,10 +29,13 @@ flowchart LR
     n0["ScheduleApplyRequest (backend/app/schemas/gantt.py)"]
     n1["BaseModel"]
     n2["schedule_iteration (backend/app/routers/gantt.py)"]
+    n3["test_reassigned_tasks_preview_and_apply_without_capacity_refusal (backend/tests/test_scheduler_dependencies.py)"]
     n0 --> n1
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/schemas_gantt.md"
     click n2 "../modules/routers_gantt.md"
+    click n3 "../modules/test_scheduler_dependencies.md"
 ```
 
 ### Summary
@@ -52,3 +55,4 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `schedule_iteration` | type_reference | [routers_gantt](../modules/routers_gantt.md) | — |
+| `test_reassigned_tasks_preview_and_apply_without_capacity_refusal` | call | [test_scheduler_dependencies](../modules/test_scheduler_dependencies.md) | 1 |

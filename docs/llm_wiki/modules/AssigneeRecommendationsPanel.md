@@ -33,7 +33,7 @@ flowchart LR
     n1["frontend/src/components/feedback/QueryState.tsx"]
     n2["frontend/src/components/tasks/TaskForm.tsx"]
     n3["frontend/src/components/team/AssigneeRecommendationsPanel.tsx"]
-    n4["frontend/src/pages/TriagePage.tsx"]
+    n4["frontend/src/components/triage/ConvertTriageDrawer.tsx"]
     n5["frontend/src/services/taskService.ts"]
     n6["frontend/src/services/triageService.ts"]
     n1 --> n0
@@ -49,13 +49,12 @@ flowchart LR
     n4 --> n0
     n4 --> n1
     n4 --> n3
-    n4 --> n5
     n4 --> n6
     click n0 "../modules/Button.md"
     click n1 "../modules/QueryState.md"
     click n2 "../modules/TaskForm.md"
     click n3 "../modules/AssigneeRecommendationsPanel.md"
-    click n4 "../modules/TriagePage.md"
+    click n4 "../modules/ConvertTriageDrawer.md"
     click n5 "../modules/taskService.md"
     click n6 "../modules/triageService.md"
 ```
@@ -65,7 +64,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [TaskForm](../modules/TaskForm.md) |
-| Inbound | [TriagePage](../modules/TriagePage.md) |
+| Inbound | [ConvertTriageDrawer](../modules/ConvertTriageDrawer.md) |
 | Outbound | [Button](../modules/Button.md) |
 | Outbound | [QueryState](../modules/QueryState.md) |
 | Outbound | [taskService](../modules/taskService.md) |

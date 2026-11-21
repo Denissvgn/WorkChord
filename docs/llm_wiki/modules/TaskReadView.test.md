@@ -16,14 +16,14 @@ _Auto-generated from `frontend/src/components/tasks/TaskReadView.test.tsx`._
 | `./taskEditorContract` | `emptyTaskBrief` | — | compiler-dependent |
 | `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
 | `react-router-dom` | `useLocation` | — | compiler-dependent |
-| `vitest` | `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
 | Constants | `service`, `task` |
-| Module calls | `service = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `describe` |
+| Module calls | `service = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `beforeEach`, `describe`, `describe` |
 
 ## Local dependency map
 
@@ -42,6 +42,7 @@ flowchart LR
     n1 --> n2
     n1 --> n3
     n1 --> n4
+    n2 --> n0
     n2 --> n4
     click n0 "../modules/taskEditorContract.md"
     click n1 "../modules/TaskReadView.test.md"

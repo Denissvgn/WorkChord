@@ -1,6 +1,6 @@
 # TeamService
 
-**Location:** `backend/app/services/team_service.py:36`
+**Location:** `backend/app/services/team_service.py:38`
 **Kind:** Class
 **Bases:** —
 **Module:** [team_service](../modules/team_service.md)
@@ -20,6 +20,7 @@ Service for team member operations.
 | `__init__` | `(db: AsyncSession)` | — | — |
 | `_profile_options` | `()` | — | Return eager loading options for reusable profile responses. |
 | `_member_options` | `()` | — | Return eager loading options for team member responses. |
+| `_attach_assignee_profiles` | *(async)* `(members: Sequence[TeamMember]) -> None` | — | Give rows whose profile the reader cannot read the part every team reader may see. |
 | `_normalize_text_key` | `(value: str \| None) -> str` | — | Return a lowercase matching key for display names and emails. |
 | `_get_profile_by_id` | *(async)* `(profile_id: int) -> TeamMemberProfile \| None` | — | Load a reusable profile by id. |
 | `_require_profile_not_assigned_to_iteration` | *(async)* `(profile_id: int, iteration_id: int \| None, *, exclude_member_id: int \| None = None) -> None` | — | Ensure a profile has at most one capacity row in an iteration. |
@@ -97,7 +98,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [team_service](../modules/team_service.md) | 30 | — |
+| [team_service](../modules/team_service.md) | 31 | — |
 
 ### References
 

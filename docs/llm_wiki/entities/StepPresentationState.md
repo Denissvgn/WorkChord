@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # StepPresentationState
 
 **Location:** `frontend/src/pages/PlanMasterPage.tsx:106`

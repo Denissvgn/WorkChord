@@ -1,6 +1,6 @@
 # PlanReadiness
 
-**Location:** `frontend/src/features/planningMasters/masters.ts:94`
+**Location:** `frontend/src/features/planningMasters/masters.ts:8`
 **Kind:** Interface
 **Bases:** —
 **Module:** [planningMasters_masters](../modules/planningMasters_masters.md)
@@ -31,7 +31,6 @@ _Auto-generated from `PlanReadiness` in `frontend/src/features/planningMasters/m
 | `ganttLastBuilt` | `string` | Yes | — | — |
 | `riskCount` | `number` | Yes | — | — |
 | `inboxCount` | `number` | Yes | — | — |
-| `checkpointStates` | `Partial<Record<PlanningStepId, StepState>>` | No | — | — |
 
 ## Methods
 
@@ -45,36 +44,30 @@ flowchart LR
     n0["PlanReadiness (frontend/src/features/planningMasters/masters.ts)"]
     n1["frontend/src/features/planningMasters/masters.test.ts"]
     n2["derivePlanningRecovery (frontend/src/features/planningMasters/masters.ts)"]
-    n3["deriveStatus (frontend/src/features/planningMasters/masters.ts)"]
-    n4["localizeStatus (frontend/src/features/planningMasters/masters.ts)"]
-    n5["frontend/src/features/planningMasters/usePlanningNavigationSummary.ts"]
+    n3["checkpointEvidence (frontend/src/features/planningMasters/planEvidence.ts)"]
+    n4["checkpointOwnerLink (frontend/src/features/planningMasters/planEvidence.ts)"]
+    n5["readinessWithServerCounts (frontend/src/features/planningMasters/planEvidence.ts)"]
     n6["frontend/src/features/planningMasters/usePlanningReadiness.ts"]
-    n7["frontend/src/pages/PlanMasterPage.test.tsx"]
-    n8["frontend/src/pages/PlanMasterPage.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
-    n7 --> n0
-    n8 --> n0
     click n0 "../modules/planningMasters_masters.md"
     click n1 "../modules/planningMasters_masters.test.md"
     click n2 "../modules/planningMasters_masters.md"
-    click n3 "../modules/planningMasters_masters.md"
-    click n4 "../modules/planningMasters_masters.md"
-    click n5 "../modules/usePlanningNavigationSummary.md"
+    click n3 "../modules/planEvidence.md"
+    click n4 "../modules/planEvidence.md"
+    click n5 "../modules/planEvidence.md"
     click n6 "../modules/usePlanningReadiness.md"
-    click n7 "../modules/PlanMasterPage.test.md"
-    click n8 "../modules/PlanMasterPage.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [planningMasters_masters](../modules/planningMasters_masters.md) | 0 | `checkpointStates`, `currentIterationDays`, `currentIterationEnd`, `currentIterationName`, `currentIterationStart`, `ganttLastBuilt`, `hasCurrentIteration`, `hasGanttSchedule`, `inboxCount`, `iterationCount`, `riskCount`, `taskCount` |
+| [planningMasters_masters](../modules/planningMasters_masters.md) | 0 | `currentIterationDays`, `currentIterationEnd`, `currentIterationName`, `currentIterationStart`, `ganttLastBuilt`, `hasCurrentIteration`, `hasGanttSchedule`, `inboxCount`, `iterationCount`, `riskCount`, `taskCount`, `tasksAgentWithoutCapacity` |
 
 ### References
 
@@ -82,9 +75,7 @@ flowchart LR
 |---|---|---|---:|
 | `masters.test` | import | [planningMasters_masters.test](../modules/planningMasters_masters.test.md) | — |
 | `derivePlanningRecovery` | type_reference | [planningMasters_masters](../modules/planningMasters_masters.md) | — |
-| `deriveStatus` | type_reference | [planningMasters_masters](../modules/planningMasters_masters.md) | — |
-| `localizeStatus` | type_reference | [planningMasters_masters](../modules/planningMasters_masters.md) | — |
-| `usePlanningNavigationSummary` | import | [usePlanningNavigationSummary](../modules/usePlanningNavigationSummary.md) | — |
+| `checkpointEvidence` | type_reference | [planEvidence](../modules/planEvidence.md) | — |
+| `checkpointOwnerLink` | type_reference | [planEvidence](../modules/planEvidence.md) | — |
+| `readinessWithServerCounts` | type_reference | [planEvidence](../modules/planEvidence.md) | — |
 | `usePlanningReadiness` | import | [usePlanningReadiness](../modules/usePlanningReadiness.md) | — |
-| `PlanMasterPage.test` | import | [PlanMasterPage.test](../modules/PlanMasterPage.test.md) | — |
-| `PlanMasterPage` | import | [PlanMasterPage](../modules/PlanMasterPage.md) | — |

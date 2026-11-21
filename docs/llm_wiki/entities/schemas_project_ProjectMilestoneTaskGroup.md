@@ -1,6 +1,6 @@
 # ProjectMilestoneTaskGroup
 
-**Location:** `backend/app/schemas/project.py:256`
+**Location:** `backend/app/schemas/project.py:258`
 **Kind:** Pydantic model
 **Bases:** `WorkMetricSummary`
 **Module:** [schemas_project](../modules/schemas_project.md)

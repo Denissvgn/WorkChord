@@ -1,6 +1,6 @@
 # AgentTaskAssignmentUpdate
 
-**Location:** `backend/app/schemas/agent.py:635`
+**Location:** `backend/app/schemas/agent.py:655`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -20,6 +20,7 @@ PM command to reorder, reassign, or cancel a queued assignment.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `actor_id` | `Optional[int]` | `actor_id` | No | Yes | `None` | — | — | — |
+| `review_binding_id` | `int \| None` | `review_binding_id` | No | Yes | `None` | ge=1 | — | — |
 | `queue_rank` | `Optional[int]` | `queue_rank` | No | Yes | `None` | ge=0 | — | — |
 | `not_before` | `Optional[datetime]` | `not_before` | No | Yes | `None` | — | — | — |
 | `reviewer_profile_id` | `Optional[int]` | `reviewer_profile_id` | No | Yes | `None` | — | — | — |
@@ -64,7 +65,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 0 | `actor_id`, `expected_queue_revision`, `not_before`, `queue_rank`, `reason`, `reviewer_profile_id`, `state` |
+| [schemas_agent](../modules/schemas_agent.md) | 0 | `actor_id`, `expected_queue_revision`, `not_before`, `queue_rank`, `reason`, `review_binding_id`, `reviewer_profile_id`, `state` |
 
 ### Structure
 

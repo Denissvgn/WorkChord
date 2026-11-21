@@ -31,9 +31,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (22) |
+| Inbound | `frontend` (38) |
 
-> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -47,14 +47,14 @@ flowchart LR
 | [TeamMemberProfileSkillCreate](../entities/types_team_TeamMemberProfileSkillCreate.md) | Interface | 39 | — | — |
 | [TeamMemberProfile](../entities/types_team_TeamMemberProfile.md) | Interface | 60 | — | — |
 | [TeamMemberProfileCompact](../entities/types_team_TeamMemberProfileCompact.md) | Interface | 76 | — | — |
-| [TeamMemberProfileCreate](../entities/types_team_TeamMemberProfileCreate.md) | Interface | 87 | — | — |
-| [TeamMemberProfileUpdate](../entities/types_team_TeamMemberProfileUpdate.md) | Interface | 99 | — | — |
-| [TeamMember](../entities/types_team_TeamMember.md) | Interface | 110 | — | — |
-| [TeamMemberOption](../entities/TeamMemberOption.md) | Interface | 124 | — | — |
-| [TeamMemberCreate](../entities/types_team_TeamMemberCreate.md) | Interface | 133 | — | — |
-| [MemberWorkload](../entities/types_team_MemberWorkload.md) | Interface | 143 | — | — |
-| [MemberCapacity](../entities/types_team_MemberCapacity.md) | Interface | 159 | — | Detailed capacity breakdown from GET /team-members/{id}/capacity. |
-| [AssigneeRecommendation](../entities/AssigneeRecommendation.md) | Interface | 169 | — | — |
+| [TeamMemberProfileCreate](../entities/types_team_TeamMemberProfileCreate.md) | Interface | 89 | — | — |
+| [TeamMemberProfileUpdate](../entities/types_team_TeamMemberProfileUpdate.md) | Interface | 101 | — | — |
+| [TeamMember](../entities/types_team_TeamMember.md) | Interface | 112 | — | — |
+| [TeamMemberOption](../entities/TeamMemberOption.md) | Interface | 126 | — | — |
+| [TeamMemberCreate](../entities/types_team_TeamMemberCreate.md) | Interface | 135 | — | — |
+| [MemberWorkload](../entities/types_team_MemberWorkload.md) | Interface | 145 | — | — |
+| [MemberCapacity](../entities/types_team_MemberCapacity.md) | Interface | 161 | — | Detailed capacity breakdown from GET /team-members/{id}/capacity. |
+| [AssigneeRecommendation](../entities/AssigneeRecommendation.md) | Interface | 171 | — | — |
 | [TeamMemberProfileSkillUpdate](../entities/types_team_TeamMemberProfileSkillUpdate.md) | Type alias | 50 | `Partial<TeamMemberProfileSkillCreate>` | — |
 | [TeamMemberProfileKind](../entities/TeamMemberProfileKind.md) | Type alias | 52 | `'human' \| 'agent' \| 'hybrid'` | — |
 | [TeamMemberAssignmentMode](../entities/TeamMemberAssignmentMode.md) | Type alias | 54 | <pre><code>&#124; &#39;ownership&#39;&#10;    &#124; &#39;execution&#39;&#10;    &#124; &#39;verification&#39;&#10;    &#124; &#39;design&#95;handoff&#39;</code></pre> | — |

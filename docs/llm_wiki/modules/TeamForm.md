@@ -1,15 +1,16 @@
 # TeamForm Module
 
-**Path:** `frontend/src/components/team/TeamForm.tsx`
+**Path:** `frontend/src/components/capacity/TeamForm.tsx`
 
 ## Description
 
-_Auto-generated from `frontend/src/components/team/TeamForm.tsx`._
+This form edits a person’s or agent’s allocation for one iteration. It reads the durable profile separately and sends the planning revisions observed when the form opened with its create or update request.
 
 ## Imports
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
 | `../../services/planningInputService` | `MemberPlanningIntent`, `ObservedRevisions` | Declaration | erased |
@@ -43,7 +44,7 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 ```mermaid
 flowchart LR
     n0["frontend"]
-    n1["frontend/src/components/team/TeamForm.tsx"]
+    n1["frontend/src/components/capacity/TeamForm.tsx"]
     n0 --> n1
     n1 --> n0
     click n1 "../modules/TeamForm.md"
@@ -56,7 +57,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (11) |
+| Outbound | `frontend` (12) |
 
 ### External packages
 
@@ -64,13 +65,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TeamFormProps](../entities/TeamFormProps.md) | Interface | 23 | — | — |
+| [TeamFormProps](../entities/TeamFormProps.md) | Interface | 24 | — | — |
 
 ## Functions
 

@@ -26,14 +26,14 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/tasks/SavedViewsControl.tsx"]
+    n0["frontend/src/components/tasks/useSavedViewManager.tsx"]
     n1["frontend/src/components/UserSessionBadge.tsx"]
     n2["frontend/src/services/api.ts"]
     n3["frontend/src/services/sessionService.ts"]
     n0 --> n3
     n1 --> n3
     n3 --> n2
-    click n0 "../modules/SavedViewsControl.md"
+    click n0 "../modules/useSavedViewManager.md"
     click n1 "../modules/UserSessionBadge.md"
     click n2 "../modules/api.md"
     click n3 "../modules/sessionService.md"
@@ -43,7 +43,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | [SavedViewsControl](../modules/SavedViewsControl.md) |
+| Inbound | [useSavedViewManager](../modules/useSavedViewManager.md) |
 | Inbound | [UserSessionBadge](../modules/UserSessionBadge.md) |
 | Outbound | [api](../modules/api.md) |
 

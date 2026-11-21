@@ -1,6 +1,6 @@
 # LegacySQLiteFactory
 
-**Location:** `backend/tests/support/factories.py:80`
+**Location:** `backend/tests/support/factories.py:83`
 **Kind:** Class
 **Bases:** —
 **Module:** [factories](../modules/factories.md)

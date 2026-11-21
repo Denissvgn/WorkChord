@@ -14,6 +14,7 @@ _Auto-generated from `frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx
 | `../../common/Button` | `Button` | — | compiler-dependent |
 | `../../ui/tone` | `PillTone` | Declaration | erased |
 | `../../ui/tone` | `toneDotClassName` | — | compiler-dependent |
+| `./KanbanCard` | `BoardCardContext` | Declaration | erased |
 | `./KanbanCard` | `KanbanCard` | — | compiler-dependent |
 | `@dnd-kit/core` | `useDroppable` | — | compiler-dependent |
 | `@dnd-kit/sortable` | `SortableContext`, `verticalListSortingStrategy` | — | compiler-dependent |
@@ -47,6 +48,7 @@ flowchart LR
     n1 --> n4
     n1 --> n5
     n1 --> n6
+    n2 --> n0
     n2 --> n5
     n2 --> n6
     n3 --> n2
@@ -87,10 +89,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [KanbanColumnProps](../entities/KanbanColumnProps.md) | Interface | 15 | — | — |
+| [KanbanColumnProps](../entities/KanbanColumnProps.md) | Interface | 16 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `KanbanColumn` | `({ id, title, tasks, count, tone, onOpen }: KanbanColumnProps)` | — | — |
+| `KanbanColumn` | `({ id, title, caption, tasks, count, tone, onOpen, context }: KanbanColumnProps)` | — | — |

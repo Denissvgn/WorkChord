@@ -1,7 +1,7 @@
 # AgentTeamSetupModel
 
 **Location:** `backend/app/schemas/agent_team_setup.py:171`
-**Kind:** Class
+**Kind:** Pydantic model
 **Bases:** `StrictContractModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 

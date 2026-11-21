@@ -1,6 +1,6 @@
 # DndContextMockProps
 
-**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx:29`
+**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx:37`
 **Kind:** Interface
 **Bases:** —
 **Module:** [KanbanBoard.test](../modules/KanbanBoard.test.md)

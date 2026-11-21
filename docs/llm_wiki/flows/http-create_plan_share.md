@@ -2,7 +2,7 @@
 
 **Entry point:** `create_plan_share` (`http`)
 **Source:** [plan_shares](../modules/plan_shares.md)
-**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [iteration_service](../modules/iteration_service.md), [models_plan_share](../modules/models_plan_share.md), and 8 more
+**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [iteration_service](../modules/iteration_service.md), [models_plan_share](../modules/models_plan_share.md), and 9 more
 
 **Complete modules touched:**
 
@@ -13,6 +13,7 @@
 - [plan_share_service](../modules/plan_share_service.md)
 - [plan_shares](../modules/plan_shares.md)
 - [query_limits](../modules/query_limits.md)
+- [schemas_team](../modules/schemas_team.md)
 - [snapshot_service](../modules/snapshot_service.md)
 - [task_hierarchy_service](../modules/task_hierarchy_service.md)
 - [task_service](../modules/task_service.md)
@@ -39,22 +40,22 @@ sequenceDiagram
     participant p10 as SnapshotService._profile_references
     participant p11 as TaskService._task_graph_query
     participant p12 as TaskService._load_iteration_tree
-    participant p13 as TaskHierarchyService._load_iteration_tree
-    participant p14 as SnapshotService
-    participant p15 as utc_now
-    participant p16 as PlanShareService._owner_filter
-    participant p17 as PlanShare
-    participant p18 as PlanShareService._share_snapshot
-    participant p19 as PlanShareService._query
-    participant p20 as current_command
-    participant p21 as IterationService
-    participant p22 as IterationService.get_by_id
-    participant p23 as TaskService
-    participant p24 as TeamService
-    participant p25 as SnapshotService._member_to_export
-    participant p26 as internal_authority
-    participant p27 as SnapshotPathError
-    participant p28 as TeamService._member_options
+    participant p13 as TeamService._attach_assignee_profiles
+    participant p14 as TaskHierarchyService._load_iteration_tree
+    participant p15 as SnapshotService
+    participant p16 as utc_now
+    participant p17 as PlanShareService._owner_filter
+    participant p18 as PlanShare
+    participant p19 as PlanShareService._share_snapshot
+    participant p20 as PlanShareService._query
+    participant p21 as current_command
+    participant p22 as IterationService
+    participant p23 as IterationService.get_by_id
+    participant p24 as TaskService
+    participant p25 as TeamService
+    participant p26 as SnapshotService._member_to_export
+    participant p27 as internal_authority
+    participant p28 as SnapshotPathError
     participant p29 as HTTPException
     participant p30 as service.to_response
     p0->>p1: PlanShareService.create
@@ -69,29 +70,29 @@ sequenceDiagram
     p9->>p10: SnapshotService._profile_references
     p6->>p11: TaskService._task_graph_query
     p6->>p12: TaskService._load_iteration_tree
-    p12->>p13: TaskHierarchyService._load_iteration_tree
-    p1->>p14: SnapshotService
-    p1->>p15: utc_now
-    p1->>p16: PlanShareService._owner_filter
-    p1->>p17: PlanShare
-    p1->>p18: PlanShareService._share_snapshot
-    p1->>p19: PlanShareService._query
-    p4->>p20: current_command
-    p3->>p21: IterationService
-    p3->>p22: IterationService.get_by_id
-    p3->>p23: TaskService
-    p3->>p24: TeamService
-    p3->>p25: SnapshotService._member_to_export
-    p9->>p26: internal_authority
-    p5->>p27: SnapshotPathError
-    p7->>p28: TeamService._member_options
+    p7->>p13: TeamService._attach_assignee_profiles
+    p12->>p14: TaskHierarchyService._load_iteration_tree
+    p1->>p15: SnapshotService
+    p1->>p16: utc_now
+    p1->>p17: PlanShareService._owner_filter
+    p1->>p18: PlanShare
+    p1->>p19: PlanShareService._share_snapshot
+    p1->>p20: PlanShareService._query
+    p4->>p21: current_command
+    p3->>p22: IterationService
+    p3->>p23: IterationService.get_by_id
+    p3->>p24: TaskService
+    p3->>p25: TeamService
+    p3->>p26: SnapshotService._member_to_export
+    p9->>p27: internal_authority
+    p5->>p28: SnapshotPathError
     p0-->>p29: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
     p0-->>p30: service.to_response(share)
 ```
 
-> Call sequence diagram shows 30 of 194 interactions; 164 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 203 interactions; 173 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 52 (51 omitted); unresolved 1 of 101 (100 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 53 (52 omitted); unresolved 1 of 106 (105 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -105,7 +106,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_service.py:TaskService._task_graph_query` | 23 | [backend/app/services/task_hierarchy_service.py](../modules/task_hierarchy_service.md) | internal | 2 |
 | `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._task_graph_query` | 24 | - | unresolved | 6 |
 | `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._task_graph_query` | 24 | - | external | 8 |
-> Omission summary shows 8 of 45 groups; 37 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 50 groups; 42 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -116,9 +117,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 42; effect analysis evaluated: 27, partial: 0, unavailable: 15. Counts include steps omitted from the displayed trace.
+Source steps: 45; effect analysis evaluated: 29, partial: 0, unavailable: 16. Counts include steps omitted from the displayed trace.
 
-Collector observations for 27 source steps with known totals: observed: 99, emitted: 99, omitted: 0. Unavailable totals are excluded.
+Collector observations for 29 source steps with known totals: observed: 106, emitted: 106, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.

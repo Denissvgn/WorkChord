@@ -95,9 +95,9 @@ sequenceDiagram
     p4-->>p30: self.db.execute (backend/app/services/rele…:ReleaseService.get_by_id)(...)
 ```
 
-> Call sequence diagram shows 30 of 502 interactions; 472 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 504 interactions; 474 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 180 (179 omitted); unresolved 1 of 240 (239 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 181 (180 omitted); unresolved 1 of 241 (240 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -126,7 +126,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 83; effect analysis evaluated: 56, partial: 3, unavailable: 24. Counts include steps omitted from the displayed trace.
 
-Collector observations for 59 source steps with known totals: observed: 250, emitted: 238, omitted: 12. Unavailable totals are excluded.
+Collector observations for 59 source steps with known totals: observed: 252, emitted: 239, omitted: 13. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -202,7 +202,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| release_resource | _json_resource | 2212 | `_json_resource('tasks:read', ...)` |
+| release_resource | _json_resource | 2247 | `_json_resource('tasks:read', ...)` |
 | _json_resource | _tool_call | 363 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

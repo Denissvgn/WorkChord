@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/services/executionUsageService.ts`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../types/analyticsScope` | `AnalyticsScope` | Declaration | erased |
 | `../types/executionUsage` | `ExecutionUsageSummary` | Declaration | erased |
 | `./api` | `api` | — | compiler-dependent |
 
@@ -30,14 +31,18 @@ flowchart LR
     n0["frontend/src/components/analytics/ExecutionUsagePanel.tsx"]
     n1["frontend/src/services/api.ts"]
     n2["frontend/src/services/executionUsageService.ts"]
-    n3["frontend/src/types/executionUsage.ts"]
+    n3["frontend/src/types/analyticsScope.ts"]
+    n4["frontend/src/types/executionUsage.ts"]
     n0 --> n2
+    n0 --> n3
     n2 --> n1
     n2 --> n3
+    n2 --> n4
     click n0 "../modules/ExecutionUsagePanel.md"
     click n1 "../modules/api.md"
     click n2 "../modules/executionUsageService.md"
-    click n3 "../modules/executionUsage.md"
+    click n3 "../modules/analyticsScope.md"
+    click n4 "../modules/executionUsage.md"
 ```
 
 ### Internal neighbors
@@ -46,4 +51,5 @@ flowchart LR
 |---|---|
 | Inbound | [ExecutionUsagePanel](../modules/ExecutionUsagePanel.md) |
 | Outbound | [api](../modules/api.md) |
+| Outbound | [analyticsScope](../modules/analyticsScope.md) |
 | Outbound | [executionUsage](../modules/executionUsage.md) |

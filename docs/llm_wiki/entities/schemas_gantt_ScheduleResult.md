@@ -1,6 +1,6 @@
 # ScheduleResult
 
-**Location:** `backend/app/schemas/gantt.py:97`
+**Location:** `backend/app/schemas/gantt.py:101`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)

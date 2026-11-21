@@ -148,17 +148,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_agent_model_catalog_entry | service.get_catalog | 172 | `service.get_catalog(actor, ...)` |
-| get_agent_model_catalog_entry | catalog_key.strip().lower | 172 | `catalog_key.strip().lower(data not statically known)` |
-| get_agent_model_catalog_entry | catalog_key.strip | 172 | `catalog_key.strip(data not statically known)` |
-| get_agent_model_catalog_entry | _handle_model_error | 174 | `_handle_model_error(exc)` |
-| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 51 | `isinstance(exc, AgentModelConflictError)` |
-| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 52 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_model_error | exc.detail (backend/app/routers/agent…log.py:_handle_model_error) | 54 | `exc.detail(data not statically known)` |
-| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 56 | `isinstance(exc, LookupError)` |
-| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 57 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={...})` |
-| _handle_model_error | str (backend/app/routers/agent…log.py:_handle_model_error) | 61 | `str(exc)` |
-| _handle_model_error | _handle_agent_error | 64 | `_handle_agent_error(exc)` |
+| get_agent_model_catalog_entry | service.get_catalog | 220 | `service.get_catalog(actor, ...)` |
+| get_agent_model_catalog_entry | catalog_key.strip().lower | 220 | `catalog_key.strip().lower(data not statically known)` |
+| get_agent_model_catalog_entry | catalog_key.strip | 220 | `catalog_key.strip(data not statically known)` |
+| get_agent_model_catalog_entry | _handle_model_error | 222 | `_handle_model_error(exc)` |
+| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 99 | `isinstance(exc, AgentModelConflictError)` |
+| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 100 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_model_error | exc.detail (backend/app/routers/agent…log.py:_handle_model_error) | 102 | `exc.detail(data not statically known)` |
+| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 104 | `isinstance(exc, LookupError)` |
+| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 105 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={...})` |
+| _handle_model_error | str (backend/app/routers/agent…log.py:_handle_model_error) | 109 | `str(exc)` |
+| _handle_model_error | _handle_agent_error | 112 | `_handle_agent_error(exc)` |
 
 ### Boundary effects
 
@@ -168,14 +168,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_agent_model_catalog_entry` | `service.get_catalog` | 172 |
-| unresolved_call | `get_agent_model_catalog_entry` | `catalog_key.strip().lower` | 172 |
-| unresolved_call | `get_agent_model_catalog_entry` | `catalog_key.strip` | 172 |
-| external_call | `_handle_model_error` | `isinstance` | 51 |
-| external_call | `_handle_model_error` | `HTTPException` | 52 |
-| unresolved_call | `_handle_model_error` | `exc.detail` | 54 |
-| external_call | `_handle_model_error` | `isinstance` | 56 |
-| external_call | `_handle_model_error` | `HTTPException` | 57 |
+| unresolved_call | `get_agent_model_catalog_entry` | `service.get_catalog` | 220 |
+| unresolved_call | `get_agent_model_catalog_entry` | `catalog_key.strip().lower` | 220 |
+| unresolved_call | `get_agent_model_catalog_entry` | `catalog_key.strip` | 220 |
+| external_call | `_handle_model_error` | `isinstance` | 99 |
+| external_call | `_handle_model_error` | `HTTPException` | 100 |
+| unresolved_call | `_handle_model_error` | `exc.detail` | 102 |
+| external_call | `_handle_model_error` | `isinstance` | 104 |
+| external_call | `_handle_model_error` | `HTTPException` | 105 |
 | step_limit | `get_agent_model_catalog_entry` | `first 12 steps` | 0 |
 
 ## Behavior

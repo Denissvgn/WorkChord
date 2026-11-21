@@ -1,13 +1,13 @@
 # DateListProps
 
-**Location:** `frontend/src/pages/CalendarPage.tsx:1189`
+**Location:** `frontend/src/components/settings/WorkCalendarSettings.tsx:932`
 **Kind:** Interface
 **Bases:** —
-**Module:** [CalendarPage](../modules/CalendarPage.md)
+**Module:** [WorkCalendarSettings](../modules/WorkCalendarSettings.md)
 
 ## Description
 
-_Auto-generated from `DateListProps` in `frontend/src/pages/CalendarPage.tsx`._
+_Auto-generated from `DateListProps` in `frontend/src/components/settings/WorkCalendarSettings.tsx`._
 
 ## Attributes
 
@@ -32,4 +32,4 @@ _Auto-generated from `DateListProps` in `frontend/src/pages/CalendarPage.tsx`._
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [CalendarPage](../modules/CalendarPage.md) | 0 | `holidays`, `locale`, `onRemoveHoliday`, `onRemoveShortDay`, `shortDays` |
+| [WorkCalendarSettings](../modules/WorkCalendarSettings.md) | 0 | `holidays`, `locale`, `onRemoveHoliday`, `onRemoveShortDay`, `shortDays` |

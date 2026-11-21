@@ -1,6 +1,6 @@
 # SeriesDraft
 
-**Location:** `frontend/src/components/iteration/IterationForm.tsx:48`
+**Location:** `frontend/src/components/iteration/IterationForm.tsx:55`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [IterationForm](../modules/IterationForm.md)
@@ -16,6 +16,7 @@
     count: number;
     until_date: string;
     manager_email: string;
+    calendar_id: string;
 }
 ```
 

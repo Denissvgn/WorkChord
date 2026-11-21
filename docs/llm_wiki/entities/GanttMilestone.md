@@ -1,6 +1,6 @@
 # GanttMilestone
 
-**Location:** `backend/app/schemas/gantt.py:19`
+**Location:** `backend/app/schemas/gantt.py:23`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)

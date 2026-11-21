@@ -28,13 +28,10 @@ _Auto-generated from `ProjectUpdateFreshness` in `frontend/src/types/project.ts`
 ```mermaid
 flowchart LR
     n0["ProjectUpdateFreshness (frontend/src/types/project.ts)"]
-    n1["frontend/src/pages/OverviewPage.tsx"]
-    n2["frontend/src/pages/ProjectDetailPage.tsx"]
+    n1["updateFreshnessMessage (frontend/src/components/projects/projectDetailShared.ts)"]
     n1 --> n0
-    n2 --> n0
     click n0 "../modules/types_project.md"
-    click n1 "../modules/OverviewPage.md"
-    click n2 "../modules/ProjectDetailPage.md"
+    click n1 "../modules/projectDetailShared.md"
 ```
 
 ### Summary
@@ -47,5 +44,4 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `OverviewPage` | import | [OverviewPage](../modules/OverviewPage.md) | — |
-| `ProjectDetailPage` | import | [ProjectDetailPage](../modules/ProjectDetailPage.md) | — |
+| `updateFreshnessMessage` | type_reference | [projectDetailShared](../modules/projectDetailShared.md) | — |

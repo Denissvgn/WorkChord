@@ -14,6 +14,7 @@ Compact planning inputs used by persistent navigation.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `iteration_id` | `int` | `iteration_id` | Yes | No | — | — | — | — |
+| `calendar_name` | `str \| None` | `calendar_name` | No | Yes | `None` | — | — | — |
 | `team_member_count` | `int` | `team_member_count` | Yes | No | — | — | — | — |
 | `team_agent_count` | `int` | `team_agent_count` | No | No | `0` | — | — | — |
 | `team_capacity_hours` | `float` | `team_capacity_hours` | Yes | No | — | — | — | — |
@@ -61,7 +62,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `assigned_hours`, `checkpoints`, `checkpoints_done`, `checkpoints_total`, `has_schedule`, `iteration_id`, `planned_hours`, `risk_count`, `task_count`, `tasks_agent_without_capacity`, `tasks_without_assignee`, `tasks_without_effort` |
+| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `assigned_hours`, `calendar_name`, `checkpoints`, `checkpoints_done`, `checkpoints_total`, `has_schedule`, `iteration_id`, `planned_hours`, `risk_count`, `task_count`, `tasks_agent_without_capacity`, `tasks_without_assignee` |
 
 ### Structure
 

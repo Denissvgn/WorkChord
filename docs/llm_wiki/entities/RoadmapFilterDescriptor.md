@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # RoadmapFilterDescriptor
 
 **Location:** `frontend/src/pages/RoadmapPage.tsx:80`

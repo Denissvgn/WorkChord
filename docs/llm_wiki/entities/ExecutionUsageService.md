@@ -24,7 +24,7 @@ _Auto-generated from `ExecutionUsageService` in `backend/app/services/execution_
 | `_history` | *(async)* `(identity)` | — | — |
 | `latest` | *(async)* `(actor, run_id)` | — | — |
 | `write` | *(async)* `(actor, run_id, data: ExecutionUsageWrite)` | `@atomic_command` | — |
-| `summary` | *(async)* `(*, project_id = None, iteration_id = None, lookback_days = 30, budget_amount = None, budget_currency = None)` | — | — |
+| `summary` | *(async)* `(*, project_id = None, iteration_id = None, lookback_days = 30, budget_amount = None, budget_currency = None, backlog = False, all_projects = False, all_projects_backlog = False)` | — | — |
 
 ## Relationships
 
@@ -39,11 +39,11 @@ flowchart LR
     n5["record_execution_usage (backend/app/routers/agent.py)"]
     n6["execution_usage_summary (backend/app/routers/task_domain.py)"]
     n7["backend/app/services/agent_run_read_service.py"]
-    n8["test_concurrent_usage_corrections_reserve_one_head (backend/tests/test_execution_usage.py)"]
-    n9["test_human_only_usage_summary_preserves_zero_and_unknown (backend/tests/test_execution_usage.py)"]
-    n10["test_reported_zero_and_unknown_are_not_repriced_by_live_metadata (backend/tests/test_execution_usage.py)"]
-    n11["test_usage_correction_is_versioned_and_atomic (backend/tests/test_execution_usage.py)"]
-    n12["test_usage_replay_correction_and_currency_buckets (backend/tests/test_execution_usage.py)"]
+    n8["report_store (backend/tests/test_analytics_scopes.py)"]
+    n9["test_deleted_iteration_history_does_not_become_backlog (backend/tests/test_analytics_scopes.py)"]
+    n10["test_workspace_reports_keep_authorization_and_recorded_backlog_scope (backend/tests/test_analytics_scopes.py)"]
+    n11["test_workspace_reports_preserve_window_and_empty_backlog (backend/tests/test_analytics_scopes.py)"]
+    n12["test_concurrent_usage_corrections_reserve_one_head (backend/tests/test_execution_usage.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -64,10 +64,10 @@ flowchart LR
     click n5 "../modules/routers_agent.md"
     click n6 "../modules/routers_task_domain.md"
     click n7 "../modules/agent_run_read_service.md"
-    click n8 "../modules/test_execution_usage.md"
-    click n9 "../modules/test_execution_usage.md"
-    click n10 "../modules/test_execution_usage.md"
-    click n11 "../modules/test_execution_usage.md"
+    click n8 "../modules/test_analytics_scopes.md"
+    click n9 "../modules/test_analytics_scopes.md"
+    click n10 "../modules/test_analytics_scopes.md"
+    click n11 "../modules/test_analytics_scopes.md"
     click n12 "../modules/test_execution_usage.md"
 ```
 
@@ -88,10 +88,10 @@ flowchart LR
 | `record_execution_usage` | call | [routers_agent](../modules/routers_agent.md) | 1 |
 | `execution_usage_summary` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |
 | `agent_run_read_service` | import | [agent_run_read_service](../modules/agent_run_read_service.md) | — |
+| `report_store` | call | [test_analytics_scopes](../modules/test_analytics_scopes.md) | 2 |
+| `test_deleted_iteration_history_does_not_become_backlog` | call | [test_analytics_scopes](../modules/test_analytics_scopes.md) | 3 |
+| `test_workspace_reports_keep_authorization_and_recorded_backlog_scope` | call | [test_analytics_scopes](../modules/test_analytics_scopes.md) | 1 |
+| `test_workspace_reports_preserve_window_and_empty_backlog` | call | [test_analytics_scopes](../modules/test_analytics_scopes.md) | 1 |
 | `test_concurrent_usage_corrections_reserve_one_head` | call | [test_execution_usage](../modules/test_execution_usage.md) | 1 |
-| `test_human_only_usage_summary_preserves_zero_and_unknown` | call | [test_execution_usage](../modules/test_execution_usage.md) | 2 |
-| `test_reported_zero_and_unknown_are_not_repriced_by_live_metadata` | call | [test_execution_usage](../modules/test_execution_usage.md) | 2 |
-| `test_usage_correction_is_versioned_and_atomic` | call | [test_execution_usage](../modules/test_execution_usage.md) | 3 |
-| `test_usage_replay_correction_and_currency_buckets` | call | [test_execution_usage](../modules/test_execution_usage.md) | 1 |
 
-> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
+> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.

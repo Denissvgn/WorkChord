@@ -193,15 +193,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| convert_task_brief | domain_result | 230 | `domain_result(...)` |
-| domain_result | HTTPException | 51 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 53 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 53 | `str(exc)` |
-| domain_result | HTTPException | 55 | `HTTPException(422, detail=[...])` |
+| convert_task_brief | domain_result | 255 | `domain_result(...)` |
+| domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
 | domain_result | str | 55 | `str(exc)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| convert_task_brief | TaskBriefService.conversion | 230 | `TaskBriefService(db).conversion(task_id, data)` |
+| domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 57 | `str(exc)` |
+| domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| convert_task_brief | TaskBriefService.conversion | 255 | `TaskBriefService(db).conversion(task_id, data)` |
 | TaskBriefService.conversion | self.tasks.get_by_id (backend/app/services/task…skBriefService.conversion) | 211 | `self.tasks.get_by_id(task_id)` |
 | TaskBriefService.conversion | ValueError (backend/app/services/task…skBriefService.conversion) | 213 | `ValueError('Task not found or inaccessible')` |
 
@@ -213,11 +213,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 51 |
-| unresolved_call | `domain_result` | `exc.detail` | 51 |
 | external_call | `domain_result` | `HTTPException` | 53 |
+| unresolved_call | `domain_result` | `exc.detail` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
+| external_call | `domain_result` | `HTTPException` | 59 |
 | unresolved_call | `TaskBriefService.conversion` | `self.tasks.get_by_id` | 211 |
 | external_call | `TaskBriefService.conversion` | `ValueError` | 213 |
 | step_limit | `convert_task_brief` | `first 12 steps` | 0 |

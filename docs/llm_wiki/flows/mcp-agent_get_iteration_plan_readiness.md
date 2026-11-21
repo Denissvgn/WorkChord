@@ -65,8 +65,8 @@ sequenceDiagram
     participant p24 as CapacityService.absence_ranges
     participant p25 as DeliveryDependencyService.reconcile
     participant p26 as DiscussionService.enqueue
-    participant p27 as actor_has_scope
-    participant p28 as CapacityService.require_visible
+    participant p27 as TeamService._attach_assignee_profiles
+    participant p28 as actor_has_scope
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -95,15 +95,15 @@ sequenceDiagram
     p14->>p24: CapacityService.absence_ranges
     p9->>p25: DeliveryDependencyService.reconcile
     p9->>p26: DiscussionService.enqueue
-    p18->>p27: actor_has_scope
-    p22->>p28: CapacityService.require_visible
+    p13->>p27: TeamService._attach_assignee_profiles
+    p18->>p28: actor_has_scope
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 611 interactions; 581 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 622 interactions; 592 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 218 (217 omitted); unresolved 1 of 258 (257 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 219 (218 omitted); unresolved 1 of 263 (262 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -117,7 +117,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 135 groups; 127 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 139 groups; 131 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -130,9 +130,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 136; effect analysis evaluated: 96, partial: 3, unavailable: 37. Counts include steps omitted from the displayed trace.
+Source steps: 141; effect analysis evaluated: 100, partial: 3, unavailable: 38. Counts include steps omitted from the displayed trace.
 
-Collector observations for 99 source steps with known totals: observed: 449, emitted: 434, omitted: 15. Unavailable totals are excluded.
+Collector observations for 103 source steps with known totals: observed: 466, emitted: 450, omitted: 16. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -207,7 +207,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_get_iteration_plan_readiness | _tool_call | 1587 | `_tool_call((...), ...)` |
+| agent_get_iteration_plan_readiness | _tool_call | 1600 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

@@ -1,6 +1,6 @@
 # UnsavedLeaveGuardProps
 
-**Location:** `frontend/src/components/common/UnsavedLeaveGuard.tsx:5`
+**Location:** `frontend/src/components/common/UnsavedLeaveGuard.tsx:6`
 **Kind:** Interface
 **Bases:** —
 **Module:** [UnsavedLeaveGuard](../modules/UnsavedLeaveGuard.md)
@@ -19,6 +19,7 @@ _Auto-generated from `UnsavedLeaveGuardProps` in `frontend/src/components/common
 | `leaveLabel` | `string` | Yes | — | — |
 | `stayLabel` | `string` | Yes | — | — |
 | `closeLabel` | `string` | Yes | — | — |
+| `blockSearchChanges` | `boolean` | No | — | — |
 
 ## Methods
 
@@ -40,7 +41,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [UnsavedLeaveGuard](../modules/UnsavedLeaveGuard.md) | 0 | `closeLabel`, `description`, `leaveLabel`, `stayLabel`, `title`, `when` |
+| [UnsavedLeaveGuard](../modules/UnsavedLeaveGuard.md) | 0 | `blockSearchChanges`, `closeLabel`, `description`, `leaveLabel`, `stayLabel`, `title`, `when` |
 
 ### References
 

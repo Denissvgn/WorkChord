@@ -1,6 +1,6 @@
 # EditableSchedulingPass
 
-**Location:** `frontend/src/components/settings/SchedulingRulesSettings.tsx:39`
+**Location:** `frontend/src/components/settings/SchedulingRulesSettings.tsx:41`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SchedulingRulesSettings](../modules/SchedulingRulesSettings.md)

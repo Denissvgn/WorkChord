@@ -1,10 +1,10 @@
 # TeamList.test Module
 
-**Path:** `frontend/src/components/team/TeamList.test.tsx`
+**Path:** `frontend/src/components/capacity/TeamList.test.tsx`
 
 ## Description
 
-_Auto-generated from `frontend/src/components/team/TeamList.test.tsx`._
+_Auto-generated from `frontend/src/components/capacity/TeamList.test.tsx`._
 
 ## Imports
 
@@ -31,19 +31,19 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/iteration/IterationCapacityLine.tsx"]
-    n1["frontend/src/components/team/TeamList.test.tsx"]
-    n2["frontend/src/components/team/TeamList.tsx"]
+    n0["frontend/src/components/capacity/TeamList.test.tsx"]
+    n1["frontend/src/components/capacity/TeamList.tsx"]
+    n2["frontend/src/components/iteration/IterationCapacityLine.tsx"]
     n3["frontend/src/test/renderWithProviders.tsx"]
     n4["frontend/src/types/team.ts"]
-    n1 --> n0
-    n1 --> n2
-    n1 --> n3
+    n0 --> n1
+    n0 --> n2
+    n0 --> n3
+    n0 --> n4
     n1 --> n4
-    n2 --> n4
-    click n0 "../modules/IterationCapacityLine.md"
-    click n1 "../modules/TeamList.test.md"
-    click n2 "../modules/TeamList.md"
+    click n0 "../modules/TeamList.test.md"
+    click n1 "../modules/TeamList.md"
+    click n2 "../modules/IterationCapacityLine.md"
     click n3 "../modules/renderWithProviders.md"
     click n4 "../modules/types_team.md"
 ```
@@ -52,8 +52,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | [IterationCapacityLine](../modules/IterationCapacityLine.md) |
 | Outbound | [TeamList](../modules/TeamList.md) |
+| Outbound | [IterationCapacityLine](../modules/IterationCapacityLine.md) |
 | Outbound | [renderWithProviders](../modules/renderWithProviders.md) |
 | Outbound | [types_team](../modules/types_team.md) |
 

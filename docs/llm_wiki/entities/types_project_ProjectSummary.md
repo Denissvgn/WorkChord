@@ -60,15 +60,12 @@ _Auto-generated from `ProjectSummary` in `frontend/src/types/project.ts`._
 flowchart LR
     n0["ProjectSummary (frontend/src/types/project.ts)"]
     n1["WorkMetrics (frontend/src/types/workMetrics.ts)"]
-    n2["frontend/src/pages/OverviewPage.tsx"]
-    n3["frontend/src/services/projectService.ts"]
+    n2["frontend/src/services/projectService.ts"]
     n0 --> n1
     n2 --> n0
-    n3 --> n0
     click n0 "../modules/types_project.md"
     click n1 "../modules/workMetrics.md"
-    click n2 "../modules/OverviewPage.md"
-    click n3 "../modules/projectService.md"
+    click n2 "../modules/projectService.md"
 ```
 
 ### Summary
@@ -87,5 +84,4 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `OverviewPage` | import | [OverviewPage](../modules/OverviewPage.md) | — |
 | `projectService` | import | [projectService](../modules/projectService.md) | — |

@@ -1,6 +1,6 @@
 # AgentActorCreate
 
-**Location:** `backend/app/schemas/agent.py:186`
+**Location:** `backend/app/schemas/agent.py:202`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

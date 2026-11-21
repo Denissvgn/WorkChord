@@ -11,7 +11,8 @@ _Auto-generated from `frontend/src/pages/NotFoundPage.tsx`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../components/common/Button` | `Button` | — | compiler-dependent |
-| `../components/ui` | `PageHeader`, `SectionCard` | — | compiler-dependent |
+| `../components/ui` | `PageHeader`, `PageLayout`, `SectionCard` | — | compiler-dependent |
+| `../features/scope/useScopeLink` | `useScopeLink` | — | compiler-dependent |
 | `lucide-react` | `Home` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 | `react-router-dom` | `useLocation`, `useNavigate` | — | compiler-dependent |
@@ -29,12 +30,15 @@ _Auto-generated from `frontend/src/pages/NotFoundPage.tsx`._
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
     n1["frontend/src/components/ui/index.ts"]
-    n2["frontend/src/pages/NotFoundPage.tsx"]
-    n2 --> n0
-    n2 --> n1
+    n2["frontend/src/features/scope/useScopeLink.ts"]
+    n3["frontend/src/pages/NotFoundPage.tsx"]
+    n3 --> n0
+    n3 --> n1
+    n3 --> n2
     click n0 "../modules/Button.md"
     click n1 "../modules/index.md"
-    click n2 "../modules/NotFoundPage.md"
+    click n2 "../modules/useScopeLink.md"
+    click n3 "../modules/NotFoundPage.md"
 ```
 
 ### Internal neighbors
@@ -43,6 +47,7 @@ flowchart LR
 |---|---|
 | Outbound | [Button](../modules/Button.md) |
 | Outbound | [index](../modules/index.md) |
+| Outbound | [useScopeLink](../modules/useScopeLink.md) |
 
 ### External packages
 

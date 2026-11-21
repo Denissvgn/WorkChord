@@ -1,6 +1,6 @@
 # BreadcrumbsProps
 
-**Location:** `frontend/src/components/layout/Breadcrumbs.tsx:10`
+**Location:** `frontend/src/components/layout/Breadcrumbs.tsx:11`
 **Kind:** Interface
 **Bases:** —
 **Module:** [Breadcrumbs](../modules/Breadcrumbs.md)

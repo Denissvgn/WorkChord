@@ -1,6 +1,6 @@
 # AgentTeamActionReceipt
 
-**Location:** `backend/app/models/agent.py:651`
+**Location:** `backend/app/models/agent.py:666`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)

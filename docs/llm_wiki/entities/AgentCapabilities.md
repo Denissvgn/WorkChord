@@ -39,7 +39,7 @@ flowchart LR
     n0["AgentCapabilities (frontend/src/types/agent.ts)"]
     n1["frontend/src/components/agent/TaskRoutingPanel.test.tsx"]
     n2["frontend/src/components/settings/AgentAccessPanel.test.tsx"]
-    n3["frontend/src/components/settings/AgentModelAdministration.test.tsx"]
+    n3["frontend/src/components/team/AgentModelAdministration.test.tsx"]
     n4["frontend/src/services/agentService.ts"]
     n1 --> n0
     n2 --> n0

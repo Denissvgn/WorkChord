@@ -91,9 +91,9 @@ sequenceDiagram
     p0-->>p30: service.get_tasks(project_id)
 ```
 
-> Call sequence diagram shows 30 of 186 interactions; 156 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 187 interactions; 157 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 52 (51 omitted); unresolved 1 of 56 (55 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 52 (51 omitted); unresolved 1 of 57 (56 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 

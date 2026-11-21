@@ -1,6 +1,6 @@
 # PlanningReadinessOptions
 
-**Location:** `frontend/src/features/planningMasters/usePlanningReadiness.ts:23`
+**Location:** `frontend/src/features/planningMasters/usePlanningReadiness.ts:22`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [usePlanningReadiness](../modules/usePlanningReadiness.md)
@@ -9,7 +9,6 @@
 ```typescript
 {
     includeInbox?: boolean;
-    autoSelectFirst?: boolean;
 }
 ```
 

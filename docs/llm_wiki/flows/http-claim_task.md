@@ -147,17 +147,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| claim_task | service.claim_task | 1179 | `service.claim_task(task_id, actor, data, idempotency_key)` |
-| claim_task | _handle_agent_error | 1181 | `_handle_agent_error(exc)` |
-| _handle_agent_error | isinstance | 326 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 328 | `str(exc)` |
-| _handle_agent_error | str | 330 | `str(exc)` |
-| _handle_agent_error | HTTPException (backend/app/routers/agent.py:_handle_agent_error) | 332 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
-| _handle_agent_error | isinstance | 333 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException (backend/app/routers/agent.py:_handle_agent_error) | 334 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 334 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 335 | `isinstance(exc, AgentTeamSetupConflictError)` |
-| _handle_agent_error | HTTPException (backend/app/routers/agent.py:_handle_agent_error) | 336 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| claim_task | service.claim_task | 1180 | `service.claim_task(task_id, actor, data, idempotency_key)` |
+| claim_task | _handle_agent_error | 1182 | `_handle_agent_error(exc)` |
+| _handle_agent_error | isinstance | 327 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | str | 329 | `str(exc)` |
+| _handle_agent_error | str | 331 | `str(exc)` |
+| _handle_agent_error | HTTPException (backend/app/routers/agent.py:_handle_agent_error) | 333 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
+| _handle_agent_error | isinstance | 334 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException (backend/app/routers/agent.py:_handle_agent_error) | 335 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 335 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 336 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| _handle_agent_error | HTTPException (backend/app/routers/agent.py:_handle_agent_error) | 337 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
 
 ### Boundary effects
 
@@ -167,14 +167,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `claim_task` | `service.claim_task` | 1179 |
-| external_call | `_handle_agent_error` | `isinstance` | 326 |
-| external_call | `_handle_agent_error` | `HTTPException` | 332 |
-| external_call | `_handle_agent_error` | `isinstance` | 333 |
-| external_call | `_handle_agent_error` | `HTTPException` | 334 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 334 |
-| external_call | `_handle_agent_error` | `isinstance` | 335 |
-| external_call | `_handle_agent_error` | `HTTPException` | 336 |
+| unresolved_call | `claim_task` | `service.claim_task` | 1180 |
+| external_call | `_handle_agent_error` | `isinstance` | 327 |
+| external_call | `_handle_agent_error` | `HTTPException` | 333 |
+| external_call | `_handle_agent_error` | `isinstance` | 334 |
+| external_call | `_handle_agent_error` | `HTTPException` | 335 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 335 |
+| external_call | `_handle_agent_error` | `isinstance` | 336 |
+| external_call | `_handle_agent_error` | `HTTPException` | 337 |
 | step_limit | `claim_task` | `first 12 steps` | 0 |
 
 ## Behavior

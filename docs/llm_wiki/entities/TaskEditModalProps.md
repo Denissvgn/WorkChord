@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # TaskEditModalProps
 
 **Location:** `frontend/src/components/gantt/TaskEditModal.tsx:8`

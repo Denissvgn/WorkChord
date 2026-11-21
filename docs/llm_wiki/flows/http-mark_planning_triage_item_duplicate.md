@@ -157,11 +157,11 @@ flowchart LR
 |---|---|---:|---|
 | mark_planning_triage_item_duplicate | _run_triage_action | 798 | `_run_triage_action(mcp_agent_tools.mark_triage_item_duplicate, db=db, actor=actor, triage_item_id=triage_item_id, data=data, command=command)` |
 | _run_triage_action | require_scope | 697 | `require_scope(actor, 'planning:write')` |
-| require_scope | actor_has_scope | 101 | `actor_has_scope(actor, scope)` |
+| require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
-| require_scope | AgentPermissionError | 102 | `AgentPermissionError(...)` |
+| require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
 | _run_triage_action | adapter | 698 | `adapter(db, actor, triage_item_id, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
 | _run_triage_action | data.model_dump | 702 | `data.model_dump(mode='json', exclude_unset=True)` |
 | _run_triage_action | _require_triage_result | 707 | `_require_triage_result(result, triage_item_id)` |

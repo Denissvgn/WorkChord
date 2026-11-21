@@ -37,10 +37,10 @@ flowchart LR
     n7["backend/app/services/task_domain_service.py"]
     n8["backend/tests/migrations/test_project_identity.py"]
     n9["test_scoped_manager_can_restore_another_eligible_person_without_profile_access (backend/tests/test_allocation_recovery.py)"]
-    n10["managed_store (backend/tests/test_managed_authority.py)"]
-    n11["test_scoped_nonmanager_deletion_is_denied_without_domain_changes (backend/tests/test_managed_authority.py)"]
-    n12["backend/tests/test_task_discussion.py"]
-    n13["human_context (backend/tests/test_task_domain.py)"]
+    n10["test_reconciliation_uses_operator_and_archived_catalog (backend/tests/test_execution_reconciliation.py)"]
+    n11["managed_store (backend/tests/test_managed_authority.py)"]
+    n12["test_scoped_nonmanager_deletion_is_denied_without_domain_changes (backend/tests/test_managed_authority.py)"]
+    n13["test_authenticated_manual_submission_and_assigned_agent_verdict (backend/tests/test_manual_review_provenance.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -64,10 +64,10 @@ flowchart LR
     click n7 "../modules/task_domain_service.md"
     click n8 "../modules/test_project_identity.md"
     click n9 "../modules/test_allocation_recovery.md"
-    click n10 "../modules/test_managed_authority.md"
+    click n10 "../modules/test_execution_reconciliation.md"
     click n11 "../modules/test_managed_authority.md"
-    click n12 "../modules/test_task_discussion.md"
-    click n13 "../modules/test_task_domain.md"
+    click n12 "../modules/test_managed_authority.md"
+    click n13 "../modules/test_manual_review_provenance.md"
 ```
 
 ### Summary
@@ -94,9 +94,9 @@ flowchart LR
 | `task_domain_service` | import | [task_domain_service](../modules/task_domain_service.md) | — |
 | `test_project_identity` | import | [test_project_identity](../modules/test_project_identity.md) | — |
 | `test_scoped_manager_can_restore_another_eligible_person_without_profile_access` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
+| `test_reconciliation_uses_operator_and_archived_catalog` | call | [test_execution_reconciliation](../modules/test_execution_reconciliation.md) | 1 |
 | `managed_store` | call | [test_managed_authority](../modules/test_managed_authority.md) | 2 |
 | `test_scoped_nonmanager_deletion_is_denied_without_domain_changes` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
-| `test_task_discussion` | import | [test_task_discussion](../modules/test_task_discussion.md) | — |
-| `human_context` | call | [test_task_domain](../modules/test_task_domain.md) | 2 |
+| `test_authenticated_manual_submission_and_assigned_agent_verdict` | call | [test_manual_review_provenance](../modules/test_manual_review_provenance.md) | 2 |
 
-> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
+> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.

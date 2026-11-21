@@ -39,9 +39,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (15) |
+| Inbound | `backend` (19) |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -57,11 +57,11 @@ flowchart LR
 | [AssessmentReasonCode](../entities/agent_routing_policy_AssessmentReasonCode.md) | Enum | 160 | `StrEnum` | Governed reasons that may raise the derived band or review floor. |
 | [AssignmentIntent](../entities/AssignmentIntent.md) | Enum | 177 | `StrEnum` | Normalized assignment intents derived from purpose and queue class. |
 | [RoutingBlockerCode](../entities/agent_routing_policy_RoutingBlockerCode.md) | Enum | 186 | `StrEnum` | Stable hard blockers shared by preview and assignment enforcement. |
-| [ReasonCodeRule](../entities/ReasonCodeRule.md) | Class | 458 | — | Minimum band/review requirements attached to one governed reason. |
-| [RoutingProfileEvidence](../entities/RoutingProfileEvidence.md) | Class | 531 | — | Secret-free profile evidence used by compatibility decisions. |
-| [RoutingEligibilityDecision](../entities/RoutingEligibilityDecision.md) | Class | 543 | — | Separated authority/compatibility evidence for one candidate. |
-| [RoutingSkillDecision](../entities/RoutingSkillDecision.md) | Class | 616 | — | Deterministic required-skill evidence for one profile. |
-| [RoutingModelEnvelopeDecision](../entities/RoutingModelEnvelopeDecision.md) | Class | 631 | — | Deterministic binding/catalog capability evidence for one candidate. |
+| [ReasonCodeRule](../entities/ReasonCodeRule.md) | Class | 465 | — | Minimum band/review requirements attached to one governed reason. |
+| [RoutingProfileEvidence](../entities/RoutingProfileEvidence.md) | Class | 538 | — | Secret-free profile evidence used by compatibility decisions. |
+| [RoutingEligibilityDecision](../entities/RoutingEligibilityDecision.md) | Class | 550 | — | Separated authority/compatibility evidence for one candidate. |
+| [RoutingSkillDecision](../entities/RoutingSkillDecision.md) | Class | 623 | — | Deterministic required-skill evidence for one profile. |
+| [RoutingModelEnvelopeDecision](../entities/RoutingModelEnvelopeDecision.md) | Class | 638 | — | Deterministic binding/catalog capability evidence for one candidate. |
 
 ## Functions
 
@@ -88,4 +88,4 @@ flowchart LR
 | `validate_routing_packet_size` | `(value: Any, *, label: str = 'Routing packet', maximum_bytes: int = MAX_ROUTING_PACKET_BYTES) -> Any` | — | Reject a canonical routing packet that exceeds its storage boundary. |
 | `assignment_intent` | `(purpose: str, queue_class: str) -> str` | — | Normalize a valid assignment purpose/queue tuple to one intent. |
 | `evaluate_actor_authorization` | `(*, intent: str, enabled: bool, role: str, scopes: Iterable[str]) -> RoutingEligibilityDecision` | — | Evaluate authority only; capability evidence cannot clear these blockers. |
-| `evaluate_assignment_compatibility` | `(*, intent: str, actor_id: int, actor_profile: RoutingProfileEvidence \| None, capacity_owner_id: int \| None = None, capacity_owner_profile_id: int \| None = None, reviewer_profile_id: int \| None = None, execution_actor_ids: Iterable[int \| None] = (), execution_profile_ids: Iterable[int \| None] = (), review_mode: str = ReviewMode.NONE.value, required_specialist_skill_levels: Mapping[str, int] \| None = None) -> RoutingEligibilityDecision` | — | Evaluate unattended profile/capacity/verifier compatibility. |
+| `evaluate_assignment_compatibility` | `(*, intent: str, actor_id: int, actor_profile: RoutingProfileEvidence \| None, capacity_owner_id: int \| None = None, capacity_owner_profile_id: int \| None = None, reviewer_profile_id: int \| None = None, execution_actor_ids: Iterable[int \| None] = (), execution_profile_ids: Iterable[int \| None] = (), manual_executor_profile_ids: Iterable[int] \| None = None, review_mode: str = ReviewMode.NONE.value, required_specialist_skill_levels: Mapping[str, int] \| None = None) -> RoutingEligibilityDecision` | — | Evaluate unattended profile/capacity/verifier compatibility. |

@@ -10,10 +10,9 @@ _Auto-generated from `frontend/src/components/tasks/TaskReviewer.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `../../services/taskService` | `taskService` | — | compiler-dependent |
 | `../../types/task` | `Task` | Declaration | erased |
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
-| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `./useTaskReviewer` | `useTaskReviewer` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
@@ -32,7 +31,7 @@ flowchart LR
     n0["frontend/src/components/feedback/QueryState.tsx"]
     n1["frontend/src/components/tasks/TaskReviewer.tsx"]
     n2["frontend/src/components/tasks/TaskWorkPanel.tsx"]
-    n3["frontend/src/services/taskService.ts"]
+    n3["frontend/src/components/tasks/useTaskReviewer.ts"]
     n4["frontend/src/types/task.ts"]
     n1 --> n0
     n1 --> n3
@@ -45,7 +44,7 @@ flowchart LR
     click n0 "../modules/QueryState.md"
     click n1 "../modules/TaskReviewer.md"
     click n2 "../modules/TaskWorkPanel.md"
-    click n3 "../modules/taskService.md"
+    click n3 "../modules/useTaskReviewer.md"
     click n4 "../modules/types_task.md"
 ```
 
@@ -55,14 +54,14 @@ flowchart LR
 |---|---|
 | Inbound | [TaskWorkPanel](../modules/TaskWorkPanel.md) |
 | Outbound | [QueryState](../modules/QueryState.md) |
-| Outbound | [taskService](../modules/taskService.md) |
+| Outbound | [useTaskReviewer](../modules/useTaskReviewer.md) |
 | Outbound | [types_task](../modules/types_task.md) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 2 | 0 |
+| typescript | 1 | 0 |
 
 ## Functions
 

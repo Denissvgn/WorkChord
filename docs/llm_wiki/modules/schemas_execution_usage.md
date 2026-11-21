@@ -29,7 +29,8 @@ flowchart LR
     n4["backend/app/schemas/execution_usage.py"]
     n5["backend/app/services/execution_usage_service.py"]
     n6["backend/tests/test_agent_skill_routing_guidance.py"]
-    n7["backend/tests/test_execution_usage.py"]
+    n7["backend/tests/test_analytics_scopes.py"]
+    n8["backend/tests/test_execution_usage.py"]
     n0 --> n4
     n0 --> n5
     n1 --> n3
@@ -42,9 +43,11 @@ flowchart LR
     n6 --> n0
     n6 --> n1
     n6 --> n4
-    n7 --> n0
     n7 --> n4
     n7 --> n5
+    n8 --> n0
+    n8 --> n4
+    n8 --> n5
     click n0 "../modules/mcp_agent_tools.md"
     click n1 "../modules/routers_agent.md"
     click n2 "../modules/routers_task_domain.md"
@@ -52,7 +55,8 @@ flowchart LR
     click n4 "../modules/schemas_execution_usage.md"
     click n5 "../modules/execution_usage_service.md"
     click n6 "../modules/test_agent_skill_routing_guidance.md"
-    click n7 "../modules/test_execution_usage.md"
+    click n7 "../modules/test_analytics_scopes.md"
+    click n8 "../modules/test_execution_usage.md"
 ```
 
 ### Internal neighbors
@@ -65,6 +69,7 @@ flowchart LR
 | Inbound | [agent_run_read](../modules/agent_run_read.md) |
 | Inbound | [execution_usage_service](../modules/execution_usage_service.md) |
 | Inbound | [test_agent_skill_routing_guidance](../modules/test_agent_skill_routing_guidance.md) |
+| Inbound | [test_analytics_scopes](../modules/test_analytics_scopes.md) |
 | Inbound | [test_execution_usage](../modules/test_execution_usage.md) |
 
 ### External packages

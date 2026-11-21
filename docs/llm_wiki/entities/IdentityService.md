@@ -1,6 +1,6 @@
 # IdentityService
 
-**Location:** `backend/app/services/identity_service.py:159`
+**Location:** `backend/app/services/identity_service.py:200`
 **Kind:** Class
 **Bases:** —
 **Module:** [identity_service](../modules/identity_service.md)
@@ -45,8 +45,8 @@ flowchart LR
     n8["DiscussionService.recipient_authorized (backend/app/services/discussion_service.py)"]
     n9["ExecutionUsageService.write (backend/app/services/execution_usage_service.py)"]
     n10["NativeSessionService.exchange (backend/app/services/native_session_service.py)"]
-    n11["test_usage_rest_mcp_parity_and_readonly_human_summary (backend/tests/test_execution_usage.py)"]
-    n12["test_shared_actions_rest_mcp_and_explicit_backlog_triage (backend/tests/test_task_domain.py)"]
+    n11["test_guard_admits_only_the_discovery_the_command_announced (backend/tests/test_agent_discovery_report.py)"]
+    n12["test_reconciliation_uses_operator_and_archived_catalog (backend/tests/test_execution_reconciliation.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -70,8 +70,8 @@ flowchart LR
     click n8 "../modules/discussion_service.md"
     click n9 "../modules/execution_usage_service.md"
     click n10 "../modules/native_session_service.md"
-    click n11 "../modules/test_execution_usage.md"
-    click n12 "../modules/test_task_domain.md"
+    click n11 "../modules/test_agent_discovery_report.md"
+    click n12 "../modules/test_execution_reconciliation.md"
 ```
 
 ### Summary
@@ -94,5 +94,7 @@ flowchart LR
 | `DiscussionService.recipient_authorized` | call | [discussion_service](../modules/discussion_service.md) | 1 |
 | `ExecutionUsageService.write` | call | [execution_usage_service](../modules/execution_usage_service.md) | 1 |
 | `NativeSessionService.exchange` | call | [native_session_service](../modules/native_session_service.md) | 1 |
-| `test_usage_rest_mcp_parity_and_readonly_human_summary` | call | [test_execution_usage](../modules/test_execution_usage.md) | 1 |
-| `test_shared_actions_rest_mcp_and_explicit_backlog_triage` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
+| `test_guard_admits_only_the_discovery_the_command_announced` | call | [test_agent_discovery_report](../modules/test_agent_discovery_report.md) | 1 |
+| `test_reconciliation_uses_operator_and_archived_catalog` | call | [test_execution_reconciliation](../modules/test_execution_reconciliation.md) | 1 |
+
+> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.

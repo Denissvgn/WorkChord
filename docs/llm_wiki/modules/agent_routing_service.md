@@ -6,11 +6,14 @@
 
 Authoritative assessment, preview, and selection validation for agent routing.
 
+A verification preview on a project that requires different publishers checks the reviewer against the actual execution contributors. The selected actor’s current profile and enabled model binding support the comparison. Missing or conflicting historical attribution is surfaced before the assignment can be accepted.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
+| `app.authority` | `require_project` |
 | `app.commands` | `commit_or_flush` |
 | `app.config` | `get_settings` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord`, `AgentModelBinding`, `AgentRun`, `AgentTaskAssignment`, `TaskRoutingAssessment` |
@@ -21,11 +24,12 @@ Authoritative assessment, preview, and selection validation for agent routing.
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.agent_routing` | `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse`, `RoutingDecisionSnapshot`, `TaskRoutingAssessmentCommand`, `TaskRoutingAssessmentCreate`, `TaskRoutingAssessmentListResponse`, `TaskRoutingAssessmentMutationReceipt`, `TaskRoutingAssessmentResponse`, `TaskRoutingAssessmentState` |
 | `app.services.agent_routing_observability` | `RoutingOperationalEvent`, `record_routing_operational_event`, `routing_exclusion_projection` |
-| `app.services.agent_routing_policy` | `MAX_ROUTING_CANDIDATES`, `MAX_ROUTING_EXCLUSIONS`, `MAX_ROUTING_PACKET_BYTES`, `MIN_ROUTING_ASSESSMENT_CONFIDENCE`, `MODEL_FAILURE_CATEGORIES`, `REVIEW_MODE_ORDER`, `ROUTING_DECISION_AUTHORITY`, `ROUTING_DECISION_LINEAGE_FIELDS`, `ROUTING_LINEAGE_AUTHORITY`, `ROUTING_POLICY_VERSION`, `ROUTING_PREVIEW_TTL_SECONDS`, `RoutingBlockerCode`, `RoutingProfileEvidence`, `canonical_routing_json_bytes`, `evaluate_actor_authorization`, `evaluate_assignment_compatibility`, `evaluate_model_envelope`, `evaluate_required_skills`, `normalize_model_failure_category`, `routing_candidate_rank_key`, `review_mode_meets`, `validate_routing_packet_size` |
+| `app.services.agent_routing_policy` | `MAX_ROUTING_CANDIDATES`, `MAX_ROUTING_EXCLUSIONS`, `MAX_ROUTING_PACKET_BYTES`, `MIN_ROUTING_ASSESSMENT_CONFIDENCE`, `MODEL_FAILURE_CATEGORIES`, `REVIEW_MODE_ORDER`, `ROUTING_DECISION_LINEAGE_FIELDS`, `ROUTING_LINEAGE_AUTHORITY`, `ROUTING_POLICY_VERSION`, `ROUTING_PREVIEW_TTL_SECONDS`, `RoutingBlockerCode`, `RoutingProfileEvidence`, `canonical_routing_json_bytes`, `evaluate_actor_authorization`, `evaluate_assignment_compatibility`, `evaluate_model_envelope`, `evaluate_required_skills`, `normalize_model_failure_category`, `routing_candidate_rank_key`, `review_mode_meets`, `validate_routing_packet_size` |
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutError`, `AgentRoutingRolloutMode`, `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupService`, `AgentTeamSetupService` |
 | `app.services.calendar_service` | `CalendarService` |
+| `app.services.review_provenance` | `different_publisher_required`, `historical_profile`, `review_history` |
 | `app.services.task_brief_service` | `brief_definition_blockers` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.utils.time` | `as_utc`, `utc_now` |
@@ -36,7 +40,7 @@ Authoritative assessment, preview, and selection validation for agent routing.
 | `json` | `json` |
 | `math` | `math` |
 | `secrets` | `secrets` |
-| `sqlalchemy` | `func`, `select`, `text` |
+| `sqlalchemy` | `func`, `select`, `text`, `update` |
 | `sqlalchemy.exc` | `IntegrityError` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `sqlalchemy.orm` | `selectinload` |
@@ -60,8 +64,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (12) |
-| Outbound | `backend` (18) |
+| Inbound | `backend` (15) |
+| Outbound | `backend` (20) |
 
 ### External packages
 
@@ -69,15 +73,15 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentRoutingConflictError](../entities/AgentRoutingConflictError.md) | 114 | `AgentConflictError` | Stable routing conflict shared by REST, MCP, and assignment commands. |
-| [RoutingSelectionValidation](../entities/RoutingSelectionValidation.md) | 134 | — | Authoritative result consumed inside the assignment transaction. |
-| [AgentRoutingService](../entities/AgentRoutingService.md) | 201 | — | Create immutable assessments and deterministic exact-actor previews. |
+| [AgentRoutingConflictError](../entities/AgentRoutingConflictError.md) | 115 | `AgentConflictError` | Stable routing conflict shared by REST, MCP, and assignment commands. |
+| [RoutingSelectionValidation](../entities/RoutingSelectionValidation.md) | 135 | — | Authoritative result consumed inside the assignment transaction. |
+| [AgentRoutingService](../entities/AgentRoutingService.md) | 202 | — | Create immutable assessments and deterministic exact-actor previews. |
 
 ## Functions
 

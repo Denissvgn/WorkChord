@@ -2,7 +2,7 @@
 
 **Entry point:** `workspace_create_task_github_link` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [backlog_snapshot_service](../modules/backlog_snapshot_service.md), [commands](../modules/commands.md), and 20 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [backlog_snapshot_service](../modules/backlog_snapshot_service.md), [commands](../modules/commands.md), and 21 more
 
 **Complete modules touched:**
 
@@ -14,6 +14,7 @@
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
 - [external_link_service](../modules/external_link_service.md)
+- [github_links](../modules/github_links.md)
 - [identity_service](../modules/identity_service.md)
 - [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
@@ -60,13 +61,13 @@ sequenceDiagram
     participant p19 as ExternalLinkService.create_task_link
     participant p20 as _require_scope_requirement
     participant p21 as IdentityService.actor_context
-    participant p22 as lock_planning
-    participant p23 as require_scope
-    participant p24 as ExternalLinkService.create
-    participant p25 as AgentService.authenticate
-    participant p26 as require_identity_writes
-    participant p27 as require_project
-    participant p28 as DeliveryDependencyService.reconcile
+    participant p22 as ExternalLinkService._emit_github_created
+    participant p23 as lock_planning
+    participant p24 as parse_github_url
+    participant p25 as require_scope
+    participant p26 as ExternalLinkService.create
+    participant p27 as AgentService.authenticate
+    participant p28 as require_identity_writes
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -90,20 +91,20 @@ sequenceDiagram
     p8->>p19: ExternalLinkService.create_task_link
     p5->>p20: _require_scope_requirement
     p5->>p21: IdentityService.actor_context
-    p15->>p22: lock_planning
-    p20->>p23: require_scope
-    p19->>p24: ExternalLinkService.create
-    p18->>p25: AgentService.authenticate
-    p21->>p26: require_identity_writes
-    p15->>p27: require_project
-    p17->>p28: DeliveryDependencyService.reconcile
+    p8->>p22: ExternalLinkService._emit_github_created
+    p15->>p23: lock_planning
+    p16->>p24: parse_github_url
+    p20->>p25: require_scope
+    p19->>p26: ExternalLinkService.create
+    p18->>p27: AgentService.authenticate
+    p21->>p28: require_identity_writes
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 430 interactions; 400 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 449 interactions; 419 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 102 (101 omitted); unresolved 1 of 174 (173 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 107 (106 omitted); unresolved 1 of 179 (178 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -117,7 +118,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 151 groups; 143 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 157 groups; 149 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -130,9 +131,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 155; effect analysis evaluated: 96, partial: 4, unavailable: 55. Counts include steps omitted from the displayed trace.
+Source steps: 164; effect analysis evaluated: 100, partial: 4, unavailable: 60. Counts include steps omitted from the displayed trace.
 
-Collector observations for 100 source steps with known totals: observed: 505, emitted: 493, omitted: 12. Unavailable totals are excluded.
+Collector observations for 104 source steps with known totals: observed: 523, emitted: 511, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -207,7 +208,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_create_task_github_link | _tool_call | 2055 | `_tool_call('planning:write', ...)` |
+| workspace_create_task_github_link | _tool_call | 2068 | `_tool_call('planning:write', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

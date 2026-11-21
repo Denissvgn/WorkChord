@@ -57,9 +57,13 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `service_without_database` | `() -> SavedViewService` | — | — |
+| `test_task_milestone_and_attention_filters_normalize` | `(filters_json: dict[str, Any]) -> None` | `@pytest.mark.parametrize('filters_json', [{'milestoneId': 12, 'needsAttention': True}, {'milestoneId': None, 'needsAttention': False}])` | — |
+| `test_task_milestone_and_attention_filters_reject_invalid_values` | `(filters_json: dict[str, Any]) -> None` | `@pytest.mark.parametrize('filters_json', [{'milestoneId': True}, {'milestoneId': 0}, {'milestoneId': '12'}, {'needsAttention': 1}, {'needsAttention': 'true'}])` | — |
+| `test_legacy_task_view_filters_keep_their_values_and_default_new_filters` | `() -> None` | — | — |
 | `task_response` | `(*, assignee: Any = None, effort_days: Any = 1, is_deferred: bool = False, is_composite: bool = False, children: list[Any] \| None = None) -> SimpleNamespace` | — | — |
 | `test_task_planning_issue_filter_normalizes_supported_values` | `(planning_issue: str \| None) -> None` | `@pytest.mark.parametrize('planning_issue', [None, 'unassigned', 'missing-effort', 'any'])` | — |
 | `test_task_planning_issue_filter_rejects_unknown_values` | `(planning_issue: Any) -> None` | `@pytest.mark.parametrize('planning_issue', ['', 'missing_effort', 'UNASSIGNED', True, ['unassigned']])` | — |
 | `test_task_planning_issue_filter_persists_in_saved_view` | *(async)* `(db_session: AsyncSession) -> None` | `@pytest.mark.asyncio` | — |
+| `test_task_milestone_and_attention_filters_persist_in_saved_view` | *(async)* `(db_session: AsyncSession) -> None` | `@pytest.mark.asyncio` | — |
 | `test_task_planning_issue_matching_uses_planning_leaf_semantics` | `() -> None` | — | — |
 | `test_task_planning_issue_filter_preserves_matching_child_context` | `() -> None` | — | — |

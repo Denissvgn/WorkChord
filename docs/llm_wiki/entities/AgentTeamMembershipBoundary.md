@@ -34,11 +34,14 @@ flowchart LR
     n0["AgentTeamMembershipBoundary (backend/app/services/agent_team_setup_service.py)"]
     n1["AgentTeamSetupService.membership_boundary (backend/app/services/agent_team_setup_service.py)"]
     n2["AgentTeamSetupService.require_dispatch_member (backend/app/services/agent_team_setup_service.py)"]
+    n3["backend/app/services/agent_work_service.py"]
     n1 --> n0
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/agent_team_setup_service.md"
     click n1 "../modules/agent_team_setup_service.md"
     click n2 "../modules/agent_team_setup_service.md"
+    click n3 "../modules/agent_work_service.md"
 ```
 
 ### Summary
@@ -54,3 +57,4 @@ flowchart LR
 | `AgentTeamSetupService.membership_boundary` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 | `AgentTeamSetupService.membership_boundary` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService.require_dispatch_member` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
+| `agent_work_service` | import | [agent_work_service](../modules/agent_work_service.md) | — |

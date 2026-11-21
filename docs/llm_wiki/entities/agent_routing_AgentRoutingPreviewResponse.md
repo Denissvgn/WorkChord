@@ -1,6 +1,6 @@
 # AgentRoutingPreviewResponse
 
-**Location:** `backend/app/schemas/agent_routing.py:1123`
+**Location:** `backend/app/schemas/agent_routing.py:1129`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -21,6 +21,7 @@ Expiring non-dispatch result over a digest-bound routing input snapshot.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `acceptance_blocker_codes` | `list[RoutingBlockerCode]` | `acceptance_blocker_codes` | No | No | factory: `list` | — | — | — |
 | `runtime_availability` | `Literal['unknown']` | `runtime_availability` | No | No | `'unknown'` | — | — | — |
 | `eligibility_basis` | `Literal['task_policy_and_configuration']` | `eligibility_basis` | No | No | `'task_policy_and_configuration'` | — | — | — |
 | `model_attestation` | `Literal['not_independently_attested']` | `model_attestation` | No | No | `'not_independently_attested'` | — | — | — |
@@ -94,7 +95,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing](../modules/agent_routing.md) | 3 | `assessment_id`, `assessment_task_version`, `current_task_version`, `eligibility_basis`, `eligible_candidates`, `eligible_candidates_omitted`, `exclusions`, `exclusions_omitted`, `expires_at`, `generated_at`, `hard_blocker_codes`, `input_digest` |
+| [agent_routing](../modules/agent_routing.md) | 3 | `acceptance_blocker_codes`, `assessment_id`, `assessment_task_version`, `current_task_version`, `eligibility_basis`, `eligible_candidates`, `eligible_candidates_omitted`, `exclusions`, `exclusions_omitted`, `expires_at`, `generated_at`, `hard_blocker_codes` |
 
 ### Structure
 

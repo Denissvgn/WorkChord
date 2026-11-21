@@ -1,9 +1,9 @@
 # RoadmapRow
 
-**Location:** `frontend/src/pages/RoadmapPage.tsx:54`
+**Location:** `frontend/src/components/projects/RoadmapView.tsx:42`
 **Kind:** Type alias
 **Bases:** —
-**Module:** [RoadmapPage](../modules/RoadmapPage.md)
+**Module:** [RoadmapView](../modules/RoadmapView.md)
 **Target:**
 
 ```typescript
@@ -14,13 +14,16 @@
     startDate: Date | null;
     endDate: Date | null;
     spanSource: 'project' | 'single-project-date' | 'milestones' | 'none';
+    /** Nothing to draw: no project dates and no dated milestones. */
     isUnscheduled: boolean;
+    /** The project has neither a start nor a target date, even if its milestones give it a span. */
+    needsDates: boolean;
 }
 ```
 
 ## Description
 
-_Auto-generated from `RoadmapRow` in `frontend/src/pages/RoadmapPage.tsx`._
+_Auto-generated from `RoadmapRow` in `frontend/src/components/projects/RoadmapView.tsx`._
 
 ## Attributes
 
@@ -39,4 +42,4 @@ _Auto-generated from `RoadmapRow` in `frontend/src/pages/RoadmapPage.tsx`._
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [RoadmapPage](../modules/RoadmapPage.md) | 0 | — |
+| [RoadmapView](../modules/RoadmapView.md) | 0 | — |

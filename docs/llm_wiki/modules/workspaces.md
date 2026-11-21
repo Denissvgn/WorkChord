@@ -10,16 +10,17 @@ _Auto-generated from `frontend/src/navigation/workspaces.ts`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `./destinations` | `DestinationId` | Specifier | compiler-dependent |
+| `./destinations` | `getDestination`, `getDestinationForPath` | — | compiler-dependent |
 | `lucide-react` | `LucideIcon` | Declaration | erased |
-| `lucide-react` | `LayoutDashboard`, `Calendar`, `Inbox`, `Users`, `ListTodo`, `FolderOpen`, `Map`, `GanttChartSquare`, `Settings`, `Repeat`, `BarChart`, `Bot`, `MapPin`, `Network`, `Truck`, `UserCheck` | — | compiler-dependent |
+| `lucide-react` | `Bot`, `Calendar`, `GanttChartSquare`, `Map`, `Network`, `Repeat`, `Settings`, `Truck` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
-| Exports | `NavItem`, `PRIMARY_NAV_ITEMS`, `WORKSPACES`, `WorkspaceKey`, `WorkspaceMetadata`, `getWorkspaceForPath`, `getWorkspaceFromPath` |
-| Constants | `WORKSPACES`, `PRIMARY_NAV_ITEMS` |
-| Module calls | `PRIMARY_NAV_ITEMS = flatMap` |
+| Exports | `WORKSPACES`, `getWorkspaceForPath` |
+| Constants | `VIEW_ITEMS`, `WORKSPACES` |
 
 ## Local dependency map
 
@@ -28,40 +29,28 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/layout/AppSidebar.tsx"]
-    n1["frontend/src/components/layout/AppTopNav.tsx"]
-    n2["frontend/src/components/layout/CommandMenu.test.tsx"]
-    n3["frontend/src/components/layout/CommandMenu.tsx"]
-    n4["frontend/src/navigation/helpContexts.ts"]
-    n5["frontend/src/navigation/workspaces.test.ts"]
-    n6["frontend/src/navigation/workspaces.ts"]
-    n0 --> n6
-    n1 --> n0
-    n1 --> n6
+    n0["frontend/src/components/layout/CommandMenu.tsx"]
+    n1["frontend/src/navigation/destinations.ts"]
+    n2["frontend/src/navigation/workspaces.test.ts"]
+    n3["frontend/src/navigation/workspaces.ts"]
+    n0 --> n1
+    n0 --> n3
+    n2 --> n1
     n2 --> n3
-    n2 --> n6
-    n3 --> n6
-    n4 --> n6
-    n5 --> n6
-    click n0 "../modules/AppSidebar.md"
-    click n1 "../modules/AppTopNav.md"
-    click n2 "../modules/CommandMenu.test.md"
-    click n3 "../modules/CommandMenu.md"
-    click n4 "../modules/helpContexts.md"
-    click n5 "../modules/workspaces.test.md"
-    click n6 "../modules/workspaces.md"
+    n3 --> n1
+    click n0 "../modules/CommandMenu.md"
+    click n1 "../modules/destinations.md"
+    click n2 "../modules/workspaces.test.md"
+    click n3 "../modules/workspaces.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [AppSidebar](../modules/AppSidebar.md) |
-| Inbound | [AppTopNav](../modules/AppTopNav.md) |
-| Inbound | [CommandMenu.test](../modules/CommandMenu.test.md) |
 | Inbound | [CommandMenu](../modules/CommandMenu.md) |
-| Inbound | [helpContexts](../modules/helpContexts.md) |
 | Inbound | [workspaces.test](../modules/workspaces.test.md) |
+| Outbound | [destinations](../modules/destinations.md) |
 
 ### External packages
 
@@ -73,13 +62,12 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [NavItem](../entities/NavItem.md) | Interface | 23 | — | — |
-| [WorkspaceMetadata](../entities/WorkspaceMetadata.md) | Interface | 31 | — | — |
-| [WorkspaceKey](../entities/WorkspaceKey.md) | Type alias | 21 | `'delivery' \| 'planning' \| 'resource'` | — |
+| [NavItem](../entities/NavItem.md) | Interface | 20 | — | — |
+| [WorkspaceMetadata](../entities/WorkspaceMetadata.md) | Interface | 28 | — | — |
+| [WorkspaceKey](../entities/WorkspaceKey.md) | Type alias | 18 | `'delivery' \| 'planning' \| 'resource'` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `getWorkspaceFromPath` | `(pathname: string) -> WorkspaceKey` | — | — |
-| `getWorkspaceForPath` | `(pathname: string) -> WorkspaceMetadata` | — | — |
+| `getWorkspaceForPath` | `(pathname: string) -> WorkspaceMetadata` | — | The old area for a path. An old view page stays in the area that lists it; every other |

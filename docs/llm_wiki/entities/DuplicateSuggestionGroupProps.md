@@ -1,13 +1,13 @@
 # DuplicateSuggestionGroupProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1441`
+**Location:** `frontend/src/components/triage/TriageSuggestions.tsx:80`
 **Kind:** Interface
 **Bases:** —
-**Module:** [TriagePage](../modules/TriagePage.md)
+**Module:** [TriageSuggestions](../modules/TriageSuggestions.md)
 
 ## Description
 
-_Auto-generated from `DuplicateSuggestionGroupProps` in `frontend/src/pages/TriagePage.tsx`._
+_Auto-generated from `DuplicateSuggestionGroupProps` in `frontend/src/components/triage/TriageSuggestions.tsx`._
 
 ## Attributes
 
@@ -32,4 +32,4 @@ _Auto-generated from `DuplicateSuggestionGroupProps` in `frontend/src/pages/Tria
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TriagePage](../modules/TriagePage.md) | 0 | `iterationsById`, `onMarkSuggestion`, `projectsById`, `suggestions`, `title` |
+| [TriageSuggestions](../modules/TriageSuggestions.md) | 0 | `iterationsById`, `onMarkSuggestion`, `projectsById`, `suggestions`, `title` |

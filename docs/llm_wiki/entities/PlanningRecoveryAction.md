@@ -1,6 +1,6 @@
 # PlanningRecoveryAction
 
-**Location:** `frontend/src/features/planningMasters/masters.ts:129`
+**Location:** `frontend/src/features/planningMasters/masters.ts:41`
 **Kind:** Interface
 **Bases:** —
 **Module:** [planningMasters_masters](../modules/planningMasters_masters.md)

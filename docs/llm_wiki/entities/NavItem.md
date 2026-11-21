@@ -1,6 +1,6 @@
 # NavItem
 
-**Location:** `frontend/src/navigation/workspaces.ts:23`
+**Location:** `frontend/src/navigation/workspaces.ts:20`
 **Kind:** Interface
 **Bases:** —
 **Module:** [workspaces](../modules/workspaces.md)
@@ -26,23 +26,10 @@ _Auto-generated from `NavItem` in `frontend/src/navigation/workspaces.ts`._
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-```mermaid
-flowchart LR
-    n0["NavItem (frontend/src/navigation/workspaces.ts)"]
-    n1["frontend/src/components/layout/AppSidebar.tsx"]
-    n1 --> n0
-    click n0 "../modules/workspaces.md"
-    click n1 "../modules/AppSidebar.md"
-```
+*No generated relationships detected.*
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
 | [workspaces](../modules/workspaces.md) | 0 | `defaultLabel`, `icon`, `labelKey`, `secondary`, `to` |
-
-### References
-
-| Reference | Kind | Source | Call sites |
-|---|---|---|---:|
-| `AppSidebar` | import | [AppSidebar](../modules/AppSidebar.md) | — |

@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/settings/TemplateLabelSettings.tsx
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../../i18n/seedDisplay` | `labelDisplay`, `labelGroupDisplay`, `templateDisplay` | — | compiler-dependent |
 | `../../services/labelService` | `labelService` | — | compiler-dependent |
@@ -24,8 +25,9 @@ _Auto-generated from `frontend/src/components/settings/TemplateLabelSettings.tsx
 | `../labels/LabelSelector` | `LabelSelector` | — | compiler-dependent |
 | `../ui` | `OverflowMenu` | — | compiler-dependent |
 | `../ui/SlideOverDrawer` | `SlideOverDrawer` | — | compiler-dependent |
+| `./sharedUnlock` | `useSettingsReadOnly` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
-| `lucide-react` | `Archive`, `ChevronDown`, `ChevronUp`, `Edit3`, `FileText`, `Plus`, `Save`, `Tags`, `X` | — | compiler-dependent |
+| `lucide-react` | `Archive`, `ChevronDown`, `ChevronUp`, `Edit3`, `Eye`, `FileText`, `Plus`, `Save`, `Tags` | — | compiler-dependent |
 | `react` | `useId`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 
@@ -34,7 +36,7 @@ _Auto-generated from `frontend/src/components/settings/TemplateLabelSettings.tsx
 | Signal | Values |
 |--------|--------|
 | Exports | `TemplateLabelSettings` |
-| Constants | `templateTypes` |
+| Constants | `templateTypes`, `TEMPLATE_DAY_HOURS` |
 
 ## Local dependency map
 
@@ -57,7 +59,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (14) |
+| Outbound | `frontend` (16) |
 
 ### External packages
 
@@ -65,17 +67,17 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TemplateFormState](../entities/TemplateFormState.md) | Interface | 38 | — | — |
-| [LabelGroupFormState](../entities/LabelGroupFormState.md) | Interface | 53 | — | — |
-| [LabelFormState](../entities/LabelFormState.md) | Interface | 62 | — | — |
-| [TemplateRowProps](../entities/TemplateRowProps.md) | Interface | 221 | — | — |
-| [ManagementSection](../entities/ManagementSection.md) | Type alias | 37 | `'templates' \| 'labels'` | — |
+| [TemplateFormState](../entities/TemplateFormState.md) | Interface | 40 | — | — |
+| [LabelGroupFormState](../entities/LabelGroupFormState.md) | Interface | 55 | — | — |
+| [LabelFormState](../entities/LabelFormState.md) | Interface | 64 | — | — |
+| [TemplateRowProps](../entities/TemplateRowProps.md) | Interface | 226 | — | — |
+| [ManagementSection](../entities/ManagementSection.md) | Type alias | 39 | `'templates' \| 'labels'` | — |
 
 ## Functions
 

@@ -1,6 +1,6 @@
 # MemberCapacity
 
-**Location:** `frontend/src/types/team.ts:159`
+**Location:** `frontend/src/types/team.ts:161`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_team](../modules/types_team.md)
@@ -31,7 +31,7 @@ Detailed capacity breakdown from GET /team-members/{id}/capacity.
 ```mermaid
 flowchart LR
     n0["MemberCapacity (frontend/src/types/team.ts)"]
-    n1["frontend/src/components/team/TeamList.tsx"]
+    n1["frontend/src/components/capacity/TeamList.tsx"]
     n2["frontend/src/services/teamService.ts"]
     n1 --> n0
     n2 --> n0

@@ -1,13 +1,13 @@
 # ConflictResolution
 
-**Location:** `frontend/src/components/settings/AgentModelAdministration.tsx:63`
+**Location:** `frontend/src/components/team/AgentModelAdministration.tsx:65`
 **Kind:** Interface
 **Bases:** —
 **Module:** [AgentModelAdministration](../modules/AgentModelAdministration.md)
 
 ## Description
 
-_Auto-generated from `ConflictResolution` in `frontend/src/components/settings/AgentModelAdministration.tsx`._
+_Auto-generated from `ConflictResolution` in `frontend/src/components/team/AgentModelAdministration.tsx`._
 
 ## Attributes
 

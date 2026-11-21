@@ -45,13 +45,19 @@ _Auto-generated from `TriageTaskDraftResponse` in `frontend/src/types/triage.ts`
 ```mermaid
 flowchart LR
     n0["TriageTaskDraftResponse (frontend/src/types/triage.ts)"]
-    n1["frontend/src/pages/TriagePage.tsx"]
-    n2["frontend/src/services/triageService.ts"]
+    n1["frontend/src/components/triage/ConvertTriageDrawer.tsx"]
+    n2["TriageDraftPreview (frontend/src/components/triage/TriageDraftPreview.tsx)"]
+    n3["formatDraftDescription (frontend/src/components/triage/triageUtils.ts)"]
+    n4["frontend/src/services/triageService.ts"]
     n1 --> n0
     n2 --> n0
+    n3 --> n0
+    n4 --> n0
     click n0 "../modules/types_triage.md"
-    click n1 "../modules/TriagePage.md"
-    click n2 "../modules/triageService.md"
+    click n1 "../modules/ConvertTriageDrawer.md"
+    click n2 "../modules/TriageDraftPreview.md"
+    click n3 "../modules/triageUtils.md"
+    click n4 "../modules/triageService.md"
 ```
 
 ### Summary
@@ -64,5 +70,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `TriagePage` | import | [TriagePage](../modules/TriagePage.md) | — |
+| `ConvertTriageDrawer` | import | [ConvertTriageDrawer](../modules/ConvertTriageDrawer.md) | — |
+| `TriageDraftPreview` | type_reference | [TriageDraftPreview](../modules/TriageDraftPreview.md) | — |
+| `formatDraftDescription` | type_reference | [triageUtils](../modules/triageUtils.md) | — |
 | `triageService` | import | [triageService](../modules/triageService.md) | — |

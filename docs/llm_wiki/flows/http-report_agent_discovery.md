@@ -131,17 +131,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| report_agent_discovery | service.report_discovery | 1160 | `service.report_discovery(actor, data, idempotency_key=idempotency_key)` |
-| report_agent_discovery | _handle_agent_error | 1166 | `_handle_agent_error(exc, structured=True)` |
-| _handle_agent_error | isinstance | 326 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 328 | `str(exc)` |
-| _handle_agent_error | str | 330 | `str(exc)` |
-| _handle_agent_error | HTTPException | 332 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
-| _handle_agent_error | isinstance | 333 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 334 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 334 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 335 | `isinstance(exc, AgentTeamSetupConflictError)` |
-| _handle_agent_error | HTTPException | 336 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| report_agent_discovery | service.report_discovery | 1161 | `service.report_discovery(actor, data, idempotency_key=idempotency_key)` |
+| report_agent_discovery | _handle_agent_error | 1167 | `_handle_agent_error(exc, structured=True)` |
+| _handle_agent_error | isinstance | 327 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | str | 329 | `str(exc)` |
+| _handle_agent_error | str | 331 | `str(exc)` |
+| _handle_agent_error | HTTPException | 333 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
+| _handle_agent_error | isinstance | 334 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException | 335 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 335 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 336 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| _handle_agent_error | HTTPException | 337 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
 
 ### Boundary effects
 
@@ -151,16 +151,16 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `report_agent_discovery` | `service.report_discovery` | 1160 |
-| external_call | `_handle_agent_error` | `isinstance` | 326 |
-| external_call | `_handle_agent_error` | `HTTPException` | 332 |
-| external_call | `_handle_agent_error` | `isinstance` | 333 |
-| external_call | `_handle_agent_error` | `HTTPException` | 334 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 334 |
-| external_call | `_handle_agent_error` | `isinstance` | 335 |
-| external_call | `_handle_agent_error` | `HTTPException` | 336 |
+| unresolved_call | `report_agent_discovery` | `service.report_discovery` | 1161 |
+| external_call | `_handle_agent_error` | `isinstance` | 327 |
+| external_call | `_handle_agent_error` | `HTTPException` | 333 |
+| external_call | `_handle_agent_error` | `isinstance` | 334 |
+| external_call | `_handle_agent_error` | `HTTPException` | 335 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 335 |
+| external_call | `_handle_agent_error` | `isinstance` | 336 |
+| external_call | `_handle_agent_error` | `HTTPException` | 337 |
 | step_limit | `report_agent_discovery` | `first 12 steps` | 0 |
 
 ## Behavior
 
-This flow starts at `report_agent_discovery` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+A worker submits its assignment, run, claim fence, task version and idempotency key. A successful response identifies the new triage item. A changed fence requires the worker to read its current assignment again.

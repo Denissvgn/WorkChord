@@ -11,23 +11,22 @@ _Auto-generated from `frontend/src/pages/ProjectReleaseDetailPage.tsx`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../components/common/Button` | `Button` | — | compiler-dependent |
-| `../components/common/Modal` | `Modal` | — | compiler-dependent |
 | `../components/common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
 | `../components/feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `../components/layout/Breadcrumbs` | `Breadcrumbs` | — | compiler-dependent |
 | `../components/releases/ReleaseForm` | `ReleaseForm` | — | compiler-dependent |
 | `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` | — | compiler-dependent |
-| `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
+| `../components/ui` | `PageHeader`, `PageLayout`, `SlideOverDrawer` | — | compiler-dependent |
 | `../components/ui/tone` | `isTaskStatus`, `pillToneClassName`, `STATUS_TONE`, `statusTextClassName`, `wcPillClass` | — | compiler-dependent |
 | `../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../services/projectService` | `projectService` | — | compiler-dependent |
 | `../services/releaseService` | `releaseService` | — | compiler-dependent |
 | `../types/release` | `Release`, `ReleaseStatus`, `ReleaseTaskSummary` | Declaration | erased |
-| `../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../utils/apiError` | `getApiErrorMessage`, `getApiErrorStatus` | — | compiler-dependent |
 | `../utils/formatDate` | `formatDate`, `formatDateTime` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
-| `lucide-react` | `CalendarDays`, `CheckCircle2`, `Clock`, `Edit`, `FolderOpen`, `Package`, `Tag` | — | compiler-dependent |
+| `lucide-react` | `CalendarDays`, `CheckCircle2`, `Clock`, `Edit`, `Package`, `Tag` | — | compiler-dependent |
 | `react` | `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 | `react-router-dom` | `useNavigate`, `useParams` | — | compiler-dependent |
@@ -48,6 +47,7 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 flowchart LR
     n0["frontend"]
     n1["frontend/src/pages/ProjectReleaseDetailPage.tsx"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/ProjectReleaseDetailPage.md"
 ```
@@ -58,7 +58,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `frontend` (15) |
+| Inbound | `frontend` (1) |
+| Outbound | `frontend` (14) |
 
 ### External packages
 

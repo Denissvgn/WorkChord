@@ -1,6 +1,6 @@
 # KanbanCardProps
 
-**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx:12`
+**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx:20`
 **Kind:** Interface
 **Bases:** —
 **Module:** [KanbanCard](../modules/KanbanCard.md)
@@ -15,6 +15,7 @@ _Auto-generated from `KanbanCardProps` in `frontend/src/components/tasks/KanbanB
 |------|------|----------|---------|-------------|
 | `task` | `Task` | Yes | — | — |
 | `onOpen` | `(task: Task, trigger?: HTMLElement) => void` | No | — | — |
+| `context` | `BoardCardContext` | No | — | — |
 
 ## Methods
 
@@ -36,7 +37,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [KanbanCard](../modules/KanbanCard.md) | 0 | `onOpen`, `task` |
+| [KanbanCard](../modules/KanbanCard.md) | 0 | `context`, `onOpen`, `task` |
 
 ### References
 

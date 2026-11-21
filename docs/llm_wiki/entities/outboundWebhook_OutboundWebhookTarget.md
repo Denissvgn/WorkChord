@@ -37,14 +37,20 @@ flowchart LR
     n0["OutboundWebhookTarget (frontend/src/types/outboundWebhook.ts)"]
     n1["frontend/src/components/settings/OutboundWebhooksPanel.test.tsx"]
     n2["frontend/src/components/settings/OutboundWebhooksPanel.tsx"]
-    n3["frontend/src/services/outboundWebhookService.ts"]
+    n3["frontend/src/pages/SettingsPage.labels.test.tsx"]
+    n4["frontend/src/pages/SettingsPage.readOnlyPanels.test.tsx"]
+    n5["frontend/src/services/outboundWebhookService.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
+    n4 --> n0
+    n5 --> n0
     click n0 "../modules/outboundWebhook.md"
     click n1 "../modules/OutboundWebhooksPanel.test.md"
     click n2 "../modules/OutboundWebhooksPanel.md"
-    click n3 "../modules/outboundWebhookService.md"
+    click n3 "../modules/SettingsPage.labels.test.md"
+    click n4 "../modules/SettingsPage.readOnlyPanels.test.md"
+    click n5 "../modules/outboundWebhookService.md"
 ```
 
 ### Summary
@@ -59,4 +65,6 @@ flowchart LR
 |---|---|---|---:|
 | `OutboundWebhooksPanel.test` | import | [OutboundWebhooksPanel.test](../modules/OutboundWebhooksPanel.test.md) | — |
 | `OutboundWebhooksPanel` | import | [OutboundWebhooksPanel](../modules/OutboundWebhooksPanel.md) | — |
+| `SettingsPage.labels.test` | import | [SettingsPage.labels.test](../modules/SettingsPage.labels.test.md) | — |
+| `SettingsPage.readOnlyPanels.test` | import | [SettingsPage.readOnlyPanels.test](../modules/SettingsPage.readOnlyPanels.test.md) | — |
 | `outboundWebhookService` | import | [outboundWebhookService](../modules/outboundWebhookService.md) | — |

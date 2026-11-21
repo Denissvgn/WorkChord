@@ -19,56 +19,21 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/labels/LabelSelector.tsx"]
-    n1["frontend/src/components/settings/TemplateLabelSettings.test.tsx"]
-    n2["frontend/src/components/settings/TemplateLabelSettings.tsx"]
-    n3["frontend/src/components/tasks/TaskList.tsx"]
-    n4["frontend/src/i18n/seedDisplay.ts"]
-    n5["frontend/src/services/labelService.ts"]
-    n6["frontend/src/types/label.ts"]
-    n7["frontend/src/utils/taskFilters.ts"]
-    n8["frontend/src/utils/visibleWork.ts"]
-    n0 --> n4
-    n0 --> n5
-    n0 --> n6
-    n1 --> n2
-    n1 --> n6
-    n2 --> n0
-    n2 --> n4
-    n2 --> n5
-    n2 --> n6
-    n3 --> n5
-    n3 --> n6
-    n3 --> n7
-    n3 --> n8
-    n4 --> n6
-    n5 --> n6
-    n7 --> n6
-    n8 --> n6
-    n8 --> n7
-    click n0 "../modules/LabelSelector.md"
-    click n1 "../modules/TemplateLabelSettings.test.md"
-    click n2 "../modules/TemplateLabelSettings.md"
-    click n3 "../modules/TaskList.md"
-    click n4 "../modules/seedDisplay.md"
-    click n5 "../modules/labelService.md"
-    click n6 "../modules/types_label.md"
-    click n7 "../modules/taskFilters.md"
-    click n8 "../modules/visibleWork.md"
+    n0["frontend"]
+    n1["frontend/src/types/label.ts"]
+    n0 --> n1
+    click n1 "../modules/types_label.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [LabelSelector](../modules/LabelSelector.md) |
-| Inbound | [TemplateLabelSettings.test](../modules/TemplateLabelSettings.test.md) |
-| Inbound | [TemplateLabelSettings](../modules/TemplateLabelSettings.md) |
-| Inbound | [TaskList](../modules/TaskList.md) |
-| Inbound | [seedDisplay](../modules/seedDisplay.md) |
-| Inbound | [labelService](../modules/labelService.md) |
-| Inbound | [taskFilters](../modules/taskFilters.md) |
-| Inbound | [visibleWork](../modules/visibleWork.md) |
+| Inbound | `frontend` (12) |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -20,7 +20,7 @@ _Auto-generated from `frontend/src/i18n/workflowVocabulary.test.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Constants | `vocabulary`, `LABEL_KEYS`, `catalogs` |
+| Constants | `vocabulary`, `workflowSteps`, `LABEL_KEYS`, `catalogs` |
 | Module calls | `describe` |
 
 ## Local dependency map
@@ -55,6 +55,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Localized](../entities/Localized.md) | Type alias | 9 | `{ en: string; ru: string }` | — |
+| [Localized](../entities/workflowVocabulary.test_Localized.md) | Type alias | 9 | `{ en: string; ru: string }` | — |
 | [Entry](../entities/Entry.md) | Type alias | 10 | `{ id: string; name: Localized \| string; group?: Localized; description?: Localized }` | — |
-| [Vocabulary](../entities/Vocabulary.md) | Type alias | 11 | `Record<'roles' \| 'task_states' \| 'actions' \| 'queues' \| 'triage_dispositions' \| 'pipeline_stages', Entry[]>` | — |
+| [Vocabulary](../entities/workflowVocabulary.test_Vocabulary.md) | Type alias | 11 | `Record<'destinations' \| 'checkpoints' \| 'terms' \| 'roles' \| 'task_states' \| 'actions' \| 'queues' \| 'triage_dispositions' \| 'pipeline_stages', Entry[]>` | — |
+| [WorkflowStep](../entities/WorkflowStep.md) | Type alias | 18 | `{ id: string; name: string; name_ru?: string }` | — |

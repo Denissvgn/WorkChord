@@ -174,13 +174,13 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | task_comment_history | domain_result | 60 | `domain_result(...)` |
-| domain_result | HTTPException | 51 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 53 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 53 | `str(exc)` |
-| domain_result | HTTPException | 55 | `HTTPException(422, detail=[...])` |
+| domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
 | domain_result | str | 55 | `str(exc)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 57 | `str(exc)` |
+| domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | task_comment_history | DiscussionService.history | 60 | `DiscussionService(db).history(task_id, comment_id, after_version=after_version, limit=limit)` |
 | DiscussionService.history | DiscussionService.task | 115 | `self.task(task_id)` |
 | DiscussionService.task | self.db.scalar (backend/app/services/disc….py:DiscussionService.task) | 54 | `self.db.scalar(...)` |
@@ -193,11 +193,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 51 |
-| unresolved_call | `domain_result` | `exc.detail` | 51 |
 | external_call | `domain_result` | `HTTPException` | 53 |
+| unresolved_call | `domain_result` | `exc.detail` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
+| external_call | `domain_result` | `HTTPException` | 59 |
 | unresolved_call | `DiscussionService.task` | `self.db.scalar` | 54 |
 | step_limit | `task_comment_history` | `first 12 steps` | 0 |
 

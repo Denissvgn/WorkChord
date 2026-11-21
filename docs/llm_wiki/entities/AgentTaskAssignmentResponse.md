@@ -1,6 +1,6 @@
 # AgentTaskAssignmentResponse
 
-**Location:** `backend/app/schemas/agent.py:684`
+**Location:** `backend/app/schemas/agent.py:705`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -13,6 +13,7 @@ Durable agent task assignment response.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `review_selection` | `dict[str, Any] \| None` | `review_selection` | No | Yes | `None` | — | — | — |
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `task_id` | `int` | `task_id` | Yes | No | — | — | — | — |
 | `actor_id` | `int` | `actor_id` | Yes | No | — | — | — | — |

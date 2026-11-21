@@ -19,13 +19,13 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/pages/CalendarPage.tsx"]
+    n0["frontend/src/components/settings/WorkCalendarSettings.tsx"]
     n1["frontend/src/services/calendarService.ts"]
     n2["frontend/src/types/calendar.ts"]
     n0 --> n1
     n0 --> n2
     n1 --> n2
-    click n0 "../modules/CalendarPage.md"
+    click n0 "../modules/WorkCalendarSettings.md"
     click n1 "../modules/calendarService.md"
     click n2 "../modules/types_calendar.md"
 ```
@@ -34,7 +34,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | [CalendarPage](../modules/CalendarPage.md) |
+| Inbound | [WorkCalendarSettings](../modules/WorkCalendarSettings.md) |
 | Inbound | [calendarService](../modules/calendarService.md) |
 
 ## Classes

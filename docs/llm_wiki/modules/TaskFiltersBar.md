@@ -17,12 +17,11 @@ _Auto-generated from `frontend/src/components/tasks/TaskFiltersBar.tsx`._
 | `../../services/teamService` | `teamService` | — | compiler-dependent |
 | `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
 | `../../utils/taskFilterDefaults` | `defaultFilters` | — | compiler-dependent |
-| `../common/Button` | `Button` | — | compiler-dependent |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
-| `./TaskTextEditorModal` | `TaskTextEditorModal` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../ui` | `FilterBarFilter` | Specifier | compiler-dependent |
+| `../ui` | `FilterBar` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
-| `lucide-react` | `ChevronDown`, `ChevronRight`, `X`, `FileText`, `XCircle` | — | compiler-dependent |
-| `react` | `useId`, `useMemo`, `useState` | — | compiler-dependent |
+| `react` | `useMemo` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
@@ -30,6 +29,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskFiltersBar.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `TaskFilters`, `TaskFiltersBar` |
+| Constants | `YES`, `NO`, `LABEL_CHIP`, `LABEL_GROUP_CHIP`, `DATE_FILTERS`, `QUICK_FILTERS` |
 
 ## Local dependency map
 
@@ -51,26 +51,26 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (10) |
-| Outbound | `frontend` (10) |
+| Inbound | `frontend` (14) |
+| Outbound | `frontend` (9) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 4 | 0 |
+| typescript | 3 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskFilters](../entities/TaskFilters.md) | Interface | 16 | — | — |
+| [TaskFilters](../entities/TaskFilters.md) | Interface | 14 | — | — |
 | [TaskFiltersBarProps](../entities/TaskFiltersBarProps.md) | Interface | 35 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskFiltersBar` | `({ iterationId, filters, onFiltersChange }: TaskFiltersBarProps)` | — | — |
+| `TaskFiltersBar` | `({ iterationId, filters, onFiltersChange, agentFilter, hideProject, onClear }: TaskFiltersBarProps)` | — | The task filters in the shared FilterBar: five quick filters in the row, every other condition under |

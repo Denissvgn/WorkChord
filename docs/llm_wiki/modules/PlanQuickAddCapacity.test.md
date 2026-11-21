@@ -1,10 +1,10 @@
 # PlanQuickAddCapacity.test Module
 
-**Path:** `frontend/src/components/planning/PlanQuickAddCapacity.test.tsx`
+**Path:** `frontend/src/components/capacity/PlanQuickAddCapacity.test.tsx`
 
 ## Description
 
-_Auto-generated from `frontend/src/components/planning/PlanQuickAddCapacity.test.tsx`._
+_Auto-generated from `frontend/src/components/capacity/PlanQuickAddCapacity.test.tsx`._
 
 ## Imports
 
@@ -15,14 +15,14 @@ _Auto-generated from `frontend/src/components/planning/PlanQuickAddCapacity.test
 | `../../types/team` | `TeamMember` | Declaration | erased |
 | `./PlanQuickAddCapacity` | `PlanQuickAddCapacity` | — | compiler-dependent |
 | `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
-| `vitest` | `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
 | Constants | `team`, `planning`, `iteration` |
-| Module calls | `team = hoisted`, `planning = hoisted`, `mock`, `mock`, `describe` |
+| Module calls | `team = hoisted`, `planning = hoisted`, `mock`, `mock`, `beforeEach`, `describe` |
 
 ## Local dependency map
 
@@ -31,8 +31,8 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/planning/PlanQuickAddCapacity.test.tsx"]
-    n1["frontend/src/components/planning/PlanQuickAddCapacity.tsx"]
+    n0["frontend/src/components/capacity/PlanQuickAddCapacity.test.tsx"]
+    n1["frontend/src/components/capacity/PlanQuickAddCapacity.tsx"]
     n2["frontend/src/test/renderWithProviders.tsx"]
     n3["frontend/src/types/iteration.ts"]
     n4["frontend/src/types/team.ts"]

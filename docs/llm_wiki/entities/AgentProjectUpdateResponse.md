@@ -1,7 +1,7 @@
 # AgentProjectUpdateResponse
 
-**Location:** `backend/app/schemas/agent.py:1202`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent.py:1305`
+**Kind:** Class
 **Bases:** `ProjectUpdateEntryResponse`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
 

@@ -1,6 +1,6 @@
 # ProjectIterationsSectionProps
 
-**Location:** `frontend/src/components/projects/ProjectIterationsSection.tsx:18`
+**Location:** `frontend/src/components/projects/ProjectIterationsSection.tsx:19`
 **Kind:** Interface
 **Bases:** —
 **Module:** [ProjectIterationsSection](../modules/ProjectIterationsSection.md)

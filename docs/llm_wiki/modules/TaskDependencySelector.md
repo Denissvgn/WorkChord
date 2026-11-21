@@ -36,33 +36,31 @@ flowchart LR
     n2["frontend/src/components/feedback/QueryState.tsx"]
     n3["frontend/src/components/tasks/TaskDependencySelector.tsx"]
     n4["frontend/src/components/tasks/TaskForm.tsx"]
-    n5["frontend/src/i18n/i18n.ts"]
-    n6["frontend/src/pages/TriagePage.tsx"]
+    n5["frontend/src/components/triage/ConvertTriageDrawer.tsx"]
+    n6["frontend/src/i18n/i18n.ts"]
     n7["frontend/src/services/taskService.ts"]
     n2 --> n0
     n3 --> n0
     n3 --> n1
     n3 --> n2
-    n3 --> n5
+    n3 --> n6
     n3 --> n7
     n4 --> n0
     n4 --> n1
     n4 --> n2
     n4 --> n3
     n4 --> n7
-    n6 --> n0
-    n6 --> n1
-    n6 --> n2
-    n6 --> n3
-    n6 --> n5
-    n6 --> n7
+    n5 --> n0
+    n5 --> n1
+    n5 --> n2
+    n5 --> n3
     click n0 "../modules/Button.md"
     click n1 "../modules/Input.md"
     click n2 "../modules/QueryState.md"
     click n3 "../modules/TaskDependencySelector.md"
     click n4 "../modules/TaskForm.md"
-    click n5 "../modules/i18n.md"
-    click n6 "../modules/TriagePage.md"
+    click n5 "../modules/ConvertTriageDrawer.md"
+    click n6 "../modules/i18n.md"
     click n7 "../modules/taskService.md"
 ```
 
@@ -71,7 +69,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [TaskForm](../modules/TaskForm.md) |
-| Inbound | [TriagePage](../modules/TriagePage.md) |
+| Inbound | [ConvertTriageDrawer](../modules/ConvertTriageDrawer.md) |
 | Outbound | [Button](../modules/Button.md) |
 | Outbound | [Input](../modules/Input.md) |
 | Outbound | [QueryState](../modules/QueryState.md) |

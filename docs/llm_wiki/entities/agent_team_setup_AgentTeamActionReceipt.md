@@ -1,7 +1,7 @@
 # AgentTeamActionReceipt
 
 **Location:** `backend/app/schemas/agent_team_setup.py:811`
-**Kind:** Class
+**Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 

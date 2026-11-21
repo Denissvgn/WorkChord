@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_append_task_event` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), and 14 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), and 12 more
 
 **Complete modules touched:**
 
@@ -16,10 +16,8 @@
 - [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [mcp_server](../modules/mcp_server.md)
-- [models_agent](../modules/models_agent.md)
 - [models_identity](../modules/models_identity.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
-- [outbound_webhook_service](../modules/outbound_webhook_service.md)
 - [schemas_agent](../modules/schemas_agent.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_service](../modules/task_service.md)
@@ -37,81 +35,81 @@ sequenceDiagram
     participant p2 as append_task_event
     participant p3 as enforce_mcp_access
     participant p4 as _agent_context
-    participant p5 as AgentService.append_task_event
+    participant p5 as AgentService.event_to_payload
     participant p6 as get_settings
     participant p7 as command_transaction
     participant p8 as _authenticate_agent_key
     participant p9 as _require_scope_requirement
     participant p10 as IdentityService.actor_context
-    participant p11 as AgentService._task_event_matches
-    participant p12 as AgentService._validate_task_fence
-    participant p13 as AgentService._record_command_receipt
-    participant p14 as emit_outbound_webhook_event
-    participant p15 as AgentService.event_to_payload
-    participant p16 as OutboundWebhookService.safe_emit_event
-    participant p17 as require_scope
-    participant p18 as AgentService.authenticate
-    participant p19 as require_identity_writes
-    participant p20 as DeliveryDependencyService.reconcile
-    participant p21 as DiscussionService.enqueue
-    participant p22 as actor_has_scope
-    participant p23 as OutboundWebhookService.enqueue_event
-    participant p24 as commit_or_flush
-    participant p25 as DeliveryDependencyService.validate_cycles
-    participant p26 as DiscussionService.recipient_authorized
-    participant p27 as TaskService.reserve_task_version
-    participant p28 as clear_execution_evidence
+    participant p11 as require_scope
+    participant p12 as AgentService.authenticate
+    participant p13 as require_identity_writes
+    participant p14 as DeliveryDependencyService.reconcile
+    participant p15 as DiscussionService.enqueue
+    participant p16 as actor_has_scope
+    participant p17 as commit_or_flush
+    participant p18 as DeliveryDependencyService.validate_cycles
+    participant p19 as DiscussionService.recipient_authorized
+    participant p20 as TaskService.reserve_task_version
+    participant p21 as clear_execution_evidence
+    participant p22 as AgentService
+    participant p23 as TaskEventCreate
+    participant p24 as _structured_tool_error
+    participant p25 as _current_agent_key
+    participant p26 as AgentService._loads
+    participant p27 as scope_requirement_is_mutating
+    participant p28 as MCPAuthError
     participant p29 as ToolError
-    participant p30 as func
+    participant p30 as service.append_task_event
     p0->>p1: _tool_call
     p0->>p2: append_task_event
     p1->>p3: enforce_mcp_access
     p1->>p4: _agent_context
-    p2->>p5: AgentService.append_task_event
+    p2->>p5: AgentService.event_to_payload
     p3->>p6: get_settings
     p4->>p7: command_transaction
     p4->>p8: _authenticate_agent_key
     p4->>p9: _require_scope_requirement
     p4->>p10: IdentityService.actor_context
-    p5->>p11: AgentService._task_event_matches
-    p5->>p12: AgentService._validate_task_fence
-    p5->>p13: AgentService._record_command_receipt
-    p5->>p14: emit_outbound_webhook_event
-    p11->>p15: AgentService.event_to_payload
-    p14->>p16: OutboundWebhookService.safe_emit_event
-    p9->>p17: require_scope
-    p8->>p18: AgentService.authenticate
-    p10->>p19: require_identity_writes
-    p7->>p20: DeliveryDependencyService.reconcile
-    p7->>p21: DiscussionService.enqueue
-    p17->>p22: actor_has_scope
-    p16->>p23: OutboundWebhookService.enqueue_event
-    p18->>p24: commit_or_flush
-    p20->>p25: DeliveryDependencyService.validate_cycles
-    p21->>p26: DiscussionService.recipient_authorized
-    p20->>p27: TaskService.reserve_task_version
-    p20->>p28: clear_execution_evidence
+    p9->>p11: require_scope
+    p8->>p12: AgentService.authenticate
+    p10->>p13: require_identity_writes
+    p7->>p14: DeliveryDependencyService.reconcile
+    p7->>p15: DiscussionService.enqueue
+    p11->>p16: actor_has_scope
+    p12->>p17: commit_or_flush
+    p14->>p18: DeliveryDependencyService.validate_cycles
+    p15->>p19: DiscussionService.recipient_authorized
+    p14->>p20: TaskService.reserve_task_version
+    p14->>p21: clear_execution_evidence
+    p2->>p22: AgentService
+    p2->>p23: TaskEventCreate
+    p1->>p24: _structured_tool_error
+    p4->>p25: _current_agent_key
+    p5->>p26: AgentService._loads
+    p3->>p27: scope_requirement_is_mutating
+    p4->>p28: MCPAuthError
     p1-->>p29: ToolError(_structured_tool_error(...))
-    p1-->>p30: func(db, actor)
+    p2-->>p30: service.append_task_event(task_id, actor, TaskEventCreate(...), idempotency_key=idempotency_key)
 ```
 
-> Call sequence diagram shows 30 of 322 interactions; 292 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 252 interactions; 222 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 83 (82 omitted); unresolved 1 of 134 (133 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 69 (68 omitted); unresolved 1 of 105 (104 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
 | `backend/app/config.py:get_settings` | 4 | [backend/app/config.py](../modules/config.md) | internal | 1 |
-| `backend/app/maintenance.py:enforce_mcp_access` | 3 | [backend/app/maintenance.py](../modules/maintenance.md) | internal | 2 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | external | 4 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | unresolved | 3 |
-| `backend/app/mcp_server.py:_agent_context` | 15 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 3 |
+| `backend/app/maintenance.py:enforce_mcp_access` | 3 | [backend/app/maintenance.py](../modules/maintenance.md) | internal | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
+| `backend/app/mcp_server.py:_agent_context` | 15 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 97 groups; 89 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 74 groups; 66 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -124,9 +122,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 106; effect analysis evaluated: 73, partial: 2, unavailable: 31. Counts include steps omitted from the displayed trace.
+Source steps: 79; effect analysis evaluated: 51, partial: 2, unavailable: 26. Counts include steps omitted from the displayed trace.
 
-Collector observations for 75 source steps with known totals: observed: 342, emitted: 332, omitted: 10. Unavailable totals are excluded.
+Collector observations for 53 source steps with known totals: observed: 226, emitted: 216, omitted: 10. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -201,7 +199,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_append_task_event | _tool_call | 1201 | `_tool_call('events:write', ...)` |
+| agent_append_task_event | _tool_call | 1214 | `_tool_call('events:write', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

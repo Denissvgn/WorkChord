@@ -1,6 +1,6 @@
 # LabelOption
 
-**Location:** `frontend/src/components/labels/LabelSelector.tsx:21`
+**Location:** `frontend/src/components/labels/LabelSelector.tsx:22`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [LabelSelector](../modules/LabelSelector.md)

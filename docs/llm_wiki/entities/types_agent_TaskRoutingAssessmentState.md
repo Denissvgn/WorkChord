@@ -1,6 +1,6 @@
 # TaskRoutingAssessmentState
 
-**Location:** `frontend/src/types/agent.ts:357`
+**Location:** `frontend/src/types/agent.ts:358`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

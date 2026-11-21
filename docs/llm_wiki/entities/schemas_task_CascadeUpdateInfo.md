@@ -1,6 +1,6 @@
 # CascadeUpdateInfo
 
-**Location:** `backend/app/schemas/task.py:414`
+**Location:** `backend/app/schemas/task.py:418`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

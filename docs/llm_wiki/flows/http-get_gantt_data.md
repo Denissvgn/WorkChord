@@ -2,10 +2,11 @@
 
 **Entry point:** `get_gantt_data` (`http`)
 **Source:** [routers_gantt](../modules/routers_gantt.md)
-**Modules touched:** [calendar_service](../modules/calendar_service.md), [iteration_service](../modules/iteration_service.md), [query_limits](../modules/query_limits.md), [routers_gantt](../modules/routers_gantt.md), and 8 more
+**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [iteration_service](../modules/iteration_service.md), [query_limits](../modules/query_limits.md), and 10 more
 
 **Complete modules touched:**
 
+- [authority](../modules/authority.md)
 - [calendar_service](../modules/calendar_service.md)
 - [iteration_service](../modules/iteration_service.md)
 - [query_limits](../modules/query_limits.md)
@@ -13,6 +14,7 @@
 - [schemas_calendar](../modules/schemas_calendar.md)
 - [schemas_gantt](../modules/schemas_gantt.md)
 - [schemas_iteration](../modules/schemas_iteration.md)
+- [schemas_team](../modules/schemas_team.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_hierarchy_service](../modules/task_hierarchy_service.md)
 - [task_service](../modules/task_service.md)
@@ -42,19 +44,19 @@ sequenceDiagram
     participant p13 as TaskService._task_graph_query
     participant p14 as task_signals
     participant p15 as TaskService._load_iteration_tree
-    participant p16 as TaskHierarchyService._load_iteration_tree
-    participant p17 as working_today
-    participant p18 as TeamService._member_options
-    participant p19 as WorkingDaysResponse
-    participant p20 as CollectionLimitExceededError
-    participant p21 as GanttAssignee
-    participant p22 as GanttMilestone
-    participant p23 as GanttTask
-    participant p24 as _get_calculated_effort
-    participant p25 as TaskHierarchyService._task_graph_query
-    participant p26 as TaskHierarchyService
-    participant p27 as effective_work_flags
-    participant p28 as as_utc
+    participant p16 as TeamService._attach_assignee_profiles
+    participant p17 as TaskHierarchyService._load_iteration_tree
+    participant p18 as working_today
+    participant p19 as TeamService._member_options
+    participant p20 as WorkingDaysResponse
+    participant p21 as CollectionLimitExceededError
+    participant p22 as GanttAssignee
+    participant p23 as GanttMilestone
+    participant p24 as GanttTask
+    participant p25 as _get_calculated_effort
+    participant p26 as TaskHierarchyService._task_graph_query
+    participant p27 as internal_authority
+    participant p28 as TaskHierarchyService
     participant p29 as HTTPException
     participant p30 as gantt_tasks.append
     p0->>p1: TaskService.get_by_iteration
@@ -72,26 +74,26 @@ sequenceDiagram
     p1->>p13: TaskService._task_graph_query
     p4->>p14: task_signals
     p1->>p15: TaskService._load_iteration_tree
-    p15->>p16: TaskHierarchyService._load_iteration_tree
-    p14->>p17: working_today
-    p2->>p18: TeamService._member_options
-    p3->>p19: WorkingDaysResponse
-    p1->>p20: CollectionLimitExceededError
-    p4->>p21: GanttAssignee
-    p4->>p22: GanttMilestone
-    p4->>p23: GanttTask
-    p4->>p24: _get_calculated_effort
-    p13->>p25: TaskHierarchyService._task_graph_query
-    p13->>p26: TaskHierarchyService
-    p14->>p27: effective_work_flags
-    p17->>p28: as_utc
+    p2->>p16: TeamService._attach_assignee_profiles
+    p15->>p17: TaskHierarchyService._load_iteration_tree
+    p14->>p18: working_today
+    p2->>p19: TeamService._member_options
+    p3->>p20: WorkingDaysResponse
+    p1->>p21: CollectionLimitExceededError
+    p4->>p22: GanttAssignee
+    p4->>p23: GanttMilestone
+    p4->>p24: GanttTask
+    p4->>p25: _get_calculated_effort
+    p13->>p26: TaskHierarchyService._task_graph_query
+    p16->>p27: internal_authority
+    p13->>p28: TaskHierarchyService
     p0-->>p29: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
     p0-->>p30: gantt_tasks.append(gantt_task)
 ```
 
-> Call sequence diagram shows 30 of 175 interactions; 145 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 186 interactions; 156 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 71 (70 omitted); unresolved 1 of 68 (67 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 72 (71 omitted); unresolved 1 of 75 (74 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -105,7 +107,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_service.py:TaskService.get_by_iteration` | 13 | - | external | 2 |
 | `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._load_iteration_tree` | 41 | - | unresolved | 20 |
 | `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._load_iteration_tree` | 41 | - | external | 11 |
-> Omission summary shows 8 of 34 groups; 26 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 39 groups; 31 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -116,9 +118,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 37; effect analysis evaluated: 20, partial: 0, unavailable: 17. Counts include steps omitted from the displayed trace.
+Source steps: 40; effect analysis evaluated: 22, partial: 0, unavailable: 18. Counts include steps omitted from the displayed trace.
 
-Collector observations for 20 source steps with known totals: observed: 105, emitted: 105, omitted: 0. Unavailable totals are excluded.
+Collector observations for 22 source steps with known totals: observed: 112, emitted: 112, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.

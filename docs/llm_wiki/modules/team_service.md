@@ -12,14 +12,14 @@ Capacity and workload reads can omit task relationship hydration. Workload hours
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `internal_authority`, `internal_authority`, `internal_authority`, `internal_authority` |
+| `app.authority` | `internal_authority`, `internal_authority`, `internal_authority`, `internal_authority`, `internal_authority` |
 | `app.commands` | `atomic_command`, `commit_or_flush`, `schedule_input_command`, `PlanningConflict`, `PlanningConflict` |
 | `app.models.capacity` | `ProfileAbsence`, `ProfileAbsence`, `ProfileAbsence`, `ProfileAbsence` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.task` | `Task` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile`, `TeamMemberProfileSkill`, `Vacation` |
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_BOUNDED_LIST_ITEMS` |
-| `app.schemas.team` | `TeamMemberCreate`, `TeamMemberProfileCreate`, `TeamMemberProfileSkillCreate`, `TeamMemberProfileSkillUpdate`, `TeamMemberProfileUpdate`, `TeamMemberOptionResponse`, `TeamMemberUpdate`, `VacationCreate`, `VacationUpdate`, `VacationImportError`, `VacationImportResponse`, `MemberCapacity`, `MemberWorkload` |
+| `app.schemas.team` | `TeamMemberCreate`, `TeamMemberProfileCreate`, `TeamMemberProfileSkillCreate`, `TeamMemberProfileSkillUpdate`, `TeamMemberProfileUpdate`, `TeamMemberOptionResponse`, `TeamMemberProfileCompact`, `TeamMemberUpdate`, `VacationCreate`, `VacationUpdate`, `VacationImportError`, `VacationImportResponse`, `MemberCapacity`, `MemberWorkload` |
 | `app.services.calendar_service` | `CalendarService` |
 | `app.services.capacity_service` | `CapacityService`, `CapacityService`, `CapacityService`, `CapacityService`, `day_hours`, `CapacityService` |
 | `app.services.work_metrics` | `included_work_ids` |
@@ -66,4 +66,4 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TeamService](../entities/TeamService.md) | 36 | — | Service for team member operations. |
+| [TeamService](../entities/TeamService.md) | 38 | — | Service for team member operations. |

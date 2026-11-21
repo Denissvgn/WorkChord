@@ -11,7 +11,7 @@ _Auto-generated from `frontend/src/i18n/seedDisplay.ts`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../types/github` | `GitHubStatusAutomationRule` | Declaration | erased |
-| `../types/label` | `Label`, `LabelGroup` | Declaration | erased |
+| `../types/label` | `Label` | Declaration | erased |
 | `../types/savedView` | `SavedView`, `SavedViewDashboardCard` | Declaration | erased |
 | `../types/template` | `WorkTemplate` | Declaration | erased |
 | `./i18n` | `i18n` | — | compiler-dependent |
@@ -21,7 +21,7 @@ _Auto-generated from `frontend/src/i18n/seedDisplay.ts`._
 | Signal | Values |
 |--------|--------|
 | Exports | `githubRuleDisplay`, `labelDisplay`, `labelGroupDisplay`, `savedViewDisplay`, `templateDisplay` |
-| Constants | `templateBaselines`, `labelGroupBaselines`, `labelBaselines`, `savedViewBaselines`, `githubRuleBaselines` |
+| Constants | `templateBaselines`, `labelGroupBaselines`, `labelBaselines`, `savedViewBaselines`, `githubRuleBaselines`, `labelGroupSeedKeyByKey` |
 
 ## Local dependency map
 
@@ -58,7 +58,7 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `labelGroupDisplay` | `(group: LabelGroup \| { seed_key?: string \| null; name: string; description?: string \| null })` | — | — |
+| `labelGroupDisplay` | `(group: { seed_key?: string \| null; key?: string; name: string; description?: string \| null })` | — | — |
 | `labelDisplay` | `(label: Label \| { seed_key?: string \| null; name: string; description?: string \| null })` | — | — |
 | `templateDisplay` | `(template: WorkTemplate)` | — | — |
 | `savedViewDisplay` | `(view: SavedView \| SavedViewDashboardCard)` | — | — |

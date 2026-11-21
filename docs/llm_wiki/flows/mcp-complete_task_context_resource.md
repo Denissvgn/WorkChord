@@ -50,22 +50,22 @@ sequenceDiagram
     participant p10 as AgentService.get_task_timeline
     participant p11 as AgentWorkService.assignment_response
     participant p12 as get_settings
-    participant p13 as AgentWorkService._selection_pending
-    participant p14 as command_transaction
+    participant p13 as command_transaction
+    participant p14 as AgentWorkService._resolve_rollout
     participant p15 as TaskTimelineService.page
     participant p16 as _authenticate_agent_key
     participant p17 as _require_scope_requirement
-    participant p18 as AgentWorkService._resolve_rollout
+    participant p18 as AgentWorkService._supervised_recovery
     participant p19 as IdentityService.actor_context
-    participant p20 as AgentWorkService._is_model_aware_assignment
-    participant p21 as AgentWorkService._validate_assignment_actor
-    participant p22 as AgentWorkService._working_today
-    participant p23 as DeliveryDependencyService.ready
-    participant p24 as AgentTeamSetupService.routing_readiness
-    participant p25 as require_scope
+    participant p20 as AgentWorkService._selection_pending
+    participant p21 as AgentWorkService._is_model_aware_assignment
+    participant p22 as AgentWorkService._validate_assignment_actor
+    participant p23 as AgentWorkService._working_today
+    participant p24 as DeliveryDependencyService.ready
+    participant p25 as AgentTeamSetupService.routing_readiness
     participant p26 as AgentWorkService._routing_snapshot
-    participant p27 as evaluate_actor_authorization
-    participant p28 as working_today
+    participant p27 as require_scope
+    participant p28 as evaluate_actor_authorization
     participant p29 as int
     participant p30 as context.model_dump
     p0->>p1: _json_resource
@@ -80,29 +80,29 @@ sequenceDiagram
     p4->>p10: AgentService.get_task_timeline
     p4->>p11: AgentWorkService.assignment_response
     p5->>p12: get_settings
-    p9->>p13: AgentWorkService._selection_pending
-    p7->>p14: command_transaction
+    p7->>p13: command_transaction
+    p9->>p14: AgentWorkService._resolve_rollout
     p10->>p15: TaskTimelineService.page
     p7->>p16: _authenticate_agent_key
     p7->>p17: _require_scope_requirement
-    p9->>p18: AgentWorkService._resolve_rollout
+    p9->>p18: AgentWorkService._supervised_recovery
     p7->>p19: IdentityService.actor_context
-    p9->>p20: AgentWorkService._is_model_aware_assignment
-    p9->>p21: AgentWorkService._validate_assignment_actor
-    p9->>p22: AgentWorkService._working_today
-    p9->>p23: DeliveryDependencyService.ready
-    p18->>p24: AgentTeamSetupService.routing_readiness
-    p17->>p25: require_scope
-    p13->>p26: AgentWorkService._routing_snapshot
-    p21->>p27: evaluate_actor_authorization
-    p22->>p28: working_today
+    p9->>p20: AgentWorkService._selection_pending
+    p9->>p21: AgentWorkService._is_model_aware_assignment
+    p9->>p22: AgentWorkService._validate_assignment_actor
+    p9->>p23: AgentWorkService._working_today
+    p9->>p24: DeliveryDependencyService.ready
+    p14->>p25: AgentTeamSetupService.routing_readiness
+    p18->>p26: AgentWorkService._routing_snapshot
+    p17->>p27: require_scope
+    p22->>p28: evaluate_actor_authorization
     p0-->>p29: int(task_id)
     p2-->>p30: context.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 546 interactions; 516 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 551 interactions; 521 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 151 (150 omitted); unresolved 1 of 257 (256 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 151 (150 omitted); unresolved 1 of 260 (259 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -116,7 +116,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 135 groups; 127 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 138 groups; 130 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -129,9 +129,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 139; effect analysis evaluated: 98, partial: 4, unavailable: 37. Counts include steps omitted from the displayed trace.
+Source steps: 141; effect analysis evaluated: 100, partial: 4, unavailable: 37. Counts include steps omitted from the displayed trace.
 
-Collector observations for 102 source steps with known totals: observed: 526, emitted: 485, omitted: 41. Unavailable totals are excluded.
+Collector observations for 104 source steps with known totals: observed: 532, emitted: 490, omitted: 42. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -207,7 +207,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| complete_task_context_resource | _json_resource | 2275 | `_json_resource((...), ...)` |
+| complete_task_context_resource | _json_resource | 2310 | `_json_resource((...), ...)` |
 | _json_resource | _tool_call | 363 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

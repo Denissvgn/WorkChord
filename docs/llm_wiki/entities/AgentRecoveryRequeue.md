@@ -1,6 +1,6 @@
 # AgentRecoveryRequeue
 
-**Location:** `backend/app/schemas/agent.py:1133`
+**Location:** `backend/app/schemas/agent.py:1235`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -19,6 +19,7 @@ PM command to replace stale execution ownership with recovery work.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `return_for_evidence` | `bool` | `return_for_evidence` | No | No | `False` | — | — | — |
 | `actor_id` | `int` | `actor_id` | Yes | No | — | — | — | — |
 | `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1 | — | — |
 | `expected_live_assignment_ids` | `list[int]` | `expected_live_assignment_ids` | Yes | No | — | max_length=20 | — | — |
@@ -61,7 +62,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 0 | `actor_id`, `expected_claim_generation`, `expected_live_assignment_ids`, `expected_running_run_ids`, `expected_task_version`, `queue_rank`, `reason` |
+| [schemas_agent](../modules/schemas_agent.md) | 0 | `actor_id`, `expected_claim_generation`, `expected_live_assignment_ids`, `expected_running_run_ids`, `expected_task_version`, `queue_rank`, `reason`, `return_for_evidence` |
 
 ### Structure
 

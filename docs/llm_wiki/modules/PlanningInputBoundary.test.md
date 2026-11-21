@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/planning/PlanningInputBoundary.tes
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Button` | `Button` | — | compiler-dependent |
 | `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
 | `./PlanningInputBoundary` | `PlanningInputBoundary` | — | compiler-dependent |
 | `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
@@ -28,20 +29,25 @@ _Auto-generated from `frontend/src/components/planning/PlanningInputBoundary.tes
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/planning/PlanningInputBoundary.test.tsx"]
-    n1["frontend/src/components/planning/PlanningInputBoundary.tsx"]
-    n2["frontend/src/test/renderWithProviders.tsx"]
-    n0 --> n1
-    n0 --> n2
-    click n0 "../modules/PlanningInputBoundary.test.md"
-    click n1 "../modules/PlanningInputBoundary.md"
-    click n2 "../modules/renderWithProviders.md"
+    n0["frontend/src/components/common/Button.tsx"]
+    n1["frontend/src/components/planning/PlanningInputBoundary.test.tsx"]
+    n2["frontend/src/components/planning/PlanningInputBoundary.tsx"]
+    n3["frontend/src/test/renderWithProviders.tsx"]
+    n1 --> n0
+    n1 --> n2
+    n1 --> n3
+    n2 --> n0
+    click n0 "../modules/Button.md"
+    click n1 "../modules/PlanningInputBoundary.test.md"
+    click n2 "../modules/PlanningInputBoundary.md"
+    click n3 "../modules/renderWithProviders.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Outbound | [Button](../modules/Button.md) |
 | Outbound | [PlanningInputBoundary](../modules/PlanningInputBoundary.md) |
 | Outbound | [renderWithProviders](../modules/renderWithProviders.md) |
 

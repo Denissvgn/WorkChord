@@ -88,9 +88,9 @@ sequenceDiagram
     p2-->>p30: exc.detail
 ```
 
-> Call sequence diagram shows 30 of 128 interactions; 98 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 129 interactions; 99 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 43 (42 omitted); unresolved 2 of 44 (42 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 43 (42 omitted); unresolved 2 of 45 (43 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -99,7 +99,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/routers/task_domain.py:domain_result` | 2 | - | external | 5 |
 | `backend/app/commands.py:current_command` | 13 | - | external | 2 |
 | `backend/app/commands.py:current_command` | 13 | - | unresolved | 1 |
-| `backend/app/services/task_service.py:TaskService.task_to_response` | 12 | - | unresolved | 6 |
+| `backend/app/services/task_service.py:TaskService.task_to_response` | 12 | - | unresolved | 7 |
 | `backend/app/services/task_service.py:TaskService.task_to_response` | 12 | - | external | 5 |
 | `backend/app/services/work_metrics.py:working_today` | 22 | - | unresolved | 2 |
 | `backend/app/services/work_metrics.py:working_today` | 22 | [backend/app/utils/time.py](../modules/time.md) | internal | 2 |
@@ -193,17 +193,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_command | domain_result | 218 | `domain_result(...)` |
-| domain_result | HTTPException | 51 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 53 | `HTTPException(404, detail=str(...))` |
-| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 53 | `str(exc)` |
-| domain_result | HTTPException | 55 | `HTTPException(422, detail=[...])` |
+| task_command | domain_result | 243 | `domain_result(...)` |
+| domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 55 | `str(exc)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_command | TaskDomainService(…).command | 218 | `TaskDomainService(db).command(task_id, data)` |
-| task_command | TaskDomainService | 218 | `TaskDomainService(db)` |
-| task_command | TaskService.task_to_response | 219 | `TaskService(db).task_to_response(task)` |
+| domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
+| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 57 | `str(exc)` |
+| domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| task_command | TaskDomainService(…).command | 243 | `TaskDomainService(db).command(task_id, data)` |
+| task_command | TaskDomainService | 243 | `TaskDomainService(db)` |
+| task_command | TaskService.task_to_response | 244 | `TaskService(db).task_to_response(task)` |
 
 ### Boundary effects
 
@@ -215,12 +215,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 51 |
-| unresolved_call | `domain_result` | `exc.detail` | 51 |
 | external_call | `domain_result` | `HTTPException` | 53 |
+| unresolved_call | `domain_result` | `exc.detail` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
-| unresolved_call | `task_command` | `TaskDomainService(db).command` | 218 |
+| external_call | `domain_result` | `HTTPException` | 59 |
+| unresolved_call | `task_command` | `TaskDomainService(db).command` | 243 |
 | step_limit | `task_command` | `first 12 steps` | 0 |
 
 ## Behavior

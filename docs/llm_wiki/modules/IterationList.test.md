@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # IterationList.test Module
 
 **Path:** `frontend/src/components/iteration/IterationList.test.tsx`

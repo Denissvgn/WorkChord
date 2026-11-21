@@ -1,6 +1,6 @@
 # TeamMemberProfileCreate
 
-**Location:** `frontend/src/types/team.ts:87`
+**Location:** `frontend/src/types/team.ts:89`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_team](../modules/types_team.md)

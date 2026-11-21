@@ -10,6 +10,8 @@ _Auto-generated from `frontend/src/components/layout/AppShell.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/firstRun/FirstRunLanding` | `FirstRunLanding` | — | compiler-dependent |
+| `../../features/scope/useWorkScope` | `useWorkScope` | — | compiler-dependent |
 | `../../store/themeStore` | `useThemeStore` | — | compiler-dependent |
 | `../feedback/WorkRefreshStatus` | `WorkRefreshStatus` | — | compiler-dependent |
 | `./AppSidebar` | `AppSidebar` | — | compiler-dependent |
@@ -44,7 +46,9 @@ flowchart LR
     n6["frontend/src/components/layout/CommandMenu.tsx"]
     n7["frontend/src/components/layout/DocumentMetadata.tsx"]
     n8["frontend/src/components/layout/RouteErrorBoundary.tsx"]
-    n9["frontend/src/store/themeStore.ts"]
+    n9["frontend/src/features/firstRun/FirstRunLanding.tsx"]
+    n10["frontend/src/features/scope/useWorkScope.ts"]
+    n11["frontend/src/store/themeStore.ts"]
     n0 --> n3
     n0 --> n7
     n2 --> n3
@@ -55,7 +59,10 @@ flowchart LR
     n3 --> n7
     n3 --> n8
     n3 --> n9
+    n3 --> n10
+    n3 --> n11
     n5 --> n4
+    n6 --> n10
     click n0 "../modules/App.md"
     click n1 "../modules/WorkRefreshStatus.md"
     click n2 "../modules/AppShell.test.md"
@@ -65,7 +72,9 @@ flowchart LR
     click n6 "../modules/CommandMenu.md"
     click n7 "../modules/DocumentMetadata.md"
     click n8 "../modules/RouteErrorBoundary.md"
-    click n9 "../modules/themeStore.md"
+    click n9 "../modules/FirstRunLanding.md"
+    click n10 "../modules/useWorkScope.md"
+    click n11 "../modules/themeStore.md"
 ```
 
 ### Internal neighbors
@@ -80,6 +89,8 @@ flowchart LR
 | Outbound | [CommandMenu](../modules/CommandMenu.md) |
 | Outbound | [DocumentMetadata](../modules/DocumentMetadata.md) |
 | Outbound | [RouteErrorBoundary](../modules/RouteErrorBoundary.md) |
+| Outbound | [FirstRunLanding](../modules/FirstRunLanding.md) |
+| Outbound | [useWorkScope](../modules/useWorkScope.md) |
 | Outbound | [themeStore](../modules/themeStore.md) |
 
 ### External packages

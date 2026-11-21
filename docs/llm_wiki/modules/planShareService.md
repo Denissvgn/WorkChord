@@ -26,24 +26,29 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/pages/PlanMasterPage.tsx"]
-    n1["frontend/src/pages/PlanSharePage.tsx"]
-    n2["frontend/src/services/api.ts"]
-    n3["frontend/src/services/planShareService.ts"]
-    n0 --> n3
-    n1 --> n3
-    n3 --> n2
-    click n0 "../modules/PlanMasterPage.md"
-    click n1 "../modules/PlanSharePage.md"
-    click n2 "../modules/api.md"
-    click n3 "../modules/planShareService.md"
+    n0["frontend/src/components/planning/PlanShareSection.test.tsx"]
+    n1["frontend/src/components/planning/PlanShareSection.tsx"]
+    n2["frontend/src/pages/PlanSharePage.tsx"]
+    n3["frontend/src/services/api.ts"]
+    n4["frontend/src/services/planShareService.ts"]
+    n0 --> n1
+    n0 --> n4
+    n1 --> n4
+    n2 --> n4
+    n4 --> n3
+    click n0 "../modules/PlanShareSection.test.md"
+    click n1 "../modules/PlanShareSection.md"
+    click n2 "../modules/PlanSharePage.md"
+    click n3 "../modules/api.md"
+    click n4 "../modules/planShareService.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [PlanMasterPage](../modules/PlanMasterPage.md) |
+| Inbound | [PlanShareSection.test](../modules/PlanShareSection.test.md) |
+| Inbound | [PlanShareSection](../modules/PlanShareSection.md) |
 | Inbound | [PlanSharePage](../modules/PlanSharePage.md) |
 | Outbound | [api](../modules/api.md) |
 

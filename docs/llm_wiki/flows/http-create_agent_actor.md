@@ -156,17 +156,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_agent_actor | require_scope | 665 | `require_scope(actor, 'admin')` |
-| require_scope | actor_has_scope | 101 | `actor_has_scope(actor, scope)` |
+| create_agent_actor | require_scope | 666 | `require_scope(actor, 'admin')` |
+| require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
-| require_scope | AgentPermissionError | 102 | `AgentPermissionError(...)` |
-| create_agent_actor | service.create_actor | 666 | `service.create_actor(data, principal=actor)` |
-| create_agent_actor | _handle_agent_error | 671 | `_handle_agent_error(exc)` |
-| _handle_agent_error | isinstance (backend/app/routers/agent.py:_handle_agent_error) | 326 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 328 | `str(exc)` |
-| _handle_agent_error | str | 330 | `str(exc)` |
+| require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
+| create_agent_actor | service.create_actor | 667 | `service.create_actor(data, principal=actor)` |
+| create_agent_actor | _handle_agent_error | 672 | `_handle_agent_error(exc)` |
+| _handle_agent_error | isinstance (backend/app/routers/agent.py:_handle_agent_error) | 327 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | str | 329 | `str(exc)` |
+| _handle_agent_error | str | 331 | `str(exc)` |
 
 ### Boundary effects
 
@@ -178,8 +178,8 @@ flowchart LR
 |---|---|---|---:|
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | external_call | `actor_scopes` | `isinstance` | 90 |
-| unresolved_call | `create_agent_actor` | `service.create_actor` | 666 |
-| external_call | `_handle_agent_error` | `isinstance` | 326 |
+| unresolved_call | `create_agent_actor` | `service.create_actor` | 667 |
+| external_call | `_handle_agent_error` | `isinstance` | 327 |
 | step_limit | `create_agent_actor` | `first 12 steps` | 0 |
 
 ## Behavior

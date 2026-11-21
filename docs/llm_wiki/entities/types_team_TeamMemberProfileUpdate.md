@@ -1,6 +1,6 @@
 # TeamMemberProfileUpdate
 
-**Location:** `frontend/src/types/team.ts:99`
+**Location:** `frontend/src/types/team.ts:101`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_team](../modules/types_team.md)

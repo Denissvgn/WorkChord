@@ -33,8 +33,8 @@ flowchart LR
     n2["frontend/src/components/common/Textarea.tsx"]
     n3["frontend/src/components/projects/InitiativeForm.tsx"]
     n4["frontend/src/components/projects/ProjectForm.tsx"]
-    n5["frontend/src/components/tasks/SavedViewsControl.tsx"]
-    n6["frontend/src/pages/TriagePage.tsx"]
+    n5["frontend/src/components/tasks/useSavedViewManager.tsx"]
+    n6["frontend/src/components/triage/CreateTriageDrawer.tsx"]
     n1 --> n2
     n2 --> n0
     n3 --> n0
@@ -50,8 +50,8 @@ flowchart LR
     click n2 "../modules/Textarea.md"
     click n3 "../modules/InitiativeForm.md"
     click n4 "../modules/ProjectForm.md"
-    click n5 "../modules/SavedViewsControl.md"
-    click n6 "../modules/TriagePage.md"
+    click n5 "../modules/useSavedViewManager.md"
+    click n6 "../modules/CreateTriageDrawer.md"
 ```
 
 ### Internal neighbors
@@ -61,8 +61,8 @@ flowchart LR
 | Inbound | [Select.test](../modules/Select.test.md) |
 | Inbound | [InitiativeForm](../modules/InitiativeForm.md) |
 | Inbound | [ProjectForm](../modules/ProjectForm.md) |
-| Inbound | [SavedViewsControl](../modules/SavedViewsControl.md) |
-| Inbound | [TriagePage](../modules/TriagePage.md) |
+| Inbound | [useSavedViewManager](../modules/useSavedViewManager.md) |
+| Inbound | [CreateTriageDrawer](../modules/CreateTriageDrawer.md) |
 | Outbound | [Input](../modules/Input.md) |
 
 ### External packages

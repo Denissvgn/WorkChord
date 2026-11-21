@@ -13,7 +13,7 @@
 - [mcp_server](../modules/mcp_server.md)
 - [upgrade_service](../modules/upgrade_service.md)
 
-**Related modules:** [agent_key_file](../modules/agent_key_file.md), [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_routing_service](../modules/agent_routing_service.md), and 13 more
+**Related modules:** [agent_key_file](../modules/agent_key_file.md), [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_routing_service](../modules/agent_routing_service.md), and 14 more
 
 **Complete related modules:**
 
@@ -26,6 +26,7 @@
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
+- [execution_reconciliation](../modules/execution_reconciliation.md)
 - [http_authority](../modules/http_authority.md)
 - [identity_service](../modules/identity_service.md)
 - [maintenance](../modules/maintenance.md)
@@ -219,10 +220,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | argparse.ArgumentParser | 2485 | `argparse.ArgumentParser(description='Run WorkChord MCP server')` |
-| main | parser.add_argument | 2486 | `parser.add_argument('--transport', choices=[...], default='stdio', help='MCP transport to run')` |
-| main | parser.parse_args | 2492 | `parser.parse_args(argv)` |
-| main | _load_stdio_agent_key | 2496 | `_load_stdio_agent_key(data not statically known)` |
+| main | argparse.ArgumentParser | 2520 | `argparse.ArgumentParser(description='Run WorkChord MCP server')` |
+| main | parser.add_argument | 2521 | `parser.add_argument('--transport', choices=[...], default='stdio', help='MCP transport to run')` |
+| main | parser.parse_args | 2527 | `parser.parse_args(argv)` |
+| main | _load_stdio_agent_key | 2531 | `_load_stdio_agent_key(data not statically known)` |
 | _load_stdio_agent_key | os.getenv | 215 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
 | _load_stdio_agent_key | os.getenv | 217 | `os.getenv(MCP_AGENT_API_KEY_FILE_ENV)` |
 | _load_stdio_agent_key | read_agent_key_file | 220 | `read_agent_key_file(key_file)` |
@@ -235,8 +236,8 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| output | `print` | `main` | 2498 |
-| output | `print` | `main` | 2501 |
+| output | `print` | `main` | 2533 |
+| output | `print` | `main` | 2536 |
 | environment_read | `os.getenv` | `_load_stdio_agent_key` | 215 |
 | environment_read | `os.getenv` | `_load_stdio_agent_key` | 217 |
 | filesystem_read | `location.read_text` | `read_agent_key_file` | 43 |
@@ -245,9 +246,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `main` | `argparse.ArgumentParser` | 2485 |
-| unresolved_call | `main` | `parser.add_argument` | 2486 |
-| unresolved_call | `main` | `parser.parse_args` | 2492 |
+| external_call | `main` | `argparse.ArgumentParser` | 2520 |
+| unresolved_call | `main` | `parser.add_argument` | 2521 |
+| unresolved_call | `main` | `parser.parse_args` | 2527 |
 | unresolved_call | `read_agent_key_file` | `Path(path).expanduser` | 28 |
 | unresolved_call | `read_agent_key_file` | `location.stat` | 30 |
 | step_limit | `main` | `first 12 steps` | 0 |

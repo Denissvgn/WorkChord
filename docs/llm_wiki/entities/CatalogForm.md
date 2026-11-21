@@ -1,13 +1,13 @@
 # CatalogForm
 
-**Location:** `frontend/src/components/settings/AgentModelAdministration.tsx:39`
+**Location:** `frontend/src/components/team/AgentModelAdministration.tsx:41`
 **Kind:** Interface
 **Bases:** —
 **Module:** [AgentModelAdministration](../modules/AgentModelAdministration.md)
 
 ## Description
 
-_Auto-generated from `CatalogForm` in `frontend/src/components/settings/AgentModelAdministration.tsx`._
+_Auto-generated from `CatalogForm` in `frontend/src/components/team/AgentModelAdministration.tsx`._
 
 ## Attributes
 

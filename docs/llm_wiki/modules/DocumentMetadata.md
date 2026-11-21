@@ -28,17 +28,21 @@ _Auto-generated from `frontend/src/components/layout/DocumentMetadata.tsx`._
 flowchart LR
     n0["frontend/src/App.tsx"]
     n1["frontend/src/components/layout/AppShell.tsx"]
-    n2["frontend/src/components/layout/DocumentMetadata.tsx"]
-    n3["frontend/src/navigation/routeModules.ts"]
+    n2["frontend/src/components/layout/BareLayout.tsx"]
+    n3["frontend/src/components/layout/DocumentMetadata.tsx"]
+    n4["frontend/src/navigation/routeModules.ts"]
     n0 --> n1
     n0 --> n2
     n0 --> n3
-    n1 --> n2
+    n0 --> n4
+    n1 --> n3
     n2 --> n3
+    n3 --> n4
     click n0 "../modules/App.md"
     click n1 "../modules/AppShell.md"
-    click n2 "../modules/DocumentMetadata.md"
-    click n3 "../modules/routeModules.md"
+    click n2 "../modules/BareLayout.md"
+    click n3 "../modules/DocumentMetadata.md"
+    click n4 "../modules/routeModules.md"
 ```
 
 ### Internal neighbors
@@ -47,6 +51,7 @@ flowchart LR
 |---|---|
 | Inbound | [App](../modules/App.md) |
 | Inbound | [AppShell](../modules/AppShell.md) |
+| Inbound | [BareLayout](../modules/BareLayout.md) |
 | Outbound | [routeModules](../modules/routeModules.md) |
 
 ### External packages

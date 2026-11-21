@@ -1,6 +1,6 @@
 # AgentModelCatalogDisable
 
-**Location:** `backend/app/schemas/agent_routing.py:358`
+**Location:** `backend/app/schemas/agent_routing.py:360`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)

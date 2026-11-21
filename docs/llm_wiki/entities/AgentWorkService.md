@@ -1,6 +1,6 @@
 # AgentWorkService
 
-**Location:** `backend/app/services/agent_work_service.py:176`
+**Location:** `backend/app/services/agent_work_service.py:181`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_work_service](../modules/agent_work_service.md)
@@ -25,7 +25,9 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `_require_supervised_rollout` | `(rollout_service: AgentRoutingRolloutService)` | `@staticmethod` | Permit legacy/supervised dispatch only while enforcement is inactive. |
 | `_require_supervised_routing` | `()` | — | Preserve the explicit/static rollout guard for compatibility. |
 | `_require_supervised_routing_for_actor` | *(async)* `(actor: AgentActor)` | — | Require supervised mode using the actor's authoritative topology. |
-| `_require_team_dispatch_member` | *(async)* `(principal: AgentActor, target_actor_id: int) -> None` | — | — |
+| `_require_team_dispatch_member` | *(async)* `(principal: AgentActor, target_actor_id: int) -> AgentTeamMembershipBoundary \| None` | — | — |
+| `_require_dispatch_owners` | `(boundary: AgentTeamMembershipBoundary \| None, actor_ids: Iterable[int]) -> None` | `@staticmethod` | — |
+| `_advance_dispatch_queue` | `(principal: AgentActor, actor: AgentActor, boundary: AgentTeamMembershipBoundary \| None, *, scope: str = 'assignments:write') -> None` | — | Advance a locked team queue on behalf of its controller. |
 | `_audited_command_request` | `(data: Any, *, idempotency_key: str, rationale: str, correlation_id: str, exclude_unset: bool = False) -> tuple[AgentPlanningCommandContext, dict[str, Any]]` | `@staticmethod` | Validate PM audit metadata and bind it into the exact request hash. |
 | `_require_any_scope` | `(actor: AgentActor, *scopes: str) -> None` | `@staticmethod` | — |
 | `actor_response` | `(actor: AgentActor) -> AgentActorResponse` | `@staticmethod` | — |
@@ -35,6 +37,7 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `_record_routing_selection` | *(async)* `(*, assignment: AgentTaskAssignment, routing_validation: Any, principal: AgentActor, correlation_id: str, idempotency_key: str) -> None` | — | Stage bounded selection and governed escalation evidence. |
 | `_record_routing_stale_conflict` | *(async)* `(*, task: Task, principal: AgentActor, data: Any, conflict: Any, assignment_id: int \| None = None, correlation_id: str \| None = None) -> None` | — | Durably record a failed selection attempt without mutating work state. |
 | `_selection_pending` | `(assignment: AgentTaskAssignment) -> bool` | `@classmethod` | — |
+| `_supervised_recovery` | `(assignment: AgentTaskAssignment) -> bool` | `@classmethod` | — |
 | `_is_model_aware_assignment` | `(assignment: AgentTaskAssignment) -> bool` | `@classmethod` | — |
 | `_failure_category` | `(evidence: Any) -> str` | `@staticmethod` | Recognize only explicit governed model-failure evidence. |
 | `_routing_lineage_snapshot` | `(*, task: Task, source_assignments: Iterable[AgentTaskAssignment], transition: str, provisional_actor_id: int, reason: str, evidence: Any = None) -> dict[str, Any]` | `@classmethod` | Build bounded pending-selection evidence without copying opaque payloads. |
@@ -47,7 +50,7 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `_lock_actors` | *(async)* `(actor_ids: Iterable[int]) -> dict[int, AgentActor]` | — | Lock actor rows in primary-key order, refreshing identity-map state. |
 | `_lock_task_assignments` | *(async)* `(task_id: int, *, states: Optional[Iterable[str]] = None) -> list[AgentTaskAssignment]` | — | Lock a task's selected assignment rows in primary-key order. |
 | `_lock_task_runs` | *(async)* `(task_id: int, *, run_ids: Optional[Iterable[int]] = None, status: Optional[str] = None) -> list[AgentRun]` | — | Lock selected run rows last and in primary-key order. |
-| `_has_pending_recovery_signal` | *(async)* `(task_id: int) -> bool` | — | Return whether the latest agent lifecycle evidence still needs ownership. |
+| `_pending_recovery_signal` | *(async)* `(task_id: int) -> TaskEvent \| None` | — | Return the latest lifecycle event if it still requires ownership. |
 | `_validate_assignment_actor` | `(actor: AgentActor, purpose: str) -> None` | `@staticmethod` | Require authority before separate profile/model compatibility evidence. |
 | `_validate_assignment_context` | *(async)* `(task: Task, *, team_member_id: Optional[int], reviewer_profile_id: Optional[int]) -> None` | — | Validate optional capacity and reviewer references against live records. |
 | `list_assignments` | *(async)* `(principal: AgentActor, *, task_id: Optional[int] = None, actor_id: Optional[int] = None, purpose: Optional[str] = None, state: Optional[str] = None, limit: int = 200) -> list[AgentTaskAssignmentResponse]` | — | Return a secret-free durable assignment projection for restart-safe reads. |
@@ -77,6 +80,8 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `_current_recovery_codes` | *(async)* `(actor: AgentActor, accepted: list[AgentTaskAssignment], running: list[AgentRun], now: datetime) -> list[str]` | — | — |
 | `_validate_fence` | `(task: Task, actor: AgentActor, claim_id: str, claim_generation: int) -> None` | `@staticmethod` | — |
 | `_idempotent_replay` | *(async)* `(actor: AgentActor, operation: str, target_type: str, target_id: int, idempotency_key: Optional[str], request_payload: dict[str, Any]) -> Optional[dict[str, Any]]` | — | — |
+| `_record_work_links` | *(async)* `(task: Task, urls: list[str]) -> None` | — | Link the worker's GitHub branch, commits, and pull request to its task. |
+| `_submitted_github_links` | `(data: AgentWorkSubmit) -> list[str]` | `@staticmethod` | Return the submitted GitHub URLs to link, branch first, then commits, then the PR. |
 | `_live_fence_receipt` | `(response: AgentWorkBeginResponse) -> dict[str, Any]` | `@staticmethod` | Store an exact live response without retaining the plaintext claim secret. |
 | `_replay_live_fence_receipt` | *(async)* `(actor: AgentActor, payload: dict[str, Any]) -> AgentWorkBeginResponse` | — | Replay a fence receipt only while its original authority is still exact. |
 | `_require_current_execution_policy` | `(task)` | `@staticmethod` | — |
@@ -145,7 +150,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_work_service](../modules/agent_work_service.md) | 78 | — |
+| [agent_work_service](../modules/agent_work_service.md) | 83 | — |
 
 ### References
 
@@ -164,4 +169,4 @@ flowchart LR
 | `list_agent_recovery_tasks` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `list_my_claims` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 70 logical references; 58 omitted by the 12-row generated summary limit.
+> References: showing 12 of 72 logical references; 60 omitted by the 12-row generated summary limit.

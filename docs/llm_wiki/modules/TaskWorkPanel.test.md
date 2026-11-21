@@ -10,19 +10,20 @@ _Auto-generated from `frontend/src/components/tasks/TaskWorkPanel.test.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../i18n/i18n` | `i18n`, `ensureLanguageResources` | — | compiler-dependent |
 | `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
 | `../../types/task` | `Task` | Declaration | erased |
 | `./TaskWorkPanel` | `TaskWorkPanel` | — | compiler-dependent |
 | `./taskEditorContract` | `emptyTaskBrief` | — | compiler-dependent |
 | `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
+| `vitest` | `afterEach`, `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
 | Constants | `service`, `task` |
-| Module calls | `service = hoisted`, `mock`, `mock`, `describe`, `it`, `describe` |
+| Module calls | `service = hoisted`, `mock`, `mock`, `describe`, `it`, `describe`, `describe` |
 
 ## Local dependency map
 
@@ -34,19 +35,23 @@ flowchart LR
     n0["frontend/src/components/tasks/taskEditorContract.ts"]
     n1["frontend/src/components/tasks/TaskWorkPanel.test.tsx"]
     n2["frontend/src/components/tasks/TaskWorkPanel.tsx"]
-    n3["frontend/src/test/renderWithProviders.tsx"]
-    n4["frontend/src/types/task.ts"]
-    n0 --> n4
+    n3["frontend/src/i18n/i18n.ts"]
+    n4["frontend/src/test/renderWithProviders.tsx"]
+    n5["frontend/src/types/task.ts"]
+    n0 --> n5
     n1 --> n0
     n1 --> n2
     n1 --> n3
     n1 --> n4
-    n2 --> n4
+    n1 --> n5
+    n2 --> n5
+    n4 --> n3
     click n0 "../modules/taskEditorContract.md"
     click n1 "../modules/TaskWorkPanel.test.md"
     click n2 "../modules/TaskWorkPanel.md"
-    click n3 "../modules/renderWithProviders.md"
-    click n4 "../modules/types_task.md"
+    click n3 "../modules/i18n.md"
+    click n4 "../modules/renderWithProviders.md"
+    click n5 "../modules/types_task.md"
 ```
 
 ### Internal neighbors
@@ -55,6 +60,7 @@ flowchart LR
 |---|---|
 | Outbound | [taskEditorContract](../modules/taskEditorContract.md) |
 | Outbound | [TaskWorkPanel](../modules/TaskWorkPanel.md) |
+| Outbound | [i18n](../modules/i18n.md) |
 | Outbound | [renderWithProviders](../modules/renderWithProviders.md) |
 | Outbound | [types_task](../modules/types_task.md) |
 

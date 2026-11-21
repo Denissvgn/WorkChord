@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/settings/RuntimeConfigSettings.tsx
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../hooks/useAdminAccess` | `useCanReadSettings` | — | compiler-dependent |
 | `../../services/systemSettingsService` | `systemSettingsService` | — | compiler-dependent |
 | `../../types/systemSettings` | `AILanguageMode`, `AppRuntimeSettingsUpdate`, `GitHubRuntimeSettingsUpdate`, `LLMProvider`, `LLMRuntimeSettingsUpdate`, `RuntimeSettingSource`, `SystemSettings`, `WebIntakeRuntimeSettingsUpdate` | Declaration | erased |
@@ -31,8 +32,8 @@ _Auto-generated from `frontend/src/components/settings/RuntimeConfigSettings.tsx
 
 | Signal | Values |
 |--------|--------|
-| Exports | `RuntimeConfigSettings` |
-| Constants | `DEFAULT_LLM_ENDPOINTS`, `sourceClass` |
+| Exports | `RuntimeConfigPart`, `RuntimeConfigSettings` |
+| Constants | `ALL_PARTS`, `FORM_PARTS`, `DEFAULT_LLM_ENDPOINTS`, `sourceClass` |
 
 ## Local dependency map
 
@@ -55,7 +56,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (12) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -63,21 +64,22 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [LLMForm](../entities/LLMForm.md) | Interface | 27 | — | — |
-| [AppForm](../entities/AppForm.md) | Interface | 37 | — | — |
-| [GitHubForm](../entities/GitHubForm.md) | Interface | 41 | — | — |
-| [WebIntakeForm](../entities/WebIntakeForm.md) | Interface | 51 | — | — |
-| [RuntimeSection](../entities/RuntimeSection.md) | Type alias | 57 | `'llm' \| 'github' \| 'webIntake'` | — |
-| [RuntimeErrors](../entities/RuntimeErrors.md) | Type alias | 58 | `Record<string, string>` | — |
+| [LLMForm](../entities/LLMForm.md) | Interface | 28 | — | — |
+| [AppForm](../entities/AppForm.md) | Interface | 38 | — | — |
+| [GitHubForm](../entities/GitHubForm.md) | Interface | 42 | — | — |
+| [WebIntakeForm](../entities/WebIntakeForm.md) | Interface | 52 | — | — |
+| [RuntimeSection](../entities/RuntimeSection.md) | Type alias | 58 | `'llm' \| 'github' \| 'webIntake'` | — |
+| [RuntimeConfigPart](../entities/RuntimeConfigPart.md) | Type alias | 61 | `'aiLanguage' \| 'llm' \| 'github' \| 'webIntake' \| 'restart'` | The parts of the saved server configuration that one Settings section shows. |
+| [RuntimeErrors](../entities/RuntimeErrors.md) | Type alias | 65 | `Record<string, string>` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `RuntimeConfigSettings` | `()` | — | — |
+| `RuntimeConfigSettings` | `({ parts = ALL_PARTS }: { parts?: readonly RuntimeConfigPart[] })` | — | — |

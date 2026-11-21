@@ -1,6 +1,6 @@
 # ExternalLinkValidationError
 
-**Location:** `backend/app/services/external_link_service.py:26`
+**Location:** `backend/app/services/external_link_service.py:27`
 **Kind:** Class
 **Bases:** `ValueError`
 **Module:** [external_link_service](../modules/external_link_service.md)
@@ -60,7 +60,7 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `tasks` | import | [tasks](../modules/tasks.md) | — |
-| `ExternalLinkService.parse_github_url` | call | [external_link_service](../modules/external_link_service.md) | 4 |
+| `ExternalLinkService.parse_github_url` | call | [external_link_service](../modules/external_link_service.md) | 1 |
 | `ExternalLinkService.update` | call | [external_link_service](../modules/external_link_service.md) | 1 |
 | `GitHubStatusService._pr_metadata` | call | [github_status_service](../modules/github_status_service.md) | 2 |
 | `GitHubStatusService.refresh_pull_request_status` | call | [github_status_service](../modules/github_status_service.md) | 1 |

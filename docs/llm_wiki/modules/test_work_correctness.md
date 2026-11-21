@@ -84,7 +84,7 @@ flowchart LR
 | `test_preview_revision_rejects_apply_after_another_edit` | *(async)* `(delivery_store)` | — | — |
 | `test_snapshot_survives_new_session_and_restores_ids_in_place` | *(async)* `(delivery_store)` | — | — |
 | `test_project_iteration_and_portfolio_share_metric_definitions` | *(async)* `(delivery_store)` | — | — |
-| `test_late_start_does_not_overwrite_committed_baseline` | *(async)* `(delivery_store)` | — | — |
+| `test_late_start_does_not_overwrite_committed_baseline` | *(async)* `(delivery_store, monkeypatch)` | — | — |
 | `test_repair_is_dry_by_default_and_does_not_invent_acceptance` | *(async)* `(delivery_store)` | — | — |
 | `test_calendar_midnight_is_not_server_midnight` | `()` | — | — |
 | `test_two_http_writers_cannot_overwrite_the_same_revision` | *(async)* `(delivery_store)` | — | — |

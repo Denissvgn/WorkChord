@@ -61,9 +61,9 @@ sequenceDiagram
     participant p23 as AgentWorkService.assignment_response
     participant p24 as AgentWorkService.run_response
     participant p25 as actor_has_scope
-    participant p26 as AgentWorkService._selection_pending
-    participant p27 as evaluate_actor_authorization
-    participant p28 as AgentWorkService._resolve_rollout
+    participant p26 as evaluate_actor_authorization
+    participant p27 as AgentWorkService._resolve_rollout
+    participant p28 as AgentWorkService._supervised_recovery
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -91,16 +91,16 @@ sequenceDiagram
     p12->>p23: AgentWorkService.assignment_response
     p12->>p24: AgentWorkService.run_response
     p15->>p25: actor_has_scope
-    p22->>p26: AgentWorkService._selection_pending
-    p19->>p27: evaluate_actor_authorization
-    p22->>p28: AgentWorkService._resolve_rollout
+    p19->>p26: evaluate_actor_authorization
+    p22->>p27: AgentWorkService._resolve_rollout
+    p22->>p28: AgentWorkService._supervised_recovery
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 490 interactions; 460 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 495 interactions; 465 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 126 (125 omitted); unresolved 1 of 228 (227 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 126 (125 omitted); unresolved 1 of 231 (230 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -114,7 +114,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 146 groups; 138 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 148 groups; 140 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -127,9 +127,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 137; effect analysis evaluated: 94, partial: 3, unavailable: 40. Counts include steps omitted from the displayed trace.
+Source steps: 139; effect analysis evaluated: 96, partial: 3, unavailable: 40. Counts include steps omitted from the displayed trace.
 
-Collector observations for 97 source steps with known totals: observed: 474, emitted: 446, omitted: 28. Unavailable totals are excluded.
+Collector observations for 99 source steps with known totals: observed: 480, emitted: 451, omitted: 29. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -204,7 +204,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_get_my_reviews | _tool_call | 890 | `_tool_call((...), ...)` |
+| agent_get_my_reviews | _tool_call | 903 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

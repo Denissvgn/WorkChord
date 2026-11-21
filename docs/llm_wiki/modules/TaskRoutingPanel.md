@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/agent/TaskRoutingPanel.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../hooks/useAgentAccess` | `useAgentAccess` | — | compiler-dependent |
 | `../../services/agentService` | `agentService` | — | compiler-dependent |
 | `../../types/agent` | `AgentAssignmentPurpose`, `AgentRoutingCandidate`, `AgentTaskAssignment`, `AssessmentReasonCode`, `ModelContextTier`, `ModelReasoningTier`, `TaskDifficultyAxes`, `TaskDifficultyScore`, `TaskReviewMode`, `TaskRoutingAssessment`, `TaskRoutingAssessmentCommand`, `TaskSkillLevel` | Declaration | erased |
@@ -19,6 +20,7 @@ _Auto-generated from `frontend/src/components/agent/TaskRoutingPanel.tsx`._
 | `../../utils/modelRouting` | `ASSESSMENT_REASON_CODES`, `createAgentCommandMetadata`, `deriveDifficultyBand`, `formatRoutingCode`, `minimumReviewMode`, `MODEL_AWARE_ROUTING_FEATURE`, `parseRoutingTags`, `reviewModeMeets` | — | compiler-dependent |
 | `../../utils/protectedQueries` | `protectedQueryRetry` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/ButtonLink` | `ButtonLink` | — | compiler-dependent |
 | `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
 | `../common/Input` | `Input`, `RequiredIndicator` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
@@ -30,7 +32,6 @@ _Auto-generated from `frontend/src/components/agent/TaskRoutingPanel.tsx`._
 | `react` | `FormEvent` | Declaration | erased |
 | `react` | `useEffect`, `useMemo`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
-| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -61,22 +62,22 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (15) |
+| Outbound | `frontend` (17) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 5 | 0 |
+| typescript | 4 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskRoutingPanelProps](../entities/TaskRoutingPanelProps.md) | Interface | 55 | — | — |
-| [AssessmentDraft](../entities/AssessmentDraft.md) | Interface | 60 | — | — |
+| [TaskRoutingPanelProps](../entities/TaskRoutingPanelProps.md) | Interface | 56 | — | — |
+| [AssessmentDraft](../entities/AssessmentDraft.md) | Interface | 61 | — | — |
 
 ## Functions
 

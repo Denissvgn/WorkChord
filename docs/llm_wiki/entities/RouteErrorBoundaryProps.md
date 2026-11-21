@@ -1,6 +1,6 @@
 # RouteErrorBoundaryProps
 
-**Location:** `frontend/src/components/layout/RouteErrorBoundary.tsx:5`
+**Location:** `frontend/src/components/layout/RouteErrorBoundary.tsx:6`
 **Kind:** Interface
 **Bases:** —
 **Module:** [RouteErrorBoundary](../modules/RouteErrorBoundary.md)

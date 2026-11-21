@@ -1,7 +1,7 @@
 # AgentWorkService_begin
 
 **Entry point:** `agent_work_service.AgentWorkService.begin`
-**Modules involved:** [agent_routing_observability](../modules/agent_routing_observability.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [models_agent](../modules/models_agent.md), [schemas_agent](../modules/schemas_agent.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
+**Modules involved:** [agent_routing_observability](../modules/agent_routing_observability.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [models_agent](../modules/models_agent.md), [review_provenance](../modules/review_provenance.md), [schemas_agent](../modules/schemas_agent.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
 
 > Atomically accept, fence, claim, run, and activate selected work.
 
@@ -30,11 +30,14 @@
 20. `agent_service.AgentConflictError`
 21. `time.utc_now`
 22. `agent_service.AgentConflictError`
-23. `models_agent.AgentRun`
-24. `schemas_agent.declared_harness`
-25. `schemas_agent.declared_harness`
-26. `schemas_agent.AgentWorkBeginResponse`
-27. `commands.commit_or_flush`
+23. `review_provenance.different_publisher_required`
+24. `review_provenance.actor_provenance`
+25. `agent_routing_service.AgentRoutingConflictError`
+26. `models_agent.AgentRun`
+27. `schemas_agent.declared_harness`
+28. `schemas_agent.declared_harness`
+29. `schemas_agent.AgentWorkBeginResponse`
+30. `commands.commit_or_flush`
 
 ## Touches
 
@@ -44,10 +47,11 @@
 - [agent_work_service](../modules/agent_work_service.md)
 - [commands](../modules/commands.md)
 - [models_agent](../modules/models_agent.md)
+- [review_provenance](../modules/review_provenance.md)
 - [schemas_agent](../modules/schemas_agent.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
 ## Behavior
 
-This workflow starts at `agent_work_service.AgentWorkService.begin`. The generated sequence is a bounded static projection; runtime ordering, branching, and side effects require source-level confirmation.
+The worker presents the server-selected assignment and current queue revision. Begin rechecks task readiness and routing state, then creates the next claim generation and its run in one transaction. When the project requires different publishers for implementation and review, begin also requires a worker profile and an observed model that resolves to a publisher.

@@ -56,13 +56,13 @@ sequenceDiagram
     participant p18 as AgentWorkService._start_blockers
     participant p19 as AgentWorkService.assignment_response
     participant p20 as AgentWorkService.run_response
-    participant p21 as AgentWorkService._selection_pending
-    participant p22 as require_scope
-    participant p23 as evaluate_actor_authorization
-    participant p24 as AgentService.authenticate
+    participant p21 as require_scope
+    participant p22 as evaluate_actor_authorization
+    participant p23 as AgentService.authenticate
+    participant p24 as AgentWorkService._resolve_rollout
     participant p25 as require_identity_writes
-    participant p26 as AgentWorkService._resolve_rollout
-    participant p27 as AgentWorkService._is_model_aware_assignment
+    participant p26 as AgentWorkService._supervised_recovery
+    participant p27 as AgentWorkService._selection_pending
     participant p28 as DeliveryDependencyService.reconcile
     participant p29 as json.dumps (backend/app/mcp_server.py:_json_resource)
     participant p30 as result.model_dump
@@ -86,21 +86,21 @@ sequenceDiagram
     p8->>p18: AgentWorkService._start_blockers
     p8->>p19: AgentWorkService.assignment_response
     p8->>p20: AgentWorkService.run_response
-    p18->>p21: AgentWorkService._selection_pending
-    p15->>p22: require_scope
-    p16->>p23: evaluate_actor_authorization
-    p14->>p24: AgentService.authenticate
+    p15->>p21: require_scope
+    p16->>p22: evaluate_actor_authorization
+    p14->>p23: AgentService.authenticate
+    p18->>p24: AgentWorkService._resolve_rollout
     p17->>p25: require_identity_writes
-    p18->>p26: AgentWorkService._resolve_rollout
-    p18->>p27: AgentWorkService._is_model_aware_assignment
+    p18->>p26: AgentWorkService._supervised_recovery
+    p18->>p27: AgentWorkService._selection_pending
     p13->>p28: DeliveryDependencyService.reconcile
     p1-->>p29: json.dumps (backend/app/mcp_server.py:_json_resource)(value, ensure_ascii=False, default=str)
     p2-->>p30: result.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 453 interactions; 423 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 458 interactions; 428 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 124 (123 omitted); unresolved 1 of 204 (203 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 124 (123 omitted); unresolved 1 of 207 (206 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -114,7 +114,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 130 groups; 122 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 132 groups; 124 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -127,9 +127,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 126; effect analysis evaluated: 86, partial: 3, unavailable: 37. Counts include steps omitted from the displayed trace.
+Source steps: 128; effect analysis evaluated: 88, partial: 3, unavailable: 37. Counts include steps omitted from the displayed trace.
 
-Collector observations for 89 source steps with known totals: observed: 438, emitted: 410, omitted: 28. Unavailable totals are excluded.
+Collector observations for 91 source steps with known totals: observed: 444, emitted: 415, omitted: 29. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -205,7 +205,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_reviews_resource | _json_resource | 2267 | `_json_resource((...), ...)` |
+| agent_reviews_resource | _json_resource | 2302 | `_json_resource((...), ...)` |
 | _json_resource | _tool_call | 363 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

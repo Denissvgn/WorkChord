@@ -100,9 +100,9 @@ sequenceDiagram
     p1-->>p30: <dynamic>
 ```
 
-> Call sequence diagram shows 30 of 767 interactions; 737 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 772 interactions; 742 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 205 (204 omitted); unresolved 1 of 381 (380 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 205 (204 omitted); unresolved 1 of 384 (383 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -116,7 +116,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/commands.py:command_transaction` | 9 | - | external | 4 |
 | `backend/app/commands.py:command_transaction` | 9 | - | unresolved | 12 |
 | `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 21 | - | unresolved | 23 |
-> Omission summary shows 8 of 168 groups; 160 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 170 groups; 162 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -129,9 +129,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 182; effect analysis evaluated: 126, partial: 4, unavailable: 52. Counts include steps omitted from the displayed trace.
+Source steps: 184; effect analysis evaluated: 128, partial: 4, unavailable: 52. Counts include steps omitted from the displayed trace.
 
-Collector observations for 130 source steps with known totals: observed: 715, emitted: 674, omitted: 41. Unavailable totals are excluded.
+Collector observations for 132 source steps with known totals: observed: 722, emitted: 679, omitted: 43. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -225,18 +225,18 @@ flowchart LR
 | execute | <dynamic> | 28 | `<dynamic>(data not statically known)` |
 | execute | async_sessionmaker | 28 | `async_sessionmaker(engine, expire_on_commit=False)` |
 | execute | command_transaction | 29 | `command_transaction(db)` |
-| command_transaction | current_command | 87 | `current_command(db)` |
-| current_command | getattr (backend/app/commands.py:current_command) | 73 | `getattr(db, 'info', None)` |
-| current_command | isinstance (backend/app/commands.py:current_command) | 74 | `isinstance(info, dict)` |
+| command_transaction | current_command | 93 | `current_command(db)` |
+| current_command | getattr (backend/app/commands.py:current_command) | 79 | `getattr(db, 'info', None)` |
+| current_command | isinstance (backend/app/commands.py:current_command) | 80 | `isinstance(info, dict)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.info.pop` | `command_transaction` | 107 |
-| mutation | `db.info.pop` | `command_transaction` | 120 |
-| mutation | `db.info.pop` | `command_transaction` | 121 |
-| mutation | `db.info.pop` | `command_transaction` | 123 |
+| mutation | `db.info.pop` | `command_transaction` | 113 |
+| mutation | `db.info.pop` | `command_transaction` | 126 |
+| mutation | `db.info.pop` | `command_transaction` | 127 |
+| mutation | `db.info.pop` | `command_transaction` | 129 |
 
 ### Static analysis gaps
 
@@ -248,8 +248,8 @@ flowchart LR
 | external_call | `execute` | `create_async_engine` | 22 |
 | unresolved_call | `execute` | `<dynamic>` | 28 |
 | external_call | `execute` | `async_sessionmaker` | 28 |
-| external_call | `current_command` | `getattr` | 73 |
-| external_call | `current_command` | `isinstance` | 74 |
+| external_call | `current_command` | `getattr` | 79 |
+| external_call | `current_command` | `isinstance` | 80 |
 | step_limit | `__main__` | `first 12 steps` | 0 |
 | truncated_flow | `__main__` | `depth limit` | 0 |
 

@@ -12,6 +12,7 @@ Project reports expose work-date filters, own versus authorized manager totals, 
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` | — | compiler-dependent |
 | `../../features/timeEntries/useTimeEntries` | `useTimeEntries` | — | compiler-dependent |
 | `../../features/useLiveWindow` | `useLiveWindow` | — | compiler-dependent |
@@ -52,7 +53,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (10) |
+| Outbound | `frontend` (11) |
 
 ### External packages
 
@@ -60,7 +61,7 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

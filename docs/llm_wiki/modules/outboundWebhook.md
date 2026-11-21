@@ -21,17 +21,23 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 flowchart LR
     n0["frontend/src/components/settings/OutboundWebhooksPanel.test.tsx"]
     n1["frontend/src/components/settings/OutboundWebhooksPanel.tsx"]
-    n2["frontend/src/services/outboundWebhookService.ts"]
-    n3["frontend/src/types/outboundWebhook.ts"]
+    n2["frontend/src/pages/SettingsPage.labels.test.tsx"]
+    n3["frontend/src/pages/SettingsPage.readOnlyPanels.test.tsx"]
+    n4["frontend/src/services/outboundWebhookService.ts"]
+    n5["frontend/src/types/outboundWebhook.ts"]
     n0 --> n1
-    n0 --> n3
-    n1 --> n2
-    n1 --> n3
-    n2 --> n3
+    n0 --> n5
+    n1 --> n4
+    n1 --> n5
+    n2 --> n5
+    n3 --> n5
+    n4 --> n5
     click n0 "../modules/OutboundWebhooksPanel.test.md"
     click n1 "../modules/OutboundWebhooksPanel.md"
-    click n2 "../modules/outboundWebhookService.md"
-    click n3 "../modules/outboundWebhook.md"
+    click n2 "../modules/SettingsPage.labels.test.md"
+    click n3 "../modules/SettingsPage.readOnlyPanels.test.md"
+    click n4 "../modules/outboundWebhookService.md"
+    click n5 "../modules/outboundWebhook.md"
 ```
 
 ### Internal neighbors
@@ -40,6 +46,8 @@ flowchart LR
 |---|---|
 | Inbound | [OutboundWebhooksPanel.test](../modules/OutboundWebhooksPanel.test.md) |
 | Inbound | [OutboundWebhooksPanel](../modules/OutboundWebhooksPanel.md) |
+| Inbound | [SettingsPage.labels.test](../modules/SettingsPage.labels.test.md) |
+| Inbound | [SettingsPage.readOnlyPanels.test](../modules/SettingsPage.readOnlyPanels.test.md) |
 | Inbound | [outboundWebhookService](../modules/outboundWebhookService.md) |
 
 ## Classes

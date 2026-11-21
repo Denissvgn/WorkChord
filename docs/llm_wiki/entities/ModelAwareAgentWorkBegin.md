@@ -1,6 +1,6 @@
 # ModelAwareAgentWorkBegin
 
-**Location:** `backend/app/schemas/agent.py:975`
+**Location:** `backend/app/schemas/agent.py:1008`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -21,6 +21,7 @@ Atomically begin only the model binding selected by routing.
 |--------|-------|--------|------|---------|
 | `normalize_resolved_model_id` | field | resolved_model_id | after | — |
 | `validate_metadata_size` | field | metadata | after | — |
+| `validate_branch_url` | field | branch_url | after | — |
 
 ## Attributes
 
@@ -35,6 +36,7 @@ Atomically begin only the model binding selected by routing.
 | `trace_id` | `Optional[str]` | `trace_id` | No | Yes | `None` | max_length=255 | — | — |
 | `tool_name` | `Optional[str]` | `tool_name` | No | Yes | `None` | max_length=255 | — | — |
 | `metadata` | `dict[str, Any]` | `metadata` | No | No | factory: `dict` | max_length=unknown (MAX_AGENT_JSON_FIELDS) | — | — |
+| `branch_url` | `Optional[str]` | `branch_url` | No | Yes | `None` | max_length=1000 | — | GitHub branch URL of the work; WorkChord links it to the task. |
 
 ## Methods
 
@@ -42,6 +44,7 @@ Atomically begin only the model binding selected by routing.
 |--------|-----------|------------|-------------|
 | `normalize_resolved_model_id` | `(value: str) -> str` | `@field_validator('resolved_model_id')`, `@classmethod` | — |
 | `validate_metadata_size` | `(value: dict[str, Any]) -> dict[str, Any]` | `@field_validator('metadata')`, `@classmethod` | — |
+| `validate_branch_url` | `(value: Optional[str]) -> Optional[str]` | `@field_validator('branch_url')`, `@classmethod` | — |
 
 ## Relationships
 
@@ -60,6 +63,7 @@ flowchart LR
     n9["backend/tests/test_agent_skill_routing_guidance.py"]
     n10["test_model_aware_commands_own_selection_and_observed_model_fields (backend/tests/test_agent_work_routing_lineage.py)"]
     n11["begins (backend/tests/test_harness_session_metadata.py)"]
+    n12["test_begin_accepts_only_a_branch_url (backend/tests/test_work_delivery_links.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -71,6 +75,7 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
@@ -82,13 +87,14 @@ flowchart LR
     click n9 "../modules/test_agent_skill_routing_guidance.md"
     click n10 "../modules/test_agent_work_routing_lineage.md"
     click n11 "../modules/test_harness_session_metadata.md"
+    click n12 "../modules/test_work_delivery_links.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 2 | `assignment_id`, `lease_seconds`, `metadata`, `model_binding_id`, `model_binding_revision`, `queue_revision`, `resolved_model_id`, `tool_name`, `trace_id` |
+| [schemas_agent](../modules/schemas_agent.md) | 3 | `assignment_id`, `branch_url`, `lease_seconds`, `metadata`, `model_binding_id`, `model_binding_revision`, `queue_revision`, `resolved_model_id`, `tool_name`, `trace_id` |
 
 ### Structure
 
@@ -110,3 +116,4 @@ flowchart LR
 | `test_agent_skill_routing_guidance` | import | [test_agent_skill_routing_guidance](../modules/test_agent_skill_routing_guidance.md) | — |
 | `test_model_aware_commands_own_selection_and_observed_model_fields` | call | [test_agent_work_routing_lineage](../modules/test_agent_work_routing_lineage.md) | 1 |
 | `begins` | call | [test_harness_session_metadata](../modules/test_harness_session_metadata.md) | 1 |
+| `test_begin_accepts_only_a_branch_url` | call | [test_work_delivery_links](../modules/test_work_delivery_links.md) | 1 |

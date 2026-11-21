@@ -35,6 +35,7 @@ Agents start work whose dependencies are done, and the plan's dates follow what 
 flowchart LR
     n0["backend"]
     n1["backend/tests/test_schedule_follows_actual_dates.py"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/test_schedule_follows_actual_dates.md"
 ```
@@ -45,6 +46,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
+| Inbound | `backend` (1) |
 | Outbound | `backend` (14) |
 
 ### External packages
@@ -53,7 +55,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

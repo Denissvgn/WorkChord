@@ -30,7 +30,7 @@ Agent integration API router.
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
 | `app.services.agent_routing_service` | `AgentRoutingConflictError`, `AgentRoutingService` |
 | `app.services.agent_run_read_service` | `AgentRunReadService` |
-| `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `AgentService`, `actor_has_scope`, `actor_scopes`, `require_scope` |
+| `app.services.agent_service` | `ADMIN_KEY_PRINCIPAL_NAME`, `AgentConflictError`, `AgentPermissionError`, `AgentService`, `actor_has_scope`, `actor_scopes`, `require_scope` |
 | `app.services.agent_skill_bundle_service` | `AgentSkillBundleService`, `SkillBundleArtifactError` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupConflictError`, `AgentTeamSetupService` |
 | `app.services.agent_work_service` | `AgentWorkService` |

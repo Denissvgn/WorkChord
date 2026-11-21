@@ -10,6 +10,8 @@ The plan page and the PM role skill use these ids, in this order. Each
 checkpoint is ``done``, ``warn`` (usable but needs attention), ``todo`` (the
 next thing to do), or ``blocked`` (an earlier checkpoint must be done first).
 
+When the selected work calendar does not cover the iteration, the iteration checkpoint returns a warning with the reason calendar_outside_year. Plan can open calendar settings while the other checkpoints retain their own states.
+
 ## Imports
 
 | Source | Symbols |
@@ -43,4 +45,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `plan_checkpoints` | `(*, team_member_count: int, team_members_no_capacity: int, task_count: int, tasks_without_assignee: int, tasks_without_effort: int, has_schedule: bool, tasks_agent_without_capacity: int = 0, risk_count: int) -> list[dict[str, Any]]` | — | Return the ordered checkpoints for one existing planning period. |
+| `plan_checkpoints` | `(*, team_member_count: int, team_members_no_capacity: int, task_count: int, tasks_without_assignee: int, tasks_without_effort: int, has_schedule: bool, tasks_agent_without_capacity: int = 0, risk_count: int, calendar_covers_iteration: bool = True) -> list[dict[str, Any]]` | — | Return the ordered checkpoints for one existing planning period. |

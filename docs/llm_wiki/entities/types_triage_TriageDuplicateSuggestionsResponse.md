@@ -27,12 +27,12 @@ _Auto-generated from `TriageDuplicateSuggestionsResponse` in `frontend/src/types
 ```mermaid
 flowchart LR
     n0["TriageDuplicateSuggestionsResponse (frontend/src/types/triage.ts)"]
-    n1["frontend/src/pages/TriagePage.tsx"]
+    n1["frontend/src/components/triage/TriageSuggestions.tsx"]
     n2["frontend/src/services/triageService.ts"]
     n1 --> n0
     n2 --> n0
     click n0 "../modules/types_triage.md"
-    click n1 "../modules/TriagePage.md"
+    click n1 "../modules/TriageSuggestions.md"
     click n2 "../modules/triageService.md"
 ```
 
@@ -46,5 +46,5 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `TriagePage` | import | [TriagePage](../modules/TriagePage.md) | — |
+| `TriageSuggestions` | import | [TriageSuggestions](../modules/TriageSuggestions.md) | — |
 | `triageService` | import | [triageService](../modules/triageService.md) | — |

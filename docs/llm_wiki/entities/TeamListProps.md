@@ -1,19 +1,20 @@
 # TeamListProps
 
-**Location:** `frontend/src/components/team/TeamList.tsx:18`
+**Location:** `frontend/src/components/capacity/TeamList.tsx:20`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TeamList](../modules/TeamList.md)
 
 ## Description
 
-_Auto-generated from `TeamListProps` in `frontend/src/components/team/TeamList.tsx`._
+_Auto-generated from `TeamListProps` in `frontend/src/components/capacity/TeamList.tsx`._
 
 ## Attributes
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `iterationId` | `number` | Yes | — | — |
+| `layout` | `'cards' \| 'table'` | No | — | — |
 | `onEdit` | `(member: TeamMember) => void` | Yes | — | — |
 
 ## Methods
@@ -25,8 +26,8 @@ _Auto-generated from `TeamListProps` in `frontend/src/components/team/TeamList.t
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["TeamListProps (frontend/src/components/team/TeamList.tsx)"]
-    n1["TeamList (frontend/src/components/team/TeamList.tsx)"]
+    n0["TeamListProps (frontend/src/components/capacity/TeamList.tsx)"]
+    n1["TeamList (frontend/src/components/capacity/TeamList.tsx)"]
     n1 --> n0
     click n0 "../modules/TeamList.md"
     click n1 "../modules/TeamList.md"
@@ -36,7 +37,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TeamList](../modules/TeamList.md) | 0 | `iterationId`, `onEdit` |
+| [TeamList](../modules/TeamList.md) | 0 | `iterationId`, `layout`, `onEdit` |
 
 ### References
 

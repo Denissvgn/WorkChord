@@ -12,6 +12,7 @@ _Auto-generated from `frontend/src/components/settings/AgentTeamStepList.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Button` | `Button` | — | compiler-dependent |
 | `../../features/agentTeamSetup/masters` | `AgentTeamStepId` | Declaration | erased |
 | `../../features/agentTeamSetup/masters` | `AGENT_TEAM_STEP_DEFINITIONS`, `stateTone` | — | compiler-dependent |
 | `../../features/agentTeamSetup/useAgentTeamReadiness` | `useAgentTeamReadiness` | Declaration | erased |
@@ -33,27 +34,32 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/settings/AgentTeamStepList.tsx"]
-    n1["frontend/src/features/agentTeamSetup/masters.ts"]
-    n2["frontend/src/features/agentTeamSetup/useAgentTeamReadiness.ts"]
-    n3["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
-    n0 --> n1
-    n0 --> n2
+    n0["frontend/src/components/common/Button.tsx"]
+    n1["frontend/src/components/settings/AgentTeamStepList.tsx"]
+    n2["frontend/src/components/team/AgentManifestWorkflow.tsx"]
+    n3["frontend/src/features/agentTeamSetup/masters.ts"]
+    n4["frontend/src/features/agentTeamSetup/useAgentTeamReadiness.ts"]
+    n1 --> n0
+    n1 --> n3
+    n1 --> n4
+    n2 --> n0
     n2 --> n1
-    n3 --> n0
-    n3 --> n1
-    n3 --> n2
-    click n0 "../modules/AgentTeamStepList.md"
-    click n1 "../modules/agentTeamSetup_masters.md"
-    click n2 "../modules/useAgentTeamReadiness.md"
-    click n3 "../modules/AgentTeamSetupMasterPage.md"
+    n2 --> n3
+    n2 --> n4
+    n4 --> n3
+    click n0 "../modules/Button.md"
+    click n1 "../modules/AgentTeamStepList.md"
+    click n2 "../modules/AgentManifestWorkflow.md"
+    click n3 "../modules/agentTeamSetup_masters.md"
+    click n4 "../modules/useAgentTeamReadiness.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) |
+| Inbound | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) |
+| Outbound | [Button](../modules/Button.md) |
 | Outbound | [agentTeamSetup_masters](../modules/agentTeamSetup_masters.md) |
 | Outbound | [useAgentTeamReadiness](../modules/useAgentTeamReadiness.md) |
 
@@ -67,7 +73,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [AgentTeamStepScope](../entities/AgentTeamStepScope.md) | Type alias | 6 | `'authority' \| 'topology' \| 'runtime'` | — |
+| [AgentTeamStepScope](../entities/AgentTeamStepScope.md) | Type alias | 7 | `'authority' \| 'topology' \| 'runtime'` | — |
 
 ## Functions
 

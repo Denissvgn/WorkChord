@@ -12,6 +12,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskContextSummary.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/scope/useScopeLink` | `useScopeLink` | — | compiler-dependent |
 | `../../services/taskService` | `taskService` | — | compiler-dependent |
 | `../../types/task` | `TaskDetail` | Declaration | erased |
 | `../common/Button` | `Button` | — | compiler-dependent |
@@ -38,23 +39,27 @@ flowchart LR
     n1["frontend/src/components/feedback/QueryState.tsx"]
     n2["frontend/src/components/tasks/TaskContextSummary.tsx"]
     n3["frontend/src/components/tasks/TaskEditorDrawer.tsx"]
-    n4["frontend/src/services/taskService.ts"]
-    n5["frontend/src/types/task.ts"]
+    n4["frontend/src/features/scope/useScopeLink.ts"]
+    n5["frontend/src/services/taskService.ts"]
+    n6["frontend/src/types/task.ts"]
     n1 --> n0
     n2 --> n0
     n2 --> n1
     n2 --> n4
     n2 --> n5
+    n2 --> n6
     n3 --> n0
     n3 --> n2
-    n3 --> n5
-    n4 --> n5
+    n3 --> n4
+    n3 --> n6
+    n5 --> n6
     click n0 "../modules/Button.md"
     click n1 "../modules/QueryState.md"
     click n2 "../modules/TaskContextSummary.md"
     click n3 "../modules/TaskEditorDrawer.md"
-    click n4 "../modules/taskService.md"
-    click n5 "../modules/types_task.md"
+    click n4 "../modules/useScopeLink.md"
+    click n5 "../modules/taskService.md"
+    click n6 "../modules/types_task.md"
 ```
 
 ### Internal neighbors
@@ -64,6 +69,7 @@ flowchart LR
 | Inbound | [TaskEditorDrawer](../modules/TaskEditorDrawer.md) |
 | Outbound | [Button](../modules/Button.md) |
 | Outbound | [QueryState](../modules/QueryState.md) |
+| Outbound | [useScopeLink](../modules/useScopeLink.md) |
 | Outbound | [taskService](../modules/taskService.md) |
 | Outbound | [types_task](../modules/types_task.md) |
 

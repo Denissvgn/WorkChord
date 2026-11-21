@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/components/UserSessionBadge.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `../features/identity/IdentityProvider` | `IdentityBadge` | — | compiler-dependent |
+| `../features/identity/AccountMenu` | `IdentityBadge` | — | compiler-dependent |
 | `../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
 | `../services/sessionService` | `UserSession` | Specifier | compiler-dependent |
 | `../services/sessionService` | `sessionService` | — | compiler-dependent |
@@ -34,20 +34,20 @@ flowchart LR
     n0["frontend/src/components/layout/AppTopNav.tsx"]
     n1["frontend/src/components/UserSessionBadge.test.tsx"]
     n2["frontend/src/components/UserSessionBadge.tsx"]
-    n3["frontend/src/features/identity/identityContext.ts"]
-    n4["frontend/src/features/identity/IdentityProvider.tsx"]
+    n3["frontend/src/features/identity/AccountMenu.tsx"]
+    n4["frontend/src/features/identity/identityContext.ts"]
     n5["frontend/src/services/sessionService.ts"]
     n0 --> n2
     n1 --> n2
     n2 --> n3
     n2 --> n4
     n2 --> n5
-    n4 --> n3
+    n3 --> n4
     click n0 "../modules/AppTopNav.md"
     click n1 "../modules/UserSessionBadge.test.md"
     click n2 "../modules/UserSessionBadge.md"
-    click n3 "../modules/identityContext.md"
-    click n4 "../modules/IdentityProvider.md"
+    click n3 "../modules/AccountMenu.md"
+    click n4 "../modules/identityContext.md"
     click n5 "../modules/sessionService.md"
 ```
 
@@ -57,8 +57,8 @@ flowchart LR
 |---|---|
 | Inbound | [AppTopNav](../modules/AppTopNav.md) |
 | Inbound | [UserSessionBadge.test](../modules/UserSessionBadge.test.md) |
+| Outbound | [AccountMenu](../modules/AccountMenu.md) |
 | Outbound | [identityContext](../modules/identityContext.md) |
-| Outbound | [IdentityProvider](../modules/IdentityProvider.md) |
 | Outbound | [sessionService](../modules/sessionService.md) |
 
 ### External packages

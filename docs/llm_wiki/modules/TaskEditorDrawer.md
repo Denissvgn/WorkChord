@@ -12,6 +12,7 @@ In direct mode the drawer opens `TaskReadView` (Brief, Work & review, Activity) 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
+| `../../features/scope/useScopeLink` | `useScopeLink` | — | compiler-dependent |
 | `../../types/task` | `Task`, `TaskUpdate` | Declaration | erased |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../ui/SlideOverDrawer` | `SlideOverDrawer` | — | compiler-dependent |
@@ -54,8 +55,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (5) |
-| Outbound | `frontend` (10) |
+| Inbound | `frontend` (7) |
+| Outbound | `frontend` (11) |
 
 ### External packages
 
@@ -63,16 +64,16 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DrawerCopy](../entities/DrawerCopy.md) | Type alias | 18 | `ReactNode \| ((task: Task \| null) => ReactNode)` | — |
+| [DrawerCopy](../entities/DrawerCopy.md) | Type alias | 19 | `ReactNode \| ((task: Task \| null) => ReactNode)` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskEditorDrawer` | <pre><code>&#40;&#123;&#10;    taskId&#44;&#10;    iterationId&#44;&#10;    open&#44;&#10;    onClose&#44;&#10;    mode &#61; &#39;direct&#39;&#44;&#10;    prepareTask&#44;&#10;    onSaveSandbox&#44;&#10;    title&#44;&#10;    subtitle&#44;&#10;    icon&#44;&#10;    beforeForm&#44;&#10;    className&#44;&#10;    restoreFocusRef&#44;&#10;&#125;&#58; &#123;&#10;    taskId&#58; number &#124; null&#59;&#10;    iterationId&#63;&#58; number&#59;&#10;    open&#58; boolean&#59;&#10;    onClose&#58; &#40;&#41; &#61;&#62; void&#59;&#10;    mode&#63;&#58; &#39;direct&#39; &#124; &#39;sandbox&#39;&#59;&#10;    prepareTask&#63;&#58; &#40;task&#58; Task&#41; &#61;&#62; Task&#59;&#10;    onSaveSandbox&#63;&#58; &#40;update&#58; TaskUpdate&#41; &#61;&#62; void&#59;&#10;    title&#63;&#58; DrawerCopy&#59;&#10;    subtitle&#63;&#58; DrawerCopy&#59;&#10;    icon&#63;&#58; ReactNode&#59;&#10;    beforeForm&#63;&#58; ReactNode&#59;&#10;    className&#63;&#58; string&#59;&#10;    restoreFocusRef&#63;&#58; RefObject&#60;HTMLElement &#124; null&#62;&#59;&#10;&#125;&#41;</code></pre> | — | — |
+| `TaskEditorDrawer` | <pre><code>&#40;&#123;&#10;    taskId&#44;&#10;    iterationId&#44;&#10;    open&#44;&#10;    onClose&#44;&#10;    mode &#61; &#39;direct&#39;&#44;&#10;    prepareTask&#44;&#10;    onSaveSandbox&#44;&#10;    title&#44;&#10;    subtitle&#44;&#10;    icon&#44;&#10;    beforeForm&#44;&#10;    className&#44;&#10;    restoreFocusRef&#44;&#10;&#125;&#58; &#123;&#10;    taskId&#58; number &#124; null&#59;&#10;    iterationId&#63;&#58; number&#59;&#10;    open&#58; boolean&#59;&#10;    onClose&#58; &#40;&#41; &#61;&#62; void&#59;&#10;    mode&#63;&#58; &#39;direct&#39; &#124; &#39;sandbox&#39;&#59;&#10;    prepareTask&#63;&#58; &#40;task&#58; Task&#41; &#61;&#62; Task&#59;&#10;    onSaveSandbox&#63;&#58; &#40;update&#58; TaskUpdate&#41; &#61;&#62; void&#59;&#10;    title&#63;&#58; DrawerCopy&#59;&#10;    subtitle&#63;&#58; DrawerCopy&#59;&#10;    icon&#63;&#58; ReactNode&#59;&#10;    beforeForm&#63;&#58; DrawerCopy&#59;&#10;    className&#63;&#58; string&#59;&#10;    restoreFocusRef&#63;&#58; RefObject&#60;HTMLElement &#124; null&#62;&#59;&#10;&#125;&#41;</code></pre> | — | — |

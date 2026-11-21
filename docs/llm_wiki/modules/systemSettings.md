@@ -23,26 +23,32 @@ flowchart LR
     n1["frontend/src/components/settings/InterfaceLanguageSettings.tsx"]
     n2["frontend/src/components/settings/RuntimeConfigSettings.test.tsx"]
     n3["frontend/src/components/settings/RuntimeConfigSettings.tsx"]
-    n4["frontend/src/services/systemSettingsService.ts"]
-    n5["frontend/src/types/emailSettings.ts"]
-    n6["frontend/src/types/systemSettings.ts"]
-    n0 --> n5
-    n0 --> n6
-    n1 --> n4
+    n4["frontend/src/pages/SettingsPage.labels.test.tsx"]
+    n5["frontend/src/pages/SettingsPage.readOnlyPanels.test.tsx"]
+    n6["frontend/src/services/systemSettingsService.ts"]
+    n7["frontend/src/types/emailSettings.ts"]
+    n8["frontend/src/types/systemSettings.ts"]
+    n0 --> n7
+    n0 --> n8
     n1 --> n6
+    n1 --> n8
     n2 --> n3
-    n2 --> n6
-    n3 --> n4
+    n2 --> n8
     n3 --> n6
-    n4 --> n6
-    n5 --> n6
+    n3 --> n8
+    n4 --> n8
+    n5 --> n8
+    n6 --> n8
+    n7 --> n8
     click n0 "../modules/EmailSettingsPanel.md"
     click n1 "../modules/InterfaceLanguageSettings.md"
     click n2 "../modules/RuntimeConfigSettings.test.md"
     click n3 "../modules/RuntimeConfigSettings.md"
-    click n4 "../modules/systemSettingsService.md"
-    click n5 "../modules/emailSettings.md"
-    click n6 "../modules/systemSettings.md"
+    click n4 "../modules/SettingsPage.labels.test.md"
+    click n5 "../modules/SettingsPage.readOnlyPanels.test.md"
+    click n6 "../modules/systemSettingsService.md"
+    click n7 "../modules/emailSettings.md"
+    click n8 "../modules/systemSettings.md"
 ```
 
 ### Internal neighbors
@@ -53,6 +59,8 @@ flowchart LR
 | Inbound | [InterfaceLanguageSettings](../modules/InterfaceLanguageSettings.md) |
 | Inbound | [RuntimeConfigSettings.test](../modules/RuntimeConfigSettings.test.md) |
 | Inbound | [RuntimeConfigSettings](../modules/RuntimeConfigSettings.md) |
+| Inbound | [SettingsPage.labels.test](../modules/SettingsPage.labels.test.md) |
+| Inbound | [SettingsPage.readOnlyPanels.test](../modules/SettingsPage.readOnlyPanels.test.md) |
 | Inbound | [systemSettingsService](../modules/systemSettingsService.md) |
 | Inbound | [emailSettings](../modules/emailSettings.md) |
 

@@ -10,25 +10,33 @@ _Auto-generated from `frontend/src/store/iterationStore.ts`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `zustand` | `create` | — | compiler-dependent |
-| `zustand/middleware` | `persist` | — | compiler-dependent |
+| `../features/scope/scopeStore` | `RememberedScope` | Specifier | compiler-dependent |
+| `../features/scope/scopeStore` | `useScopeStore` | — | compiler-dependent |
+| `../features/scope/workScope` | `ScopeIterationRecord` | Specifier | compiler-dependent |
+| `../features/scope/workScope` | `resolveWorkScope` | — | compiler-dependent |
+| `../navigation/scopeParams` | `parseScope` | — | compiler-dependent |
+| `react` | `useMemo` | — | compiler-dependent |
+| `react-router-dom` | `useLocation` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
-| Exports | `pickDefaultIteration`, `useIterationStore` |
+| Exports | `useIterationStore` |
 | Constants | `useIterationStore` |
-| Module calls | `useIterationStore = create<IterationStore>()` |
+| Module calls | `useIterationStore = assign` |
 
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
     n1["frontend/src/store/iterationStore.ts"]
     n0 --> n1
+    n1 --> n0
     click n1 "../modules/iterationStore.md"
 ```
 
@@ -38,25 +46,19 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (15) |
+| Inbound | `frontend` (11) |
+| Outbound | `frontend` (3) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 1 | 0 |
+| typescript | 2 | 0 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [IterationStore](../entities/IterationStore.md) | Interface | 4 | — | — |
-| [DatedIteration](../entities/DatedIteration.md) | Type alias | 21 | `{ id: number; start_date: string; end_date: string }` | — |
-
-## Functions
-
-| Function | Signature | Decorators | Description |
-|----------|-----------|------------|-------------|
-| `pickDefaultIteration` | `<T extends DatedIteration>(iterations: readonly T[], today: string = new Date().toISOString().slice(0, 10)) -> T \| undefined` | — | The one rule every page uses when no valid iteration is selected: the |
+| [IterationStore](../entities/IterationStore.md) | Interface | 13 | — | The iteration-only view of the work scope, for pages that still set the iteration with |

@@ -214,7 +214,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workchord_worker_role | _skill_bundle_prompt | 2387 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended worker skill version, then read workchord://skill-bundles/workchord-worker/{version}/SKILL.md. Follow that skill, call workchord://agent/me/work, and execute only the exact server-selected assignment.')` |
+| workchord_worker_role | _skill_bundle_prompt | 2422 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended worker skill version, then read workchord://skill-bundles/workchord-worker/{version}/SKILL.md. Follow that skill, call workchord://agent/me/work, and execute only the exact server-selected assignment.')` |
 | _skill_bundle_prompt | _agent_context | 369 | `_agent_context(_skill_bundle_scope_requirement(...))` |
 | _agent_context | _current_agent_key | 278 | `_current_agent_key(data not statically known)` |
 | _current_agent_key | _http_agent_key.get | 205 | `_http_agent_key.get(data not statically known)` |
@@ -224,17 +224,17 @@ flowchart LR
 | _open_db_session | _session_factory | 186 | `_session_factory(data not statically known)` |
 | _open_db_session | hasattr | 187 | `hasattr(session_context, '__aenter__')` |
 | _agent_context | command_transaction | 282 | `command_transaction(db, mode=...)` |
-| command_transaction | current_command | 87 | `current_command(db)` |
+| command_transaction | current_command | 93 | `current_command(db)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
 | environment_read | `os.getenv` | `_current_agent_key` | 205 |
-| mutation | `db.info.pop` | `command_transaction` | 107 |
-| mutation | `db.info.pop` | `command_transaction` | 120 |
-| mutation | `db.info.pop` | `command_transaction` | 121 |
-| mutation | `db.info.pop` | `command_transaction` | 123 |
+| mutation | `db.info.pop` | `command_transaction` | 113 |
+| mutation | `db.info.pop` | `command_transaction` | 126 |
+| mutation | `db.info.pop` | `command_transaction` | 127 |
+| mutation | `db.info.pop` | `command_transaction` | 129 |
 
 ### Static analysis gaps
 

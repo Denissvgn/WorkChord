@@ -1,6 +1,6 @@
 # EventOption
 
-**Location:** `frontend/src/components/settings/OutboundWebhooksPanel.tsx:55`
+**Location:** `frontend/src/components/settings/OutboundWebhooksPanel.tsx:59`
 **Kind:** Interface
 **Bases:** —
 **Module:** [OutboundWebhooksPanel](../modules/OutboundWebhooksPanel.md)

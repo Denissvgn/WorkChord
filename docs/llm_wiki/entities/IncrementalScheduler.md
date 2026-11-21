@@ -1,6 +1,6 @@
 # IncrementalScheduler
 
-**Location:** `backend/app/services/scheduler_service.py:1497`
+**Location:** `backend/app/services/scheduler_service.py:1273`
 **Kind:** Class
 **Bases:** —
 **Module:** [scheduler_service](../modules/scheduler_service.md)
@@ -39,9 +39,12 @@ Performance: O(A) instead of O(N), typically 10x faster for single-task changes.
 flowchart LR
     n0["IncrementalScheduler (backend/app/services/scheduler_service.py)"]
     n1["test_incremental_schedule_excludes_inherited_deferred_work (backend/tests/test_planning_read_models.py)"]
+    n2["test_unstarted_work_starts_no_earlier_than_workspace_today (backend/tests/test_schedule_working_date.py)"]
     n1 --> n0
+    n2 --> n0
     click n0 "../modules/scheduler_service.md"
     click n1 "../modules/test_planning_read_models.md"
+    click n2 "../modules/test_schedule_working_date.md"
 ```
 
 ### Summary
@@ -55,3 +58,4 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `test_incremental_schedule_excludes_inherited_deferred_work` | call | [test_planning_read_models](../modules/test_planning_read_models.md) | 1 |
+| `test_unstarted_work_starts_no_earlier_than_workspace_today` | call | [test_schedule_working_date](../modules/test_schedule_working_date.md) | 1 |

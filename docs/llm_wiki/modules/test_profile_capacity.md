@@ -28,7 +28,7 @@ Shared person capacity, calendar arithmetic and private availability boundaries.
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.team_service` | `TeamService` |
 | `asyncio` | `asyncio`, `asyncio` |
-| `datetime` | `date` |
+| `datetime` | `UTC`, `date`, `datetime` |
 | `pydantic` | `ValidationError` |
 | `pytest` | `pytest` |
 | `pytest_asyncio` | `pytest_asyncio` |
@@ -82,7 +82,7 @@ flowchart LR
 | `test_short_workday_and_overflow_are_reserved_for_the_person` | `()` | — | — |
 | `test_schedule_preview_is_pure_and_rejects_changed_shared_inputs` | *(async)* `(db_session)` | `@pytest.mark.asyncio` | — |
 | `test_overallocated_person_can_preview_but_cannot_commit` | *(async)* `(db_session)` | `@pytest.mark.asyncio` | — |
-| `test_two_planners_cannot_commit_the_same_shared_revision` | *(async)* `(db_session)` | `@pytest.mark.asyncio` | — |
+| `test_two_planners_cannot_commit_the_same_shared_revision` | *(async)* `(db_session, monkeypatch)` | `@pytest.mark.asyncio` | — |
 | `test_iteration_restore_preserves_current_shared_absence` | *(async)* `(db_session)` | `@pytest.mark.asyncio` | — |
 | `test_reassigning_allocation_does_not_transfer_private_absence` | *(async)* `(db_session)` | `@pytest.mark.asyncio` | — |
 | `test_person_calendar_cannot_be_deleted_while_selected` | *(async)* `(db_session)` | `@pytest.mark.asyncio` | — |

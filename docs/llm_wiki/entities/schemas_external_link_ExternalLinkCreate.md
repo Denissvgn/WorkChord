@@ -35,16 +35,19 @@ flowchart LR
     n1["ExternalLinkFields (backend/app/schemas/external_link.py)"]
     n2["backend/app/schemas/__init__.py"]
     n3["ExternalLinkService.create (backend/app/services/external_link_service.py)"]
-    n4["ExternalLinkService.create_task_link (backend/app/services/external_link_service.py)"]
+    n4["ExternalLinkService.create_release_github_link (backend/app/services/external_link_service.py)"]
+    n5["ExternalLinkService.create_task_link (backend/app/services/external_link_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/schemas_external_link.md"
     click n1 "../modules/schemas_external_link.md"
     click n2 "../modules/schemas___init__.md"
     click n3 "../modules/external_link_service.md"
     click n4 "../modules/external_link_service.md"
+    click n5 "../modules/external_link_service.md"
 ```
 
 ### Summary
@@ -65,5 +68,6 @@ flowchart LR
 |---|---|---|---:|
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `ExternalLinkService.create` | type_reference | [external_link_service](../modules/external_link_service.md) | — |
+| `ExternalLinkService.create_release_github_link` | call | [external_link_service](../modules/external_link_service.md) | 1 |
 | `ExternalLinkService.create_task_link` | call | [external_link_service](../modules/external_link_service.md) | 1 |
 | `ExternalLinkService.create_task_link` | type_reference | [external_link_service](../modules/external_link_service.md) | — |

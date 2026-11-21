@@ -15,7 +15,7 @@ _Auto-generated from `frontend/src/components/gantt/GanttChart.test.tsx`._
 | `../../types/gantt` | `GanttTask`, `SchedulePreviewResponse`, `ScheduleResult` | Declaration | erased |
 | `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
 | `./GanttChart` | `GanttChart` | — | compiler-dependent |
-| `@testing-library/react` | `fireEvent`, `screen`, `waitFor` | — | compiler-dependent |
+| `@testing-library/react` | `fireEvent`, `screen`, `within` | — | compiler-dependent |
 | `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
@@ -23,7 +23,7 @@ _Auto-generated from `frontend/src/components/gantt/GanttChart.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `ganttServiceMock`, `teamServiceMock`, `taskFixture`, `scheduleResult`, `previewFixture` |
-| Module calls | `ganttServiceMock = hoisted`, `mock`, `mock`, `mock`, `teamServiceMock = hoisted`, `mock`, `describe`, `describe`, `describe`, `describe`, `describe`, `describe`, `describe`, `describe`, `describe` |
+| Module calls | `ganttServiceMock = hoisted`, `mock`, `mock`, `mock`, `teamServiceMock = hoisted`, `mock`, `describe`, `describe`, `describe`, `describe`, `describe`, `describe`, `describe`, `describe` |
 
 ## Local dependency map
 

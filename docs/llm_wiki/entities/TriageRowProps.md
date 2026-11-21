@@ -1,13 +1,13 @@
 # TriageRowProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1626`
+**Location:** `frontend/src/components/triage/TriageRow.tsx:12`
 **Kind:** Interface
 **Bases:** —
-**Module:** [TriagePage](../modules/TriagePage.md)
+**Module:** [TriageRow](../modules/TriageRow.md)
 
 ## Description
 
-_Auto-generated from `TriageRowProps` in `frontend/src/pages/TriagePage.tsx`._
+_Auto-generated from `TriageRowProps` in `frontend/src/components/triage/TriageRow.tsx`._
 
 ## Attributes
 
@@ -26,10 +26,23 @@ _Auto-generated from `TriageRowProps` in `frontend/src/pages/TriagePage.tsx`._
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-*No generated relationships detected.*
+```mermaid
+flowchart LR
+    n0["TriageRowProps (frontend/src/components/triage/TriageRow.tsx)"]
+    n1["TriageRow (frontend/src/components/triage/TriageRow.tsx)"]
+    n1 --> n0
+    click n0 "../modules/TriageRow.md"
+    click n1 "../modules/TriageRow.md"
+```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TriagePage](../modules/TriagePage.md) | 0 | `isSelected`, `item`, `iterationsById`, `onSelect`, `projectsById` |
+| [TriageRow](../modules/TriageRow.md) | 0 | `isSelected`, `item`, `iterationsById`, `onSelect`, `projectsById` |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `TriageRow` | type_reference | [TriageRow](../modules/TriageRow.md) | — |

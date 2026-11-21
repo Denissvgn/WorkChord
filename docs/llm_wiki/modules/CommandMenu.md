@@ -10,15 +10,22 @@ _Auto-generated from `frontend/src/components/layout/CommandMenu.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Button` | `Button` | — | compiler-dependent |
+| `../../features/scope/useScopeLink` | `useLinkScope`, `useScopeLink` | — | compiler-dependent |
+| `../../features/scope/useWorkScope` | `useSetWorkScope` | — | compiler-dependent |
+| `../../features/scope/workScope` | `ScopeProject`, `ScopeIteration` | Declaration | erased |
 | `../../hooks/useSingleKeyShortcutPreference` | `useSingleKeyShortcutPreference` | — | compiler-dependent |
 | `../../i18n/seedDisplay` | `savedViewDisplay` | — | compiler-dependent |
-| `../../navigation/workspaces` | `getWorkspaceForPath`, `WORKSPACES` | — | compiler-dependent |
+| `../../navigation/destinations` | `DESTINATIONS`, `DESTINATION_VIEWS` | — | compiler-dependent |
+| `../../navigation/workspaces` | `getWorkspaceForPath` | — | compiler-dependent |
+| `../../services/iterationService` | `iterationService` | — | compiler-dependent |
 | `../../services/projectService` | `projectService` | — | compiler-dependent |
 | `../../services/savedViewService` | `savedViewService` | — | compiler-dependent |
 | `../../services/taskService` | `taskService` | — | compiler-dependent |
 | `../../types/savedView` | `SavedView` | Declaration | erased |
 | `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
 | `../common/Modal` | `Modal` | — | compiler-dependent |
+| `../tasks/taskSearchResults` | `taskSearchResultCopy` | — | compiler-dependent |
 | `./commandMenuEvents` | `OPEN_COMMAND_MENU_EVENT` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
 | `lucide-react` | `LucideIcon` | Declaration | erased |
@@ -55,8 +62,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (3) |
-| Outbound | `frontend` (10) |
+| Inbound | `frontend` (4) |
+| Outbound | `frontend` (17) |
 
 ### External packages
 
@@ -64,14 +71,14 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CommandAction](../entities/CommandAction.md) | Interface | 37 | — | — |
-| [CommandGroup](../entities/CommandGroup.md) | Type alias | 35 | `'results' \| 'tasks' \| 'current' \| 'navigate' \| 'suggested'` | — |
+| [CommandAction](../entities/CommandAction.md) | Interface | 44 | — | — |
+| [CommandGroup](../entities/CommandGroup.md) | Type alias | 42 | `'results' \| 'tasks' \| 'current' \| 'navigate' \| 'suggested'` | — |
 
 ## Functions
 

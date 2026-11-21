@@ -1,6 +1,6 @@
 # Task
 
-**Location:** `frontend/src/types/task.ts:89`
+**Location:** `frontend/src/types/task.ts:91`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -101,16 +101,16 @@ flowchart LR
     n0["Task (frontend/src/types/task.ts)"]
     n1["frontend/src/components/agent/TaskRoutingPanel.test.tsx"]
     n2["TaskRoutingPanel (frontend/src/components/agent/TaskRoutingPanel.tsx)"]
-    n3["TaskEditModal (frontend/src/components/gantt/TaskEditModal.tsx)"]
-    n4["ProjectTaskTree (frontend/src/components/projects/ProjectTaskTree.tsx)"]
-    n5["frontend/src/components/releases/ReleaseForm.tsx"]
-    n6["frontend/src/components/tasks/CurrentTaskModal.test.tsx"]
-    n7["DeliveryDependencies (frontend/src/components/tasks/DeliveryDependencies.tsx)"]
-    n8["frontend/src/components/tasks/GuardedTaskModal.tsx"]
-    n9["frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx"]
-    n10["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
-    n11["frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx"]
-    n12["frontend/src/components/tasks/KanbanBoard/KanbanColumn.test.tsx"]
+    n3["TaskEditDrawer (frontend/src/components/gantt/TaskEditDrawer.tsx)"]
+    n4["frontend/src/components/planning/PlanBlockersSection.tsx"]
+    n5["PlanScheduleSection (frontend/src/components/planning/PlanScheduleSection.tsx)"]
+    n6["PlanWorkSection (frontend/src/components/planning/PlanWorkSection.tsx)"]
+    n7["ProjectTasksTab (frontend/src/components/projects/ProjectTasksTab.tsx)"]
+    n8["frontend/src/components/projects/ProjectTaskTree.test.tsx"]
+    n9["ProjectTaskTree (frontend/src/components/projects/ProjectTaskTree.tsx)"]
+    n10["frontend/src/components/releases/ReleaseForm.tsx"]
+    n11["frontend/src/components/tasks/assigneeDisplay.test.tsx"]
+    n12["frontend/src/components/tasks/AssigneePicker.test.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -126,16 +126,16 @@ flowchart LR
     click n0 "../modules/types_task.md"
     click n1 "../modules/TaskRoutingPanel.test.md"
     click n2 "../modules/TaskRoutingPanel.md"
-    click n3 "../modules/TaskEditModal.md"
-    click n4 "../modules/ProjectTaskTree.md"
-    click n5 "../modules/ReleaseForm.md"
-    click n6 "../modules/CurrentTaskModal.test.md"
-    click n7 "../modules/DeliveryDependencies.md"
-    click n8 "../modules/GuardedTaskModal.md"
-    click n9 "../modules/KanbanBoard.test.md"
-    click n10 "../modules/KanbanBoard.md"
-    click n11 "../modules/KanbanCard.md"
-    click n12 "../modules/KanbanColumn.test.md"
+    click n3 "../modules/TaskEditDrawer.md"
+    click n4 "../modules/PlanBlockersSection.md"
+    click n5 "../modules/PlanScheduleSection.md"
+    click n6 "../modules/PlanWorkSection.md"
+    click n7 "../modules/ProjectTasksTab.md"
+    click n8 "../modules/ProjectTaskTree.test.md"
+    click n9 "../modules/ProjectTaskTree.md"
+    click n10 "../modules/ReleaseForm.md"
+    click n11 "../modules/assigneeDisplay.test.md"
+    click n12 "../modules/AssigneePicker.test.md"
 ```
 
 ### Summary
@@ -150,15 +150,15 @@ flowchart LR
 |---|---|---|---:|
 | `TaskRoutingPanel.test` | import | [TaskRoutingPanel.test](../modules/TaskRoutingPanel.test.md) | — |
 | `TaskRoutingPanel` | type_reference | [TaskRoutingPanel](../modules/TaskRoutingPanel.md) | — |
-| `TaskEditModal` | type_reference | [TaskEditModal](../modules/TaskEditModal.md) | — |
+| `TaskEditDrawer` | type_reference | [TaskEditDrawer](../modules/TaskEditDrawer.md) | — |
+| `PlanBlockersSection` | import | [PlanBlockersSection](../modules/PlanBlockersSection.md) | — |
+| `PlanScheduleSection` | type_reference | [PlanScheduleSection](../modules/PlanScheduleSection.md) | — |
+| `PlanWorkSection` | type_reference | [PlanWorkSection](../modules/PlanWorkSection.md) | — |
+| `ProjectTasksTab` | type_reference | [ProjectTasksTab](../modules/ProjectTasksTab.md) | — |
+| `ProjectTaskTree.test` | import | [ProjectTaskTree.test](../modules/ProjectTaskTree.test.md) | — |
 | `ProjectTaskTree` | type_reference | [ProjectTaskTree](../modules/ProjectTaskTree.md) | — |
 | `ReleaseForm` | import | [ReleaseForm](../modules/ReleaseForm.md) | — |
-| `CurrentTaskModal.test` | import | [CurrentTaskModal.test](../modules/CurrentTaskModal.test.md) | — |
-| `DeliveryDependencies` | type_reference | [DeliveryDependencies](../modules/DeliveryDependencies.md) | — |
-| `GuardedTaskModal` | import | [GuardedTaskModal](../modules/GuardedTaskModal.md) | — |
-| `KanbanBoard.test` | import | [KanbanBoard.test](../modules/KanbanBoard.test.md) | — |
-| `KanbanBoard` | import | [KanbanBoard](../modules/KanbanBoard.md) | — |
-| `KanbanCard` | import | [KanbanCard](../modules/KanbanCard.md) | — |
-| `KanbanColumn.test` | import | [KanbanColumn.test](../modules/KanbanColumn.test.md) | — |
+| `assigneeDisplay.test` | import | [assigneeDisplay.test](../modules/assigneeDisplay.test.md) | — |
+| `AssigneePicker.test` | import | [AssigneePicker.test](../modules/AssigneePicker.test.md) | — |
 
-> References: showing 12 of 71 logical references; 59 omitted by the 12-row generated summary limit.
+> References: showing 12 of 106 logical references; 94 omitted by the 12-row generated summary limit.

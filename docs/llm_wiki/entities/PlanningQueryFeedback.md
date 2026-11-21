@@ -1,6 +1,6 @@
 # PlanningQueryFeedback
 
-**Location:** `frontend/src/features/planningMasters/usePlanningReadiness.ts:37`
+**Location:** `frontend/src/features/planningMasters/usePlanningReadiness.ts:35`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [usePlanningReadiness](../modules/usePlanningReadiness.md)
@@ -39,16 +39,10 @@ _Auto-generated from `PlanningQueryFeedback` in `frontend/src/features/planningM
 ```mermaid
 flowchart LR
     n0["PlanningQueryFeedback (frontend/src/features/planningMasters/usePlanningReadiness.ts)"]
-    n1["frontend/src/pages/OverviewPage.tsx"]
-    n2["frontend/src/pages/PlanMasterPage.test.tsx"]
-    n3["frontend/src/pages/PlanMasterPage.tsx"]
+    n1["frontend/src/pages/PlanPage.tsx"]
     n1 --> n0
-    n2 --> n0
-    n3 --> n0
     click n0 "../modules/usePlanningReadiness.md"
-    click n1 "../modules/OverviewPage.md"
-    click n2 "../modules/PlanMasterPage.test.md"
-    click n3 "../modules/PlanMasterPage.md"
+    click n1 "../modules/PlanPage.md"
 ```
 
 ### Summary
@@ -61,6 +55,4 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `OverviewPage` | import | [OverviewPage](../modules/OverviewPage.md) | — |
-| `PlanMasterPage.test` | import | [PlanMasterPage.test](../modules/PlanMasterPage.test.md) | — |
-| `PlanMasterPage` | import | [PlanMasterPage](../modules/PlanMasterPage.md) | — |
+| `PlanPage` | import | [PlanPage](../modules/PlanPage.md) | — |

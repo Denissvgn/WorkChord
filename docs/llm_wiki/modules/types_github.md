@@ -28,24 +28,30 @@ flowchart LR
     n0["frontend/src/components/settings/GitHubSettingsPanel.test.tsx"]
     n1["frontend/src/components/settings/GitHubSettingsPanel.tsx"]
     n2["frontend/src/i18n/seedDisplay.ts"]
-    n3["frontend/src/services/githubService.ts"]
-    n4["frontend/src/types/github.ts"]
-    n5["frontend/src/types/task.ts"]
+    n3["frontend/src/pages/SettingsPage.labels.test.tsx"]
+    n4["frontend/src/pages/SettingsPage.readOnlyPanels.test.tsx"]
+    n5["frontend/src/services/githubService.ts"]
+    n6["frontend/src/types/github.ts"]
+    n7["frontend/src/types/task.ts"]
     n0 --> n1
-    n0 --> n4
+    n0 --> n6
     n1 --> n2
-    n1 --> n3
-    n1 --> n4
     n1 --> n5
-    n2 --> n4
-    n3 --> n4
-    n4 --> n5
+    n1 --> n6
+    n1 --> n7
+    n2 --> n6
+    n3 --> n6
+    n4 --> n6
+    n5 --> n6
+    n6 --> n7
     click n0 "../modules/GitHubSettingsPanel.test.md"
     click n1 "../modules/GitHubSettingsPanel.md"
     click n2 "../modules/seedDisplay.md"
-    click n3 "../modules/githubService.md"
-    click n4 "../modules/types_github.md"
-    click n5 "../modules/types_task.md"
+    click n3 "../modules/SettingsPage.labels.test.md"
+    click n4 "../modules/SettingsPage.readOnlyPanels.test.md"
+    click n5 "../modules/githubService.md"
+    click n6 "../modules/types_github.md"
+    click n7 "../modules/types_task.md"
 ```
 
 ### Internal neighbors
@@ -55,6 +61,8 @@ flowchart LR
 | Inbound | [GitHubSettingsPanel.test](../modules/GitHubSettingsPanel.test.md) |
 | Inbound | [GitHubSettingsPanel](../modules/GitHubSettingsPanel.md) |
 | Inbound | [seedDisplay](../modules/seedDisplay.md) |
+| Inbound | [SettingsPage.labels.test](../modules/SettingsPage.labels.test.md) |
+| Inbound | [SettingsPage.readOnlyPanels.test](../modules/SettingsPage.readOnlyPanels.test.md) |
 | Inbound | [githubService](../modules/githubService.md) |
 | Outbound | [types_task](../modules/types_task.md) |
 

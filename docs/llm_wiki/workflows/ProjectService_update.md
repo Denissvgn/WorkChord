@@ -1,19 +1,21 @@
 # ProjectService_update
 
 **Entry point:** `project_service.ProjectService.update`
-**Modules involved:** [commands](../modules/commands.md), [outbound_webhook_service](../modules/outbound_webhook_service.md), [project_service](../modules/project_service.md), [time](../modules/time.md)
+**Modules involved:** [authority](../modules/authority.md), [commands](../modules/commands.md), [outbound_webhook_service](../modules/outbound_webhook_service.md), [project_service](../modules/project_service.md), [time](../modules/time.md)
 
 > Apply a partial project update, optionally deferring the commit.
 
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
-1. `time.as_utc`
-2. `outbound_webhook_service.emit_outbound_webhook_event`
-3. `commands.commit_or_flush`
+1. `authority.require_operator`
+2. `time.as_utc`
+3. `outbound_webhook_service.emit_outbound_webhook_event`
+4. `commands.commit_or_flush`
 
 ## Touches
 
+- [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [outbound_webhook_service](../modules/outbound_webhook_service.md)
 - [project_service](../modules/project_service.md)
