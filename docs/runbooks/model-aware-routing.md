@@ -64,6 +64,24 @@ will remain effective `off`.
 Enablement applies only to new assignments. Never rewrite historical snapshots
 or reinterpret a shadow preview as an enforced selection.
 
+## Supervised rework in shadow mode
+
+After an independent reviewer requests changes, read the original worker's
+assigned-work queue and complete task context. The server can return
+`start_assigned` for an existing or newly issued rework assignment when its
+stored rejection and submission identify the same team, worker, model binding
+and independent reviewer. The worker begins the exact assignment with the
+current queue revision and its observed model. Repeating the begin with the
+original idempotency key returns the same run and claim generation.
+
+The assignment's routing snapshot retains its source assignment IDs and
+independent reviewer profile. The running attempt also records the rejected
+run, verifier receipt and reviewed candidate digest in
+`execution_provenance.supervised_rework`. The original verdict and submission
+receipts remain available. A changed binding, different worker, missing
+receipt, or request for a model-tier change leaves routing pending.
+Enforced mode continues to require a fresh model-aware selection.
+
 ## Operational evidence
 
 Routing events and aggregate metrics identify the policy revision, binding

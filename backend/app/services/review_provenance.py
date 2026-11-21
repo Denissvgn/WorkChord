@@ -12,14 +12,14 @@ import httpx
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from app.models.agent import AgentIdempotencyRecord, AgentModelBinding, AgentModelCatalogEntry, AgentRun, AgentRunEvent, TaskEvent
+from app.models.agent import AgentActor, AgentIdempotencyRecord, AgentModelBinding, AgentModelCatalogEntry, AgentRun, AgentRunEvent, AgentTaskAssignment, TaskEvent
 from app.models.external_link import ExternalLink
 from app.models.identity import Principal
 from app.models.project import Project
 from app.models.task_brief import TaskProgressRecord
-from app.models.team_member import TeamMemberProfile
+from app.models.team_member import TeamMember, TeamMemberProfile
 from app.query_limits import CollectionLimitExceededError, MAX_BOUNDED_LIST_ITEMS
-from app.services.agent_routing_policy import ROUTING_DECISION_AUTHORITY, canonical_routing_json_bytes
+from app.services.agent_routing_policy import ROUTING_DECISION_AUTHORITY, ROUTING_LINEAGE_AUTHORITY, canonical_routing_json_bytes
 from app.utils.github_links import GitHubLinkError, parse_github_url
 from app.utils.url_policy import normalize_stored_display_url
 
@@ -31,6 +31,178 @@ def _conflict(code, message, **details):
 
 def digest(value):
     return hashlib.sha256(canonical_routing_json_bytes(value)).hexdigest()
+
+
+async def _rework_verdict(db, task, assignment, sources, lineage):
+    """Find the unique immutable verifier receipt that issued this exact queued assignment."""
+    from app.schemas.agent import AgentReviewVerdictResponse
+
+    query = select(AgentIdempotencyRecord).join(
+        AgentTaskAssignment, AgentTaskAssignment.id == AgentIdempotencyRecord.target_id,
+    ).where(
+        AgentIdempotencyRecord.operation == "verification.verdict",
+        AgentIdempotencyRecord.target_type == "assignment",
+        AgentIdempotencyRecord.actor_id == assignment.assigned_by_actor_id,
+        AgentTaskAssignment.id.in_(sources),
+        AgentTaskAssignment.task_id == task.id,
+        AgentTaskAssignment.actor_id == assignment.assigned_by_actor_id,
+        AgentTaskAssignment.purpose == "verification",
+        AgentTaskAssignment.state == "fulfilled",
+        AgentTaskAssignment.task_version == task.version,
+    )
+    receipts = (await db.scalars(query.limit(2))).all()
+    if len(receipts) != 1:
+        return None
+    receipt = receipts[0]
+    try:
+        verdict = AgentReviewVerdictResponse.model_validate(json.loads(receipt.response_payload)["response"])
+    except (KeyError, TypeError, ValueError):
+        return None
+    review, issued = verdict.review_assignment, verdict.rework_assignment
+    if (issued is None or issued.id != assignment.id or issued.task_id != task.id
+            or issued.actor_id != assignment.actor_id or issued.task_version != task.version
+            or issued.assigned_by_actor_id != receipt.actor_id or issued.team_member_id != task.assignee_id
+            or issued.routing_snapshot != lineage or issued.queue_class != "rework" or issued.state != "queued"
+            or review.id != receipt.target_id or review.actor_id != receipt.actor_id or review.task_id != task.id
+            or review.model_binding_id is not None or verdict.task.id != task.id or verdict.task.status != "active"
+            or verdict.task.brief_revision != task.brief_revision or verdict.task.artifact_revision != task.artifact_revision):
+        return None
+    events = (await db.execute(select(TaskEvent.id, TaskEvent.payload).where(
+        TaskEvent.task_id == task.id, TaskEvent.actor_type == "agent", TaskEvent.actor_id == receipt.actor_id,
+        TaskEvent.event_type == "agent.verification_verdict", TaskEvent.idempotency_key == receipt.idempotency_key,
+    ).limit(2))).all()
+    if len(events) != 1:
+        return None
+    event_id, raw = events[0]
+    try:
+        event = json.loads(raw)
+    except (TypeError, ValueError):
+        return None
+    selection = review.review_selection or {}
+    reviewer = selection.get("reviewer")
+    candidate = selection.get("candidate")
+    if (not isinstance(event, dict) or not isinstance(reviewer, dict) or not isinstance(candidate, dict)
+            or event.get("verdict") != "reject" or event.get("assignment_id") != review.id
+            or event.get("rework_assignment_id") != assignment.id or event.get("task_version") != task.version
+            or event.get("review_selection") != selection or event.get("routing_lineage_digest") != digest(lineage)
+            or event.get("observed_model") not in (reviewer.get("catalog_key"), reviewer.get("configured_model_alias"))
+            or event.get("reviewed_candidate_digest") not in (None, candidate.get("digest"))):
+        return None
+    return receipt, review, event_id
+
+
+async def _rejected_execution(db, task, worker, sources, candidate):
+    """Cross-bind the selected candidate to its original worker's normal submit receipt."""
+    from app.schemas.agent import AgentWorkTerminalResponse
+
+    query = select(AgentRun, AgentTaskAssignment, AgentIdempotencyRecord).join(
+        AgentTaskAssignment, AgentTaskAssignment.id == AgentRun.assignment_id,
+    ).join(
+        AgentIdempotencyRecord, AgentIdempotencyRecord.target_id == AgentTaskAssignment.id,
+    ).where(
+        AgentRun.id == candidate["run_id"], AgentRun.task_id == task.id, AgentRun.actor_id == worker.id,
+        AgentRun.status == "succeeded", AgentRun.model_binding_id.is_(None),
+        AgentTaskAssignment.id.in_(sources), AgentTaskAssignment.task_id == task.id,
+        AgentTaskAssignment.actor_id == worker.id, AgentTaskAssignment.team_member_id == task.assignee_id,
+        AgentTaskAssignment.purpose == "execution", AgentTaskAssignment.state == "fulfilled",
+        AgentTaskAssignment.model_binding_id.is_(None),
+        AgentIdempotencyRecord.actor_id == worker.id, AgentIdempotencyRecord.operation == "work.submit",
+        AgentIdempotencyRecord.target_type == "assignment", AgentIdempotencyRecord.request_hash == candidate["submission_sha256"],
+    )
+    matches = (await db.execute(query.limit(2))).all()
+    if len(matches) != 1:
+        return None
+    run, source, receipt = matches[0]
+    try:
+        submission = AgentWorkTerminalResponse.model_validate(json.loads(receipt.response_payload)["response"])
+    except (KeyError, TypeError, ValueError):
+        return None
+    trusted = submission.run.execution_provenance or {}
+    if (submission.run.id != run.id or submission.run.actor_id != worker.id or submission.run.status != "succeeded"
+            or submission.run.assignment_id != source.id or submission.assignment.id != source.id
+            or submission.task.id != task.id or submission.task.artifact_revision != task.artifact_revision
+            or submission.task.brief_revision != task.brief_revision or run.execution_provenance != trusted
+            or trusted.get("source") != "authenticated_work_begin" or not trusted.get("binding_id")
+            or not trusted.get("publisher_key") or trusted.get("profile_id") != worker.profile_id):
+        return None
+    terminal = trusted.get("terminal_model")
+    if (not isinstance(terminal, dict) or terminal.get("source") != "authenticated_terminal"
+            or terminal.get("publisher_key") != trusted["publisher_key"]):
+        return None
+    return run, source, trusted
+
+
+async def supervised_rework_evidence(db, task, assignment, worker, lineage, *, lock=False):
+    """Identify a strict shadow handback to the original actor, including previously issued rows."""
+    from app.services.agent_team_setup_service import AgentTeamSetupService
+
+    sources = lineage.get("source_assignment_ids")
+    if (assignment.state != "queued" or assignment.purpose != "execution" or assignment.queue_class != "rework"
+            or assignment.model_binding_id is not None or assignment.actor_id != worker.id or worker.profile_id is None
+            or assignment.task_id != task.id or assignment.task_version != task.version or task.status != "active"
+            or assignment.team_member_id != task.assignee_id
+            or lineage.get("schema_version") != "routing-lineage-snapshot-v1" or lineage.get("authority") != ROUTING_LINEAGE_AUTHORITY
+            or (lineage.get("task_id"), lineage.get("task_version"), lineage.get("provisional_actor_id")) != (task.id, task.version, worker.id)
+            or lineage.get("selection_pending") is not True or lineage.get("prior_decisions") != []
+            or not isinstance(sources, list) or not 1 <= len(sources) <= 20 or not all(type(value) is int for value in sources)
+            or not await different_publisher_required(db, task.project_id)):
+        return None
+    rejection = await _rework_verdict(db, task, assignment, sources, lineage)
+    if rejection is None:
+        return None
+    verdict_receipt, review, verdict_event_id = rejection
+    selection = review.review_selection or {}
+    candidate, reviewer, contributors = (selection.get(field) for field in ("candidate", "reviewer", "contributors"))
+    if (not isinstance(candidate, dict) or not isinstance(reviewer, dict) or not isinstance(contributors, list)
+            or not contributors or selection.get("acceptance_blockers") != [] or selection.get("manual_execution")
+            or type(candidate.get("run_id")) is not int or not isinstance(candidate.get("submission_sha256"), str)
+            or candidate.get("task_id") != task.id or candidate.get("brief_revision") != task.brief_revision
+            or candidate.get("artifact_revision") != task.artifact_revision
+            or candidate.get("digest") != digest({key: value for key, value in candidate.items() if key != "digest"})
+            or reviewer.get("actor_id") != review.actor_id or not reviewer.get("profile_id") or not reviewer.get("publisher_key")
+            or any(not isinstance(c, dict) or not c.get("profile_id") or not c.get("publisher_key")
+                   or c["profile_id"] == reviewer["profile_id"] or c["publisher_key"] == reviewer["publisher_key"]
+                   for c in contributors)):
+        return None
+    floor = lineage.get("review_floor")
+    tier_change = lineage.get("model_tier_change")
+    if (not isinstance(floor, dict) or floor.get("review_mode") not in {"none", "standard", "independent"}
+            or floor.get("reviewer_profile_ids") not in ([], [reviewer["profile_id"]])
+            or not isinstance(tier_change, dict) or tier_change.get("eligible") is not False):
+        return None
+    origin = await _rejected_execution(db, task, worker, sources, candidate)
+    if origin is None:
+        return None
+    run, source, proof = origin
+    if not any((c.get("run_id"), c.get("actor_id"), c["profile_id"], c["publisher_key"]) ==
+               (run.id, worker.id, worker.profile_id, proof["publisher_key"]) for c in contributors):
+        return None
+    team = await AgentTeamSetupService(db).membership_boundary(worker.id)
+    if (team is None or team.primary_actor_id is None or review.assigned_by_actor_id != team.primary_actor_id
+            or not {worker.id, review.actor_id}.issubset(team.runtime_ready_actor_ids)
+            or (source.queue_class == "normal" and source.assigned_by_actor_id != team.primary_actor_id)
+            or (source.queue_class != "normal" and not (source.queue_class == "rework" and proof.get("supervised_rework")))
+            or any(c.get("actor_id") not in team.member_actor_ids for c in contributors)
+            or await db.scalar(select(TeamMember.profile_id).where(TeamMember.id == task.assignee_id)) != worker.profile_id):
+        return None
+    verifier_query = select(AgentActor).where(AgentActor.id == review.actor_id).execution_options(populate_existing=True)
+    verifier = await db.scalar(verifier_query.with_for_update(read=True) if lock else verifier_query)
+    if verifier is None or not verifier.enabled or verifier.role != "verifier" or verifier.id == worker.id or verifier.profile_id == worker.profile_id:
+        return None
+    identity = ("actor_id", "profile_id", "profile_revision", "binding_id", "binding_revision",
+                "catalog_id", "catalog_revision", "catalog_key", "configured_model_alias", "publisher_key")
+    for actor, recorded in ((worker, proof), (verifier, reviewer)):
+        if not recorded.get("binding_id"):
+            return None
+        current = await actor_provenance(db, actor, binding_id=recorded["binding_id"], lock=lock)
+        if any(current.get(key) != recorded.get(key) for key in identity):
+            return None
+    return {"rejected_run_id": run.id, "execution_assignment_id": source.id, "review_assignment_id": review.id,
+            "verdict_receipt_id": verdict_receipt.id, "verdict_event_id": verdict_event_id,
+            "reviewed_candidate_digest": candidate["digest"],
+            "reviewer_profile_id": reviewer["profile_id"], "reviewer_publisher_key": reviewer["publisher_key"],
+            "catalog_key": proof["catalog_key"], "configured_model_alias": proof["configured_model_alias"],
+            "binding_id": proof["binding_id"], "lineage_digest": digest(lineage)}
 
 
 async def different_publisher_required(db, project_id):
