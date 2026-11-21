@@ -77,14 +77,20 @@ original idempotency key returns the same run and claim generation.
 The latest submitter can also have completed a supervised recovery selected
 by the team's PM. The recovery receipt and event must confirm that exact
 assignment and actor. Earlier retained contributors continue to participate
-in the independent publisher check.
+in the independent publisher check. The recovery records the task version
+when it was issued. The fulfilled assignment must match the later task
+version in the worker's submission receipt.
 
 The issued assignment and its routing snapshot preserve their original
 lineage. The effective worker views show the supervised handback and review
 floor. A successful begin records the complete worker binding, independent
 reviewer floor, rejected run, verifier receipt and reviewed candidate digest
 in the new run's `execution_provenance.supervised_rework`. The original
-verdict and submission stay intact. A changed binding, different worker,
+verdict and submission stay intact. If an older rejection omits the explicit
+candidate digest, the verifier's selection in its event and receipt must
+identify the same submitted candidate. For the next verification, preview,
+dispatch and verdict require the recorded reviewer profile and a publisher
+independent of every contributor. A changed binding, different worker,
 missing receipt, or request for a model-tier change leaves routing pending.
 After a failed or canceled rework, the PM uses the normal recovery path.
 The resulting recovery queue waits for a fresh applicable routing selection.

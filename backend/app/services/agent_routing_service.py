@@ -1523,6 +1523,8 @@ class AgentRoutingService:
             input_evidence["review_history"] = {
                 "different_publisher_required": strict_review, "contributors": history.contributors, "candidate": history.candidate,
             }
+            if history.required_reviewer_profiles is not None:
+                input_evidence["review_history"]["required_reviewer_profile_ids"] = list(history.required_reviewer_profiles)
         input_digest = hashlib.sha256(
             canonical_routing_json_bytes(input_evidence)
         ).hexdigest()
@@ -1616,6 +1618,8 @@ class AgentRoutingService:
                 *compatibility.hard_blocker_codes,
                 *skill.hard_blocker_codes,
             ]
+            if history is not None and not history.permits_profile(actor.profile_id):
+                actor_blockers.append(RoutingBlockerCode.REVIEWER_PROFILE_MISMATCH.value)
             if (
                 topology_boundary is not None
                 and actor.id

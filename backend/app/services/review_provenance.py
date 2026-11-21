@@ -12,7 +12,10 @@ import httpx
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from app.models.agent import AgentActor, AgentIdempotencyRecord, AgentModelBinding, AgentModelCatalogEntry, AgentRun, AgentRunEvent, AgentTaskAssignment, TaskEvent
+from app.models.agent import (
+    AgentActor, AgentIdempotencyRecord, AgentModelBinding, AgentModelCatalogEntry, AgentRun, AgentRunEvent,
+    AgentTaskAssignment, AgentTeamTopology, AgentTeamTopologyMember, TaskEvent,
+)
 from app.models.external_link import ExternalLink
 from app.models.identity import Principal
 from app.models.project import Project
@@ -140,6 +143,7 @@ async def _rejected_execution(db, task, worker, sources, candidate):
     trusted = submission.run.execution_provenance or {}
     if (submission.run.id != run.id or submission.run.actor_id != worker.id or submission.run.status != "succeeded"
             or submission.run.assignment_id != source.id or submission.assignment.id != source.id
+            or submission.assignment.task_version != source.task_version or submission.task.version != source.task_version
             or submission.task.id != task.id or submission.task.artifact_revision != task.artifact_revision
             or submission.task.brief_revision != task.brief_revision or run.execution_provenance != trusted
             or trusted.get("source") != "authenticated_work_begin" or not trusted.get("binding_id")
@@ -179,6 +183,7 @@ async def _supervised_recovery_origin(db, source, submit_receipt_id, manager_id,
             or issued.actor_id != source.actor_id or issued.assigned_by_actor_id != manager_id
             or issued.task_id != source.task_id or issued.state != "queued" or issued.purpose != "execution" or issued.queue_class != "recovery"
             or issued.team_member_id != source.team_member_id or response.task.id != source.task_id or response.task.status != "active"
+            or response.task.version != issued.task_version or issued.task_version >= source.task_version
             or issued.model_binding_id is not None or issued.reviewer_profile_id != source.reviewer_profile_id):
         return None
     events = (await db.execute(select(TaskEvent.id, TaskEvent.payload).where(
@@ -197,7 +202,24 @@ async def _supervised_recovery_origin(db, source, submit_receipt_id, manager_id,
             or event.get("task_version") != issued.task_version or event.get("routing_selection_pending") is not False
             or event.get("routing_lineage_digest") != original_hash):
         return None
-    return {"receipt_id": receipt.id, "event_id": event_id, "assignment_id": source.id, "lineage_digest": original_hash}
+    return {"receipt_id": receipt.id, "event_id": event_id, "assignment_id": source.id, "lineage_digest": original_hash,
+            "issued_task_version": issued.task_version, "submitted_task_version": source.task_version}
+
+
+async def _lock_handback_team(db, worker_id, actor_ids):
+    """Fence the roster and its contributing members until an exact begin commits."""
+    topology_id = await db.scalar(select(AgentTeamTopologyMember.topology_id).where(AgentTeamTopologyMember.actor_id == worker_id))
+    if topology_id is None:
+        return None
+    version = await db.scalar(select(AgentTeamTopology.revision).where(AgentTeamTopology.id == topology_id,
+        AgentTeamTopology.state != "disabled").with_for_update(read=True))
+    if version is None:
+        return None
+    members = (await db.scalars(select(AgentTeamTopologyMember.actor_id).where(
+        AgentTeamTopologyMember.topology_id == topology_id, AgentTeamTopologyMember.actor_id.in_(actor_ids),
+        AgentTeamTopologyMember.lifecycle_state != "disabled",
+    ).order_by(AgentTeamTopologyMember.id).with_for_update(read=True))).all()
+    return (topology_id, version) if set(members) == actor_ids else None
 
 
 async def supervised_rework_evidence(db, task, assignment, worker, lineage, *, lock=False, cache=None):
@@ -218,7 +240,7 @@ async def supervised_rework_evidence(db, task, assignment, worker, lineage, *, l
     # share current team and catalog facts only within their own request.
     scoped = ReworkReadCache() if lock or cache is None else cache
     if task.project_id not in scoped.projects:
-        scoped.projects[task.project_id] = await different_publisher_required(db, task.project_id)
+        scoped.projects[task.project_id] = await different_publisher_required(db, task.project_id, lock=lock)
     if not scoped.projects[task.project_id]:
         return None
     rejection = await _rework_verdict(db, task, assignment, sources, lineage)
@@ -230,11 +252,12 @@ async def supervised_rework_evidence(db, task, assignment, worker, lineage, *, l
     if (not isinstance(candidate, dict) or not isinstance(reviewer, dict) or not isinstance(contributors, list)
             or not contributors or selection.get("acceptance_blockers") != [] or selection.get("manual_execution")
             or type(candidate.get("run_id")) is not int or not isinstance(candidate.get("submission_sha256"), str)
+            or type(review.assigned_by_actor_id) is not int
             or candidate.get("task_id") != task.id or candidate.get("brief_revision") != task.brief_revision
             or candidate.get("artifact_revision") != task.artifact_revision
             or candidate.get("digest") != digest({key: value for key, value in candidate.items() if key != "digest"})
             or reviewer.get("actor_id") != review.actor_id or not reviewer.get("profile_id") or not reviewer.get("publisher_key")
-            or any(not isinstance(c, dict) or not c.get("profile_id") or not c.get("publisher_key")
+            or any(not isinstance(c, dict) or type(c.get("actor_id")) is not int or not c.get("profile_id") or not c.get("publisher_key")
                    or c["profile_id"] == reviewer["profile_id"] or c["publisher_key"] == reviewer["publisher_key"]
                    for c in contributors)):
         return None
@@ -257,15 +280,21 @@ async def supervised_rework_evidence(db, task, assignment, worker, lineage, *, l
                 or prior_handoff.get("worker_binding") != rework_binding_identity(proof)
                 or prior_handoff.get("reviewer_profile_id") != reviewer["profile_id"]):
             return None
+    members = {worker.id, review.actor_id, review.assigned_by_actor_id, *(c.get("actor_id") for c in contributors)}
+    locked_team = await _lock_handback_team(db, worker.id, members) if lock else None
+    if lock and locked_team is None:
+        return None
     if worker.id not in scoped.teams:
         scoped.teams[worker.id] = await AgentTeamSetupService(db).membership_boundary(worker.id)
     team = scoped.teams[worker.id]
+    capacity = select(TeamMember.profile_id).where(TeamMember.id == task.assignee_id)
+    capacity_profile = await db.scalar(capacity.with_for_update(read=True) if lock else capacity)
     if (team is None or team.primary_actor_id is None or review.assigned_by_actor_id != team.primary_actor_id
+            or (lock and (team.topology_id, team.topology_revision) != locked_team)
             or not {worker.id, review.actor_id}.issubset(team.runtime_ready_actor_ids)
             or (source.queue_class == "normal" and source.assigned_by_actor_id != team.primary_actor_id)
             or source.queue_class not in {"normal", "rework", "recovery"}
-            or any(c.get("actor_id") not in team.member_actor_ids for c in contributors)
-            or await db.scalar(select(TeamMember.profile_id).where(TeamMember.id == task.assignee_id)) != worker.profile_id):
+            or not members.issubset(team.member_actor_ids) or capacity_profile != worker.profile_id):
         return None
     recovery_origin = None
     if source.queue_class == "recovery":
@@ -291,6 +320,7 @@ async def supervised_rework_evidence(db, task, assignment, worker, lineage, *, l
             "reviewed_candidate_digest": candidate["digest"],
             "reviewer_profile_id": reviewer["profile_id"], "reviewer_publisher_key": reviewer["publisher_key"],
             "worker_binding": rework_binding_identity(proof),
+            "topology_id": team.topology_id, "topology_revision": team.topology_revision,
             "contributor_count": len(contributors), "contributors_digest": digest(contributors),
             "review_floor": {**floor, "review_mode": "independent", "reviewer_profile_ids": [reviewer["profile_id"]],
                              "independence_must_be_revalidated": True},
@@ -300,13 +330,13 @@ async def supervised_rework_evidence(db, task, assignment, worker, lineage, *, l
     return evidence
 
 
-async def different_publisher_required(db, project_id):
+async def different_publisher_required(db, project_id, *, lock=False):
     if project_id is None:
         return False
     from app.commands import current_command
     query = select(Project.require_different_review_publisher).where(Project.id == project_id,
                                                                     Project.require_different_review_publisher.is_(True))
-    if (command := current_command(db)) is not None and command.mode == "apply":
+    if lock or ((command := current_command(db)) is not None and command.mode == "apply"):
         query = query.with_for_update(read=True)
     return bool(await db.scalar(query))
 
@@ -482,6 +512,10 @@ class ReviewHistory:
     candidate: dict | None
     manual_execution: dict | None = None
     missing_manual_fact: str | None = None
+    required_reviewer_profiles: tuple[int, ...] | None = None
+
+    def permits_profile(self, profile_id):
+        return self.required_reviewer_profiles is None or profile_id in self.required_reviewer_profiles
 
     def publisher_blockers(self, publisher):
         if (not self.contributors and self.manual_execution is None or not publisher
@@ -490,6 +524,23 @@ class ReviewHistory:
         if any(row["publisher_key"] == publisher for row in self.contributors):
             return ["verification_publisher_not_independent"]
         return []
+
+
+def _submitted_review_floor(provenance, assignment_id, actor_id):
+    """An absent handback is unrestricted; a contradictory handback admits no verifier."""
+    if not isinstance(provenance, dict) or "supervised_rework" not in provenance:
+        return None
+    handback = provenance["supervised_rework"]
+    if not isinstance(handback, dict) or handback.get("rework_assignment_id") != assignment_id:
+        return ()
+    floor = handback.get("review_floor")
+    profile = handback.get("reviewer_profile_id")
+    identity = handback.get("worker_binding")
+    if (type(profile) is not int or profile <= 0 or not isinstance(identity, dict) or identity.get("actor_id") != actor_id
+            or not isinstance(floor, dict) or floor.get("review_mode") != "independent"
+            or floor.get("independence_must_be_revalidated") is not True or floor.get("reviewer_profile_ids") != [profile]):
+        return ()
+    return (profile,)
 
 
 async def _manual_history(db, task):
@@ -630,12 +681,14 @@ async def review_history(db, task, assignments, *, strict):
     if not submitted:
         return ReviewHistory(contributors, None)
     latest = max(submitted, key=lambda run: (run.ended_at, run.id))
+    floor = _submitted_review_floor(latest.execution_provenance, latest.assignment_id, latest.actor_id)
+    unavailable = ReviewHistory(contributors, None, required_reviewer_profiles=() if floor is not None else None)
     receipts = (await db.scalars(select(AgentIdempotencyRecord).where(
         AgentIdempotencyRecord.actor_id == latest.actor_id, AgentIdempotencyRecord.operation == "work.submit",
         AgentIdempotencyRecord.target_type == "assignment", AgentIdempotencyRecord.target_id == latest.assignment_id,
     ).limit(2))).all()
     if len(receipts) != 1:
-        return ReviewHistory(contributors, None)
+        return unavailable
     try:
         response = json.loads(receipts[0].response_payload)["response"]
         if (response["run"]["id"] != latest.id or response["task"]["id"] != task.id
@@ -643,11 +696,14 @@ async def review_history(db, task, assignments, *, strict):
                 or response["run"]["actor_id"] != latest.actor_id or response["run"]["status"] != "succeeded"
                 or response["task"].get("artifact_revision", 0) != task.artifact_revision
                 or response["task"].get("brief_revision", 0) != task.brief_revision):
-            return ReviewHistory(contributors, None)
+            return unavailable
     except (KeyError, TypeError, ValueError):
-        return ReviewHistory(contributors, None)
+        return unavailable
+    captured = _submitted_review_floor(response["run"].get("execution_provenance"), latest.assignment_id, latest.actor_id)
+    if captured != floor:
+        floor = ()
     candidate = await _submission_candidate(db, task, response["run"], {"run_id": latest.id, "submission_sha256": receipts[0].request_hash})
-    return ReviewHistory(contributors, candidate)
+    return ReviewHistory(contributors, candidate, required_reviewer_profiles=floor)
 
 
 async def _submission_candidate(db, task, submitted_run, source):
@@ -713,6 +769,9 @@ async def select_reviewer(db, task, assignments, reviewer, *, binding_id=None, r
                  missing=[{"run_id": r["run_id"], "facts": r.get("missing", ["profile_id"])} for r in history.contributors if r["profile_id"] is None])
     if reviewer_profile_id is not None and receipt["profile_id"] != reviewer_profile_id:
         _conflict("reviewer_profile_mismatch", "The selected reviewer must hold the requested profile.")
+    if not history.permits_profile(receipt["profile_id"]):
+        _conflict("reviewer_profile_mismatch", "The submitted rework requires its recorded independent reviewer profile.",
+                  required_reviewer_profile_ids=list(history.required_reviewer_profiles))
     if history.manual_execution:
         profile = (await db.execute(select(TeamMemberProfile.profile_kind, TeamMemberProfile.automation_enabled,
             TeamMemberProfile.assignment_modes).where(TeamMemberProfile.id == receipt["profile_id"]))).one_or_none()

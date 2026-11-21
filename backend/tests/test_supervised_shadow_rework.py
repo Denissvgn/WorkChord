@@ -1,5 +1,6 @@
 """A prior supervised worker resumes the exact strict handback on its original publisher."""
 import json
+from copy import deepcopy
 from unittest.mock import patch
 
 import httpx
@@ -9,15 +10,23 @@ from sqlalchemy.exc import DBAPIError
 
 from app.config import get_settings
 from app.main import app
-from app.models.agent import AgentActor, AgentIdempotencyRecord, AgentModelCatalogEntry, AgentRun, AgentTaskAssignment, AgentTeamTopologyMember, TaskEvent
+from app.models.agent import (AgentActor, AgentIdempotencyRecord, AgentModelBinding, AgentModelCatalogEntry, AgentRun,
+                              AgentTaskAssignment, AgentTeamTopology, AgentTeamTopologyMember, TaskEvent)
 from app.models.identity import ProjectMembership, WorkspaceMembership
 from app.models.iteration import Iteration
 from app.models.project import Project
 from app.models.task import Task
+from app.models.team_member import TeamMember
+from app.schemas.agent_team_setup import AgentTeamMaster
 from app.services import agent_work_service, review_provenance
 from app.services.agent_team_setup_service import AgentTeamSetupService
 from app.services.identity_service import IdentityService, initialize_control_plane
-from tests.test_agent_team_setup_qualification import provision_ready_topology, routing_base
+from tests.test_agent_routing_service import _assessment_command
+from tests.test_agent_team_setup import CapturingCredentialSink
+from tests.test_agent_team_setup_qualification import (
+    ReadyTopology, acknowledge_all, apply_manifest, provision_ready_topology, routing_base, seed_model_catalog,
+    topology_actors, topology_payload,
+)
 from tests.test_review_provenance_transports import databases, fence
 from tests.test_team_pm_dispatch import db_session_factory
 from tests.test_team_pm_recovery import recovery_api
@@ -33,15 +42,76 @@ async def stored_history(factory, rework_id, verdict_id, source_id):
         return issued.reviewer_profile_id, issued.routing_snapshot, list(receipts)
 
 
-async def assert_postgresql_binding_lock(factory, catalog_id):
-    """An independent writer cannot change the selected binding's publisher inside begin."""
-    async with factory() as competing:
-        await competing.execute(text("SET LOCAL lock_timeout = '200ms'"))
-        with pytest.raises(DBAPIError) as blocked:
-            await competing.execute(update(AgentModelCatalogEntry).where(AgentModelCatalogEntry.id == catalog_id)
-                .values(revision=AgentModelCatalogEntry.revision + 1))
-        assert getattr(blocked.value.orig, "sqlstate", None) == "55P03"
-        await competing.rollback()
+async def topology_with_two_reviewers(db):
+    payload = topology_payload()
+    extra = deepcopy(payload["verifiers"][0])
+    extra.update(actor_key="alternate-reviewer", actor_name="alternate-reviewer", display_name="Alternate Review",
+                 profile_key="security-scope-agent", runtime_ref="runtime://alternate-reviewer",
+                 credential_ref="agent-team-secure-sink/alternate-reviewer")
+    payload["verifiers"].append(extra)
+    manifest = AgentTeamMaster.model_validate(payload)
+    await seed_model_catalog(db, manifest)
+    sink = CapturingCredentialSink()
+    service = AgentTeamSetupService(db, credential_sink=sink)
+    await apply_manifest(service, manifest, expected_revision=0, key="multi-verifier-topology")
+    await acknowledge_all(service, manifest, sink.keys)
+    return ReadyTopology(manifest, sink, service, await topology_actors(db, manifest))
+
+
+def control_plane_writes(project_id, capacity_id, manager, worker, reviewer, earlier_actor, binding, topology_id):
+    writes = {
+        "catalog": update(AgentModelCatalogEntry).where(AgentModelCatalogEntry.id == binding["catalog_id"])
+                  .values(revision=AgentModelCatalogEntry.revision + 1),
+        "binding": update(AgentModelBinding).where(AgentModelBinding.id == binding["binding_id"]).values(revision=AgentModelBinding.revision + 1),
+        "project_policy": update(Project).where(Project.id == project_id).values(require_different_review_publisher=False),
+        "topology": update(AgentTeamTopology).where(AgentTeamTopology.id == topology_id).values(revision=AgentTeamTopology.revision + 1),
+        "capacity_profile": update(TeamMember).where(TeamMember.id == capacity_id).values(profile_id=None),
+        "verifier_identity": update(AgentActor).where(AgentActor.id == reviewer.id).values(enabled=False),
+    }
+    actors = {"worker_membership": worker.id, "verifier_membership": reviewer.id, "manager_membership": manager.id}
+    if earlier_actor is not None:
+        actors["prior_contributor_membership"] = earlier_actor.id
+    for label, actor_id in actors.items():
+        writes[label] = update(AgentTeamTopologyMember).where(AgentTeamTopologyMember.actor_id == actor_id).values(lifecycle_state="disabled")
+    return writes
+
+
+async def assert_postgresql_locks(factory, writes):
+    blocked_writers = set()
+    for name, statement in writes.items():
+        async with factory() as competing:
+            await competing.execute(text("SET LOCAL lock_timeout = '180ms'"))
+            with pytest.raises(DBAPIError) as blocked:
+                await competing.execute(statement)
+            assert getattr(blocked.value.orig, "sqlstate", None) == "55P03", name
+            blocked_writers.add(name)
+            await competing.rollback()
+    return blocked_writers
+
+
+async def assert_floor_preview(task_id, task_version, pm_key, reviewer, alternate_verifier):
+    command = _assessment_command(task_version=task_version).model_copy(update={
+        "review_mode": "independent", "required_skill_levels": {},
+    })
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://localhost:8001") as client:
+        assessment = await client.post(f"/api/agent/planning/tasks/{task_id}/routing-assessment",
+            headers={"X-Agent-API-Key": pm_key, "Idempotency-Key": "assess-revised-instructions",
+                     "X-Correlation-ID": "assess-revised-instructions", "X-Agent-Rationale": "Select a qualified independent reviewer"},
+            json=command.model_dump(mode="json"))
+        assert assessment.status_code == 201, assessment.text
+        for actor in (alternate_verifier, reviewer):
+            response = await client.post(f"/api/agent/tasks/{task_id}/routing-preview",
+                headers={"X-Agent-API-Key": pm_key}, json={"purpose": "verification",
+                    "assessment_id": assessment.json()["assessment"]["id"], "expected_task_version": task_version,
+                    "reviewer_profile_id": actor.profile_id})
+            assert response.status_code == 200, response.text
+            snapshot = response.json()
+            exclusions = [row for row in snapshot["exclusions"] if row["actor_id"] == actor.id]
+            if actor.id == alternate_verifier.id:
+                assert exclusions and all("reviewer_profile_mismatch" in row["hard_blocker_codes"] for row in exclusions)
+                assert all(row["actor_id"] != actor.id for row in snapshot["eligible_candidates"])
+            else:
+                assert all("reviewer_profile_mismatch" not in row["hard_blocker_codes"] for row in exclusions)
 
 
 def assert_lookup_indexes(session):
@@ -61,6 +131,8 @@ def assert_lookup_indexes(session):
     "worker_membership_lost", "verifier_membership_lost", "task_changed_before_begin", "previous_canceled_run",
     "identity_revision_during_begin", "identity_publisher_during_begin", "failed_recovery", "canceled_recovery", "two_items",
     "recovered_submitter", "older_contributor", "missing_recovery_receipt", "wrong_recovery_event",
+    "wrong_submitted_version", "wrong_issued_version", "legacy_verdict_selection", "legacy_verdict_wrong_candidate",
+    "policy_changed_before_begin",
 ])
 @pytest.mark.usefixtures("deployed_agent_skill_release")
 async def test_authenticated_shadow_handback(db_session, db_session_factory, task_factory,
@@ -71,7 +143,8 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
     db = db_session
     await initialize_control_plane(db)
     await db.commit()
-    team = await provision_ready_topology(db)
+    multi_reviewer = case in {"same_worker", "recovered_submitter"}
+    team = await topology_with_two_reviewers(db) if multi_reviewer else await provision_ready_topology(db)
     member, other_member = team.manifest.workers[:2]
     verifier = team.manifest.verifiers[0]
     worker, other, reviewer = (team.actors[m.actor_key] for m in (member, other_member, verifier))
@@ -86,11 +159,16 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
     await db.flush()
     task.project_id = (await db.get(Iteration, task.iteration_id)).project_id = project.id
     task.effort_hours = 8
-    for actor, role in ((manager, "manager"), (worker, "executor"), (other, "executor"), (reviewer, "reviewer")):
+    memberships = [(manager, "manager"), (worker, "executor"), (other, "executor"), (reviewer, "reviewer")]
+    if multi_reviewer:
+        alternate_verifier = team.actors[team.manifest.verifiers[1].actor_key]
+        memberships.append((alternate_verifier, "reviewer"))
+    for actor, role in memberships:
         principal = await IdentityService(db).actor_context(actor)
         db.add_all([WorkspaceMembership(principal_id=principal.principal_id, role="member"),
                     ProjectMembership(principal_id=principal.principal_id, project_id=project.id, role=role)])
-    recovered_origin = case in {"recovered_submitter", "older_contributor", "missing_recovery_receipt", "wrong_recovery_event"}
+    recovered_origin = case in {"recovered_submitter", "older_contributor", "missing_recovery_receipt", "wrong_recovery_event",
+                                "wrong_submitted_version", "wrong_issued_version"}
     if recovered_origin:
         prior_capacity = await team_member_factory(profile=other.profile, iteration=await db.get(Iteration, task.iteration_id))
         task.assignee_id = prior_capacity.id
@@ -181,6 +259,8 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
             return
         if case == "model_escalation":
             reject_request["evidence"]["routing_failure_category"] = "tool_insufficiency"
+        if case in {"legacy_verdict_selection", "legacy_verdict_wrong_candidate"}:
+            reject_request.pop("reviewed_candidate_digest")
         rejected = await call(*verdict, reviewer_key, payload=reject_request, receipt="request-revision")
         assert await call(*verdict, reviewer_key, payload=reject_request, receipt="request-revision") == rejected
         rework = rejected["rework_assignment"]
@@ -207,12 +287,18 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
                     AgentIdempotencyRecord.actor_id == worker.id, AgentIdempotencyRecord.operation == "work.submit",
                     AgentIdempotencyRecord.target_id == assigned["id"]))
                 await audit.delete(submission)
-            if case == "wrong_rework_event":
+            if case in {"wrong_rework_event", "legacy_verdict_selection", "legacy_verdict_wrong_candidate"}:
                 recorded_event = await audit.scalar(select(TaskEvent).where(TaskEvent.task_id == task.id,
                     TaskEvent.event_type == "agent.verification_verdict", TaskEvent.actor_id == reviewer.id))
                 changed = json.loads(recorded_event.payload)
-                changed["rework_assignment_id"] += 1
-                recorded_event.payload = json.dumps(changed)
+                if case == "wrong_rework_event":
+                    changed["rework_assignment_id"] += 1
+                else:
+                    assert changed.get("reviewed_candidate_digest") is None and changed["review_selection"] == origin
+                    if case == "legacy_verdict_wrong_candidate":
+                        changed["review_selection"]["candidate"]["digest"] = "0" * 64
+                if case != "legacy_verdict_selection":
+                    recorded_event.payload = json.dumps(changed)
             if case == "verifier_disabled":
                 (await audit.get(AgentActor, reviewer.id)).enabled = False
             if case == "verifier_rebound":
@@ -226,11 +312,18 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
             if case == "previous_canceled_run":
                 audit.add(AgentRun(task_id=task.id, assignment_id=rework["id"], actor_id=worker.id,
                                    status="canceled", claim_generation=running["claim_generation"] + 1))
-            if case in {"missing_recovery_receipt", "wrong_recovery_event"}:
-                if case == "missing_recovery_receipt":
+            if case == "wrong_submitted_version":
+                (await audit.get(AgentTaskAssignment, assigned["id"])).task_version += 1
+            if case in {"missing_recovery_receipt", "wrong_recovery_event", "wrong_issued_version"}:
+                if case in {"missing_recovery_receipt", "wrong_issued_version"}:
                     row = await audit.scalar(select(AgentIdempotencyRecord).where(AgentIdempotencyRecord.actor_id == manager.id,
                         AgentIdempotencyRecord.operation == "recovery.requeue", AgentIdempotencyRecord.target_id == task.id))
-                    await audit.delete(row)
+                    if case == "missing_recovery_receipt":
+                        await audit.delete(row)
+                    else:
+                        value = json.loads(row.response_payload)
+                        value["response"]["task"]["version"] += 1
+                        row.response_payload = json.dumps(value)
                 else:
                     row = await audit.scalar(select(TaskEvent).where(TaskEvent.task_id == task.id,
                         TaskEvent.actor_id == manager.id, TaskEvent.event_type == "agent.recovery_requeued"))
@@ -282,7 +375,8 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
             record_property("added_proof_selects", str(proof_selects - len(selects)))
             return
         queue = await call(*work, key)
-        ready_cases = {"same_worker", "recovered_submitter", "binding_changed_before_begin", "task_changed_before_begin", "identity_revision_during_begin",
+        ready_cases = {"same_worker", "recovered_submitter", "legacy_verdict_selection", "binding_changed_before_begin",
+                       "task_changed_before_begin", "policy_changed_before_begin", "identity_revision_during_begin",
                        "identity_publisher_during_begin", "failed_recovery", "canceled_recovery"}
         if case not in ready_cases:
             blocked, = queue["blocked_assigned"]
@@ -309,13 +403,15 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
             pending = await audit.get(AgentTaskAssignment, rework["id"])
             assert pending.reviewer_profile_id is None and json.loads(pending.routing_snapshot) == rework["routing_snapshot"]
         handback = {"assignment_id": rework["id"], "queue_revision": queue["queue_revision"]}
-        if case in {"binding_changed_before_begin", "task_changed_before_begin"}:
+        if case in {"binding_changed_before_begin", "task_changed_before_begin", "policy_changed_before_begin"}:
             async with db_session_factory() as audit:
                 if case == "binding_changed_before_begin":
                     entry = await audit.get(AgentModelCatalogEntry, original_execution["catalog_id"])
                     entry.revision += 1
-                else:
+                elif case == "task_changed_before_begin":
                     (await audit.get(Task, task.id)).version += 1
+                else:
+                    (await audit.get(Project, project.id)).require_different_review_publisher = False
                 await audit.commit()
             await call(*begin, worker_key, payload={**handback, "model": member.default_model_binding_key},
                        receipt="stale-handoff", error="routing_selection_pending")
@@ -335,6 +431,12 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
         next_request = {**handback, "model": member.default_model_binding_key}
         resolve = agent_work_service.actor_provenance
         is_pg = db.get_bind().dialect.name == "postgresql"
+        checked_writers = set()
+        writes = {}
+        if is_pg and multi_reviewer:
+            topology_id = await db.scalar(select(AgentTeamTopologyMember.topology_id).where(AgentTeamTopologyMember.actor_id == worker.id))
+            writes = control_plane_writes(project.id, assigned["team_member_id"], manager, worker, reviewer,
+                                         other if earlier_run else None, original_execution, topology_id)
 
         async def final_observation(*args, **kwargs):
             value = await resolve(*args, **kwargs)
@@ -342,8 +444,8 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
                 return {**value, "catalog_revision": value["catalog_revision"] + 1}
             if case == "identity_publisher_during_begin":
                 return {**value, "publisher_key": "independent-publisher"}
-            if case == "same_worker" and is_pg:
-                await assert_postgresql_binding_lock(db_session_factory, value["catalog_id"])
+            if writes:
+                checked_writers.update(await assert_postgresql_locks(db_session_factory, writes))
             return value
 
         with patch.object(agent_work_service, "actor_provenance", final_observation), \
@@ -372,6 +474,9 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
         if earlier_run:
             assert lineage["contributor_count"] == 2 and lineage["source_recovery"]["assignment_id"] == assigned["id"]
             assert lineage["source_recovery"]["receipt_id"] and lineage["source_recovery"]["event_id"]
+            assert (lineage["source_recovery"]["issued_task_version"], lineage["source_recovery"]["submitted_task_version"]) == (
+                assigned["task_version"], submitted["assignment"]["task_version"])
+            assert assigned["task_version"] < submitted["assignment"]["task_version"]
         assert lineage["worker_binding"]["binding_revision"] == original_execution["binding_revision"]
         assert lineage["worker_binding"]["publisher_key"] == original_execution["publisher_key"]
         assert lineage["review_floor"] == resumed["assignment"]["routing_snapshot"]["review_floor"]
@@ -408,6 +513,18 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
         revised = await call(*submit, worker_key, payload={**fence(resumed), "observed_model": member.default_model_binding_key,
             "summary": "Clarified the instructions", "evidence": {"check": "verified the revised explanation"},
             "artifact_links": ["https://example.test/guide/revised"]}, receipt="submit-revision")
+        if multi_reviewer:
+            async with db_session_factory() as audit:
+                alternate_binding = await review_provenance.actor_provenance(audit, alternate_verifier)
+            assert alternate_verifier.profile_id != reviewer.profile_id
+            assert alternate_binding["publisher_key"] == lineage["reviewer_publisher_key"]
+            await call(*dispatch, pm_key, payload={"actor_id": alternate_verifier.id, "purpose": "verification", "task_id": task.id,
+                "reviewer_profile_id": alternate_verifier.profile_id, "expected_task_version": revised["task"]["version"]},
+                receipt="other-independent-profile", error="submitted rework requires its recorded independent reviewer profile")
+            await assert_floor_preview(task.id, revised["task"]["version"], pm_key, reviewer, alternate_verifier)
+            async with db_session_factory() as audit:
+                assert not await audit.scalar(select(AgentTaskAssignment.id).where(AgentTaskAssignment.task_id == task.id,
+                    AgentTaskAssignment.purpose == "verification", AgentTaskAssignment.state == "queued"))
         second_review = await call(*dispatch, pm_key, payload={"actor_id": reviewer.id, "task_id": task.id,
             "purpose": "verification", "reviewer_profile_id": reviewer.profile_id, "expected_task_version": revised["task"]["version"]},
             receipt="verify-revision")
@@ -425,11 +542,12 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
             "queue_revision": second_queue["queue_revision"], "model": member.default_model_binding_key}, receipt="begin-second-revision")
         assert second_begin["claim_generation"] > resumed["claim_generation"] and second_begin["run"]["id"] != resumed["run"]["id"]
         assert second_begin["run"]["execution_provenance"]["supervised_rework"]["rejected_run_id"] == resumed["run"]["id"]
-        if is_pg:
+        if checked_writers:
+            assert checked_writers == set(writes)
             async with db_session_factory() as competing:
                 await competing.execute(text("SET LOCAL lock_timeout = '500ms'"))
-                wrote = await competing.execute(update(AgentModelCatalogEntry).where(AgentModelCatalogEntry.id == original_execution["catalog_id"])
-                    .values(revision=AgentModelCatalogEntry.revision + 1))
-                assert wrote.rowcount == 1
+                for statement in writes.values():
+                    assert (await competing.execute(statement)).rowcount == 1
                 await competing.commit()
             record_property("postgres_catalog_writer", "blocked with 55P03 during begin; committed after the fence")
+            record_property("postgres_control_plane_writers", ",".join(sorted(checked_writers)))
