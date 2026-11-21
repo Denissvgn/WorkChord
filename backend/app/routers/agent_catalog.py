@@ -17,6 +17,7 @@ from app.routers.agent_planning import (
     get_agent_planning_command_context,
 )
 from app.schemas.agent_planning import AgentPlanningCommandContext
+from app.schemas.review_evidence import ReviewEvidenceCommand
 from app.schemas.agent_team_setup import AgentTeamRuntimeAcknowledgement
 from app.schemas.agent_routing import (
     AgentModelBindingCreate,
@@ -67,6 +68,23 @@ async def get_model_catalog_principal(
     if not agent_api_key and admin_api_key_is_valid(admin_api_key):
         return _admin_header_actor()
     return await get_agent_actor(service, agent_api_key)
+
+
+@router.post("/agent/tasks/{task_id}/review-evidence")
+async def attest_review_evidence(
+    task_id: int,
+    data: ReviewEvidenceCommand,
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+    command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)],
+):
+    """Issue or revoke candidate-bound review evidence as the authenticated operator."""
+    from app.services.review_evidence import record_review_evidence
+    try:
+        return await record_review_evidence(db,actor,task_id,data,idempotency_key=command.idempotency_key,
+            rationale=command.rationale,correlation_id=command.correlation_id)
+    except Exception as exc:
+        _handle_agent_error(exc)
 
 
 @router.post("/agent/model-catalog/execution-provenance/{run_id}/reconcile")

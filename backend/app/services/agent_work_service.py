@@ -1431,10 +1431,15 @@ class AgentWorkService:
             routing_snapshot = routing_validation.snapshot.model_dump(mode="json")
         assert routing_snapshot is not None
         review_selection = None
+        if data.review_evidence_id is not None and data.purpose != "verification":
+            raise ValueError("Review evidence is available only for verification.")
         if data.purpose == "verification":
             review_selection = await select_reviewer(self.db, task, task_assignments, target,
                 binding_id=getattr(data, "model_binding_id", None) or getattr(data, "review_binding_id", None),
-                reviewer_profile_id=data.reviewer_profile_id)
+                reviewer_profile_id=data.reviewer_profile_id, review_evidence_id=data.review_evidence_id)
+            if data.review_evidence_id is not None and not isinstance(data, ModelAwareAgentTaskAssignmentCreate):
+                from app.services.review_evidence import check_supervised_selection
+                await check_supervised_selection(self.db,task,principal,review_selection,data.reviewer_profile_id)
             if review_selection is None and getattr(data, "review_binding_id", None):
                 raise ValueError("An explicit supervised review binding requires the project publisher policy.")
         assignment = AgentTaskAssignment(
@@ -1735,14 +1740,35 @@ class AgentWorkService:
 
         if getattr(data, "review_binding_id", None) and assignment.purpose != "verification":
             raise ValueError("A review binding is available only for verification.")
-        if assignment.purpose == "verification" and data.state != "cancelled":
+        selection_unchanged = (
+            (assignment.review_selection or {}).get("review_evidence") is not None
+            and data.model_fields_set <= {"expected_queue_revision", "reason", "queue_rank"}
+        )
+        if assignment.purpose == "verification" and data.state != "cancelled" and not selection_unchanged:
             selected_binding_id = getattr(data, "model_binding_id", None) or getattr(data, "review_binding_id", None)
             if selected_binding_id is None and selected_actor.id == assignment.actor_id and assignment.review_selection:
                 selected_binding_id = assignment.review_selection["reviewer"]["binding_id"]
+            previous_evidence = (assignment.review_selection or {}).get("review_evidence")
+            evidence_id = data.review_evidence_id
+            if evidence_id is None and previous_evidence and selected_actor.id == assignment.actor_id and (
+                    selected_binding_id is None or selected_binding_id == previous_evidence["reviewer"]["binding_id"]):
+                evidence_id = previous_evidence["id"]
+            if previous_evidence and evidence_id is None and not isinstance(data, ModelAwareAgentTaskAssignmentUpdate):
+                from app.services.agent_routing_service import AgentRoutingConflictError
+                raise AgentRoutingConflictError("verification_evidence_unavailable",
+                    "A different supervised verifier or binding requires fresh candidate-bound evidence.")
             assignment.review_selection = await select_reviewer(self.db, task, task_assignments, selected_actor,
                 binding_id=selected_binding_id or assignment.model_binding_id,
                 reviewer_profile_id=(data.reviewer_profile_id if "reviewer_profile_id" in data.model_fields_set
-                                     else assignment.reviewer_profile_id))
+                                     else assignment.reviewer_profile_id), review_evidence_id=evidence_id)
+            if evidence_id and not isinstance(data, ModelAwareAgentTaskAssignmentUpdate) and (
+                    previous_evidence is None or previous_evidence["id"] != evidence_id
+                    or previous_evidence["reviewer"]!=assignment.review_selection["reviewer"]):
+                from app.services.review_evidence import check_supervised_selection
+                await check_supervised_selection(self.db,task,principal,assignment.review_selection,
+                    data.reviewer_profile_id or assignment.reviewer_profile_id)
+        elif data.review_evidence_id is not None:
+            raise ValueError("Review evidence is available only for verification.")
         if selected_actor.id != assignment.actor_id:
             assignment.actor_id = selected_actor.id
             self._advance_dispatch_queue(principal, selected_actor, boundary)
@@ -3031,7 +3057,8 @@ class AgentWorkService:
                 rework_worker.id,
             )
             self._validate_assignment_actor(rework_worker, "execution")
-        if await different_publisher_required(self.db, task.project_id):
+        if ((assignment.review_selection or {}).get("review_evidence") or data.reviewed_packet_sha256 is not None
+                or await different_publisher_required(self.db, task.project_id)):
             from app.services.review_provenance import verify_verdict
             await verify_verdict(self.db, task, task_assignments, assignment, actor, data, observed_candidate)
         from app.services.task_brief_service import TaskBriefService

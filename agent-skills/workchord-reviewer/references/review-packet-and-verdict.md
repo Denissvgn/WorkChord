@@ -32,6 +32,8 @@ changes, and hand rework to an explicit owner.
 
 ## Build The Review Packet
 
+If the assigned `review_selection` contains `review_evidence`, obtain the operator-prepared packet through the approved channel. Check the commit URL, the selected model binding, the expiry and the packet's SHA-256. For `source_only`, verify that the current task assessment explicitly permits review from source alone. For `source_and_tests`, check the named test results against their recorded digests. Use exactly those observations and the submitted source to evaluate each criterion. Send the digest of the packet you actually reviewed in `reviewed_packet_sha256` with the normal `observed_model` and `reviewed_candidate_digest`. Stop and return to the PM if the material is unavailable, stale or differs.
+
 Read the complete context with the review assignment ID, then record:
 
 1. The typed brief (`task.brief`) when present: goal, scope, exclusions,
