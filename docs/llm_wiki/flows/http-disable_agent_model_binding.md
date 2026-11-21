@@ -140,15 +140,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| disable_agent_model_binding | service.disable_binding | 455 | `service.disable_binding(binding_id, actor, data, command=command)` |
-| disable_agent_model_binding | _handle_model_error | 462 | `_handle_model_error(exc)` |
-| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 124 | `isinstance(exc, AgentModelConflictError)` |
-| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 125 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_model_error | exc.detail (backend/app/routers/agent…log.py:_handle_model_error) | 127 | `exc.detail(data not statically known)` |
-| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 129 | `isinstance(exc, LookupError)` |
-| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 130 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={...})` |
-| _handle_model_error | str (backend/app/routers/agent…log.py:_handle_model_error) | 134 | `str(exc)` |
-| _handle_model_error | _handle_agent_error | 137 | `_handle_agent_error(exc)` |
+| disable_agent_model_binding | service.disable_binding | 473 | `service.disable_binding(binding_id, actor, data, command=command)` |
+| disable_agent_model_binding | _handle_model_error | 480 | `_handle_model_error(exc)` |
+| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 142 | `isinstance(exc, AgentModelConflictError)` |
+| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 143 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_model_error | exc.detail (backend/app/routers/agent…log.py:_handle_model_error) | 145 | `exc.detail(data not statically known)` |
+| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 147 | `isinstance(exc, LookupError)` |
+| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 148 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={...})` |
+| _handle_model_error | str (backend/app/routers/agent…log.py:_handle_model_error) | 152 | `str(exc)` |
+| _handle_model_error | _handle_agent_error | 155 | `_handle_agent_error(exc)` |
 | _handle_agent_error | isinstance (backend/app/routers/agent…ing.py:_handle_agent_error) | 106 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error) | 107 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
 
@@ -160,12 +160,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `disable_agent_model_binding` | `service.disable_binding` | 455 |
-| external_call | `_handle_model_error` | `isinstance` | 124 |
-| external_call | `_handle_model_error` | `HTTPException` | 125 |
-| unresolved_call | `_handle_model_error` | `exc.detail` | 127 |
-| external_call | `_handle_model_error` | `isinstance` | 129 |
-| external_call | `_handle_model_error` | `HTTPException` | 130 |
+| unresolved_call | `disable_agent_model_binding` | `service.disable_binding` | 473 |
+| external_call | `_handle_model_error` | `isinstance` | 142 |
+| external_call | `_handle_model_error` | `HTTPException` | 143 |
+| unresolved_call | `_handle_model_error` | `exc.detail` | 145 |
+| external_call | `_handle_model_error` | `isinstance` | 147 |
+| external_call | `_handle_model_error` | `HTTPException` | 148 |
 | external_call | `_handle_agent_error` | `isinstance` | 106 |
 | external_call | `_handle_agent_error` | `HTTPException` | 107 |
 | step_limit | `disable_agent_model_binding` | `first 12 steps` | 0 |

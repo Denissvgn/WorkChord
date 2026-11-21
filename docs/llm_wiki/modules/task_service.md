@@ -14,6 +14,8 @@ Task commands share transaction ownership and task/iteration version fences. Uns
 
 Backlog project changes require edit permission in both scopes. Project locks are acquired in ascending ID order and the task scope is rechecked before writing. The complete subtree must have no incoming or outgoing dependency across its boundary. Both backlogs receive transactional recovery points, descendants reserve one version per command, and rejected moves roll everything back. Actual dependency changes invalidate current progress and acceptance through general updates and individual add/remove commands. Immutable evidence history remains available, a command reserves one task version, and no-op dependency requests retain their current version. Locked graph relationships are loaded explicitly before applying a dependency update.
 
+Generic task events reserve the review evidence issue and revocation names for the operator's attestation command. The attestation service records the issuer's bound identity and its own idempotent result in the task ledger.
+
 ## Imports
 
 | Source | Symbols |
@@ -73,7 +75,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (64) |
+| Inbound | `backend` (65) |
 | Inbound | `scripts` (2) |
 | Outbound | `backend` (28) |
 
@@ -83,7 +85,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 86 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 87 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

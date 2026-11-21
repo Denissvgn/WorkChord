@@ -49,6 +49,7 @@ flowchart LR
     n7["test_commit_only_review_verifies_the_entire_pinned_range (backend/tests/test_review_provenance.py)"]
     n8["test_github_candidate_uses_full_head_and_contributions (backend/tests/test_review_provenance.py)"]
     n9["backend/tests/test_review_provenance_transports.py"]
+    n10["backend/tests/test_scoped_review_evidence.py"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -58,6 +59,7 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/github_status_service.md"
     click n1 "../modules/tasks.md"
     click n2 "../modules/tasks.md"
@@ -68,6 +70,7 @@ flowchart LR
     click n7 "../modules/test_review_provenance.md"
     click n8 "../modules/test_review_provenance.md"
     click n9 "../modules/test_review_provenance_transports.md"
+    click n10 "../modules/test_scoped_review_evidence.md"
 ```
 
 ### Summary
@@ -90,3 +93,4 @@ flowchart LR
 | `test_commit_only_review_verifies_the_entire_pinned_range` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
 | `test_github_candidate_uses_full_head_and_contributions` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
 | `test_review_provenance_transports` | import | [test_review_provenance_transports](../modules/test_review_provenance_transports.md) | — |
+| `test_scoped_review_evidence` | import | [test_scoped_review_evidence](../modules/test_scoped_review_evidence.md) | — |

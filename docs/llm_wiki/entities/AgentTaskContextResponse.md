@@ -1,6 +1,6 @@
 # AgentTaskContextResponse
 
-**Location:** `backend/app/schemas/agent.py:888`
+**Location:** `backend/app/schemas/agent.py:894`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

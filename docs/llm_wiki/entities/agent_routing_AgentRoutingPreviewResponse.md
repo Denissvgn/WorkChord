@@ -1,6 +1,6 @@
 # AgentRoutingPreviewResponse
 
-**Location:** `backend/app/schemas/agent_routing.py:1129`
+**Location:** `backend/app/schemas/agent_routing.py:1141`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -22,8 +22,9 @@ Expiring non-dispatch result over a digest-bound routing input snapshot.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `acceptance_blocker_codes` | `list[RoutingBlockerCode]` | `acceptance_blocker_codes` | No | No | factory: `list` | — | — | — |
+| `review_evidence` | `ScopedReviewEvidence \| None` | `review_evidence` | No | Yes | `None` | — | — | — |
 | `runtime_availability` | `Literal['unknown']` | `runtime_availability` | No | No | `'unknown'` | — | — | — |
-| `eligibility_basis` | `Literal['task_policy_and_configuration']` | `eligibility_basis` | No | No | `'task_policy_and_configuration'` | — | — | — |
+| `eligibility_basis` | `Literal['task_policy_and_configuration', 'task_policy_configuration_and_review_evidence']` | `eligibility_basis` | No | No | `'task_policy_and_configuration'` | — | — | — |
 | `model_attestation` | `Literal['not_independently_attested']` | `model_attestation` | No | No | `'not_independently_attested'` | — | — | — |
 | `preview_id` | `str` | `preview_id` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `preview_digest` | `RoutingDigest` | `preview_digest` | Yes | No | — | — | — | — |

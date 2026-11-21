@@ -1,6 +1,6 @@
 # AgentModelCatalogResponse
 
-**Location:** `backend/app/schemas/agent_routing.py:367`
+**Location:** `backend/app/schemas/agent_routing.py:368`
 **Kind:** Pydantic model
 **Bases:** `AgentModelCatalogFields`
 **Module:** [agent_routing](../modules/agent_routing.md)

@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1741,
-      "flows": 571,
+      "entities": 1748,
+      "flows": 573,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 1121,
-      "workflows": 216
+      "modules": 1124,
+      "workflows": 219
     },
     "dependency_architecture": 2,
-    "total": 3665
+    "total": 3680
   },
   "dependency_pages": {
     "count": 2,
@@ -952,11 +952,109 @@
             "backend/app/schemas/agent.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 743,
+          "step_count": 745,
           "truncated": true
         }
       },
       "id": "http-attest_my_retained_output",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "attest_review_evidence",
+        "source_path": "backend/app/routers/agent_catalog.py",
+        "symbol": "attest_review_evidence"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 452,
+              "step": "record_review_evidence",
+              "step_index": 2,
+              "target": "db.add"
+            }
+          ],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 84,
+              "step": "require_operator",
+              "target": "db.info.get"
+            },
+            {
+              "kind": "external_call",
+              "line": 87,
+              "step": "actor_scopes",
+              "target": "json.loads"
+            },
+            {
+              "kind": "external_call",
+              "line": 90,
+              "step": "actor_scopes",
+              "target": "isinstance"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 333,
+              "step": "record_review_evidence",
+              "target": "TypeAdapter(ReviewEvidenceCommand).validate_python"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "attest_review_evidence",
+              "target": "first 12 steps"
+            },
+            {
+              "kind": "truncated_flow",
+              "line": 0,
+              "step": "attest_review_evidence",
+              "target": "depth limit"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": true
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/agent_catalog.py",
+            "backend/app/services/review_evidence.py",
+            "backend/app/authority.py",
+            "backend/app/services/agent_service.py",
+            "backend/app/schemas/agent_planning.py",
+            "backend/app/services/review_provenance.py",
+            "backend/app/services/agent_routing_policy.py",
+            "backend/app/commands.py",
+            "backend/app/services/delivery_dependency_service.py",
+            "backend/app/services/task_service.py",
+            "backend/app/mutation_versions.py",
+            "backend/app/services/task_brief_service.py",
+            "backend/app/services/discussion_service.py",
+            "backend/app/models/outbound_webhook.py",
+            "backend/app/services/identity_service.py",
+            "backend/app/config.py",
+            "backend/app/services/agent_routing_service.py",
+            "backend/app/utils/time.py",
+            "backend/app/query_limits.py",
+            "backend/app/utils/url_policy.py",
+            "backend/app/utils/github_links.py",
+            "backend/app/services/execution_planning_window.py",
+            "backend/app/services/retained_planning_output.py",
+            "backend/app/models/agent.py",
+            "backend/app/routers/agent_planning.py"
+          ],
+          "step_count": 785,
+          "truncated": true
+        }
+      },
+      "id": "http-attest_review_evidence",
       "language": "python"
     },
     {
@@ -2114,7 +2212,7 @@
             "backend/app/services/task_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 283,
+          "step_count": 284,
           "truncated": true
         }
       },
@@ -2405,7 +2503,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 396,
+          "step_count": 397,
           "truncated": true
         }
       },
@@ -2988,37 +3086,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 400,
+              "line": 418,
               "step": "create_agent_model_binding",
               "target": "service.create_binding"
             },
             {
               "kind": "external_call",
-              "line": 124,
+              "line": 142,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 125,
+              "line": 143,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 127,
+              "line": 145,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 129,
+              "line": 147,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 130,
+              "line": 148,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -3072,37 +3170,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 270,
+              "line": 288,
               "step": "create_agent_model_catalog_entry",
               "target": "service.create_catalog"
             },
             {
               "kind": "external_call",
-              "line": 124,
+              "line": 142,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 125,
+              "line": 143,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 127,
+              "line": 145,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 129,
+              "line": 147,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 130,
+              "line": 148,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -4185,7 +4283,7 @@
             "backend/app/services/task_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 151,
+          "step_count": 152,
           "truncated": true
         }
       },
@@ -7212,37 +7310,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 455,
+              "line": 473,
               "step": "disable_agent_model_binding",
               "target": "service.disable_binding"
             },
             {
               "kind": "external_call",
-              "line": 124,
+              "line": 142,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 125,
+              "line": 143,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 127,
+              "line": 145,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 129,
+              "line": 147,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 130,
+              "line": 148,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -7296,37 +7394,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 325,
+              "line": 343,
               "step": "disable_agent_model_catalog_entry",
               "target": "service.disable_catalog"
             },
             {
               "kind": "external_call",
-              "line": 124,
+              "line": 142,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 125,
+              "line": 143,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 127,
+              "line": 145,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 129,
+              "line": 147,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 130,
+              "line": 148,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -8387,25 +8485,25 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 572,
+              "line": 574,
               "step": "TaskService.get_by_id",
               "target": "(await self.db.execute(select(Task.iteration_id, Task.project_id).where(Task.id == task_id))).first"
             },
             {
               "kind": "unresolved_call",
-              "line": 572,
+              "line": 574,
               "step": "TaskService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 572,
+              "line": 574,
               "step": "TaskService.get_by_id",
               "target": "select(Task.iteration_id, Task.project_id).where"
             },
             {
               "kind": "external_call",
-              "line": 572,
+              "line": 574,
               "step": "TaskService.get_by_id",
               "target": "select"
             },
@@ -8657,37 +8755,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 375,
+              "line": 393,
               "step": "get_agent_model_binding",
               "target": "service.get_binding"
             },
             {
               "kind": "external_call",
-              "line": 124,
+              "line": 142,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 125,
+              "line": 143,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 127,
+              "line": 145,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 129,
+              "line": 147,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 130,
+              "line": 148,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -8741,49 +8839,49 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 245,
+              "line": 263,
               "step": "get_agent_model_catalog_entry",
               "target": "service.get_catalog"
             },
             {
               "kind": "unresolved_call",
-              "line": 245,
+              "line": 263,
               "step": "get_agent_model_catalog_entry",
               "target": "catalog_key.strip().lower"
             },
             {
               "kind": "unresolved_call",
-              "line": 245,
+              "line": 263,
               "step": "get_agent_model_catalog_entry",
               "target": "catalog_key.strip"
             },
             {
               "kind": "external_call",
-              "line": 124,
+              "line": 142,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 125,
+              "line": 143,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 127,
+              "line": 145,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 129,
+              "line": 147,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 130,
+              "line": 148,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -8861,7 +8959,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 141,
+              "line": 159,
               "step": "_require_catalog_read",
               "target": "any"
             },
@@ -8879,7 +8977,7 @@
             },
             {
               "kind": "external_call",
-              "line": 145,
+              "line": 163,
               "step": "_require_catalog_read",
               "target": "HTTPException"
             }
@@ -8916,7 +9014,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 141,
+              "line": 159,
               "step": "_require_catalog_read",
               "target": "any"
             },
@@ -8934,7 +9032,7 @@
             },
             {
               "kind": "external_call",
-              "line": 145,
+              "line": 163,
               "step": "_require_catalog_read",
               "target": "HTTPException"
             }
@@ -11087,7 +11185,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 141,
+              "line": 159,
               "step": "_require_catalog_read",
               "target": "any"
             },
@@ -11105,7 +11203,7 @@
             },
             {
               "kind": "external_call",
-              "line": 145,
+              "line": 163,
               "step": "_require_catalog_read",
               "target": "HTTPException"
             }
@@ -13465,7 +13563,7 @@
             "backend/app/models/task.py",
             "backend/app/schemas/common.py"
           ],
-          "step_count": 925,
+          "step_count": 928,
           "truncated": true
         }
       },
@@ -13627,7 +13725,7 @@
             "backend/app/models/task.py",
             "backend/app/schemas/common.py"
           ],
-          "step_count": 935,
+          "step_count": 938,
           "truncated": true
         }
       },
@@ -13854,25 +13952,25 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 572,
+              "line": 574,
               "step": "TaskService.get_by_id",
               "target": "(await self.db.execute(select(Task.iteration_id, Task.project_id).where(Task.id == task_id))).first"
             },
             {
               "kind": "unresolved_call",
-              "line": 572,
+              "line": 574,
               "step": "TaskService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 572,
+              "line": 574,
               "step": "TaskService.get_by_id",
               "target": "select(Task.iteration_id, Task.project_id).where"
             },
             {
               "kind": "external_call",
-              "line": 572,
+              "line": 574,
               "step": "TaskService.get_by_id",
               "target": "select"
             },
@@ -14317,37 +14415,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 351,
+              "line": 369,
               "step": "list_agent_model_bindings",
               "target": "service.list_bindings"
             },
             {
               "kind": "external_call",
-              "line": 124,
+              "line": 142,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 125,
+              "line": 143,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 127,
+              "line": 145,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 129,
+              "line": 147,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 130,
+              "line": 148,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -14401,37 +14499,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 222,
+              "line": 240,
               "step": "list_agent_model_catalog",
               "target": "service.list_catalog"
             },
             {
               "kind": "external_call",
-              "line": 124,
+              "line": 142,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 125,
+              "line": 143,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 127,
+              "line": 145,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 129,
+              "line": 147,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 130,
+              "line": 148,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -19270,7 +19368,7 @@
             "backend/app/models/identity.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 722,
+          "step_count": 724,
           "truncated": true
         }
       },
@@ -19448,7 +19546,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 1669,
+              "line": 1671,
               "step": "TaskService.task_to_response",
               "step_index": 12,
               "target": "signals.pop"
@@ -20799,7 +20897,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 1669,
+              "line": 1671,
               "step": "TaskService.task_to_response",
               "step_index": 12,
               "target": "signals.pop"
@@ -21987,25 +22085,25 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 572,
+              "line": 574,
               "step": "TaskService.get_by_id",
               "target": "(await self.db.execute(select(Task.iteration_id, Task.project_id).where(Task.id == task_id))).first"
             },
             {
               "kind": "unresolved_call",
-              "line": 572,
+              "line": 574,
               "step": "TaskService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 572,
+              "line": 574,
               "step": "TaskService.get_by_id",
               "target": "select(Task.iteration_id, Task.project_id).where"
             },
             {
               "kind": "external_call",
-              "line": 572,
+              "line": 574,
               "step": "TaskService.get_by_id",
               "target": "select"
             },
@@ -22311,7 +22409,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 988,
+          "step_count": 990,
           "truncated": true
         }
       },
@@ -22483,7 +22581,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 1669,
+              "line": 1671,
               "step": "TaskService.task_to_response",
               "step_index": 12,
               "target": "signals.pop"
@@ -23916,37 +24014,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 425,
+              "line": 443,
               "step": "update_agent_model_binding",
               "target": "service.update_binding"
             },
             {
               "kind": "external_call",
-              "line": 124,
+              "line": 142,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 125,
+              "line": 143,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 127,
+              "line": 145,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 129,
+              "line": 147,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 130,
+              "line": 148,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -24000,37 +24098,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 295,
+              "line": 313,
               "step": "update_agent_model_catalog_entry",
               "target": "service.update_catalog"
             },
             {
               "kind": "external_call",
-              "line": 124,
+              "line": 142,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 125,
+              "line": 143,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 127,
+              "line": 145,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 129,
+              "line": 147,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 130,
+              "line": 148,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -24915,7 +25013,7 @@
             "backend/app/commands.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 107,
+          "step_count": 108,
           "truncated": false
         }
       },
@@ -26430,7 +26528,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 1669,
+              "line": 1671,
               "step": "TaskService.task_to_response",
               "step_index": 12,
               "target": "signals.pop"
@@ -27026,6 +27124,90 @@
         }
       },
       "id": "mcp-agent_attest_retained_planning_output",
+      "language": "python"
+    },
+    {
+      "category": "mcp",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "agent_attest_review_evidence",
+        "source_path": "backend/app/mcp_server.py",
+        "symbol": "agent_attest_review_evidence"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 100,
+              "step": "scope_requirement_is_mutating",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "external_call",
+              "line": 102,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 103,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "agent_attest_review_evidence",
+              "target": "first 12 steps"
+            },
+            {
+              "kind": "truncated_flow",
+              "line": 0,
+              "step": "agent_attest_review_evidence",
+              "target": "depth limit"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": true
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/mcp_server.py",
+            "backend/app/maintenance.py",
+            "backend/app/config.py",
+            "backend/app/commands.py",
+            "backend/app/services/delivery_dependency_service.py",
+            "backend/app/authority.py",
+            "backend/app/services/task_service.py",
+            "backend/app/services/task_brief_service.py",
+            "backend/app/services/discussion_service.py",
+            "backend/app/models/outbound_webhook.py",
+            "backend/app/services/identity_service.py",
+            "backend/app/services/agent_service.py",
+            "backend/app/utils/time.py",
+            "backend/app/models/identity.py"
+          ],
+          "step_count": 245,
+          "truncated": true
+        }
+      },
+      "id": "mcp-agent_attest_review_evidence",
       "language": "python"
     },
     {
@@ -28358,7 +28540,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 500,
+          "step_count": 501,
           "truncated": true
         }
       },
@@ -31942,11 +32124,12 @@
             "backend/app/utils/url_policy.py",
             "backend/app/utils/github_links.py",
             "backend/app/services/retained_planning_output.py",
+            "backend/app/services/review_evidence.py",
             "backend/app/services/agent_routing_observability.py",
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 1129,
+          "step_count": 1188,
           "truncated": true
         }
       },
@@ -35999,7 +36182,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 313,
+          "step_count": 314,
           "truncated": true
         }
       },
@@ -36181,7 +36364,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 490,
+          "step_count": 491,
           "truncated": true
         }
       },
@@ -36281,7 +36464,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 561,
+          "step_count": 562,
           "truncated": true
         }
       },
@@ -36375,7 +36558,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 398,
+          "step_count": 399,
           "truncated": true
         }
       },
@@ -36469,7 +36652,7 @@
             "backend/app/models/request_source.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 409,
+          "step_count": 410,
           "truncated": true
         }
       },
@@ -36564,7 +36747,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 450,
+          "step_count": 451,
           "truncated": true
         }
       },
@@ -36655,7 +36838,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 359,
+          "step_count": 360,
           "truncated": true
         }
       },
@@ -36744,7 +36927,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 313,
+          "step_count": 314,
           "truncated": true
         }
       },
@@ -36836,7 +37019,7 @@
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 348,
+          "step_count": 349,
           "truncated": true
         }
       },
@@ -39654,7 +39837,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 313,
+          "step_count": 314,
           "truncated": true
         }
       },
@@ -39830,7 +40013,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 313,
+          "step_count": 314,
           "truncated": true
         }
       },
@@ -39922,7 +40105,7 @@
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 350,
+          "step_count": 351,
           "truncated": true
         }
       },
@@ -40011,7 +40194,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 313,
+          "step_count": 314,
           "truncated": true
         }
       },
@@ -40269,7 +40452,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3472,
+              "line": 3476,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -40277,7 +40460,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3477,
+              "line": 3481,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -40285,7 +40468,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3480,
+              "line": 3484,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -40293,7 +40476,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3483,
+              "line": 3487,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -40301,7 +40484,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3486,
+              "line": 3490,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -40309,7 +40492,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3492,
+              "line": 3496,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -40317,7 +40500,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3495,
+              "line": 3499,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -40325,7 +40508,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3504,
+              "line": 3508,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -40334,33 +40517,27 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 3463,
+              "line": 3467,
               "step": "main",
               "target": "_parser().parse_args"
             },
             {
               "kind": "external_call",
-              "line": 3404,
+              "line": 3408,
               "step": "_parser",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3405,
+              "line": 3409,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 3411,
+              "line": 3415,
               "step": "_parser",
               "target": "parser.add_subparsers"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 3412,
-              "step": "_parser",
-              "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
@@ -40376,7 +40553,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 3421,
+              "line": 3424,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
@@ -40388,7 +40565,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 3426,
+              "line": 3429,
+              "step": "_parser",
+              "target": "subparsers.add_parser"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 3430,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
@@ -42721,7 +42904,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 2555,
+              "line": 2564,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -42729,7 +42912,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 2558,
+              "line": 2567,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -42762,19 +42945,19 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 2542,
+              "line": 2551,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 2543,
+              "line": 2552,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 2549,
+              "line": 2558,
               "step": "main",
               "target": "parser.parse_args"
             },
@@ -45697,6 +45880,7 @@
         "entities/PlanShareTeamMember.md",
         "entities/PortfolioFilters.md",
         "entities/PortfolioView.md",
+        "entities/Positive.md",
         "entities/PositiveRevision.md",
         "entities/PostgresOwnership.md",
         "entities/PostgreSQLContractBundle.md",
@@ -45808,8 +45992,12 @@
         "entities/ResolvedStatusEvidence.md",
         "entities/ResolvedVerifierLease.md",
         "entities/RetentionState.md",
+        "entities/ReviewEvidenceCommand.md",
+        "entities/ReviewEvidenceIssue.md",
+        "entities/ReviewEvidenceRevocation.md",
         "entities/ReviewHistory.md",
         "entities/ReviewMode.md",
+        "entities/ReviewTestEvidence.md",
         "entities/RevocationObservation.md",
         "entities/RevocationResolver.md",
         "entities/ReworkReadCache.md",
@@ -46081,6 +46269,7 @@
         "entities/schemas_triage_TriageSnoozeRequest.md",
         "entities/schemas_triage_TriageTaskDraftRequest.md",
         "entities/schemas_triage_TriageTaskDraftResponse.md",
+        "entities/ScopedReviewEvidence.md",
         "entities/ScopeIteration.md",
         "entities/ScopeIterationRecord.md",
         "entities/ScopeLinkBuilder.md",
@@ -46119,6 +46308,7 @@
         "entities/SettingsSectionId.md",
         "entities/SettingsTab.md",
         "entities/SetupReturn.md",
+        "entities/Sha256.md",
         "entities/SharedStateProps.md",
         "entities/SharedUnlock.md",
         "entities/ShareFocusIntent.md",
@@ -46658,6 +46848,7 @@
         "flows/http-apply_schedule.md",
         "flows/http-approve_native_connection.md",
         "flows/http-attest_my_retained_output.md",
+        "flows/http-attest_review_evidence.md",
         "flows/http-audit_hierarchy.md",
         "flows/http-authorize.md",
         "flows/http-backlog_snapshots.md",
@@ -47025,6 +47216,7 @@
         "flows/mcp-agent_apply_schedule.md",
         "flows/mcp-agent_apply_task_command.md",
         "flows/mcp-agent_attest_retained_planning_output.md",
+        "flows/mcp-agent_attest_review_evidence.md",
         "flows/mcp-agent_begin_my_work.md",
         "flows/mcp-agent_capabilities_resource.md",
         "flows/mcp-agent_claim_task.md",
@@ -47893,6 +48085,7 @@
         "modules/schemas_project.md",
         "modules/schemas_release.md",
         "modules/schemas_request_source.md",
+        "modules/schemas_review_evidence.md",
         "modules/schemas_runtime_observation.md",
         "modules/schemas_saved_view.md",
         "modules/schemas_scheduling_rules.md",
@@ -47928,6 +48121,7 @@
         "modules/serve_disposable_oidc.md",
         "modules/server_features.md",
         "modules/service_worksets.md",
+        "modules/services_review_evidence.md",
         "modules/services_work_metrics.md",
         "modules/session_service.md",
         "modules/sessionService.md",
@@ -48202,6 +48396,7 @@
         "modules/test_schedule_working_date.md",
         "modules/test_scheduler_dependencies.md",
         "modules/test_schema_behavior.md",
+        "modules/test_scoped_review_evidence.md",
         "modules/test_server_acceptance.md",
         "modules/test_server_features.md",
         "modules/test_settings_read_access.md",
@@ -48415,6 +48610,7 @@
         "workflows/CapacityService_save_absence.md",
         "workflows/CapacityService_set_calendar.md",
         "workflows/change_task_status.md",
+        "workflows/check_supervised_selection.md",
         "workflows/choose_local_profile.md",
         "workflows/convert_triage_item_to_backlog.md",
         "workflows/convert_triage_to_task.md",
@@ -48457,6 +48653,7 @@
         "workflows/import_new_iteration.md",
         "workflows/IncrementalScheduler__reschedule_subset.md",
         "workflows/initialize_gate.md",
+        "workflows/issuer_identity.md",
         "workflows/IterationService__reconcile_tasks_for_project_scope.md",
         "workflows/IterationService_create.md",
         "workflows/IterationService_create_series.md",
@@ -48503,6 +48700,7 @@
         "workflows/reconcile_snapshot.md",
         "workflows/reconcile_window.md",
         "workflows/record_post_copy_repairs.md",
+        "workflows/record_review_evidence.md",
         "workflows/record_routing_operational_event.md",
         "workflows/recover_principal.md",
         "workflows/ReleaseService_create_for_project.md",
@@ -48786,7 +48984,8 @@
         "modules/agent_model_catalog_service.md",
         "modules/agent_routing.md",
         "modules/mcp_agent_tools.md",
-        "modules/test_agent_model_catalog_api.md"
+        "modules/test_agent_model_catalog_api.md",
+        "modules/test_scoped_review_evidence.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_routing.py",
@@ -48892,10 +49091,10 @@
         "modules/agent_routing_service.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md",
+        "modules/services_review_evidence.md",
         "modules/test_agent_routing_service.md",
         "modules/test_agent_routing_wave3_contract.md",
-        "modules/test_agent_routing_wave6_qualification.md",
-        "modules/test_agent_skill_routing_guidance.md"
+        "modules/test_agent_routing_wave6_qualification.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_routing.py",
@@ -50005,6 +50204,7 @@
         "modules/test_agent_routing_rollout.md",
         "modules/test_agent_routing_service.md",
         "modules/test_review_provenance.md",
+        "modules/test_scoped_review_evidence.md",
         "modules/test_task_domain.md"
       ],
       "role": "semantic",
@@ -50529,7 +50729,8 @@
         "modules/runtime_peer.md",
         "modules/schemas_agent.md",
         "modules/test_agent_model_catalog_api.md",
-        "modules/test_agent_routing_wave6_qualification.md"
+        "modules/test_agent_routing_wave6_qualification.md",
+        "modules/test_scoped_review_evidence.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent.py",
@@ -51335,6 +51536,7 @@
         "modules/schemas_agent.md",
         "modules/test_agent_skill_routing_guidance.md",
         "modules/test_review_provenance.md",
+        "modules/test_scoped_review_evidence.md",
         "modules/test_task_domain.md",
         "modules/test_work_delivery_links.md"
       ],
@@ -55448,7 +55650,8 @@
         "modules/tasks.md",
         "modules/test_manual_review_provenance.md",
         "modules/test_review_provenance.md",
-        "modules/test_review_provenance_transports.md"
+        "modules/test_review_provenance_transports.md",
+        "modules/test_scoped_review_evidence.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/github_status_service.py",
@@ -56763,6 +56966,7 @@
         "modules/test_execution_reconciliation.md",
         "modules/test_identity_lifecycle.md",
         "modules/test_pm_forecast_calendar.md",
+        "modules/test_scoped_review_evidence.md",
         "modules/test_team_pm_dispatch.md",
         "modules/test_team_pm_recovery.md"
       ],
@@ -57288,6 +57492,7 @@
         "modules/models___init__.md",
         "modules/models_agent.md",
         "modules/review_provenance.md",
+        "modules/services_review_evidence.md",
         "modules/test_agent_model_catalog_api.md"
       ],
       "role": "semantic",
@@ -57377,7 +57582,7 @@
         "modules/models___init__.md",
         "modules/models_agent.md",
         "modules/models_task.md",
-        "modules/test_agent_routing_contract.md"
+        "modules/services_review_evidence.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/agent.py",
@@ -59495,6 +59700,18 @@
       "title": "PortfolioView"
     },
     {
+      "canonical_path": "entities/Positive.md",
+      "id": "Positive",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/Positive",
+      "outgoing_internal_links": [
+        "modules/schemas_review_evidence.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/review_evidence.py",
+      "title": "Positive"
+    },
+    {
       "canonical_path": "entities/PositiveRevision.md",
       "id": "PositiveRevision",
       "kind": "entities",
@@ -59621,11 +59838,12 @@
         "modules/models_identity.md",
         "modules/routers_identity.md",
         "modules/routers_task_domain.md",
-        "modules/serve_disposable_api.md",
+        "modules/services_review_evidence.md",
         "modules/task_domain_service.md",
         "modules/test_acceptance_attribution.md",
         "modules/test_allocation_recovery.md",
         "modules/test_manual_review_provenance.md",
+        "modules/test_scoped_review_evidence.md",
         "modules/test_strict_caller_matrix.md",
         "modules/test_task_domain.md"
       ],
@@ -60383,6 +60601,7 @@
       "mcp_uri": "llm-wiki://entities/ReadyTopology",
       "outgoing_internal_links": [
         "modules/test_agent_team_setup_qualification.md",
+        "modules/test_scoped_review_evidence.md",
         "modules/test_supervised_shadow_rework.md"
       ],
       "role": "semantic",
@@ -61004,6 +61223,45 @@
       "title": "RetentionState"
     },
     {
+      "canonical_path": "entities/ReviewEvidenceCommand.md",
+      "id": "ReviewEvidenceCommand",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/ReviewEvidenceCommand",
+      "outgoing_internal_links": [
+        "modules/agent_catalog.md",
+        "modules/schemas_review_evidence.md",
+        "modules/services_review_evidence.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/review_evidence.py",
+      "title": "ReviewEvidenceCommand"
+    },
+    {
+      "canonical_path": "entities/ReviewEvidenceIssue.md",
+      "id": "ReviewEvidenceIssue",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/ReviewEvidenceIssue",
+      "outgoing_internal_links": [
+        "modules/schemas_review_evidence.md",
+        "modules/services_review_evidence.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/review_evidence.py",
+      "title": "ReviewEvidenceIssue"
+    },
+    {
+      "canonical_path": "entities/ReviewEvidenceRevocation.md",
+      "id": "ReviewEvidenceRevocation",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/ReviewEvidenceRevocation",
+      "outgoing_internal_links": [
+        "modules/schemas_review_evidence.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/review_evidence.py",
+      "title": "ReviewEvidenceRevocation"
+    },
+    {
       "canonical_path": "entities/ReviewHistory.md",
       "id": "ReviewHistory",
       "kind": "entities",
@@ -61028,6 +61286,19 @@
       "role": "semantic",
       "source_path": "backend/app/services/agent_routing_policy.py",
       "title": "ReviewMode"
+    },
+    {
+      "canonical_path": "entities/ReviewTestEvidence.md",
+      "id": "ReviewTestEvidence",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/ReviewTestEvidence",
+      "outgoing_internal_links": [
+        "modules/schemas_review_evidence.md",
+        "modules/test_scoped_review_evidence.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/review_evidence.py",
+      "title": "ReviewTestEvidence"
     },
     {
       "canonical_path": "entities/RevocationObservation.md",
@@ -64853,6 +65124,19 @@
       "title": "TriageTaskDraftResponse"
     },
     {
+      "canonical_path": "entities/ScopedReviewEvidence.md",
+      "id": "ScopedReviewEvidence",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/ScopedReviewEvidence",
+      "outgoing_internal_links": [
+        "modules/agent_routing.md",
+        "modules/schemas_review_evidence.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/review_evidence.py",
+      "title": "ScopedReviewEvidence"
+    },
+    {
       "canonical_path": "entities/ScopeIteration.md",
       "id": "ScopeIteration",
       "kind": "entities",
@@ -65345,6 +65629,18 @@
       "role": "semantic",
       "source_path": "frontend/src/features/firstRun/setupReturn.ts",
       "title": "SetupReturn"
+    },
+    {
+      "canonical_path": "entities/Sha256.md",
+      "id": "Sha256",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/Sha256",
+      "outgoing_internal_links": [
+        "modules/schemas_review_evidence.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/review_evidence.py",
+      "title": "Sha256"
     },
     {
       "canonical_path": "entities/SharedStateProps.md",
@@ -72654,9 +72950,11 @@
         "modules/identity_service.md",
         "modules/models_identity.md",
         "modules/routers_identity.md",
+        "modules/services_review_evidence.md",
         "modules/test_agent_model_catalog_api.md",
         "modules/test_allocation_recovery.md",
         "modules/test_managed_authority.md",
+        "modules/test_scoped_review_evidence.md",
         "modules/test_settings_read_access.md"
       ],
       "role": "semantic",
@@ -72713,10 +73011,10 @@
         "modules/models_identity.md",
         "modules/routers_identity.md",
         "modules/routers_task_domain.md",
+        "modules/services_review_evidence.md",
         "modules/task_domain_service.md",
         "modules/test_agent_model_catalog_api.md",
-        "modules/test_agent_team_setup.md",
-        "modules/test_annual_calendar_work_control.md"
+        "modules/test_agent_team_setup.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/identity.py",
@@ -83939,6 +84237,29 @@
       "title": "request_source Module"
     },
     {
+      "canonical_path": "modules/schemas_review_evidence.md",
+      "id": "schemas_review_evidence",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/schemas_review_evidence",
+      "outgoing_internal_links": [
+        "entities/Positive.md",
+        "entities/ReviewEvidenceCommand.md",
+        "entities/ReviewEvidenceIssue.md",
+        "entities/ReviewEvidenceRevocation.md",
+        "entities/ReviewTestEvidence.md",
+        "entities/ScopedReviewEvidence.md",
+        "entities/Sha256.md",
+        "modules/agent_catalog.md",
+        "modules/agent_routing.md",
+        "modules/schemas_review_evidence.md",
+        "modules/services_review_evidence.md",
+        "modules/test_scoped_review_evidence.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/review_evidence.py",
+      "title": "review_evidence Module"
+    },
+    {
       "canonical_path": "modules/schemas_runtime_observation.md",
       "id": "schemas_runtime_observation",
       "kind": "modules",
@@ -84608,6 +84929,18 @@
       "role": "semantic",
       "source_path": "scripts/load/service_worksets.py",
       "title": "service_worksets Module"
+    },
+    {
+      "canonical_path": "modules/services_review_evidence.md",
+      "id": "services_review_evidence",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/services_review_evidence",
+      "outgoing_internal_links": [
+        "modules/services_review_evidence.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/review_evidence.py",
+      "title": "review_evidence Module"
     },
     {
       "canonical_path": "modules/services_work_metrics.md",
@@ -88975,6 +89308,18 @@
       "title": "test_schema_behavior Module"
     },
     {
+      "canonical_path": "modules/test_scoped_review_evidence.md",
+      "id": "test_scoped_review_evidence",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_scoped_review_evidence",
+      "outgoing_internal_links": [
+        "modules/test_scoped_review_evidence.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_scoped_review_evidence.py",
+      "title": "test_scoped_review_evidence Module"
+    },
+    {
       "canonical_path": "modules/test_server_acceptance.md",
       "id": "test_server_acceptance",
       "kind": "modules",
@@ -89764,6 +90109,7 @@
         "modules/test_agent_routing_wave6_qualification.md",
         "modules/test_agent_team_setup_qualification.md",
         "modules/test_review_provenance.md",
+        "modules/test_scoped_review_evidence.md",
         "modules/transactions.md"
       ],
       "role": "semantic",
@@ -91671,6 +92017,7 @@
         "modules/agent_team_setup_service.md",
         "modules/query_limits.md",
         "modules/review_provenance.md",
+        "modules/services_review_evidence.md",
         "modules/task_service.md",
         "modules/time.md"
       ],
@@ -92107,6 +92454,7 @@
         "modules/commands.md",
         "modules/models_agent.md",
         "modules/review_provenance.md",
+        "modules/services_review_evidence.md",
         "modules/task_service.md",
         "modules/time.md"
       ],
@@ -92300,6 +92648,7 @@
         "modules/agent_work_service.md",
         "modules/commands.md",
         "modules/review_provenance.md",
+        "modules/services_review_evidence.md",
         "modules/time.md"
       ],
       "role": "mixed",
@@ -92645,6 +92994,21 @@
       "role": "mixed",
       "source_path": "backend/app/routers/tasks.py",
       "title": "change_task_status"
+    },
+    {
+      "canonical_path": "workflows/check_supervised_selection.md",
+      "id": "check_supervised_selection",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/check_supervised_selection",
+      "outgoing_internal_links": [
+        "modules/agent_routing.md",
+        "modules/agent_routing_service.md",
+        "modules/services_review_evidence.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/review_evidence.py",
+      "title": "check_supervised_selection"
     },
     {
       "canonical_path": "workflows/choose_local_profile.md",
@@ -93306,6 +93670,22 @@
       "role": "mixed",
       "source_path": "backend/app/database_migration/transfer.py",
       "title": "initialize_gate"
+    },
+    {
+      "canonical_path": "workflows/issuer_identity.md",
+      "id": "issuer_identity",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/issuer_identity",
+      "outgoing_internal_links": [
+        "modules/agent_service.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/services_review_evidence.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/review_evidence.py",
+      "title": "issuer_identity"
     },
     {
       "canonical_path": "workflows/IterationService__reconcile_tasks_for_project_scope.md",
@@ -94037,6 +94417,27 @@
       "role": "mixed",
       "source_path": "backend/app/database_migration/transfer.py",
       "title": "record_post_copy_repairs"
+    },
+    {
+      "canonical_path": "workflows/record_review_evidence.md",
+      "id": "record_review_evidence",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/record_review_evidence",
+      "outgoing_internal_links": [
+        "modules/agent_routing_service.md",
+        "modules/agent_service.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/models_agent.md",
+        "modules/query_limits.md",
+        "modules/review_provenance.md",
+        "modules/schemas_agent_planning.md",
+        "modules/services_review_evidence.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/review_evidence.py",
+      "title": "record_review_evidence"
     },
     {
       "canonical_path": "workflows/record_routing_operational_event.md",
@@ -95290,6 +95691,42 @@
       "role": "mixed",
       "source_path": "backend/app/routers/agent.py",
       "title": "attest_my_retained_output"
+    },
+    {
+      "canonical_path": "flows/http-attest_review_evidence.md",
+      "id": "http-attest_review_evidence",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-attest_review_evidence",
+      "outgoing_internal_links": [
+        "modules/agent_catalog.md",
+        "modules/agent_routing_policy.md",
+        "modules/agent_routing_service.md",
+        "modules/agent_service.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/delivery_dependency_service.md",
+        "modules/discussion_service.md",
+        "modules/execution_planning_window.md",
+        "modules/github_links.md",
+        "modules/identity_service.md",
+        "modules/models_agent.md",
+        "modules/models_outbound_webhook.md",
+        "modules/mutation_versions.md",
+        "modules/query_limits.md",
+        "modules/retained_planning_output.md",
+        "modules/review_provenance.md",
+        "modules/routers_agent_planning.md",
+        "modules/schemas_agent_planning.md",
+        "modules/services_review_evidence.md",
+        "modules/task_brief_service.md",
+        "modules/task_service.md",
+        "modules/time.md",
+        "modules/url_policy.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/agent_catalog.py",
+      "title": "attest_review_evidence"
     },
     {
       "canonical_path": "flows/http-audit_hierarchy.md",
@@ -100890,6 +101327,31 @@
       "title": "agent_attest_retained_planning_output"
     },
     {
+      "canonical_path": "flows/mcp-agent_attest_review_evidence.md",
+      "id": "mcp-agent_attest_review_evidence",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/mcp-agent_attest_review_evidence",
+      "outgoing_internal_links": [
+        "modules/agent_service.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/delivery_dependency_service.md",
+        "modules/discussion_service.md",
+        "modules/identity_service.md",
+        "modules/maintenance.md",
+        "modules/mcp_server.md",
+        "modules/models_identity.md",
+        "modules/models_outbound_webhook.md",
+        "modules/task_brief_service.md",
+        "modules/task_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/mcp_server.py",
+      "title": "agent_attest_review_evidence"
+    },
+    {
       "canonical_path": "flows/mcp-agent_begin_my_work.md",
       "id": "mcp-agent_begin_my_work",
       "kind": "flows",
@@ -102578,6 +103040,7 @@
         "modules/query_limits.md",
         "modules/retained_planning_output.md",
         "modules/review_provenance.md",
+        "modules/services_review_evidence.md",
         "modules/task_brief_service.md",
         "modules/task_service.md",
         "modules/time.md",
@@ -105676,6 +106139,7 @@
         "modules/planning_window_reconciliation.md",
         "modules/retained_planning_output.md",
         "modules/schemas_agent.md",
+        "modules/services_review_evidence.md",
         "modules/task_service.md",
         "modules/triage_service.md",
         "modules/upgrade_service.md"
@@ -106803,6 +107267,7 @@
         "modules/schemas_project.md",
         "modules/schemas_release.md",
         "modules/schemas_request_source.md",
+        "modules/schemas_review_evidence.md",
         "modules/schemas_runtime_observation.md",
         "modules/schemas_saved_view.md",
         "modules/schemas_scheduling_rules.md",
@@ -106837,6 +107302,7 @@
         "modules/serve_disposable_oidc.md",
         "modules/server_features.md",
         "modules/service_worksets.md",
+        "modules/services_review_evidence.md",
         "modules/services_work_metrics.md",
         "modules/session_service.md",
         "modules/sessionService.md",
@@ -107104,6 +107570,7 @@
         "modules/test_schedule_working_date.md",
         "modules/test_scheduler_dependencies.md",
         "modules/test_schema_behavior.md",
+        "modules/test_scoped_review_evidence.md",
         "modules/test_server_acceptance.md",
         "modules/test_server_features.md",
         "modules/test_settings_read_access.md",
@@ -107907,6 +108374,7 @@
         "modules/schemas_project.md",
         "modules/schemas_release.md",
         "modules/schemas_request_source.md",
+        "modules/schemas_review_evidence.md",
         "modules/schemas_runtime_observation.md",
         "modules/schemas_saved_view.md",
         "modules/schemas_scheduling_rules.md",
@@ -107941,6 +108409,7 @@
         "modules/serve_disposable_oidc.md",
         "modules/server_features.md",
         "modules/service_worksets.md",
+        "modules/services_review_evidence.md",
         "modules/services_work_metrics.md",
         "modules/session_service.md",
         "modules/sessionService.md",
@@ -108208,6 +108677,7 @@
         "modules/test_schedule_working_date.md",
         "modules/test_scheduler_dependencies.md",
         "modules/test_schema_behavior.md",
+        "modules/test_scoped_review_evidence.md",
         "modules/test_server_acceptance.md",
         "modules/test_server_features.md",
         "modules/test_settings_read_access.md",
@@ -108364,5 +108834,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:1baf4a8d6fa848b76d6e928d47581063c21a5d596f9bd2747e2f7ba64701d724"
+  "source_hash": "sha256:59401445cc838d7a5f8abf40e8c7cdc11ca92e918bb9cb5e349f30155a782260"
 }

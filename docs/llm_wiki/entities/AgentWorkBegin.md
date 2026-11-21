@@ -1,6 +1,6 @@
 # AgentWorkBegin
 
-**Location:** `backend/app/schemas/agent.py:976`
+**Location:** `backend/app/schemas/agent.py:982`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -118,4 +118,4 @@ flowchart LR
 | `test_supervised_execution_and_exact_independent_review` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
 | `test_unassigned_run_remains_unknown_and_optional_supervisor_needs_no_profile` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

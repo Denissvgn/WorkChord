@@ -201,7 +201,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_timeline_resource | _json_resource | 2237 | `_json_resource('tasks:read', ...)` |
+| task_timeline_resource | _json_resource | 2246 | `_json_resource('tasks:read', ...)` |
 | _json_resource | _tool_call | 364 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

@@ -41,6 +41,7 @@ Exercise independent publisher review through the atomic work commands.
 flowchart LR
     n0["backend"]
     n1["backend/tests/test_review_provenance.py"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/test_review_provenance.md"
 ```
@@ -51,6 +52,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
+| Inbound | `backend` (1) |
 | Outbound | `backend` (18) |
 
 ### External packages
@@ -59,7 +61,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 1 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

@@ -116,4 +116,4 @@ flowchart LR
 | `create_agent_model_binding` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
 | `create_agent_model_catalog_entry` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
 
-> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.
+> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.

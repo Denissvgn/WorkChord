@@ -65,6 +65,7 @@ Stable hard blockers shared by preview and assignment enforcement.
 | `VERIFICATION_PUBLISHER_UNVERIFIABLE` | `'verification_publisher_unverifiable'` | — |
 | `VERIFICATION_PUBLISHER_NOT_INDEPENDENT` | `'verification_publisher_not_independent'` | — |
 | `VERIFICATION_CANDIDATE_UNVERIFIABLE` | `'verification_candidate_unverifiable'` | — |
+| `VERIFICATION_EVIDENCE_UNAVAILABLE` | `'verification_evidence_unavailable'` | — |
 | `VERIFICATION_CANDIDATE_STALE` | `'verification_candidate_stale'` | — |
 | `VERIFICATION_CONTRIBUTORS_UNVERIFIABLE` | `'verification_contributors_unverifiable'` | — |
 | `EXECUTION_PUBLISHER_UNVERIFIABLE` | `'execution_publisher_unverifiable'` | — |

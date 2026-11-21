@@ -31,6 +31,7 @@ PM command to dispatch a task to an exact actor.
 | `team_member_id` | `Optional[int]` | `team_member_id` | No | Yes | `None` | — | — | — |
 | `purpose` | `AgentAssignmentPurpose` | `purpose` | No | No | `'execution'` | — | — | — |
 | `review_binding_id` | `int \| None` | `review_binding_id` | No | Yes | `None` | ge=1 | — | — |
+| `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | ge=1; strict=True | — | — |
 | `queue_class` | `AgentAssignmentQueueClass` | `queue_class` | No | No | `'normal'` | — | — | — |
 | `queue_rank` | `int` | `queue_rank` | No | No | `1000` | ge=0 | — | — |
 | `not_before` | `Optional[datetime]` | `not_before` | No | Yes | `None` | — | — | — |
@@ -97,7 +98,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 2 | `actor_id`, `expected_task_version`, `not_before`, `purpose`, `queue_class`, `queue_rank`, `reason`, `review_binding_id`, `reviewer_profile_id`, `routing_snapshot`, `task_id`, `team_member_id` |
+| [schemas_agent](../modules/schemas_agent.md) | 2 | `actor_id`, `expected_task_version`, `not_before`, `purpose`, `queue_class`, `queue_rank`, `reason`, `review_binding_id`, `review_evidence_id`, `reviewer_profile_id`, `routing_snapshot`, `task_id` |
 
 ### Structure
 
@@ -122,4 +123,4 @@ flowchart LR
 | `test_routing_snapshot_rejects_non_json_native_evidence` | call | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) | 1 |
 | `test_supervised_assignment_cannot_author_server_routing_snapshots` | call | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) | 1 |
 
-> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

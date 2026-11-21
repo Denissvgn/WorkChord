@@ -14,6 +14,8 @@ Routing within the primary year uses iteration working days and that member's it
 
 On PostgreSQL, an authenticated dispatch reserves the shared planning revision before taking broad routing table locks. A calendar editor reserves the same revision first. A later dispatch sees the committed annual policy, while a later policy replacement must respect an already issued assignment.
 
+A verification preview checks candidate-bound operator evidence before evaluating fresh dispatch capacity. The PM can request an existing review owner's receipt even while that reviewer is occupied. Source-only substitution depends on the current assessment's explicit review policy.
+
 ## Imports
 
 | Source | Symbols |
@@ -36,6 +38,7 @@ On PostgreSQL, an authenticated dispatch reserves the shared planning revision b
 | `app.services.agent_team_setup_service` | `AgentTeamSetupService`, `AgentTeamSetupService` |
 | `app.services.calendar_rules` | `AnnualCalendars` |
 | `app.services.capacity_service` | `CapacityService` |
+| `app.services.review_evidence` | `assignment_observation`, `requirements_for`, `resolve` |
 | `app.services.review_provenance` | `different_publisher_required`, `historical_profile`, `review_history` |
 | `app.services.task_brief_service` | `brief_definition_blockers` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
@@ -71,8 +74,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (16) |
-| Outbound | `backend` (21) |
+| Inbound | `backend` (18) |
+| Outbound | `backend` (22) |
 
 ### External packages
 
@@ -80,7 +83,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 36 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

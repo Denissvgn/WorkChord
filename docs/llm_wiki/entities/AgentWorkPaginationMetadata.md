@@ -1,6 +1,6 @@
 # AgentWorkPaginationMetadata
 
-**Location:** `backend/app/schemas/agent.py:944`
+**Location:** `backend/app/schemas/agent.py:950`
 **Kind:** Pydantic model
 **Bases:** `AgentPaginationMetadata`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

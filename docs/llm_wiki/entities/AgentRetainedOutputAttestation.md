@@ -1,6 +1,6 @@
 # AgentRetainedOutputAttestation
 
-**Location:** `backend/app/schemas/agent.py:1272`
+**Location:** `backend/app/schemas/agent.py:1279`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

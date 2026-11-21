@@ -121,4 +121,4 @@ flowchart LR
 | `AgentTeamSetupService._refresh_handoffs` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `test_agent_team_catalog` | import | [test_agent_team_catalog](../modules/test_agent_team_catalog.md) | — |
 
-> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.
+> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.

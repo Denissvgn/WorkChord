@@ -1,6 +1,6 @@
 # AgentWorkSubmit
 
-**Location:** `backend/app/schemas/agent.py:1099`
+**Location:** `backend/app/schemas/agent.py:1105`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -72,8 +72,9 @@ flowchart LR
     n7["backend/tests/support/runtime_peer.py"]
     n8["backend/tests/test_agent_skill_routing_guidance.py"]
     n9["test_supervised_execution_and_exact_independent_review (backend/tests/test_review_provenance.py)"]
-    n10["test_managed_assigned_submission_and_independent_rework (backend/tests/test_task_domain.py)"]
-    n11["test_submit_commit_urls_must_be_commits_and_repeat_once (backend/tests/test_work_delivery_links.py)"]
+    n10["test_scoped_source_packet_from_submission_through_verdict (backend/tests/test_scoped_review_evidence.py)"]
+    n11["test_managed_assigned_submission_and_independent_rework (backend/tests/test_task_domain.py)"]
+    n12["test_submit_commit_urls_must_be_commits_and_repeat_once (backend/tests/test_work_delivery_links.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -85,6 +86,7 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
@@ -94,8 +96,9 @@ flowchart LR
     click n7 "../modules/runtime_peer.md"
     click n8 "../modules/test_agent_skill_routing_guidance.md"
     click n9 "../modules/test_review_provenance.md"
-    click n10 "../modules/test_task_domain.md"
-    click n11 "../modules/test_work_delivery_links.md"
+    click n10 "../modules/test_scoped_review_evidence.md"
+    click n11 "../modules/test_task_domain.md"
+    click n12 "../modules/test_work_delivery_links.md"
 ```
 
 ### Summary
@@ -122,5 +125,6 @@ flowchart LR
 | `runtime_peer` | import | [runtime_peer](../modules/runtime_peer.md) | — |
 | `test_agent_skill_routing_guidance` | import | [test_agent_skill_routing_guidance](../modules/test_agent_skill_routing_guidance.md) | — |
 | `test_supervised_execution_and_exact_independent_review` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
+| `test_scoped_source_packet_from_submission_through_verdict` | call | [test_scoped_review_evidence](../modules/test_scoped_review_evidence.md) | 1 |
 | `test_managed_assigned_submission_and_independent_rework` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `test_submit_commit_urls_must_be_commits_and_repeat_once` | call | [test_work_delivery_links](../modules/test_work_delivery_links.md) | 2 |

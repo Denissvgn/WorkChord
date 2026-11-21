@@ -48,11 +48,11 @@ flowchart LR
     n6["AgentTeamSetupService._catalog_entries (backend/app/services/agent_team_setup_service.py)"]
     n7["AgentTeamSetupService._reconcile_bindings (backend/app/services/agent_team_setup_service.py)"]
     n8["backend/app/services/execution_planning_window.py"]
-    n9["backend/app/services/review_provenance.py"]
-    n10["test_actor_provisioning_creates_binding_and_audit_atomically (backend/tests/test_agent_model_catalog_api.py)"]
-    n11["test_binding_and_preset_routes_preserve_credential_permissions (backend/tests/test_agent_model_catalog_api.py)"]
-    n12["test_binding_disable_requires_explicit_reconciliation_and_marks_queue_stale (backend/tests/test_agent_model_catalog_api.py)"]
-    n13["test_rest_and_mcp_rosters_are_identical_and_secret_free (backend/tests/test_agent_model_catalog_api.py)"]
+    n9["backend/app/services/review_evidence.py"]
+    n10["backend/app/services/review_provenance.py"]
+    n11["test_actor_provisioning_creates_binding_and_audit_atomically (backend/tests/test_agent_model_catalog_api.py)"]
+    n12["test_binding_and_preset_routes_preserve_credential_permissions (backend/tests/test_agent_model_catalog_api.py)"]
+    n13["test_binding_disable_requires_explicit_reconciliation_and_marks_queue_stale (backend/tests/test_agent_model_catalog_api.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -75,8 +75,8 @@ flowchart LR
     click n6 "../modules/agent_team_setup_service.md"
     click n7 "../modules/agent_team_setup_service.md"
     click n8 "../modules/execution_planning_window.md"
-    click n9 "../modules/review_provenance.md"
-    click n10 "../modules/test_agent_model_catalog_api.md"
+    click n9 "../modules/services_review_evidence.md"
+    click n10 "../modules/review_provenance.md"
     click n11 "../modules/test_agent_model_catalog_api.md"
     click n12 "../modules/test_agent_model_catalog_api.md"
     click n13 "../modules/test_agent_model_catalog_api.md"
@@ -105,10 +105,10 @@ flowchart LR
 | `AgentTeamSetupService._catalog_entries` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._reconcile_bindings` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `execution_planning_window` | import | [execution_planning_window](../modules/execution_planning_window.md) | — |
+| `review_evidence` | import | [services_review_evidence](../modules/services_review_evidence.md) | — |
 | `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |
 | `test_actor_provisioning_creates_binding_and_audit_atomically` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 1 |
 | `test_binding_and_preset_routes_preserve_credential_permissions` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 2 |
 | `test_binding_disable_requires_explicit_reconciliation_and_marks_queue_stale` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 1 |
-| `test_rest_and_mcp_rosters_are_identical_and_secret_free` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 2 |
 
-> References: showing 12 of 39 logical references; 27 omitted by the 12-row generated summary limit.
+> References: showing 12 of 41 logical references; 29 omitted by the 12-row generated summary limit.

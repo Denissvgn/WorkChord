@@ -1,6 +1,6 @@
 # AgentInterruptionCheckpoint
 
-**Location:** `backend/app/schemas/agent.py:1062`
+**Location:** `backend/app/schemas/agent.py:1068`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

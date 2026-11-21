@@ -62,8 +62,8 @@ sequenceDiagram
     participant p18 as parse_github_url
     participant p19 as DeliveryDependencyService.validate_cycles
     participant p20 as SnapshotService._task_to_export
-    participant p21 as AgentRoutingService._profile_revision
-    participant p22 as DiscussionService.recipient_authorized
+    participant p21 as DiscussionService.recipient_authorized
+    participant p22 as AgentRoutingService._profile_revision
     participant p23 as TaskService.reserve_task_version
     participant p24 as clear_execution_evidence
     participant p25 as _snapshot_task
@@ -92,8 +92,8 @@ sequenceDiagram
     p17->>p18: parse_github_url
     p10->>p19: DeliveryDependencyService.validate_cycles
     p14->>p20: SnapshotService._task_to_export
-    p16->>p21: AgentRoutingService._profile_revision
-    p13->>p22: DiscussionService.recipient_authorized
+    p13->>p21: DiscussionService.recipient_authorized
+    p16->>p22: AgentRoutingService._profile_revision
     p10->>p23: TaskService.reserve_task_version
     p10->>p24: clear_execution_evidence
     p14->>p25: _snapshot_task
@@ -104,9 +104,9 @@ sequenceDiagram
     p1-->>p30: data.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 742 interactions; 712 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 744 interactions; 714 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 221 (220 omitted); unresolved 1 of 370 (369 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 222 (221 omitted); unresolved 1 of 371 (370 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 

@@ -33,6 +33,7 @@ A planning command rejected by the domain returns its scoped conflict code and p
 | `app.services.identity_service` | `IdentityService` |
 | `app.services.planning_window_reconciliation` | `reconcile_window` |
 | `app.services.retained_planning_output` | `attest_retained_output` |
+| `app.services.review_evidence` | `record_review_evidence` |
 | `app.services.task_service` | `TaskVersionConflictError` |
 | `app.services.triage_service` | `TriageConflictError` |
 | `argparse` | `argparse` |
@@ -71,8 +72,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (17) |
-| Outbound | `backend` (21) |
+| Inbound | `backend` (18) |
+| Outbound | `backend` (22) |
 
 ### External packages
 
@@ -80,7 +81,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

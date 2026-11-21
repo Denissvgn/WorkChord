@@ -101,9 +101,9 @@ sequenceDiagram
     p0-->>p30: data.model_dump (backend/app/routers/agent…nning_triage_item_to_task)(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 395 interactions; 365 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 396 interactions; 366 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 102 (101 omitted); unresolved 1 of 170 (169 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 103 (102 omitted); unresolved 1 of 170 (169 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -117,7 +117,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/agent_service.py:validate_idempotency_key` | 10 | - | unresolved | 1 |
 | `backend/app/mcp_agent_tools.py:_triage_command_context` | 9 | [backend/app/schemas/agent_planning.py](../modules/schemas_agent_planning.md) | internal | 1 |
 | `backend/app/mcp_agent_tools.py:convert_triage_to_task` | 8 | [backend/app/schemas/triage.py](../modules/schemas_triage.md) | internal | 2 |
-> Omission summary shows 8 of 120 groups; 112 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 121 groups; 113 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.

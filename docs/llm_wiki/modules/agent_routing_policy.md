@@ -39,9 +39,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (19) |
+| Inbound | `backend` (20) |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -57,11 +57,11 @@ flowchart LR
 | [AssessmentReasonCode](../entities/agent_routing_policy_AssessmentReasonCode.md) | Enum | 160 | `StrEnum` | Governed reasons that may raise the derived band or review floor. |
 | [AssignmentIntent](../entities/AssignmentIntent.md) | Enum | 177 | `StrEnum` | Normalized assignment intents derived from purpose and queue class. |
 | [RoutingBlockerCode](../entities/agent_routing_policy_RoutingBlockerCode.md) | Enum | 186 | `StrEnum` | Stable hard blockers shared by preview and assignment enforcement. |
-| [ReasonCodeRule](../entities/ReasonCodeRule.md) | Class | 465 | — | Minimum band/review requirements attached to one governed reason. |
-| [RoutingProfileEvidence](../entities/RoutingProfileEvidence.md) | Class | 538 | — | Secret-free profile evidence used by compatibility decisions. |
-| [RoutingEligibilityDecision](../entities/RoutingEligibilityDecision.md) | Class | 550 | — | Separated authority/compatibility evidence for one candidate. |
-| [RoutingSkillDecision](../entities/RoutingSkillDecision.md) | Class | 623 | — | Deterministic required-skill evidence for one profile. |
-| [RoutingModelEnvelopeDecision](../entities/RoutingModelEnvelopeDecision.md) | Class | 638 | — | Deterministic binding/catalog capability evidence for one candidate. |
+| [ReasonCodeRule](../entities/ReasonCodeRule.md) | Class | 466 | — | Minimum band/review requirements attached to one governed reason. |
+| [RoutingProfileEvidence](../entities/RoutingProfileEvidence.md) | Class | 539 | — | Secret-free profile evidence used by compatibility decisions. |
+| [RoutingEligibilityDecision](../entities/RoutingEligibilityDecision.md) | Class | 551 | — | Separated authority/compatibility evidence for one candidate. |
+| [RoutingSkillDecision](../entities/RoutingSkillDecision.md) | Class | 624 | — | Deterministic required-skill evidence for one profile. |
+| [RoutingModelEnvelopeDecision](../entities/RoutingModelEnvelopeDecision.md) | Class | 639 | — | Deterministic binding/catalog capability evidence for one candidate. |
 
 ## Functions
 

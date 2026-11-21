@@ -17,6 +17,7 @@ Agent capability, profile, and operator-owned model catalog API.
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.agent_routing` | `AgentModelBindingCreate`, `AgentModelBindingDisable`, `AgentModelBindingResponse`, `AgentModelBindingUpdate`, `AgentModelCatalogCreate`, `AgentModelCatalogDisable`, `AgentModelCatalogResponse`, `AgentModelCatalogUpdate`, `AgentModelMutationReceipt` |
 | `app.schemas.agent_team_setup` | `AgentTeamRuntimeAcknowledgement` |
+| `app.schemas.review_evidence` | `ReviewEvidenceCommand` |
 | `app.schemas.team` | `TeamMemberProfileResponse` |
 | `app.security` | `ADMIN_API_KEY_HEADER`, `admin_api_key_is_valid` |
 | `app.services.agent_model_catalog_service` | `AgentModelCatalogService`, `AgentModelConflictError` |
@@ -25,6 +26,7 @@ Agent capability, profile, and operator-owned model catalog API.
 | `app.services.agent_service` | `AgentService`, `actor_has_scope` |
 | `app.services.execution_reconciliation` | `reconcile_execution_request` |
 | `app.services.planning_window_reconciliation` | `reconcile_window` |
+| `app.services.review_evidence` | `record_review_evidence` |
 | `fastapi` | `APIRouter`, `Depends`, `Header`, `HTTPException`, `Query`, `status` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `typing` | `Annotated`, `Any`, `NoReturn`, `Optional` |
@@ -48,7 +50,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (1) |
-| Outbound | `backend` (15) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
@@ -56,7 +58,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -64,6 +66,7 @@ flowchart LR
 |----------|-----------|------------|-------------|
 | `get_agent_model_catalog_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> AgentModelCatalogService` | — | Return the request-scoped model control service. |
 | `get_model_catalog_principal` | *(async)* `(service: Annotated[AgentService, Depends(get_agent_service)], agent_api_key: Annotated[Optional[str], Header(alias='X-Agent-API-Key')] = None, admin_api_key: Annotated[Optional[str], Header(alias=ADMIN_API_KEY_HEADER)] = None) -> AgentActor` | — | Use the catalog with an agent key, or with the operator's admin key. |
+| `attest_review_evidence` | *(async)* `(task_id: int, data: ReviewEvidenceCommand, actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], db: Annotated[AsyncSession, Depends(get_db, scope='function')], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.post('/agent/tasks/{task_id}/review-evidence')` | Issue or revoke candidate-bound review evidence as the authenticated operator. |
 | `reconcile_run_provenance` | *(async)* `(run_id: int, actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], db: Annotated[AsyncSession, Depends(get_db, scope='function')], apply: bool = False, expected_evidence_digest: Annotated[str \| None, Query(pattern='^[a-f0-9]{64}$')] = None, archived_acknowledgement: AgentTeamRuntimeAcknowledgement \| None = None, idempotency_key: Annotated[str \| None, Header(alias='Idempotency-Key')] = None, rationale: Annotated[str \| None, Header(alias='X-Agent-Rationale')] = None, correlation_id: Annotated[str \| None, Header(alias='X-Correlation-ID')] = None)` | `@router.post('/agent/model-catalog/execution-provenance/{run_id}/reconcile')` | Preview historical evidence or atomically apply that preview as a workspace operator. |
 | `reconcile_task_planning_window` | *(async)* `(task_id: int, actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], db: Annotated[AsyncSession, Depends(get_db, scope='function')], planning_receipt_id: Annotated[int \| None, Query(gt=0)] = None, planning_actor_id: Annotated[int \| None, Query(gt=0)] = None, planning_command_key: Annotated[str \| None, Query(min_length=1, max_length=255)] = None, apply: bool = False, expected_evidence_digest: Annotated[str \| None, Query(pattern='^[a-f0-9]{64}$')] = None, idempotency_key: Annotated[str \| None, Header(alias='Idempotency-Key')] = None, rationale: Annotated[str \| None, Header(alias='X-Agent-Rationale')] = None, correlation_id: Annotated[str \| None, Header(alias='X-Correlation-ID')] = None)` | `@router.post('/agent/tasks/{task_id}/reconcile-planning-window')` | Inspect or reconcile one task after an independently proved planning cutoff extension. |
 | `_handle_model_error` | `(exc: Exception) -> NoReturn` | — | Map stable model-control errors without losing conflict context. |

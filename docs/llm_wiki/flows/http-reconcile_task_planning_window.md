@@ -68,8 +68,8 @@ sequenceDiagram
     participant p21 as TaskHierarchyService._load_iteration_tree
     participant p22 as DeliveryDependencyService.validate_cycles
     participant p23 as _canonical_snapshot_checksum
-    participant p24 as AgentRoutingService._profile_revision
-    participant p25 as DiscussionService.recipient_authorized
+    participant p24 as DiscussionService.recipient_authorized
+    participant p25 as AgentRoutingService._profile_revision
     participant p26 as TaskService.reserve_task_version
     participant p27 as clear_execution_evidence
     participant p28 as _digest
@@ -98,8 +98,8 @@ sequenceDiagram
     p14->>p21: TaskHierarchyService._load_iteration_tree
     p16->>p22: DeliveryDependencyService.validate_cycles
     p20->>p23: _canonical_snapshot_checksum
-    p19->>p24: AgentRoutingService._profile_revision
-    p17->>p25: DiscussionService.recipient_authorized
+    p17->>p24: DiscussionService.recipient_authorized
+    p19->>p25: AgentRoutingService._profile_revision
     p16->>p26: TaskService.reserve_task_version
     p16->>p27: clear_execution_evidence
     p13->>p28: _digest
@@ -107,9 +107,9 @@ sequenceDiagram
     p2-->>p30: exc.detail (backend/app/routers/agent…og.py:_handle_model_error)
 ```
 
-> Call sequence diagram shows 30 of 721 interactions; 691 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 723 interactions; 693 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 233 (232 omitted); unresolved 1 of 368 (367 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 234 (233 omitted); unresolved 1 of 369 (368 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -226,7 +226,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| reconcile_task_planning_window | reconcile_window | 112 | `reconcile_window(db, actor, task_id, planning_receipt_id, apply=apply, planning_actor_id=planning_actor_id, planning_command_key=planning_command_key, expected_evidence_digest=expected_evidence_digest, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| reconcile_task_planning_window | reconcile_window | 130 | `reconcile_window(db, actor, task_id, planning_receipt_id, apply=apply, planning_actor_id=planning_actor_id, planning_command_key=planning_command_key, expected_evidence_digest=expected_evidence_digest, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 | reconcile_window | require_operator | 312 | `require_operator(db)` |
 | require_operator | db.info.get (backend/app/authority.py:require_operator) | 84 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 86 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |

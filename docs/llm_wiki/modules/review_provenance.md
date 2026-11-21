@@ -10,6 +10,8 @@ The review assignment binds the reviewer’s identity and model to a particular 
 
 A supervised handback binds the rejection and its candidate to the latest worker submission. If the PM previously recovered the task, its issue receipt and event identify the original assignment version, and the worker submission identifies the later completed version. The begin transaction checks and locks the participating team members, project policy, assigned capacity and model identities. Earlier contributors remain part of the publisher check.
 
+An evidence-backed verdict rechecks the packet against the current submission and execution history, including the contributing publishers and the reviewer's selected binding. The reviewer supplies the digest of the bytes it examined. The existing GitHub candidate check still verifies the submitted head for acceptance.
+
 ## Imports
 
 | Source | Symbols |
@@ -30,6 +32,7 @@ A supervised handback binds the rejection and its candidate to the latest worker
 | `app.services.execution_planning_window` | `assignment_matches`, `candidate_version` |
 | `app.services.github_status_service` | `GitHubStatusService` |
 | `app.services.retained_planning_output` | `retained_attestations` |
+| `app.services.review_evidence` | `resolve` |
 | `app.utils.github_links` | `GitHubLinkError`, `parse_github_url` |
 | `app.utils.url_policy` | `normalize_stored_display_url` |
 | `dataclasses` | `dataclass`, `field` |
@@ -38,7 +41,7 @@ A supervised handback binds the rejection and its candidate to the latest worker
 | `json` | `json` |
 | `re` | `re` |
 | `sqlalchemy` | `select` |
-| `sqlalchemy.orm` | `selectinload` |
+| `sqlalchemy.orm` | `contains_eager`, `selectinload` |
 | `urllib.parse` | `urlsplit` |
 
 ## Local dependency map
@@ -59,8 +62,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (11) |
-| Outbound | `backend` (17) |
+| Inbound | `backend` (13) |
+| Outbound | `backend` (18) |
 
 ### External packages
 
@@ -68,14 +71,14 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [ReworkReadCache](../entities/ReworkReadCache.md) | 50 | — | Ephemeral evidence for one queue/context request or one locked begin transaction. |
-| [ReviewHistory](../entities/ReviewHistory.md) | 512 | — | — |
+| [ReviewHistory](../entities/ReviewHistory.md) | 513 | — | — |
 
 ## Functions
 
@@ -101,6 +104,6 @@ flowchart LR
 | `_manual_history` | *(async)* `(db, task)` | — | Verify an actual human executor and immutable evidence, independently of the planned owner. |
 | `review_history` | *(async)* `(db, task, assignments, *, strict)` | — | A failed or recovered run can have produced retained work. Include every actual attempt. |
 | `_submission_candidate` | *(async)* `(db, task, submitted_run, source)` | — | Use identical repository and revision checks for authenticated worker or human artifact records. |
-| `select_reviewer` | *(async)* `(db, task, assignments, reviewer, *, binding_id = None, reviewer_profile_id = None)` | — | — |
+| `select_reviewer` | *(async)* `(db, task, assignments, reviewer, *, binding_id = None, reviewer_profile_id = None, review_evidence_id = None)` | — | — |
 | `observe_review_candidate` | *(async)* `(db, assignment_id, actor_id)` | — | Resolve remote PR evidence before taking the task, actor and assignment locks. |
 | `verify_verdict` | *(async)* `(db, task, assignments, assignment, actor, data, observed_candidate)` | — | — |

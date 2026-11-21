@@ -91,9 +91,9 @@ sequenceDiagram
     p2-->>p30: db.rollback (backend/app/mcp_agent_tools.py:classify_triage_item)
 ```
 
-> Call sequence diagram shows 30 of 282 interactions; 252 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 283 interactions; 253 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 85 (84 omitted); unresolved 1 of 96 (95 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 86 (85 omitted); unresolved 1 of 96 (95 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -107,7 +107,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/agent_service.py:validate_idempotency_key` | 10 | - | unresolved | 1 |
 | `backend/app/mcp_agent_tools.py:_triage_command_context` | 9 | [backend/app/schemas/agent_planning.py](../modules/schemas_agent_planning.md) | internal | 1 |
 | `backend/app/mcp_agent_tools.py:classify_triage_item` | 8 | [backend/app/mcp_agent_tools.py](../modules/mcp_agent_tools.md) | internal | 2 |
-> Omission summary shows 8 of 82 groups; 74 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 83 groups; 75 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -140,7 +140,7 @@ Collector observations for 80 source steps with known totals: observed: 412, emi
 | `classify_triage_item` | `available` | `evaluated` | `available` | `10` | `10` | `0` |
 | `_triage_command_context` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
 | `validate_idempotency_key` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
-| `ValueError` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `ValueError (backend/app/services/agen…:validate_idempotency_key)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `value.strip` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 
 ```mermaid
@@ -155,7 +155,7 @@ flowchart LR
     s8["8. classify_triage_item"]
     s9["9. _triage_command_context"]
     s10["10. validate_idempotency_key"]
-    s11["11. ValueError"]
+    s11["11. ValueError (backend/app/services/agen…:validate_idempotency_key)"]
     s12["12. value.strip"]
     s1 -->|"require_scope(actor, 'planning:write')"| s2
     s2 -->|"actor_has_scope(actor, scope)"| s3
@@ -166,7 +166,7 @@ flowchart LR
     s1 -->|"classify_triage_item(db, actor, triage_item_id, idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)"| s8
     s8 -->|"_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)"| s9
     s9 -->|"validate_idempotency_key(idempotency_key, required=True)"| s10
-    s10 -. "ValueError('Idempotency-Key is required')" .-> s11
+    s10 -. "ValueError (backend/app/services/agen…:validate_idempotency_key)('Idempotency-Key is required')" .-> s11
     s10 -. "value.strip(data not statically known)" .-> s12
     click s1 "../modules/routers_agent_planning.md"
     click s2 "../modules/agent_service.md"
@@ -192,7 +192,7 @@ flowchart LR
 | `classify_triage_item` | `db: AsyncSession`, `actor: AgentActor`, `triage_item_id: int`, `idempotency_key: str`, `rationale: str`, `correlation_id: str` | `TriageClassificationSuggestionResponse` | - | `replay`, `None`, `...` |
 | `_triage_command_context` | `idempotency_key: str`, `rationale: str`, `correlation_id: str` | - | - | `AgentPlanningCommandContext(...)` |
 | `validate_idempotency_key` | `value: Optional[str]`, `required: bool` | - | - | `None`, `value` |
-| `ValueError` | - | - | - | - |
+| `ValueError (backend/app/services/agen…:validate_idempotency_key)` | - | - | - | - |
 | `value.strip` | - | - | - | - |
 
 ### Call data
@@ -208,7 +208,7 @@ flowchart LR
 | classify_planning_triage_item | classify_triage_item | 646 | `mcp_agent_tools.classify_triage_item(db, actor, triage_item_id, idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
 | classify_triage_item | _triage_command_context | 2340 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 | _triage_command_context | validate_idempotency_key | 221 | `validate_idempotency_key(idempotency_key, required=True)` |
-| validate_idempotency_key | ValueError | 123 | `ValueError('Idempotency-Key is required')` |
+| validate_idempotency_key | ValueError (backend/app/services/agen…:validate_idempotency_key) | 123 | `ValueError('Idempotency-Key is required')` |
 | validate_idempotency_key | value.strip | 127 | `value.strip(data not statically known)` |
 
 ### Boundary effects

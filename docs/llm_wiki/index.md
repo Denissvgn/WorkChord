@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1725 | [Open section](#entities) |
-| Modules | 1093 | [Open section](#modules) |
-| Workflows | 216 | [Open section](#workflows) |
+| Entities | 1732 | [Open section](#entities) |
+| Modules | 1096 | [Open section](#modules) |
+| Workflows | 219 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 571 | [Open section](#entry-point-flows) |
+| Entry-point flows | 573 | [Open section](#entry-point-flows) |
 | Infrastructure | 12 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -741,6 +741,7 @@ These pages preserve documentation from earlier source revisions.
 - [PlanningWorkbenchFrameProps](entities/PlanningWorkbenchFrameProps.md)
 - [PortfolioFilters](entities/PortfolioFilters.md)
 - [PortfolioView](entities/PortfolioView.md)
+- [Positive](entities/Positive.md)
 - [PositiveRevision](entities/PositiveRevision.md)
 - [PostgreSQLContractBundle](entities/PostgreSQLContractBundle.md)
 - [PostgreSQLContractManifest](entities/PostgreSQLContractManifest.md)
@@ -841,8 +842,12 @@ These pages preserve documentation from earlier source revisions.
 - [ResolvedStatusEvidence](entities/ResolvedStatusEvidence.md)
 - [ResolvedVerifierLease](entities/ResolvedVerifierLease.md)
 - [RetentionState](entities/RetentionState.md)
+- [ReviewEvidenceCommand](entities/ReviewEvidenceCommand.md)
+- [ReviewEvidenceIssue](entities/ReviewEvidenceIssue.md)
+- [ReviewEvidenceRevocation](entities/ReviewEvidenceRevocation.md)
 - [ReviewHistory](entities/ReviewHistory.md)
 - [ReviewMode](entities/ReviewMode.md)
+- [ReviewTestEvidence](entities/ReviewTestEvidence.md)
 - [RevocationObservation](entities/RevocationObservation.md)
 - [RevocationResolver](entities/RevocationResolver.md)
 - [ReworkReadCache](entities/ReworkReadCache.md)
@@ -936,6 +941,7 @@ These pages preserve documentation from earlier source revisions.
 - [ScopeProject](entities/ScopeProject.md)
 - [ScopeRequirement](entities/ScopeRequirement.md)
 - [ScopeStore](entities/ScopeStore.md)
+- [ScopedReviewEvidence](entities/ScopedReviewEvidence.md)
 - [SecretMaterialError](entities/SecretMaterialError.md)
 - [SectionId](entities/SectionId.md)
 - [SegmentedOption](entities/SegmentedOption.md)
@@ -957,6 +963,7 @@ These pages preserve documentation from earlier source revisions.
 - [SettingsSection](entities/SettingsSection.md)
 - [SettingsSectionId](entities/SettingsSectionId.md)
 - [SetupReturn](entities/SetupReturn.md)
+- [Sha256](entities/Sha256.md)
 - [SharedStateProps](entities/SharedStateProps.md)
 - [SharedUnlock](entities/SharedUnlock.md)
 - [SignatureVerificationError](entities/SignatureVerificationError.md)
@@ -2567,6 +2574,7 @@ Retained history; these declarations are absent from the selected source invento
 - [schemas_project](modules/schemas_project.md) - Project schemas.
 - [schemas_release](modules/schemas_release.md) - Release schemas.
 - [schemas_request_source](modules/schemas_request_source.md) - Request source schemas.
+- [schemas_review_evidence](modules/schemas_review_evidence.md) - Bounded, non-executable evidence prepared for one review of an immutable candidate.
 - [schemas_runtime_observation](modules/schemas_runtime_observation.md) - Advisory runtime observation contracts.
 - [schemas_saved_view](modules/schemas_saved_view.md) - Saved view schemas and filter payload validation primitives.
 - [schemas_scheduling_rules](modules/schemas_scheduling_rules.md) - Scheduling rules schemas for API.
@@ -2594,6 +2602,7 @@ Retained history; these declarations are absent from the selected source invento
 - [serve_disposable_oidc](modules/serve_disposable_oidc.md) - Synthetic OIDC issuer confined to the disposable browser network and database.
 - [server_features](modules/server_features.md) - Server features a client can detect before it holds a credential.
 - [service_worksets](modules/service_worksets.md) - Owned cross-dialect service measurements, separate from HTTP and certification.
+- [services_review_evidence](modules/services_review_evidence.md) - Operator-attested review material. The receipt never grants access to a host or runs a command.
 - [services_work_metrics](modules/services_work_metrics.md) - Canonical leaf work, acceptance and distinct calendar-based schedule signals.
 - [sessionService](modules/sessionService.md) - `frontend/src/services/sessionService.ts`
 - [session_service](modules/session_service.md) - Opaque browser-session resolution and trusted request audit metadata.
@@ -2780,6 +2789,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_schedule_working_date](modules/test_schedule_working_date.md) - Forecasts respect the working date and readiness rejects stale saved dates.
 - [test_scheduler_dependencies](modules/test_scheduler_dependencies.md) - Dependency-ready scheduling across capacity rows and configured passes.
 - [test_schema_behavior](modules/test_schema_behavior.md) - Dual-dialect Boolean/JSON/time/constraint/RETURNING behavior matrix.
+- [test_scoped_review_evidence](modules/test_scoped_review_evidence.md) - Only the named independent reviewer can consume current, operator-attested review material.
 - [test_server_acceptance](modules/test_server_acceptance.md) - Self-hosted server acceptance contract and adapter tests.
 - [test_server_features](modules/test_server_features.md) - The public feature list names only features this server has.
 - [test_settings_read_access](modules/test_settings_read_access.md) - People without the admin key read settings and the pipeline; changes keep the key.
@@ -3052,6 +3062,7 @@ Retained history; these declarations are absent from the selected source invento
 - [build_examples](workflows/build_examples.md) - entry: `generate_mobile_contract_fixtures.build_examples`
 - [callback](workflows/callback.md) - entry: `identity.callback`
 - [change_task_status](workflows/change_task_status.md) - entry: `tasks.change_task_status`
+- [check_supervised_selection](workflows/check_supervised_selection.md) - entry: `review_evidence.check_supervised_selection`
 - [choose_local_profile](workflows/choose_local_profile.md) - entry: `identity.choose_local_profile`
 - [convert_triage_item_to_backlog](workflows/convert_triage_item_to_backlog.md) - entry: `triage.convert_triage_item_to_backlog`
 - [convert_triage_to_task](workflows/convert_triage_to_task.md) - entry: `mcp_agent_tools.convert_triage_to_task`
@@ -3069,6 +3080,7 @@ Retained history; these declarations are absent from the selected source invento
 - [get_task_timeline_page](workflows/get_task_timeline_page.md) - entry: `tasks.get_task_timeline_page`
 - [import_new_iteration](workflows/import_new_iteration.md) - entry: `export.import_new_iteration`
 - [initialize_gate](workflows/initialize_gate.md) - entry: `transfer._initialize_gate`
+- [issuer_identity](workflows/issuer_identity.md) - entry: `review_evidence._issuer_identity`
 - [link_profile](workflows/link_profile.md) - entry: `identity.link_profile`
 - [load_snapshot](workflows/load_snapshot.md) - entry: `transfer.load_snapshot`
 - [load_source_manifest](workflows/load_source_manifest.md) - entry: `transfer._load_source_manifest`
@@ -3092,6 +3104,7 @@ Retained history; these declarations are absent from the selected source invento
 - [reconcile_snapshot](workflows/reconcile_snapshot.md) - entry: `transfer.reconcile_snapshot`
 - [reconcile_window](workflows/reconcile_window.md) - entry: `planning_window_reconciliation.reconcile_window`
 - [record_post_copy_repairs](workflows/record_post_copy_repairs.md) - entry: `transfer.record_post_copy_repairs`
+- [record_review_evidence](workflows/record_review_evidence.md) - entry: `review_evidence.record_review_evidence`
 - [record_routing_operational_event](workflows/record_routing_operational_event.md) - entry: `agent_routing_observability.record_routing_operational_event`
 - [recover_principal](workflows/recover_principal.md) - entry: `identity.recover_principal`
 - [repair_sequences](workflows/repair_sequences.md) - entry: `transfer._repair_sequences`
@@ -3134,6 +3147,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-apply_schedule](flows/http-apply_schedule.md) - entry: `apply_schedule`
 - [http-approve_native_connection](flows/http-approve_native_connection.md) - entry: `approve_native_connection`
 - [http-attest_my_retained_output](flows/http-attest_my_retained_output.md) - entry: `attest_my_retained_output`
+- [http-attest_review_evidence](flows/http-attest_review_evidence.md) - entry: `attest_review_evidence`
 - [http-audit_hierarchy](flows/http-audit_hierarchy.md) - entry: `audit_hierarchy`
 - [http-authorize](flows/http-authorize.md) - entry: `authorize`
 - [http-backlog_snapshots](flows/http-backlog_snapshots.md) - entry: `backlog_snapshots`
@@ -3504,6 +3518,7 @@ Retained history; these declarations are absent from the selected source invento
 - [mcp-agent_apply_schedule](flows/mcp-agent_apply_schedule.md) - entry: `agent_apply_schedule`
 - [mcp-agent_apply_task_command](flows/mcp-agent_apply_task_command.md) - entry: `agent_apply_task_command`
 - [mcp-agent_attest_retained_planning_output](flows/mcp-agent_attest_retained_planning_output.md) - entry: `agent_attest_retained_planning_output`
+- [mcp-agent_attest_review_evidence](flows/mcp-agent_attest_review_evidence.md) - entry: `agent_attest_review_evidence`
 - [mcp-agent_begin_my_work](flows/mcp-agent_begin_my_work.md) - entry: `agent_begin_my_work`
 - [mcp-agent_capabilities_resource](flows/mcp-agent_capabilities_resource.md) - entry: `agent_capabilities_resource`
 - [mcp-agent_claim_task](flows/mcp-agent_claim_task.md) - entry: `agent_claim_task`

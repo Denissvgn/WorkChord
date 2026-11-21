@@ -1,7 +1,7 @@
 # AgentWorkService_create_assignment
 
 **Entry point:** `agent_work_service.AgentWorkService.create_assignment`
-**Modules involved:** [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [models_agent](../modules/models_agent.md), [review_provenance](../modules/review_provenance.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
+**Modules involved:** [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [models_agent](../modules/models_agent.md), [review_provenance](../modules/review_provenance.md), [services_review_evidence](../modules/services_review_evidence.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
 
 > Dispatch one task to one provisioned actor.
 
@@ -20,8 +20,9 @@
 10. `agent_routing_service.AgentRoutingService.validate_assignment_selection`
 11. `time.utc_now`
 12. `review_provenance.select_reviewer`
-13. `models_agent.AgentTaskAssignment`
-14. `commands.commit_or_flush`
+13. `services_review_evidence.check_supervised_selection`
+14. `models_agent.AgentTaskAssignment`
+15. `commands.commit_or_flush`
 
 ## Touches
 
@@ -31,6 +32,7 @@
 - [commands](../modules/commands.md)
 - [models_agent](../modules/models_agent.md)
 - [review_provenance](../modules/review_provenance.md)
+- [services_review_evidence](../modules/services_review_evidence.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 

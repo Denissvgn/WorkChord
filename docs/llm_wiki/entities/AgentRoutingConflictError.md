@@ -88,7 +88,7 @@ flowchart LR
 | `agent` | import | [routers_agent](../modules/routers_agent.md) | — |
 | `agent_planning` | import | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 | `AgentRoutingService._assessment_replay` | call | [agent_routing_service](../modules/agent_routing_service.md) | 2 |
-| `AgentRoutingService._build_preview` | call | [agent_routing_service](../modules/agent_routing_service.md) | 5 |
+| `AgentRoutingService._build_preview` | call | [agent_routing_service](../modules/agent_routing_service.md) | 7 |
 | `AgentRoutingService._completed_prior_lineage` | call | [agent_routing_service](../modules/agent_routing_service.md) | 2 |
 | `AgentRoutingService._parse_preview_id` | call | [agent_routing_service](../modules/agent_routing_service.md) | 3 |
 | `AgentRoutingService._preview_context` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |
@@ -97,4 +97,4 @@ flowchart LR
 | `AgentRoutingService.create_assessment` | call | [agent_routing_service](../modules/agent_routing_service.md) | 3 |
 | `AgentRoutingService.validate_assignment_selection` | call | [agent_routing_service](../modules/agent_routing_service.md) | 8 |
 
-> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.
+> References: showing 12 of 27 logical references; 15 omitted by the 12-row generated summary limit.

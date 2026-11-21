@@ -1,6 +1,6 @@
 # ModelAwareAgentTaskAssignmentUpdate
 
-**Location:** `backend/app/schemas/agent.py:670`
+**Location:** `backend/app/schemas/agent.py:675`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -27,6 +27,7 @@ PM command to reroute queued work through a fresh routing preview.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `expected_queue_revision` | `int` | `expected_queue_revision` | Yes | No | — | ge=1 | — | — |
+| `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | ge=1; strict=True | — | — |
 | `assessment_id` | `int` | `assessment_id` | Yes | No | — | ge=1 | — | — |
 | `model_binding_id` | `int` | `model_binding_id` | Yes | No | — | ge=1 | — | — |
 | `model_binding_revision` | `int` | `model_binding_revision` | Yes | No | — | ge=1 | — | — |
@@ -91,7 +92,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 2 | `actor_id`, `assessment_id`, `expected_queue_revision`, `model_binding_id`, `model_binding_revision`, `not_before`, `queue_rank`, `reason`, `reviewer_profile_id`, `routing_preview_digest`, `routing_preview_id`, `state` |
+| [schemas_agent](../modules/schemas_agent.md) | 2 | `actor_id`, `assessment_id`, `expected_queue_revision`, `model_binding_id`, `model_binding_revision`, `not_before`, `queue_rank`, `reason`, `review_evidence_id`, `reviewer_profile_id`, `routing_preview_digest`, `routing_preview_id` |
 
 ### Structure
 

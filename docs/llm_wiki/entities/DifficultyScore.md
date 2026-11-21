@@ -1,6 +1,6 @@
 # DifficultyScore
 
-**Location:** `backend/app/schemas/agent_routing.py:68`
+**Location:** `backend/app/schemas/agent_routing.py:69`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [agent_routing](../modules/agent_routing.md)

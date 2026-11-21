@@ -1,6 +1,6 @@
 # AgentModelCatalogCreate
 
-**Location:** `backend/app/schemas/agent_routing.py:273`
+**Location:** `backend/app/schemas/agent_routing.py:274`
 **Kind:** Pydantic model
 **Bases:** `AgentModelCatalogFields`
 **Module:** [agent_routing](../modules/agent_routing.md)
