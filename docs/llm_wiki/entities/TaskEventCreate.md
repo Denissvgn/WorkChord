@@ -52,16 +52,19 @@ flowchart LR
     n3["append_task_event (backend/app/routers/agent.py)"]
     n4["AgentService._task_event_matches (backend/app/services/agent_service.py)"]
     n5["AgentService.append_task_event (backend/app/services/agent_service.py)"]
+    n6["_require_original_private_fence (backend/app/services/retained_planning_output.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
+    n6 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
     click n4 "../modules/agent_service.md"
     click n5 "../modules/agent_service.md"
+    click n6 "../modules/retained_planning_output.md"
 ```
 
 ### Summary
@@ -84,3 +87,4 @@ flowchart LR
 | `append_task_event` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `AgentService._task_event_matches` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `AgentService.append_task_event` | type_reference | [agent_service](../modules/agent_service.md) | — |
+| `_require_original_private_fence` | call | [retained_planning_output](../modules/retained_planning_output.md) | 1 |

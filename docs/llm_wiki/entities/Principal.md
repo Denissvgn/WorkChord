@@ -39,10 +39,10 @@ flowchart LR
     n7["AgentService.create_actor (backend/app/services/agent_service.py)"]
     n8["AgentTeamSetupService.acknowledge_runtime (backend/app/services/agent_team_setup_service.py)"]
     n9["backend/app/services/discussion_service.py"]
-    n10["acting_principal_id (backend/app/services/identity_service.py)"]
-    n11["IdentityService.actor_context (backend/app/services/identity_service.py)"]
-    n12["IdentityService.context (backend/app/services/identity_service.py)"]
-    n13["IdentityService.finish_login (backend/app/services/identity_service.py)"]
+    n10["backend/app/services/execution_planning_window.py"]
+    n11["acting_principal_id (backend/app/services/identity_service.py)"]
+    n12["IdentityService.actor_context (backend/app/services/identity_service.py)"]
+    n13["IdentityService.context (backend/app/services/identity_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -66,7 +66,7 @@ flowchart LR
     click n7 "../modules/agent_service.md"
     click n8 "../modules/agent_team_setup_service.md"
     click n9 "../modules/discussion_service.md"
-    click n10 "../modules/identity_service.md"
+    click n10 "../modules/execution_planning_window.md"
     click n11 "../modules/identity_service.md"
     click n12 "../modules/identity_service.md"
     click n13 "../modules/identity_service.md"
@@ -96,9 +96,9 @@ flowchart LR
 | `AgentService.create_actor` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentTeamSetupService.acknowledge_runtime` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 | `discussion_service` | import | [discussion_service](../modules/discussion_service.md) | — |
+| `execution_planning_window` | import | [execution_planning_window](../modules/execution_planning_window.md) | — |
 | `acting_principal_id` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `IdentityService.actor_context` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `IdentityService.context` | type_reference | [identity_service](../modules/identity_service.md) | — |
-| `IdentityService.finish_login` | call | [identity_service](../modules/identity_service.md) | 1 |
 
-> References: showing 12 of 43 logical references; 31 omitted by the 12-row generated summary limit.
+> References: showing 12 of 46 logical references; 34 omitted by the 12-row generated summary limit.

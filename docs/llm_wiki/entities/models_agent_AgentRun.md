@@ -128,4 +128,4 @@ flowchart LR
 | `AgentService.append_run_event` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `AgentService.finish_run` | type_reference | [agent_service](../modules/agent_service.md) | — |
 
-> References: showing 12 of 61 logical references; 49 omitted by the 12-row generated summary limit.
+> References: showing 12 of 64 logical references; 52 omitted by the 12-row generated summary limit.

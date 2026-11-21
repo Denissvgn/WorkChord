@@ -207,7 +207,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_create_release_github_link | _tool_call | 2090 | `_tool_call('planning:write', ...)` |
+| workspace_create_release_github_link | _tool_call | 2111 | `_tool_call('planning:write', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

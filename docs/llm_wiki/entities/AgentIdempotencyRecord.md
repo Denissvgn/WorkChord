@@ -41,11 +41,11 @@ flowchart LR
     n6["AgentRoutingService.create_assessment (backend/app/services/agent_routing_service.py)"]
     n7["AgentService._record_command_receipt (backend/app/services/agent_service.py)"]
     n8["AgentWorkService._record_idempotency (backend/app/services/agent_work_service.py)"]
-    n9["backend/app/services/execution_reconciliation.py"]
-    n10["backend/app/services/review_provenance.py"]
-    n11["_record_planning_command (backend/tests/database/test_postgresql_concurrency.py)"]
-    n12["test_binding_receipt_without_independent_catalog_history_cannot_name_a_publisher (backend/tests/test_review_provenance.py)"]
-    n13["test_legacy_history_never_uses_the_actors_current_configuration (backend/tests/test_review_provenance.py)"]
+    n9["backend/app/services/execution_planning_window.py"]
+    n10["backend/app/services/execution_reconciliation.py"]
+    n11["backend/app/services/planning_window_reconciliation.py"]
+    n12["backend/app/services/retained_planning_output.py"]
+    n13["backend/app/services/review_provenance.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -68,11 +68,11 @@ flowchart LR
     click n6 "../modules/agent_routing_service.md"
     click n7 "../modules/agent_service.md"
     click n8 "../modules/agent_work_service.md"
-    click n9 "../modules/execution_reconciliation.md"
-    click n10 "../modules/review_provenance.md"
-    click n11 "../modules/test_postgresql_concurrency.md"
-    click n12 "../modules/test_review_provenance.md"
-    click n13 "../modules/test_review_provenance.md"
+    click n9 "../modules/execution_planning_window.md"
+    click n10 "../modules/execution_reconciliation.md"
+    click n11 "../modules/planning_window_reconciliation.md"
+    click n12 "../modules/retained_planning_output.md"
+    click n13 "../modules/review_provenance.md"
 ```
 
 ### Summary
@@ -98,10 +98,10 @@ flowchart LR
 | `AgentRoutingService.create_assessment` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |
 | `AgentService._record_command_receipt` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentWorkService._record_idempotency` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
+| `execution_planning_window` | import | [execution_planning_window](../modules/execution_planning_window.md) | — |
 | `execution_reconciliation` | import | [execution_reconciliation](../modules/execution_reconciliation.md) | — |
+| `planning_window_reconciliation` | import | [planning_window_reconciliation](../modules/planning_window_reconciliation.md) | — |
+| `retained_planning_output` | import | [retained_planning_output](../modules/retained_planning_output.md) | — |
 | `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |
-| `_record_planning_command` | call | [test_postgresql_concurrency](../modules/test_postgresql_concurrency.md) | 1 |
-| `test_binding_receipt_without_independent_catalog_history_cannot_name_a_publisher` | call | [test_review_provenance](../modules/test_review_provenance.md) | 2 |
-| `test_legacy_history_never_uses_the_actors_current_configuration` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
 
-> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
+> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.

@@ -2,23 +2,31 @@
 
 **Entry point:** `import_iteration` (`http`)
 **Source:** [export](../modules/export.md)
-**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 18 more
+**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_team_setup](../modules/agent_team_setup.md), and 28 more
 
 **Complete modules touched:**
 
+- [agent_routing_policy](../modules/agent_routing_policy.md)
+- [agent_routing_service](../modules/agent_routing_service.md)
+- [agent_team_setup](../modules/agent_team_setup.md)
+- [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
+- [execution_planning_window](../modules/execution_planning_window.md)
+- [execution_reconciliation](../modules/execution_reconciliation.md)
 - [export](../modules/export.md)
 - [identity_service](../modules/identity_service.md)
 - [import_parser](../modules/import_parser.md)
 - [iteration_service](../modules/iteration_service.md)
+- [models_agent](../modules/models_agent.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
 - [models_task](../modules/models_task.md)
 - [mutation_versions](../modules/mutation_versions.md)
 - [planning_input_context](../modules/planning_input_context.md)
+- [review_provenance](../modules/review_provenance.md)
 - [schemas_common](../modules/schemas_common.md)
 - [schemas_task](../modules/schemas_task.md)
 - [schemas_team](../modules/schemas_team.md)
@@ -28,6 +36,7 @@
 - [task_service](../modules/task_service.md)
 - [team_member](../modules/team_member.md)
 - [team_service](../modules/team_service.md)
+- [time](../modules/time.md)
 
 ## Call sequence
 
@@ -49,22 +58,22 @@ sequenceDiagram
     participant p10 as DiscussionService.enqueue
     participant p11 as _import_task
     participant p12 as commit_or_flush
-    participant p13 as _import_task_record
-    participant p14 as require_operator
-    participant p15 as require_project
-    participant p16 as DeliveryDependencyService.validate_cycles
-    participant p17 as DiscussionService.recipient_authorized
-    participant p18 as prospective_member_profiles
-    participant p19 as TaskService.reserve_task_version
-    participant p20 as clear_execution_evidence
-    participant p21 as DeliveryDependencyService.graph
-    participant p22 as lock_iterations
-    participant p23 as IdentityService.context
-    participant p24 as parse_team_members_text
-    participant p25 as TeamService._resolve_profile_for_member
-    participant p26 as lock_planning
-    participant p27 as TeamService._get_profile_by_id
-    participant p28 as portable_case_insensitive_equal
+    participant p13 as task_context
+    participant p14 as current_window
+    participant p15 as make_window
+    participant p16 as seal_authority
+    participant p17 as TaskService.record_task_event
+    participant p18 as assignment_context
+    participant p19 as original_ownership
+    participant p20 as _import_task_record
+    participant p21 as authority_stamp
+    participant p22 as require_operator
+    participant p23 as require_project
+    participant p24 as DeliveryDependencyService.validate_cycles
+    participant p25 as DiscussionService.recipient_authorized
+    participant p26 as prospective_member_profiles
+    participant p27 as TaskService.reserve_task_version
+    participant p28 as clear_execution_evidence
     participant p29 as HTTPException (backend/app/routers/export.py:import_iteration)
     participant p30 as file.read
     p0->>p1: _validate_import_data
@@ -79,29 +88,29 @@ sequenceDiagram
     p2->>p10: DiscussionService.enqueue
     p4->>p11: _import_task
     p4->>p12: commit_or_flush
-    p11->>p13: _import_task_record
-    p8->>p14: require_operator
-    p8->>p15: require_project
-    p9->>p16: DeliveryDependencyService.validate_cycles
-    p10->>p17: DiscussionService.recipient_authorized
-    p8->>p18: prospective_member_profiles
-    p9->>p19: TaskService.reserve_task_version
-    p9->>p20: clear_execution_evidence
-    p16->>p21: DeliveryDependencyService.graph
-    p19->>p22: lock_iterations
-    p17->>p23: IdentityService.context
-    p18->>p24: parse_team_members_text
-    p18->>p25: TeamService._resolve_profile_for_member
-    p22->>p26: lock_planning
-    p25->>p27: TeamService._get_profile_by_id
-    p25->>p28: portable_case_insensitive_equal
+    p3->>p13: task_context
+    p3->>p14: current_window
+    p3->>p15: make_window
+    p3->>p16: seal_authority
+    p3->>p17: TaskService.record_task_event
+    p15->>p18: assignment_context
+    p16->>p19: original_ownership
+    p11->>p20: _import_task_record
+    p16->>p21: authority_stamp
+    p8->>p22: require_operator
+    p8->>p23: require_project
+    p9->>p24: DeliveryDependencyService.validate_cycles
+    p10->>p25: DiscussionService.recipient_authorized
+    p8->>p26: prospective_member_profiles
+    p9->>p27: TaskService.reserve_task_version
+    p9->>p28: clear_execution_evidence
     p0-->>p29: HTTPException (backend/app/routers/export.py:import_iteration)(status_code=status.HTTP_404_NOT_FOUND, detail=...)
     p5-->>p30: file.read(...)
 ```
 
-> Call sequence diagram shows 30 of 584 interactions; 554 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 846 interactions; 816 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 164 (163 omitted); unresolved 1 of 308 (307 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 235 (234 omitted); unresolved 1 of 462 (461 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -115,7 +124,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/routers/export.py:_validate_import_data` | 22 | - | external | 9 |
 | `backend/app/routers/export.py:_validate_import_data` | 22 | [backend/app/routers/export.py](../modules/export.md) | internal | 1 |
 | `backend/app/routers/export.py:_validate_import_task_tree` | 26 | - | unresolved | 3 |
-> Omission summary shows 8 of 115 groups; 107 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 167 groups; 159 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -128,9 +137,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 113; effect analysis evaluated: 65, partial: 2, unavailable: 46. Counts include steps omitted from the displayed trace.
+Source steps: 150; effect analysis evaluated: 98, partial: 5, unavailable: 47. Counts include steps omitted from the displayed trace.
 
-Collector observations for 67 source steps with known totals: observed: 310, emitted: 308, omitted: 2. Unavailable totals are excluded.
+Collector observations for 103 source steps with known totals: observed: 502, emitted: 476, omitted: 26. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

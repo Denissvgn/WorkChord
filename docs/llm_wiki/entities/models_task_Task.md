@@ -67,6 +67,7 @@ A durable work item has either iteration scope or explicit project backlog scope
 | `source` | `Mapped[Optional[str]]` | `mapped_column(String(100), nullable=True)` | — |
 | `source_url` | `Mapped[Optional[str]]` | `mapped_column(String(1000), nullable=True)` | — |
 | `version` | `Mapped[int]` | `mapped_column(Integer, default=1, nullable=False)` | — |
+| `execution_planning_window` | `Mapped[dict \| None]` | `mapped_column(JSON(none_as_null=True))` | — |
 | `claim_expires_at` | `Mapped[Optional[datetime]]` | `mapped_column(UTCDateTime(), nullable=True)` | — |
 | `claim_id` | `Mapped[Optional[str]]` | `mapped_column(String(64), nullable=True, index=True)` | — |
 | `claim_generation` | `Mapped[int]` | `mapped_column(Integer, default=0, nullable=False)` | — |
@@ -180,4 +181,4 @@ flowchart LR
 | `recovery` | import | [recovery](../modules/recovery.md) | — |
 | `release` | import | [models_release](../modules/models_release.md) | — |
 
-> References: showing 12 of 306 logical references; 294 omitted by the 12-row generated summary limit.
+> References: showing 12 of 308 logical references; 296 omitted by the 12-row generated summary limit.

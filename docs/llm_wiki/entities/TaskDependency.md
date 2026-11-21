@@ -1,6 +1,6 @@
 # TaskDependency
 
-**Location:** `backend/app/models/task.py:257`
+**Location:** `backend/app/models/task.py:258`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_task](../modules/models_task.md)

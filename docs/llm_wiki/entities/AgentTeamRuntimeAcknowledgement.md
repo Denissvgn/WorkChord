@@ -54,6 +54,7 @@ flowchart LR
     n7["acknowledge_member (backend/tests/test_agent_team_setup_qualification.py)"]
     n8["test_setup_scenario_03_runtime_handoff_failure_resumes_in_place (backend/tests/test_agent_team_setup_qualification.py)"]
     n9["acknowledgement_for (backend/tests/test_agent_team_setup_stored_contract.py)"]
+    n10["backend/tests/test_execution_planning_window.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -63,6 +64,7 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/agent_team_setup.md"
     click n1 "../modules/agent_team_setup.md"
     click n2 "../modules/routers_agent.md"
@@ -73,6 +75,7 @@ flowchart LR
     click n7 "../modules/test_agent_team_setup_qualification.md"
     click n8 "../modules/test_agent_team_setup_qualification.md"
     click n9 "../modules/test_agent_team_setup_stored_contract.md"
+    click n10 "../modules/test_execution_planning_window.md"
 ```
 
 ### Summary
@@ -100,3 +103,4 @@ flowchart LR
 | `test_setup_scenario_03_runtime_handoff_failure_resumes_in_place` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |
 | `acknowledgement_for` | call | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | 1 |
 | `acknowledgement_for` | type_reference | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | — |
+| `test_execution_planning_window` | import | [test_execution_planning_window](../modules/test_execution_planning_window.md) | — |

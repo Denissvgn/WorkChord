@@ -2,18 +2,20 @@
 
 **Entry point:** `agent_list_recovery_tasks` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [authority](../modules/authority.md), and 14 more
+**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_service](../modules/agent_service.md), [agent_team_setup_service](../modules/agent_team_setup_service.md), and 17 more
 
 **Complete modules touched:**
 
 - [agent_routing_policy](../modules/agent_routing_policy.md)
 - [agent_service](../modules/agent_service.md)
+- [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [agent_work_service](../modules/agent_work_service.md)
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
+- [execution_planning_window](../modules/execution_planning_window.md)
 - [identity_service](../modules/identity_service.md)
 - [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
@@ -45,22 +47,22 @@ sequenceDiagram
     participant p10 as _require_scope_requirement
     participant p11 as IdentityService.actor_context
     participant p12 as AgentWorkService._validate_assignment_actor
-    participant p13 as AgentWorkService.assignment_response
-    participant p14 as AgentWorkService.run_response
-    participant p15 as AgentWorkService._paginate_single_collection
-    participant p16 as require_scope
-    participant p17 as evaluate_actor_authorization
-    participant p18 as AgentWorkService._decode_page_cursor
-    participant p19 as AgentService.authenticate
-    participant p20 as require_identity_writes
-    participant p21 as DeliveryDependencyService.reconcile
-    participant p22 as DiscussionService.enqueue
-    participant p23 as actor_has_scope
-    participant p24 as commit_or_flush
-    participant p25 as DeliveryDependencyService.validate_cycles
-    participant p26 as DiscussionService.recipient_authorized
-    participant p27 as TaskService.reserve_task_version
-    participant p28 as clear_execution_evidence
+    participant p13 as window_authority_matches
+    participant p14 as AgentWorkService.assignment_response
+    participant p15 as AgentWorkService.run_response
+    participant p16 as AgentWorkService._paginate_single_collection
+    participant p17 as assignment_matches
+    participant p18 as require_scope
+    participant p19 as evaluate_actor_authorization
+    participant p20 as AgentWorkService._decode_page_cursor
+    participant p21 as AgentService.authenticate
+    participant p22 as require_identity_writes
+    participant p23 as authority_stamp
+    participant p24 as DeliveryDependencyService.reconcile
+    participant p25 as DiscussionService.enqueue
+    participant p26 as actor_has_scope
+    participant p27 as current_window
+    participant p28 as assignment_context
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -75,29 +77,29 @@ sequenceDiagram
     p4->>p10: _require_scope_requirement
     p4->>p11: IdentityService.actor_context
     p5->>p12: AgentWorkService._validate_assignment_actor
-    p5->>p13: AgentWorkService.assignment_response
-    p5->>p14: AgentWorkService.run_response
-    p5->>p15: AgentWorkService._paginate_single_collection
-    p10->>p16: require_scope
-    p12->>p17: evaluate_actor_authorization
-    p15->>p18: AgentWorkService._decode_page_cursor
-    p9->>p19: AgentService.authenticate
-    p11->>p20: require_identity_writes
-    p8->>p21: DeliveryDependencyService.reconcile
-    p8->>p22: DiscussionService.enqueue
-    p16->>p23: actor_has_scope
-    p19->>p24: commit_or_flush
-    p21->>p25: DeliveryDependencyService.validate_cycles
-    p22->>p26: DiscussionService.recipient_authorized
-    p21->>p27: TaskService.reserve_task_version
-    p21->>p28: clear_execution_evidence
+    p5->>p13: window_authority_matches
+    p5->>p14: AgentWorkService.assignment_response
+    p5->>p15: AgentWorkService.run_response
+    p5->>p16: AgentWorkService._paginate_single_collection
+    p13->>p17: assignment_matches
+    p10->>p18: require_scope
+    p12->>p19: evaluate_actor_authorization
+    p16->>p20: AgentWorkService._decode_page_cursor
+    p9->>p21: AgentService.authenticate
+    p11->>p22: require_identity_writes
+    p13->>p23: authority_stamp
+    p8->>p24: DeliveryDependencyService.reconcile
+    p8->>p25: DiscussionService.enqueue
+    p18->>p26: actor_has_scope
+    p17->>p27: current_window
+    p17->>p28: assignment_context
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 471 interactions; 441 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 594 interactions; 564 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 132 (131 omitted); unresolved 1 of 234 (233 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 169 (168 omitted); unresolved 1 of 305 (304 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -111,7 +113,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 108 groups; 100 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 131 groups; 123 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -124,9 +126,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 106; effect analysis evaluated: 69, partial: 3, unavailable: 34. Counts include steps omitted from the displayed trace.
+Source steps: 121; effect analysis evaluated: 83, partial: 4, unavailable: 34. Counts include steps omitted from the displayed trace.
 
-Collector observations for 72 source steps with known totals: observed: 344, emitted: 328, omitted: 16. Unavailable totals are excluded.
+Collector observations for 87 source steps with known totals: observed: 411, emitted: 388, omitted: 23. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -201,7 +203,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_list_recovery_tasks | _tool_call | 939 | `_tool_call('recovery:read', ...)` |
+| agent_list_recovery_tasks | _tool_call | 960 | `_tool_call('recovery:read', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

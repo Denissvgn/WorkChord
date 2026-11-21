@@ -33,6 +33,7 @@ flowchart LR
     n6["backend/app/services/task_recovery_service.py"]
     n7["backend/app/services/task_service.py"]
     n1 --> n0
+    n1 --> n2
     n1 --> n5
     n1 --> n7
     n4 --> n0

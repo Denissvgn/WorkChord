@@ -1,6 +1,6 @@
 # ReworkReadCache
 
-**Location:** `backend/app/services/review_provenance.py:49`
+**Location:** `backend/app/services/review_provenance.py:50`
 **Kind:** Class
 **Bases:** —
 **Module:** [review_provenance](../modules/review_provenance.md)
@@ -22,6 +22,7 @@ Several assignments on one queue page can reuse the same team and binding observ
 | `teams` | `dict` | `field(default_factory=dict)` | — |
 | `bindings` | `dict` | `field(default_factory=dict)` | — |
 | `modes` | `dict` | `field(default_factory=dict)` | — |
+| `retained_outputs` | `dict` | `field(default_factory=dict)` | — |
 
 ## Methods
 
@@ -55,7 +56,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [review_provenance](../modules/review_provenance.md) | 0 | `assignments`, `bindings`, `modes`, `projects`, `teams` |
+| [review_provenance](../modules/review_provenance.md) | 0 | `assignments`, `bindings`, `modes`, `projects`, `retained_outputs`, `teams` |
 
 ### References
 

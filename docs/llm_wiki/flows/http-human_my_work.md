@@ -2,7 +2,7 @@
 
 **Entry point:** `human_my_work` (`http`)
 **Source:** [routers_task_domain](../modules/routers_task_domain.md)
-**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 18 more
+**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 23 more
 
 **Complete modules touched:**
 
@@ -16,7 +16,12 @@
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
+- [execution_planning_window](../modules/execution_planning_window.md)
+- [execution_reconciliation](../modules/execution_reconciliation.md)
+- [github_links](../modules/github_links.md)
 - [identity_service](../modules/identity_service.md)
+- [planning_window_reconciliation](../modules/planning_window_reconciliation.md)
+- [retained_planning_output](../modules/retained_planning_output.md)
 - [review_provenance](../modules/review_provenance.md)
 - [routers_task_domain](../modules/routers_task_domain.md)
 - [schemas_task_domain](../modules/schemas_task_domain.md)
@@ -49,21 +54,21 @@ sequenceDiagram
     participant p11 as action_projection
     participant p12 as TaskBriefService.require_review
     participant p13 as AgentWorkService._start_blockers
-    participant p14 as DeliveryDependencyService.projection
-    participant p15 as different_publisher_required
-    participant p16 as AgentWorkService._resolve_rollout
-    participant p17 as AgentWorkService._shadow_handoff
-    participant p18 as AgentWorkService._selection_pending
-    participant p19 as AgentWorkService._is_model_aware_assignment
-    participant p20 as AgentWorkService._validate_assignment_actor
-    participant p21 as sha256_hex
-    participant p22 as AgentWorkService._working_today
-    participant p23 as AgentWorkService._supervised_recovery
-    participant p24 as AgentTeamSetupService.routing_readiness
-    participant p25 as supervised_rework_evidence
-    participant p26 as evaluate_actor_authorization
-    participant p27 as working_today
-    participant p28 as canonical_json_bytes
+    participant p14 as window_authority_matches
+    participant p15 as DeliveryDependencyService.projection
+    participant p16 as different_publisher_required
+    participant p17 as recovery_attestation_hint
+    participant p18 as AgentWorkService._resolve_rollout
+    participant p19 as AgentWorkService._shadow_handoff
+    participant p20 as AgentWorkService._selection_pending
+    participant p21 as AgentWorkService._is_model_aware_assignment
+    participant p22 as AgentWorkService._validate_assignment_actor
+    participant p23 as sha256_hex
+    participant p24 as AgentWorkService._working_today
+    participant p25 as assignment_matches
+    participant p26 as AgentWorkService._supervised_recovery
+    participant p27 as AgentTeamSetupService.routing_readiness
+    participant p28 as supervised_rework_evidence
     participant p29 as HTTPException
     participant p30 as self.db.info.get (backend/app/services/task…TaskDetailService.my_work)
     p0->>p1: TaskDetailService.my_work
@@ -79,28 +84,28 @@ sequenceDiagram
     p7->>p11: action_projection
     p7->>p12: TaskBriefService.require_review
     p7->>p13: AgentWorkService._start_blockers
-    p10->>p14: DeliveryDependencyService.projection
-    p12->>p15: different_publisher_required
-    p13->>p16: AgentWorkService._resolve_rollout
-    p13->>p17: AgentWorkService._shadow_handoff
-    p13->>p18: AgentWorkService._selection_pending
-    p13->>p19: AgentWorkService._is_model_aware_assignment
-    p13->>p20: AgentWorkService._validate_assignment_actor
-    p12->>p21: sha256_hex
-    p13->>p22: AgentWorkService._working_today
-    p17->>p23: AgentWorkService._supervised_recovery
-    p16->>p24: AgentTeamSetupService.routing_readiness
-    p17->>p25: supervised_rework_evidence
-    p20->>p26: evaluate_actor_authorization
-    p22->>p27: working_today
-    p21->>p28: canonical_json_bytes
+    p13->>p14: window_authority_matches
+    p10->>p15: DeliveryDependencyService.projection
+    p12->>p16: different_publisher_required
+    p13->>p17: recovery_attestation_hint
+    p13->>p18: AgentWorkService._resolve_rollout
+    p13->>p19: AgentWorkService._shadow_handoff
+    p13->>p20: AgentWorkService._selection_pending
+    p13->>p21: AgentWorkService._is_model_aware_assignment
+    p13->>p22: AgentWorkService._validate_assignment_actor
+    p12->>p23: sha256_hex
+    p13->>p24: AgentWorkService._working_today
+    p14->>p25: assignment_matches
+    p19->>p26: AgentWorkService._supervised_recovery
+    p18->>p27: AgentTeamSetupService.routing_readiness
+    p19->>p28: supervised_rework_evidence
     p0-->>p29: HTTPException(422, detail=[...])
     p1-->>p30: self.db.info.get (backend/app/services/task…TaskDetailService.my_work)('authority')
 ```
 
-> Call sequence diagram shows 30 of 515 interactions; 485 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 781 interactions; 751 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 115 (114 omitted); unresolved 1 of 284 (283 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 193 (192 omitted); unresolved 1 of 423 (422 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -114,7 +119,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_detail_service.py:TaskDetailService.my_work` | 2 | [backend/app/services/task_detail_service.py](../modules/task_detail_service.md) | internal | 2 |
 | `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | unresolved | 9 |
 | `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | external | 2 |
-> Omission summary shows 8 of 105 groups; 97 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 140 groups; 132 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -127,9 +132,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 117; effect analysis evaluated: 85, partial: 4, unavailable: 28. Counts include steps omitted from the displayed trace.
+Source steps: 166; effect analysis evaluated: 122, partial: 8, unavailable: 36. Counts include steps omitted from the displayed trace.
 
-Collector observations for 89 source steps with known totals: observed: 551, emitted: 512, omitted: 39. Unavailable totals are excluded.
+Collector observations for 130 source steps with known totals: observed: 828, emitted: 766, omitted: 62. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -143,7 +148,7 @@ Collector observations for 89 source steps with known totals: observed: 551, emi
 | `local_work_profile` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
 | `internal_authority` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
 | `db.info.get (backend/app/authority.py:internal_authority)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `db.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `db.get (backend/app/services/iden…ice.py:local_work_profile)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `select(…).where (backend/app/services/task…TaskDetailService.my_work)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `select (backend/app/services/task…TaskDetailService.my_work)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `self.references().where` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
@@ -158,7 +163,7 @@ flowchart LR
     s4["4. local_work_profile"]
     s5["5. internal_authority"]
     s6["6. db.info.get (backend/app/authority.py:internal_authority)"]
-    s7["7. db.get"]
+    s7["7. db.get (backend/app/services/iden…ice.py:local_work_profile)"]
     s8["8. select(…).where (backend/app/services/task…TaskDetailService.my_work)"]
     s9["9. select (backend/app/services/task…TaskDetailService.my_work)"]
     s10["10. self.references().where"]
@@ -169,7 +174,7 @@ flowchart LR
     s2 -->|"local_work_profile(self.db, authority.profile_id)"| s4
     s4 -->|"internal_authority(db)"| s5
     s5 -. "db.info.get (backend/app/authority.py:internal_authority)('authority_internal', False)" .-> s6
-    s4 -. "db.get(TeamMemberProfile, profile_id)" .-> s7
+    s4 -. "db.get (backend/app/services/iden…ice.py:local_work_profile)(TeamMemberProfile, profile_id)" .-> s7
     s2 -. "select(…).where (backend/app/services/task…TaskDetailService.my_work)(...)" .-> s8
     s2 -. "select (backend/app/services/task…TaskDetailService.my_work)(TeamMember.id)" .-> s9
     s2 -. "self.references().where(or_(...), or_(...), Task.canceled_at.is_(...), Task.is_summary.is_(...))" .-> s10
@@ -192,7 +197,7 @@ flowchart LR
 | `local_work_profile` | `db`, `profile_id` | - | - | `None`, `...` |
 | `internal_authority` | `db` | - | `db.info[...]`, `db.info[...]` | - |
 | `db.info.get (backend/app/authority.py:internal_authority)` | - | - | - | - |
-| `db.get` | - | - | - | - |
+| `db.get (backend/app/services/iden…ice.py:local_work_profile)` | - | - | - | - |
 | `select(…).where (backend/app/services/task…TaskDetailService.my_work)` | - | - | - | - |
 | `select (backend/app/services/task…TaskDetailService.my_work)` | - | - | - | - |
 | `self.references().where` | - | - | - | - |
@@ -208,7 +213,7 @@ flowchart LR
 | TaskDetailService.my_work | local_work_profile | 115 | `local_work_profile(self.db, authority.profile_id)` |
 | local_work_profile | internal_authority | 59 | `internal_authority(db)` |
 | internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 92 | `db.info.get('authority_internal', False)` |
-| local_work_profile | db.get | 60 | `db.get(TeamMemberProfile, profile_id)` |
+| local_work_profile | db.get (backend/app/services/iden…ice.py:local_work_profile) | 60 | `db.get(TeamMemberProfile, profile_id)` |
 | TaskDetailService.my_work | select(…).where (backend/app/services/task…TaskDetailService.my_work) | 121 | `select(TeamMember.id).where(...)` |
 | TaskDetailService.my_work | select (backend/app/services/task…TaskDetailService.my_work) | 121 | `select(TeamMember.id)` |
 | TaskDetailService.my_work | self.references().where | 122 | `self.references().where(or_(...), or_(...), Task.canceled_at.is_(...), Task.is_summary.is_(...))` |

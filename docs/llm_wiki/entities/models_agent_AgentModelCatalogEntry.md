@@ -47,12 +47,12 @@ flowchart LR
     n5["backend/app/services/agent_service.py"]
     n6["AgentTeamSetupService._catalog_entries (backend/app/services/agent_team_setup_service.py)"]
     n7["AgentTeamSetupService._reconcile_bindings (backend/app/services/agent_team_setup_service.py)"]
-    n8["backend/app/services/review_provenance.py"]
-    n9["test_actor_provisioning_creates_binding_and_audit_atomically (backend/tests/test_agent_model_catalog_api.py)"]
-    n10["test_binding_and_preset_routes_preserve_credential_permissions (backend/tests/test_agent_model_catalog_api.py)"]
-    n11["test_binding_disable_requires_explicit_reconciliation_and_marks_queue_stale (backend/tests/test_agent_model_catalog_api.py)"]
-    n12["test_rest_and_mcp_rosters_are_identical_and_secret_free (backend/tests/test_agent_model_catalog_api.py)"]
-    n13["test_roster_query_count_is_cardinality_constant (backend/tests/test_agent_model_catalog_api.py)"]
+    n8["backend/app/services/execution_planning_window.py"]
+    n9["backend/app/services/review_provenance.py"]
+    n10["test_actor_provisioning_creates_binding_and_audit_atomically (backend/tests/test_agent_model_catalog_api.py)"]
+    n11["test_binding_and_preset_routes_preserve_credential_permissions (backend/tests/test_agent_model_catalog_api.py)"]
+    n12["test_binding_disable_requires_explicit_reconciliation_and_marks_queue_stale (backend/tests/test_agent_model_catalog_api.py)"]
+    n13["test_rest_and_mcp_rosters_are_identical_and_secret_free (backend/tests/test_agent_model_catalog_api.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -74,8 +74,8 @@ flowchart LR
     click n5 "../modules/agent_service.md"
     click n6 "../modules/agent_team_setup_service.md"
     click n7 "../modules/agent_team_setup_service.md"
-    click n8 "../modules/review_provenance.md"
-    click n9 "../modules/test_agent_model_catalog_api.md"
+    click n8 "../modules/execution_planning_window.md"
+    click n9 "../modules/review_provenance.md"
     click n10 "../modules/test_agent_model_catalog_api.md"
     click n11 "../modules/test_agent_model_catalog_api.md"
     click n12 "../modules/test_agent_model_catalog_api.md"
@@ -104,11 +104,11 @@ flowchart LR
 | `agent_service` | import | [agent_service](../modules/agent_service.md) | — |
 | `AgentTeamSetupService._catalog_entries` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._reconcile_bindings` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
+| `execution_planning_window` | import | [execution_planning_window](../modules/execution_planning_window.md) | — |
 | `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |
 | `test_actor_provisioning_creates_binding_and_audit_atomically` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 1 |
 | `test_binding_and_preset_routes_preserve_credential_permissions` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 2 |
 | `test_binding_disable_requires_explicit_reconciliation_and_marks_queue_stale` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 1 |
 | `test_rest_and_mcp_rosters_are_identical_and_secret_free` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 2 |
-| `test_roster_query_count_is_cardinality_constant` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 1 |
 
-> References: showing 12 of 36 logical references; 24 omitted by the 12-row generated summary limit.
+> References: showing 12 of 38 logical references; 26 omitted by the 12-row generated summary limit.

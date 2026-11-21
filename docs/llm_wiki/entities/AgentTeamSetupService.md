@@ -133,4 +133,4 @@ flowchart LR
 | `get_agent_team_starting_points` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `get_agent_team_topology` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 
-> References: showing 12 of 48 logical references; 36 omitted by the 12-row generated summary limit.
+> References: showing 12 of 49 logical references; 37 omitted by the 12-row generated summary limit.

@@ -20,6 +20,8 @@ A team controller can advance another actor’s queue only for the revision and 
 
 When independent review returns work to its original submitter, the assigned-work queue shows the effective reviewer profile and worker binding. The worker starts that exact assignment with its current queue revision and observed model. The new run records the handback while the original assignment, submission and verdict retain their recorded contents.
 
+A worker can continue across a verified planning-only reservation using its current task version and original live claim. It still needs its own current assignment, model and team authority. After expiry, ordinary PM recovery creates a new assignment and claim generation.
+
 ## Imports
 
 | Source | Symbols |
@@ -47,8 +49,10 @@ When independent review returns work to its original submitter, the assigned-wor
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key`, `AgentService` |
 | `app.services.agent_team_setup_service` | `AgentTeamMembershipBoundary`, `AgentTeamSetupService`, `AgentTeamSetupService`, `AgentTeamSetupConflictError`, `AgentTeamSetupService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
+| `app.services.execution_planning_window` | `assignment_matches`, `require_window_authority`, `window_authority_matches` |
 | `app.services.external_link_service` | `ExternalLinkService` |
 | `app.services.project_service` | `ProjectService` |
+| `app.services.retained_planning_output` | `REQUIRED`, `REQUIRED`, `recovery_attestation_hint`, `REQUIRED`, `recovery_attestation_hint` |
 | `app.services.review_provenance` | `ReworkReadCache`, `actor_provenance`, `different_publisher_required`, `rework_binding_identity`, `select_reviewer`, `supervised_rework_evidence`, `record_terminal_observation`, `record_terminal_observation`, `observe_review_candidate`, `verify_verdict`, `mark_server_interruption` |
 | `app.services.scheduler_service` | `SchedulerService` |
 | `app.services.task_brief_service` | `TaskBriefService`, `TaskBriefService`, `brief_definition_blockers`, `brief_definition_blockers` |
@@ -87,8 +91,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (23) |
-| Outbound | `backend` (32) |
+| Inbound | `backend` (24) |
+| Outbound | `backend` (34) |
 
 ### External packages
 
@@ -96,13 +100,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 53 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 55 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentWorkService](../entities/AgentWorkService.md) | 184 | — | Coordinate PM dispatch and low-freedom worker lifecycle commands. |
+| [AgentWorkService](../entities/AgentWorkService.md) | 185 | — | Coordinate PM dispatch and low-freedom worker lifecycle commands. |
 
 ## Functions
 

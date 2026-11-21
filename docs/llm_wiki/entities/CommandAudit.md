@@ -43,9 +43,9 @@ flowchart LR
     n8["workspace_member (backend/app/routers/identity.py)"]
     n9["reconcile_execution (backend/app/services/execution_reconciliation.py)"]
     n10["IdentityService.transfer_guest (backend/app/services/identity_service.py)"]
-    n11["backend/tests/database_migration/test_project_identity_scope.py"]
-    n12["backend/tests/migrations/test_allocation_identity.py"]
-    n13["backend/tests/migrations/test_profile_identity.py"]
+    n11["reconcile_window (backend/app/services/planning_window_reconciliation.py)"]
+    n12["backend/tests/database_migration/test_project_identity_scope.py"]
+    n13["backend/tests/migrations/test_allocation_identity.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -70,9 +70,9 @@ flowchart LR
     click n8 "../modules/routers_identity.md"
     click n9 "../modules/execution_reconciliation.md"
     click n10 "../modules/identity_service.md"
-    click n11 "../modules/test_project_identity_scope.md"
-    click n12 "../modules/test_allocation_identity.md"
-    click n13 "../modules/test_profile_identity.md"
+    click n11 "../modules/planning_window_reconciliation.md"
+    click n12 "../modules/test_project_identity_scope.md"
+    click n13 "../modules/test_allocation_identity.md"
 ```
 
 ### Summary
@@ -100,8 +100,8 @@ flowchart LR
 | `workspace_member` | call | [routers_identity](../modules/routers_identity.md) | 1 |
 | `reconcile_execution` | call | [execution_reconciliation](../modules/execution_reconciliation.md) | 1 |
 | `IdentityService.transfer_guest` | call | [identity_service](../modules/identity_service.md) | 1 |
+| `reconcile_window` | call | [planning_window_reconciliation](../modules/planning_window_reconciliation.md) | 1 |
 | `test_project_identity_scope` | import | [test_project_identity_scope](../modules/test_project_identity_scope.md) | — |
 | `test_allocation_identity` | import | [test_allocation_identity](../modules/test_allocation_identity.md) | — |
-| `test_profile_identity` | import | [test_profile_identity](../modules/test_profile_identity.md) | — |
 
-> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

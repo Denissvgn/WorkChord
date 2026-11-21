@@ -1,6 +1,6 @@
 # AgentProjectUpdateResponse
 
-**Location:** `backend/app/schemas/agent.py:1305`
+**Location:** `backend/app/schemas/agent.py:1326`
 **Kind:** Class
 **Bases:** `ProjectUpdateEntryResponse`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

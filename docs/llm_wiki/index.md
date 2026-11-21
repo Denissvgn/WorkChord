@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1715 | [Open section](#entities) |
-| Modules | 1081 | [Open section](#modules) |
-| Workflows | 204 | [Open section](#workflows) |
+| Entities | 1718 | [Open section](#entities) |
+| Modules | 1086 | [Open section](#modules) |
+| Workflows | 211 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 567 | [Open section](#entry-point-flows) |
+| Entry-point flows | 571 | [Open section](#entry-point-flows) |
 | Infrastructure | 12 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -137,6 +137,7 @@ These pages preserve documentation from earlier source revisions.
 - [AgentRecoveryListResponse](entities/AgentRecoveryListResponse.md)
 - [AgentRecoveryRequeue](entities/AgentRecoveryRequeue.md)
 - [AgentRecoveryRequeueResponse](entities/AgentRecoveryRequeueResponse.md)
+- [AgentRetainedOutputAttestation](entities/AgentRetainedOutputAttestation.md)
 - [AgentReviewQueueResponse](entities/AgentReviewQueueResponse.md)
 - [AgentReviewVerdict](entities/AgentReviewVerdict.md)
 - [AgentReviewVerdictResponse](entities/AgentReviewVerdictResponse.md)
@@ -895,6 +896,7 @@ These pages preserve documentation from earlier source revisions.
 - [SaveSample](entities/SaveSample.md)
 - [SavedIn](entities/SavedIn.md)
 - [SavedInPart](entities/SavedInPart.md)
+- [SavedTask](entities/SavedTask.md)
 - [SavedViewCreateRequest](entities/SavedViewCreateRequest.md)
 - [SavedViewDashboardCard](entities/SavedViewDashboardCard.md)
 - [SavedViewDashboardCardResponse](entities/SavedViewDashboardCardResponse.md)
@@ -976,6 +978,7 @@ These pages preserve documentation from earlier source revisions.
 - [SkillBundleReleaseIndex](entities/SkillBundleReleaseIndex.md)
 - [SkillLevel](entities/SkillLevel.md)
 - [SkillPackError](entities/SkillPackError.md)
+- [SnapshotIdentity](entities/SnapshotIdentity.md)
 - [SnapshotPathError](entities/SnapshotPathError.md)
 - [SnapshotRestoreRequest](entities/SnapshotRestoreRequest.md)
 - [SnapshotService](entities/SnapshotService.md)
@@ -1811,6 +1814,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261116_0016_runtime_observations](modules/20261116_0016_runtime_observations.md) - Retain advisory observations of agent runtime sessions.
 - [20261116_0017_run_harness_session](modules/20261116_0017_run_harness_session.md) - Keep a run's declared harness session in columns a reader can search.
 - [20261120_0018_review_provenance](modules/20261120_0018_review_provenance.md) - Preserve execution provenance and project review selection.
+- [20261121_0019_execution_planning_window](modules/20261121_0019_execution_planning_window.md) - Retain server-proved execution equivalence across a planning reservation.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AccountMenu](modules/AccountMenu.md) - `frontend/src/features/identity/AccountMenu.tsx`
 - [AccountMenu.test](modules/AccountMenu.test.md) - `frontend/src/features/identity/AccountMenu.test.tsx`
@@ -2296,6 +2300,7 @@ Retained history; these declarations are absent from the selected source invento
 - [executionUsage](modules/executionUsage.md) - `frontend/src/types/executionUsage.ts`
 - [executionUsageService](modules/executionUsageService.md) - `frontend/src/services/executionUsageService.ts`
 - [execution_mode](modules/execution_mode.md) - Execution-mode guards shared by legacy and autonomous migration tools.
+- [execution_planning_window](modules/execution_planning_window.md) - Preserve a proved assignment context across an iteration end-date extension.
 - [execution_reconciliation](modules/execution_reconciliation.md) - Reconcile a terminal run using authenticated, contemporaneous server records.
 - [execution_usage_service](modules/execution_usage_service.md) - Bounded usage corrections, immutable pricing and scoped advisory totals.
 - [export](modules/export.md) - Export/Import API router.
@@ -2451,6 +2456,7 @@ Retained history; these declarations are absent from the selected source invento
 - [planning_input_context](modules/planning_input_context.md) - Complete permission-safe observations for shared planning input mutations.
 - [planning_inputs](modules/planning_inputs.md) - Validated working zones and optional aggregate revisions for shared inputs.
 - [planning_issues](modules/planning_issues.md) - One rule for the planning gaps people and the PM see: "needs an assignee" and "missing effort".
+- [planning_window_reconciliation](modules/planning_window_reconciliation.md) - Reconcile existing ownership only from an authenticated date-only command and its preimage.
 - [postcss.config](modules/postcss.config.md) - `frontend/postcss.config.js`
 - [postgres_runtime](modules/postgres_runtime.md) - Own an isolated PostgreSQL cluster on a native runner.
 - [postgresql___init__](modules/postgresql___init__.md) - Installed PostgreSQL autonomous-program contract bundle.
@@ -2482,6 +2488,7 @@ Retained history; these declarations are absent from the selected source invento
 - [resources.en](modules/resources.en.md) - `frontend/src/i18n/resources.en.ts`
 - [resources.ru](modules/resources.ru.md) - `frontend/src/i18n/resources.ru.ts`
 - [result](modules/result.md) - Build, validate, and evaluate machine-readable load result documents.
+- [retained_planning_output](modules/retained_planning_output.md) - Attribute an interrupted, checkpointed output without altering its historical lease or terminal result.
 - [review_provenance](modules/review_provenance.md) - Attribute task execution and bind independent review to its submitted candidate.
 - [routeModules](modules/routeModules.md) - `frontend/src/navigation/routeModules.ts`
 - [routeRegistry](modules/routeRegistry.md) - `frontend/src/test/routeRegistry.ts`
@@ -2703,6 +2710,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_deployment_topology](modules/test_deployment_topology.md) - Wave 3 deployment, security, backup, and reset contracts.
 - [test_documentation_boundary](modules/test_documentation_boundary.md) - A concise entrypoint still binds release evidence to authoritative operator policy.
 - [test_effective_deferral](modules/test_effective_deferral.md) - Complete ancestry policy, working lifecycle parity and rejected-write atomicity.
+- [test_execution_planning_window](modules/test_execution_planning_window.md) - Date-only planning reservations retain verifiable work without weakening task writes.
 - [test_execution_reconciliation](modules/test_execution_reconciliation.md) - Operator reconciliation through authenticated REST and registered MCP commands.
 - [test_execution_usage](modules/test_execution_usage.md) - Usage provenance, corrections, immutable pricing and permission isolation.
 - [test_execution_working_dates](modules/test_execution_working_dates.md) - Agent start decisions use the same declared working day as human work.
@@ -2900,6 +2908,7 @@ Retained history; these declarations are absent from the selected source invento
 - [AgentTeamSetupService__status_for_topology](workflows/AgentTeamSetupService__status_for_topology.md) - entry: `agent_team_setup_service.AgentTeamSetupService._status_for_topology`
 - [AgentTeamSetupService_acknowledge_runtime](workflows/AgentTeamSetupService_acknowledge_runtime.md) - entry: `agent_team_setup_service.AgentTeamSetupService.acknowledge_runtime`
 - [AgentTeamSetupService_apply](workflows/AgentTeamSetupService_apply.md) - entry: `agent_team_setup_service.AgentTeamSetupService.apply`
+- [AgentWorkService__replay_live_fence_receipt](workflows/AgentWorkService__replay_live_fence_receipt.md) - entry: `agent_work_service.AgentWorkService._replay_live_fence_receipt`
 - [AgentWorkService__start_blockers](workflows/AgentWorkService__start_blockers.md) - entry: `agent_work_service.AgentWorkService._start_blockers`
 - [AgentWorkService__terminal_work](workflows/AgentWorkService__terminal_work.md) - entry: `agent_work_service.AgentWorkService._terminal_work`
 - [AgentWorkService__work_item](workflows/AgentWorkService__work_item.md) - entry: `agent_work_service.AgentWorkService._work_item`
@@ -2910,6 +2919,7 @@ Retained history; these declarations are absent from the selected source invento
 - [AgentWorkService_get_task_context](workflows/AgentWorkService_get_task_context.md) - entry: `agent_work_service.AgentWorkService.get_task_context`
 - [AgentWorkService_get_work](workflows/AgentWorkService_get_work.md) - entry: `agent_work_service.AgentWorkService.get_work`
 - [AgentWorkService_list_actor_roster](workflows/AgentWorkService_list_actor_roster.md) - entry: `agent_work_service.AgentWorkService.list_actor_roster`
+- [AgentWorkService_list_recovery_tasks](workflows/AgentWorkService_list_recovery_tasks.md) - entry: `agent_work_service.AgentWorkService.list_recovery_tasks`
 - [AgentWorkService_renew_work](workflows/AgentWorkService_renew_work.md) - entry: `agent_work_service.AgentWorkService.renew_work`
 - [AgentWorkService_report_discovery](workflows/AgentWorkService_report_discovery.md) - entry: `agent_work_service.AgentWorkService.report_discovery`
 - [AgentWorkService_requeue_recovery](workflows/AgentWorkService_requeue_recovery.md) - entry: `agent_work_service.AgentWorkService.requeue_recovery`
@@ -3017,6 +3027,8 @@ Retained history; these declarations are absent from the selected source invento
 - [affected_iteration_ids](workflows/affected_iteration_ids.md) - entry: `planning_input_context.affected_iteration_ids`
 - [aggregate_metrics](workflows/aggregate_metrics.md) - entry: `work_metrics.aggregate_metrics`
 - [assert_postgresql_contract](workflows/assert_postgresql_contract.md) - entry: `transfer._assert_postgresql_contract`
+- [attest_retained_output](workflows/attest_retained_output.md) - entry: `retained_planning_output.attest_retained_output`
+- [authority_stamp](workflows/authority_stamp.md) - entry: `execution_planning_window.authority_stamp`
 - [batch_update_tasks](workflows/batch_update_tasks.md) - entry: `tasks.batch_update_tasks`
 - [bootstrap](workflows/bootstrap.md) - entry: `identity.bootstrap`
 - [build_examples](workflows/build_examples.md) - entry: `generate_mobile_contract_fixtures.build_examples`
@@ -3049,6 +3061,7 @@ Retained history; these declarations are absent from the selected source invento
 - [metric_matches](workflows/metric_matches.md) - entry: `task_domain.metric_matches`
 - [native_token](workflows/native_token.md) - entry: `identity.native_token`
 - [planning_input_reservation](workflows/planning_input_reservation.md) - entry: `commands.planning_input_reservation`
+- [planning_proof](workflows/planning_proof.md) - entry: `planning_window_reconciliation._planning_proof`
 - [preflight_source](workflows/preflight_source.md) - entry: `source.preflight_source`
 - [preview_iteration_schedule](workflows/preview_iteration_schedule.md) - entry: `gantt.preview_iteration_schedule`
 - [process_import](workflows/process_import.md) - entry: `export._process_import`
@@ -3059,6 +3072,7 @@ Retained history; these declarations are absent from the selected source invento
 - [reconcile_execution](workflows/reconcile_execution.md) - entry: `execution_reconciliation.reconcile_execution`
 - [reconcile_execution_request](workflows/reconcile_execution_request.md) - entry: `execution_reconciliation.reconcile_execution_request`
 - [reconcile_snapshot](workflows/reconcile_snapshot.md) - entry: `transfer.reconcile_snapshot`
+- [reconcile_window](workflows/reconcile_window.md) - entry: `planning_window_reconciliation.reconcile_window`
 - [record_post_copy_repairs](workflows/record_post_copy_repairs.md) - entry: `transfer.record_post_copy_repairs`
 - [record_routing_operational_event](workflows/record_routing_operational_event.md) - entry: `agent_routing_observability.record_routing_operational_event`
 - [recover_principal](workflows/recover_principal.md) - entry: `identity.recover_principal`
@@ -3068,6 +3082,7 @@ Retained history; these declarations are absent from the selected source invento
 - [reserve_task_context_revision](workflows/reserve_task_context_revision.md) - entry: `task_context_revision_service.reserve_task_context_revision`
 - [resolve_http_identity](workflows/resolve_http_identity.md) - entry: `http_authority.resolve_http_identity`
 - [restore_staged_references](workflows/restore_staged_references.md) - entry: `transfer._restore_staged_references`
+- [retained_witness](workflows/retained_witness.md) - entry: `retained_planning_output._retained_witness`
 - [revoke_owned_session](workflows/revoke_owned_session.md) - entry: `identity.revoke_owned_session`
 - [rotate_session](workflows/rotate_session.md) - entry: `session_service.rotate_session`
 - [run_post_migration_repairs](workflows/run_post_migration_repairs.md) - entry: `upgrade_service.run_post_migration_repairs`
@@ -3099,6 +3114,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-apply_agent_team_reconciliation](flows/http-apply_agent_team_reconciliation.md) - entry: `apply_agent_team_reconciliation`
 - [http-apply_schedule](flows/http-apply_schedule.md) - entry: `apply_schedule`
 - [http-approve_native_connection](flows/http-approve_native_connection.md) - entry: `approve_native_connection`
+- [http-attest_my_retained_output](flows/http-attest_my_retained_output.md) - entry: `attest_my_retained_output`
 - [http-audit_hierarchy](flows/http-audit_hierarchy.md) - entry: `audit_hierarchy`
 - [http-authorize](flows/http-authorize.md) - entry: `authorize`
 - [http-backlog_snapshots](flows/http-backlog_snapshots.md) - entry: `backlog_snapshots`
@@ -3360,6 +3376,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-readiness_check](flows/http-readiness_check.md) - entry: `readiness_check`
 - [http-receive_github_webhook](flows/http-receive_github_webhook.md) - entry: `receive_github_webhook`
 - [http-reconcile_run_provenance](flows/http-reconcile_run_provenance.md) - entry: `reconcile_run_provenance`
+- [http-reconcile_task_planning_window](flows/http-reconcile_task_planning_window.md) - entry: `reconcile_task_planning_window`
 - [http-record_execution_usage](flows/http-record_execution_usage.md) - entry: `record_execution_usage`
 - [http-record_runtime_observation](flows/http-record_runtime_observation.md) - entry: `record_runtime_observation`
 - [http-record_task_progress](flows/http-record_task_progress.md) - entry: `record_task_progress`
@@ -3467,6 +3484,7 @@ Retained history; these declarations are absent from the selected source invento
 - [mcp-agent_append_task_event](flows/mcp-agent_append_task_event.md) - entry: `agent_append_task_event`
 - [mcp-agent_apply_schedule](flows/mcp-agent_apply_schedule.md) - entry: `agent_apply_schedule`
 - [mcp-agent_apply_task_command](flows/mcp-agent_apply_task_command.md) - entry: `agent_apply_task_command`
+- [mcp-agent_attest_retained_planning_output](flows/mcp-agent_attest_retained_planning_output.md) - entry: `agent_attest_retained_planning_output`
 - [mcp-agent_begin_my_work](flows/mcp-agent_begin_my_work.md) - entry: `agent_begin_my_work`
 - [mcp-agent_capabilities_resource](flows/mcp-agent_capabilities_resource.md) - entry: `agent_capabilities_resource`
 - [mcp-agent_claim_task](flows/mcp-agent_claim_task.md) - entry: `agent_claim_task`
@@ -3523,6 +3541,7 @@ Retained history; these declarations are absent from the selected source invento
 - [mcp-agent_preview_schedule](flows/mcp-agent_preview_schedule.md) - entry: `agent_preview_schedule`
 - [mcp-agent_preview_task_routing](flows/mcp-agent_preview_task_routing.md) - entry: `agent_preview_task_routing`
 - [mcp-agent_profile_presets_resource](flows/mcp-agent_profile_presets_resource.md) - entry: `agent_profile_presets_resource`
+- [mcp-agent_reconcile_planning_window](flows/mcp-agent_reconcile_planning_window.md) - entry: `agent_reconcile_planning_window`
 - [mcp-agent_reconcile_run_provenance](flows/mcp-agent_reconcile_run_provenance.md) - entry: `agent_reconcile_run_provenance`
 - [mcp-agent_record_execution_usage](flows/mcp-agent_record_execution_usage.md) - entry: `agent_record_execution_usage`
 - [mcp-agent_release_task](flows/mcp-agent_release_task.md) - entry: `agent_release_task`

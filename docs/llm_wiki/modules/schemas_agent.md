@@ -48,7 +48,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (30) |
+| Inbound | `backend` (32) |
 | Outbound | `backend` (10) |
 
 ### External packages
@@ -57,7 +57,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 42 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -68,8 +68,8 @@ flowchart LR
 | [AgentActorUpdate](../entities/AgentActorUpdate.md) | Pydantic model | 225 | `BaseModel` | Administrative update for a provisioned actor. |
 | [AgentActorResponse](../entities/AgentActorResponse.md) | Pydantic model | 266 | `BaseModel` | Agent actor response. |
 | [AgentActorCreatedResponse](../entities/AgentActorCreatedResponse.md) | Pydantic model | 283 | `AgentActorResponse` | Agent actor creation response including the one-time API key. |
-| [AgentTaskCreate](../entities/AgentTaskCreate.md) | Pydantic model | 292 | `TaskCreate` | Agent task creation request. |
-| [AgentTaskPatch](../entities/AgentTaskPatch.md) | Pydantic model | 297 | `TaskUpdate` | Agent task patch request with optimistic concurrency. |
+| [AgentTaskCreate](../entities/AgentTaskCreate.md) | Class | 292 | `TaskCreate` | Agent task creation request. |
+| [AgentTaskPatch](../entities/AgentTaskPatch.md) | Class | 297 | `TaskUpdate` | Agent task patch request with optimistic concurrency. |
 | [TaskClaimRequest](../entities/TaskClaimRequest.md) | Pydantic model | 304 | `BaseModel` | Request to claim or renew a task lease. |
 | [TaskClaimResponse](../entities/TaskClaimResponse.md) | Pydantic model | 314 | `BaseModel` | Response for task lease operations. |
 | [TaskEventCreate](../entities/TaskEventCreate.md) | Pydantic model | 322 | `BaseModel` | Request to append a task event. |
@@ -123,11 +123,12 @@ flowchart LR
 | [AgentRecoveryRequeue](../entities/AgentRecoveryRequeue.md) | Pydantic model | 1235 | `BaseModel` | PM command to replace stale execution ownership with recovery work. |
 | [AgentRecoveryItem](../entities/AgentRecoveryItem.md) | Pydantic model | 1250 | `BaseModel` | Typed PM recovery diagnosis and optimistic ownership tuple. |
 | [AgentRecoveryListResponse](../entities/AgentRecoveryListResponse.md) | Pydantic model | 1265 | `BaseModel` | Paginated PM recovery projection. |
-| [AgentRecoveryRequeueResponse](../entities/AgentRecoveryRequeueResponse.md) | Pydantic model | 1272 | `BaseModel` | Authoritative result of stale-work reconciliation and requeue. |
-| [AgentProjectUpdateCreate](../entities/AgentProjectUpdateCreate.md) | Pydantic model | 1281 | `BaseModel` | Agent-authored append-only project status report. |
-| [AgentProjectUpdateResponse](../entities/AgentProjectUpdateResponse.md) | Pydantic model | 1305 | `ProjectUpdateEntryResponse` | Agent project-update response with attribution and evidence. |
-| [AgentDiscoveryTriageCreate](../entities/AgentDiscoveryTriageCreate.md) | Pydantic model | 1309 | `BaseModel` | Claim-bound report of work discovered outside the assigned scope. |
-| [AgentDiscoveryTriageResponse](../entities/AgentDiscoveryTriageResponse.md) | Pydantic model | 1334 | `TriageItemResponse` | Created discovery Triage item with source linkage metadata. |
+| [AgentRetainedOutputAttestation](../entities/AgentRetainedOutputAttestation.md) | Pydantic model | 1272 | `BaseModel` | A fresh statement from the original worker after a genuine expiry and PM recovery. |
+| [AgentRecoveryRequeueResponse](../entities/AgentRecoveryRequeueResponse.md) | Pydantic model | 1293 | `BaseModel` | Authoritative result of stale-work reconciliation and requeue. |
+| [AgentProjectUpdateCreate](../entities/AgentProjectUpdateCreate.md) | Pydantic model | 1302 | `BaseModel` | Agent-authored append-only project status report. |
+| [AgentProjectUpdateResponse](../entities/AgentProjectUpdateResponse.md) | Class | 1326 | `ProjectUpdateEntryResponse` | Agent project-update response with attribution and evidence. |
+| [AgentDiscoveryTriageCreate](../entities/AgentDiscoveryTriageCreate.md) | Pydantic model | 1330 | `BaseModel` | Claim-bound report of work discovered outside the assigned scope. |
+| [AgentDiscoveryTriageResponse](../entities/AgentDiscoveryTriageResponse.md) | Class | 1355 | `TriageItemResponse` | Created discovery Triage item with source linkage metadata. |
 
 ## Functions
 

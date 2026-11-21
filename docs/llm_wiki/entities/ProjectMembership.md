@@ -33,14 +33,14 @@ flowchart LR
     n3["project_member (backend/app/routers/identity.py)"]
     n4["backend/app/routers/task_domain.py"]
     n5["backend/app/services/discussion_service.py"]
-    n6["backend/app/services/identity_service.py"]
-    n7["backend/app/services/task_domain_service.py"]
-    n8["backend/tests/migrations/test_project_identity.py"]
-    n9["test_scoped_manager_can_restore_another_eligible_person_without_profile_access (backend/tests/test_allocation_recovery.py)"]
-    n10["test_reconciliation_uses_operator_and_archived_catalog (backend/tests/test_execution_reconciliation.py)"]
-    n11["managed_store (backend/tests/test_managed_authority.py)"]
-    n12["test_scoped_nonmanager_deletion_is_denied_without_domain_changes (backend/tests/test_managed_authority.py)"]
-    n13["test_authenticated_manual_submission_and_assigned_agent_verdict (backend/tests/test_manual_review_provenance.py)"]
+    n6["backend/app/services/execution_planning_window.py"]
+    n7["backend/app/services/identity_service.py"]
+    n8["backend/app/services/task_domain_service.py"]
+    n9["backend/tests/migrations/test_project_identity.py"]
+    n10["test_scoped_manager_can_restore_another_eligible_person_without_profile_access (backend/tests/test_allocation_recovery.py)"]
+    n11["test_date_only_reservation (backend/tests/test_execution_planning_window.py)"]
+    n12["test_reconciliation_uses_operator_and_archived_catalog (backend/tests/test_execution_reconciliation.py)"]
+    n13["managed_store (backend/tests/test_managed_authority.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -60,14 +60,14 @@ flowchart LR
     click n3 "../modules/routers_identity.md"
     click n4 "../modules/routers_task_domain.md"
     click n5 "../modules/discussion_service.md"
-    click n6 "../modules/identity_service.md"
-    click n7 "../modules/task_domain_service.md"
-    click n8 "../modules/test_project_identity.md"
-    click n9 "../modules/test_allocation_recovery.md"
-    click n10 "../modules/test_execution_reconciliation.md"
-    click n11 "../modules/test_managed_authority.md"
-    click n12 "../modules/test_managed_authority.md"
-    click n13 "../modules/test_manual_review_provenance.md"
+    click n6 "../modules/execution_planning_window.md"
+    click n7 "../modules/identity_service.md"
+    click n8 "../modules/task_domain_service.md"
+    click n9 "../modules/test_project_identity.md"
+    click n10 "../modules/test_allocation_recovery.md"
+    click n11 "../modules/test_execution_planning_window.md"
+    click n12 "../modules/test_execution_reconciliation.md"
+    click n13 "../modules/test_managed_authority.md"
 ```
 
 ### Summary
@@ -90,13 +90,13 @@ flowchart LR
 | `project_member` | call | [routers_identity](../modules/routers_identity.md) | 1 |
 | `task_domain` | import | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `discussion_service` | import | [discussion_service](../modules/discussion_service.md) | — |
+| `execution_planning_window` | import | [execution_planning_window](../modules/execution_planning_window.md) | — |
 | `identity_service` | import | [identity_service](../modules/identity_service.md) | — |
 | `task_domain_service` | import | [task_domain_service](../modules/task_domain_service.md) | — |
 | `test_project_identity` | import | [test_project_identity](../modules/test_project_identity.md) | — |
 | `test_scoped_manager_can_restore_another_eligible_person_without_profile_access` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
+| `test_date_only_reservation` | call | [test_execution_planning_window](../modules/test_execution_planning_window.md) | 1 |
 | `test_reconciliation_uses_operator_and_archived_catalog` | call | [test_execution_reconciliation](../modules/test_execution_reconciliation.md) | 1 |
 | `managed_store` | call | [test_managed_authority](../modules/test_managed_authority.md) | 2 |
-| `test_scoped_nonmanager_deletion_is_denied_without_domain_changes` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
-| `test_authenticated_manual_submission_and_assigned_agent_verdict` | call | [test_manual_review_provenance](../modules/test_manual_review_provenance.md) | 2 |
 
-> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

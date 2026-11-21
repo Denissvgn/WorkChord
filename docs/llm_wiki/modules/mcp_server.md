@@ -22,12 +22,15 @@ MCP uses the shared principal/project authority and command owner. Its establish
 | `app.maintenance` | `MaintenanceModeError`, `enforce_mcp_access` |
 | `app.models.agent` | `AgentActor` |
 | `app.mutation_versions` | `MissingMutationRevision` |
+| `app.schemas.agent` | `AgentRetainedOutputAttestation` |
 | `app.services.agent_model_catalog_service` | `AgentModelConflictError` |
 | `app.services.agent_routing_service` | `AgentRoutingConflictError` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `AgentService`, `actor_has_scope`, `require_scope` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupConflictError` |
 | `app.services.execution_reconciliation` | `reconcile_execution_request` |
 | `app.services.identity_service` | `IdentityService` |
+| `app.services.planning_window_reconciliation` | `reconcile_window` |
+| `app.services.retained_planning_output` | `attest_retained_output` |
 | `app.services.task_service` | `TaskVersionConflictError` |
 | `app.services.triage_service` | `TriageConflictError` |
 | `argparse` | `argparse` |
@@ -66,8 +69,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (14) |
-| Outbound | `backend` (18) |
+| Inbound | `backend` (15) |
+| Outbound | `backend` (21) |
 
 ### External packages
 
@@ -75,7 +78,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 36 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -140,15 +140,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_agent_model_catalog_entry | service.create_catalog | 245 | `service.create_catalog(actor, data, command=command)` |
-| create_agent_model_catalog_entry | _handle_model_error | 247 | `_handle_model_error(exc)` |
-| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 99 | `isinstance(exc, AgentModelConflictError)` |
-| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 100 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_model_error | exc.detail (backend/app/routers/agent…log.py:_handle_model_error) | 102 | `exc.detail(data not statically known)` |
-| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 104 | `isinstance(exc, LookupError)` |
-| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 105 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={...})` |
-| _handle_model_error | str (backend/app/routers/agent…log.py:_handle_model_error) | 109 | `str(exc)` |
-| _handle_model_error | _handle_agent_error | 112 | `_handle_agent_error(exc)` |
+| create_agent_model_catalog_entry | service.create_catalog | 270 | `service.create_catalog(actor, data, command=command)` |
+| create_agent_model_catalog_entry | _handle_model_error | 272 | `_handle_model_error(exc)` |
+| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 124 | `isinstance(exc, AgentModelConflictError)` |
+| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 125 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_model_error | exc.detail (backend/app/routers/agent…log.py:_handle_model_error) | 127 | `exc.detail(data not statically known)` |
+| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 129 | `isinstance(exc, LookupError)` |
+| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 130 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={...})` |
+| _handle_model_error | str (backend/app/routers/agent…log.py:_handle_model_error) | 134 | `str(exc)` |
+| _handle_model_error | _handle_agent_error | 137 | `_handle_agent_error(exc)` |
 | _handle_agent_error | isinstance (backend/app/routers/agent…ing.py:_handle_agent_error) | 106 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error) | 107 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
 
@@ -160,12 +160,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_agent_model_catalog_entry` | `service.create_catalog` | 245 |
-| external_call | `_handle_model_error` | `isinstance` | 99 |
-| external_call | `_handle_model_error` | `HTTPException` | 100 |
-| unresolved_call | `_handle_model_error` | `exc.detail` | 102 |
-| external_call | `_handle_model_error` | `isinstance` | 104 |
-| external_call | `_handle_model_error` | `HTTPException` | 105 |
+| unresolved_call | `create_agent_model_catalog_entry` | `service.create_catalog` | 270 |
+| external_call | `_handle_model_error` | `isinstance` | 124 |
+| external_call | `_handle_model_error` | `HTTPException` | 125 |
+| unresolved_call | `_handle_model_error` | `exc.detail` | 127 |
+| external_call | `_handle_model_error` | `isinstance` | 129 |
+| external_call | `_handle_model_error` | `HTTPException` | 130 |
 | external_call | `_handle_agent_error` | `isinstance` | 106 |
 | external_call | `_handle_agent_error` | `HTTPException` | 107 |
 | step_limit | `create_agent_model_catalog_entry` | `first 12 steps` | 0 |

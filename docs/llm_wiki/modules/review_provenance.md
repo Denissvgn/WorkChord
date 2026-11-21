@@ -27,7 +27,9 @@ A supervised handback binds the rejection and its candidate to the latest worker
 | `app.services.agent_routing_policy` | `ROUTING_DECISION_AUTHORITY`, `ROUTING_LINEAGE_AUTHORITY`, `canonical_routing_json_bytes` |
 | `app.services.agent_routing_service` | `AgentRoutingConflictError`, `AgentRoutingService` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupService` |
+| `app.services.execution_planning_window` | `assignment_matches`, `candidate_version` |
 | `app.services.github_status_service` | `GitHubStatusService` |
+| `app.services.retained_planning_output` | `retained_attestations` |
 | `app.utils.github_links` | `GitHubLinkError`, `parse_github_url` |
 | `app.utils.url_policy` | `normalize_stored_display_url` |
 | `dataclasses` | `dataclass`, `field` |
@@ -57,8 +59,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (9) |
-| Outbound | `backend` (15) |
+| Inbound | `backend` (11) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
@@ -66,14 +68,14 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [ReworkReadCache](../entities/ReworkReadCache.md) | 49 | — | Ephemeral evidence for one queue/context request or one locked begin transaction. |
-| [ReviewHistory](../entities/ReviewHistory.md) | 510 | — | — |
+| [ReworkReadCache](../entities/ReworkReadCache.md) | 50 | — | Ephemeral evidence for one queue/context request or one locked begin transaction. |
+| [ReviewHistory](../entities/ReviewHistory.md) | 512 | — | — |
 
 ## Functions
 

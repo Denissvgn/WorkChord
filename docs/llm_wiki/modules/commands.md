@@ -20,11 +20,13 @@ Shared-input reservations validate one complete outer scope before any mutation.
 | `app.models.capacity` | `PlanningState` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project` |
+| `app.models.recovery` | `ApplicationSnapshot` |
 | `app.models.task` | `Task`, `Task` |
 | `app.mutation_versions` | `require_mutation_revision`, `require_mutation_revision` |
 | `app.runtime_telemetry` | `metrics` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.discussion_service` | `DiscussionService` |
+| `app.services.execution_planning_window` | `current_window`, `extension_input`, `live_assignments`, `make_window`, `seal_authority`, `task_context` |
 | `app.services.planning_input_context` | `affected_iteration_ids` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_service` | `TaskService` |
@@ -57,8 +59,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (85) |
-| Outbound | `backend` (12) |
+| Inbound | `backend` (87) |
+| Outbound | `backend` (14) |
 
 ### External packages
 
@@ -66,7 +68,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 92 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 96 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -105,4 +105,4 @@ flowchart LR
 | `AgentPlanningService._schedule_input_digest` | call | [agent_planning_service](../modules/agent_planning_service.md) | 1 |
 | `agent_routing_service` | import | [agent_routing_service](../modules/agent_routing_service.md) | — |
 
-> References: showing 12 of 56 logical references; 44 omitted by the 12-row generated summary limit.
+> References: showing 12 of 59 logical references; 47 omitted by the 12-row generated summary limit.
