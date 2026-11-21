@@ -126,11 +126,19 @@ to drain before an upgrade. Confirm the recorded server time is past expiry.
 Save the PM command key, its new assignment ID and the worker’s checkpoint.
 An expired lease cannot renew or submit.
 
+If starting a queued recovery would discard an available original-worker
+attestation, the work decision reports `retained_output_attestation_required`
+on that assignment. When it is the only actionable case, the worker sees
+`attention_required`. The assignment and complete context include
+`routing_snapshot.retained_output_attestation` with the supported tool,
+original run and generation, checkpoint, commit, tree and receipt IDs.
+Other ready work remains selectable. A direct begin enforces the same check.
+
 Before starting that fresh assignment, the original worker can attest its
 retained artifact through `POST /api/agent/me/runs/{run_id}/attest-retained-output`
 or `agent_attest_retained_planning_output`. Submit the original assignment
 and fence through the authenticated worker transport, the planning and
-recovery actors and command keys, checkpoint ID, observed model, commit URL,
+recovery actors and command keys or the two receipt IDs in the hint, checkpoint ID, observed model, commit URL,
 tree, PR URL, native final turn and `confirmed_final_output=true`. The
 server requires the checkpoint to have been recorded on the live original
 generation and the PM recovery to have occurred after expiry. It records
@@ -138,6 +146,14 @@ the worker's current statement separately from the historical interruption.
 The subsequent submission and independent review include both actual runs
 and the retained commit. If a worker cannot confirm its final output or the
 checkpoint is incomplete, the unknown contributor remains visible to review.
+The worker retrieves the old private fence from its own saved response to
+the indicated begin or renew operation, matching its original assignment,
+run and generation. It obtains the native final turn from its own retained
+session and checkpoint. If either is unavailable or the worker cannot
+confirm the output, it reports that fact to the primary PM. The PM may use
+the normal queued-assignment update with `state=cancelled`, the current
+actor queue revision, and an explicit reason. That action frees the worker
+for other work and preserves the unresolved contributor on the affected task.
 
 ## Operational evidence
 

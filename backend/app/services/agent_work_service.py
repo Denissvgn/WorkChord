@@ -1977,6 +1977,8 @@ class AgentWorkService:
                 next_poll_after=now + timedelta(seconds=AGENT_IDLE_POLL_SECONDS),
             )
         if blocked:
+            from app.services.retained_planning_output import REQUIRED
+            handoff = next((item for item in blocked if REQUIRED in item.blocker_codes), None)
             future_times = [
                 as_utc(item.assignment.not_before)
                 for item in blocked
@@ -1989,9 +1991,10 @@ class AgentWorkService:
                 queue_revision=queue_revision,
                 pagination=pagination,
                 cursor=pagination.next_cursor,
-                state="wait",
-                next=blocked[0],
+                state="attention_required" if handoff else "wait",
+                next=handoff or blocked[0],
                 blocked_assigned=blocked_page,
+                recovery_codes=[REQUIRED] if handoff else [],
                 next_poll_after=(
                     min(
                         min(future_times),
@@ -2219,6 +2222,11 @@ class AgentWorkService:
         model_aware_assignment = self._is_model_aware_assignment(assignment)
         supervised, rework_evidence = False, None
         rework_read = ReworkReadCache()
+        from app.services.retained_planning_output import REQUIRED, recovery_attestation_hint
+        retained = await recovery_attestation_hint(self.db,task,assignment,rework_read.retained_outputs,lock=True)
+        if retained:
+            raise AgentRoutingConflictError(REQUIRED,"Confirm the original checkpointed output before beginning this recovery.",
+                                            retained_output_attestation=retained)
         if not model_aware_request and assignment.queue_class in {"rework", "recovery"}:
             mode = (await self._resolve_rollout(actor)).status().effective_mode
             rework_read.modes[actor.id] = mode
@@ -4118,6 +4126,12 @@ class AgentWorkService:
             blockers.append("assignment_task_version_stale")
         assignment_actor = await self.db.get(AgentActor, assignment.actor_id)
         read = rework_read if rework_read is not None else ReworkReadCache()
+        from app.services.retained_planning_output import REQUIRED, recovery_attestation_hint
+        retained = await recovery_attestation_hint(self.db,task,assignment,read.retained_outputs)
+        if retained:
+            blockers.append(REQUIRED)
+            if assignment_view is not None:
+                assignment_view.routing_snapshot = {**assignment_view.routing_snapshot, "retained_output_attestation": retained}
         if assignment_actor is None:
             mode = self.rollout_service.status().effective_mode
         elif assignment.queue_class == "rework" and assignment_actor.id in read.modes:

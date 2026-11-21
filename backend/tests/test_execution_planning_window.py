@@ -279,6 +279,57 @@ async def competing_updates(factory, task, assignment_id, *, blocked, run_id=Non
     return sorted(writes)
 
 
+async def cancel_unconfirmable(http, transport, pm_key, assignment, queue_revision):
+    reason = (
+        "Original worker cannot confirm the final retained output; preserve its unknown historical publisher."
+    )
+    body = {"state": "cancelled", "reason": reason, "expected_queue_revision": queue_revision}
+    key = "hold-unconfirmable-output"
+    if transport == "rest":
+        response = await http.patch(
+            f"/api/agent/assignments/{assignment}",
+            headers={
+                "X-Agent-API-Key": pm_key,
+                "Idempotency-Key": key,
+                "X-Agent-Rationale": reason,
+                "X-Correlation-ID": key,
+            },
+            json=body,
+        )
+        assert response.status_code == 200, response.text
+        return response.json()
+    server = mcp_server.create_mcp_server()
+    application = mcp_server.MCPAgentKeyMiddleware(server.streamable_http_app())
+    async with (
+        server.session_manager.run(),
+        httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=application), base_url="http://localhost:8001"
+        ) as client,
+    ):
+        response = await client.post(
+            "/",
+            headers={"X-Agent-API-Key": pm_key, "Accept": "application/json, text/event-stream"},
+            json={
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "tools/call",
+                "params": {
+                    "name": "agent_update_assignment",
+                    "arguments": {
+                        "assignment_id": assignment,
+                        "payload": body,
+                        "idempotency_key": key,
+                        "rationale": reason,
+                        "correlation_id": key,
+                    },
+                },
+            },
+        )
+        result = response.json()["result"]
+        assert not result["isError"], result
+        return json.loads(result["content"][0]["text"])
+
+
 @databases
 @pytest.mark.parametrize("transport", ["rest", "mcp"])
 @pytest.mark.parametrize(
@@ -300,6 +351,8 @@ async def competing_updates(factory, task, assignment_id, *, blocked, run_id=Non
         "artifact_changed",
         "consecutive_extensions",
         "legacy_drained",
+        "legacy_unconfirmable",
+        "legacy_no_checkpoint",
     ],
 )
 @pytest.mark.usefixtures("deployed_agent_skill_release")
@@ -323,6 +376,7 @@ async def test_date_only_reservation(
     legacy = case.startswith("legacy_")
     lane = case.removeprefix("legacy_")
     recovered_original = lane == "recovered_rework"
+    post_expiry = lane in {"drained", "unconfirmable", "no_checkpoint"}
     if recovered_original:
         lane = "rework"
     if legacy:
@@ -462,7 +516,7 @@ async def test_date_only_reservation(
             payload={
                 "assignment_id": assigned["id"],
                 "queue_revision": queue["queue_revision"],
-                "lease_seconds": 60 if lane == "drained" else 3600,
+                "lease_seconds": 60 if post_expiry else 3600,
                 "model": member.default_model_binding_key,
             },
             receipt="begin-notes",
@@ -642,7 +696,7 @@ async def test_date_only_reservation(
                         renewed_ack.acknowledgement_digest != prior_digest
                         and renewed_ack.topology_runtime_ready
                     )
-            if lane == "drained":
+            if post_expiry:
                 head = "a" * 40
                 origin = "https://github.com/example/release-notes"
                 mark = {
@@ -665,7 +719,12 @@ async def test_date_only_reservation(
                     headers={"X-Agent-API-Key": wk, "Idempotency-Key": "retained-output"},
                     json={
                         "event_type": "agent.checkpoint",
-                        "payload": mark,
+                        "payload": {
+                            "run_id": "not-an-integer",
+                            "summary": "Ordinary checkpoint without a final artifact",
+                        }
+                        if lane == "no_checkpoint"
+                        else mark,
                         "claim_id": running["claim_id"],
                         "claim_generation": running["claim_generation"],
                     },
@@ -719,6 +778,154 @@ async def test_date_only_reservation(
                     "terminal_native_turn": mark["terminal_native_turn"],
                     "confirmed_final_output": True,
                 }
+                replacement_id = recovery["assignment"]["id"]
+                before = await call(*work, wk)
+                old_etag = (await http.get("/api/agent/me/work", headers={"X-Agent-API-Key": wk})).headers[
+                    "etag"
+                ]
+                if lane == "no_checkpoint":
+                    assert (
+                        before["state"] == "start_assigned"
+                        and before["next"]["assignment"]["id"] == replacement_id
+                    )
+                    assert (
+                        "retained_output_attestation" not in before["next"]["assignment"]["routing_snapshot"]
+                    )
+                    fresh = await call(
+                        *begin,
+                        wk,
+                        payload={
+                            "assignment_id": replacement_id,
+                            "queue_revision": before["queue_revision"],
+                            "model": member.default_model_binding_key,
+                        },
+                        receipt="begin-normal-recovery",
+                    )
+                    assert (
+                        fresh["run"]["id"] != running["run"]["id"]
+                        and fresh["claim_generation"] > running["claim_generation"]
+                    )
+                    record_property("no_usable_checkpoint_accepted_ordinary_begin", True)
+                    return
+                (blocked,) = before["blocked_assigned"]
+                assert before["state"] == "attention_required" and before["recovery_codes"] == [
+                    "retained_output_attestation_required"
+                ]
+                assert (
+                    blocked["assignment"]["id"] == replacement_id
+                    and "retained_output_attestation_required" in blocked["blocker_codes"]
+                )
+                hint = blocked["assignment"]["routing_snapshot"]["retained_output_attestation"]
+                assert (
+                    hint["tool"] == "agent_attest_retained_planning_output"
+                    and hint["checkpoint_id"] == body["checkpoint_id"]
+                )
+                assert (hint["run_id"], hint["assignment_id"], hint["claim_generation"]) == (
+                    running["run"]["id"],
+                    assigned["id"],
+                    running["claim_generation"],
+                )
+                assert hint["commit_url"] == body["commit_url"] and hint["git_tree"] == body["git_tree"]
+                assert (
+                    "claim_id" not in hint
+                    and "claim_sha256" not in hint
+                    and running["claim_id"] not in json.dumps(hint)
+                )
+                assert (
+                    "terminal_native_turn" not in hint
+                    and "saved begin or renew response" in hint["private_fence_source"]
+                )
+                context = await call(
+                    "agent_get_complete_task_context",
+                    f"/api/agent/tasks/{task.id}/context",
+                    wk,
+                    task_id=task.id,
+                )
+                assert (
+                    not context["start_ready"]
+                    and context["assignment"]["routing_snapshot"]["retained_output_attestation"] == hint
+                )
+                await call(
+                    *begin,
+                    wk,
+                    payload={
+                        "assignment_id": replacement_id,
+                        "queue_revision": before["queue_revision"],
+                        "model": member.default_model_binding_key,
+                    },
+                    receipt="ordinary-begin-held",
+                    error="retained_output_attestation_required",
+                )
+                async with db_session_factory() as check:
+                    assert not await check.scalar(
+                        select(AgentRun.id).where(AgentRun.assignment_id == replacement_id)
+                    )
+                    assert not (await check.get(Task, task.id)).claim_id
+                record_property("ordinary_begin_refused_before_attestation", True)
+                if lane == "unconfirmable":
+                    separate = await task_factory(
+                        iteration=iteration,
+                        assignee=scope.member,
+                        title="Independent release note",
+                        description=task.description,
+                        tags=task.tags,
+                        status="planned",
+                        start_date=task.start_date,
+                        end_date=task.end_date,
+                        effort_days=1,
+                        priority=2,
+                    )
+                    separate.project_id = project.id
+                    separate.effort_hours = 8
+                    await db.commit()
+                    separate_assignment = await call(
+                        *dispatch,
+                        pk,
+                        payload={
+                            "actor_id": worker.id,
+                            "task_id": separate.id,
+                            "expected_task_version": separate.version,
+                            "reviewer_profile_id": reviewer.profile_id,
+                        },
+                        receipt="assign-unrelated",
+                    )
+                    available = await call(*work, wk)
+                    assert (
+                        available["state"] == "start_assigned"
+                        and available["next"]["assignment"]["id"] == separate_assignment["id"]
+                    )
+                    assert any(i["assignment"]["id"] == replacement_id for i in available["blocked_assigned"])
+                    cancellation = await cancel_unconfirmable(
+                        http, transport, pk, replacement_id, available["queue_revision"]
+                    )
+                    assert cancellation["state"] == "cancelled" and "cannot confirm" in cancellation["reason"]
+                    left = await call(*work, wk)
+                    unrelated = await call(
+                        *begin,
+                        wk,
+                        payload={
+                            "assignment_id": separate_assignment["id"],
+                            "queue_revision": left["queue_revision"],
+                            "model": member.default_model_binding_key,
+                        },
+                        receipt="start-unrelated",
+                    )
+                    assert unrelated["run"]["task_id"] == separate.id
+                    async with db_session_factory() as check:
+                        unchanged = await check.get(AgentRun, running["run"]["id"])
+                        assert (
+                            unchanged.status,
+                            unchanged.ended_at,
+                            unchanged.execution_provenance,
+                        ) == history
+                        assert not await check.scalar(
+                            select(AgentIdempotencyRecord.id).where(
+                                AgentIdempotencyRecord.operation == "work.attest_retained_planning_output",
+                                AgentIdempotencyRecord.target_id == unchanged.id,
+                            )
+                        )
+                    record_property("unconfirmable_task_canceled_unrelated_began", True)
+                    return
                 other = team.sink.keys[team.manifest.workers[1].actor_key]
                 await worker_attest(
                     http,
@@ -795,6 +1002,14 @@ async def test_date_only_reservation(
                     ) == history
                     assert not (await read.get(Task, task.id)).claim_id
                 fresh = await call(*work, wk)
+                refreshed = await http.get(
+                    "/api/agent/me/work", headers={"X-Agent-API-Key": wk, "If-None-Match": old_etag}
+                )
+                assert (
+                    refreshed.status_code == 200
+                    and refreshed.headers["etag"] != old_etag
+                    and refreshed.json()["state"] == "start_assigned"
+                )
                 next_run = await call(
                     *begin,
                     wk,

@@ -54,6 +54,7 @@ class ReworkReadCache:
     teams: dict = field(default_factory=dict)
     bindings: dict = field(default_factory=dict)
     modes: dict = field(default_factory=dict)
+    retained_outputs: dict = field(default_factory=dict)
 
 
 async def _rework_verdict(db, task, assignment, sources, lineage):
