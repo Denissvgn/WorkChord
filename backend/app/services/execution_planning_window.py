@@ -10,6 +10,8 @@ from app.agent_contract import EXECUTION_PLANNING_WINDOW_FEATURE
 
 from app.models.agent import (
     AgentActor,
+    AgentIdempotencyRecord,
+    AgentRun,
     AgentModelBinding,
     AgentModelCatalogEntry,
     AgentTaskAssignment,
@@ -379,8 +381,191 @@ def make_window(task, old_version, assignments, *, prior=None, evidence):
     }
 
 
+async def original_ownership(db, task, row, before):
+    """Verify one current assignment against its original, authenticated worker, PM or reviewer receipt."""
+    from app.services.execution_reconciliation import _json_value
+    from app.services.review_provenance import actor_provenance, rework_binding_identity
+
+    records = select(AgentIdempotencyRecord).where(AgentIdempotencyRecord.created_at < before)
+    if row.state == "accepted" and row.purpose == "execution":
+        runs = (
+            await db.scalars(
+                select(AgentRun)
+                .where(
+                    AgentRun.assignment_id == row.id,
+                    AgentRun.task_id == task.id,
+                    AgentRun.actor_id == row.actor_id,
+                    AgentRun.status == "running",
+                )
+                .limit(2)
+            )
+        ).all()
+        receipt = await db.scalar(
+            records.where(
+                AgentIdempotencyRecord.actor_id == row.actor_id,
+                AgentIdempotencyRecord.target_type == "assignment",
+                AgentIdempotencyRecord.target_id == row.id,
+                AgentIdempotencyRecord.operation.in_(("work.begin", "work.renew")),
+            )
+            .order_by(AgentIdempotencyRecord.id.desc())
+            .limit(1)
+        )
+        if len(runs) != 1 or not receipt or not task.claim_id or task.claimed_by != row.actor_id:
+            return None
+        run = runs[0]
+        try:
+            raw = json.loads(receipt.response_payload)
+            observed = raw["response_without_claim_id"]
+            prior_run = observed["run"]
+            prior_task = observed["task"]
+            if (
+                raw.get("claim_sha256") != hashlib.sha256(task.claim_id.encode()).hexdigest()
+                or (
+                    prior_run["id"],
+                    prior_run["assignment_id"],
+                    prior_run["actor_id"],
+                    prior_run["task_id"],
+                    prior_run["status"],
+                )
+                != (run.id, row.id, row.actor_id, task.id, "running")
+                or observed["assignment"]["id"] != row.id
+                or observed["assignment"]["task_version"] != row.task_version
+                or observed["claim_generation"] != task.claim_generation
+                or run.claim_generation != task.claim_generation
+                or (
+                    prior_task["id"],
+                    prior_task["version"],
+                    prior_task["brief_revision"],
+                    prior_task["artifact_revision"],
+                )
+                != (task.id, row.task_version, task.brief_revision, task.artifact_revision)
+            ):
+                return None
+            previous = prior_run["execution_provenance"]
+            stored = run.execution_provenance or {}
+            actor = await db.get(AgentActor, row.actor_id)
+            bound = await actor_provenance(db, actor, binding_id=previous["binding_id"])
+            policy = await db.scalar(
+                select(Project.require_different_review_publisher).where(Project.id == task.project_id)
+            )
+            if (
+                not previous["publisher_key"]
+                or previous["source"] != "authenticated_work_begin"
+                or previous["different_publisher_required"] != policy
+                or rework_binding_identity(bound) != rework_binding_identity(previous)
+                or rework_binding_identity(previous) != rework_binding_identity(stored)
+            ):
+                return None
+            captured_links = {
+                (link["id"], link["provider"], link.get("external_key"), link.get("url"))
+                for link in prior_task.get("external_links", ())
+                if link.get("id") is not None
+            }
+            actual_links = (
+                await db.execute(
+                    select(
+                        ExternalLink.id, ExternalLink.provider, ExternalLink.external_key, ExternalLink.url
+                    ).where(ExternalLink.entity_type == "task", ExternalLink.entity_id == task.id)
+                )
+            ).all()
+            if captured_links != {tuple(link) for link in actual_links}:
+                return None
+        except (KeyError, TypeError, ValueError):
+            return None
+        return {"receipt": receipt.id, "run": run.id, "generation": run.claim_generation}
+    if row.state != "queued":
+        return None
+    if row.purpose == "verification" or row.purpose == "execution" and row.queue_class == "normal":
+        query = records.where(
+            AgentIdempotencyRecord.actor_id == row.assigned_by_actor_id,
+            AgentIdempotencyRecord.operation == "assignment.create",
+            AgentIdempotencyRecord.target_type == "task",
+            AgentIdempotencyRecord.target_id == task.id,
+            _json_value(db, AgentIdempotencyRecord.response_payload, "response", "id", integer=True)
+            == row.id,
+        )
+        field = None
+    elif row.purpose == "execution" and row.queue_class == "recovery":
+        query = records.where(
+            AgentIdempotencyRecord.actor_id == row.assigned_by_actor_id,
+            AgentIdempotencyRecord.operation == "recovery.requeue",
+            AgentIdempotencyRecord.target_type == "task",
+            AgentIdempotencyRecord.target_id == task.id,
+            _json_value(
+                db, AgentIdempotencyRecord.response_payload, "response", "assignment", "id", integer=True
+            )
+            == row.id,
+        )
+        field = "assignment"
+    elif row.purpose == "execution" and row.queue_class == "rework":
+        query = records.where(
+            AgentIdempotencyRecord.actor_id == row.assigned_by_actor_id,
+            AgentIdempotencyRecord.operation == "verification.verdict",
+            AgentIdempotencyRecord.target_type == "assignment",
+            _json_value(
+                db,
+                AgentIdempotencyRecord.response_payload,
+                "response",
+                "rework_assignment",
+                "id",
+                integer=True,
+            )
+            == row.id,
+        )
+        field = "rework_assignment"
+    else:
+        return None
+    records = (await db.scalars(query.limit(2))).all()
+    if len(records) != 1:
+        return None
+    try:
+        original = json.loads(records[0].response_payload)["response"]
+        captured = original[field] if field else original
+        if (
+            captured["id"],
+            captured["task_id"],
+            captured["actor_id"],
+            captured["purpose"],
+            captured["task_version"],
+            captured["team_member_id"],
+            captured["reviewer_profile_id"],
+            captured.get("review_selection"),
+        ) != (
+            row.id,
+            task.id,
+            row.actor_id,
+            row.purpose,
+            row.task_version,
+            row.team_member_id,
+            row.reviewer_profile_id,
+            row.review_selection,
+        ):
+            return None
+        snapshot = json.loads(row.routing_snapshot or "{}")
+        if (captured.get("routing_snapshot") or {}) != snapshot:
+            return None
+        if row.purpose == "execution" and row.queue_class in {"normal", "recovery"}:
+            return {"receipt": records[0].id}
+        if field:
+            candidate = original["review_assignment"]["review_selection"]["candidate"]
+        else:
+            candidate = row.review_selection["candidate"]
+        if (candidate["task_id"], candidate["brief_revision"], candidate["artifact_revision"]) != (
+            task.id,
+            task.brief_revision,
+            task.artifact_revision,
+        ):
+            return None
+        if not await db.scalar(
+            select(Project.require_different_review_publisher).where(Project.id == task.project_id)
+        ):
+            return None
+    except (TypeError, ValueError, KeyError):
+        return None
+    return {"receipt": records[0].id, "candidate_digest": candidate["digest"]}
+
+
 async def seal_authority(db, task, window, assignments, *, prior=None, lock=False, as_of=None):
-    from app.services.planning_window_reconciliation import _ownership
     from app.utils.time import utc_now
 
     stamps = {}
@@ -388,7 +573,7 @@ async def seal_authority(db, task, window, assignments, *, prior=None, lock=Fals
         key = str(row.id)
         if key not in window["assignments"]:
             continue
-        if as_of is None and not await _ownership(db, task, row, utc_now()):
+        if as_of is None and not await original_ownership(db, task, row, utc_now()):
             continue
         stamp = await authority_stamp(db, task, row, lock=lock, as_of=as_of)
         if stamp and (

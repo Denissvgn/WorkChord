@@ -879,7 +879,7 @@ async def test_date_only_reservation(
                 denied="planning_window_evidence_unavailable",
             )
             with (
-                patch("app.services.planning_window_reconciliation.seal_authority", side_effect=observe_locks)
+                patch("app.services.execution_planning_window.seal_authority", side_effect=observe_locks)
                 if is_pg and lane == "running"
                 else nullcontext()
             ):
