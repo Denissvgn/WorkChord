@@ -856,7 +856,7 @@ async def test_date_only_reservation(
                     "output_state": "retained",
                     "candidate": head,
                     "git_tree": "b" * 40,
-                    "pr_url": origin + "/pull/7",
+                    "pr_url": origin + "/pull/7/",
                     "terminal_native_turn": "retained-runtime-turn",
                     "brief_revision": task.brief_revision,
                     "artifact_revision": task.artifact_revision,
@@ -925,7 +925,7 @@ async def test_date_only_reservation(
                     "observed_model": mark["observed_model"],
                     "commit_url": origin + "/commit/" + head,
                     "git_tree": mark["git_tree"],
-                    "pr_url": mark["pr_url"],
+                    "pr_url": origin + "/pull/7",
                     "terminal_native_turn": mark["terminal_native_turn"],
                     "confirmed_final_output": True,
                 }
@@ -991,6 +991,7 @@ async def test_date_only_reservation(
                     running["claim_generation"],
                 )
                 assert hint["commit_url"] == body["commit_url"] and hint["git_tree"] == body["git_tree"]
+                assert hint["pr_url"] == body["pr_url"] and hint["pr_url"] != mark["pr_url"]
                 assert (
                     "claim_id" not in hint
                     and "claim_sha256" not in hint
@@ -1153,6 +1154,15 @@ async def test_date_only_reservation(
                     running["run"]["id"],
                     {**body, "pr_url": "https://example.invalid/notes/pull/1"},
                     "invalid-pr",
+                    error="checkpoint_receipt_or_repository",
+                )
+                await worker_attest(
+                    http,
+                    transport,
+                    wk,
+                    running["run"]["id"],
+                    {**body, "pr_url": origin + "/pull/8"},
+                    "wrong-valid-pull",
                     error="checkpoint_receipt_or_repository",
                 )
                 await worker_attest(

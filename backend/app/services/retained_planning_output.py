@@ -70,8 +70,11 @@ async def _authenticate_checkpoint(db, actor, run, task, data, before_version):
     try:
         content = json.loads(event.payload)
         recorded = json.loads(receipt.response_payload) if receipt else {}
+        if not isinstance(content, dict) or not isinstance(content.get("pr_url"), str):
+            _unverified("checkpoint_receipt_or_repository")
         commit = parse_github_url(data.commit_url)
         pull = parse_github_url(data.pr_url)
+        checkpoint_pull = parse_github_url(content["pr_url"])
     except (ValueError, TypeError, AttributeError):
         _unverified("checkpoint_receipt_or_repository")
     if (
@@ -79,6 +82,9 @@ async def _authenticate_checkpoint(db, actor, run, task, data, before_version):
         or recorded.get("event_id") != event.id
         or commit.github_type != "commit"
         or pull.github_type != "pull_request"
+        or checkpoint_pull.github_type != "pull_request"
+        or checkpoint_pull.number != pull.number
+        or checkpoint_pull.repo_full_name.casefold() != pull.repo_full_name.casefold()
         or commit.repo_full_name.casefold() != pull.repo_full_name.casefold()
         or as_utc(event.created_at) < as_utc(run.started_at)
         or as_utc(event.created_at) > as_utc(run.ended_at)
@@ -92,7 +98,6 @@ async def _authenticate_checkpoint(db, actor, run, task, data, before_version):
         "output_state": "retained",
         "candidate": commit.sha,
         "git_tree": data.git_tree,
-        "pr_url": data.pr_url,
         "terminal_native_turn": data.terminal_native_turn,
         "brief_revision": task.brief_revision,
         "artifact_revision": task.artifact_revision,
@@ -334,9 +339,9 @@ async def attest_retained_output(db, actor, run_id, data: AgentRetainedOutputAtt
             "publisher_key": initial["publisher_key"],
             "observed_model": data.observed_model,
             "output_state": "retained",
-            "commit_urls": [data.commit_url],
+            "commit_urls": [parse_github_url(data.commit_url).url],
             "git_tree": data.git_tree,
-            "pr_url": data.pr_url,
+            "pr_url": parse_github_url(data.pr_url).url,
             "checkpoint_id": event.id,
             "worker_checkpoint_receipt_id": checkpoint.id,
             "planning_receipt_id": plan.id,
