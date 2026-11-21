@@ -1138,6 +1138,10 @@ def canonical_routing_json_bytes(value: Any) -> bytes:
         ) from exc
 
 
+class RoutingPacketSizeError(ValueError):
+    """The canonical UTF-8 representation exceeds its routing boundary."""
+
+
 def validate_routing_packet_size(
     value: Any,
     *,
@@ -1147,7 +1151,7 @@ def validate_routing_packet_size(
     """Reject a canonical routing packet that exceeds its storage boundary."""
 
     if len(canonical_routing_json_bytes(value)) > maximum_bytes:
-        raise ValueError(f"{label} must not exceed {maximum_bytes} bytes")
+        raise RoutingPacketSizeError(f"{label} must not exceed {maximum_bytes} bytes")
     return value
 
 
