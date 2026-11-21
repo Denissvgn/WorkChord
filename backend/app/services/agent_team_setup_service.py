@@ -3594,10 +3594,14 @@ class AgentTeamSetupService:
     async def routing_readiness(
         self,
         actor: AgentActor,
+        *,
+        observed_boundaries: dict[int, AgentTeamMembershipBoundary | None] | None = None,
     ) -> AgentRoutingTopologyReadiness:
         """Project authoritative setup state into the rollout readiness hook."""
 
         boundary = await self.membership_boundary(actor.id)
+        if observed_boundaries is not None:
+            observed_boundaries[actor.id] = boundary
         if boundary is None:
             return AgentRoutingTopologyReadiness.unavailable()
         topology = await self._topology(

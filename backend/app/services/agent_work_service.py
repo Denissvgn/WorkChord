@@ -103,7 +103,10 @@ from app.services.agent_routing_rollout import (
     AgentRoutingTopologyReadinessStatus,
 )
 from app.services.agent_model_catalog_service import AgentModelCatalogService
-from app.services.review_provenance import actor_provenance, different_publisher_required, select_reviewer, supervised_rework_evidence
+from app.services.review_provenance import (
+    ReworkReadCache, actor_provenance, different_publisher_required, rework_binding_identity,
+    select_reviewer, supervised_rework_evidence,
+)
 from app.services.task_service import TaskService, TaskVersionConflictError
 from app.services.project_service import ProjectService
 from app.schemas.project import ProjectUpdateEntryCreate
@@ -195,6 +198,8 @@ class AgentWorkService:
     async def _resolve_rollout(
         self,
         actor: AgentActor,
+        *,
+        observed_boundaries: dict | None = None,
     ) -> AgentRoutingRolloutService:
         if self._rollout_service_explicit:
             return self.rollout_service
@@ -202,9 +207,9 @@ class AgentWorkService:
             return self.rollout_service
         from app.services.agent_team_setup_service import AgentTeamSetupService
 
-        readiness = await AgentTeamSetupService(self.db).routing_readiness(
-            actor
-        )
+        setup = AgentTeamSetupService(self.db)
+        readiness = (await setup.routing_readiness(actor) if observed_boundaries is None
+                     else await setup.routing_readiness(actor, observed_boundaries=observed_boundaries))
         if (
             readiness.status
             == AgentRoutingTopologyReadinessStatus.UNAVAILABLE
@@ -620,18 +625,42 @@ class AgentWorkService:
             and snapshot.get("supervised_actor_id") == assignment.actor_id
         )
 
-    @classmethod
-    def _supervised_rework_snapshot(cls, assignment, evidence):
-        """Keep the original pending model decision and its independently required review floor."""
-        lineage = cls._routing_snapshot(assignment)
-        return {
-            **lineage,
-            "supervised_actor_id": assignment.actor_id,
+    @staticmethod
+    def _show_rework(assignment_view, actor_id, evidence):
+        """Project the effective handback without rewriting the issued assignment."""
+        if (assignment_view is None or not isinstance(evidence, dict) or evidence.get("rework_assignment_id") != assignment_view.id
+                or not isinstance(evidence.get("review_floor"), dict) or not evidence.get("reviewer_profile_id")):
+            return
+        assignment_view.reviewer_profile_id = evidence["reviewer_profile_id"]
+        assignment_view.routing_snapshot = {
+            **assignment_view.routing_snapshot,
+            "supervised_actor_id": actor_id,
             "supervised_rework": evidence,
-            "review_floor": {**lineage["review_floor"], "review_mode": "independent",
-                             "reviewer_profile_ids": [evidence["reviewer_profile_id"]],
-                             "independence_must_be_revalidated": True},
+            "review_floor": evidence["review_floor"],
         }
+
+    @classmethod
+    def _execution_assignment_view(cls, assignment, run, **binding_options):
+        view = cls.assignment_response(assignment, **binding_options)
+        if (run is not None and assignment.queue_class == "rework" and run.assignment_id == assignment.id
+                and run.task_id == assignment.task_id and run.actor_id == assignment.actor_id):
+            cls._show_rework(view, assignment.actor_id, (run.execution_provenance or {}).get("supervised_rework"))
+        return view
+
+    async def _shadow_handoff(self, task, assignment, worker, mode, cache, *, lock=False):
+        if worker is None or mode != AgentRoutingRolloutMode.SHADOW:
+            return False, None
+        if assignment.queue_class == "recovery":
+            return self._supervised_recovery(assignment), None
+        if assignment.queue_class != "rework":
+            return False, None
+        key = (assignment.id, task.version, worker.id)
+        if lock or key not in cache.assignments:
+            cache.assignments[key] = await supervised_rework_evidence(
+                self.db, task, assignment, worker, self._routing_snapshot(assignment), lock=lock, cache=cache,
+            )
+        evidence = cache.assignments[key]
+        return evidence is not None, evidence
 
     @classmethod
     def _is_model_aware_assignment(
@@ -1806,6 +1835,7 @@ class AgentWorkService:
         *,
         limit: int = 20,
         cursor: Optional[str] = None,
+        _rework_read: ReworkReadCache | None = None,
     ) -> AgentWorkDecisionResponse:
         """Return the authoritative resume/begin/wait/recovery decision."""
         self._require_any_scope(actor, "assignments:read", "tasks:read")
@@ -1814,6 +1844,7 @@ class AgentWorkService:
         await self.db.refresh(actor)
         self._require_any_scope(actor, "assignments:read", "tasks:read")
         queue_revision = int(actor.queue_revision)
+        rework_read = _rework_read if _rework_read is not None else ReworkReadCache()
         accepted_result = await self.db.execute(
             select(AgentTaskAssignment)
             .where(
@@ -1910,7 +1941,7 @@ class AgentWorkService:
         items: list[AgentWorkItem] = []
         blocked: list[AgentWorkItem] = []
         for assignment in assignments:
-            item = await self._work_item(assignment, 0, now)
+            item = await self._work_item(assignment, 0, now, rework_read=rework_read)
             if item.blocker_codes:
                 blocked.append(item)
             else:
@@ -2073,6 +2104,13 @@ class AgentWorkService:
         brief = parse_task_brief(task.description)
         definition_blockers = self._definition_blockers(task)
         assignment_view = self.assignment_response(assignment) if assignment else None
+        if assignment and assignment.queue_class == "rework" and assignment.state == "accepted":
+            active_runs = (await self.db.scalars(select(AgentRun).where(
+                AgentRun.assignment_id == assignment.id, AgentRun.task_id == task.id,
+                AgentRun.actor_id == assignment.actor_id, AgentRun.claim_generation == task.claim_generation,
+                AgentRun.status == "running").limit(2))).all()
+            if len(active_runs) == 1:
+                assignment_view = self._execution_assignment_view(assignment, active_runs[0])
         start_blockers = await self._start_blockers(task, assignment, utc_now(), assignment_view=assignment_view)
         parent_chain: list[dict[str, Any]] = []
         parent = task.parent
@@ -2178,17 +2216,17 @@ class AgentWorkService:
 
         model_aware_request = isinstance(data, ModelAwareAgentWorkBegin)
         model_aware_assignment = self._is_model_aware_assignment(assignment)
-        supervised = False
-        rework_evidence = None
+        supervised, rework_evidence = False, None
+        rework_read = ReworkReadCache()
         if not model_aware_request and assignment.queue_class in {"rework", "recovery"}:
-            if (await self._resolve_rollout(actor)).status().effective_mode == AgentRoutingRolloutMode.SHADOW:
-                if assignment.queue_class == "rework":
-                    rework_evidence = await supervised_rework_evidence(self.db, task, assignment, actor,
-                                                                       self._routing_snapshot(assignment), lock=True)
-                supervised = self._supervised_recovery(assignment) or rework_evidence is not None
-        if rework_evidence and data.model not in {rework_evidence["catalog_key"], rework_evidence["configured_model_alias"]}:
-            raise AgentRoutingConflictError("execution_publisher_unverifiable",
-                "Report the original supervised model for this authenticated rework handback.")
+            mode = (await self._resolve_rollout(actor)).status().effective_mode
+            rework_read.modes[actor.id] = mode
+            supervised, rework_evidence = await self._shadow_handoff(task, assignment, actor, mode, rework_read, lock=True)
+        if rework_evidence:
+            binding = rework_evidence["worker_binding"]
+            if not data.model or data.model not in (binding["catalog_key"], binding["configured_model_alias"]):
+                raise AgentRoutingConflictError("execution_publisher_unverifiable",
+                    "Report the original supervised model for this authenticated rework handback.")
         if self._selection_pending(assignment) and not supervised:
             raise AgentRoutingConflictError(
                 "routing_selection_pending",
@@ -2368,7 +2406,7 @@ class AgentWorkService:
                 )
         if await self._assignment_count(actor.id, "accepted") >= actor.max_parallel_work:
             raise AgentConflictError("Actor has reached max_parallel_work")
-        decision = await self.get_work(actor, limit=1)
+        decision = await self.get_work(actor, limit=1, _rework_read=rework_read)
         if (
             decision.state != "start_assigned"
             or decision.next is None
@@ -2382,7 +2420,7 @@ class AgentWorkService:
                 assignment.task_version,
                 self.task_service._metadata_from_task(task),
             )
-        blockers = await self._start_blockers(task, assignment, utc_now())
+        blockers = await self._start_blockers(task, assignment, utc_now(), rework_read=rework_read)
         if blockers:
             raise AgentConflictError("Work is not start-ready: " + ", ".join(blockers))
         now = utc_now()
@@ -2420,10 +2458,8 @@ class AgentWorkService:
             raise AgentRoutingConflictError("execution_publisher_unverifiable",
                 "The authenticated worker must report a uniquely bound model with a known publisher.")
         if rework_evidence:
-            if provenance["binding_id"] != rework_evidence["binding_id"]:
+            if rework_binding_identity(provenance) != rework_evidence["worker_binding"]:
                 raise AgentRoutingConflictError("execution_publisher_unverifiable", "The supervised rework binding changed.")
-            assignment.reviewer_profile_id = rework_evidence["reviewer_profile_id"]
-            assignment.routing_snapshot = self._serialize_routing_snapshot(self._supervised_rework_snapshot(assignment, rework_evidence))
             provenance["supervised_rework"] = rework_evidence
         run = AgentRun(
             task_id=task.id,
@@ -2471,8 +2507,8 @@ class AgentWorkService:
         self.db.add(run)
         await self.db.flush()
         response = AgentWorkBeginResponse(
-            assignment=self.assignment_response(
-                assignment,
+            assignment=self._execution_assignment_view(
+                assignment, run,
                 model_binding=selected_binding,
                 binding_loaded=model_aware_request,
             ),
@@ -2635,7 +2671,7 @@ class AgentWorkService:
             "task_id": task.id,
         }
         response = AgentWorkBeginResponse(
-            assignment=self.assignment_response(assignment),
+            assignment=self._execution_assignment_view(assignment, run),
             task=self.task_service.task_to_response(task),
             run=self.run_response(run),
             claim_id=task.claim_id,
@@ -2825,7 +2861,7 @@ class AgentWorkService:
         actor.queue_revision += 1
         evidence = data.evidence
         response = AgentWorkTerminalResponse(
-            assignment=self.assignment_response(assignment),
+            assignment=self._execution_assignment_view(assignment, run),
             task=self.task_service.task_to_response(task),
             run=self.run_response(run),
             recovery_required=not success,
@@ -4070,6 +4106,7 @@ class AgentWorkService:
         now: datetime,
         *,
         assignment_view: AgentTaskAssignmentResponse | None = None,
+        rework_read: ReworkReadCache | None = None,
     ) -> list[str]:
         blockers: list[str] = []
         if assignment is None:
@@ -4077,25 +4114,25 @@ class AgentWorkService:
         if assignment.task_version != task.version:
             blockers.append("assignment_task_version_stale")
         assignment_actor = await self.db.get(AgentActor, assignment.actor_id)
-        rollout_status = (
-            (await self._resolve_rollout(assignment_actor)).status()
-            if assignment_actor is not None
-            else self.rollout_service.status()
-        )
-        supervised = self._supervised_recovery(assignment) and rollout_status.effective_mode == AgentRoutingRolloutMode.SHADOW
-        if assignment_actor is not None and assignment.queue_class == "rework" and rollout_status.effective_mode == AgentRoutingRolloutMode.SHADOW:
-            evidence = await supervised_rework_evidence(self.db, task, assignment, assignment_actor, self._routing_snapshot(assignment))
-            supervised = evidence is not None
-            if evidence and assignment_view is not None:
-                assignment_view.reviewer_profile_id = evidence["reviewer_profile_id"]
-                assignment_view.routing_snapshot = self._supervised_rework_snapshot(assignment, evidence)
+        read = rework_read if rework_read is not None else ReworkReadCache()
+        if assignment_actor is None:
+            mode = self.rollout_service.status().effective_mode
+        elif assignment.queue_class == "rework" and assignment_actor.id in read.modes:
+            mode = read.modes[assignment_actor.id]
+        else:
+            observed = read.teams if assignment.queue_class == "rework" else None
+            mode = (await self._resolve_rollout(assignment_actor, observed_boundaries=observed)).status().effective_mode
+            if assignment.queue_class == "rework":
+                read.modes[assignment_actor.id] = mode
+        supervised, evidence = await self._shadow_handoff(task, assignment, assignment_actor, mode, read)
+        if evidence:
+            self._show_rework(assignment_view, assignment.actor_id, evidence)
         if self._selection_pending(assignment) and not supervised:
             blockers.append("routing_selection_pending")
         if (
             self._is_model_aware_assignment(assignment)
             and not supervised
-            and rollout_status.effective_mode
-            != AgentRoutingRolloutMode.ENFORCED
+            and mode != AgentRoutingRolloutMode.ENFORCED
         ):
             blockers.append("model_aware_assignment_inactive")
         try:
@@ -4192,6 +4229,7 @@ class AgentWorkService:
         now: datetime,
         *,
         running: Optional[Iterable[AgentRun]] = None,
+        rework_read: ReworkReadCache | None = None,
     ) -> AgentWorkItem:
         task = await self.task_service.get_by_id(assignment.task_id)
         if task is None:
@@ -4221,7 +4259,7 @@ class AgentWorkService:
                 if assignment.task_version != task.version:
                     blockers.append("assignment_task_version_stale")
             else:
-                blockers = await self._start_blockers(task, assignment, now, assignment_view=assignment_view)
+                blockers = await self._start_blockers(task, assignment, now, assignment_view=assignment_view, rework_read=rework_read)
         queue_class_rank = QUEUE_CLASS_RANK.get(assignment.queue_class, 99)
         not_before = assignment.not_before.isoformat() if assignment.not_before else ""
         start_date = task.start_date.isoformat() if task.start_date else ""
@@ -4241,6 +4279,8 @@ class AgentWorkService:
             ),
             None,
         )
+        if run and assignment.queue_class == "rework":
+            self._show_rework(assignment_view, assignment.actor_id, (run.execution_provenance or {}).get("supervised_rework"))
         claim = None
         if task.claimed_by is not None:
             claim = {

@@ -74,12 +74,21 @@ and independent reviewer. The worker begins the exact assignment with the
 current queue revision and its observed model. Repeating the begin with the
 original idempotency key returns the same run and claim generation.
 
-The assignment's routing snapshot retains its source assignment IDs and
-independent reviewer profile. The running attempt also records the rejected
-run, verifier receipt and reviewed candidate digest in
-`execution_provenance.supervised_rework`. The original verdict and submission
-receipts remain available. A changed binding, different worker, missing
-receipt, or request for a model-tier change leaves routing pending.
+The latest submitter can also have completed a supervised recovery selected
+by the team's PM. The recovery receipt and event must confirm that exact
+assignment and actor. Earlier retained contributors continue to participate
+in the independent publisher check.
+
+The issued assignment and its routing snapshot preserve their original
+lineage. The effective worker views show the supervised handback and review
+floor. A successful begin records the complete worker binding, independent
+reviewer floor, rejected run, verifier receipt and reviewed candidate digest
+in the new run's `execution_provenance.supervised_rework`. The original
+verdict and submission stay intact. A changed binding, different worker,
+missing receipt, or request for a model-tier change leaves routing pending.
+After a failed or canceled rework, the PM uses the normal recovery path.
+The resulting recovery queue waits for a fresh applicable routing selection.
+A previously begun rework cannot be reused to start a second fenced run.
 Enforced mode continues to require a fresh model-aware selection.
 
 ## Operational evidence
