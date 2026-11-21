@@ -1,6 +1,6 @@
 # TaskChange
 
-**Location:** `backend/app/services/scheduler_service.py:41`
+**Location:** `backend/app/services/scheduler_service.py:48`
 **Kind:** Class
 **Bases:** —
 **Module:** [scheduler_service](../modules/scheduler_service.md)

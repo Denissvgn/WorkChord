@@ -1,6 +1,6 @@
 # AbsenceInput
 
-**Location:** `backend/app/routers/capacity.py:22`
+**Location:** `backend/app/routers/capacity.py:23`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [routers_capacity](../modules/routers_capacity.md)

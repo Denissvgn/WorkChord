@@ -1,7 +1,7 @@
 # IterationService_get_planning_readiness_summary
 
 **Entry point:** `iteration_service.IterationService.get_planning_readiness_summary`
-**Modules involved:** [capacity_service](../modules/capacity_service.md), [iteration_service](../modules/iteration_service.md), [plan_checkpoints](../modules/plan_checkpoints.md), [schemas_iteration](../modules/schemas_iteration.md), [services_work_metrics](../modules/services_work_metrics.md), [team_service](../modules/team_service.md)
+**Modules involved:** [calendar_rules](../modules/calendar_rules.md), [capacity_service](../modules/capacity_service.md), [iteration_service](../modules/iteration_service.md), [plan_checkpoints](../modules/plan_checkpoints.md), [schemas_iteration](../modules/schemas_iteration.md), [services_work_metrics](../modules/services_work_metrics.md), [team_service](../modules/team_service.md)
 
 > Return bounded aggregate planning inputs without loading task graphs.
 
@@ -16,11 +16,13 @@
 6. `team_service.TeamService`
 7. `capacity_service.CapacityService.schedule_issues`
 8. `capacity_service.CapacityService`
-9. `plan_checkpoints.plan_checkpoints`
-10. `schemas_iteration.IterationPlanningReadinessSummary`
+9. `calendar_rules.AnnualCalendars.for_iteration`
+10. `plan_checkpoints.plan_checkpoints`
+11. `schemas_iteration.IterationPlanningReadinessSummary`
 
 ## Touches
 
+- [calendar_rules](../modules/calendar_rules.md)
 - [capacity_service](../modules/capacity_service.md)
 - [iteration_service](../modules/iteration_service.md)
 - [plan_checkpoints](../modules/plan_checkpoints.md)

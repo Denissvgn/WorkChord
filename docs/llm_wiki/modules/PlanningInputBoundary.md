@@ -6,6 +6,8 @@
 
 Existing planning editors start from one coherent server resource and complete revision map. Explicit comparison retains user input; explicit reload starts a new editor generation. Scope and permission failures remain visible, and denied observations remove server data. Pending editors disable comparison controls.
 
+When an iteration's annual calendar selection changes elsewhere, the editor presents that field for comparison before it accepts the newer revision. The comparison treats the selected IDs as a set, independent of the order returned by the reader.
+
 ## Imports
 
 | Source | Symbols | Type-only | Runtime emission |

@@ -10,16 +10,19 @@ Creation persists submitted shortened working days along with the declared zone,
 
 Nominal-workday edits use the same task-unit refresh helper as iteration calendar reassignment, within the existing planning-input transaction.
 
+Working-day queries accept additional annual calendar IDs. They count only dates with a selected record and return the uncovered years alongside the count. A calendar used in an annual selection must be detached before its year or local time zone can change.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `internal_authority` |
+| `app.authority` | `internal_authority`, `internal_authority` |
 | `app.commands` | `commit_or_flush`, `schedule_input_command`, `PlanningConflict` |
-| `app.models.calendar` | `Calendar` |
-| `app.models.capacity` | `ProfileAvailability` |
+| `app.models.calendar` | `Calendar`, `iteration_annual_calendars`, `profile_annual_calendars` |
+| `app.models.capacity` | `ProfileAvailability`, `ProfileAvailability` |
 | `app.models.iteration` | `Iteration` |
 | `app.schemas.calendar` | `CalendarCreate`, `CalendarImportError`, `CalendarImportRequest`, `CalendarImportResponse`, `CalendarUpdate`, `WorkingDaysResponse` |
+| `app.services.calendar_rules` | `AnnualCalendars` |
 | `app.services.task_domain_service` | `refresh_nominal_day_hours` |
 | `collections.abc` | `Iterable` |
 | `csv` | `csv` |
@@ -47,8 +50,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (9) |
-| Outbound | `backend` (7) |
+| Inbound | `backend` (11) |
+| Outbound | `backend` (8) |
 
 ### External packages
 
@@ -56,10 +59,10 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [CalendarService](../entities/CalendarService.md) | 64 | — | Service for calendar operations. |
+| [CalendarService](../entities/CalendarService.md) | 65 | — | Service for calendar operations. |

@@ -66,10 +66,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| import_calendar_holidays | service.import_holidays | 106 | `service.import_holidays(calendar_id, data)` |
-| import_calendar_holidays | HTTPException | 108 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| import_calendar_holidays | str | 110 | `str(e)` |
-| import_calendar_holidays | HTTPException | 113 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| import_calendar_holidays | service.import_holidays | 107 | `service.import_holidays(calendar_id, data)` |
+| import_calendar_holidays | HTTPException | 109 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| import_calendar_holidays | str | 111 | `str(e)` |
+| import_calendar_holidays | HTTPException | 114 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 
 ### Boundary effects
 
@@ -79,9 +79,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `import_calendar_holidays` | `service.import_holidays` | 106 |
-| external_call | `import_calendar_holidays` | `HTTPException` | 108 |
-| external_call | `import_calendar_holidays` | `HTTPException` | 113 |
+| unresolved_call | `import_calendar_holidays` | `service.import_holidays` | 107 |
+| external_call | `import_calendar_holidays` | `HTTPException` | 109 |
+| external_call | `import_calendar_holidays` | `HTTPException` | 114 |
 
 ## Behavior
 

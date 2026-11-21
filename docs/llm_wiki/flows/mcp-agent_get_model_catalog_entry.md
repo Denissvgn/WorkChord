@@ -124,7 +124,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 85; effect analysis evaluated: 57, partial: 2, unavailable: 26. Counts include steps omitted from the displayed trace.
 
-Collector observations for 59 source steps with known totals: observed: 252, emitted: 242, omitted: 10. Unavailable totals are excluded.
+Collector observations for 59 source steps with known totals: observed: 254, emitted: 242, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -133,7 +133,7 @@ Collector observations for 59 source steps with known totals: observed: 252, emi
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
 | `agent_get_model_catalog_entry` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
-| `_tool_call` | `available` | `partial` | `available` | `18` | `12` | `6` |
+| `_tool_call` | `available` | `partial` | `available` | `19` | `12` | `7` |
 | `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -183,7 +183,7 @@ flowchart LR
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
 | `agent_get_model_catalog_entry` | `catalog_key: str` | - | - | `...` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -199,7 +199,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_get_model_catalog_entry | _tool_call | 455 | `_tool_call((...), ...)` |
+| agent_get_model_catalog_entry | _tool_call | 456 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

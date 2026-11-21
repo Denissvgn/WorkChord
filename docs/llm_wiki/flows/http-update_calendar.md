@@ -61,20 +61,20 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_calendar | service.update | 68 | `service.update(calendar_id, data)` |
-| update_calendar | HTTPException | 70 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| update_calendar | service.update | 69 | `service.update(calendar_id, data)` |
+| update_calendar | HTTPException | 71 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `service.update` | `update_calendar` | 68 |
+| mutation | `service.update` | `update_calendar` | 69 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `update_calendar` | `HTTPException` | 70 |
+| external_call | `update_calendar` | `HTTPException` | 71 |
 
 ## Behavior
 

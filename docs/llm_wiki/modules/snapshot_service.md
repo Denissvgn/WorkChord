@@ -14,6 +14,8 @@ Allocation recovery validates stable lifetime provenance before any writes, pres
 
 Saved planning graphs include complete person lifetime provenance for allocation profiles and all recursive task owners. Preflight validates these references before any recovery mutation, using internal ID/token projections without serializing private profile data; current owner eligibility remains required.
 
+Iteration snapshots preserve the selected annual calendar IDs. Restoring an older snapshot that recorded only the primary calendar restores that single selection. The service validates the saved annual records before restoring the iteration.
+
 ## Imports
 
 | Source | Symbols |
@@ -30,6 +32,7 @@ Saved planning graphs include complete person lifetime provenance for allocation
 | `app.models.task` | `Task`, `Task`, `TaskDependency` |
 | `app.models.team_member` | `TeamMemberProfile`, `TeamMemberProfile`, `TeamMember`, `TeamMemberProfile`, `TeamMember`, `Vacation` |
 | `app.routers.snapshots` | `_validate_snapshot_task_payloads` |
+| `app.services.calendar_service` | `CalendarService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.task_brief_service` | `TaskBriefService` |
@@ -65,8 +68,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (21) |
-| Outbound | `backend` (20) |
+| Inbound | `backend` (22) |
+| Outbound | `backend` (21) |
 
 ### External packages
 
@@ -74,7 +77,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 37 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -1,6 +1,6 @@
 # IterationSeriesCreate
 
-**Location:** `backend/app/schemas/iteration.py:48`
+**Location:** `backend/app/schemas/iteration.py:50`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_iteration](../modules/schemas_iteration.md)
@@ -15,6 +15,7 @@ Schema for creating multiple back-to-back iterations.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `base_name` | `str` | `base_name` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `calendar_id` | `Optional[int]` | `calendar_id` | No | Yes | `None` | — | — | — |
+| `additional_calendar_ids` | `list[int]` | `additional_calendar_ids` | No | No | factory: `list` | max_length=100 | — | — |
 | `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
 | `start_date` | `date` | `start_date` | Yes | No | — | — | — | — |
 | `duration_days` | `int` | `duration_days` | No | No | `14` | ge=1; le=366 | — | — |
@@ -52,7 +53,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `base_name`, `calendar_id`, `duration_days`, `manager_email`, `project_id`, `start_date`, `stop` |
+| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `additional_calendar_ids`, `base_name`, `calendar_id`, `duration_days`, `manager_email`, `project_id`, `start_date`, `stop` |
 
 ### Structure
 

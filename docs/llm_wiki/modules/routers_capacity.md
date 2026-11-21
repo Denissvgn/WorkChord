@@ -57,8 +57,8 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [Database](../entities/routers_capacity_Database.md) | Type alias | 14 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
 | [CalendarSelection](../entities/CalendarSelection.md) | Pydantic model | 17 | `BaseModel` | — |
-| [AbsenceInput](../entities/AbsenceInput.md) | Pydantic model | 22 | `BaseModel` | — |
-| [AbsenceUpdate](../entities/AbsenceUpdate.md) | Pydantic model | 27 | `AbsenceInput` | — |
+| [AbsenceInput](../entities/AbsenceInput.md) | Pydantic model | 23 | `BaseModel` | — |
+| [AbsenceUpdate](../entities/AbsenceUpdate.md) | Pydantic model | 28 | `AbsenceInput` | — |
 
 ## Functions
 

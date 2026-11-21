@@ -2,12 +2,13 @@
 
 **Entry point:** `agent_get_iteration_plan_readiness` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [capacity_service](../modules/capacity_service.md), and 20 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), [calendar_service](../modules/calendar_service.md), and 21 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
 - [authority](../modules/authority.md)
+- [calendar_rules](../modules/calendar_rules.md)
 - [calendar_service](../modules/calendar_service.md)
 - [capacity_service](../modules/capacity_service.md)
 - [commands](../modules/commands.md)
@@ -58,15 +59,15 @@ sequenceDiagram
     participant p17 as TeamService.get_by_id
     participant p18 as require_scope
     participant p19 as AgentService.authenticate
-    participant p20 as CapacityService.calendar_for
+    participant p20 as CapacityService.coverage_for
     participant p21 as CapacityService.calendar_status
-    participant p22 as CapacityService.projection
-    participant p23 as require_identity_writes
+    participant p22 as require_identity_writes
+    participant p23 as CalendarService.get_working_dates
     participant p24 as CapacityService.absence_ranges
     participant p25 as DeliveryDependencyService.reconcile
-    participant p26 as DiscussionService.enqueue
-    participant p27 as TeamService._attach_assignee_profiles
-    participant p28 as actor_has_scope
+    participant p26 as CapacityService._projection
+    participant p27 as DiscussionService.enqueue
+    participant p28 as TeamService._attach_assignee_profiles
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -88,22 +89,22 @@ sequenceDiagram
     p14->>p17: TeamService.get_by_id
     p11->>p18: require_scope
     p10->>p19: AgentService.authenticate
-    p14->>p20: CapacityService.calendar_for
+    p14->>p20: CapacityService.coverage_for
     p14->>p21: CapacityService.calendar_status
-    p15->>p22: CapacityService.projection
-    p12->>p23: require_identity_writes
+    p12->>p22: require_identity_writes
+    p14->>p23: CalendarService.get_working_dates
     p14->>p24: CapacityService.absence_ranges
     p9->>p25: DeliveryDependencyService.reconcile
-    p9->>p26: DiscussionService.enqueue
-    p13->>p27: TeamService._attach_assignee_profiles
-    p18->>p28: actor_has_scope
+    p15->>p26: CapacityService._projection
+    p9->>p27: DiscussionService.enqueue
+    p13->>p28: TeamService._attach_assignee_profiles
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 622 interactions; 592 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 645 interactions; 615 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 219 (218 omitted); unresolved 1 of 263 (262 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 221 (220 omitted); unresolved 1 of 275 (274 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -117,7 +118,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 139 groups; 131 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 148 groups; 140 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -130,9 +131,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 141; effect analysis evaluated: 100, partial: 3, unavailable: 38. Counts include steps omitted from the displayed trace.
+Source steps: 150; effect analysis evaluated: 104, partial: 3, unavailable: 43. Counts include steps omitted from the displayed trace.
 
-Collector observations for 103 source steps with known totals: observed: 466, emitted: 450, omitted: 16. Unavailable totals are excluded.
+Collector observations for 107 source steps with known totals: observed: 483, emitted: 465, omitted: 18. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -141,7 +142,7 @@ Collector observations for 103 source steps with known totals: observed: 466, em
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
 | `agent_get_iteration_plan_readiness` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
-| `_tool_call` | `available` | `partial` | `available` | `18` | `12` | `6` |
+| `_tool_call` | `available` | `partial` | `available` | `19` | `12` | `7` |
 | `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -191,7 +192,7 @@ flowchart LR
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
 | `agent_get_iteration_plan_readiness` | `iteration_id: int` | - | - | `...` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -207,7 +208,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_get_iteration_plan_readiness | _tool_call | 1621 | `_tool_call((...), ...)` |
+| agent_get_iteration_plan_readiness | _tool_call | 1622 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

@@ -133,7 +133,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 164; effect analysis evaluated: 100, partial: 4, unavailable: 60. Counts include steps omitted from the displayed trace.
 
-Collector observations for 104 source steps with known totals: observed: 523, emitted: 511, omitted: 12. Unavailable totals are excluded.
+Collector observations for 104 source steps with known totals: observed: 525, emitted: 511, omitted: 14. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -142,7 +142,7 @@ Collector observations for 104 source steps with known totals: observed: 523, em
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
 | `workspace_create_task_github_link` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
-| `_tool_call` | `available` | `partial` | `available` | `18` | `12` | `6` |
+| `_tool_call` | `available` | `partial` | `available` | `19` | `12` | `7` |
 | `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -192,7 +192,7 @@ flowchart LR
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
 | `workspace_create_task_github_link` | `task_id: int`, `url: str`, `idempotency_key: str`, `rationale: str`, `correlation_id: str` | - | - | `...` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -208,7 +208,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_create_task_github_link | _tool_call | 2089 | `_tool_call('planning:write', ...)` |
+| workspace_create_task_github_link | _tool_call | 2090 | `_tool_call('planning:write', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

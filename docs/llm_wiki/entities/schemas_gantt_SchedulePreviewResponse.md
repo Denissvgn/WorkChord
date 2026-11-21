@@ -1,6 +1,6 @@
 # SchedulePreviewResponse
 
-**Location:** `backend/app/schemas/gantt.py:141`
+**Location:** `backend/app/schemas/gantt.py:151`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)

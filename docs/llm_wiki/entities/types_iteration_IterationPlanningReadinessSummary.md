@@ -1,6 +1,6 @@
 # IterationPlanningReadinessSummary
 
-**Location:** `frontend/src/types/iteration.ts:82`
+**Location:** `frontend/src/types/iteration.ts:88`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_iteration](../modules/types_iteration.md)
@@ -15,6 +15,8 @@ _Auto-generated from `IterationPlanningReadinessSummary` in `frontend/src/types/
 |------|------|----------|---------|-------------|
 | `iteration_id` | `number` | Yes | — | — |
 | `calendar_name` | `string \| null` | No | — | — |
+| `additional_calendar_ids` | `number[]` | No | — | — |
+| `missing_calendar_years` | `number[]` | No | — | — |
 | `team_member_count` | `number` | Yes | — | — |
 | `team_capacity_hours` | `number` | Yes | — | — |
 | `planned_hours` | `number` | No | — | — |
@@ -75,7 +77,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_iteration](../modules/types_iteration.md) | 0 | `assigned_hours`, `calendar_name`, `checkpoints`, `checkpoints_done`, `checkpoints_total`, `has_schedule`, `iteration_id`, `planned_hours`, `risk_count`, `task_count`, `tasks_agent_without_capacity`, `tasks_without_assignee` |
+| [types_iteration](../modules/types_iteration.md) | 0 | `additional_calendar_ids`, `assigned_hours`, `calendar_name`, `checkpoints`, `checkpoints_done`, `checkpoints_total`, `has_schedule`, `iteration_id`, `missing_calendar_years`, `planned_hours`, `risk_count`, `task_count` |
 
 ### References
 

@@ -22,21 +22,22 @@ task that started on ``follow_date``; it takes its assignee's row from there.
 6. `capacity_service.CapacityService.schedule_issues`
 7. `capacity_service.CapacityService`
 8. `commands.PlanningConflict`
-9. `services_work_metrics.effective_work_flags`
-10. `schemas_gantt.SchedulingDecision`
+9. `schemas_gantt.ScheduleResult`
+10. `services_work_metrics.effective_work_flags`
 11. `schemas_gantt.SchedulingDecision`
-12. `delivery_dependency_service.DeliveryDependencyService.ready`
-13. `delivery_dependency_service.DeliveryDependencyService`
-14. `schemas_gantt.SchedulingDecision`
+12. `schemas_gantt.SchedulingDecision`
+13. `delivery_dependency_service.DeliveryDependencyService.ready`
+14. `delivery_dependency_service.DeliveryDependencyService`
 15. `schemas_gantt.SchedulingDecision`
-16. `commands.PlanningConflict`
-17. `recovery.TaskScheduleBaseline`
-18. `capacity_service.CapacityService.schedule_issues`
-19. `capacity_service.CapacityService`
-20. `commands.PlanningConflict`
-21. `commands.commit_or_flush`
-22. `schemas_gantt.SchedulingDecision`
-23. `schemas_gantt.ScheduleResult`
+16. `schemas_gantt.SchedulingDecision`
+17. `commands.PlanningConflict`
+18. `recovery.TaskScheduleBaseline`
+19. `capacity_service.CapacityService.schedule_issues`
+20. `capacity_service.CapacityService`
+21. `commands.PlanningConflict`
+22. `commands.commit_or_flush`
+23. `schemas_gantt.SchedulingDecision`
+24. `schemas_gantt.ScheduleResult`
 
 ## Touches
 

@@ -1,6 +1,6 @@
 # IterationSummary
 
-**Location:** `frontend/src/types/iteration.ts:59`
+**Location:** `frontend/src/types/iteration.ts:64`
 **Kind:** Interface
 **Bases:** `WorkMetrics`
 **Module:** [types_iteration](../modules/types_iteration.md)
@@ -13,6 +13,7 @@ _Auto-generated from `IterationSummary` in `frontend/src/types/iteration.ts`._
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
+| `missing_calendar_years` | `number[]` | No | — | — |
 | `id` | `number` | Yes | — | — |
 | `name` | `string` | Yes | — | — |
 | `project_id` | `number \| null` | No | — | — |
@@ -70,7 +71,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_iteration](../modules/types_iteration.md) | 0 | `blocked_tasks`, `completed_tasks`, `end_date`, `id`, `name`, `overdue_tasks_count`, `project`, `project_id`, `remaining_effort_days`, `remaining_working_days`, `scheduled_finish`, `start_date` |
+| [types_iteration](../modules/types_iteration.md) | 0 | `blocked_tasks`, `completed_tasks`, `end_date`, `id`, `missing_calendar_years`, `name`, `overdue_tasks_count`, `project`, `project_id`, `remaining_effort_days`, `remaining_working_days`, `scheduled_finish` |
 
 ### Structure
 

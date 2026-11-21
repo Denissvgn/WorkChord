@@ -1,6 +1,6 @@
 # IterationService
 
-**Location:** `backend/app/services/iteration_service.py:44`
+**Location:** `backend/app/services/iteration_service.py:46`
 **Kind:** Class
 **Bases:** —
 **Module:** [iteration_service](../modules/iteration_service.md)
@@ -24,7 +24,8 @@ Calendar reassignment refreshes nominal workday and derived effort-day values un
 | `to_response` | `(iteration: Iteration) -> IterationResponse` | — | Build a public iteration response with computed calendar days. |
 | `_project_exists` | *(async)* `(project_id: int) -> bool` | — | Return whether a project exists without loading the full project graph. |
 | `_require_project_exists` | *(async)* `(project_id: Optional[int]) -> None` | — | Validate an optional iteration project scope. |
-| `_calendar_id_for_create` | *(async)* `(calendar_id: Optional[int], *, commit: bool = True) -> int` | — | Return an explicit or default calendar id for new iterations. |
+| `_calendar_for_create` | *(async)* `(calendar_id: Optional[int], *, commit: bool = True) -> Calendar` | — | Return the selected primary calendar for an iteration. |
+| `changed_calendar_selection` | *(async)* `(iteration: Iteration, data: IterationUpdate)` | — | Resolve the same proposed selection for the reservation and the update. |
 | `_validate_date_range` | `(start_date: date, end_date: date) -> None` | — | Reject inverted iteration periods. |
 | `_series_name` | `(base_name: str, index: int) -> str` | — | Increment a trailing number, or append a sequence number. |
 | `_series_items` | `(data: IterationSeriesCreate) -> list[IterationSeriesItem]` | — | Compute all rows for a back-to-back iteration series before writing. |
@@ -34,8 +35,8 @@ Calendar reassignment refreshes nominal workday and derived effort-day values un
 | `get_page` | *(async)* `(*, limit: int, cursor_start_date: date \| None = None, cursor_id: int \| None = None) -> Sequence[Iteration]` | — | Return one stable keyset page in newest-first order. |
 | `id_page` | *(async)* `(*, limit = 100, after_id = 0, upper_id = None)` | — | — |
 | `get_by_id` | *(async)* `(iteration_id: int) -> Iteration \| None` | — | Get iteration by ID with related data. |
-| `create` | *(async)* `(data: IterationCreate, *, commit: bool = True) -> Iteration` | — | Create an iteration, optionally leaving commit ownership to the caller. |
-| `create_series` | *(async)* `(data: IterationSeriesCreate) -> list[Iteration]` | — | Create multiple back-to-back iterations as one operation. |
+| `create` | *(async)* `(data: IterationCreate, *, commit: bool = True) -> Iteration` | `@atomic_command` | Create an iteration, optionally leaving commit ownership to the caller. |
+| `create_series` | *(async)* `(data: IterationSeriesCreate) -> list[Iteration]` | `@atomic_command` | Create multiple back-to-back iterations as one operation. |
 | `update` | *(async)* `(iteration_id: int, data: IterationUpdate, *, commit: bool = True) -> Iteration \| None` | `@schedule_input_command('iteration')` | Update an iteration, optionally leaving commit ownership to the caller. |
 | `delete` | *(async)* `(iteration_id: int) -> bool` | `@schedule_input_command('iteration')` | Delete an iteration. |
 | `get_summary` | *(async)* `(iteration_id: int) -> IterationSummary \| None` | — | Get iteration summary with statistics. |
@@ -92,7 +93,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [iteration_service](../modules/iteration_service.md) | 23 | — |
+| [iteration_service](../modules/iteration_service.md) | 24 | — |
 
 ### References
 
@@ -111,4 +112,4 @@ flowchart LR
 | `preview_iteration_schedule` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
 | `schedule_iteration` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
 
-> References: showing 12 of 66 logical references; 54 omitted by the 12-row generated summary limit.
+> References: showing 12 of 72 logical references; 60 omitted by the 12-row generated summary limit.

@@ -13,6 +13,7 @@ _Auto-generated from `WorkingDaysResponse` in `frontend/src/types/calendar.ts`._
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
+| `missing_calendar_years` | `number[]` | No | — | — |
 | `total_days` | `number` | Yes | — | — |
 | `working_days` | `number` | Yes | — | — |
 | `holidays` | `string[]` | Yes | — | — |
@@ -38,7 +39,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_calendar](../modules/types_calendar.md) | 0 | `holidays`, `total_days`, `weekends`, `working_days` |
+| [types_calendar](../modules/types_calendar.md) | 0 | `holidays`, `missing_calendar_years`, `total_days`, `weekends`, `working_days` |
 
 ### References
 

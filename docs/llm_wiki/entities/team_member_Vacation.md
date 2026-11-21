@@ -41,7 +41,7 @@ flowchart LR
     n9["TeamService.add_vacation (backend/app/services/team_service.py)"]
     n10["TeamService.import_vacations (backend/app/services/team_service.py)"]
     n11["TeamService.update_vacation (backend/app/services/team_service.py)"]
-    n12["test_context_covers_each_shared_resource_and_new_member_target (backend/tests/test_planning_input_context.py)"]
+    n12["test_routing_preserves_single_year_ratios_and_uses_each_annual_nominal (backend/tests/test_annual_calendar_coverage.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -66,7 +66,7 @@ flowchart LR
     click n9 "../modules/team_service.md"
     click n10 "../modules/team_service.md"
     click n11 "../modules/team_service.md"
-    click n12 "../modules/test_planning_input_context.md"
+    click n12 "../modules/test_annual_calendar_coverage.md"
 ```
 
 ### Summary
@@ -96,6 +96,6 @@ flowchart LR
 | `TeamService.add_vacation` | type_reference | [team_service](../modules/team_service.md) | — |
 | `TeamService.import_vacations` | type_reference | [team_service](../modules/team_service.md) | — |
 | `TeamService.update_vacation` | type_reference | [team_service](../modules/team_service.md) | — |
-| `test_context_covers_each_shared_resource_and_new_member_target` | call | [test_planning_input_context](../modules/test_planning_input_context.md) | 1 |
+| `test_routing_preserves_single_year_ratios_and_uses_each_annual_nominal` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
 
-> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
+> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.

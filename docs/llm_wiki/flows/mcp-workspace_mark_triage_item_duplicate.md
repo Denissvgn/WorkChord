@@ -127,7 +127,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 103; effect analysis evaluated: 65, partial: 5, unavailable: 33. Counts include steps omitted from the displayed trace.
 
-Collector observations for 70 source steps with known totals: observed: 350, emitted: 337, omitted: 13. Unavailable totals are excluded.
+Collector observations for 70 source steps with known totals: observed: 352, emitted: 337, omitted: 15. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -136,7 +136,7 @@ Collector observations for 70 source steps with known totals: observed: 350, emi
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
 | `workspace_mark_triage_item_duplicate` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
-| `_tool_call` | `available` | `partial` | `available` | `18` | `12` | `6` |
+| `_tool_call` | `available` | `partial` | `available` | `19` | `12` | `7` |
 | `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -186,7 +186,7 @@ flowchart LR
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
 | `workspace_mark_triage_item_duplicate` | `triage_item_id: int`, `payload: dict[str, Any]`, `idempotency_key: str`, `rationale: str`, `correlation_id: str` | - | - | `...` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -202,7 +202,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_mark_triage_item_duplicate | _tool_call | 1989 | `_tool_call('planning:write', ...)` |
+| workspace_mark_triage_item_duplicate | _tool_call | 1990 | `_tool_call('planning:write', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

@@ -18,6 +18,8 @@ _Auto-generated from `Iteration` in `frontend/src/types/iteration.ts`._
 | `id` | `number` | Yes | — | — |
 | `name` | `string` | Yes | — | — |
 | `calendar_id` | `number` | Yes | — | — |
+| `additional_calendar_ids` | `number[]` | No | — | — |
+| `missing_calendar_years` | `number[]` | No | — | — |
 | `project_id` | `number \| null` | No | — | — |
 | `project` | `IterationProject \| null` | No | — | — |
 | `start_date` | `string` | Yes | — | — |
@@ -78,7 +80,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_iteration](../modules/types_iteration.md) | 0 | `calendar_id`, `end_date`, `id`, `manager_email`, `name`, `nominal_day_hours`, `project`, `project_id`, `revision`, `start_date`, `working_days` |
+| [types_iteration](../modules/types_iteration.md) | 0 | `additional_calendar_ids`, `calendar_id`, `end_date`, `id`, `manager_email`, `missing_calendar_years`, `name`, `nominal_day_hours`, `project`, `project_id`, `revision`, `start_date` |
 
 ### References
 

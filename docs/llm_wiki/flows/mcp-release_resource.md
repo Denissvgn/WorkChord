@@ -95,9 +95,9 @@ sequenceDiagram
     p4-->>p30: self.db.execute (backend/app/services/rele…:ReleaseService.get_by_id)(...)
 ```
 
-> Call sequence diagram shows 30 of 504 interactions; 474 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 508 interactions; 478 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 181 (180 omitted); unresolved 1 of 241 (240 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 182 (181 omitted); unresolved 1 of 244 (243 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -126,7 +126,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 83; effect analysis evaluated: 56, partial: 3, unavailable: 24. Counts include steps omitted from the displayed trace.
 
-Collector observations for 59 source steps with known totals: observed: 252, emitted: 239, omitted: 13. Unavailable totals are excluded.
+Collector observations for 59 source steps with known totals: observed: 254, emitted: 239, omitted: 15. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -136,7 +136,7 @@ Collector observations for 59 source steps with known totals: observed: 252, emi
 |---|---|---|---|---:|---:|---:|
 | `release_resource` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `_json_resource` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
-| `_tool_call` | `available` | `partial` | `available` | `18` | `12` | `6` |
+| `_tool_call` | `available` | `partial` | `available` | `19` | `12` | `7` |
 | `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -187,7 +187,7 @@ flowchart LR
 |---|---|---|---|---|
 | `release_resource` | `release_id: str` | - | - | `...` |
 | `_json_resource` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]` | - | - | `json.dumps(...)` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -202,8 +202,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| release_resource | _json_resource | 2268 | `_json_resource('tasks:read', ...)` |
-| _json_resource | _tool_call | 363 | `_tool_call(required_scope, func)` |
+| release_resource | _json_resource | 2269 | `_json_resource('tasks:read', ...)` |
+| _json_resource | _tool_call | 364 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

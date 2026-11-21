@@ -46,7 +46,7 @@ flowchart LR
     n9["ExecutionUsageService.write (backend/app/services/execution_usage_service.py)"]
     n10["NativeSessionService.exchange (backend/app/services/native_session_service.py)"]
     n11["test_guard_admits_only_the_discovery_the_command_announced (backend/tests/test_agent_discovery_report.py)"]
-    n12["test_date_only_reservation (backend/tests/test_execution_planning_window.py)"]
+    n12["test_annual_selection_and_forecast_preserve_live_ownership (backend/tests/test_annual_calendar_work_control.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -71,7 +71,7 @@ flowchart LR
     click n9 "../modules/execution_usage_service.md"
     click n10 "../modules/native_session_service.md"
     click n11 "../modules/test_agent_discovery_report.md"
-    click n12 "../modules/test_execution_planning_window.md"
+    click n12 "../modules/test_annual_calendar_work_control.md"
 ```
 
 ### Summary
@@ -95,6 +95,6 @@ flowchart LR
 | `ExecutionUsageService.write` | call | [execution_usage_service](../modules/execution_usage_service.md) | 1 |
 | `NativeSessionService.exchange` | call | [native_session_service](../modules/native_session_service.md) | 1 |
 | `test_guard_admits_only_the_discovery_the_command_announced` | call | [test_agent_discovery_report](../modules/test_agent_discovery_report.md) | 1 |
-| `test_date_only_reservation` | call | [test_execution_planning_window](../modules/test_execution_planning_window.md) | 1 |
+| `test_annual_selection_and_forecast_preserve_live_ownership` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
 
-> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.
+> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.

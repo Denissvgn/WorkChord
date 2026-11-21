@@ -84,11 +84,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| delete_calendar | service.delete | 84 | `service.delete(calendar_id)` |
-| delete_calendar | HTTPException | 86 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(...))` |
-| delete_calendar | str | 88 | `str(e)` |
-| delete_calendar | HTTPException | 91 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| delete_calendar | MessageResponse | 95 | `MessageResponse(message=..., success=True)` |
+| delete_calendar | service.delete | 85 | `service.delete(calendar_id)` |
+| delete_calendar | HTTPException | 87 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(...))` |
+| delete_calendar | str | 89 | `str(e)` |
+| delete_calendar | HTTPException | 92 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| delete_calendar | MessageResponse | 96 | `MessageResponse(message=..., success=True)` |
 
 ### Boundary effects
 
@@ -98,9 +98,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `delete_calendar` | `service.delete` | 84 |
-| external_call | `delete_calendar` | `HTTPException` | 86 |
-| external_call | `delete_calendar` | `HTTPException` | 91 |
+| unresolved_call | `delete_calendar` | `service.delete` | 85 |
+| external_call | `delete_calendar` | `HTTPException` | 87 |
+| external_call | `delete_calendar` | `HTTPException` | 92 |
 
 ## Behavior
 

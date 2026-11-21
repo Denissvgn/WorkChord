@@ -134,7 +134,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 152; effect analysis evaluated: 108, partial: 6, unavailable: 38. Counts include steps omitted from the displayed trace.
 
-Collector observations for 114 source steps with known totals: observed: 646, emitted: 597, omitted: 49. Unavailable totals are excluded.
+Collector observations for 114 source steps with known totals: observed: 648, emitted: 597, omitted: 51. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -144,7 +144,7 @@ Collector observations for 114 source steps with known totals: observed: 646, em
 |---|---|---|---|---:|---:|---:|
 | `agent_reviews_resource` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `_json_resource` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
-| `_tool_call` | `available` | `partial` | `available` | `18` | `12` | `6` |
+| `_tool_call` | `available` | `partial` | `available` | `19` | `12` | `7` |
 | `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -195,7 +195,7 @@ flowchart LR
 |---|---|---|---|---|
 | `agent_reviews_resource` | - | - | - | `...` |
 | `_json_resource` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]` | - | - | `json.dumps(...)` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -210,8 +210,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_reviews_resource | _json_resource | 2323 | `_json_resource((...), ...)` |
-| _json_resource | _tool_call | 363 | `_tool_call(required_scope, func)` |
+| agent_reviews_resource | _json_resource | 2324 | `_json_resource((...), ...)` |
+| _json_resource | _tool_call | 364 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

@@ -14,12 +14,15 @@ Readiness and summary capacity use actual person calendar hours, short days, abs
 Its unassigned and missing-effort counts apply the same planned-leaf rule as the task filters, count agent-held tasks without a capacity row separately, and report how many capacity rows belong to agent profiles.
 The planning-readiness summary also returns the six plan checkpoints (`iteration`, `team`, `work`, `blockers`, `schedule`, `review`) derived once by `plan_checkpoints`, so the plan page, the sidebar and the PM agent read the same states and the same "n of 6".
 
+Iterations and series retain the primary calendar and their explicit additional calendar IDs. The period's working-day count and calendar checkpoint use every year in the interval, including any year between the two endpoints. A revision-bound annual selection can complete the calendar checkpoint while preserving the project target and the iteration dates.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
-| `app.commands` | `commit_or_flush`, `schedule_input_command` |
+| `app.commands` | `atomic_command`, `commit_or_flush`, `lock_planning`, `schedule_input_command` |
 | `app.models.agent` | `AgentTaskAssignment` |
+| `app.models.calendar` | `Calendar` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project`, `ProjectMilestone` |
 | `app.models.task` | `Task`, `TaskStatus` |
@@ -28,6 +31,7 @@ The planning-readiness summary also returns the six plan checkpoints (`iteration
 | `app.schemas.iteration` | `IterationCreate`, `IterationPlanningReadinessSummary`, `IterationProjectSummary`, `IterationResponse`, `IterationSeriesCreate`, `IterationSummary`, `IterationUpdate` |
 | `app.schemas.work_metrics` | `WorkMetricSummary` |
 | `app.services.bounded_scope_reads` | `scope_page` |
+| `app.services.calendar_rules` | `AnnualCalendars` |
 | `app.services.calendar_service` | `CalendarService` |
 | `app.services.capacity_service` | `CapacityService`, `CapacityService` |
 | `app.services.plan_checkpoints` | `PLAN_CHECKPOINT_IDS`, `plan_checkpoints` |
@@ -63,8 +67,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (18) |
-| Outbound | `backend` (19) |
+| Inbound | `backend` (21) |
+| Outbound | `backend` (21) |
 
 ### External packages
 
@@ -72,11 +76,11 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 36 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [IterationSeriesItem](../entities/IterationSeriesItem.md) | 37 | — | Computed iteration row for a series create request. |
-| [IterationService](../entities/IterationService.md) | 44 | — | Service for iteration operations. |
+| [IterationSeriesItem](../entities/IterationSeriesItem.md) | 39 | — | Computed iteration row for a series create request. |
+| [IterationService](../entities/IterationService.md) | 46 | — | Service for iteration operations. |

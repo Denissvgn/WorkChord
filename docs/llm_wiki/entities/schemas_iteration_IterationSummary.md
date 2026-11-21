@@ -1,6 +1,6 @@
 # IterationSummary
 
-**Location:** `backend/app/schemas/iteration.py:94`
+**Location:** `backend/app/schemas/iteration.py:99`
 **Kind:** Pydantic model
 **Bases:** `WorkMetricSummary`
 **Module:** [schemas_iteration](../modules/schemas_iteration.md)
@@ -13,6 +13,7 @@ Summary statistics for an iteration.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `missing_calendar_years` | `list[int]` | `missing_calendar_years` | No | No | factory: `list` | — | — | — |
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `name` | `str` | `name` | Yes | No | — | — | — | — |
 | `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
@@ -46,24 +47,27 @@ flowchart LR
     n3["get_iteration_summary (backend/app/routers/iterations.py)"]
     n4["backend/app/schemas/__init__.py"]
     n5["IterationService.get_summary (backend/app/services/iteration_service.py)"]
+    n6["backend/tests/test_annual_calendar_coverage.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
+    n6 --> n0
     click n0 "../modules/schemas_iteration.md"
     click n1 "../modules/schemas_work_metrics.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/iterations.md"
     click n4 "../modules/schemas___init__.md"
     click n5 "../modules/iteration_service.md"
+    click n6 "../modules/test_annual_calendar_coverage.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `blocked_tasks`, `completed_tasks`, `end_date`, `id`, `name`, `overdue_tasks_count`, `project`, `project_id`, `remaining_effort_days`, `remaining_working_days`, `scheduled_finish`, `start_date` |
+| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `blocked_tasks`, `completed_tasks`, `end_date`, `id`, `missing_calendar_years`, `name`, `overdue_tasks_count`, `project`, `project_id`, `remaining_effort_days`, `remaining_working_days`, `scheduled_finish` |
 
 ### Structure
 
@@ -80,3 +84,4 @@ flowchart LR
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `IterationService.get_summary` | call | [iteration_service](../modules/iteration_service.md) | 1 |
 | `IterationService.get_summary` | type_reference | [iteration_service](../modules/iteration_service.md) | — |
+| `test_annual_calendar_coverage` | import | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | — |

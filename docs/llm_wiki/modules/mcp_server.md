@@ -8,6 +8,8 @@ MCP server facade for external LLM-agent integrations.
 
 MCP uses the shared principal/project authority and command owner. Its established bearer actor-key format is validated and normalized before resolution; conflicting credentials remain rejected. Schedule preview selects a rollback context and returns structured version conflicts through the tool boundary. Every tool is registered with one of three behavior declarations (read-only, write, removal), all closed-world, because a client with nobody to approve calls refuses a tool it must assume is destructive; only the three tools that remove a record are declared destructive.
 
+A planning command rejected by the domain returns its scoped conflict code and public message over MCP. The PM can use the same reason reported by REST to refresh or reconcile the plan. An unexpected implementation exception retains the generic error response.
+
 ## Imports
 
 | Source | Symbols |
@@ -15,7 +17,7 @@ MCP uses the shared principal/project authority and command owner. Its establish
 | `app` | `mcp_agent_tools` |
 | `app.agent_key_file` | `AgentKeyFileError`, `read_agent_key_file` |
 | `app.authority` | `AuthorityError` |
-| `app.commands` | `command_transaction`, `AggregateVersionConflict`, `HierarchyScopeError`, `AggregateVersionConflict`, `HierarchyScopeError` |
+| `app.commands` | `command_transaction`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AggregateVersionConflict`, `HierarchyScopeError` |
 | `app.config` | `get_settings` |
 | `app.database` | `async_session_maker`, `close_database`, `init_db` |
 | `app.http_authority` | `resolve_http_identity` |
@@ -69,7 +71,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (15) |
+| Inbound | `backend` (17) |
 | Outbound | `backend` (21) |
 
 ### External packages
@@ -78,7 +80,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 36 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

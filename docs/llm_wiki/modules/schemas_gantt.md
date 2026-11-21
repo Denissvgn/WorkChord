@@ -88,8 +88,9 @@ flowchart LR
 | [UnscheduledReason](../entities/schemas_gantt_UnscheduledReason.md) | Type alias | 73 | `Literal['no_assignee', 'assignee_not_in_iteration', 'no_estimate', 'no_capacity', 'prerequisites_pending', 'predecessor_unscheduled', 'deferred', 'blocked', 'not_placed']` | — |
 | [UnscheduledTask](../entities/schemas_gantt_UnscheduledTask.md) | Pydantic model | 86 | `BaseModel` | A planned task the scheduler left without dates, and what would change that. |
 | [WorkloadIssue](../entities/schemas_gantt_WorkloadIssue.md) | Pydantic model | 94 | `BaseModel` | Workload issue for a team member. |
-| [ScheduleResult](../entities/schemas_gantt_ScheduleResult.md) | Pydantic model | 101 | `BaseModel` | Result of scheduling operation. |
-| [GanttResponse](../entities/schemas_gantt_GanttResponse.md) | Pydantic model | 113 | `BaseModel` | Full Gantt chart response. |
-| [ScheduleApplyRequest](../entities/ScheduleApplyRequest.md) | Pydantic model | 124 | `BaseModel` | — |
-| [SchedulePreviewRequest](../entities/SchedulePreviewRequest.md) | Pydantic model | 130 | `BaseModel` | Sandbox edits to dry-run through the real scheduler. |
-| [SchedulePreviewResponse](../entities/schemas_gantt_SchedulePreviewResponse.md) | Pydantic model | 141 | `BaseModel` | Projected Gantt state after applying changes and rescheduling. |
+| [AssignmentSelectionRefresh](../entities/AssignmentSelectionRefresh.md) | Pydantic model | 101 | `BaseModel` | — |
+| [ScheduleResult](../entities/schemas_gantt_ScheduleResult.md) | Pydantic model | 110 | `BaseModel` | Result of scheduling operation. |
+| [GanttResponse](../entities/schemas_gantt_GanttResponse.md) | Pydantic model | 123 | `BaseModel` | Full Gantt chart response. |
+| [ScheduleApplyRequest](../entities/ScheduleApplyRequest.md) | Pydantic model | 134 | `BaseModel` | — |
+| [SchedulePreviewRequest](../entities/SchedulePreviewRequest.md) | Pydantic model | 140 | `BaseModel` | Sandbox edits to dry-run through the real scheduler. |
+| [SchedulePreviewResponse](../entities/schemas_gantt_SchedulePreviewResponse.md) | Pydantic model | 151 | `BaseModel` | Projected Gantt state after applying changes and rescheduling. |

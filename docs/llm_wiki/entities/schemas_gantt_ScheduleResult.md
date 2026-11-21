@@ -1,6 +1,6 @@
 # ScheduleResult
 
-**Location:** `backend/app/schemas/gantt.py:101`
+**Location:** `backend/app/schemas/gantt.py:110`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)
@@ -16,6 +16,7 @@ Result of scheduling operation.
 | `success` | `bool` | `success` | Yes | No | — | — | — | — |
 | `planning_revision` | `int \| None` | `planning_revision` | No | Yes | `None` | — | — | — |
 | `capacity_issues` | `list[dict]` | `capacity_issues` | No | No | `[]` | — | — | — |
+| `assignment_refreshes` | `list[AssignmentSelectionRefresh]` | `assignment_refreshes` | No | No | factory: `list` | — | — | — |
 | `decisions` | `list[SchedulingDecision]` | `decisions` | No | No | `[]` | — | — | — |
 | `workload_balanced` | `bool` | `workload_balanced` | No | No | `True` | — | — | — |
 | `workload_issues` | `list[WorkloadIssue]` | `workload_issues` | No | No | `[]` | — | — | — |
@@ -49,7 +50,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `capacity_issues`, `decisions`, `planning_revision`, `success`, `unscheduled`, `workload_balanced`, `workload_issues` |
+| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `assignment_refreshes`, `capacity_issues`, `decisions`, `planning_revision`, `success`, `unscheduled`, `workload_balanced`, `workload_issues` |
 
 ### Structure
 
@@ -63,5 +64,5 @@ flowchart LR
 |---|---|---|---:|
 | `schedule_iteration` | type_reference | [routers_gantt](../modules/routers_gantt.md) | — |
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
-| `SchedulerService.schedule_iteration` | call | [scheduler_service](../modules/scheduler_service.md) | 2 |
+| `SchedulerService.schedule_iteration` | call | [scheduler_service](../modules/scheduler_service.md) | 3 |
 | `SchedulerService.schedule_iteration` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |

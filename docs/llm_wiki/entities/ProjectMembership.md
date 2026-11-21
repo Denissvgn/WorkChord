@@ -38,9 +38,9 @@ flowchart LR
     n8["backend/app/services/task_domain_service.py"]
     n9["backend/tests/migrations/test_project_identity.py"]
     n10["test_scoped_manager_can_restore_another_eligible_person_without_profile_access (backend/tests/test_allocation_recovery.py)"]
-    n11["test_date_only_reservation (backend/tests/test_execution_planning_window.py)"]
-    n12["test_reconciliation_uses_operator_and_archived_catalog (backend/tests/test_execution_reconciliation.py)"]
-    n13["managed_store (backend/tests/test_managed_authority.py)"]
+    n11["test_annual_selection_and_forecast_preserve_live_ownership (backend/tests/test_annual_calendar_work_control.py)"]
+    n12["test_mcp_reports_an_existing_issued_year_conflict (backend/tests/test_annual_calendar_work_control.py)"]
+    n13["test_date_only_reservation (backend/tests/test_execution_planning_window.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -65,9 +65,9 @@ flowchart LR
     click n8 "../modules/task_domain_service.md"
     click n9 "../modules/test_project_identity.md"
     click n10 "../modules/test_allocation_recovery.md"
-    click n11 "../modules/test_execution_planning_window.md"
-    click n12 "../modules/test_execution_reconciliation.md"
-    click n13 "../modules/test_managed_authority.md"
+    click n11 "../modules/test_annual_calendar_work_control.md"
+    click n12 "../modules/test_annual_calendar_work_control.md"
+    click n13 "../modules/test_execution_planning_window.md"
 ```
 
 ### Summary
@@ -95,8 +95,8 @@ flowchart LR
 | `task_domain_service` | import | [task_domain_service](../modules/task_domain_service.md) | — |
 | `test_project_identity` | import | [test_project_identity](../modules/test_project_identity.md) | — |
 | `test_scoped_manager_can_restore_another_eligible_person_without_profile_access` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
+| `test_annual_selection_and_forecast_preserve_live_ownership` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
+| `test_mcp_reports_an_existing_issued_year_conflict` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
 | `test_date_only_reservation` | call | [test_execution_planning_window](../modules/test_execution_planning_window.md) | 1 |
-| `test_reconciliation_uses_operator_and_archived_catalog` | call | [test_execution_reconciliation](../modules/test_execution_reconciliation.md) | 1 |
-| `managed_store` | call | [test_managed_authority](../modules/test_managed_authority.md) | 2 |
 
-> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.
+> References: showing 12 of 24 logical references; 12 omitted by the 12-row generated summary limit.

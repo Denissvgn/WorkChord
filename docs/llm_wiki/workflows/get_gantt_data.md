@@ -1,7 +1,7 @@
 # get_gantt_data
 
 **Entry point:** `gantt.get_gantt_data`
-**Modules involved:** [calendar_service](../modules/calendar_service.md), [iteration_service](../modules/iteration_service.md), [routers_gantt](../modules/routers_gantt.md), [schemas_gantt](../modules/schemas_gantt.md), [schemas_iteration](../modules/schemas_iteration.md), [task_service](../modules/task_service.md), [team_service](../modules/team_service.md)
+**Modules involved:** [calendar_rules](../modules/calendar_rules.md), [calendar_service](../modules/calendar_service.md), [iteration_service](../modules/iteration_service.md), [routers_gantt](../modules/routers_gantt.md), [schemas_gantt](../modules/schemas_gantt.md), [schemas_iteration](../modules/schemas_iteration.md), [task_service](../modules/task_service.md), [team_service](../modules/team_service.md)
 
 > Get Gantt chart data for an iteration.
 
@@ -20,11 +20,13 @@ on one async session. Vacation dates still use O(1) set lookups.
 6. `team_service.TeamService.get_by_iteration`
 7. `calendar_service.CalendarService`
 8. `calendar_service.CalendarService.calculate_working_days`
-9. `schemas_gantt.GanttResponse`
-10. `schemas_iteration.IterationResponse`
+9. `calendar_rules.AnnualCalendars.for_iteration`
+10. `schemas_gantt.GanttResponse`
+11. `schemas_iteration.IterationResponse`
 
 ## Touches
 
+- [calendar_rules](../modules/calendar_rules.md)
 - [calendar_service](../modules/calendar_service.md)
 - [iteration_service](../modules/iteration_service.md)
 - [routers_gantt](../modules/routers_gantt.md)

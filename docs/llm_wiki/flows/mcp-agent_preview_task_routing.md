@@ -14,7 +14,8 @@
 - [agent_service](../modules/agent_service.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [authority](../modules/authority.md)
-- [calendar_service](../modules/calendar_service.md)
+- [calendar_rules](../modules/calendar_rules.md)
+- [capacity_service](../modules/capacity_service.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
@@ -31,7 +32,6 @@
 - [query_limits](../modules/query_limits.md)
 - [retained_planning_output](../modules/retained_planning_output.md)
 - [review_provenance](../modules/review_provenance.md)
-- [schemas_calendar](../modules/schemas_calendar.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
@@ -107,9 +107,9 @@ sequenceDiagram
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 1099 interactions; 1069 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 1128 interactions; 1098 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 423 (422 omitted); unresolved 1 of 429 (428 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 427 (426 omitted); unresolved 1 of 446 (445 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -123,7 +123,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 221 groups; 213 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 231 groups; 223 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -136,9 +136,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 248; effect analysis evaluated: 148, partial: 14, unavailable: 86. Counts include steps omitted from the displayed trace.
+Source steps: 256; effect analysis evaluated: 155, partial: 14, unavailable: 87. Counts include steps omitted from the displayed trace.
 
-Collector observations for 162 source steps with known totals: observed: 1128, emitted: 1002, omitted: 126. Unavailable totals are excluded.
+Collector observations for 169 source steps with known totals: observed: 1150, emitted: 1022, omitted: 128. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -147,7 +147,7 @@ Collector observations for 162 source steps with known totals: observed: 1128, e
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
 | `agent_preview_task_routing` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
-| `_tool_call` | `available` | `partial` | `available` | `18` | `12` | `6` |
+| `_tool_call` | `available` | `partial` | `available` | `19` | `12` | `7` |
 | `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -197,7 +197,7 @@ flowchart LR
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
 | `agent_preview_task_routing` | `task_id: int`, `payload: dict[str, Any]` | `ROUTING_READ_SCOPE_REQUIREMENT` | - | `...` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -213,7 +213,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_preview_task_routing | _tool_call | 550 | `_tool_call(ROUTING_READ_SCOPE_REQUIREMENT, ...)` |
+| agent_preview_task_routing | _tool_call | 551 | `_tool_call(ROUTING_READ_SCOPE_REQUIREMENT, ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

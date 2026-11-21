@@ -1,6 +1,6 @@
 # HolidayImportRequest
 
-**Location:** `backend/app/schemas/calendar.py:88`
+**Location:** `backend/app/schemas/calendar.py:89`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_calendar](../modules/schemas_calendar.md)

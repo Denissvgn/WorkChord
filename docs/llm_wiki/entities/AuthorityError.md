@@ -96,4 +96,4 @@ flowchart LR
 | `mcp_server` | import | [mcp_server](../modules/mcp_server.md) | — |
 | `bootstrap` | call | [routers_identity](../modules/routers_identity.md) | 3 |
 
-> References: showing 12 of 84 logical references; 72 omitted by the 12-row generated summary limit.
+> References: showing 12 of 85 logical references; 73 omitted by the 12-row generated summary limit.

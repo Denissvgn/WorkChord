@@ -10,6 +10,8 @@ A verification preview on a project that requires different publishers checks th
 
 After supervised rework, the latest successful run and its immutable submission identify the required reviewer profile. Verification preview excludes other profiles, including profiles using the same independent publisher. Dispatch and verdict require the same profile and recheck independence from every contributing publisher.
 
+Routing within the primary year uses iteration working days and that member's iteration vacations. Across years, each working date contributes its actual hours divided by that year's nominal hours. The relevant absences and annual rules contribute to the result. A digest records the annual basis, and missing coverage leaves the workload ratio unknown.
+
 ## Imports
 
 | Source | Symbols |
@@ -30,7 +32,8 @@ After supervised rework, the latest successful run and its immutable submission 
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutError`, `AgentRoutingRolloutMode`, `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupService`, `AgentTeamSetupService` |
-| `app.services.calendar_service` | `CalendarService` |
+| `app.services.calendar_rules` | `AnnualCalendars` |
+| `app.services.capacity_service` | `CapacityService` |
 | `app.services.review_provenance` | `different_publisher_required`, `historical_profile`, `review_history` |
 | `app.services.task_brief_service` | `brief_definition_blockers` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
@@ -66,8 +69,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (15) |
-| Outbound | `backend` (20) |
+| Inbound | `backend` (16) |
+| Outbound | `backend` (21) |
 
 ### External packages
 
@@ -75,15 +78,15 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 36 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentRoutingConflictError](../entities/AgentRoutingConflictError.md) | 115 | `AgentConflictError` | Stable routing conflict shared by REST, MCP, and assignment commands. |
-| [RoutingSelectionValidation](../entities/RoutingSelectionValidation.md) | 135 | — | Authoritative result consumed inside the assignment transaction. |
-| [AgentRoutingService](../entities/AgentRoutingService.md) | 202 | — | Create immutable assessments and deterministic exact-actor previews. |
+| [AgentRoutingConflictError](../entities/AgentRoutingConflictError.md) | 116 | `AgentConflictError` | Stable routing conflict shared by REST, MCP, and assignment commands. |
+| [RoutingSelectionValidation](../entities/RoutingSelectionValidation.md) | 136 | — | Authoritative result consumed inside the assignment transaction. |
+| [AgentRoutingService](../entities/AgentRoutingService.md) | 203 | — | Create immutable assessments and deterministic exact-actor previews. |
 
 ## Functions
 

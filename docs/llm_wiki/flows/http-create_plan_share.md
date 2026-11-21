@@ -209,7 +209,7 @@ flowchart LR
 | SnapshotService._validate_reason | SnapshotPathError | 161 | `SnapshotPathError('Snapshot reason must contain only letters, numbers, dots, underscores, and hyphens.')` |
 | SnapshotService.build_snapshot_data | IterationService | 210 | `IterationService(self.db)` |
 | SnapshotService.build_snapshot_data | IterationService.get_by_id | 211 | `iteration_service.get_by_id(iteration_id)` |
-| IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 323 | `self.db.execute(...)` |
+| IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 338 | `self.db.execute(...)` |
 
 ### Boundary effects
 
@@ -223,7 +223,7 @@ flowchart LR
 |---|---|---|---:|
 | unresolved_call | `SnapshotService._validate_reason` | `str(reason).strip` | 159 |
 | unresolved_call | `SnapshotService._validate_reason` | `SNAPSHOT_REASON_PATTERN.fullmatch` | 160 |
-| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 323 |
+| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 338 |
 | step_limit | `create_plan_share` | `first 12 steps` | 0 |
 
 ## Behavior

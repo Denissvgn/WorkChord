@@ -126,7 +126,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 93; effect analysis evaluated: 64, partial: 2, unavailable: 27. Counts include steps omitted from the displayed trace.
 
-Collector observations for 66 source steps with known totals: observed: 305, emitted: 295, omitted: 10. Unavailable totals are excluded.
+Collector observations for 66 source steps with known totals: observed: 307, emitted: 295, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -135,7 +135,7 @@ Collector observations for 66 source steps with known totals: observed: 305, emi
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
 | `agent_list_task_routing_assessments` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
-| `_tool_call` | `available` | `partial` | `available` | `18` | `12` | `6` |
+| `_tool_call` | `available` | `partial` | `available` | `19` | `12` | `7` |
 | `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -185,7 +185,7 @@ flowchart LR
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
 | `agent_list_task_routing_assessments` | `task_id: int`, `limit: int` | `ROUTING_READ_SCOPE_REQUIREMENT` | - | `...` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -201,7 +201,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_list_task_routing_assessments | _tool_call | 512 | `_tool_call(ROUTING_READ_SCOPE_REQUIREMENT, ...)` |
+| agent_list_task_routing_assessments | _tool_call | 513 | `_tool_call(ROUTING_READ_SCOPE_REQUIREMENT, ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

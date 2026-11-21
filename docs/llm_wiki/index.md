@@ -6,9 +6,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1718 | [Open section](#entities) |
-| Modules | 1086 | [Open section](#modules) |
-| Workflows | 211 | [Open section](#workflows) |
+| Entities | 1725 | [Open section](#entities) |
+| Modules | 1093 | [Open section](#modules) |
+| Workflows | 216 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 571 | [Open section](#entry-point-flows) |
 | Infrastructure | 12 | [Open section](#infrastructure) |
@@ -237,6 +237,8 @@ These pages preserve documentation from earlier source revisions.
 - [AllIterationsDrawerProps](entities/AllIterationsDrawerProps.md)
 - [AnalyticsScope](entities/AnalyticsScope.md)
 - [AndroidArtifacts](entities/AndroidArtifacts.md)
+- [AnnualCalendarFields_Props](entities/AnnualCalendarFields_Props.md)
+- [AnnualCalendars](entities/AnnualCalendars.md)
 - [ApiErrorKind](entities/ApiErrorKind.md)
 - [ApiErrorShape](entities/ApiErrorShape.md)
 - [ApiFieldError](entities/ApiFieldError.md)
@@ -253,6 +255,7 @@ These pages preserve documentation from earlier source revisions.
 - [AssigneeRecommendationsPanelProps](entities/AssigneeRecommendationsPanelProps.md)
 - [AssigneeSelectProps](entities/AssigneeSelectProps.md)
 - [AssignmentIntent](entities/AssignmentIntent.md)
+- [AssignmentSelectionRefresh](entities/AssignmentSelectionRefresh.md)
 - [AsyncBarrier](entities/AsyncBarrier.md)
 - [Attempt](entities/Attempt.md)
 - [AttemptEventType](entities/AttemptEventType.md)
@@ -339,6 +342,7 @@ These pages preserve documentation from earlier source revisions.
 - [CommentCreate](entities/CommentCreate.md)
 - [CommentRevision](entities/CommentRevision.md)
 - [CommentUpdate](entities/CommentUpdate.md)
+- [CommitmentRate](entities/CommitmentRate.md)
 - [CompleteMetricWindow](entities/CompleteMetricWindow.md)
 - [ConfirmDialogProps](entities/ConfirmDialogProps.md)
 - [ConfirmDialogTone](entities/ConfirmDialogTone.md)
@@ -626,6 +630,7 @@ These pages preserve documentation from earlier source revisions.
 - [MigrationPolicy](entities/MigrationPolicy.md)
 - [MilestoneEditorState](entities/MilestoneEditorState.md)
 - [MilestoneFormState](entities/MilestoneFormState.md)
+- [MissingCalendarYear](entities/MissingCalendarYear.md)
 - [MissingMutationRevision](entities/MissingMutationRevision.md)
 - [ModalProps](entities/ModalProps.md)
 - [ModelAwareAgentWorkBegin](entities/ModelAwareAgentWorkBegin.md)
@@ -701,6 +706,7 @@ These pages preserve documentation from earlier source revisions.
 - [ParsedTeamMember](entities/ParsedTeamMember.md)
 - [PartialWorkScope](entities/PartialWorkScope.md)
 - [PendingTaskWrite](entities/PendingTaskWrite.md)
+- [PeriodCommitments](entities/PeriodCommitments.md)
 - [PersistedState](entities/PersistedState.md)
 - [PersistedTaskRoutingAssessmentFields](entities/PersistedTaskRoutingAssessmentFields.md)
 - [PickerItem](entities/PickerItem.md)
@@ -1241,6 +1247,7 @@ These pages preserve documentation from earlier source revisions.
 - [WorkspaceMembership](entities/WorkspaceMembership.md)
 - [WorkspaceMetadata](entities/WorkspaceMetadata.md)
 - [WormObjectStore](entities/WormObjectStore.md)
+- [YearRules](entities/YearRules.md)
 - [agent_routing_AgentModelBindingCreate](entities/agent_routing_AgentModelBindingCreate.md)
 - [agent_routing_AgentModelBindingDisable](entities/agent_routing_AgentModelBindingDisable.md)
 - [agent_routing_AgentModelBindingUpdate](entities/agent_routing_AgentModelBindingUpdate.md)
@@ -1815,6 +1822,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261116_0017_run_harness_session](modules/20261116_0017_run_harness_session.md) - Keep a run's declared harness session in columns a reader can search.
 - [20261120_0018_review_provenance](modules/20261120_0018_review_provenance.md) - Preserve execution provenance and project review selection.
 - [20261121_0019_execution_planning_window](modules/20261121_0019_execution_planning_window.md) - Retain server-proved execution equivalence across a planning reservation.
+- [20261121_0020_annual_calendar_coverage](modules/20261121_0020_annual_calendar_coverage.md) - Store explicitly selected annual calendars for iterations and profile owners.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AccountMenu](modules/AccountMenu.md) - `frontend/src/features/identity/AccountMenu.tsx`
 - [AccountMenu.test](modules/AccountMenu.test.md) - `frontend/src/features/identity/AccountMenu.test.tsx`
@@ -1835,6 +1843,7 @@ Retained history; these declarations are absent from the selected source invento
 - [AllIterationsDrawer.test](modules/AllIterationsDrawer.test.md) - `frontend/src/components/iteration/AllIterationsDrawer.test.tsx`
 - [AnalyticsPage](modules/AnalyticsPage.md) - `frontend/src/pages/AnalyticsPage.tsx`
 - [AnalyticsPage.test](modules/AnalyticsPage.test.md) - `frontend/src/pages/AnalyticsPage.test.tsx`
+- [AnnualCalendarFields](modules/AnnualCalendarFields.md) - `frontend/src/components/iteration/AnnualCalendarFields.tsx`
 - [App](modules/App.md) - `frontend/src/App.tsx`
 - [App.legacyRoutes.test](modules/App.legacyRoutes.test.md) - `frontend/src/App.legacyRoutes.test.tsx`
 - [AppShell](modules/AppShell.md) - `frontend/src/components/layout/AppShell.tsx`
@@ -2233,6 +2242,7 @@ Retained history; these declarations are absent from the selected source invento
 - [build_identity](modules/build_identity.md) - Revision-bound identity baked into WorkChord container images.
 - [buttonStyles](modules/buttonStyles.md) - `frontend/src/components/common/buttonStyles.ts`
 - [calendarService](modules/calendarService.md) - `frontend/src/services/calendarService.ts`
+- [calendar_rules](modules/calendar_rules.md) - Resolve local working dates from the annual records explicitly selected by an owner.
 - [calendar_service](modules/calendar_service.md) - Calendar service with business logic.
 - [calendars](modules/calendars.md) - Calendar API router.
 - [capacityMutations](modules/capacityMutations.md) - `frontend/src/components/capacity/capacityMutations.ts`
@@ -2691,6 +2701,9 @@ Retained history; these declarations are absent from the selected source invento
 - [test_allocation_recovery](modules/test_allocation_recovery.md) - Allocation membership recovery preserves durable references and rolls back failures.
 - [test_analytics_scopes](modules/test_analytics_scopes.md) - Report scopes aggregate recorded facts and retain legacy query behavior.
 - [test_android_cleanup](modules/test_android_cleanup.md) - Emulator cleanup retains unrelated replacements and drains owned controllers.
+- [test_annual_calendar_coverage](modules/test_annual_calendar_coverage.md) - `backend/tests/test_annual_calendar_coverage.py`
+- [test_annual_calendar_migration](modules/test_annual_calendar_migration.md) - Annual selections are explicit and reversibly migrate from the actual predecessor.
+- [test_annual_calendar_work_control](modules/test_annual_calendar_work_control.md) - Annual planning inputs and execution authority are independently fenced.
 - [test_apt_runtime](modules/test_apt_runtime.md) - Runner APT preparation preserves signed sources and bounds stalled downloads.
 - [test_authority_migrations](modules/test_authority_migrations.md) - Initial authority schema, constraints and empty transfer targets.
 - [test_autonomy_foundation](modules/test_autonomy_foundation.md) - Fail-closed contract, evidence, lease, and orchestration coverage.
@@ -2738,6 +2751,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_planning_input_context](modules/test_planning_input_context.md) - Initial shared-input observations are complete, bounded and side-effect free.
 - [test_planning_issues](modules/test_planning_issues.md) - The "needs an assignee" and "missing effort" rule shared by counts and filters.
 - [test_planning_read_models](modules/test_planning_read_models.md) - Independent synthetic counterexamples for read-model and inherited policy parity.
+- [test_pm_forecast_calendar](modules/test_pm_forecast_calendar.md) - A managed planning principal can forecast an iteration using a single annual calendar.
 - [test_postgresql_closeout](modules/test_postgresql_closeout.md) - Contracts for DBM-DOC-002 publication and DBM-CLOSE-001 decisions.
 - [test_postgresql_concurrency](modules/test_postgresql_concurrency.md) - DBM-RUN-001 real-PostgreSQL concurrency and invariant matrix.
 - [test_postgresql_documentation](modules/test_postgresql_documentation.md) - Machine-check the pre-cutover PostgreSQL operator documentation.
@@ -2887,6 +2901,7 @@ Retained history; these declarations are absent from the selected source invento
 - [AgentModelCatalogService__execute](workflows/AgentModelCatalogService__execute.md) - entry: `agent_model_catalog_service.AgentModelCatalogService._execute`
 - [AgentPlanningService___init__](workflows/AgentPlanningService___init__.md) - entry: `agent_planning_service.AgentPlanningService.__init__`
 - [AgentPlanningService__execute](workflows/AgentPlanningService__execute.md) - entry: `agent_planning_service.AgentPlanningService._execute`
+- [AgentPlanningService__schedule_input_digest](workflows/AgentPlanningService__schedule_input_digest.md) - entry: `agent_planning_service.AgentPlanningService._schedule_input_digest`
 - [AgentRoutingService__build_preview](workflows/AgentRoutingService__build_preview.md) - entry: `agent_routing_service.AgentRoutingService._build_preview`
 - [AgentRoutingService_create_assessment](workflows/AgentRoutingService_create_assessment.md) - entry: `agent_routing_service.AgentRoutingService.create_assessment`
 - [AgentRoutingService_preview_task_routing](workflows/AgentRoutingService_preview_task_routing.md) - entry: `agent_routing_service.AgentRoutingService.preview_task_routing`
@@ -2933,8 +2948,8 @@ Retained history; these declarations are absent from the selected source invento
 - [AutonomyWorkPackageService_submit_requirement](workflows/AutonomyWorkPackageService_submit_requirement.md) - entry: `autonomy_work_package_service.AutonomyWorkPackageService.submit_requirement`
 - [BacklogSnapshotService_capture](workflows/BacklogSnapshotService_capture.md) - entry: `backlog_snapshot_service.BacklogSnapshotService.capture`
 - [BacklogSnapshotService_restore](workflows/BacklogSnapshotService_restore.md) - entry: `backlog_snapshot_service.BacklogSnapshotService.restore`
+- [CapacityService__projection](workflows/CapacityService__projection.md) - entry: `capacity_service.CapacityService._projection`
 - [CapacityService_invalidate_profile](workflows/CapacityService_invalidate_profile.md) - entry: `capacity_service.CapacityService.invalidate_profile`
-- [CapacityService_projection](workflows/CapacityService_projection.md) - entry: `capacity_service.CapacityService.projection`
 - [CapacityService_save_absence](workflows/CapacityService_save_absence.md) - entry: `capacity_service.CapacityService.save_absence`
 - [CapacityService_set_calendar](workflows/CapacityService_set_calendar.md) - entry: `capacity_service.CapacityService.set_calendar`
 - [DeliveryDependencyService_add](workflows/DeliveryDependencyService_add.md) - entry: `delivery_dependency_service.DeliveryDependencyService.add`
@@ -2963,8 +2978,11 @@ Retained history; these declarations are absent from the selected source invento
 - [IdentityService_transfer_guest](workflows/IdentityService_transfer_guest.md) - entry: `identity_service.IdentityService.transfer_guest`
 - [IncrementalScheduler__reschedule_subset](workflows/IncrementalScheduler__reschedule_subset.md) - entry: `scheduler_service.IncrementalScheduler._reschedule_subset`
 - [IterationService__reconcile_tasks_for_project_scope](workflows/IterationService__reconcile_tasks_for_project_scope.md) - entry: `iteration_service.IterationService._reconcile_tasks_for_project_scope`
+- [IterationService_create](workflows/IterationService_create.md) - entry: `iteration_service.IterationService.create`
+- [IterationService_create_series](workflows/IterationService_create_series.md) - entry: `iteration_service.IterationService.create_series`
 - [IterationService_get_planning_readiness_summary](workflows/IterationService_get_planning_readiness_summary.md) - entry: `iteration_service.IterationService.get_planning_readiness_summary`
 - [IterationService_get_summary](workflows/IterationService_get_summary.md) - entry: `iteration_service.IterationService.get_summary`
+- [IterationService_to_response](workflows/IterationService_to_response.md) - entry: `iteration_service.IterationService.to_response`
 - [LabelService_create_label](workflows/LabelService_create_label.md) - entry: `label_service.LabelService.create_label`
 - [NativeSessionService_approve](workflows/NativeSessionService_approve.md) - entry: `native_session_service.NativeSessionService.approve`
 - [NativeSessionService_connection](workflows/NativeSessionService_connection.md) - entry: `native_session_service.NativeSessionService.connection`
@@ -3078,6 +3096,7 @@ Retained history; these declarations are absent from the selected source invento
 - [recover_principal](workflows/recover_principal.md) - entry: `identity.recover_principal`
 - [repair_sequences](workflows/repair_sequences.md) - entry: `transfer._repair_sequences`
 - [require_agent_read_access](workflows/require_agent_read_access.md) - entry: `agent.require_agent_read_access`
+- [reserve_iteration_annuals](workflows/reserve_iteration_annuals.md) - entry: `calendar_rules.reserve_iteration_annuals`
 - [reserve_restored_task_version](workflows/reserve_restored_task_version.md) - entry: `task_recovery_service.reserve_restored_task_version`
 - [reserve_task_context_revision](workflows/reserve_task_context_revision.md) - entry: `task_context_revision_service.reserve_task_context_revision`
 - [resolve_http_identity](workflows/resolve_http_identity.md) - entry: `http_authority.resolve_http_identity`

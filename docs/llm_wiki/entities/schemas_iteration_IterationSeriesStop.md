@@ -1,6 +1,6 @@
 # IterationSeriesStop
 
-**Location:** `backend/app/schemas/iteration.py:32`
+**Location:** `backend/app/schemas/iteration.py:34`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_iteration](../modules/schemas_iteration.md)

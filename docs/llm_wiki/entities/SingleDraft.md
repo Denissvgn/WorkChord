@@ -1,6 +1,6 @@
 # SingleDraft
 
-**Location:** `frontend/src/components/iteration/IterationForm.tsx:45`
+**Location:** `frontend/src/components/iteration/IterationForm.tsx:46`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [IterationForm](../modules/IterationForm.md)
@@ -15,6 +15,7 @@
     manager_email: string;
     /** Calendar id as text; empty keeps the default calendar. */
     calendar_id: string;
+    additional_calendar_ids: number[];
 }
 ```
 

@@ -1,6 +1,6 @@
 # TeamImportRequest
 
-**Location:** `backend/app/schemas/team.py:364`
+**Location:** `backend/app/schemas/team.py:365`
 **Kind:** Pydantic model
 **Bases:** `PlanningInputRevisions`
 **Module:** [schemas_team](../modules/schemas_team.md)

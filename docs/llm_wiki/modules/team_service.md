@@ -21,7 +21,7 @@ Capacity and workload reads can omit task relationship hydration. Workload hours
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_BOUNDED_LIST_ITEMS` |
 | `app.schemas.team` | `TeamMemberCreate`, `TeamMemberProfileCreate`, `TeamMemberProfileSkillCreate`, `TeamMemberProfileSkillUpdate`, `TeamMemberProfileUpdate`, `TeamMemberOptionResponse`, `TeamMemberProfileCompact`, `TeamMemberUpdate`, `VacationCreate`, `VacationUpdate`, `VacationImportError`, `VacationImportResponse`, `MemberCapacity`, `MemberWorkload` |
 | `app.services.calendar_service` | `CalendarService` |
-| `app.services.capacity_service` | `CapacityService`, `CapacityService`, `CapacityService`, `CapacityService`, `day_hours`, `CapacityService` |
+| `app.services.capacity_service` | `CapacityService`, `CapacityService`, `CapacityService`, `CapacityService`, `CapacityService` |
 | `app.services.work_metrics` | `included_work_ids` |
 | `app.sql_semantics` | `portable_case_insensitive_equal` |
 | `app.utils.import_parser` | `parse_team_members_text` |
@@ -51,7 +51,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (17) |
+| Inbound | `backend` (18) |
 | Outbound | `backend` (13) |
 
 ### External packages
@@ -60,7 +60,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

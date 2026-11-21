@@ -189,13 +189,13 @@ flowchart LR
 |---|---|---:|---|
 | bulk_update_tasks | IterationService | 870 | `IterationService(db)` |
 | bulk_update_tasks | IterationService.get_by_id | 871 | `iteration_service.get_by_id(iteration_id)` |
-| IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 323 | `self.db.execute(...)` |
-| IterationService.get_by_id | select(…).options(…).where | 324 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
-| IterationService.get_by_id | select(…).options | 324 | `select(Iteration).options(selectinload(...), selectinload(...))` |
-| IterationService.get_by_id | select (backend/app/services/iter…terationService.get_by_id) | 324 | `select(Iteration)` |
-| IterationService.get_by_id | selectinload | 326 | `selectinload(Iteration.calendar)` |
-| IterationService.get_by_id | selectinload | 327 | `selectinload(Iteration.project)` |
-| IterationService.get_by_id | result.scalar_one_or_none (backend/app/services/iter…terationService.get_by_id) | 331 | `result.scalar_one_or_none(data not statically known)` |
+| IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 338 | `self.db.execute(...)` |
+| IterationService.get_by_id | select(…).options(…).where | 339 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
+| IterationService.get_by_id | select(…).options | 339 | `select(Iteration).options(selectinload(...), selectinload(...))` |
+| IterationService.get_by_id | select (backend/app/services/iter…terationService.get_by_id) | 339 | `select(Iteration)` |
+| IterationService.get_by_id | selectinload | 341 | `selectinload(Iteration.calendar)` |
+| IterationService.get_by_id | selectinload | 342 | `selectinload(Iteration.project)` |
+| IterationService.get_by_id | result.scalar_one_or_none (backend/app/services/iter…terationService.get_by_id) | 346 | `result.scalar_one_or_none(data not statically known)` |
 | bulk_update_tasks | HTTPException | 874 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 | bulk_update_tasks | _not_found_detail | 876 | `_not_found_detail(db, 'iteration', iteration_id)` |
 
@@ -207,13 +207,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 323 |
-| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 324 |
-| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 324 |
-| external_call | `IterationService.get_by_id` | `select` | 324 |
-| external_call | `IterationService.get_by_id` | `selectinload` | 326 |
-| external_call | `IterationService.get_by_id` | `selectinload` | 327 |
-| unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 331 |
+| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 338 |
+| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 339 |
+| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 339 |
+| external_call | `IterationService.get_by_id` | `select` | 339 |
+| external_call | `IterationService.get_by_id` | `selectinload` | 341 |
+| external_call | `IterationService.get_by_id` | `selectinload` | 342 |
+| unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 346 |
 | external_call | `bulk_update_tasks` | `HTTPException` | 874 |
 | step_limit | `bulk_update_tasks` | `first 12 steps` | 0 |
 | truncated_flow | `bulk_update_tasks` | `depth limit` | 0 |

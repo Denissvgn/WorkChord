@@ -39,7 +39,7 @@ flowchart LR
     n10["test_binding_and_preset_routes_preserve_credential_permissions (backend/tests/test_agent_model_catalog_api.py)"]
     n11["test_model_catalog_routes_accept_admin_key_agent_key_and_refuse_neither (backend/tests/test_agent_model_catalog_api.py)"]
     n12["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
-    n13["test_date_only_reservation (backend/tests/test_execution_planning_window.py)"]
+    n13["test_annual_selection_and_forecast_preserve_live_ownership (backend/tests/test_annual_calendar_work_control.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -66,7 +66,7 @@ flowchart LR
     click n10 "../modules/test_agent_model_catalog_api.md"
     click n11 "../modules/test_agent_model_catalog_api.md"
     click n12 "../modules/test_agent_team_setup.md"
-    click n13 "../modules/test_execution_planning_window.md"
+    click n13 "../modules/test_annual_calendar_work_control.md"
 ```
 
 ### Summary
@@ -96,6 +96,6 @@ flowchart LR
 | `test_binding_and_preset_routes_preserve_credential_permissions` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 1 |
 | `test_model_catalog_routes_accept_admin_key_agent_key_and_refuse_neither` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 1 |
 | `test_fresh_apply_replay_onboarding_and_runtime_readiness` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 1 |
-| `test_date_only_reservation` | call | [test_execution_planning_window](../modules/test_execution_planning_window.md) | 2 |
+| `test_annual_selection_and_forecast_preserve_live_ownership` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
 
-> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.
+> References: showing 12 of 29 logical references; 17 omitted by the 12-row generated summary limit.

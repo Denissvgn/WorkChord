@@ -34,7 +34,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (13) |
+| Inbound | `backend` (14) |
 | Outbound | `backend` (2) |
 
 ### External packages
@@ -43,20 +43,20 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [IterationCreate](../entities/schemas_iteration_IterationCreate.md) | 12 | `BaseModel` | Schema for creating an iteration. |
-| [IterationUpdate](../entities/schemas_iteration_IterationUpdate.md) | 22 | `PlanningInputRevisions` | Schema for updating an iteration. |
-| [IterationSeriesStop](../entities/schemas_iteration_IterationSeriesStop.md) | 32 | `BaseModel` | Stop rule for generating a back-to-back iteration series. |
-| [IterationSeriesCreate](../entities/schemas_iteration_IterationSeriesCreate.md) | 48 | `BaseModel` | Schema for creating multiple back-to-back iterations. |
-| [IterationProjectSummary](../entities/IterationProjectSummary.md) | 59 | `BaseModel` | Compact project identity embedded in iteration responses. |
-| [IterationResponse](../entities/IterationResponse.md) | 70 | `BaseModel` | — |
-| [IterationSeriesResponse](../entities/schemas_iteration_IterationSeriesResponse.md) | 89 | `BaseModel` | Response returned after creating an iteration series. |
-| [IterationSummary](../entities/schemas_iteration_IterationSummary.md) | 94 | `WorkMetricSummary` | Summary statistics for an iteration. |
-| [PlanCheckpoint](../entities/schemas_iteration_PlanCheckpoint.md) | 116 | `BaseModel` | One of the six plan checkpoints, in the order people and the PM work them. |
-| [IterationPlanningReadinessSummary](../entities/schemas_iteration_IterationPlanningReadinessSummary.md) | 124 | `BaseModel` | Compact planning inputs used by persistent navigation. |
-| [IterationPage](../entities/IterationPage.md) | 148 | `BaseModel` | — |
+| [IterationUpdate](../entities/schemas_iteration_IterationUpdate.md) | 23 | `PlanningInputRevisions` | Schema for updating an iteration. |
+| [IterationSeriesStop](../entities/schemas_iteration_IterationSeriesStop.md) | 34 | `BaseModel` | Stop rule for generating a back-to-back iteration series. |
+| [IterationSeriesCreate](../entities/schemas_iteration_IterationSeriesCreate.md) | 50 | `BaseModel` | Schema for creating multiple back-to-back iterations. |
+| [IterationProjectSummary](../entities/IterationProjectSummary.md) | 62 | `BaseModel` | Compact project identity embedded in iteration responses. |
+| [IterationResponse](../entities/IterationResponse.md) | 73 | `BaseModel` | — |
+| [IterationSeriesResponse](../entities/schemas_iteration_IterationSeriesResponse.md) | 94 | `BaseModel` | Response returned after creating an iteration series. |
+| [IterationSummary](../entities/schemas_iteration_IterationSummary.md) | 99 | `WorkMetricSummary` | Summary statistics for an iteration. |
+| [PlanCheckpoint](../entities/schemas_iteration_PlanCheckpoint.md) | 122 | `BaseModel` | One of the six plan checkpoints, in the order people and the PM work them. |
+| [IterationPlanningReadinessSummary](../entities/schemas_iteration_IterationPlanningReadinessSummary.md) | 130 | `BaseModel` | Compact planning inputs used by persistent navigation. |
+| [IterationPage](../entities/IterationPage.md) | 156 | `BaseModel` | — |

@@ -88,9 +88,9 @@ sequenceDiagram
     p0-->>p30: JSONResponse(content=jsonable_encoder(...), headers={...})
 ```
 
-> Call sequence diagram shows 30 of 401 interactions; 371 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 405 interactions; 375 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 2 of 147 (145 omitted); unresolved 5 of 220 (215 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 2 of 148 (146 omitted); unresolved 5 of 223 (218 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -192,13 +192,13 @@ flowchart LR
 |---|---|---:|---|
 | export_iteration | IterationService | 82 | `IterationService(db)` |
 | export_iteration | IterationService.get_by_id | 83 | `iteration_service.get_by_id(iteration_id)` |
-| IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 323 | `self.db.execute(...)` |
-| IterationService.get_by_id | select(…).options(…).where (backend/app/services/iter…terationService.get_by_id) | 324 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
-| IterationService.get_by_id | select(…).options (backend/app/services/iter…terationService.get_by_id) | 324 | `select(Iteration).options(selectinload(...), selectinload(...))` |
-| IterationService.get_by_id | select (backend/app/services/iter…terationService.get_by_id) | 324 | `select(Iteration)` |
-| IterationService.get_by_id | selectinload (backend/app/services/iter…terationService.get_by_id) | 326 | `selectinload(Iteration.calendar)` |
-| IterationService.get_by_id | selectinload (backend/app/services/iter…terationService.get_by_id) | 327 | `selectinload(Iteration.project)` |
-| IterationService.get_by_id | result.scalar_one_or_none | 331 | `result.scalar_one_or_none(data not statically known)` |
+| IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 338 | `self.db.execute(...)` |
+| IterationService.get_by_id | select(…).options(…).where (backend/app/services/iter…terationService.get_by_id) | 339 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
+| IterationService.get_by_id | select(…).options (backend/app/services/iter…terationService.get_by_id) | 339 | `select(Iteration).options(selectinload(...), selectinload(...))` |
+| IterationService.get_by_id | select (backend/app/services/iter…terationService.get_by_id) | 339 | `select(Iteration)` |
+| IterationService.get_by_id | selectinload (backend/app/services/iter…terationService.get_by_id) | 341 | `selectinload(Iteration.calendar)` |
+| IterationService.get_by_id | selectinload (backend/app/services/iter…terationService.get_by_id) | 342 | `selectinload(Iteration.project)` |
+| IterationService.get_by_id | result.scalar_one_or_none | 346 | `result.scalar_one_or_none(data not statically known)` |
 | export_iteration | HTTPException | 86 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 | export_iteration | TaskService | 91 | `TaskService(db)` |
 
@@ -210,13 +210,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 323 |
-| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 324 |
-| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 324 |
-| external_call | `IterationService.get_by_id` | `select` | 324 |
-| external_call | `IterationService.get_by_id` | `selectinload` | 326 |
-| external_call | `IterationService.get_by_id` | `selectinload` | 327 |
-| unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 331 |
+| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 338 |
+| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 339 |
+| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 339 |
+| external_call | `IterationService.get_by_id` | `select` | 339 |
+| external_call | `IterationService.get_by_id` | `selectinload` | 341 |
+| external_call | `IterationService.get_by_id` | `selectinload` | 342 |
+| unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 346 |
 | external_call | `export_iteration` | `HTTPException` | 86 |
 | step_limit | `export_iteration` | `first 12 steps` | 0 |
 

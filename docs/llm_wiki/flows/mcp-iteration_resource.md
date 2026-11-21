@@ -2,12 +2,13 @@
 
 **Entry point:** `iteration_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), and 12 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), [commands](../modules/commands.md), and 13 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
 - [authority](../modules/authority.md)
+- [calendar_rules](../modules/calendar_rules.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
@@ -34,82 +35,82 @@ sequenceDiagram
     participant p1 as _json_resource
     participant p2 as get_iteration
     participant p3 as _tool_call
-    participant p4 as enforce_mcp_access
-    participant p5 as _agent_context
-    participant p6 as get_settings
-    participant p7 as command_transaction
-    participant p8 as _authenticate_agent_key
-    participant p9 as _require_scope_requirement
-    participant p10 as IdentityService.actor_context
-    participant p11 as require_scope
-    participant p12 as AgentService.authenticate
-    participant p13 as require_identity_writes
-    participant p14 as DeliveryDependencyService.reconcile
-    participant p15 as IdentityService.context
-    participant p16 as DiscussionService.enqueue
-    participant p17 as IterationService.get_by_id
-    participant p18 as IterationService
-    participant p19 as _iteration_project_payload
-    participant p20 as _structured_tool_error
-    participant p21 as _current_agent_key
-    participant p22 as scope_requirement_is_mutating
-    participant p23 as MCPAuthError
-    participant p24 as MaintenanceModeError
-    participant p25 as _open_db_session
-    participant p26 as IdentityService
-    participant p27 as Settings
-    participant p28 as current_command
+    participant p4 as AnnualCalendars.for_iteration
+    participant p5 as enforce_mcp_access
+    participant p6 as _agent_context
+    participant p7 as get_settings
+    participant p8 as command_transaction
+    participant p9 as _authenticate_agent_key
+    participant p10 as _require_scope_requirement
+    participant p11 as IdentityService.actor_context
+    participant p12 as require_scope
+    participant p13 as AgentService.authenticate
+    participant p14 as require_identity_writes
+    participant p15 as DeliveryDependencyService.reconcile
+    participant p16 as IdentityService.context
+    participant p17 as DiscussionService.enqueue
+    participant p18 as IterationService.get_by_id
+    participant p19 as IterationService
+    participant p20 as _iteration_project_payload
+    participant p21 as AnnualCalendars
+    participant p22 as _structured_tool_error
+    participant p23 as _current_agent_key
+    participant p24 as scope_requirement_is_mutating
+    participant p25 as MCPAuthError
+    participant p26 as MaintenanceModeError
+    participant p27 as _open_db_session
+    participant p28 as IdentityService
     participant p29 as int
-    participant p30 as iteration.start_date.isoformat
+    participant p30 as AnnualCalendars.for_iteration(…).missing_years
     p0->>p1: _json_resource
     p0->>p2: get_iteration
     p1->>p3: _tool_call
-    p3->>p4: enforce_mcp_access
-    p3->>p5: _agent_context
-    p4->>p6: get_settings
-    p5->>p7: command_transaction
-    p5->>p8: _authenticate_agent_key
-    p5->>p9: _require_scope_requirement
-    p5->>p10: IdentityService.actor_context
-    p9->>p11: require_scope
-    p8->>p12: AgentService.authenticate
-    p10->>p13: require_identity_writes
-    p7->>p14: DeliveryDependencyService.reconcile
-    p10->>p15: IdentityService.context
-    p7->>p16: DiscussionService.enqueue
-    p2->>p17: IterationService.get_by_id
-    p2->>p18: IterationService
-    p2->>p19: _iteration_project_payload
-    p3->>p20: _structured_tool_error
-    p5->>p21: _current_agent_key
-    p4->>p22: scope_requirement_is_mutating
-    p5->>p23: MCPAuthError
-    p4->>p24: MaintenanceModeError
-    p5->>p25: _open_db_session
-    p5->>p26: IdentityService
-    p6->>p27: Settings
-    p7->>p28: current_command
+    p2->>p4: AnnualCalendars.for_iteration
+    p3->>p5: enforce_mcp_access
+    p3->>p6: _agent_context
+    p5->>p7: get_settings
+    p6->>p8: command_transaction
+    p6->>p9: _authenticate_agent_key
+    p6->>p10: _require_scope_requirement
+    p6->>p11: IdentityService.actor_context
+    p10->>p12: require_scope
+    p9->>p13: AgentService.authenticate
+    p11->>p14: require_identity_writes
+    p8->>p15: DeliveryDependencyService.reconcile
+    p11->>p16: IdentityService.context
+    p8->>p17: DiscussionService.enqueue
+    p2->>p18: IterationService.get_by_id
+    p2->>p19: IterationService
+    p2->>p20: _iteration_project_payload
+    p4->>p21: AnnualCalendars
+    p3->>p22: _structured_tool_error
+    p6->>p23: _current_agent_key
+    p5->>p24: scope_requirement_is_mutating
+    p6->>p25: MCPAuthError
+    p5->>p26: MaintenanceModeError
+    p6->>p27: _open_db_session
+    p6->>p28: IdentityService
     p0-->>p29: int(iteration_id)
-    p2-->>p30: iteration.start_date.isoformat
+    p2-->>p30: AnnualCalendars.for_iteration(…).missing_years(iteration.start_date, iteration.end_date)
 ```
 
-> Call sequence diagram shows 30 of 218 interactions; 188 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 221 interactions; 191 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 67 (66 omitted); unresolved 1 of 85 (84 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 67 (66 omitted); unresolved 1 of 86 (85 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
+| `backend/app/config.py:get_settings` | 5 | [backend/app/config.py](../modules/config.md) | internal | 1 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 7 | - | external | 4 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 7 | - | unresolved | 3 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | external | 1 |
-| `backend/app/commands.py:current_command` | 25 | - | external | 2 |
-| `backend/app/commands.py:current_command` | 25 | - | unresolved | 1 |
-> Omission summary shows 8 of 56 groups; 48 further groups are not expanded here. Counts above include all omitted interactions.
+| `backend/app/commands.py:command_transaction` | 24 | [backend/app/commands.py](../modules/commands.md) | internal | 2 |
+> Omission summary shows 8 of 57 groups; 49 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -122,9 +123,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 67; effect analysis evaluated: 43, partial: 2, unavailable: 22. Counts include steps omitted from the displayed trace.
+Source steps: 69; effect analysis evaluated: 44, partial: 2, unavailable: 23. Counts include steps omitted from the displayed trace.
 
-Collector observations for 45 source steps with known totals: observed: 186, emitted: 176, omitted: 10. Unavailable totals are excluded.
+Collector observations for 46 source steps with known totals: observed: 190, emitted: 178, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -134,7 +135,7 @@ Collector observations for 45 source steps with known totals: observed: 186, emi
 |---|---|---|---|---:|---:|---:|
 | `iteration_resource` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `_json_resource` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
-| `_tool_call` | `available` | `partial` | `available` | `18` | `12` | `6` |
+| `_tool_call` | `available` | `partial` | `available` | `19` | `12` | `7` |
 | `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -185,7 +186,7 @@ flowchart LR
 |---|---|---|---|---|
 | `iteration_resource` | `iteration_id: str` | - | - | `...` |
 | `_json_resource` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]` | - | - | `json.dumps(...)` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -200,8 +201,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| iteration_resource | _json_resource | 2260 | `_json_resource('tasks:read', ...)` |
-| _json_resource | _tool_call | 363 | `_tool_call(required_scope, func)` |
+| iteration_resource | _json_resource | 2261 | `_json_resource('tasks:read', ...)` |
+| _json_resource | _tool_call | 364 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

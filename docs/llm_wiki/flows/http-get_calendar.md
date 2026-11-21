@@ -57,8 +57,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_calendar | service.get_by_id | 52 | `service.get_by_id(calendar_id)` |
-| get_calendar | HTTPException | 54 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_calendar | service.get_by_id | 53 | `service.get_by_id(calendar_id)` |
+| get_calendar | HTTPException | 55 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 
 ### Boundary effects
 
@@ -68,8 +68,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_calendar` | `service.get_by_id` | 52 |
-| external_call | `get_calendar` | `HTTPException` | 54 |
+| unresolved_call | `get_calendar` | `service.get_by_id` | 53 |
+| external_call | `get_calendar` | `HTTPException` | 55 |
 
 ## Behavior
 

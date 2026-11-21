@@ -10,6 +10,7 @@ Agents start work whose dependencies are done, and the plan's dates follow what 
 
 | Source | Symbols |
 |--------|---------|
+| `app.commands` | `PlanningConflict` |
 | `app.main` | `app` |
 | `app.models.agent` | `AgentActor`, `AgentTaskAssignment`, `TaskEvent` |
 | `app.models.iteration` | `Iteration` |
@@ -47,7 +48,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (1) |
-| Outbound | `backend` (14) |
+| Outbound | `backend` (15) |
 
 ### External packages
 
@@ -55,7 +56,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

@@ -14,6 +14,8 @@ Schedule outcome plus the complete optimistic task-version token set.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `success` | `bool` | `success` | Yes | No | — | — | — | — |
+| `capacity_issues` | `list[dict[str, Any]]` | `capacity_issues` | No | No | factory: `list` | — | — | — |
+| `assignment_refreshes` | `list[dict[str, Any]]` | `assignment_refreshes` | No | No | factory: `list` | — | — | — |
 | `decisions` | `list[dict[str, Any]]` | `decisions` | No | No | factory: `list` | — | — | — |
 | `workload_balanced` | `bool` | `workload_balanced` | No | No | `True` | — | — | — |
 | `workload_issues` | `list[dict[str, Any]]` | `workload_issues` | No | No | factory: `list` | — | — | — |
@@ -43,7 +45,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent_planning](../modules/schemas_agent_planning.md) | 0 | `decisions`, `input_digest`, `success`, `task_states`, `unscheduled`, `workload_balanced`, `workload_issues` |
+| [schemas_agent_planning](../modules/schemas_agent_planning.md) | 0 | `assignment_refreshes`, `capacity_issues`, `decisions`, `input_digest`, `success`, `task_states`, `unscheduled`, `workload_balanced`, `workload_issues` |
 
 ### Structure
 

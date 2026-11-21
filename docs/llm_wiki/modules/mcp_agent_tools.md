@@ -47,6 +47,7 @@ the same audited command and read-model paths.
 | `app.services.agent_team_setup_service` | `AgentTeamSetupService` |
 | `app.services.agent_work_service` | `AgentWorkService` |
 | `app.services.assignee_recommendation_service` | `AssigneeRecommendationService` |
+| `app.services.calendar_rules` | `AnnualCalendars` |
 | `app.services.execution_usage_service` | `ExecutionUsageService` |
 | `app.services.external_link_service` | `ExternalLinkConflictError`, `ExternalLinkService` |
 | `app.services.iteration_service` | `IterationService` |
@@ -98,7 +99,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (14) |
-| Outbound | `backend` (51) |
+| Outbound | `backend` (52) |
 
 ### External packages
 
@@ -106,7 +107,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 65 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 66 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

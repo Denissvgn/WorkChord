@@ -2,12 +2,13 @@
 
 **Entry point:** `workspace_get_iteration_summary` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [capacity_service](../modules/capacity_service.md), and 20 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), [calendar_service](../modules/calendar_service.md), and 21 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
 - [authority](../modules/authority.md)
+- [calendar_rules](../modules/calendar_rules.md)
 - [calendar_service](../modules/calendar_service.md)
 - [capacity_service](../modules/capacity_service.md)
 - [commands](../modules/commands.md)
@@ -47,26 +48,26 @@ sequenceDiagram
     participant p6 as get_settings
     participant p7 as CalendarService.calculate_working_days
     participant p8 as command_transaction
-    participant p9 as aggregate_metrics
+    participant p9 as AnnualCalendars.for_iteration
     participant p10 as _authenticate_agent_key
-    participant p11 as IterationService._calculate_team_capacity
+    participant p11 as aggregate_metrics
     participant p12 as _require_scope_requirement
-    participant p13 as IdentityService.actor_context
-    participant p14 as IterationService._remaining_working_days
-    participant p15 as TeamService.get_by_iteration
-    participant p16 as require_scope
-    participant p17 as AgentService.authenticate
-    participant p18 as TeamService.calculate_capacity
-    participant p19 as require_identity_writes
-    participant p20 as DeliveryDependencyService.reconcile
-    participant p21 as DiscussionService.enqueue
-    participant p22 as working_today
-    participant p23 as actor_has_scope
-    participant p24 as TeamService.get_by_id
-    participant p25 as CapacityService.calendar_for
-    participant p26 as CapacityService.calendar_status
-    participant p27 as CapacityService.absence_ranges
-    participant p28 as commit_or_flush
+    participant p13 as IterationService._calculate_team_capacity
+    participant p14 as IdentityService.actor_context
+    participant p15 as IterationService._remaining_working_days
+    participant p16 as TeamService.get_by_iteration
+    participant p17 as require_scope
+    participant p18 as AgentService.authenticate
+    participant p19 as TeamService.calculate_capacity
+    participant p20 as require_identity_writes
+    participant p21 as CapacityService.calendar_for
+    participant p22 as DeliveryDependencyService.reconcile
+    participant p23 as DiscussionService.enqueue
+    participant p24 as working_today
+    participant p25 as actor_has_scope
+    participant p26 as TeamService.get_by_id
+    participant p27 as CapacityService.coverage_for
+    participant p28 as CapacityService.calendar_status
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -77,33 +78,33 @@ sequenceDiagram
     p3->>p6: get_settings
     p4->>p7: CalendarService.calculate_working_days
     p5->>p8: command_transaction
-    p4->>p9: aggregate_metrics
+    p4->>p9: AnnualCalendars.for_iteration
     p5->>p10: _authenticate_agent_key
-    p4->>p11: IterationService._calculate_team_capacity
+    p4->>p11: aggregate_metrics
     p5->>p12: _require_scope_requirement
-    p5->>p13: IdentityService.actor_context
-    p4->>p14: IterationService._remaining_working_days
-    p11->>p15: TeamService.get_by_iteration
-    p12->>p16: require_scope
-    p10->>p17: AgentService.authenticate
-    p11->>p18: TeamService.calculate_capacity
-    p13->>p19: require_identity_writes
-    p8->>p20: DeliveryDependencyService.reconcile
-    p8->>p21: DiscussionService.enqueue
-    p9->>p22: working_today
-    p16->>p23: actor_has_scope
-    p18->>p24: TeamService.get_by_id
-    p18->>p25: CapacityService.calendar_for
-    p18->>p26: CapacityService.calendar_status
-    p18->>p27: CapacityService.absence_ranges
-    p17->>p28: commit_or_flush
+    p4->>p13: IterationService._calculate_team_capacity
+    p5->>p14: IdentityService.actor_context
+    p4->>p15: IterationService._remaining_working_days
+    p13->>p16: TeamService.get_by_iteration
+    p12->>p17: require_scope
+    p10->>p18: AgentService.authenticate
+    p13->>p19: TeamService.calculate_capacity
+    p14->>p20: require_identity_writes
+    p13->>p21: CapacityService.calendar_for
+    p8->>p22: DeliveryDependencyService.reconcile
+    p8->>p23: DiscussionService.enqueue
+    p11->>p24: working_today
+    p17->>p25: actor_has_scope
+    p19->>p26: TeamService.get_by_id
+    p19->>p27: CapacityService.coverage_for
+    p19->>p28: CapacityService.calendar_status
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 647 interactions; 617 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 660 interactions; 630 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 216 (215 omitted); unresolved 1 of 308 (307 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 216 (215 omitted); unresolved 1 of 312 (311 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -117,7 +118,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 132 groups; 124 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 139 groups; 131 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -130,9 +131,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 124; effect analysis evaluated: 84, partial: 3, unavailable: 37. Counts include steps omitted from the displayed trace.
+Source steps: 133; effect analysis evaluated: 89, partial: 3, unavailable: 41. Counts include steps omitted from the displayed trace.
 
-Collector observations for 87 source steps with known totals: observed: 369, emitted: 356, omitted: 13. Unavailable totals are excluded.
+Collector observations for 92 source steps with known totals: observed: 383, emitted: 368, omitted: 15. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -141,7 +142,7 @@ Collector observations for 87 source steps with known totals: observed: 369, emi
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
 | `workspace_get_iteration_summary` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
-| `_tool_call` | `available` | `partial` | `available` | `18` | `12` | `6` |
+| `_tool_call` | `available` | `partial` | `available` | `19` | `12` | `7` |
 | `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -191,7 +192,7 @@ flowchart LR
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
 | `workspace_get_iteration_summary` | `iteration_id: int` | - | - | `...` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -207,7 +208,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_get_iteration_summary | _tool_call | 1629 | `_tool_call((...), ...)` |
+| workspace_get_iteration_summary | _tool_call | 1630 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

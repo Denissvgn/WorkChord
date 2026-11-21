@@ -56,8 +56,8 @@ flowchart LR
     n8["test_operator_rest_restore_reconciles_exact_allocation_membership (backend/tests/test_allocation_recovery.py)"]
     n9["test_scoped_manager_can_restore_another_eligible_person_without_profile_access (backend/tests/test_allocation_recovery.py)"]
     n10["test_workspace_reports_keep_authorization_and_recorded_backlog_scope (backend/tests/test_analytics_scopes.py)"]
-    n11["test_hidden_parent_policy_cannot_disclose_private_scope (backend/tests/test_bounded_task_policy.py)"]
-    n12["test_target_revocation_redacts_identity_and_denies_new_edges (backend/tests/test_delivery_dependencies.py)"]
+    n11["test_hidden_person_protects_shared_master_without_leaking_their_identity (backend/tests/test_annual_calendar_coverage.py)"]
+    n12["test_hidden_parent_policy_cannot_disclose_private_scope (backend/tests/test_bounded_task_policy.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -81,8 +81,8 @@ flowchart LR
     click n8 "../modules/test_allocation_recovery.md"
     click n9 "../modules/test_allocation_recovery.md"
     click n10 "../modules/test_analytics_scopes.md"
-    click n11 "../modules/test_bounded_task_policy.md"
-    click n12 "../modules/test_delivery_dependencies.md"
+    click n11 "../modules/test_annual_calendar_coverage.md"
+    click n12 "../modules/test_bounded_task_policy.md"
 ```
 
 ### Summary
@@ -105,7 +105,7 @@ flowchart LR
 | `test_operator_rest_restore_reconciles_exact_allocation_membership` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
 | `test_scoped_manager_can_restore_another_eligible_person_without_profile_access` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
 | `test_workspace_reports_keep_authorization_and_recorded_backlog_scope` | call | [test_analytics_scopes](../modules/test_analytics_scopes.md) | 1 |
+| `test_hidden_person_protects_shared_master_without_leaking_their_identity` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
 | `test_hidden_parent_policy_cannot_disclose_private_scope` | call | [test_bounded_task_policy](../modules/test_bounded_task_policy.md) | 1 |
-| `test_target_revocation_redacts_identity_and_denies_new_edges` | call | [test_delivery_dependencies](../modules/test_delivery_dependencies.md) | 1 |
 
-> References: showing 12 of 47 logical references; 35 omitted by the 12-row generated summary limit.
+> References: showing 12 of 48 logical references; 36 omitted by the 12-row generated summary limit.

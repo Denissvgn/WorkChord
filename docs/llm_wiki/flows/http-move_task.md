@@ -144,7 +144,7 @@ flowchart LR
 | move_task | HTTPException (backend/app/routers/tasks.py:move_task) | 384 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 | move_task | IterationService | 389 | `IterationService(db)` |
 | move_task | IterationService.get_by_id | 390 | `iteration_service.get_by_id(task.iteration_id)` |
-| IterationService.get_by_id | self.db.execute | 323 | `self.db.execute(...)` |
+| IterationService.get_by_id | self.db.execute | 338 | `self.db.execute(...)` |
 
 ### Boundary effects
 
@@ -160,7 +160,7 @@ flowchart LR
 | external_call | `move_task` | `HTTPException` | 375 |
 | external_call | `move_task` | `HTTPException` | 379 |
 | external_call | `move_task` | `HTTPException` | 384 |
-| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 323 |
+| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 338 |
 | step_limit | `move_task` | `first 12 steps` | 0 |
 
 ## Behavior

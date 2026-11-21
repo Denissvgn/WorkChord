@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1734,
+      "entities": 1741,
       "flows": 571,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 1114,
-      "workflows": 211
+      "modules": 1121,
+      "workflows": 216
     },
     "dependency_architecture": 2,
-    "total": 3646
+    "total": 3665
   },
   "dependency_pages": {
     "count": 2,
@@ -1271,43 +1271,43 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
@@ -1622,43 +1622,43 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
@@ -2786,19 +2786,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 45,
+              "line": 46,
               "step": "create_absence",
               "target": "service.save_absence"
             },
             {
               "kind": "unresolved_call",
-              "line": 32,
+              "line": 108,
               "step": "CapacityService.require_owner",
               "target": "self.db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 41,
+              "line": 117,
               "step": "CapacityService.require_visible",
               "target": "self.db.info.get"
             },
@@ -2820,7 +2820,8 @@
             "backend/app/services/capacity_service.py",
             "backend/app/config.py",
             "backend/app/authority.py",
-            "backend/app/commands.py"
+            "backend/app/commands.py",
+            "backend/app/services/calendar_rules.py"
           ],
           "step_count": 50,
           "truncated": false
@@ -3407,7 +3408,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 43,
+              "line": 44,
               "step": "create_calendar",
               "target": "service.create"
             }
@@ -3987,7 +3988,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
@@ -4900,31 +4901,31 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
@@ -4966,43 +4967,43 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
@@ -6125,19 +6126,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 84,
+              "line": 85,
               "step": "delete_calendar",
               "target": "service.delete"
             },
             {
               "kind": "external_call",
-              "line": 86,
+              "line": 87,
               "step": "delete_calendar",
               "target": "HTTPException"
             },
             {
               "kind": "external_call",
-              "line": 91,
+              "line": 92,
               "step": "delete_calendar",
               "target": "HTTPException"
             }
@@ -8109,43 +8110,43 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
@@ -8181,7 +8182,7 @@
             "backend/app/utils/time.py",
             "backend/app/commands.py"
           ],
-          "step_count": 402,
+          "step_count": 406,
           "truncated": false
         }
       },
@@ -9511,25 +9512,25 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 32,
+              "line": 108,
               "step": "CapacityService.require_owner",
               "target": "self.db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 41,
+              "line": 117,
               "step": "CapacityService.require_visible",
               "target": "self.db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 43,
+              "line": 119,
               "step": "CapacityService.require_visible",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 43,
+              "line": 119,
               "step": "CapacityService.require_visible",
               "target": "select(TeamMember.id).where(TeamMember.profile_id == profile_id).limit"
             },
@@ -9551,7 +9552,8 @@
             "backend/app/services/capacity_service.py",
             "backend/app/config.py",
             "backend/app/authority.py",
-            "backend/app/commands.py"
+            "backend/app/commands.py",
+            "backend/app/services/calendar_rules.py"
           ],
           "step_count": 49,
           "truncated": false
@@ -9574,13 +9576,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 52,
+              "line": 53,
               "step": "get_calendar",
               "target": "service.get_by_id"
             },
             {
               "kind": "external_call",
-              "line": 54,
+              "line": 55,
               "step": "get_calendar",
               "target": "HTTPException"
             }
@@ -9615,7 +9617,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 30,
+              "line": 31,
               "step": "get_calendars",
               "target": "service.get_all"
             }
@@ -9937,7 +9939,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 170,
+              "line": 171,
               "step": "get_gantt_data",
               "step_index": 1,
               "target": "gantt_tasks.append"
@@ -9945,7 +9947,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 191,
+              "line": 192,
               "step": "get_gantt_data",
               "step_index": 1,
               "target": "vacation_dates.update"
@@ -9954,43 +9956,43 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
@@ -10017,13 +10019,14 @@
             "backend/app/authority.py",
             "backend/app/schemas/team.py",
             "backend/app/services/calendar_service.py",
+            "backend/app/services/calendar_rules.py",
             "backend/app/schemas/calendar.py",
             "backend/app/services/work_metrics.py",
             "backend/app/utils/time.py",
             "backend/app/schemas/gantt.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 187,
+          "step_count": 190,
           "truncated": false
         }
       },
@@ -10213,13 +10216,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
@@ -10249,11 +10252,12 @@
             "backend/app/authority.py",
             "backend/app/schemas/team.py",
             "backend/app/services/capacity_service.py",
+            "backend/app/services/calendar_rules.py",
             "backend/app/services/calendar_service.py",
             "backend/app/services/plan_checkpoints.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 413,
+          "step_count": 436,
           "truncated": false
         }
       },
@@ -10315,43 +10319,43 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
@@ -10764,43 +10768,43 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
@@ -10968,68 +10972,78 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 210,
-              "step": "CapacityService.projection",
-              "step_index": 2,
-              "target": "days.append"
+              "line": 357,
+              "step": "CapacityService._projection",
+              "step_index": 4,
+              "target": "missing_years.add"
             },
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 229,
-              "step": "CapacityService.projection",
-              "step_index": 2,
+              "line": 360,
+              "step": "CapacityService._projection",
+              "step_index": 4,
+              "target": "observed_zones.add"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 361,
+              "step": "CapacityService._projection",
+              "step_index": 4,
+              "target": "observed_years.add"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 372,
+              "step": "CapacityService._projection",
+              "step_index": 4,
               "target": "result.append"
             }
           ],
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 41,
+              "line": 117,
               "step": "CapacityService.require_visible",
               "target": "self.db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 43,
+              "line": 119,
               "step": "CapacityService.require_visible",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 43,
+              "line": 119,
               "step": "CapacityService.require_visible",
               "target": "select(TeamMember.id).where(TeamMember.profile_id == profile_id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 43,
+              "line": 119,
               "step": "CapacityService.require_visible",
               "target": "select(TeamMember.id).where"
             },
             {
               "kind": "external_call",
-              "line": 43,
+              "line": 119,
               "step": "CapacityService.require_visible",
               "target": "select"
             },
             {
               "kind": "unresolved_call",
-              "line": 46,
+              "line": 122,
               "step": "CapacityService.require_visible",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 46,
+              "line": 122,
               "step": "CapacityService.require_visible",
               "target": "select(Task.id).where(Task.owner_profile_id == profile_id).limit"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 46,
-              "step": "CapacityService.require_visible",
-              "target": "select(Task.id).where"
             },
             {
               "kind": "step_limit",
@@ -11049,9 +11063,10 @@
             "backend/app/services/capacity_service.py",
             "backend/app/commands.py",
             "backend/app/authority.py",
+            "backend/app/services/calendar_rules.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 152,
+          "step_count": 159,
           "truncated": false
         }
       },
@@ -11577,43 +11592,43 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
@@ -11715,43 +11730,43 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
@@ -12257,43 +12272,43 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
@@ -12351,43 +12366,43 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
@@ -12993,39 +13008,52 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 128,
+              "line": 130,
               "step": "get_working_days",
               "target": "service.get_by_id"
             },
             {
               "kind": "external_call",
-              "line": 130,
+              "line": 132,
               "step": "get_working_days",
               "target": "HTTPException"
             },
             {
               "kind": "external_call",
-              "line": 136,
+              "line": 138,
               "step": "get_working_days",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 141,
+              "line": 144,
+              "step": "get_working_days",
+              "target": "service.selected_years"
+            },
+            {
+              "kind": "external_call",
+              "line": 146,
+              "step": "get_working_days",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 147,
               "step": "get_working_days",
               "target": "service.calculate_working_days"
             }
           ],
           "generated": true,
-          "step_count": 5,
-          "transfer_count": 4,
+          "step_count": 9,
+          "transfer_count": 8,
           "truncated": false
         },
         "flow": {
           "modules_touched": [
-            "backend/app/routers/calendars.py"
+            "backend/app/routers/calendars.py",
+            "backend/app/services/calendar_rules.py"
           ],
-          "step_count": 5,
+          "step_count": 9,
           "truncated": false
         }
       },
@@ -13295,19 +13323,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 106,
+              "line": 107,
               "step": "import_calendar_holidays",
               "target": "service.import_holidays"
             },
             {
               "kind": "external_call",
-              "line": 108,
+              "line": 109,
               "step": "import_calendar_holidays",
               "target": "HTTPException"
             },
             {
               "kind": "external_call",
-              "line": 113,
+              "line": 114,
               "step": "import_calendar_holidays",
               "target": "HTTPException"
             }
@@ -13421,6 +13449,9 @@
             "backend/app/models/team_member.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/snapshot_service.py",
+            "backend/app/services/calendar_rules.py",
+            "backend/app/services/calendar_service.py",
+            "backend/app/models/calendar.py",
             "backend/app/services/review_provenance.py",
             "backend/app/services/agent_routing_service.py",
             "backend/app/services/agent_routing_policy.py",
@@ -13434,7 +13465,7 @@
             "backend/app/models/task.py",
             "backend/app/schemas/common.py"
           ],
-          "step_count": 847,
+          "step_count": 925,
           "truncated": true
         }
       },
@@ -13578,6 +13609,10 @@
             "backend/app/models/team_member.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/snapshot_service.py",
+            "backend/app/services/calendar_rules.py",
+            "backend/app/services/iteration_service.py",
+            "backend/app/services/calendar_service.py",
+            "backend/app/models/calendar.py",
             "backend/app/services/review_provenance.py",
             "backend/app/services/agent_routing_service.py",
             "backend/app/services/agent_routing_policy.py",
@@ -13587,16 +13622,12 @@
             "backend/app/schemas/agent_team_setup.py",
             "backend/app/models/agent.py",
             "backend/app/schemas/iteration.py",
-            "backend/app/services/iteration_service.py",
-            "backend/app/services/calendar_service.py",
-            "backend/app/models/calendar.py",
-            "backend/app/models/iteration.py",
             "backend/app/schemas/team.py",
             "backend/app/schemas/task.py",
             "backend/app/models/task.py",
             "backend/app/schemas/common.py"
           ],
-          "step_count": 893,
+          "step_count": 935,
           "truncated": true
         }
       },
@@ -13617,43 +13648,43 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
@@ -15449,10 +15480,11 @@
             "backend/app/config.py",
             "backend/app/services/iteration_service.py",
             "backend/app/services/calendar_service.py",
+            "backend/app/services/calendar_rules.py",
             "backend/app/schemas/calendar.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 84,
+          "step_count": 87,
           "truncated": true
         }
       },
@@ -16098,43 +16130,43 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
@@ -17292,7 +17324,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 147,
+              "line": 149,
               "step": "observe_planning_input",
               "target": "revisions"
             },
@@ -17314,7 +17346,7 @@
             "backend/app/services/planning_input_context.py",
             "backend/app/commands.py"
           ],
-          "step_count": 47,
+          "step_count": 53,
           "truncated": false
         }
       },
@@ -17335,43 +17367,43 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
@@ -17494,7 +17526,7 @@
             "backend/app/commands.py",
             "backend/app/config.py"
           ],
-          "step_count": 316,
+          "step_count": 320,
           "truncated": false
         }
       },
@@ -17624,7 +17656,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
@@ -18215,7 +18247,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 147,
+              "line": 149,
               "step": "observe_planning_input",
               "target": "revisions"
             },
@@ -18237,7 +18269,7 @@
             "backend/app/services/planning_input_context.py",
             "backend/app/commands.py"
           ],
-          "step_count": 46,
+          "step_count": 52,
           "truncated": false
         }
       },
@@ -18338,7 +18370,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 100,
+              "line": 101,
               "step": "preview_iteration_schedule",
               "step_index": 1,
               "target": "gantt_tasks.append"
@@ -18347,49 +18379,49 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
             {
               "kind": "external_call",
-              "line": 76,
+              "line": 77,
               "step": "preview_iteration_schedule",
               "target": "HTTPException"
             },
@@ -18833,7 +18865,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 322,
+              "line": 323,
               "step": "SnapshotService._payload_visible",
               "step_index": 8,
               "target": "tasks.pop"
@@ -18841,7 +18873,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 325,
+              "line": 326,
               "step": "SnapshotService._payload_visible",
               "step_index": 8,
               "target": "tasks.extend"
@@ -18850,37 +18882,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 306,
+              "line": 307,
               "step": "SnapshotService.get_snapshot",
               "target": "SNAPSHOT_FILENAME_PATTERN.fullmatch"
             },
             {
               "kind": "unresolved_call",
-              "line": 308,
+              "line": 309,
               "step": "SnapshotService.get_snapshot",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 308,
+              "line": 309,
               "step": "SnapshotService.get_snapshot",
               "target": "select(ApplicationSnapshot).where"
             },
             {
               "kind": "external_call",
-              "line": 308,
+              "line": 309,
               "step": "SnapshotService.get_snapshot",
               "target": "select"
             },
             {
               "kind": "unresolved_call",
-              "line": 317,
+              "line": 318,
               "step": "SnapshotService._payload_visible",
               "target": "self.db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 320,
+              "line": 321,
               "step": "SnapshotService._payload_visible",
               "target": "payload.get"
             },
@@ -20546,43 +20578,43 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
@@ -21166,55 +21198,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "external_call",
-              "line": 327,
+              "line": 342,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
             {
               "kind": "unresolved_call",
-              "line": 331,
+              "line": 346,
               "step": "IterationService.get_by_id",
               "target": "result.scalar_one_or_none"
             },
             {
               "kind": "external_call",
-              "line": 44,
+              "line": 45,
               "step": "schedule_iteration",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 49,
+              "line": 50,
               "step": "schedule_iteration",
               "target": "service.schedule_iteration"
             }
@@ -21370,7 +21402,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 39,
+              "line": 40,
               "step": "set_availability",
               "target": "CapacityService(db).set_calendar"
             }
@@ -23599,31 +23631,31 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options"
             },
             {
               "kind": "external_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 326,
+              "line": 341,
               "step": "IterationService.get_by_id",
               "target": "selectinload"
             },
@@ -23665,19 +23697,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 52,
+              "line": 53,
               "step": "update_absence",
               "target": "service.save_absence"
             },
             {
               "kind": "unresolved_call",
-              "line": 32,
+              "line": 108,
               "step": "CapacityService.require_owner",
               "target": "self.db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 41,
+              "line": 117,
               "step": "CapacityService.require_visible",
               "target": "self.db.info.get"
             },
@@ -23699,7 +23731,8 @@
             "backend/app/services/capacity_service.py",
             "backend/app/config.py",
             "backend/app/authority.py",
-            "backend/app/commands.py"
+            "backend/app/commands.py",
+            "backend/app/services/calendar_rules.py"
           ],
           "step_count": 50,
           "truncated": false
@@ -24092,7 +24125,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 68,
+              "line": 69,
               "step": "update_calendar",
               "step_index": 1,
               "target": "service.update"
@@ -24101,7 +24134,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 70,
+              "line": 71,
               "step": "update_calendar",
               "target": "HTTPException"
             }
@@ -25546,13 +25579,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 323,
+              "line": 338,
               "step": "IterationService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 324,
+              "line": 339,
               "step": "IterationService.get_by_id",
               "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
             },
@@ -29489,11 +29522,12 @@
             "backend/app/query_limits.py",
             "backend/app/schemas/team.py",
             "backend/app/services/capacity_service.py",
+            "backend/app/services/calendar_rules.py",
             "backend/app/services/calendar_service.py",
             "backend/app/services/plan_checkpoints.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 623,
+          "step_count": 646,
           "truncated": true
         }
       },
@@ -31901,10 +31935,10 @@
             "backend/app/services/agent_team_setup_service.py",
             "backend/app/query_limits.py",
             "backend/app/schemas/agent_routing.py",
-            "backend/app/services/calendar_service.py",
-            "backend/app/schemas/calendar.py",
-            "backend/app/services/review_provenance.py",
+            "backend/app/services/capacity_service.py",
+            "backend/app/services/calendar_rules.py",
             "backend/app/services/agent_routing_policy.py",
+            "backend/app/services/review_provenance.py",
             "backend/app/utils/url_policy.py",
             "backend/app/utils/github_links.py",
             "backend/app/services/retained_planning_output.py",
@@ -31912,7 +31946,7 @@
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 1100,
+          "step_count": 1129,
           "truncated": true
         }
       },
@@ -34615,9 +34649,10 @@
             "backend/app/services/identity_service.py",
             "backend/app/models/identity.py",
             "backend/app/mcp_agent_tools.py",
-            "backend/app/services/iteration_service.py"
+            "backend/app/services/iteration_service.py",
+            "backend/app/services/calendar_rules.py"
           ],
-          "step_count": 219,
+          "step_count": 222,
           "truncated": true
         }
       },
@@ -35033,7 +35068,7 @@
             "backend/app/services/work_metrics.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 505,
+          "step_count": 509,
           "truncated": true
         }
       },
@@ -37147,9 +37182,10 @@
             "backend/app/utils/time.py",
             "backend/app/models/identity.py",
             "backend/app/mcp_agent_tools.py",
-            "backend/app/services/iteration_service.py"
+            "backend/app/services/iteration_service.py",
+            "backend/app/services/calendar_rules.py"
           ],
-          "step_count": 257,
+          "step_count": 260,
           "truncated": true
         }
       },
@@ -37240,12 +37276,13 @@
             "backend/app/query_limits.py",
             "backend/app/schemas/team.py",
             "backend/app/services/calendar_service.py",
+            "backend/app/services/calendar_rules.py",
             "backend/app/schemas/calendar.py",
             "backend/app/services/work_metrics.py",
             "backend/app/schemas/gantt.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 441,
+          "step_count": 444,
           "truncated": true
         }
       },
@@ -37331,6 +37368,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/iteration_service.py",
             "backend/app/services/calendar_service.py",
+            "backend/app/services/calendar_rules.py",
             "backend/app/schemas/calendar.py",
             "backend/app/services/work_metrics.py",
             "backend/app/services/team_service.py",
@@ -37339,7 +37377,7 @@
             "backend/app/services/capacity_service.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 648,
+          "step_count": 661,
           "truncated": true
         }
       },
@@ -37687,7 +37725,7 @@
             "backend/app/schemas/project.py",
             "backend/app/services/request_source_service.py"
           ],
-          "step_count": 607,
+          "step_count": 611,
           "truncated": true
         }
       },
@@ -37775,7 +37813,7 @@
             "backend/app/services/work_metrics.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 543,
+          "step_count": 547,
           "truncated": true
         }
       },
@@ -37862,9 +37900,10 @@
             "backend/app/services/team_service.py",
             "backend/app/schemas/team.py",
             "backend/app/services/capacity_service.py",
+            "backend/app/services/calendar_rules.py",
             "backend/app/services/calendar_service.py"
           ],
-          "step_count": 336,
+          "step_count": 338,
           "truncated": true
         }
       },
@@ -38037,10 +38076,11 @@
             "backend/app/services/team_service.py",
             "backend/app/schemas/team.py",
             "backend/app/services/capacity_service.py",
+            "backend/app/services/calendar_rules.py",
             "backend/app/services/calendar_service.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 394,
+          "step_count": 397,
           "truncated": true
         }
       },
@@ -39002,7 +39042,7 @@
             "backend/app/query_limits.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 559,
+          "step_count": 563,
           "truncated": true
         }
       },
@@ -42681,7 +42721,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 2554,
+              "line": 2555,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -42689,7 +42729,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 2557,
+              "line": 2558,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -42722,19 +42762,19 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 2541,
+              "line": 2542,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 2542,
+              "line": 2543,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 2548,
+              "line": 2549,
               "step": "main",
               "target": "parser.parse_args"
             },
@@ -45061,6 +45101,8 @@
         "entities/AllIterationsDrawerProps.md",
         "entities/AnalyticsScope.md",
         "entities/AndroidArtifacts.md",
+        "entities/AnnualCalendarFields_Props.md",
+        "entities/AnnualCalendars.md",
         "entities/ApiErrorKind.md",
         "entities/ApiErrorShape.md",
         "entities/ApiFieldError.md",
@@ -45077,6 +45119,7 @@
         "entities/AssigneeRecommendationsPanelProps.md",
         "entities/AssigneeSelectProps.md",
         "entities/AssignmentIntent.md",
+        "entities/AssignmentSelectionRefresh.md",
         "entities/AsyncBarrier.md",
         "entities/atRiskReasons_Translate.md",
         "entities/Attempt.md",
@@ -45167,6 +45210,7 @@
         "entities/CommentCreate.md",
         "entities/CommentRevision.md",
         "entities/CommentUpdate.md",
+        "entities/CommitmentRate.md",
         "entities/CompleteMetricWindow.md",
         "entities/ConfirmationRequest.md",
         "entities/ConfirmDialogProps.md",
@@ -45479,6 +45523,7 @@
         "entities/MigrationPolicy.md",
         "entities/MilestoneEditorState.md",
         "entities/MilestoneFormState.md",
+        "entities/MissingCalendarYear.md",
         "entities/MissingMutationRevision.md",
         "entities/ModalFrameProps.md",
         "entities/ModalProps.md",
@@ -45611,6 +45656,7 @@
         "entities/ParsedTeamMember.md",
         "entities/PartialWorkScope.md",
         "entities/PendingTaskWrite.md",
+        "entities/PeriodCommitments.md",
         "entities/PersistedState.md",
         "entities/PersistedTaskRoutingAssessmentFields.md",
         "entities/PickerItem.md",
@@ -46598,6 +46644,7 @@
         "entities/WorkspaceMetadata.md",
         "entities/WorkTemplateResponse.md",
         "entities/WormObjectStore.md",
+        "entities/YearRules.md",
         "flows/http-accept_planning_triage_item.md",
         "flows/http-accept_triage_item.md",
         "flows/http-acknowledge_agent_team_runtime.md",
@@ -47203,6 +47250,7 @@
         "modules/20261116_0017_run_harness_session.md",
         "modules/20261120_0018_review_provenance.md",
         "modules/20261121_0019_execution_planning_window.md",
+        "modules/20261121_0020_annual_calendar_coverage.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -47269,6 +47317,7 @@
         "modules/analyticsScope.md",
         "modules/android_qualification.md",
         "modules/android_web_peer.md",
+        "modules/AnnualCalendarFields.md",
         "modules/api.md",
         "modules/apiError.md",
         "modules/App.legacyRoutes.test.md",
@@ -47321,6 +47370,7 @@
         "modules/ButtonLink.md",
         "modules/ButtonLink.test.md",
         "modules/buttonStyles.md",
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/CalendarPage.md",
         "modules/CalendarPage.test.md",
@@ -48073,6 +48123,9 @@
         "modules/test_allocation_recovery.md",
         "modules/test_analytics_scopes.md",
         "modules/test_android_cleanup.md",
+        "modules/test_annual_calendar_coverage.md",
+        "modules/test_annual_calendar_migration.md",
+        "modules/test_annual_calendar_work_control.md",
         "modules/test_apt_runtime.md",
         "modules/test_authority_migrations.md",
         "modules/test_autonomy_foundation.md",
@@ -48120,6 +48173,7 @@
         "modules/test_planning_input_context.md",
         "modules/test_planning_issues.md",
         "modules/test_planning_read_models.md",
+        "modules/test_pm_forecast_calendar.md",
         "modules/test_postgresql_closeout.md",
         "modules/test_postgresql_concurrency.md",
         "modules/test_postgresql_documentation.md",
@@ -48301,6 +48355,7 @@
         "workflows/AgentModelCatalogService__execute.md",
         "workflows/AgentPlanningService___init__.md",
         "workflows/AgentPlanningService__execute.md",
+        "workflows/AgentPlanningService__schedule_input_digest.md",
         "workflows/AgentRoutingService__build_preview.md",
         "workflows/AgentRoutingService_create_assessment.md",
         "workflows/AgentRoutingService_preview_task_routing.md",
@@ -48355,8 +48410,8 @@
         "workflows/bootstrap.md",
         "workflows/build_examples.md",
         "workflows/callback.md",
+        "workflows/CapacityService__projection.md",
         "workflows/CapacityService_invalidate_profile.md",
-        "workflows/CapacityService_projection.md",
         "workflows/CapacityService_save_absence.md",
         "workflows/CapacityService_set_calendar.md",
         "workflows/change_task_status.md",
@@ -48403,8 +48458,11 @@
         "workflows/IncrementalScheduler__reschedule_subset.md",
         "workflows/initialize_gate.md",
         "workflows/IterationService__reconcile_tasks_for_project_scope.md",
+        "workflows/IterationService_create.md",
+        "workflows/IterationService_create_series.md",
         "workflows/IterationService_get_planning_readiness_summary.md",
         "workflows/IterationService_get_summary.md",
+        "workflows/IterationService_to_response.md",
         "workflows/LabelService_create_label.md",
         "workflows/link_profile.md",
         "workflows/load_snapshot.md",
@@ -48452,6 +48510,7 @@
         "workflows/RequestSourceService_create_link.md",
         "workflows/RequestSourceService_unlink.md",
         "workflows/require_agent_read_access.md",
+        "workflows/reserve_iteration_annuals.md",
         "workflows/reserve_restored_task_version.md",
         "workflows/reserve_task_context_revision.md",
         "workflows/resolve_http_identity.md",
@@ -51373,6 +51432,37 @@
       "title": "AndroidArtifacts"
     },
     {
+      "canonical_path": "entities/AnnualCalendarFields_Props.md",
+      "id": "AnnualCalendarFields_Props",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/AnnualCalendarFields_Props",
+      "outgoing_internal_links": [
+        "modules/AnnualCalendarFields.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/iteration/AnnualCalendarFields.tsx",
+      "title": "Props"
+    },
+    {
+      "canonical_path": "entities/AnnualCalendars.md",
+      "id": "AnnualCalendars",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/AnnualCalendars",
+      "outgoing_internal_links": [
+        "modules/agent_planning_service.md",
+        "modules/agent_routing_service.md",
+        "modules/calendar_rules.md",
+        "modules/calendar_service.md",
+        "modules/calendars.md",
+        "modules/capacity_service.md",
+        "modules/mcp_agent_tools.md",
+        "modules/routers_gantt.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/calendar_rules.py",
+      "title": "AnnualCalendars"
+    },
+    {
       "canonical_path": "entities/ApiErrorKind.md",
       "id": "ApiErrorKind",
       "kind": "entities",
@@ -51599,6 +51689,18 @@
       "title": "AssignmentIntent"
     },
     {
+      "canonical_path": "entities/AssignmentSelectionRefresh.md",
+      "id": "AssignmentSelectionRefresh",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/AssignmentSelectionRefresh",
+      "outgoing_internal_links": [
+        "modules/schemas_gantt.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/gantt.py",
+      "title": "AssignmentSelectionRefresh"
+    },
+    {
       "canonical_path": "entities/AsyncBarrier.md",
       "id": "AsyncBarrier",
       "kind": "entities",
@@ -51795,8 +51897,8 @@
         "modules/test_acceptance_attribution.md",
         "modules/test_allocation_recovery.md",
         "modules/test_analytics_scopes.md",
-        "modules/test_bounded_task_policy.md",
-        "modules/test_delivery_dependencies.md"
+        "modules/test_annual_calendar_coverage.md",
+        "modules/test_bounded_task_policy.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/authority.py",
@@ -52380,9 +52482,9 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/CalendarService",
       "outgoing_internal_links": [
-        "modules/agent_routing_service.md",
         "modules/calendar_service.md",
         "modules/calendars.md",
+        "modules/capacity_service.md",
         "modules/iteration_service.md",
         "modules/routers_gantt.md"
       ],
@@ -52445,6 +52547,8 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/CapacityService",
       "outgoing_internal_links": [
+        "modules/agent_planning_service.md",
+        "modules/agent_routing_service.md",
         "modules/capacity_service.md",
         "modules/iteration_service.md",
         "modules/routers_capacity.md",
@@ -52805,6 +52909,18 @@
       "role": "semantic",
       "source_path": "backend/app/routers/discussion.py",
       "title": "CommentUpdate"
+    },
+    {
+      "canonical_path": "entities/CommitmentRate.md",
+      "id": "CommitmentRate",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/CommitmentRate",
+      "outgoing_internal_links": [
+        "modules/capacity_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/capacity_service.py",
+      "title": "CommitmentRate"
     },
     {
       "canonical_path": "entities/CompleteMetricWindow.md",
@@ -55633,7 +55749,7 @@
         "modules/native_session_service.md",
         "modules/routers_identity.md",
         "modules/test_agent_discovery_report.md",
-        "modules/test_execution_planning_window.md"
+        "modules/test_annual_calendar_work_control.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/identity_service.py",
@@ -56642,9 +56758,11 @@
       "mcp_uri": "llm-wiki://entities/MCPAgentKeyMiddleware",
       "outgoing_internal_links": [
         "modules/mcp_server.md",
+        "modules/test_annual_calendar_work_control.md",
         "modules/test_execution_planning_window.md",
         "modules/test_execution_reconciliation.md",
         "modules/test_identity_lifecycle.md",
+        "modules/test_pm_forecast_calendar.md",
         "modules/test_team_pm_dispatch.md",
         "modules/test_team_pm_recovery.md"
       ],
@@ -56887,6 +57005,19 @@
       "role": "semantic",
       "source_path": "frontend/src/components/projects/projectDetailShared.ts",
       "title": "MilestoneFormState"
+    },
+    {
+      "canonical_path": "entities/MissingCalendarYear.md",
+      "id": "MissingCalendarYear",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/MissingCalendarYear",
+      "outgoing_internal_links": [
+        "modules/commands.md",
+        "modules/scheduler_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/scheduler_service.py",
+      "title": "MissingCalendarYear"
     },
     {
       "canonical_path": "entities/MissingMutationRevision.md",
@@ -57260,9 +57391,11 @@
       "outgoing_internal_links": [
         "modules/agent_planning_service.md",
         "modules/app_database.md",
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/models___init__.md",
         "modules/models_calendar.md",
+        "modules/models_capacity.md",
         "modules/models_iteration.md"
       ],
       "role": "semantic",
@@ -58811,6 +58944,19 @@
       "title": "PendingTaskWrite"
     },
     {
+      "canonical_path": "entities/PeriodCommitments.md",
+      "id": "PeriodCommitments",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/PeriodCommitments",
+      "outgoing_internal_links": [
+        "modules/capacity_service.md",
+        "modules/test_annual_calendar_coverage.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/capacity_service.py",
+      "title": "PeriodCommitments"
+    },
+    {
       "canonical_path": "entities/PersistedState.md",
       "id": "PersistedState",
       "kind": "entities",
@@ -58945,11 +59091,14 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/PlanningConflict",
       "outgoing_internal_links": [
+        "modules/agent_planning_service.md",
         "modules/app_main.md",
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/capacity_service.md",
         "modules/commands.md",
-        "modules/delivery_dependency_service.md",
+        "modules/mcp_server.md",
+        "modules/scheduler_service.md",
         "modules/time_entry_service.md"
       ],
       "role": "semantic",
@@ -59507,6 +59656,7 @@
         "modules/models___init__.md",
         "modules/models_capacity.md",
         "modules/team_service.md",
+        "modules/test_annual_calendar_coverage.md",
         "modules/test_profile_capacity.md"
       ],
       "role": "semantic",
@@ -59525,6 +59675,8 @@
         "modules/models___init__.md",
         "modules/models_capacity.md",
         "modules/planning_input_context.md",
+        "modules/test_annual_calendar_coverage.md",
+        "modules/test_annual_calendar_migration.md",
         "modules/test_planning_input_context.md"
       ],
       "role": "semantic",
@@ -59655,9 +59807,8 @@
         "modules/routers_task_domain.md",
         "modules/task_domain_service.md",
         "modules/test_allocation_recovery.md",
+        "modules/test_annual_calendar_work_control.md",
         "modules/test_execution_planning_window.md",
-        "modules/test_execution_reconciliation.md",
-        "modules/test_managed_authority.md",
         "modules/test_project_identity.md"
       ],
       "role": "semantic",
@@ -62094,7 +62245,7 @@
         "modules/routers_llm.md",
         "modules/scheduler_service.md",
         "modules/tasks.md",
-        "modules/test_planning_read_models.md"
+        "modules/test_annual_calendar_coverage.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/scheduler_service.py",
@@ -62467,6 +62618,7 @@
         "modules/planning_inputs.md",
         "modules/schemas___init__.md",
         "modules/schemas_calendar.md",
+        "modules/test_annual_calendar_coverage.md",
         "modules/test_planning_input_context.md",
         "modules/test_profile_capacity.md"
       ],
@@ -62514,6 +62666,7 @@
         "modules/planning_inputs.md",
         "modules/schemas___init__.md",
         "modules/schemas_calendar.md",
+        "modules/test_annual_calendar_coverage.md",
         "modules/test_planning_input_context.md"
       ],
       "role": "semantic",
@@ -62944,7 +63097,8 @@
         "modules/mcp_agent_tools.md",
         "modules/schemas___init__.md",
         "modules/schemas_iteration.md",
-        "modules/schemas_work_metrics.md"
+        "modules/schemas_work_metrics.md",
+        "modules/test_annual_calendar_coverage.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/iteration.py",
@@ -62964,8 +63118,8 @@
         "modules/routers_agent_planning.md",
         "modules/schemas___init__.md",
         "modules/schemas_iteration.md",
-        "modules/test_schedule_working_date.md",
-        "modules/test_task_domain_integrity.md"
+        "modules/test_annual_calendar_coverage.md",
+        "modules/test_schedule_working_date.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/iteration.py",
@@ -67793,7 +67947,7 @@
         "modules/snapshot_service.md",
         "modules/team_member.md",
         "modules/team_service.md",
-        "modules/test_planning_input_context.md"
+        "modules/test_annual_calendar_coverage.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/team_member.py",
@@ -69456,6 +69610,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/types_calendar_Calendar",
       "outgoing_internal_links": [
+        "modules/AnnualCalendarFields.md",
         "modules/calendarService.md",
         "modules/types_calendar.md",
         "modules/WorkCalendarSettings.md"
@@ -72561,7 +72716,7 @@
         "modules/task_domain_service.md",
         "modules/test_agent_model_catalog_api.md",
         "modules/test_agent_team_setup.md",
-        "modules/test_execution_planning_window.md"
+        "modules/test_annual_calendar_work_control.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/identity.py",
@@ -72606,6 +72761,20 @@
       "role": "semantic",
       "source_path": "backend/app/autonomy/evidence.py",
       "title": "WormObjectStore"
+    },
+    {
+      "canonical_path": "entities/YearRules.md",
+      "id": "YearRules",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/YearRules",
+      "outgoing_internal_links": [
+        "modules/calendar_rules.md",
+        "modules/capacity_service.md",
+        "modules/test_annual_calendar_coverage.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/calendar_rules.py",
+      "title": "YearRules"
     },
     {
       "canonical_path": "modules/0001_wave0_probe.md",
@@ -72818,6 +72987,16 @@
       "role": "semantic",
       "source_path": "backend/app/migrations/versions/20261121_0019_execution_planning_window.py",
       "title": "20261121_0019_execution_planning_window Module"
+    },
+    {
+      "canonical_path": "modules/20261121_0020_annual_calendar_coverage.md",
+      "id": "20261121_0020_annual_calendar_coverage",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/20261121_0020_annual_calendar_coverage",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/app/migrations/versions/20261121_0020_annual_calendar_coverage.py",
+      "title": "20261121_0020_annual_calendar_coverage Module"
     },
     {
       "canonical_path": "modules/acceptance_artifacts.md",
@@ -73995,6 +74174,23 @@
       "title": "android_web_peer Module"
     },
     {
+      "canonical_path": "modules/AnnualCalendarFields.md",
+      "id": "AnnualCalendarFields",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/AnnualCalendarFields",
+      "outgoing_internal_links": [
+        "entities/AnnualCalendarFields_Props.md",
+        "modules/AnnualCalendarFields.md",
+        "modules/IterationForm.md",
+        "modules/PersonCapacity.md",
+        "modules/Select.md",
+        "modules/types_calendar.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/iteration/AnnualCalendarFields.tsx",
+      "title": "AnnualCalendarFields Module"
+    },
+    {
       "canonical_path": "modules/api.md",
       "id": "api",
       "kind": "modules",
@@ -74814,6 +75010,20 @@
       "title": "buttonStyles Module"
     },
     {
+      "canonical_path": "modules/calendar_rules.md",
+      "id": "calendar_rules",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/calendar_rules",
+      "outgoing_internal_links": [
+        "entities/AnnualCalendars.md",
+        "entities/YearRules.md",
+        "modules/calendar_rules.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/calendar_rules.py",
+      "title": "calendar_rules Module"
+    },
+    {
       "canonical_path": "modules/calendar_service.md",
       "id": "calendar_service",
       "kind": "modules",
@@ -74877,6 +75087,7 @@
       "outgoing_internal_links": [
         "modules/app_database.md",
         "modules/app_main.md",
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/calendars.md",
         "modules/routers___init__.md",
@@ -74913,6 +75124,8 @@
       "mcp_uri": "llm-wiki://modules/capacity_service",
       "outgoing_internal_links": [
         "entities/CapacityService.md",
+        "entities/CommitmentRate.md",
+        "entities/PeriodCommitments.md",
         "modules/capacity_service.md"
       ],
       "role": "semantic",
@@ -78918,18 +79131,7 @@
         "entities/PlanningState.md",
         "entities/ProfileAbsence.md",
         "entities/ProfileAvailability.md",
-        "modules/app_database.md",
-        "modules/calendar_service.md",
-        "modules/capacity_service.md",
-        "modules/commands.md",
-        "modules/models___init__.md",
-        "modules/models_capacity.md",
-        "modules/planning_input_context.md",
-        "modules/team_service.md",
-        "modules/test_planning_input_context.md",
-        "modules/test_profile_capacity.md",
-        "modules/test_task_discussion.md",
-        "modules/test_team_pm_recovery.md"
+        "modules/models_capacity.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/capacity.py",
@@ -80170,6 +80372,7 @@
         "entities/Absence.md",
         "entities/Availability.md",
         "entities/Capacity.md",
+        "modules/AnnualCalendarFields.md",
         "modules/api.md",
         "modules/apiError.md",
         "modules/Button.md",
@@ -83015,6 +83218,7 @@
         "entities/ChangeType.md",
         "entities/IncrementalScheduler.md",
         "entities/MemberSchedule.md",
+        "entities/MissingCalendarYear.md",
         "entities/RescheduleResult.md",
         "entities/SchedulerService.md",
         "entities/TaskChange.md",
@@ -83360,6 +83564,7 @@
         "modules/planning_inputs.md",
         "modules/schemas___init__.md",
         "modules/schemas_calendar.md",
+        "modules/test_annual_calendar_coverage.md",
         "modules/test_planning_input_context.md",
         "modules/test_profile_capacity.md"
       ],
@@ -83460,6 +83665,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/schemas_gantt",
       "outgoing_internal_links": [
+        "entities/AssignmentSelectionRefresh.md",
         "entities/GanttAssignee.md",
         "entities/GanttMilestone.md",
         "entities/ScheduleApplyRequest.md",
@@ -87615,6 +87821,47 @@
       "title": "test_android_cleanup Module"
     },
     {
+      "canonical_path": "modules/test_annual_calendar_coverage.md",
+      "id": "test_annual_calendar_coverage",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_annual_calendar_coverage",
+      "outgoing_internal_links": [
+        "modules/test_annual_calendar_coverage.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_annual_calendar_coverage.py",
+      "title": "test_annual_calendar_coverage Module"
+    },
+    {
+      "canonical_path": "modules/test_annual_calendar_migration.md",
+      "id": "test_annual_calendar_migration",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_annual_calendar_migration",
+      "outgoing_internal_links": [
+        "modules/models_calendar.md",
+        "modules/models_capacity.md",
+        "modules/models_iteration.md",
+        "modules/team_member.md",
+        "modules/test_annual_calendar_migration.md",
+        "modules/upgrade_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/migrations/test_annual_calendar_migration.py",
+      "title": "test_annual_calendar_migration Module"
+    },
+    {
+      "canonical_path": "modules/test_annual_calendar_work_control.md",
+      "id": "test_annual_calendar_work_control",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_annual_calendar_work_control",
+      "outgoing_internal_links": [
+        "modules/test_annual_calendar_work_control.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_annual_calendar_work_control.py",
+      "title": "test_annual_calendar_work_control Module"
+    },
+    {
       "canonical_path": "modules/test_apt_runtime.md",
       "id": "test_apt_runtime",
       "kind": "modules",
@@ -88278,6 +88525,18 @@
       "role": "semantic",
       "source_path": "backend/tests/test_planning_read_models.py",
       "title": "test_planning_read_models Module"
+    },
+    {
+      "canonical_path": "modules/test_pm_forecast_calendar.md",
+      "id": "test_pm_forecast_calendar",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_pm_forecast_calendar",
+      "outgoing_internal_links": [
+        "modules/test_pm_forecast_calendar.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_pm_forecast_calendar.py",
+      "title": "test_pm_forecast_calendar Module"
     },
     {
       "canonical_path": "modules/test_postgresql_closeout.md",
@@ -89869,6 +90128,7 @@
         "entities/types_calendar_CalendarImportResponse.md",
         "entities/types_calendar_CalendarUpdate.md",
         "entities/types_calendar_WorkingDaysResponse.md",
+        "modules/AnnualCalendarFields.md",
         "modules/calendarService.md",
         "modules/types_calendar.md",
         "modules/WorkCalendarSettings.md"
@@ -91383,6 +91643,22 @@
       "title": "AgentPlanningService__execute"
     },
     {
+      "canonical_path": "workflows/AgentPlanningService__schedule_input_digest.md",
+      "id": "AgentPlanningService__schedule_input_digest",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/AgentPlanningService__schedule_input_digest",
+      "outgoing_internal_links": [
+        "modules/agent_planning_service.md",
+        "modules/agent_service.md",
+        "modules/calendar_rules.md",
+        "modules/capacity_service.md",
+        "modules/commands.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/agent_planning_service.py",
+      "title": "AgentPlanningService__schedule_input_digest"
+    },
+    {
       "canonical_path": "workflows/AgentRoutingService__build_preview.md",
       "id": "AgentRoutingService__build_preview",
       "kind": "workflows",
@@ -92291,35 +92567,37 @@
       "title": "callback"
     },
     {
+      "canonical_path": "workflows/CapacityService__projection.md",
+      "id": "CapacityService__projection",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/CapacityService__projection",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/calendar_rules.md",
+        "modules/capacity_service.md",
+        "modules/services_work_metrics.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/capacity_service.py",
+      "title": "CapacityService__projection"
+    },
+    {
       "canonical_path": "workflows/CapacityService_invalidate_profile.md",
       "id": "CapacityService_invalidate_profile",
       "kind": "workflows",
       "mcp_uri": "llm-wiki://workflows/CapacityService_invalidate_profile",
       "outgoing_internal_links": [
         "modules/authority.md",
+        "modules/calendar_rules.md",
         "modules/capacity_service.md",
         "modules/commands.md",
+        "modules/execution_planning_window.md",
         "modules/snapshot_service.md",
         "modules/task_service.md"
       ],
       "role": "mixed",
       "source_path": "backend/app/services/capacity_service.py",
       "title": "CapacityService_invalidate_profile"
-    },
-    {
-      "canonical_path": "workflows/CapacityService_projection.md",
-      "id": "CapacityService_projection",
-      "kind": "workflows",
-      "mcp_uri": "llm-wiki://workflows/CapacityService_projection",
-      "outgoing_internal_links": [
-        "modules/authority.md",
-        "modules/capacity_service.md",
-        "modules/commands.md",
-        "modules/services_work_metrics.md"
-      ],
-      "role": "mixed",
-      "source_path": "backend/app/services/capacity_service.py",
-      "title": "CapacityService_projection"
     },
     {
       "canonical_path": "workflows/CapacityService_save_absence.md",
@@ -92343,6 +92621,8 @@
       "mcp_uri": "llm-wiki://workflows/CapacityService_set_calendar",
       "outgoing_internal_links": [
         "modules/authority.md",
+        "modules/calendar_rules.md",
+        "modules/calendar_service.md",
         "modules/capacity_service.md",
         "modules/commands.md",
         "modules/models_capacity.md"
@@ -92766,6 +93046,7 @@
       "kind": "workflows",
       "mcp_uri": "llm-wiki://workflows/get_gantt_data",
       "outgoing_internal_links": [
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/iteration_service.md",
         "modules/routers_gantt.md",
@@ -93042,11 +93323,42 @@
       "title": "IterationService__reconcile_tasks_for_project_scope"
     },
     {
+      "canonical_path": "workflows/IterationService_create.md",
+      "id": "IterationService_create",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/IterationService_create",
+      "outgoing_internal_links": [
+        "modules/calendar_service.md",
+        "modules/commands.md",
+        "modules/iteration_service.md",
+        "modules/models_iteration.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/iteration_service.py",
+      "title": "IterationService_create"
+    },
+    {
+      "canonical_path": "workflows/IterationService_create_series.md",
+      "id": "IterationService_create_series",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/IterationService_create_series",
+      "outgoing_internal_links": [
+        "modules/calendar_service.md",
+        "modules/commands.md",
+        "modules/iteration_service.md",
+        "modules/models_iteration.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/iteration_service.py",
+      "title": "IterationService_create_series"
+    },
+    {
       "canonical_path": "workflows/IterationService_get_planning_readiness_summary.md",
       "id": "IterationService_get_planning_readiness_summary",
       "kind": "workflows",
       "mcp_uri": "llm-wiki://workflows/IterationService_get_planning_readiness_summary",
       "outgoing_internal_links": [
+        "modules/calendar_rules.md",
         "modules/capacity_service.md",
         "modules/iteration_service.md",
         "modules/plan_checkpoints.md",
@@ -93064,6 +93376,7 @@
       "kind": "workflows",
       "mcp_uri": "llm-wiki://workflows/IterationService_get_summary",
       "outgoing_internal_links": [
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/iteration_service.md",
         "modules/schemas_iteration.md",
@@ -93072,6 +93385,21 @@
       "role": "mixed",
       "source_path": "backend/app/services/iteration_service.py",
       "title": "IterationService_get_summary"
+    },
+    {
+      "canonical_path": "workflows/IterationService_to_response.md",
+      "id": "IterationService_to_response",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/IterationService_to_response",
+      "outgoing_internal_links": [
+        "modules/calendar_rules.md",
+        "modules/calendar_service.md",
+        "modules/iteration_service.md",
+        "modules/schemas_iteration.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/iteration_service.py",
+      "title": "IterationService_to_response"
     },
     {
       "canonical_path": "workflows/LabelService_create_label.md",
@@ -93358,6 +93686,7 @@
       "kind": "workflows",
       "mcp_uri": "llm-wiki://workflows/planning_input_reservation",
       "outgoing_internal_links": [
+        "modules/calendar_rules.md",
         "modules/commands.md",
         "modules/execution_planning_window.md",
         "modules/mutation_versions.md",
@@ -93817,6 +94146,21 @@
       "title": "require_agent_read_access"
     },
     {
+      "canonical_path": "workflows/reserve_iteration_annuals.md",
+      "id": "reserve_iteration_annuals",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/reserve_iteration_annuals",
+      "outgoing_internal_links": [
+        "modules/calendar_rules.md",
+        "modules/commands.md",
+        "modules/execution_planning_window.md",
+        "modules/iteration_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/calendar_rules.py",
+      "title": "reserve_iteration_annuals"
+    },
+    {
       "canonical_path": "workflows/reserve_restored_task_version.md",
       "id": "reserve_restored_task_version",
       "kind": "workflows",
@@ -94103,6 +94447,7 @@
       "mcp_uri": "llm-wiki://workflows/SnapshotService_restore",
       "outgoing_internal_links": [
         "modules/authority.md",
+        "modules/calendar_service.md",
         "modules/commands.md",
         "modules/config.md",
         "modules/delivery_dependency_service.md",
@@ -95354,6 +95699,7 @@
       "mcp_uri": "llm-wiki://flows/http-create_absence",
       "outgoing_internal_links": [
         "modules/authority.md",
+        "modules/calendar_rules.md",
         "modules/capacity_service.md",
         "modules/commands.md",
         "modules/config.md",
@@ -96737,6 +97083,7 @@
       "mcp_uri": "llm-wiki://flows/http-get_availability",
       "outgoing_internal_links": [
         "modules/authority.md",
+        "modules/calendar_rules.md",
         "modules/capacity_service.md",
         "modules/commands.md",
         "modules/config.md",
@@ -96840,6 +97187,7 @@
       "mcp_uri": "llm-wiki://flows/http-get_gantt_data",
       "outgoing_internal_links": [
         "modules/authority.md",
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/iteration_service.md",
         "modules/query_limits.md",
@@ -96906,6 +97254,7 @@
       "outgoing_internal_links": [
         "modules/agent_service.md",
         "modules/authority.md",
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/capacity_service.md",
         "modules/commands.md",
@@ -97069,6 +97418,7 @@
       "mcp_uri": "llm-wiki://flows/http-get_profile_capacity",
       "outgoing_internal_links": [
         "modules/authority.md",
+        "modules/calendar_rules.md",
         "modules/capacity_service.md",
         "modules/commands.md",
         "modules/routers_capacity.md",
@@ -97512,6 +97862,7 @@
       "kind": "flows",
       "mcp_uri": "llm-wiki://flows/http-get_working_days",
       "outgoing_internal_links": [
+        "modules/calendar_rules.md",
         "modules/calendars.md"
       ],
       "role": "mixed",
@@ -97609,6 +97960,8 @@
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
         "modules/authority.md",
+        "modules/calendar_rules.md",
+        "modules/calendar_service.md",
         "modules/commands.md",
         "modules/config.md",
         "modules/delivery_dependency_service.md",
@@ -97620,6 +97973,7 @@
         "modules/import_parser.md",
         "modules/iteration_service.md",
         "modules/models_agent.md",
+        "modules/models_calendar.md",
         "modules/models_outbound_webhook.md",
         "modules/models_task.md",
         "modules/mutation_versions.md",
@@ -97664,6 +98018,7 @@
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
         "modules/authority.md",
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/commands.md",
         "modules/config.md",
@@ -97677,7 +98032,6 @@
         "modules/iteration_service.md",
         "modules/models_agent.md",
         "modules/models_calendar.md",
-        "modules/models_iteration.md",
         "modules/models_outbound_webhook.md",
         "modules/models_task.md",
         "modules/mutation_versions.md",
@@ -98057,6 +98411,7 @@
       "kind": "flows",
       "mcp_uri": "llm-wiki://flows/http-list_project_iterations",
       "outgoing_internal_links": [
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/config.md",
         "modules/iteration_service.md",
@@ -99779,6 +100134,7 @@
       "mcp_uri": "llm-wiki://flows/http-update_absence",
       "outgoing_internal_links": [
         "modules/authority.md",
+        "modules/calendar_rules.md",
         "modules/capacity_service.md",
         "modules/commands.md",
         "modules/config.md",
@@ -101364,6 +101720,7 @@
       "outgoing_internal_links": [
         "modules/agent_service.md",
         "modules/authority.md",
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/capacity_service.md",
         "modules/commands.md",
@@ -102202,7 +102559,8 @@
         "modules/agent_service.md",
         "modules/agent_team_setup_service.md",
         "modules/authority.md",
-        "modules/calendar_service.md",
+        "modules/calendar_rules.md",
+        "modules/capacity_service.md",
         "modules/commands.md",
         "modules/config.md",
         "modules/delivery_dependency_service.md",
@@ -102219,7 +102577,6 @@
         "modules/query_limits.md",
         "modules/retained_planning_output.md",
         "modules/review_provenance.md",
-        "modules/schemas_calendar.md",
         "modules/task_brief_service.md",
         "modules/task_service.md",
         "modules/time.md",
@@ -103118,6 +103475,7 @@
       "outgoing_internal_links": [
         "modules/agent_service.md",
         "modules/authority.md",
+        "modules/calendar_rules.md",
         "modules/commands.md",
         "modules/config.md",
         "modules/delivery_dependency_service.md",
@@ -103966,6 +104324,7 @@
       "outgoing_internal_links": [
         "modules/agent_service.md",
         "modules/authority.md",
+        "modules/calendar_rules.md",
         "modules/commands.md",
         "modules/config.md",
         "modules/delivery_dependency_service.md",
@@ -103993,6 +104352,7 @@
       "outgoing_internal_links": [
         "modules/agent_service.md",
         "modules/authority.md",
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/commands.md",
         "modules/config.md",
@@ -104030,6 +104390,7 @@
       "outgoing_internal_links": [
         "modules/agent_service.md",
         "modules/authority.md",
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/capacity_service.md",
         "modules/commands.md",
@@ -104206,6 +104567,7 @@
       "outgoing_internal_links": [
         "modules/agent_service.md",
         "modules/authority.md",
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/capacity_service.md",
         "modules/commands.md",
@@ -104263,6 +104625,7 @@
       "outgoing_internal_links": [
         "modules/agent_service.md",
         "modules/authority.md",
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/capacity_service.md",
         "modules/commands.md",
@@ -105816,6 +106179,7 @@
         "modules/20261116_0017_run_harness_session.md",
         "modules/20261120_0018_review_provenance.md",
         "modules/20261121_0019_execution_planning_window.md",
+        "modules/20261121_0020_annual_calendar_coverage.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -105878,6 +106242,7 @@
         "modules/analyticsScope.md",
         "modules/android_qualification.md",
         "modules/android_web_peer.md",
+        "modules/AnnualCalendarFields.md",
         "modules/api.md",
         "modules/apiError.md",
         "modules/App.legacyRoutes.test.md",
@@ -105928,6 +106293,7 @@
         "modules/ButtonLink.md",
         "modules/ButtonLink.test.md",
         "modules/buttonStyles.md",
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/CalendarRedirect.test.md",
         "modules/calendars.md",
@@ -106658,6 +107024,9 @@
         "modules/test_allocation_recovery.md",
         "modules/test_analytics_scopes.md",
         "modules/test_android_cleanup.md",
+        "modules/test_annual_calendar_coverage.md",
+        "modules/test_annual_calendar_migration.md",
+        "modules/test_annual_calendar_work_control.md",
         "modules/test_apt_runtime.md",
         "modules/test_authority_migrations.md",
         "modules/test_autonomy_foundation.md",
@@ -106705,6 +107074,7 @@
         "modules/test_planning_input_context.md",
         "modules/test_planning_issues.md",
         "modules/test_planning_read_models.md",
+        "modules/test_pm_forecast_calendar.md",
         "modules/test_postgresql_closeout.md",
         "modules/test_postgresql_concurrency.md",
         "modules/test_postgresql_documentation.md",
@@ -106913,6 +107283,7 @@
         "modules/20261116_0017_run_harness_session.md",
         "modules/20261120_0018_review_provenance.md",
         "modules/20261121_0019_execution_planning_window.md",
+        "modules/20261121_0020_annual_calendar_coverage.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -106975,6 +107346,7 @@
         "modules/analyticsScope.md",
         "modules/android_qualification.md",
         "modules/android_web_peer.md",
+        "modules/AnnualCalendarFields.md",
         "modules/api.md",
         "modules/apiError.md",
         "modules/App.legacyRoutes.test.md",
@@ -107025,6 +107397,7 @@
         "modules/ButtonLink.md",
         "modules/ButtonLink.test.md",
         "modules/buttonStyles.md",
+        "modules/calendar_rules.md",
         "modules/calendar_service.md",
         "modules/CalendarRedirect.test.md",
         "modules/calendars.md",
@@ -107755,6 +108128,9 @@
         "modules/test_allocation_recovery.md",
         "modules/test_analytics_scopes.md",
         "modules/test_android_cleanup.md",
+        "modules/test_annual_calendar_coverage.md",
+        "modules/test_annual_calendar_migration.md",
+        "modules/test_annual_calendar_work_control.md",
         "modules/test_apt_runtime.md",
         "modules/test_authority_migrations.md",
         "modules/test_autonomy_foundation.md",
@@ -107802,6 +108178,7 @@
         "modules/test_planning_input_context.md",
         "modules/test_planning_issues.md",
         "modules/test_planning_read_models.md",
+        "modules/test_pm_forecast_calendar.md",
         "modules/test_postgresql_closeout.md",
         "modules/test_postgresql_concurrency.md",
         "modules/test_postgresql_documentation.md",
@@ -107986,5 +108363,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:e1cd189760969b788b708b15decd1a36c2599588980c90b0d9215ced8e2f8bd1"
+  "source_hash": "sha256:854812caefe24fe41d65e634ed33ca5287650f3c452d8a8938feb1185d4c6f8b"
 }

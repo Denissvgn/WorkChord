@@ -1,6 +1,6 @@
 # Availability
 
-**Location:** `frontend/src/components/tasks/PersonCapacity.tsx:12`
+**Location:** `frontend/src/components/tasks/PersonCapacity.tsx:13`
 **Kind:** Interface
 **Bases:** —
 **Module:** [PersonCapacity](../modules/PersonCapacity.md)
@@ -15,6 +15,7 @@ _Auto-generated from `Availability` in `frontend/src/components/tasks/PersonCapa
 |------|------|----------|---------|-------------|
 | `version` | `number` | Yes | — | — |
 | `calendar_id` | `number \| null` | Yes | — | — |
+| `additional_calendar_ids` | `number[]` | No | — | — |
 | `calendar_selection_required` | `boolean` | Yes | — | — |
 | `allocation_calendar_conflicts` | `number[]` | Yes | — | — |
 | `absences` | `Absence[]` | Yes | — | — |
@@ -32,4 +33,4 @@ _Auto-generated from `Availability` in `frontend/src/components/tasks/PersonCapa
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [PersonCapacity](../modules/PersonCapacity.md) | 0 | `absences`, `allocation_calendar_conflicts`, `calendar_id`, `calendar_selection_required`, `version` |
+| [PersonCapacity](../modules/PersonCapacity.md) | 0 | `absences`, `additional_calendar_ids`, `allocation_calendar_conflicts`, `calendar_id`, `calendar_selection_required`, `version` |

@@ -27,19 +27,20 @@ _Auto-generated from `PlanningConflict` in `backend/app/commands.py`._
 flowchart LR
     n0["PlanningConflict (backend/app/commands.py)"]
     n1["RuntimeError"]
-    n2["TimeEntryVersionConflict (backend/app/services/time_entry_service.py)"]
-    n3["lock_iterations (backend/app/commands.py)"]
-    n4["lock_planning (backend/app/commands.py)"]
-    n5["planning_input_reservation (backend/app/commands.py)"]
-    n6["planning_conflict (backend/app/main.py)"]
-    n7["CalendarService.delete (backend/app/services/calendar_service.py)"]
-    n8["CapacityService.projection (backend/app/services/capacity_service.py)"]
-    n9["CapacityService.require_visible (backend/app/services/capacity_service.py)"]
-    n10["CapacityService.save_absence (backend/app/services/capacity_service.py)"]
-    n11["CapacityService.set_calendar (backend/app/services/capacity_service.py)"]
-    n12["DeliveryDependencyService.add (backend/app/services/delivery_dependency_service.py)"]
-    n13["DeliveryDependencyService.reconcile (backend/app/services/delivery_dependency_service.py)"]
-    n14["DeliveryDependencyService.require_unreferenced (backend/app/services/delivery_dependency_service.py)"]
+    n2["MissingCalendarYear (backend/app/services/scheduler_service.py)"]
+    n3["TimeEntryVersionConflict (backend/app/services/time_entry_service.py)"]
+    n4["lock_iterations (backend/app/commands.py)"]
+    n5["lock_planning (backend/app/commands.py)"]
+    n6["planning_input_reservation (backend/app/commands.py)"]
+    n7["planning_conflict (backend/app/main.py)"]
+    n8["backend/app/mcp_server.py"]
+    n9["backend/app/services/agent_planning_service.py"]
+    n10["reserve_iteration_annuals (backend/app/services/calendar_rules.py)"]
+    n11["CalendarService.delete (backend/app/services/calendar_service.py)"]
+    n12["CapacityService.invalidate_profile (backend/app/services/capacity_service.py)"]
+    n13["CapacityService.projection (backend/app/services/capacity_service.py)"]
+    n14["CapacityService.require_visible (backend/app/services/capacity_service.py)"]
+    n15["CapacityService.save_absence (backend/app/services/capacity_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -54,20 +55,22 @@ flowchart LR
     n12 --> n0
     n13 --> n0
     n14 --> n0
+    n15 --> n0
     click n0 "../modules/commands.md"
-    click n2 "../modules/time_entry_service.md"
-    click n3 "../modules/commands.md"
+    click n2 "../modules/scheduler_service.md"
+    click n3 "../modules/time_entry_service.md"
     click n4 "../modules/commands.md"
     click n5 "../modules/commands.md"
-    click n6 "../modules/app_main.md"
-    click n7 "../modules/calendar_service.md"
-    click n8 "../modules/capacity_service.md"
-    click n9 "../modules/capacity_service.md"
-    click n10 "../modules/capacity_service.md"
-    click n11 "../modules/capacity_service.md"
-    click n12 "../modules/delivery_dependency_service.md"
-    click n13 "../modules/delivery_dependency_service.md"
-    click n14 "../modules/delivery_dependency_service.md"
+    click n6 "../modules/commands.md"
+    click n7 "../modules/app_main.md"
+    click n8 "../modules/mcp_server.md"
+    click n9 "../modules/agent_planning_service.md"
+    click n10 "../modules/calendar_rules.md"
+    click n11 "../modules/calendar_service.md"
+    click n12 "../modules/capacity_service.md"
+    click n13 "../modules/capacity_service.md"
+    click n14 "../modules/capacity_service.md"
+    click n15 "../modules/capacity_service.md"
 ```
 
 ### Summary
@@ -81,6 +84,7 @@ flowchart LR
 | Kind | Entity | Module |
 |---|---|---|
 | Base | `RuntimeError` | — |
+| Subclass | `MissingCalendarYear` | [scheduler_service](../modules/scheduler_service.md) |
 | Subclass | `TimeEntryVersionConflict` | [time_entry_service](../modules/time_entry_service.md) |
 
 ### References
@@ -91,13 +95,13 @@ flowchart LR
 | `lock_planning` | call | [commands](../modules/commands.md) | 1 |
 | `planning_input_reservation` | call | [commands](../modules/commands.md) | 3 |
 | `planning_conflict` | type_reference | [app_main](../modules/app_main.md) | — |
-| `CalendarService.delete` | call | [calendar_service](../modules/calendar_service.md) | 1 |
+| `mcp_server` | import | [mcp_server](../modules/mcp_server.md) | — |
+| `agent_planning_service` | import | [agent_planning_service](../modules/agent_planning_service.md) | — |
+| `reserve_iteration_annuals` | call | [calendar_rules](../modules/calendar_rules.md) | 2 |
+| `CalendarService.delete` | call | [calendar_service](../modules/calendar_service.md) | 2 |
+| `CapacityService.invalidate_profile` | call | [capacity_service](../modules/capacity_service.md) | 2 |
 | `CapacityService.projection` | call | [capacity_service](../modules/capacity_service.md) | 1 |
 | `CapacityService.require_visible` | call | [capacity_service](../modules/capacity_service.md) | 1 |
 | `CapacityService.save_absence` | call | [capacity_service](../modules/capacity_service.md) | 3 |
-| `CapacityService.set_calendar` | call | [capacity_service](../modules/capacity_service.md) | 2 |
-| `DeliveryDependencyService.add` | call | [delivery_dependency_service](../modules/delivery_dependency_service.md) | 1 |
-| `DeliveryDependencyService.reconcile` | call | [delivery_dependency_service](../modules/delivery_dependency_service.md) | 1 |
-| `DeliveryDependencyService.require_unreferenced` | call | [delivery_dependency_service](../modules/delivery_dependency_service.md) | 1 |
 
-> References: showing 12 of 45 logical references; 33 omitted by the 12-row generated summary limit.
+> References: showing 12 of 52 logical references; 40 omitted by the 12-row generated summary limit.

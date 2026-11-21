@@ -15,6 +15,7 @@ Schema for creating an iteration.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `calendar_id` | `Optional[int]` | `calendar_id` | No | Yes | `None` | — | — | — |
+| `additional_calendar_ids` | `list[int]` | `additional_calendar_ids` | No | No | factory: `list` | max_length=100 | — | — |
 | `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
 | `start_date` | `date` | `start_date` | Yes | No | — | — | — | — |
 | `end_date` | `date` | `end_date` | Yes | No | — | — | — | — |
@@ -63,7 +64,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `calendar_id`, `end_date`, `manager_email`, `name`, `project_id`, `start_date` |
+| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `additional_calendar_ids`, `calendar_id`, `end_date`, `manager_email`, `name`, `project_id`, `start_date` |
 
 ### Structure
 

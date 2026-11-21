@@ -214,8 +214,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workchord_worker_role | _skill_bundle_prompt | 2443 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended worker skill version, then read workchord://skill-bundles/workchord-worker/{version}/SKILL.md. Follow that skill, call workchord://agent/me/work, and execute only the exact server-selected assignment.')` |
-| _skill_bundle_prompt | _agent_context | 369 | `_agent_context(_skill_bundle_scope_requirement(...))` |
+| workchord_worker_role | _skill_bundle_prompt | 2444 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended worker skill version, then read workchord://skill-bundles/workchord-worker/{version}/SKILL.md. Follow that skill, call workchord://agent/me/work, and execute only the exact server-selected assignment.')` |
+| _skill_bundle_prompt | _agent_context | 370 | `_agent_context(_skill_bundle_scope_requirement(...))` |
 | _agent_context | _current_agent_key | 278 | `_current_agent_key(data not statically known)` |
 | _current_agent_key | _http_agent_key.get | 205 | `_http_agent_key.get(data not statically known)` |
 | _current_agent_key | os.getenv | 205 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |

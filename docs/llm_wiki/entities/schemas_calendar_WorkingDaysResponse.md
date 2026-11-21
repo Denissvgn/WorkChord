@@ -19,6 +19,7 @@ Response with working days calculation.
 | `working_days` | `int` | `working_days` | Yes | No | — | — | — | — |
 | `holidays` | `list[date]` | `holidays` | Yes | No | — | — | — | — |
 | `weekends` | `list[date]` | `weekends` | Yes | No | — | — | — | — |
+| `missing_calendar_years` | `list[int]` | `missing_calendar_years` | No | No | factory: `list` | — | — | — |
 
 ## Methods
 
@@ -48,7 +49,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_calendar](../modules/schemas_calendar.md) | 0 | `end_date`, `holidays`, `start_date`, `total_days`, `weekends`, `working_days` |
+| [schemas_calendar](../modules/schemas_calendar.md) | 0 | `end_date`, `holidays`, `missing_calendar_years`, `start_date`, `total_days`, `weekends`, `working_days` |
 
 ### Structure
 

@@ -110,4 +110,4 @@ flowchart LR
 | `PlanShareService.create` | call | [plan_share_service](../modules/plan_share_service.md) | 1 |
 | `_planning_proof` | call | [planning_window_reconciliation](../modules/planning_window_reconciliation.md) | 1 |
 
-> References: showing 12 of 49 logical references; 37 omitted by the 12-row generated summary limit.
+> References: showing 12 of 50 logical references; 38 omitted by the 12-row generated summary limit.

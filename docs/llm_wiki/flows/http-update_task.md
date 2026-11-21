@@ -146,8 +146,8 @@ flowchart LR
 | update_task | HTTPException (backend/app/routers/tasks.py:update_task) | 343 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 | update_task | IterationService | 348 | `IterationService(db)` |
 | update_task | IterationService.get_by_id | 349 | `iteration_service.get_by_id(task.iteration_id)` |
-| IterationService.get_by_id | self.db.execute | 323 | `self.db.execute(...)` |
-| IterationService.get_by_id | select(…).options(…).where | 324 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
+| IterationService.get_by_id | self.db.execute | 338 | `self.db.execute(...)` |
+| IterationService.get_by_id | select(…).options(…).where | 339 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
 
 ### Boundary effects
 
@@ -163,8 +163,8 @@ flowchart LR
 | unresolved_call | `_raise_task_version_conflict` | `exc.detail` | 61 |
 | external_call | `update_task` | `HTTPException` | 338 |
 | external_call | `update_task` | `HTTPException` | 343 |
-| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 323 |
-| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 324 |
+| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 338 |
+| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 339 |
 | step_limit | `update_task` | `first 12 steps` | 0 |
 
 ## Behavior

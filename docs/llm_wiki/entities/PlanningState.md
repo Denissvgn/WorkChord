@@ -1,6 +1,6 @@
 # PlanningState
 
-**Location:** `backend/app/models/capacity.py:11`
+**Location:** `backend/app/models/capacity.py:12`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_capacity](../modules/models_capacity.md)

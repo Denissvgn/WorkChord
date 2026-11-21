@@ -11,6 +11,7 @@
 - [agent_team_setup](../modules/agent_team_setup.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [authority](../modules/authority.md)
+- [calendar_rules](../modules/calendar_rules.md)
 - [calendar_service](../modules/calendar_service.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
@@ -24,7 +25,6 @@
 - [iteration_service](../modules/iteration_service.md)
 - [models_agent](../modules/models_agent.md)
 - [models_calendar](../modules/models_calendar.md)
-- [models_iteration](../modules/models_iteration.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
 - [models_task](../modules/models_task.md)
 - [mutation_versions](../modules/mutation_versions.md)
@@ -53,68 +53,68 @@ sequenceDiagram
     participant p1 as _validate_import_data
     participant p2 as command_transaction
     participant p3 as planning_input_reservation
-    participant p4 as IterationService.create
-    participant p5 as _process_import
-    participant p6 as _read_json_upload
-    participant p7 as IterationCreate
-    participant p8 as _optional_int
-    participant p9 as IterationService
-    participant p10 as lock_iterations
-    participant p11 as affected_iteration_ids
-    participant p12 as IterationService._require_project_exists
-    participant p13 as IterationService._calendar_id_for_create
-    participant p14 as DeliveryDependencyService.reconcile
-    participant p15 as DiscussionService.enqueue
-    participant p16 as _import_task
-    participant p17 as task_context
-    participant p18 as current_window
-    participant p19 as make_window
-    participant p20 as seal_authority
-    participant p21 as TaskService.record_task_event
-    participant p22 as assignment_context
-    participant p23 as original_ownership
-    participant p24 as CalendarService.get_or_create_default
-    participant p25 as _import_task_record
-    participant p26 as authority_stamp
-    participant p27 as require_operator
-    participant p28 as require_project
+    participant p4 as _process_import
+    participant p5 as _read_json_upload
+    participant p6 as IterationCreate
+    participant p7 as _optional_int
+    participant p8 as IterationService
+    participant p9 as lock_iterations
+    participant p10 as affected_iteration_ids
+    participant p11 as DeliveryDependencyService.reconcile
+    participant p12 as DiscussionService.enqueue
+    participant p13 as _import_task
+    participant p14 as reserve_iteration_annuals
+    participant p15 as task_context
+    participant p16 as current_window
+    participant p17 as make_window
+    participant p18 as seal_authority
+    participant p19 as TaskService.record_task_event
+    participant p20 as assignment_context
+    participant p21 as original_ownership
+    participant p22 as _import_task_record
+    participant p23 as authority_stamp
+    participant p24 as AnnualCalendars.for_iteration
+    participant p25 as require_operator
+    participant p26 as IterationService.changed_calendar_selection
+    participant p27 as require_project
+    participant p28 as DeliveryDependencyService.validate_cycles
     participant p29 as HTTPException (backend/app/routers/export.py:import_new_iteration)
     participant p30 as iter_data.get
     p0->>p1: _validate_import_data
     p0->>p2: command_transaction
     p0->>p3: planning_input_reservation
-    p0->>p4: IterationService.create
-    p0->>p5: _process_import
-    p0->>p6: _read_json_upload
-    p0->>p7: IterationCreate
-    p0->>p8: _optional_int
-    p0->>p9: IterationService
-    p0->>p10: lock_iterations
-    p3->>p11: affected_iteration_ids
-    p4->>p12: IterationService._require_project_exists
-    p4->>p13: IterationService._calendar_id_for_create
-    p2->>p14: DeliveryDependencyService.reconcile
-    p2->>p15: DiscussionService.enqueue
-    p5->>p16: _import_task
-    p3->>p17: task_context
-    p3->>p18: current_window
-    p3->>p19: make_window
-    p3->>p20: seal_authority
-    p3->>p21: TaskService.record_task_event
-    p19->>p22: assignment_context
-    p20->>p23: original_ownership
-    p13->>p24: CalendarService.get_or_create_default
-    p16->>p25: _import_task_record
-    p20->>p26: authority_stamp
-    p11->>p27: require_operator
-    p11->>p28: require_project
+    p0->>p4: _process_import
+    p0->>p5: _read_json_upload
+    p0->>p6: IterationCreate
+    p0->>p7: _optional_int
+    p0->>p8: IterationService
+    p0->>p9: lock_iterations
+    p3->>p10: affected_iteration_ids
+    p2->>p11: DeliveryDependencyService.reconcile
+    p2->>p12: DiscussionService.enqueue
+    p4->>p13: _import_task
+    p3->>p14: reserve_iteration_annuals
+    p3->>p15: task_context
+    p3->>p16: current_window
+    p3->>p17: make_window
+    p3->>p18: seal_authority
+    p3->>p19: TaskService.record_task_event
+    p17->>p20: assignment_context
+    p18->>p21: original_ownership
+    p13->>p22: _import_task_record
+    p18->>p23: authority_stamp
+    p14->>p24: AnnualCalendars.for_iteration
+    p10->>p25: require_operator
+    p14->>p26: IterationService.changed_calendar_selection
+    p10->>p27: require_project
+    p11->>p28: DeliveryDependencyService.validate_cycles
     p0-->>p29: HTTPException (backend/app/routers/export.py:import_new_iteration)(status_code=status.HTTP_400_BAD_REQUEST, detail='Missing iteration data in export file')
     p0-->>p30: iter_data.get('calendar_id')
 ```
 
-> Call sequence diagram shows 30 of 892 interactions; 862 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 934 interactions; 904 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 247 (246 omitted); unresolved 1 of 481 (480 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 271 (270 omitted); unresolved 1 of 490 (489 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -128,7 +128,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/routers/export.py:_validate_import_task_tree` | 16 | - | unresolved | 3 |
 | `backend/app/routers/export.py:_validate_import_task_tree` | 16 | - | external | 6 |
 | `backend/app/commands.py:command_transaction` | 34 | [backend/app/commands.py](../modules/commands.md) | internal | 2 |
-> Omission summary shows 8 of 189 groups; 181 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 194 groups; 186 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -141,9 +141,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 165; effect analysis evaluated: 109, partial: 5, unavailable: 51. Counts include steps omitted from the displayed trace.
+Source steps: 174; effect analysis evaluated: 113, partial: 5, unavailable: 56. Counts include steps omitted from the displayed trace.
 
-Collector observations for 114 source steps with known totals: observed: 543, emitted: 517, omitted: 26. Unavailable totals are excluded.
+Collector observations for 118 source steps with known totals: observed: 568, emitted: 542, omitted: 26. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

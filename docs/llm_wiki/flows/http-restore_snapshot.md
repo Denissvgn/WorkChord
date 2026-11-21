@@ -132,13 +132,13 @@ flowchart LR
 | restore_snapshot | HTTPException | 219 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Snapshot restore requires confirm=true.')` |
 | restore_snapshot | IterationService | 224 | `IterationService(db)` |
 | restore_snapshot | IterationService.get_by_id | 225 | `iteration_service.get_by_id(iteration_id)` |
-| IterationService.get_by_id | self.db.execute | 323 | `self.db.execute(...)` |
-| IterationService.get_by_id | select(…).options(…).where | 324 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
-| IterationService.get_by_id | select(…).options | 324 | `select(Iteration).options(selectinload(...), selectinload(...))` |
-| IterationService.get_by_id | select | 324 | `select(Iteration)` |
-| IterationService.get_by_id | selectinload | 326 | `selectinload(Iteration.calendar)` |
-| IterationService.get_by_id | selectinload | 327 | `selectinload(Iteration.project)` |
-| IterationService.get_by_id | result.scalar_one_or_none | 331 | `result.scalar_one_or_none(data not statically known)` |
+| IterationService.get_by_id | self.db.execute | 338 | `self.db.execute(...)` |
+| IterationService.get_by_id | select(…).options(…).where | 339 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
+| IterationService.get_by_id | select(…).options | 339 | `select(Iteration).options(selectinload(...), selectinload(...))` |
+| IterationService.get_by_id | select | 339 | `select(Iteration)` |
+| IterationService.get_by_id | selectinload | 341 | `selectinload(Iteration.calendar)` |
+| IterationService.get_by_id | selectinload | 342 | `selectinload(Iteration.project)` |
+| IterationService.get_by_id | result.scalar_one_or_none | 346 | `result.scalar_one_or_none(data not statically known)` |
 | restore_snapshot | HTTPException | 228 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 
 ### Boundary effects
@@ -150,13 +150,13 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | external_call | `restore_snapshot` | `HTTPException` | 219 |
-| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 323 |
-| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 324 |
-| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 324 |
-| external_call | `IterationService.get_by_id` | `select` | 324 |
-| external_call | `IterationService.get_by_id` | `selectinload` | 326 |
-| external_call | `IterationService.get_by_id` | `selectinload` | 327 |
-| unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 331 |
+| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 338 |
+| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 339 |
+| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 339 |
+| external_call | `IterationService.get_by_id` | `select` | 339 |
+| external_call | `IterationService.get_by_id` | `selectinload` | 341 |
+| external_call | `IterationService.get_by_id` | `selectinload` | 342 |
+| unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 346 |
 | external_call | `restore_snapshot` | `HTTPException` | 228 |
 | step_limit | `restore_snapshot` | `first 12 steps` | 0 |
 

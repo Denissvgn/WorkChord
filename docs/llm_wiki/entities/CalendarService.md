@@ -1,6 +1,6 @@
 # CalendarService
 
-**Location:** `backend/app/services/calendar_service.py:64`
+**Location:** `backend/app/services/calendar_service.py:65`
 **Kind:** Class
 **Bases:** —
 **Module:** [calendar_service](../modules/calendar_service.md)
@@ -21,15 +21,17 @@ Service for calendar operations.
 | `get_all` | *(async)* `() -> Sequence[Calendar]` | — | Get all calendars. |
 | `get_or_create_default` | *(async)* `(*, commit: bool = True) -> Calendar` | — | Return the default calendar, optionally deferring creation commit. |
 | `get_by_id` | *(async)* `(calendar_id: int) -> Calendar \| None` | — | Get calendar by ID. |
+| `selected_years` | *(async)* `(primary: Calendar, identifiers: list[int]) -> list[Calendar]` | — | Validate annual policy choices without creating or inferring calendar records. |
 | `create` | *(async)* `(data: CalendarCreate) -> Calendar` | — | Create a new calendar. |
 | `update` | *(async)* `(calendar_id: int, data: CalendarUpdate) -> Calendar \| None` | `@schedule_input_command('calendar')` | Update an existing calendar. |
 | `delete` | *(async)* `(calendar_id: int) -> bool` | `@schedule_input_command('calendar')` | Delete a calendar. |
+| `_in_annual_selection` | *(async)* `(calendar_id: int) -> bool` | — | — |
 | `_public_holidays` | `(country: str, year: int) -> list[str]` | — | Return deterministic built-in public holiday dates for a country/year. |
 | `_parse_holiday_csv` | `(csv_text: str \| None) -> tuple[list[str], list[CalendarImportError]]` | — | Parse holiday CSV rows with a required date column. |
 | `_merge_holidays` | `(existing_holidays: Iterable[str], imported_holidays: Iterable[str]) -> tuple[list[str], int, int]` | — | Merge imported holiday dates into existing holiday strings. |
 | `import_holidays` | *(async)* `(calendar_id: int, data: CalendarImportRequest) -> CalendarImportResponse \| None` | `@schedule_input_command('calendar')` | Import public or CSV holiday dates into a calendar. |
-| `calculate_working_days` | `(calendar: Calendar, start_date: date, end_date: date) -> WorkingDaysResponse` | — | Calculate working days for a period. |
-| `get_working_dates` | `(calendar: Calendar, start_date: date, end_date: date) -> list[date]` | — | Get list of working dates in a period. |
+| `calculate_working_days` | `(calendar: Calendar \| AnnualCalendars, start_date: date, end_date: date) -> WorkingDaysResponse` | — | Calculate working days for a period. |
+| `get_working_dates` | `(calendar: Calendar \| AnnualCalendars, start_date: date, end_date: date) -> list[date]` | — | Get list of working dates in a period. |
 
 ## Relationships
 
@@ -46,8 +48,8 @@ flowchart LR
     n7["import_calendar_holidays (backend/app/routers/calendars.py)"]
     n8["update_calendar (backend/app/routers/calendars.py)"]
     n9["get_gantt_data (backend/app/routers/gantt.py)"]
-    n10["AgentRoutingService._capacity_inputs (backend/app/services/agent_routing_service.py)"]
-    n11["IterationService._calendar_id_for_create (backend/app/services/iteration_service.py)"]
+    n10["CapacityService.set_calendar (backend/app/services/capacity_service.py)"]
+    n11["IterationService._calendar_for_create (backend/app/services/iteration_service.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -69,7 +71,7 @@ flowchart LR
     click n7 "../modules/calendars.md"
     click n8 "../modules/calendars.md"
     click n9 "../modules/routers_gantt.md"
-    click n10 "../modules/agent_routing_service.md"
+    click n10 "../modules/capacity_service.md"
     click n11 "../modules/iteration_service.md"
 ```
 
@@ -77,7 +79,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [calendar_service](../modules/calendar_service.md) | 13 | — |
+| [calendar_service](../modules/calendar_service.md) | 15 | — |
 
 ### References
 
@@ -93,7 +95,7 @@ flowchart LR
 | `import_calendar_holidays` | type_reference | [calendars](../modules/calendars.md) | — |
 | `update_calendar` | type_reference | [calendars](../modules/calendars.md) | — |
 | `get_gantt_data` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
-| `AgentRoutingService._capacity_inputs` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |
-| `IterationService._calendar_id_for_create` | call | [iteration_service](../modules/iteration_service.md) | 1 |
+| `CapacityService.set_calendar` | call | [capacity_service](../modules/capacity_service.md) | 1 |
+| `IterationService._calendar_for_create` | call | [iteration_service](../modules/iteration_service.md) | 1 |
 
-> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.
+> References: showing 12 of 32 logical references; 20 omitted by the 12-row generated summary limit.

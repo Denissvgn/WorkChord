@@ -1,6 +1,6 @@
 # IterationResponse
 
-**Location:** `backend/app/schemas/iteration.py:70`
+**Location:** `backend/app/schemas/iteration.py:73`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_iteration](../modules/schemas_iteration.md)
@@ -24,6 +24,8 @@ _Auto-generated from `IterationResponse` in `backend/app/schemas/iteration.py`._
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `name` | `str` | `name` | Yes | No | — | — | — | — |
 | `calendar_id` | `int` | `calendar_id` | Yes | No | — | — | — | — |
+| `additional_calendar_ids` | `list[int]` | `additional_calendar_ids` | No | No | factory: `list` | — | — | — |
+| `missing_calendar_years` | `list[int]` | `missing_calendar_years` | No | No | factory: `list` | — | — | — |
 | `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
 | `project` | `Optional[IterationProjectSummary]` | `project` | No | Yes | `None` | — | — | — |
 | `start_date` | `date` | `start_date` | Yes | No | — | — | — | — |
@@ -77,7 +79,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `calendar_id`, `end_date`, `id`, `manager_email`, `name`, `nominal_day_hours`, `project`, `project_id`, `revision`, `start_date`, `working_days` |
+| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `additional_calendar_ids`, `calendar_id`, `end_date`, `id`, `manager_email`, `missing_calendar_years`, `name`, `nominal_day_hours`, `project`, `project_id`, `revision`, `start_date` |
 
 ### Structure
 
