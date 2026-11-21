@@ -202,13 +202,13 @@ flowchart LR
 | create_plan_share | PlanShareService | 54 | `PlanShareService(db)` |
 | create_plan_share | PlanShareService.create | 55 | `service.create(iteration_id, current_session)` |
 | PlanShareService.create | SnapshotService.build_snapshot_data | 135 | `SnapshotService(self.db).build_snapshot_data(iteration_id, 'plan_share')` |
-| SnapshotService.build_snapshot_data | SnapshotService._validate_reason | 209 | `self._validate_reason(reason)` |
-| SnapshotService._validate_reason | str(…).strip | 159 | `str(reason).strip(data not statically known)` |
-| SnapshotService._validate_reason | str (backend/app/services/snap…tService._validate_reason) | 159 | `str(reason)` |
-| SnapshotService._validate_reason | SNAPSHOT_REASON_PATTERN.fullmatch | 160 | `SNAPSHOT_REASON_PATTERN.fullmatch(normalized)` |
-| SnapshotService._validate_reason | SnapshotPathError | 161 | `SnapshotPathError('Snapshot reason must contain only letters, numbers, dots, underscores, and hyphens.')` |
-| SnapshotService.build_snapshot_data | IterationService | 210 | `IterationService(self.db)` |
-| SnapshotService.build_snapshot_data | IterationService.get_by_id | 211 | `iteration_service.get_by_id(iteration_id)` |
+| SnapshotService.build_snapshot_data | SnapshotService._validate_reason | 203 | `self._validate_reason(reason)` |
+| SnapshotService._validate_reason | str(…).strip | 153 | `str(reason).strip(data not statically known)` |
+| SnapshotService._validate_reason | str (backend/app/services/snap…tService._validate_reason) | 153 | `str(reason)` |
+| SnapshotService._validate_reason | SNAPSHOT_REASON_PATTERN.fullmatch | 154 | `SNAPSHOT_REASON_PATTERN.fullmatch(normalized)` |
+| SnapshotService._validate_reason | SnapshotPathError | 155 | `SnapshotPathError('Snapshot reason must contain only letters, numbers, dots, underscores, and hyphens.')` |
+| SnapshotService.build_snapshot_data | IterationService | 204 | `IterationService(self.db)` |
+| SnapshotService.build_snapshot_data | IterationService.get_by_id | 205 | `iteration_service.get_by_id(iteration_id)` |
 | IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 338 | `self.db.execute(...)` |
 
 ### Boundary effects
@@ -221,8 +221,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `SnapshotService._validate_reason` | `str(reason).strip` | 159 |
-| unresolved_call | `SnapshotService._validate_reason` | `SNAPSHOT_REASON_PATTERN.fullmatch` | 160 |
+| unresolved_call | `SnapshotService._validate_reason` | `str(reason).strip` | 153 |
+| unresolved_call | `SnapshotService._validate_reason` | `SNAPSHOT_REASON_PATTERN.fullmatch` | 154 |
 | unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 338 |
 | step_limit | `create_plan_share` | `first 12 steps` | 0 |
 

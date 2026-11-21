@@ -10,6 +10,8 @@ The module freezes the vocabulary and decision rules shared by persistence,
 REST, MCP, and future candidate ranking.  It does not grant actor authority,
 infer precise skills from prose, or select a provider/model by name.
 
+The byte limit applies to the canonical UTF-8 routing packet used by both transports. A distinct size error allows preview construction to retry with less evidence while propagating unrelated validation errors.
+
 ## Imports
 
 | Source | Symbols |
@@ -39,9 +41,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (20) |
+| Inbound | `backend` (22) |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -62,6 +64,7 @@ flowchart LR
 | [RoutingEligibilityDecision](../entities/RoutingEligibilityDecision.md) | Class | 551 | — | Separated authority/compatibility evidence for one candidate. |
 | [RoutingSkillDecision](../entities/RoutingSkillDecision.md) | Class | 624 | — | Deterministic required-skill evidence for one profile. |
 | [RoutingModelEnvelopeDecision](../entities/RoutingModelEnvelopeDecision.md) | Class | 639 | — | Deterministic binding/catalog capability evidence for one candidate. |
+| [RoutingPacketSizeError](../entities/RoutingPacketSizeError.md) | Class | 1141 | `ValueError` | The canonical UTF-8 representation exceeds its routing boundary. |
 
 ## Functions
 

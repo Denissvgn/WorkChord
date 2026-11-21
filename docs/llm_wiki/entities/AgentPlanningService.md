@@ -118,4 +118,4 @@ flowchart LR
 | `patch_planning_task` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `preview_planning_schedule` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 44 logical references; 32 omitted by the 12-row generated summary limit.
+> References: showing 12 of 45 logical references; 33 omitted by the 12-row generated summary limit.

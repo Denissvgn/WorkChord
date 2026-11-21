@@ -54,6 +54,7 @@ flowchart LR
     n5["TriageService._get_task_draft_classification (backend/app/services/triage_service.py)"]
     n6["TriageService.classify_item (backend/app/services/triage_service.py)"]
     n7["TriageService.list_classification_suggestions (backend/app/services/triage_service.py)"]
+    n8["test_allocation_guard_preserves_references (backend/tests/test_unused_allocation.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -61,6 +62,7 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
     click n0 "../modules/models_triage.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -69,6 +71,7 @@ flowchart LR
     click n5 "../modules/triage_service.md"
     click n6 "../modules/triage_service.md"
     click n7 "../modules/triage_service.md"
+    click n8 "../modules/test_unused_allocation.md"
 ```
 
 ### Summary
@@ -94,3 +97,4 @@ flowchart LR
 | `TriageService.classify_item` | call | [triage_service](../modules/triage_service.md) | 1 |
 | `TriageService.classify_item` | type_reference | [triage_service](../modules/triage_service.md) | — |
 | `TriageService.list_classification_suggestions` | type_reference | [triage_service](../modules/triage_service.md) | — |
+| `test_allocation_guard_preserves_references` | call | [test_unused_allocation](../modules/test_unused_allocation.md) | 1 |

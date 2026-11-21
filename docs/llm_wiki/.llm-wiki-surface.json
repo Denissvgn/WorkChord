@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1748,
+      "entities": 1750,
       "flows": 573,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 1124,
+      "modules": 1127,
       "workflows": 219
     },
     "dependency_architecture": 2,
-    "total": 3680
+    "total": 3685
   },
   "dependency_pages": {
     "count": 2,
@@ -396,13 +396,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 315,
+              "line": 316,
               "step": "add_vacation",
               "target": "service.add_vacation"
             },
             {
               "kind": "external_call",
-              "line": 317,
+              "line": 318,
               "step": "add_vacation",
               "target": "HTTPException"
             }
@@ -4074,13 +4074,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 159,
+              "line": 153,
               "step": "SnapshotService._validate_reason",
               "target": "str(reason).strip"
             },
             {
               "kind": "unresolved_call",
-              "line": 160,
+              "line": 154,
               "step": "SnapshotService._validate_reason",
               "target": "SNAPSHOT_REASON_PATTERN.fullmatch"
             },
@@ -6952,13 +6952,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 247,
+              "line": 248,
               "step": "delete_team_member",
               "target": "service.delete"
             },
             {
               "kind": "external_call",
-              "line": 249,
+              "line": 250,
               "step": "delete_team_member",
               "target": "HTTPException"
             }
@@ -7078,13 +7078,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 330,
+              "line": 331,
               "step": "delete_vacation",
               "target": "service.delete_vacation"
             },
             {
               "kind": "external_call",
-              "line": 332,
+              "line": 333,
               "step": "delete_vacation",
               "target": "HTTPException"
             }
@@ -10608,13 +10608,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 262,
+              "line": 263,
               "step": "get_member_capacity",
               "target": "service.calculate_capacity"
             },
             {
               "kind": "external_call",
-              "line": 264,
+              "line": 265,
               "step": "get_member_capacity",
               "target": "HTTPException"
             }
@@ -10649,13 +10649,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 277,
+              "line": 278,
               "step": "get_member_workload",
               "target": "service.get_workload"
             },
             {
               "kind": "external_call",
-              "line": 279,
+              "line": 280,
               "step": "get_member_workload",
               "target": "HTTPException"
             }
@@ -13065,13 +13065,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 295,
+              "line": 296,
               "step": "get_vacations",
               "target": "service.get_by_id"
             },
             {
               "kind": "external_call",
-              "line": 297,
+              "line": 298,
               "step": "get_vacations",
               "target": "HTTPException"
             }
@@ -13545,6 +13545,7 @@
             "backend/app/services/team_service.py",
             "backend/app/sql_semantics.py",
             "backend/app/models/team_member.py",
+            "backend/app/services/allocation_removal.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/snapshot_service.py",
             "backend/app/services/calendar_rules.py",
@@ -13563,7 +13564,7 @@
             "backend/app/models/task.py",
             "backend/app/schemas/common.py"
           ],
-          "step_count": 928,
+          "step_count": 1075,
           "truncated": true
         }
       },
@@ -13705,6 +13706,7 @@
             "backend/app/services/team_service.py",
             "backend/app/sql_semantics.py",
             "backend/app/models/team_member.py",
+            "backend/app/services/allocation_removal.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/snapshot_service.py",
             "backend/app/services/calendar_rules.py",
@@ -13725,7 +13727,7 @@
             "backend/app/models/task.py",
             "backend/app/schemas/common.py"
           ],
-          "step_count": 938,
+          "step_count": 1085,
           "truncated": true
         }
       },
@@ -13837,7 +13839,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 375,
+              "line": 376,
               "step": "import_team_members",
               "step_index": 1,
               "target": "full_members.append"
@@ -13846,19 +13848,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 370,
+              "line": 371,
               "step": "import_team_members",
               "target": "service.import_members"
             },
             {
               "kind": "unresolved_call",
-              "line": 374,
+              "line": 375,
               "step": "import_team_members",
               "target": "service.get_by_id"
             },
             {
               "kind": "external_call",
-              "line": 382,
+              "line": 383,
               "step": "import_team_members",
               "target": "HTTPException"
             }
@@ -13894,13 +13896,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 350,
+              "line": 351,
               "step": "import_team_vacations",
               "target": "service.import_vacations"
             },
             {
               "kind": "external_call",
-              "line": 352,
+              "line": 353,
               "step": "import_team_vacations",
               "target": "HTTPException"
             }
@@ -18963,7 +18965,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 323,
+              "line": 317,
               "step": "SnapshotService._payload_visible",
               "step_index": 8,
               "target": "tasks.pop"
@@ -18971,7 +18973,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 326,
+              "line": 320,
               "step": "SnapshotService._payload_visible",
               "step_index": 8,
               "target": "tasks.extend"
@@ -18980,37 +18982,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 307,
+              "line": 301,
               "step": "SnapshotService.get_snapshot",
               "target": "SNAPSHOT_FILENAME_PATTERN.fullmatch"
             },
             {
               "kind": "unresolved_call",
-              "line": 309,
+              "line": 303,
               "step": "SnapshotService.get_snapshot",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 309,
+              "line": 303,
               "step": "SnapshotService.get_snapshot",
               "target": "select(ApplicationSnapshot).where"
             },
             {
               "kind": "external_call",
-              "line": 309,
+              "line": 303,
               "step": "SnapshotService.get_snapshot",
               "target": "select"
             },
             {
               "kind": "unresolved_call",
-              "line": 318,
+              "line": 312,
               "step": "SnapshotService._payload_visible",
               "target": "self.db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 321,
+              "line": 315,
               "step": "SnapshotService._payload_visible",
               "target": "payload.get"
             },
@@ -32129,7 +32131,7 @@
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 1188,
+          "step_count": 1186,
           "truncated": true
         }
       },
@@ -45282,6 +45284,7 @@
         "entities/AgentWorkTerminalResponse.md",
         "entities/AggregateVersionConflict.md",
         "entities/AllIterationsDrawerProps.md",
+        "entities/AllocationHistory.md",
         "entities/AnalyticsScope.md",
         "entities/AndroidArtifacts.md",
         "entities/AnnualCalendarFields_Props.md",
@@ -46028,6 +46031,7 @@
         "entities/RoutingKey.md",
         "entities/RoutingModelEnvelopeDecision.md",
         "entities/RoutingOperationalEvent.md",
+        "entities/RoutingPacketSizeError.md",
         "entities/RoutingProfileEvidence.md",
         "entities/RoutingSelectionValidation.md",
         "entities/RoutingSkillDecision.md",
@@ -47504,6 +47508,7 @@
         "modules/AllIterationsDrawer.md",
         "modules/AllIterationsDrawer.test.md",
         "modules/allocation_identity.md",
+        "modules/allocation_removal.md",
         "modules/AnalyticsPage.md",
         "modules/AnalyticsPage.test.md",
         "modules/analyticsScope.md",
@@ -48387,6 +48392,7 @@
         "modules/test_review_provenance.md",
         "modules/test_review_provenance_transports.md",
         "modules/test_routing_evidence.md",
+        "modules/test_routing_preview_size.md",
         "modules/test_runtime_boundaries.md",
         "modules/test_runtime_mutation_policy.md",
         "modules/test_runtime_observations.md",
@@ -48420,6 +48426,7 @@
         "modules/test_time_reports.md",
         "modules/test_transfer_catalog.md",
         "modules/test_unscheduled_tasks.md",
+        "modules/test_unused_allocation.md",
         "modules/test_verification_preview_history.md",
         "modules/test_work_correctness.md",
         "modules/test_work_delivery_links.md",
@@ -49110,7 +49117,8 @@
         "modules/agent_routing_service.md",
         "modules/routers_agent.md",
         "modules/test_agent_routing_wave3_contract.md",
-        "modules/test_agent_routing_wave6_qualification.md"
+        "modules/test_agent_routing_wave6_qualification.md",
+        "modules/test_routing_preview_size.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_routing.py",
@@ -51588,7 +51596,8 @@
         "modules/tasks.md",
         "modules/test_annual_calendar_work_control.md",
         "modules/test_planning_input_context.md",
-        "modules/test_shared_profile_revisions.md"
+        "modules/test_shared_profile_revisions.md",
+        "modules/test_unused_allocation.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/commands.py",
@@ -51605,6 +51614,18 @@
       "role": "semantic",
       "source_path": "frontend/src/components/iteration/AllIterationsDrawer.tsx",
       "title": "AllIterationsDrawerProps"
+    },
+    {
+      "canonical_path": "entities/AllocationHistory.md",
+      "id": "AllocationHistory",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/AllocationHistory",
+      "outgoing_internal_links": [
+        "modules/allocation_removal.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/allocation_removal.py",
+      "title": "AllocationHistory"
     },
     {
       "canonical_path": "entities/AnalyticsScope.md",
@@ -57837,7 +57858,8 @@
         "modules/models___init__.md",
         "modules/models_project.md",
         "modules/project_service.md",
-        "modules/team_member.md"
+        "modules/team_member.md",
+        "modules/test_unused_allocation.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/project.py",
@@ -58180,6 +58202,7 @@
         "modules/assignee_recommendation_service.md",
         "modules/models___init__.md",
         "modules/models_triage.md",
+        "modules/test_unused_allocation.md",
         "modules/triage_service.md"
       ],
       "role": "semantic",
@@ -59297,6 +59320,7 @@
       "mcp_uri": "llm-wiki://entities/PlanningConflict",
       "outgoing_internal_links": [
         "modules/agent_planning_service.md",
+        "modules/allocation_removal.md",
         "modules/app_main.md",
         "modules/calendar_rules.md",
         "modules/calendar_service.md",
@@ -59461,6 +59485,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/PlanningState",
       "outgoing_internal_links": [
+        "modules/allocation_removal.md",
         "modules/app_database.md",
         "modules/capacity_service.md",
         "modules/commands.md",
@@ -59468,7 +59493,8 @@
         "modules/models_capacity.md",
         "modules/test_profile_capacity.md",
         "modules/test_task_discussion.md",
-        "modules/test_team_pm_recovery.md"
+        "modules/test_team_pm_recovery.md",
+        "modules/test_unused_allocation.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/capacity.py",
@@ -61594,6 +61620,7 @@
       "outgoing_internal_links": [
         "modules/agent_routing.md",
         "modules/agent_routing_service.md",
+        "modules/allocation_removal.md",
         "modules/test_agent_routing_wave3_contract.md"
       ],
       "role": "semantic",
@@ -61675,6 +61702,19 @@
       "role": "semantic",
       "source_path": "backend/app/services/agent_routing_observability.py",
       "title": "RoutingOperationalEvent"
+    },
+    {
+      "canonical_path": "entities/RoutingPacketSizeError.md",
+      "id": "RoutingPacketSizeError",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RoutingPacketSizeError",
+      "outgoing_internal_links": [
+        "modules/agent_routing_policy.md",
+        "modules/agent_routing_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/agent_routing_policy.py",
+      "title": "RoutingPacketSizeError"
     },
     {
       "canonical_path": "entities/RoutingProfileEvidence.md",
@@ -62827,7 +62867,8 @@
         "modules/test_agent_routing_service.md",
         "modules/test_agent_routing_wave6_qualification.md",
         "modules/test_agent_skill_routing_guidance.md",
-        "modules/test_agent_work_routing_lineage.md"
+        "modules/test_agent_work_routing_lineage.md",
+        "modules/test_unused_allocation.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent.py",
@@ -67836,6 +67877,7 @@
         "modules/recovery.md",
         "modules/scheduler_service.md",
         "modules/snapshot_service.md",
+        "modules/test_unused_allocation.md",
         "modules/test_work_correctness.md"
       ],
       "role": "semantic",
@@ -73745,6 +73787,7 @@
         "entities/ReviewMode.md",
         "entities/RoutingEligibilityDecision.md",
         "entities/RoutingModelEnvelopeDecision.md",
+        "entities/RoutingPacketSizeError.md",
         "entities/RoutingProfileEvidence.md",
         "entities/RoutingSkillDecision.md",
         "modules/agent_routing_policy.md"
@@ -74402,6 +74445,19 @@
       "role": "semantic",
       "source_path": "backend/app/database_migration/allocation_identity.py",
       "title": "allocation_identity Module"
+    },
+    {
+      "canonical_path": "modules/allocation_removal.md",
+      "id": "allocation_removal",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/allocation_removal",
+      "outgoing_internal_links": [
+        "entities/AllocationHistory.md",
+        "modules/allocation_removal.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/allocation_removal.py",
+      "title": "allocation_removal Module"
     },
     {
       "canonical_path": "modules/AnalyticsPage.md",
@@ -89145,6 +89201,18 @@
       "title": "test_routing_evidence Module"
     },
     {
+      "canonical_path": "modules/test_routing_preview_size.md",
+      "id": "test_routing_preview_size",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_routing_preview_size",
+      "outgoing_internal_links": [
+        "modules/test_routing_preview_size.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_routing_preview_size.py",
+      "title": "test_routing_preview_size Module"
+    },
+    {
       "canonical_path": "modules/test_runtime_boundaries.md",
       "id": "test_runtime_boundaries",
       "kind": "modules",
@@ -89663,6 +89731,18 @@
       "role": "semantic",
       "source_path": "backend/tests/test_unscheduled_tasks.py",
       "title": "test_unscheduled_tasks Module"
+    },
+    {
+      "canonical_path": "modules/test_unused_allocation.md",
+      "id": "test_unused_allocation",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_unused_allocation",
+      "outgoing_internal_links": [
+        "modules/test_unused_allocation.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_unused_allocation.py",
+      "title": "test_unused_allocation Module"
     },
     {
       "canonical_path": "modules/test_verification_preview_history.md",
@@ -94066,6 +94146,7 @@
       "kind": "workflows",
       "mcp_uri": "llm-wiki://workflows/planning_input_reservation",
       "outgoing_internal_links": [
+        "modules/allocation_removal.md",
         "modules/calendar_rules.md",
         "modules/commands.md",
         "modules/execution_planning_window.md",
@@ -98397,6 +98478,7 @@
         "modules/agent_routing_service.md",
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
+        "modules/allocation_removal.md",
         "modules/authority.md",
         "modules/calendar_rules.md",
         "modules/calendar_service.md",
@@ -98455,6 +98537,7 @@
         "modules/agent_routing_service.md",
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
+        "modules/allocation_removal.md",
         "modules/authority.md",
         "modules/calendar_rules.md",
         "modules/calendar_service.md",
@@ -106702,6 +106785,7 @@
         "modules/AllIterationsDrawer.md",
         "modules/AllIterationsDrawer.test.md",
         "modules/allocation_identity.md",
+        "modules/allocation_removal.md",
         "modules/AnalyticsPage.md",
         "modules/AnalyticsPage.test.md",
         "modules/analyticsScope.md",
@@ -107561,6 +107645,7 @@
         "modules/test_review_provenance.md",
         "modules/test_review_provenance_transports.md",
         "modules/test_routing_evidence.md",
+        "modules/test_routing_preview_size.md",
         "modules/test_runtime_boundaries.md",
         "modules/test_runtime_mutation_policy.md",
         "modules/test_runtime_observations.md",
@@ -107594,6 +107679,7 @@
         "modules/test_time_reports.md",
         "modules/test_transfer_catalog.md",
         "modules/test_unscheduled_tasks.md",
+        "modules/test_unused_allocation.md",
         "modules/test_verification_preview_history.md",
         "modules/test_work_correctness.md",
         "modules/test_work_delivery_links.md",
@@ -107809,6 +107895,7 @@
         "modules/AllIterationsDrawer.md",
         "modules/AllIterationsDrawer.test.md",
         "modules/allocation_identity.md",
+        "modules/allocation_removal.md",
         "modules/AnalyticsPage.md",
         "modules/AnalyticsPage.test.md",
         "modules/analyticsScope.md",
@@ -108668,6 +108755,7 @@
         "modules/test_review_provenance.md",
         "modules/test_review_provenance_transports.md",
         "modules/test_routing_evidence.md",
+        "modules/test_routing_preview_size.md",
         "modules/test_runtime_boundaries.md",
         "modules/test_runtime_mutation_policy.md",
         "modules/test_runtime_observations.md",
@@ -108701,6 +108789,7 @@
         "modules/test_time_reports.md",
         "modules/test_transfer_catalog.md",
         "modules/test_unscheduled_tasks.md",
+        "modules/test_unused_allocation.md",
         "modules/test_verification_preview_history.md",
         "modules/test_work_correctness.md",
         "modules/test_work_delivery_links.md",
@@ -108834,5 +108923,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:59401445cc838d7a5f8abf40e8c7cdc11ca92e918bb9cb5e349f30155a782260"
+  "source_hash": "sha256:a2500003837e8160a8c4b17fb4ad52e3a61364b12adf396362a166032dc029c2"
 }

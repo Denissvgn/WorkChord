@@ -24,6 +24,8 @@ A worker can continue across a verified planning-only reservation using its curr
 
 A change to a queued verification's reviewer or binding requires fresh evidence for that selection. The PM can cancel or reorder the queue after a receipt expires or is revoked. Both acceptance and rejection require a currently valid receipt when the assignment uses one.
 
+Work discovery, fencing and recovery read the same live assignment and run states used by planning-window and allocation checks. An unused allocation can be removed without advancing the versions of unrelated issued tasks.
+
 ## Imports
 
 | Source | Symbols |
@@ -51,7 +53,7 @@ A change to a queued verification's reviewer or binding requires fresh evidence 
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key`, `AgentService` |
 | `app.services.agent_team_setup_service` | `AgentTeamMembershipBoundary`, `AgentTeamSetupService`, `AgentTeamSetupService`, `AgentTeamSetupConflictError`, `AgentTeamSetupService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
-| `app.services.execution_planning_window` | `assignment_matches`, `require_window_authority`, `window_authority_matches` |
+| `app.services.execution_planning_window` | `LIVE_ASSIGNMENT_STATES`, `LIVE_RUN_STATE`, `assignment_matches`, `require_window_authority`, `window_authority_matches` |
 | `app.services.external_link_service` | `ExternalLinkService` |
 | `app.services.project_service` | `ProjectService` |
 | `app.services.retained_planning_output` | `REQUIRED`, `REQUIRED`, `recovery_attestation_hint`, `REQUIRED`, `recovery_attestation_hint` |
@@ -94,7 +96,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (26) |
+| Inbound | `backend` (27) |
 | Outbound | `backend` (35) |
 
 ### External packages
@@ -103,13 +105,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 58 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 59 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentWorkService](../entities/AgentWorkService.md) | 185 | — | Coordinate PM dispatch and low-freedom worker lifecycle commands. |
+| [AgentWorkService](../entities/AgentWorkService.md) | 184 | — | Coordinate PM dispatch and low-freedom worker lifecycle commands. |
 
 ## Functions
 

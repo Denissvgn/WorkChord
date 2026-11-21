@@ -35,6 +35,7 @@ flowchart LR
     n7["backend/tests/test_annual_calendar_work_control.py"]
     n8["backend/tests/test_planning_input_context.py"]
     n9["backend/tests/test_shared_profile_revisions.py"]
+    n10["backend/tests/test_unused_allocation.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -44,6 +45,7 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/commands.md"
     click n2 "../modules/commands.md"
     click n3 "../modules/app_main.md"
@@ -53,6 +55,7 @@ flowchart LR
     click n7 "../modules/test_annual_calendar_work_control.md"
     click n8 "../modules/test_planning_input_context.md"
     click n9 "../modules/test_shared_profile_revisions.md"
+    click n10 "../modules/test_unused_allocation.md"
 ```
 
 ### Summary
@@ -79,3 +82,4 @@ flowchart LR
 | `test_annual_calendar_work_control` | import | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | — |
 | `test_planning_input_context` | import | [test_planning_input_context](../modules/test_planning_input_context.md) | — |
 | `test_shared_profile_revisions` | import | [test_shared_profile_revisions](../modules/test_shared_profile_revisions.md) | — |
+| `test_unused_allocation` | import | [test_unused_allocation](../modules/test_unused_allocation.md) | — |

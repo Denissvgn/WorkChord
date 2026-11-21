@@ -57,8 +57,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_vacations | service.get_by_id | 295 | `service.get_by_id(member_id)` |
-| get_vacations | HTTPException | 297 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_vacations | service.get_by_id | 296 | `service.get_by_id(member_id)` |
+| get_vacations | HTTPException | 298 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 
 ### Boundary effects
 
@@ -68,8 +68,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_vacations` | `service.get_by_id` | 295 |
-| external_call | `get_vacations` | `HTTPException` | 297 |
+| unresolved_call | `get_vacations` | `service.get_by_id` | 296 |
+| external_call | `get_vacations` | `HTTPException` | 298 |
 
 ## Behavior
 

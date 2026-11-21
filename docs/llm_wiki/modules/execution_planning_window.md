@@ -8,6 +8,8 @@ Preserve a proved assignment context across an iteration end-date extension.
 
 An iteration end-date extension still advances planning and task versions. Each eligible issued assignment keeps a digest of its original task, team and model context for that range of versions. A later scope, artifact, owner, authority or binding change makes the range unusable.
 
+The planning-window and allocation commands share the durable live assignment and run states used by work control. Ownership checks retain queued and accepted assignments and running work when the underlying planning inputs change.
+
 ## Imports
 
 | Source | Symbols |
@@ -49,7 +51,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (8) |
+| Inbound | `backend` (9) |
 | Outbound | `backend` (14) |
 
 ### External packages
@@ -58,7 +60,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

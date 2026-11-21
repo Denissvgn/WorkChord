@@ -98,4 +98,4 @@ flowchart LR
 | `test_model_catalog_routes_accept_admin_key_agent_key_and_refuse_neither` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 1 |
 | `test_fresh_apply_replay_onboarding_and_runtime_readiness` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 1 |
 
-> References: showing 12 of 32 logical references; 20 omitted by the 12-row generated summary limit.
+> References: showing 12 of 35 logical references; 23 omitted by the 12-row generated summary limit.

@@ -3851,3 +3851,19 @@ A controller can recover eligible work for its own team. Formal review can bind 
 - Workflow pages created: 3
 - Dependency pages initialized: 0
 - Surface policy updated: no
+
+## 2026-11-21
+
+### Wiki sync
+- Source: `<external-source-root>`
+- Generator version: `5.0.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:9a98d3530f353f0e6e322f06566e1e742516bc9f168585140d13d10515af6b4b`
+- Pages created: 5
+- Pages updated: 91
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3503
+- Pages deprecated: 0
+- Semantic fields preserved: 9
+- Moved entities: none

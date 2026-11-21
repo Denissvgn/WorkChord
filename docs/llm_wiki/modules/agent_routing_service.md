@@ -16,6 +16,8 @@ On PostgreSQL, an authenticated dispatch reserves the shared planning revision b
 
 A verification preview checks candidate-bound operator evidence before evaluating fresh dispatch capacity. The PM can request an existing review owner's receipt even while that reviewer is occupied. Source-only substitution depends on the current assessment's explicit review policy.
 
+Routing previews are bounded using the complete validated response, including its default evidence fields and digest. The service removes trailing exclusions first and preserves the highest-ranked eligible candidate, updating the omission counts and digest for the retained evidence.
+
 ## Imports
 
 | Source | Symbols |
@@ -32,7 +34,7 @@ A verification preview checks candidate-bound operator evidence before evaluatin
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.agent_routing` | `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse`, `RoutingDecisionSnapshot`, `TaskRoutingAssessmentCommand`, `TaskRoutingAssessmentCreate`, `TaskRoutingAssessmentListResponse`, `TaskRoutingAssessmentMutationReceipt`, `TaskRoutingAssessmentResponse`, `TaskRoutingAssessmentState` |
 | `app.services.agent_routing_observability` | `RoutingOperationalEvent`, `record_routing_operational_event`, `routing_exclusion_projection` |
-| `app.services.agent_routing_policy` | `MAX_ROUTING_CANDIDATES`, `MAX_ROUTING_EXCLUSIONS`, `MAX_ROUTING_PACKET_BYTES`, `MIN_ROUTING_ASSESSMENT_CONFIDENCE`, `MODEL_FAILURE_CATEGORIES`, `REVIEW_MODE_ORDER`, `ROUTING_DECISION_LINEAGE_FIELDS`, `ROUTING_LINEAGE_AUTHORITY`, `ROUTING_POLICY_VERSION`, `ROUTING_PREVIEW_TTL_SECONDS`, `RoutingBlockerCode`, `RoutingProfileEvidence`, `canonical_routing_json_bytes`, `evaluate_actor_authorization`, `evaluate_assignment_compatibility`, `evaluate_model_envelope`, `evaluate_required_skills`, `normalize_model_failure_category`, `routing_candidate_rank_key`, `review_mode_meets`, `validate_routing_packet_size` |
+| `app.services.agent_routing_policy` | `MAX_ROUTING_CANDIDATES`, `MAX_ROUTING_EXCLUSIONS`, `MAX_ROUTING_PACKET_BYTES`, `MIN_ROUTING_ASSESSMENT_CONFIDENCE`, `MODEL_FAILURE_CATEGORIES`, `REVIEW_MODE_ORDER`, `ROUTING_DECISION_LINEAGE_FIELDS`, `ROUTING_LINEAGE_AUTHORITY`, `ROUTING_POLICY_VERSION`, `ROUTING_PREVIEW_TTL_SECONDS`, `RoutingBlockerCode`, `RoutingPacketSizeError`, `RoutingProfileEvidence`, `canonical_routing_json_bytes`, `evaluate_actor_authorization`, `evaluate_assignment_compatibility`, `evaluate_model_envelope`, `evaluate_required_skills`, `normalize_model_failure_category`, `routing_candidate_rank_key`, `review_mode_meets`, `validate_routing_packet_size` |
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutError`, `AgentRoutingRolloutMode`, `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupService`, `AgentTeamSetupService` |
@@ -49,6 +51,7 @@ A verification preview checks candidate-bound operator evidence before evaluatin
 | `hmac` | `hmac` |
 | `json` | `json` |
 | `math` | `math` |
+| `pydantic` | `ValidationError` |
 | `secrets` | `secrets` |
 | `sqlalchemy` | `func`, `select`, `text`, `update` |
 | `sqlalchemy.exc` | `IntegrityError` |
@@ -74,24 +77,24 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (18) |
+| Inbound | `backend` (20) |
 | Outbound | `backend` (22) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| python | 1 | 0 |
+| python | 2 | 0 |
 
-> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentRoutingConflictError](../entities/AgentRoutingConflictError.md) | 116 | `AgentConflictError` | Stable routing conflict shared by REST, MCP, and assignment commands. |
-| [RoutingSelectionValidation](../entities/RoutingSelectionValidation.md) | 136 | — | Authoritative result consumed inside the assignment transaction. |
-| [AgentRoutingService](../entities/AgentRoutingService.md) | 203 | — | Create immutable assessments and deterministic exact-actor previews. |
+| [AgentRoutingConflictError](../entities/AgentRoutingConflictError.md) | 118 | `AgentConflictError` | Stable routing conflict shared by REST, MCP, and assignment commands. |
+| [RoutingSelectionValidation](../entities/RoutingSelectionValidation.md) | 138 | — | Authoritative result consumed inside the assignment transaction. |
+| [AgentRoutingService](../entities/AgentRoutingService.md) | 205 | — | Create immutable assessments and deterministic exact-actor previews. |
 
 ## Functions
 

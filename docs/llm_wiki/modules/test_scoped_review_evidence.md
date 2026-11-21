@@ -57,6 +57,7 @@ Only the named independent reviewer can consume current, operator-attested revie
 flowchart LR
     n0["backend"]
     n1["backend/tests/test_scoped_review_evidence.py"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/test_scoped_review_evidence.md"
 ```
@@ -67,6 +68,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
+| Inbound | `backend` (1) |
 | Outbound | `backend` (30) |
 
 ### External packages
@@ -75,7 +77,7 @@ flowchart LR
 |---|---:|---:|
 | python | 4 | 1 |
 
-> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

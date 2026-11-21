@@ -69,6 +69,7 @@ flowchart LR
     n9["_dispatch (backend/tests/test_agent_routing_wave6_qualification.py)"]
     n10["backend/tests/test_agent_skill_routing_guidance.py"]
     n11["test_model_aware_commands_own_selection_and_observed_model_fields (backend/tests/test_agent_work_routing_lineage.py)"]
+    n12["test_saved_allocation_uses_typed_decision_and_both_native_lineage_writers (backend/tests/test_unused_allocation.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -80,6 +81,7 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
@@ -91,6 +93,7 @@ flowchart LR
     click n9 "../modules/test_agent_routing_wave6_qualification.md"
     click n10 "../modules/test_agent_skill_routing_guidance.md"
     click n11 "../modules/test_agent_work_routing_lineage.md"
+    click n12 "../modules/test_unused_allocation.md"
 ```
 
 ### Summary
@@ -119,3 +122,4 @@ flowchart LR
 | `_dispatch` | call | [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md) | 1 |
 | `test_agent_skill_routing_guidance` | import | [test_agent_skill_routing_guidance](../modules/test_agent_skill_routing_guidance.md) | — |
 | `test_model_aware_commands_own_selection_and_observed_model_fields` | call | [test_agent_work_routing_lineage](../modules/test_agent_work_routing_lineage.md) | 1 |
+| `test_saved_allocation_uses_typed_decision_and_both_native_lineage_writers` | call | [test_unused_allocation](../modules/test_unused_allocation.md) | 1 |

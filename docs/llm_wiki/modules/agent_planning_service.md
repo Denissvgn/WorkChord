@@ -15,6 +15,8 @@ Composed planning mutations share one transaction and retain exact durable mutat
 
 The PM preview digest includes the relevant iteration and personal annual calendar rules. Apply checks this digest and the full task-version map before updating the planned dates. SQLite uses a scoped iteration update for its write reservation. On PostgreSQL the service takes shared locks on the selected annual records in ID order.
 
+Preview and apply use the observed iteration revision in the forecast digest. A command that already owns a revision reservation uses its recorded pre-command revision consistently, including after the scheduler writes its outputs. A previously held forecast must be refreshed after another reservation.
+
 ## Imports
 
 | Source | Symbols |
@@ -67,7 +69,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (9) |
+| Inbound | `backend` (10) |
 | Outbound | `backend` (21) |
 
 ### External packages
@@ -76,7 +78,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -10,6 +10,8 @@ Capacity and workload reads can omit task relationship hydration. Workload hours
 
 Workload reads identify uncovered years and unresolved personal calendar rules alongside known capacity. The displayed day equivalents require a finite, positive normal day length from the primary calendar.
 
+Removing a proven unused allocation preserves unrelated task versions. The optional unused-only precondition refuses removal if the row is referenced or its history cannot be verified. The shared profile and allocations in other iterations retain their identities.
+
 ## Imports
 
 | Source | Symbols |
@@ -54,7 +56,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (18) |
+| Inbound | `backend` (19) |
 | Outbound | `backend` (13) |
 
 ### External packages
@@ -63,7 +65,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

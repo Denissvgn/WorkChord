@@ -28,9 +28,7 @@
 20. `agent_routing_policy.routing_candidate_rank_key`
 21. `time.as_utc`
 22. `agent_routing_policy.canonical_routing_json_bytes`
-23. `agent_routing_policy.canonical_routing_json_bytes`
-24. `agent_routing.AgentRoutingPreviewResponse`
-25. `agent_routing_policy.validate_routing_packet_size`
+23. `agent_routing.AgentRoutingPreviewResponse`
 
 ## Touches
 

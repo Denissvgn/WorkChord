@@ -52,6 +52,7 @@ The PostgreSQL writer-order cases run independent dispatch and annual-selection 
 flowchart LR
     n0["backend"]
     n1["backend/tests/test_annual_calendar_work_control.py"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/test_annual_calendar_work_control.md"
 ```
@@ -62,6 +63,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
+| Inbound | `backend` (1) |
 | Outbound | `backend` (26) |
 
 ### External packages
@@ -70,7 +72,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

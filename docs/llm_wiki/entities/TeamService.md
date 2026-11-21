@@ -40,7 +40,7 @@ Service for team member operations.
 | `create` | *(async)* `(iteration_id: int, data: TeamMemberCreate, *, commit: bool = True) -> TeamMember` | `@schedule_input_command('member')` | Create a team member, optionally leaving commit ownership to the caller. |
 | `update` | *(async)* `(member_id: int, data: TeamMemberUpdate, *, commit: bool = True) -> TeamMember \| None` | `@schedule_input_command('member')` | Update a team member, optionally leaving commit ownership to the caller. |
 | `detach_absence_adapters` | *(async)* `(member, next_profile_id)` | — | Allocation identity changes must not expose another person's absence adapters. |
-| `delete` | *(async)* `(member_id: int) -> bool` | `@schedule_input_command('member')` | Delete a team member. |
+| `delete` | *(async)* `(member_id: int, *, unused_only: bool = False) -> bool` | `@schedule_input_command('member_removal')` | Remove an allocation under its planning reservation and optional unused precondition. |
 | `add_vacation` | *(async)* `(member_id: int, data: VacationCreate, *, commit: bool = True) -> Vacation \| None` | `@schedule_input_command('member')` | Add a vacation, optionally leaving commit ownership to the caller. |
 | `update_vacation` | *(async)* `(vacation_id: int, data: VacationUpdate, *, commit: bool = True) -> Vacation \| None` | `@schedule_input_command('member')` | Update a vacation period, optionally leaving commit ownership to the caller. |
 | `delete_vacation` | *(async)* `(vacation_id: int) -> bool` | `@schedule_input_command('member')` | Delete a vacation. |
@@ -117,4 +117,4 @@ flowchart LR
 | `add_vacation` | type_reference | [routers_team](../modules/routers_team.md) | — |
 | `create_team_member` | type_reference | [routers_team](../modules/routers_team.md) | — |
 
-> References: showing 12 of 61 logical references; 49 omitted by the 12-row generated summary limit.
+> References: showing 12 of 62 logical references; 50 omitted by the 12-row generated summary limit.

@@ -101,16 +101,19 @@ flowchart LR
     n1["RoutingContractModel (backend/app/schemas/agent_routing.py)"]
     n2["RoutingDecisionSnapshot.validate_selected_lineage (backend/app/schemas/agent_routing.py)"]
     n3["AgentRoutingService.validate_assignment_selection (backend/app/services/agent_routing_service.py)"]
-    n4["test_routing_decision_snapshot_is_immutable_and_preserves_trust_lineage (backend/tests/test_agent_routing_wave3_contract.py)"]
+    n4["backend/app/services/allocation_removal.py"]
+    n5["test_routing_decision_snapshot_is_immutable_and_preserves_trust_lineage (backend/tests/test_agent_routing_wave3_contract.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/agent_routing.md"
     click n1 "../modules/agent_routing.md"
     click n2 "../modules/agent_routing.md"
     click n3 "../modules/agent_routing_service.md"
-    click n4 "../modules/test_agent_routing_wave3_contract.md"
+    click n4 "../modules/allocation_removal.md"
+    click n5 "../modules/test_agent_routing_wave3_contract.md"
 ```
 
 ### Summary
@@ -131,4 +134,5 @@ flowchart LR
 |---|---|---|---:|
 | `RoutingDecisionSnapshot.validate_selected_lineage` | type_reference | [agent_routing](../modules/agent_routing.md) | — |
 | `AgentRoutingService.validate_assignment_selection` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |
+| `allocation_removal` | import | [allocation_removal](../modules/allocation_removal.md) | — |
 | `test_routing_decision_snapshot_is_immutable_and_preserves_trust_lineage` | call | [test_agent_routing_wave3_contract](../modules/test_agent_routing_wave3_contract.md) | 1 |

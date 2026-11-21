@@ -98,4 +98,4 @@ flowchart LR
 | `TeamService.update_vacation` | type_reference | [team_service](../modules/team_service.md) | — |
 | `test_routing_preserves_single_year_ratios_and_uses_each_annual_nominal` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
 
-> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

@@ -108,4 +108,4 @@ flowchart LR
 | `test_identity_lifecycle` | import | [test_identity_lifecycle](../modules/test_identity_lifecycle.md) | — |
 | `test_managed_authority` | import | [test_managed_authority](../modules/test_managed_authority.md) | — |
 
-> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

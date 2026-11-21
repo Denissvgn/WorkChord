@@ -43,6 +43,7 @@ flowchart LR
     n5["ProjectService.get_initiative_by_id (backend/app/services/project_service.py)"]
     n6["ProjectService.list_initiatives (backend/app/services/project_service.py)"]
     n7["ProjectService.update_initiative (backend/app/services/project_service.py)"]
+    n8["test_allocation_guard_preserves_references (backend/tests/test_unused_allocation.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -50,6 +51,7 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
     click n0 "../modules/models_project.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -58,6 +60,7 @@ flowchart LR
     click n5 "../modules/project_service.md"
     click n6 "../modules/project_service.md"
     click n7 "../modules/project_service.md"
+    click n8 "../modules/test_unused_allocation.md"
 ```
 
 ### Summary
@@ -83,3 +86,4 @@ flowchart LR
 | `ProjectService.get_initiative_by_id` | type_reference | [project_service](../modules/project_service.md) | — |
 | `ProjectService.list_initiatives` | type_reference | [project_service](../modules/project_service.md) | — |
 | `ProjectService.update_initiative` | type_reference | [project_service](../modules/project_service.md) | — |
+| `test_allocation_guard_preserves_references` | call | [test_unused_allocation](../modules/test_unused_allocation.md) | 1 |

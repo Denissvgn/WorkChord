@@ -1,6 +1,6 @@
 # AgentRoutingService
 
-**Location:** `backend/app/services/agent_routing_service.py:203`
+**Location:** `backend/app/services/agent_routing_service.py:205`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_routing_service](../modules/agent_routing_service.md)
@@ -106,4 +106,4 @@ flowchart LR
 | `get_task_routing_assessment` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 | `list_task_routing_assessments` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 
-> References: showing 12 of 31 logical references; 19 omitted by the 12-row generated summary limit.
+> References: showing 12 of 33 logical references; 21 omitted by the 12-row generated summary limit.

@@ -71,6 +71,7 @@ flowchart LR
     n7["_dispatch (backend/tests/test_agent_routing_wave6_qualification.py)"]
     n8["_exclusion (backend/tests/test_agent_routing_wave6_qualification.py)"]
     n9["_preview_with_parity (backend/tests/test_agent_routing_wave6_qualification.py)"]
+    n10["backend/tests/test_routing_preview_size.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -80,6 +81,7 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/agent_routing.md"
     click n1 "../modules/agent_routing.md"
     click n2 "../modules/routers_agent.md"
@@ -90,6 +92,7 @@ flowchart LR
     click n7 "../modules/test_agent_routing_wave6_qualification.md"
     click n8 "../modules/test_agent_routing_wave6_qualification.md"
     click n9 "../modules/test_agent_routing_wave6_qualification.md"
+    click n10 "../modules/test_routing_preview_size.md"
 ```
 
 ### Summary
@@ -117,3 +120,4 @@ flowchart LR
 | `_dispatch` | type_reference | [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md) | — |
 | `_exclusion` | type_reference | [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md) | — |
 | `_preview_with_parity` | type_reference | [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md) | — |
+| `test_routing_preview_size` | import | [test_routing_preview_size](../modules/test_routing_preview_size.md) | — |

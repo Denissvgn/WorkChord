@@ -37,18 +37,21 @@ flowchart LR
     n2["backend/app/models/__init__.py"]
     n3["SchedulerService.schedule_iteration (backend/app/services/scheduler_service.py)"]
     n4["SnapshotService.restore (backend/app/services/snapshot_service.py)"]
-    n5["backend/tests/test_work_correctness.py"]
+    n5["test_empty_allocation_preserves_issued_work (backend/tests/test_unused_allocation.py)"]
+    n6["backend/tests/test_work_correctness.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
+    n6 --> n0
     click n0 "../modules/recovery.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/scheduler_service.md"
     click n4 "../modules/snapshot_service.md"
-    click n5 "../modules/test_work_correctness.md"
+    click n5 "../modules/test_unused_allocation.md"
+    click n6 "../modules/test_work_correctness.md"
 ```
 
 ### Summary
@@ -70,4 +73,5 @@ flowchart LR
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `SchedulerService.schedule_iteration` | call | [scheduler_service](../modules/scheduler_service.md) | 1 |
 | `SnapshotService.restore` | call | [snapshot_service](../modules/snapshot_service.md) | 1 |
+| `test_empty_allocation_preserves_issued_work` | call | [test_unused_allocation](../modules/test_unused_allocation.md) | 1 |
 | `test_work_correctness` | import | [test_work_correctness](../modules/test_work_correctness.md) | — |

@@ -35,12 +35,12 @@ flowchart LR
     n7["planning_conflict (backend/app/main.py)"]
     n8["backend/app/mcp_server.py"]
     n9["backend/app/services/agent_planning_service.py"]
-    n10["reserve_iteration_annuals (backend/app/services/calendar_rules.py)"]
-    n11["CalendarService.delete (backend/app/services/calendar_service.py)"]
-    n12["CapacityService.invalidate_profile (backend/app/services/capacity_service.py)"]
-    n13["CapacityService.projection (backend/app/services/capacity_service.py)"]
-    n14["CapacityService.require_visible (backend/app/services/capacity_service.py)"]
-    n15["CapacityService.save_absence (backend/app/services/capacity_service.py)"]
+    n10["is_unused_allocation (backend/app/services/allocation_removal.py)"]
+    n11["reserve_iteration_annuals (backend/app/services/calendar_rules.py)"]
+    n12["CalendarService.delete (backend/app/services/calendar_service.py)"]
+    n13["CapacityService.invalidate_profile (backend/app/services/capacity_service.py)"]
+    n14["CapacityService.projection (backend/app/services/capacity_service.py)"]
+    n15["CapacityService.require_visible (backend/app/services/capacity_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -65,9 +65,9 @@ flowchart LR
     click n7 "../modules/app_main.md"
     click n8 "../modules/mcp_server.md"
     click n9 "../modules/agent_planning_service.md"
-    click n10 "../modules/calendar_rules.md"
-    click n11 "../modules/calendar_service.md"
-    click n12 "../modules/capacity_service.md"
+    click n10 "../modules/allocation_removal.md"
+    click n11 "../modules/calendar_rules.md"
+    click n12 "../modules/calendar_service.md"
     click n13 "../modules/capacity_service.md"
     click n14 "../modules/capacity_service.md"
     click n15 "../modules/capacity_service.md"
@@ -93,15 +93,15 @@ flowchart LR
 |---|---|---|---:|
 | `lock_iterations` | call | [commands](../modules/commands.md) | 1 |
 | `lock_planning` | call | [commands](../modules/commands.md) | 1 |
-| `planning_input_reservation` | call | [commands](../modules/commands.md) | 3 |
+| `planning_input_reservation` | call | [commands](../modules/commands.md) | 4 |
 | `planning_conflict` | type_reference | [app_main](../modules/app_main.md) | — |
 | `mcp_server` | import | [mcp_server](../modules/mcp_server.md) | — |
 | `agent_planning_service` | import | [agent_planning_service](../modules/agent_planning_service.md) | — |
+| `is_unused_allocation` | call | [allocation_removal](../modules/allocation_removal.md) | 1 |
 | `reserve_iteration_annuals` | call | [calendar_rules](../modules/calendar_rules.md) | 2 |
 | `CalendarService.delete` | call | [calendar_service](../modules/calendar_service.md) | 2 |
 | `CapacityService.invalidate_profile` | call | [capacity_service](../modules/capacity_service.md) | 2 |
 | `CapacityService.projection` | call | [capacity_service](../modules/capacity_service.md) | 1 |
 | `CapacityService.require_visible` | call | [capacity_service](../modules/capacity_service.md) | 1 |
-| `CapacityService.save_absence` | call | [capacity_service](../modules/capacity_service.md) | 3 |
 
-> References: showing 12 of 54 logical references; 42 omitted by the 12-row generated summary limit.
+> References: showing 12 of 56 logical references; 44 omitted by the 12-row generated summary limit.

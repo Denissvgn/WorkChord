@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1732 | [Open section](#entities) |
-| Modules | 1096 | [Open section](#modules) |
+| Entities | 1734 | [Open section](#entities) |
+| Modules | 1099 | [Open section](#modules) |
 | Workflows | 219 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 573 | [Open section](#entry-point-flows) |
@@ -235,6 +235,7 @@ These pages preserve documentation from earlier source revisions.
 - [AgentWorkTerminalResponse](entities/AgentWorkTerminalResponse.md)
 - [AggregateVersionConflict](entities/AggregateVersionConflict.md)
 - [AllIterationsDrawerProps](entities/AllIterationsDrawerProps.md)
+- [AllocationHistory](entities/AllocationHistory.md)
 - [AnalyticsScope](entities/AnalyticsScope.md)
 - [AndroidArtifacts](entities/AndroidArtifacts.md)
 - [AnnualCalendarFields_Props](entities/AnnualCalendarFields_Props.md)
@@ -872,6 +873,7 @@ These pages preserve documentation from earlier source revisions.
 - [RoutingKey](entities/RoutingKey.md)
 - [RoutingModelEnvelopeDecision](entities/RoutingModelEnvelopeDecision.md)
 - [RoutingOperationalEvent](entities/RoutingOperationalEvent.md)
+- [RoutingPacketSizeError](entities/RoutingPacketSizeError.md)
 - [RoutingProfileEvidence](entities/RoutingProfileEvidence.md)
 - [RoutingSelectionValidation](entities/RoutingSelectionValidation.md)
 - [RoutingSkillDecision](entities/RoutingSkillDecision.md)
@@ -2220,6 +2222,7 @@ Retained history; these declarations are absent from the selected source invento
 - [agent_team_setup_service](modules/agent_team_setup_service.md) - Operator-only agent-team validation, reconciliation, setup, and readiness.
 - [agent_work_service](modules/agent_work_service.md) - Durable agent assignment, current-work, verification, and recovery services.
 - [allocation_identity](modules/allocation_identity.md) - Reserve numeric allocation identities retained by immutable recovery history.
+- [allocation_removal](modules/allocation_removal.md) - Check whether removing a capacity allocation changes planning alone.
 - [analyticsScope](modules/analyticsScope.md) - `frontend/src/types/analyticsScope.ts`
 - [android_qualification](modules/android_qualification.md) - Release-behavior qualification confined to an explicitly owned ARM64 emulator.
 - [android_web_peer](modules/android_web_peer.md) - `scripts/ci/android_web_peer.mjs`
@@ -2780,6 +2783,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_review_provenance](modules/test_review_provenance.md) - Exercise independent publisher review through the atomic work commands.
 - [test_review_provenance_transports](modules/test_review_provenance_transports.md) - Exercise strict review, interruption and return through the registered worker and PM protocols.
 - [test_routing_evidence](modules/test_routing_evidence.md) - Keep CI evidence inventories aligned with the checked-in implementation.
+- [test_routing_preview_size](modules/test_routing_preview_size.md) - The routed decision, its wire defaults, and its digest share one exact byte budget.
 - [test_runtime_boundaries](modules/test_runtime_boundaries.md) - DBM-PERF-002 and DBM-MAINT-001 runtime-boundary tests.
 - [test_runtime_mutation_policy](modules/test_runtime_mutation_policy.md) - Runtime configuration preserves supplied conflicts in either rollout mode.
 - [test_runtime_observations](modules/test_runtime_observations.md) - Advisory runtime observations: who may record and read them, and that dispatch never sees them.
@@ -2813,6 +2817,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_time_reports](modules/test_time_reports.md) - Recorded coverage and manager totals preserve private entry boundaries.
 - [test_transfer_catalog](modules/test_transfer_catalog.md) - Versioned transfer catalog invariants.
 - [test_unscheduled_tasks](modules/test_unscheduled_tasks.md) - The scheduler says which planned tasks it left without dates, and readiness says how to fix it.
+- [test_unused_allocation](modules/test_unused_allocation.md) - Capacity-row removal reserves planning while preserving unrelated issued work.
 - [test_verification_preview_history](modules/test_verification_preview_history.md) - Verification previews keep assignment-based independence until the stricter policy is enabled.
 - [test_work_correctness](modules/test_work_correctness.md) - Atomic recovery, hierarchy, aggregate versions and cross-surface metric contracts.
 - [test_work_delivery_links](modules/test_work_delivery_links.md) - A task records where its code went: branch, commits and pull request, and a release its merge PR or tag.
