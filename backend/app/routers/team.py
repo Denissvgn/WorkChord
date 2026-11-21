@@ -241,10 +241,11 @@ async def update_team_member(
 @router.delete("/team-members/{member_id}", response_model=MessageResponse)
 async def delete_team_member(
     member_id: int,
-    service: Annotated[TeamService, Depends(get_team_service)]
+    service: Annotated[TeamService, Depends(get_team_service)],
+    unused_only: bool = False,
 ):
-    """Delete a team member."""
-    deleted = await service.delete(member_id)
+    """Delete a team member. Set unused_only to refuse removal of a referenced allocation."""
+    deleted = await service.delete(member_id, unused_only=unused_only)
     if not deleted:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

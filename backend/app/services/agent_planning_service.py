@@ -1013,10 +1013,14 @@ class AgentPlanningService:
 
         rules = self.scheduler.rules_service.get_rules_as_dict()
         command = current_command(self.db)
+        revision = iteration.revision
+        if command is not None:
+            revision = command.iterations.get(iteration.id, revision)
         snapshot = {
             "schema": "workchord-schedule-input/v1",
             "iteration": {
                 "id": iteration.id,
+                "revision": revision,
                 "calendar_id": iteration.calendar_id,
                 "start_date": iteration.start_date.isoformat(),
                 "end_date": iteration.end_date.isoformat(),
