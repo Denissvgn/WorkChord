@@ -625,13 +625,18 @@ async def list_iterations(db: AsyncSession) -> list[dict[str, Any]]:
 
 async def get_iteration(db: AsyncSession, iteration_id: int) -> dict[str, Any] | None:
     """MCP handler: get one iteration."""
+    from app.services.calendar_rules import AnnualCalendars
+
     iteration = await IterationService(db).get_by_id(iteration_id)
     if not iteration:
         return None
     return {
         "id": iteration.id,
         "name": iteration.name,
+        "revision": iteration.revision,
         "calendar_id": iteration.calendar_id,
+        "additional_calendar_ids": [calendar.id for calendar in iteration.additional_calendars],
+        "missing_calendar_years": AnnualCalendars.for_iteration(iteration).missing_years(iteration.start_date, iteration.end_date),
         "project_id": iteration.project_id,
         "project": _iteration_project_payload(iteration),
         "start_date": iteration.start_date.isoformat(),

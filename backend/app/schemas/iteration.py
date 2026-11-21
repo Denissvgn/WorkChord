@@ -13,6 +13,7 @@ class IterationCreate(BaseModel):
     """Schema for creating an iteration."""
     name: str = Field(..., min_length=1, max_length=255)
     calendar_id: Optional[int] = None
+    additional_calendar_ids: list[int] = Field(default_factory=list, max_length=100)
     project_id: Optional[int] = None
     start_date: date
     end_date: date
@@ -23,6 +24,7 @@ class IterationUpdate(PlanningInputRevisions):
     """Schema for updating an iteration."""
     name: Optional[str] = Field(default=None, min_length=1, max_length=255)
     calendar_id: Optional[int] = None
+    additional_calendar_ids: list[int] | None = Field(default=None, max_length=100)
     project_id: Optional[int] = None
     start_date: Optional[date] = None
     end_date: Optional[date] = None
@@ -49,6 +51,7 @@ class IterationSeriesCreate(BaseModel):
     """Schema for creating multiple back-to-back iterations."""
     base_name: str = Field(..., min_length=1, max_length=255)
     calendar_id: Optional[int] = None
+    additional_calendar_ids: list[int] = Field(default_factory=list, max_length=100)
     project_id: Optional[int] = None
     start_date: date
     duration_days: int = Field(default=14, ge=1, le=366)
@@ -75,6 +78,8 @@ class IterationResponse(BaseModel):
     id: int
     name: str
     calendar_id: int
+    additional_calendar_ids: list[int] = Field(default_factory=list)
+    missing_calendar_years: list[int] = Field(default_factory=list)
     project_id: Optional[int] = None
     project: Optional[IterationProjectSummary] = None
     start_date: date
@@ -93,6 +98,7 @@ class IterationSeriesResponse(BaseModel):
 
 class IterationSummary(WorkMetricSummary):
     """Summary statistics for an iteration."""
+    missing_calendar_years: list[int] = Field(default_factory=list)
     id: int
     name: str
     project_id: Optional[int] = None
@@ -125,6 +131,8 @@ class IterationPlanningReadinessSummary(BaseModel):
     """Compact planning inputs used by persistent navigation."""
     iteration_id: int
     calendar_name: str | None = None
+    additional_calendar_ids: list[int] = Field(default_factory=list)
+    missing_calendar_years: list[int] = Field(default_factory=list)
     team_member_count: int
     # Capacity rows whose profile is an agent; the rest are people (decision: agents count as capacity).
     team_agent_count: int = 0

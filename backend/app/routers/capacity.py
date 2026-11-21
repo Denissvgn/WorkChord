@@ -16,6 +16,7 @@ Database = Annotated[AsyncSession, Depends(get_db, scope="function")]
 
 class CalendarSelection(BaseModel):
     calendar_id: int = Field(gt=0)
+    additional_calendar_ids: list[int] | None = Field(default=None, max_length=100)
     expected_version: int = Field(ge=0)
 
 
@@ -36,7 +37,7 @@ async def get_availability(profile_id: int, db: Database):
 
 @router.put("/team-member-profiles/{profile_id}/availability")
 async def set_availability(profile_id: int, data: CalendarSelection, db: Database):
-    return await CapacityService(db).set_calendar(profile_id, data.calendar_id, data.expected_version)
+    return await CapacityService(db).set_calendar(profile_id, data.calendar_id, data.expected_version, data.additional_calendar_ids)
 
 
 @router.post("/team-member-profiles/{profile_id}/absences", status_code=201)

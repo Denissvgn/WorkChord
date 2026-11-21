@@ -32,7 +32,7 @@ Current `FOR UPDATE` inventory:
 | Task context revision | `Task` | `task_context_revision_service.lock_task_context` |
 | Atomic assignment/work lifecycle | `Task -> AgentActor -> AgentTaskAssignment -> AgentRun` | ordered helpers in `AgentWorkService` |
 | Legacy claim/event/run lifecycle | `Task` or `AgentRun` | focused transitions in `AgentService`; live uniqueness indexes are the final fence |
-| Planning preview/apply | `Iteration -> Calendar[FOR SHARE] -> Task[id...] -> TaskDependency[id...] -> TeamMember[id...] -> Vacation[id...]` | `AgentPlanningService`; all exclusive locks are scoped to one iteration aggregate |
+| Planning preview/apply | `PlanningState -> Iteration -> Calendar[id...] [FOR SHARE] -> Task[id...] -> TaskDependency[id...] -> TeamMember[id...] -> Vacation[id...]` | The planning revision serializes shared capacity inputs. The PM command scopes its work rows to the authorized iteration. |
 | Profile preset creation | `TeamMemberProfile` | seed-key uniqueness plus locked re-read |
 | Triage reservation | `TriageItem` | `TriageService.get_by_id(for_update=True)` |
 | Delivery queue | due `OutboundWebhookDelivery[id...]` | PostgreSQL `FOR UPDATE SKIP LOCKED`; SQLite compare-and-set lease update |
@@ -46,12 +46,31 @@ locked" messages.
 The iteration row is the schedule aggregate root. Its `FOR UPDATE` lock fences
 new task and team-member foreign keys for that iteration; existing task,
 dependency, member, and vacation rows are then locked in deterministic order.
-The calendar uses `FOR SHARE`, so a calendar edit waits but schedules for two
-different iterations using the same calendar do not block one another. Apply
+Selected annual calendars use `FOR SHARE` in ID order. An editor waits for a
+forecast using that calendar. The preview digest includes the explicit
+iteration and member calendar rules. Apply
 also re-hashes every input after scheduling, normalizing only the three
 scheduler-owned output fields back to their pre-apply values, before task
 versions and audit events are committed. PostgreSQL schedule code contains no
 table-level lock.
+
+A dispatch and a calendar edit serialize through the planning revision row.
+PostgreSQL dispatch takes it before the routing table locks and the task lock.
+Replacing supplemental years leaves task versions unchanged and inspects issued
+work while the shared revision is held.
+
+To downgrade a database with annual selections to a release that supports only
+one calendar per owner, export the iteration and profile selections and clear
+them through their normal commands. Resolve any affected issued work first.
+The downgrade refuses to discard a populated annual selection.
+
+An existing iteration whose dates lie outside its primary calendar keeps its
+dates, tasks and execution history after upgrade. Its working-day, capacity and
+workload totals cover only selected years. Read `missing_calendar_years` and
+select the actual annual records before applying its forecast. An uncovered
+saved commitment in a different allocation can leave its proportional daily
+effort unknown. The draft lists that warning and its visible capacity owner;
+publishing a baseline requires complete commitment inputs.
 
 ## Retry boundary
 

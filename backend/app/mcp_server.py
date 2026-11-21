@@ -9,7 +9,7 @@ from contextvars import ContextVar
 from typing import Any, AsyncIterator, Callable, Optional
 
 from mcp.server.fastmcp import FastMCP
-from app.commands import command_transaction, AggregateVersionConflict, HierarchyScopeError
+from app.commands import command_transaction, AggregateVersionConflict, HierarchyScopeError, PlanningConflict
 from app.authority import AuthorityError
 from app.services.identity_service import IdentityService
 from mcp.server.fastmcp.exceptions import ToolError
@@ -289,7 +289,7 @@ async def _agent_context(required_scope: ScopeRequirement = None, *, preview=Fal
 def _structured_tool_error(exc: Exception) -> str:
     """Return stable, machine-readable conflict and validation errors."""
     from app.commands import AggregateVersionConflict, HierarchyScopeError
-    if isinstance(exc, (AuthorityError, AggregateVersionConflict, HierarchyScopeError, MissingMutationRevision)):
+    if isinstance(exc, (AuthorityError, AggregateVersionConflict, HierarchyScopeError, MissingMutationRevision, PlanningConflict)):
         return json.dumps(exc.detail(), ensure_ascii=False, sort_keys=True)
     if isinstance(exc, AgentRoutingConflictError):
         payload = exc.detail()
@@ -340,6 +340,7 @@ async def _tool_call(required_scope: ScopeRequirement, func: Callable[[Any, Agen
         MissingMutationRevision,
         AggregateVersionConflict,
         HierarchyScopeError,
+        PlanningConflict,
         AuthorityError,
         MCPAuthError,
         MaintenanceModeError,

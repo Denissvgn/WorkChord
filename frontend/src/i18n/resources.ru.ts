@@ -2943,6 +2943,8 @@ export const russianResources = {
                 kind: 'Вид итерации',
                 needName: 'Введите название, чтобы сохранить.',
                 defaultCalendar: 'Календарь по умолчанию',
+                calendarForYear: 'Рабочий календарь на {{year}} год',
+                annualCalendarNotSelected: 'Выберите календарь',
                 calendarsUnavailable: 'Не удалось загрузить календари. У итерации остаётся её текущий календарь.',
                 needDates: 'Выберите даты начала и окончания, чтобы сохранить.',
                 needOrderedDates: 'Дата окончания должна быть не раньше даты начала.',

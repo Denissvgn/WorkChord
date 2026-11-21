@@ -27,9 +27,10 @@ export const calendarService = {
         return response.data;
     },
 
-    calculateWorkingDays: async (id: number, startDate: string, endDate: string) => {
+    calculateWorkingDays: async (id: number, startDate: string, endDate: string, additionalCalendarIds: number[] = []) => {
         const response = await api.get<WorkingDaysResponse>(`/calendars/${id}/working-days`, {
-            params: { start_date: startDate, end_date: endDate },
+            params: { start_date: startDate, end_date: endDate, additional_calendar_ids: additionalCalendarIds },
+            paramsSerializer: { indexes: null },
         });
         return response.data;
     },

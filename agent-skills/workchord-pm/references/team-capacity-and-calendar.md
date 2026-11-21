@@ -43,12 +43,13 @@ People manage the work calendar in Settings → Work calendar, iterations and it
 1. Read existing calendars before creating one.
 2. Select the correct year, weekend-day indexes (`0` for Monday through `6` for Sunday), holidays, and shortened days.
 3. Import public or CSV holidays only through the supported import surface; inspect imported, skipped, and error counts.
-4. Query working days across the proposed iteration dates.
+4. Query working days across the proposed iteration dates. On servers advertising `annual-calendar-coverage-v1`, select one existing annual record per year in the same local time zone. Supply the primary `calendar_id` and repeat the `additional_calendar_ids` query parameter for the other years. Check `missing_calendar_years` before using the total.
 5. Create the iteration with `name`, `calendar_id`, optional `project_id`, `start_date`, `end_date`, and optional `manager_email`.
 6. Use an iteration series only for genuinely repeated, back-to-back timeboxes. Check every generated date and project link.
-7. Re-read the iteration and its computed `working_days`.
+7. For a cross-year iteration or series, include its selected `additional_calendar_ids` in the create command. To attach another year to an existing iteration, use `agent_update_iteration` or the authenticated planning PATCH with only `additional_calendar_ids` (the complete list) and the observed `expected_revisions`. This reserves the planning inputs and keeps existing task and assignment versions. The server holds replacement rules used by issued work. Use the reported task and assignment IDs to coordinate that change.
+8. Re-read the iteration, its `missing_calendar_years`, and the calendar checkpoint. Preview the schedule again and apply its fresh digest and task-version map. Follow any returned `assignment_refreshes` through ordinary PM model-aware reassignment. A profile owner's explicit annual choices take priority over iteration rules. Ask that owner or the operator to resolve a missing personal year or conflicting attendance.
 
-Stop when the calendar year does not cover the iteration, the dates overlap an unintended timebox, or the project boundary is unclear.
+Hold the schedule when any year is uncovered, the dates overlap an unintended timebox, or the project boundary is unclear. An older server needs an operator-supported upgrade before it can schedule an iteration spanning multiple calendars.
 
 ## Prepare the Team for the Plan
 

@@ -18,6 +18,7 @@ from app.services.scheduler_service import SchedulerService
 from app.services.iteration_service import IterationService
 from app.services.task_service import TaskService
 from app.services.calendar_service import CalendarService
+from app.services.calendar_rules import AnnualCalendars
 from sqlalchemy.orm import attributes
 from datetime import date
 
@@ -153,7 +154,7 @@ async def get_gantt_data(
     # Get calendar info (sync operation, uses cached calendar from iteration)
     calendar_service = CalendarService(db)
     working_days_info = calendar_service.calculate_working_days(
-        iteration.calendar, iteration.start_date, iteration.end_date
+        AnnualCalendars.for_iteration(iteration), iteration.start_date, iteration.end_date
     )
 
     # Convert to Gantt format
@@ -202,6 +203,8 @@ async def get_gantt_data(
             revision=iteration.revision,
             name=iteration.name,
             calendar_id=iteration.calendar_id,
+            additional_calendar_ids=[row.id for row in iteration.additional_calendars],
+            missing_calendar_years=working_days_info.missing_calendar_years,
             start_date=iteration.start_date,
             end_date=iteration.end_date,
             working_days=working_days_info.working_days,

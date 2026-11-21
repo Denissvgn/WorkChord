@@ -28,7 +28,10 @@ export const PlanIterationCheckpoint = ({ iteration, done, calendarOutsideYear =
     const calendarYear = calendars.data?.find(calendar => calendar.id === iteration?.calendar_id)?.year;
     const startYear = iteration?.start_date.slice(0, 4);
     const endYear = iteration?.end_date.slice(0, 4);
-    const missingYear = calendarYear && String(calendarYear) === startYear ? endYear : startYear;
+    const missingYear = iteration?.missing_calendar_years?.[0]
+        ?? (calendarYear && String(calendarYear) === startYear ? endYear : startYear);
+    const selectedZone = calendars.data?.find(calendar => calendar.id === iteration?.calendar_id)?.timezone;
+    const canSelectYear = calendars.data?.some(calendar => calendar.year === Number(missingYear) && calendar.timezone === selectedZone);
     // One primary action per page: the open, incomplete checkpoint's own.
     const primary = !done;
 
@@ -58,7 +61,9 @@ export const PlanIterationCheckpoint = ({ iteration, done, calendarOutsideYear =
             ) : (
                 <p className="plan-section-waiting">{t('plan.page.noIterationBody')}</p>
             )}
-            {calendarOutsideYear && <p>{t('plan.page.calendarOutsideYear', { calendar: readinessCalendarName ?? calendarName })} <Link className="plan-evidence-link" to={`/settings?tab=work_calendar&create=1${missingYear ? `&year=${missingYear}` : ''}`}>{t('plan.page.createCoveringCalendar')}</Link></p>}
+            {calendarOutsideYear && <p>{t('plan.page.calendarOutsideYear', { calendar: readinessCalendarName ?? calendarName })} {canSelectYear
+                ? t('plan.page.selectCoveringCalendar', { year: missingYear })
+                : <Link className="plan-evidence-link" to={`/settings?tab=work_calendar&create=1${missingYear ? `&year=${missingYear}` : ''}`}>{t('plan.page.createCoveringCalendar')}</Link>}</p>}
             <div className="plan-section-owner flex flex-wrap items-center gap-2">
                 {iteration ? (
                     <Button variant="secondary" onClick={() => panels.openEdit(iteration.id)}>{t('iterations.editIteration')}</Button>

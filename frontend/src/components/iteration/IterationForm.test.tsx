@@ -62,6 +62,40 @@ const iterationFixture = (overrides: Partial<Iteration> = {}): Iteration => ({
 });
 
 describe('IterationForm hardening', () => {
+    it('shows a concurrent annual choice before the editor may use the newer revision', async () => {
+        const initial = iterationFixture({ end_date: '2027-01-05', additional_calendar_ids: [] });
+        planningMock.readInitial.mockResolvedValue({ resource: { ...initial, additional_calendar_ids: [3] },
+            resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        calendarServiceMock.getAll.mockResolvedValue([
+            { id: 1, name: 'Current year', year: 2026, timezone: 'UTC' },
+            { id: 3, name: 'Following year', year: 2027, timezone: 'UTC' },
+        ]);
+        const { user } = renderWithProviders(<IterationForm initialData={initial} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        expect(await screen.findByText(/changed on the server after you opened it: Annual calendars\./)).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Update iteration' })).toBeDisabled();
+        await user.click(screen.getByRole('button', { name: 'Load latest version' }));
+        await waitFor(() => expect(screen.getByRole('combobox', { name: 'Working calendar for 2027' })).toHaveValue('3'));
+        expect(iterationServiceMock.update).not.toHaveBeenCalled();
+    });
+
+    it('binds an explicitly chosen annual calendar without reserving unrelated task edits', async () => {
+        const initial = iterationFixture({ end_date: '2027-01-05', additional_calendar_ids: [] });
+        planningMock.readInitial.mockResolvedValue({ resource: initial, resource_id: 17, expected_revisions: { 17: 4 }, complete: true });
+        calendarServiceMock.getAll.mockResolvedValue([
+            { id: 1, name: 'Current year', year: 2026, timezone: 'UTC' },
+            { id: 2, name: 'Next year, first policy', year: 2027, timezone: 'UTC' },
+            { id: 3, name: 'Next year, second policy', year: 2027, timezone: 'UTC' },
+            { id: 4, name: 'Different time zone', year: 2027, timezone: 'Europe/Madrid' },
+        ]);
+        const { user } = renderWithProviders(<IterationForm initialData={initial} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        const annual = await screen.findByRole('combobox', { name: 'Working calendar for 2027' });
+        expect(annual).toHaveValue('');
+        expect(within(annual).queryByRole('option', { name: 'Different time zone' })).not.toBeInTheDocument();
+        await user.selectOptions(annual, '3');
+        await user.click(screen.getByRole('button', { name: 'Update iteration' }));
+        await waitFor(() => expect(iterationServiceMock.update).toHaveBeenCalledWith(17, { additional_calendar_ids: [3] }, { 17: 4 }));
+    });
+
     beforeEach(() => {
         vi.clearAllMocks();
         planningMock.readInitial.mockResolvedValue({ resource: iterationFixture(), resource_id: 17, expected_revisions: { 17: 4 }, complete: true });

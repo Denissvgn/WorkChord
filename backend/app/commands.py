@@ -268,6 +268,11 @@ async def planning_input_reservation(db, kind, values):
                 .where(ApplicationSnapshot.iteration_id == iteration_id, ApplicationSnapshot.filename == filename))).one()
             extension.update(snapshot_id=snapshot.id, snapshot_sha256=snapshot.checksum, input_revision=snapshot.input_revision)
     tasks = list((await db.scalars(select(Task).where(Task.iteration_id.in_(ids), Task.status != 'closed').order_by(Task.id))).all())
+    if kind == "iteration" and parent is None and len(ids) == 1:
+        from app.services.calendar_rules import reserve_iteration_annuals
+        if await reserve_iteration_annuals(db, ids[0], data, tasks):
+            # The iteration and global schedule revisions are already reserved. This command changes no task or issued work.
+            tasks = []
     service = TaskService(db)
     issued = await live_assignments(db, [task.id for task in tasks], lock=True) if extension else {}
     before = {task.id: (task.version, task_context(task), current_window(task)) for task in tasks if task.id in issued}

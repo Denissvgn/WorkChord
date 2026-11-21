@@ -1,6 +1,6 @@
 {
   "api_contract": "workchord-agent/v1",
-  "catalog_version": "1.21.0",
+  "catalog_version": "1.22.0",
   "schema_version": "workchord-agent-skills/v1",
   "skills": [
     {
@@ -8,15 +8,15 @@
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-pm-1.19.0.tar.gz",
-          "sha256": "a406b919f34ab3e5ff83b3e78f072a512a29aa9391ec540fee8976faa93192bf",
+          "path": "workchord-pm-1.20.0.tar.gz",
+          "sha256": "a79a8bd39d2ae332b3544b2df19bc7506895b72c19962e7b1c7e405f770efae9",
           "size": 194593
         },
         {
           "format": "zip",
-          "path": "workchord-pm-1.19.0.zip",
-          "sha256": "d296e5d4a76f73c69c9334ec8d7ff8b5b1298f45b30a0e1b4e487e12262bfe95",
-          "size": 186443
+          "path": "workchord-pm-1.20.0.zip",
+          "sha256": "81ab419a7215ba043756a756b8f2702e0055f5d8a5f42a333b25b680accde335",
+          "size": 187778
         }
       ],
       "entrypoint": "SKILL.md",
@@ -48,8 +48,8 @@
         },
         {
           "path": "references/plan-mapping-and-roadmap.md",
-          "sha256": "aeaf2cef7f03ee1871498a3b51898ed798ba48b1e34e47d8d1f02c065f5b78b3",
-          "size": 17293
+          "sha256": "48400bfd762b1284d484a4007097db4f74f4cdcddd4a2786b015015c26de9274",
+          "size": 17341
         },
         {
           "path": "references/system-map-and-authority.md",
@@ -58,8 +58,8 @@
         },
         {
           "path": "references/team-capacity-and-calendar.md",
-          "sha256": "fa985c5b6116988bef658752f78456f5b40d0636269417300a2c7b770c9297eb",
-          "size": 16170
+          "sha256": "2ef88e38b40e56c4f5196edb2db4b91a53beda18378c3142c1caf72d8fe1bfc1",
+          "size": 17457
         },
         {
           "path": "references/verification-rework-and-recovery.md",
@@ -114,7 +114,7 @@
       ],
       "role": "pm",
       "server_compatibility": ">=1.8.0,<2.0.0",
-      "version": "1.19.0"
+      "version": "1.20.0"
     },
     {
       "api_contract": "workchord-agent/v1",
@@ -280,5 +280,5 @@
       "version": "1.19.0"
     }
   ],
-  "source_revision": "sha256:1b9e26314c0d43a829901e6012e82833a4662e6969f17704900a6c2fb53f4f07"
+  "source_revision": "sha256:142749ab7f5ead0ce5c24e4ee42ba86101996ca125b91201ae05596dd28ccfb1"
 }
