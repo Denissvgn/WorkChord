@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1730,
+      "entities": 1731,
       "flows": 567,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 1108,
+      "modules": 1109,
       "workflows": 204
     },
     "dependency_architecture": 2,
-    "total": 3625
+    "total": 3627
   },
   "dependency_pages": {
     "count": 2,
@@ -13178,7 +13178,7 @@
             "backend/app/utils/time.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 424,
+          "step_count": 516,
           "truncated": true
         }
       },
@@ -22039,12 +22039,13 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/services/agent_team_setup_service.py",
             "backend/app/services/agent_routing_rollout.py",
+            "backend/app/services/agent_routing_service.py",
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/agent_service.py",
             "backend/app/utils/time.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 381,
+          "step_count": 601,
           "truncated": true
         }
       },
@@ -28889,14 +28890,15 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py",
             "backend/app/services/work_metrics.py",
+            "backend/app/schemas/agent.py",
+            "backend/app/services/review_provenance.py",
             "backend/app/services/agent_team_setup_service.py",
             "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/agent_routing_policy.py",
-            "backend/app/schemas/agent.py",
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 588,
+          "step_count": 689,
           "truncated": true
         }
       },
@@ -29426,13 +29428,14 @@
             "backend/app/models/identity.py",
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py",
+            "backend/app/schemas/agent.py",
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py",
+            "backend/app/services/review_provenance.py",
             "backend/app/services/agent_team_setup_service.py",
-            "backend/app/services/agent_routing_rollout.py",
-            "backend/app/schemas/agent.py"
+            "backend/app/services/agent_routing_rollout.py"
           ],
-          "step_count": 496,
+          "step_count": 505,
           "truncated": true
         }
       },
@@ -29517,13 +29520,14 @@
             "backend/app/models/identity.py",
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py",
+            "backend/app/services/review_provenance.py",
             "backend/app/services/agent_routing_policy.py",
+            "backend/app/schemas/agent.py",
             "backend/app/services/work_metrics.py",
             "backend/app/services/agent_team_setup_service.py",
-            "backend/app/services/agent_routing_rollout.py",
-            "backend/app/schemas/agent.py"
+            "backend/app/services/agent_routing_rollout.py"
           ],
-          "step_count": 582,
+          "step_count": 592,
           "truncated": true
         }
       },
@@ -29609,12 +29613,13 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/query_limits.py",
             "backend/app/services/agent_work_service.py",
+            "backend/app/services/review_provenance.py",
             "backend/app/services/agent_team_setup_service.py",
             "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 487,
+          "step_count": 579,
           "truncated": true
         }
       },
@@ -29795,7 +29800,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 576,
+          "step_count": 668,
           "truncated": true
         }
       },
@@ -31366,12 +31371,13 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/query_limits.py",
             "backend/app/services/agent_work_service.py",
+            "backend/app/services/review_provenance.py",
             "backend/app/services/agent_team_setup_service.py",
             "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 450,
+          "step_count": 542,
           "truncated": true
         }
       },
@@ -31557,7 +31563,7 @@
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 1059,
+          "step_count": 1076,
           "truncated": true
         }
       },
@@ -32320,13 +32326,14 @@
             "backend/app/models/identity.py",
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py",
+            "backend/app/schemas/agent.py",
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py",
+            "backend/app/services/review_provenance.py",
             "backend/app/services/agent_team_setup_service.py",
-            "backend/app/services/agent_routing_rollout.py",
-            "backend/app/schemas/agent.py"
+            "backend/app/services/agent_routing_rollout.py"
           ],
-          "step_count": 459,
+          "step_count": 468,
           "truncated": true
         }
       },
@@ -33871,13 +33878,14 @@
             "backend/app/models/identity.py",
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py",
+            "backend/app/services/review_provenance.py",
             "backend/app/services/agent_routing_policy.py",
+            "backend/app/schemas/agent.py",
             "backend/app/services/work_metrics.py",
             "backend/app/services/agent_team_setup_service.py",
-            "backend/app/services/agent_routing_rollout.py",
-            "backend/app/schemas/agent.py"
+            "backend/app/services/agent_routing_rollout.py"
           ],
-          "step_count": 545,
+          "step_count": 555,
           "truncated": true
         }
       },
@@ -34075,14 +34083,15 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py",
             "backend/app/services/work_metrics.py",
+            "backend/app/schemas/agent.py",
+            "backend/app/services/review_provenance.py",
             "backend/app/services/agent_team_setup_service.py",
             "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/agent_routing_policy.py",
-            "backend/app/schemas/agent.py",
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 552,
+          "step_count": 653,
           "truncated": true
         }
       },
@@ -43217,15 +43226,16 @@
             "backend/app/services/agent_service.py",
             "backend/app/utils/time.py",
             "backend/app/services/agent_work_service.py",
+            "backend/app/services/review_provenance.py",
             "backend/app/services/agent_routing_policy.py",
+            "backend/app/schemas/agent.py",
             "backend/app/services/work_metrics.py",
             "backend/app/services/agent_team_setup_service.py",
             "backend/app/services/agent_routing_rollout.py",
-            "backend/app/schemas/agent.py",
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 773,
+          "step_count": 793,
           "truncated": true
         }
       },
@@ -45305,6 +45315,7 @@
         "entities/ReviewMode.md",
         "entities/RevocationObservation.md",
         "entities/RevocationResolver.md",
+        "entities/ReworkReadCache.md",
         "entities/RiskFields.md",
         "entities/RoadmapFilterDescriptor.md",
         "entities/RoadmapGroup.md",
@@ -47683,6 +47694,7 @@
         "modules/test_source_preflight.md",
         "modules/test_sqlite_migrations.md",
         "modules/test_strict_caller_matrix.md",
+        "modules/test_supervised_shadow_rework.md",
         "modules/test_task_assignee_kind.md",
         "modules/test_task_discussion.md",
         "modules/test_task_domain.md",
@@ -49411,6 +49423,7 @@
       "mcp_uri": "llm-wiki://entities/AgentRecoveryRequeueResponse",
       "outgoing_internal_links": [
         "modules/agent_work_service.md",
+        "modules/review_provenance.md",
         "modules/routers_agent.md",
         "modules/schemas_agent.md"
       ],
@@ -49459,6 +49472,7 @@
       "mcp_uri": "llm-wiki://entities/AgentReviewVerdictResponse",
       "outgoing_internal_links": [
         "modules/agent_work_service.md",
+        "modules/review_provenance.md",
         "modules/routers_agent.md",
         "modules/schemas_agent.md"
       ],
@@ -50521,9 +50535,9 @@
         "modules/execution_reconciliation.md",
         "modules/models___init__.md",
         "modules/models_agent.md",
+        "modules/review_provenance.md",
         "modules/test_agent_team_setup.md",
-        "modules/test_agent_team_setup_stored_contract.md",
-        "modules/test_runtime_observations.md"
+        "modules/test_agent_team_setup_stored_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/agent.py",
@@ -50803,6 +50817,7 @@
       "mcp_uri": "llm-wiki://entities/AgentWorkTerminalResponse",
       "outgoing_internal_links": [
         "modules/agent_work_service.md",
+        "modules/review_provenance.md",
         "modules/routers_agent.md",
         "modules/schemas_agent.md"
       ],
@@ -59721,7 +59736,8 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/ReadyTopology",
       "outgoing_internal_links": [
-        "modules/test_agent_team_setup_qualification.md"
+        "modules/test_agent_team_setup_qualification.md",
+        "modules/test_supervised_shadow_rework.md"
       ],
       "role": "semantic",
       "source_path": "backend/tests/test_agent_team_setup_qualification.py",
@@ -60392,6 +60408,19 @@
       "role": "semantic",
       "source_path": "backend/app/autonomy/contracts/charter.py",
       "title": "RevocationResolver"
+    },
+    {
+      "canonical_path": "entities/ReworkReadCache.md",
+      "id": "ReworkReadCache",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/ReworkReadCache",
+      "outgoing_internal_links": [
+        "modules/agent_work_service.md",
+        "modules/review_provenance.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/review_provenance.py",
+      "title": "ReworkReadCache"
     },
     {
       "canonical_path": "entities/RiskFields.md",
@@ -81510,6 +81539,7 @@
       "mcp_uri": "llm-wiki://modules/review_provenance",
       "outgoing_internal_links": [
         "entities/ReviewHistory.md",
+        "entities/ReworkReadCache.md",
         "modules/review_provenance.md"
       ],
       "role": "semantic",
@@ -88241,6 +88271,18 @@
       "title": "test_strict_caller_matrix Module"
     },
     {
+      "canonical_path": "modules/test_supervised_shadow_rework.md",
+      "id": "test_supervised_shadow_rework",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_supervised_shadow_rework",
+      "outgoing_internal_links": [
+        "modules/test_supervised_shadow_rework.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_supervised_shadow_rework.py",
+      "title": "test_supervised_shadow_rework Module"
+    },
+    {
       "canonical_path": "modules/test_task_assignee_kind.md",
       "id": "test_task_assignee_kind",
       "kind": "modules",
@@ -91105,6 +91147,7 @@
         "modules/agent_work_service.md",
         "modules/authority.md",
         "modules/delivery_dependency_service.md",
+        "modules/review_provenance.md",
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
         "modules/time.md"
@@ -91243,6 +91286,7 @@
       "outgoing_internal_links": [
         "modules/agent_service.md",
         "modules/agent_work_service.md",
+        "modules/review_provenance.md",
         "modules/schemas_agent.md",
         "modules/time.md"
       ],
@@ -98618,6 +98662,7 @@
       "outgoing_internal_links": [
         "modules/agent_routing_policy.md",
         "modules/agent_routing_rollout.md",
+        "modules/agent_routing_service.md",
         "modules/agent_service.md",
         "modules/agent_team_setup_service.md",
         "modules/agent_work_service.md",
@@ -100389,6 +100434,7 @@
         "modules/models_identity.md",
         "modules/models_outbound_webhook.md",
         "modules/query_limits.md",
+        "modules/review_provenance.md",
         "modules/schemas_agent.md",
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
@@ -100572,6 +100618,7 @@
         "modules/mcp_server.md",
         "modules/models_identity.md",
         "modules/models_outbound_webhook.md",
+        "modules/review_provenance.md",
         "modules/schemas_agent.md",
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
@@ -100604,6 +100651,7 @@
         "modules/mcp_server.md",
         "modules/models_identity.md",
         "modules/models_outbound_webhook.md",
+        "modules/review_provenance.md",
         "modules/schemas_agent.md",
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
@@ -100637,6 +100685,7 @@
         "modules/models_identity.md",
         "modules/models_outbound_webhook.md",
         "modules/query_limits.md",
+        "modules/review_provenance.md",
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
         "modules/task_service.md",
@@ -101226,6 +101275,7 @@
         "modules/models_identity.md",
         "modules/models_outbound_webhook.md",
         "modules/query_limits.md",
+        "modules/review_provenance.md",
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
         "modules/task_service.md",
@@ -101543,6 +101593,7 @@
         "modules/mcp_server.md",
         "modules/models_identity.md",
         "modules/models_outbound_webhook.md",
+        "modules/review_provenance.md",
         "modules/schemas_agent.md",
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
@@ -102056,6 +102107,7 @@
         "modules/mcp_server.md",
         "modules/models_identity.md",
         "modules/models_outbound_webhook.md",
+        "modules/review_provenance.md",
         "modules/schemas_agent.md",
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
@@ -102132,6 +102184,7 @@
         "modules/models_identity.md",
         "modules/models_outbound_webhook.md",
         "modules/query_limits.md",
+        "modules/review_provenance.md",
         "modules/schemas_agent.md",
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
@@ -104452,6 +104505,7 @@
         "modules/models_outbound_webhook.md",
         "modules/mutation_versions.md",
         "modules/query_limits.md",
+        "modules/review_provenance.md",
         "modules/runtime_peer.md",
         "modules/schemas_agent.md",
         "modules/services_work_metrics.md",
@@ -105761,6 +105815,7 @@
         "modules/test_source_preflight.md",
         "modules/test_sqlite_migrations.md",
         "modules/test_strict_caller_matrix.md",
+        "modules/test_supervised_shadow_rework.md",
         "modules/test_task_assignee_kind.md",
         "modules/test_task_discussion.md",
         "modules/test_task_domain.md",
@@ -106852,6 +106907,7 @@
         "modules/test_source_preflight.md",
         "modules/test_sqlite_migrations.md",
         "modules/test_strict_caller_matrix.md",
+        "modules/test_supervised_shadow_rework.md",
         "modules/test_task_assignee_kind.md",
         "modules/test_task_discussion.md",
         "modules/test_task_domain.md",
@@ -106999,5 +107055,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:63781a11ff2d4652e58b053f05e04bb0cced0df1a2dd8c858aadf50dd9f77d57"
+  "source_hash": "sha256:f5bcd6e61e7329c5222ec529ddf7385a7c71f975e9eb644e533b1e200942cd78"
 }

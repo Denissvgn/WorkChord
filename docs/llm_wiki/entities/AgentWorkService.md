@@ -1,6 +1,6 @@
 # AgentWorkService
 
-**Location:** `backend/app/services/agent_work_service.py:181`
+**Location:** `backend/app/services/agent_work_service.py:184`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_work_service](../modules/agent_work_service.md)
@@ -18,7 +18,7 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
 | `__init__` | `(db: AsyncSession, *, rollout_service: AgentRoutingRolloutService \| None = None)` | — | — |
-| `_resolve_rollout` | *(async)* `(actor: AgentActor) -> AgentRoutingRolloutService` | — | — |
+| `_resolve_rollout` | *(async)* `(actor: AgentActor, *, observed_boundaries: dict \| None = None) -> AgentRoutingRolloutService` | — | — |
 | `_require_enforced_rollout` | `(rollout_service: AgentRoutingRolloutService)` | `@staticmethod` | Require effective enforcement and return its bounded status. |
 | `_require_enforced_routing` | `()` | — | Preserve the explicit/static rollout guard for compatibility. |
 | `_require_enforced_routing_for_actor` | *(async)* `(actor: AgentActor)` | — | Require enforcement using the actor's authoritative topology. |
@@ -38,6 +38,9 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `_record_routing_stale_conflict` | *(async)* `(*, task: Task, principal: AgentActor, data: Any, conflict: Any, assignment_id: int \| None = None, correlation_id: str \| None = None) -> None` | — | Durably record a failed selection attempt without mutating work state. |
 | `_selection_pending` | `(assignment: AgentTaskAssignment) -> bool` | `@classmethod` | — |
 | `_supervised_recovery` | `(assignment: AgentTaskAssignment) -> bool` | `@classmethod` | — |
+| `_show_rework` | `(assignment_view, actor_id, evidence)` | `@staticmethod` | Project the effective handback without rewriting the issued assignment. |
+| `_execution_assignment_view` | `(assignment, run, **binding_options)` | `@classmethod` | — |
+| `_shadow_handoff` | *(async)* `(task, assignment, worker, mode, cache, *, lock = False)` | — | — |
 | `_is_model_aware_assignment` | `(assignment: AgentTaskAssignment) -> bool` | `@classmethod` | — |
 | `_failure_category` | `(evidence: Any) -> str` | `@staticmethod` | Recognize only explicit governed model-failure evidence. |
 | `_routing_lineage_snapshot` | `(*, task: Task, source_assignments: Iterable[AgentTaskAssignment], transition: str, provisional_actor_id: int, reason: str, evidence: Any = None) -> dict[str, Any]` | `@classmethod` | Build bounded pending-selection evidence without copying opaque payloads. |
@@ -57,7 +60,7 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `list_assignments_for_people` | *(async)* `(*, task_id: Optional[int] = None, actor_id: Optional[int] = None, purpose: Optional[str] = None, state: Optional[str] = None, limit: int = 200) -> list[AgentAssignmentReadItem]` | — | List the assignments of the tasks this request's reader can see. |
 | `create_assignment` | *(async)* `(principal: AgentActor, data: AgentTaskAssignmentCreate \| ModelAwareAgentTaskAssignmentCreate, *, idempotency_key: Optional[str] = None, rationale: str, correlation_id: str) -> AgentTaskAssignmentResponse` | `@atomic_command` | Dispatch one task to one provisioned actor. |
 | `update_assignment` | *(async)* `(assignment_id: int, principal: AgentActor, data: AgentTaskAssignmentUpdate \| ModelAwareAgentTaskAssignmentUpdate, *, idempotency_key: Optional[str] = None, rationale: str, correlation_id: str) -> AgentTaskAssignmentResponse` | `@atomic_command` | Reassign, reorder, or cancel queued work. |
-| `get_work` | *(async)* `(actor: AgentActor, *, limit: int = 20, cursor: Optional[str] = None) -> AgentWorkDecisionResponse` | — | Return the authoritative resume/begin/wait/recovery decision. |
+| `get_work` | *(async)* `(actor: AgentActor, *, limit: int = 20, cursor: Optional[str] = None, _rework_read: ReworkReadCache \| None = None) -> AgentWorkDecisionResponse` | — | Return the authoritative resume/begin/wait/recovery decision. |
 | `get_reviews` | *(async)* `(actor: AgentActor, *, limit: int = 50, cursor: Optional[str] = None) -> AgentReviewQueueResponse` | — | Return the separate verifier-assignment queue. |
 | `get_task_context` | *(async)* `(actor: AgentActor, task_id: int, *, assignment_id: Optional[int] = None) -> AgentTaskContextResponse` | — | Return complete worker context with brief and dependency states. |
 | `begin` | *(async)* `(actor: AgentActor, data: AgentWorkBegin \| ModelAwareAgentWorkBegin, *, idempotency_key: str) -> AgentWorkBeginResponse` | `@atomic_command` | Atomically accept, fence, claim, run, and activate selected work. |
@@ -75,8 +78,8 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `_definition_blockers` | `(task: Task) -> list[str]` | — | — |
 | `_working_today` | *(async)* `(task: Task, now: datetime) -> date` | — | Today in the task's project time zone, as the schedule counts days. |
 | `_follow_actual_dates` | *(async)* `(task: Task, *, started: bool) -> None` | — | Recalculate planned work around a task that just started or was submitted. |
-| `_start_blockers` | *(async)* `(task: Task, assignment: Optional[AgentTaskAssignment], now: datetime) -> list[str]` | — | — |
-| `_work_item` | *(async)* `(assignment: AgentTaskAssignment, position: int, now: datetime, *, running: Optional[Iterable[AgentRun]] = None) -> AgentWorkItem` | — | — |
+| `_start_blockers` | *(async)* `(task: Task, assignment: Optional[AgentTaskAssignment], now: datetime, *, assignment_view: AgentTaskAssignmentResponse \| None = None, rework_read: ReworkReadCache \| None = None) -> list[str]` | — | — |
+| `_work_item` | *(async)* `(assignment: AgentTaskAssignment, position: int, now: datetime, *, running: Optional[Iterable[AgentRun]] = None, rework_read: ReworkReadCache \| None = None) -> AgentWorkItem` | — | — |
 | `_current_recovery_codes` | *(async)* `(actor: AgentActor, accepted: list[AgentTaskAssignment], running: list[AgentRun], now: datetime) -> list[str]` | — | — |
 | `_validate_fence` | `(task: Task, actor: AgentActor, claim_id: str, claim_generation: int) -> None` | `@staticmethod` | — |
 | `_idempotent_replay` | *(async)* `(actor: AgentActor, operation: str, target_type: str, target_id: int, idempotency_key: Optional[str], request_payload: dict[str, Any]) -> Optional[dict[str, Any]]` | — | — |
@@ -150,7 +153,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_work_service](../modules/agent_work_service.md) | 83 | — |
+| [agent_work_service](../modules/agent_work_service.md) | 86 | — |
 
 ### References
 

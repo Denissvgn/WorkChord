@@ -52,18 +52,18 @@ sequenceDiagram
     participant p14 as DeliveryDependencyService.projection
     participant p15 as different_publisher_required
     participant p16 as AgentWorkService._resolve_rollout
-    participant p17 as AgentWorkService._supervised_recovery
+    participant p17 as AgentWorkService._shadow_handoff
     participant p18 as AgentWorkService._selection_pending
     participant p19 as AgentWorkService._is_model_aware_assignment
     participant p20 as AgentWorkService._validate_assignment_actor
     participant p21 as sha256_hex
     participant p22 as AgentWorkService._working_today
-    participant p23 as AgentTeamSetupService.routing_readiness
-    participant p24 as AgentWorkService._routing_snapshot
-    participant p25 as evaluate_actor_authorization
-    participant p26 as working_today
-    participant p27 as canonical_json_bytes
-    participant p28 as DeliveryDependencyService._accepted
+    participant p23 as AgentWorkService._supervised_recovery
+    participant p24 as AgentTeamSetupService.routing_readiness
+    participant p25 as supervised_rework_evidence
+    participant p26 as evaluate_actor_authorization
+    participant p27 as working_today
+    participant p28 as canonical_json_bytes
     participant p29 as HTTPException
     participant p30 as self.db.info.get (backend/app/services/task…TaskDetailService.my_work)
     p0->>p1: TaskDetailService.my_work
@@ -82,25 +82,25 @@ sequenceDiagram
     p10->>p14: DeliveryDependencyService.projection
     p12->>p15: different_publisher_required
     p13->>p16: AgentWorkService._resolve_rollout
-    p13->>p17: AgentWorkService._supervised_recovery
+    p13->>p17: AgentWorkService._shadow_handoff
     p13->>p18: AgentWorkService._selection_pending
     p13->>p19: AgentWorkService._is_model_aware_assignment
     p13->>p20: AgentWorkService._validate_assignment_actor
     p12->>p21: sha256_hex
     p13->>p22: AgentWorkService._working_today
-    p16->>p23: AgentTeamSetupService.routing_readiness
-    p17->>p24: AgentWorkService._routing_snapshot
-    p20->>p25: evaluate_actor_authorization
-    p22->>p26: working_today
-    p21->>p27: canonical_json_bytes
-    p14->>p28: DeliveryDependencyService._accepted
+    p17->>p23: AgentWorkService._supervised_recovery
+    p16->>p24: AgentTeamSetupService.routing_readiness
+    p17->>p25: supervised_rework_evidence
+    p20->>p26: evaluate_actor_authorization
+    p22->>p27: working_today
+    p21->>p28: canonical_json_bytes
     p0-->>p29: HTTPException(422, detail=[...])
     p1-->>p30: self.db.info.get (backend/app/services/task…TaskDetailService.my_work)('authority')
 ```
 
-> Call sequence diagram shows 30 of 423 interactions; 393 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 515 interactions; 485 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 93 (92 omitted); unresolved 1 of 235 (234 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 115 (114 omitted); unresolved 1 of 284 (283 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -114,7 +114,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_detail_service.py:TaskDetailService.my_work` | 2 | [backend/app/services/task_detail_service.py](../modules/task_detail_service.md) | internal | 2 |
 | `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | unresolved | 9 |
 | `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | external | 2 |
-> Omission summary shows 8 of 96 groups; 88 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 105 groups; 97 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -127,9 +127,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 96; effect analysis evaluated: 68, partial: 3, unavailable: 25. Counts include steps omitted from the displayed trace.
+Source steps: 117; effect analysis evaluated: 85, partial: 4, unavailable: 28. Counts include steps omitted from the displayed trace.
 
-Collector observations for 71 source steps with known totals: observed: 396, emitted: 363, omitted: 33. Unavailable totals are excluded.
+Collector observations for 89 source steps with known totals: observed: 551, emitted: 512, omitted: 39. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

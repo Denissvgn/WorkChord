@@ -97,4 +97,4 @@ flowchart LR
 | `test_guard_admits_only_the_discovery_the_command_announced` | call | [test_agent_discovery_report](../modules/test_agent_discovery_report.md) | 1 |
 | `test_reconciliation_uses_operator_and_archived_catalog` | call | [test_execution_reconciliation](../modules/test_execution_reconciliation.md) | 1 |
 
-> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

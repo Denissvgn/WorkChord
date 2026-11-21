@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_work_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 18 more
+**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 19 more
 
 **Complete modules touched:**
 
@@ -22,6 +22,7 @@
 - [mcp_server](../modules/mcp_server.md)
 - [models_identity](../modules/models_identity.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
+- [review_provenance](../modules/review_provenance.md)
 - [schemas_agent](../modules/schemas_agent.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
@@ -50,20 +51,20 @@ sequenceDiagram
     participant p12 as AgentWorkService.actor_response
     participant p13 as get_settings
     participant p14 as AgentWorkService._validate_assignment_actor
-    participant p15 as command_transaction
-    participant p16 as _authenticate_agent_key
-    participant p17 as AgentWorkService._decode_page_cursor
-    participant p18 as _require_scope_requirement
-    participant p19 as IdentityService.actor_context
-    participant p20 as AgentWorkService._start_blockers
-    participant p21 as AgentWorkService.assignment_response
+    participant p15 as AgentWorkService.assignment_response
+    participant p16 as command_transaction
+    participant p17 as _authenticate_agent_key
+    participant p18 as AgentWorkService._decode_page_cursor
+    participant p19 as _require_scope_requirement
+    participant p20 as IdentityService.actor_context
+    participant p21 as AgentWorkService._start_blockers
     participant p22 as AgentWorkService.run_response
     participant p23 as require_scope
     participant p24 as evaluate_actor_authorization
     participant p25 as AgentService.authenticate
-    participant p26 as AgentWorkService._resolve_rollout
-    participant p27 as require_identity_writes
-    participant p28 as AgentWorkService._supervised_recovery
+    participant p26 as require_identity_writes
+    participant p27 as AgentWorkService._resolve_rollout
+    participant p28 as AgentWorkService._shadow_handoff
     participant p29 as json.dumps (backend/app/mcp_server.py:_json_resource)
     participant p30 as decision.model_dump
     p0->>p1: _json_resource
@@ -80,27 +81,27 @@ sequenceDiagram
     p4->>p12: AgentWorkService.actor_response
     p5->>p13: get_settings
     p8->>p14: AgentWorkService._validate_assignment_actor
-    p7->>p15: command_transaction
-    p7->>p16: _authenticate_agent_key
-    p10->>p17: AgentWorkService._decode_page_cursor
-    p7->>p18: _require_scope_requirement
-    p7->>p19: IdentityService.actor_context
-    p9->>p20: AgentWorkService._start_blockers
-    p9->>p21: AgentWorkService.assignment_response
+    p9->>p15: AgentWorkService.assignment_response
+    p7->>p16: command_transaction
+    p7->>p17: _authenticate_agent_key
+    p10->>p18: AgentWorkService._decode_page_cursor
+    p7->>p19: _require_scope_requirement
+    p7->>p20: IdentityService.actor_context
+    p9->>p21: AgentWorkService._start_blockers
     p9->>p22: AgentWorkService.run_response
-    p18->>p23: require_scope
+    p19->>p23: require_scope
     p14->>p24: evaluate_actor_authorization
-    p16->>p25: AgentService.authenticate
-    p20->>p26: AgentWorkService._resolve_rollout
-    p19->>p27: require_identity_writes
-    p20->>p28: AgentWorkService._supervised_recovery
+    p17->>p25: AgentService.authenticate
+    p20->>p26: require_identity_writes
+    p21->>p27: AgentWorkService._resolve_rollout
+    p21->>p28: AgentWorkService._shadow_handoff
     p1-->>p29: json.dumps (backend/app/mcp_server.py:_json_resource)(value, ensure_ascii=False, default=str)
     p2-->>p30: decision.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 544 interactions; 514 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 554 interactions; 524 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 144 (143 omitted); unresolved 1 of 240 (239 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 146 (145 omitted); unresolved 1 of 241 (240 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -114,7 +115,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 138 groups; 130 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 142 groups; 134 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -127,9 +128,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 161; effect analysis evaluated: 110, partial: 5, unavailable: 46. Counts include steps omitted from the displayed trace.
+Source steps: 168; effect analysis evaluated: 114, partial: 6, unavailable: 48. Counts include steps omitted from the displayed trace.
 
-Collector observations for 115 source steps with known totals: observed: 594, emitted: 560, omitted: 34. Unavailable totals are excluded.
+Collector observations for 120 source steps with known totals: observed: 664, emitted: 624, omitted: 40. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

@@ -8,6 +8,8 @@ Authoritative assessment, preview, and selection validation for agent routing.
 
 A verification preview on a project that requires different publishers checks the reviewer against the actual execution contributors. The selected actor’s current profile and enabled model binding support the comparison. Missing or conflicting historical attribution is surfaced before the assignment can be accepted.
 
+After supervised rework, the latest successful run and its immutable submission identify the required reviewer profile. Verification preview excludes other profiles, including profiles using the same independent publisher. Dispatch and verdict require the same profile and recheck independence from every contributing publisher.
+
 ## Imports
 
 | Source | Symbols |

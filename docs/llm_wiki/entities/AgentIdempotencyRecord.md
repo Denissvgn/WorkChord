@@ -104,4 +104,4 @@ flowchart LR
 | `test_binding_receipt_without_independent_catalog_history_cannot_name_a_publisher` | call | [test_review_provenance](../modules/test_review_provenance.md) | 2 |
 | `test_legacy_history_never_uses_the_actors_current_configuration` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

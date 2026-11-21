@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1714 | [Open section](#entities) |
-| Modules | 1080 | [Open section](#modules) |
+| Entities | 1715 | [Open section](#entities) |
+| Modules | 1081 | [Open section](#modules) |
 | Workflows | 204 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 567 | [Open section](#entry-point-flows) |
@@ -838,6 +838,7 @@ These pages preserve documentation from earlier source revisions.
 - [ReviewMode](entities/ReviewMode.md)
 - [RevocationObservation](entities/RevocationObservation.md)
 - [RevocationResolver](entities/RevocationResolver.md)
+- [ReworkReadCache](entities/ReworkReadCache.md)
 - [RiskFields](entities/RiskFields.md)
 - [RoadmapMarker](entities/RoadmapMarker.md)
 - [RoadmapRow](entities/RoadmapRow.md)
@@ -2765,6 +2766,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_source_preflight](modules/test_source_preflight.md) - Read-only SQLite snapshot and manifest safety tests.
 - [test_sqlite_migrations](modules/test_sqlite_migrations.md) - SQLite side of the fresh schema and inspection migration matrix.
 - [test_strict_caller_matrix](modules/test_strict_caller_matrix.md) - Operator caller observations are enforced in both dialects and sampled explicitly.
+- [test_supervised_shadow_rework](modules/test_supervised_shadow_rework.md) - A prior supervised worker resumes the exact strict handback on its original publisher.
 - [test_task_assignee_kind](modules/test_task_assignee_kind.md) - Task responses say whether the assignee is a person or an agent, to every reader of the task.
 - [test_task_discussion](modules/test_task_discussion.md) - Discussion is attributable, versioned, private and independent from execution.
 - [test_task_domain](modules/test_task_domain.md) - Domain commands preserve identity, evidence independence and bounded read contracts.

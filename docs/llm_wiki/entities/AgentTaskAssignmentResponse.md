@@ -49,11 +49,12 @@ flowchart LR
     n2["create_agent_assignment (backend/app/routers/agent.py)"]
     n3["list_agent_assignments (backend/app/routers/agent.py)"]
     n4["update_agent_assignment (backend/app/routers/agent.py)"]
-    n5["AgentWorkService.assignment_response (backend/app/services/agent_work_service.py)"]
-    n6["AgentWorkService.create_assignment (backend/app/services/agent_work_service.py)"]
-    n7["AgentWorkService.list_assignments (backend/app/services/agent_work_service.py)"]
-    n8["AgentWorkService.update_assignment (backend/app/services/agent_work_service.py)"]
-    n9["test_legacy_assignment_and_run_responses_remain_readable (backend/tests/test_agent_routing_data.py)"]
+    n5["AgentWorkService._start_blockers (backend/app/services/agent_work_service.py)"]
+    n6["AgentWorkService.assignment_response (backend/app/services/agent_work_service.py)"]
+    n7["AgentWorkService.create_assignment (backend/app/services/agent_work_service.py)"]
+    n8["AgentWorkService.list_assignments (backend/app/services/agent_work_service.py)"]
+    n9["AgentWorkService.update_assignment (backend/app/services/agent_work_service.py)"]
+    n10["test_legacy_assignment_and_run_responses_remain_readable (backend/tests/test_agent_routing_data.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -63,6 +64,7 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/routers_agent.md"
     click n3 "../modules/routers_agent.md"
@@ -71,7 +73,8 @@ flowchart LR
     click n6 "../modules/agent_work_service.md"
     click n7 "../modules/agent_work_service.md"
     click n8 "../modules/agent_work_service.md"
-    click n9 "../modules/test_agent_routing_data.md"
+    click n9 "../modules/agent_work_service.md"
+    click n10 "../modules/test_agent_routing_data.md"
 ```
 
 ### Summary
@@ -93,6 +96,7 @@ flowchart LR
 | `create_agent_assignment` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `list_agent_assignments` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `update_agent_assignment` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
+| `AgentWorkService._start_blockers` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `AgentWorkService.assignment_response` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 | `AgentWorkService.assignment_response` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `AgentWorkService.create_assignment` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |

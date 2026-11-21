@@ -2,12 +2,13 @@
 
 **Entry point:** `task_actions` (`http`)
 **Source:** [routers_task_domain](../modules/routers_task_domain.md)
-**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 15 more
+**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_routing_service](../modules/agent_routing_service.md), and 16 more
 
 **Complete modules touched:**
 
 - [agent_routing_policy](../modules/agent_routing_policy.md)
 - [agent_routing_rollout](../modules/agent_routing_rollout.md)
+- [agent_routing_service](../modules/agent_routing_service.md)
 - [agent_service](../modules/agent_service.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [agent_work_service](../modules/agent_work_service.md)
@@ -44,23 +45,23 @@ sequenceDiagram
     participant p9 as DeliveryDependencyService.projection
     participant p10 as different_publisher_required
     participant p11 as AgentWorkService._resolve_rollout
-    participant p12 as AgentWorkService._supervised_recovery
+    participant p12 as AgentWorkService._shadow_handoff
     participant p13 as AgentWorkService._selection_pending
     participant p14 as AgentWorkService._is_model_aware_assignment
     participant p15 as AgentWorkService._validate_assignment_actor
     participant p16 as sha256_hex
     participant p17 as AgentWorkService._working_today
-    participant p18 as AgentTeamSetupService.routing_readiness
-    participant p19 as AgentWorkService._routing_snapshot
-    participant p20 as evaluate_actor_authorization
-    participant p21 as working_today
-    participant p22 as canonical_json_bytes
-    participant p23 as require_project
-    participant p24 as DeliveryDependencyService._accepted
-    participant p25 as AgentTeamSetupService.membership_boundary
-    participant p26 as get_settings
-    participant p27 as AgentRoutingTopologyReadiness.unavailable
-    participant p28 as _json_value
+    participant p18 as AgentWorkService._supervised_recovery
+    participant p19 as AgentTeamSetupService.routing_readiness
+    participant p20 as supervised_rework_evidence
+    participant p21 as evaluate_actor_authorization
+    participant p22 as working_today
+    participant p23 as canonical_json_bytes
+    participant p24 as require_project
+    participant p25 as DeliveryDependencyService._accepted
+    participant p26 as AgentTeamSetupService.membership_boundary
+    participant p27 as AgentWorkService._routing_snapshot
+    participant p28 as get_settings
     participant p29 as HTTPException
     participant p30 as exc.detail
     p0->>p1: TaskDomainService.allowed_actions
@@ -74,30 +75,30 @@ sequenceDiagram
     p5->>p9: DeliveryDependencyService.projection
     p7->>p10: different_publisher_required
     p8->>p11: AgentWorkService._resolve_rollout
-    p8->>p12: AgentWorkService._supervised_recovery
+    p8->>p12: AgentWorkService._shadow_handoff
     p8->>p13: AgentWorkService._selection_pending
     p8->>p14: AgentWorkService._is_model_aware_assignment
     p8->>p15: AgentWorkService._validate_assignment_actor
     p7->>p16: sha256_hex
     p8->>p17: AgentWorkService._working_today
-    p11->>p18: AgentTeamSetupService.routing_readiness
-    p12->>p19: AgentWorkService._routing_snapshot
-    p15->>p20: evaluate_actor_authorization
-    p17->>p21: working_today
-    p16->>p22: canonical_json_bytes
-    p9->>p23: require_project
-    p9->>p24: DeliveryDependencyService._accepted
-    p18->>p25: AgentTeamSetupService.membership_boundary
-    p23->>p26: get_settings
-    p18->>p27: AgentRoutingTopologyReadiness.unavailable
-    p22->>p28: _json_value
+    p12->>p18: AgentWorkService._supervised_recovery
+    p11->>p19: AgentTeamSetupService.routing_readiness
+    p12->>p20: supervised_rework_evidence
+    p15->>p21: evaluate_actor_authorization
+    p17->>p22: working_today
+    p16->>p23: canonical_json_bytes
+    p9->>p24: require_project
+    p9->>p25: DeliveryDependencyService._accepted
+    p19->>p26: AgentTeamSetupService.membership_boundary
+    p18->>p27: AgentWorkService._routing_snapshot
+    p24->>p28: get_settings
     p2-->>p29: HTTPException(409, detail=exc.detail(...))
     p2-->>p30: exc.detail
 ```
 
-> Call sequence diagram shows 30 of 380 interactions; 350 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 600 interactions; 570 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 90 (89 omitted); unresolved 1 of 200 (199 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 141 (140 omitted); unresolved 1 of 344 (343 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -111,7 +112,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_domain_service.py:TaskDomainService.ownership` | 15 | - | unresolved | 11 |
 | `backend/app/services/task_domain_service.py:TaskDomainService.ownership` | 15 | - | external | 4 |
 | `backend/app/services/task_domain_service.py:TaskDomainService.allowed_actions` | 10 | - | unresolved | 24 |
-> Omission summary shows 8 of 90 groups; 82 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 112 groups; 104 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -124,9 +125,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 91; effect analysis evaluated: 61, partial: 4, unavailable: 26. Counts include steps omitted from the displayed trace.
+Source steps: 116; effect analysis evaluated: 82, partial: 5, unavailable: 29. Counts include steps omitted from the displayed trace.
 
-Collector observations for 65 source steps with known totals: observed: 414, emitted: 368, omitted: 46. Unavailable totals are excluded.
+Collector observations for 87 source steps with known totals: observed: 581, emitted: 529, omitted: 52. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

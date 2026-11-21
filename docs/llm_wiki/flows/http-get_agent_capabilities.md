@@ -120,7 +120,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 62; effect analysis evaluated: 34, partial: 2, unavailable: 26. Counts include steps omitted from the displayed trace.
 
-Collector observations for 36 source steps with known totals: observed: 204, emitted: 178, omitted: 26. Unavailable totals are excluded.
+Collector observations for 36 source steps with known totals: observed: 206, emitted: 180, omitted: 26. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -135,7 +135,7 @@ Collector observations for 36 source steps with known totals: observed: 204, emi
 | `AgentRoutingRolloutStatus` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
 | `AgentRoutingRolloutStatus` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
 | `AgentRoutingRolloutService` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
-| `AgentTeamSetupService.routing_readiness` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `AgentTeamSetupService.routing_readiness` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
 | `AgentTeamSetupService.membership_boundary` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
 | `self.db.execute (backend/app/services/agen…rvice.membership_boundary)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `select(…).join(…).where` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
@@ -195,7 +195,7 @@ flowchart LR
 | `AgentRoutingRolloutStatus` | - | - | - | - |
 | `AgentRoutingRolloutStatus` | - | - | - | - |
 | `AgentRoutingRolloutService` | - | - | - | - |
-| `AgentTeamSetupService.routing_readiness` | `actor: AgentActor` | - | - | `AgentRoutingTopologyReadiness.unavailable(...)`, `AgentRoutingTopologyReadiness.ready(...)`, `AgentRoutingTopologyReadiness.not_ready(...)` |
+| `AgentTeamSetupService.routing_readiness` | `actor: AgentActor`, `observed_boundaries: dict[int, AgentTeamMembershipBoundary \| None] \| None` | - | `observed_boundaries[...]` | `AgentRoutingTopologyReadiness.unavailable(...)`, `AgentRoutingTopologyReadiness.ready(...)`, `AgentRoutingTopologyReadiness.not_ready(...)` |
 | `AgentTeamSetupService.membership_boundary` | `actor_id: int` | `AgentTeamTopologyMember`, `AgentTeamTopology` | - | `None`, `None`, `AgentTeamMembershipBoundary(...)` |
 | `self.db.execute (backend/app/services/agen…rvice.membership_boundary)` | - | - | - | - |
 | `select(…).join(…).where` | - | - | - | - |
@@ -212,7 +212,7 @@ flowchart LR
 | AgentRoutingRolloutService.status | AgentRoutingRolloutStatus | 273 | `AgentRoutingRolloutStatus(configured_mode=configured, effective_mode=configured, feature_advertised=True, blocker_codes=(...), topology_readiness=readiness)` |
 | get_agent_capabilities | AgentRoutingRolloutService | 412 | `AgentRoutingRolloutService(data not statically known)` |
 | get_agent_capabilities | AgentTeamSetupService.routing_readiness | 414 | `AgentTeamSetupService(service.db).routing_readiness(actor)` |
-| AgentTeamSetupService.routing_readiness | AgentTeamSetupService.membership_boundary | 3600 | `self.membership_boundary(actor.id)` |
+| AgentTeamSetupService.routing_readiness | AgentTeamSetupService.membership_boundary | 3602 | `self.membership_boundary(actor.id)` |
 | AgentTeamSetupService.membership_boundary | self.db.execute (backend/app/services/agen…rvice.membership_boundary) | 3532 | `self.db.execute(...)` |
 | AgentTeamSetupService.membership_boundary | select(…).join(…).where | 3533 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where(..., ...)` |
 | AgentTeamSetupService.membership_boundary | select(…).join | 3533 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, ...)` |

@@ -111,4 +111,4 @@ flowchart LR
 | `test_rest_and_mcp_rosters_are_identical_and_secret_free` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 2 |
 | `test_roster_query_count_is_cardinality_constant` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 1 |
 
-> References: showing 12 of 35 logical references; 23 omitted by the 12-row generated summary limit.
+> References: showing 12 of 36 logical references; 24 omitted by the 12-row generated summary limit.

@@ -99,4 +99,4 @@ flowchart LR
 | `test_scoped_nonmanager_deletion_is_denied_without_domain_changes` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
 | `test_authenticated_manual_submission_and_assigned_agent_verdict` | call | [test_manual_review_provenance](../modules/test_manual_review_provenance.md) | 2 |
 
-> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

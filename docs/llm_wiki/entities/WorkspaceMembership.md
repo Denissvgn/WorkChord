@@ -98,4 +98,4 @@ flowchart LR
 | `test_reconciliation_uses_operator_and_archived_catalog` | call | [test_execution_reconciliation](../modules/test_execution_reconciliation.md) | 3 |
 | `test_shared_iteration_snapshots_cannot_reveal_another_project` | call | [test_identity_lifecycle](../modules/test_identity_lifecycle.md) | 1 |
 
-> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.
+> References: showing 12 of 24 logical references; 12 omitted by the 12-row generated summary limit.
