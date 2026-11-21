@@ -47,9 +47,9 @@ sequenceDiagram
     participant p9 as CapacityService.calendar_for
     participant p10 as command_transaction
     participant p11 as _authenticate_agent_key
-    participant p12 as included_work_ids
-    participant p13 as _require_scope_requirement
-    participant p14 as IdentityService.actor_context
+    participant p12 as _require_scope_requirement
+    participant p13 as IdentityService.actor_context
+    participant p14 as included_work_ids
     participant p15 as require_scope
     participant p16 as AgentService.authenticate
     participant p17 as CapacityService.coverage_for
@@ -77,14 +77,14 @@ sequenceDiagram
     p4->>p9: CapacityService.calendar_for
     p5->>p10: command_transaction
     p5->>p11: _authenticate_agent_key
-    p4->>p12: included_work_ids
-    p5->>p13: _require_scope_requirement
-    p5->>p14: IdentityService.actor_context
-    p13->>p15: require_scope
+    p5->>p12: _require_scope_requirement
+    p5->>p13: IdentityService.actor_context
+    p4->>p14: included_work_ids
+    p12->>p15: require_scope
     p11->>p16: AgentService.authenticate
     p8->>p17: CapacityService.coverage_for
     p8->>p18: CapacityService.calendar_status
-    p14->>p19: require_identity_writes
+    p13->>p19: require_identity_writes
     p8->>p20: CalendarService.get_working_dates
     p8->>p21: CapacityService.absence_ranges
     p10->>p22: DeliveryDependencyService.reconcile
@@ -98,9 +98,9 @@ sequenceDiagram
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 396 interactions; 366 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 398 interactions; 368 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 121 (120 omitted); unresolved 1 of 168 (167 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 122 (121 omitted); unresolved 1 of 168 (167 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -114,7 +114,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 116 groups; 108 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 117 groups; 109 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -127,7 +127,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 108; effect analysis evaluated: 71, partial: 2, unavailable: 35. Counts include steps omitted from the displayed trace.
+Source steps: 109; effect analysis evaluated: 71, partial: 2, unavailable: 36. Counts include steps omitted from the displayed trace.
 
 Collector observations for 73 source steps with known totals: observed: 302, emitted: 290, omitted: 12. Unavailable totals are excluded.
 

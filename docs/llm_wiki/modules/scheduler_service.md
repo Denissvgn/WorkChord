@@ -12,6 +12,8 @@ A calculation may also follow actual dates. Given the day a task started or was 
 
 An estimate consumes the dated hours of each selected annual record. If a forecast reaches an uncovered year, the scheduler retains the existing dates and reports the missing year. A successful date-only apply reports a model-bound queue entry that needs a fresh selection and identifies an accepted assignment whose dates would need to move.
 
+Applying dates that change accepted work is guarded regardless of how the iteration or person selected their calendars. An unchanged accepted task retains its version while eligible planned work can move.
+
 ## Imports
 
 | Source | Symbols |
@@ -85,7 +87,7 @@ flowchart LR
 | [RescheduleResult](../entities/RescheduleResult.md) | Class | 59 | — | Result of an incremental reschedule operation. |
 | [MemberSchedule](../entities/MemberSchedule.md) | Class | 69 | — | Optimized schedule tracking with O(D) slot finding using sliding window. |
 | [SchedulerService](../entities/SchedulerService.md) | Class | 340 | — | Service for automatic task scheduling. |
-| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1325 | — | Handles incremental rescheduling when a single task changes. |
+| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1324 | — | Handles incremental rescheduling when a single task changes. |
 
 ## Functions
 

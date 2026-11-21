@@ -104,4 +104,4 @@ flowchart LR
 | `CapacityService.require_visible` | call | [capacity_service](../modules/capacity_service.md) | 1 |
 | `CapacityService.save_absence` | call | [capacity_service](../modules/capacity_service.md) | 3 |
 
-> References: showing 12 of 52 logical references; 40 omitted by the 12-row generated summary limit.
+> References: showing 12 of 54 logical references; 42 omitted by the 12-row generated summary limit.

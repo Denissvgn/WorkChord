@@ -37,7 +37,9 @@ flowchart LR
     n5["backend/app/services/planning_input_context.py"]
     n6["backend/tests/migrations/test_annual_calendar_migration.py"]
     n7["test_hidden_person_protects_shared_master_without_leaking_their_identity (backend/tests/test_annual_calendar_coverage.py)"]
-    n8["backend/tests/test_planning_input_context.py"]
+    n8["test_single_year_apply_protects_accepted_work_even_with_personal_annuals (backend/tests/test_annual_calendar_coverage.py)"]
+    n9["test_postgres_dispatch_serializes_with_supplemental_policy_replacement (backend/tests/test_annual_calendar_work_control.py)"]
+    n10["backend/tests/test_planning_input_context.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -46,6 +48,8 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
+    n10 --> n0
     click n0 "../modules/models_capacity.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -54,7 +58,9 @@ flowchart LR
     click n5 "../modules/planning_input_context.md"
     click n6 "../modules/test_annual_calendar_migration.md"
     click n7 "../modules/test_annual_calendar_coverage.md"
-    click n8 "../modules/test_planning_input_context.md"
+    click n8 "../modules/test_annual_calendar_coverage.md"
+    click n9 "../modules/test_annual_calendar_work_control.md"
+    click n10 "../modules/test_planning_input_context.md"
 ```
 
 ### Summary
@@ -79,4 +85,6 @@ flowchart LR
 | `planning_input_context` | import | [planning_input_context](../modules/planning_input_context.md) | — |
 | `test_annual_calendar_migration` | import | [test_annual_calendar_migration](../modules/test_annual_calendar_migration.md) | — |
 | `test_hidden_person_protects_shared_master_without_leaking_their_identity` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
+| `test_single_year_apply_protects_accepted_work_even_with_personal_annuals` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
+| `test_postgres_dispatch_serializes_with_supplemental_policy_replacement` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
 | `test_planning_input_context` | import | [test_planning_input_context](../modules/test_planning_input_context.md) | — |

@@ -1,6 +1,6 @@
 # TeamService
 
-**Location:** `backend/app/services/team_service.py:38`
+**Location:** `backend/app/services/team_service.py:39`
 **Kind:** Class
 **Bases:** —
 **Module:** [team_service](../modules/team_service.md)
@@ -117,4 +117,4 @@ flowchart LR
 | `add_vacation` | type_reference | [routers_team](../modules/routers_team.md) | — |
 | `create_team_member` | type_reference | [routers_team](../modules/routers_team.md) | — |
 
-> References: showing 12 of 60 logical references; 48 omitted by the 12-row generated summary limit.
+> References: showing 12 of 61 logical references; 49 omitted by the 12-row generated summary limit.

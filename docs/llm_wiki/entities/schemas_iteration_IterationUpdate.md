@@ -41,9 +41,9 @@ flowchart LR
     n8["IterationService.update (backend/app/services/iteration_service.py)"]
     n9["test_interior_year_and_snapshot_use_the_explicit_owner (backend/tests/test_annual_calendar_coverage.py)"]
     n10["test_invalid_annual_bindings_and_reverse_dependencies (backend/tests/test_annual_calendar_coverage.py)"]
-    n11["test_replacing_issued_annual_rules_is_scoped_to_the_affected_tasks (backend/tests/test_annual_calendar_coverage.py)"]
-    n12["test_moving_iteration_dates_requires_schedule_recalculation (backend/tests/test_schedule_working_date.py)"]
-    n13["test_recalculation_preserves_started_dates_outside_moved_iteration (backend/tests/test_schedule_working_date.py)"]
+    n11["test_legacy_iteration_entirely_outside_its_primary_year_is_explicitly_held (backend/tests/test_annual_calendar_coverage.py)"]
+    n12["test_replacing_issued_annual_rules_is_scoped_to_the_affected_tasks (backend/tests/test_annual_calendar_coverage.py)"]
+    n13["backend/tests/test_annual_calendar_work_control.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -69,8 +69,8 @@ flowchart LR
     click n9 "../modules/test_annual_calendar_coverage.md"
     click n10 "../modules/test_annual_calendar_coverage.md"
     click n11 "../modules/test_annual_calendar_coverage.md"
-    click n12 "../modules/test_schedule_working_date.md"
-    click n13 "../modules/test_schedule_working_date.md"
+    click n12 "../modules/test_annual_calendar_coverage.md"
+    click n13 "../modules/test_annual_calendar_work_control.md"
 ```
 
 ### Summary
@@ -98,8 +98,8 @@ flowchart LR
 | `IterationService.update` | type_reference | [iteration_service](../modules/iteration_service.md) | — |
 | `test_interior_year_and_snapshot_use_the_explicit_owner` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
 | `test_invalid_annual_bindings_and_reverse_dependencies` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
+| `test_legacy_iteration_entirely_outside_its_primary_year_is_explicitly_held` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
 | `test_replacing_issued_annual_rules_is_scoped_to_the_affected_tasks` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
-| `test_moving_iteration_dates_requires_schedule_recalculation` | call | [test_schedule_working_date](../modules/test_schedule_working_date.md) | 1 |
-| `test_recalculation_preserves_started_dates_outside_moved_iteration` | call | [test_schedule_working_date](../modules/test_schedule_working_date.md) | 1 |
+| `test_annual_calendar_work_control` | import | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | — |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.

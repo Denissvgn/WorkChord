@@ -32,8 +32,9 @@ flowchart LR
     n4["backend/app/mcp_server.py"]
     n5["get_tasks_text_context (backend/app/routers/tasks.py)"]
     n6["HierarchyRepairService.repair (backend/app/services/hierarchy_repair_service.py)"]
-    n7["backend/tests/test_planning_input_context.py"]
-    n8["backend/tests/test_shared_profile_revisions.py"]
+    n7["backend/tests/test_annual_calendar_work_control.py"]
+    n8["backend/tests/test_planning_input_context.py"]
+    n9["backend/tests/test_shared_profile_revisions.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -42,14 +43,16 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
     click n0 "../modules/commands.md"
     click n2 "../modules/commands.md"
     click n3 "../modules/app_main.md"
     click n4 "../modules/mcp_server.md"
     click n5 "../modules/tasks.md"
     click n6 "../modules/hierarchy_repair_service.md"
-    click n7 "../modules/test_planning_input_context.md"
-    click n8 "../modules/test_shared_profile_revisions.md"
+    click n7 "../modules/test_annual_calendar_work_control.md"
+    click n8 "../modules/test_planning_input_context.md"
+    click n9 "../modules/test_shared_profile_revisions.md"
 ```
 
 ### Summary
@@ -73,5 +76,6 @@ flowchart LR
 | `mcp_server` | import | [mcp_server](../modules/mcp_server.md) | — |
 | `get_tasks_text_context` | call | [tasks](../modules/tasks.md) | 1 |
 | `HierarchyRepairService.repair` | call | [hierarchy_repair_service](../modules/hierarchy_repair_service.md) | 1 |
+| `test_annual_calendar_work_control` | import | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | — |
 | `test_planning_input_context` | import | [test_planning_input_context](../modules/test_planning_input_context.md) | — |
 | `test_shared_profile_revisions` | import | [test_shared_profile_revisions](../modules/test_shared_profile_revisions.md) | — |

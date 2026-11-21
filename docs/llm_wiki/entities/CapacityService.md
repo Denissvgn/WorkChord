@@ -100,4 +100,4 @@ flowchart LR
 | `SchedulerService.schedule_iteration` | call | [scheduler_service](../modules/scheduler_service.md) | 2 |
 | `TeamService.add_vacation` | call | [team_service](../modules/team_service.md) | 1 |
 
-> References: showing 12 of 32 logical references; 20 omitted by the 12-row generated summary limit.
+> References: showing 12 of 33 logical references; 21 omitted by the 12-row generated summary limit.

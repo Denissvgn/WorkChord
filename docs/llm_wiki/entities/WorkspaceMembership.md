@@ -98,4 +98,4 @@ flowchart LR
 | `test_fresh_apply_replay_onboarding_and_runtime_readiness` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 1 |
 | `test_annual_selection_and_forecast_preserve_live_ownership` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
 
-> References: showing 12 of 29 logical references; 17 omitted by the 12-row generated summary limit.
+> References: showing 12 of 30 logical references; 18 omitted by the 12-row generated summary limit.

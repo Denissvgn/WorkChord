@@ -11,12 +11,14 @@ _Auto-generated from `backend/tests/test_annual_calendar_coverage.py`._
 | Source | Symbols |
 |--------|---------|
 | `app.authority` | `Authority`, `AuthorityError` |
-| `app.commands` | `PlanningConflict` |
+| `app.commands` | `PlanningConflict`, `command_transaction` |
 | `app.database` | `get_db` |
 | `app.main` | `app` |
 | `app.models.agent` | `AgentTaskAssignment` |
 | `app.models.capacity` | `ProfileAbsence`, `ProfileAvailability` |
+| `app.models.identity` | `Principal` |
 | `app.models.iteration` | `Iteration` |
+| `app.models.project` | `Project` |
 | `app.models.task` | `Task` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile`, `Vacation` |
 | `app.schemas.calendar` | `CalendarCreate`, `CalendarUpdate` |
@@ -24,7 +26,7 @@ _Auto-generated from `backend/tests/test_annual_calendar_coverage.py`._
 | `app.services.agent_routing_service` | `AgentRoutingService` |
 | `app.services.calendar_rules` | `AnnualCalendars`, `YearRules` |
 | `app.services.calendar_service` | `CalendarService` |
-| `app.services.capacity_service` | `CapacityService`, `PeriodCommitments` |
+| `app.services.capacity_service` | `CapacityService`, `PeriodCommitments`, `day_hours` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.planning_input_context` | `observe_planning_input` |
 | `app.services.scheduler_service` | `SchedulerService` |
@@ -54,7 +56,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (21) |
+| Outbound | `backend` (23) |
 
 ### External packages
 
@@ -62,7 +64,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -79,3 +81,7 @@ flowchart LR
 | `test_routing_preserves_single_year_ratios_and_uses_each_annual_nominal` | *(async)* `(db_session)` | — | — |
 | `test_repeated_long_commitments_are_indexed_by_owner_and_year` | *(async)* `(db_session, monkeypatch, record_property)` | — | — |
 | `test_registered_iteration_summary_retains_its_schema_description` | `()` | — | — |
+| `test_uncovered_forecast_restores_every_task_and_issued_fence` | *(async)* `(db_session, actor_factory, monkeypatch, case)` | `@pytest.mark.parametrize('case', ['leaf_overflow', 'active_prior_year'])` | — |
+| `test_single_year_apply_protects_accepted_work_even_with_personal_annuals` | *(async)* `(db_session, actor_factory, monkeypatch, personal_years)` | `@pytest.mark.parametrize('personal_years', [False, True])` | — |
+| `test_legacy_iteration_entirely_outside_its_primary_year_is_explicitly_held` | *(async)* `(db_session, monkeypatch)` | — | — |
+| `test_private_cross_year_commitment_warns_the_draft_and_holds_only_baseline_commit` | *(async)* `(db_session, monkeypatch)` | — | — |

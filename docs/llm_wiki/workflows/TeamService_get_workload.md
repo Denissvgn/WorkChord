@@ -1,7 +1,7 @@
 # TeamService_get_workload
 
 **Entry point:** `team_service.TeamService.get_workload`
-**Modules involved:** [capacity_service](../modules/capacity_service.md), [schemas_team](../modules/schemas_team.md), [services_work_metrics](../modules/services_work_metrics.md), [team_service](../modules/team_service.md)
+**Modules involved:** [capacity_service](../modules/capacity_service.md), [commands](../modules/commands.md), [schemas_team](../modules/schemas_team.md), [services_work_metrics](../modules/services_work_metrics.md), [team_service](../modules/team_service.md)
 
 > Get workload information for a team member.
 
@@ -10,12 +10,14 @@
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `capacity_service.CapacityService.calendar_for`
 2. `capacity_service.CapacityService`
-3. `services_work_metrics.included_work_ids`
-4. `schemas_team.MemberWorkload`
+3. `commands.PlanningConflict`
+4. `services_work_metrics.included_work_ids`
+5. `schemas_team.MemberWorkload`
 
 ## Touches
 
 - [capacity_service](../modules/capacity_service.md)
+- [commands](../modules/commands.md)
 - [schemas_team](../modules/schemas_team.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [team_service](../modules/team_service.md)

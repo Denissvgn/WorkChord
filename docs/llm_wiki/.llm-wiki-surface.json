@@ -28358,7 +28358,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 485,
+          "step_count": 500,
           "truncated": true
         }
       },
@@ -38080,7 +38080,7 @@
             "backend/app/services/calendar_service.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 397,
+          "step_count": 399,
           "truncated": true
         }
       },
@@ -51384,6 +51384,7 @@
         "modules/hierarchy_repair_service.md",
         "modules/mcp_server.md",
         "modules/tasks.md",
+        "modules/test_annual_calendar_work_control.md",
         "modules/test_planning_input_context.md",
         "modules/test_shared_profile_revisions.md"
       ],
@@ -51897,8 +51898,7 @@
         "modules/test_acceptance_attribution.md",
         "modules/test_allocation_recovery.md",
         "modules/test_analytics_scopes.md",
-        "modules/test_annual_calendar_coverage.md",
-        "modules/test_bounded_task_policy.md"
+        "modules/test_annual_calendar_coverage.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/authority.py",
@@ -59677,6 +59677,7 @@
         "modules/planning_input_context.md",
         "modules/test_annual_calendar_coverage.md",
         "modules/test_annual_calendar_migration.md",
+        "modules/test_annual_calendar_work_control.md",
         "modules/test_planning_input_context.md"
       ],
       "role": "semantic",
@@ -59808,7 +59809,6 @@
         "modules/task_domain_service.md",
         "modules/test_allocation_recovery.md",
         "modules/test_annual_calendar_work_control.md",
-        "modules/test_execution_planning_window.md",
         "modules/test_project_identity.md"
       ],
       "role": "semantic",
@@ -63119,7 +63119,7 @@
         "modules/schemas___init__.md",
         "modules/schemas_iteration.md",
         "modules/test_annual_calendar_coverage.md",
-        "modules/test_schedule_working_date.md"
+        "modules/test_annual_calendar_work_control.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/iteration.py",
@@ -94896,6 +94896,7 @@
       "mcp_uri": "llm-wiki://workflows/TeamService_get_workload",
       "outgoing_internal_links": [
         "modules/capacity_service.md",
+        "modules/commands.md",
         "modules/schemas_team.md",
         "modules/services_work_metrics.md",
         "modules/team_service.md"
@@ -108363,5 +108364,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:854812caefe24fe41d65e634ed33ca5287650f3c452d8a8938feb1185d4c6f8b"
+  "source_hash": "sha256:1baf4a8d6fa848b76d6e928d47581063c21a5d596f9bd2747e2f7ba64701d724"
 }

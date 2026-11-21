@@ -8,12 +8,14 @@ Manages durable profiles and iteration allocations while adapting legacy vacatio
 
 Capacity and workload reads can omit task relationship hydration. Workload hours use the canonical scoped inclusion selector; private person calendar and absence factors remain the same basis as scheduling and readiness.
 
+Workload reads identify uncovered years and unresolved personal calendar rules alongside known capacity. The displayed day equivalents require a finite, positive normal day length from the primary calendar.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
 | `app.authority` | `internal_authority`, `internal_authority`, `internal_authority`, `internal_authority`, `internal_authority` |
-| `app.commands` | `atomic_command`, `commit_or_flush`, `schedule_input_command`, `PlanningConflict`, `PlanningConflict` |
+| `app.commands` | `atomic_command`, `commit_or_flush`, `schedule_input_command`, `PlanningConflict`, `PlanningConflict`, `PlanningConflict` |
 | `app.models.capacity` | `ProfileAbsence`, `ProfileAbsence`, `ProfileAbsence`, `ProfileAbsence` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.task` | `Task` |
@@ -28,6 +30,7 @@ Capacity and workload reads can omit task relationship hydration. Workload hours
 | `csv` | `csv` |
 | `datetime` | `date` |
 | `io` | `StringIO` |
+| `math` | `math` |
 | `sqlalchemy` | `select`, `func` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `sqlalchemy.orm` | `selectinload` |
@@ -66,4 +69,4 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TeamService](../entities/TeamService.md) | 38 | — | Service for team member operations. |
+| [TeamService](../entities/TeamService.md) | 39 | — | Service for team member operations. |

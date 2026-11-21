@@ -122,4 +122,4 @@ flowchart LR
 | `test_routing_snapshot_rejects_non_json_native_evidence` | call | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) | 1 |
 | `test_supervised_assignment_cannot_author_server_routing_snapshots` | call | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) | 1 |
 
-> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
+> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.

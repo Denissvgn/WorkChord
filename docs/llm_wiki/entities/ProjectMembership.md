@@ -40,7 +40,7 @@ flowchart LR
     n10["test_scoped_manager_can_restore_another_eligible_person_without_profile_access (backend/tests/test_allocation_recovery.py)"]
     n11["test_annual_selection_and_forecast_preserve_live_ownership (backend/tests/test_annual_calendar_work_control.py)"]
     n12["test_mcp_reports_an_existing_issued_year_conflict (backend/tests/test_annual_calendar_work_control.py)"]
-    n13["test_date_only_reservation (backend/tests/test_execution_planning_window.py)"]
+    n13["test_postgres_dispatch_serializes_with_supplemental_policy_replacement (backend/tests/test_annual_calendar_work_control.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -67,7 +67,7 @@ flowchart LR
     click n10 "../modules/test_allocation_recovery.md"
     click n11 "../modules/test_annual_calendar_work_control.md"
     click n12 "../modules/test_annual_calendar_work_control.md"
-    click n13 "../modules/test_execution_planning_window.md"
+    click n13 "../modules/test_annual_calendar_work_control.md"
 ```
 
 ### Summary
@@ -97,6 +97,6 @@ flowchart LR
 | `test_scoped_manager_can_restore_another_eligible_person_without_profile_access` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
 | `test_annual_selection_and_forecast_preserve_live_ownership` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
 | `test_mcp_reports_an_existing_issued_year_conflict` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
-| `test_date_only_reservation` | call | [test_execution_planning_window](../modules/test_execution_planning_window.md) | 1 |
+| `test_postgres_dispatch_serializes_with_supplemental_policy_replacement` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
 
-> References: showing 12 of 24 logical references; 12 omitted by the 12-row generated summary limit.
+> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.

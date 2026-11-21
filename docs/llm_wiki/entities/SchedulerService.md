@@ -97,4 +97,4 @@ flowchart LR
 | `IncrementalScheduler.__init__` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `test_capacity_scheduler_and_profile_owner_use_each_selected_day` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
 
-> References: showing 12 of 43 logical references; 31 omitted by the 12-row generated summary limit.
+> References: showing 12 of 47 logical references; 35 omitted by the 12-row generated summary limit.

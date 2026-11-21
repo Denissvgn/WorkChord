@@ -12,13 +12,15 @@ After supervised rework, the latest successful run and its immutable submission 
 
 Routing within the primary year uses iteration working days and that member's iteration vacations. Across years, each working date contributes its actual hours divided by that year's nominal hours. The relevant absences and annual rules contribute to the result. A digest records the annual basis, and missing coverage leaves the workload ratio unknown.
 
+On PostgreSQL, an authenticated dispatch reserves the shared planning revision before taking broad routing table locks. A calendar editor reserves the same revision first. A later dispatch sees the committed annual policy, while a later policy replacement must respect an already issued assignment.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
 | `app.authority` | `require_project` |
-| `app.commands` | `commit_or_flush` |
+| `app.commands` | `commit_or_flush`, `current_command`, `lock_planning` |
 | `app.config` | `get_settings` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord`, `AgentModelBinding`, `AgentRun`, `AgentTaskAssignment`, `TaskRoutingAssessment` |
 | `app.models.iteration` | `Iteration` |

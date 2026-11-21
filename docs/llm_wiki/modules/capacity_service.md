@@ -10,6 +10,8 @@ Commitment projections select only required scalar task fields after complete sc
 
 Personal calendar choices apply to each relevant year across that person's allocations. With inherited rules, the service compares the allocations active on each local date. A missing year or incompatible overlapping policies keeps the available hours unknown. Changing an explicit annual selection checks the prior rules of the person's issued work, including the inherited rules that applied before their first personal selection.
 
+An uncovered year in a saved commitment leaves its proportional daily effort uncertain, including when its allocation belongs to another project. The draft carries a warning for the visible capacity owner. Publishing a baseline requires that owner to reconcile the underlying annual rules.
+
 ## Imports
 
 | Source | Symbols |
@@ -54,7 +56,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (11) |
+| Inbound | `backend` (12) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (14) |
 
@@ -64,7 +66,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
