@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from app.commands import atomic_command, commit_or_flush
+from app.commands import atomic_command, commit_or_flush, current_command
 
 import base64
 import binascii
@@ -11,7 +11,7 @@ import json
 import logging
 import secrets
 from datetime import date, datetime, timedelta
-from typing import Any, Callable, Iterable, Optional
+from typing import TYPE_CHECKING, Any, Callable, Iterable, Optional
 
 from sqlalchemy import func, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -110,6 +110,9 @@ from app.schemas.triage import TriageItemCreate
 from app.services.triage_service import TriageService
 from app.utils.github_links import GitHubLinkError, parse_github_url
 from app.utils.time import as_utc, utc_now
+
+if TYPE_CHECKING:
+    from app.services.agent_team_setup_service import AgentTeamMembershipBoundary
 
 
 AGENT_BUSY_POLL_SECONDS = 1
@@ -285,13 +288,38 @@ class AgentWorkService:
         self,
         principal: AgentActor,
         target_actor_id: int,
-    ) -> None:
+    ) -> AgentTeamMembershipBoundary | None:
         from app.services.agent_team_setup_service import AgentTeamSetupService
 
-        await AgentTeamSetupService(self.db).require_dispatch_member(
+        return await AgentTeamSetupService(self.db).require_dispatch_member(
             principal,
             target_actor_id,
         )
+
+    def _advance_dispatch_queue(
+        self,
+        principal: AgentActor,
+        actor: AgentActor,
+        boundary: AgentTeamMembershipBoundary | None,
+    ) -> None:
+        """Advance a locked queue after validating the assignment selection."""
+        if boundary is not None:
+            # Reassignment also removes work from the previous owner's queue.
+            if actor.id not in boundary.member_actor_ids:
+                from app.services.agent_team_setup_service import AgentTeamSetupConflictError
+
+                raise AgentTeamSetupConflictError(
+                    "agent_team_actor_outside_topology",
+                    "Queue owner is outside the caller's current topology",
+                    topology_key=boundary.topology_key,
+                    topology_revision=boundary.topology_revision,
+                    target_actor_id=actor.id,
+                )
+            if boundary.primary_actor_id == principal.id:
+                command = current_command(self.db)
+                assert command is not None
+                command.dispatch_queue_revisions.add((principal.id, actor.id, actor.queue_revision + 1))
+        actor.queue_revision += 1
 
     @staticmethod
     def _audited_command_request(
@@ -1247,7 +1275,7 @@ class AgentWorkService:
         target = locked_actors.get(data.actor_id)
         if target is None:
             raise ValueError("Assignment actor must exist and be enabled")
-        await self._require_team_dispatch_member(principal, target.id)
+        boundary = await self._require_team_dispatch_member(principal, target.id)
         self._validate_assignment_actor(target, data.purpose)
         await self._validate_assignment_context(
             task,
@@ -1360,7 +1388,7 @@ class AgentWorkService:
             reason=data.reason,
         )
         self.db.add(assignment)
-        target.queue_revision += 1
+        self._advance_dispatch_queue(principal, target, boundary)
         await self.db.flush()
         await self.task_service.record_task_event(
             task.id,
@@ -1525,7 +1553,7 @@ class AgentWorkService:
                         "Verification actor must be independent from the implementation actor"
                     )
             selected_actor = replacement
-        await self._require_team_dispatch_member(
+        boundary = await self._require_team_dispatch_member(
             principal,
             selected_actor.id,
         )
@@ -1627,7 +1655,7 @@ class AgentWorkService:
 
         if selected_actor.id != assignment.actor_id:
             assignment.actor_id = selected_actor.id
-            selected_actor.queue_revision += 1
+            self._advance_dispatch_queue(principal, selected_actor, boundary)
             current_actor = selected_actor
         if data.queue_rank is not None:
             assignment.queue_rank = data.queue_rank
@@ -1648,7 +1676,7 @@ class AgentWorkService:
             assignment.state = data.state
         if "reason" in data.model_fields_set:
             assignment.reason = data.reason
-        old_actor.queue_revision += 1
+        self._advance_dispatch_queue(principal, old_actor, boundary)
         await self.task_service.record_task_event(
             assignment.task_id,
             "agent.assignment_updated",

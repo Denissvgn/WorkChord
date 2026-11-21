@@ -326,10 +326,19 @@ def authorize_domain_writes(session, _flush_context, _instances):
             continue
         table = inspect(type(obj)).local_table.name
         changed = {attr.key for attr in inspect(obj).attrs if attr.history.has_changes()}
-        if table == "agent_actors" and changed <= {"queue_revision", "updated_at"} and obj.id in session.info.get("domain_queue_actors", set()):
-            continue
-        if protocol and table == "agent_actors" and changed <= {"queue_revision", "updated_at"} and (obj.id == authority.actor_id or obj.id in rework_actors):
-            continue
+        if (table == "agent_actors" and obj in session.dirty and obj not in session.deleted
+                and changed <= {"queue_revision", "updated_at"}):
+            if obj.id in session.info.get("domain_queue_actors", set()):
+                continue
+            if protocol and (obj.id == authority.actor_id or obj.id in rework_actors):
+                continue
+            if (protocol and authority.actor_role == "pm" and "assignments:write" in authority.scopes
+                    and "queue_revision" in changed):
+                command = session.info.get("command")
+                advance = (authority.actor_id, obj.id, obj.queue_revision)
+                if command is not None and advance in command.dispatch_queue_revisions:
+                    command.dispatch_queue_revisions.remove(advance)
+                    continue
         if table == "agent_actors" and obj.id == authority.actor_id and changed <= {"last_seen_at"} and obj not in session.deleted and obj not in session.new:
             continue
         if table in {"planning_state", "profile_availability", "profile_absences"} and not authority.operator:
