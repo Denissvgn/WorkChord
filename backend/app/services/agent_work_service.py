@@ -26,6 +26,7 @@ from app.models.agent import (
     TaskEvent,
 )
 from app.models.task import Task, TaskDependency, TaskStatus
+from app.services.execution_planning_window import assignment_matches, require_window_authority, window_authority_matches
 from app.models.iteration import Iteration
 from app.models.project import Project, ProjectUpdateEntry
 from app.models.team_member import TeamMember, TeamMemberProfile
@@ -2415,11 +2416,12 @@ class AgentWorkService:
             raise AgentConflictError(
                 "Assignment is not the server-selected next work item"
             )
-        if assignment.task_version != task.version:
+        if not assignment_matches(task, assignment):
             raise TaskVersionConflictError(
                 assignment.task_version,
                 self.task_service._metadata_from_task(task),
             )
+        await require_window_authority(self.db, task, assignment)
         blockers = await self._start_blockers(task, assignment, utc_now(), rework_read=rework_read)
         if blockers:
             raise AgentConflictError("Work is not start-ready: " + ", ".join(blockers))
@@ -2639,10 +2641,11 @@ class AgentWorkService:
             or run.actor_id != actor.id
         ):
             raise AgentConflictError("Work is not active and renewable")
-        if assignment.task_version != task.version:
+        if not assignment_matches(task, assignment):
             raise AgentConflictError(
                 "Assignment scope changed during execution; recovery and redispatch are required"
             )
+        await require_window_authority(self.db, task, assignment)
         self._validate_fence(task, actor, data.claim_id, data.claim_generation)
         if task.version != data.expected_task_version:
             raise TaskVersionConflictError(
@@ -2797,10 +2800,11 @@ class AgentWorkService:
             or run.claim_generation != data.claim_generation
         ):
             raise AgentConflictError("Work is not active")
-        if assignment.task_version != task.version:
+        if not assignment_matches(task, assignment):
             raise AgentConflictError(
                 "Assignment scope changed during execution; recovery and redispatch are required"
             )
+        await require_window_authority(self.db, task, assignment)
         self._validate_fence(task, actor, data.claim_id, data.claim_generation)
         if task.version != data.expected_task_version:
             raise TaskVersionConflictError(
@@ -2997,10 +3001,11 @@ class AgentWorkService:
             raise AgentConflictError(
                 "Verification assignment is not actionable before not_before"
             )
-        if assignment.task_version != task.version:
+        if not assignment_matches(task, assignment):
             raise AgentConflictError(
                 "Verification assignment is stale; PM must refresh verification ownership"
             )
+        await require_window_authority(self.db, task, assignment)
         if task.version != data.expected_task_version:
             raise TaskVersionConflictError(
                 data.expected_task_version,
@@ -3420,7 +3425,7 @@ class AgentWorkService:
                     and running[0].assignment_id == accepted[0].id
                     and running[0].task_id == accepted[0].task_id == task.id
                     and running[0].claim_generation == task.claim_generation
-                    and accepted[0].task_version == task.version
+                    and await window_authority_matches(self.db, task, accepted[0])
                 )
                 inconsistent = not consistent_current
             if inconsistent:
@@ -3456,10 +3461,7 @@ class AgentWorkService:
                     run.claim_generation != task.claim_generation for run in running
                 ):
                     codes.append("run_claim_generation_mismatch")
-                if any(
-                    assignment.task_version != task.version
-                    for assignment in accepted
-                ):
+                if any([not await window_authority_matches(self.db, task, assignment) for assignment in accepted]):
                     codes.append("assignment_task_version_stale")
                 if (
                     not execution_assignments
@@ -3662,7 +3664,7 @@ class AgentWorkService:
             and stale_runs[0].actor_id == task.claimed_by
             and stale_runs[0].assignment_id == accepted_assignments[0].id
             and stale_runs[0].claim_generation == task.claim_generation
-            and accepted_assignments[0].task_version == task.version
+            and await window_authority_matches(self.db, task, accepted_assignments[0], lock=True)
         )
         if healthy_execution and not (stale_runs[0].execution_provenance or {}).get("interruption_checkpoint"):
             raise AgentConflictError(
@@ -3992,10 +3994,11 @@ class AgentWorkService:
             or run.status != "running"
         ):
             raise AgentConflictError("Discovery requires the assignment's running run")
-        if assignment.task_version != task.version:
+        if not assignment_matches(task, assignment):
             raise AgentConflictError(
                 "Assignment scope changed during execution; recovery and redispatch are required"
             )
+        await require_window_authority(self.db, task, assignment)
         self._validate_fence(task, actor, data.claim_id, data.claim_generation)
         if task.version != data.expected_task_version:
             raise TaskVersionConflictError(
@@ -4111,7 +4114,7 @@ class AgentWorkService:
         blockers: list[str] = []
         if assignment is None:
             return ["assignment_missing"]
-        if assignment.task_version != task.version:
+        if not await window_authority_matches(self.db, task, assignment):
             blockers.append("assignment_task_version_stale")
         assignment_actor = await self.db.get(AgentActor, assignment.actor_id)
         read = rework_read if rework_read is not None else ReworkReadCache()
@@ -4237,7 +4240,7 @@ class AgentWorkService:
         assignment_view = self.assignment_response(assignment)
         if assignment.purpose == "verification":
             blockers = []
-            if assignment.task_version != task.version:
+            if not await window_authority_matches(self.db, task, assignment):
                 blockers.append("assignment_task_version_stale")
             verifier = await self.db.get(AgentActor, assignment.actor_id)
             try:
@@ -4256,7 +4259,7 @@ class AgentWorkService:
                 from app.services.work_metrics import effective_work_flags
                 if effective_work_flags(task)["effective_is_deferred"]:
                     blockers.append("task_deferred")
-                if assignment.task_version != task.version:
+                if not await window_authority_matches(self.db, task, assignment):
                     blockers.append("assignment_task_version_stale")
             else:
                 blockers = await self._start_blockers(task, assignment, now, assignment_view=assignment_view, rework_read=rework_read)
@@ -4339,7 +4342,7 @@ class AgentWorkService:
             if task is None:
                 codes.append(f"assignment_{assignment.id}_task_missing")
                 continue
-            if assignment.task_version != task.version:
+            if not await window_authority_matches(self.db, task, assignment):
                 codes.append(f"assignment_{assignment.id}_task_version_stale")
             live_claim = (
                 task.claimed_by == actor.id
@@ -4484,7 +4487,7 @@ class AgentWorkService:
             and assignment.task_id == task.id
             and assignment.state == assignment_data.get("state") == "accepted"
             and assignment.task_version == assignment_task_version
-            and task.version == task_version
+            and (task.version == task_version or assignment_task_version == task_version and assignment_matches(task, assignment))
             and task.claimed_by == actor.id
             and current_claim is not None
             and task.claim_generation == claim_generation
@@ -4532,6 +4535,7 @@ class AgentWorkService:
             raise AgentConflictError(
                 "Idempotent live-work receipt is no longer authoritative; refetch work state"
             )
+        await require_window_authority(self.db, task, assignment)
         self._require_current_execution_policy(task)
         replay = dict(snapshot)
         replay["claim_id"] = current_claim

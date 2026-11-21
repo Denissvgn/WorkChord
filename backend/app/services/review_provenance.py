@@ -23,6 +23,7 @@ from app.models.task_brief import TaskProgressRecord
 from app.models.team_member import TeamMember, TeamMemberProfile
 from app.query_limits import CollectionLimitExceededError, MAX_BOUNDED_LIST_ITEMS
 from app.services.agent_routing_policy import ROUTING_DECISION_AUTHORITY, ROUTING_LINEAGE_AUTHORITY, canonical_routing_json_bytes
+from app.services.execution_planning_window import assignment_matches, candidate_version
 from app.utils.github_links import GitHubLinkError, parse_github_url
 from app.utils.url_policy import normalize_stored_display_url
 
@@ -70,7 +71,7 @@ async def _rework_verdict(db, task, assignment, sources, lineage):
         AgentTaskAssignment.actor_id == assignment.assigned_by_actor_id,
         AgentTaskAssignment.purpose == "verification",
         AgentTaskAssignment.state == "fulfilled",
-        AgentTaskAssignment.task_version == task.version,
+        AgentTaskAssignment.task_version == assignment.task_version,
         ~select(AgentRun.id).where(AgentRun.assignment_id == assignment.id).exists(),
     )
     receipts = (await db.scalars(query.limit(2))).all()
@@ -83,7 +84,7 @@ async def _rework_verdict(db, task, assignment, sources, lineage):
         return None
     review, issued = verdict.review_assignment, verdict.rework_assignment
     if (issued is None or issued.id != assignment.id or issued.task_id != task.id
-            or issued.actor_id != assignment.actor_id or issued.task_version != task.version
+            or issued.actor_id != assignment.actor_id or issued.task_version != assignment.task_version
             or issued.assigned_by_actor_id != receipt.actor_id or issued.team_member_id != task.assignee_id
             or issued.routing_snapshot != lineage or issued.queue_class != "rework" or issued.state != "queued"
             or review.id != receipt.target_id or review.actor_id != receipt.actor_id or review.task_id != task.id
@@ -106,7 +107,7 @@ async def _rework_verdict(db, task, assignment, sources, lineage):
     candidate = selection.get("candidate")
     if (not isinstance(event, dict) or not isinstance(reviewer, dict) or not isinstance(candidate, dict)
             or event.get("verdict") != "reject" or event.get("assignment_id") != review.id
-            or event.get("rework_assignment_id") != assignment.id or event.get("task_version") != task.version
+            or event.get("rework_assignment_id") != assignment.id or event.get("task_version") != assignment.task_version
             or event.get("review_selection") != selection or event.get("routing_lineage_digest") != digest(lineage)
             or event.get("observed_model") not in (reviewer.get("catalog_key"), reviewer.get("configured_model_alias"))
             or event.get("reviewed_candidate_digest") not in (None, candidate.get("digest"))):
@@ -229,10 +230,10 @@ async def supervised_rework_evidence(db, task, assignment, worker, lineage, *, l
     sources = lineage.get("source_assignment_ids")
     if (assignment.state != "queued" or assignment.purpose != "execution" or assignment.queue_class != "rework"
             or assignment.model_binding_id is not None or assignment.actor_id != worker.id or worker.profile_id is None
-            or assignment.task_id != task.id or assignment.task_version != task.version or task.status != "active"
+            or assignment.task_id != task.id or not assignment_matches(task, assignment) or task.status != "active"
             or assignment.team_member_id != task.assignee_id
             or lineage.get("schema_version") != "routing-lineage-snapshot-v1" or lineage.get("authority") != ROUTING_LINEAGE_AUTHORITY
-            or (lineage.get("task_id"), lineage.get("task_version"), lineage.get("provisional_actor_id")) != (task.id, task.version, worker.id)
+            or (lineage.get("task_id"), lineage.get("task_version"), lineage.get("provisional_actor_id")) != (task.id, assignment.task_version, worker.id)
             or lineage.get("selection_pending") is not True or lineage.get("prior_decisions") != []
             or not isinstance(sources, list) or not 1 <= len(sources) <= 20 or not all(type(value) is int for value in sources)):
         return None
@@ -631,6 +632,8 @@ async def review_history(db, task, assignments, *, strict):
         raise CollectionLimitExceededError("task execution provenance", MAX_BOUNDED_LIST_ITEMS)
     if strict and not runs and not executions:
         return await _manual_history(db, task)
+    from app.services.retained_planning_output import retained_attestations
+    attestations = await retained_attestations(db, task.id, runs) if strict else {}
     contributors = []
     represented = set()
     for run in runs:
@@ -657,13 +660,19 @@ async def review_history(db, task, assignments, *, strict):
             profile_id = historical_profile(assignment)
         commits = set(receipt.get("submitted_commit_urls") or ())
         commits.update(terminal.get("commit_urls") or ())
+        supplement = attestations.get(run.id)
+        if supplement:
+            commits.update(supplement["commit_urls"])
         if run.commit_url:
             commits.add(run.commit_url)
         contributors.append({"run_id": run.id, "actor_id": run.actor_id, "profile_id": profile_id,
                              "publisher_key": receipt.get("publisher_key"),
                              "commit_urls": sorted(commits)})
+        if supplement:
+            contributors[-1]["retained_output_attestation"] = {
+                key: supplement[key] for key in ("source", "event_id", "checkpoint_id", "attested_at")}
         if strict and (terminal or interrupted):
-            last_publisher = (terminal or {}).get("publisher_key")
+            last_publisher = terminal.get("publisher_key") or (supplement or {}).get("publisher_key")
             if last_publisher != receipt.get("publisher_key") or not last_publisher:
                 contributors.append({"run_id": run.id, "actor_id": run.actor_id, "profile_id": profile_id,
                                      "publisher_key": last_publisher,
@@ -752,7 +761,7 @@ async def _submission_candidate(db, task, submitted_run, source):
             return None
     except (KeyError, TypeError, ValueError, GitHubLinkError):
         return None
-    basis = {"task_id": task.id, "task_version": task.version, "brief_revision": task.brief_revision,
+    basis = {"task_id": task.id, "task_version": candidate_version(task), "brief_revision": task.brief_revision,
              "artifact_revision": task.artifact_revision, **source,
              "commit_url": commit.url if commit else None, "pr_url": pr.url if pr else None,
              "base_commit_url": base.url if base else None}

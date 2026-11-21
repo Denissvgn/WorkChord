@@ -558,6 +558,19 @@ def create_mcp_server() -> FastMCP:
         )
 
     @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_reconcile_planning_window(
+        task_id: int, planning_receipt_id: int | None = None, planning_actor_id: int | None = None,
+        planning_command_key: str | None = None, apply: bool = False, expected_evidence_digest: str | None = None,
+        idempotency_key: str | None = None, rationale: str | None = None, correlation_id: str | None = None,
+    ) -> Any:
+        """Inspect or reconcile one historical iteration cutoff as an authenticated operator."""
+        from app.services.planning_window_reconciliation import reconcile_window
+        return await _tool_call("admin:write", lambda db, actor: reconcile_window(db, actor, task_id, planning_receipt_id,
+            planning_actor_id=planning_actor_id,planning_command_key=planning_command_key,
+            apply=apply, expected_evidence_digest=expected_evidence_digest, idempotency_key=idempotency_key,
+            rationale=rationale, correlation_id=correlation_id))
+
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_reconcile_run_provenance(
         run_id: int, apply: bool = False, expected_evidence_digest: str | None = None,
         archived_acknowledgement: dict[str, Any] | None = None, idempotency_key: str | None = None,
@@ -929,6 +942,14 @@ def create_mcp_server() -> FastMCP:
                 correlation_id=correlation_id,
             ),
         )
+
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_attest_retained_planning_output(run_id: int, payload: dict[str, Any], idempotency_key: str) -> Any:
+        """Record the original worker's present attribution of its retained, previously checkpointed output."""
+        from app.schemas.agent import AgentRetainedOutputAttestation
+        from app.services.retained_planning_output import attest_retained_output
+        return await _tool_call("work:execute", lambda db, actor: attest_retained_output(db,actor,run_id,
+            AgentRetainedOutputAttestation.model_validate(payload),idempotency_key=idempotency_key))
 
     @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_list_recovery_tasks(

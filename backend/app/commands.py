@@ -258,15 +258,36 @@ async def planning_input_reservation(db, kind, values):
             field='expected_revisions', resource=resolved_kind, resource_id=next((values[key] for key in
                 ['iteration_id', 'member_id', 'vacation_id', 'calendar_id', 'profile_id', 'project_id'] if values.get(key) is not None), 0))
     await lock_iterations(db, ids, expected=body_expected, require_expected=True)
+    from app.services.execution_planning_window import current_window, extension_input, live_assignments, make_window, seal_authority, task_context
+    extension = await extension_input(db, values, ids) if kind == "iteration" and parent is None else None
     for iteration_id in ids:
-        await SnapshotService(db).create_snapshot(iteration_id, 'before_planning_input_change')
+        snapshot = await SnapshotService(db).create_snapshot(iteration_id, 'before_planning_input_change')
+        if extension:
+            extension["input_revision"] = current_command(db).iterations[iteration_id]
+            extension["snapshot"] = snapshot
     tasks = list((await db.scalars(select(Task).where(Task.iteration_id.in_(ids), Task.status != 'closed').order_by(Task.id))).all())
     service = TaskService(db)
+    issued = await live_assignments(db, [task.id for task in tasks], lock=True) if extension else {}
+    before = {task.id: (task.version, task_context(task), current_window(task)) for task in tasks if task.id in issued}
     for task in tasks:
         await service.reserve_task_version(task, task.version)
     db.info['planning_input_scope'] = parent if parent is not None else set(ids)
     try:
         yield db.info['planning_input_scope']
+        if extension and extension["snapshot"] and current_command(db).mode == "apply":
+            for task in tasks:
+                if task.id not in before:
+                    continue
+                previous_version, previous_context, prior = before[task.id]
+                if task_context(task) == previous_context:
+                    window = make_window(task, previous_version, issued[task.id], prior=prior, evidence=extension)
+                    if window:
+                        window = await seal_authority(db, task, window, issued[task.id], prior=prior, lock=True)
+                    if window:
+                        task.execution_planning_window = window
+                        await service.record_task_event(task.id, "task.execution_planning_window",
+                            {"source": "iteration_end_extension", "from": window["from"], "through": window["through"],
+                             "assignment_ids": sorted(map(int, window["assignments"])), **extension}, actor_type="system")
     finally:
         if parent is None:
             db.info.pop('planning_input_scope', None)
