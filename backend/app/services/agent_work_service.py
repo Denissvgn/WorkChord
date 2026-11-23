@@ -26,7 +26,7 @@ from app.models.agent import (
     TaskEvent,
 )
 from app.models.task import Task, TaskDependency, TaskStatus
-from app.services.execution_planning_window import assignment_matches, require_window_authority, window_authority_matches
+from app.services.execution_planning_window import LIVE_ASSIGNMENT_STATES, LIVE_RUN_STATE, assignment_matches, require_window_authority, window_authority_matches
 from app.models.iteration import Iteration
 from app.models.project import Project, ProjectUpdateEntry
 from app.models.team_member import TeamMember, TeamMemberProfile
@@ -128,7 +128,6 @@ AGENT_RETRY_MAX_SECONDS = 30
 logger = logging.getLogger(__name__)
 
 
-LIVE_ASSIGNMENT_STATES = ("queued", "accepted")
 QUEUE_CLASS_RANK = {"rework": 0, "recovery": 1, "normal": 2}
 REQUIRED_BRIEF_SECTIONS = (
     "goal",
@@ -969,7 +968,7 @@ class AgentWorkService:
                     select(AgentRun.actor_id, func.count(AgentRun.id))
                     .where(
                         AgentRun.actor_id.in_(actor_ids),
-                        AgentRun.status == "running",
+                        AgentRun.status == LIVE_RUN_STATE,
                     )
                     .group_by(AgentRun.actor_id)
                 )
@@ -1431,10 +1430,15 @@ class AgentWorkService:
             routing_snapshot = routing_validation.snapshot.model_dump(mode="json")
         assert routing_snapshot is not None
         review_selection = None
+        if data.review_evidence_id is not None and data.purpose != "verification":
+            raise ValueError("Review evidence is available only for verification.")
         if data.purpose == "verification":
             review_selection = await select_reviewer(self.db, task, task_assignments, target,
                 binding_id=getattr(data, "model_binding_id", None) or getattr(data, "review_binding_id", None),
-                reviewer_profile_id=data.reviewer_profile_id)
+                reviewer_profile_id=data.reviewer_profile_id, review_evidence_id=data.review_evidence_id)
+            if data.review_evidence_id is not None and not isinstance(data, ModelAwareAgentTaskAssignmentCreate):
+                from app.services.review_evidence import check_supervised_selection
+                await check_supervised_selection(self.db,task,principal,review_selection,data.reviewer_profile_id)
             if review_selection is None and getattr(data, "review_binding_id", None):
                 raise ValueError("An explicit supervised review binding requires the project publisher policy.")
         assignment = AgentTaskAssignment(
@@ -1735,14 +1739,35 @@ class AgentWorkService:
 
         if getattr(data, "review_binding_id", None) and assignment.purpose != "verification":
             raise ValueError("A review binding is available only for verification.")
-        if assignment.purpose == "verification" and data.state != "cancelled":
+        selection_unchanged = (
+            (assignment.review_selection or {}).get("review_evidence") is not None
+            and data.model_fields_set <= {"expected_queue_revision", "reason", "queue_rank"}
+        )
+        if assignment.purpose == "verification" and data.state != "cancelled" and not selection_unchanged:
             selected_binding_id = getattr(data, "model_binding_id", None) or getattr(data, "review_binding_id", None)
             if selected_binding_id is None and selected_actor.id == assignment.actor_id and assignment.review_selection:
                 selected_binding_id = assignment.review_selection["reviewer"]["binding_id"]
+            previous_evidence = (assignment.review_selection or {}).get("review_evidence")
+            evidence_id = data.review_evidence_id
+            if evidence_id is None and previous_evidence and selected_actor.id == assignment.actor_id and (
+                    selected_binding_id is None or selected_binding_id == previous_evidence["reviewer"]["binding_id"]):
+                evidence_id = previous_evidence["id"]
+            if previous_evidence and evidence_id is None and not isinstance(data, ModelAwareAgentTaskAssignmentUpdate):
+                from app.services.agent_routing_service import AgentRoutingConflictError
+                raise AgentRoutingConflictError("verification_evidence_unavailable",
+                    "A different supervised verifier or binding requires fresh candidate-bound evidence.")
             assignment.review_selection = await select_reviewer(self.db, task, task_assignments, selected_actor,
                 binding_id=selected_binding_id or assignment.model_binding_id,
                 reviewer_profile_id=(data.reviewer_profile_id if "reviewer_profile_id" in data.model_fields_set
-                                     else assignment.reviewer_profile_id))
+                                     else assignment.reviewer_profile_id), review_evidence_id=evidence_id)
+            if evidence_id and not isinstance(data, ModelAwareAgentTaskAssignmentUpdate) and (
+                    previous_evidence is None or previous_evidence["id"] != evidence_id
+                    or previous_evidence["reviewer"]!=assignment.review_selection["reviewer"]):
+                from app.services.review_evidence import check_supervised_selection
+                await check_supervised_selection(self.db,task,principal,assignment.review_selection,
+                    data.reviewer_profile_id or assignment.reviewer_profile_id)
+        elif data.review_evidence_id is not None:
+            raise ValueError("Review evidence is available only for verification.")
         if selected_actor.id != assignment.actor_id:
             assignment.actor_id = selected_actor.id
             self._advance_dispatch_queue(principal, selected_actor, boundary)
@@ -1859,7 +1884,7 @@ class AgentWorkService:
         running_result = await self.db.execute(
             select(AgentRun).where(
                 AgentRun.actor_id == actor.id,
-                AgentRun.status == "running",
+                AgentRun.status == LIVE_RUN_STATE,
             )
         )
         running = running_result.scalars().all()
@@ -2112,7 +2137,7 @@ class AgentWorkService:
             active_runs = (await self.db.scalars(select(AgentRun).where(
                 AgentRun.assignment_id == assignment.id, AgentRun.task_id == task.id,
                 AgentRun.actor_id == assignment.actor_id, AgentRun.claim_generation == task.claim_generation,
-                AgentRun.status == "running").limit(2))).all()
+                AgentRun.status == LIVE_RUN_STATE).limit(2))).all()
             if len(active_runs) == 1:
                 assignment_view = self._execution_assignment_view(assignment, active_runs[0])
         start_blockers = await self._start_blockers(task, assignment, utc_now(), assignment_view=assignment_view)
@@ -2644,7 +2669,7 @@ class AgentWorkService:
             raise ValueError("Assignment, task, or run not found")
         if (
             assignment.state != "accepted"
-            or run.status != "running"
+            or run.status != LIVE_RUN_STATE
             or run.assignment_id != assignment.id
             or run.actor_id != actor.id
         ):
@@ -2802,7 +2827,7 @@ class AgentWorkService:
             raise AgentPermissionError("Work belongs to another actor")
         if (
             assignment.state != "accepted"
-            or run.status != "running"
+            or run.status != LIVE_RUN_STATE
             or run.assignment_id != assignment.id
             or run.task_id != task.id
             or run.claim_generation != data.claim_generation
@@ -3031,7 +3056,8 @@ class AgentWorkService:
                 rework_worker.id,
             )
             self._validate_assignment_actor(rework_worker, "execution")
-        if await different_publisher_required(self.db, task.project_id):
+        if ((assignment.review_selection or {}).get("review_evidence") or data.reviewed_packet_sha256 is not None
+                or await different_publisher_required(self.db, task.project_id)):
             from app.services.review_provenance import verify_verdict
             await verify_verdict(self.db, task, task_assignments, assignment, actor, data, observed_candidate)
         from app.services.task_brief_service import TaskBriefService
@@ -3248,7 +3274,7 @@ class AgentWorkService:
             select(AgentRun.id)
             .where(
                 AgentRun.task_id == Task.id,
-                AgentRun.status == "running",
+                AgentRun.status == LIVE_RUN_STATE,
             )
             .correlate(Task)
             .exists()
@@ -3308,7 +3334,7 @@ class AgentWorkService:
                 select(AgentRun)
                 .where(
                     AgentRun.task_id.in_(task_ids),
-                    AgentRun.status == "running",
+                    AgentRun.status == LIVE_RUN_STATE,
                 )
                 .order_by(AgentRun.task_id, AgentRun.id)
             )
@@ -3999,7 +4025,7 @@ class AgentWorkService:
             run is None
             or run.assignment_id != assignment.id
             or run.actor_id != actor.id
-            or run.status != "running"
+            or run.status != LIVE_RUN_STATE
         ):
             raise AgentConflictError("Discovery requires the assignment's running run")
         if not assignment_matches(task, assignment):

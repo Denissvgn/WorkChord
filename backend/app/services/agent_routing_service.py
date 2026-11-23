@@ -1502,6 +1502,11 @@ class AgentRoutingService:
             members=members,
         )
         strict_review = data.purpose == "verification" and await different_publisher_required(self.db, task.project_id)
+        from app.services.review_evidence import assignment_observation, requirements_for, resolve
+        review_evidence = None
+        review_ownership = {}
+        if data.review_evidence_id is not None and not strict_review:
+            raise AgentRoutingConflictError("verification_evidence_unavailable","Scoped review evidence requires independent verification.")
         input_evidence = self._routing_input_evidence(
             task=task,
             assessment=assessment,
@@ -1536,6 +1541,16 @@ class AgentRoutingService:
             }
             if history.required_reviewer_profiles is not None:
                 input_evidence["review_history"]["required_reviewer_profile_ids"] = list(history.required_reviewer_profiles)
+        if data.review_evidence_id is not None:
+            review_evidence = await resolve(self.db, task, data.review_evidence_id, history)
+            if review_evidence["assessment_id"] != assessment.id:
+                raise AgentRoutingConflictError("verification_evidence_unavailable", "The evidence was issued for another assessment.")
+            review_ownership = assignment_observation(
+                task, task_assignments, data.review_assignment_id, review_evidence, history.candidate
+            )
+            input_evidence["review_evidence"] = {
+                "id": review_evidence["id"], "digest": review_evidence["digest"], **review_ownership
+            }
         input_digest = hashlib.sha256(
             canonical_routing_json_bytes(input_evidence)
         ).hexdigest()
@@ -1756,7 +1771,7 @@ class AgentRoutingService:
                     )
                 catalog = binding.model_catalog
                 model = evaluate_model_envelope(
-                    assessment.required_model,
+                    requirements_for(assessment.required_model, review_evidence, actor.id, binding.id),
                     binding_present=True,
                     binding_enabled=binding.enabled,
                     binding_revision_current=True,
@@ -1778,6 +1793,10 @@ class AgentRoutingService:
                 )
                 publisher_blockers = history.publisher_blockers(catalog.publisher_key if catalog else None) if strict_review else []
                 blockers = sorted(set((*actor_blockers, *model.hard_blocker_codes, *publisher_blockers)))
+                if review_evidence is not None and (actor.id, binding.id) != (
+                    review_evidence["reviewer"]["actor_id"], review_evidence["reviewer"]["binding_id"]
+                ):
+                    blockers = sorted(set((*blockers, RoutingBlockerCode.VERIFICATION_EVIDENCE_UNAVAILABLE.value)))
                 schedule_delay_days = (
                     float(
                         max(
@@ -2002,6 +2021,17 @@ class AgentRoutingService:
             response_values["acceptance_blocker_codes"] = (
                 [] if history.candidate else [RoutingBlockerCode.VERIFICATION_CANDIDATE_UNVERIFIABLE.value]
             )
+        if review_evidence is not None:
+            owner = review_evidence["reviewer"]
+            response_values["eligibility_basis"]="task_policy_configuration_and_review_evidence"
+            response_values["review_evidence"] = {
+                "id": review_evidence["id"], "digest": review_evidence["digest"],
+                "candidate_digest": review_evidence["candidate_digest"], "packet_sha256": review_evidence["packet_sha256"],
+                "method": review_evidence["method"], "reviewer_actor_id": owner["actor_id"],
+                "binding_id": owner["binding_id"], "binding_revision": owner["binding_revision"],
+                "expires_at": datetime.fromisoformat(review_evidence["expires_at"]),
+                **review_ownership,
+            }
         # Cardinality limits alone are insufficient because evidence strings
         # vary in size. Trim the deterministic tail until the full packet,
         # including its digest field, stays within the durable boundary.
@@ -2440,11 +2470,19 @@ class AgentRoutingService:
             "expected_task_version",
             task.version,
         )
+        evidence_id = data.review_evidence_id
+        if existing_assignment and evidence_id is None:
+            previous = (existing_assignment.review_selection or {}).get("review_evidence")
+            if previous and (selected_actor.id, data.model_binding_id) == (
+                previous["reviewer"]["actor_id"], previous["reviewer"]["binding_id"]
+            ):
+                evidence_id = previous["id"]
         preview_request = AgentRoutingPreviewCreate(
             purpose=purpose,
             assessment_id=data.assessment_id,
             expected_task_version=expected_task_version,
             reviewer_profile_id=reviewer_profile_id,
+            review_evidence_id=evidence_id,
         )
         recomputed = await self._build_preview(
             task=task,

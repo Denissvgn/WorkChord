@@ -234,8 +234,13 @@ async def planning_input_reservation(db, kind, values):
     from app.models.task import Task
     from app.mutation_versions import require_mutation_revision
 
+    history = None
+    if kind == "member_removal":
+        from app.services.allocation_removal import inspect_allocation_history
+        await affected_iteration_ids(db, "member", values)
+        history = await inspect_allocation_history(db, values["member_id"])
     await lock_planning(db)
-    resolved_kind = 'vacation' if 'vacation_id' in values else kind
+    resolved_kind = 'member' if kind == 'member_removal' else 'vacation' if 'vacation_id' in values else kind
     ids = await affected_iteration_ids(db, resolved_kind, values)
     data = values.get('data')
     body_expected = values.get('expected_revisions', getattr(data, 'expected_revisions', None))
@@ -258,6 +263,12 @@ async def planning_input_reservation(db, kind, values):
             field='expected_revisions', resource=resolved_kind, resource_id=next((values[key] for key in
                 ['iteration_id', 'member_id', 'vacation_id', 'calendar_id', 'profile_id', 'project_id'] if values.get(key) is not None), 0))
     await lock_iterations(db, ids, expected=body_expected, require_expected=True)
+    unused_allocation = False
+    if kind == "member_removal":
+        from app.services.allocation_removal import is_unused_allocation
+        unused_allocation = await is_unused_allocation(db, values["member_id"], history, unused_only=values.get("unused_only", False))
+        if values.get("unused_only") and not unused_allocation:
+            raise PlanningConflict("allocation_not_unused", "The allocation is in use or its history could not be verified.")
     from app.services.execution_planning_window import current_window, extension_input, live_assignments, make_window, seal_authority, task_context
     extension = await extension_input(db, values, ids) if kind == "iteration" and parent is None else None
     for iteration_id in ids:
@@ -267,7 +278,7 @@ async def planning_input_reservation(db, kind, values):
             snapshot = (await db.execute(select(ApplicationSnapshot.id, ApplicationSnapshot.checksum, ApplicationSnapshot.input_revision)
                 .where(ApplicationSnapshot.iteration_id == iteration_id, ApplicationSnapshot.filename == filename))).one()
             extension.update(snapshot_id=snapshot.id, snapshot_sha256=snapshot.checksum, input_revision=snapshot.input_revision)
-    tasks = list((await db.scalars(select(Task).where(Task.iteration_id.in_(ids), Task.status != 'closed').order_by(Task.id))).all())
+    tasks = [] if unused_allocation else list((await db.scalars(select(Task).where(Task.iteration_id.in_(ids), Task.status != 'closed').order_by(Task.id))).all())
     if kind == "iteration" and parent is None and len(ids) == 1:
         from app.services.calendar_rules import reserve_iteration_annuals
         if await reserve_iteration_annuals(db, ids[0], data, tasks):

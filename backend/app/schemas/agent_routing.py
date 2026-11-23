@@ -11,6 +11,7 @@ from collections.abc import Mapping
 import math
 import re
 from datetime import datetime
+from app.schemas.review_evidence import ScopedReviewEvidence
 from typing import Annotated, Any, Literal
 
 from pydantic import (
@@ -532,6 +533,7 @@ class RequiredModelEnvelope(RoutingContractModel):
     minimum_context_tier: ModelContextTier
     modality_tags: list[str] = Field(default_factory=lambda: ["text"])
     tool_tags: list[str] = Field(default_factory=list)
+    allow_source_only_review: bool = Field(default=False, strict=True, exclude_if=lambda value: not value)
     data_policy_tags: list[str] = Field(default_factory=list)
 
     @field_validator("minimum_reasoning_tier", mode="before")
@@ -927,6 +929,16 @@ class AgentRoutingPreviewCreate(RoutingContractModel):
     assessment_id: int = Field(..., strict=True, ge=1)
     expected_task_version: int = Field(..., strict=True, ge=1)
     reviewer_profile_id: int | None = Field(default=None, strict=True, ge=1)
+    review_evidence_id: int | None = Field(default=None, strict=True, ge=1, exclude_if=lambda value: value is None)
+    review_assignment_id: int | None = Field(default=None, strict=True, ge=1, exclude_if=lambda value: value is None)
+
+    @model_validator(mode="after")
+    def require_review_purpose(self):
+        if self.review_evidence_id is not None and self.purpose != "verification":
+            raise ValueError("Review evidence is available only for verification.")
+        if self.review_assignment_id is not None and self.review_evidence_id is None:
+            raise ValueError("An assignment evidence readback requires its receipt identifier.")
+        return self
 
 
 class AgentRoutingCandidate(RoutingContractModel):
@@ -1130,8 +1142,9 @@ class AgentRoutingPreviewResponse(RoutingContractModel):
     """Expiring non-dispatch result over a digest-bound routing input snapshot."""
 
     acceptance_blocker_codes: list[RoutingBlockerCode] = Field(default_factory=list)
+    review_evidence: ScopedReviewEvidence | None = Field(default=None, exclude_if=lambda value: value is None)
     runtime_availability: Literal["unknown"] = "unknown"
-    eligibility_basis: Literal["task_policy_and_configuration"] = "task_policy_and_configuration"
+    eligibility_basis: Literal["task_policy_and_configuration","task_policy_configuration_and_review_evidence"] = "task_policy_and_configuration"
     model_attestation: Literal["not_independently_attested"] = "not_independently_attested"
     preview_id: str = Field(..., min_length=1, max_length=255)
     preview_digest: RoutingDigest

@@ -391,6 +391,8 @@ class TaskService:
         idempotency_key: Optional[str] = None,
     ) -> TaskEvent:
         """Append an audit event for a task mutation or checkpoint."""
+        if event_type in {"review.evidence_issued", "review.evidence_revoked"}:
+            raise ValueError("Operator review evidence requires the dedicated attestation command.")
         authority = self.db.info.get("authority")
         if authority is not None:
             payload = {**(payload or {}), "principal_id": authority.principal_id, "source": authority.source}

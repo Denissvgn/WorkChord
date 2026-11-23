@@ -469,9 +469,9 @@ class TeamService:
             raise PlanningConflict("absence_reconciliation_required", "Reconcile legacy allocation absences before changing this person's profile.")
         member.vacations.clear()
 
-    @schedule_input_command("member")
-    async def delete(self, member_id: int) -> bool:
-        """Delete a team member."""
+    @schedule_input_command("member_removal")
+    async def delete(self, member_id: int, *, unused_only: bool = False) -> bool:
+        """Remove an allocation under its planning reservation and optional unused precondition."""
         member = await self.get_by_id(member_id)
         if not member:
             return False
