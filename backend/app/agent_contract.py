@@ -5,6 +5,7 @@ from __future__ import annotations
 
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
 REVIEW_PROVENANCE_FEATURE = "review-provenance-v1"
+SCOPED_REVIEW_EVIDENCE_FEATURE = "scoped-review-evidence-v1"
 EXECUTION_PLANNING_WINDOW_FEATURE = "iteration-window-execution-recovery-v1"
 ANNUAL_CALENDAR_FEATURE = "annual-calendar-coverage-v1"
 SKILL_BUNDLES_FEATURE = "skill-bundles-v1"
@@ -35,6 +36,7 @@ AGENT_CONTRACT_FEATURES: tuple[str, ...] = (
     "pm-control-v1",
     "verification-v1",
     REVIEW_PROVENANCE_FEATURE,
+    SCOPED_REVIEW_EVIDENCE_FEATURE,
     # Work starts once its dependencies are done; calculated dates then follow
     # the actual start and submit, and a change of dates keeps queued dispatch valid.
     "schedule-follows-actuals-v1",

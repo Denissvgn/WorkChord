@@ -572,6 +572,15 @@ def create_mcp_server() -> FastMCP:
             rationale=rationale, correlation_id=correlation_id))
 
     @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_attest_review_evidence(
+        task_id: int, payload: dict[str, Any], idempotency_key: str, rationale: str, correlation_id: str
+    ) -> Any:
+        """Issue or revoke review evidence for one submitted candidate as the authenticated operator."""
+        from app.services.review_evidence import record_review_evidence
+        return await _tool_call("admin:write",lambda db, actor: record_review_evidence(db,actor,task_id,payload,
+            idempotency_key=idempotency_key,rationale=rationale,correlation_id=correlation_id))
+
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_reconcile_run_provenance(
         run_id: int, apply: bool = False, expected_evidence_digest: str | None = None,
         archived_acknowledgement: dict[str, Any] | None = None, idempotency_key: str | None = None,

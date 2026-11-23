@@ -22,6 +22,19 @@ Historical performance remains advisory. Do not feed it back into selection
 policy without a separately approved calibration contract covering sample
 size, decay, bias review, and operator approval.
 
+## Candidate-bound review evidence
+
+On a project requiring an independent publisher, an authenticated workspace operator may deliver an immutable review packet to a specific verifier. The issuer must be independent of the candidate’s contributors and verifier, including their linked profiles. Named offline test results can satisfy the assessment’s `host-shell` requirement for verification. Source alone qualifies only when the PM explicitly sets `required_model.allow_source_only_review=true` in the assessment for this task version. A worker still needs its own execution tools. This mechanism executes no commands and changes no model binding.
+
+1. Capture the reviewed Git commit and the SHA-256 of the exact packet. For `source_and_tests`, include each named offline test and the SHA-256 of its result. For `source_only`, omit the test list. Distribute the packet through the team's approved channel.
+2. Use `POST /api/agent/tasks/{task_id}/review-evidence` or MCP `agent_attest_review_evidence` with `action=issue`, `expected_assessment_id`, the expected task, brief and artifact revisions, `commit_sha`, `reviewer_actor_id`, `binding_id`, `expected_binding_revision`, `method`, `packet_sha256` and an offset-aware `expires_at` within the next 24 hours. Each test entry has `name` and `result_sha256`. Supply the normal idempotency key, rationale and correlation ID.
+3. Use the returned `event_id` as `review_evidence_id` on the verification preview and assignment. In supervised mode, provide the exact `review_binding_id`. In enforced mode, select the same binding using the current signed preview. Other model, data-policy, capacity and independence requirements still apply.
+4. The reviewer checks the received packet and passes its digest as `reviewed_packet_sha256` with the normal observed model and reviewed candidate digest. The server rechecks the operator receipt, candidate, expiry and verifier identity when it records the verdict.
+
+Before merging an externally hosted pull request, the PM can use the same verification preview with both `review_evidence_id` and `review_assignment_id`. Compare `review_evidence.assignment_id`, `assignment_state`, actor, binding, candidate and packet digests with the current assignment. A valid existing owner can hold a current receipt even when the fresh-dispatch candidate list is empty. An expired, revoked or mismatched receipt yields `verification_evidence_unavailable`. Check the external head independently and pin the merge to that SHA. The preview applies to its read instant.
+
+An operator can revoke an issued receipt through the same command with `action=revoke` and `evidence_id`. Changing the candidate, task revisions or reviewer binding requires fresh evidence. A revoked, expired or retired issuer cannot support either verdict. The PM can reorder or cancel the queued assignment and select a fresh receipt. An assessment is immutable and unique for its task version and policy. If an existing assessment requires tests, supply the named results or use a genuine versioned planning change and fresh assessment before offering source alone. A completed verdict and its audit record remain historical. A later rework submission requires a new candidate-bound decision. Clients can discover this protocol through `scoped-review-evidence-v1`.
+
 ## Rollout modes
 
 `MODEL_AWARE_ROUTING_MODE` is restart-bound and must have the same value on all

@@ -10,7 +10,7 @@ from urllib.parse import urlsplit
 import httpx
 
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import contains_eager, selectinload
 
 from app.models.agent import (
     AgentActor, AgentIdempotencyRecord, AgentModelBinding, AgentModelCatalogEntry, AgentRun, AgentRunEvent,
@@ -366,6 +366,7 @@ async def actor_provenance(db, actor, *, observed_model=None, binding_id=None, l
     profile_query = select(TeamMemberProfile).where(TeamMemberProfile.id == actor.profile_id).options(
         selectinload(TeamMemberProfile.skills)).execution_options(populate_existing=True)
     query = (select(AgentModelBinding, AgentModelCatalogEntry).join(AgentModelBinding.model_catalog)
+             .options(contains_eager(AgentModelBinding.model_catalog))
              .where(AgentModelBinding.actor_id == actor.id, AgentModelBinding.enabled.is_(True),
                     AgentModelCatalogEntry.enabled.is_(True))
              .execution_options(populate_existing=True))
@@ -769,8 +770,10 @@ async def _submission_candidate(db, task, submitted_run, source):
     return {**basis, "digest": digest(basis)}
 
 
-async def select_reviewer(db, task, assignments, reviewer, *, binding_id=None, reviewer_profile_id=None):
+async def select_reviewer(db, task, assignments, reviewer, *, binding_id=None, reviewer_profile_id=None, review_evidence_id=None):
     if not await different_publisher_required(db, task.project_id):
+        if review_evidence_id is not None:
+            _conflict("verification_evidence_unavailable", "Scoped evidence requires independent verification.")
         return None
     history = await review_history(db, task, assignments, strict=True)
     receipt = await actor_provenance(db, reviewer, binding_id=binding_id, lock=True)
@@ -804,6 +807,9 @@ async def select_reviewer(db, task, assignments, reviewer, *, binding_id=None, r
                  "acceptance_blockers": [] if history.candidate else ["verification_candidate_unverifiable"]}
     if history.manual_execution:
         selection["manual_execution"] = history.manual_execution
+    if review_evidence_id is not None:
+        from app.services.review_evidence import resolve
+        selection["review_evidence"] = await resolve(db, task, review_evidence_id, history, reviewer=receipt)
     return selection
 
 
@@ -852,8 +858,13 @@ async def verify_verdict(db, task, assignments, assignment, actor, data, observe
     if assignment.actor_id != actor.id or not assignment.review_selection:
         _conflict("verification_independence_unverifiable", "The assigned reviewer must submit its own observed model.")
     stored = assignment.review_selection
+    evidence = stored.get("review_evidence")
+    if (evidence or data.reviewed_packet_sha256 is not None) and (
+        not evidence or data.reviewed_packet_sha256 != evidence["packet_sha256"]
+    ):
+        _conflict("verification_evidence_unavailable", "A scoped verdict must acknowledge the exact reviewed evidence packet.")
     current = await select_reviewer(db, task, assignments, actor, binding_id=stored["reviewer"]["binding_id"],
-                                    reviewer_profile_id=assignment.reviewer_profile_id)
+                                    reviewer_profile_id=assignment.reviewer_profile_id, review_evidence_id=evidence["id"] if evidence else None)
     if current["reviewer"] != stored["reviewer"]:
         _conflict("verification_publisher_unverifiable", "Refresh the assignment after a change to the reviewer's binding or profile.")
     if data.verdict == "pass" and not current["candidate"]:
