@@ -21,7 +21,7 @@ PM command to reorder, reassign, or cancel a queued assignment.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `actor_id` | `Optional[int]` | `actor_id` | No | Yes | `None` | — | — | — |
 | `review_binding_id` | `int \| None` | `review_binding_id` | No | Yes | `None` | ge=1 | — | — |
-| `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
 | `queue_rank` | `Optional[int]` | `queue_rank` | No | Yes | `None` | ge=0 | — | — |
 | `not_before` | `Optional[datetime]` | `not_before` | No | Yes | `None` | — | — | — |
 | `reviewer_profile_id` | `Optional[int]` | `reviewer_profile_id` | No | Yes | `None` | — | — | — |

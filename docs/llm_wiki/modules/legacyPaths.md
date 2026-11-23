@@ -32,6 +32,7 @@ flowchart LR
     n4 --> n2
     n5 --> n2
     n6 --> n2
+    n6 --> n4
     click n0 "../modules/NextStepEmptyState.test.md"
     click n1 "../modules/legacyPaths.check.test.md"
     click n2 "../modules/legacyPaths.md"

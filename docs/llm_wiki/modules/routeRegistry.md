@@ -30,6 +30,7 @@ flowchart LR
     n1["frontend/src/test/accessibilityInvariants.test.tsx"]
     n2["frontend/src/test/pageChrome.test.tsx"]
     n3["frontend/src/test/routeRegistry.ts"]
+    n1 --> n0
     n1 --> n3
     n2 --> n0
     n2 --> n3

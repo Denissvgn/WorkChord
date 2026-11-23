@@ -104,4 +104,4 @@ flowchart LR
 | `test_project_identity_scope` | import | [test_project_identity_scope](../modules/test_project_identity_scope.md) | — |
 | `test_allocation_identity` | import | [test_allocation_identity](../modules/test_allocation_identity.md) | — |
 
-> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
+> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.

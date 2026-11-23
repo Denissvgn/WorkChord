@@ -19,8 +19,8 @@ Explicit current, stale, or absent assessment state for one task.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `task_id` | `int` | `task_id` | Yes | No | — | ge=1; strict=True | — | — |
-| `current_task_version` | `int` | `current_task_version` | Yes | No | — | ge=1; strict=True | — | — |
+| `task_id` | `int` | `task_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `current_task_version` | `int` | `current_task_version` | Yes | No | — | strict=True; ge=1 | — | — |
 | `state` | `Literal['none', 'current', 'stale']` | `state` | Yes | No | — | — | — | — |
 | `assessment` | `TaskRoutingAssessmentResponse \| None` | `assessment` | No | Yes | `None` | — | — | — |
 

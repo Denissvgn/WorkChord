@@ -23,19 +23,19 @@ The worker confirms the original run, assignment, generation, planning and recov
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `assignment_id` | `int` | `assignment_id` | Yes | No | — | gt=0 | — | — |
 | `claim_generation` | `int` | `claim_generation` | Yes | No | — | ge=1 | — | — |
-| `claim_id` | `str` | `claim_id` | Yes | No | — | max_length=64; min_length=16 | — | — |
+| `claim_id` | `str` | `claim_id` | Yes | No | — | min_length=16; max_length=64 | — | — |
 | `planning_receipt_id` | `int \| None` | `planning_receipt_id` | No | Yes | `None` | gt=0 | — | — |
 | `planning_actor_id` | `int \| None` | `planning_actor_id` | No | Yes | `None` | gt=0 | — | — |
-| `planning_command_key` | `str \| None` | `planning_command_key` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
+| `planning_command_key` | `str \| None` | `planning_command_key` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
 | `recovery_receipt_id` | `int \| None` | `recovery_receipt_id` | No | Yes | `None` | gt=0 | — | — |
 | `recovery_actor_id` | `int \| None` | `recovery_actor_id` | No | Yes | `None` | gt=0 | — | — |
-| `recovery_command_key` | `str \| None` | `recovery_command_key` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
+| `recovery_command_key` | `str \| None` | `recovery_command_key` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
 | `checkpoint_id` | `int` | `checkpoint_id` | Yes | No | — | gt=0 | — | — |
-| `observed_model` | `str` | `observed_model` | Yes | No | — | max_length=255; min_length=1 | — | — |
-| `commit_url` | `str` | `commit_url` | Yes | No | — | max_length=2048; min_length=1 | — | — |
-| `pr_url` | `str` | `pr_url` | Yes | No | — | max_length=2048; min_length=1 | — | — |
+| `observed_model` | `str` | `observed_model` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `commit_url` | `str` | `commit_url` | Yes | No | — | min_length=1; max_length=2048 | — | — |
+| `pr_url` | `str` | `pr_url` | Yes | No | — | min_length=1; max_length=2048 | — | — |
 | `git_tree` | `str` | `git_tree` | Yes | No | — | pattern='^[0-9a-f]{40}([0-9a-f]{24})?$' | — | — |
-| `terminal_native_turn` | `str` | `terminal_native_turn` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `terminal_native_turn` | `str` | `terminal_native_turn` | Yes | No | — | min_length=1; max_length=255 | — | — |
 | `confirmed_final_output` | `Literal[True]` | `confirmed_final_output` | Yes | No | — | — | — | — |
 
 ## Methods

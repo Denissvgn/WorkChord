@@ -172,4 +172,4 @@ flowchart LR
 | `list_agent_recovery_tasks` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `list_my_claims` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 77 logical references; 65 omitted by the 12-row generated summary limit.
+> References: showing 12 of 78 logical references; 66 omitted by the 12-row generated summary limit.

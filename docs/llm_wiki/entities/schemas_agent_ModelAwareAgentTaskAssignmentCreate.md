@@ -28,15 +28,15 @@ PM command to dispatch one preview-selected actor/model binding.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `task_id` | `int` | `task_id` | Yes | No | — | ge=1 | — | — |
-| `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
 | `actor_id` | `int` | `actor_id` | Yes | No | — | ge=1 | — | — |
 | `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1 | — | — |
 | `purpose` | `AgentAssignmentPurpose` | `purpose` | Yes | No | — | — | — | — |
 | `assessment_id` | `int` | `assessment_id` | Yes | No | — | ge=1 | — | — |
 | `model_binding_id` | `int` | `model_binding_id` | Yes | No | — | ge=1 | — | — |
 | `model_binding_revision` | `int` | `model_binding_revision` | Yes | No | — | ge=1 | — | — |
-| `routing_preview_id` | `str` | `routing_preview_id` | Yes | No | — | max_length=255; min_length=1 | — | — |
-| `routing_preview_digest` | `str` | `routing_preview_digest` | Yes | No | — | max_length=64; min_length=64 | — | — |
+| `routing_preview_id` | `str` | `routing_preview_id` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `routing_preview_digest` | `str` | `routing_preview_digest` | Yes | No | — | min_length=64; max_length=64 | — | — |
 | `team_member_id` | `Optional[int]` | `team_member_id` | No | Yes | `None` | ge=1 | — | — |
 | `reviewer_profile_id` | `Optional[int]` | `reviewer_profile_id` | No | Yes | `None` | ge=1 | — | — |
 | `queue_class` | `AgentAssignmentQueueClass` | `queue_class` | No | No | `'normal'` | — | — | — |

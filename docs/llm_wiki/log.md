@@ -3867,3 +3867,28 @@ A controller can recover eligible work for its own team. Formal review can bind 
 - Pages deprecated: 0
 - Semantic fields preserved: 9
 - Moved entities: none
+
+## 2026-11-23
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:86e6707f118c37e04fdaa1ca789beb58bf415385e6dd76de3e4bc2ead29e5832`
+- Pages created: 3
+- Pages updated: 478
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3189
+- Pages deprecated: 0
+- Semantic fields preserved: 240
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 9

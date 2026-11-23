@@ -25,8 +25,8 @@ Request for creating an agent actor.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `str` | `name` | Yes | No | — | max_length=100; min_length=1 | — | — |
-| `display_name` | `str` | `display_name` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=100 | — | — |
+| `display_name` | `str` | `display_name` | Yes | No | — | min_length=1; max_length=255 | — | — |
 | `scopes` | `list[str]` | `scopes` | No | No | factory: `list` | max_length=unknown (len(SUPPORTED_AGENT_SCOPES)) | — | — |
 | `enabled` | `bool` | `enabled` | No | No | `True` | — | — | — |
 | `role` | `Literal['pm', 'worker', 'verifier']` | `role` | No | No | `'worker'` | — | — | — |

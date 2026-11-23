@@ -17,7 +17,7 @@ Request to claim or renew a task lease.
 | `trace_id` | `Optional[str]` | `trace_id` | No | Yes | `None` | max_length=255 | — | — |
 | `span_id` | `Optional[str]` | `span_id` | No | Yes | `None` | max_length=255 | — | — |
 | `correlation_id` | `Optional[str]` | `correlation_id` | No | Yes | `None` | max_length=255 | — | — |
-| `claim_id` | `Optional[str]` | `claim_id` | No | Yes | `None` | max_length=64; min_length=16 | — | — |
+| `claim_id` | `Optional[str]` | `claim_id` | No | Yes | `None` | min_length=16; max_length=64 | — | — |
 | `claim_generation` | `Optional[int]` | `claim_generation` | No | Yes | `None` | ge=1 | — | — |
 
 ## Methods

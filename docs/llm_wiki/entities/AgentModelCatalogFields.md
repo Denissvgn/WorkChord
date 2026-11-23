@@ -23,9 +23,9 @@ Secret-free provider-neutral model catalog fields.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `key` | `RoutingKey` | `key` | Yes | No | — | — | — | — |
-| `provider` | `str` | `provider` | Yes | No | — | max_length=120; min_length=1 | — | — |
+| `provider` | `str` | `provider` | Yes | No | — | min_length=1; max_length=120 | — | — |
 | `publisher_key` | `RoutingKey \| None` | `publisher_key` | No | Yes | `None` | — | — | Operator-verified canonical model publisher, independent of serving provider. |
-| `configured_model_alias` | `str` | `configured_model_alias` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `configured_model_alias` | `str` | `configured_model_alias` | Yes | No | — | min_length=1; max_length=255 | — | — |
 | `reasoning_tier` | `ReasoningTier` | `reasoning_tier` | Yes | No | — | — | — | — |
 | `context_tier` | `ModelContextTier` | `context_tier` | Yes | No | — | — | — | — |
 | `modality_tags` | `list[str]` | `modality_tags` | No | No | factory: `lambda: ['text']` | — | — | — |

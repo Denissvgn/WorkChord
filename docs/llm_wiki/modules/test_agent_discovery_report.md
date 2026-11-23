@@ -34,6 +34,7 @@ A worker with an accepted assignment can report out-of-scope work to triage, and
 flowchart LR
     n0["backend"]
     n1["backend/tests/test_agent_discovery_report.py"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/test_agent_discovery_report.md"
 ```
@@ -44,6 +45,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
+| Inbound | `backend` (1) |
 | Outbound | `backend` (13) |
 
 ### External packages
@@ -52,7 +54,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

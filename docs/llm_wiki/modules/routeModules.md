@@ -53,9 +53,10 @@ flowchart LR
     n5["frontend/src/navigation/helpContexts.ts"]
     n6["frontend/src/navigation/legacyPaths.ts"]
     n7["frontend/src/navigation/routeModules.ts"]
-    n8["frontend/src/test/pageChrome.test.tsx"]
-    n9["frontend/src/test/routeRegistry.ts"]
-    n10["frontend/src/test/scopedPageRender.test.tsx"]
+    n8["frontend/src/test/accessibilityInvariants.test.tsx"]
+    n9["frontend/src/test/pageChrome.test.tsx"]
+    n10["frontend/src/test/routeRegistry.ts"]
+    n11["frontend/src/test/scopedPageRender.test.tsx"]
     n0 --> n2
     n0 --> n7
     n1 --> n4
@@ -67,11 +68,16 @@ flowchart LR
     n5 --> n7
     n7 --> n4
     n7 --> n6
+    n8 --> n0
     n8 --> n4
+    n8 --> n6
     n8 --> n7
-    n8 --> n9
+    n8 --> n10
+    n9 --> n4
     n9 --> n7
+    n9 --> n10
     n10 --> n7
+    n11 --> n7
     click n0 "../modules/App.md"
     click n1 "../modules/AppTopNav.md"
     click n2 "../modules/DocumentMetadata.md"
@@ -80,9 +86,10 @@ flowchart LR
     click n5 "../modules/helpContexts.md"
     click n6 "../modules/legacyPaths.md"
     click n7 "../modules/routeModules.md"
-    click n8 "../modules/pageChrome.test.md"
-    click n9 "../modules/routeRegistry.md"
-    click n10 "../modules/scopedPageRender.test.md"
+    click n8 "../modules/accessibilityInvariants.test.md"
+    click n9 "../modules/pageChrome.test.md"
+    click n10 "../modules/routeRegistry.md"
+    click n11 "../modules/scopedPageRender.test.md"
 ```
 
 ### Internal neighbors
@@ -94,6 +101,7 @@ flowchart LR
 | Inbound | [DocumentMetadata](../modules/DocumentMetadata.md) |
 | Inbound | [destinations.test](../modules/destinations.test.md) |
 | Inbound | [helpContexts](../modules/helpContexts.md) |
+| Inbound | [accessibilityInvariants.test](../modules/accessibilityInvariants.test.md) |
 | Inbound | [pageChrome.test](../modules/pageChrome.test.md) |
 | Inbound | [routeRegistry](../modules/routeRegistry.md) |
 | Inbound | [scopedPageRender.test](../modules/scopedPageRender.test.md) |

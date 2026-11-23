@@ -136,4 +136,4 @@ flowchart LR
 | `convert_triage_item_to_backlog` | type_reference | [routers_triage](../modules/routers_triage.md) | — |
 | `convert_triage_item_to_task` | type_reference | [routers_triage](../modules/routers_triage.md) | — |
 
-> References: showing 12 of 29 logical references; 17 omitted by the 12-row generated summary limit.
+> References: showing 12 of 30 logical references; 18 omitted by the 12-row generated summary limit.

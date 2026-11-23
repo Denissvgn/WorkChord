@@ -25,10 +25,10 @@ Schema for updating a reusable work template.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `Optional[str]` | `name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
+| `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `template_type` | `Optional[TemplateType]` | `template_type` | No | Yes | `None` | — | — | — |
-| `default_title` | `Optional[str]` | `default_title` | No | Yes | `None` | max_length=500; min_length=1 | — | — |
+| `default_title` | `Optional[str]` | `default_title` | No | Yes | `None` | min_length=1; max_length=500 | — | — |
 | `default_description` | `Optional[str]` | `default_description` | No | Yes | `None` | — | — | — |
 | `default_priority` | `Optional[int]` | `default_priority` | No | Yes | `None` | ge=1; le=10 | — | — |
 | `default_effort_days` | `Optional[float]` | `default_effort_days` | No | Yes | `None` | ge=0.1 | — | — |

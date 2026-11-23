@@ -53,6 +53,7 @@ flowchart LR
     n4 --> n7
     n5 --> n1
     n8 --> n1
+    n8 --> n7
     click n0 "../modules/App.legacyRoutes.test.md"
     click n1 "../modules/App.md"
     click n2 "../modules/AppShell.md"

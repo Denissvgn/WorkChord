@@ -56,7 +56,7 @@ sequenceDiagram
     p0-->>p12: str(...)
     p0-->>p17: set(…).intersection (scripts/ci/run_disposable_checks.py:main)({...})
     p0-->>p18: set (scripts/ci/run_disposable_checks.py:main)(selected)
-    p0-->>p16: run.run(scope, [...], cwd=scratch, env=env, timeout=..., check=False)
+    p0-->>p16: run.run(scope, [...], cwd=scratch, env=env, timeout=args.timeout_seconds, check=False)
     p0-->>p19: map(str, targets)
     p0-->>p14: run.validators.append (scripts/ci/run_disposable_checks.py:main)(require_schema_diff)
     p0-->>p17: set(…).intersection (scripts/ci/run_disposable_checks.py:main)({...})

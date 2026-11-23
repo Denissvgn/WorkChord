@@ -27,7 +27,7 @@ A relative test identifier and result digest let the reviewer compare the operat
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `str` | `name` | Yes | No | — | max_length=180; min_length=1; pattern='^[A-Za-z0-9_][A-Za-z0-9_.:/-]*$' | — | — |
+| `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=180; pattern='^[A-Za-z0-9_][A-Za-z0-9_.:/-]*$' | — | — |
 | `result_sha256` | `Sha256` | `result_sha256` | Yes | No | — | — | — | — |
 
 ## Methods

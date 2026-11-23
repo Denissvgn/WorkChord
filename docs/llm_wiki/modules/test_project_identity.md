@@ -20,7 +20,7 @@ Project allocation floors, dependent preservation and transactional rebuilds.
 | `app.services.upgrade_service` | `alembic_config`, `run_alembic_upgrade` |
 | `datetime` | `UTC`, `datetime` |
 | `pytest` | `pytest` |
-| `sqlalchemy` | `create_engine`, `event`, `text` |
+| `sqlalchemy` | `MetaData`, `Table`, `create_engine`, `event`, `text` |
 | `sqlalchemy.engine` | `Engine` |
 | `sqlite3` | `sqlite3` |
 | `tests.support` | `schema_snapshot` |
@@ -109,6 +109,7 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `legacy_store` | `(tmp_path, configure_database)` | — | — |
+| `insert_legacy_project` | `(db, **values)` | — | Insert through the reflected legacy table so newer ORM columns stay out. |
 | `retained_entry` | `(db, project_id)` | — | — |
 | `seed_dependents` | `(db)` | — | — |
 | `database_rows` | `(engine)` | — | — |

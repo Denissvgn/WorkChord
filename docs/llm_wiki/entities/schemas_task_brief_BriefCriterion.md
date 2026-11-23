@@ -25,9 +25,9 @@ _Auto-generated from `BriefCriterion` in `backend/app/schemas/task_brief.py`._
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `id` | `str` | `id` | No | No | factory: `lambda: uuid4().hex` | max_length=64; min_length=1; pattern='^[a-zA-Z0-9_-]+$' | — | — |
+| `id` | `str` | `id` | No | No | factory: `lambda: uuid4().hex` | min_length=1; max_length=64; pattern='^[a-zA-Z0-9_-]+$' | — | — |
 | `revision` | `int` | `revision` | No | No | `1` | ge=1 | — | — |
-| `text` | `str` | `text` | Yes | No | — | max_length=4000; min_length=1 | — | — |
+| `text` | `str` | `text` | Yes | No | — | min_length=1; max_length=4000 | — | — |
 | `verification` | `str` | `verification` | No | No | `''` | max_length=4000 | — | — |
 
 ## Methods

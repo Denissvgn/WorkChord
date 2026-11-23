@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1734 | [Open section](#entities) |
-| Modules | 1099 | [Open section](#modules) |
+| Entities | 1736 | [Open section](#entities) |
+| Modules | 1100 | [Open section](#modules) |
 | Workflows | 219 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 573 | [Open section](#entry-point-flows) |
@@ -15,57 +15,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
 | Log | 1 | [Open log](log.md) |
-
-### Historical source files
-
-<!-- llm-wiki:historical-source-files/v1 -->
-These pages preserve documentation from earlier source revisions.
-
-- [entities/AttentionSeverity.md](entities/AttentionSeverity.md)
-- [entities/IterationSelectorProps.md](entities/IterationSelectorProps.md)
-- [entities/PlanningMember.md](entities/PlanningMember.md)
-- [entities/QueryKey.md](entities/QueryKey.md)
-- [entities/RankableAttention.md](entities/RankableAttention.md)
-- [entities/RecoveryFocusIntent.md](entities/RecoveryFocusIntent.md)
-- [entities/RecoveryFocusTarget.md](entities/RecoveryFocusTarget.md)
-- [entities/RoadmapFilterDescriptor.md](entities/RoadmapFilterDescriptor.md)
-- [entities/RoadmapGroup.md](entities/RoadmapGroup.md)
-- [entities/SavedViewDashboardCardsProps.md](entities/SavedViewDashboardCardsProps.md)
-- [entities/ShareFocusIntent.md](entities/ShareFocusIntent.md)
-- [entities/ShareFocusTarget.md](entities/ShareFocusTarget.md)
-- [entities/StepDataState.md](entities/StepDataState.md)
-- [entities/StepPresentationState.md](entities/StepPresentationState.md)
-- [entities/TaskEditModalProps.md](entities/TaskEditModalProps.md)
-- [entities/VacationRow.md](entities/VacationRow.md)
-- [modules/AgentPipelinePage.md](modules/AgentPipelinePage.md)
-- [modules/AgentPipelinePage.test.md](modules/AgentPipelinePage.test.md)
-- [modules/AgentTeamSetupMasterPage.md](modules/AgentTeamSetupMasterPage.md)
-- [modules/AgentTeamSetupMasterPage.test.md](modules/AgentTeamSetupMasterPage.test.md)
-- [modules/CalendarPage.md](modules/CalendarPage.md)
-- [modules/CalendarPage.test.md](modules/CalendarPage.test.md)
-- [modules/CurrentTaskModal.test.md](modules/CurrentTaskModal.test.md)
-- [modules/GuardedTaskModal.md](modules/GuardedTaskModal.md)
-- [modules/IterationList.test.md](modules/IterationList.test.md)
-- [modules/IterationSelector.md](modules/IterationSelector.md)
-- [modules/IterationsPage.md](modules/IterationsPage.md)
-- [modules/PlanMasterPage.md](modules/PlanMasterPage.md)
-- [modules/PlanMasterPage.test.md](modules/PlanMasterPage.test.md)
-- [modules/PlanningWorkflowGuide.md](modules/PlanningWorkflowGuide.md)
-- [modules/PlanningWorkflowGuide.test.md](modules/PlanningWorkflowGuide.test.md)
-- [modules/RoadmapPage.md](modules/RoadmapPage.md)
-- [modules/RoadmapPage.test.md](modules/RoadmapPage.test.md)
-- [modules/SavedViewDashboardCards.md](modules/SavedViewDashboardCards.md)
-- [modules/SidebarIterationCard.md](modules/SidebarIterationCard.md)
-- [modules/SidebarIterationCard.test.md](modules/SidebarIterationCard.test.md)
-- [modules/TaskEditModal.md](modules/TaskEditModal.md)
-- [modules/TaskEditModal.test.md](modules/TaskEditModal.test.md)
-- [modules/TaskSearch.md](modules/TaskSearch.md)
-- [modules/TaskStatusFlow.md](modules/TaskStatusFlow.md)
-- [modules/TaskWorkflowGuide.md](modules/TaskWorkflowGuide.md)
-- [modules/attentionRanking.md](modules/attentionRanking.md)
-- [modules/attentionRanking.test.md](modules/attentionRanking.test.md)
-- [modules/selectWorkNowTasks.md](modules/selectWorkNowTasks.md)
-<!-- /llm-wiki:historical-source-files/v1 -->
 
 ## Entities
 
@@ -250,6 +199,7 @@ These pages preserve documentation from earlier source revisions.
 - [ApplicationSnapshot](entities/ApplicationSnapshot.md)
 - [AptPreparation](entities/AptPreparation.md)
 - [AssessmentDraft](entities/AssessmentDraft.md)
+- [AssignedWorker](entities/AssignedWorker.md)
 - [AssigneeRecommendation](entities/AssigneeRecommendation.md)
 - [AssigneeRecommendationResponse](entities/AssigneeRecommendationResponse.md)
 - [AssigneeRecommendationService](entities/AssigneeRecommendationService.md)
@@ -724,6 +674,7 @@ These pages preserve documentation from earlier source revisions.
 - [PlanShareSnapshot](entities/PlanShareSnapshot.md)
 - [PlanShareTask](entities/PlanShareTask.md)
 - [PlanShareTeamMember](entities/PlanShareTeamMember.md)
+- [PlannedRollback](entities/PlannedRollback.md)
 - [PlanningConflict](entities/PlanningConflict.md)
 - [PlanningInputContext](entities/PlanningInputContext.md)
 - [PlanningInputKind](entities/PlanningInputKind.md)
@@ -2747,6 +2698,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_load_tooling](modules/test_load_tooling.md) - Unit contracts for deterministic, sealed, fail-closed load tooling.
 - [test_local_baseline](modules/test_local_baseline.md) - Local measurements retain limits and cannot become formal certification.
 - [test_managed_authority](modules/test_managed_authority.md) - Real principal, transport, scoped-read and command-denial contracts.
+- [test_managed_worker_discovery](modules/test_managed_worker_discovery.md) - Managed discovery attribution, scope and transaction boundaries for assigned workers.
 - [test_manual_review_provenance](modules/test_manual_review_provenance.md) - Authenticated human delivery still requires an assigned agent decision in a strict project.
 - [test_mcp_tool_annotations](modules/test_mcp_tool_annotations.md) - Every MCP tool tells clients whether it reads, writes, or removes.
 - [test_metric_matches](modules/test_metric_matches.md) - A work-metric count and the list it opens are chosen by the same predicate.
