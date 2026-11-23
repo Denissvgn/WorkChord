@@ -131,6 +131,9 @@ try {
   await page.screenshot({ path: join(artifacts, 'managed-editor-mobile.png'), fullPage: true });
   const mobileDescription = page.getByRole('textbox', { name: 'Description', exact: true });
   await mobileDescription.fill('Recover this draft after session expiry');
+  // At phone width the earlier save's toast covers Update task for up to 5 s. If a background read sees the
+  // expired session during that delay, the editor disables saving and the click below can never land.
+  await page.waitForFunction(() => !document.querySelector('[data-toast-tone]'));
   const cookie = (await context.cookies()).find(cookie => cookie.name === 'workchord_session');
   const expired = await context.request.post(`${issuer}/control/expire`, { headers: { 'X-Fixture-Key': 'disposable-browser-control' }, data: { token: cookie.value } });
   assert.equal((await expired.json()).expired, 1);

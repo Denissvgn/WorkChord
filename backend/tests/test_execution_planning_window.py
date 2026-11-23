@@ -30,6 +30,7 @@ from app.models.project import Project
 from app.models.task import Task
 from app.services.identity_service import IdentityService, initialize_control_plane
 from app.services.agent_service import hash_api_key
+from app.utils import time as server_time
 from tests.test_agent_team_setup_qualification import provision_ready_topology, routing_base
 from tests.test_review_provenance_transports import databases, fence
 from tests import test_team_pm_dispatch
@@ -444,6 +445,23 @@ async def cancel_unconfirmable(http, transport, pm_key, assignment, queue_revisi
         assert not result["isError"], result
         return json.loads(result["content"][0]["text"])
 
+
+
+def advance_server_clock_past(monkeypatch, instant):
+    """Move the server's UTC clock just past ``instant`` without waiting.
+
+    Every lease and window decision reads ``app.utils.time.utc_now``, which
+    resolves ``datetime`` from its module at call time, so shifting that one
+    name moves the whole server forward while monotonic timers stay real.
+    """
+    delay = max(instant - datetime.now(timezone.utc), timedelta(0)) + timedelta(milliseconds=120)
+
+    class ShiftedDatetime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return datetime.now(tz) + delay
+
+    monkeypatch.setattr(server_time, "datetime", ShiftedDatetime)
 
 @databases
 @pytest.mark.parametrize("transport", ["rest", "mcp"])
@@ -882,8 +900,7 @@ async def test_date_only_reservation(
                 )
                 assert checkpoint.status_code == 200, checkpoint.text
                 expiry = datetime.fromisoformat(running["claim_expires_at"].replace("Z", "+00:00"))
-                while (delay := (expiry - datetime.now(timezone.utc)).total_seconds()) >= 0:
-                    await asyncio.sleep(min(delay + 0.12, 30))
+                advance_server_clock_past(monkeypatch, expiry)
                 recovery = await call(
                     "agent_requeue_recovery",
                     f"/api/agent/recovery/{task.id}/requeue",
