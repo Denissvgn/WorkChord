@@ -3,17 +3,18 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
 import { calendarService } from '../../services/calendarService';
+import { AnnualCalendarFields } from '../iteration/AnnualCalendarFields';
 import { Button } from '../common/Button';
 import { QueryErrorState } from '../feedback/QueryState';
 import { getApiErrorMessage } from '../../utils/apiError';
 
 import { Select } from '../../components/common/Select';
 interface Absence { id: number; version: number; start_date: string; end_date: string }
-interface Availability { version: number; calendar_id: number | null; calendar_selection_required: boolean; allocation_calendar_conflicts: number[]; absences: Absence[] }
+interface Availability { version: number; calendar_id: number | null; additional_calendar_ids?: number[]; calendar_selection_required: boolean; allocation_calendar_conflicts: number[]; absences: Absence[] }
 interface Capacity {
     calendar_uncertain: boolean; outside_calendar_year: boolean; timezone: string | null; has_unknown_effort: boolean;
     allocations: { member_id: number; availability_percent: number; operational_utilization: number; professionalism_coefficient: number }[];
-    days: { date: string; available_hours: number | null; allocated_hours: number; productive_hours: number | null; private_busy_hours: number; committed_effort_hours: number; overallocated_hours: number | null }[];
+    days: { date: string; available_hours: number | null; allocated_hours: number | null; productive_hours: number | null; private_busy_hours: number | null; committed_effort_hours: number; overallocated_hours: number | null }[];
 }
 
 const localDate = () => { const now = new Date(); return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`; };
@@ -26,6 +27,7 @@ export const PersonCapacity = ({ profileId, startDate, endDate, manage = false, 
     const [start, setStart] = useState(startDate ?? localDate());
     const [end, setEnd] = useState(endDate ?? startDate ?? localDate());
     const [calendar, setCalendar] = useState('');
+    const [annualIds, setAnnualIds] = useState<number[] | null>(null);
     const [calendarVersion, setCalendarVersion] = useState<number | null>(null);
     const [absenceStart, setAbsenceStart] = useState('');
     const [absenceEnd, setAbsenceEnd] = useState('');
@@ -38,9 +40,19 @@ export const PersonCapacity = ({ profileId, startDate, endDate, manage = false, 
         queryFn: async () => (await api.get<Availability>(`/team-member-profiles/${profileId}/availability`)).data });
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
     const calendars = useQuery({ queryKey: ['calendars'], enabled: expanded && manage, queryFn: calendarService.getAll });
+    const primaryId = Number(calendar || availability.data?.calendar_id);
+    const primary = calendars.data?.find(row => row.id === primaryId);
+    const selectedAnnual = annualIds ?? availability.data?.additional_calendar_ids ?? [];
     const refresh = async () => { await client.invalidateQueries({ queryKey: ['profile-capacity'] }); await availability.refetch(); await client.invalidateQueries({ queryKey: ['gantt'] }); };
     // feedback-policy: mutation pending,inline - disable repeat writes and retain the draft on failure.
-    const selectCalendar = useMutation({ mutationFn: async () => api.put(`/team-member-profiles/${profileId}/availability`, { calendar_id: Number(calendar), expected_version: calendarVersion }), onSuccess: async () => { setCalendar(''); setCalendarVersion(null); await refresh(); }, onError: async error => { if ((error as { response?: { status?: number } }).response?.status === 409) await availability.refetch(); } });
+    const selectCalendar = useMutation({
+        mutationFn: async () => api.put(`/team-member-profiles/${profileId}/availability`, {
+            calendar_id: primaryId, expected_version: calendarVersion,
+            ...(annualIds !== null ? { additional_calendar_ids: annualIds } : {}),
+        }),
+        onSuccess: async () => { setCalendar(''); setCalendarVersion(null); setAnnualIds(null); await refresh(); },
+        onError: async error => { if ((error as { response?: { status?: number } }).response?.status === 409) await availability.refetch(); },
+    });
     // feedback-policy: mutation pending,inline - disable repeat writes and retain the draft on failure.
     const absence = useMutation({ mutationFn: async (removed?: Absence) => {
         const current = removed ?? editing;
@@ -67,7 +79,7 @@ export const PersonCapacity = ({ profileId, startDate, endDate, manage = false, 
             {(capacity.data.calendar_uncertain || capacity.data.outside_calendar_year) && <p role="status" className="text-sm text-feedback-warning-foreground">{t('teamwork.calendarUncertain')}</p>}
             {capacity.data.has_unknown_effort && <p className="text-sm text-feedback-warning-foreground">{t('teamwork.unknownCommitment')}</p>}
             <div className="max-h-64 overflow-auto"><table className="w-full text-left text-sm"><caption className="sr-only">{t('teamwork.capacityHours')}</caption><thead><tr>{['date', 'available', 'allocated', 'productive', 'committed'].map(key => <th key={key} className="px-2 py-2 font-medium">{t(`teamwork.capacity_${key}`)}</th>)}</tr></thead>
-                <tbody>{capacity.data.days.map(day => <tr key={day.date} className="border-t border-border"><td className="whitespace-nowrap px-2 py-2">{day.date}</td><td className="px-2">{day.available_hours ?? '—'}</td><td className="px-2">{day.allocated_hours}{day.overallocated_hours != null && day.overallocated_hours > 0 && <span className="block text-feedback-warning-foreground">{t('teamwork.overallocated', { hours: day.overallocated_hours })}</span>}</td><td className="px-2">{day.productive_hours ?? '—'}</td><td className="px-2">{day.committed_effort_hours}</td></tr>)}</tbody></table></div>
+                <tbody>{capacity.data.days.map(day => <tr key={day.date} className="border-t border-border"><td className="whitespace-nowrap px-2 py-2">{day.date}</td><td className="px-2">{day.available_hours ?? '—'}</td><td className="px-2">{day.allocated_hours ?? '—'}{day.overallocated_hours != null && day.overallocated_hours > 0 && <span className="block text-feedback-warning-foreground">{t('teamwork.overallocated', { hours: day.overallocated_hours })}</span>}</td><td className="px-2">{day.productive_hours ?? '—'}</td><td className="px-2">{day.committed_effort_hours}</td></tr>)}</tbody></table></div>
             <p className="text-xs text-content-secondary">{t('teamwork.capacityRounding')}</p>
         </>}
         {manage && <>
@@ -77,8 +89,15 @@ export const PersonCapacity = ({ profileId, startDate, endDate, manage = false, 
             {availability.data && <>
                 {(availability.data.calendar_selection_required || availability.data.allocation_calendar_conflicts.length > 0) && <p className="text-sm text-feedback-warning-foreground">{t('teamwork.chooseCalendar')}</p>}
                 <label className="field-lbl" htmlFor={`${id}-calendar`}>{t('teamwork.personCalendar')}</label>
-                <Select id={`${id}-calendar`} className="input w-full" value={calendar || availability.data.calendar_id || ''} disabled={pending} onChange={event => { if (calendarVersion === null) setCalendarVersion(availability.data!.version); setCalendar(event.target.value); }}><option value="">{t('teamwork.chooseCalendar')}</option>{calendars.data?.map(item => <option key={item.id} value={item.id}>{item.name} · {item.year} · {item.timezone ?? t('teamwork.unknownCalendar')}</option>)}</Select>
-                <Button type="button" size="sm" variant="secondary" disabled={!calendar || calendarVersion === null || calendarChanged || pending} onClick={() => selectCalendar.mutate()}>{t('teamwork.saveCalendar')}</Button>
+                <Select id={`${id}-calendar`} className="input w-full" value={calendar || availability.data.calendar_id || ''} disabled={pending} onChange={event => {
+                    if (calendarVersion === null) setCalendarVersion(availability.data!.version);
+                    const next = calendars.data?.find(row => row.id === Number(event.target.value));
+                    if (next && selectedAnnual.length) setAnnualIds(selectedAnnual.filter(value => calendars.data?.some(row => row.id === value && row.year !== next.year && row.timezone === next.timezone)));
+                    setCalendar(event.target.value);
+                }}><option value="">{t('teamwork.chooseCalendar')}</option>{calendars.data?.map(item => <option key={item.id} value={item.id}>{item.name} · {item.year} · {item.timezone ?? t('teamwork.unknownCalendar')}</option>)}</Select>
+                <AnnualCalendarFields calendars={calendars.data ?? []} primary={primary} startDate={start} endDate={end} selected={selectedAnnual}
+                    disabled={pending} onChange={ids => { if (calendarVersion === null) setCalendarVersion(availability.data!.version); setAnnualIds(ids); }} />
+                <Button type="button" size="sm" variant="secondary" disabled={!primaryId || calendarVersion === null || calendarChanged || pending} onClick={() => selectCalendar.mutate()}>{t('teamwork.saveCalendar')}</Button>
                 {calendarChanged && <div role="status" className="space-y-2 text-sm text-feedback-warning-foreground"><p>{t('taskEditor.conflictTitle')}</p><p>{calendars.data?.find(item => item.id === availability.data?.calendar_id)?.name ?? t('teamwork.chooseCalendar')}</p><Button type="button" size="sm" variant="secondary" disabled={pending} onClick={() => setCalendarVersion(availability.data!.version)}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button></div>}
                 <h4 className="pt-3 font-medium">{t('teamwork.absences')}</h4>
                 <ul className="space-y-2">{availability.data.absences.map(item => <li key={item.id} className="flex flex-wrap items-center gap-2 text-sm"><span>{item.start_date} – {item.end_date}</span>

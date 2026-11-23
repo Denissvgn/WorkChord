@@ -9,7 +9,7 @@ from contextvars import ContextVar
 from typing import Any, AsyncIterator, Callable, Optional
 
 from mcp.server.fastmcp import FastMCP
-from app.commands import command_transaction, AggregateVersionConflict, HierarchyScopeError
+from app.commands import command_transaction, AggregateVersionConflict, HierarchyScopeError, PlanningConflict
 from app.authority import AuthorityError
 from app.services.identity_service import IdentityService
 from mcp.server.fastmcp.exceptions import ToolError
@@ -289,7 +289,7 @@ async def _agent_context(required_scope: ScopeRequirement = None, *, preview=Fal
 def _structured_tool_error(exc: Exception) -> str:
     """Return stable, machine-readable conflict and validation errors."""
     from app.commands import AggregateVersionConflict, HierarchyScopeError
-    if isinstance(exc, (AuthorityError, AggregateVersionConflict, HierarchyScopeError, MissingMutationRevision)):
+    if isinstance(exc, (AuthorityError, AggregateVersionConflict, HierarchyScopeError, MissingMutationRevision, PlanningConflict)):
         return json.dumps(exc.detail(), ensure_ascii=False, sort_keys=True)
     if isinstance(exc, AgentRoutingConflictError):
         payload = exc.detail()
@@ -340,6 +340,7 @@ async def _tool_call(required_scope: ScopeRequirement, func: Callable[[Any, Agen
         MissingMutationRevision,
         AggregateVersionConflict,
         HierarchyScopeError,
+        PlanningConflict,
         AuthorityError,
         MCPAuthError,
         MaintenanceModeError,
@@ -556,6 +557,28 @@ def create_mcp_server() -> FastMCP:
                 payload,
             ),
         )
+
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_reconcile_planning_window(
+        task_id: int, planning_receipt_id: int | None = None, planning_actor_id: int | None = None,
+        planning_command_key: str | None = None, apply: bool = False, expected_evidence_digest: str | None = None,
+        idempotency_key: str | None = None, rationale: str | None = None, correlation_id: str | None = None,
+    ) -> Any:
+        """Inspect or reconcile one historical iteration cutoff as an authenticated operator."""
+        from app.services.planning_window_reconciliation import reconcile_window
+        return await _tool_call("admin:write", lambda db, actor: reconcile_window(db, actor, task_id, planning_receipt_id,
+            planning_actor_id=planning_actor_id,planning_command_key=planning_command_key,
+            apply=apply, expected_evidence_digest=expected_evidence_digest, idempotency_key=idempotency_key,
+            rationale=rationale, correlation_id=correlation_id))
+
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_attest_review_evidence(
+        task_id: int, payload: dict[str, Any], idempotency_key: str, rationale: str, correlation_id: str
+    ) -> Any:
+        """Issue or revoke review evidence for one submitted candidate as the authenticated operator."""
+        from app.services.review_evidence import record_review_evidence
+        return await _tool_call("admin:write",lambda db, actor: record_review_evidence(db,actor,task_id,payload,
+            idempotency_key=idempotency_key,rationale=rationale,correlation_id=correlation_id))
 
     @mcp.tool(annotations=WRITE_TOOL)
     async def agent_reconcile_run_provenance(
@@ -929,6 +952,14 @@ def create_mcp_server() -> FastMCP:
                 correlation_id=correlation_id,
             ),
         )
+
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_attest_retained_planning_output(run_id: int, payload: dict[str, Any], idempotency_key: str) -> Any:
+        """Record the original worker's present attribution of its retained, previously checkpointed output."""
+        from app.schemas.agent import AgentRetainedOutputAttestation
+        from app.services.retained_planning_output import attest_retained_output
+        return await _tool_call("work:execute", lambda db, actor: attest_retained_output(db,actor,run_id,
+            AgentRetainedOutputAttestation.model_validate(payload),idempotency_key=idempotency_key))
 
     @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_list_recovery_tasks(

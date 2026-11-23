@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from app.commands import commit_or_flush
+from app.commands import commit_or_flush, current_command, lock_planning
 
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -14,6 +14,7 @@ import secrets
 from typing import Any, Sequence
 
 from sqlalchemy import func, select, text, update
+from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -59,6 +60,7 @@ from app.services.agent_routing_policy import (
     ROUTING_POLICY_VERSION,
     ROUTING_PREVIEW_TTL_SECONDS,
     RoutingBlockerCode,
+    RoutingPacketSizeError,
     RoutingProfileEvidence,
     canonical_routing_json_bytes,
     evaluate_actor_authorization,
@@ -88,7 +90,8 @@ from app.services.agent_service import (
     actor_scopes,
     validate_idempotency_key,
 )
-from app.services.calendar_service import CalendarService
+from app.services.capacity_service import CapacityService
+from app.services.calendar_rules import AnnualCalendars
 from app.services.task_service import TaskService, TaskVersionConflictError
 from app.utils.time import as_utc, utc_now
 
@@ -305,6 +308,11 @@ class AgentRoutingService:
             if task_scope is None:
                 return
             require_project(self.db, task_scope.project_id, "edit")
+            # Work issuance subsequently locks this same planning row through
+            # TaskService._lock_task_scope. Acquire it before broad routing
+            # table locks so a calendar writer can finish without a lock cycle.
+            if current_command(self.db) is not None:
+                await lock_planning(self.db)
             # Only the fixed lock statement uses the connection. All routing reads
             # and mutations still pass through the principal-bound ORM session.
             connection = await self.db.connection()
@@ -1114,29 +1122,34 @@ class AgentRoutingService:
             int(member_id): float(effort)
             for member_id, effort in allocated_rows
         }
-        calendar_service = CalendarService(self.db)
+        capacity_service = CapacityService(self.db)
+        single_year = iteration.start_date.year == iteration.end_date.year == iteration.calendar.year
+        primary = AnnualCalendars(iteration.calendar)
+        original_dates = primary.working_dates(iteration.start_date, iteration.end_date) if single_year else []
         capacity: dict[int, dict[str, Any]] = {}
         for member in members:
-            working_days = calendar_service.calculate_working_days(
-                iteration.calendar,
-                iteration.start_date,
-                iteration.end_date,
-            ).working_days
-            vacation_days = 0
-            for vacation in member.vacations:
-                overlap_start = max(vacation.start_date, iteration.start_date)
-                overlap_end = min(vacation.end_date, iteration.end_date)
-                if overlap_start <= overlap_end:
-                    vacation_days += calendar_service.calculate_working_days(
-                        iteration.calendar,
-                        overlap_start,
-                        overlap_end,
-                    ).working_days
-            available_days = (
-                (working_days - vacation_days)
-                * (member.availability_percent / 100)
-                * (1 - member.operational_utilization / 100)
-            )
+            annual_basis = {}
+            if single_year:
+                # Retain the shipped single-year routing evidence, including how
+                # it counts each recorded vacation and treats shortened days.
+                absences = [(row.start_date, row.end_date) for row in member.vacations]
+                available = len(original_dates) - sum(
+                    sum(first <= day <= last for day in original_dates) for first, last in absences
+                )
+                if iteration.calendar.year not in primary.rules:
+                    annual_basis["missing_calendar_years"] = [iteration.calendar.year]
+            else:
+                coverage = await capacity_service.coverage_for(member)
+                missing_years = coverage.missing_years(iteration.start_date, iteration.end_date)
+                absences = await capacity_service.absence_ranges(member)
+                available = 0.0 if missing_years else sum(
+                    rule.hours(day) / rule.nominal
+                    for day, rule in coverage.dated_rules(iteration.start_date, iteration.end_date)
+                    if not any(first <= day <= last for first, last in absences)
+                )
+                annual_basis = {"annual_calendar_basis": _request_hash({"years": coverage.signature()}),
+                                "missing_calendar_years": missing_years}
+            available_days = available * (member.availability_percent / 100) * (1 - member.operational_utilization / 100)
             committed = allocated_by_member.get(member.id, 0.0)
             required = max(float(task.effort_days), 0.0) if task.effort_days is not None else None
             ratio = (
@@ -1148,9 +1161,8 @@ class AgentRoutingService:
                 task.start_date is not None
                 and task.end_date is not None
                 and any(
-                    vacation.start_date <= task.end_date
-                    and vacation.end_date >= task.start_date
-                    for vacation in member.vacations
+                    start <= task.end_date and end >= task.start_date
+                    for start, end in absences
                 )
             )
             capacity[member.id] = {
@@ -1160,6 +1172,7 @@ class AgentRoutingService:
                     round(ratio, 4) if math.isfinite(ratio) else None
                 ),
                 "vacation_conflict": vacation_conflict,
+                **annual_basis,
                 "vacations": [
                     {
                         "id": vacation.id,
@@ -1491,6 +1504,11 @@ class AgentRoutingService:
             members=members,
         )
         strict_review = data.purpose == "verification" and await different_publisher_required(self.db, task.project_id)
+        from app.services.review_evidence import assignment_observation, requirements_for, resolve
+        review_evidence = None
+        review_ownership = {}
+        if data.review_evidence_id is not None and not strict_review:
+            raise AgentRoutingConflictError("verification_evidence_unavailable","Scoped review evidence requires independent verification.")
         input_evidence = self._routing_input_evidence(
             task=task,
             assessment=assessment,
@@ -1522,6 +1540,18 @@ class AgentRoutingService:
             history = await review_history(self.db, task, task_assignments, strict=True)
             input_evidence["review_history"] = {
                 "different_publisher_required": strict_review, "contributors": history.contributors, "candidate": history.candidate,
+            }
+            if history.required_reviewer_profiles is not None:
+                input_evidence["review_history"]["required_reviewer_profile_ids"] = list(history.required_reviewer_profiles)
+        if data.review_evidence_id is not None:
+            review_evidence = await resolve(self.db, task, data.review_evidence_id, history)
+            if review_evidence["assessment_id"] != assessment.id:
+                raise AgentRoutingConflictError("verification_evidence_unavailable", "The evidence was issued for another assessment.")
+            review_ownership = assignment_observation(
+                task, task_assignments, data.review_assignment_id, review_evidence, history.candidate
+            )
+            input_evidence["review_evidence"] = {
+                "id": review_evidence["id"], "digest": review_evidence["digest"], **review_ownership
             }
         input_digest = hashlib.sha256(
             canonical_routing_json_bytes(input_evidence)
@@ -1616,6 +1646,8 @@ class AgentRoutingService:
                 *compatibility.hard_blocker_codes,
                 *skill.hard_blocker_codes,
             ]
+            if history is not None and not history.permits_profile(actor.profile_id):
+                actor_blockers.append(RoutingBlockerCode.REVIEWER_PROFILE_MISMATCH.value)
             if (
                 topology_boundary is not None
                 and actor.id
@@ -1741,7 +1773,7 @@ class AgentRoutingService:
                     )
                 catalog = binding.model_catalog
                 model = evaluate_model_envelope(
-                    assessment.required_model,
+                    requirements_for(assessment.required_model, review_evidence, actor.id, binding.id),
                     binding_present=True,
                     binding_enabled=binding.enabled,
                     binding_revision_current=True,
@@ -1763,6 +1795,10 @@ class AgentRoutingService:
                 )
                 publisher_blockers = history.publisher_blockers(catalog.publisher_key if catalog else None) if strict_review else []
                 blockers = sorted(set((*actor_blockers, *model.hard_blocker_codes, *publisher_blockers)))
+                if review_evidence is not None and (actor.id, binding.id) != (
+                    review_evidence["reviewer"]["actor_id"], review_evidence["reviewer"]["binding_id"]
+                ):
+                    blockers = sorted(set((*blockers, RoutingBlockerCode.VERIFICATION_EVIDENCE_UNAVAILABLE.value)))
                 schedule_delay_days = (
                     float(
                         max(
@@ -1987,18 +2023,32 @@ class AgentRoutingService:
             response_values["acceptance_blocker_codes"] = (
                 [] if history.candidate else [RoutingBlockerCode.VERIFICATION_CANDIDATE_UNVERIFIABLE.value]
             )
-        # Cardinality limits alone are insufficient because evidence strings
-        # vary in size. Trim the deterministic tail until the full packet,
-        # including its digest field, stays within the durable boundary.
-        packet_budget = MAX_ROUTING_PACKET_BYTES - 128
-        while (
-            len(
-                canonical_routing_json_bytes(
-                    _json_projection(response_values)
-                )
-            )
-            > packet_budget
-        ):
+        if review_evidence is not None:
+            owner = review_evidence["reviewer"]
+            response_values["eligibility_basis"]="task_policy_configuration_and_review_evidence"
+            response_values["review_evidence"] = {
+                "id": review_evidence["id"], "digest": review_evidence["digest"],
+                "candidate_digest": review_evidence["candidate_digest"], "packet_sha256": review_evidence["packet_sha256"],
+                "method": review_evidence["method"], "reviewer_actor_id": owner["actor_id"],
+                "binding_id": owner["binding_id"], "binding_revision": owner["binding_revision"],
+                "expires_at": datetime.fromisoformat(review_evidence["expires_at"]),
+                **review_ownership,
+            }
+        # REST and MCP expose this same validated model. Its defaults and
+        # normalized timestamps participate in the byte limit. Keep the
+        # existing digest input and recompute it for each retained prefix.
+        while True:
+            preview_digest = hashlib.sha256(
+                canonical_routing_json_bytes(_json_projection(response_values))
+            ).hexdigest()
+            try:
+                return AgentRoutingPreviewResponse(preview_digest=preview_digest, **response_values)
+            except ValidationError as exc:
+                errors = exc.errors(include_input=False, include_url=False)
+                if len(errors) != 1 or errors[0]["loc"] or not isinstance(
+                    errors[0].get("ctx", {}).get("error"), RoutingPacketSizeError
+                ):
+                    raise
             if response_values["exclusions"]:
                 response_values["exclusions"].pop()
                 response_values["exclusions_omitted"] += 1
@@ -2012,18 +2062,6 @@ class AgentRoutingService:
                 "Routing preview evidence cannot fit the bounded response packet",
                 task_id=task.id,
             )
-        preview_digest = hashlib.sha256(
-            canonical_routing_json_bytes(_json_projection(response_values))
-        ).hexdigest()
-        preview = AgentRoutingPreviewResponse(
-            preview_digest=preview_digest,
-            **response_values,
-        )
-        validate_routing_packet_size(
-            preview,
-            label="Routing preview",
-        )
-        return preview
 
     async def preview_task_routing(
         self,
@@ -2425,11 +2463,19 @@ class AgentRoutingService:
             "expected_task_version",
             task.version,
         )
+        evidence_id = data.review_evidence_id
+        if existing_assignment and evidence_id is None:
+            previous = (existing_assignment.review_selection or {}).get("review_evidence")
+            if previous and (selected_actor.id, data.model_binding_id) == (
+                previous["reviewer"]["actor_id"], previous["reviewer"]["binding_id"]
+            ):
+                evidence_id = previous["id"]
         preview_request = AgentRoutingPreviewCreate(
             purpose=purpose,
             assessment_id=data.assessment_id,
             expected_task_version=expected_task_version,
             reviewer_profile_id=reviewer_profile_id,
+            review_evidence_id=evidence_id,
         )
         recomputed = await self._build_preview(
             task=task,

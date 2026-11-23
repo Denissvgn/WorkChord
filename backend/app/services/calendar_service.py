@@ -10,8 +10,9 @@ from typing import Sequence
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.calendar import Calendar
+from app.models.calendar import Calendar, iteration_annual_calendars, profile_annual_calendars
 from app.models.iteration import Iteration
+from app.services.calendar_rules import AnnualCalendars
 from app.schemas.calendar import (
     CalendarCreate,
     CalendarImportError,
@@ -104,6 +105,21 @@ class CalendarService:
         )
         return result.scalar_one_or_none()
 
+    async def selected_years(self, primary: Calendar, identifiers: list[int]) -> list[Calendar]:
+        """Validate annual policy choices without creating or inferring calendar records."""
+        if not identifiers:
+            return []
+        if len(set(identifiers)) != len(identifiers) or primary.id in identifiers:
+            raise ValueError("Choose each annual calendar once")
+        rows = list((await self.db.scalars(select(Calendar).where(Calendar.id.in_(identifiers)).order_by(Calendar.year))).all())
+        if len(rows) != len(identifiers):
+            raise ValueError("One or more annual calendars are unavailable")
+        if len({primary.year, *(row.year for row in rows)}) != len(rows) + 1:
+            raise ValueError("Choose one calendar for each covered year")
+        if any(row.timezone != primary.timezone for row in rows):
+            raise ValueError("Annual calendars must use the same local time zone")
+        return rows
+
     async def create(self, data: CalendarCreate) -> Calendar:
         """Create a new calendar."""
         calendar = Calendar(
@@ -128,6 +144,9 @@ class CalendarService:
             return None
 
         update_data = data.model_dump(exclude_unset=True, exclude={"expected_revisions"})
+        if any(key in update_data and update_data[key] != getattr(calendar, key) for key in ("year", "timezone")):
+            if await self._in_annual_selection(calendar_id):
+                raise ValueError("Remove the related annual calendar selections before changing the year or time zone")
         for field, value in update_data.items():
             setattr(calendar, field, value)
 
@@ -164,10 +183,26 @@ class CalendarService:
             selected = await self.db.scalar(select(ProfileAvailability.profile_id).where(ProfileAvailability.calendar_id == calendar_id).limit(1))
         if selected is not None:
             raise PlanningConflict("calendar_in_use", "Choose another person availability calendar before deleting this calendar.")
+        if await self._in_annual_selection(calendar_id):
+            raise PlanningConflict("calendar_in_use", "Remove this annual calendar from its existing selections before deleting it.")
 
         await self.db.delete(calendar)
         await commit_or_flush(self.db)
         return True
+
+    async def _in_annual_selection(self, calendar_id: int) -> bool:
+        from app.authority import internal_authority
+        from app.models.capacity import ProfileAvailability
+        iteration_links = iteration_annual_calendars
+        profile_links = profile_annual_calendars
+        uses = select(iteration_links.c.calendar_id).join(Iteration, Iteration.id == iteration_links.c.iteration_id).where(
+            (iteration_links.c.calendar_id == calendar_id) | (Iteration.calendar_id == calendar_id))
+        uses = uses.union_all(select(profile_links.c.calendar_id).join(ProfileAvailability, ProfileAvailability.profile_id == profile_links.c.profile_id).where(
+            (profile_links.c.calendar_id == calendar_id) | (ProfileAvailability.calendar_id == calendar_id)))
+        # The caller's authorization was checked by the outer command. A shared
+        # master's in-use invariant must see every owner, revealing only a boolean.
+        with internal_authority(self.db):
+            return (await self.db.scalar(select(uses.exists()))) is True
 
     def _public_holidays(self, country: str, year: int) -> list[str]:
         """Return deterministic built-in public holiday dates for a country/year."""
@@ -260,32 +295,25 @@ class CalendarService:
 
     def calculate_working_days(
         self,
-        calendar: Calendar,
+        calendar: Calendar | AnnualCalendars,
         start_date: date,
         end_date: date
     ) -> WorkingDaysResponse:
         """Calculate working days for a period."""
-        holidays_set = set(date.fromisoformat(d) for d in calendar.holidays)
-        weekend_days_set = set(calendar.weekend_days)
-
-        current = start_date
-        total_days = 0
+        coverage = calendar if isinstance(calendar, AnnualCalendars) else AnnualCalendars(calendar)
+        total_days = max(0, (end_date - start_date).days + 1)
         working_days = 0
         holidays_in_period: list[date] = []
         weekends_in_period: list[date] = []
 
-        while current <= end_date:
-            total_days += 1
-            weekday = current.weekday()
-
-            if current in holidays_set:
+        for current, rule in coverage.dated_rules(start_date, end_date):
+            kind = rule.kind(current)
+            if kind == "holiday":
                 holidays_in_period.append(current)
-            elif weekday in weekend_days_set:
+            elif kind == "weekend":
                 weekends_in_period.append(current)
             else:
                 working_days += 1
-
-            current += timedelta(days=1)
 
         return WorkingDaysResponse(
             start_date=start_date,
@@ -294,25 +322,15 @@ class CalendarService:
             working_days=working_days,
             holidays=holidays_in_period,
             weekends=weekends_in_period,
+            missing_calendar_years=coverage.missing_years(start_date, end_date),
         )
 
     def get_working_dates(
         self,
-        calendar: Calendar,
+        calendar: Calendar | AnnualCalendars,
         start_date: date,
         end_date: date
     ) -> list[date]:
         """Get list of working dates in a period."""
-        holidays_set = set(date.fromisoformat(d) for d in calendar.holidays)
-        weekend_days_set = set(calendar.weekend_days)
-
-        working_dates = []
-        current = start_date
-
-        while current <= end_date:
-            weekday = current.weekday()
-            if current not in holidays_set and weekday not in weekend_days_set:
-                working_dates.append(current)
-            current += timedelta(days=1)
-
-        return working_dates
+        coverage = calendar if isinstance(calendar, AnnualCalendars) else AnnualCalendars(calendar)
+        return coverage.working_dates(start_date, end_date)

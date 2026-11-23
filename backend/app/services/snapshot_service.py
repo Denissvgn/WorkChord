@@ -84,9 +84,9 @@ class SnapshotService:
 
     async def _preflight_allocation_membership(self, iteration_id, payload, current):
         """Inventory complete allocation references before changing recovery state."""
-        from sqlalchemy import inspect, or_
+        from sqlalchemy import or_
+        from app.services.allocation_removal import foreign_keys_to_members, mapped_allocation_references
         from app.commands import PlanningConflict
-        from app.database import Base
         from app.models.agent import AgentRun, AgentTaskAssignment
         from app.models.autonomy import AgentWorkPackage
         from app.models.task import Task
@@ -123,17 +123,11 @@ class SnapshotService:
         affected = allocated | saved
         if affected:
             connection = await self.db.connection()
-            def references(sync):
-                inspector = inspect(sync)
-                return {(name, column) for name in inspector.get_table_names()
-                        for foreign in inspector.get_foreign_keys(name) if foreign["referred_table"] == "team_members"
-                        for column in foreign["constrained_columns"]}
-            physical = await connection.run_sync(references)
+            physical = await connection.run_sync(foreign_keys_to_members)
             known = {("tasks", "assignee_id"), ("projects", "owner_id"), ("initiatives", "owner_id"),
                      ("vacations", "team_member_id"), ("agent_task_assignments", "team_member_id"),
                      ("triage_classification_suggestions", "suggested_assignee_id")}
-            mapped = {(table.name, foreign.parent.name) for table in Base.metadata.tables.values()
-                      for foreign in table.foreign_keys if foreign.target_fullname == "team_members.id"}
+            mapped = mapped_allocation_references(self.db)
             if physical != mapped or physical - known:
                 raise PlanningConflict("snapshot_reference_inventory_incomplete", "Allocation reference ownership must be reconciled before restoring.")
             external = await self.db.scalar(select(Task.id).where(Task.assignee_id.in_(affected),
@@ -225,6 +219,7 @@ class SnapshotService:
                 "start_date": iteration.start_date.isoformat(),
                 "end_date": iteration.end_date.isoformat(),
                 "calendar_id": iteration.calendar_id,
+                "additional_calendar_ids": [row.id for row in iteration.additional_calendars],
                 "project_id": iteration.project_id,
                 "manager_email": iteration.manager_email,
             },
@@ -383,6 +378,14 @@ class SnapshotService:
         saved_iteration = payload["iteration"]
         if saved_iteration.get("project_id") != iteration.project_id:
             raise ValueError("Restore cannot change project authority; reconcile the iteration scope first")
+        if "calendar_id" in saved_iteration:
+            from app.services.calendar_service import CalendarService
+            calendars = CalendarService(self.db)
+            primary = await calendars.get_by_id(saved_iteration["calendar_id"])
+            if primary is None:
+                raise ValueError("Snapshot calendar is no longer available")
+            iteration.additional_calendars = await calendars.selected_years(primary, saved_iteration.get("additional_calendar_ids", []))
+            iteration.calendar = primary
         for key in ["name", "calendar_id", "manager_email"]:
             if key in saved_iteration:
                 setattr(iteration, key, saved_iteration[key])

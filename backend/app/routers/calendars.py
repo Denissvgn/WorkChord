@@ -13,6 +13,7 @@ from app.schemas.calendar import (
 )
 from app.schemas.common import MessageResponse
 from app.services.calendar_service import CalendarService
+from app.services.calendar_rules import AnnualCalendars
 
 router = APIRouter()
 
@@ -122,7 +123,8 @@ async def get_working_days(
     calendar_id: int,
     start_date: Annotated[date, Query(description="Start date (ISO format)")],
     end_date: Annotated[date, Query(description="End date (ISO format)")],
-    service: Annotated[CalendarService, Depends(get_calendar_service)]
+    service: Annotated[CalendarService, Depends(get_calendar_service)],
+    additional_calendar_ids: Annotated[list[int] | None, Query(max_length=100)] = None,
 ):
     """Calculate working days for a period."""
     calendar = await service.get_by_id(calendar_id)
@@ -138,4 +140,8 @@ async def get_working_days(
             detail="start_date must be before or equal to end_date"
         )
 
-    return service.calculate_working_days(calendar, start_date, end_date)
+    try:
+        additional = await service.selected_years(calendar, additional_calendar_ids or [])
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return service.calculate_working_days(AnnualCalendars(calendar, additional), start_date, end_date)

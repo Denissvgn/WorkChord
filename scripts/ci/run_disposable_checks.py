@@ -179,7 +179,7 @@ def main():
                     run.run(scope, [sys.executable, '-m', 'pytest', '-q', '--durations=25', '-o',
                         f"cache_dir={scratch / 'pytest-cache'}", '-m', marker,
                         f"--junitxml={run.output / (scope + '.xml')}", *map(str, targets)],
-                        cwd=scratch, env=env, timeout=1200 if scope == 'sqlite' else 1500, check=False)
+                        cwd=scratch, env=env, timeout=args.timeout_seconds, check=False)
             if args.scope == 'postgresql':
                 def require_schema_diff():
                     difference = json.loads((run.output / 'schema-diff.json').read_text())

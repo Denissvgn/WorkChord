@@ -567,6 +567,7 @@ class AgentTaskAssignmentCreate(BaseModel):
     team_member_id: Optional[int] = None
     purpose: AgentAssignmentPurpose = "execution"
     review_binding_id: int | None = Field(default=None, ge=1)
+    review_evidence_id: int | None = Field(default=None, strict=True, ge=1, exclude_if=lambda value: value is None)
     queue_class: AgentAssignmentQueueClass = "normal"
     queue_rank: int = Field(default=1000, ge=0)
     not_before: Optional[datetime] = None
@@ -604,6 +605,8 @@ class AgentTaskAssignmentCreate(BaseModel):
         assignment_intent(self.purpose, self.queue_class)
         if self.review_binding_id is not None and self.purpose != "verification":
             raise ValueError("A review binding is available only for verification.")
+        if self.review_evidence_id is not None and (self.purpose != "verification" or self.review_binding_id is None):
+            raise ValueError("Scoped review evidence requires verification and the exact review binding.")
         return self
 
 
@@ -613,6 +616,7 @@ class ModelAwareAgentTaskAssignmentCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     task_id: int = Field(..., ge=1)
+    review_evidence_id: int | None = Field(default=None, strict=True, ge=1, exclude_if=lambda value: value is None)
     actor_id: int = Field(..., ge=1)
     expected_task_version: int = Field(..., ge=1)
     purpose: AgentAssignmentPurpose
@@ -659,6 +663,7 @@ class AgentTaskAssignmentUpdate(BaseModel):
 
     actor_id: Optional[int] = None
     review_binding_id: int | None = Field(default=None, ge=1)
+    review_evidence_id: int | None = Field(default=None, strict=True, ge=1, exclude_if=lambda value: value is None)
     queue_rank: Optional[int] = Field(default=None, ge=0)
     not_before: Optional[datetime] = None
     reviewer_profile_id: Optional[int] = None
@@ -673,6 +678,7 @@ class ModelAwareAgentTaskAssignmentUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     expected_queue_revision: int = Field(..., ge=1)
+    review_evidence_id: int | None = Field(default=None, strict=True, ge=1, exclude_if=lambda value: value is None)
     assessment_id: int = Field(..., ge=1)
     model_binding_id: int = Field(..., ge=1)
     model_binding_revision: int = Field(..., ge=1)
@@ -1206,6 +1212,7 @@ class AgentReviewVerdict(BaseModel):
 
     observed_model: str | None = Field(default=None, min_length=1, max_length=255)
     reviewed_candidate_digest: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
+    reviewed_packet_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$", exclude_if=lambda value: value is None)
 
     assignment_id: int
     verdict: Literal["pass", "reject"]
@@ -1267,6 +1274,27 @@ class AgentRecoveryListResponse(BaseModel):
 
     items: list[AgentRecoveryItem] = Field(default_factory=list)
     pagination: AgentPaginationMetadata
+
+
+class AgentRetainedOutputAttestation(BaseModel):
+    """A fresh statement from the original worker after a genuine expiry and PM recovery."""
+    model_config = ConfigDict(extra="forbid")
+    assignment_id: int = Field(gt=0)
+    claim_generation: int = Field(ge=1)
+    claim_id: str = Field(min_length=16, max_length=64, repr=False)
+    planning_receipt_id: int | None = Field(default=None, gt=0)
+    planning_actor_id: int | None = Field(default=None, gt=0)
+    planning_command_key: str | None = Field(default=None,min_length=1,max_length=255)
+    recovery_receipt_id: int | None = Field(default=None, gt=0)
+    recovery_actor_id: int | None = Field(default=None, gt=0)
+    recovery_command_key: str | None = Field(default=None,min_length=1,max_length=255)
+    checkpoint_id: int = Field(gt=0)
+    observed_model: str = Field(min_length=1, max_length=255)
+    commit_url: str = Field(min_length=1, max_length=2048)
+    pr_url: str = Field(min_length=1, max_length=2048)
+    git_tree: str = Field(pattern=r"^[0-9a-f]{40}([0-9a-f]{24})?$")
+    terminal_native_turn: str = Field(min_length=1, max_length=255)
+    confirmed_final_output: Literal[True]
 
 
 class AgentRecoveryRequeueResponse(BaseModel):

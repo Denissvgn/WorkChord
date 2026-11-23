@@ -83,6 +83,7 @@ class WorkingDaysResponse(BaseModel):
     working_days: int
     holidays: list[date]
     weekends: list[date]
+    missing_calendar_years: list[int] = Field(default_factory=list)
 
 
 class HolidayImportRequest(BaseModel):

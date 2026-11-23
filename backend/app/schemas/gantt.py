@@ -98,11 +98,21 @@ class WorkloadIssue(BaseModel):
     issue: str
 
 
+class AssignmentSelectionRefresh(BaseModel):
+    task_id: int
+    assignment_id: int
+    actor_id: int
+    from_task_version: int
+    to_task_version: int
+    action: Literal["refresh_model_selection"]
+
+
 class ScheduleResult(BaseModel):
     """Result of scheduling operation."""
     success: bool
     planning_revision: int | None = None
     capacity_issues: list[dict] = []
+    assignment_refreshes: list[AssignmentSelectionRefresh] = Field(default_factory=list, exclude_if=lambda rows: not rows)
     decisions: list[SchedulingDecision] = []
     workload_balanced: bool = True
     workload_issues: list[WorkloadIssue] = []

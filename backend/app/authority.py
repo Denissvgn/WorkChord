@@ -159,7 +159,10 @@ def _scope_conditions(authority):
         elif name == "user_sessions":
             condition = c.principal_id == authority.principal_id if authority.principal_id is not None else c.id == authority.session_id
         elif name == "calendars":
-            condition = true() if workspace_read else c.id.in_(select(iterations.c.calendar_id).where(project_condition))
+            direct = select(iterations.c.calendar_id).where(project_condition)
+            annual = tables["iteration_annual_calendars"]
+            selected = direct.union(select(annual.c.calendar_id).where(annual.c.iteration_id.in_(iteration_ids)))
+            condition = true() if workspace_read else c.id.in_(selected)
         elif name in {"profile_availability", "profile_absences"}:
             condition = c.profile_id == authority.profile_id if authority.profile_id is not None else false()
         elif name == "team_member_profiles":

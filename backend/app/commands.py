@@ -234,8 +234,13 @@ async def planning_input_reservation(db, kind, values):
     from app.models.task import Task
     from app.mutation_versions import require_mutation_revision
 
+    history = None
+    if kind == "member_removal":
+        from app.services.allocation_removal import inspect_allocation_history
+        await affected_iteration_ids(db, "member", values)
+        history = await inspect_allocation_history(db, values["member_id"])
     await lock_planning(db)
-    resolved_kind = 'vacation' if 'vacation_id' in values else kind
+    resolved_kind = 'member' if kind == 'member_removal' else 'vacation' if 'vacation_id' in values else kind
     ids = await affected_iteration_ids(db, resolved_kind, values)
     data = values.get('data')
     body_expected = values.get('expected_revisions', getattr(data, 'expected_revisions', None))
@@ -258,15 +263,49 @@ async def planning_input_reservation(db, kind, values):
             field='expected_revisions', resource=resolved_kind, resource_id=next((values[key] for key in
                 ['iteration_id', 'member_id', 'vacation_id', 'calendar_id', 'profile_id', 'project_id'] if values.get(key) is not None), 0))
     await lock_iterations(db, ids, expected=body_expected, require_expected=True)
+    unused_allocation = False
+    if kind == "member_removal":
+        from app.services.allocation_removal import is_unused_allocation
+        unused_allocation = await is_unused_allocation(db, values["member_id"], history, unused_only=values.get("unused_only", False))
+        if values.get("unused_only") and not unused_allocation:
+            raise PlanningConflict("allocation_not_unused", "The allocation is in use or its history could not be verified.")
+    from app.services.execution_planning_window import current_window, extension_input, live_assignments, make_window, seal_authority, task_context
+    extension = await extension_input(db, values, ids) if kind == "iteration" and parent is None else None
     for iteration_id in ids:
-        await SnapshotService(db).create_snapshot(iteration_id, 'before_planning_input_change')
-    tasks = list((await db.scalars(select(Task).where(Task.iteration_id.in_(ids), Task.status != 'closed').order_by(Task.id))).all())
+        filename = await SnapshotService(db).create_snapshot(iteration_id, 'before_planning_input_change')
+        if extension and filename:
+            from app.models.recovery import ApplicationSnapshot
+            snapshot = (await db.execute(select(ApplicationSnapshot.id, ApplicationSnapshot.checksum, ApplicationSnapshot.input_revision)
+                .where(ApplicationSnapshot.iteration_id == iteration_id, ApplicationSnapshot.filename == filename))).one()
+            extension.update(snapshot_id=snapshot.id, snapshot_sha256=snapshot.checksum, input_revision=snapshot.input_revision)
+    tasks = [] if unused_allocation else list((await db.scalars(select(Task).where(Task.iteration_id.in_(ids), Task.status != 'closed').order_by(Task.id))).all())
+    if kind == "iteration" and parent is None and len(ids) == 1:
+        from app.services.calendar_rules import reserve_iteration_annuals
+        if await reserve_iteration_annuals(db, ids[0], data, tasks):
+            # The iteration and global schedule revisions are already reserved. This command changes no task or issued work.
+            tasks = []
     service = TaskService(db)
+    issued = await live_assignments(db, [task.id for task in tasks], lock=True) if extension else {}
+    before = {task.id: (task.version, task_context(task), current_window(task)) for task in tasks if task.id in issued}
     for task in tasks:
         await service.reserve_task_version(task, task.version)
     db.info['planning_input_scope'] = parent if parent is not None else set(ids)
     try:
         yield db.info['planning_input_scope']
+        if extension and extension.get("snapshot_id") and current_command(db).mode == "apply":
+            for task in tasks:
+                if task.id not in before:
+                    continue
+                previous_version, previous_context, prior = before[task.id]
+                if task_context(task) == previous_context:
+                    window = make_window(task, previous_version, issued[task.id], prior=prior, evidence=extension)
+                    if window:
+                        window = await seal_authority(db, task, window, issued[task.id], prior=prior, lock=True)
+                    if window:
+                        task.execution_planning_window = window
+                        await service.record_task_event(task.id, "task.execution_planning_window",
+                            {"source": "iteration_end_extension", "from": window["from"], "through": window["through"],
+                             "assignment_ids": sorted(map(int, window["assignments"])), **extension}, actor_type="system")
     finally:
         if parent is None:
             db.info.pop('planning_input_scope', None)

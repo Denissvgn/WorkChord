@@ -5,6 +5,7 @@ from app.commands import atomic_command, commit_or_flush, schedule_input_command
 import csv
 from datetime import date
 from io import StringIO
+import math
 from typing import Sequence
 
 from sqlalchemy import select, func
@@ -468,9 +469,9 @@ class TeamService:
             raise PlanningConflict("absence_reconciliation_required", "Reconcile legacy allocation absences before changing this person's profile.")
         member.vacations.clear()
 
-    @schedule_input_command("member")
-    async def delete(self, member_id: int) -> bool:
-        """Delete a team member."""
+    @schedule_input_command("member_removal")
+    async def delete(self, member_id: int, *, unused_only: bool = False) -> bool:
+        """Remove an allocation under its planning reservation and optional unused precondition."""
         member = await self.get_by_id(member_id)
         if not member:
             return False
@@ -676,24 +677,25 @@ class TeamService:
         if not member or not member.iteration:
             return None
 
-        from app.services.capacity_service import CapacityService, day_hours
+        from app.services.capacity_service import CapacityService
         capacity_service = CapacityService(self.db)
-        calendar = await capacity_service.calendar_for(member)
+        coverage = await capacity_service.coverage_for(member)
         calendar_source, calendar_uncertain = await capacity_service.calendar_status(member)
         working = CalendarService(self.db).get_working_dates(
-            calendar, member.iteration.start_date, member.iteration.end_date)
+            coverage, member.iteration.start_date, member.iteration.end_date)
         ranges = await capacity_service.absence_ranges(member)
         absent = {day for day in working if any(start <= day <= end for start, end in ranges)}
         available_days = (len(working) - len(absent)) * member.availability_percent / 100
         effective_days = available_days * (1 - member.operational_utilization / 100)
         adjusted_days = effective_days * member.professionalism_coefficient
-        hours = sum(day_hours(calendar, day) for day in working if day not in absent)
+        hours = sum(coverage.hours(day) for day in working if day not in absent)
         hours *= member.availability_percent / 100 * (1 - member.operational_utilization / 100) * member.professionalism_coefficient
+        missing_years = coverage.missing_years(member.iteration.start_date, member.iteration.end_date)
         return MemberCapacity(team_member_id=member_id, working_days=len(working),
             vacation_days=len(absent), available_days=round(available_days, 2),
             effective_days=round(effective_days, 2), adjusted_days=round(adjusted_days, 2),
-            hours=round(hours, 2), calendar_source=calendar_source, calendar_uncertain=calendar_uncertain, timezone=calendar.timezone,
-            outside_calendar_year=member.iteration.start_date.year != calendar.year or member.iteration.end_date.year != calendar.year)
+            hours=round(hours, 2), calendar_source=calendar_source, calendar_uncertain=calendar_uncertain, timezone=coverage.primary.timezone,
+            missing_calendar_years=missing_years, outside_calendar_year=bool(missing_years))
 
     async def get_workload(self, member_id: int) -> MemberWorkload | None:
         """Get workload information for a team member."""
@@ -707,6 +709,9 @@ class TeamService:
 
         from app.services.capacity_service import CapacityService
         calendar = await CapacityService(self.db).calendar_for(member)
+        if calendar.nominal_day_hours is None or not math.isfinite(calendar.nominal_day_hours) or calendar.nominal_day_hours <= 0:
+            from app.commands import PlanningConflict
+            raise PlanningConflict("calendar_nominal_hours_invalid", "Workload day equivalents require a positive normal day length.")
         from app.services.work_metrics import included_work_ids
         included = await included_work_ids(self.db, {member.iteration_id})
         allocated_hours = await self.db.scalar(select(func.coalesce(func.sum(Task.effort_hours), 0)).where(
@@ -728,6 +733,8 @@ class TeamService:
         return MemberWorkload(
             team_member_id=member_id,
             name=member.name,
+            missing_calendar_years=capacity.missing_calendar_years,
+            calendar_uncertain=capacity.calendar_uncertain,
             capacity_days=capacity_days,
             allocated_days=round(allocated_days, 2),
             free_days=round(free_days, 2),

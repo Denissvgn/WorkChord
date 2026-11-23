@@ -44,7 +44,7 @@ RELEASE_BASELINE_FILENAME = "release-baseline.json"
 CATALOG_SCHEMA = "workchord-agent-skills/v1"
 RELEASE_SCHEMA = "workchord-agent-skills-release/v1"
 RELEASE_BASELINE_SCHEMA = "workchord-agent-skills-baseline/v2"
-CATALOG_VERSION = "1.21.0"
+CATALOG_VERSION = "1.23.1"
 API_CONTRACT = "workchord-agent/v1"
 SERVER_COMPATIBILITY = ">=1.8.0,<2.0.0"
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
@@ -262,7 +262,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             "shadow may append bounded audit evidence.",
             body_model="AgentRoutingPreviewCreate",
             body_required=("purpose", "assessment_id", "expected_task_version"),
-            body_optional=("reviewer_profile_id",),
+            body_optional=("reviewer_profile_id", "review_evidence_id", "review_assignment_id"),
             path_required=("task_id",),
             tool_required=("task_id", "payload"),
             required_feature=MODEL_AWARE_ROUTING_FEATURE,
@@ -291,6 +291,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
                 "team_member_id",
                 "reviewer_profile_id",
                 "review_binding_id",
+                "review_evidence_id",
                 "queue_class",
                 "queue_rank",
                 "not_before",
@@ -322,6 +323,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
                 "actor_id",
                 "reviewer_profile_id",
                 "review_binding_id",
+                "review_evidence_id",
                 "queue_rank",
                 "not_before",
                 "state",
@@ -361,6 +363,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
                 "routing_preview_digest",
             ),
             body_optional=(
+                "review_evidence_id",
                 "team_member_id",
                 "reviewer_profile_id",
                 "queue_class",
@@ -398,6 +401,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
                 "routing_preview_digest",
             ),
             body_optional=(
+                "review_evidence_id",
                 "actor_id",
                 "reviewer_profile_id",
                 "queue_rank",
@@ -675,7 +679,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
                 "expected_task_version",
                 "evidence",
             ),
-            body_optional=("reason", "rework_actor_id", "rework_queue_rank", "observed_model", "reviewed_candidate_digest"),
+            body_optional=("reason", "rework_actor_id", "rework_queue_rank", "observed_model", "reviewed_candidate_digest", "reviewed_packet_sha256"),
             header_required=(
                 "Idempotency-Key",
                 "X-Agent-Rationale",
@@ -781,7 +785,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
 ROLE_METADATA: dict[str, dict[str, Any]] = {
     "workchord-pm": {
         "role": "pm",
-        "version": "1.19.0",
+        "version": "1.21.1",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -822,7 +826,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-worker": {
         "role": "worker",
-        "version": "1.19.0",
+        "version": "1.20.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -850,7 +854,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-reviewer": {
         "role": "verifier",
-        "version": "1.7.0",
+        "version": "1.8.1",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,

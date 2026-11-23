@@ -2,13 +2,26 @@
 from datetime import date
 from typing import TYPE_CHECKING
 
-from sqlalchemy import JSON, Float, Integer, String
+from sqlalchemy import JSON, Column, Float, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
 
 if TYPE_CHECKING:
     from app.models.iteration import Iteration
+
+
+iteration_annual_calendars = Table(
+    "iteration_annual_calendars", Base.metadata,
+    Column("iteration_id", ForeignKey("iterations.id", ondelete="CASCADE"), primary_key=True),
+    Column("calendar_id", ForeignKey("calendars.id", ondelete="RESTRICT"), primary_key=True, index=True),
+)
+
+profile_annual_calendars = Table(
+    "profile_annual_calendars", Base.metadata,
+    Column("profile_id", ForeignKey("profile_availability.profile_id", ondelete="CASCADE"), primary_key=True),
+    Column("calendar_id", ForeignKey("calendars.id", ondelete="RESTRICT"), primary_key=True, index=True),
+)
 
 
 class Calendar(Base):

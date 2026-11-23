@@ -65,6 +65,18 @@
       "version": "1.21.0"
     },
     {
+      "catalog_sha256": "419b7d38888b42cb88c44232211b207086601b0850663b94f5bf48c83bc3fe33",
+      "version": "1.22.0"
+    },
+    {
+      "catalog_sha256": "5e4e811b6e708ba63a39e53987a2ef46ee70968d8679141e0f72964f92d5d071",
+      "version": "1.23.0"
+    },
+    {
+      "catalog_sha256": "cc72decc5a1e3d3424b3f0020a156206872175cd31717394ed214fd0c322a42e",
+      "version": "1.23.1"
+    },
+    {
       "catalog_sha256": "ee8e1dcd76b7c75c7f503ddc4b10c5c1c6729ddfc26cb03cf154f9afbf36524f",
       "version": "1.3.0"
     },
@@ -170,6 +182,21 @@
       "version": "1.19.0"
     },
     {
+      "catalog_entry_sha256": "a969ec4d34eb1be697d73ac6360f48df48828d0b95b612392ec42f9ad2c6ac31",
+      "name": "workchord-pm",
+      "version": "1.20.0"
+    },
+    {
+      "catalog_entry_sha256": "d7fa9382e98bedbc3841ba54897372dbe4f7626430f499d9e53e475c713d7232",
+      "name": "workchord-pm",
+      "version": "1.21.0"
+    },
+    {
+      "catalog_entry_sha256": "bfacceee04a3314ebc1dd534f24e20486b953ec3127bd3ae6dbcede6f687e3db",
+      "name": "workchord-pm",
+      "version": "1.21.1"
+    },
+    {
       "catalog_entry_sha256": "557c1f2f026da7d305dde4eb9e366ff3b4d584d6a86fc6c8567f65d324ec64c0",
       "name": "workchord-pm",
       "version": "1.3.0"
@@ -255,6 +282,16 @@
       "version": "1.7.0"
     },
     {
+      "catalog_entry_sha256": "63155d3d185809709873acefcd99cbcb04284dc8ad535e500c46f60d05c84a73",
+      "name": "workchord-reviewer",
+      "version": "1.8.0"
+    },
+    {
+      "catalog_entry_sha256": "55c9c92c562844a434084dfca15b7721523c1c22326e4fb0a7046ccbbd1a836d",
+      "name": "workchord-reviewer",
+      "version": "1.8.1"
+    },
+    {
       "catalog_entry_sha256": "4e1232d87b06c5dbaa6a93207f0c86666105d80527291ee0665bc2278a8cb57a",
       "name": "workchord-worker",
       "version": "1.10.0"
@@ -313,6 +350,11 @@
       "catalog_entry_sha256": "c5d8fc003ae547b6478a808347181eb2952d1ffd4ae1603153bbc44f57e42602",
       "name": "workchord-worker",
       "version": "1.2.0"
+    },
+    {
+      "catalog_entry_sha256": "61fa0d267bccd295b3a38e5c45b2ff7356190f7e238e1d87710669005134aba6",
+      "name": "workchord-worker",
+      "version": "1.20.0"
     },
     {
       "catalog_entry_sha256": "864ba1a6b9851a62aeaf517535ff2d9c23b737b003503f2f621c8a42726a357e",

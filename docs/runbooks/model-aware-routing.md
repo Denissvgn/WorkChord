@@ -22,6 +22,19 @@ Historical performance remains advisory. Do not feed it back into selection
 policy without a separately approved calibration contract covering sample
 size, decay, bias review, and operator approval.
 
+## Candidate-bound review evidence
+
+On a project requiring an independent publisher, an authenticated workspace operator may deliver an immutable review packet to a specific verifier. The issuer must be independent of the candidate’s contributors and verifier, including their linked profiles. Named offline test results can satisfy the assessment’s `host-shell` requirement for verification. Source alone qualifies only when the PM explicitly sets `required_model.allow_source_only_review=true` in the assessment for this task version. A worker still needs its own execution tools. This mechanism executes no commands and changes no model binding.
+
+1. Capture the reviewed Git commit and the SHA-256 of the exact packet. For `source_and_tests`, include each named offline test and the SHA-256 of its result. For `source_only`, omit the test list. Distribute the packet through the team's approved channel.
+2. Use `POST /api/agent/tasks/{task_id}/review-evidence` or MCP `agent_attest_review_evidence` with `action=issue`, `expected_assessment_id`, the expected task, brief and artifact revisions, `commit_sha`, `reviewer_actor_id`, `binding_id`, `expected_binding_revision`, `method`, `packet_sha256` and an offset-aware `expires_at` within the next 24 hours. Each test entry has `name` and `result_sha256`. Supply the normal idempotency key, rationale and correlation ID.
+3. Use the returned `event_id` as `review_evidence_id` on the verification preview and assignment. In supervised mode, provide the exact `review_binding_id`. In enforced mode, select the same binding using the current signed preview. Other model, data-policy, capacity and independence requirements still apply.
+4. The reviewer checks the received packet and passes its digest as `reviewed_packet_sha256` with the normal observed model and reviewed candidate digest. The server rechecks the operator receipt, candidate, expiry and verifier identity when it records the verdict.
+
+Before merging an externally hosted pull request, the PM can use the same verification preview with both `review_evidence_id` and `review_assignment_id`. Compare `review_evidence.assignment_id`, `assignment_state`, actor, binding, candidate and packet digests with the current assignment. A valid existing owner can hold a current receipt even when the fresh-dispatch candidate list is empty. An expired, revoked or mismatched receipt yields `verification_evidence_unavailable`. Check the external head independently and pin the merge to that SHA. The preview applies to its read instant.
+
+An operator can revoke an issued receipt through the same command with `action=revoke` and `evidence_id`. Changing the candidate, task revisions or reviewer binding requires fresh evidence. A revoked, expired or retired issuer cannot support either verdict. The PM can reorder or cancel the queued assignment and select a fresh receipt. An assessment is immutable and unique for its task version and policy. If an existing assessment requires tests, supply the named results or use a genuine versioned planning change and fresh assessment before offering source alone. A completed verdict and its audit record remain historical. A later rework submission requires a new candidate-bound decision. Clients can discover this protocol through `scoped-review-evidence-v1`.
+
 ## Rollout modes
 
 `MODEL_AWARE_ROUTING_MODE` is restart-bound and must have the same value on all
@@ -63,6 +76,100 @@ will remain effective `off`.
 
 Enablement applies only to new assignments. Never rewrite historical snapshots
 or reinterpret a shadow preview as an enforced selection.
+
+## Supervised rework in shadow mode
+
+After an independent reviewer requests changes, read the original worker's
+assigned-work queue and complete task context. The server can return
+`start_assigned` for an existing or newly issued rework assignment when its
+stored rejection and submission identify the same team, worker, model binding
+and independent reviewer. The worker begins the exact assignment with the
+current queue revision and its observed model. Repeating the begin with the
+original idempotency key returns the same run and claim generation.
+
+The latest submitter can also have completed a supervised recovery selected
+by the team's PM. The recovery receipt and event must confirm that exact
+assignment and actor. Earlier retained contributors continue to participate
+in the independent publisher check. The recovery records the task version
+when it was issued. The fulfilled assignment must match the later task
+version in the worker's submission receipt.
+
+The issued assignment and its routing snapshot preserve their original
+lineage. The effective worker views show the supervised handback and review
+floor. A successful begin records the complete worker binding, independent
+reviewer floor, rejected run, verifier receipt and reviewed candidate digest
+in the new run's `execution_provenance.supervised_rework`. The original
+verdict and submission stay intact. If an older rejection omits the explicit
+candidate digest, the verifier's selection in its event and receipt must
+identify the same submitted candidate. For the next verification, preview,
+dispatch and verdict require the recorded reviewer profile and a publisher
+independent of every contributor. A changed binding, different worker,
+missing receipt, or request for a model-tier change leaves routing pending.
+After a failed or canceled rework, the PM uses the normal recovery path.
+The resulting recovery queue waits for a fresh applicable routing selection.
+A previously begun rework cannot be reused to start a second fenced run.
+Enforced mode continues to require a fresh model-aware selection.
+
+## Extending an iteration with assigned work
+
+A date-only extension reserves the iteration and every open task version.
+Existing ownership can continue when the task, assignment, model bindings,
+team, capacity owner and project review policy still match. Workers read
+their assigned queue and current task version before renewing or submitting.
+The recorded planning evidence identifies the snapshot by its ID, SHA-256
+and input revision. A worker command verifies current authority and the
+applicable historical evidence under its operation’s locks.
+Verification uses the originally selected artifact and reviewer. A rework
+begin still checks its independent rejection and the original submitter.
+
+For a cutoff applied before `iteration-window-execution-recovery-v1`, a
+workspace operator can preview a single task with
+`POST /api/agent/tasks/{task_id}/reconcile-planning-window` or
+`agent_reconcile_planning_window`. Supply the planning receipt's
+`planning_actor_id` and `planning_command_key`. The server checks its own
+before-change snapshot, the exact end-date-only command, and each live
+owner’s original receipt. Check the returned task version, assignment IDs
+and empty `missing` list. Apply with the returned `expected_evidence_digest`,
+`apply=true`, and normal idempotency, rationale and correlation metadata.
+The command records operator attribution. The original assignment, task
+version, run, lease and source records keep their existing values. Missing
+or contradictory server evidence leaves the task pending.
+
+If the worker lease has expired, the PM reads the actual recovery tuple and
+uses the usual typed requeue with the current task version, claim generation,
+live assignment IDs and running run IDs. This also permits an older service
+to drain before an upgrade. Confirm the recorded server time is past expiry.
+Save the PM command key, its new assignment ID and the worker’s checkpoint.
+An expired lease cannot renew or submit.
+
+If starting a queued recovery would discard an available original-worker
+attestation, the work decision reports `retained_output_attestation_required`
+on that assignment. When it is the only actionable case, the worker sees
+`attention_required`. The assignment and complete context include
+`routing_snapshot.retained_output_attestation` with the supported tool,
+original run and generation, checkpoint, commit, tree and receipt IDs.
+Other ready work remains selectable. A direct begin enforces the same check.
+
+Before starting that fresh assignment, the original worker can attest its
+retained artifact through `POST /api/agent/me/runs/{run_id}/attest-retained-output`
+or `agent_attest_retained_planning_output`. Submit the original assignment
+and fence through the authenticated worker transport, the planning and
+recovery actors and command keys or the two receipt IDs in the hint, checkpoint ID, observed model, commit URL,
+tree, PR URL, native final turn and `confirmed_final_output=true`. The
+server requires the checkpoint to have been recorded on the live original
+generation and the PM recovery to have occurred after expiry. It records
+the worker's current statement separately from the historical interruption.
+The subsequent submission and independent review include both actual runs
+and the retained commit. If a worker cannot confirm its final output or the
+checkpoint is incomplete, the unknown contributor remains visible to review.
+The worker retrieves the old private fence from its own saved response to
+the indicated begin or renew operation, matching its original assignment,
+run and generation. It obtains the native final turn from its own retained
+session and checkpoint. If either is unavailable or the worker cannot
+confirm the output, it reports that fact to the primary PM. The PM may use
+the normal queued-assignment update with `state=cancelled`, the current
+actor queue revision, and an explicit reason. That action frees the worker
+for other work and preserves the unresolved contributor on the affected task.
 
 ## Operational evidence
 

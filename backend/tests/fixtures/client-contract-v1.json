@@ -1707,6 +1707,14 @@
       "IterationCreate": {
         "description": "Schema for creating an iteration.",
         "properties": {
+          "additional_calendar_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 100,
+            "title": "Additional Calendar Ids",
+            "type": "array"
+          },
           "calendar_id": {
             "anyOf": [
               {
@@ -1812,6 +1820,13 @@
       "IterationPlanningReadinessSummary": {
         "description": "Compact planning inputs used by persistent navigation.",
         "properties": {
+          "additional_calendar_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Additional Calendar Ids",
+            "type": "array"
+          },
           "assigned_hours": {
             "default": 0.0,
             "title": "Assigned Hours",
@@ -1852,6 +1867,13 @@
           "iteration_id": {
             "title": "Iteration Id",
             "type": "integer"
+          },
+          "missing_calendar_years": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Missing Calendar Years",
+            "type": "array"
           },
           "planned_hours": {
             "default": 0.0,
@@ -1942,6 +1964,13 @@
       },
       "IterationResponse": {
         "properties": {
+          "additional_calendar_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Additional Calendar Ids",
+            "type": "array"
+          },
           "calendar_id": {
             "title": "Calendar Id",
             "type": "integer"
@@ -1965,6 +1994,13 @@
               }
             ],
             "title": "Manager Email"
+          },
+          "missing_calendar_years": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Missing Calendar Years",
+            "type": "array"
           },
           "name": {
             "title": "Name",

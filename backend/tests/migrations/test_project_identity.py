@@ -6,7 +6,7 @@ from uuid import uuid4
 
 from alembic import command
 import pytest
-from sqlalchemy import create_engine, event, text
+from sqlalchemy import MetaData, Table, create_engine, event, text
 from sqlalchemy.engine import Engine
 
 from app.models.calendar import Calendar
@@ -28,6 +28,19 @@ def legacy_store(tmp_path, configure_database):
     return path, engine
 
 
+def insert_legacy_project(db, **values):
+    """Insert through the reflected legacy table so newer ORM columns stay out."""
+    legacy = Table("projects", MetaData(), autoload_with=db)
+    row = {}
+    for column in Project.__table__.columns:
+        if column.name not in legacy.c or column.default is None:
+            continue
+        default = column.default
+        row[column.name] = default.arg(None) if default.is_callable else default.arg
+    row.update(values)
+    return db.execute(legacy.insert().values(**row))
+
+
 def retained_entry(db, project_id):
     values = dict(project_id=project_id, task_id=None, principal_id=1, work_date=datetime(2026, 1, 1).date(),
         timezone="UTC", minutes=90, note="Retained private evidence", version=1, voided=False)
@@ -38,7 +51,7 @@ def retained_entry(db, project_id):
 
 def seed_dependents(db):
     db.execute(Principal.__table__.insert().values(id=1, kind="human", display_name="Owner"))
-    db.execute(Project.__table__.insert().values(id=5, name="Current project"))
+    insert_legacy_project(db, id=5, name="Current project")
     db.execute(Calendar.__table__.insert().values(id=1, name="Calendar", year=2026))
     db.execute(Iteration.__table__.insert().values(id=1, name="Iteration", calendar_id=1, project_id=5,
         start_date=datetime(2026, 1, 1).date(), end_date=datetime(2026, 1, 31).date()))
@@ -52,8 +65,15 @@ def seed_dependents(db):
 def database_rows(engine):
     catalog = schema_snapshot(engine)
     with engine.connect() as db:
-        return {name: db.execute(text(f'SELECT * FROM "{name}"')).fetchall()
+        return {name: [dict(row._mapping) for row in db.execute(text(f'SELECT * FROM "{name}"'))]
                 for name in sorted(catalog) if name != "alembic_version"}
+
+
+# Columns later revisions add, with the value every retained row receives.
+LATER_COLUMNS = {
+    "projects": {"require_different_review_publisher": 0},
+    "tasks": {"execution_planning_window": None},
+}
 
 
 @pytest.mark.sqlite
@@ -70,6 +90,12 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         run_alembic_upgrade(backup=False, run_repairs=False)
         after_rows = database_rows(engine)
         assert after_rows.pop("agent_runtime_observations") == []
+        for table in ("iteration_annual_calendars", "profile_annual_calendars"):
+            assert after_rows.pop(table) == []
+        for table, columns in LATER_COLUMNS.items():
+            for row in after_rows[table]:
+                for column, value in columns.items():
+                    assert row.pop(column) == value
         assert after_rows == before_rows
         after_catalog = schema_snapshot(engine)
         allocation = after_catalog["team_members"]
@@ -96,6 +122,15 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         for column in ("harness_kind", "harness_session_id"):
             assert runs["columns"].pop(column) == {"type": {"family": "text"}, "nullable": True}
         runs["indexes"].remove(("ix_agent_runs_harness_session_id", ("harness_session_id",), False))
+        # Later revisions record review provenance and the execution planning window.
+        assert runs["columns"].pop("execution_provenance") == {"type": {"family": "json"}, "nullable": True}
+        assert after_catalog["agent_task_assignments"]["columns"].pop("review_selection") == {"type": {"family": "json"}, "nullable": True}
+        assert after_catalog["agent_model_catalog_entries"]["columns"].pop("publisher_key") == {"type": {"family": "text"}, "nullable": True}
+        assert after_catalog["projects"]["columns"].pop("require_different_review_publisher") == {"type": {"family": "boolean"}, "nullable": False}
+        assert after_catalog["tasks"]["columns"].pop("execution_planning_window") == {"type": {"family": "json"}, "nullable": True}
+        # A later revision records which annual calendars an iteration or profile spans.
+        for table in ("iteration_annual_calendars", "profile_annual_calendars"):
+            assert after_catalog.pop(table)["columns"]["calendar_id"]["nullable"] is False
         # A later revision adds the advisory runtime observation table.
         assert after_catalog.pop("agent_runtime_observations")["checks"] == ["ck_agent_runtime_observations_kind"]
         assert after_catalog == before_catalog
@@ -165,7 +200,7 @@ def test_direct_upgrade_refuses_to_commit_a_callers_pending_writes(tmp_path, con
     path, engine = legacy_store(tmp_path, configure_database)
     try:
         with engine.connect() as db:
-            db.execute(Project.__table__.insert().values(name="Pending caller state"))
+            insert_legacy_project(db, name="Pending caller state")
             with pytest.raises(RuntimeError, match="pending writes"):
                 command.upgrade(alembic_config(connection=db), "head")
             db.rollback()

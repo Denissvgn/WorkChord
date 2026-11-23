@@ -14,7 +14,7 @@ from app.models.project import Project
 from app.models.time_entry import TimeEntry, TimeEntryRevision
 from app.services.upgrade_service import UpgradeError, run_alembic_upgrade
 from tests.database_migration.test_source_preflight import _drain_evidence
-from tests.migrations.test_project_identity import legacy_store, retained_entry, seed_dependents
+from tests.migrations.test_project_identity import insert_legacy_project, legacy_store, retained_entry, seed_dependents
 
 
 @pytest.mark.sqlite
@@ -58,7 +58,7 @@ def test_collision_diagnostics_are_bounded_and_do_not_include_notes(tmp_path, co
     _, engine = legacy_store(tmp_path, configure_database)
     try:
         with engine.begin() as db:
-            db.execute(Project.__table__.insert().values(id=5, name="Current identity"))
+            insert_legacy_project(db, id=5, name="Current identity")
             for _ in range(102):
                 retained_entry(db, 5)
             db.execute(TimeEntry.__table__.update().values(created_at=datetime(2000, 1, 1, tzinfo=UTC)))

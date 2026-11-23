@@ -4,7 +4,7 @@ The adapter delegates validation and mutation behavior to the existing domain
 services, then stores an exact actor-attributed receipt in the same transaction.
 """
 
-from app.commands import commit_or_flush, atomic_command, current_command, preview_command
+from app.commands import commit_or_flush, atomic_command, current_command, lock_planning, preview_command
 
 import hashlib
 import json
@@ -12,7 +12,7 @@ import secrets
 from collections.abc import Awaitable, Callable, Mapping
 from typing import Any
 
-from sqlalchemy import select, text
+from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -860,12 +860,14 @@ class AgentPlanningService:
         dialect = self.db.get_bind().dialect.name
         if dialect == "postgresql":
             iteration = await self._require_iteration_for_update(iteration_id)
+            calendar_ids = {iteration.calendar_id, *(calendar.id for calendar in iteration.additional_calendars)}
             calendar_result = await self.db.execute(
                 select(Calendar.id)
-                .where(Calendar.id == iteration.calendar_id)
+                .where(Calendar.id.in_(calendar_ids))
+                .order_by(Calendar.id)
                 .with_for_update(read=True)
             )
-            if calendar_result.scalar_one_or_none() is None:
+            if set(calendar_result.scalars()) != calendar_ids:
                 raise AgentConflictError(
                     "Iteration scheduling calendar is unavailable"
                 )
@@ -911,8 +913,8 @@ class AgentPlanningService:
             # SQLite ignores SELECT FOR UPDATE. A harmless write acquires its
             # database write lock before the task-set snapshot is read.
             await self.db.execute(
-                text("UPDATE iterations SET name = name WHERE id = :iteration_id"),
-                {"iteration_id": iteration_id},
+                update(Iteration).where(Iteration.id == iteration_id).values(name=Iteration.name)
+                .execution_options(synchronize_session=False)
             )
             return
         raise AgentConflictError(
@@ -1011,10 +1013,14 @@ class AgentPlanningService:
 
         rules = self.scheduler.rules_service.get_rules_as_dict()
         command = current_command(self.db)
+        revision = iteration.revision
+        if command is not None:
+            revision = command.iterations.get(iteration.id, revision)
         snapshot = {
             "schema": "workchord-schedule-input/v1",
             "iteration": {
                 "id": iteration.id,
+                "revision": revision,
                 "calendar_id": iteration.calendar_id,
                 "start_date": iteration.start_date.isoformat(),
                 "end_date": iteration.end_date.isoformat(),
@@ -1120,6 +1126,16 @@ class AgentPlanningService:
             ],
             "rules": rules,
         }
+        # The digest observes the owner's actual rules, including profile overrides,
+        # without putting another person's rule details in the PM receipt.
+        from app.services.calendar_rules import AnnualCalendars
+        from app.services.capacity_service import CapacityService
+
+        capacities = CapacityService(self.db)
+        snapshot["annual_calendars"] = AnnualCalendars.for_iteration(iteration).signature()
+        snapshot["member_calendars"] = [
+            (member.id, (await capacities.coverage_for(member)).signature()) for member in members
+        ]
         return self._canonical_digest(snapshot), self._canonical_digest(rules)
 
     @staticmethod
@@ -1130,6 +1146,8 @@ class AgentPlanningService:
     ) -> dict[str, Any]:
         return AgentScheduleResult(
             success=schedule.success,
+            capacity_issues=schedule.capacity_issues,
+            assignment_refreshes=[item.model_dump() for item in schedule.assignment_refreshes],
             decisions=[item.model_dump(mode="json") for item in schedule.decisions],
             workload_balanced=schedule.workload_balanced,
             workload_issues=[
@@ -1153,6 +1171,7 @@ class AgentPlanningService:
         payload = {"iteration_id": iteration_id}
 
         async def mutate() -> MutationResult:
+            await lock_planning(self.db)
             await self._require_iteration_for_update(iteration_id)
             try:
                 async with self.db.begin_nested():
@@ -1205,6 +1224,7 @@ class AgentPlanningService:
         }
 
         async def mutate() -> MutationResult:
+            await lock_planning(self.db)
             await self._require_iteration_for_update(iteration_id)
             await self._lock_schedule_task_set(iteration_id)
             tasks = await self._iteration_tasks_for_update(iteration_id)
@@ -1237,7 +1257,12 @@ class AgentPlanningService:
                 iteration_id,
                 commit=False,
                 expected_revision=iteration.revision,
+                protect_issued=True,
             )
+            if not schedule.success and schedule.capacity_issues:
+                from app.commands import PlanningConflict
+                issue = schedule.capacity_issues[0]
+                raise PlanningConflict(issue["code"], issue["message"])
             if not secrets.compare_digest(
                 rules_digest,
                 self._scheduling_rules_digest(),
