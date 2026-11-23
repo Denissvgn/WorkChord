@@ -342,11 +342,14 @@ class MemberCapacity(BaseModel):
     calendar_source: str = "legacy_allocation"
     calendar_uncertain: bool = False
     outside_calendar_year: bool = False
+    missing_calendar_years: list[int] = Field(default_factory=list)
     timezone: str | None = None
 
 
 class MemberWorkload(BaseModel):
     """Workload information for a team member."""
+    missing_calendar_years: list[int] = Field(default_factory=list, exclude_if=lambda rows: not rows)
+    calendar_uncertain: bool = Field(default=False, exclude_if=lambda value: not value)
     team_member_id: int
     name: str
     capacity_days: float

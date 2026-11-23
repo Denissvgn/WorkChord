@@ -225,6 +225,7 @@ class SnapshotService:
                 "start_date": iteration.start_date.isoformat(),
                 "end_date": iteration.end_date.isoformat(),
                 "calendar_id": iteration.calendar_id,
+                "additional_calendar_ids": [row.id for row in iteration.additional_calendars],
                 "project_id": iteration.project_id,
                 "manager_email": iteration.manager_email,
             },
@@ -383,6 +384,14 @@ class SnapshotService:
         saved_iteration = payload["iteration"]
         if saved_iteration.get("project_id") != iteration.project_id:
             raise ValueError("Restore cannot change project authority; reconcile the iteration scope first")
+        if "calendar_id" in saved_iteration:
+            from app.services.calendar_service import CalendarService
+            calendars = CalendarService(self.db)
+            primary = await calendars.get_by_id(saved_iteration["calendar_id"])
+            if primary is None:
+                raise ValueError("Snapshot calendar is no longer available")
+            iteration.additional_calendars = await calendars.selected_years(primary, saved_iteration.get("additional_calendar_ids", []))
+            iteration.calendar = primary
         for key in ["name", "calendar_id", "manager_email"]:
             if key in saved_iteration:
                 setattr(iteration, key, saved_iteration[key])

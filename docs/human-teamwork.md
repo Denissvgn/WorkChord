@@ -110,11 +110,18 @@ checkpoint lists what must be resolved first: missing assignees, missing effort
 estimates, and unfinished prerequisites.
 
 In **My Work → My availability**, choose your calendar and record absences.
-These absences apply across your allocations. Conflicting imported calendars
-need an explicit choice. Review the calendar year and time zone; dates outside
-its supported year remain uncertain and cannot be silently committed. Capacity
-uses local calendar dates rather than shift start/end times; recorded execution
-events retain their actual timestamps.
+These absences apply across your allocations. In Plan, select one work calendar
+for every year of the iteration. Each date uses that year's weekends, holidays,
+shortened days and normal hours. All selected years share one local time zone.
+If you select a personal calendar, choose its additional years in your own
+availability settings. An uncovered year or conflicting allocation rules hold
+the forecast until the responsible owner selects the applicable record.
+Recorded execution events retain their actual timestamps.
+
+Routing within the primary calendar year retains the existing iteration-day
+calculation and the member's iteration vacation records. For a period spanning
+years, the routing calculation divides each working date's available hours by
+its own year's normal hours and includes the member's applicable absences.
 
 For each working date:
 

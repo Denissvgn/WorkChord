@@ -7,6 +7,7 @@ import httpx
 import pytest
 from sqlalchemy import select
 
+from app.commands import PlanningConflict
 from app.main import app
 from app.models.agent import AgentActor, AgentTaskAssignment, TaskEvent
 from app.models.iteration import Iteration
@@ -232,9 +233,20 @@ async def test_only_plain_queued_assignments_follow_a_change_of_dates(delivery_s
         rows["routed"].routing_snapshot = json.dumps({"schema_version": "routing-decision-snapshot-v1"})
         rows["running"].state = "accepted"
         versions = {key: row.task_version for key, row in rows.items()}
+        refreshes = {}
         for key, task_id in ids.items():
-            await rebind_queued_assignments(db, task_id, versions[key], versions[key] + 1)
+            refreshes[key] = await rebind_queued_assignments(db, task_id, versions[key], versions[key] + 1)
         assert rows["plain"].task_version == versions["plain"] + 1
         # Routing evidence is bound to the exact task version, and running work to its fence.
         assert rows["routed"].task_version == versions["routed"]
         assert rows["running"].task_version == versions["running"]
+        assert refreshes["routed"] == [{"task_id": ids["routed"], "assignment_id": rows["routed"].id,
+            "actor_id": rows["routed"].actor_id, "from_task_version": versions["routed"],
+            "to_task_version": versions["routed"] + 1, "action": "refresh_model_selection"}]
+        assert not refreshes["plain"] and not refreshes["running"]
+        with pytest.raises(PlanningConflict) as blocked:
+            await rebind_queued_assignments(db, ids["running"], versions["running"], versions["running"] + 1,
+                                           protect_issued=True)
+        assert blocked.value.code == "issued_task_schedule_conflict"
+        assert f"task {ids['running']}" in str(blocked.value)
+        assert f"assignment {rows['running'].id}" in str(blocked.value)

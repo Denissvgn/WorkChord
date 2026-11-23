@@ -61,7 +61,7 @@ async def prospective_member_profiles(db, values):
 
 async def affected_iteration_ids(db, kind, values):
     """Resolve one complete scope for both read observations and atomic writes."""
-    from app.models.calendar import Calendar
+    from app.models.calendar import Calendar, iteration_annual_calendars, profile_annual_calendars
     from app.models.capacity import ProfileAvailability
     from app.models.iteration import Iteration
     from app.models.project import Project
@@ -86,9 +86,11 @@ async def affected_iteration_ids(db, kind, values):
         require_project(db, identifier, "edit")
     with internal_authority(db):
         if kind == "calendar":
-            direct = select(Iteration.id).where(Iteration.calendar_id == identifier)
+            indirect = select(iteration_annual_calendars.c.iteration_id).where(iteration_annual_calendars.c.calendar_id == identifier)
+            profile_years = select(profile_annual_calendars.c.profile_id).where(profile_annual_calendars.c.calendar_id == identifier)
+            direct = select(Iteration.id).where((Iteration.calendar_id == identifier) | Iteration.id.in_(indirect))
             shared = select(TeamMember.iteration_id).join(ProfileAvailability, ProfileAvailability.profile_id == TeamMember.profile_id).where(
-                ProfileAvailability.calendar_id == identifier, TeamMember.iteration_id.is_not(None))
+                (ProfileAvailability.calendar_id == identifier) | ProfileAvailability.profile_id.in_(profile_years), TeamMember.iteration_id.is_not(None))
             query = direct.union(shared)
         elif kind == "project":
             query = select(Iteration.id).where(Iteration.project_id == identifier).union(
@@ -150,6 +152,12 @@ async def observe_planning_input(db, kind, resource_id, *, creating_member=False
     if row is None:
         raise PlanningInputUnavailable("Planning input not found or inaccessible")
     resource = dict(row)
+    if kind == "iteration":
+        from app.models.calendar import iteration_annual_calendars
+        annual = iteration_annual_calendars.c
+        resource["additional_calendar_ids"] = list((await db.scalars(
+            select(annual.calendar_id).where(annual.iteration_id == resource_id).order_by(annual.calendar_id)
+        )).all())
     if kind == 'member' and not creating_member:
         vacations = (await db.execute(select(*Vacation.__table__.columns).where(Vacation.team_member_id == resource_id)
             .order_by(Vacation.id).limit(501))).mappings().all()

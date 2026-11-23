@@ -12,6 +12,7 @@ import { useConfirmDialog } from '../common/useConfirmDialog';
 import { Input } from '../common/Input';
 import { Select } from '../common/Select';
 import { calendarService } from '../../services/calendarService';
+import { AnnualCalendarFields } from './AnnualCalendarFields';
 import { CollapsibleSection } from '../common/CollapsibleSection';
 import { iterationService } from '../../services/iterationService';
 import { projectService } from '../../services/projectService';
@@ -50,6 +51,7 @@ type SingleDraft = {
     manager_email: string;
     /** Calendar id as text; empty keeps the default calendar. */
     calendar_id: string;
+    additional_calendar_ids: number[];
 };
 
 type SeriesDraft = {
@@ -62,6 +64,7 @@ type SeriesDraft = {
     until_date: string;
     manager_email: string;
     calendar_id: string;
+    additional_calendar_ids: number[];
 };
 
 type EditorBaseline = {
@@ -114,6 +117,7 @@ const initialSingleDraft = (
     end_date: initialData?.end_date ?? '',
     manager_email: initialData?.manager_email ?? '',
     calendar_id: initialData?.calendar_id ? String(initialData.calendar_id) : '',
+    additional_calendar_ids: [...(initialData?.additional_calendar_ids ?? [])].sort((a, b) => a - b),
 });
 
 const initialSeriesDraft = (
@@ -131,6 +135,7 @@ const initialSeriesDraft = (
         until_date: addDays(start, 41),
         manager_email: '',
         calendar_id: '',
+        additional_calendar_ids: [],
     };
 };
 
@@ -141,6 +146,7 @@ const singleDraftsMatch = (left: SingleDraft, right: SingleDraft) => (
     && left.end_date === right.end_date
     && left.manager_email === right.manager_email
     && left.calendar_id === right.calendar_id
+    && left.additional_calendar_ids.join(',') === right.additional_calendar_ids.join(',')
 );
 
 const seriesDraftsMatch = (left: SeriesDraft, right: SeriesDraft) => (
@@ -153,14 +159,21 @@ const seriesDraftsMatch = (left: SeriesDraft, right: SeriesDraft) => (
     && left.until_date === right.until_date
     && left.manager_email === right.manager_email
     && left.calendar_id === right.calendar_id
+    && left.additional_calendar_ids.join(',') === right.additional_calendar_ids.join(',')
 );
 
 /** The calendar the iteration counts its working days in; it loads only once More is opened. */
-const CalendarField = ({ value, onChange, startDate, endDate }: { value: string; onChange: (value: string) => void; startDate: string; endDate: string }) => {
+const CalendarField = ({ value, onChange, startDate, endDate, additional, onAnnualChange }: {
+    value: string; onChange: (value: string) => void; startDate: string; endDate: string;
+    additional: number[]; onAnnualChange: (ids: number[]) => void;
+}) => {
     const { t } = useTranslation();
     // feedback-policy: query loading,error,retry,empty - without the list the iteration keeps its calendar; the field says so.
     const calendars = useQuery({ queryKey: ['calendars'], queryFn: calendarService.getAll, staleTime: 60_000 });
-    const selectedYear = calendars.data?.find(calendar => String(calendar.id) === value)?.year;
+    const rows = calendars.data ?? [];
+    const defaultCalendar = [...rows].sort((a, b) => a.id - b.id)[0];
+    const primary = value ? rows.find(calendar => String(calendar.id) === value) : defaultCalendar;
+    const selectedYear = primary?.year;
     const startYear = startDate.slice(0, 4);
     const endYear = endDate.slice(0, 4);
     const year = selectedYear && String(selectedYear) === startYear && endYear !== startYear ? endYear : startYear;
@@ -169,7 +182,12 @@ const CalendarField = ({ value, onChange, startDate, endDate }: { value: string;
         <Select
             label={t('iterations.calendar')}
             value={value}
-            onChange={event => onChange(event.target.value)}
+            onChange={event => {
+                const id = event.target.value;
+                const next = id ? rows.find(row => row.id === Number(id)) : defaultCalendar;
+                if (next) onAnnualChange(additional.filter(old => rows.some(row => row.id === old && row.year !== next.year && row.timezone === next.timezone)));
+                onChange(id);
+            }}
             help={calendars.isError ? t('iterationForm.calendarsUnavailable') : undefined}
         >
             <option value="">{t('iterationForm.defaultCalendar')}</option>
@@ -177,6 +195,8 @@ const CalendarField = ({ value, onChange, startDate, endDate }: { value: string;
                 <option key={calendar.id} value={calendar.id}>{calendar.name}</option>
             ))}
         </Select>
+        <AnnualCalendarFields calendars={rows} primary={primary} startDate={startDate} endDate={endDate}
+            selected={additional} onChange={onAnnualChange} />
         <Link className="plan-evidence-link text-sm" to={`/settings?tab=work_calendar&create=1${/^\d{4}$/.test(year) ? `&year=${year}` : ''}`}>{t('plan.page.createCoveringCalendar')}</Link>
         </>
     );
@@ -334,7 +354,9 @@ const IterationFormEditor = ({
 
     const submitSingle = () => {
         const managerEmail = singleDraft.manager_email.trim();
-        const payload: IterationUpdate = {
+        const onlyAnnualSelection = initialData && singleDraft.additional_calendar_ids.join(',') !== baseline.singleDraft.additional_calendar_ids.join(',')
+            && singleDraftsMatch({ ...singleDraft, additional_calendar_ids: baseline.singleDraft.additional_calendar_ids }, baseline.singleDraft);
+        const payload: IterationUpdate = onlyAnnualSelection ? {} : {
             name: singleDraft.name.trim(),
             start_date: singleDraft.start_date,
             end_date: singleDraft.end_date,
@@ -345,7 +367,10 @@ const IterationFormEditor = ({
         if (singleDraft.calendar_id !== baseline.singleDraft.calendar_id) {
             payload.calendar_id = singleDraft.calendar_id ? Number(singleDraft.calendar_id) : null;
         }
-        if (!initialData || !hideProjectScope) {
+        if (singleDraft.additional_calendar_ids.join(',') !== baseline.singleDraft.additional_calendar_ids.join(',')) {
+            payload.additional_calendar_ids = singleDraft.additional_calendar_ids;
+        }
+        if (!onlyAnnualSelection && (!initialData || !hideProjectScope)) {
             payload.project_id = selectedProjectId(singleDraft.project_id);
         }
 
@@ -369,6 +394,7 @@ const IterationFormEditor = ({
                 : { mode: 'until_date', until_date: seriesDraft.until_date },
             manager_email: managerEmail || undefined,
             ...(seriesDraft.calendar_id ? { calendar_id: Number(seriesDraft.calendar_id) } : {}),
+            ...(seriesDraft.additional_calendar_ids.length ? { additional_calendar_ids: seriesDraft.additional_calendar_ids } : {}),
         };
         seriesMutation.mutate(payload);
     };
@@ -615,8 +641,12 @@ const IterationFormEditor = ({
 
                 <CalendarField
                     startDate={mode === 'series' ? seriesDraft.start_date : singleDraft.start_date}
-                    endDate={mode === 'series' ? seriesDraft.start_date : singleDraft.end_date}
+                    endDate={mode === 'series' ? seriesPreview[seriesPreview.length - 1]?.end_date ?? seriesDraft.start_date : singleDraft.end_date}
                     value={mode === 'series' ? seriesDraft.calendar_id : singleDraft.calendar_id}
+                    additional={mode === 'series' ? seriesDraft.additional_calendar_ids : singleDraft.additional_calendar_ids}
+                    onAnnualChange={ids => mode === 'series'
+                        ? setSeriesDraft(current => ({ ...current, additional_calendar_ids: ids }))
+                        : setSingleDraft(current => ({ ...current, additional_calendar_ids: ids }))}
                     onChange={value => {
                         if (mode === 'series') {
                             setSeriesDraft(current => ({ ...current, calendar_id: value }));

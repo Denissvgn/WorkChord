@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from app.commands import commit_or_flush
+from app.commands import commit_or_flush, current_command, lock_planning
 
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -88,7 +88,8 @@ from app.services.agent_service import (
     actor_scopes,
     validate_idempotency_key,
 )
-from app.services.calendar_service import CalendarService
+from app.services.capacity_service import CapacityService
+from app.services.calendar_rules import AnnualCalendars
 from app.services.task_service import TaskService, TaskVersionConflictError
 from app.utils.time import as_utc, utc_now
 
@@ -305,6 +306,11 @@ class AgentRoutingService:
             if task_scope is None:
                 return
             require_project(self.db, task_scope.project_id, "edit")
+            # Work issuance subsequently locks this same planning row through
+            # TaskService._lock_task_scope. Acquire it before broad routing
+            # table locks so a calendar writer can finish without a lock cycle.
+            if current_command(self.db) is not None:
+                await lock_planning(self.db)
             # Only the fixed lock statement uses the connection. All routing reads
             # and mutations still pass through the principal-bound ORM session.
             connection = await self.db.connection()
@@ -1114,29 +1120,34 @@ class AgentRoutingService:
             int(member_id): float(effort)
             for member_id, effort in allocated_rows
         }
-        calendar_service = CalendarService(self.db)
+        capacity_service = CapacityService(self.db)
+        single_year = iteration.start_date.year == iteration.end_date.year == iteration.calendar.year
+        primary = AnnualCalendars(iteration.calendar)
+        original_dates = primary.working_dates(iteration.start_date, iteration.end_date) if single_year else []
         capacity: dict[int, dict[str, Any]] = {}
         for member in members:
-            working_days = calendar_service.calculate_working_days(
-                iteration.calendar,
-                iteration.start_date,
-                iteration.end_date,
-            ).working_days
-            vacation_days = 0
-            for vacation in member.vacations:
-                overlap_start = max(vacation.start_date, iteration.start_date)
-                overlap_end = min(vacation.end_date, iteration.end_date)
-                if overlap_start <= overlap_end:
-                    vacation_days += calendar_service.calculate_working_days(
-                        iteration.calendar,
-                        overlap_start,
-                        overlap_end,
-                    ).working_days
-            available_days = (
-                (working_days - vacation_days)
-                * (member.availability_percent / 100)
-                * (1 - member.operational_utilization / 100)
-            )
+            annual_basis = {}
+            if single_year:
+                # Retain the shipped single-year routing evidence, including how
+                # it counts each recorded vacation and treats shortened days.
+                absences = [(row.start_date, row.end_date) for row in member.vacations]
+                available = len(original_dates) - sum(
+                    sum(first <= day <= last for day in original_dates) for first, last in absences
+                )
+                if iteration.calendar.year not in primary.rules:
+                    annual_basis["missing_calendar_years"] = [iteration.calendar.year]
+            else:
+                coverage = await capacity_service.coverage_for(member)
+                missing_years = coverage.missing_years(iteration.start_date, iteration.end_date)
+                absences = await capacity_service.absence_ranges(member)
+                available = 0.0 if missing_years else sum(
+                    rule.hours(day) / rule.nominal
+                    for day, rule in coverage.dated_rules(iteration.start_date, iteration.end_date)
+                    if not any(first <= day <= last for first, last in absences)
+                )
+                annual_basis = {"annual_calendar_basis": _request_hash({"years": coverage.signature()}),
+                                "missing_calendar_years": missing_years}
+            available_days = available * (member.availability_percent / 100) * (1 - member.operational_utilization / 100)
             committed = allocated_by_member.get(member.id, 0.0)
             required = max(float(task.effort_days), 0.0) if task.effort_days is not None else None
             ratio = (
@@ -1148,9 +1159,8 @@ class AgentRoutingService:
                 task.start_date is not None
                 and task.end_date is not None
                 and any(
-                    vacation.start_date <= task.end_date
-                    and vacation.end_date >= task.start_date
-                    for vacation in member.vacations
+                    start <= task.end_date and end >= task.start_date
+                    for start, end in absences
                 )
             )
             capacity[member.id] = {
@@ -1160,6 +1170,7 @@ class AgentRoutingService:
                     round(ratio, 4) if math.isfinite(ratio) else None
                 ),
                 "vacation_conflict": vacation_conflict,
+                **annual_basis,
                 "vacations": [
                     {
                         "id": vacation.id,
@@ -1523,6 +1534,8 @@ class AgentRoutingService:
             input_evidence["review_history"] = {
                 "different_publisher_required": strict_review, "contributors": history.contributors, "candidate": history.candidate,
             }
+            if history.required_reviewer_profiles is not None:
+                input_evidence["review_history"]["required_reviewer_profile_ids"] = list(history.required_reviewer_profiles)
         input_digest = hashlib.sha256(
             canonical_routing_json_bytes(input_evidence)
         ).hexdigest()
@@ -1616,6 +1629,8 @@ class AgentRoutingService:
                 *compatibility.hard_blocker_codes,
                 *skill.hard_blocker_codes,
             ]
+            if history is not None and not history.permits_profile(actor.profile_id):
+                actor_blockers.append(RoutingBlockerCode.REVIEWER_PROFILE_MISMATCH.value)
             if (
                 topology_boundary is not None
                 and actor.id

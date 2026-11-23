@@ -26,6 +26,7 @@ export interface CalendarUpdate {
 }
 
 export interface WorkingDaysResponse {
+    missing_calendar_years?: number[];
     total_days: number;
     working_days: number;
     holidays: string[];

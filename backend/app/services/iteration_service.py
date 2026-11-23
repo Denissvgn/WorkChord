@@ -1,6 +1,6 @@
 """Iteration service with business logic."""
 
-from app.commands import commit_or_flush, schedule_input_command
+from app.commands import atomic_command, commit_or_flush, lock_planning, schedule_input_command
 import re
 from dataclasses import dataclass
 from datetime import date, timedelta
@@ -9,6 +9,8 @@ from typing import Optional, Sequence
 from sqlalchemy import and_, case, exists, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import aliased, selectinload
+from app.models.calendar import Calendar
+from app.services.calendar_rules import AnnualCalendars
 
 from app.models.iteration import Iteration
 from app.models.project import Project, ProjectMilestone
@@ -60,13 +62,15 @@ class IterationService:
         """Build a public iteration response with computed calendar days."""
         calendar_service = CalendarService(self.db)
         working_days_info = calendar_service.calculate_working_days(
-            iteration.calendar, iteration.start_date, iteration.end_date
+            AnnualCalendars.for_iteration(iteration), iteration.start_date, iteration.end_date
         )
         return IterationResponse(
             id=iteration.id,
             revision=iteration.revision,
             name=iteration.name,
             calendar_id=iteration.calendar_id,
+            additional_calendar_ids=[item.id for item in iteration.additional_calendars],
+            missing_calendar_years=working_days_info.missing_calendar_years,
             nominal_day_hours=iteration.calendar.nominal_day_hours,
             project_id=iteration.project_id,
             project=self._response_project(iteration),
@@ -88,24 +92,35 @@ class IterationService:
         if project_id is not None and not await self._project_exists(project_id):
             raise ValueError(f"Project with id {project_id} not found")
 
-    async def _calendar_id_for_create(
+    async def _calendar_for_create(
         self,
         calendar_id: Optional[int],
         *,
         commit: bool = True,
-    ) -> int:
-        """Return an explicit or default calendar id for new iterations."""
+    ) -> Calendar:
+        """Return the selected primary calendar for an iteration."""
         calendar_service = CalendarService(self.db)
         if calendar_id is None:
             default_calendar = await calendar_service.get_or_create_default(
                 commit=commit
             )
-            return default_calendar.id
+            return default_calendar
 
         calendar = await calendar_service.get_by_id(calendar_id)
         if calendar is None:
             raise ValueError(f"Calendar with id {calendar_id} not found")
-        return calendar.id
+        return calendar
+
+    async def changed_calendar_selection(self, iteration: Iteration, data: IterationUpdate):
+        """Resolve the same proposed selection for the reservation and the update."""
+        fields = data.model_fields_set
+        primary = (await self._calendar_for_create(data.calendar_id, commit=False)
+                   if "calendar_id" in fields else iteration.calendar)
+        identifiers = (data.additional_calendar_ids if "additional_calendar_ids" in fields
+                       else [row.id for row in iteration.additional_calendars])
+        if identifiers is None:
+            raise ValueError("Use an empty list to clear additional annual calendars")
+        return primary, await CalendarService(self.db).selected_years(primary, identifiers)
 
     def _validate_date_range(self, start_date: date, end_date: date) -> None:
         """Reject inverted iteration periods."""
@@ -330,17 +345,21 @@ class IterationService:
         )
         return result.scalar_one_or_none()
 
+    @atomic_command
     async def create(self, data: IterationCreate, *, commit: bool = True) -> Iteration:
         """Create an iteration, optionally leaving commit ownership to the caller."""
         self._validate_date_range(data.start_date, data.end_date)
+        if data.additional_calendar_ids:
+            await lock_planning(self.db)
         await self._require_project_exists(data.project_id)
-        calendar_id = await self._calendar_id_for_create(
+        calendar = await self._calendar_for_create(
             data.calendar_id,
             commit=commit,
         )
         iteration = Iteration(
             name=data.name,
-            calendar_id=calendar_id,
+            calendar=calendar,
+            additional_calendars=await CalendarService(self.db).selected_years(calendar, data.additional_calendar_ids),
             project_id=data.project_id,
             start_date=data.start_date,
             end_date=data.end_date,
@@ -357,6 +376,7 @@ class IterationService:
             raise RuntimeError("Created iteration could not be reloaded")
         return created
 
+    @atomic_command
     async def create_series(self, data: IterationSeriesCreate) -> list[Iteration]:
         """Create multiple back-to-back iterations as one operation."""
         items = self._series_items(data)
@@ -364,12 +384,16 @@ class IterationService:
             raise ValueError("Iteration series must create at least one iteration")
 
         await self._require_project_exists(data.project_id)
-        calendar_id = await self._calendar_id_for_create(data.calendar_id)
+        if data.additional_calendar_ids:
+            await lock_planning(self.db)
+        calendar = await self._calendar_for_create(data.calendar_id)
+        additional = await CalendarService(self.db).selected_years(calendar, data.additional_calendar_ids)
 
         iterations = [
             Iteration(
                 name=item.name,
-                calendar_id=calendar_id,
+                calendar=calendar,
+                additional_calendars=additional,
                 project_id=data.project_id,
                 start_date=item.start_date,
                 end_date=item.end_date,
@@ -417,11 +441,13 @@ class IterationService:
                     iteration,
                     update_data["project_id"],
                 )
-        if "calendar_id" in update_data:
-            update_data["calendar_id"] = await self._calendar_id_for_create(
-                update_data["calendar_id"],
-                commit=commit,
-            )
+        if "calendar_id" in update_data or "additional_calendar_ids" in update_data:
+            calendar, additional = await self.changed_calendar_selection(iteration, data)
+            update_data.pop("additional_calendar_ids", None)
+            iteration.additional_calendars = additional
+            if "calendar_id" in update_data:
+                update_data["calendar_id"] = calendar.id
+                iteration.calendar = calendar
         for field, value in update_data.items():
             setattr(iteration, field, value)
 
@@ -456,7 +482,7 @@ class IterationService:
         # Calculate working days
         calendar_service = CalendarService(self.db)
         working_days_info = calendar_service.calculate_working_days(
-            iteration.calendar, iteration.start_date, iteration.end_date
+            AnnualCalendars.for_iteration(iteration), iteration.start_date, iteration.end_date
         )
 
         from app.services.work_metrics import aggregate_metrics
@@ -480,6 +506,7 @@ class IterationService:
             start_date=iteration.start_date,
             end_date=iteration.end_date,
             working_days=working_days_info.working_days,
+            missing_calendar_years=working_days_info.missing_calendar_years,
             total_tasks=total_tasks,
             completed_tasks=completed_tasks,
             total_effort_days=total_effort_days,
@@ -501,7 +528,7 @@ class IterationService:
         if today > iteration.end_date:
             return 0
         start = max(today, iteration.start_date)
-        return calendar_service.calculate_working_days(iteration.calendar, start, iteration.end_date).working_days
+        return calendar_service.calculate_working_days(AnnualCalendars.for_iteration(iteration), start, iteration.end_date).working_days
 
     async def get_planning_readiness_summary(
         self,
@@ -626,14 +653,16 @@ class IterationService:
             has_schedule=task_count > 0 and unscheduled_count == 0,
             risk_count=int(task_row[4]) + overloaded_count + uncertain_count,
         )
+        missing_years = AnnualCalendars.for_iteration(iteration).missing_years(iteration.start_date, iteration.end_date)
         checkpoints = plan_checkpoints(
             **inputs,
-            calendar_covers_iteration=(iteration.start_date.year == iteration.calendar.year
-                                       and iteration.end_date.year == iteration.calendar.year),
+            calendar_covers_iteration=not missing_years,
         )
         return IterationPlanningReadinessSummary(
             iteration_id=iteration_id,
             calendar_name=iteration.calendar.name,
+            missing_calendar_years=missing_years,
+            additional_calendar_ids=[row.id for row in iteration.additional_calendars],
             team_agent_count=agent_rows,
             team_capacity_hours=round(total_hours, 2),
             planned_hours=round(float(task_row[6] or 0), 2),

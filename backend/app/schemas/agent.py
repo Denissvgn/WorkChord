@@ -1269,6 +1269,27 @@ class AgentRecoveryListResponse(BaseModel):
     pagination: AgentPaginationMetadata
 
 
+class AgentRetainedOutputAttestation(BaseModel):
+    """A fresh statement from the original worker after a genuine expiry and PM recovery."""
+    model_config = ConfigDict(extra="forbid")
+    assignment_id: int = Field(gt=0)
+    claim_generation: int = Field(ge=1)
+    claim_id: str = Field(min_length=16, max_length=64, repr=False)
+    planning_receipt_id: int | None = Field(default=None, gt=0)
+    planning_actor_id: int | None = Field(default=None, gt=0)
+    planning_command_key: str | None = Field(default=None,min_length=1,max_length=255)
+    recovery_receipt_id: int | None = Field(default=None, gt=0)
+    recovery_actor_id: int | None = Field(default=None, gt=0)
+    recovery_command_key: str | None = Field(default=None,min_length=1,max_length=255)
+    checkpoint_id: int = Field(gt=0)
+    observed_model: str = Field(min_length=1, max_length=255)
+    commit_url: str = Field(min_length=1, max_length=2048)
+    pr_url: str = Field(min_length=1, max_length=2048)
+    git_tree: str = Field(pattern=r"^[0-9a-f]{40}([0-9a-f]{24})?$")
+    terminal_native_turn: str = Field(min_length=1, max_length=255)
+    confirmed_final_output: Literal[True]
+
+
 class AgentRecoveryRequeueResponse(BaseModel):
     """Authoritative result of stale-work reconciliation and requeue."""
 

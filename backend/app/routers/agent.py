@@ -44,6 +44,7 @@ from app.schemas.agent import (
     AgentWorkDecisionResponse,
     AgentWorkRenew,
     AgentWorkSubmit,
+    AgentRetainedOutputAttestation,
     AgentWorkTerminal,
     AgentWorkTerminalResponse,
     ModelAwareAgentTaskAssignmentCreate,
@@ -999,6 +1000,21 @@ async def submit_my_agent_work(
         )
     except Exception as exc:
         _handle_agent_error(exc, structured=True)
+
+
+@router.post("/agent/me/runs/{run_id}/attest-retained-output")
+async def attest_my_retained_output(
+    run_id: int, data: AgentRetainedOutputAttestation,
+    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    service: Annotated[AgentWorkService, Depends(get_agent_work_service)],
+    idempotency_key: Annotated[str, Header(alias="Idempotency-Key")],
+):
+    """Record the original worker's present attribution of its checkpointed, interrupted output."""
+    from app.services.retained_planning_output import attest_retained_output
+    try:
+        return await attest_retained_output(service.db,actor,run_id,data,idempotency_key=idempotency_key)
+    except Exception as exc:
+        _handle_agent_error(exc,structured=True)
 
 
 @router.post("/agent/me/work/renew", response_model=AgentWorkBeginResponse)
