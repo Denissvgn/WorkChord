@@ -1,10 +1,11 @@
 import { act, waitFor } from '@testing-library/react';
 import { getRoles } from '@testing-library/dom';
 import { computeAccessibleName } from 'dom-accessibility-api';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import App from '../App';
 import { getDestinationForPath } from '../navigation/destinations';
 import { mapLegacyPath } from '../navigation/legacyPaths';
+import { routeModuleLoaders } from '../navigation/routeModules';
 import {
     accessibleNameViolations,
     headingOrderViolations,
@@ -109,6 +110,11 @@ const SHELL_AND_PAGE_READS: Array<[RegExp, () => unknown]> = [
 const BARE_ROUTES = new Set(['/welcome', '/plan/share/:publicId', '/mobile/connect']);
 
 describe('accessibility invariants on every route', () => {
+    // Load every lazy page once, so a route's wait covers rendering rather than module transforms.
+    beforeAll(async () => {
+        await Promise.all(Object.values(routeModuleLoaders).map(load => load()));
+    }, 120_000);
+
     it.each(routeRegistry)('route $path names its landmarks and controls and keeps one h1', async ({ path }) => {
         const { unplanned } = installWorkspaceApi(SHELL_AND_PAGE_READS);
         const sample = samplePath(path === '*' ? '/missing' : path);
