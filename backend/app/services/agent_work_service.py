@@ -26,7 +26,7 @@ from app.models.agent import (
     TaskEvent,
 )
 from app.models.task import Task, TaskDependency, TaskStatus
-from app.services.execution_planning_window import assignment_matches, require_window_authority, window_authority_matches
+from app.services.execution_planning_window import LIVE_ASSIGNMENT_STATES, LIVE_RUN_STATE, assignment_matches, require_window_authority, window_authority_matches
 from app.models.iteration import Iteration
 from app.models.project import Project, ProjectUpdateEntry
 from app.models.team_member import TeamMember, TeamMemberProfile
@@ -128,7 +128,6 @@ AGENT_RETRY_MAX_SECONDS = 30
 logger = logging.getLogger(__name__)
 
 
-LIVE_ASSIGNMENT_STATES = ("queued", "accepted")
 QUEUE_CLASS_RANK = {"rework": 0, "recovery": 1, "normal": 2}
 REQUIRED_BRIEF_SECTIONS = (
     "goal",
@@ -969,7 +968,7 @@ class AgentWorkService:
                     select(AgentRun.actor_id, func.count(AgentRun.id))
                     .where(
                         AgentRun.actor_id.in_(actor_ids),
-                        AgentRun.status == "running",
+                        AgentRun.status == LIVE_RUN_STATE,
                     )
                     .group_by(AgentRun.actor_id)
                 )
@@ -1885,7 +1884,7 @@ class AgentWorkService:
         running_result = await self.db.execute(
             select(AgentRun).where(
                 AgentRun.actor_id == actor.id,
-                AgentRun.status == "running",
+                AgentRun.status == LIVE_RUN_STATE,
             )
         )
         running = running_result.scalars().all()
@@ -2138,7 +2137,7 @@ class AgentWorkService:
             active_runs = (await self.db.scalars(select(AgentRun).where(
                 AgentRun.assignment_id == assignment.id, AgentRun.task_id == task.id,
                 AgentRun.actor_id == assignment.actor_id, AgentRun.claim_generation == task.claim_generation,
-                AgentRun.status == "running").limit(2))).all()
+                AgentRun.status == LIVE_RUN_STATE).limit(2))).all()
             if len(active_runs) == 1:
                 assignment_view = self._execution_assignment_view(assignment, active_runs[0])
         start_blockers = await self._start_blockers(task, assignment, utc_now(), assignment_view=assignment_view)
@@ -2670,7 +2669,7 @@ class AgentWorkService:
             raise ValueError("Assignment, task, or run not found")
         if (
             assignment.state != "accepted"
-            or run.status != "running"
+            or run.status != LIVE_RUN_STATE
             or run.assignment_id != assignment.id
             or run.actor_id != actor.id
         ):
@@ -2828,7 +2827,7 @@ class AgentWorkService:
             raise AgentPermissionError("Work belongs to another actor")
         if (
             assignment.state != "accepted"
-            or run.status != "running"
+            or run.status != LIVE_RUN_STATE
             or run.assignment_id != assignment.id
             or run.task_id != task.id
             or run.claim_generation != data.claim_generation
@@ -3275,7 +3274,7 @@ class AgentWorkService:
             select(AgentRun.id)
             .where(
                 AgentRun.task_id == Task.id,
-                AgentRun.status == "running",
+                AgentRun.status == LIVE_RUN_STATE,
             )
             .correlate(Task)
             .exists()
@@ -3335,7 +3334,7 @@ class AgentWorkService:
                 select(AgentRun)
                 .where(
                     AgentRun.task_id.in_(task_ids),
-                    AgentRun.status == "running",
+                    AgentRun.status == LIVE_RUN_STATE,
                 )
                 .order_by(AgentRun.task_id, AgentRun.id)
             )
@@ -4026,7 +4025,7 @@ class AgentWorkService:
             run is None
             or run.assignment_id != assignment.id
             or run.actor_id != actor.id
-            or run.status != "running"
+            or run.status != LIVE_RUN_STATE
         ):
             raise AgentConflictError("Discovery requires the assignment's running run")
         if not assignment_matches(task, assignment):

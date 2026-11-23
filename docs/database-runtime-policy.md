@@ -47,10 +47,10 @@ The iteration row is the schedule aggregate root. Its `FOR UPDATE` lock fences
 new task and team-member foreign keys for that iteration; existing task,
 dependency, member, and vacation rows are then locked in deterministic order.
 Selected annual calendars use `FOR SHARE` in ID order. An editor waits for a
-forecast using that calendar. The preview digest includes the explicit
-iteration and member calendar rules. Apply
-also re-hashes every input after scheduling, normalizing only the three
-scheduler-owned output fields back to their pre-apply values, before task
+forecast using that calendar. The preview digest includes the observed iteration
+revision and the explicit iteration and member calendar rules. Apply
+also re-hashes every input after scheduling, accounting for its own iteration
+reservation and restoring scheduler-owned output fields to their pre-apply values before task
 versions and audit events are committed. PostgreSQL schedule code contains no
 table-level lock.
 
@@ -58,6 +58,25 @@ A dispatch and a calendar edit serialize through the planning revision row.
 PostgreSQL dispatch takes it before the routing table locks and the task lock.
 Replacing supplemental years leaves task versions unchanged and inspects issued
 work while the shared revision is held.
+
+Deleting a proven unused capacity allocation advances the shared planning and
+affected iteration revisions while preserving task versions and issued work.
+Read the member's planning-input context and supply its complete
+`X-Expected-Revisions` on `DELETE /api/team-members/{member_id}`.
+Use `unused_only=true` when the operation depends on the allocation remaining
+unused. A current reference or retained task or routing history then returns
+`allocation_not_unused`. The ordinary deletion path retains its existing
+behavior for deliberately removing a referenced allocation.
+
+The standalone command reads the authorized scope and retained history before
+reserving the shared planning writer. A direct live reference can avoid this
+history scan. Historical work grows with retained snapshot task nodes and
+nonempty routing decisions. Known routing records are classified by their
+version and exact bytes. The locked command rechecks the observed planning
+revision, allocation references and any issued owner. An ordinary removal uses
+its existing conservative task reservation if it cannot prove a planning-only
+change. If a concurrent planning change invalidates an otherwise unused observation,
+the guarded request asks for a fresh context.
 
 To downgrade a database with annual selections to a release that supports only
 one calendar per owner, export the iteration and profile selections and clear

@@ -24,6 +24,9 @@ from app.models.external_link import ExternalLink
 from app.models.identity import Principal, ProjectMembership, WorkspaceMembership
 from app.models.team_member import TeamMember
 
+LIVE_ASSIGNMENT_STATES = ("queued", "accepted")
+LIVE_RUN_STATE = "running"
+
 
 def digest(value):
     return hashlib.sha256(
@@ -395,7 +398,7 @@ async def original_ownership(db, task, row, before):
                     AgentRun.assignment_id == row.id,
                     AgentRun.task_id == task.id,
                     AgentRun.actor_id == row.actor_id,
-                    AgentRun.status == "running",
+                    AgentRun.status == LIVE_RUN_STATE,
                 )
                 .limit(2)
             )
@@ -427,7 +430,7 @@ async def original_ownership(db, task, row, before):
                     prior_run["task_id"],
                     prior_run["status"],
                 )
-                != (run.id, row.id, row.actor_id, task.id, "running")
+                != (run.id, row.id, row.actor_id, task.id, LIVE_RUN_STATE)
                 or observed["assignment"]["id"] != row.id
                 or observed["assignment"]["task_version"] != row.task_version
                 or observed["claim_generation"] != task.claim_generation
@@ -614,7 +617,7 @@ async def live_assignments(db, task_ids, *, lock=False):
     query = (
         select(AgentTaskAssignment)
         .where(
-            AgentTaskAssignment.task_id.in_(task_ids), AgentTaskAssignment.state.in_(("queued", "accepted"))
+            AgentTaskAssignment.task_id.in_(task_ids), AgentTaskAssignment.state.in_(LIVE_ASSIGNMENT_STATES)
         )
         .order_by(AgentTaskAssignment.task_id, AgentTaskAssignment.id)
     )
