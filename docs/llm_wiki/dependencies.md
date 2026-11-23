@@ -636,7 +636,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [models_task](modules/models_task.md) | 119 | 9 |
 | [types_task](modules/types_task.md) | 106 | 2 |
 | [models_agent](modules/models_agent.md) | 102 | 5 |
-| [time](modules/time.md) | 99 | 0 |
+| [time](modules/time.md) | 100 | 0 |
 | [app_database](modules/app_database.md) | 97 | 5 |
 | [commands](modules/commands.md) | 95 | 16 |
 | [config](modules/config.md) | 93 | 1 |
@@ -1235,7 +1235,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_agent_routing_wave6_qualification](modules/test_agent_routing_wave6_qualification.md) | 1 | 14 |
 | [test_annual_calendar_work_control](modules/test_annual_calendar_work_control.md) | 1 | 26 |
 | [test_authority_migrations](modules/test_authority_migrations.md) | 1 | 2 |
-| [test_execution_planning_window](modules/test_execution_planning_window.md) | 1 | 22 |
+| [test_execution_planning_window](modules/test_execution_planning_window.md) | 1 | 23 |
 | [test_execution_usage](modules/test_execution_usage.md) | 1 | 11 |
 | [test_schedule_follows_actual_dates](modules/test_schedule_follows_actual_dates.md) | 1 | 15 |
 | [test_scheduler_dependencies](modules/test_scheduler_dependencies.md) | 1 | 8 |

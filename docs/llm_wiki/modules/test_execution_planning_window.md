@@ -29,6 +29,7 @@ Date-only planning reservations retain verifiable work without weakening task wr
 | `app.services.identity_service` | `IdentityService`, `initialize_control_plane` |
 | `app.services.retained_planning_output` | `_authenticate_checkpoint` |
 | `app.services.upgrade_service` | `alembic_config` |
+| `app.utils` | `time` |
 | `asyncio` | `asyncio` |
 | `contextlib` | `nullcontext` |
 | `copy` | `deepcopy` |
@@ -65,7 +66,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (1) |
-| Outbound | `backend` (22) |
+| Outbound | `backend` (23) |
 
 ### External packages
 
@@ -73,7 +74,7 @@ flowchart LR
 |---|---:|---:|
 | python | 4 | 1 |
 
-> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -87,4 +88,5 @@ flowchart LR
 | `worker_attest` | *(async)* `(http, transport, key, run_id, body, request_key, *, error = None)` | — | — |
 | `competing_updates` | *(async)* `(factory, task, assignment_id, *, blocked, run_id = None)` | — | — |
 | `cancel_unconfirmable` | *(async)* `(http, transport, pm_key, assignment, queue_revision)` | — | — |
+| `advance_server_clock_past` | `(monkeypatch, instant)` | — | Move the server's UTC clock just past ``instant`` without waiting. |
 | `test_date_only_reservation` | *(async)* `(db_session, db_session_factory, task_factory, team_member_factory, actor_factory, monkeypatch, transport, case, record_property)` | `@databases`, `@pytest.mark.parametrize('transport', ['rest', 'mcp'])`, `@pytest.mark.parametrize('case', ['running', 'verification', 'rework', 'substantive', 'legacy_running', 'legacy_refresh', 'legacy_verification', 'legacy_rework', 'legacy_recovered_rework', 'legacy_missing', 'legacy_stale', 'legacy_scope', 'authority_changed', 'artifact_changed', 'consecutive_extensions', 'legacy_drained', 'legacy_unconfirmable', 'legacy_no_checkpoint', 'queued_normal', 'queued_recovery', 'legacy_queued_normal', 'legacy_queued_recovery'])`, `@pytest.mark.usefixtures('deployed_agent_skill_release')` | — |

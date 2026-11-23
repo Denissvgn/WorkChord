@@ -15,11 +15,11 @@ _Auto-generated from `scripts/ci/browser_managed_work.mjs`._
 | `node:fs/promises` | `writeFile` |
 | `node:path` | `join` |
 | `playwright` | `chromium` |
-| Unresolved `dynamic-import` | — (line 451; deferred) |
-| Unresolved `dynamic-import` | — (line 477; deferred) |
+| Unresolved `dynamic-import` | — (line 454; deferred) |
 | Unresolved `dynamic-import` | — (line 480; deferred) |
-| Unresolved `dynamic-import` | — (line 485; deferred) |
-| Unresolved `dynamic-import` | — (line 524) |
+| Unresolved `dynamic-import` | — (line 483; deferred) |
+| Unresolved `dynamic-import` | — (line 488; deferred) |
+| Unresolved `dynamic-import` | — (line 527) |
 
 ## Module Signals
 

@@ -3892,3 +3892,19 @@ A controller can recover eligible work for its own team. Formal review can bind 
 - Infrastructure moved: 0
 - Infrastructure removed: 0
 - Unsupported infrastructure YAML: 9
+
+## 2026-11-23
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:cc0025ce53ff5052797eea0c8a409b6f533d5f38a288a42b55387ef21e0dd67c`
+- Pages created: 0
+- Pages updated: 3
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 3598
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
