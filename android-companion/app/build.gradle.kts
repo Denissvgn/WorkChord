@@ -6,8 +6,13 @@ plugins {
 
 android {
     namespace = "com.workchord.android"
-    // okhttp 5 needs API 37 to compile against; the app still targets 34, so runtime behavior is unchanged.
-    compileSdk = 37
+    // okhttp 5 needs API 37 and Compose 1.13 needs its 37.1 minor release to compile against;
+    // the app still targets 34, so runtime behavior is unchanged.
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 1
+        }
+    }
     val qualifyRelease = providers.environmentVariable("WORKCHORD_ANDROID_RELEASE_QUALIFICATION").orNull == "true"
     testBuildType = if (qualifyRelease) "release" else "debug"
     if (qualifyRelease) {
