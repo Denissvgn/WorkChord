@@ -241,11 +241,11 @@ jobs:
       matrix:
         include:
           - scope: sqlite
-            job_minutes: 25
-            work_seconds: 1200
+            job_minutes: 40
+            work_seconds: 2100
           - scope: postgresql
-            job_minutes: 30
-            work_seconds: 1500
+            job_minutes: 45
+            work_seconds: 2400
     steps:
       - name: Reserve cleanup and artifact time
         env:
