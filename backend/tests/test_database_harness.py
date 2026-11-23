@@ -76,7 +76,12 @@ async def test_isolated_sqlite_session_round_trips_representative_graph(
 
 def test_generic_factory_covers_every_mapped_table(mapped_model_factory) -> None:
     mappers = sorted(Base.registry.mappers, key=lambda mapper: mapper.local_table.name)
-    assert {mapper.local_table.name for mapper in mappers} == set(Base.metadata.tables) - {"release_tasks"}
+    assert {mapper.local_table.name for mapper in mappers} == set(Base.metadata.tables) - {
+        # Association tables without a mapped class.
+        "release_tasks",
+        "iteration_annual_calendars",
+        "profile_annual_calendars",
+    }
     assert {"tasks", "principals", "time_entries", "time_entry_revisions"} <= set(Base.metadata.tables)
     for mapper in mappers:
         instance = mapped_model_factory.build(mapper.class_)

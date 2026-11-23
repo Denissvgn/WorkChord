@@ -5,6 +5,51 @@ procedure low-freedom.
 
 ## Keep State Independent
 
+Report the model identifier your runtime actually observed when beginning
+assigned work. The supervised request uses `model`. Enforced routing uses
+`resolved_model_id` and the selected binding revision. The begin response's
+`execution_provenance` records the profile and model publisher the server
+could establish at that time. An ambiguous or missing observation leaves the
+publisher unresolved. The original run trust state is retained.
+
+On a project requiring different publishers for review, include the actual
+final `observed_model` in the submit payload. Report a runtime model change
+through the interrupted-work command with the final observed model and
+evidence of the work retained. This preserves both contributing publishers
+for the next review.
+
+With `review-provenance-v1`, strict projects require `observed_model`
+on failures as well as submissions. If the execution has stopped, you can
+seal its final observation on a fenced renewal using
+`interruption_checkpoint`. Supply the model actually observed,
+`output_state` of `no_output` or `retained`, and any retained
+`commit_urls`. Keep the receipt. Further submissions on that sealed fence
+are refused. PM recovery uses the original authenticated receipt. When the
+process stops before recording one, any retained contribution remains
+unknown. Report `no_output` only after verifying that this execution
+produced no candidate artifacts.
+
+For a PR, submit every commit your run contributed in `commit_urls` and the
+immutable head in `commit_url`. For a commit-only delivery, also submit the
+immutable `base_commit_url` delimiting your reviewed range. For a document
+or dashboard, submit the artifact link with the version or artifact evidence
+the reviewer needs to identify what they inspected.
+
+On strict projects, any `Co-authored-by:` trailer on a submitted commit
+holds formal acceptance. The server records the offending SHA. Preserve
+legitimate credit and the original history when reporting that hold.
+Keep the contributor evidence for an ownership-preserving review, or agree
+on a genuinely independent implementation with a new candidate. A shared
+Git account or editing an existing credit cannot establish who produced the
+candidate. Other projects retain their configured review policy.
+
+For code, submit the immutable candidate in `commit_url` and its PR in
+`pr_url` when available. Keep evidence of retained work from earlier
+attempts. A recovered supervised assignment can return `start_assigned`
+in shadow mode. Begin that assignment with its exact queue revision.
+For `agent.blocker`, provide the live claim ID and generation. The event
+preserves the task version. The authorized PM or person clears the blocker.
+
 - Assignment answers who was dispatched and in what queue position.
 - Claim/fence answers who may write now.
 - Run answers which execution attempt produced events and artifacts.

@@ -230,6 +230,7 @@ class AgentModelCatalogFields(RoutingContractModel):
 
     key: RoutingKey
     provider: str = Field(..., min_length=1, max_length=120)
+    publisher_key: RoutingKey | None = Field(default=None, description="Operator-verified canonical model publisher, independent of serving provider.")
     configured_model_alias: str = Field(..., min_length=1, max_length=255)
     reasoning_tier: ReasoningTier
     context_tier: ModelContextTier
@@ -280,6 +281,7 @@ class AgentModelCatalogUpdate(RoutingContractModel):
 
     expected_revision: PositiveRevision
     provider: str | None = Field(default=None, min_length=1, max_length=120)
+    publisher_key: RoutingKey | None = None
     configured_model_alias: str | None = Field(
         default=None,
         min_length=1,
@@ -1127,6 +1129,7 @@ class AgentRoutingExclusion(RoutingContractModel):
 class AgentRoutingPreviewResponse(RoutingContractModel):
     """Expiring non-dispatch result over a digest-bound routing input snapshot."""
 
+    acceptance_blocker_codes: list[RoutingBlockerCode] = Field(default_factory=list)
     runtime_availability: Literal["unknown"] = "unknown"
     eligibility_basis: Literal["task_policy_and_configuration"] = "task_policy_and_configuration"
     model_attestation: Literal["not_independently_attested"] = "not_independently_attested"

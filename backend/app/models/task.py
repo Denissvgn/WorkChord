@@ -139,6 +139,7 @@ class Task(Base):
     source: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     source_url: Mapped[Optional[str]] = mapped_column(String(1000), nullable=True)
     version: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+    execution_planning_window: Mapped[dict | None] = mapped_column(JSON(none_as_null=True))
     claim_expires_at: Mapped[Optional[datetime]] = mapped_column(UTCDateTime(), nullable=True)
     claim_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
     claim_generation: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

@@ -237,6 +237,13 @@ class RoutingBlockerCode(StrEnum):
     REVIEWER_PROFILE_MISSING = "reviewer_profile_missing"
     REVIEWER_PROFILE_MISMATCH = "reviewer_profile_mismatch"
     VERIFICATION_ACTOR_NOT_INDEPENDENT = "verification_actor_not_independent"
+    VERIFICATION_PUBLISHER_UNVERIFIABLE = "verification_publisher_unverifiable"
+    VERIFICATION_PUBLISHER_NOT_INDEPENDENT = "verification_publisher_not_independent"
+    VERIFICATION_CANDIDATE_UNVERIFIABLE = "verification_candidate_unverifiable"
+    VERIFICATION_CANDIDATE_STALE = "verification_candidate_stale"
+    VERIFICATION_CONTRIBUTORS_UNVERIFIABLE = "verification_contributors_unverifiable"
+    EXECUTION_PUBLISHER_UNVERIFIABLE = "execution_publisher_unverifiable"
+    EXECUTION_OUTPUT_CONFLICT = "execution_output_conflict"
     VERIFICATION_PROFILE_NOT_INDEPENDENT = "verification_profile_not_independent"
     VERIFICATION_INDEPENDENCE_UNVERIFIABLE = (
         "verification_independence_unverifiable"
@@ -1197,6 +1204,7 @@ def evaluate_assignment_compatibility(
     reviewer_profile_id: int | None = None,
     execution_actor_ids: Iterable[int | None] = (),
     execution_profile_ids: Iterable[int | None] = (),
+    manual_executor_profile_ids: Iterable[int] | None = None,
     review_mode: str = ReviewMode.NONE.value,
     required_specialist_skill_levels: Mapping[str, int] | None = None,
 ) -> RoutingEligibilityDecision:
@@ -1266,8 +1274,9 @@ def evaluate_assignment_compatibility(
             for value in implementation_profile_values
             if value is not None
         }
+        known_implementation_profiles.update(manual_executor_profile_ids or ())
         if (
-            not implementation_actor_values
+            (not implementation_actor_values and manual_executor_profile_ids is None)
             or len(implementation_actor_values)
             != len(implementation_profile_values)
             or any(value is None for value in implementation_actor_values)

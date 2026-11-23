@@ -642,6 +642,21 @@ class AgentModelCatalogService:
         authoritative_revision: int,
         invalidated_assignment_ids: list[int],
     ) -> TaskEvent:
+        if target_type == "model_binding":
+            binding = await self._binding(target_id)
+            catalog = binding.model_catalog
+            snapshot = {"id": binding.id, "revision": binding.revision, "enabled": binding.enabled,
+                        "actor_id": binding.actor_id, "model_catalog_id": catalog.id}
+        else:
+            catalog = await self.db.get(AgentModelCatalogEntry, target_id)
+            snapshot = {}
+        catalog_snapshot = {"id": catalog.id, "revision": catalog.revision, "enabled": catalog.enabled,
+                            "key": catalog.key, "configured_model_alias": catalog.configured_model_alias,
+                            "publisher_key": catalog.publisher_key}
+        if target_type == "model_binding":
+            snapshot["model_catalog"] = catalog_snapshot
+        else:
+            snapshot = catalog_snapshot
         event = TaskEvent(
             task_id=None,
             **self._audit_actor(principal),
@@ -652,6 +667,7 @@ class AgentModelCatalogService:
                     "target_type": target_type,
                     "target_id": target_id,
                     "authoritative_revision": authoritative_revision,
+                    "configuration": snapshot,
                     "invalidated_assignment_ids": invalidated_assignment_ids,
                     "rationale": command.rationale,
                 },

@@ -314,6 +314,21 @@
               "title": "Provider",
               "type": "string"
             },
+            "publisher_key": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Operator-verified canonical model publisher, independent of serving provider.",
+              "title": "Publisher Key"
+            },
             "reasoning_tier": {
               "$ref": "#/components/schemas/ReasoningTier"
             },
@@ -421,6 +436,21 @@
               "minLength": 1,
               "title": "Provider",
               "type": "string"
+            },
+            "publisher_key": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Operator-verified canonical model publisher, independent of serving provider.",
+              "title": "Publisher Key"
             },
             "reasoning_tier": {
               "$ref": "#/components/schemas/ReasoningTier"
@@ -554,6 +584,20 @@
                 }
               ],
               "title": "Provider"
+            },
+            "publisher_key": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Publisher Key"
             },
             "reasoning_tier": {
               "anyOf": [
@@ -1664,6 +1708,14 @@
         "IterationCreate": {
           "description": "Schema for creating an iteration.",
           "properties": {
+            "additional_calendar_ids": {
+              "items": {
+                "type": "integer"
+              },
+              "maxItems": 100,
+              "title": "Additional Calendar Ids",
+              "type": "array"
+            },
             "calendar_id": {
               "anyOf": [
                 {
@@ -1769,6 +1821,13 @@
         "IterationPlanningReadinessSummary": {
           "description": "Compact planning inputs used by persistent navigation.",
           "properties": {
+            "additional_calendar_ids": {
+              "items": {
+                "type": "integer"
+              },
+              "title": "Additional Calendar Ids",
+              "type": "array"
+            },
             "assigned_hours": {
               "default": 0.0,
               "title": "Assigned Hours",
@@ -1809,6 +1868,13 @@
             "iteration_id": {
               "title": "Iteration Id",
               "type": "integer"
+            },
+            "missing_calendar_years": {
+              "items": {
+                "type": "integer"
+              },
+              "title": "Missing Calendar Years",
+              "type": "array"
             },
             "planned_hours": {
               "default": 0.0,
@@ -1899,6 +1965,13 @@
         },
         "IterationResponse": {
           "properties": {
+            "additional_calendar_ids": {
+              "items": {
+                "type": "integer"
+              },
+              "title": "Additional Calendar Ids",
+              "type": "array"
+            },
             "calendar_id": {
               "title": "Calendar Id",
               "type": "integer"
@@ -1922,6 +1995,13 @@
                 }
               ],
               "title": "Manager Email"
+            },
+            "missing_calendar_years": {
+              "items": {
+                "type": "integer"
+              },
+              "title": "Missing Calendar Years",
+              "type": "array"
             },
             "name": {
               "title": "Name",
@@ -2561,6 +2641,11 @@
               ],
               "title": "Owner Profile Id"
             },
+            "require_different_review_publisher": {
+              "default": false,
+              "title": "Require Different Review Publisher",
+              "type": "boolean"
+            },
             "sort_order": {
               "default": 0,
               "title": "Sort Order",
@@ -3009,6 +3094,11 @@
                 }
               ],
               "title": "Owner Profile Id"
+            },
+            "require_different_review_publisher": {
+              "default": false,
+              "title": "Require Different Review Publisher",
+              "type": "boolean"
             },
             "sort_order": {
               "default": 0,

@@ -3,6 +3,7 @@
 from app.commands import commit_or_flush
 from datetime import datetime, timezone
 import logging
+import re
 from typing import Any, Optional
 
 import httpx
@@ -106,7 +107,16 @@ class GitHubStatusService:
         number: int,
     ) -> dict[str, Any]:
         """Fetch one pull request payload from GitHub."""
-        url = f"{self.api_url}/repos/{owner}/{repo}/pulls/{number}"
+        payload = await self._fetch_pr_resource(owner, repo, number)
+        if not isinstance(payload, dict):
+            raise ValueError("GitHub response was not a JSON object")
+        return payload
+
+    async def _fetch_pr_resource(self, owner, repo, number, suffix=""):
+        url = f"{self.api_url}/repos/{owner}/{repo}/pulls/{number}{suffix}"
+        return await self._fetch_resource(url)
+
+    async def _fetch_resource(self, url):
         client_kwargs: dict[str, Any] = {"timeout": self.timeout_seconds}
         if self.transport is not None:
             client_kwargs["transport"] = self.transport
@@ -121,10 +131,73 @@ class GitHubStatusService:
                 response=response,
             )
 
-        payload = response.json()
-        if not isinstance(payload, dict):
-            raise ValueError("GitHub response was not a JSON object")
-        return payload
+        return response.json()
+
+    @staticmethod
+    def _check_review_commits(commits, count, expected_sha, attributed_commits, failure_context=None):
+        if len(commits) != count or not commits or commits[-1].get("sha") != expected_sha:
+            return "verification_candidate_stale"
+        seen = set()
+        for item in commits:
+            sha = item.get("sha")
+            if not isinstance(sha, str) or re.fullmatch(r"(?:[0-9a-f]{40}|[0-9a-f]{64})", sha) is None:
+                return "verification_candidate_unverifiable"
+            if sha in seen or not attributed_commits.get(sha):
+                if failure_context is not None:
+                    failure_context.update(offending_sha=sha, attribution_gap="commit_attribution")
+                return "verification_contributors_unverifiable"
+            seen.add(sha)
+            message = item.get("commit", {}).get("message")
+            if not isinstance(message, str) or any(line.strip().casefold().startswith("co-authored-by:") for line in message.splitlines()):
+                if failure_context is not None:
+                    failure_context.update(offending_sha=sha, attribution_gap="coauthor_trailer" if isinstance(message, str) else "commit_metadata")
+                return "verification_contributors_unverifiable"
+        return None
+
+    async def verify_review_range(self, base, head, attributed_commits, *, failure_context=None):
+        """Verify every commit after the submitted immutable base."""
+        endpoint = f"{self.api_url}/repos/{head.owner}/{head.repo}/compare/{base.sha}...{head.sha}"
+        commits = []
+        expected_count = None
+        for page in range(1, 4):
+            comparison = await self._fetch_resource(f"{endpoint}?per_page=100&page={page}")
+            count = comparison.get("total_commits")
+            if (comparison.get("status") != "ahead" or comparison.get("base_commit", {}).get("sha") != base.sha
+                    or comparison.get("merge_base_commit", {}).get("sha") != base.sha
+                    or type(count) is not int or not 0 < count <= 250
+                    or expected_count is not None and expected_count != count):
+                return "verification_candidate_unverifiable"
+            expected_count = count
+            batch = comparison.get("commits")
+            if not isinstance(batch, list):
+                return "verification_candidate_unverifiable"
+            commits.extend(batch)
+            if len(commits) >= count:
+                return self._check_review_commits(commits, count, head.sha, attributed_commits, failure_context)
+        return "verification_candidate_unverifiable"
+
+    async def verify_review_head(self, pr, expected_sha, attributed_commits, *, expected_repository=None, failure_context=None):
+        """Observe the exact PR candidate and flag additional, unbound authors."""
+        pull = await self._fetch_pull_request(pr.owner, pr.repo, pr.number)
+        if pull.get("head", {}).get("sha") != expected_sha:
+            return "verification_candidate_stale"
+        if expected_repository and expected_repository.casefold() != pr.repo_full_name.casefold():
+            if (pull.get("head", {}).get("repo") or {}).get("full_name", "").casefold() != expected_repository.casefold():
+                return "verification_candidate_stale"
+        count = pull.get("commits")
+        if type(count) is not int or not 0 < count <= 250:
+            return "verification_contributors_unverifiable"
+        commits = []
+        for page in range(1, (count + 99) // 100 + 1):
+            batch = await self._fetch_pr_resource(pr.owner, pr.repo, pr.number, f"/commits?per_page=100&page={page}")
+            if not isinstance(batch, list):
+                return "verification_candidate_unverifiable"
+            commits.extend(batch)
+        blocker = self._check_review_commits(commits, count, expected_sha, attributed_commits, failure_context)
+        if blocker:
+            return blocker
+        current = await self._fetch_pull_request(pr.owner, pr.repo, pr.number)
+        return None if current.get("head", {}).get("sha") == expected_sha else "verification_candidate_stale"
 
     def _provider_error_message(self, error: Exception) -> str:
         """Convert provider exceptions into a safe cached message."""

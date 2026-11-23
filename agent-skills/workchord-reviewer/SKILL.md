@@ -46,6 +46,7 @@ Assigned mode (`assigned-work v1`) requires every one of these live features; th
 - `agent-team-master-v1`
 - `canonical-task-brief-v1`
 - `complete-task-context`
+- `review-provenance-v1`
 - `snapshot-pagination-v1`
 - `typed-rework-recovery`
 - `verification-v1`

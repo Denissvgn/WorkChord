@@ -172,6 +172,7 @@ class AgentModelCatalogEntry(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     key: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     provider: Mapped[str] = mapped_column(String(120), nullable=False)
+    publisher_key: Mapped[Optional[str]] = mapped_column(String(120))
     configured_model_alias: Mapped[str] = mapped_column(String(255), nullable=False)
     reasoning_tier: Mapped[int] = mapped_column(Integer, nullable=False)
     context_tier: Mapped[str] = mapped_column(String(20), nullable=False)
@@ -939,6 +940,7 @@ class AgentTaskAssignment(Base):
         Integer, nullable=True
     )
     routing_snapshot: Mapped[str] = mapped_column(Text, default="{}", nullable=False)
+    review_selection: Mapped[Optional[dict]] = mapped_column(JSON(none_as_null=True))
     reason: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         UTCDateTime(), default=utc_now, nullable=False, index=True
@@ -1089,6 +1091,7 @@ class AgentRun(Base):
     claim_generation: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     status: Mapped[str] = mapped_column(String(50), default="running", nullable=False, index=True)
     trace_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True, index=True)
+    execution_provenance: Mapped[Optional[dict]] = mapped_column(JSON(none_as_null=True))
     model_binding_id: Mapped[Optional[int]] = mapped_column(
         Integer,
         ForeignKey("agent_model_bindings.id", ondelete="RESTRICT"),

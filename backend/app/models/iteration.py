@@ -6,6 +6,7 @@ from sqlalchemy import Date, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
+from app.models.calendar import iteration_annual_calendars
 
 if TYPE_CHECKING:
     from app.models.calendar import Calendar
@@ -41,6 +42,9 @@ class Iteration(Base):
 
     # Relationships
     calendar: Mapped["Calendar"] = relationship("Calendar", back_populates="iterations")
+    additional_calendars: Mapped[list["Calendar"]] = relationship(
+        "Calendar", secondary=iteration_annual_calendars, lazy="selectin", order_by="Calendar.year",
+    )
     project: Mapped[Optional["Project"]] = relationship("Project", back_populates="iterations")
     team_members: Mapped[list["TeamMember"]] = relationship(
         "TeamMember", back_populates="iteration"  # No cascade delete - keep team members for reuse

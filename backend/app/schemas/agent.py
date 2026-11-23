@@ -460,6 +460,7 @@ class AgentRunEventResponse(BaseModel):
 
 class AgentRunResponse(BaseModel):
     """Agent run response."""
+    execution_provenance: dict[str, Any] | None = None
     id: int
     task_id: Optional[int]
     actor_id: int
@@ -565,6 +566,7 @@ class AgentTaskAssignmentCreate(BaseModel):
     actor_id: int
     team_member_id: Optional[int] = None
     purpose: AgentAssignmentPurpose = "execution"
+    review_binding_id: int | None = Field(default=None, ge=1)
     queue_class: AgentAssignmentQueueClass = "normal"
     queue_rank: int = Field(default=1000, ge=0)
     not_before: Optional[datetime] = None
@@ -600,6 +602,8 @@ class AgentTaskAssignmentCreate(BaseModel):
         """Freeze the four supported purpose/queue-class combinations."""
 
         assignment_intent(self.purpose, self.queue_class)
+        if self.review_binding_id is not None and self.purpose != "verification":
+            raise ValueError("A review binding is available only for verification.")
         return self
 
 
@@ -654,6 +658,7 @@ class AgentTaskAssignmentUpdate(BaseModel):
 
 
     actor_id: Optional[int] = None
+    review_binding_id: int | None = Field(default=None, ge=1)
     queue_rank: Optional[int] = Field(default=None, ge=0)
     not_before: Optional[datetime] = None
     reviewer_profile_id: Optional[int] = None
@@ -700,6 +705,7 @@ class ModelAwareAgentTaskAssignmentUpdate(BaseModel):
 class AgentTaskAssignmentResponse(BaseModel):
     """Durable agent task assignment response."""
 
+    review_selection: dict[str, Any] | None = None
     id: int
     task_id: int
     actor_id: int
@@ -1053,9 +1059,30 @@ class AgentWorkBeginResponse(BaseModel):
     queue_revision: int
 
 
+class AgentInterruptionCheckpoint(BaseModel):
+    """The worker has stopped producing output under this fence."""
+    model_config = ConfigDict(extra="forbid")
+
+    observed_model: str = Field(min_length=1, max_length=255)
+    output_state: Literal["no_output", "retained"]
+    commit_urls: list[str] = Field(default_factory=list, max_length=MAX_AGENT_ARTIFACT_LINKS)
+
+    @field_validator("commit_urls")
+    @classmethod
+    def validate_commits(cls, value):
+        return _github_link_list(value, "commit")
+
+    @model_validator(mode="after")
+    def validate_output(self):
+        if self.output_state == "no_output" and self.commit_urls:
+            raise ValueError("A no-output checkpoint cannot contain produced commits.")
+        return self
+
+
 class AgentWorkRenew(BaseModel):
     """Renew the live fence for one accepted assignment and running run."""
     model_config = ConfigDict(extra="forbid")
+    interruption_checkpoint: AgentInterruptionCheckpoint | None = None
 
 
     assignment_id: int
@@ -1072,6 +1099,13 @@ from app.schemas.task_brief import CriterionProgress
 class AgentWorkSubmit(BaseModel):
     """Atomically submit an active assignment for verification."""
     criterion_progress: list[CriterionProgress] = Field(default_factory=list, max_length=100)
+    observed_model: str | None = Field(default=None, min_length=1, max_length=255)
+    base_commit_url: str | None = Field(default=None, max_length=1000)
+
+    @field_validator("base_commit_url")
+    @classmethod
+    def validate_base_commit(cls, value):
+        return _github_link_or_none(value, "commit")
     model_config = ConfigDict(extra="forbid")
 
 
@@ -1130,6 +1164,14 @@ class AgentWorkTerminal(BaseModel):
     """Atomically fail or cancel an active assignment."""
     model_config = ConfigDict(extra="forbid")
 
+    observed_model: str | None = Field(default=None, min_length=1, max_length=255)
+    output_state: Literal["no_output", "retained"] | None = None
+    commit_urls: list[str] = Field(default_factory=list, max_length=MAX_AGENT_ARTIFACT_LINKS)
+
+    @field_validator("commit_urls")
+    @classmethod
+    def validate_retained_commits(cls, value):
+        return _github_link_list(value, "commit")
 
     assignment_id: int
     run_id: int
@@ -1162,6 +1204,8 @@ class AgentReviewVerdict(BaseModel):
     """Verifier-scoped pass or rejection command."""
     model_config = ConfigDict(extra="forbid")
 
+    observed_model: str | None = Field(default=None, min_length=1, max_length=255)
+    reviewed_candidate_digest: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
 
     assignment_id: int
     verdict: Literal["pass", "reject"]
@@ -1191,6 +1235,7 @@ class AgentReviewVerdictResponse(BaseModel):
 class AgentRecoveryRequeue(BaseModel):
     """PM command to replace stale execution ownership with recovery work."""
     model_config = ConfigDict(extra="forbid")
+    return_for_evidence: bool = False
 
 
     actor_id: int
@@ -1222,6 +1267,27 @@ class AgentRecoveryListResponse(BaseModel):
 
     items: list[AgentRecoveryItem] = Field(default_factory=list)
     pagination: AgentPaginationMetadata
+
+
+class AgentRetainedOutputAttestation(BaseModel):
+    """A fresh statement from the original worker after a genuine expiry and PM recovery."""
+    model_config = ConfigDict(extra="forbid")
+    assignment_id: int = Field(gt=0)
+    claim_generation: int = Field(ge=1)
+    claim_id: str = Field(min_length=16, max_length=64, repr=False)
+    planning_receipt_id: int | None = Field(default=None, gt=0)
+    planning_actor_id: int | None = Field(default=None, gt=0)
+    planning_command_key: str | None = Field(default=None,min_length=1,max_length=255)
+    recovery_receipt_id: int | None = Field(default=None, gt=0)
+    recovery_actor_id: int | None = Field(default=None, gt=0)
+    recovery_command_key: str | None = Field(default=None,min_length=1,max_length=255)
+    checkpoint_id: int = Field(gt=0)
+    observed_model: str = Field(min_length=1, max_length=255)
+    commit_url: str = Field(min_length=1, max_length=2048)
+    pr_url: str = Field(min_length=1, max_length=2048)
+    git_tree: str = Field(pattern=r"^[0-9a-f]{40}([0-9a-f]{24})?$")
+    terminal_native_turn: str = Field(min_length=1, max_length=255)
+    confirmed_final_output: Literal[True]
 
 
 class AgentRecoveryRequeueResponse(BaseModel):

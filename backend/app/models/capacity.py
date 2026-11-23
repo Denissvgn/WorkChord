@@ -3,9 +3,10 @@
 from datetime import date
 
 from sqlalchemy import CheckConstraint, Date, ForeignKey, Integer, JSON, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
+from app.models.calendar import Calendar, profile_annual_calendars
 
 
 class PlanningState(Base):
@@ -25,6 +26,9 @@ class ProfileAvailability(Base):
     version: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     provenance: Mapped[str] = mapped_column(String(40), nullable=False, default="explicit")
     calendar_conflicts: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    additional_calendars: Mapped[list[Calendar]] = relationship(
+        Calendar, secondary=profile_annual_calendars, lazy="selectin", order_by=Calendar.year,
+    )
 
 
 class ProfileAbsence(Base):

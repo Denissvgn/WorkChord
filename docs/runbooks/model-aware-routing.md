@@ -64,6 +64,100 @@ will remain effective `off`.
 Enablement applies only to new assignments. Never rewrite historical snapshots
 or reinterpret a shadow preview as an enforced selection.
 
+## Supervised rework in shadow mode
+
+After an independent reviewer requests changes, read the original worker's
+assigned-work queue and complete task context. The server can return
+`start_assigned` for an existing or newly issued rework assignment when its
+stored rejection and submission identify the same team, worker, model binding
+and independent reviewer. The worker begins the exact assignment with the
+current queue revision and its observed model. Repeating the begin with the
+original idempotency key returns the same run and claim generation.
+
+The latest submitter can also have completed a supervised recovery selected
+by the team's PM. The recovery receipt and event must confirm that exact
+assignment and actor. Earlier retained contributors continue to participate
+in the independent publisher check. The recovery records the task version
+when it was issued. The fulfilled assignment must match the later task
+version in the worker's submission receipt.
+
+The issued assignment and its routing snapshot preserve their original
+lineage. The effective worker views show the supervised handback and review
+floor. A successful begin records the complete worker binding, independent
+reviewer floor, rejected run, verifier receipt and reviewed candidate digest
+in the new run's `execution_provenance.supervised_rework`. The original
+verdict and submission stay intact. If an older rejection omits the explicit
+candidate digest, the verifier's selection in its event and receipt must
+identify the same submitted candidate. For the next verification, preview,
+dispatch and verdict require the recorded reviewer profile and a publisher
+independent of every contributor. A changed binding, different worker,
+missing receipt, or request for a model-tier change leaves routing pending.
+After a failed or canceled rework, the PM uses the normal recovery path.
+The resulting recovery queue waits for a fresh applicable routing selection.
+A previously begun rework cannot be reused to start a second fenced run.
+Enforced mode continues to require a fresh model-aware selection.
+
+## Extending an iteration with assigned work
+
+A date-only extension reserves the iteration and every open task version.
+Existing ownership can continue when the task, assignment, model bindings,
+team, capacity owner and project review policy still match. Workers read
+their assigned queue and current task version before renewing or submitting.
+The recorded planning evidence identifies the snapshot by its ID, SHA-256
+and input revision. A worker command verifies current authority and the
+applicable historical evidence under its operation’s locks.
+Verification uses the originally selected artifact and reviewer. A rework
+begin still checks its independent rejection and the original submitter.
+
+For a cutoff applied before `iteration-window-execution-recovery-v1`, a
+workspace operator can preview a single task with
+`POST /api/agent/tasks/{task_id}/reconcile-planning-window` or
+`agent_reconcile_planning_window`. Supply the planning receipt's
+`planning_actor_id` and `planning_command_key`. The server checks its own
+before-change snapshot, the exact end-date-only command, and each live
+owner’s original receipt. Check the returned task version, assignment IDs
+and empty `missing` list. Apply with the returned `expected_evidence_digest`,
+`apply=true`, and normal idempotency, rationale and correlation metadata.
+The command records operator attribution. The original assignment, task
+version, run, lease and source records keep their existing values. Missing
+or contradictory server evidence leaves the task pending.
+
+If the worker lease has expired, the PM reads the actual recovery tuple and
+uses the usual typed requeue with the current task version, claim generation,
+live assignment IDs and running run IDs. This also permits an older service
+to drain before an upgrade. Confirm the recorded server time is past expiry.
+Save the PM command key, its new assignment ID and the worker’s checkpoint.
+An expired lease cannot renew or submit.
+
+If starting a queued recovery would discard an available original-worker
+attestation, the work decision reports `retained_output_attestation_required`
+on that assignment. When it is the only actionable case, the worker sees
+`attention_required`. The assignment and complete context include
+`routing_snapshot.retained_output_attestation` with the supported tool,
+original run and generation, checkpoint, commit, tree and receipt IDs.
+Other ready work remains selectable. A direct begin enforces the same check.
+
+Before starting that fresh assignment, the original worker can attest its
+retained artifact through `POST /api/agent/me/runs/{run_id}/attest-retained-output`
+or `agent_attest_retained_planning_output`. Submit the original assignment
+and fence through the authenticated worker transport, the planning and
+recovery actors and command keys or the two receipt IDs in the hint, checkpoint ID, observed model, commit URL,
+tree, PR URL, native final turn and `confirmed_final_output=true`. The
+server requires the checkpoint to have been recorded on the live original
+generation and the PM recovery to have occurred after expiry. It records
+the worker's current statement separately from the historical interruption.
+The subsequent submission and independent review include both actual runs
+and the retained commit. If a worker cannot confirm its final output or the
+checkpoint is incomplete, the unknown contributor remains visible to review.
+The worker retrieves the old private fence from its own saved response to
+the indicated begin or renew operation, matching its original assignment,
+run and generation. It obtains the native final turn from its own retained
+session and checkpoint. If either is unavailable or the worker cannot
+confirm the output, it reports that fact to the primary PM. The PM may use
+the normal queued-assignment update with `state=cancelled`, the current
+actor queue revision, and an explicit reason. That action frees the worker
+for other work and preserves the unresolved contributor on the affected task.
+
 ## Operational evidence
 
 Routing events and aggregate metrics identify the policy revision, binding

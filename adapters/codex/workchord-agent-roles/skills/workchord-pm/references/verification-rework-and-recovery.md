@@ -38,6 +38,60 @@ execution capacity while the task is still active.
 
 ## Handle Model Evidence and Escalation
 
+When a project requires a different model publisher for review, dispatch a
+verification actor whose profile and publisher allow it to review every
+contributing implementation attempt. The server compares historical run
+receipts, including interrupted or reworked executions. A supervised
+verification assignment can select a specific eligible binding with
+`review_binding_id`. The returned `review_selection` identifies the selected
+reviewer, submitted candidate and contributors. Use the current task version
+and the worker's own submission evidence.
+
+When the server advertises `review-provenance-v1`, an eligible independent
+reviewer can return a defective or unavailable candidate for rework.
+`review_selection.acceptance_blockers` lists problems with accepting that
+candidate. Both formal verdicts require an independently attributable
+reviewer. Only a topology's primary controller acting as PM can use
+`return_for_evidence: true` on released, resolved strict-project work. It
+requires a previous fulfilled execution assignment with a successful,
+claim-fenced run from the same team, the current ownership tuple and a
+reason. This administrative action records zero verdicts. Cancel or finish
+any outstanding verification assignment separately.
+
+An owner performing manual work signs in, starts the task with
+`start_manual`, writes current progress with at least one artifact link,
+and submits with `resolve_manual` under the same human identity. Before
+assigning a reviewer, check the manual execution and artifact receipt. The
+server allows this route only when it can establish the human executor and
+finds no agent execution assignments, runs or conflicting execution evidence.
+The independent assigned agent still supplies its own observed model and a
+known publisher. The human owner and workspace operator cannot give a formal
+verdict on the strict project. An unverified owner name, a planned assignment
+or an empty run list is insufficient. The administrative return command
+requires a previous agent submission and cannot reopen human-only work.
+Refresh existing verification previews after an upgrade.
+
+Give the operator the affected task and run IDs and the named missing facts.
+The operator can preview with
+`POST /api/agent/model-catalog/execution-provenance/{run_id}/reconcile`
+or `agent_reconcile_run_provenance(run_id)`. A retained acknowledgement can
+be supplied for comparison with the original server digest. An apply request
+uses `apply=true` and `expected_evidence_digest` from that preview. REST
+also requires the `Idempotency-Key`, `X-Agent-Rationale` and
+`X-Correlation-ID` headers. The MCP operator supplies `idempotency_key`,
+`rationale` and `correlation_id`. Retain the returned source receipts and
+operator event ID. A missing terminal model requires an authenticated final
+checkpoint from the same execution fence. Older records with missing model
+publisher evidence remain unresolved. Reconciliation preserves the run's
+original model trust state.
+
+For interrupted work, take the exact version, claim generation, live assignment
+IDs and running run IDs from the recovery queue. The primary controller can
+requeue an eligible worker on its own team. A supervised recovery in shadow
+mode can immediately offer `start_assigned`. For `routing_selection_pending`,
+complete the governed selection on the existing assignment. Preserve any
+independent verification ownership.
+
 Use `agent_get_execution_usage_summary` or `/api/tasks/execution-usage` for an
 authorized project/iteration and stated observation window. Compare reports
 with accepted task identities, rejection/reopen events and review/recovery

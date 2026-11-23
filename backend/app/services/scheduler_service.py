@@ -18,10 +18,17 @@ from app.models.task import Task, TaskDependency, TaskStatus
 from app.models.team_member import TeamMember, Vacation
 from app.models.iteration import Iteration
 from app.services.calendar_service import CalendarService
+from app.services.calendar_rules import AnnualCalendars
 from app.services.task_service import TaskService
 from app.services.team_service import TeamService
 from app.services.scheduling_rules_service import SchedulingRulesService
 from app.schemas.gantt import SchedulingDecision, ScheduleResult, UnscheduledTask, WorkloadIssue
+
+
+class MissingCalendarYear(PlanningConflict):
+    def __init__(self, year: int):
+        self.year = year
+        super().__init__("calendar_outside_year", f"No working calendar is selected for {year}.")
 
 
 class ChangeType(Enum):
@@ -83,6 +90,7 @@ class MemberSchedule:
     nominal_day_hours: float = 8.0
     productivity_factor: float = 1.0
     short_dates: set[date] = field(default_factory=set)
+    annual_calendars: AnnualCalendars | None = None
 
     # Optimization: date-to-index mapping for O(1) lookups
     _date_to_idx: dict[date, int] = field(default_factory=dict, repr=False)
@@ -250,6 +258,11 @@ class MemberSchedule:
         of a hardcoded Mon-Fri week, so overflow projections respect custom
         calendars the same way in-iteration scheduling does.
         """
+        if self.annual_calendars is not None:
+            hours = self.annual_calendars.hours(day)
+            if hours is None:
+                raise MissingCalendarYear(day.year)
+            return hours > 0 and day not in self.vacation_dates
         return (
             day.weekday() not in self.weekend_days
             and day not in self.holiday_dates
@@ -272,8 +285,8 @@ class MemberSchedule:
                 allocated = []
                 remaining = required
             elif self._is_projectable_working_day(current):
-                capacity = ((self.nominal_day_hours - (current in self.short_dates)) * self.productivity_factor
-                            if required_hours is not None else 1.0)
+                hours = self.annual_calendars.hours(current) if self.annual_calendars else self.nominal_day_hours - (current in self.short_dates)
+                capacity = hours * self.productivity_factor if required_hours is not None else 1.0
                 if capacity > 0:
                     allocated.append(current)
                     remaining -= capacity
@@ -286,7 +299,8 @@ class MemberSchedule:
         raise PlanningConflict("forecast_horizon_exceeded", "No capacity was found within the forecast horizon. Reconcile availability.")
 
 
-async def rebind_queued_assignments(db: AsyncSession, task_id: int, previous_version: int, new_version: int) -> None:
+async def rebind_queued_assignments(db: AsyncSession, task_id: int, previous_version: int, new_version: int,
+                                    *, protect_issued: bool = False) -> list[dict]:
     """Keep queued dispatch valid when only a task's dates changed.
 
     A queued agent assignment is bound to the task version it was created for,
@@ -295,20 +309,32 @@ async def rebind_queued_assignments(db: AsyncSession, task_id: int, previous_ver
     routing evidence is bound to the exact task version.
     """
     if new_version == previous_version:
-        return
+        return []
     from app.models.agent import AgentTaskAssignment
     from app.services.agent_work_service import AgentWorkService
 
     queued = await db.scalars(
         select(AgentTaskAssignment).where(
             AgentTaskAssignment.task_id == task_id,
-            AgentTaskAssignment.state == "queued",
-            AgentTaskAssignment.task_version == previous_version,
-        )
+            AgentTaskAssignment.state.in_(("queued", "accepted")),
+        ).order_by(AgentTaskAssignment.id).with_for_update()
     )
+    refreshes = []
     for assignment in queued.all():
-        if not AgentWorkService._is_model_aware_assignment(assignment):
+        if assignment.state == "accepted":
+            if protect_issued:
+                raise PlanningConflict("issued_task_schedule_conflict",
+                    f"Scheduling would change task {task_id} during accepted assignment {assignment.id}. Preserve its dates or finish that attempt first.")
+            continue
+        if assignment.task_version != previous_version:
+            continue
+        if AgentWorkService._is_model_aware_assignment(assignment):
+            refreshes.append({"task_id":task_id,"assignment_id":assignment.id,"actor_id":assignment.actor_id,
+                              "from_task_version":previous_version,"to_task_version":new_version,
+                              "action":"refresh_model_selection"})
+        else:
             assignment.task_version = new_version
+    return refreshes
 
 
 class SchedulerService:
@@ -343,6 +369,7 @@ class SchedulerService:
         expected_revision: int | None = None,
         expected_planning_revision: int | None = None,
         commit_baseline: bool = False,
+        protect_issued: bool = False,
         rebaseline_reason: str | None = None,
         follow_date: date | None = None,
         anchor_task_id: int | None = None,
@@ -376,6 +403,21 @@ class SchedulerService:
         input_issues = [issue for issue in capacity_issues if issue["code"] != "committed_capacity_exceeded"]
         if commit_baseline and input_issues:
             raise PlanningConflict(input_issues[0]["code"], input_issues[0]["message"])
+        if any(issue["code"] in {"calendar_outside_year", "calendar_reconciliation_required"} for issue in input_issues):
+            return ScheduleResult(success=False, planning_revision=planning_revision,
+                                  capacity_issues=capacity_issues, workload_balanced=False)
+
+        def uncovered_forecast(exc: MissingCalendarYear) -> ScheduleResult:
+            # Forecasting can reach a later year than the configured iteration.
+            # Restore draft dates before any task or assignment version is reserved.
+            if commit_baseline:
+                raise exc
+            for row in all_tasks:
+                row.start_date, row.end_date = before_dates[row.id]
+                row.calculated_effort_days = before_effort[row.id]
+            issue = {"code": exc.code, "message": str(exc), "missing_calendar_years": [exc.year]}
+            return ScheduleResult(success=False, planning_revision=planning_revision,
+                                  capacity_issues=[*capacity_issues, issue], workload_balanced=False)
 
         # Build member schedules
         member_schedules = await self._build_member_schedules(
@@ -441,6 +483,8 @@ class SchedulerService:
                         follow_date, self._calculate_adjusted_effort(anchor), anchor.id,
                         accounting_days=anchor.effort_days, required_hours=anchor.effort_hours,
                     )
+                except MissingCalendarYear as exc:
+                    return uncovered_forecast(exc)
                 except PlanningConflict:
                     # A row without productive capacity cannot place the work; its dates stay as they are.
                     for day in [day for day, owner in schedule.allocated_dates.items() if owner == anchor.id]:
@@ -465,6 +509,10 @@ class SchedulerService:
                 elif task.status == TaskStatus.ACTIVE.value:
                     last_day = max(last_day, follow_date)
             day = task.start_date
+            if schedule.annual_calendars:
+                missing = schedule.annual_calendars.missing_years(day, last_day)
+                if missing:
+                    return uncovered_forecast(MissingCalendarYear(missing[0]))
             while day <= last_day:
                 if schedule._is_projectable_working_day(day):
                     schedule.allocated_dates.setdefault(day, task.id)
@@ -676,9 +724,12 @@ class SchedulerService:
                     # Keep the cursor even beyond the iteration. Looking for a date
                     # only inside the iteration can otherwise backfill an earlier gap.
                     earliest_start = max(earliest_start, assignee_last_end[task.assignee_id] + timedelta(days=1))
-                await self._schedule_leaf_task(
-                    task, iteration, member_schedules, decisions, task_map, earliest_start
-                )
+                try:
+                    await self._schedule_leaf_task(
+                        task, iteration, member_schedules, decisions, task_map, earliest_start
+                    )
+                except MissingCalendarYear as exc:
+                    return uncovered_forecast(exc)
                 if task.start_date is not None and task.end_date is not None:
                     assignee_last_end[task.assignee_id] = task.end_date
             if task_id not in satisfied_predecessor_ids and (task.start_date is None or task.end_date is None):
@@ -713,11 +764,13 @@ class SchedulerService:
         for parent in composite_tasks:
             self._update_composite_task_dates(parent, iteration, decisions)
 
+        assignment_refreshes = []
         for task in sorted(all_tasks, key=lambda task: task.id):
             if before_dates[task.id] != (task.start_date, task.end_date):
                 previous_version = task.version
                 await self.task_service.reserve_task_version(task, task.version)
-                await rebind_queued_assignments(self.db, task.id, previous_version, task.version)
+                assignment_refreshes.extend(await rebind_queued_assignments(self.db, task.id, previous_version, task.version,
+                    protect_issued=commit_baseline or protect_issued))
 
         if commit_baseline:
             from app.models.recovery import TaskScheduleBaseline
@@ -769,6 +822,7 @@ class SchedulerService:
             success=True,
             planning_revision=planning_revision,
             capacity_issues=capacity_issues,
+            assignment_refreshes=assignment_refreshes,
             decisions=decisions,
             workload_balanced=len(workload_issues) == 0,
             workload_issues=workload_issues,
@@ -878,11 +932,10 @@ class SchedulerService:
         from app.services.capacity_service import CapacityService
         shared_capacity = CapacityService(self.db)
         for member in team_members:
-            calendar = await shared_capacity.calendar_for(member)
+            coverage = await shared_capacity.coverage_for(member)
+            calendar = coverage.primary
             self._member_day_hours[member.id] = calendar.nominal_day_hours
-            working_dates = self.calendar_service.get_working_dates(calendar, iteration.start_date, iteration.end_date)
-            holiday_dates = {date.fromisoformat(value) for value in calendar.holidays}
-            weekend_days = set(calendar.weekend_days)
+            working_dates = self.calendar_service.get_working_dates(coverage, iteration.start_date, iteration.end_date)
             vacation_dates = set()
             for start, end in await shared_capacity.absence_ranges(member):
                 current = max(start, iteration.start_date)
@@ -899,12 +952,10 @@ class SchedulerService:
                 member_name=member.name,
                 nominal_day_hours=calendar.nominal_day_hours,
                 productivity_factor=member.availability_percent / 100 * (1 - member.operational_utilization / 100) * member.professionalism_coefficient,
-                short_dates={date.fromisoformat(value) for value in calendar.short_days},
+                annual_calendars=coverage,
                 capacity_days=capacity.adjusted_days if capacity else 0,
                 working_dates=working_dates.copy(),
                 vacation_dates=vacation_dates,
-                holiday_dates=holiday_dates,  # Used by overflow projection beyond the iteration
-                weekend_days=weekend_days,
             )
 
             # Log available dates after excluding vacations

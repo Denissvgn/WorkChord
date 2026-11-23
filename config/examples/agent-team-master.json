@@ -17,8 +17,8 @@
     "scope_preset": "pm-v1",
     "skill_package": {
       "name": "workchord-pm",
-      "sha256": "bba646e5e9252899efda5d99786142d7bb1be1a38a6fe52416455e1ba167d209",
-      "version": "1.16.0"
+      "sha256": "a79a8bd39d2ae332b3544b2df19bc7506895b72c19962e7b1c7e405f770efae9",
+      "version": "1.20.0"
     }
   },
   "credential_sink_ref": "agent-team-secure-sink",
@@ -30,7 +30,8 @@
   "required_server_features": [
     "actor-roster-v1",
     "agent-team-master-v1",
-    "model-aware-routing-v1"
+    "model-aware-routing-v1",
+    "review-provenance-v1"
   ],
   "schema_version": "agent-team-master-v1",
   "server_url": "http://localhost:8001",
@@ -54,8 +55,8 @@
       "scope_preset": "verifier-v1",
       "skill_package": {
         "name": "workchord-reviewer",
-        "sha256": "bc4bbbed71149748d527235cecf366e064332ced6487e8897ab792929db5635b",
-        "version": "1.4.0"
+        "sha256": "77e45571291431e12e5160582e97b157656bc5bfe0ad9d9a6c64ee6bdf945a93",
+        "version": "1.7.0"
       }
     }
   ],
@@ -78,8 +79,8 @@
       "scope_preset": "worker-v1",
       "skill_package": {
         "name": "workchord-worker",
-        "sha256": "567080dee6aeae12dcd65f00c19ad453387947a34e76839e9effd408da3620e4",
-        "version": "1.16.0"
+        "sha256": "bd21ac7657d922d7c6a2b3f3d7d78319a1c2920cb8195650282935bc4422f53b",
+        "version": "1.19.0"
       }
     }
   ]

@@ -159,7 +159,10 @@ def _scope_conditions(authority):
         elif name == "user_sessions":
             condition = c.principal_id == authority.principal_id if authority.principal_id is not None else c.id == authority.session_id
         elif name == "calendars":
-            condition = true() if workspace_read else c.id.in_(select(iterations.c.calendar_id).where(project_condition))
+            direct = select(iterations.c.calendar_id).where(project_condition)
+            annual = tables["iteration_annual_calendars"]
+            selected = direct.union(select(annual.c.calendar_id).where(annual.c.iteration_id.in_(iteration_ids)))
+            condition = true() if workspace_read else c.id.in_(selected)
         elif name in {"profile_availability", "profile_absences"}:
             condition = c.profile_id == authority.profile_id if authority.profile_id is not None else false()
         elif name == "team_member_profiles":
@@ -187,6 +190,9 @@ def scope_orm_operation(state):
         return
     if authority.read_only and (state.is_insert or state.is_update or state.is_delete):
         raise AuthorityError("read_only_credential", "This credential can only read.")
+    if (not authority.operator and (state.is_insert or state.is_update)
+            and getattr(getattr(state.statement, "table", None), "name", None) == "projects"):
+        _guard_bulk_project_review_policy(state)
     if isinstance(state.statement, TextClause) and not authority.operator and not authority.local:
         raise AuthorityError("unscoped_query_denied", "This operation requires an explicit resource scope.")
     if authority.operator or authority.local:
@@ -204,6 +210,30 @@ def scope_orm_operation(state):
             state.statement = state.statement.where(conditions[mapper.class_])
         elif not authority.operator:
             raise AuthorityError("unscoped_write_denied", "This write requires an explicit resource scope.")
+
+
+def _guard_bulk_project_review_policy(state):
+    """Protect policy columns in explicit SQLAlchemy writes as well as ORM flushes."""
+    column = "require_different_review_publisher"
+    statement = state.statement
+    pairs = list((getattr(statement, "_values", {}) or {}).items())
+    pairs.extend(getattr(statement, "_ordered_values", ()) or ())
+    for group in getattr(statement, "_multi_values", ()) or ():
+        for row in group:
+            if isinstance(row, dict):
+                pairs.extend(row.items())
+    parameters = state.parameters
+    if parameters:
+        for row in parameters if isinstance(parameters, (list, tuple)) else [parameters]:
+            if isinstance(row, dict):
+                pairs.extend(row.items())
+    for key, value in pairs:
+        if getattr(key, "key", key) == column:
+            # Existing-row changes and expression-valued inserts need the operator.
+            if state.is_update or getattr(value, "value", value) is not False:
+                raise AuthorityError("operator_required", "Changing the project's review publisher policy requires an operator.")
+    if column in (getattr(statement, "_select_names", None) or ()):
+        raise AuthorityError("operator_required", "Importing the project's review publisher policy requires an operator.")
 
 
 def _check_bulk_write(state, authority):
@@ -326,18 +356,21 @@ def authorize_domain_writes(session, _flush_context, _instances):
             continue
         table = inspect(type(obj)).local_table.name
         changed = {attr.key for attr in inspect(obj).attrs if attr.history.has_changes()}
+        if table == "projects" and not authority.operator and obj not in session.deleted:
+            if (obj in session.new and obj.require_different_review_publisher
+                    or obj not in session.new and "require_different_review_publisher" in changed):
+                raise AuthorityError("operator_required", "Changing the project's review publisher policy requires an operator.")
         if (table == "agent_actors" and obj in session.dirty and obj not in session.deleted
                 and changed <= {"queue_revision", "updated_at"}):
             if obj.id in session.info.get("domain_queue_actors", set()):
                 continue
             if protocol and (obj.id == authority.actor_id or obj.id in rework_actors):
                 continue
-            if (protocol and authority.actor_role == "pm" and "assignments:write" in authority.scopes
-                    and "queue_revision" in changed):
+            if protocol and authority.actor_role == "pm" and "queue_revision" in changed:
                 command = session.info.get("command")
                 advance = (authority.actor_id, obj.id, obj.queue_revision)
-                if command is not None and advance in command.dispatch_queue_revisions:
-                    command.dispatch_queue_revisions.remove(advance)
+                if command is not None and command.dispatch_queue_revisions.get(advance) in authority.scopes:
+                    del command.dispatch_queue_revisions[advance]
                     continue
         if table == "agent_actors" and obj.id == authority.actor_id and changed <= {"last_seen_at"} and obj not in session.deleted and obj not in session.new:
             continue
@@ -377,10 +410,25 @@ def authorize_domain_writes(session, _flush_context, _instances):
                 action = "review" if obj.purpose == "verification" else "execute"
             elif obj in session.new and obj.task_id in session.info.get("review_rework_tasks", set()):
                 action = "review"
+        if protocol and table == "triage_items" and obj in session.new:
+            announced = session.info.get("claim_bound_discovery") or {}
+            if (announced.get("remaining", 0) > 0 and announced.get("actor_id") == authority.actor_id
+                    and "triage:write" in authority.scopes and obj.source == "agent-discovery"
+                    and obj.project_hint_id == announced.get("project_hint_id")
+                    and obj.iteration_hint_id == announced.get("iteration_hint_id")):
+                announced["remaining"] -= 1
+                action = "execute"
         derived = table in {"task_comments", "task_comment_revisions", "task_brief_revisions", "task_progress_records", "task_review_records", "task_status_logs", "task_events", "outbound_webhook_events", "outbound_webhook_deliveries", "application_snapshots", "task_routing_assessments", "agent_run_events"}
         if derived and not authority.allows(project_id, action):
             action = "execute" if authority.allows(project_id, "execute") else "review"
         if isinstance(obj, Task):
+            if (protocol and obj in session.dirty and obj not in session.deleted
+                    and changed == {"blocked_reason"} and obj.claimed_by == authority.actor_id):
+                command = session.info.get("command")
+                blocker = (authority.actor_id, obj.id, obj.claim_generation, obj.blocked_reason)
+                if command is not None and blocker in command.worker_blockers:
+                    command.worker_blockers.remove(blocker)
+                    action = "execute"
             claim_fields = {"claimed_by", "claim_id", "claim_generation", "claim_expires_at", "version", "updated_at", "execution_mode"}
             prior_claims = inspect(obj).attrs.claimed_by.history.deleted
             if protocol and changed <= claim_fields and ("execution_mode" not in changed or obj.execution_mode == "scheduled") and obj.claimed_by in {None, authority.actor_id} and all(prior in {None, authority.actor_id} for prior in prior_claims):
@@ -391,6 +439,11 @@ def authorize_domain_writes(session, _flush_context, _instances):
             rollup = obj.id in session.info.get("derived_rollups", set()) and obj.is_summary
             if history.has_changes() and obj.status in {"active", "resolved"}:
                 action = "review" if obj.id in session.info.get("review_rework_tasks", set()) and obj.status == "active" else "execute"
+                command = session.info.get("command")
+                if (protocol and authority.actor_role == "pm" and "recovery:write" in authority.scopes
+                        and obj.status == "active" and "resolved" in history.deleted and command is not None
+                        and (authority.actor_id, obj.id) in command.evidence_returns):
+                    action = "manage"
             if history.has_changes() and obj.status == "closed" and not rollup:
                 action = "review"
                 if authority.kind == "system" and obj.accepted_at is not None and (not authority.review_override or not authority.reason):

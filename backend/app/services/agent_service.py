@@ -1,13 +1,13 @@
 """Agent integration services."""
 
-from app.commands import commit_or_flush
+from app.commands import atomic_command, commit_or_flush, current_command
 import hashlib
 import json
 import secrets
 from datetime import datetime, timedelta
 from typing import Any, Optional, Sequence
 
-from sqlalchemy import select, text
+from sqlalchemy import select, text, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -874,6 +874,7 @@ class AgentService:
         result = await self.db.execute(query.order_by(TaskEvent.created_at.desc(), TaskEvent.id.desc()))
         return result.scalars().first()
 
+    @atomic_command
     async def append_task_event(
         self,
         task_id: int,
@@ -934,8 +935,8 @@ class AgentService:
 
         if self.db.get_bind().dialect.name == "sqlite":
             await self.db.execute(
-                text("UPDATE tasks SET id = id WHERE id = :task_id"),
-                {"task_id": task_id},
+                update(Task).where(Task.id == task_id).values(version=Task.version, updated_at=Task.updated_at)
+                .execution_options(synchronize_session=False)
             )
 
         task_result = await self.db.execute(
@@ -996,6 +997,9 @@ class AgentService:
             # "Block work"; only the PM or a person removes it. The task
             # version stays unchanged so the worker's lease fields stay valid.
             task.blocked_reason = blocker_reason_from_payload(data.payload)
+            command = current_command(self.db)
+            assert command is not None
+            command.worker_blockers.add((actor.id, task.id, task.claim_generation, task.blocked_reason))
         if assigned_worker:
             self._record_command_receipt(
                 actor,
@@ -1602,7 +1606,7 @@ class AgentService:
                 continue
 
             if task.status == TaskStatus.ACTIVE.value:
-                if await work_service._has_pending_recovery_signal(task.id):
+                if await work_service._pending_recovery_signal(task.id):
                     recovery_required.append(task_resp)
                 continue
 

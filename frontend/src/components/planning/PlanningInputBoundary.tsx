@@ -7,7 +7,11 @@ import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 
 const WATCHED_FIELDS = ['name', 'display_name', 'position', 'start_date', 'end_date', 'status', 'health', 'availability_percent', 'operational_utilization', 'professionalism_coefficient'];
 
-const DRAFT_FIELDS = [...WATCHED_FIELDS, 'calendar_id', 'project_id', 'manager_email'];
+const DRAFT_FIELDS = [...WATCHED_FIELDS, 'calendar_id', 'additional_calendar_ids', 'project_id', 'manager_email'];
+
+const fieldValue = (key: string, value: unknown) => key === 'additional_calendar_ids' && Array.isArray(value)
+    ? [...value].sort((left, right) => Number(left) - Number(right)).join(',')
+    : String(value ?? '');
 
 export const PlanningInputBoundary = <T,>({ kind, resourceId, creatingMember = false, getIntent, onCancel, draft, children }: {
     /** The record the form was opened with; when given, the conflict prompt shows only if the server's copy differs from it. */
@@ -32,7 +36,7 @@ export const PlanningInputBoundary = <T,>({ kind, resourceId, creatingMember = f
     const fields = draft ? DRAFT_FIELDS : WATCHED_FIELDS;
     const baseline = acknowledged ?? (draft as Record<string, unknown> | undefined);
     const differing = (from: Record<string, unknown>, to: Record<string, unknown>) => fields.filter(key =>
-        to[key] !== undefined && String(to[key] ?? '') !== String(from[key] ?? ''));
+        to[key] !== undefined && fieldValue(key, to[key]) !== fieldValue(key, from[key]));
     const changedFields = baseline && context.observation ? differing(baseline, context.observation.resource as Record<string, unknown>) : [];
     // Fields that changed on the server again after the prompt was shown; null while there is no such change.
     const [changedAgain, setChangedAgain] = useState<string[] | null>(null);

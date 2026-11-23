@@ -290,7 +290,11 @@ class TaskDomainService:
                     self.db.add(TaskStatusLog(task_id=task.id, from_status=old_status, to_status=task.status, reason=data.reason, triggered_by="user"))
                 if task.parent_id:
                     await self.tasks.status_service.reconcile_parent_chain(task.parent_id, commit=False)
-        await self.tasks.record_task_event(task.id, f"task_{data.action}", {"reason": data.reason, "version": task.version})
+        payload = {"reason": data.reason, "version": task.version}
+        authority = self.db.info.get("authority")
+        if data.action in {"start_manual", "resolve_manual"} and authority and authority.kind == "human" and authority.profile_id:
+            payload["executor_profile_id"] = authority.profile_id
+        await self.tasks.record_task_event(task.id, f"task_{data.action}", payload)
         await self.db.flush()
         return await self.tasks.get_by_id(task.id)
 
@@ -311,6 +315,10 @@ class TaskDomainService:
         for assignment in assignments:
             assignment.state, assignment.reason = "cancelled", data.reason
         for run in runs:
+            from app.services.review_provenance import different_publisher_required, mark_server_interruption
+            if ((run.execution_provenance or {}).get("different_publisher_required") or
+                    await different_publisher_required(self.db, task.project_id)):
+                await mark_server_interruption(self.db, run)
             run.status, run.ended_at, run.error = "cancelled", utc_now(), data.reason
         task.claimed_by = task.claim_id = task.claim_expires_at = None
         task.claim_generation += 1

@@ -81,6 +81,8 @@ class AgentScheduleResult(BaseModel):
     """Schedule outcome plus the complete optimistic task-version token set."""
 
     success: bool
+    capacity_issues: list[dict[str, Any]] = Field(default_factory=list, exclude_if=lambda rows: not rows)
+    assignment_refreshes: list[dict[str, Any]] = Field(default_factory=list, exclude_if=lambda rows: not rows)
     decisions: list[dict[str, Any]] = Field(default_factory=list)
     workload_balanced: bool = True
     workload_issues: list[dict[str, Any]] = Field(default_factory=list)

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from app.commands import commit_or_flush
+from app.commands import commit_or_flush, current_command, lock_planning
 
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -32,6 +32,7 @@ from app.models.iteration import Iteration
 from app.models.task import Task, TaskStatus
 from app.models.team_member import TeamMember, TeamMemberProfile
 from app.query_limits import CollectionLimitExceededError
+from app.services.review_provenance import different_publisher_required, historical_profile, review_history
 from app.schemas.agent_planning import AgentPlanningCommandContext
 from app.schemas.agent_routing import (
     AgentRoutingCandidate,
@@ -53,7 +54,6 @@ from app.services.agent_routing_policy import (
     MIN_ROUTING_ASSESSMENT_CONFIDENCE,
     MODEL_FAILURE_CATEGORIES,
     REVIEW_MODE_ORDER,
-    ROUTING_DECISION_AUTHORITY,
     ROUTING_DECISION_LINEAGE_FIELDS,
     ROUTING_LINEAGE_AUTHORITY,
     ROUTING_POLICY_VERSION,
@@ -88,7 +88,8 @@ from app.services.agent_service import (
     actor_scopes,
     validate_idempotency_key,
 )
-from app.services.calendar_service import CalendarService
+from app.services.capacity_service import CapacityService
+from app.services.calendar_rules import AnnualCalendars
 from app.services.task_service import TaskService, TaskVersionConflictError
 from app.utils.time import as_utc, utc_now
 
@@ -305,6 +306,11 @@ class AgentRoutingService:
             if task_scope is None:
                 return
             require_project(self.db, task_scope.project_id, "edit")
+            # Work issuance subsequently locks this same planning row through
+            # TaskService._lock_task_scope. Acquire it before broad routing
+            # table locks so a calendar writer can finish without a lock cycle.
+            if current_command(self.db) is not None:
+                await lock_planning(self.db)
             # Only the fixed lock statement uses the connection. All routing reads
             # and mutations still pass through the principal-bound ORM session.
             connection = await self.db.connection()
@@ -1114,29 +1120,34 @@ class AgentRoutingService:
             int(member_id): float(effort)
             for member_id, effort in allocated_rows
         }
-        calendar_service = CalendarService(self.db)
+        capacity_service = CapacityService(self.db)
+        single_year = iteration.start_date.year == iteration.end_date.year == iteration.calendar.year
+        primary = AnnualCalendars(iteration.calendar)
+        original_dates = primary.working_dates(iteration.start_date, iteration.end_date) if single_year else []
         capacity: dict[int, dict[str, Any]] = {}
         for member in members:
-            working_days = calendar_service.calculate_working_days(
-                iteration.calendar,
-                iteration.start_date,
-                iteration.end_date,
-            ).working_days
-            vacation_days = 0
-            for vacation in member.vacations:
-                overlap_start = max(vacation.start_date, iteration.start_date)
-                overlap_end = min(vacation.end_date, iteration.end_date)
-                if overlap_start <= overlap_end:
-                    vacation_days += calendar_service.calculate_working_days(
-                        iteration.calendar,
-                        overlap_start,
-                        overlap_end,
-                    ).working_days
-            available_days = (
-                (working_days - vacation_days)
-                * (member.availability_percent / 100)
-                * (1 - member.operational_utilization / 100)
-            )
+            annual_basis = {}
+            if single_year:
+                # Retain the shipped single-year routing evidence, including how
+                # it counts each recorded vacation and treats shortened days.
+                absences = [(row.start_date, row.end_date) for row in member.vacations]
+                available = len(original_dates) - sum(
+                    sum(first <= day <= last for day in original_dates) for first, last in absences
+                )
+                if iteration.calendar.year not in primary.rules:
+                    annual_basis["missing_calendar_years"] = [iteration.calendar.year]
+            else:
+                coverage = await capacity_service.coverage_for(member)
+                missing_years = coverage.missing_years(iteration.start_date, iteration.end_date)
+                absences = await capacity_service.absence_ranges(member)
+                available = 0.0 if missing_years else sum(
+                    rule.hours(day) / rule.nominal
+                    for day, rule in coverage.dated_rules(iteration.start_date, iteration.end_date)
+                    if not any(first <= day <= last for first, last in absences)
+                )
+                annual_basis = {"annual_calendar_basis": _request_hash({"years": coverage.signature()}),
+                                "missing_calendar_years": missing_years}
+            available_days = available * (member.availability_percent / 100) * (1 - member.operational_utilization / 100)
             committed = allocated_by_member.get(member.id, 0.0)
             required = max(float(task.effort_days), 0.0) if task.effort_days is not None else None
             ratio = (
@@ -1148,9 +1159,8 @@ class AgentRoutingService:
                 task.start_date is not None
                 and task.end_date is not None
                 and any(
-                    vacation.start_date <= task.end_date
-                    and vacation.end_date >= task.start_date
-                    for vacation in member.vacations
+                    start <= task.end_date and end >= task.start_date
+                    for start, end in absences
                 )
             )
             capacity[member.id] = {
@@ -1160,6 +1170,7 @@ class AgentRoutingService:
                     round(ratio, 4) if math.isfinite(ratio) else None
                 ),
                 "vacation_conflict": vacation_conflict,
+                **annual_basis,
                 "vacations": [
                     {
                         "id": vacation.id,
@@ -1200,6 +1211,7 @@ class AgentRoutingService:
         task: Task,
         assessment: TaskRoutingAssessment,
         purpose: str,
+        strict_review: bool,
         reviewer_profile_id: int | None,
         iteration: Iteration,
         members: Sequence[TeamMember],
@@ -1330,6 +1342,7 @@ class AgentRoutingService:
                                 {
                                     "id": binding.model_catalog.id,
                                     "key": binding.model_catalog.key,
+                                    **({"publisher_key": binding.model_catalog.publisher_key} if strict_review else {}),
                                     "revision": binding.model_catalog.revision,
                                     "enabled": binding.model_catalog.enabled,
                                     "configured_model_alias": (
@@ -1488,10 +1501,12 @@ class AgentRoutingService:
             iteration=iteration,
             members=members,
         )
+        strict_review = data.purpose == "verification" and await different_publisher_required(self.db, task.project_id)
         input_evidence = self._routing_input_evidence(
             task=task,
             assessment=assessment,
             purpose=data.purpose,
+            strict_review=strict_review,
             reviewer_profile_id=data.reviewer_profile_id,
             iteration=iteration,
             members=members,
@@ -1513,6 +1528,14 @@ class AgentRoutingService:
             if topology_boundary is not None
             else None
         )
+        history = None
+        if strict_review:
+            history = await review_history(self.db, task, task_assignments, strict=True)
+            input_evidence["review_history"] = {
+                "different_publisher_required": strict_review, "contributors": history.contributors, "candidate": history.candidate,
+            }
+            if history.required_reviewer_profiles is not None:
+                input_evidence["review_history"]["required_reviewer_profile_ids"] = list(history.required_reviewer_profiles)
         input_digest = hashlib.sha256(
             canonical_routing_json_bytes(input_evidence)
         ).hexdigest()
@@ -1535,37 +1558,16 @@ class AgentRoutingService:
             )
             global_blockers = sorted(set(global_blockers))
 
-        execution_assignments = [
-            assignment
-            for assignment in task_assignments
-            if assignment.purpose == "execution"
-            and assignment.state == "fulfilled"
-        ]
-        execution_actor_ids = [
-            assignment.actor_id for assignment in execution_assignments
-        ]
-        execution_profile_ids: list[int | None] = []
-        for assignment in execution_assignments:
-            historical_snapshot = _json_value(
-                assignment.routing_snapshot,
-                {},
-            )
-            historical_profile_id = (
-                historical_snapshot.get("profile_id")
-                if (
-                    historical_snapshot.get("schema_version")
-                    == "routing-decision-snapshot-v1"
-                    and historical_snapshot.get("authority")
-                    == ROUTING_DECISION_AUTHORITY
-                )
-                else None
-            )
-            execution_profile_ids.append(
-                historical_profile_id
-                if isinstance(historical_profile_id, int)
-                and historical_profile_id > 0
-                else None
-            )
+        if history is None:
+            fulfilled = [
+                assignment for assignment in task_assignments
+                if assignment.purpose == "execution" and assignment.state == "fulfilled"
+            ]
+            execution_actor_ids = [assignment.actor_id for assignment in fulfilled]
+            execution_profile_ids = [historical_profile(assignment) for assignment in fulfilled]
+        else:
+            execution_actor_ids = [row["actor_id"] for row in history.contributors]
+            execution_profile_ids = [row["profile_id"] for row in history.contributors]
         eligible_rows: list[tuple[tuple[Any, ...], dict[str, Any]]] = []
         exclusion_rows: list[dict[str, Any]] = []
         examined_pairs = 0
@@ -1608,6 +1610,7 @@ class AgentRoutingService:
                 reviewer_profile_id=reviewer_profile_id,
                 execution_actor_ids=execution_actor_ids,
                 execution_profile_ids=execution_profile_ids,
+                manual_executor_profile_ids=history.manual_execution["profile_ids"] if history and history.manual_execution else None,
                 review_mode=assessment.review_mode,
                 required_specialist_skill_levels=assessment.required_skill_levels,
             )
@@ -1626,6 +1629,8 @@ class AgentRoutingService:
                 *compatibility.hard_blocker_codes,
                 *skill.hard_blocker_codes,
             ]
+            if history is not None and not history.permits_profile(actor.profile_id):
+                actor_blockers.append(RoutingBlockerCode.REVIEWER_PROFILE_MISMATCH.value)
             if (
                 topology_boundary is not None
                 and actor.id
@@ -1771,9 +1776,8 @@ class AgentRoutingService:
                     actual_tool_tags=binding.tool_tags or (),
                     actual_data_policy_tags=binding.data_policy_tags or (),
                 )
-                blockers = sorted(
-                    set((*actor_blockers, *model.hard_blocker_codes))
-                )
+                publisher_blockers = history.publisher_blockers(catalog.publisher_key if catalog else None) if strict_review else []
+                blockers = sorted(set((*actor_blockers, *model.hard_blocker_codes, *publisher_blockers)))
                 schedule_delay_days = (
                     float(
                         max(
@@ -1994,6 +1998,10 @@ class AgentRoutingService:
             ),
             "hard_blocker_codes": hard_blocker_codes,
         }
+        if strict_review:
+            response_values["acceptance_blocker_codes"] = (
+                [] if history.candidate else [RoutingBlockerCode.VERIFICATION_CANDIDATE_UNVERIFIABLE.value]
+            )
         # Cardinality limits alone are insufficient because evidence strings
         # vary in size. Trim the deterministic tail until the full packet,
         # including its digest field, stays within the durable boundary.

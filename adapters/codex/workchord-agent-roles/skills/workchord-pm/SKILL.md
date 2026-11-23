@@ -146,6 +146,7 @@ Assigned mode (`assigned-work v1`) requires every one of these live features; th
 - `fenced-claims`
 - `my-work-v1`
 - `pm-control-v1`
+- `review-provenance-v1`
 - `snapshot-pagination-v1`
 - `typed-rework-recovery`
 - `verification-v1`

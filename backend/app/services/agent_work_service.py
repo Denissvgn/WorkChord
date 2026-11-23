@@ -26,6 +26,7 @@ from app.models.agent import (
     TaskEvent,
 )
 from app.models.task import Task, TaskDependency, TaskStatus
+from app.services.execution_planning_window import assignment_matches, require_window_authority, window_authority_matches
 from app.models.iteration import Iteration
 from app.models.project import Project, ProjectUpdateEntry
 from app.models.team_member import TeamMember, TeamMemberProfile
@@ -103,6 +104,10 @@ from app.services.agent_routing_rollout import (
     AgentRoutingTopologyReadinessStatus,
 )
 from app.services.agent_model_catalog_service import AgentModelCatalogService
+from app.services.review_provenance import (
+    ReworkReadCache, actor_provenance, different_publisher_required, rework_binding_identity,
+    select_reviewer, supervised_rework_evidence,
+)
 from app.services.task_service import TaskService, TaskVersionConflictError
 from app.services.project_service import ProjectService
 from app.schemas.project import ProjectUpdateEntryCreate
@@ -194,6 +199,8 @@ class AgentWorkService:
     async def _resolve_rollout(
         self,
         actor: AgentActor,
+        *,
+        observed_boundaries: dict | None = None,
     ) -> AgentRoutingRolloutService:
         if self._rollout_service_explicit:
             return self.rollout_service
@@ -201,9 +208,9 @@ class AgentWorkService:
             return self.rollout_service
         from app.services.agent_team_setup_service import AgentTeamSetupService
 
-        readiness = await AgentTeamSetupService(self.db).routing_readiness(
-            actor
-        )
+        setup = AgentTeamSetupService(self.db)
+        readiness = (await setup.routing_readiness(actor) if observed_boundaries is None
+                     else await setup.routing_readiness(actor, observed_boundaries=observed_boundaries))
         if (
             readiness.status
             == AgentRoutingTopologyReadinessStatus.UNAVAILABLE
@@ -296,29 +303,38 @@ class AgentWorkService:
             target_actor_id,
         )
 
+    @staticmethod
+    def _require_dispatch_owners(
+        boundary: AgentTeamMembershipBoundary | None, actor_ids: Iterable[int],
+    ) -> None:
+        if boundary is None:
+            return
+        outsiders = set(actor_ids) - boundary.member_actor_ids
+        if outsiders:
+            from app.services.agent_team_setup_service import AgentTeamSetupConflictError
+
+            raise AgentTeamSetupConflictError(
+                "agent_team_actor_outside_topology",
+                "Work owner is outside the caller's current topology",
+                topology_key=boundary.topology_key,
+                topology_revision=boundary.topology_revision,
+                target_actor_id=min(outsiders),
+            )
+
     def _advance_dispatch_queue(
         self,
         principal: AgentActor,
         actor: AgentActor,
         boundary: AgentTeamMembershipBoundary | None,
+        *,
+        scope: str = "assignments:write",
     ) -> None:
-        """Advance a locked queue after validating the assignment selection."""
-        if boundary is not None:
-            # Reassignment also removes work from the previous owner's queue.
-            if actor.id not in boundary.member_actor_ids:
-                from app.services.agent_team_setup_service import AgentTeamSetupConflictError
-
-                raise AgentTeamSetupConflictError(
-                    "agent_team_actor_outside_topology",
-                    "Queue owner is outside the caller's current topology",
-                    topology_key=boundary.topology_key,
-                    topology_revision=boundary.topology_revision,
-                    target_actor_id=actor.id,
-                )
-            if boundary.primary_actor_id == principal.id:
-                command = current_command(self.db)
-                assert command is not None
-                command.dispatch_queue_revisions.add((principal.id, actor.id, actor.queue_revision + 1))
+        """Advance a locked team queue on behalf of its controller."""
+        self._require_dispatch_owners(boundary, [actor.id])
+        if boundary is not None and boundary.primary_actor_id == principal.id:
+            command = current_command(self.db)
+            assert command is not None
+            command.dispatch_queue_revisions[(principal.id, actor.id, actor.queue_revision + 1)] = scope
         actor.queue_revision += 1
 
     @staticmethod
@@ -337,6 +353,12 @@ class AgentWorkService:
             correlation_id=correlation_id,
         )
         payload = data.model_dump(mode="json", exclude_unset=exclude_unset)
+        # Preserve receipts created before these optional observations existed.
+        for field in ("review_binding_id", "observed_model", "reviewed_candidate_digest"):
+            if payload.get(field) is None:
+                payload.pop(field, None)
+        if payload.get("return_for_evidence") is False:
+            payload.pop("return_for_evidence")
         return command, {
             "command": {
                 "rationale": command.rationale,
@@ -407,6 +429,7 @@ class AgentWorkService:
                     "stale" if binding_stale_reasons else "current"
                 )
         return AgentTaskAssignmentResponse(
+            review_selection=assignment.review_selection,
             id=assignment.id,
             task_id=assignment.task_id,
             actor_id=assignment.actor_id,
@@ -593,6 +616,54 @@ class AgentWorkService:
         return cls._routing_snapshot(assignment).get("selection_pending") is True
 
     @classmethod
+    def _supervised_recovery(cls, assignment: AgentTaskAssignment) -> bool:
+        snapshot = cls._routing_snapshot(assignment)
+        return (
+            assignment.queue_class == "recovery"
+            and assignment.model_binding_id is None
+            and snapshot.get("schema_version") == "routing-lineage-snapshot-v1"
+            and snapshot.get("authority") == ROUTING_LINEAGE_AUTHORITY
+            and snapshot.get("supervised_actor_id") == assignment.actor_id
+        )
+
+    @staticmethod
+    def _show_rework(assignment_view, actor_id, evidence):
+        """Project the effective handback without rewriting the issued assignment."""
+        if (assignment_view is None or not isinstance(evidence, dict) or evidence.get("rework_assignment_id") != assignment_view.id
+                or not isinstance(evidence.get("review_floor"), dict) or not evidence.get("reviewer_profile_id")):
+            return
+        assignment_view.reviewer_profile_id = evidence["reviewer_profile_id"]
+        assignment_view.routing_snapshot = {
+            **assignment_view.routing_snapshot,
+            "supervised_actor_id": actor_id,
+            "supervised_rework": evidence,
+            "review_floor": evidence["review_floor"],
+        }
+
+    @classmethod
+    def _execution_assignment_view(cls, assignment, run, **binding_options):
+        view = cls.assignment_response(assignment, **binding_options)
+        if (run is not None and assignment.queue_class == "rework" and run.assignment_id == assignment.id
+                and run.task_id == assignment.task_id and run.actor_id == assignment.actor_id):
+            cls._show_rework(view, assignment.actor_id, (run.execution_provenance or {}).get("supervised_rework"))
+        return view
+
+    async def _shadow_handoff(self, task, assignment, worker, mode, cache, *, lock=False):
+        if worker is None or mode != AgentRoutingRolloutMode.SHADOW:
+            return False, None
+        if assignment.queue_class == "recovery":
+            return self._supervised_recovery(assignment), None
+        if assignment.queue_class != "rework":
+            return False, None
+        key = (assignment.id, task.version, worker.id)
+        if lock or key not in cache.assignments:
+            cache.assignments[key] = await supervised_rework_evidence(
+                self.db, task, assignment, worker, self._routing_snapshot(assignment), lock=lock, cache=cache,
+            )
+        evidence = cache.assignments[key]
+        return evidence is not None, evidence
+
+    @classmethod
     def _is_model_aware_assignment(
         cls,
         assignment: AgentTaskAssignment,
@@ -734,6 +805,7 @@ class AgentWorkService:
     @staticmethod
     def run_response(run: AgentRun) -> AgentRunResponse:
         return AgentRunResponse(
+            execution_provenance=run.execution_provenance,
             id=run.id,
             task_id=run.task_id,
             actor_id=run.actor_id,
@@ -1034,10 +1106,10 @@ class AgentWorkService:
         )
         return list(result.scalars().all())
 
-    async def _has_pending_recovery_signal(self, task_id: int) -> bool:
-        """Return whether the latest agent lifecycle evidence still needs ownership."""
+    async def _pending_recovery_signal(self, task_id: int) -> TaskEvent | None:
+        """Return the latest lifecycle event if it still requires ownership."""
         result = await self.db.execute(
-            select(TaskEvent.event_type)
+            select(TaskEvent)
             .where(
                 TaskEvent.task_id == task_id,
                 TaskEvent.event_type.in_(RECOVERY_LIFECYCLE_EVENT_TYPES),
@@ -1046,7 +1118,7 @@ class AgentWorkService:
             .limit(1)
         )
         latest = result.scalar_one_or_none()
-        return latest in PENDING_RECOVERY_SIGNAL_TYPES
+        return latest if latest and latest.event_type in PENDING_RECOVERY_SIGNAL_TYPES else None
 
     @staticmethod
     def _validate_assignment_actor(actor: AgentActor, purpose: str) -> None:
@@ -1358,7 +1430,15 @@ class AgentWorkService:
                 raise
             routing_snapshot = routing_validation.snapshot.model_dump(mode="json")
         assert routing_snapshot is not None
+        review_selection = None
+        if data.purpose == "verification":
+            review_selection = await select_reviewer(self.db, task, task_assignments, target,
+                binding_id=getattr(data, "model_binding_id", None) or getattr(data, "review_binding_id", None),
+                reviewer_profile_id=data.reviewer_profile_id)
+            if review_selection is None and getattr(data, "review_binding_id", None):
+                raise ValueError("An explicit supervised review binding requires the project publisher policy.")
         assignment = AgentTaskAssignment(
+            review_selection=review_selection,
             task_id=task.id,
             actor_id=target.id,
             team_member_id=data.team_member_id or task.assignee_id,
@@ -1653,6 +1733,16 @@ class AgentWorkService:
                 )
                 raise conflict
 
+        if getattr(data, "review_binding_id", None) and assignment.purpose != "verification":
+            raise ValueError("A review binding is available only for verification.")
+        if assignment.purpose == "verification" and data.state != "cancelled":
+            selected_binding_id = getattr(data, "model_binding_id", None) or getattr(data, "review_binding_id", None)
+            if selected_binding_id is None and selected_actor.id == assignment.actor_id and assignment.review_selection:
+                selected_binding_id = assignment.review_selection["reviewer"]["binding_id"]
+            assignment.review_selection = await select_reviewer(self.db, task, task_assignments, selected_actor,
+                binding_id=selected_binding_id or assignment.model_binding_id,
+                reviewer_profile_id=(data.reviewer_profile_id if "reviewer_profile_id" in data.model_fields_set
+                                     else assignment.reviewer_profile_id))
         if selected_actor.id != assignment.actor_id:
             assignment.actor_id = selected_actor.id
             self._advance_dispatch_queue(principal, selected_actor, boundary)
@@ -1746,6 +1836,7 @@ class AgentWorkService:
         *,
         limit: int = 20,
         cursor: Optional[str] = None,
+        _rework_read: ReworkReadCache | None = None,
     ) -> AgentWorkDecisionResponse:
         """Return the authoritative resume/begin/wait/recovery decision."""
         self._require_any_scope(actor, "assignments:read", "tasks:read")
@@ -1754,6 +1845,7 @@ class AgentWorkService:
         await self.db.refresh(actor)
         self._require_any_scope(actor, "assignments:read", "tasks:read")
         queue_revision = int(actor.queue_revision)
+        rework_read = _rework_read if _rework_read is not None else ReworkReadCache()
         accepted_result = await self.db.execute(
             select(AgentTaskAssignment)
             .where(
@@ -1850,7 +1942,7 @@ class AgentWorkService:
         items: list[AgentWorkItem] = []
         blocked: list[AgentWorkItem] = []
         for assignment in assignments:
-            item = await self._work_item(assignment, 0, now)
+            item = await self._work_item(assignment, 0, now, rework_read=rework_read)
             if item.blocker_codes:
                 blocked.append(item)
             else:
@@ -1885,6 +1977,8 @@ class AgentWorkService:
                 next_poll_after=now + timedelta(seconds=AGENT_IDLE_POLL_SECONDS),
             )
         if blocked:
+            from app.services.retained_planning_output import REQUIRED
+            handoff = next((item for item in blocked if REQUIRED in item.blocker_codes), None)
             future_times = [
                 as_utc(item.assignment.not_before)
                 for item in blocked
@@ -1897,9 +1991,10 @@ class AgentWorkService:
                 queue_revision=queue_revision,
                 pagination=pagination,
                 cursor=pagination.next_cursor,
-                state="wait",
-                next=blocked[0],
+                state="attention_required" if handoff else "wait",
+                next=handoff or blocked[0],
                 blocked_assigned=blocked_page,
+                recovery_codes=[REQUIRED] if handoff else [],
                 next_poll_after=(
                     min(
                         min(future_times),
@@ -2012,7 +2107,15 @@ class AgentWorkService:
             raise AgentPermissionError("Task context requires a live assignment to this actor")
         brief = parse_task_brief(task.description)
         definition_blockers = self._definition_blockers(task)
-        start_blockers = await self._start_blockers(task, assignment, utc_now())
+        assignment_view = self.assignment_response(assignment) if assignment else None
+        if assignment and assignment.queue_class == "rework" and assignment.state == "accepted":
+            active_runs = (await self.db.scalars(select(AgentRun).where(
+                AgentRun.assignment_id == assignment.id, AgentRun.task_id == task.id,
+                AgentRun.actor_id == assignment.actor_id, AgentRun.claim_generation == task.claim_generation,
+                AgentRun.status == "running").limit(2))).all()
+            if len(active_runs) == 1:
+                assignment_view = self._execution_assignment_view(assignment, active_runs[0])
+        start_blockers = await self._start_blockers(task, assignment, utc_now(), assignment_view=assignment_view)
         parent_chain: list[dict[str, Any]] = []
         parent = task.parent
         seen: set[int] = set()
@@ -2050,7 +2153,7 @@ class AgentWorkService:
         timeline = await AgentService(self.db).get_task_timeline(task.id)
         return AgentTaskContextResponse(
             task=self.task_service.task_to_response(task),
-            assignment=self.assignment_response(assignment) if assignment else None,
+            assignment=assignment_view,
             task_brief=brief,
             parent_chain=parent_chain,
             dependencies=dependencies,
@@ -2117,7 +2220,23 @@ class AgentWorkService:
 
         model_aware_request = isinstance(data, ModelAwareAgentWorkBegin)
         model_aware_assignment = self._is_model_aware_assignment(assignment)
-        if self._selection_pending(assignment):
+        supervised, rework_evidence = False, None
+        rework_read = ReworkReadCache()
+        from app.services.retained_planning_output import REQUIRED, recovery_attestation_hint
+        retained = await recovery_attestation_hint(self.db,task,assignment,rework_read.retained_outputs,lock=True)
+        if retained:
+            raise AgentRoutingConflictError(REQUIRED,"Confirm the original checkpointed output before beginning this recovery.",
+                                            retained_output_attestation=retained)
+        if not model_aware_request and assignment.queue_class in {"rework", "recovery"}:
+            mode = (await self._resolve_rollout(actor)).status().effective_mode
+            rework_read.modes[actor.id] = mode
+            supervised, rework_evidence = await self._shadow_handoff(task, assignment, actor, mode, rework_read, lock=True)
+        if rework_evidence:
+            binding = rework_evidence["worker_binding"]
+            if not data.model or data.model not in (binding["catalog_key"], binding["configured_model_alias"]):
+                raise AgentRoutingConflictError("execution_publisher_unverifiable",
+                    "Report the original supervised model for this authenticated rework handback.")
+        if self._selection_pending(assignment) and not supervised:
             raise AgentRoutingConflictError(
                 "routing_selection_pending",
                 "A fresh routing preview and model-aware assignment update are required",
@@ -2131,7 +2250,7 @@ class AgentWorkService:
                 "Model-aware begin cannot claim a legacy assignment",
                 assignment_id=assignment.id,
             )
-        if not model_aware_request and model_aware_assignment:
+        if not model_aware_request and model_aware_assignment and not supervised:
             effective_mode = (
                 await self._resolve_rollout(actor)
             ).status().effective_mode
@@ -2296,7 +2415,7 @@ class AgentWorkService:
                 )
         if await self._assignment_count(actor.id, "accepted") >= actor.max_parallel_work:
             raise AgentConflictError("Actor has reached max_parallel_work")
-        decision = await self.get_work(actor, limit=1)
+        decision = await self.get_work(actor, limit=1, _rework_read=rework_read)
         if (
             decision.state != "start_assigned"
             or decision.next is None
@@ -2305,12 +2424,13 @@ class AgentWorkService:
             raise AgentConflictError(
                 "Assignment is not the server-selected next work item"
             )
-        if assignment.task_version != task.version:
+        if not assignment_matches(task, assignment):
             raise TaskVersionConflictError(
                 assignment.task_version,
                 self.task_service._metadata_from_task(task),
             )
-        blockers = await self._start_blockers(task, assignment, utc_now())
+        await require_window_authority(self.db, task, assignment)
+        blockers = await self._start_blockers(task, assignment, utc_now(), rework_read=rework_read)
         if blockers:
             raise AgentConflictError("Work is not start-ready: " + ", ".join(blockers))
         now = utc_now()
@@ -2340,10 +2460,28 @@ class AgentWorkService:
         assignment.state = "accepted"
         assignment.task_version = task.version
         actor.queue_revision += 1
+        observed_model = resolved_model_id if model_aware_request else data.model
+        strict_review = await different_publisher_required(self.db, task.project_id)
+        provenance = await actor_provenance(self.db, actor, observed_model=observed_model or "",
+                                            binding_id=selected_binding.id if selected_binding else None, lock=strict_review)
+        if strict_review and not (provenance["publisher_key"] and provenance["profile_id"]):
+            raise AgentRoutingConflictError("execution_publisher_unverifiable",
+                "The authenticated worker must report a uniquely bound model with a known publisher.")
+        if rework_evidence:
+            if rework_binding_identity(provenance) != rework_evidence["worker_binding"]:
+                raise AgentRoutingConflictError("execution_publisher_unverifiable", "The supervised rework binding changed.")
+            provenance["supervised_rework"] = rework_evidence
         run = AgentRun(
             task_id=task.id,
             actor_id=actor.id,
             assignment_id=assignment.id,
+            execution_provenance={
+                **provenance,
+                "source": "authenticated_work_begin",
+                "reported_model": observed_model,
+                "different_publisher_required": strict_review,
+                "independently_attested": False,
+            },
             claim_generation=task.claim_generation,
             status="running",
             trace_id=data.trace_id,
@@ -2379,8 +2517,8 @@ class AgentWorkService:
         self.db.add(run)
         await self.db.flush()
         response = AgentWorkBeginResponse(
-            assignment=self.assignment_response(
-                assignment,
+            assignment=self._execution_assignment_view(
+                assignment, run,
                 model_binding=selected_binding,
                 binding_loaded=model_aware_request,
             ),
@@ -2482,6 +2620,8 @@ class AgentWorkService:
         if assignment is None or assignment.actor_id != actor.id:
             raise AgentPermissionError("Assignment does not belong to this actor")
         request_payload = data.model_dump(mode="json")
+        if data.interruption_checkpoint is None:
+            request_payload.pop("interruption_checkpoint")
         replay = await self._idempotent_replay(
             actor,
             "work.renew",
@@ -2509,10 +2649,11 @@ class AgentWorkService:
             or run.actor_id != actor.id
         ):
             raise AgentConflictError("Work is not active and renewable")
-        if assignment.task_version != task.version:
+        if not assignment_matches(task, assignment):
             raise AgentConflictError(
                 "Assignment scope changed during execution; recovery and redispatch are required"
             )
+        await require_window_authority(self.db, task, assignment)
         self._validate_fence(task, actor, data.claim_id, data.claim_generation)
         if task.version != data.expected_task_version:
             raise TaskVersionConflictError(
@@ -2520,6 +2661,16 @@ class AgentWorkService:
                 self.task_service._metadata_from_task(task),
             )
         self._require_current_execution_policy(task)
+        if data.interruption_checkpoint:
+            from app.services.review_provenance import record_terminal_observation
+            previous = (run.execution_provenance or {}).get("interruption_checkpoint")
+            if previous:
+                raise AgentConflictError("The worker already sealed this execution. Replay its original checkpoint.")
+            checkpoint = data.interruption_checkpoint
+            await record_terminal_observation(self.db, actor, run, checkpoint.observed_model, submitting=False,
+                output_state=checkpoint.output_state, commit_urls=checkpoint.commit_urls, checkpoint=True)
+            captured = dict(run.execution_provenance["interruption_checkpoint"], renew_key=idempotency_key)
+            run.execution_provenance = {**run.execution_provenance, "interruption_checkpoint": captured}
         await self.task_service.reserve_task_version(task, task.version)
         now = utc_now()
         task.claim_expires_at = now + timedelta(seconds=data.lease_seconds)
@@ -2531,7 +2682,7 @@ class AgentWorkService:
             "task_id": task.id,
         }
         response = AgentWorkBeginResponse(
-            assignment=self.assignment_response(assignment),
+            assignment=self._execution_assignment_view(assignment, run),
             task=self.task_service.task_to_response(task),
             run=self.run_response(run),
             claim_id=task.claim_id,
@@ -2615,6 +2766,15 @@ class AgentWorkService:
         if assignment is None or assignment.actor_id != actor.id:
             raise AgentPermissionError("Assignment does not belong to this actor")
         request_payload = data.model_dump(mode="json")
+        if data.observed_model is None:
+            request_payload.pop("observed_model")
+        if request_payload.get("base_commit_url") is None:
+            request_payload.pop("base_commit_url", None)
+        if not success:
+            if data.output_state is None:
+                request_payload.pop("output_state")
+            if not data.commit_urls:
+                request_payload.pop("commit_urls")
         replay = await self._idempotent_replay(
             actor,
             operation,
@@ -2648,10 +2808,11 @@ class AgentWorkService:
             or run.claim_generation != data.claim_generation
         ):
             raise AgentConflictError("Work is not active")
-        if assignment.task_version != task.version:
+        if not assignment_matches(task, assignment):
             raise AgentConflictError(
                 "Assignment scope changed during execution; recovery and redispatch are required"
             )
+        await require_window_authority(self.db, task, assignment)
         self._validate_fence(task, actor, data.claim_id, data.claim_generation)
         if task.version != data.expected_task_version:
             raise TaskVersionConflictError(
@@ -2660,6 +2821,12 @@ class AgentWorkService:
             )
         if success:
             self._require_current_execution_policy(task)
+        if ((run.execution_provenance or {}).get("interruption_checkpoint") or
+                (run.execution_provenance or {}).get("different_publisher_required") or
+                await different_publisher_required(self.db, task.project_id)):
+            from app.services.review_provenance import record_terminal_observation
+            await record_terminal_observation(self.db, actor, run, data.observed_model, submitting=success,
+                output_state=getattr(data, "output_state", None), commit_urls=data.commit_urls, evidence=data.evidence)
         now = utc_now()
         run.status = "succeeded" if success else data.status
         run.ended_at = now
@@ -2673,6 +2840,10 @@ class AgentWorkService:
                 await TaskBriefService(self.db).write_progress(task.id, ProgressWrite(expected_version=task.version,
                     criteria=data.criterion_progress, artifacts=data.artifact_links), fenced_submission=True)
             run.artifact_links = json.dumps(data.artifact_links, ensure_ascii=False)
+            if data.commit_urls and run.execution_provenance:
+                run.execution_provenance = {**run.execution_provenance, "submitted_commit_urls": data.commit_urls}
+            if data.base_commit_url and run.execution_provenance:
+                run.execution_provenance = {**run.execution_provenance, "submitted_base_commit_url": data.base_commit_url}
             run.commit_url = data.commit_url
             run.pr_url = data.pr_url
             task, _, _ = await self.task_service.change_status(
@@ -2702,7 +2873,7 @@ class AgentWorkService:
         actor.queue_revision += 1
         evidence = data.evidence
         response = AgentWorkTerminalResponse(
-            assignment=self.assignment_response(assignment),
+            assignment=self._execution_assignment_view(assignment, run),
             task=self.task_service.task_to_response(task),
             run=self.run_response(run),
             recovery_required=not success,
@@ -2753,6 +2924,8 @@ class AgentWorkService:
             raise ValueError("Review assignment or task not found")
         if hint[1] != actor.id and not actor_has_scope(actor, "admin"):
             raise AgentPermissionError("Review belongs to another actor")
+        from app.services.review_provenance import observe_review_candidate
+        observed_candidate = await observe_review_candidate(self.db, data.assignment_id, actor.id) if data.verdict == "pass" else None
         task = await self._lock_task(hint[0])
         if task is None:
             raise ValueError("Review assignment or task not found")
@@ -2836,10 +3009,11 @@ class AgentWorkService:
             raise AgentConflictError(
                 "Verification assignment is not actionable before not_before"
             )
-        if assignment.task_version != task.version:
+        if not assignment_matches(task, assignment):
             raise AgentConflictError(
                 "Verification assignment is stale; PM must refresh verification ownership"
             )
+        await require_window_authority(self.db, task, assignment)
         if task.version != data.expected_task_version:
             raise TaskVersionConflictError(
                 data.expected_task_version,
@@ -2857,6 +3031,9 @@ class AgentWorkService:
                 rework_worker.id,
             )
             self._validate_assignment_actor(rework_worker, "execution")
+        if await different_publisher_required(self.db, task.project_id):
+            from app.services.review_provenance import verify_verdict
+            await verify_verdict(self.db, task, task_assignments, assignment, actor, data, observed_candidate)
         from app.services.task_brief_service import TaskBriefService
         await TaskBriefService(self.db).require_review(task, accepting=data.verdict == "pass")
         if data.verdict == "reject":
@@ -2923,6 +3100,9 @@ class AgentWorkService:
                 "verdict": data.verdict,
                 "reason": data.reason,
                 "evidence": data.evidence,
+                "review_selection": assignment.review_selection,
+                "observed_model": data.observed_model,
+                "reviewed_candidate_digest": data.reviewed_candidate_digest,
                 "rework_assignment_id": rework.id if rework else None,
                 "routing_selection_pending": (
                     rework_snapshot is not None
@@ -3253,7 +3433,7 @@ class AgentWorkService:
                     and running[0].assignment_id == accepted[0].id
                     and running[0].task_id == accepted[0].task_id == task.id
                     and running[0].claim_generation == task.claim_generation
-                    and accepted[0].task_version == task.version
+                    and await window_authority_matches(self.db, task, accepted[0])
                 )
                 inconsistent = not consistent_current
             if inconsistent:
@@ -3289,10 +3469,7 @@ class AgentWorkService:
                     run.claim_generation != task.claim_generation for run in running
                 ):
                     codes.append("run_claim_generation_mismatch")
-                if any(
-                    assignment.task_version != task.version
-                    for assignment in accepted
-                ):
+                if any([not await window_authority_matches(self.db, task, assignment) for assignment in accepted]):
                     codes.append("assignment_task_version_stale")
                 if (
                     not execution_assignments
@@ -3344,6 +3521,8 @@ class AgentWorkService:
         idempotency_key = validate_idempotency_key(idempotency_key, required=True)
         assert idempotency_key is not None
         task = await self._lock_task(task_id)
+        if task is None:
+            raise ValueError("Task not found")
         command, request_payload = self._audited_command_request(
             data,
             idempotency_key=idempotency_key,
@@ -3361,10 +3540,11 @@ class AgentWorkService:
         if replay:
             snapshot = replay.get("response")
             if snapshot is not None:
-                return AgentRecoveryRequeueResponse.model_validate(snapshot)
+                response = AgentRecoveryRequeueResponse.model_validate(snapshot)
+                # The locked read reserves planning and iteration revisions.
+                await self.db.rollback()
+                return response
             raise AgentConflictError("Idempotent recovery receipt is unavailable")
-        if task is None:
-            raise ValueError("Task not found")
         if task.status not in {
             TaskStatus.ACTIVE.value,
             TaskStatus.RESOLVED.value,
@@ -3390,7 +3570,7 @@ class AgentWorkService:
         target = locked_actors.get(data.actor_id)
         if target is None:
             raise ValueError("Recovery actor must be an enabled worker or PM")
-        await self._require_team_dispatch_member(principal, target.id)
+        boundary = await self._require_team_dispatch_member(principal, target.id)
         self._validate_assignment_actor(target, "execution")
 
         task_assignments = await self._lock_task_assignments(task.id)
@@ -3437,15 +3617,32 @@ class AgentWorkService:
                 "Recovery cannot cancel live verification ownership; "
                 "PM must cancel or complete verification separately"
             )
-        if (
-            not stale_assignments
-            and not stale_runs
-            and task.claimed_by is None
-            and not await self._has_pending_recovery_signal(task.id)
-        ):
-            raise AgentConflictError(
-                "Task has no agent execution ownership or history to recover"
-            )
+        affected_owners = {item.actor_id for item in live_assignments}
+        if data.return_for_evidence:
+            if (task.status != TaskStatus.RESOLVED.value or live_assignments or stale_runs or task.claimed_by is not None
+                    or boundary is None or boundary.primary_actor_id != principal.id or principal.role != "pm"
+                    or not await different_publisher_required(self.db, task.project_id)):
+                raise AgentConflictError("A same-team PM can return released, resolved strict-project work for evidence.")
+            submitted_owners = {item.actor_id for item in task_assignments if item.purpose == "execution" and item.state == "fulfilled"}
+            submitted_run = await self.db.scalar(select(AgentRun.id).join(AgentTaskAssignment,
+                AgentTaskAssignment.id == AgentRun.assignment_id).where(
+                    AgentRun.task_id == task.id, AgentRun.status == "succeeded", AgentRun.claim_generation.is_not(None),
+                    AgentTaskAssignment.task_id == task.id, AgentTaskAssignment.actor_id == AgentRun.actor_id,
+                    AgentTaskAssignment.purpose == "execution", AgentTaskAssignment.state == "fulfilled").limit(1))
+            if not submitted_owners or submitted_run is None:
+                raise AgentConflictError("No attributable execution submission is available to return.")
+            affected_owners.update(submitted_owners)
+            affected_owners.update((await self.db.scalars(select(AgentRun.actor_id).where(AgentRun.task_id == task.id))).all())
+        affected_owners.update(run.actor_id for run in stale_runs)
+        if task.claimed_by is not None:
+            affected_owners.add(task.claimed_by)
+        if not affected_owners:
+            signal = await self._pending_recovery_signal(task.id)
+            if signal is None or (boundary is not None and signal.actor_id is None):
+                raise AgentConflictError("Task has no attributable execution ownership or history to recover")
+            if signal.actor_id is not None:
+                affected_owners.add(signal.actor_id)
+        self._require_dispatch_owners(boundary, affected_owners)
         claim_actor = locked_actors.get(task.claimed_by) if task.claimed_by else None
         claim_actor_compatible = False
         if claim_actor is not None:
@@ -3475,9 +3672,9 @@ class AgentWorkService:
             and stale_runs[0].actor_id == task.claimed_by
             and stale_runs[0].assignment_id == accepted_assignments[0].id
             and stale_runs[0].claim_generation == task.claim_generation
-            and accepted_assignments[0].task_version == task.version
+            and await window_authority_matches(self.db, task, accepted_assignments[0], lock=True)
         )
-        if healthy_execution:
+        if healthy_execution and not (stale_runs[0].execution_provenance or {}).get("interruption_checkpoint"):
             raise AgentConflictError(
                 "Recovery cannot cancel a healthy accepted assignment, claim, and run"
             )
@@ -3496,6 +3693,7 @@ class AgentWorkService:
             and not stale_assignments
             and not stale_runs
             and not live_claim
+            and not data.return_for_evidence
         ):
             raise AgentConflictError(
                 "Resolved task has no inconsistent execution ownership to recover"
@@ -3508,19 +3706,28 @@ class AgentWorkService:
             cancelled_assignment_ids.append(assignment.id)
             owner = locked_actors.get(assignment.actor_id)
             if owner is not None:
-                owner.queue_revision += 1
+                self._advance_dispatch_queue(principal, owner, boundary, scope="recovery:write")
 
         for run in stale_runs:
+            from app.services.review_provenance import mark_server_interruption
+            if ((run.execution_provenance or {}).get("different_publisher_required") or
+                    await different_publisher_required(self.db, task.project_id)):
+                await mark_server_interruption(self.db, run)
             run.status = "canceled"
             run.ended_at = now
             run.heartbeat_at = now
             run.error = f"Reconciled by PM recovery: {data.reason}"
 
         if task.status == TaskStatus.RESOLVED.value:
+            if data.return_for_evidence:
+                command_state = current_command(self.db)
+                assert command_state is not None
+                command_state.evidence_returns.add((principal.id, task.id))
             task, _, _ = await self.task_service.change_status(
                 task.id,
                 TaskStatus.ACTIVE,
-                reason=f"PM recovery reopened inconsistent resolved work: {data.reason}",
+                reason=f"PM returned the work for evidence: {data.reason}" if data.return_for_evidence else
+                       f"PM recovery reopened inconsistent resolved work: {data.reason}",
                 actor_type="agent",
                 actor_id=principal.id,
                 correlation_id=command.correlation_id,
@@ -3561,6 +3768,18 @@ class AgentWorkService:
             reason=data.reason,
             evidence=recovery_evidence,
         )
+        # An exact, supervised dispatch can resume legacy work in shadow.
+        # Retain the pending model lineage in case enforcement changes before begin.
+        reviewer_ids = {item.reviewer_profile_id for item in task_assignments if item.reviewer_profile_id is not None}
+        supervised = (
+            boundary is not None and boundary.primary_actor_id == principal.id
+            and (await self._resolve_rollout(target)).status().effective_mode == AgentRoutingRolloutMode.SHADOW
+            and not any(self._is_model_aware_assignment(item) and not self._supervised_recovery(item)
+                        for item in task_assignments)
+            and len(reviewer_ids) <= 1 and target.profile_id not in reviewer_ids
+        )
+        if supervised:
+            recovery_snapshot["supervised_actor_id"] = target.id
         recovery_assignment = AgentTaskAssignment(
             task_id=task.id,
             actor_id=target.id,
@@ -3570,6 +3789,7 @@ class AgentWorkService:
             state="queued",
             queue_rank=data.queue_rank,
             assigned_by_actor_id=principal.id,
+            reviewer_profile_id=next(iter(reviewer_ids), None) if supervised else None,
             task_version=task.version,
             routing_snapshot=self._serialize_routing_snapshot(
                 recovery_snapshot
@@ -3577,7 +3797,7 @@ class AgentWorkService:
             reason=data.reason,
         )
         self.db.add(recovery_assignment)
-        target.queue_revision += 1
+        self._advance_dispatch_queue(principal, target, boundary, scope="recovery:write")
         await self.db.flush()
         response_ids = {
             "task_id": task.id,
@@ -3599,7 +3819,8 @@ class AgentWorkService:
                 "actor_id": target.id,
                 "task_version": task.version,
                 "reason": data.reason,
-                "routing_selection_pending": True,
+                "routing_selection_pending": not supervised,
+                "returned_for_evidence": data.return_for_evidence,
                 "routing_lineage_digest": hashlib.sha256(
                     canonical_routing_json_bytes(recovery_snapshot)
                 ).hexdigest(),
@@ -3781,10 +4002,11 @@ class AgentWorkService:
             or run.status != "running"
         ):
             raise AgentConflictError("Discovery requires the assignment's running run")
-        if assignment.task_version != task.version:
+        if not assignment_matches(task, assignment):
             raise AgentConflictError(
                 "Assignment scope changed during execution; recovery and redispatch are required"
             )
+        await require_window_authority(self.db, task, assignment)
         self._validate_fence(task, actor, data.claim_id, data.claim_generation)
         if task.version != data.expected_task_version:
             raise TaskVersionConflictError(
@@ -3792,6 +4014,14 @@ class AgentWorkService:
                 self.task_service._metadata_from_task(task),
             )
         labels = list(dict.fromkeys(["agent-discovery", *data.suggested_labels]))
+        # The checks above tie this one item to the actor's accepted assignment and live fence;
+        # the write guard admits exactly that item and nothing else.
+        self.db.info["claim_bound_discovery"] = {
+            "actor_id": actor.id,
+            "project_hint_id": task.project_id,
+            "iteration_hint_id": task.iteration_id,
+            "remaining": 1,
+        }
         item = await TriageService(self.db).create(
             TriageItemCreate(
                 title=data.title,
@@ -3885,24 +4115,41 @@ class AgentWorkService:
         task: Task,
         assignment: Optional[AgentTaskAssignment],
         now: datetime,
+        *,
+        assignment_view: AgentTaskAssignmentResponse | None = None,
+        rework_read: ReworkReadCache | None = None,
     ) -> list[str]:
         blockers: list[str] = []
         if assignment is None:
             return ["assignment_missing"]
-        if self._selection_pending(assignment):
-            blockers.append("routing_selection_pending")
-        if assignment.task_version != task.version:
+        if not await window_authority_matches(self.db, task, assignment):
             blockers.append("assignment_task_version_stale")
         assignment_actor = await self.db.get(AgentActor, assignment.actor_id)
-        rollout_status = (
-            (await self._resolve_rollout(assignment_actor)).status()
-            if assignment_actor is not None
-            else self.rollout_service.status()
-        )
+        read = rework_read if rework_read is not None else ReworkReadCache()
+        from app.services.retained_planning_output import REQUIRED, recovery_attestation_hint
+        retained = await recovery_attestation_hint(self.db,task,assignment,read.retained_outputs)
+        if retained:
+            blockers.append(REQUIRED)
+            if assignment_view is not None:
+                assignment_view.routing_snapshot = {**assignment_view.routing_snapshot, "retained_output_attestation": retained}
+        if assignment_actor is None:
+            mode = self.rollout_service.status().effective_mode
+        elif assignment.queue_class == "rework" and assignment_actor.id in read.modes:
+            mode = read.modes[assignment_actor.id]
+        else:
+            observed = read.teams if assignment.queue_class == "rework" else None
+            mode = (await self._resolve_rollout(assignment_actor, observed_boundaries=observed)).status().effective_mode
+            if assignment.queue_class == "rework":
+                read.modes[assignment_actor.id] = mode
+        supervised, evidence = await self._shadow_handoff(task, assignment, assignment_actor, mode, read)
+        if evidence:
+            self._show_rework(assignment_view, assignment.actor_id, evidence)
+        if self._selection_pending(assignment) and not supervised:
+            blockers.append("routing_selection_pending")
         if (
             self._is_model_aware_assignment(assignment)
-            and rollout_status.effective_mode
-            != AgentRoutingRolloutMode.ENFORCED
+            and not supervised
+            and mode != AgentRoutingRolloutMode.ENFORCED
         ):
             blockers.append("model_aware_assignment_inactive")
         try:
@@ -3999,13 +4246,15 @@ class AgentWorkService:
         now: datetime,
         *,
         running: Optional[Iterable[AgentRun]] = None,
+        rework_read: ReworkReadCache | None = None,
     ) -> AgentWorkItem:
         task = await self.task_service.get_by_id(assignment.task_id)
         if task is None:
             raise AgentConflictError("Assigned task is missing")
+        assignment_view = self.assignment_response(assignment)
         if assignment.purpose == "verification":
             blockers = []
-            if assignment.task_version != task.version:
+            if not await window_authority_matches(self.db, task, assignment):
                 blockers.append("assignment_task_version_stale")
             verifier = await self.db.get(AgentActor, assignment.actor_id)
             try:
@@ -4024,10 +4273,10 @@ class AgentWorkService:
                 from app.services.work_metrics import effective_work_flags
                 if effective_work_flags(task)["effective_is_deferred"]:
                     blockers.append("task_deferred")
-                if assignment.task_version != task.version:
+                if not await window_authority_matches(self.db, task, assignment):
                     blockers.append("assignment_task_version_stale")
             else:
-                blockers = await self._start_blockers(task, assignment, now)
+                blockers = await self._start_blockers(task, assignment, now, assignment_view=assignment_view, rework_read=rework_read)
         queue_class_rank = QUEUE_CLASS_RANK.get(assignment.queue_class, 99)
         not_before = assignment.not_before.isoformat() if assignment.not_before else ""
         start_date = task.start_date.isoformat() if task.start_date else ""
@@ -4047,6 +4296,8 @@ class AgentWorkService:
             ),
             None,
         )
+        if run and assignment.queue_class == "rework":
+            self._show_rework(assignment_view, assignment.actor_id, (run.execution_provenance or {}).get("supervised_rework"))
         claim = None
         if task.claimed_by is not None:
             claim = {
@@ -4061,7 +4312,7 @@ class AgentWorkService:
             ):
                 claim["claim_id"] = task.claim_id
         return AgentWorkItem(
-            assignment=self.assignment_response(assignment),
+            assignment=assignment_view,
             task=self.task_service.task_to_response(task),
             queue_position=position,
             selection_key=selection_key,
@@ -4105,7 +4356,7 @@ class AgentWorkService:
             if task is None:
                 codes.append(f"assignment_{assignment.id}_task_missing")
                 continue
-            if assignment.task_version != task.version:
+            if not await window_authority_matches(self.db, task, assignment):
                 codes.append(f"assignment_{assignment.id}_task_version_stale")
             live_claim = (
                 task.claimed_by == actor.id
@@ -4250,7 +4501,7 @@ class AgentWorkService:
             and assignment.task_id == task.id
             and assignment.state == assignment_data.get("state") == "accepted"
             and assignment.task_version == assignment_task_version
-            and task.version == task_version
+            and (task.version == task_version or assignment_task_version == task_version and assignment_matches(task, assignment))
             and task.claimed_by == actor.id
             and current_claim is not None
             and task.claim_generation == claim_generation
@@ -4298,6 +4549,7 @@ class AgentWorkService:
             raise AgentConflictError(
                 "Idempotent live-work receipt is no longer authoritative; refetch work state"
             )
+        await require_window_authority(self.db, task, assignment)
         self._require_current_execution_policy(task)
         replay = dict(snapshot)
         replay["claim_id"] = current_claim

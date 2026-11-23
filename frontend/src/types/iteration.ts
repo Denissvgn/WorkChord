@@ -12,6 +12,8 @@ export interface Iteration {
     id: number;
     name: string;
     calendar_id: number;
+    additional_calendar_ids?: number[];
+    missing_calendar_years?: number[];
     project_id?: number | null;
     project?: IterationProject | null;
     start_date: string; // ISO
@@ -23,6 +25,7 @@ export interface Iteration {
 export interface IterationCreate {
     name: string;
     calendar_id?: number | null;
+    additional_calendar_ids?: number[];
     project_id?: number | null;
     start_date: string;
     end_date: string;
@@ -32,6 +35,7 @@ export interface IterationCreate {
 export interface IterationUpdate {
     name?: string;
     calendar_id?: number | null;
+    additional_calendar_ids?: number[];
     project_id?: number | null;
     start_date?: string;
     end_date?: string;
@@ -45,6 +49,7 @@ export type IterationSeriesStop =
 export interface IterationSeriesCreate {
     base_name: string;
     calendar_id?: number | null;
+    additional_calendar_ids?: number[];
     project_id?: number | null;
     start_date: string;
     duration_days: number;
@@ -57,6 +62,7 @@ export interface IterationSeriesResponse {
 }
 
 export interface IterationSummary extends WorkMetrics {
+    missing_calendar_years?: number[];
     id: number;
     name: string;
     project_id?: number | null;
@@ -82,6 +88,8 @@ export interface IterationSummary extends WorkMetrics {
 export interface IterationPlanningReadinessSummary {
     iteration_id: number;
     calendar_name?: string | null;
+    additional_calendar_ids?: number[];
+    missing_calendar_years?: number[];
     team_member_count: number;
     team_capacity_hours: number;
     /** Effort of the iteration's planning leaves, and the part assigned to a capacity row. */
