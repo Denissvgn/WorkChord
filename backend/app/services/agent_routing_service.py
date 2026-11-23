@@ -14,6 +14,7 @@ import secrets
 from typing import Any, Sequence
 
 from sqlalchemy import func, select, text, update
+from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -59,6 +60,7 @@ from app.services.agent_routing_policy import (
     ROUTING_POLICY_VERSION,
     ROUTING_PREVIEW_TTL_SECONDS,
     RoutingBlockerCode,
+    RoutingPacketSizeError,
     RoutingProfileEvidence,
     canonical_routing_json_bytes,
     evaluate_actor_authorization,
@@ -2032,18 +2034,21 @@ class AgentRoutingService:
                 "expires_at": datetime.fromisoformat(review_evidence["expires_at"]),
                 **review_ownership,
             }
-        # Cardinality limits alone are insufficient because evidence strings
-        # vary in size. Trim the deterministic tail until the full packet,
-        # including its digest field, stays within the durable boundary.
-        packet_budget = MAX_ROUTING_PACKET_BYTES - 128
-        while (
-            len(
-                canonical_routing_json_bytes(
-                    _json_projection(response_values)
-                )
-            )
-            > packet_budget
-        ):
+        # REST and MCP expose this same validated model. Its defaults and
+        # normalized timestamps participate in the byte limit. Keep the
+        # existing digest input and recompute it for each retained prefix.
+        while True:
+            preview_digest = hashlib.sha256(
+                canonical_routing_json_bytes(_json_projection(response_values))
+            ).hexdigest()
+            try:
+                return AgentRoutingPreviewResponse(preview_digest=preview_digest, **response_values)
+            except ValidationError as exc:
+                errors = exc.errors(include_input=False, include_url=False)
+                if len(errors) != 1 or errors[0]["loc"] or not isinstance(
+                    errors[0].get("ctx", {}).get("error"), RoutingPacketSizeError
+                ):
+                    raise
             if response_values["exclusions"]:
                 response_values["exclusions"].pop()
                 response_values["exclusions_omitted"] += 1
@@ -2057,18 +2062,6 @@ class AgentRoutingService:
                 "Routing preview evidence cannot fit the bounded response packet",
                 task_id=task.id,
             )
-        preview_digest = hashlib.sha256(
-            canonical_routing_json_bytes(_json_projection(response_values))
-        ).hexdigest()
-        preview = AgentRoutingPreviewResponse(
-            preview_digest=preview_digest,
-            **response_values,
-        )
-        validate_routing_packet_size(
-            preview,
-            label="Routing preview",
-        )
-        return preview
 
     async def preview_task_routing(
         self,
