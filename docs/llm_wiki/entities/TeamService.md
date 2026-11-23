@@ -1,6 +1,6 @@
 # TeamService
 
-**Location:** `backend/app/services/team_service.py:36`
+**Location:** `backend/app/services/team_service.py:39`
 **Kind:** Class
 **Bases:** —
 **Module:** [team_service](../modules/team_service.md)
@@ -20,6 +20,7 @@ Service for team member operations.
 | `__init__` | `(db: AsyncSession)` | — | — |
 | `_profile_options` | `()` | — | Return eager loading options for reusable profile responses. |
 | `_member_options` | `()` | — | Return eager loading options for team member responses. |
+| `_attach_assignee_profiles` | *(async)* `(members: Sequence[TeamMember]) -> None` | — | Give rows whose profile the reader cannot read the part every team reader may see. |
 | `_normalize_text_key` | `(value: str \| None) -> str` | — | Return a lowercase matching key for display names and emails. |
 | `_get_profile_by_id` | *(async)* `(profile_id: int) -> TeamMemberProfile \| None` | — | Load a reusable profile by id. |
 | `_require_profile_not_assigned_to_iteration` | *(async)* `(profile_id: int, iteration_id: int \| None, *, exclude_member_id: int \| None = None) -> None` | — | Ensure a profile has at most one capacity row in an iteration. |
@@ -39,7 +40,7 @@ Service for team member operations.
 | `create` | *(async)* `(iteration_id: int, data: TeamMemberCreate, *, commit: bool = True) -> TeamMember` | `@schedule_input_command('member')` | Create a team member, optionally leaving commit ownership to the caller. |
 | `update` | *(async)* `(member_id: int, data: TeamMemberUpdate, *, commit: bool = True) -> TeamMember \| None` | `@schedule_input_command('member')` | Update a team member, optionally leaving commit ownership to the caller. |
 | `detach_absence_adapters` | *(async)* `(member, next_profile_id)` | — | Allocation identity changes must not expose another person's absence adapters. |
-| `delete` | *(async)* `(member_id: int) -> bool` | `@schedule_input_command('member')` | Delete a team member. |
+| `delete` | *(async)* `(member_id: int, *, unused_only: bool = False) -> bool` | `@schedule_input_command('member_removal')` | Remove an allocation under its planning reservation and optional unused precondition. |
 | `add_vacation` | *(async)* `(member_id: int, data: VacationCreate, *, commit: bool = True) -> Vacation \| None` | `@schedule_input_command('member')` | Add a vacation, optionally leaving commit ownership to the caller. |
 | `update_vacation` | *(async)* `(vacation_id: int, data: VacationUpdate, *, commit: bool = True) -> Vacation \| None` | `@schedule_input_command('member')` | Update a vacation period, optionally leaving commit ownership to the caller. |
 | `delete_vacation` | *(async)* `(vacation_id: int) -> bool` | `@schedule_input_command('member')` | Delete a vacation. |
@@ -97,7 +98,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [team_service](../modules/team_service.md) | 30 | — |
+| [team_service](../modules/team_service.md) | 31 | — |
 
 ### References
 
@@ -116,4 +117,4 @@ flowchart LR
 | `add_vacation` | type_reference | [routers_team](../modules/routers_team.md) | — |
 | `create_team_member` | type_reference | [routers_team](../modules/routers_team.md) | — |
 
-> References: showing 12 of 58 logical references; 46 omitted by the 12-row generated summary limit.
+> References: showing 12 of 62 logical references; 50 omitted by the 12-row generated summary limit.

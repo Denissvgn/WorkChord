@@ -20,16 +20,20 @@ _Auto-generated from `frontend/src/features/overview/overviewTaskThread.ts`._
 flowchart LR
     n0["frontend/src/components/overview/OverviewTaskReturnBar.tsx"]
     n1["frontend/src/features/overview/overviewTaskThread.ts"]
-    n2["frontend/src/pages/OverviewPage.tsx"]
-    n3["frontend/src/pages/TasksPage.tsx"]
+    n2["frontend/src/features/scope/scopedPages.test.tsx"]
+    n3["frontend/src/pages/OverviewPage.tsx"]
+    n4["frontend/src/pages/TasksPage.tsx"]
     n0 --> n1
     n2 --> n1
-    n3 --> n0
+    n2 --> n4
     n3 --> n1
+    n4 --> n0
+    n4 --> n1
     click n0 "../modules/OverviewTaskReturnBar.md"
     click n1 "../modules/overviewTaskThread.md"
-    click n2 "../modules/OverviewPage.md"
-    click n3 "../modules/TasksPage.md"
+    click n2 "../modules/scopedPages.test.md"
+    click n3 "../modules/OverviewPage.md"
+    click n4 "../modules/TasksPage.md"
 ```
 
 ### Internal neighbors
@@ -37,6 +41,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [OverviewTaskReturnBar](../modules/OverviewTaskReturnBar.md) |
+| Inbound | [scopedPages.test](../modules/scopedPages.test.md) |
 | Inbound | [OverviewPage](../modules/OverviewPage.md) |
 | Inbound | [TasksPage](../modules/TasksPage.md) |
 

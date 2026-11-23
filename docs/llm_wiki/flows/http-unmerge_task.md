@@ -134,11 +134,11 @@ flowchart LR
 | unmerge_task | HTTPException | 755 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Task has no children to unmerge')` |
 | unmerge_task | IterationService | 760 | `IterationService(db)` |
 | unmerge_task | IterationService.get_by_id | 761 | `iteration_service.get_by_id(task.iteration_id)` |
-| IterationService.get_by_id | self.db.execute | 323 | `self.db.execute(...)` |
-| IterationService.get_by_id | select(…).options(…).where | 324 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
-| IterationService.get_by_id | select(…).options | 324 | `select(Iteration).options(selectinload(...), selectinload(...))` |
-| IterationService.get_by_id | select | 324 | `select(Iteration)` |
-| IterationService.get_by_id | selectinload | 326 | `selectinload(Iteration.calendar)` |
+| IterationService.get_by_id | self.db.execute | 338 | `self.db.execute(...)` |
+| IterationService.get_by_id | select(…).options(…).where | 339 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
+| IterationService.get_by_id | select(…).options | 339 | `select(Iteration).options(selectinload(...), selectinload(...))` |
+| IterationService.get_by_id | select | 339 | `select(Iteration)` |
+| IterationService.get_by_id | selectinload | 341 | `selectinload(Iteration.calendar)` |
 
 ### Boundary effects
 
@@ -151,11 +151,11 @@ flowchart LR
 | unresolved_call | `unmerge_task` | `service.get_by_id` | 747 |
 | external_call | `unmerge_task` | `HTTPException` | 749 |
 | external_call | `unmerge_task` | `HTTPException` | 755 |
-| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 323 |
-| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 324 |
-| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 324 |
-| external_call | `IterationService.get_by_id` | `select` | 324 |
-| external_call | `IterationService.get_by_id` | `selectinload` | 326 |
+| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 338 |
+| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 339 |
+| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 339 |
+| external_call | `IterationService.get_by_id` | `select` | 339 |
+| external_call | `IterationService.get_by_id` | `selectinload` | 341 |
 | step_limit | `unmerge_task` | `first 12 steps` | 0 |
 
 ## Behavior

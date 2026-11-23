@@ -1,6 +1,6 @@
 # IterationSeriesCreate
 
-**Location:** `frontend/src/types/iteration.ts:45`
+**Location:** `frontend/src/types/iteration.ts:49`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_iteration](../modules/types_iteration.md)
@@ -15,6 +15,7 @@ _Auto-generated from `IterationSeriesCreate` in `frontend/src/types/iteration.ts
 |------|------|----------|---------|-------------|
 | `base_name` | `string` | Yes | — | — |
 | `calendar_id` | `number \| null` | No | — | — |
+| `additional_calendar_ids` | `number[]` | No | — | — |
 | `project_id` | `number \| null` | No | — | — |
 | `start_date` | `string` | Yes | — | — |
 | `duration_days` | `number` | Yes | — | — |
@@ -44,7 +45,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_iteration](../modules/types_iteration.md) | 0 | `base_name`, `calendar_id`, `duration_days`, `manager_email`, `project_id`, `start_date`, `stop` |
+| [types_iteration](../modules/types_iteration.md) | 0 | `additional_calendar_ids`, `base_name`, `calendar_id`, `duration_days`, `manager_email`, `project_id`, `start_date`, `stop` |
 
 ### References
 

@@ -1,6 +1,6 @@
 # RequiredModelEnvelope
 
-**Location:** `backend/app/schemas/agent_routing.py:522`
+**Location:** `backend/app/schemas/agent_routing.py:529`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -8,6 +8,8 @@
 ## Description
 
 Minimum provider-neutral runtime capabilities required by a task.
+
+The host-shell tool requirement still applies to execution when the PM permits source-only verification. The optional review setting is omitted from the serialized envelope unless selected so existing assessment receipts retain their original representation.
 
 ## Validators
 
@@ -24,6 +26,7 @@ Minimum provider-neutral runtime capabilities required by a task.
 | `minimum_context_tier` | `ModelContextTier` | `minimum_context_tier` | Yes | No | — | — | — | — |
 | `modality_tags` | `list[str]` | `modality_tags` | No | No | factory: `lambda: ['text']` | — | — | — |
 | `tool_tags` | `list[str]` | `tool_tags` | No | No | factory: `list` | — | — | — |
+| `allow_source_only_review` | `bool` | `allow_source_only_review` | No | No | `False` | strict=True | — | — |
 | `data_policy_tags` | `list[str]` | `data_policy_tags` | No | No | factory: `list` | — | — | — |
 
 ## Methods
@@ -49,7 +52,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing](../modules/agent_routing.md) | 2 | `data_policy_tags`, `minimum_context_tier`, `minimum_reasoning_tier`, `modality_tags`, `tool_tags` |
+| [agent_routing](../modules/agent_routing.md) | 2 | `allow_source_only_review`, `data_policy_tags`, `minimum_context_tier`, `minimum_reasoning_tier`, `modality_tags`, `tool_tags` |
 
 ### Structure
 

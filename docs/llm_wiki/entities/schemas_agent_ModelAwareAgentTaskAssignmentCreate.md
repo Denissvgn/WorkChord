@@ -1,6 +1,6 @@
 # ModelAwareAgentTaskAssignmentCreate
 
-**Location:** `backend/app/schemas/agent.py:590`
+**Location:** `backend/app/schemas/agent.py:613`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -28,14 +28,15 @@ PM command to dispatch one preview-selected actor/model binding.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `task_id` | `int` | `task_id` | Yes | No | — | ge=1 | — | — |
+| `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
 | `actor_id` | `int` | `actor_id` | Yes | No | — | ge=1 | — | — |
 | `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1 | — | — |
 | `purpose` | `AgentAssignmentPurpose` | `purpose` | Yes | No | — | — | — | — |
 | `assessment_id` | `int` | `assessment_id` | Yes | No | — | ge=1 | — | — |
 | `model_binding_id` | `int` | `model_binding_id` | Yes | No | — | ge=1 | — | — |
 | `model_binding_revision` | `int` | `model_binding_revision` | Yes | No | — | ge=1 | — | — |
-| `routing_preview_id` | `str` | `routing_preview_id` | Yes | No | — | max_length=255; min_length=1 | — | — |
-| `routing_preview_digest` | `str` | `routing_preview_digest` | Yes | No | — | max_length=64; min_length=64 | — | — |
+| `routing_preview_id` | `str` | `routing_preview_id` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `routing_preview_digest` | `str` | `routing_preview_digest` | Yes | No | — | min_length=64; max_length=64 | — | — |
 | `team_member_id` | `Optional[int]` | `team_member_id` | No | Yes | `None` | ge=1 | — | — |
 | `reviewer_profile_id` | `Optional[int]` | `reviewer_profile_id` | No | Yes | `None` | ge=1 | — | — |
 | `queue_class` | `AgentAssignmentQueueClass` | `queue_class` | No | No | `'normal'` | — | — | — |
@@ -68,6 +69,7 @@ flowchart LR
     n9["_dispatch (backend/tests/test_agent_routing_wave6_qualification.py)"]
     n10["backend/tests/test_agent_skill_routing_guidance.py"]
     n11["test_model_aware_commands_own_selection_and_observed_model_fields (backend/tests/test_agent_work_routing_lineage.py)"]
+    n12["test_saved_allocation_uses_typed_decision_and_both_native_lineage_writers (backend/tests/test_unused_allocation.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -79,6 +81,7 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
@@ -90,13 +93,14 @@ flowchart LR
     click n9 "../modules/test_agent_routing_wave6_qualification.md"
     click n10 "../modules/test_agent_skill_routing_guidance.md"
     click n11 "../modules/test_agent_work_routing_lineage.md"
+    click n12 "../modules/test_unused_allocation.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 3 | `actor_id`, `assessment_id`, `expected_task_version`, `model_binding_id`, `model_binding_revision`, `not_before`, `purpose`, `queue_class`, `queue_rank`, `reason`, `reviewer_profile_id`, `routing_preview_digest` |
+| [schemas_agent](../modules/schemas_agent.md) | 3 | `actor_id`, `assessment_id`, `expected_task_version`, `model_binding_id`, `model_binding_revision`, `not_before`, `purpose`, `queue_class`, `queue_rank`, `reason`, `review_evidence_id`, `reviewer_profile_id` |
 
 ### Structure
 
@@ -118,3 +122,4 @@ flowchart LR
 | `_dispatch` | call | [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md) | 1 |
 | `test_agent_skill_routing_guidance` | import | [test_agent_skill_routing_guidance](../modules/test_agent_skill_routing_guidance.md) | — |
 | `test_model_aware_commands_own_selection_and_observed_model_fields` | call | [test_agent_work_routing_lineage](../modules/test_agent_work_routing_lineage.md) | 1 |
+| `test_saved_allocation_uses_typed_decision_and_both_native_lineage_writers` | call | [test_unused_allocation](../modules/test_unused_allocation.md) | 1 |

@@ -61,19 +61,19 @@ flowchart LR
 | [InitiativeResponse](../entities/InitiativeResponse.md) | Pydantic model | 84 | `BaseModel` | Schema for initiative responses. |
 | [ProjectInitiativeSummary](../entities/schemas_project_ProjectInitiativeSummary.md) | Pydantic model | 101 | `BaseModel` | Compact initiative identity embedded in project responses. |
 | [ProjectCreate](../entities/schemas_project_ProjectCreate.md) | Pydantic model | 115 | `BaseModel` | Schema for creating a project. |
-| [ProjectUpdate](../entities/schemas_project_ProjectUpdate.md) | Pydantic model | 131 | `PlanningInputRevisions` | Schema for updating a project. |
-| [ProjectUpdateEntryCreate](../entities/schemas_project_ProjectUpdateEntryCreate.md) | Pydantic model | 148 | `BaseModel` | Schema for creating an append-only project update. |
-| [ProjectUpdateEntryResponse](../entities/ProjectUpdateEntryResponse.md) | Pydantic model | 160 | `BaseModel` | Schema for project update responses. |
-| [ProjectMilestoneCreate](../entities/ProjectMilestoneCreate.md) | Pydantic model | 180 | `BaseModel` | Schema for creating a project milestone. |
-| [ProjectMilestoneCreateRequest](../entities/schemas_project_ProjectMilestoneCreateRequest.md) | Pydantic model | 193 | `BaseModel` | API request for creating a project-scoped milestone. |
-| [ProjectMilestoneUpdate](../entities/ProjectMilestoneUpdate.md) | Pydantic model | 205 | `BaseModel` | Schema for updating a project milestone. |
-| [ProjectMilestoneResponse](../entities/ProjectMilestoneResponse.md) | Pydantic model | 217 | `BaseModel` | Schema for project milestone responses. |
-| [RoadmapMilestonePage](../entities/schemas_project_RoadmapMilestonePage.md) | Pydantic model | 233 | `BaseModel` | Cursor page of milestones used by the portfolio roadmap. |
-| [ProjectMilestoneDeleteResponse](../entities/schemas_project_ProjectMilestoneDeleteResponse.md) | Pydantic model | 239 | `BaseModel` | Response returned after deleting a project milestone. |
-| [ProjectMilestoneSummary](../entities/schemas_project_ProjectMilestoneSummary.md) | Pydantic model | 246 | `BaseModel` | Compact milestone identity for project task grouping. |
-| [ProjectMilestoneTaskGroup](../entities/schemas_project_ProjectMilestoneTaskGroup.md) | Pydantic model | 256 | `WorkMetricSummary` | Task progress metrics grouped under one milestone or unassigned work. |
-| [ProjectResponse](../entities/ProjectResponse.md) | Pydantic model | 276 | `BaseModel` | Schema for project response. |
-| [ProjectPortfolioSummary](../entities/schemas_project_ProjectPortfolioSummary.md) | Pydantic model | 302 | `WorkMetricSummary` | Compact project signals for portfolio tables. |
-| [ProjectSummary](../entities/schemas_project_ProjectSummary.md) | Pydantic model | 314 | `WorkMetricSummary` | Summary statistics for a project. |
-| [ProjectPage](../entities/ProjectPage.md) | Pydantic model | 360 | `BaseModel` | — |
-| [ProjectPortfolioPage](../entities/ProjectPortfolioPage.md) | Pydantic model | 368 | `BaseModel` | — |
+| [ProjectUpdate](../entities/schemas_project_ProjectUpdate.md) | Pydantic model | 132 | `PlanningInputRevisions` | Schema for updating a project. |
+| [ProjectUpdateEntryCreate](../entities/schemas_project_ProjectUpdateEntryCreate.md) | Pydantic model | 150 | `BaseModel` | Schema for creating an append-only project update. |
+| [ProjectUpdateEntryResponse](../entities/ProjectUpdateEntryResponse.md) | Pydantic model | 162 | `BaseModel` | Schema for project update responses. |
+| [ProjectMilestoneCreate](../entities/ProjectMilestoneCreate.md) | Pydantic model | 182 | `BaseModel` | Schema for creating a project milestone. |
+| [ProjectMilestoneCreateRequest](../entities/schemas_project_ProjectMilestoneCreateRequest.md) | Pydantic model | 195 | `BaseModel` | API request for creating a project-scoped milestone. |
+| [ProjectMilestoneUpdate](../entities/ProjectMilestoneUpdate.md) | Pydantic model | 207 | `BaseModel` | Schema for updating a project milestone. |
+| [ProjectMilestoneResponse](../entities/ProjectMilestoneResponse.md) | Pydantic model | 219 | `BaseModel` | Schema for project milestone responses. |
+| [RoadmapMilestonePage](../entities/schemas_project_RoadmapMilestonePage.md) | Pydantic model | 235 | `BaseModel` | Cursor page of milestones used by the portfolio roadmap. |
+| [ProjectMilestoneDeleteResponse](../entities/schemas_project_ProjectMilestoneDeleteResponse.md) | Pydantic model | 241 | `BaseModel` | Response returned after deleting a project milestone. |
+| [ProjectMilestoneSummary](../entities/schemas_project_ProjectMilestoneSummary.md) | Pydantic model | 248 | `BaseModel` | Compact milestone identity for project task grouping. |
+| [ProjectMilestoneTaskGroup](../entities/schemas_project_ProjectMilestoneTaskGroup.md) | Pydantic model | 258 | `WorkMetricSummary` | Task progress metrics grouped under one milestone or unassigned work. |
+| [ProjectResponse](../entities/ProjectResponse.md) | Pydantic model | 278 | `BaseModel` | Schema for project response. |
+| [ProjectPortfolioSummary](../entities/schemas_project_ProjectPortfolioSummary.md) | Pydantic model | 305 | `WorkMetricSummary` | Compact project signals for portfolio tables. |
+| [ProjectSummary](../entities/schemas_project_ProjectSummary.md) | Pydantic model | 317 | `WorkMetricSummary` | Summary statistics for a project. |
+| [ProjectPage](../entities/ProjectPage.md) | Pydantic model | 363 | `BaseModel` | — |
+| [ProjectPortfolioPage](../entities/ProjectPortfolioPage.md) | Pydantic model | 371 | `BaseModel` | — |

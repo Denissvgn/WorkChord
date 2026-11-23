@@ -1,6 +1,6 @@
 # TaskItemContentProps
 
-**Location:** `frontend/src/components/tasks/TaskList.tsx:901`
+**Location:** `frontend/src/components/tasks/TaskList.tsx:667`
 **Kind:** Interface
 **Bases:** `TaskItemProps`
 **Module:** [TaskList](../modules/TaskList.md)
@@ -14,6 +14,7 @@ _Auto-generated from `TaskItemContentProps` in `frontend/src/components/tasks/Ta
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `dragHandleProps` | `Record<string, unknown>` | No | — | — |
+| `dragging` | `boolean` | No | — | — |
 
 ## Methods
 
@@ -35,7 +36,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TaskList](../modules/TaskList.md) | 0 | `dragHandleProps` |
+| [TaskList](../modules/TaskList.md) | 0 | `dragging`, `dragHandleProps` |
 
 ### Structure
 

@@ -10,23 +10,33 @@ _Auto-generated from `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx`
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../../features/firstRun/NextStepEmptyState` | `NextStepEmptyState` | — | compiler-dependent |
+| `../../../features/firstRun/firstRunSteps` | `firstRunPlanHref` | — | compiler-dependent |
 | `../../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../../../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
+| `../../../features/scope/useScopeLink` | `useScopeLink` | — | compiler-dependent |
 | `../../../features/taskTransitions` | `canTransition` | — | compiler-dependent |
 | `../../../services/labelService` | `labelService` | — | compiler-dependent |
+| `../../../services/planningInputService` | `planningInputService` | — | compiler-dependent |
 | `../../../services/taskService` | `taskService` | — | compiler-dependent |
 | `../../../services/teamService` | `teamService` | — | compiler-dependent |
 | `../../../types/task` | `Task`, `TaskBatchUpdateResponse`, `TaskStatus`, `TaskUpdate` | Declaration | erased |
+| `../../../types/team` | `TeamMemberProfile` | Declaration | erased |
 | `../../../utils/graphLimitError` | `isGraphLimitError` | — | compiler-dependent |
+| `../../../utils/taskFilters` | `filterTaskBySearch` | — | compiler-dependent |
 | `../../../utils/visibleWork` | `selectVisibleWork` | — | compiler-dependent |
 | `../../common/Button` | `Button` | — | compiler-dependent |
+| `../../common/ButtonLink` | `ButtonLink` | — | compiler-dependent |
 | `../../common/Modal` | `Modal` | — | compiler-dependent |
 | `../../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
 | `../../feedback/WorkFreshness` | `WorkFreshness` | — | compiler-dependent |
+| `../../ui/InlineEmptyState` | `InlineEmptyState` | — | compiler-dependent |
 | `../../ui/tone` | `STATUS_TONE` | — | compiler-dependent |
+| `../AssigneePicker` | `AssigneePicker` | — | compiler-dependent |
 | `../PagedTaskBrowser` | `PagedTaskBrowser` | — | compiler-dependent |
 | `../TaskEditorDrawer` | `TaskEditorDrawer` | — | compiler-dependent |
 | `../TaskFiltersBar` | `TaskFilters` | Declaration | erased |
+| `./KanbanCard` | `BoardCardContext` | Declaration | erased |
 | `./KanbanCard` | `KanbanCard` | — | compiler-dependent |
 | `./KanbanColumn` | `KanbanColumn` | — | compiler-dependent |
 | `@dnd-kit/core` | `DragStartEvent`, `DragEndEvent` | Declaration | erased |
@@ -36,7 +46,7 @@ _Auto-generated from `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx`
 | `react` | `useState`, `useMemo`, `useId`, `useRef` | — | compiler-dependent |
 | `react-dom` | `createPortal` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
-| `react-router-dom` | `Link` | — | compiler-dependent |
+| `react-router-dom` | `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -66,7 +76,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (18) |
+| Outbound | `frontend` (27) |
 
 ### External packages
 
@@ -74,19 +84,19 @@ flowchart LR
 |---|---:|---:|
 | typescript | 7 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [KanbanBoardProps](../entities/KanbanBoardProps.md) | Interface | 38 | — | — |
-| [ColumnId](../entities/ColumnId.md) | Type alias | 43 | `'planned-unassigned' \| 'planned-assigned' \| 'active' \| 'resolved' \| 'closed'` | — |
-| [BoardTaskUpdate](../entities/BoardTaskUpdate.md) | Type alias | 55 | <pre><code>Pick&#60;TaskUpdate&#44; &#39;assignee&#95;id&#39;&#62; &#38; &#123;&#10;    status&#63;&#58; TaskStatus&#59;&#10;&#125;</code></pre> | — |
-| [OwnershipSelection](../entities/OwnershipSelection.md) | Type alias | 59 | <pre><code>&#123;&#10;    task&#58; Task&#59;&#10;    updates&#58; BoardTaskUpdate&#59;&#10;    targetColumn&#58; ColumnId&#59;&#10;&#125;</code></pre> | — |
+| [KanbanBoardProps](../entities/KanbanBoardProps.md) | Interface | 48 | — | — |
+| [ColumnId](../entities/ColumnId.md) | Type alias | 57 | `'planned-unassigned' \| 'planned-assigned' \| 'active' \| 'resolved' \| 'closed'` | — |
+| [BoardTaskUpdate](../entities/BoardTaskUpdate.md) | Type alias | 70 | <pre><code>Pick&#60;TaskUpdate&#44; &#39;assignee&#95;id&#39;&#62; &#38; &#123;&#10;    status&#63;&#58; TaskStatus&#59;&#10;&#125;</code></pre> | — |
+| [OwnershipSelection](../entities/OwnershipSelection.md) | Type alias | 74 | <pre><code>&#123;&#10;    task&#58; Task&#59;&#10;    updates&#58; BoardTaskUpdate&#59;&#10;    targetColumn&#58; ColumnId&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `KanbanBoard` | `({ iterationId, filters }: KanbanBoardProps)` | — | — |
+| `KanbanBoard` | `({ iterationId, filters, onCreateTask, hasActiveFilters = false, onClearFilters }: KanbanBoardProps)` | — | — |

@@ -28,16 +28,16 @@ _Auto-generated from `ObservedRevisions` in `frontend/src/services/planningInput
 ```mermaid
 flowchart LR
     n0["ObservedRevisions (frontend/src/services/planningInputService.ts)"]
-    n1["frontend/src/components/iteration/IterationForm.tsx"]
-    n2["frontend/src/components/iteration/IterationImportDialog.tsx"]
-    n3["frontend/src/components/iteration/IterationList.tsx"]
-    n4["frontend/src/components/projects/ProjectForm.tsx"]
-    n5["frontend/src/components/projects/ProjectIterationsSection.tsx"]
-    n6["frontend/src/components/tasks/TaskWorkPanel.tsx"]
-    n7["frontend/src/components/team/TeamForm.tsx"]
-    n8["frontend/src/components/team/TeamList.tsx"]
-    n9["frontend/src/components/team/VacationCsvImport.tsx"]
-    n10["frontend/src/components/team/VacationManager.tsx"]
+    n1["frontend/src/components/capacity/TeamForm.tsx"]
+    n2["frontend/src/components/capacity/TeamList.tsx"]
+    n3["frontend/src/components/capacity/VacationManager.tsx"]
+    n4["frontend/src/components/iteration/IterationForm.tsx"]
+    n5["frontend/src/components/iteration/IterationImportDialog.tsx"]
+    n6["frontend/src/components/iteration/IterationList.tsx"]
+    n7["frontend/src/components/projects/ProjectForm.tsx"]
+    n8["frontend/src/components/projects/ProjectIterationsSection.tsx"]
+    n9["frontend/src/components/tasks/TaskWorkPanel.tsx"]
+    n10["frontend/src/components/team/VacationCsvImport.tsx"]
     n11["frontend/src/services/calendarService.ts"]
     n12["frontend/src/services/exportService.ts"]
     n1 --> n0
@@ -53,16 +53,16 @@ flowchart LR
     n11 --> n0
     n12 --> n0
     click n0 "../modules/planningInputService.md"
-    click n1 "../modules/IterationForm.md"
-    click n2 "../modules/IterationImportDialog.md"
-    click n3 "../modules/IterationList.md"
-    click n4 "../modules/ProjectForm.md"
-    click n5 "../modules/ProjectIterationsSection.md"
-    click n6 "../modules/TaskWorkPanel.md"
-    click n7 "../modules/TeamForm.md"
-    click n8 "../modules/TeamList.md"
-    click n9 "../modules/VacationCsvImport.md"
-    click n10 "../modules/VacationManager.md"
+    click n1 "../modules/TeamForm.md"
+    click n2 "../modules/TeamList.md"
+    click n3 "../modules/VacationManager.md"
+    click n4 "../modules/IterationForm.md"
+    click n5 "../modules/IterationImportDialog.md"
+    click n6 "../modules/IterationList.md"
+    click n7 "../modules/ProjectForm.md"
+    click n8 "../modules/ProjectIterationsSection.md"
+    click n9 "../modules/TaskWorkPanel.md"
+    click n10 "../modules/VacationCsvImport.md"
     click n11 "../modules/calendarService.md"
     click n12 "../modules/exportService.md"
 ```
@@ -77,16 +77,16 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `TeamForm` | import | [TeamForm](../modules/TeamForm.md) | — |
+| `TeamList` | import | [TeamList](../modules/TeamList.md) | — |
+| `VacationManager` | import | [VacationManager](../modules/VacationManager.md) | — |
 | `IterationForm` | import | [IterationForm](../modules/IterationForm.md) | — |
 | `IterationImportDialog` | import | [IterationImportDialog](../modules/IterationImportDialog.md) | — |
 | `IterationList` | import | [IterationList](../modules/IterationList.md) | — |
 | `ProjectForm` | import | [ProjectForm](../modules/ProjectForm.md) | — |
 | `ProjectIterationsSection` | import | [ProjectIterationsSection](../modules/ProjectIterationsSection.md) | — |
 | `TaskWorkPanel` | import | [TaskWorkPanel](../modules/TaskWorkPanel.md) | — |
-| `TeamForm` | import | [TeamForm](../modules/TeamForm.md) | — |
-| `TeamList` | import | [TeamList](../modules/TeamList.md) | — |
 | `VacationCsvImport` | import | [VacationCsvImport](../modules/VacationCsvImport.md) | — |
-| `VacationManager` | import | [VacationManager](../modules/VacationManager.md) | — |
 | `calendarService` | import | [calendarService](../modules/calendarService.md) | — |
 | `exportService` | import | [exportService](../modules/exportService.md) | — |
 

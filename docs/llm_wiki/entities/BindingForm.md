@@ -1,13 +1,13 @@
 # BindingForm
 
-**Location:** `frontend/src/components/settings/AgentModelAdministration.tsx:53`
+**Location:** `frontend/src/components/team/AgentModelAdministration.tsx:55`
 **Kind:** Interface
 **Bases:** —
 **Module:** [AgentModelAdministration](../modules/AgentModelAdministration.md)
 
 ## Description
 
-_Auto-generated from `BindingForm` in `frontend/src/components/settings/AgentModelAdministration.tsx`._
+_Auto-generated from `BindingForm` in `frontend/src/components/team/AgentModelAdministration.tsx`._
 
 ## Attributes
 

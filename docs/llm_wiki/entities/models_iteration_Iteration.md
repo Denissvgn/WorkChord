@@ -1,6 +1,6 @@
 # Iteration
 
-**Location:** `backend/app/models/iteration.py:18`
+**Location:** `backend/app/models/iteration.py:19`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_iteration](../modules/models_iteration.md)
@@ -22,6 +22,7 @@ Development iteration (sprint) model.
 | `calendar_id` | `Mapped[int]` | `mapped_column(Integer, ForeignKey('calendars.id'), nullable=False)` | — |
 | `project_id` | `Mapped[Optional[int]]` | `mapped_column(Integer, ForeignKey('projects.id', ondelete='SET NULL', use_alter=True), nullable=True, index=True)` | — |
 | `calendar` | `Mapped['Calendar']` | `relationship('Calendar', back_populates='iterations')` | — |
+| `additional_calendars` | `Mapped[list['Calendar']]` | `relationship('Calendar', secondary=iteration_annual_calendars, lazy='selectin', order_by='Calendar.year')` | — |
 | `project` | `Mapped[Optional['Project']]` | `relationship('Project', back_populates='iterations')` | — |
 | `team_members` | `Mapped[list['TeamMember']]` | `relationship('TeamMember', back_populates='iteration')` | — |
 | `tasks` | `Mapped[list['Task']]` | `relationship('Task', back_populates='iteration', cascade='all, delete-orphan')` | — |
@@ -83,7 +84,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_iteration](../modules/models_iteration.md) | 0 | `calendar`, `calendar_id`, `end_date`, `id`, `manager_email`, `name`, `plan_shares`, `project`, `project_id`, `revision`, `start_date`, `tasks` |
+| [models_iteration](../modules/models_iteration.md) | 0 | `additional_calendars`, `calendar`, `calendar_id`, `end_date`, `id`, `manager_email`, `name`, `plan_shares`, `project`, `project_id`, `revision`, `start_date` |
 
 ### Structure
 
@@ -108,4 +109,4 @@ flowchart LR
 | `AgentPlanningService.create_iteration` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `AgentPlanningService.update_iteration` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 
-> References: showing 12 of 87 logical references; 75 omitted by the 12-row generated summary limit.
+> References: showing 12 of 116 logical references; 104 omitted by the 12-row generated summary limit.

@@ -12,7 +12,7 @@ _Auto-generated from `frontend/src/features/agentTeamSetup/masters.test.ts`._
 |--------|---------|-----------|------------------|
 | `../../types/agent` | `AgentTeamMaster`, `AgentTeamSetupStep` | Declaration | erased |
 | `./manifest` | `parseAgentTeamMasterEditor` | — | compiler-dependent |
-| `./masters` | `AGENT_TEAM_STEP_IDS`, `stateTone`, `stepProgress`, `stepsById` | — | compiler-dependent |
+| `./masters` | `stateTone`, `stepProgress`, `stepsById` | — | compiler-dependent |
 | `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals

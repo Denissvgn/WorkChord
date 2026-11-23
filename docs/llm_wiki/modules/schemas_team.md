@@ -63,13 +63,13 @@ flowchart LR
 | [TeamMemberProfileUpdate](../entities/schemas_team_TeamMemberProfileUpdate.md) | 223 | `PlanningInputRevisions` | Schema for updating a reusable team-member profile. |
 | [TeamMemberProfileResponse](../entities/TeamMemberProfileResponse.md) | 252 | `BaseModel` | Schema for reusable team-member profile responses. |
 | [TeamMemberProfileCompact](../entities/schemas_team_TeamMemberProfileCompact.md) | 271 | `BaseModel` | Compact profile data embedded in team-member responses. |
-| [TeamMemberResponse](../entities/TeamMemberResponse.md) | 285 | `BaseModel` | Schema for team member response. |
-| [TeamMemberOptionResponse](../entities/TeamMemberOptionResponse.md) | 303 | `BaseModel` | Compact team-member identity for owner and assignee selectors. |
-| [MemberCapacity](../entities/schemas_team_MemberCapacity.md) | 315 | `BaseModel` | Capacity calculation for a team member. |
-| [MemberWorkload](../entities/schemas_team_MemberWorkload.md) | 330 | `BaseModel` | Workload information for a team member. |
-| [TeamImportRequest](../entities/TeamImportRequest.md) | 346 | `PlanningInputRevisions` | Request for importing team members from text. |
-| [TeamImportResponse](../entities/TeamImportResponse.md) | 351 | `BaseModel` | Response for team import. |
-| [AssigneeRecommendationResponse](../entities/AssigneeRecommendationResponse.md) | 357 | `BaseModel` | Explainable candidate score for assigning a task or triage item. |
+| [TeamMemberResponse](../entities/TeamMemberResponse.md) | 294 | `BaseModel` | Schema for team member response. |
+| [TeamMemberOptionResponse](../entities/TeamMemberOptionResponse.md) | 321 | `BaseModel` | Compact team-member identity for owner and assignee selectors. |
+| [MemberCapacity](../entities/schemas_team_MemberCapacity.md) | 333 | `BaseModel` | Capacity calculation for a team member. |
+| [MemberWorkload](../entities/schemas_team_MemberWorkload.md) | 349 | `BaseModel` | Workload information for a team member. |
+| [TeamImportRequest](../entities/TeamImportRequest.md) | 367 | `PlanningInputRevisions` | Request for importing team members from text. |
+| [TeamImportResponse](../entities/TeamImportResponse.md) | 372 | `BaseModel` | Response for team import. |
+| [AssigneeRecommendationResponse](../entities/AssigneeRecommendationResponse.md) | 378 | `BaseModel` | Explainable candidate score for assigning a task or triage item. |
 
 ## Functions
 

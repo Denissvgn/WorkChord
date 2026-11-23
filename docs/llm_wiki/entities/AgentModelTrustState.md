@@ -28,10 +28,10 @@ _Auto-generated from `AgentModelTrustState` in `frontend/src/types/agent.ts`._
 ```mermaid
 flowchart LR
     n0["AgentModelTrustState (frontend/src/types/agent.ts)"]
-    n1["frontend/src/pages/AgentPipelinePage.tsx"]
+    n1["frontend/src/components/tasks/PipelineTaskEvidence.tsx"]
     n1 --> n0
     click n0 "../modules/types_agent.md"
-    click n1 "../modules/AgentPipelinePage.md"
+    click n1 "../modules/PipelineTaskEvidence.md"
 ```
 
 ### Summary
@@ -44,4 +44,4 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `AgentPipelinePage` | import | [AgentPipelinePage](../modules/AgentPipelinePage.md) | — |
+| `PipelineTaskEvidence` | import | [PipelineTaskEvidence](../modules/PipelineTaskEvidence.md) | — |

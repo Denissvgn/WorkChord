@@ -10,22 +10,27 @@ _Auto-generated from `frontend/src/pages/OverviewPage.test.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `../features/planningMasters/usePlanningReadiness` | `PlanningTeamMember` | Declaration | erased |
+| `../components/layout/CommandMenu` | `CommandMenu` | — | compiler-dependent |
+| `../features/firstRun/getStartedVisibility` | `useGetStartedVisibility` | — | compiler-dependent |
+| `../features/scope/scopeStore` | `useScopeStore` | — | compiler-dependent |
+| `../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../test/pageChrome` | `expectPageChrome` | — | compiler-dependent |
 | `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
-| `../types/iteration` | `Iteration`, `IterationSummary` | Declaration | erased |
-| `../types/task` | `Task`, `TaskStatus` | Declaration | erased |
-| `../utils/selectWorkNowTasks` | `selectWorkNowTasks` | — | compiler-dependent |
+| `../types/agent` | `AgentPipeline` | Declaration | erased |
+| `../types/iteration` | `Iteration`, `PlanCheckpoint` | Declaration | erased |
+| `../types/task` | `Task`, `TaskReference` | Declaration | erased |
 | `./OverviewPage` | `OverviewPage` | — | compiler-dependent |
-| `@testing-library/react` | `screen`, `waitFor`, `within` | — | compiler-dependent |
-| `@testing-library/user-event` | `UserEvent` | Declaration | erased |
+| `./TasksPage` | `TasksPage` | — | compiler-dependent |
+| `@testing-library/react` | `act`, `screen`, `waitFor`, `within` | — | compiler-dependent |
+| `react-router-dom` | `Route`, `Routes`, `useLocation` | — | compiler-dependent |
 | `vitest` | `afterEach`, `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
-| Constants | `planningReadinessMock`, `serviceMocks`, `iteration`, `iterationSummary` |
-| Module calls | `planningReadinessMock = hoisted`, `serviceMocks = hoisted`, `mock`, `mock`, `mock`, `describe`, `describe` |
+| Constants | `api`, `access`, `TODAY`, `ITERATIONS`, `ALPHA_TASKS`, `BETA_TASKS`, `PAST_TASKS`, `TASKS_BY_ITERATION`, `STAGES`, `BACKLOG` |
+| Module calls | `api = hoisted`, `access = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `describe` |
 
 ## Local dependency map
 
@@ -34,45 +39,63 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/features/planningMasters/usePlanningReadiness.ts"]
-    n1["frontend/src/pages/OverviewPage.test.tsx"]
-    n2["frontend/src/pages/OverviewPage.tsx"]
-    n3["frontend/src/test/renderWithProviders.tsx"]
-    n4["frontend/src/types/iteration.ts"]
-    n5["frontend/src/types/task.ts"]
-    n6["frontend/src/utils/selectWorkNowTasks.ts"]
-    n0 --> n4
-    n0 --> n5
-    n1 --> n0
-    n1 --> n2
-    n1 --> n3
-    n1 --> n4
-    n1 --> n5
-    n1 --> n6
-    n2 --> n0
-    n2 --> n4
-    n2 --> n5
-    n2 --> n6
-    n6 --> n5
-    click n0 "../modules/usePlanningReadiness.md"
-    click n1 "../modules/OverviewPage.test.md"
-    click n2 "../modules/OverviewPage.md"
-    click n3 "../modules/renderWithProviders.md"
-    click n4 "../modules/types_iteration.md"
-    click n5 "../modules/types_task.md"
-    click n6 "../modules/selectWorkNowTasks.md"
+    n0["frontend/src/components/layout/CommandMenu.tsx"]
+    n1["frontend/src/features/firstRun/getStartedVisibility.ts"]
+    n2["frontend/src/features/scope/scopeStore.ts"]
+    n3["frontend/src/i18n/i18n.ts"]
+    n4["frontend/src/pages/OverviewPage.test.tsx"]
+    n5["frontend/src/pages/OverviewPage.tsx"]
+    n6["frontend/src/pages/TasksPage.tsx"]
+    n7["frontend/src/test/pageChrome.ts"]
+    n8["frontend/src/test/renderWithProviders.tsx"]
+    n9["frontend/src/types/agent.ts"]
+    n10["frontend/src/types/iteration.ts"]
+    n11["frontend/src/types/task.ts"]
+    n4 --> n0
+    n4 --> n1
+    n4 --> n2
+    n4 --> n3
+    n4 --> n5
+    n4 --> n6
+    n4 --> n7
+    n4 --> n8
+    n4 --> n9
+    n4 --> n10
+    n4 --> n11
+    n5 --> n10
+    n5 --> n11
+    n6 --> n11
+    n8 --> n3
+    n9 --> n11
+    click n0 "../modules/CommandMenu.md"
+    click n1 "../modules/getStartedVisibility.md"
+    click n2 "../modules/scopeStore.md"
+    click n3 "../modules/i18n.md"
+    click n4 "../modules/OverviewPage.test.md"
+    click n5 "../modules/OverviewPage.md"
+    click n6 "../modules/TasksPage.md"
+    click n7 "../modules/pageChrome.md"
+    click n8 "../modules/renderWithProviders.md"
+    click n9 "../modules/types_agent.md"
+    click n10 "../modules/types_iteration.md"
+    click n11 "../modules/types_task.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Outbound | [usePlanningReadiness](../modules/usePlanningReadiness.md) |
+| Outbound | [CommandMenu](../modules/CommandMenu.md) |
+| Outbound | [getStartedVisibility](../modules/getStartedVisibility.md) |
+| Outbound | [scopeStore](../modules/scopeStore.md) |
+| Outbound | [i18n](../modules/i18n.md) |
 | Outbound | [OverviewPage](../modules/OverviewPage.md) |
+| Outbound | [TasksPage](../modules/TasksPage.md) |
+| Outbound | [pageChrome](../modules/pageChrome.md) |
 | Outbound | [renderWithProviders](../modules/renderWithProviders.md) |
+| Outbound | [types_agent](../modules/types_agent.md) |
 | Outbound | [types_iteration](../modules/types_iteration.md) |
 | Outbound | [types_task](../modules/types_task.md) |
-| Outbound | [selectWorkNowTasks](../modules/selectWorkNowTasks.md) |
 
 ### External packages
 

@@ -1,13 +1,13 @@
 # SettingsGroupId
 
-**Location:** `frontend/src/pages/SettingsPage.tsx:46`
+**Location:** `frontend/src/pages/SettingsPage.tsx:53`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SettingsPage](../modules/SettingsPage.md)
 **Target:**
 
 ```typescript
-'personal' | 'planning' | 'agents' | 'integrations' | 'system'
+'myPreferences' | 'workspace' | 'connections' | 'accessSystem'
 ```
 
 ## Description

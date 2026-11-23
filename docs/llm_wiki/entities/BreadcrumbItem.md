@@ -1,6 +1,6 @@
 # BreadcrumbItem
 
-**Location:** `frontend/src/components/layout/Breadcrumbs.tsx:5`
+**Location:** `frontend/src/components/layout/Breadcrumbs.tsx:6`
 **Kind:** Interface
 **Bases:** —
 **Module:** [Breadcrumbs](../modules/Breadcrumbs.md)

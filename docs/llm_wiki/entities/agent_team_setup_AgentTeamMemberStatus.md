@@ -1,7 +1,7 @@
 # AgentTeamMemberStatus
 
 **Location:** `backend/app/schemas/agent_team_setup.py:941`
-**Kind:** Class
+**Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 

@@ -50,23 +50,23 @@ sequenceDiagram
     participant p9 as command_transaction
     participant p10 as AgentRoutingService._assessment_replay
     participant p11 as _authenticate_agent_key
-    participant p12 as _require_scope_requirement
-    participant p13 as IdentityService.actor_context
-    participant p14 as AgentRoutingService._require_preview_rollout
-    participant p15 as record_routing_operational_event
-    participant p16 as require_scope
-    participant p17 as AgentTeamSetupService.routing_readiness
-    participant p18 as build_routing_operational_payload
-    participant p19 as AgentService.authenticate
-    participant p20 as TaskService.record_task_event
-    participant p21 as require_identity_writes
-    participant p22 as emit_outbound_webhook_event
-    participant p23 as _request_hash
-    participant p24 as DeliveryDependencyService.reconcile
-    participant p25 as DiscussionService.enqueue
-    participant p26 as actor_has_scope
-    participant p27 as AgentTeamSetupService.membership_boundary
-    participant p28 as OutboundWebhookService.safe_emit_event
+    participant p12 as AgentRoutingService._lock_task
+    participant p13 as _require_scope_requirement
+    participant p14 as IdentityService.actor_context
+    participant p15 as AgentRoutingService._require_preview_rollout
+    participant p16 as record_routing_operational_event
+    participant p17 as require_scope
+    participant p18 as AgentRoutingService.lock_selection_inputs
+    participant p19 as AgentTeamSetupService.routing_readiness
+    participant p20 as build_routing_operational_payload
+    participant p21 as AgentService.authenticate
+    participant p22 as TaskService.record_task_event
+    participant p23 as require_identity_writes
+    participant p24 as emit_outbound_webhook_event
+    participant p25 as _request_hash
+    participant p26 as DeliveryDependencyService.reconcile
+    participant p27 as DiscussionService.enqueue
+    participant p28 as actor_has_scope
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -80,30 +80,30 @@ sequenceDiagram
     p5->>p9: command_transaction
     p4->>p10: AgentRoutingService._assessment_replay
     p5->>p11: _authenticate_agent_key
-    p5->>p12: _require_scope_requirement
-    p5->>p13: IdentityService.actor_context
-    p4->>p14: AgentRoutingService._require_preview_rollout
-    p4->>p15: record_routing_operational_event
-    p12->>p16: require_scope
-    p14->>p17: AgentTeamSetupService.routing_readiness
-    p15->>p18: build_routing_operational_payload
-    p11->>p19: AgentService.authenticate
-    p15->>p20: TaskService.record_task_event
-    p13->>p21: require_identity_writes
-    p15->>p22: emit_outbound_webhook_event
-    p10->>p23: _request_hash
-    p9->>p24: DeliveryDependencyService.reconcile
-    p9->>p25: DiscussionService.enqueue
-    p16->>p26: actor_has_scope
-    p17->>p27: AgentTeamSetupService.membership_boundary
-    p22->>p28: OutboundWebhookService.safe_emit_event
+    p4->>p12: AgentRoutingService._lock_task
+    p5->>p13: _require_scope_requirement
+    p5->>p14: IdentityService.actor_context
+    p4->>p15: AgentRoutingService._require_preview_rollout
+    p4->>p16: record_routing_operational_event
+    p13->>p17: require_scope
+    p12->>p18: AgentRoutingService.lock_selection_inputs
+    p15->>p19: AgentTeamSetupService.routing_readiness
+    p16->>p20: build_routing_operational_payload
+    p11->>p21: AgentService.authenticate
+    p16->>p22: TaskService.record_task_event
+    p14->>p23: require_identity_writes
+    p16->>p24: emit_outbound_webhook_event
+    p10->>p25: _request_hash
+    p9->>p26: DeliveryDependencyService.reconcile
+    p9->>p27: DiscussionService.enqueue
+    p17->>p28: actor_has_scope
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 462 interactions; 432 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 500 interactions; 470 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 150 (149 omitted); unresolved 1 of 169 (168 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 156 (155 omitted); unresolved 1 of 191 (190 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -117,7 +117,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 138 groups; 130 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 150 groups; 142 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -130,9 +130,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 144; effect analysis evaluated: 85, partial: 7, unavailable: 52. Counts include steps omitted from the displayed trace.
+Source steps: 154; effect analysis evaluated: 92, partial: 7, unavailable: 55. Counts include steps omitted from the displayed trace.
 
-Collector observations for 92 source steps with known totals: observed: 536, emitted: 489, omitted: 47. Unavailable totals are excluded.
+Collector observations for 99 source steps with known totals: observed: 563, emitted: 514, omitted: 49. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -141,7 +141,7 @@ Collector observations for 92 source steps with known totals: observed: 536, emi
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
 | `agent_create_task_routing_assessment` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
-| `_tool_call` | `available` | `partial` | `available` | `18` | `12` | `6` |
+| `_tool_call` | `available` | `partial` | `available` | `19` | `12` | `7` |
 | `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -191,7 +191,7 @@ flowchart LR
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
 | `agent_create_task_routing_assessment` | `task_id: int`, `payload: dict[str, Any]`, `idempotency_key: str`, `rationale: str`, `correlation_id: str` | - | - | `...` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -207,7 +207,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_create_task_routing_assessment | _tool_call | 531 | `_tool_call('planning:write', ...)` |
+| agent_create_task_routing_assessment | _tool_call | 532 | `_tool_call('planning:write', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

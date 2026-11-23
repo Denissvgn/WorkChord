@@ -1,9 +1,9 @@
 # RoadmapMarker
 
-**Location:** `frontend/src/pages/RoadmapPage.tsx:49`
+**Location:** `frontend/src/components/projects/RoadmapView.tsx:37`
 **Kind:** Type alias
 **Bases:** —
-**Module:** [RoadmapPage](../modules/RoadmapPage.md)
+**Module:** [RoadmapView](../modules/RoadmapView.md)
 **Target:**
 
 ```typescript
@@ -15,7 +15,7 @@
 
 ## Description
 
-_Auto-generated from `RoadmapMarker` in `frontend/src/pages/RoadmapPage.tsx`._
+_Auto-generated from `RoadmapMarker` in `frontend/src/components/projects/RoadmapView.tsx`._
 
 ## Attributes
 
@@ -34,4 +34,4 @@ _Auto-generated from `RoadmapMarker` in `frontend/src/pages/RoadmapPage.tsx`._
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [RoadmapPage](../modules/RoadmapPage.md) | 0 | — |
+| [RoadmapView](../modules/RoadmapView.md) | 0 | — |

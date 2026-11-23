@@ -46,18 +46,42 @@ _Auto-generated from `TriageItem` in `frontend/src/types/triage.ts`._
 flowchart LR
     n0["TriageItem (frontend/src/types/triage.ts)"]
     n1["frontend/src/components/tasks/QuickCapture.tsx"]
-    n2["frontend/src/pages/TriagePage.tsx"]
-    n3["frontend/src/services/triageService.ts"]
-    n4["frontend/src/types/task.ts"]
+    n2["frontend/src/components/triage/ConvertTriageDrawer.tsx"]
+    n3["frontend/src/components/triage/TriageActionModal.tsx"]
+    n4["TriageConvertSource (frontend/src/components/triage/TriageConvertSource.tsx)"]
+    n5["frontend/src/components/triage/TriageDetailPanel.tsx"]
+    n6["frontend/src/components/triage/TriageList.test.tsx"]
+    n7["TriageList (frontend/src/components/triage/TriageList.tsx)"]
+    n8["frontend/src/components/triage/TriageRow.tsx"]
+    n9["isDueSnoozed (frontend/src/components/triage/triageUtils.ts)"]
+    n10["statusClassName (frontend/src/components/triage/triageUtils.ts)"]
+    n11["frontend/src/pages/TriagePage.test.tsx"]
+    n12["frontend/src/pages/TriagePage.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
+    n6 --> n0
+    n7 --> n0
+    n8 --> n0
+    n9 --> n0
+    n10 --> n0
+    n11 --> n0
+    n12 --> n0
     click n0 "../modules/types_triage.md"
     click n1 "../modules/QuickCapture.md"
-    click n2 "../modules/TriagePage.md"
-    click n3 "../modules/triageService.md"
-    click n4 "../modules/types_task.md"
+    click n2 "../modules/ConvertTriageDrawer.md"
+    click n3 "../modules/TriageActionModal.md"
+    click n4 "../modules/TriageConvertSource.md"
+    click n5 "../modules/TriageDetailPanel.md"
+    click n6 "../modules/TriageList.test.md"
+    click n7 "../modules/TriageList.md"
+    click n8 "../modules/TriageRow.md"
+    click n9 "../modules/triageUtils.md"
+    click n10 "../modules/triageUtils.md"
+    click n11 "../modules/TriagePage.test.md"
+    click n12 "../modules/TriagePage.md"
 ```
 
 ### Summary
@@ -71,6 +95,16 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `QuickCapture` | import | [QuickCapture](../modules/QuickCapture.md) | — |
+| `ConvertTriageDrawer` | import | [ConvertTriageDrawer](../modules/ConvertTriageDrawer.md) | — |
+| `TriageActionModal` | import | [TriageActionModal](../modules/TriageActionModal.md) | — |
+| `TriageConvertSource` | type_reference | [TriageConvertSource](../modules/TriageConvertSource.md) | — |
+| `TriageDetailPanel` | import | [TriageDetailPanel](../modules/TriageDetailPanel.md) | — |
+| `TriageList.test` | import | [TriageList.test](../modules/TriageList.test.md) | — |
+| `TriageList` | type_reference | [TriageList](../modules/TriageList.md) | — |
+| `TriageRow` | import | [TriageRow](../modules/TriageRow.md) | — |
+| `isDueSnoozed` | type_reference | [triageUtils](../modules/triageUtils.md) | — |
+| `statusClassName` | type_reference | [triageUtils](../modules/triageUtils.md) | — |
+| `TriagePage.test` | import | [TriagePage.test](../modules/TriagePage.test.md) | — |
 | `TriagePage` | import | [TriagePage](../modules/TriagePage.md) | — |
-| `triageService` | import | [triageService](../modules/triageService.md) | — |
-| `task` | import | [types_task](../modules/types_task.md) | — |
+
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

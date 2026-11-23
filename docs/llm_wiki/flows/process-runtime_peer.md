@@ -2,7 +2,7 @@
 
 **Entry point:** `__main__` (`process`)
 **Source:** [runtime_peer](../modules/runtime_peer.md)
-**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 18 more
+**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 23 more
 
 **Complete modules touched:**
 
@@ -16,10 +16,15 @@
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
+- [execution_planning_window](../modules/execution_planning_window.md)
+- [execution_reconciliation](../modules/execution_reconciliation.md)
+- [github_links](../modules/github_links.md)
 - [identity_service](../modules/identity_service.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
 - [mutation_versions](../modules/mutation_versions.md)
 - [query_limits](../modules/query_limits.md)
+- [retained_planning_output](../modules/retained_planning_output.md)
+- [review_provenance](../modules/review_provenance.md)
 - [runtime_peer](../modules/runtime_peer.md)
 - [schemas_agent](../modules/schemas_agent.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
@@ -49,23 +54,23 @@ sequenceDiagram
     participant p9 as DiscussionService.enqueue
     participant p10 as AgentWorkService._current_recovery_codes
     participant p11 as AgentWorkService._work_item
-    participant p12 as AgentWorkService._paginate_work_collections
-    participant p13 as AgentWorkService._definition_blockers
+    participant p12 as AgentWorkService._definition_blockers
+    participant p13 as AgentWorkService._paginate_work_collections
     participant p14 as AgentWorkService._read_actor_queue_revision
     participant p15 as AgentWorkService.actor_response
-    participant p16 as AgentService.get_task_timeline
-    participant p17 as AgentWorkService._validate_assignment_actor
-    participant p18 as actor_has_scope
-    participant p19 as TaskTimelineService.page
-    participant p20 as AgentWorkService._decode_page_cursor
-    participant p21 as AgentWorkService._start_blockers
-    participant p22 as DeliveryDependencyService.validate_cycles
-    participant p23 as DiscussionService.recipient_authorized
-    participant p24 as AgentWorkService.assignment_response
-    participant p25 as AgentWorkService.run_response
-    participant p26 as TaskService.reserve_task_version
-    participant p27 as clear_execution_evidence
-    participant p28 as DeliveryDependencyService.graph
+    participant p16 as AgentWorkService._execution_assignment_view
+    participant p17 as AgentService.get_task_timeline
+    participant p18 as AgentWorkService._validate_assignment_actor
+    participant p19 as actor_has_scope
+    participant p20 as AgentWorkService.assignment_response
+    participant p21 as TaskTimelineService.page
+    participant p22 as AgentWorkService._decode_page_cursor
+    participant p23 as window_authority_matches
+    participant p24 as AgentWorkService._start_blockers
+    participant p25 as DeliveryDependencyService.validate_cycles
+    participant p26 as DiscussionService.recipient_authorized
+    participant p27 as AgentWorkService.run_response
+    participant p28 as TaskService.reserve_task_version
     participant p29 as print
     participant p30 as <dynamic>
     p0->>p1: execute
@@ -79,30 +84,30 @@ sequenceDiagram
     p2->>p9: DiscussionService.enqueue
     p4->>p10: AgentWorkService._current_recovery_codes
     p4->>p11: AgentWorkService._work_item
-    p4->>p12: AgentWorkService._paginate_work_collections
-    p5->>p13: AgentWorkService._definition_blockers
+    p5->>p12: AgentWorkService._definition_blockers
+    p4->>p13: AgentWorkService._paginate_work_collections
     p4->>p14: AgentWorkService._read_actor_queue_revision
     p4->>p15: AgentWorkService.actor_response
-    p5->>p16: AgentService.get_task_timeline
-    p10->>p17: AgentWorkService._validate_assignment_actor
-    p6->>p18: actor_has_scope
-    p16->>p19: TaskTimelineService.page
-    p12->>p20: AgentWorkService._decode_page_cursor
-    p11->>p21: AgentWorkService._start_blockers
-    p7->>p22: DeliveryDependencyService.validate_cycles
-    p9->>p23: DiscussionService.recipient_authorized
-    p11->>p24: AgentWorkService.assignment_response
-    p11->>p25: AgentWorkService.run_response
-    p7->>p26: TaskService.reserve_task_version
-    p7->>p27: clear_execution_evidence
-    p22->>p28: DeliveryDependencyService.graph
+    p5->>p16: AgentWorkService._execution_assignment_view
+    p5->>p17: AgentService.get_task_timeline
+    p10->>p18: AgentWorkService._validate_assignment_actor
+    p6->>p19: actor_has_scope
+    p11->>p20: AgentWorkService.assignment_response
+    p17->>p21: TaskTimelineService.page
+    p13->>p22: AgentWorkService._decode_page_cursor
+    p10->>p23: window_authority_matches
+    p11->>p24: AgentWorkService._start_blockers
+    p7->>p25: DeliveryDependencyService.validate_cycles
+    p9->>p26: DiscussionService.recipient_authorized
+    p11->>p27: AgentWorkService.run_response
+    p7->>p28: TaskService.reserve_task_version
     p0-->>p29: print(json.dumps(...))
     p1-->>p30: <dynamic>
 ```
 
-> Call sequence diagram shows 30 of 767 interactions; 737 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 959 interactions; 929 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 205 (204 omitted); unresolved 1 of 381 (380 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 262 (261 omitted); unresolved 1 of 485 (484 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -116,7 +121,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/commands.py:command_transaction` | 9 | - | external | 4 |
 | `backend/app/commands.py:command_transaction` | 9 | - | unresolved | 12 |
 | `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 21 | - | unresolved | 23 |
-> Omission summary shows 8 of 168 groups; 160 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 198 groups; 190 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -129,9 +134,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 182; effect analysis evaluated: 126, partial: 4, unavailable: 52. Counts include steps omitted from the displayed trace.
+Source steps: 213; effect analysis evaluated: 152, partial: 7, unavailable: 54. Counts include steps omitted from the displayed trace.
 
-Collector observations for 130 source steps with known totals: observed: 715, emitted: 674, omitted: 41. Unavailable totals are excluded.
+Collector observations for 159 source steps with known totals: observed: 965, emitted: 899, omitted: 66. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -225,18 +230,18 @@ flowchart LR
 | execute | <dynamic> | 28 | `<dynamic>(data not statically known)` |
 | execute | async_sessionmaker | 28 | `async_sessionmaker(engine, expire_on_commit=False)` |
 | execute | command_transaction | 29 | `command_transaction(db)` |
-| command_transaction | current_command | 87 | `current_command(db)` |
-| current_command | getattr (backend/app/commands.py:current_command) | 73 | `getattr(db, 'info', None)` |
-| current_command | isinstance (backend/app/commands.py:current_command) | 74 | `isinstance(info, dict)` |
+| command_transaction | current_command | 93 | `current_command(db)` |
+| current_command | getattr (backend/app/commands.py:current_command) | 79 | `getattr(db, 'info', None)` |
+| current_command | isinstance (backend/app/commands.py:current_command) | 80 | `isinstance(info, dict)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.info.pop` | `command_transaction` | 107 |
-| mutation | `db.info.pop` | `command_transaction` | 120 |
-| mutation | `db.info.pop` | `command_transaction` | 121 |
-| mutation | `db.info.pop` | `command_transaction` | 123 |
+| mutation | `db.info.pop` | `command_transaction` | 113 |
+| mutation | `db.info.pop` | `command_transaction` | 126 |
+| mutation | `db.info.pop` | `command_transaction` | 127 |
+| mutation | `db.info.pop` | `command_transaction` | 129 |
 
 ### Static analysis gaps
 
@@ -248,8 +253,8 @@ flowchart LR
 | external_call | `execute` | `create_async_engine` | 22 |
 | unresolved_call | `execute` | `<dynamic>` | 28 |
 | external_call | `execute` | `async_sessionmaker` | 28 |
-| external_call | `current_command` | `getattr` | 73 |
-| external_call | `current_command` | `isinstance` | 74 |
+| external_call | `current_command` | `getattr` | 79 |
+| external_call | `current_command` | `isinstance` | 80 |
 | step_limit | `__main__` | `first 12 steps` | 0 |
 | truncated_flow | `__main__` | `depth limit` | 0 |
 

@@ -1,6 +1,6 @@
 # TaskBulkOperationResult
 
-**Location:** `frontend/src/types/task.ts:338`
+**Location:** `frontend/src/types/task.ts:340`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -28,23 +28,10 @@ _Auto-generated from `TaskBulkOperationResult` in `frontend/src/types/task.ts`._
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-```mermaid
-flowchart LR
-    n0["TaskBulkOperationResult (frontend/src/types/task.ts)"]
-    n1["frontend/src/components/tasks/TaskBulkOperationsPanel.tsx"]
-    n1 --> n0
-    click n0 "../modules/types_task.md"
-    click n1 "../modules/TaskBulkOperationsPanel.md"
-```
+*No generated relationships detected.*
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
 | [types_task](../modules/types_task.md) | 0 | `assignee_recommendation`, `changes`, `error`, `outcome`, `task`, `task_id`, `warnings` |
-
-### References
-
-| Reference | Kind | Source | Call sites |
-|---|---|---|---:|
-| `TaskBulkOperationsPanel` | import | [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md) | — |

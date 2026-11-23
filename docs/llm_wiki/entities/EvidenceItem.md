@@ -1,15 +1,16 @@
 # EvidenceItem
 
-**Location:** `frontend/src/pages/PlanMasterPage.tsx:66`
+**Location:** `frontend/src/features/planningMasters/planEvidence.ts:12`
 **Kind:** Type alias
 **Bases:** —
-**Module:** [PlanMasterPage](../modules/PlanMasterPage.md)
+**Module:** [planEvidence](../modules/planEvidence.md)
 **Target:**
 
 ```typescript
 {
     label: string;
     value: string;
+    /** An actionable exception: shown in the exception colour. */
     exception?: boolean;
     href?: string;
     actionLabel?: string;
@@ -18,7 +19,7 @@
 
 ## Description
 
-_Auto-generated from `EvidenceItem` in `frontend/src/pages/PlanMasterPage.tsx`._
+_Auto-generated from `EvidenceItem` in `frontend/src/features/planningMasters/planEvidence.ts`._
 
 ## Attributes
 
@@ -31,10 +32,23 @@ _Auto-generated from `EvidenceItem` in `frontend/src/pages/PlanMasterPage.tsx`._
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-*No generated relationships detected.*
+```mermaid
+flowchart LR
+    n0["EvidenceItem (frontend/src/features/planningMasters/planEvidence.ts)"]
+    n1["checkpointEvidence (frontend/src/features/planningMasters/planEvidence.ts)"]
+    n1 --> n0
+    click n0 "../modules/planEvidence.md"
+    click n1 "../modules/planEvidence.md"
+```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [PlanMasterPage](../modules/PlanMasterPage.md) | 0 | — |
+| [planEvidence](../modules/planEvidence.md) | 0 | — |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `checkpointEvidence` | type_reference | [planEvidence](../modules/planEvidence.md) | — |

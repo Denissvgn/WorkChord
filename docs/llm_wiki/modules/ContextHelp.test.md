@@ -14,9 +14,10 @@ _Auto-generated from `frontend/src/components/layout/ContextHelp.test.tsx`._
 | `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
 | `../../utils/singleKeyShortcutPreference` | `SINGLE_KEY_SHORTCUTS_STORAGE_KEY` | — | compiler-dependent |
 | `./ContextHelp` | `ContextHelp` | — | compiler-dependent |
+| `./setupGuideEvents` | `OPEN_SETUP_GUIDE_EVENT` | — | compiler-dependent |
 | `@testing-library/react` | `screen`, `within` | — | compiler-dependent |
 | `react-router-dom` | `useLocation` | — | compiler-dependent |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -31,19 +32,23 @@ _Auto-generated from `frontend/src/components/layout/ContextHelp.test.tsx`._
 flowchart LR
     n0["frontend/src/components/layout/ContextHelp.test.tsx"]
     n1["frontend/src/components/layout/ContextHelp.tsx"]
-    n2["frontend/src/i18n/i18n.ts"]
-    n3["frontend/src/test/renderWithProviders.tsx"]
-    n4["frontend/src/utils/singleKeyShortcutPreference.ts"]
+    n2["frontend/src/components/layout/setupGuideEvents.ts"]
+    n3["frontend/src/i18n/i18n.ts"]
+    n4["frontend/src/test/renderWithProviders.tsx"]
+    n5["frontend/src/utils/singleKeyShortcutPreference.ts"]
     n0 --> n1
     n0 --> n2
     n0 --> n3
     n0 --> n4
-    n3 --> n2
+    n0 --> n5
+    n1 --> n2
+    n4 --> n3
     click n0 "../modules/ContextHelp.test.md"
     click n1 "../modules/ContextHelp.md"
-    click n2 "../modules/i18n.md"
-    click n3 "../modules/renderWithProviders.md"
-    click n4 "../modules/singleKeyShortcutPreference.md"
+    click n2 "../modules/setupGuideEvents.md"
+    click n3 "../modules/i18n.md"
+    click n4 "../modules/renderWithProviders.md"
+    click n5 "../modules/singleKeyShortcutPreference.md"
 ```
 
 ### Internal neighbors
@@ -51,6 +56,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Outbound | [ContextHelp](../modules/ContextHelp.md) |
+| Outbound | [setupGuideEvents](../modules/setupGuideEvents.md) |
 | Outbound | [i18n](../modules/i18n.md) |
 | Outbound | [renderWithProviders](../modules/renderWithProviders.md) |
 | Outbound | [singleKeyShortcutPreference](../modules/singleKeyShortcutPreference.md) |

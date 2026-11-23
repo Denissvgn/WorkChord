@@ -29,31 +29,29 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 ```mermaid
 flowchart LR
     n0["frontend/src/components/projects/InitiativeForm.tsx"]
-    n1["frontend/src/components/projects/ProjectForm.tsx"]
-    n2["frontend/src/i18n/i18n.ts"]
-    n3["frontend/src/pages/ProjectDetailPage.tsx"]
-    n4["frontend/src/pages/ProjectsPage.tsx"]
-    n5["frontend/src/pages/RoadmapPage.tsx"]
+    n1["frontend/src/components/projects/InitiativeGroupHeader.tsx"]
+    n2["frontend/src/components/projects/ProjectForm.tsx"]
+    n3["frontend/src/components/projects/ProjectHeaderFields.tsx"]
+    n4["frontend/src/i18n/i18n.ts"]
+    n5["frontend/src/pages/ProjectsPage.tsx"]
     n6["frontend/src/types/team.ts"]
     n7["frontend/src/utils/teamMemberLabels.ts"]
     n0 --> n7
     n1 --> n7
-    n3 --> n1
-    n3 --> n2
+    n2 --> n7
     n3 --> n7
-    n4 --> n0
-    n4 --> n1
-    n4 --> n7
+    n5 --> n0
+    n5 --> n1
     n5 --> n2
     n5 --> n7
-    n7 --> n2
+    n7 --> n4
     n7 --> n6
     click n0 "../modules/InitiativeForm.md"
-    click n1 "../modules/ProjectForm.md"
-    click n2 "../modules/i18n.md"
-    click n3 "../modules/ProjectDetailPage.md"
-    click n4 "../modules/ProjectsPage.md"
-    click n5 "../modules/RoadmapPage.md"
+    click n1 "../modules/InitiativeGroupHeader.md"
+    click n2 "../modules/ProjectForm.md"
+    click n3 "../modules/ProjectHeaderFields.md"
+    click n4 "../modules/i18n.md"
+    click n5 "../modules/ProjectsPage.md"
     click n6 "../modules/types_team.md"
     click n7 "../modules/teamMemberLabels.md"
 ```
@@ -63,10 +61,10 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [InitiativeForm](../modules/InitiativeForm.md) |
+| Inbound | [InitiativeGroupHeader](../modules/InitiativeGroupHeader.md) |
 | Inbound | [ProjectForm](../modules/ProjectForm.md) |
-| Inbound | [ProjectDetailPage](../modules/ProjectDetailPage.md) |
+| Inbound | [ProjectHeaderFields](../modules/ProjectHeaderFields.md) |
 | Inbound | [ProjectsPage](../modules/ProjectsPage.md) |
-| Inbound | [RoadmapPage](../modules/RoadmapPage.md) |
 | Outbound | [i18n](../modules/i18n.md) |
 | Outbound | [types_team](../modules/types_team.md) |
 

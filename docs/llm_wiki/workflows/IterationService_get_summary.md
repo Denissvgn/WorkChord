@@ -1,7 +1,7 @@
 # IterationService_get_summary
 
 **Entry point:** `iteration_service.IterationService.get_summary`
-**Modules involved:** [calendar_service](../modules/calendar_service.md), [iteration_service](../modules/iteration_service.md), [schemas_iteration](../modules/schemas_iteration.md), [services_work_metrics](../modules/services_work_metrics.md)
+**Modules involved:** [calendar_rules](../modules/calendar_rules.md), [calendar_service](../modules/calendar_service.md), [iteration_service](../modules/iteration_service.md), [schemas_iteration](../modules/schemas_iteration.md), [services_work_metrics](../modules/services_work_metrics.md)
 
 > Get iteration summary with statistics.
 
@@ -10,11 +10,13 @@
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `calendar_service.CalendarService`
 2. `calendar_service.CalendarService.calculate_working_days`
-3. `services_work_metrics.aggregate_metrics`
-4. `schemas_iteration.IterationSummary`
+3. `calendar_rules.AnnualCalendars.for_iteration`
+4. `services_work_metrics.aggregate_metrics`
+5. `schemas_iteration.IterationSummary`
 
 ## Touches
 
+- [calendar_rules](../modules/calendar_rules.md)
 - [calendar_service](../modules/calendar_service.md)
 - [iteration_service](../modules/iteration_service.md)
 - [schemas_iteration](../modules/schemas_iteration.md)

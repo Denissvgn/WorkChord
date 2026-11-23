@@ -1,6 +1,6 @@
 # ConnectionDetails
 
-**Location:** `frontend/src/pages/NativeConnectionPage.tsx:25`
+**Location:** `frontend/src/pages/NativeConnectionPage.tsx:26`
 **Kind:** Interface
 **Bases:** —
 **Module:** [NativeConnectionPage](../modules/NativeConnectionPage.md)

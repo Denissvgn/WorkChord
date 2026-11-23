@@ -37,13 +37,13 @@ flowchart LR
     n3["task_actions (backend/app/routers/task_domain.py)"]
     n4["task_command (backend/app/routers/task_domain.py)"]
     n5["TaskDetailService.my_work (backend/app/services/task_detail_service.py)"]
-    n6["test_dependency_requires_current_acceptance_and_blocks_manual_start (backend/tests/test_delivery_dependencies.py)"]
-    n7["accepted_work (backend/tests/test_delivery_metrics.py)"]
-    n8["test_observations_survive_hierarchy_moves_reopen_and_deletion (backend/tests/test_delivery_metrics.py)"]
-    n9["test_deep_ancestor_deferral_clearing_and_unscheduled_manual_freedom (backend/tests/test_effective_deferral.py)"]
-    n10["test_reparenting_recomputes_inherited_deferral_without_copying_the_flag (backend/tests/test_effective_deferral.py)"]
-    n11["test_stale_session_cannot_ignore_a_committed_ancestor_deferral (backend/tests/test_effective_deferral.py)"]
-    n12["test_scheduled_agent_start_and_human_dates_reconcile (backend/tests/test_execution_working_dates.py)"]
+    n6["resolved_work (backend/tests/test_acceptance_attribution.py)"]
+    n7["test_dependency_requires_current_acceptance_and_blocks_manual_start (backend/tests/test_delivery_dependencies.py)"]
+    n8["accepted_work (backend/tests/test_delivery_metrics.py)"]
+    n9["test_observations_survive_hierarchy_moves_reopen_and_deletion (backend/tests/test_delivery_metrics.py)"]
+    n10["test_deep_ancestor_deferral_clearing_and_unscheduled_manual_freedom (backend/tests/test_effective_deferral.py)"]
+    n11["test_reparenting_recomputes_inherited_deferral_without_copying_the_flag (backend/tests/test_effective_deferral.py)"]
+    n12["test_stale_session_cannot_ignore_a_committed_ancestor_deferral (backend/tests/test_effective_deferral.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -62,13 +62,13 @@ flowchart LR
     click n3 "../modules/routers_task_domain.md"
     click n4 "../modules/routers_task_domain.md"
     click n5 "../modules/task_detail_service.md"
-    click n6 "../modules/test_delivery_dependencies.md"
-    click n7 "../modules/test_delivery_metrics.md"
+    click n6 "../modules/test_acceptance_attribution.md"
+    click n7 "../modules/test_delivery_dependencies.md"
     click n8 "../modules/test_delivery_metrics.md"
-    click n9 "../modules/test_effective_deferral.md"
+    click n9 "../modules/test_delivery_metrics.md"
     click n10 "../modules/test_effective_deferral.md"
     click n11 "../modules/test_effective_deferral.md"
-    click n12 "../modules/test_execution_working_dates.md"
+    click n12 "../modules/test_effective_deferral.md"
 ```
 
 ### Summary
@@ -86,12 +86,12 @@ flowchart LR
 | `task_actions` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |
 | `task_command` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |
 | `TaskDetailService.my_work` | call | [task_detail_service](../modules/task_detail_service.md) | 1 |
+| `resolved_work` | call | [test_acceptance_attribution](../modules/test_acceptance_attribution.md) | 2 |
 | `test_dependency_requires_current_acceptance_and_blocks_manual_start` | call | [test_delivery_dependencies](../modules/test_delivery_dependencies.md) | 2 |
 | `accepted_work` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 2 |
 | `test_observations_survive_hierarchy_moves_reopen_and_deletion` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 1 |
 | `test_deep_ancestor_deferral_clearing_and_unscheduled_manual_freedom` | call | [test_effective_deferral](../modules/test_effective_deferral.md) | 2 |
 | `test_reparenting_recomputes_inherited_deferral_without_copying_the_flag` | call | [test_effective_deferral](../modules/test_effective_deferral.md) | 2 |
 | `test_stale_session_cannot_ignore_a_committed_ancestor_deferral` | call | [test_effective_deferral](../modules/test_effective_deferral.md) | 1 |
-| `test_scheduled_agent_start_and_human_dates_reconcile` | call | [test_execution_working_dates](../modules/test_execution_working_dates.md) | 1 |
 
-> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.
+> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.

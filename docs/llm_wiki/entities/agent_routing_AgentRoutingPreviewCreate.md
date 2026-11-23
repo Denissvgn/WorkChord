@@ -1,6 +1,6 @@
 # AgentRoutingPreviewCreate
 
-**Location:** `backend/app/schemas/agent_routing.py:917`
+**Location:** `backend/app/schemas/agent_routing.py:925`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -9,18 +9,28 @@
 
 Non-dispatching exact-actor preview bound to current task state.
 
+## Validators
+
+| Method | Scope | Fields | Mode | Options |
+|--------|-------|--------|------|---------|
+| `require_review_purpose` | model | — | after | — |
+
 ## Attributes
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `purpose` | `Literal['execution', 'verification']` | `purpose` | Yes | No | — | — | — | — |
-| `assessment_id` | `int` | `assessment_id` | Yes | No | — | ge=1; strict=True | — | — |
-| `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1; strict=True | — | — |
-| `reviewer_profile_id` | `int \| None` | `reviewer_profile_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `assessment_id` | `int` | `assessment_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | strict=True; ge=1 | — | — |
+| `reviewer_profile_id` | `int \| None` | `reviewer_profile_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
+| `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
+| `review_assignment_id` | `int \| None` | `review_assignment_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
 
 ## Methods
 
-*No declared methods.*
+| Method | Signature | Decorators | Description |
+|--------|-----------|------------|-------------|
+| `require_review_purpose` | `()` | `@model_validator(mode='after')` | — |
 
 ## Relationships
 
@@ -34,13 +44,13 @@ flowchart LR
     n4["AgentRoutingService._build_preview (backend/app/services/agent_routing_service.py)"]
     n5["AgentRoutingService.preview_task_routing (backend/app/services/agent_routing_service.py)"]
     n6["AgentRoutingService.validate_assignment_selection (backend/app/services/agent_routing_service.py)"]
-    n7["test_completed_rework_update_persists_prior_and_new_routing_lineage (backend/tests/test_agent_routing_service.py)"]
-    n8["test_model_aware_assignment_and_begin_enforce_observed_model (backend/tests/test_agent_routing_service.py)"]
-    n9["test_preview_is_deterministic_and_relevant_mutation_invalidates_it (backend/tests/test_agent_routing_service.py)"]
-    n10["test_verification_independence_requires_authoritative_profile_history (backend/tests/test_agent_routing_service.py)"]
-    n11["test_preview_contract_accepts_eligible_and_explicit_no_candidate_states (backend/tests/test_agent_routing_wave3_contract.py)"]
-    n12["_preview_with_parity (backend/tests/test_agent_routing_wave6_qualification.py)"]
-    n13["backend/tests/test_agent_skill_routing_guidance.py"]
+    n7["check_supervised_selection (backend/app/services/review_evidence.py)"]
+    n8["test_completed_rework_update_persists_prior_and_new_routing_lineage (backend/tests/test_agent_routing_service.py)"]
+    n9["test_model_aware_assignment_and_begin_enforce_observed_model (backend/tests/test_agent_routing_service.py)"]
+    n10["test_preview_is_deterministic_and_relevant_mutation_invalidates_it (backend/tests/test_agent_routing_service.py)"]
+    n11["test_verification_independence_requires_authoritative_profile_history (backend/tests/test_agent_routing_service.py)"]
+    n12["test_preview_contract_accepts_eligible_and_explicit_no_candidate_states (backend/tests/test_agent_routing_wave3_contract.py)"]
+    n13["_preview_with_parity (backend/tests/test_agent_routing_wave6_qualification.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -61,20 +71,20 @@ flowchart LR
     click n4 "../modules/agent_routing_service.md"
     click n5 "../modules/agent_routing_service.md"
     click n6 "../modules/agent_routing_service.md"
-    click n7 "../modules/test_agent_routing_service.md"
+    click n7 "../modules/services_review_evidence.md"
     click n8 "../modules/test_agent_routing_service.md"
     click n9 "../modules/test_agent_routing_service.md"
     click n10 "../modules/test_agent_routing_service.md"
-    click n11 "../modules/test_agent_routing_wave3_contract.md"
-    click n12 "../modules/test_agent_routing_wave6_qualification.md"
-    click n13 "../modules/test_agent_skill_routing_guidance.md"
+    click n11 "../modules/test_agent_routing_service.md"
+    click n12 "../modules/test_agent_routing_wave3_contract.md"
+    click n13 "../modules/test_agent_routing_wave6_qualification.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing](../modules/agent_routing.md) | 0 | `assessment_id`, `expected_task_version`, `purpose`, `reviewer_profile_id` |
+| [agent_routing](../modules/agent_routing.md) | 1 | `assessment_id`, `expected_task_version`, `purpose`, `review_assignment_id`, `review_evidence_id`, `reviewer_profile_id` |
 
 ### Structure
 
@@ -91,10 +101,12 @@ flowchart LR
 | `AgentRoutingService._build_preview` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `AgentRoutingService.preview_task_routing` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `AgentRoutingService.validate_assignment_selection` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |
+| `check_supervised_selection` | call | [services_review_evidence](../modules/services_review_evidence.md) | 1 |
 | `test_completed_rework_update_persists_prior_and_new_routing_lineage` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
 | `test_model_aware_assignment_and_begin_enforce_observed_model` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
 | `test_preview_is_deterministic_and_relevant_mutation_invalidates_it` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
 | `test_verification_independence_requires_authoritative_profile_history` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
 | `test_preview_contract_accepts_eligible_and_explicit_no_candidate_states` | call | [test_agent_routing_wave3_contract](../modules/test_agent_routing_wave3_contract.md) | 1 |
 | `_preview_with_parity` | call | [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md) | 1 |
-| `test_agent_skill_routing_guidance` | import | [test_agent_skill_routing_guidance](../modules/test_agent_skill_routing_guidance.md) | — |
+
+> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.

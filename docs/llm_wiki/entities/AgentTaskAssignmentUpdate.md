@@ -1,6 +1,6 @@
 # AgentTaskAssignmentUpdate
 
-**Location:** `backend/app/schemas/agent.py:635`
+**Location:** `backend/app/schemas/agent.py:659`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -20,6 +20,8 @@ PM command to reorder, reassign, or cancel a queued assignment.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `actor_id` | `Optional[int]` | `actor_id` | No | Yes | `None` | — | — | — |
+| `review_binding_id` | `int \| None` | `review_binding_id` | No | Yes | `None` | ge=1 | — | — |
+| `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
 | `queue_rank` | `Optional[int]` | `queue_rank` | No | Yes | `None` | ge=0 | — | — |
 | `not_before` | `Optional[datetime]` | `not_before` | No | Yes | `None` | — | — | — |
 | `reviewer_profile_id` | `Optional[int]` | `reviewer_profile_id` | No | Yes | `None` | — | — | — |
@@ -44,6 +46,7 @@ flowchart LR
     n5["backend/tests/support/runtime_peer.py"]
     n6["backend/tests/test_agent_model_catalog_api.py"]
     n7["test_wave6_scenario_11_reassignment_without_fresh_preview_is_rejected (backend/tests/test_agent_routing_wave6_qualification.py)"]
+    n8["test_scoped_source_packet_from_submission_through_verdict (backend/tests/test_scoped_review_evidence.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -51,6 +54,7 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
@@ -58,13 +62,14 @@ flowchart LR
     click n5 "../modules/runtime_peer.md"
     click n6 "../modules/test_agent_model_catalog_api.md"
     click n7 "../modules/test_agent_routing_wave6_qualification.md"
+    click n8 "../modules/test_scoped_review_evidence.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 0 | `actor_id`, `expected_queue_revision`, `not_before`, `queue_rank`, `reason`, `reviewer_profile_id`, `state` |
+| [schemas_agent](../modules/schemas_agent.md) | 0 | `actor_id`, `expected_queue_revision`, `not_before`, `queue_rank`, `reason`, `review_binding_id`, `review_evidence_id`, `reviewer_profile_id`, `state` |
 
 ### Structure
 
@@ -82,3 +87,4 @@ flowchart LR
 | `runtime_peer` | import | [runtime_peer](../modules/runtime_peer.md) | — |
 | `test_agent_model_catalog_api` | import | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | — |
 | `test_wave6_scenario_11_reassignment_without_fresh_preview_is_rejected` | call | [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md) | 1 |
+| `test_scoped_source_packet_from_submission_through_verdict` | call | [test_scoped_review_evidence](../modules/test_scoped_review_evidence.md) | 2 |

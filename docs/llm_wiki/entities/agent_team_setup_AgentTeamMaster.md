@@ -1,7 +1,7 @@
 # AgentTeamMaster
 
 **Location:** `backend/app/schemas/agent_team_setup.py:291`
-**Kind:** Class
+**Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 
@@ -24,9 +24,9 @@ Canonical portable desired-state document for one agent team.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `schema_version` | `Literal['agent-team-master-v1']` | `schema_version` | No | No | `AGENT_TEAM_MASTER_SCHEMA_VERSION` | — | — | — |
 | `topology_key` | `str` | `topology_key` | Yes | No | — | max_length=100; pattern=unknown (STABLE_KEY_PATTERN) | — | — |
-| `server_url` | `str` | `server_url` | Yes | No | — | max_length=2000; min_length=1 | — | — |
-| `credential_sink_ref` | `str` | `credential_sink_ref` | Yes | No | — | max_length=1024; min_length=1 | — | — |
-| `required_server_features` | `tuple[str, ...]` | `required_server_features` | Yes | No | — | max_length=64; min_length=1 | — | — |
+| `server_url` | `str` | `server_url` | Yes | No | — | min_length=1; max_length=2000 | — | — |
+| `credential_sink_ref` | `str` | `credential_sink_ref` | Yes | No | — | min_length=1; max_length=1024 | — | — |
+| `required_server_features` | `tuple[str, ...]` | `required_server_features` | Yes | No | — | min_length=1; max_length=64 | — | — |
 | `controller` | `AgentTeamMemberSpec` | `controller` | Yes | No | — | — | — | — |
 | `workers` | `tuple[AgentTeamMemberSpec, ...]` | `workers` | Yes | No | — | min_length=1; max_length=unknown (MAX_AGENT_TEAM_MEMBERS - 1) | — | — |
 | `verifiers` | `tuple[AgentTeamMemberSpec, ...]` | `verifiers` | No | No | `()` | max_length=unknown (MAX_AGENT_TEAM_MEMBERS - 2) | — | — |
@@ -121,4 +121,4 @@ flowchart LR
 | `AgentTeamSetupService._refresh_handoffs` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `test_agent_team_catalog` | import | [test_agent_team_catalog](../modules/test_agent_team_catalog.md) | — |
 
-> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.
+> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.

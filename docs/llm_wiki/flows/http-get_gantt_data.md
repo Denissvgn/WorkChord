@@ -2,10 +2,12 @@
 
 **Entry point:** `get_gantt_data` (`http`)
 **Source:** [routers_gantt](../modules/routers_gantt.md)
-**Modules touched:** [calendar_service](../modules/calendar_service.md), [iteration_service](../modules/iteration_service.md), [query_limits](../modules/query_limits.md), [routers_gantt](../modules/routers_gantt.md), and 8 more
+**Modules touched:** [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), [calendar_service](../modules/calendar_service.md), [iteration_service](../modules/iteration_service.md), and 11 more
 
 **Complete modules touched:**
 
+- [authority](../modules/authority.md)
+- [calendar_rules](../modules/calendar_rules.md)
 - [calendar_service](../modules/calendar_service.md)
 - [iteration_service](../modules/iteration_service.md)
 - [query_limits](../modules/query_limits.md)
@@ -13,6 +15,7 @@
 - [schemas_calendar](../modules/schemas_calendar.md)
 - [schemas_gantt](../modules/schemas_gantt.md)
 - [schemas_iteration](../modules/schemas_iteration.md)
+- [schemas_team](../modules/schemas_team.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_hierarchy_service](../modules/task_hierarchy_service.md)
 - [task_service](../modules/task_service.md)
@@ -30,68 +33,68 @@ sequenceDiagram
     participant p1 as TaskService.get_by_iteration
     participant p2 as TeamService.get_by_iteration
     participant p3 as CalendarService.calculate_working_days
-    participant p4 as _task_to_gantt
-    participant p5 as IterationService
-    participant p6 as TaskService
-    participant p7 as TeamService
-    participant p8 as IterationService.get_by_id
-    participant p9 as CalendarService
-    participant p10 as _overdue_task_ids
-    participant p11 as GanttResponse
-    participant p12 as IterationResponse
-    participant p13 as TaskService._task_graph_query
-    participant p14 as task_signals
-    participant p15 as TaskService._load_iteration_tree
-    participant p16 as TaskHierarchyService._load_iteration_tree
-    participant p17 as working_today
-    participant p18 as TeamService._member_options
-    participant p19 as WorkingDaysResponse
-    participant p20 as CollectionLimitExceededError
-    participant p21 as GanttAssignee
-    participant p22 as GanttMilestone
-    participant p23 as GanttTask
-    participant p24 as _get_calculated_effort
-    participant p25 as TaskHierarchyService._task_graph_query
-    participant p26 as TaskHierarchyService
-    participant p27 as effective_work_flags
-    participant p28 as as_utc
+    participant p4 as AnnualCalendars.for_iteration
+    participant p5 as _task_to_gantt
+    participant p6 as IterationService
+    participant p7 as TaskService
+    participant p8 as TeamService
+    participant p9 as IterationService.get_by_id
+    participant p10 as CalendarService
+    participant p11 as _overdue_task_ids
+    participant p12 as GanttResponse
+    participant p13 as IterationResponse
+    participant p14 as TaskService._task_graph_query
+    participant p15 as task_signals
+    participant p16 as TaskService._load_iteration_tree
+    participant p17 as TeamService._attach_assignee_profiles
+    participant p18 as TaskHierarchyService._load_iteration_tree
+    participant p19 as working_today
+    participant p20 as AnnualCalendars
+    participant p21 as TeamService._member_options
+    participant p22 as WorkingDaysResponse
+    participant p23 as CollectionLimitExceededError
+    participant p24 as GanttAssignee
+    participant p25 as GanttMilestone
+    participant p26 as GanttTask
+    participant p27 as _get_calculated_effort
+    participant p28 as TaskHierarchyService._task_graph_query
     participant p29 as HTTPException
     participant p30 as gantt_tasks.append
     p0->>p1: TaskService.get_by_iteration
     p0->>p2: TeamService.get_by_iteration
     p0->>p3: CalendarService.calculate_working_days
-    p0->>p4: _task_to_gantt
-    p0->>p5: IterationService
-    p0->>p6: TaskService
-    p0->>p7: TeamService
-    p0->>p8: IterationService.get_by_id
-    p0->>p9: CalendarService
-    p0->>p10: _overdue_task_ids
-    p0->>p11: GanttResponse
-    p0->>p12: IterationResponse
-    p1->>p13: TaskService._task_graph_query
-    p4->>p14: task_signals
-    p1->>p15: TaskService._load_iteration_tree
-    p15->>p16: TaskHierarchyService._load_iteration_tree
-    p14->>p17: working_today
-    p2->>p18: TeamService._member_options
-    p3->>p19: WorkingDaysResponse
-    p1->>p20: CollectionLimitExceededError
-    p4->>p21: GanttAssignee
-    p4->>p22: GanttMilestone
-    p4->>p23: GanttTask
-    p4->>p24: _get_calculated_effort
-    p13->>p25: TaskHierarchyService._task_graph_query
-    p13->>p26: TaskHierarchyService
-    p14->>p27: effective_work_flags
-    p17->>p28: as_utc
+    p0->>p4: AnnualCalendars.for_iteration
+    p0->>p5: _task_to_gantt
+    p0->>p6: IterationService
+    p0->>p7: TaskService
+    p0->>p8: TeamService
+    p0->>p9: IterationService.get_by_id
+    p0->>p10: CalendarService
+    p0->>p11: _overdue_task_ids
+    p0->>p12: GanttResponse
+    p0->>p13: IterationResponse
+    p1->>p14: TaskService._task_graph_query
+    p5->>p15: task_signals
+    p1->>p16: TaskService._load_iteration_tree
+    p2->>p17: TeamService._attach_assignee_profiles
+    p16->>p18: TaskHierarchyService._load_iteration_tree
+    p15->>p19: working_today
+    p4->>p20: AnnualCalendars
+    p2->>p21: TeamService._member_options
+    p3->>p22: WorkingDaysResponse
+    p1->>p23: CollectionLimitExceededError
+    p5->>p24: GanttAssignee
+    p5->>p25: GanttMilestone
+    p5->>p26: GanttTask
+    p5->>p27: _get_calculated_effort
+    p14->>p28: TaskHierarchyService._task_graph_query
     p0-->>p29: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
     p0-->>p30: gantt_tasks.append(gantt_task)
 ```
 
-> Call sequence diagram shows 30 of 175 interactions; 145 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 189 interactions; 159 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 71 (70 omitted); unresolved 1 of 68 (67 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 70 (69 omitted); unresolved 1 of 77 (76 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -102,10 +105,10 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_service.py:TaskService.get_by_iteration` | 13 | - | unresolved | 6 |
 | `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._task_graph_query` | 18 | - | unresolved | 6 |
 | `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._task_graph_query` | 18 | - | external | 8 |
+| `backend/app/services/task_service.py:TaskService._task_graph_query` | 17 | [backend/app/services/task_hierarchy_service.py](../modules/task_hierarchy_service.md) | internal | 1 |
 | `backend/app/services/task_service.py:TaskService.get_by_iteration` | 13 | - | external | 2 |
 | `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._load_iteration_tree` | 41 | - | unresolved | 20 |
-| `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._load_iteration_tree` | 41 | - | external | 11 |
-> Omission summary shows 8 of 34 groups; 26 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 42 groups; 34 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -116,9 +119,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 37; effect analysis evaluated: 20, partial: 0, unavailable: 17. Counts include steps omitted from the displayed trace.
+Source steps: 43; effect analysis evaluated: 23, partial: 0, unavailable: 20. Counts include steps omitted from the displayed trace.
 
-Collector observations for 20 source steps with known totals: observed: 105, emitted: 105, omitted: 0. Unavailable totals are excluded.
+Collector observations for 23 source steps with known totals: observed: 115, emitted: 115, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -198,36 +201,36 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_gantt_data | IterationService | 136 | `IterationService(db)` |
-| get_gantt_data | TaskService | 137 | `TaskService(db)` |
-| get_gantt_data | TeamService | 138 | `TeamService(db)` |
-| get_gantt_data | IterationService.get_by_id | 143 | `iteration_service.get_by_id(iteration_id)` |
-| IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 323 | `self.db.execute(...)` |
-| IterationService.get_by_id | select(…).options(…).where (backend/app/services/iter…terationService.get_by_id) | 324 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
-| IterationService.get_by_id | select(…).options (backend/app/services/iter…terationService.get_by_id) | 324 | `select(Iteration).options(selectinload(...), selectinload(...))` |
-| IterationService.get_by_id | select (backend/app/services/iter…terationService.get_by_id) | 324 | `select(Iteration)` |
-| IterationService.get_by_id | selectinload (backend/app/services/iter…terationService.get_by_id) | 326 | `selectinload(Iteration.calendar)` |
-| IterationService.get_by_id | selectinload (backend/app/services/iter…terationService.get_by_id) | 327 | `selectinload(Iteration.project)` |
-| IterationService.get_by_id | result.scalar_one_or_none | 331 | `result.scalar_one_or_none(data not statically known)` |
+| get_gantt_data | IterationService | 137 | `IterationService(db)` |
+| get_gantt_data | TaskService | 138 | `TaskService(db)` |
+| get_gantt_data | TeamService | 139 | `TeamService(db)` |
+| get_gantt_data | IterationService.get_by_id | 144 | `iteration_service.get_by_id(iteration_id)` |
+| IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 338 | `self.db.execute(...)` |
+| IterationService.get_by_id | select(…).options(…).where (backend/app/services/iter…terationService.get_by_id) | 339 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
+| IterationService.get_by_id | select(…).options (backend/app/services/iter…terationService.get_by_id) | 339 | `select(Iteration).options(selectinload(...), selectinload(...))` |
+| IterationService.get_by_id | select (backend/app/services/iter…terationService.get_by_id) | 339 | `select(Iteration)` |
+| IterationService.get_by_id | selectinload (backend/app/services/iter…terationService.get_by_id) | 341 | `selectinload(Iteration.calendar)` |
+| IterationService.get_by_id | selectinload (backend/app/services/iter…terationService.get_by_id) | 342 | `selectinload(Iteration.project)` |
+| IterationService.get_by_id | result.scalar_one_or_none | 346 | `result.scalar_one_or_none(data not statically known)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `gantt_tasks.append` | `get_gantt_data` | 170 |
-| mutation | `vacation_dates.update` | `get_gantt_data` | 191 |
+| mutation | `gantt_tasks.append` | `get_gantt_data` | 171 |
+| mutation | `vacation_dates.update` | `get_gantt_data` | 192 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 323 |
-| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 324 |
-| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 324 |
-| external_call | `IterationService.get_by_id` | `select` | 324 |
-| external_call | `IterationService.get_by_id` | `selectinload` | 326 |
-| external_call | `IterationService.get_by_id` | `selectinload` | 327 |
-| unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 331 |
+| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 338 |
+| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 339 |
+| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 339 |
+| external_call | `IterationService.get_by_id` | `select` | 339 |
+| external_call | `IterationService.get_by_id` | `selectinload` | 341 |
+| external_call | `IterationService.get_by_id` | `selectinload` | 342 |
+| unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 346 |
 | step_limit | `get_gantt_data` | `first 12 steps` | 0 |
 
 ## Behavior

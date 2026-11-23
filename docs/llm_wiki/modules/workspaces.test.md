@@ -10,7 +10,8 @@ _Auto-generated from `frontend/src/navigation/workspaces.test.ts`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `./workspaces` | `getWorkspaceForPath`, `getWorkspaceFromPath` | — | compiler-dependent |
+| `./destinations` | `DESTINATIONS` | — | compiler-dependent |
+| `./workspaces` | `getWorkspaceForPath`, `WORKSPACES` | — | compiler-dependent |
 | `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
@@ -24,17 +25,22 @@ _Auto-generated from `frontend/src/navigation/workspaces.test.ts`._
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/navigation/workspaces.test.ts"]
-    n1["frontend/src/navigation/workspaces.ts"]
-    n0 --> n1
-    click n0 "../modules/workspaces.test.md"
-    click n1 "../modules/workspaces.md"
+    n0["frontend/src/navigation/destinations.ts"]
+    n1["frontend/src/navigation/workspaces.test.ts"]
+    n2["frontend/src/navigation/workspaces.ts"]
+    n1 --> n0
+    n1 --> n2
+    n2 --> n0
+    click n0 "../modules/destinations.md"
+    click n1 "../modules/workspaces.test.md"
+    click n2 "../modules/workspaces.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Outbound | [destinations](../modules/destinations.md) |
 | Outbound | [workspaces](../modules/workspaces.md) |
 
 ### External packages

@@ -1,9 +1,9 @@
 # FormMode
 
-**Location:** `frontend/src/components/tasks/SavedViewsControl.tsx:25`
+**Location:** `frontend/src/components/tasks/useSavedViewManager.tsx:22`
 **Kind:** Type alias
 **Bases:** —
-**Module:** [SavedViewsControl](../modules/SavedViewsControl.md)
+**Module:** [useSavedViewManager](../modules/useSavedViewManager.md)
 **Target:**
 
 ```typescript
@@ -12,7 +12,7 @@
 
 ## Description
 
-_Auto-generated from `FormMode` in `frontend/src/components/tasks/SavedViewsControl.tsx`._
+_Auto-generated from `FormMode` in `frontend/src/components/tasks/useSavedViewManager.tsx`._
 
 ## Attributes
 
@@ -31,4 +31,4 @@ _Auto-generated from `FormMode` in `frontend/src/components/tasks/SavedViewsCont
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [SavedViewsControl](../modules/SavedViewsControl.md) | 0 | — |
+| [useSavedViewManager](../modules/useSavedViewManager.md) | 0 | — |

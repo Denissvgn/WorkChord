@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # AttentionSeverity
 
 **Location:** `frontend/src/features/overview/attentionRanking.ts:3`

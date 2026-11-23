@@ -1,9 +1,9 @@
 # WorkflowFocusTarget
 
-**Location:** `frontend/src/pages/AgentTeamSetupMasterPage.tsx:133`
+**Location:** `frontend/src/components/team/AgentManifestWorkflow.tsx:134`
 **Kind:** Type alias
 **Bases:** —
-**Module:** [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md)
+**Module:** [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md)
 **Target:**
 
 ```typescript
@@ -12,7 +12,7 @@
 
 ## Description
 
-_Auto-generated from `WorkflowFocusTarget` in `frontend/src/pages/AgentTeamSetupMasterPage.tsx`._
+_Auto-generated from `WorkflowFocusTarget` in `frontend/src/components/team/AgentManifestWorkflow.tsx`._
 
 ## Attributes
 
@@ -31,4 +31,4 @@ _Auto-generated from `WorkflowFocusTarget` in `frontend/src/pages/AgentTeamSetup
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) | 0 | — |
+| [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) | 0 | — |

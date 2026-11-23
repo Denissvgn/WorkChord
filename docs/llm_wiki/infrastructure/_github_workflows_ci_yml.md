@@ -23,7 +23,7 @@
 
 - `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1` - uses `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1`
 - `actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0` - uses `actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0`
-- `actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238` - uses `actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238`
+- `actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1` - uses `actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1`
 - `Set up native PostgreSQL` - uses `./.github/actions/native-postgres`
 - `Create the project environment` - runs `python -m venv .venv`
 - `Install the backend` - runs `.venv/bin/pip install --require-hashes -r backend/build-requirements.lock .venv/bin/pip install --require-hashes -r backend/requirements.lock .venv/bin/pip install --require-hashes -r backend/test-requirements.lock .venv/bin/pip install --no-build-isolation --no-deps -e ./backend`
@@ -32,7 +32,7 @@
 - `Validate Python source and migrations` - runs `PYTHONPYCACHEPREFIX=/tmp/workchord-pycache .venv/bin/python -m compileall -q backend/app scripts (cd backend && PYTHONPYCACHEPREFIX=/tmp/workchord-pycache ../.venv/bin/alembic -c app/migrations/alembic.ini heads) PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -c "from app.main import app; assert app.title == 'WorkChord API'; assert app.version == '1.8.0'" .venv/bin/python scripts/generate_client_contract.py --check .venv/bin/python scripts/generate_mobile_contract_fixtures.py --check .venv/bin/python scripts/generate_agent_team_contract.py --output /tmp/agent-team-master-v1.schema.json .venv/bin/python scripts/generate_agent_team_report_contract.py --output /tmp/agent-team-setup-report-v1.schema.json`
 - `Validate the PostgreSQL qualification harness contract` - runs `qualification_dir="$(mktemp -d)" PYTHONPATH=backend .venv/bin/python scripts/load/seed.py \ --profile full \ --dry-run \ --manifest "$qualification_dir/full-seed-plan.json" for profile in human_peak_v1 mixed_peak_v1 connection_surge_v1 external_llm_wait_v1; do PYTHONPATH=backend .venv/bin/python scripts/load/run.py \ --profile "$profile" \ --phase dry \ --base-url http://127.0.0.1:8001 \ --authorize-host 127.0.0.1:8001 \ --environment test \ --output "$qualification_dir/$profile-dry.json" done cp -R "$qualification_dir" /tmp/workchord-qualification-contracts PYTHONPATH=backend .venv/bin/python \ scripts/ci/check_model_aware_routing_closeout.py \ --require-tracked \ --output /tmp/workchord-qualification-contracts/model-aware-routing-closeout.json`
 - `Validate PostgreSQL operator documentation` - runs `.venv/bin/python scripts/ci/check_postgresql_documentation.py`
-- `Upload the qualification harness contracts` - uses `actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f`
+- `Upload the qualification harness contracts` - uses `actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9`
 - `Validate agent role packages` - runs `.venv/bin/python scripts/build_agent_skills.py validate .venv/bin/python scripts/build_agent_skills.py build --output-dir /tmp/workchord-agent-skills .venv/bin/python scripts/build_agent_skills.py build-codex-plugin --output-dir /tmp/workchord-codex-plugin diff -ru adapters/codex/workchord-agent-roles /tmp/workchord-codex-plugin`
 - `Validate the local Compose profile` - runs `docker compose config --quiet docker compose \ -f docker-compose.yml \ -f docker-compose.server.yml \ --profile autonomy \ config --quiet`
 - `Stop the job-owned PostgreSQL cluster` - runs `python3 scripts/ci/postgres_runtime.py stop --bin-dir /usr/lib/postgresql/18/bin --data-dir "$RUNNER_TEMP/workchord-postgresql"`
@@ -45,7 +45,7 @@
 - `Set up native PostgreSQL` - uses `./.github/actions/native-postgres`
 - `Install the backend` - runs `python -m venv .venv .venv/bin/pip install --require-hashes -r backend/build-requirements.lock .venv/bin/pip install --require-hashes -r backend/requirements.lock .venv/bin/pip install --require-hashes -r backend/test-requirements.lock .venv/bin/pip install --no-build-isolation --no-deps -e ./backend`
 - `Run the selected database suite` - runs `.venv/bin/python scripts/ci/run_disposable_checks.py --scope ${{ matrix.scope }} --timeout-seconds ${{ matrix.work_seconds }} --output /tmp/workchord-backend-results`
-- `Upload database results and durations` - uses `actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f`
+- `Upload database results and durations` - uses `actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9`
 - `Stop the job-owned PostgreSQL cluster` - runs `python3 scripts/ci/postgres_runtime.py stop --bin-dir /usr/lib/postgresql/18/bin --data-dir "$RUNNER_TEMP/workchord-postgresql"`
 
 ### frontend
@@ -53,9 +53,9 @@
 - `Reserve cleanup and artifact time` - runs `python3 - <<'PYTHON' import os import time deadline = time.time() + int(os.environ["JOB_BUDGET_MINUTES"]) * 60 - 180 with open(os.environ["GITHUB_ENV"], "a") as output: output.write(f"WORKCHORD_CI_DEADLINE_EPOCH={deadline}\n") PYTHON`
 - `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1` - uses `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1`
 - `actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0` - uses `actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0`
-- `actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238` - uses `actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238`
-- `Run frontend checks` - runs `python scripts/ci/run_disposable_checks.py --scope frontend --timeout-seconds 600 --output /tmp/workchord-frontend-results`
-- `Upload frontend results and durations` - uses `actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f`
+- `actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1` - uses `actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1`
+- `Run frontend checks` - runs `python scripts/ci/run_disposable_checks.py --scope frontend --timeout-seconds 900 --output /tmp/workchord-frontend-results`
+- `Upload frontend results and durations` - uses `actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9`
 
 ### clients
 
@@ -71,3 +71,5 @@ Automatic PR/main CI runs dedicated SQLite/PostgreSQL scopes, a single frontend 
 The final aggregate retains the Source and build checks status name and requires packaging, both database variants, frontend and the browser/Android workflow to succeed. Failed, cancelled, skipped or missing required dependency results cannot pass. Native runner jobs establish a deadline before setup, reserving three minutes for cleanup and artifact upload. Workflow definitions do not themselves establish hosted completion.
 
 The packaging lane checks both the client schema export and the backend-derived Android examples before client delivery. Fixture freshness and runtime/device acceptance remain separate evidence boundaries.
+
+The SQLite check command has a 1,200-second budget inside a 25-minute job. PostgreSQL has 1,500 seconds inside 30 minutes, and the frontend command has 900 seconds inside 20 minutes. The difference leaves time for setup, cleanup and artifact upload.

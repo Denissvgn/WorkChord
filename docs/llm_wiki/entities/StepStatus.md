@@ -1,3 +1,5 @@
+> **Retired source member:** This declaration is no longer in the selected source inventory. The content below is retained history, not current source evidence or an authored lifecycle decision.
+
 # StepStatus
 
 **Location:** `frontend/src/features/planningMasters/masters.ts:9`

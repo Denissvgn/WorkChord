@@ -25,9 +25,9 @@ _Auto-generated from `ExecutionUsageWrite` in `backend/app/schemas/execution_usa
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `report_id` | `str` | `report_id` | Yes | No | — | max_length=128; min_length=1; pattern='^[a-zA-Z0-9_.:-]+$' | — | — |
+| `report_id` | `str` | `report_id` | Yes | No | — | min_length=1; max_length=128; pattern='^[a-zA-Z0-9_.:-]+$' | — | — |
 | `expected_previous_digest` | `str \| None` | `expected_previous_digest` | No | Yes | `None` | pattern='^[a-f0-9]{64}$' | — | — |
-| `source` | `str` | `source` | Yes | No | — | max_length=200; min_length=1 | — | — |
+| `source` | `str` | `source` | Yes | No | — | min_length=1; max_length=200 | — | — |
 | `provenance` | `Literal['provider_reported', 'runtime_metered', 'manual_reported', 'simulated']` | `provenance` | Yes | No | — | — | — | — |
 | `reporting_mode` | `Literal['attempt_total']` | `reporting_mode` | Yes | No | — | — | — | — |
 | `interval_start` | `AwareDatetime` | `interval_start` | Yes | No | — | — | — | — |
@@ -56,10 +56,12 @@ flowchart LR
     n3["record_execution_usage (backend/app/routers/agent.py)"]
     n4["ExecutionUsageService.write (backend/app/services/execution_usage_service.py)"]
     n5["backend/tests/test_agent_skill_routing_guidance.py"]
-    n6["test_human_effort_is_a_measurement_for_coverage (backend/tests/test_execution_usage.py)"]
-    n7["test_human_only_usage_summary_preserves_zero_and_unknown (backend/tests/test_execution_usage.py)"]
-    n8["test_usage_zero_unknown_and_currency_validation (backend/tests/test_execution_usage.py)"]
-    n9["usage (backend/tests/test_execution_usage.py)"]
+    n6["report_store (backend/tests/test_analytics_scopes.py)"]
+    n7["test_deleted_iteration_history_does_not_become_backlog (backend/tests/test_analytics_scopes.py)"]
+    n8["test_human_effort_is_a_measurement_for_coverage (backend/tests/test_execution_usage.py)"]
+    n9["test_human_only_usage_summary_preserves_zero_and_unknown (backend/tests/test_execution_usage.py)"]
+    n10["test_usage_zero_unknown_and_currency_validation (backend/tests/test_execution_usage.py)"]
+    n11["usage (backend/tests/test_execution_usage.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -69,15 +71,19 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
+    n11 --> n0
     click n0 "../modules/schemas_execution_usage.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
     click n4 "../modules/execution_usage_service.md"
     click n5 "../modules/test_agent_skill_routing_guidance.md"
-    click n6 "../modules/test_execution_usage.md"
-    click n7 "../modules/test_execution_usage.md"
+    click n6 "../modules/test_analytics_scopes.md"
+    click n7 "../modules/test_analytics_scopes.md"
     click n8 "../modules/test_execution_usage.md"
     click n9 "../modules/test_execution_usage.md"
+    click n10 "../modules/test_execution_usage.md"
+    click n11 "../modules/test_execution_usage.md"
 ```
 
 ### Summary
@@ -100,6 +106,8 @@ flowchart LR
 | `record_execution_usage` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `ExecutionUsageService.write` | type_reference | [execution_usage_service](../modules/execution_usage_service.md) | — |
 | `test_agent_skill_routing_guidance` | import | [test_agent_skill_routing_guidance](../modules/test_agent_skill_routing_guidance.md) | — |
+| `report_store` | call | [test_analytics_scopes](../modules/test_analytics_scopes.md) | 1 |
+| `test_deleted_iteration_history_does_not_become_backlog` | call | [test_analytics_scopes](../modules/test_analytics_scopes.md) | 1 |
 | `test_human_effort_is_a_measurement_for_coverage` | call | [test_execution_usage](../modules/test_execution_usage.md) | 3 |
 | `test_human_only_usage_summary_preserves_zero_and_unknown` | call | [test_execution_usage](../modules/test_execution_usage.md) | 1 |
 | `test_usage_zero_unknown_and_currency_validation` | call | [test_execution_usage](../modules/test_execution_usage.md) | 1 |

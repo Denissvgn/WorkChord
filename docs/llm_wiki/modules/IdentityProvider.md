@@ -15,19 +15,19 @@ The workspace factory owns both query freshness and planning invalidation. Accou
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../components/common/Button` | `Button` | — | compiler-dependent |
-| `../../services/api` | `setSessionIntegrity`, `IDENTITY_EXPIRED_EVENT`, `api` | — | compiler-dependent |
-| `../../services/teamService` | `teamService` | — | compiler-dependent |
+| `../../services/api` | `setSessionIntegrity`, `IDENTITY_EXPIRED_EVENT` | — | compiler-dependent |
 | `../../utils/adminAccess` | `clearAdminApiKey`, `ADMIN_API_KEY_CHANGED_EVENT` | — | compiler-dependent |
 | `../../utils/agentAccess` | `clearAgentApiKey`, `AGENT_API_KEY_CHANGED_EVENT` | — | compiler-dependent |
 | `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
 | `../MutationSuccessFeedback` | `MutationSuccessFeedback` | — | compiler-dependent |
+| `../scope/scopeStore` | `useScopeStore` | — | compiler-dependent |
 | `../workspaceQueryPolicy` | `createWorkspaceQueryClient`, `installWorkspaceQueryPolicy` | — | compiler-dependent |
-| `./LocalProfilePicker` | `LocalProfilePicker` | — | compiler-dependent |
-| `./identityContext` | `IdentityContext`, `useIdentity` | — | compiler-dependent |
+| `./credentialRemount` | `markCredentialRemount` | — | compiler-dependent |
+| `./identityContext` | `IdentityContext` | — | compiler-dependent |
 | `./identityService` | `WorkspaceIdentity` | Declaration | erased |
 | `./identityService` | `identityService` | — | compiler-dependent |
 | `@tanstack/react-query` | `QueryClientProvider`, `useQuery`, `useQueryClient` | — | compiler-dependent |
-| `lucide-react` | `LogIn`, `LogOut`, `ShieldCheck`, `User` | — | compiler-dependent |
+| `lucide-react` | `LogIn` | — | compiler-dependent |
 | `react` | `ReactNode` | Declaration | erased |
 | `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
@@ -37,7 +37,7 @@ The workspace factory owns both query freshness and planning invalidation. Accou
 
 | Signal | Values |
 |--------|--------|
-| Exports | `IdentityBadge`, `IdentityProvider` |
+| Exports | `IdentityProvider` |
 
 ## Local dependency map
 
@@ -59,7 +59,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (3) |
+| Inbound | `frontend` (6) |
 | Outbound | `frontend` (11) |
 
 ### External packages
@@ -68,11 +68,10 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `IdentityProvider` | `({ children, navigateAfterSignOut = target => window.location.assign(target) }: { children: ReactNode; navigateAfterSignOut?: (target: string) => void })` | — | — |
-| `IdentityBadge` | `()` | — | — |

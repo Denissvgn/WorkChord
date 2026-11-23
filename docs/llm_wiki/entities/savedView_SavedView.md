@@ -41,18 +41,18 @@ _Auto-generated from `SavedView` in `frontend/src/types/savedView.ts`._
 ```mermaid
 flowchart LR
     n0["SavedView (frontend/src/types/savedView.ts)"]
-    n1["frontend/src/components/layout/AppSidebar.test.tsx"]
-    n2["frontend/src/components/layout/AppSidebar.tsx"]
-    n3["frontend/src/components/layout/CommandMenu.tsx"]
-    n4["SavedViewsControl (frontend/src/components/tasks/SavedViewsControl.tsx)"]
-    n5["filtersFromSavedView (frontend/src/features/savedViews/taskViewState.ts)"]
-    n6["sortKeyFromSavedView (frontend/src/features/savedViews/taskViewState.ts)"]
-    n7["savedViewDisplay (frontend/src/i18n/seedDisplay.ts)"]
-    n8["frontend/src/pages/ProjectsPage.tsx"]
+    n1["frontend/src/components/layout/CommandMenu.tsx"]
+    n2["useSavedViewManager (frontend/src/components/tasks/useSavedViewManager.tsx)"]
+    n3["triageFiltersFromSavedView (frontend/src/components/triage/triageUtils.ts)"]
+    n4["filtersFromSavedView (frontend/src/features/savedViews/taskViewState.ts)"]
+    n5["sortKeyFromSavedView (frontend/src/features/savedViews/taskViewState.ts)"]
+    n6["savedViewDisplay (frontend/src/i18n/seedDisplay.ts)"]
+    n7["frontend/src/pages/ProjectsPage.tsx"]
+    n8["frontend/src/pages/TasksPage.toolbar.test.tsx"]
     n9["frontend/src/pages/TasksPage.tsx"]
-    n10["frontend/src/pages/TriagePage.tsx"]
-    n11["frontend/src/services/savedViewService.ts"]
-    n12["frontend/src/utils/savedViewState.test.ts"]
+    n10["frontend/src/services/savedViewService.ts"]
+    n11["frontend/src/utils/savedViewState.test.ts"]
+    n12["savedViewModified (frontend/src/utils/savedViewState.ts)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -66,18 +66,18 @@ flowchart LR
     n11 --> n0
     n12 --> n0
     click n0 "../modules/savedView.md"
-    click n1 "../modules/AppSidebar.test.md"
-    click n2 "../modules/AppSidebar.md"
-    click n3 "../modules/CommandMenu.md"
-    click n4 "../modules/SavedViewsControl.md"
+    click n1 "../modules/CommandMenu.md"
+    click n2 "../modules/useSavedViewManager.md"
+    click n3 "../modules/triageUtils.md"
+    click n4 "../modules/taskViewState.md"
     click n5 "../modules/taskViewState.md"
-    click n6 "../modules/taskViewState.md"
-    click n7 "../modules/seedDisplay.md"
-    click n8 "../modules/ProjectsPage.md"
+    click n6 "../modules/seedDisplay.md"
+    click n7 "../modules/ProjectsPage.md"
+    click n8 "../modules/TasksPage.toolbar.test.md"
     click n9 "../modules/TasksPage.md"
-    click n10 "../modules/TriagePage.md"
-    click n11 "../modules/savedViewService.md"
-    click n12 "../modules/savedViewState.test.md"
+    click n10 "../modules/savedViewService.md"
+    click n11 "../modules/savedViewState.test.md"
+    click n12 "../modules/savedViewState.md"
 ```
 
 ### Summary
@@ -90,17 +90,15 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `AppSidebar.test` | import | [AppSidebar.test](../modules/AppSidebar.test.md) | — |
-| `AppSidebar` | import | [AppSidebar](../modules/AppSidebar.md) | — |
 | `CommandMenu` | import | [CommandMenu](../modules/CommandMenu.md) | — |
-| `SavedViewsControl` | type_reference | [SavedViewsControl](../modules/SavedViewsControl.md) | — |
+| `useSavedViewManager` | type_reference | [useSavedViewManager](../modules/useSavedViewManager.md) | — |
+| `triageFiltersFromSavedView` | type_reference | [triageUtils](../modules/triageUtils.md) | — |
 | `filtersFromSavedView` | type_reference | [taskViewState](../modules/taskViewState.md) | — |
 | `sortKeyFromSavedView` | type_reference | [taskViewState](../modules/taskViewState.md) | — |
 | `savedViewDisplay` | type_reference | [seedDisplay](../modules/seedDisplay.md) | — |
 | `ProjectsPage` | import | [ProjectsPage](../modules/ProjectsPage.md) | — |
+| `TasksPage.toolbar.test` | import | [TasksPage.toolbar.test](../modules/TasksPage.toolbar.test.md) | — |
 | `TasksPage` | import | [TasksPage](../modules/TasksPage.md) | — |
-| `TriagePage` | import | [TriagePage](../modules/TriagePage.md) | — |
 | `savedViewService` | import | [savedViewService](../modules/savedViewService.md) | — |
 | `savedViewState.test` | import | [savedViewState.test](../modules/savedViewState.test.md) | — |
-
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+| `savedViewModified` | type_reference | [savedViewState](../modules/savedViewState.md) | — |

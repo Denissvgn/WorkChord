@@ -1,6 +1,6 @@
 # AgentTaskPatch
 
-**Location:** `backend/app/schemas/agent.py:281`
+**Location:** `backend/app/schemas/agent.py:297`
 **Kind:** Pydantic model
 **Bases:** `TaskUpdate`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -14,7 +14,7 @@ Agent task patch request with optimistic concurrency.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `expected_version` | `int` | `expected_version` | Yes | No | — | ge=1 | — | — |
-| `claim_id` | `Optional[str]` | `claim_id` | No | Yes | `None` | max_length=64; min_length=16 | — | — |
+| `claim_id` | `Optional[str]` | `claim_id` | No | Yes | `None` | min_length=16; max_length=64 | — | — |
 | `claim_generation` | `Optional[int]` | `claim_generation` | No | Yes | `None` | ge=1 | — | — |
 
 ## Methods

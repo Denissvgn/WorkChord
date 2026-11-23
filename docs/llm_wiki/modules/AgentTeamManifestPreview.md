@@ -25,17 +25,17 @@ _Auto-generated from `frontend/src/components/settings/AgentTeamManifestPreview.
 ```mermaid
 flowchart LR
     n0["frontend/src/components/settings/AgentTeamManifestPreview.tsx"]
-    n1["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
+    n1["frontend/src/components/team/AgentManifestWorkflow.tsx"]
     n1 --> n0
     click n0 "../modules/AgentTeamManifestPreview.md"
-    click n1 "../modules/AgentTeamSetupMasterPage.md"
+    click n1 "../modules/AgentManifestWorkflow.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) |
+| Inbound | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) |
 
 ### External packages
 

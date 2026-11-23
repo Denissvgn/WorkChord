@@ -16,6 +16,9 @@ _Auto-generated from `TaskFiltersBarProps` in `frontend/src/components/tasks/Tas
 | `iterationId` | `number` | Yes | — | — |
 | `filters` | `TaskFilters` | Yes | — | — |
 | `onFiltersChange` | `(filters: TaskFilters) => void` | Yes | — | — |
+| `agentFilter` | `{ value: string; options: string[]; onChange: (value: string) => void }` | No | — | — |
+| `hideProject` | `boolean` | No | — | — |
+| `onClear` | `() => void` | No | — | — |
 
 ## Methods
 
@@ -37,7 +40,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TaskFiltersBar](../modules/TaskFiltersBar.md) | 0 | `filters`, `iterationId`, `onFiltersChange` |
+| [TaskFiltersBar](../modules/TaskFiltersBar.md) | 0 | `agentFilter`, `filters`, `hideProject`, `iterationId`, `onClear`, `onFiltersChange` |
 
 ### References
 

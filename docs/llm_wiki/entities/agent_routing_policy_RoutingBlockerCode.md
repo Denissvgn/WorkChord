@@ -62,6 +62,14 @@ Stable hard blockers shared by preview and assignment enforcement.
 | `REVIEWER_PROFILE_MISSING` | `'reviewer_profile_missing'` | — |
 | `REVIEWER_PROFILE_MISMATCH` | `'reviewer_profile_mismatch'` | — |
 | `VERIFICATION_ACTOR_NOT_INDEPENDENT` | `'verification_actor_not_independent'` | — |
+| `VERIFICATION_PUBLISHER_UNVERIFIABLE` | `'verification_publisher_unverifiable'` | — |
+| `VERIFICATION_PUBLISHER_NOT_INDEPENDENT` | `'verification_publisher_not_independent'` | — |
+| `VERIFICATION_CANDIDATE_UNVERIFIABLE` | `'verification_candidate_unverifiable'` | — |
+| `VERIFICATION_EVIDENCE_UNAVAILABLE` | `'verification_evidence_unavailable'` | — |
+| `VERIFICATION_CANDIDATE_STALE` | `'verification_candidate_stale'` | — |
+| `VERIFICATION_CONTRIBUTORS_UNVERIFIABLE` | `'verification_contributors_unverifiable'` | — |
+| `EXECUTION_PUBLISHER_UNVERIFIABLE` | `'execution_publisher_unverifiable'` | — |
+| `EXECUTION_OUTPUT_CONFLICT` | `'execution_output_conflict'` | — |
 | `VERIFICATION_PROFILE_NOT_INDEPENDENT` | `'verification_profile_not_independent'` | — |
 | `VERIFICATION_INDEPENDENCE_UNVERIFIABLE` | `'verification_independence_unverifiable'` | — |
 | `VERIFICATION_SPECIALIST_SKILL_MISSING` | `'verification_specialist_skill_missing'` | — |

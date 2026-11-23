@@ -1,6 +1,6 @@
 # AgentTeamPlan
 
-**Location:** `frontend/src/types/agent.ts:740`
+**Location:** `frontend/src/types/agent.ts:741`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -31,16 +31,22 @@ _Auto-generated from `AgentTeamPlan` in `frontend/src/types/agent.ts`._
 ```mermaid
 flowchart LR
     n0["AgentTeamPlan (frontend/src/types/agent.ts)"]
-    n1["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
-    n2["frontend/src/services/agentService.test.ts"]
-    n3["frontend/src/services/agentService.ts"]
+    n1["frontend/src/components/team/AgentManifestWorkflow.tsx"]
+    n2["frontend/src/components/team/ConnectAgentSteps.test.tsx"]
+    n3["frontend/src/components/team/ConnectAgentSteps.tsx"]
+    n4["frontend/src/services/agentService.test.ts"]
+    n5["frontend/src/services/agentService.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
+    n4 --> n0
+    n5 --> n0
     click n0 "../modules/types_agent.md"
-    click n1 "../modules/AgentTeamSetupMasterPage.md"
-    click n2 "../modules/agentService.test.md"
-    click n3 "../modules/agentService.md"
+    click n1 "../modules/AgentManifestWorkflow.md"
+    click n2 "../modules/ConnectAgentSteps.test.md"
+    click n3 "../modules/ConnectAgentSteps.md"
+    click n4 "../modules/agentService.test.md"
+    click n5 "../modules/agentService.md"
 ```
 
 ### Summary
@@ -53,6 +59,8 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `AgentTeamSetupMasterPage` | import | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) | — |
+| `AgentManifestWorkflow` | import | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) | — |
+| `ConnectAgentSteps.test` | import | [ConnectAgentSteps.test](../modules/ConnectAgentSteps.test.md) | — |
+| `ConnectAgentSteps` | import | [ConnectAgentSteps](../modules/ConnectAgentSteps.md) | — |
 | `agentService.test` | import | [agentService.test](../modules/agentService.test.md) | — |
 | `agentService` | import | [agentService](../modules/agentService.md) | — |

@@ -10,6 +10,8 @@ _Auto-generated from `frontend/src/components/analytics/ExecutionUsagePanel.test
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/scope/scopeStore` | `useScopeStore` | — | compiler-dependent |
+| `../../pages/AnalyticsPage` | `AnalyticsPage` | — | compiler-dependent |
 | `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
 | `../../types/executionUsage` | `ExecutionUsageSummary` | Declaration | erased |
 | `./ExecutionUsagePanel` | `ExecutionUsagePanel` | — | compiler-dependent |
@@ -20,8 +22,8 @@ _Auto-generated from `frontend/src/components/analytics/ExecutionUsagePanel.test
 
 | Signal | Values |
 |--------|--------|
-| Constants | `service`, `report` |
-| Module calls | `service = hoisted`, `mock`, `describe` |
+| Constants | `delivery`, `service`, `report` |
+| Module calls | `delivery = hoisted`, `mock`, `mock`, `service = hoisted`, `mock`, `describe` |
 
 ## Local dependency map
 
@@ -32,15 +34,22 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 flowchart LR
     n0["frontend/src/components/analytics/ExecutionUsagePanel.test.tsx"]
     n1["frontend/src/components/analytics/ExecutionUsagePanel.tsx"]
-    n2["frontend/src/test/renderWithProviders.tsx"]
-    n3["frontend/src/types/executionUsage.ts"]
+    n2["frontend/src/features/scope/scopeStore.ts"]
+    n3["frontend/src/pages/AnalyticsPage.tsx"]
+    n4["frontend/src/test/renderWithProviders.tsx"]
+    n5["frontend/src/types/executionUsage.ts"]
     n0 --> n1
     n0 --> n2
     n0 --> n3
+    n0 --> n4
+    n0 --> n5
+    n3 --> n1
     click n0 "../modules/ExecutionUsagePanel.test.md"
     click n1 "../modules/ExecutionUsagePanel.md"
-    click n2 "../modules/renderWithProviders.md"
-    click n3 "../modules/executionUsage.md"
+    click n2 "../modules/scopeStore.md"
+    click n3 "../modules/AnalyticsPage.md"
+    click n4 "../modules/renderWithProviders.md"
+    click n5 "../modules/executionUsage.md"
 ```
 
 ### Internal neighbors
@@ -48,6 +57,8 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Outbound | [ExecutionUsagePanel](../modules/ExecutionUsagePanel.md) |
+| Outbound | [scopeStore](../modules/scopeStore.md) |
+| Outbound | [AnalyticsPage](../modules/AnalyticsPage.md) |
 | Outbound | [renderWithProviders](../modules/renderWithProviders.md) |
 | Outbound | [executionUsage](../modules/executionUsage.md) |
 

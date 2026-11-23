@@ -3696,3 +3696,215 @@ The anonymous identity response lists stable server feature names (observer sess
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-11-21
+
+### Wiki sync
+- Source: `.`
+- Generator version: `5.0.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:62afaf46470e182e403e8269da5119c22012089caa5c965d0a7d4bf0da651403`
+- Pages created: 402
+- Pages updated: 1360
+- Pages metadata-only: 9
+- Pages skipped (unchanged): 1797
+- Pages deprecated: 45
+- Semantic fields preserved: 190
+- Moved entities: `AgentTeamActionReceiptStatus` (frontend/src/pages/AgentTeamSetupMasterPage.tsx → frontend/src/components/team/AgentManifestWorkflow.tsx), `AttentionKind` (frontend/src/features/overview/attentionRanking.ts → frontend/src/features/overview/overviewSignals.ts), `BindingForm` (frontend/src/components/settings/AgentModelAdministration.tsx → frontend/src/components/team/AgentModelAdministration.tsx), `CalendarDraft` (frontend/src/pages/CalendarPage.tsx → frontend/src/components/settings/WorkCalendarSettings.tsx), `CatalogForm` (frontend/src/components/settings/AgentModelAdministration.tsx → frontend/src/components/team/AgentModelAdministration.tsx), `ClassificationPanelProps` (frontend/src/pages/TriagePage.tsx → frontend/src/components/triage/TriageSuggestions.tsx), `ConflictResolution` (frontend/src/components/settings/AgentModelAdministration.tsx → frontend/src/components/team/AgentModelAdministration.tsx), `DateChipProps` (frontend/src/pages/CalendarPage.tsx → frontend/src/components/settings/WorkCalendarSettings.tsx), `DateListProps` (frontend/src/pages/CalendarPage.tsx → frontend/src/components/settings/WorkCalendarSettings.tsx), `DateRange` (frontend/src/pages/RoadmapPage.tsx → frontend/src/components/projects/RoadmapView.tsx), `DatedIteration` (frontend/src/store/iterationStore.ts → frontend/src/features/scope/workScope.ts), `DuplicateActionDefaults` (frontend/src/pages/TriagePage.tsx → frontend/src/components/triage/triageUtils.ts), `DuplicateSuggestionGroupProps` (frontend/src/pages/TriagePage.tsx → frontend/src/components/triage/TriageSuggestions.tsx), `DuplicateSuggestionsPanelProps` (frontend/src/pages/TriagePage.tsx → frontend/src/components/triage/TriageSuggestions.tsx), `EditableScope` (frontend/src/components/tasks/SavedViewsControl.tsx → frontend/src/components/tasks/useSavedViewManager.tsx), `EvidenceItem` (frontend/src/pages/PlanMasterPage.tsx → frontend/src/features/planningMasters/planEvidence.ts), `FormMode` (frontend/src/components/tasks/SavedViewsControl.tsx → frontend/src/components/tasks/useSavedViewManager.tsx), `FormProps` (frontend/src/components/tasks/GuardedTaskModal.tsx → frontend/src/components/tasks/GuardedTaskDrawer.tsx), `GuideItem` (frontend/src/components/planning/PlanningWorkflowGuide.tsx → frontend/src/components/planning/PlanningWorkflowHelpContent.tsx), `InitiativeGroupInfo` (frontend/src/pages/RoadmapPage.tsx → frontend/src/components/projects/projectPortfolio.ts), `MilestoneEditorState` (frontend/src/pages/ProjectDetailPage.tsx → frontend/src/components/projects/projectDetailShared.ts), `MilestoneFormState` (frontend/src/pages/ProjectDetailPage.tsx → frontend/src/components/projects/projectDetailShared.ts), `ParsedGitHubLink` (backend/app/services/external_link_service.py → backend/app/utils/github_links.py), `PlanningSurface` (frontend/src/components/planning/PlanningWorkflowGuide.tsx → frontend/src/components/planning/PlanningWorkflowHelpContent.tsx), `ProjectUpdateErrorStore` (frontend/src/pages/ProjectDetailPage.tsx → frontend/src/components/projects/projectDetailShared.ts), `ProjectUpdateFormState` (frontend/src/pages/ProjectDetailPage.tsx → frontend/src/components/projects/projectDetailShared.ts), `ProjectUpdateFormStore` (frontend/src/pages/ProjectDetailPage.tsx → frontend/src/components/projects/projectDetailShared.ts), `RoadmapMarker` (frontend/src/pages/RoadmapPage.tsx → frontend/src/components/projects/RoadmapView.tsx), `RoadmapRow` (frontend/src/pages/RoadmapPage.tsx → frontend/src/components/projects/RoadmapView.tsx), `StatusTone` (frontend/src/pages/AgentTeamSetupMasterPage.tsx → frontend/src/components/team/AgentManifestWorkflow.tsx), `TaskListOption` (frontend/src/pages/TriagePage.tsx → frontend/src/components/triage/triageUtils.ts), `TeamFormProps` (frontend/src/components/team/TeamForm.tsx → frontend/src/components/capacity/TeamForm.tsx), `TeamListProps` (frontend/src/components/team/TeamList.tsx → frontend/src/components/capacity/TeamList.tsx), `TriageActionModalProps` (frontend/src/pages/TriagePage.tsx → frontend/src/components/triage/TriageActionModal.tsx), `TriageDetailPanelProps` (frontend/src/pages/TriagePage.tsx → frontend/src/components/triage/TriageDetailPanel.tsx), `TriageLifecycleAction` (frontend/src/pages/TriagePage.tsx → frontend/src/components/triage/triageUtils.ts), `TriageRowProps` (frontend/src/pages/TriagePage.tsx → frontend/src/components/triage/TriageRow.tsx), `VacationManagerProps` (frontend/src/components/team/VacationManager.tsx → frontend/src/components/capacity/VacationManager.tsx), `WorkflowFocusIntent` (frontend/src/pages/AgentTeamSetupMasterPage.tsx → frontend/src/components/team/AgentManifestWorkflow.tsx), `WorkflowFocusTarget` (frontend/src/pages/AgentTeamSetupMasterPage.tsx → frontend/src/components/team/AgentManifestWorkflow.tsx)
+- Flow pages initialized: 3 (http=1, mcp=2)
+- Workflow pages created: 5
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 3
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 9
+- Generated surface pages retired: 1
+
+### Review and workspace changes
+
+A controller can recover eligible work for its own team. Formal review can bind acceptance to the submitted artifact and a reviewer independent of the contributors. Operators can inspect and reconcile the historical receipts behind a run. In the web workspace, Team hosts model administration, Plan manages iteration capacity, and Tasks includes the agent pipeline.
+
+## 2026-11-21
+
+### Wiki sync
+- Source: `.`
+- Generator version: `5.0.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:62afaf46470e182e403e8269da5119c22012089caa5c965d0a7d4bf0da651403`
+- Pages created: 0
+- Pages updated: 1
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3538
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-11-21
+
+### Wiki sync
+- Source: `<external-source-root>`
+- Generator version: `5.0.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:9c33f946aca4c860dca871270b522d9cc1557b8ae8d73838285c12f264ca0bb3`
+- Pages created: 2
+- Pages updated: 71
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3468
+- Pages deprecated: 0
+- Semantic fields preserved: 5
+- Moved entities: none
+
+## 2026-11-21
+
+### Wiki sync
+- Source: `<external-source-root>`
+- Generator version: `5.0.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:ffe80eba3866cbdbb7c98c4347bb79b35dc173e7174b1edc879a11b4df5a42d2`
+- Pages created: 19
+- Pages updated: 300
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3241
+- Pages deprecated: 0
+- Semantic fields preserved: 11
+- Moved entities: none
+- Flow pages initialized: 4 (http=2, mcp=2)
+- Workflow pages created: 7
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-11-21
+
+### Wiki sync
+- Source: `<external-source-root>`
+- Generator version: `5.0.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:946d1a1e137e98d956ddb55c4460eabf8d80b6eacddabff2c47534ba7ec849d1`
+- Pages created: 20
+- Pages updated: 347
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3212
+- Pages deprecated: 1
+- Semantic fields preserved: 25
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 6
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Generated surface pages retired: 1
+
+## 2026-11-21
+
+### Wiki sync
+- Source: `<external-source-root>`
+- Generator version: `5.0.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:946d1a1e137e98d956ddb55c4460eabf8d80b6eacddabff2c47534ba7ec849d1`
+- Pages created: 0
+- Pages updated: 2
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3577
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-11-21
+
+### Wiki sync
+- Source: `<external-source-root>`
+- Generator version: `5.0.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:c485d9551ed8610659e21b09976fac87d04ecf5ff12d72acc712008924a15afd`
+- Pages created: 0
+- Pages updated: 50
+- Pages metadata-only: 2
+- Pages skipped (unchanged): 3527
+- Pages deprecated: 0
+- Semantic fields preserved: 8
+- Moved entities: none
+
+## 2026-11-21
+
+### Wiki sync
+- Source: `<external-source-root>`
+- Generator version: `5.0.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:aa53e155457d75c68fac48bf51900a944bc2635fe35137829e74ae16b79eb14e`
+- Pages created: 15
+- Pages updated: 328
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3251
+- Pages deprecated: 0
+- Semantic fields preserved: 13
+- Moved entities: none
+- Flow pages initialized: 2 (http=1, mcp=1)
+- Workflow pages created: 3
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-11-21
+
+### Wiki sync
+- Source: `<external-source-root>`
+- Generator version: `5.0.0`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:9a98d3530f353f0e6e322f06566e1e742516bc9f168585140d13d10515af6b4b`
+- Pages created: 5
+- Pages updated: 91
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3503
+- Pages deprecated: 0
+- Semantic fields preserved: 9
+- Moved entities: none
+
+## 2026-11-23
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:86e6707f118c37e04fdaa1ca789beb58bf415385e6dd76de3e4bc2ead29e5832`
+- Pages created: 3
+- Pages updated: 478
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3189
+- Pages deprecated: 0
+- Semantic fields preserved: 240
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 9
+
+## 2026-11-23
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:cc0025ce53ff5052797eea0c8a409b6f533d5f38a288a42b55387ef21e0dd67c`
+- Pages created: 0
+- Pages updated: 3
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 3598
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

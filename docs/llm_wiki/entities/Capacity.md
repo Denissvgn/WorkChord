@@ -1,6 +1,6 @@
 # Capacity
 
-**Location:** `frontend/src/components/tasks/PersonCapacity.tsx:12`
+**Location:** `frontend/src/components/tasks/PersonCapacity.tsx:14`
 **Kind:** Interface
 **Bases:** —
 **Module:** [PersonCapacity](../modules/PersonCapacity.md)
@@ -18,7 +18,7 @@ _Auto-generated from `Capacity` in `frontend/src/components/tasks/PersonCapacity
 | `timezone` | `string \| null` | Yes | — | — |
 | `has_unknown_effort` | `boolean` | Yes | — | — |
 | `allocations` | `{ member_id: number; availability_percent: number; operational_utilization: number; professionalism_coefficient: number }[]` | Yes | — | — |
-| `days` | `{ date: string; available_hours: number \| null; allocated_hours: number; productive_hours: number \| null; private_busy_hours: number; committed_effort_hours: number; overallocated_hours: number \| null }[]` | Yes | — | — |
+| `days` | `{ date: string; available_hours: number \| null; allocated_hours: number \| null; productive_hours: number \| null; private_busy_hours: number \| null; committed_effort_hours: number; overallocated_hours: number \| null }[]` | Yes | — | — |
 
 ## Methods
 

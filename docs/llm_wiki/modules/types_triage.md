@@ -25,43 +25,23 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/tasks/QuickCapture.tsx"]
-    n1["frontend/src/components/tasks/TaskForm.tsx"]
-    n2["frontend/src/pages/TriagePage.tsx"]
-    n3["frontend/src/services/triageService.ts"]
-    n4["frontend/src/types/task.ts"]
-    n5["frontend/src/types/triage.ts"]
-    n0 --> n3
-    n0 --> n4
-    n0 --> n5
-    n1 --> n3
-    n1 --> n4
-    n1 --> n5
-    n2 --> n0
-    n2 --> n3
-    n2 --> n4
-    n2 --> n5
-    n3 --> n5
-    n4 --> n5
-    n5 --> n4
-    click n0 "../modules/QuickCapture.md"
-    click n1 "../modules/TaskForm.md"
-    click n2 "../modules/TriagePage.md"
-    click n3 "../modules/triageService.md"
-    click n4 "../modules/types_task.md"
-    click n5 "../modules/types_triage.md"
+    n0["frontend"]
+    n1["frontend/src/types/triage.ts"]
+    n0 --> n1
+    n1 --> n0
+    click n1 "../modules/types_triage.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [QuickCapture](../modules/QuickCapture.md) |
-| Inbound | [TaskForm](../modules/TaskForm.md) |
-| Inbound | [TriagePage](../modules/TriagePage.md) |
-| Inbound | [triageService](../modules/triageService.md) |
-| Inbound | [types_task](../modules/types_task.md) |
-| Outbound | [types_task](../modules/types_task.md) |
+| Inbound | `frontend` (18) |
+| Outbound | `frontend` (1) |
+
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -30,13 +30,16 @@ _Auto-generated from `ProjectMilestoneCreateRequest` in `frontend/src/types/proj
 ```mermaid
 flowchart LR
     n0["ProjectMilestoneCreateRequest (frontend/src/types/project.ts)"]
-    n1["frontend/src/pages/ProjectDetailPage.tsx"]
-    n2["frontend/src/services/projectService.ts"]
+    n1["buildMilestonePayload (frontend/src/components/projects/projectDetailShared.ts)"]
+    n2["frontend/src/pages/ProjectDetailPage.tsx"]
+    n3["frontend/src/services/projectService.ts"]
     n1 --> n0
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/types_project.md"
-    click n1 "../modules/ProjectDetailPage.md"
-    click n2 "../modules/projectService.md"
+    click n1 "../modules/projectDetailShared.md"
+    click n2 "../modules/ProjectDetailPage.md"
+    click n3 "../modules/projectService.md"
 ```
 
 ### Summary
@@ -49,5 +52,6 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `buildMilestonePayload` | type_reference | [projectDetailShared](../modules/projectDetailShared.md) | — |
 | `ProjectDetailPage` | import | [ProjectDetailPage](../modules/ProjectDetailPage.md) | — |
 | `projectService` | import | [projectService](../modules/projectService.md) | — |

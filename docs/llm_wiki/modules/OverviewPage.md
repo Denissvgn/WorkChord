@@ -4,40 +4,43 @@
 
 ## Description
 
-_Auto-generated from `frontend/src/pages/OverviewPage.tsx`._
+Overview combines the selected scope’s task counts, planning signals and current work. Each data source retains its own loading, error and access state. A count opens the corresponding task list, while a task opens in a drawer with a return location.
 
 ## Imports
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../components/common/Button` | `Button` | — | compiler-dependent |
-| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
-| `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` | — | compiler-dependent |
-| `../components/ui` | `InlineEmptyState`, `PageHeader`, `PageLayout`, `SectionCard` | — | compiler-dependent |
+| `../components/common/ButtonLink` | `ButtonLink` | — | compiler-dependent |
+| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState`, `QueryStaleState` | — | compiler-dependent |
+| `../components/tasks/usePipeline` | `usePipeline` | — | compiler-dependent |
+| `../components/ui` | `PageHeader`, `PageLayout`, `SectionCard`, `SlideOverDrawer` | — | compiler-dependent |
 | `../components/ui/tone` | `PillTone` | Declaration | erased |
-| `../components/ui/tone` | `STATUS_TONE`, `toneVar`, `toneSoftVar` | — | compiler-dependent |
-| `../features/overview/attentionRanking` | `AttentionKind`, `AttentionSeverity` | Specifier | compiler-dependent |
-| `../features/overview/attentionRanking` | `rankAttentionItems`, `rankAttentionTaskCandidates` | — | compiler-dependent |
+| `../components/ui/tone` | `STATUS_TONE`, `toneSoftVar`, `toneVar` | — | compiler-dependent |
+| `../features/firstRun/GetStartedPanel` | `GetStartedPanel` | — | compiler-dependent |
+| `../features/firstRun/NextStepEmptyState` | `NextStepEmptyState` | — | compiler-dependent |
+| `../features/firstRun/firstRunSteps` | `firstRunPlanHref` | — | compiler-dependent |
+| `../features/firstRun/useGetStarted` | `useGetStarted` | — | compiler-dependent |
+| `../features/overview/overviewBacklog` | `loadProjectBacklog` | — | compiler-dependent |
+| `../features/overview/overviewSignals` | `AttentionCandidate`, `AttentionKind`, `OverviewCountList`, `PipelineStage` | Specifier | compiler-dependent |
+| `../features/overview/overviewSignals` | `OVERVIEW_COUNT_LIST_PARAM`, `PIPELINE_STAGES`, `backlogRoots`, `daysLeftToLatestEnd`, `deliveryRisk`, `iterationsInView`, `listTasks`, `overviewCountListHref`, `parseOverviewCountList`, `pickAttention`, `pipelineStageHref`, `pipelineTasksInScope`, `selectWorkNow`, `taskListHref` | — | compiler-dependent |
 | `../features/overview/overviewTaskThread` | `overviewTaskDrawerHref`, `overviewTaskReturnFocusId` | — | compiler-dependent |
-| `../features/planningMasters/masters` | `STEP_DEFS` | — | compiler-dependent |
-| `../features/planningMasters/planningTaskIssues` | `taskMatchesPlanningIssue` | — | compiler-dependent |
-| `../features/planningMasters/usePlanningReadiness` | `PlanningQueryFeedback` | Declaration | erased |
-| `../features/planningMasters/usePlanningReadiness` | `usePlanningReadiness` | — | compiler-dependent |
+| `../features/planningMasters/planningReturn` | `isPlanningStepId` | — | compiler-dependent |
+| `../features/planningMasters/usePlanningNavigationSummary` | `planProgress`, `planningNavigationSummaryKey`, `usePlanningNavigationSummary` | — | compiler-dependent |
+| `../features/scope/useScopeLink` | `useScopeLink` | — | compiler-dependent |
+| `../features/scope/useWorkScope` | `useWorkScope` | — | compiler-dependent |
+| `../features/scope/workScope` | `ScopeIteration`, `ScopeProject` | Declaration | erased |
 | `../services/iterationService` | `iterationService` | — | compiler-dependent |
 | `../services/projectService` | `projectService` | — | compiler-dependent |
+| `../services/taskService` | `taskService` | — | compiler-dependent |
 | `../types/iteration` | `Iteration` | Declaration | erased |
-| `../types/project` | `ProjectSummary`, `ProjectTargetDateRisk`, `ProjectUpdateFreshness` | Declaration | erased |
-| `../types/task` | `Task`, `TaskStatus` | Declaration | erased |
+| `../types/task` | `Task` | Declaration | erased |
 | `../utils/apiError` | `getApiErrorStatus` | — | compiler-dependent |
 | `../utils/formatDate` | `formatDate` | — | compiler-dependent |
-| `../utils/selectWorkNowTasks` | `selectWorkNowTasks` | — | compiler-dependent |
-| `../utils/workNumbers` | `formatDecimal`, `formatPercent` | — | compiler-dependent |
-| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
-| `clsx` | `clsx` | — | compiler-dependent |
-| `i18next` | `TFunction` | Declaration | erased |
+| `../utils/workNumbers` | `formatDecimal` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQueries`, `useQuery` | — | compiler-dependent |
 | `lucide-react` | `LucideIcon` | Declaration | erased |
-| `lucide-react` | `Activity`, `AlertTriangle`, `ArrowRight`, `Bookmark`, `Calendar`, `CheckCircle2`, `ChevronDown`, `Clock`, `FolderOpen`, `Inbox`, `ListTodo`, `RefreshCw`, `Target`, `User`, `Zap` | — | compiler-dependent |
-| `react` | `ReactNode` | Declaration | erased |
+| `lucide-react` | `AlertTriangle`, `ArrowRight`, `Bot`, `CheckCircle2`, `Clock`, `ClipboardCheck`, `HelpCircle`, `ListTodo`, `Plus`, `RefreshCw`, `Target`, `User`, `UserPlus` | — | compiler-dependent |
 | `react` | `useEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 | `react-router-dom` | `Link`, `useLocation`, `useNavigate` | — | compiler-dependent |
@@ -47,8 +50,7 @@ _Auto-generated from `frontend/src/pages/OverviewPage.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `default` |
-| Constants | `MS_PER_DAY`, `HOURS_PER_DAY`, `CAPACITY_WARNING_PERCENT`, `PACE_WARNING_POINTS`, `ITERATION_DETAILS_ID`, `WORK_NOW_TITLE_ID`, `doneStatuses`, `invalidCachedStatuses`, `operationalAttentionIds`, `commitmentAttentionIds` |
-| Module calls | `doneStatuses = Set`, `invalidCachedStatuses = Set`, `operationalAttentionIds = Set`, `commitmentAttentionIds = Set` |
+| Constants | `ATTENTION_ID`, `WORK_NOW_TITLE_ID`, `AGENTS_NOW_TITLE_ID`, `ON_TRACK_TITLE_ID`, `ATTENTION_LOOK`, `RISK_TONE` |
 
 ## Local dependency map
 
@@ -70,25 +72,23 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (1) |
-| Outbound | `frontend` (19) |
+| Inbound | `frontend` (5) |
+| Outbound | `frontend` (26) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 7 | 0 |
+| typescript | 5 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [OverviewFocusPanelProps](../entities/OverviewFocusPanelProps.md) | Interface | 1023 | — | — |
-| [OverviewDeliverySnapshotProps](../entities/OverviewDeliverySnapshotProps.md) | Interface | 1110 | — | — |
-| [CapacityException](../entities/CapacityException.md) | Type alias | 56 | <pre><code>&#123;&#10;    id&#58; number&#59;&#10;    name&#58; string&#59;&#10;    position&#58; string&#59;&#10;    allocatedDays&#58; number&#59;&#10;    capacityDays&#58; number&#59;&#10;    utilizationPercent&#58; number&#59;&#10;    tone&#58; PillTone&#59;&#10;&#125;</code></pre> | — |
-| [AttentionItem](../entities/AttentionItem.md) | Type alias | 66 | <pre><code>&#123;&#10;    id&#58; string&#59;&#10;    kind&#58; AttentionKind&#59;&#10;    severity&#58; AttentionSeverity&#59;&#10;    urgency&#58; number&#59;&#10;    magnitude&#58; number&#59;&#10;    tone&#58; PillTone&#59;&#10;    icon&#58; LucideIcon&#59;&#10;    title&#58; string&#59;&#10;    meta&#58; string&#59;&#10;    to&#58; string&#59;&#10;    actionLabel&#58; string&#59;&#10;&#125;</code></pre> | — |
-| [OverviewDataSource](../entities/OverviewDataSource.md) | Type alias | 80 | <pre><code>&#123;&#10;    id&#58; string&#59;&#10;    label&#58; string&#59;&#10;    enabled&#58; boolean&#59;&#10;    hasData&#58; boolean&#59;&#10;    hasUsableData&#58; boolean&#59;&#10;    dataUpdatedAt&#58; number&#59;&#10;    isLoading&#58; boolean&#59;&#10;    isFetching&#58; boolean&#59;&#10;    isError&#58; boolean&#59;&#10;    error&#58; unknown&#59;&#10;    refetch&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62;&#59;&#10;&#125;</code></pre> | — |
-| [DirectQueryFeedback](../entities/DirectQueryFeedback.md) | Type alias | 94 | <pre><code>&#123;&#10;    data&#58; unknown&#59;&#10;    dataUpdatedAt&#58; number&#59;&#10;    error&#58; unknown&#59;&#10;    isLoading&#58; boolean&#59;&#10;    isFetching&#58; boolean&#59;&#10;    isError&#58; boolean&#59;&#10;    refetch&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62;&#59;&#10;&#125;</code></pre> | — |
-| [OverviewLocationState](../entities/OverviewLocationState.md) | Type alias | 104 | <pre><code>&#123;&#10;    returnFocusId&#63;&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [OverviewLocationState](../entities/OverviewLocationState.md) | Type alias | 75 | <pre><code>&#123;&#10;    returnFocusId&#63;&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [SourceState](../entities/SourceState.md) | Type alias | 83 | `'loading' \| 'failed' \| 'stale' \| 'ready' \| 'unavailable'` | Whether a source Overview needs has arrived. 'stale' means a refresh failed and the last |
+| [AttentionSource](../entities/AttentionSource.md) | Type alias | 85 | `'tasks' \| 'pipeline' \| 'plan'` | — |
+| [TaskGroup](../entities/TaskGroup.md) | Type alias | 96 | `{ iteration: Iteration \| null; roots: Task[] }` | The tasks Overview counts: one group per iteration in view, or the project's backlog. |
+| [ListedTask](../entities/OverviewPage_ListedTask.md) | Type alias | 99 | `{ task: Task; iteration: Iteration \| null }` | A task in one of Overview's own lists, with the iteration it belongs to. |

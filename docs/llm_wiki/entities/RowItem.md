@@ -1,6 +1,6 @@
 # RowItem
 
-**Location:** `frontend/src/components/tasks/TaskList.tsx:58`
+**Location:** `frontend/src/components/tasks/TaskList.tsx:72`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TaskList](../modules/TaskList.md)

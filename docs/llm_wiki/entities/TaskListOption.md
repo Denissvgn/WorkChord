@@ -1,13 +1,13 @@
 # TaskListOption
 
-**Location:** `frontend/src/pages/TriagePage.tsx:184`
+**Location:** `frontend/src/components/triage/triageUtils.ts:112`
 **Kind:** Interface
 **Bases:** —
-**Module:** [TriagePage](../modules/TriagePage.md)
+**Module:** [triageUtils](../modules/triageUtils.md)
 
 ## Description
 
-_Auto-generated from `TaskListOption` in `frontend/src/pages/TriagePage.tsx`._
+_Auto-generated from `TaskListOption` in `frontend/src/components/triage/triageUtils.ts`._
 
 ## Attributes
 
@@ -24,10 +24,23 @@ _Auto-generated from `TaskListOption` in `frontend/src/pages/TriagePage.tsx`._
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-*No generated relationships detected.*
+```mermaid
+flowchart LR
+    n0["TaskListOption (frontend/src/components/triage/triageUtils.ts)"]
+    n1["flattenTasks (frontend/src/components/triage/triageUtils.ts)"]
+    n1 --> n0
+    click n0 "../modules/triageUtils.md"
+    click n1 "../modules/triageUtils.md"
+```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TriagePage](../modules/TriagePage.md) | 0 | `depth`, `id`, `title` |
+| [triageUtils](../modules/triageUtils.md) | 0 | `depth`, `id`, `title` |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `flattenTasks` | type_reference | [triageUtils](../modules/triageUtils.md) | — |

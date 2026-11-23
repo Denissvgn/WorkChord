@@ -17,9 +17,14 @@ Snapshot restore captures the target iteration identity and its observed revisio
 | `../components/feedback/toast` | `useToast` | — | compiler-dependent |
 | `../components/gantt/GanttChart` | `GanttChart` | — | compiler-dependent |
 | `../components/gantt/ScheduleExplanationDetails` | `ScheduleExplanationDetails` | — | compiler-dependent |
-| `../components/gantt/TaskEditModal` | `TaskEditModal` | — | compiler-dependent |
-| `../components/iteration/IterationSelector` | `IterationSelector` | — | compiler-dependent |
+| `../components/gantt/TaskEditDrawer` | `TaskEditDrawer` | — | compiler-dependent |
 | `../components/planning/PlanningWorkbenchFrame` | `PlanningWorkbenchFrame` | — | compiler-dependent |
+| `../components/ui` | `OverflowMenu` | — | compiler-dependent |
+| `../components/ui/OverflowMenu` | `OverflowMenuItem` | Declaration | erased |
+| `../features/firstRun/NextStepEmptyState` | `NextStepEmptyState` | — | compiler-dependent |
+| `../features/firstRun/firstRunSteps` | `firstRunPlanHref` | — | compiler-dependent |
+| `../features/scope/useScopeLink` | `useScopeLink` | — | compiler-dependent |
+| `../features/scope/useWorkScope` | `useWorkScope` | — | compiler-dependent |
 | `../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
 | `../services/ganttService` | `ganttService` | — | compiler-dependent |
 | `../services/iterationService` | `iterationService` | — | compiler-dependent |
@@ -27,7 +32,6 @@ Snapshot restore captures the target iteration identity and its observed revisio
 | `../services/snapshotService` | `IterationSnapshot` | Declaration | erased |
 | `../services/snapshotService` | `snapshotService` | — | compiler-dependent |
 | `../services/taskService` | `taskService` | — | compiler-dependent |
-| `../store/iterationStore` | `useIterationStore`, `pickDefaultIteration` | — | compiler-dependent |
 | `../types/gantt` | `ExplainScheduleResponse`, `GanttTask` | Declaration | erased |
 | `../types/iteration` | `Iteration` | Declaration | erased |
 | `../types/task` | `TaskBatchUpdateItem`, `TaskUpdate` | Declaration | erased |
@@ -37,7 +41,7 @@ Snapshot restore captures the target iteration identity and its observed revisio
 | `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
 | `lucide-react` | `AlertTriangle`, `Sparkles`, `Maximize2`, `Minimize2`, `FlaskConical`, `Undo2`, `Check`, `History`, `RefreshCw` | — | compiler-dependent |
-| `react` | `useState`, `useEffect`, `useMemo`, `useCallback`, `useRef` | — | compiler-dependent |
+| `react` | `useState`, `useMemo`, `useCallback`, `useRef`, `useId` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 | `react-router-dom` | `Link` | — | compiler-dependent |
 
@@ -68,8 +72,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (1) |
-| Outbound | `frontend` (23) |
+| Inbound | `frontend` (4) |
+| Outbound | `frontend` (27) |
 
 ### External packages
 
@@ -77,4 +81,4 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

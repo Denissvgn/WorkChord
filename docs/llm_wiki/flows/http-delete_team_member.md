@@ -15,7 +15,7 @@ sequenceDiagram
     participant p1 as service.delete
     participant p2 as HTTPException
     participant p3 as MessageResponse
-    p0-->>p1: service.delete(member_id)
+    p0-->>p1: service.delete(member_id, unused_only=unused_only)
     p0-->>p2: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
     p0->>p3: MessageResponse
 ```
@@ -35,14 +35,14 @@ sequenceDiagram
 
 Source steps: 2; effect analysis evaluated: 1, partial: 0, unavailable: 1. Counts include steps omitted from the displayed trace.
 
-Collector observations for 1 source steps with known totals: observed: 4, emitted: 4, omitted: 0. Unavailable totals are excluded.
+Collector observations for 1 source steps with known totals: observed: 5, emitted: 5, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
-| `delete_team_member` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `delete_team_member` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
 | `service.delete` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `MessageResponse` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -53,7 +53,7 @@ flowchart LR
     s2["2. service.delete"]
     s3["3. HTTPException"]
     s4["4. MessageResponse"]
-    s1 -. "service.delete(member_id)" .-> s2
+    s1 -. "service.delete(member_id, unused_only=unused_only)" .-> s2
     s1 -. "HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)" .-> s3
     s1 -->|"MessageResponse(message=..., success=True)"| s4
     click s1 "../modules/routers_team.md"
@@ -64,7 +64,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `delete_team_member` | `member_id: int`, `service: Annotated[TeamService, Depends(get_team_service)]` | `status` | - | `MessageResponse(...)` |
+| `delete_team_member` | `member_id: int`, `service: Annotated[TeamService, Depends(get_team_service)]`, `unused_only: bool` | `status` | - | `MessageResponse(...)` |
 | `service.delete` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
 | `MessageResponse` | - | - | - | - |
@@ -73,9 +73,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| delete_team_member | service.delete | 247 | `service.delete(member_id)` |
-| delete_team_member | HTTPException | 249 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| delete_team_member | MessageResponse | 253 | `MessageResponse(message=..., success=True)` |
+| delete_team_member | service.delete | 248 | `service.delete(member_id, unused_only=unused_only)` |
+| delete_team_member | HTTPException | 250 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| delete_team_member | MessageResponse | 254 | `MessageResponse(message=..., success=True)` |
 
 ### Boundary effects
 
@@ -85,8 +85,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `delete_team_member` | `service.delete` | 247 |
-| external_call | `delete_team_member` | `HTTPException` | 249 |
+| unresolved_call | `delete_team_member` | `service.delete` | 248 |
+| external_call | `delete_team_member` | `HTTPException` | 250 |
 
 ## Behavior
 

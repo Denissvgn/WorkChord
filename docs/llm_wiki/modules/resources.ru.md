@@ -11,10 +11,14 @@ _Auto-generated from `frontend/src/i18n/resources.ru.ts`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `./agentTeamSetup.ru` | `agentTeamSetupRussian` | — | compiler-dependent |
+| `./emptyStates` | `emptyStatesRussian` | — | compiler-dependent |
+| `./firstRun` | `firstRunRussian` | — | compiler-dependent |
 | `./landing.ru` | `landingRussian` | — | compiler-dependent |
 | `./literals.ru` | `literalsRussian` | — | compiler-dependent |
 | `./pagination` | `paginationRU` | — | compiler-dependent |
 | `./plan.ru` | `planRussian` | — | compiler-dependent |
+| `./planSchedule` | `planScheduleRussian` | — | compiler-dependent |
+| `./planWork` | `planWorkRussian` | — | compiler-dependent |
 | `./planningInputMessages` | `planningInputRussian` | — | compiler-dependent |
 | `./surfaces.ru` | `surfacesRussian` | — | compiler-dependent |
 | `./teamwork.ru` | `teamworkRussian` | — | compiler-dependent |
@@ -45,7 +49,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (3) |
-| Outbound | `frontend` (9) |
+| Inbound | `frontend` (5) |
+| Outbound | `frontend` (13) |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

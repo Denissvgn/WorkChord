@@ -1,6 +1,6 @@
 # IterationSeriesItem
 
-**Location:** `backend/app/services/iteration_service.py:37`
+**Location:** `backend/app/services/iteration_service.py:39`
 **Kind:** Class
 **Bases:** —
 **Module:** [iteration_service](../modules/iteration_service.md)

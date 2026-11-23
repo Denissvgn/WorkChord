@@ -16,6 +16,7 @@ Gantt API router.
 | `app.routers.tasks` | `apply_batch_update_items` |
 | `app.schemas.gantt` | `GanttResponse`, `GanttTask`, `GanttAssignee`, `GanttMilestone`, `ScheduleResult`, `SchedulePreviewRequest`, `SchedulePreviewResponse`, `WorkloadIssue`, `SchedulingDecision`, `ScheduleApplyRequest` |
 | `app.schemas.iteration` | `IterationResponse` |
+| `app.services.calendar_rules` | `AnnualCalendars` |
 | `app.services.calendar_service` | `CalendarService` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.scheduler_service` | `SchedulerService` |
@@ -47,8 +48,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (3) |
-| Outbound | `backend` (12) |
+| Inbound | `backend` (4) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -56,7 +57,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

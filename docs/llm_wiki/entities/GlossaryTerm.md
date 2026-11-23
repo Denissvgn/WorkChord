@@ -1,14 +1,14 @@
 # GlossaryTerm
 
-**Location:** `frontend/src/navigation/helpContexts.ts:50`
+**Location:** `frontend/src/navigation/helpContexts.ts:13`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [helpContexts](../modules/helpContexts.md)
 **Target:**
 
 ```typescript
-'implemented' | 'accepted' | 'blocked' | 'overdue' | 'lateStart' | 'iterationOverflow'
-    | 'unknownEstimate' | 'scheduled' | 'capacity' | 'triage' | 'agentReady'
+'iteration' | 'capacity' | 'blockers' | 'assignee' | 'reviewer' | 'labels'
+    | 'waits_for' | 'earliest_start' | 'due_by' | 'request' | 'notifications'
 ```
 
 ## Description

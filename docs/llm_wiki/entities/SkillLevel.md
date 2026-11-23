@@ -1,6 +1,6 @@
 # SkillLevel
 
-**Location:** `backend/app/schemas/agent_routing.py:69`
+**Location:** `backend/app/schemas/agent_routing.py:70`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [agent_routing](../modules/agent_routing.md)

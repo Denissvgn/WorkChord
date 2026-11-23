@@ -39,14 +39,14 @@ flowchart LR
     n2["backend/app/models/__init__.py"]
     n3["backend/app/models/release.py"]
     n4["backend/app/models/task.py"]
-    n5["ExternalLinkService.create (backend/app/services/external_link_service.py)"]
-    n6["ExternalLinkService.create_task_github_link (backend/app/services/external_link_service.py)"]
-    n7["ExternalLinkService.create_task_link (backend/app/services/external_link_service.py)"]
-    n8["ExternalLinkService.get_by_id (backend/app/services/external_link_service.py)"]
-    n9["ExternalLinkService.legacy_task_link_response (backend/app/services/external_link_service.py)"]
-    n10["ExternalLinkService.link_to_response (backend/app/services/external_link_service.py)"]
-    n11["ExternalLinkService.list_for_entity (backend/app/services/external_link_service.py)"]
-    n12["ExternalLinkService.list_task_links (backend/app/services/external_link_service.py)"]
+    n5["backend/app/services/execution_planning_window.py"]
+    n6["ExternalLinkService._emit_github_created (backend/app/services/external_link_service.py)"]
+    n7["ExternalLinkService.create (backend/app/services/external_link_service.py)"]
+    n8["ExternalLinkService.create_release_github_link (backend/app/services/external_link_service.py)"]
+    n9["ExternalLinkService.create_task_github_link (backend/app/services/external_link_service.py)"]
+    n10["ExternalLinkService.create_task_link (backend/app/services/external_link_service.py)"]
+    n11["ExternalLinkService.get_by_id (backend/app/services/external_link_service.py)"]
+    n12["ExternalLinkService.legacy_task_link_response (backend/app/services/external_link_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -64,7 +64,7 @@ flowchart LR
     click n2 "../modules/models___init__.md"
     click n3 "../modules/models_release.md"
     click n4 "../modules/models_task.md"
-    click n5 "../modules/external_link_service.md"
+    click n5 "../modules/execution_planning_window.md"
     click n6 "../modules/external_link_service.md"
     click n7 "../modules/external_link_service.md"
     click n8 "../modules/external_link_service.md"
@@ -93,14 +93,14 @@ flowchart LR
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `release` | import | [models_release](../modules/models_release.md) | — |
 | `task` | import | [models_task](../modules/models_task.md) | — |
+| `execution_planning_window` | import | [execution_planning_window](../modules/execution_planning_window.md) | — |
+| `ExternalLinkService._emit_github_created` | type_reference | [external_link_service](../modules/external_link_service.md) | — |
 | `ExternalLinkService.create` | call | [external_link_service](../modules/external_link_service.md) | 1 |
 | `ExternalLinkService.create` | type_reference | [external_link_service](../modules/external_link_service.md) | — |
+| `ExternalLinkService.create_release_github_link` | type_reference | [external_link_service](../modules/external_link_service.md) | — |
 | `ExternalLinkService.create_task_github_link` | type_reference | [external_link_service](../modules/external_link_service.md) | — |
 | `ExternalLinkService.create_task_link` | type_reference | [external_link_service](../modules/external_link_service.md) | — |
 | `ExternalLinkService.get_by_id` | type_reference | [external_link_service](../modules/external_link_service.md) | — |
 | `ExternalLinkService.legacy_task_link_response` | type_reference | [external_link_service](../modules/external_link_service.md) | — |
-| `ExternalLinkService.link_to_response` | type_reference | [external_link_service](../modules/external_link_service.md) | — |
-| `ExternalLinkService.list_for_entity` | type_reference | [external_link_service](../modules/external_link_service.md) | — |
-| `ExternalLinkService.list_task_links` | type_reference | [external_link_service](../modules/external_link_service.md) | — |
 
-> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.
+> References: showing 12 of 27 logical references; 15 omitted by the 12-row generated summary limit.

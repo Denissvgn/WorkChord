@@ -1,6 +1,6 @@
 # DraftGuard
 
-**Location:** `frontend/src/components/tasks/DraftDismissalDialog.tsx:7`
+**Location:** `frontend/src/components/tasks/DraftDismissalDialog.tsx:8`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [DraftDismissalDialog](../modules/DraftDismissalDialog.md)

@@ -16,7 +16,7 @@ Agent integration API router.
 | `app.models.agent` | `AgentActor` |
 | `app.models.team_member` | `TeamMemberProfile` |
 | `app.routers.agent_skill_bundles` | `get_agent_skill_bundle_service` |
-| `app.schemas.agent` | `AgentActorCreate`, `AgentActorCreatedResponse`, `AgentActorRosterItem`, `AgentActorResponse`, `AgentActorUpdate`, `AgentDiscoveryTriageCreate`, `AgentDiscoveryTriageResponse`, `AgentCapabilitiesResponse`, `AgentReviewVerdict`, `AgentReviewVerdictResponse`, `AgentReviewQueueResponse`, `AgentRecoveryListResponse`, `AgentRecoveryRequeue`, `AgentRecoveryRequeueResponse`, `AgentRunCreate`, `AgentRunEventCreate`, `AgentRunEventResponse`, `AgentRunFinish`, `AgentRunResponse`, `AgentTaskAssignmentCreate`, `AgentAssignmentReadItem`, `AgentTaskAssignmentResponse`, `AgentTaskAssignmentUpdate`, `AgentTaskContextResponse`, `AgentTaskCreate`, `AgentTaskPatch`, `AgentWorkBegin`, `AgentWorkBeginResponse`, `AgentWorkDecisionResponse`, `AgentWorkRenew`, `AgentWorkSubmit`, `AgentWorkTerminal`, `AgentWorkTerminalResponse`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareAgentWorkBegin`, `TaskClaimRequest`, `TaskClaimResponse`, `TaskEventCreate`, `TaskEventResponse`, `AgentPipelineResponse`, `AgentProjectUpdateCreate`, `AgentProjectUpdateResponse`, `AgentRunDetailResponse` |
+| `app.schemas.agent` | `AgentActorCreate`, `AgentActorCreatedResponse`, `AgentActorRosterItem`, `AgentActorResponse`, `AgentActorUpdate`, `AgentDiscoveryTriageCreate`, `AgentDiscoveryTriageResponse`, `AgentCapabilitiesResponse`, `AgentReviewVerdict`, `AgentReviewVerdictResponse`, `AgentReviewQueueResponse`, `AgentRecoveryListResponse`, `AgentRecoveryRequeue`, `AgentRecoveryRequeueResponse`, `AgentRunCreate`, `AgentRunEventCreate`, `AgentRunEventResponse`, `AgentRunFinish`, `AgentRunResponse`, `AgentTaskAssignmentCreate`, `AgentAssignmentReadItem`, `AgentTaskAssignmentResponse`, `AgentTaskAssignmentUpdate`, `AgentTaskContextResponse`, `AgentTaskCreate`, `AgentTaskPatch`, `AgentWorkBegin`, `AgentWorkBeginResponse`, `AgentWorkDecisionResponse`, `AgentWorkRenew`, `AgentWorkSubmit`, `AgentRetainedOutputAttestation`, `AgentWorkTerminal`, `AgentWorkTerminalResponse`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareAgentWorkBegin`, `TaskClaimRequest`, `TaskClaimResponse`, `TaskEventCreate`, `TaskEventResponse`, `AgentPipelineResponse`, `AgentProjectUpdateCreate`, `AgentProjectUpdateResponse`, `AgentRunDetailResponse` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.agent_routing` | `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse` |
 | `app.schemas.agent_run_read` | `AgentRunReadItem` |
@@ -30,11 +30,12 @@ Agent integration API router.
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
 | `app.services.agent_routing_service` | `AgentRoutingConflictError`, `AgentRoutingService` |
 | `app.services.agent_run_read_service` | `AgentRunReadService` |
-| `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `AgentService`, `actor_has_scope`, `actor_scopes`, `require_scope` |
+| `app.services.agent_service` | `ADMIN_KEY_PRINCIPAL_NAME`, `AgentConflictError`, `AgentPermissionError`, `AgentService`, `actor_has_scope`, `actor_scopes`, `require_scope` |
 | `app.services.agent_skill_bundle_service` | `AgentSkillBundleService`, `SkillBundleArtifactError` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupConflictError`, `AgentTeamSetupService` |
 | `app.services.agent_work_service` | `AgentWorkService` |
 | `app.services.execution_usage_service` | `ExecutionUsageService` |
+| `app.services.retained_planning_output` | `attest_retained_output` |
 | `app.services.runtime_observation_service` | `RuntimeObservationService` |
 | `app.services.task_domain_service` | `domain_capabilities` |
 | `app.services.task_service` | `TaskVersionConflictError` |
@@ -63,8 +64,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (9) |
-| Outbound | `backend` (29) |
+| Inbound | `backend` (10) |
+| Outbound | `backend` (30) |
 
 ### External packages
 
@@ -72,7 +73,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -117,6 +118,7 @@ flowchart LR
 | `get_agent_task_context` | *(async)* `(task_id: int, actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentWorkService, Depends(get_agent_work_service)], assignment_id: Optional[int] = None)` | `@router.get('/agent/tasks/{task_id}/context', response_model=AgentTaskContextResponse)` | Return the complete assigned-task brief, dependencies, and timeline. |
 | `begin_my_agent_work` | *(async)* `(data: ModelAwareAgentWorkBegin \| AgentWorkBegin, actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentWorkService, Depends(get_agent_work_service)], idempotency_key: Annotated[str, Header(alias='Idempotency-Key')])` | `@router.post('/agent/me/work/begin', response_model=AgentWorkBeginResponse)` | Atomically accept, fence, claim, run, and activate assigned work. |
 | `submit_my_agent_work` | *(async)* `(data: AgentWorkSubmit, actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentWorkService, Depends(get_agent_work_service)], idempotency_key: Annotated[str, Header(alias='Idempotency-Key')])` | `@router.post('/agent/me/work/submit', response_model=AgentWorkTerminalResponse)` | Atomically submit evidence, resolve the task, and release assigned work. |
+| `attest_my_retained_output` | *(async)* `(run_id: int, data: AgentRetainedOutputAttestation, actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentWorkService, Depends(get_agent_work_service)], idempotency_key: Annotated[str, Header(alias='Idempotency-Key')])` | `@router.post('/agent/me/runs/{run_id}/attest-retained-output')` | Record the original worker's present attribution of its checkpointed, interrupted output. |
 | `renew_my_agent_work` | *(async)* `(data: AgentWorkRenew, actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentWorkService, Depends(get_agent_work_service)], idempotency_key: Annotated[str, Header(alias='Idempotency-Key')])` | `@router.post('/agent/me/work/renew', response_model=AgentWorkBeginResponse)` | Renew the current assignment fence and run heartbeat atomically. |
 | `fail_my_agent_work` | *(async)* `(data: AgentWorkTerminal, actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentWorkService, Depends(get_agent_work_service)], idempotency_key: Annotated[str, Header(alias='Idempotency-Key')])` | `@router.post('/agent/me/work/fail', response_model=AgentWorkTerminalResponse)` | Atomically finish failed/canceled work and signal PM recovery. |
 | `get_my_agent_reviews` | *(async)* `(actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentWorkService, Depends(get_agent_work_service)], limit: int = Query(50, ge=1, le=200), cursor: Optional[str] = None)` | `@router.get('/agent/me/reviews', response_model=AgentReviewQueueResponse)` | Return verification-purpose assignments for the authenticated actor. |

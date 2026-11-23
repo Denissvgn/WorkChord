@@ -27,7 +27,7 @@ _Auto-generated from `NativeConnectionStart` in `backend/app/routers/identity.py
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `code_challenge` | `str` | `code_challenge` | Yes | No | — | pattern='^[A-Za-z0-9_-]{43}$' | — | — |
 | `access` | `Literal['full', 'observe']` | `access` | No | No | `'full'` | — | — | — |
-| `client_label` | `str \| None` | `client_label` | No | Yes | `None` | max_length=80; min_length=1 | — | — |
+| `client_label` | `str \| None` | `client_label` | No | Yes | `None` | min_length=1; max_length=80 | — | — |
 
 ## Methods
 

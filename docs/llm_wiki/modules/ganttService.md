@@ -28,40 +28,44 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/gantt/GanttChart.tsx"]
-    n1["frontend/src/features/planningMasters/usePlanningReadiness.ts"]
-    n2["frontend/src/pages/GanttPage.tsx"]
-    n3["frontend/src/services/api.ts"]
-    n4["frontend/src/services/ganttService.ts"]
-    n5["frontend/src/types/gantt.ts"]
-    n6["frontend/src/types/task.ts"]
-    n0 --> n4
+    n0["frontend/src/components/planning/PlanScheduleSection.tsx"]
+    n1["frontend/src/features/firstRun/sampleProject.ts"]
+    n2["frontend/src/features/planningMasters/usePlanningReadiness.ts"]
+    n3["frontend/src/pages/GanttPage.tsx"]
+    n4["frontend/src/services/api.ts"]
+    n5["frontend/src/services/ganttService.ts"]
+    n6["frontend/src/types/gantt.ts"]
+    n7["frontend/src/types/task.ts"]
     n0 --> n5
-    n1 --> n4
+    n0 --> n6
+    n0 --> n7
     n1 --> n5
-    n1 --> n6
-    n2 --> n0
-    n2 --> n4
     n2 --> n5
     n2 --> n6
-    n4 --> n3
-    n4 --> n5
-    n4 --> n6
+    n2 --> n7
+    n3 --> n5
+    n3 --> n6
+    n3 --> n7
+    n5 --> n4
     n5 --> n6
-    click n0 "../modules/GanttChart.md"
-    click n1 "../modules/usePlanningReadiness.md"
-    click n2 "../modules/GanttPage.md"
-    click n3 "../modules/api.md"
-    click n4 "../modules/ganttService.md"
-    click n5 "../modules/types_gantt.md"
-    click n6 "../modules/types_task.md"
+    n5 --> n7
+    n6 --> n7
+    click n0 "../modules/PlanScheduleSection.md"
+    click n1 "../modules/sampleProject.md"
+    click n2 "../modules/usePlanningReadiness.md"
+    click n3 "../modules/GanttPage.md"
+    click n4 "../modules/api.md"
+    click n5 "../modules/ganttService.md"
+    click n6 "../modules/types_gantt.md"
+    click n7 "../modules/types_task.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [GanttChart](../modules/GanttChart.md) |
+| Inbound | [PlanScheduleSection](../modules/PlanScheduleSection.md) |
+| Inbound | [sampleProject](../modules/sampleProject.md) |
 | Inbound | [usePlanningReadiness](../modules/usePlanningReadiness.md) |
 | Inbound | [GanttPage](../modules/GanttPage.md) |
 | Outbound | [api](../modules/api.md) |

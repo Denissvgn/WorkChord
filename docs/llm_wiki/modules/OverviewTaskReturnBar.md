@@ -11,10 +11,11 @@ _Auto-generated from `frontend/src/components/overview/OverviewTaskReturnBar.tsx
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../features/overview/overviewTaskThread` | `overviewTaskReturnFocusId` | — | compiler-dependent |
+| `../../features/scope/useScopeLink` | `useScopeLink` | — | compiler-dependent |
+| `../common/ButtonLink` | `ButtonLink` | — | compiler-dependent |
 | `lucide-react` | `ArrowLeft`, `Waypoints` | — | compiler-dependent |
 | `react` | `RefObject` | Declaration | erased |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
-| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -27,15 +28,23 @@ _Auto-generated from `frontend/src/components/overview/OverviewTaskReturnBar.tsx
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/overview/OverviewTaskReturnBar.tsx"]
-    n1["frontend/src/features/overview/overviewTaskThread.ts"]
-    n2["frontend/src/pages/TasksPage.tsx"]
-    n0 --> n1
-    n2 --> n0
-    n2 --> n1
-    click n0 "../modules/OverviewTaskReturnBar.md"
-    click n1 "../modules/overviewTaskThread.md"
-    click n2 "../modules/TasksPage.md"
+    n0["frontend/src/components/common/ButtonLink.tsx"]
+    n1["frontend/src/components/overview/OverviewTaskReturnBar.tsx"]
+    n2["frontend/src/features/overview/overviewTaskThread.ts"]
+    n3["frontend/src/features/scope/useScopeLink.ts"]
+    n4["frontend/src/pages/TasksPage.tsx"]
+    n1 --> n0
+    n1 --> n2
+    n1 --> n3
+    n4 --> n0
+    n4 --> n1
+    n4 --> n2
+    n4 --> n3
+    click n0 "../modules/ButtonLink.md"
+    click n1 "../modules/OverviewTaskReturnBar.md"
+    click n2 "../modules/overviewTaskThread.md"
+    click n3 "../modules/useScopeLink.md"
+    click n4 "../modules/TasksPage.md"
 ```
 
 ### Internal neighbors
@@ -43,13 +52,15 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [TasksPage](../modules/TasksPage.md) |
+| Outbound | [ButtonLink](../modules/ButtonLink.md) |
 | Outbound | [overviewTaskThread](../modules/overviewTaskThread.md) |
+| Outbound | [useScopeLink](../modules/useScopeLink.md) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 4 | 0 |
+| typescript | 3 | 0 |
 
 ## Functions
 

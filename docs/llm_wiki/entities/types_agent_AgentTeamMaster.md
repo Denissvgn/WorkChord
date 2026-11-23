@@ -1,6 +1,6 @@
 # AgentTeamMaster
 
-**Location:** `frontend/src/types/agent.ts:690`
+**Location:** `frontend/src/types/agent.ts:691`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -33,22 +33,43 @@ _Auto-generated from `AgentTeamMaster` in `frontend/src/types/agent.ts`._
 ```mermaid
 flowchart LR
     n0["AgentTeamMaster (frontend/src/types/agent.ts)"]
-    n1["parseAgentTeamMasterEditor (frontend/src/features/agentTeamSetup/manifest.ts)"]
-    n2["frontend/src/features/agentTeamSetup/masters.test.ts"]
-    n3["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
-    n4["frontend/src/services/agentService.test.ts"]
-    n5["frontend/src/services/agentService.ts"]
+    n1["frontend/src/components/team/AgentManifestWorkflow.tsx"]
+    n2["frontend/src/components/team/ConnectAgentSteps.test.tsx"]
+    n3["frontend/src/components/team/ConnectAgentSteps.tsx"]
+    n4["ConnectionSteps (frontend/src/components/team/ConnectionSteps.tsx)"]
+    n5["frontend/src/components/team/TeamProfileManager.test.tsx"]
+    n6["buildConnectedMember (frontend/src/features/agentTeamSetup/connectAgent.ts)"]
+    n7["hasPM (frontend/src/features/agentTeamSetup/connectAgent.ts)"]
+    n8["replacesPendingPM (frontend/src/features/agentTeamSetup/connectAgent.ts)"]
+    n9["waitingMembers (frontend/src/features/agentTeamSetup/connectAgent.ts)"]
+    n10["parseAgentTeamMasterEditor (frontend/src/features/agentTeamSetup/manifest.ts)"]
+    n11["frontend/src/features/agentTeamSetup/masters.test.ts"]
+    n12["frontend/src/services/agentService.test.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
+    n6 --> n0
+    n7 --> n0
+    n8 --> n0
+    n9 --> n0
+    n10 --> n0
+    n11 --> n0
+    n12 --> n0
     click n0 "../modules/types_agent.md"
-    click n1 "../modules/agentTeamSetup_manifest.md"
-    click n2 "../modules/agentTeamSetup_masters.test.md"
-    click n3 "../modules/AgentTeamSetupMasterPage.md"
-    click n4 "../modules/agentService.test.md"
-    click n5 "../modules/agentService.md"
+    click n1 "../modules/AgentManifestWorkflow.md"
+    click n2 "../modules/ConnectAgentSteps.test.md"
+    click n3 "../modules/ConnectAgentSteps.md"
+    click n4 "../modules/ConnectionSteps.md"
+    click n5 "../modules/TeamProfileManager.test.md"
+    click n6 "../modules/connectAgent.md"
+    click n7 "../modules/connectAgent.md"
+    click n8 "../modules/connectAgent.md"
+    click n9 "../modules/connectAgent.md"
+    click n10 "../modules/agentTeamSetup_manifest.md"
+    click n11 "../modules/agentTeamSetup_masters.test.md"
+    click n12 "../modules/agentService.test.md"
 ```
 
 ### Summary
@@ -61,8 +82,17 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `AgentManifestWorkflow` | import | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) | — |
+| `ConnectAgentSteps.test` | import | [ConnectAgentSteps.test](../modules/ConnectAgentSteps.test.md) | — |
+| `ConnectAgentSteps` | import | [ConnectAgentSteps](../modules/ConnectAgentSteps.md) | — |
+| `ConnectionSteps` | type_reference | [ConnectionSteps](../modules/ConnectionSteps.md) | — |
+| `TeamProfileManager.test` | import | [TeamProfileManager.test](../modules/TeamProfileManager.test.md) | — |
+| `buildConnectedMember` | type_reference | [connectAgent](../modules/connectAgent.md) | — |
+| `hasPM` | type_reference | [connectAgent](../modules/connectAgent.md) | — |
+| `replacesPendingPM` | type_reference | [connectAgent](../modules/connectAgent.md) | — |
+| `waitingMembers` | type_reference | [connectAgent](../modules/connectAgent.md) | — |
 | `parseAgentTeamMasterEditor` | type_reference | [agentTeamSetup_manifest](../modules/agentTeamSetup_manifest.md) | — |
 | `masters.test` | import | [agentTeamSetup_masters.test](../modules/agentTeamSetup_masters.test.md) | — |
-| `AgentTeamSetupMasterPage` | import | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) | — |
 | `agentService.test` | import | [agentService.test](../modules/agentService.test.md) | — |
-| `agentService` | import | [agentService](../modules/agentService.md) | — |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

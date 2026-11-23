@@ -10,12 +10,15 @@ _Auto-generated from `frontend/src/components/settings/AdminAccessPanel.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/identity/OperatorIdentityNotice` | `OperatorIdentityNotice` | — | compiler-dependent |
+| `../../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
 | `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
-| `../../services/schedulingRulesService` | `schedulingRulesService` | — | compiler-dependent |
+| `../../services/adminAccessService` | `verifyAdminApiKey` | — | compiler-dependent |
 | `../../utils/adminAccess` | `clearAdminApiKey`, `setAdminApiKey` | — | compiler-dependent |
 | `../../utils/apiError` | `getApiErrorStatus` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/Input` | `Input` | — | compiler-dependent |
+| `./protectedQueryKeys` | `protectedQueryKeys` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQueryClient` | — | compiler-dependent |
 | `lucide-react` | `KeyRound`, `ShieldCheck`, `Trash2` | — | compiler-dependent |
 | `react` | `useState` | — | compiler-dependent |
@@ -26,63 +29,27 @@ _Auto-generated from `frontend/src/components/settings/AdminAccessPanel.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `AdminAccessPanel` |
-| Constants | `protectedQueryKeys` |
 
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/common/Button.tsx"]
-    n1["frontend/src/components/common/Input.tsx"]
-    n2["frontend/src/components/settings/AdminAccessGate.tsx"]
-    n3["frontend/src/components/settings/AdminAccessPanel.test.tsx"]
-    n4["frontend/src/components/settings/AdminAccessPanel.tsx"]
-    n5["frontend/src/hooks/useAdminAccess.ts"]
-    n6["frontend/src/pages/SettingsPage.tsx"]
-    n7["frontend/src/services/schedulingRulesService.ts"]
-    n8["frontend/src/utils/adminAccess.ts"]
-    n9["frontend/src/utils/apiError.ts"]
-    n2 --> n0
-    n2 --> n4
-    n2 --> n5
-    n3 --> n4
-    n4 --> n0
-    n4 --> n1
-    n4 --> n5
-    n4 --> n7
-    n4 --> n8
-    n4 --> n9
-    n5 --> n8
-    n6 --> n2
-    n6 --> n4
-    n6 --> n5
-    n8 --> n9
-    click n0 "../modules/Button.md"
-    click n1 "../modules/Input.md"
-    click n2 "../modules/AdminAccessGate.md"
-    click n3 "../modules/AdminAccessPanel.test.md"
-    click n4 "../modules/AdminAccessPanel.md"
-    click n5 "../modules/useAdminAccess.md"
-    click n6 "../modules/SettingsPage.md"
-    click n7 "../modules/schedulingRulesService.md"
-    click n8 "../modules/adminAccess.md"
-    click n9 "../modules/apiError.md"
+    n0["frontend"]
+    n1["frontend/src/components/settings/AdminAccessPanel.tsx"]
+    n0 --> n1
+    n1 --> n0
+    click n1 "../modules/AdminAccessPanel.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [AdminAccessGate](../modules/AdminAccessGate.md) |
-| Inbound | [AdminAccessPanel.test](../modules/AdminAccessPanel.test.md) |
-| Inbound | [SettingsPage](../modules/SettingsPage.md) |
-| Outbound | [Button](../modules/Button.md) |
-| Outbound | [Input](../modules/Input.md) |
-| Outbound | [useAdminAccess](../modules/useAdminAccess.md) |
-| Outbound | [schedulingRulesService](../modules/schedulingRulesService.md) |
-| Outbound | [adminAccess](../modules/adminAccess.md) |
-| Outbound | [apiError](../modules/apiError.md) |
+| Inbound | `frontend` (4) |
+| Outbound | `frontend` (9) |
 
 ### External packages
 
@@ -90,8 +57,10 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `AdminAccessPanel` | <pre><code>&#40;&#123;&#10;    headingLevel &#61; 2&#44;&#10;&#125;&#58; &#123;&#10;    headingLevel&#63;&#58; 2 &#124; 3&#59;&#10;&#125;&#41;</code></pre> | — | — |
+| `AdminAccessPanel` | <pre><code>&#40;&#123;&#10;    headingLevel &#61; 2&#44;&#10;    saveVariant &#61; &#39;primary&#39;&#44;&#10;&#125;&#58; &#123;&#10;    headingLevel&#63;&#58; 2 &#124; 3&#59;&#10;    &#47;&#42;&#42; Secondary when the page around the panel already leads with a primary action&#46; &#42;&#47;&#10;    saveVariant&#63;&#58; &#39;primary&#39; &#124; &#39;secondary&#39;&#59;&#10;&#125;&#41;</code></pre> | — | — |

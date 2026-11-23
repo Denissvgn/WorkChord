@@ -1,6 +1,6 @@
 # RoutingProfileEvidence
 
-**Location:** `backend/app/services/agent_routing_policy.py:531`
+**Location:** `backend/app/services/agent_routing_policy.py:539`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_routing_policy](../modules/agent_routing_policy.md)
@@ -36,15 +36,18 @@ flowchart LR
     n2["AgentRoutingService._profile_evidence (backend/app/services/agent_routing_service.py)"]
     n3["_profile (backend/tests/test_agent_routing_contract.py)"]
     n4["test_profile_and_capacity_compatibility_blockers (backend/tests/test_agent_routing_contract.py)"]
+    n5["test_verifier_preview_keeps_the_authenticated_humans_profile_independent (backend/tests/test_manual_review_provenance.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/agent_routing_policy.md"
     click n1 "../modules/agent_routing_policy.md"
     click n2 "../modules/agent_routing_service.md"
     click n3 "../modules/test_agent_routing_contract.md"
     click n4 "../modules/test_agent_routing_contract.md"
+    click n5 "../modules/test_manual_review_provenance.md"
 ```
 
 ### Summary
@@ -63,3 +66,4 @@ flowchart LR
 | `_profile` | call | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) | 1 |
 | `_profile` | type_reference | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) | — |
 | `test_profile_and_capacity_compatibility_blockers` | type_reference | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) | — |
+| `test_verifier_preview_keeps_the_authenticated_humans_profile_independent` | call | [test_manual_review_provenance](../modules/test_manual_review_provenance.md) | 1 |

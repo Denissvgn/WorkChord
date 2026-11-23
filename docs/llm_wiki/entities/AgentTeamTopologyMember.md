@@ -1,6 +1,6 @@
 # AgentTeamTopologyMember
 
-**Location:** `backend/app/models/agent.py:356`
+**Location:** `backend/app/models/agent.py:371`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)
@@ -64,10 +64,11 @@ flowchart LR
     n6["AgentTeamSetupService._increment_ack_attempt (backend/app/services/agent_team_setup_service.py)"]
     n7["AgentTeamSetupService._member_record (backend/app/services/agent_team_setup_service.py)"]
     n8["AgentTeamSetupService._set_member_contract (backend/app/services/agent_team_setup_service.py)"]
-    n9["backend/tests/test_agent_team_setup.py"]
-    n10["identity_evidence (backend/tests/test_agent_team_setup_stored_contract.py)"]
-    n11["member_records (backend/tests/test_agent_team_setup_stored_contract.py)"]
-    n12["backend/tests/test_runtime_observations.py"]
+    n9["backend/app/services/execution_planning_window.py"]
+    n10["backend/app/services/execution_reconciliation.py"]
+    n11["backend/app/services/review_provenance.py"]
+    n12["backend/tests/test_agent_team_setup.py"]
+    n13["identity_evidence (backend/tests/test_agent_team_setup_stored_contract.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -80,6 +81,7 @@ flowchart LR
     n10 --> n0
     n11 --> n0
     n12 --> n0
+    n13 --> n0
     click n0 "../modules/models_agent.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -89,10 +91,11 @@ flowchart LR
     click n6 "../modules/agent_team_setup_service.md"
     click n7 "../modules/agent_team_setup_service.md"
     click n8 "../modules/agent_team_setup_service.md"
-    click n9 "../modules/test_agent_team_setup.md"
-    click n10 "../modules/test_agent_team_setup_stored_contract.md"
-    click n11 "../modules/test_agent_team_setup_stored_contract.md"
-    click n12 "../modules/test_runtime_observations.md"
+    click n9 "../modules/execution_planning_window.md"
+    click n10 "../modules/execution_reconciliation.md"
+    click n11 "../modules/review_provenance.md"
+    click n12 "../modules/test_agent_team_setup.md"
+    click n13 "../modules/test_agent_team_setup_stored_contract.md"
 ```
 
 ### Summary
@@ -118,7 +121,10 @@ flowchart LR
 | `AgentTeamSetupService._increment_ack_attempt` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._member_record` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._set_member_contract` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
+| `execution_planning_window` | import | [execution_planning_window](../modules/execution_planning_window.md) | — |
+| `execution_reconciliation` | import | [execution_reconciliation](../modules/execution_reconciliation.md) | — |
+| `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |
 | `test_agent_team_setup` | import | [test_agent_team_setup](../modules/test_agent_team_setup.md) | — |
 | `identity_evidence` | type_reference | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | — |
-| `member_records` | type_reference | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | — |
-| `test_runtime_observations` | import | [test_runtime_observations](../modules/test_runtime_observations.md) | — |
+
+> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.

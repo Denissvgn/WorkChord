@@ -8,6 +8,8 @@ Writers reserve Task, Actor and Run in execution-compatible order, recheck repor
 
 Bounded usage corrections, immutable pricing and scoped advisory totals.
 
+Usage reports can select an iteration or a project backlog. A backlog filter limits the observations to tasks without an iteration in the permitted project scope. The delivery outcome summary receives the same scope so usage and outcome totals describe the same work.
+
 ## Imports
 
 | Source | Symbols |
@@ -23,7 +25,7 @@ Bounded usage corrections, immutable pricing and scoped advisory totals.
 | `app.query_limits` | `CollectionLimitExceededError` |
 | `app.schemas.execution_usage` | `ExecutionUsageResponse`, `ExecutionUsageSummary`, `ExecutionUsageWrite` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope` |
-| `app.services.delivery_metrics_service` | `DeliveryMetricsService` |
+| `app.services.delivery_metrics_service` | `DeliveryMetricsService`, `validate_report_scope` |
 | `app.services.identity_service` | `IdentityService` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `collections` | `defaultdict` |
@@ -51,7 +53,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (6) |
+| Inbound | `backend` (7) |
 | Outbound | `backend` (14) |
 
 ### External packages
@@ -60,7 +62,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

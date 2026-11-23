@@ -17,12 +17,12 @@ _Auto-generated from `frontend/src/utils/copyText.ts`._
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/pages/PlanMasterPage.tsx"]
+    n0["frontend/src/components/planning/PlanShareSection.tsx"]
     n1["frontend/src/pages/PlanSharePage.tsx"]
     n2["frontend/src/utils/copyText.ts"]
     n0 --> n2
     n1 --> n2
-    click n0 "../modules/PlanMasterPage.md"
+    click n0 "../modules/PlanShareSection.md"
     click n1 "../modules/PlanSharePage.md"
     click n2 "../modules/copyText.md"
 ```
@@ -31,7 +31,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | [PlanMasterPage](../modules/PlanMasterPage.md) |
+| Inbound | [PlanShareSection](../modules/PlanShareSection.md) |
 | Inbound | [PlanSharePage](../modules/PlanSharePage.md) |
 
 ## Functions

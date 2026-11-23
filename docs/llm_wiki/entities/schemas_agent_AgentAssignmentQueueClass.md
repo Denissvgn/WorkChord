@@ -1,6 +1,6 @@
 # AgentAssignmentQueueClass
 
-**Location:** `backend/app/schemas/agent.py:539`
+**Location:** `backend/app/schemas/agent.py:556`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [schemas_agent](../modules/schemas_agent.md)

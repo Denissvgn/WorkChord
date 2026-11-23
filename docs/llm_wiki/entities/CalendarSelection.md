@@ -14,6 +14,7 @@ _Auto-generated from `CalendarSelection` in `backend/app/routers/capacity.py`._
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `calendar_id` | `int` | `calendar_id` | Yes | No | — | gt=0 | — | — |
+| `additional_calendar_ids` | `list[int] \| None` | `additional_calendar_ids` | No | Yes | `None` | max_length=100 | — | — |
 | `expected_version` | `int` | `expected_version` | Yes | No | — | ge=0 | — | — |
 
 ## Methods
@@ -38,7 +39,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [routers_capacity](../modules/routers_capacity.md) | 0 | `calendar_id`, `expected_version` |
+| [routers_capacity](../modules/routers_capacity.md) | 0 | `additional_calendar_ids`, `calendar_id`, `expected_version` |
 
 ### Structure
 

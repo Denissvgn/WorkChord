@@ -30,24 +30,28 @@ flowchart LR
     n4["frontend/src/components/settings/SchedulingRulesSettings.test.tsx"]
     n5["frontend/src/components/settings/SchedulingRulesSettings.tsx"]
     n6["frontend/src/i18n/schedulingDisplay.ts"]
-    n7["frontend/src/services/schedulingRulesService.ts"]
-    n8["frontend/src/types/schedulingRules.ts"]
-    n0 --> n8
+    n7["frontend/src/pages/SettingsPage.labels.test.tsx"]
+    n8["frontend/src/pages/SettingsPage.readOnlyPanels.test.tsx"]
+    n9["frontend/src/services/schedulingRulesService.ts"]
+    n10["frontend/src/types/schedulingRules.ts"]
+    n0 --> n10
     n1 --> n2
-    n1 --> n8
+    n1 --> n10
     n2 --> n6
-    n2 --> n8
+    n2 --> n10
     n3 --> n6
-    n3 --> n8
+    n3 --> n10
     n4 --> n5
-    n4 --> n8
+    n4 --> n10
     n5 --> n0
     n5 --> n2
     n5 --> n3
-    n5 --> n7
-    n5 --> n8
-    n6 --> n8
-    n7 --> n8
+    n5 --> n9
+    n5 --> n10
+    n6 --> n10
+    n7 --> n10
+    n8 --> n10
+    n9 --> n10
     click n0 "../modules/ConstraintsPanel.md"
     click n1 "../modules/EffortModifierCard.test.md"
     click n2 "../modules/EffortModifierCard.md"
@@ -55,8 +59,10 @@ flowchart LR
     click n4 "../modules/SchedulingRulesSettings.test.md"
     click n5 "../modules/SchedulingRulesSettings.md"
     click n6 "../modules/schedulingDisplay.md"
-    click n7 "../modules/schedulingRulesService.md"
-    click n8 "../modules/schedulingRules.md"
+    click n7 "../modules/SettingsPage.labels.test.md"
+    click n8 "../modules/SettingsPage.readOnlyPanels.test.md"
+    click n9 "../modules/schedulingRulesService.md"
+    click n10 "../modules/schedulingRules.md"
 ```
 
 ### Internal neighbors
@@ -70,6 +76,8 @@ flowchart LR
 | Inbound | [SchedulingRulesSettings.test](../modules/SchedulingRulesSettings.test.md) |
 | Inbound | [SchedulingRulesSettings](../modules/SchedulingRulesSettings.md) |
 | Inbound | [schedulingDisplay](../modules/schedulingDisplay.md) |
+| Inbound | [SettingsPage.labels.test](../modules/SettingsPage.labels.test.md) |
+| Inbound | [SettingsPage.readOnlyPanels.test](../modules/SettingsPage.readOnlyPanels.test.md) |
 | Inbound | [schedulingRulesService](../modules/schedulingRulesService.md) |
 
 ## Classes

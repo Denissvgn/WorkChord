@@ -2,7 +2,7 @@
 
 **Entry point:** `export_iteration` (`http`)
 **Source:** [export](../modules/export.md)
-**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [export](../modules/export.md), [iteration_service](../modules/iteration_service.md), and 6 more
+**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [export](../modules/export.md), [iteration_service](../modules/iteration_service.md), and 7 more
 
 **Complete modules touched:**
 
@@ -11,6 +11,7 @@
 - [export](../modules/export.md)
 - [iteration_service](../modules/iteration_service.md)
 - [query_limits](../modules/query_limits.md)
+- [schemas_team](../modules/schemas_team.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_hierarchy_service](../modules/task_hierarchy_service.md)
 - [task_service](../modules/task_service.md)
@@ -35,26 +36,26 @@ sequenceDiagram
     participant p8 as TeamService
     participant p9 as TaskService._task_graph_query
     participant p10 as TaskService._load_iteration_tree
-    participant p11 as working_today
-    participant p12 as TaskHierarchyService._load_iteration_tree
-    participant p13 as utc_now
-    participant p14 as _scope_conditions
-    participant p15 as TeamService._member_options
-    participant p16 as CollectionLimitExceededError
-    participant p17 as HierarchyScopeError
-    participant p18 as TaskHierarchyService._task_graph_query
-    participant p19 as TaskHierarchyService
-    participant p20 as as_utc
-    participant p21 as HTTPException
-    participant p22 as iteration.start_date.isoformat
-    participant p23 as iteration.end_date.isoformat
-    participant p24 as calculate_member_workload
-    participant p25 as v.start_date.isoformat
-    participant p26 as v.end_date.isoformat
-    participant p27 as JSONResponse
-    participant p28 as jsonable_encoder
-    participant p29 as self.db.execute (backend/app/services/iter…terationService.get_by_id)
-    participant p30 as self.db.execute (backend/app/services/task…kService.get_by_iteration)
+    participant p11 as TeamService._attach_assignee_profiles
+    participant p12 as working_today
+    participant p13 as TaskHierarchyService._load_iteration_tree
+    participant p14 as utc_now
+    participant p15 as _scope_conditions
+    participant p16 as TeamService._member_options
+    participant p17 as CollectionLimitExceededError
+    participant p18 as HierarchyScopeError
+    participant p19 as TaskHierarchyService._task_graph_query
+    participant p20 as internal_authority
+    participant p21 as TaskHierarchyService
+    participant p22 as as_utc
+    participant p23 as TeamMemberProfileCompact
+    participant p24 as HTTPException
+    participant p25 as iteration.start_date.isoformat
+    participant p26 as iteration.end_date.isoformat
+    participant p27 as calculate_member_workload
+    participant p28 as v.start_date.isoformat
+    participant p29 as v.end_date.isoformat
+    participant p30 as JSONResponse
     p0->>p1: TaskService.get_by_iteration
     p0->>p2: TeamService.get_by_iteration
     p0->>p3: aggregate_metrics
@@ -65,45 +66,45 @@ sequenceDiagram
     p0->>p8: TeamService
     p1->>p9: TaskService._task_graph_query
     p1->>p10: TaskService._load_iteration_tree
-    p3->>p11: working_today
-    p10->>p12: TaskHierarchyService._load_iteration_tree
-    p3->>p13: utc_now
-    p3->>p14: _scope_conditions
-    p2->>p15: TeamService._member_options
-    p1->>p16: CollectionLimitExceededError
-    p3->>p17: HierarchyScopeError
-    p9->>p18: TaskHierarchyService._task_graph_query
-    p9->>p19: TaskHierarchyService
-    p11->>p20: as_utc
-    p0-->>p21: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
-    p0-->>p22: iteration.start_date.isoformat
-    p0-->>p23: iteration.end_date.isoformat
-    p0-->>p24: calculate_member_workload(m, tasks)
-    p0-->>p25: v.start_date.isoformat
-    p0-->>p26: v.end_date.isoformat
-    p0-->>p27: JSONResponse(content=jsonable_encoder(...), headers={...})
-    p0-->>p28: jsonable_encoder(export_data)
-    p6-->>p29: self.db.execute (backend/app/services/iter…terationService.get_by_id)(...)
-    p1-->>p30: self.db.execute (backend/app/services/task…kService.get_by_iteration)(...)
+    p2->>p11: TeamService._attach_assignee_profiles
+    p3->>p12: working_today
+    p10->>p13: TaskHierarchyService._load_iteration_tree
+    p3->>p14: utc_now
+    p3->>p15: _scope_conditions
+    p2->>p16: TeamService._member_options
+    p1->>p17: CollectionLimitExceededError
+    p3->>p18: HierarchyScopeError
+    p9->>p19: TaskHierarchyService._task_graph_query
+    p11->>p20: internal_authority
+    p9->>p21: TaskHierarchyService
+    p12->>p22: as_utc
+    p11->>p23: TeamMemberProfileCompact
+    p0-->>p24: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
+    p0-->>p25: iteration.start_date.isoformat
+    p0-->>p26: iteration.end_date.isoformat
+    p0-->>p27: calculate_member_workload(m, tasks)
+    p0-->>p28: v.start_date.isoformat
+    p0-->>p29: v.end_date.isoformat
+    p0-->>p30: JSONResponse(content=jsonable_encoder(...), headers={...})
 ```
 
-> Call sequence diagram shows 30 of 389 interactions; 359 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 405 interactions; 375 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 3 of 145 (142 omitted); unresolved 7 of 213 (206 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 2 of 148 (146 omitted); unresolved 5 of 223 (218 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
-| `backend/app/services/iteration_service.py:IterationService.get_by_id` | 3 | - | unresolved | 3 |
+| `backend/app/services/iteration_service.py:IterationService.get_by_id` | 3 | - | unresolved | 4 |
 | `backend/app/services/iteration_service.py:IterationService.get_by_id` | 3 | - | external | 3 |
-| `backend/app/services/task_service.py:TaskService.get_by_iteration` | 13 | - | unresolved | 5 |
+| `backend/app/services/task_service.py:TaskService.get_by_iteration` | 13 | - | unresolved | 6 |
 | `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._task_graph_query` | 18 | - | unresolved | 6 |
 | `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._task_graph_query` | 18 | - | external | 8 |
 | `backend/app/services/task_service.py:TaskService.get_by_iteration` | 13 | - | external | 2 |
 | `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._load_iteration_tree` | 41 | - | unresolved | 20 |
 | `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._load_iteration_tree` | 41 | - | external | 11 |
-> Omission summary shows 8 of 29 groups; 21 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 33 groups; 25 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -114,9 +115,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 32; effect analysis evaluated: 21, partial: 1, unavailable: 10. Counts include steps omitted from the displayed trace.
+Source steps: 35; effect analysis evaluated: 23, partial: 1, unavailable: 11. Counts include steps omitted from the displayed trace.
 
-Collector observations for 22 source steps with known totals: observed: 98, emitted: 96, omitted: 2. Unavailable totals are excluded.
+Collector observations for 24 source steps with known totals: observed: 107, emitted: 104, omitted: 3. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -191,13 +192,13 @@ flowchart LR
 |---|---|---:|---|
 | export_iteration | IterationService | 82 | `IterationService(db)` |
 | export_iteration | IterationService.get_by_id | 83 | `iteration_service.get_by_id(iteration_id)` |
-| IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 323 | `self.db.execute(...)` |
-| IterationService.get_by_id | select(…).options(…).where (backend/app/services/iter…terationService.get_by_id) | 324 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
-| IterationService.get_by_id | select(…).options (backend/app/services/iter…terationService.get_by_id) | 324 | `select(Iteration).options(selectinload(...), selectinload(...))` |
-| IterationService.get_by_id | select (backend/app/services/iter…terationService.get_by_id) | 324 | `select(Iteration)` |
-| IterationService.get_by_id | selectinload (backend/app/services/iter…terationService.get_by_id) | 326 | `selectinload(Iteration.calendar)` |
-| IterationService.get_by_id | selectinload (backend/app/services/iter…terationService.get_by_id) | 327 | `selectinload(Iteration.project)` |
-| IterationService.get_by_id | result.scalar_one_or_none | 331 | `result.scalar_one_or_none(data not statically known)` |
+| IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 338 | `self.db.execute(...)` |
+| IterationService.get_by_id | select(…).options(…).where (backend/app/services/iter…terationService.get_by_id) | 339 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
+| IterationService.get_by_id | select(…).options (backend/app/services/iter…terationService.get_by_id) | 339 | `select(Iteration).options(selectinload(...), selectinload(...))` |
+| IterationService.get_by_id | select (backend/app/services/iter…terationService.get_by_id) | 339 | `select(Iteration)` |
+| IterationService.get_by_id | selectinload (backend/app/services/iter…terationService.get_by_id) | 341 | `selectinload(Iteration.calendar)` |
+| IterationService.get_by_id | selectinload (backend/app/services/iter…terationService.get_by_id) | 342 | `selectinload(Iteration.project)` |
+| IterationService.get_by_id | result.scalar_one_or_none | 346 | `result.scalar_one_or_none(data not statically known)` |
 | export_iteration | HTTPException | 86 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 | export_iteration | TaskService | 91 | `TaskService(db)` |
 
@@ -209,13 +210,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 323 |
-| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 324 |
-| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 324 |
-| external_call | `IterationService.get_by_id` | `select` | 324 |
-| external_call | `IterationService.get_by_id` | `selectinload` | 326 |
-| external_call | `IterationService.get_by_id` | `selectinload` | 327 |
-| unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 331 |
+| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 338 |
+| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 339 |
+| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 339 |
+| external_call | `IterationService.get_by_id` | `select` | 339 |
+| external_call | `IterationService.get_by_id` | `selectinload` | 341 |
+| external_call | `IterationService.get_by_id` | `selectinload` | 342 |
+| unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 346 |
 | external_call | `export_iteration` | `HTTPException` | 86 |
 | step_limit | `export_iteration` | `first 12 steps` | 0 |
 

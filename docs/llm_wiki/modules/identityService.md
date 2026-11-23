@@ -26,49 +26,23 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/settings/AdminAccessGate.test.tsx"]
-    n1["frontend/src/components/settings/ConnectedReadersPanel.test.tsx"]
-    n2["frontend/src/components/settings/ConnectedReadersPanel.tsx"]
-    n3["frontend/src/features/identity/identityContext.ts"]
-    n4["frontend/src/features/identity/IdentityProvider.tsx"]
-    n5["frontend/src/features/identity/identityService.ts"]
-    n6["frontend/src/features/identity/LocalProfilePicker.tsx"]
-    n7["frontend/src/services/api.ts"]
-    n0 --> n3
-    n0 --> n5
-    n1 --> n2
-    n1 --> n3
-    n1 --> n5
-    n2 --> n3
-    n2 --> n5
-    n3 --> n5
-    n4 --> n3
-    n4 --> n5
-    n4 --> n6
-    n4 --> n7
-    n5 --> n7
-    n6 --> n5
-    click n0 "../modules/AdminAccessGate.test.md"
-    click n1 "../modules/ConnectedReadersPanel.test.md"
-    click n2 "../modules/ConnectedReadersPanel.md"
-    click n3 "../modules/identityContext.md"
-    click n4 "../modules/IdentityProvider.md"
-    click n5 "../modules/identityService.md"
-    click n6 "../modules/LocalProfilePicker.md"
-    click n7 "../modules/api.md"
+    n0["frontend"]
+    n1["frontend/src/features/identity/identityService.ts"]
+    n0 --> n1
+    n1 --> n0
+    click n1 "../modules/identityService.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [AdminAccessGate.test](../modules/AdminAccessGate.test.md) |
-| Inbound | [ConnectedReadersPanel.test](../modules/ConnectedReadersPanel.test.md) |
-| Inbound | [ConnectedReadersPanel](../modules/ConnectedReadersPanel.md) |
-| Inbound | [identityContext](../modules/identityContext.md) |
-| Inbound | [IdentityProvider](../modules/IdentityProvider.md) |
-| Inbound | [LocalProfilePicker](../modules/LocalProfilePicker.md) |
-| Outbound | [api](../modules/api.md) |
+| Inbound | `frontend` (17) |
+| Outbound | `frontend` (1) |
+
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

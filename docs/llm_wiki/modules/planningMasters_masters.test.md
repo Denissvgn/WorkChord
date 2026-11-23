@@ -11,14 +11,14 @@ _Auto-generated from `frontend/src/features/planningMasters/masters.test.ts`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `./masters` | `PlanReadiness` | Declaration | erased |
-| `./masters` | `derivePlanningRecovery`, `deriveStatus`, `EMPTY_READINESS`, `nextStep` | — | compiler-dependent |
+| `./masters` | `derivePlanningRecovery` | — | compiler-dependent |
 | `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
-| Module calls | `describe`, `describe` |
+| Module calls | `describe` |
 
 ## Local dependency map
 

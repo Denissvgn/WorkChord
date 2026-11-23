@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/gantt/GanttBarInputs.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../services/teamService` | `teamService` | — | compiler-dependent |
 | `../../types/gantt` | `GanttTask` | Declaration | erased |
 | `../common/Button` | `Button` | — | compiler-dependent |
@@ -32,26 +33,29 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
-    n1["frontend/src/components/feedback/QueryState.tsx"]
-    n2["frontend/src/components/gantt/GanttBarInputs.tsx"]
-    n3["frontend/src/components/gantt/GanttChart.tsx"]
-    n4["frontend/src/services/teamService.ts"]
-    n5["frontend/src/types/gantt.ts"]
-    n1 --> n0
+    n1["frontend/src/components/common/Select.tsx"]
+    n2["frontend/src/components/feedback/QueryState.tsx"]
+    n3["frontend/src/components/gantt/GanttBarInputs.tsx"]
+    n4["frontend/src/components/gantt/GanttChart.tsx"]
+    n5["frontend/src/services/teamService.ts"]
+    n6["frontend/src/types/gantt.ts"]
     n2 --> n0
-    n2 --> n1
-    n2 --> n4
-    n2 --> n5
     n3 --> n0
     n3 --> n1
     n3 --> n2
     n3 --> n5
+    n3 --> n6
+    n4 --> n0
+    n4 --> n1
+    n4 --> n3
+    n4 --> n6
     click n0 "../modules/Button.md"
-    click n1 "../modules/QueryState.md"
-    click n2 "../modules/GanttBarInputs.md"
-    click n3 "../modules/GanttChart.md"
-    click n4 "../modules/teamService.md"
-    click n5 "../modules/types_gantt.md"
+    click n1 "../modules/Select.md"
+    click n2 "../modules/QueryState.md"
+    click n3 "../modules/GanttBarInputs.md"
+    click n4 "../modules/GanttChart.md"
+    click n5 "../modules/teamService.md"
+    click n6 "../modules/types_gantt.md"
 ```
 
 ### Internal neighbors
@@ -60,6 +64,7 @@ flowchart LR
 |---|---|
 | Inbound | [GanttChart](../modules/GanttChart.md) |
 | Outbound | [Button](../modules/Button.md) |
+| Outbound | [Select](../modules/Select.md) |
 | Outbound | [QueryState](../modules/QueryState.md) |
 | Outbound | [teamService](../modules/teamService.md) |
 | Outbound | [types_gantt](../modules/types_gantt.md) |
@@ -74,11 +79,11 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [GanttBarInputChanges](../entities/GanttBarInputChanges.md) | Interface | 9 | — | — |
-| [GanttBarInputsProps](../entities/GanttBarInputsProps.md) | Interface | 17 | — | — |
+| [GanttBarInputChanges](../entities/GanttBarInputChanges.md) | Interface | 10 | — | — |
+| [GanttBarInputsProps](../entities/GanttBarInputsProps.md) | Interface | 18 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `GanttBarInputs` | `({ task, iterationId, taskOptions, anchor, onApply, onMoreFields, onClose }: GanttBarInputsProps)` | — | The five inputs that move a task's dates. Dates themselves are scheduler |
+| `GanttBarInputs` | `({ task, iterationId, hoursPerDay, taskOptions, anchor, onApply, onMoreFields, onClose }: GanttBarInputsProps)` | — | The five inputs that move a task's dates. Dates themselves are scheduler |

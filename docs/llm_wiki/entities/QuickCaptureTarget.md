@@ -1,6 +1,6 @@
 # QuickCaptureTarget
 
-**Location:** `frontend/src/components/tasks/QuickCapture.tsx:14`
+**Location:** `frontend/src/components/tasks/QuickCapture.tsx:15`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [QuickCapture](../modules/QuickCapture.md)

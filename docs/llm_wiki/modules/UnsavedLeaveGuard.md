@@ -11,6 +11,7 @@ _Auto-generated from `frontend/src/components/common/UnsavedLeaveGuard.tsx`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `./ConfirmDialog` | `ConfirmDialog` | — | compiler-dependent |
+| `./leaveGuardBypass` | `leaveGuardsBypassed` | — | compiler-dependent |
 | `react` | `useContext`, `useEffect` | — | compiler-dependent |
 | `react-router-dom` | `UNSAFE_DataRouterContext`, `useBlocker` | — | compiler-dependent |
 
@@ -26,16 +27,19 @@ _Auto-generated from `frontend/src/components/common/UnsavedLeaveGuard.tsx`._
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/ConfirmDialog.tsx"]
-    n1["frontend/src/components/common/UnsavedLeaveGuard.tsx"]
-    n2["frontend/src/components/settings/SettingsUnsavedBar.tsx"]
-    n3["frontend/src/pages/CalendarPage.tsx"]
-    n1 --> n0
+    n1["frontend/src/components/common/leaveGuardBypass.ts"]
+    n2["frontend/src/components/common/UnsavedLeaveGuard.tsx"]
+    n3["frontend/src/components/settings/SettingsUnsavedBar.tsx"]
+    n4["frontend/src/components/settings/WorkCalendarSettings.tsx"]
+    n2 --> n0
     n2 --> n1
-    n3 --> n1
+    n3 --> n2
+    n4 --> n2
     click n0 "../modules/ConfirmDialog.md"
-    click n1 "../modules/UnsavedLeaveGuard.md"
-    click n2 "../modules/SettingsUnsavedBar.md"
-    click n3 "../modules/CalendarPage.md"
+    click n1 "../modules/leaveGuardBypass.md"
+    click n2 "../modules/UnsavedLeaveGuard.md"
+    click n3 "../modules/SettingsUnsavedBar.md"
+    click n4 "../modules/WorkCalendarSettings.md"
 ```
 
 ### Internal neighbors
@@ -43,8 +47,9 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [SettingsUnsavedBar](../modules/SettingsUnsavedBar.md) |
-| Inbound | [CalendarPage](../modules/CalendarPage.md) |
+| Inbound | [WorkCalendarSettings](../modules/WorkCalendarSettings.md) |
 | Outbound | [ConfirmDialog](../modules/ConfirmDialog.md) |
+| Outbound | [leaveGuardBypass](../modules/leaveGuardBypass.md) |
 
 ### External packages
 
@@ -56,7 +61,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [UnsavedLeaveGuardProps](../entities/UnsavedLeaveGuardProps.md) | Interface | 5 | — | — |
+| [UnsavedLeaveGuardProps](../entities/UnsavedLeaveGuardProps.md) | Interface | 6 | — | — |
 
 ## Functions
 

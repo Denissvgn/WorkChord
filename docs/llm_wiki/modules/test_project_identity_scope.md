@@ -22,7 +22,7 @@ Ambiguous legacy identities stop before writes and never expose private records.
 | `sqlalchemy` | `event` |
 | `sqlalchemy.engine` | `Engine` |
 | `tests.database_migration.test_source_preflight` | `_drain_evidence` |
-| `tests.migrations.test_project_identity` | `legacy_store`, `retained_entry`, `seed_dependents` |
+| `tests.migrations.test_project_identity` | `insert_legacy_project`, `legacy_store`, `retained_entry`, `seed_dependents` |
 
 ## Local dependency map
 

@@ -1,6 +1,6 @@
 # KanbanColumnProps
 
-**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx:15`
+**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx:16`
 **Kind:** Interface
 **Bases:** —
 **Module:** [KanbanColumn](../modules/KanbanColumn.md)
@@ -17,8 +17,10 @@ _Auto-generated from `KanbanColumnProps` in `frontend/src/components/tasks/Kanba
 | `title` | `string` | Yes | — | — |
 | `tasks` | `Task[]` | Yes | — | — |
 | `count` | `number` | Yes | — | — |
+| `caption` | `string` | No | — | — |
 | `tone` | `PillTone` | Yes | — | — |
 | `onOpen` | `(task: Task, trigger?: HTMLElement) => void` | No | — | — |
+| `context` | `BoardCardContext` | No | — | — |
 
 ## Methods
 
@@ -40,7 +42,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [KanbanColumn](../modules/KanbanColumn.md) | 0 | `count`, `id`, `onOpen`, `tasks`, `title`, `tone` |
+| [KanbanColumn](../modules/KanbanColumn.md) | 0 | `caption`, `context`, `count`, `id`, `onOpen`, `tasks`, `title`, `tone` |
 
 ### References
 

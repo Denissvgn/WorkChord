@@ -1,6 +1,6 @@
 # AgentTeamValidation
 
-**Location:** `frontend/src/types/agent.ts:706`
+**Location:** `frontend/src/types/agent.ts:707`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -29,12 +29,12 @@ _Auto-generated from `AgentTeamValidation` in `frontend/src/types/agent.ts`._
 ```mermaid
 flowchart LR
     n0["AgentTeamValidation (frontend/src/types/agent.ts)"]
-    n1["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
+    n1["frontend/src/components/team/AgentManifestWorkflow.tsx"]
     n2["frontend/src/services/agentService.ts"]
     n1 --> n0
     n2 --> n0
     click n0 "../modules/types_agent.md"
-    click n1 "../modules/AgentTeamSetupMasterPage.md"
+    click n1 "../modules/AgentManifestWorkflow.md"
     click n2 "../modules/agentService.md"
 ```
 
@@ -48,5 +48,5 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `AgentTeamSetupMasterPage` | import | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) | — |
+| `AgentManifestWorkflow` | import | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) | — |
 | `agentService` | import | [agentService](../modules/agentService.md) | — |

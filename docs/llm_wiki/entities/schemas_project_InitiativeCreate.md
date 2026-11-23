@@ -19,7 +19,7 @@ Schema for creating an initiative.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=255 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `owner_id` | `Optional[int]` | `owner_id` | No | Yes | `None` | — | — | — |
 | `owner_profile_id` | `Optional[int]` | `owner_profile_id` | No | Yes | `None` | — | — | — |

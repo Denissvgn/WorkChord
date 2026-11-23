@@ -28,16 +28,20 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 flowchart LR
     n0["frontend/src/components/agent/RoutingCandidateComparison.test.tsx"]
     n1["frontend/src/components/agent/TaskRoutingPanel.test.tsx"]
-    n2["frontend/src/test/fixtures/modelAwareRouting.ts"]
-    n3["frontend/src/types/agent.ts"]
-    n0 --> n2
-    n1 --> n2
+    n2["frontend/src/pages/TeamPage.transport.test.tsx"]
+    n3["frontend/src/test/fixtures/modelAwareRouting.ts"]
+    n4["frontend/src/types/agent.ts"]
+    n0 --> n3
     n1 --> n3
+    n1 --> n4
     n2 --> n3
+    n2 --> n4
+    n3 --> n4
     click n0 "../modules/RoutingCandidateComparison.test.md"
     click n1 "../modules/TaskRoutingPanel.test.md"
-    click n2 "../modules/modelAwareRouting.md"
-    click n3 "../modules/types_agent.md"
+    click n2 "../modules/TeamPage.transport.test.md"
+    click n3 "../modules/modelAwareRouting.md"
+    click n4 "../modules/types_agent.md"
 ```
 
 ### Internal neighbors
@@ -46,4 +50,5 @@ flowchart LR
 |---|---|
 | Inbound | [RoutingCandidateComparison.test](../modules/RoutingCandidateComparison.test.md) |
 | Inbound | [TaskRoutingPanel.test](../modules/TaskRoutingPanel.test.md) |
+| Inbound | [TeamPage.transport.test](../modules/TeamPage.transport.test.md) |
 | Outbound | [types_agent](../modules/types_agent.md) |

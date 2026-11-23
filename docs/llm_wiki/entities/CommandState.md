@@ -22,7 +22,11 @@ _Auto-generated from `CommandState` in `backend/app/commands.py`._
 | `snapshots` | `set[int \| tuple[str, int]]` | `field(default_factory=set)` | — |
 | `tasks` | `dict[int, int]` | `field(default_factory=dict)` | — |
 | `backlog_projects` | `set[int]` | `field(default_factory=set)` | — |
+| `dispatch_queue_revisions` | `dict[tuple[int, int, int], str]` | `field(default_factory=dict)` | — |
+| `worker_blockers` | `set[tuple[int, int, int, str]]` | `field(default_factory=set)` | — |
 | `failed` | `bool` | `False` | — |
+| `verified_publishers` | `set[tuple[int, int, int, int]]` | `field(default_factory=set)` | — |
+| `evidence_returns` | `set[tuple[int, int]]` | `field(default_factory=set)` | — |
 | `planning_revision` | `int \| None` | `None` | — |
 
 ## Methods
@@ -48,7 +52,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [commands](../modules/commands.md) | 0 | `backlog_projects`, `failed`, `iterations`, `missing_revision_observations`, `mode`, `planning_revision`, `snapshots`, `tasks`, `versioned_iterations` |
+| [commands](../modules/commands.md) | 0 | `backlog_projects`, `dispatch_queue_revisions`, `evidence_returns`, `failed`, `iterations`, `missing_revision_observations`, `mode`, `planning_revision`, `snapshots`, `tasks`, `verified_publishers`, `versioned_iterations` |
 
 ### References
 

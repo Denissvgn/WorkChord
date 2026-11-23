@@ -6,12 +6,13 @@
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
-1. `authority.require_project`
-2. `time.utc_now`
-3. `query_limits.CollectionLimitExceededError`
-4. `delivery_metrics_service.DeliveryMetricsService.report`
-5. `delivery_metrics_service.DeliveryMetricsService`
-6. `schemas_execution_usage.ExecutionUsageSummary`
+1. `delivery_metrics_service.validate_report_scope`
+2. `authority.require_project`
+3. `time.utc_now`
+4. `query_limits.CollectionLimitExceededError`
+5. `delivery_metrics_service.DeliveryMetricsService.report`
+6. `delivery_metrics_service.DeliveryMetricsService`
+7. `schemas_execution_usage.ExecutionUsageSummary`
 
 ## Touches
 

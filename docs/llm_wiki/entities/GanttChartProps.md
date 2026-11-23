@@ -1,6 +1,6 @@
 # GanttChartProps
 
-**Location:** `frontend/src/components/gantt/GanttChart.tsx:26`
+**Location:** `frontend/src/components/gantt/GanttChart.tsx:24`
 **Kind:** Interface
 **Bases:** —
 **Module:** [GanttChart](../modules/GanttChart.md)
@@ -14,6 +14,7 @@ _Auto-generated from `GanttChartProps` in `frontend/src/components/gantt/GanttCh
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `iterationId` | `number` | Yes | — | — |
+| `hoursPerDay` | `number` | No | — | — |
 | `iterationRevision` | `number` | No | — | — |
 | `startDate` | `string` | Yes | — | — |
 | `endDate` | `string` | Yes | — | — |
@@ -23,6 +24,7 @@ _Auto-generated from `GanttChartProps` in `frontend/src/components/gantt/GanttCh
 | `memberVacations` | `Record<number, string[]>` | Yes | — | — |
 | `sandboxMode` | `boolean` | No | — | — |
 | `onSaveSandbox` | `(taskId: number, updatedData: Partial<GanttTask>) => void` | No | — | — |
+| `onChartActionsChange` | `(items: OverflowMenuItem[]) => void` | No | — | — |
 
 ## Methods
 
@@ -44,7 +46,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [GanttChart](../modules/GanttChart.md) | 0 | `endDate`, `holidays`, `iterationId`, `iterationRevision`, `memberVacations`, `onSaveSandbox`, `sandboxMode`, `startDate`, `tasks`, `weekends` |
+| [GanttChart](../modules/GanttChart.md) | 0 | `endDate`, `holidays`, `hoursPerDay`, `iterationId`, `iterationRevision`, `memberVacations`, `onChartActionsChange`, `onSaveSandbox`, `sandboxMode`, `startDate`, `tasks`, `weekends` |
 
 ### References
 

@@ -46,7 +46,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (4) |
+| Inbound | `backend` (6) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (9) |
 
@@ -56,17 +56,18 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [DeliveryMetricsService](../entities/DeliveryMetricsService.md) | 100 | — | — |
+| [DeliveryMetricsService](../entities/DeliveryMetricsService.md) | 111 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `validate_report_scope` | `(project_id, iteration_id, *, backlog = False, all_projects = False, all_projects_backlog = False)` | — | — |
 | `_samples` | `(values, *, censored = 0, unknown = 0)` | — | — |
 | `summarize_observations` | `(rows, start, end)` | — | Use immutable leaf facts, keeping reopened episodes and incomplete histories visible. |

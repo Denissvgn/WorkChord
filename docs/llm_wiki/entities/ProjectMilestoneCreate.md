@@ -1,6 +1,6 @@
 # ProjectMilestoneCreate
 
-**Location:** `backend/app/schemas/project.py:180`
+**Location:** `backend/app/schemas/project.py:182`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_project](../modules/schemas_project.md)
@@ -20,7 +20,7 @@ Schema for creating a project milestone.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `project_id` | `int` | `project_id` | Yes | No | — | — | — | — |
-| `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=255 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `target_date` | `Optional[date]` | `target_date` | No | Yes | `None` | — | — | — |
 | `completed_at` | `Optional[datetime]` | `completed_at` | No | Yes | `None` | — | — | — |

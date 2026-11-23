@@ -19,14 +19,14 @@ _Auto-generated from `frontend/src/utils/templateDefaults.ts`._
 flowchart LR
     n0["frontend/src/components/projects/ProjectForm.tsx"]
     n1["frontend/src/components/tasks/TaskForm.tsx"]
-    n2["frontend/src/pages/TriagePage.tsx"]
+    n2["frontend/src/components/triage/CreateTriageDrawer.tsx"]
     n3["frontend/src/utils/templateDefaults.ts"]
     n0 --> n3
     n1 --> n3
     n2 --> n3
     click n0 "../modules/ProjectForm.md"
     click n1 "../modules/TaskForm.md"
-    click n2 "../modules/TriagePage.md"
+    click n2 "../modules/CreateTriageDrawer.md"
     click n3 "../modules/templateDefaults.md"
 ```
 
@@ -36,7 +36,7 @@ flowchart LR
 |---|---|
 | Inbound | [ProjectForm](../modules/ProjectForm.md) |
 | Inbound | [TaskForm](../modules/TaskForm.md) |
-| Inbound | [TriagePage](../modules/TriagePage.md) |
+| Inbound | [CreateTriageDrawer](../modules/CreateTriageDrawer.md) |
 
 ## Functions
 

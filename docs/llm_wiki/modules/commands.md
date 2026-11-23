@@ -12,6 +12,8 @@ Shared-input commands re-resolve the complete affected scope under the planning 
 
 Shared-input reservations validate one complete outer scope before any mutation. Nested import writes must remain within that approved scope and reuse its version reservations. An empty observed map remains distinct from omitted context. A freshly created iteration may be added only by its owning import transaction with its known initial revision.
 
+A capacity allocation removal reserves the shared planning input and affected iteration revisions before choosing how to reserve task versions. A verified unused row needs no task-version changes. The transaction still captures the normal recovery points.
+
 ## Imports
 
 | Source | Symbols |
@@ -20,11 +22,15 @@ Shared-input reservations validate one complete outer scope before any mutation.
 | `app.models.capacity` | `PlanningState` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project` |
+| `app.models.recovery` | `ApplicationSnapshot` |
 | `app.models.task` | `Task`, `Task` |
 | `app.mutation_versions` | `require_mutation_revision`, `require_mutation_revision` |
 | `app.runtime_telemetry` | `metrics` |
+| `app.services.allocation_removal` | `inspect_allocation_history`, `is_unused_allocation` |
+| `app.services.calendar_rules` | `reserve_iteration_annuals` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.discussion_service` | `DiscussionService` |
+| `app.services.execution_planning_window` | `current_window`, `extension_input`, `live_assignments`, `make_window`, `seal_authority`, `task_context` |
 | `app.services.planning_input_context` | `affected_iteration_ids` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_service` | `TaskService` |
@@ -57,8 +63,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (82) |
-| Outbound | `backend` (12) |
+| Inbound | `backend` (95) |
+| Outbound | `backend` (16) |
 
 ### External packages
 
@@ -66,16 +72,16 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 89 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 104 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [CommandState](../entities/CommandState.md) | 13 | — | — |
-| [AggregateVersionConflict](../entities/AggregateVersionConflict.md) | 25 | `RuntimeError` | — |
-| [HierarchyScopeError](../entities/HierarchyScopeError.md) | 36 | `RuntimeError` | — |
-| [PlanningConflict](../entities/PlanningConflict.md) | 41 | `RuntimeError` | — |
+| [AggregateVersionConflict](../entities/AggregateVersionConflict.md) | 31 | `RuntimeError` | — |
+| [HierarchyScopeError](../entities/HierarchyScopeError.md) | 42 | `RuntimeError` | — |
+| [PlanningConflict](../entities/PlanningConflict.md) | 47 | `RuntimeError` | — |
 
 ## Functions
 

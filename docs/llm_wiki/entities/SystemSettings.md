@@ -33,16 +33,22 @@ flowchart LR
     n1["frontend/src/components/settings/InterfaceLanguageSettings.tsx"]
     n2["frontend/src/components/settings/RuntimeConfigSettings.test.tsx"]
     n3["frontend/src/components/settings/RuntimeConfigSettings.tsx"]
-    n4["frontend/src/services/systemSettingsService.ts"]
+    n4["frontend/src/pages/SettingsPage.labels.test.tsx"]
+    n5["frontend/src/pages/SettingsPage.readOnlyPanels.test.tsx"]
+    n6["frontend/src/services/systemSettingsService.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
+    n6 --> n0
     click n0 "../modules/systemSettings.md"
     click n1 "../modules/InterfaceLanguageSettings.md"
     click n2 "../modules/RuntimeConfigSettings.test.md"
     click n3 "../modules/RuntimeConfigSettings.md"
-    click n4 "../modules/systemSettingsService.md"
+    click n4 "../modules/SettingsPage.labels.test.md"
+    click n5 "../modules/SettingsPage.readOnlyPanels.test.md"
+    click n6 "../modules/systemSettingsService.md"
 ```
 
 ### Summary
@@ -58,4 +64,6 @@ flowchart LR
 | `InterfaceLanguageSettings` | import | [InterfaceLanguageSettings](../modules/InterfaceLanguageSettings.md) | — |
 | `RuntimeConfigSettings.test` | import | [RuntimeConfigSettings.test](../modules/RuntimeConfigSettings.test.md) | — |
 | `RuntimeConfigSettings` | import | [RuntimeConfigSettings](../modules/RuntimeConfigSettings.md) | — |
+| `SettingsPage.labels.test` | import | [SettingsPage.labels.test](../modules/SettingsPage.labels.test.md) | — |
+| `SettingsPage.readOnlyPanels.test` | import | [SettingsPage.readOnlyPanels.test](../modules/SettingsPage.readOnlyPanels.test.md) | — |
 | `systemSettingsService` | import | [systemSettingsService](../modules/systemSettingsService.md) | — |

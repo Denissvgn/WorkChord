@@ -11,7 +11,7 @@ _Auto-generated from `frontend/src/utils/savedViewState.test.ts`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../types/savedView` | `SavedView` | Declaration | erased |
-| `./savedViewState` | `filterSignature`, `savedViewModified` | — | compiler-dependent |
+| `./savedViewState` | `filterSignature`, `savedViewFilters`, `savedViewModified` | — | compiler-dependent |
 | `./taskFilterDefaults` | `defaultFilters` | — | compiler-dependent |
 | `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 

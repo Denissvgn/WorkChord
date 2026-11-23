@@ -28,15 +28,15 @@ _Auto-generated from `MemberPlanningIntent` in `frontend/src/services/planningIn
 ```mermaid
 flowchart LR
     n0["MemberPlanningIntent (frontend/src/services/planningInputService.ts)"]
-    n1["PlanningInputBoundary (frontend/src/components/planning/PlanningInputBoundary.tsx)"]
-    n2["frontend/src/components/team/TeamForm.tsx"]
+    n1["frontend/src/components/capacity/TeamForm.tsx"]
+    n2["PlanningInputBoundary (frontend/src/components/planning/PlanningInputBoundary.tsx)"]
     n3["frontend/src/features/usePlanningObservation.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     click n0 "../modules/planningInputService.md"
-    click n1 "../modules/PlanningInputBoundary.md"
-    click n2 "../modules/TeamForm.md"
+    click n1 "../modules/TeamForm.md"
+    click n2 "../modules/PlanningInputBoundary.md"
     click n3 "../modules/usePlanningObservation.md"
 ```
 
@@ -50,6 +50,6 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `PlanningInputBoundary` | type_reference | [PlanningInputBoundary](../modules/PlanningInputBoundary.md) | — |
 | `TeamForm` | import | [TeamForm](../modules/TeamForm.md) | — |
+| `PlanningInputBoundary` | type_reference | [PlanningInputBoundary](../modules/PlanningInputBoundary.md) | — |
 | `usePlanningObservation` | import | [usePlanningObservation](../modules/usePlanningObservation.md) | — |

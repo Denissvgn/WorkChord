@@ -15,6 +15,8 @@ _Auto-generated from `CollapsibleSectionProps` in `frontend/src/components/commo
 |------|------|----------|---------|-------------|
 | `title` | `string` | Yes | — | — |
 | `defaultOpen` | `boolean` | No | — | — |
+| `open` | `boolean` | No | — | — |
+| `onOpenChange` | `(open: boolean) => void` | No | — | — |
 | `children` | `React.ReactNode` | Yes | — | — |
 
 ## Methods
@@ -37,7 +39,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [CollapsibleSection](../modules/CollapsibleSection.md) | 0 | `children`, `defaultOpen`, `title` |
+| [CollapsibleSection](../modules/CollapsibleSection.md) | 0 | `children`, `defaultOpen`, `onOpenChange`, `open`, `title` |
 
 ### References
 

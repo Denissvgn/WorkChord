@@ -64,4 +64,4 @@ flowchart LR
 |-------|------|-------|-------------|
 | [SavedViewPermissionError](../entities/SavedViewPermissionError.md) | 25 | `PermissionError` | Raised when a session cannot mutate a saved view. |
 | [SavedViewValidationError](../entities/SavedViewValidationError.md) | 29 | `ValueError` | Raised when a saved view payload is invalid. |
-| [SavedViewService](../entities/SavedViewService.md) | 174 | — | Service for saved view CRUD and compatibility-safe read models. |
+| [SavedViewService](../entities/SavedViewService.md) | 176 | — | Service for saved view CRUD and compatibility-safe read models. |

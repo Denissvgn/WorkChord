@@ -54,7 +54,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (22) |
+| Inbound | `backend` (39) |
 | Outbound | `backend` (10) |
 
 ### External packages
@@ -63,13 +63,13 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 49 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [IdentityService](../entities/IdentityService.md) | 159 | — | — |
+| [IdentityService](../entities/IdentityService.md) | 200 | — | — |
 
 ## Functions
 
@@ -81,6 +81,7 @@ flowchart LR
 | `renewable_until` | `(session)` | — | The last moment renewal can carry this session to; then sign in or pair again. |
 | `session_grant` | `(session, raw)` | — | — |
 | `local_work_profile` | *(async)* `(db, profile_id)` | — | Return a person profile a local session may work as, or None. |
+| `acting_principal_id` | *(async)* `(db)` | — | The principal a command is recorded under. |
 | `safe_return_path` | `(value: str) -> str` | — | — |
 | `oidc_url` | `(value: str) -> str` | — | — |
 | `provider_json` | *(async)* `(client: httpx.AsyncClient, method, url, **kwargs)` | — | — |

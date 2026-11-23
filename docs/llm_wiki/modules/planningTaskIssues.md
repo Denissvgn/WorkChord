@@ -12,13 +12,13 @@ _Auto-generated from `frontend/src/features/planningMasters/planningTaskIssues.t
 |--------|---------|-----------|------------------|
 | `../../types/task` | `Task` | Declaration | erased |
 | `./planningReturn` | `PlanningStepId` | Declaration | erased |
-| `./planningReturn` | `withPlanMasterReturn` | — | compiler-dependent |
+| `./planningReturn` | `withPlanReturn` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
-| Exports | `PLANNING_ITERATION_PARAM`, `PLANNING_TASK_ISSUES`, `PLANNING_TASK_ISSUE_PARAM`, `PlanningTaskIssue`, `hasPositivePlanningEffort`, `isAgentWorkingWithoutCapacity`, `isPlanningGapCandidate`, `isPlanningLeafTask`, `parsePlanningIterationId`, `parsePlanningTaskIssue`, `planningIssueTasksHref`, `taskMatchesPlanningIssue` |
+| Exports | `PLANNING_ITERATION_PARAM`, `PLANNING_TASK_ISSUE_PARAM`, `PlanningTaskIssue`, `hasDeliverySignal`, `hasPositivePlanningEffort`, `isAgentWorkingWithoutCapacity`, `isFinished`, `isOutsideDateLimits`, `isPlanningLeafTask`, `parsePlanningIterationId`, `parsePlanningTaskIssue`, `planningIssueTasksHref`, `taskMatchesPlanningIssue` |
 | Constants | `PLANNING_TASK_ISSUE_PARAM`, `PLANNING_ITERATION_PARAM`, `PLANNING_TASK_ISSUES` |
 
 ## Local dependency map
@@ -41,16 +41,17 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (10) |
+| Inbound | `frontend` (13) |
 | Outbound | `frontend` (2) |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [PlanningTaskIssue](../entities/PlanningTaskIssue.md) | Type alias | 16 | `typeof PLANNING_TASK_ISSUES[number]` | — |
+| [PlanningTaskIssue](../entities/PlanningTaskIssue.md) | Type alias | 18 | `typeof PLANNING_TASK_ISSUES[number]` | — |
+| [DeliveryFields](../entities/DeliveryFields.md) | Type alias | 56 | <pre><code>Pick&#60;Task&#44; &#39;is&#95;overdue&#39; &#124; &#39;is&#95;delayed&#39; &#124; &#39;is&#95;outside&#95;constraints&#39;&#62;&#10;    &#38; Partial&#60;Pick&#60;Task&#44; &#39;start&#95;date&#39; &#124; &#39;end&#95;date&#39; &#124; &#39;min&#95;start&#95;date&#39; &#124; &#39;max&#95;end&#95;date&#39;&#62;&#62;</code></pre> | — |
 
 ## Functions
 
@@ -59,8 +60,10 @@ flowchart LR
 | `parsePlanningTaskIssue` | `(value: unknown) -> PlanningTaskIssue \| null` | — | — |
 | `parsePlanningIterationId` | `(value: unknown) -> number \| null` | — | — |
 | `isPlanningLeafTask` | `(task: Task)` | — | — |
-| `isPlanningGapCandidate` | `(task: Task)` | — | The server's rule (app/services/planning_issues.py): only planned leaves are scheduling gaps. |
 | `isAgentWorkingWithoutCapacity` | `(task: Task)` | — | An agent is working on it, so it is not unassigned, but it still has no capacity row. |
 | `hasPositivePlanningEffort` | `(value: number \| null) -> value is number` | — | — |
+| `isFinished` | `(task: Pick<Task, 'status'>)` | — | Resolved and closed work is finished, so it is never at risk. |
+| `isOutsideDateLimits` | `(task: DeliveryFields)` | — | The flag the schedule view sends, or the same rule from the dates the Tasks list receives. |
+| `hasDeliverySignal` | `(task: DeliveryFields)` | — | A late, unstarted or out-of-limits schedule signal. |
 | `taskMatchesPlanningIssue` | `(task: Task, issue: PlanningTaskIssue)` | — | — |
 | `planningIssueTasksHref` | <pre><code>&#40;&#123;&#10;    issue&#44;&#10;    iterationId&#44;&#10;    returnStepId&#44;&#10;&#125;&#58; &#123;&#10;    issue&#58; PlanningTaskIssue&#59;&#10;    iterationId&#58; number&#59;&#10;    returnStepId&#58; PlanningStepId&#59;&#10;&#125;&#41;</code></pre> | — | — |

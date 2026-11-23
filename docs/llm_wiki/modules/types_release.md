@@ -26,41 +26,43 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/releases/ReleaseForm.tsx"]
-    n1["frontend/src/pages/ProjectDetailPage.tsx"]
-    n2["frontend/src/pages/ProjectReleaseDetailPage.tsx"]
-    n3["frontend/src/services/releaseService.ts"]
-    n4["frontend/src/types/release.ts"]
-    n5["frontend/src/types/task.ts"]
-    n6["frontend/src/types/workMetrics.ts"]
-    n0 --> n3
-    n0 --> n4
+    n0["frontend/src/components/projects/projectDetailShared.ts"]
+    n1["frontend/src/components/projects/ProjectReleasesTab.tsx"]
+    n2["frontend/src/components/releases/ReleaseForm.tsx"]
+    n3["frontend/src/pages/ProjectReleaseDetailPage.tsx"]
+    n4["frontend/src/services/releaseService.ts"]
+    n5["frontend/src/types/release.ts"]
+    n6["frontend/src/types/task.ts"]
+    n7["frontend/src/types/workMetrics.ts"]
     n0 --> n5
     n1 --> n0
-    n1 --> n3
-    n1 --> n4
     n1 --> n5
-    n2 --> n0
-    n2 --> n3
     n2 --> n4
+    n2 --> n5
+    n2 --> n6
+    n3 --> n2
     n3 --> n4
+    n3 --> n5
     n4 --> n5
-    n4 --> n6
-    click n0 "../modules/ReleaseForm.md"
-    click n1 "../modules/ProjectDetailPage.md"
-    click n2 "../modules/ProjectReleaseDetailPage.md"
-    click n3 "../modules/releaseService.md"
-    click n4 "../modules/types_release.md"
-    click n5 "../modules/types_task.md"
-    click n6 "../modules/workMetrics.md"
+    n5 --> n6
+    n5 --> n7
+    click n0 "../modules/projectDetailShared.md"
+    click n1 "../modules/ProjectReleasesTab.md"
+    click n2 "../modules/ReleaseForm.md"
+    click n3 "../modules/ProjectReleaseDetailPage.md"
+    click n4 "../modules/releaseService.md"
+    click n5 "../modules/types_release.md"
+    click n6 "../modules/types_task.md"
+    click n7 "../modules/workMetrics.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [projectDetailShared](../modules/projectDetailShared.md) |
+| Inbound | [ProjectReleasesTab](../modules/ProjectReleasesTab.md) |
 | Inbound | [ReleaseForm](../modules/ReleaseForm.md) |
-| Inbound | [ProjectDetailPage](../modules/ProjectDetailPage.md) |
 | Inbound | [ProjectReleaseDetailPage](../modules/ProjectReleaseDetailPage.md) |
 | Inbound | [releaseService](../modules/releaseService.md) |
 | Outbound | [types_task](../modules/types_task.md) |

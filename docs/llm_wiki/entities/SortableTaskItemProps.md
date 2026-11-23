@@ -1,6 +1,6 @@
 # SortableTaskItemProps
 
-**Location:** `frontend/src/components/tasks/SortableTaskItem.tsx:7`
+**Location:** `frontend/src/components/tasks/SortableTaskItem.tsx:8`
 **Kind:** Interface
 **Bases:** —
 **Module:** [SortableTaskItem](../modules/SortableTaskItem.md)

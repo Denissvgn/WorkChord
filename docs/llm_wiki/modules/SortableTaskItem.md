@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/tasks/SortableTaskItem.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Button` | `Button` | — | compiler-dependent |
 | `@dnd-kit/sortable` | `useSortable` | — | compiler-dependent |
 | `@dnd-kit/utilities` | `CSS` | — | compiler-dependent |
 | `lucide-react` | `GripVertical` | — | compiler-dependent |
@@ -25,7 +26,20 @@ _Auto-generated from `frontend/src/components/tasks/SortableTaskItem.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
-*No internal module dependencies detected.*
+```mermaid
+flowchart LR
+    n0["frontend/src/components/common/Button.tsx"]
+    n1["frontend/src/components/tasks/SortableTaskItem.tsx"]
+    n1 --> n0
+    click n0 "../modules/Button.md"
+    click n1 "../modules/SortableTaskItem.md"
+```
+
+### Internal neighbors
+
+| Direction | Module |
+|---|---|
+| Outbound | [Button](../modules/Button.md) |
 
 ### External packages
 
@@ -37,7 +51,7 @@ _Auto-generated from `frontend/src/components/tasks/SortableTaskItem.tsx`._
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SortableTaskItemProps](../entities/SortableTaskItemProps.md) | Interface | 7 | — | — |
+| [SortableTaskItemProps](../entities/SortableTaskItemProps.md) | Interface | 8 | — | — |
 
 ## Functions
 

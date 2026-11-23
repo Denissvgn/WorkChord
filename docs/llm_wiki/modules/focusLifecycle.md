@@ -17,25 +17,21 @@ _Auto-generated from `frontend/src/utils/focusLifecycle.ts`._
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
-    n1["frontend/src/pages/PlanMasterPage.tsx"]
-    n2["frontend/src/utils/focusLifecycle.test.ts"]
-    n3["frontend/src/utils/focusLifecycle.ts"]
-    n0 --> n3
-    n1 --> n3
-    n2 --> n3
-    click n0 "../modules/AgentTeamSetupMasterPage.md"
-    click n1 "../modules/PlanMasterPage.md"
-    click n2 "../modules/focusLifecycle.test.md"
-    click n3 "../modules/focusLifecycle.md"
+    n0["frontend/src/components/team/AgentManifestWorkflow.tsx"]
+    n1["frontend/src/utils/focusLifecycle.test.ts"]
+    n2["frontend/src/utils/focusLifecycle.ts"]
+    n0 --> n2
+    n1 --> n2
+    click n0 "../modules/AgentManifestWorkflow.md"
+    click n1 "../modules/focusLifecycle.test.md"
+    click n2 "../modules/focusLifecycle.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) |
-| Inbound | [PlanMasterPage](../modules/PlanMasterPage.md) |
+| Inbound | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) |
 | Inbound | [focusLifecycle.test](../modules/focusLifecycle.test.md) |
 
 ## Functions

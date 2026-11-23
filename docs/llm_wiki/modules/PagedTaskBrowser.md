@@ -12,6 +12,7 @@ _Auto-generated from `frontend/src/components/tasks/PagedTaskBrowser.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` | — | compiler-dependent |
 | `../../features/useLiveWindow` | `useLiveWindow` | — | compiler-dependent |
 | `../../services/taskService` | `taskService` | — | compiler-dependent |
@@ -33,39 +34,42 @@ _Auto-generated from `frontend/src/components/tasks/PagedTaskBrowser.tsx`._
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
-    n1["frontend/src/components/feedback/LiveWindowStatus.tsx"]
-    n2["frontend/src/components/feedback/QueryState.tsx"]
-    n3["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
-    n4["frontend/src/components/tasks/PagedTaskBrowser.test.tsx"]
-    n5["frontend/src/components/tasks/PagedTaskBrowser.tsx"]
-    n6["frontend/src/components/tasks/TaskList.tsx"]
-    n7["frontend/src/features/useLiveWindow.ts"]
-    n8["frontend/src/services/taskService.ts"]
-    n1 --> n0
+    n1["frontend/src/components/common/Select.tsx"]
+    n2["frontend/src/components/feedback/LiveWindowStatus.tsx"]
+    n3["frontend/src/components/feedback/QueryState.tsx"]
+    n4["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
+    n5["frontend/src/components/tasks/PagedTaskBrowser.test.tsx"]
+    n6["frontend/src/components/tasks/PagedTaskBrowser.tsx"]
+    n7["frontend/src/components/tasks/TaskList.tsx"]
+    n8["frontend/src/features/useLiveWindow.ts"]
+    n9["frontend/src/services/taskService.ts"]
     n2 --> n0
     n3 --> n0
-    n3 --> n2
-    n3 --> n5
-    n3 --> n8
-    n4 --> n5
-    n5 --> n0
-    n5 --> n1
-    n5 --> n2
-    n5 --> n7
-    n5 --> n8
+    n4 --> n0
+    n4 --> n3
+    n4 --> n6
+    n4 --> n9
+    n5 --> n6
     n6 --> n0
+    n6 --> n1
     n6 --> n2
-    n6 --> n5
+    n6 --> n3
     n6 --> n8
+    n6 --> n9
+    n7 --> n0
+    n7 --> n3
+    n7 --> n6
+    n7 --> n9
     click n0 "../modules/Button.md"
-    click n1 "../modules/LiveWindowStatus.md"
-    click n2 "../modules/QueryState.md"
-    click n3 "../modules/KanbanBoard.md"
-    click n4 "../modules/PagedTaskBrowser.test.md"
-    click n5 "../modules/PagedTaskBrowser.md"
-    click n6 "../modules/TaskList.md"
-    click n7 "../modules/useLiveWindow.md"
-    click n8 "../modules/taskService.md"
+    click n1 "../modules/Select.md"
+    click n2 "../modules/LiveWindowStatus.md"
+    click n3 "../modules/QueryState.md"
+    click n4 "../modules/KanbanBoard.md"
+    click n5 "../modules/PagedTaskBrowser.test.md"
+    click n6 "../modules/PagedTaskBrowser.md"
+    click n7 "../modules/TaskList.md"
+    click n8 "../modules/useLiveWindow.md"
+    click n9 "../modules/taskService.md"
 ```
 
 ### Internal neighbors
@@ -76,6 +80,7 @@ flowchart LR
 | Inbound | [PagedTaskBrowser.test](../modules/PagedTaskBrowser.test.md) |
 | Inbound | [TaskList](../modules/TaskList.md) |
 | Outbound | [Button](../modules/Button.md) |
+| Outbound | [Select](../modules/Select.md) |
 | Outbound | [LiveWindowStatus](../modules/LiveWindowStatus.md) |
 | Outbound | [QueryState](../modules/QueryState.md) |
 | Outbound | [useLiveWindow](../modules/useLiveWindow.md) |

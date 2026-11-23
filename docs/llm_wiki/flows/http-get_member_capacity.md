@@ -57,8 +57,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_member_capacity | service.calculate_capacity | 262 | `service.calculate_capacity(member_id)` |
-| get_member_capacity | HTTPException | 264 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_member_capacity | service.calculate_capacity | 263 | `service.calculate_capacity(member_id)` |
+| get_member_capacity | HTTPException | 265 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 
 ### Boundary effects
 
@@ -68,8 +68,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_member_capacity` | `service.calculate_capacity` | 262 |
-| external_call | `get_member_capacity` | `HTTPException` | 264 |
+| unresolved_call | `get_member_capacity` | `service.calculate_capacity` | 263 |
+| external_call | `get_member_capacity` | `HTTPException` | 265 |
 
 ## Behavior
 

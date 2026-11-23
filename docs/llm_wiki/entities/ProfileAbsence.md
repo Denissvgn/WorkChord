@@ -1,6 +1,6 @@
 # ProfileAbsence
 
-**Location:** `backend/app/models/capacity.py:30`
+**Location:** `backend/app/models/capacity.py:34`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_capacity](../modules/models_capacity.md)
@@ -35,18 +35,21 @@ flowchart LR
     n2["backend/app/models/__init__.py"]
     n3["CapacityService.save_absence (backend/app/services/capacity_service.py)"]
     n4["backend/app/services/team_service.py"]
-    n5["backend/tests/test_profile_capacity.py"]
+    n5["test_routing_preserves_single_year_ratios_and_uses_each_annual_nominal (backend/tests/test_annual_calendar_coverage.py)"]
+    n6["backend/tests/test_profile_capacity.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
+    n6 --> n0
     click n0 "../modules/models_capacity.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/capacity_service.md"
     click n4 "../modules/team_service.md"
-    click n5 "../modules/test_profile_capacity.md"
+    click n5 "../modules/test_annual_calendar_coverage.md"
+    click n6 "../modules/test_profile_capacity.md"
 ```
 
 ### Summary
@@ -68,4 +71,5 @@ flowchart LR
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `CapacityService.save_absence` | call | [capacity_service](../modules/capacity_service.md) | 1 |
 | `team_service` | import | [team_service](../modules/team_service.md) | — |
+| `test_routing_preserves_single_year_ratios_and_uses_each_annual_nominal` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
 | `test_profile_capacity` | import | [test_profile_capacity](../modules/test_profile_capacity.md) | — |

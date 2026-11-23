@@ -1,6 +1,6 @@
 # AgentRecoveryRequeueResponse
 
-**Location:** `backend/app/schemas/agent.py:1169`
+**Location:** `backend/app/schemas/agent.py:1300`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -31,12 +31,18 @@ flowchart LR
     n1["BaseModel"]
     n2["requeue_agent_recovery_task (backend/app/routers/agent.py)"]
     n3["AgentWorkService.requeue_recovery (backend/app/services/agent_work_service.py)"]
+    n4["backend/app/services/retained_planning_output.py"]
+    n5["backend/app/services/review_provenance.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
+    n4 --> n0
+    n5 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/routers_agent.md"
     click n3 "../modules/agent_work_service.md"
+    click n4 "../modules/retained_planning_output.md"
+    click n5 "../modules/review_provenance.md"
 ```
 
 ### Summary
@@ -58,3 +64,5 @@ flowchart LR
 | `requeue_agent_recovery_task` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `AgentWorkService.requeue_recovery` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 | `AgentWorkService.requeue_recovery` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
+| `retained_planning_output` | import | [retained_planning_output](../modules/retained_planning_output.md) | — |
+| `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |

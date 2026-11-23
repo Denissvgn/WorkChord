@@ -16,11 +16,13 @@ Project response trees explicitly link already loaded children to their loaded p
 
 Project summaries capture one UTC instant and interpret target risk, elapsed schedule and update freshness in the declared project working timezone.
 
+Creating a project with independent-publisher review enabled requires a workspace operator. Changing that policy also requires an operator. Ordinary metadata updates can retain the project’s current policy without changing its authority.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `require_project`, `internal_authority` |
+| `app.authority` | `require_operator`, `require_operator`, `require_project`, `internal_authority` |
 | `app.commands` | `atomic_command`, `lock_planning`, `commit_or_flush`, `schedule_input_command`, `PlanningConflict` |
 | `app.models.agent` | `AgentRun`, `AgentTaskAssignment` |
 | `app.models.delivery_dependency` | `DeliveryDependency` |

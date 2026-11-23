@@ -10,20 +10,29 @@ _Auto-generated from `frontend/src/components/tasks/TaskReadView.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
+| `../../features/scope/useScopeLink` | `useScopeLink` | — | compiler-dependent |
+| `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
 | `../../services/taskService` | `taskService` | — | compiler-dependent |
 | `../../types/task` | `Task`, `TaskBrief` | Declaration | erased |
-| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/adminAccess` | `clearAdminApiKey` | — | compiler-dependent |
+| `../../utils/apiError` | `getApiErrorMessage`, `normalizeApiError` | — | compiler-dependent |
 | `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/ButtonLink` | `ButtonLink` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
 | `../ui/tone` | `pillToneClassName`, `STATUS_TONE` | — | compiler-dependent |
 | `./DeliveryDependencies` | `DeliveryDependencies` | — | compiler-dependent |
+| `./TaskAssigneeDisplay` | `TaskAssigneeDisplay` | — | compiler-dependent |
 | `./TaskBriefEditor` | `TaskBriefEditor` | — | compiler-dependent |
 | `./TaskDiscussion` | `TaskDiscussion` | — | compiler-dependent |
 | `./TaskTimelinePanel` | `TaskTimelinePanel` | — | compiler-dependent |
 | `./TaskWorkPanel` | `TaskWorkPanel` | — | compiler-dependent |
 | `./TimeEntriesPanel` | `TimeEntriesPanel` | — | compiler-dependent |
-| `@tanstack/react-query` | `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `./taskEditorContract` | `emptyTaskBrief` | — | compiler-dependent |
+| `./useTaskAssigneeDisplay` | `useTaskAssigneeDisplay` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
 | `lucide-react` | `Link2`, `Pencil` | — | compiler-dependent |
 | `react` | `useState` | — | compiler-dependent |
@@ -57,8 +66,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (3) |
-| Outbound | `frontend` (13) |
+| Inbound | `frontend` (7) |
+| Outbound | `frontend` (22) |
 
 ### External packages
 
@@ -66,13 +75,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskViewPart](../entities/TaskViewPart.md) | Type alias | 21 | `'brief' \| 'work' \| 'activity'` | — |
+| [TaskViewPart](../entities/TaskViewPart.md) | Type alias | 30 | `'brief' \| 'work' \| 'activity'` | — |
 
 ## Functions
 

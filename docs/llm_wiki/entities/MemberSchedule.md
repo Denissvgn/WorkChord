@@ -1,6 +1,6 @@
 # MemberSchedule
 
-**Location:** `backend/app/services/scheduler_service.py:61`
+**Location:** `backend/app/services/scheduler_service.py:69`
 **Kind:** Class
 **Bases:** —
 **Module:** [scheduler_service](../modules/scheduler_service.md)
@@ -32,6 +32,7 @@ Performance optimizations:
 | `nominal_day_hours` | `float` | `8.0` | — |
 | `productivity_factor` | `float` | `1.0` | — |
 | `short_dates` | `set[date]` | `field(default_factory=set)` | — |
+| `annual_calendars` | `AnnualCalendars \| None` | `None` | — |
 | `_date_to_idx` | `dict[date, int]` | `field(default_factory=dict, repr=False)` | — |
 | `_available_cache` | `Optional[list[date]]` | `field(default=None, repr=False)` | — |
 | `_cache_valid` | `bool` | `field(default=False, repr=False)` | — |
@@ -81,7 +82,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [scheduler_service](../modules/scheduler_service.md) | 9 | `_available_cache`, `_cache_valid`, `_date_to_idx`, `allocated_dates`, `allocated_days`, `capacity_days`, `holiday_dates`, `member_id`, `member_name`, `nominal_day_hours`, `productivity_factor`, `short_dates` |
+| [scheduler_service](../modules/scheduler_service.md) | 9 | `_available_cache`, `_cache_valid`, `_date_to_idx`, `allocated_dates`, `allocated_days`, `annual_calendars`, `capacity_days`, `holiday_dates`, `member_id`, `member_name`, `nominal_day_hours`, `productivity_factor` |
 
 ### References
 

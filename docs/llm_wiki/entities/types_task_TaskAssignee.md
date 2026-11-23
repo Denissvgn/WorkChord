@@ -15,6 +15,7 @@ _Auto-generated from `TaskAssignee` in `frontend/src/types/task.ts`._
 |------|------|----------|---------|-------------|
 | `id` | `number` | Yes | — | — |
 | `name` | `string` | Yes | — | — |
+| `kind` | `'human' \| 'agent' \| 'hybrid' \| null` | No | — | — |
 
 ## Methods
 
@@ -29,4 +30,4 @@ _Auto-generated from `TaskAssignee` in `frontend/src/types/task.ts`._
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `id`, `name` |
+| [types_task](../modules/types_task.md) | 0 | `id`, `kind`, `name` |

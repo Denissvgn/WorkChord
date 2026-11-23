@@ -1,6 +1,6 @@
 # ProjectTaskTreeProps
 
-**Location:** `frontend/src/components/projects/ProjectTaskTree.tsx:19`
+**Location:** `frontend/src/components/projects/ProjectTaskTree.tsx:24`
 **Kind:** Interface
 **Bases:** —
 **Module:** [ProjectTaskTree](../modules/ProjectTaskTree.md)
@@ -13,7 +13,8 @@ _Auto-generated from `ProjectTaskTreeProps` in `frontend/src/components/projects
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
-| `tasks` | `Task[]` | Yes | — | — |
+| `sections` | `ProjectTaskSection[]` | Yes | — | — |
+| `dependencyTasks` | `Task[]` | No | — | — |
 
 ## Methods
 
@@ -35,7 +36,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [ProjectTaskTree](../modules/ProjectTaskTree.md) | 0 | `tasks` |
+| [ProjectTaskTree](../modules/ProjectTaskTree.md) | 0 | `dependencyTasks`, `sections` |
 
 ### References
 

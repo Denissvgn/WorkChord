@@ -1,6 +1,6 @@
 # AgentService
 
-**Location:** `backend/app/services/agent_service.py:125`
+**Location:** `backend/app/services/agent_service.py:137`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_service](../modules/agent_service.md)
@@ -35,7 +35,7 @@ Service for agent authentication, task control, and run tracing.
 | `_command_request_hash` | `(payload: dict[str, Any]) -> str` | `@staticmethod` | — |
 | `_task_from_idempotency` | *(async)* `(actor: AgentActor, event_type: str, idempotency_key: Optional[str]) -> Optional[Task]` | — | Return an existing task for a prior idempotent task event. |
 | `_task_event_from_idempotency` | *(async)* `(actor: AgentActor, event_type: str, idempotency_key: Optional[str], *, task_id: Optional[int] = None) -> Optional[TaskEvent]` | — | Return a prior agent task event for an idempotent operation. |
-| `append_task_event` | *(async)* `(task_id: int, actor: AgentActor, data: TaskEventCreate, idempotency_key: Optional[str] = None) -> Optional[TaskEvent]` | — | Append an agent-authored task event. |
+| `append_task_event` | *(async)* `(task_id: int, actor: AgentActor, data: TaskEventCreate, idempotency_key: Optional[str] = None) -> Optional[TaskEvent]` | `@atomic_command` | Append an agent-authored task event. |
 | `_task_event_matches` | `(event: TaskEvent, data: TaskEventCreate) -> bool` | — | Compare the persisted, non-secret task-event request fields. |
 | `start_run` | *(async)* `(actor: AgentActor, data: AgentRunCreate, idempotency_key: Optional[str] = None) -> AgentRun` | — | Start an agent run. |
 | `append_run_event` | *(async)* `(run_id: int, actor: AgentActor, data: AgentRunEventCreate) -> Optional[AgentRunEvent]` | — | Append an event to an agent run. |
@@ -119,4 +119,4 @@ flowchart LR
 | `list_ready_tasks` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `release_task` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 58 logical references; 46 omitted by the 12-row generated summary limit.
+> References: showing 12 of 61 logical references; 49 omitted by the 12-row generated summary limit.

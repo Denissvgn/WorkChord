@@ -1,9 +1,9 @@
 # FormProps
 
-**Location:** `frontend/src/components/tasks/GuardedTaskModal.tsx:12`
+**Location:** `frontend/src/components/tasks/GuardedTaskDrawer.tsx:12`
 **Kind:** Type alias
 **Bases:** —
-**Module:** [GuardedTaskModal](../modules/GuardedTaskModal.md)
+**Module:** [GuardedTaskDrawer](../modules/GuardedTaskDrawer.md)
 **Target:**
 
 ```typescript
@@ -12,7 +12,7 @@ Omit<ComponentProps<typeof TaskForm>, 'onSuccess' | 'onCancel' | 'onDirtyChange'
 
 ## Description
 
-_Auto-generated from `FormProps` in `frontend/src/components/tasks/GuardedTaskModal.tsx`._
+_Auto-generated from `FormProps` in `frontend/src/components/tasks/GuardedTaskDrawer.tsx`._
 
 ## Attributes
 
@@ -27,21 +27,21 @@ _Auto-generated from `FormProps` in `frontend/src/components/tasks/GuardedTaskMo
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["FormProps (frontend/src/components/tasks/GuardedTaskModal.tsx)"]
-    n1["GuardedTaskModal (frontend/src/components/tasks/GuardedTaskModal.tsx)"]
+    n0["FormProps (frontend/src/components/tasks/GuardedTaskDrawer.tsx)"]
+    n1["GuardedTaskDrawer (frontend/src/components/tasks/GuardedTaskDrawer.tsx)"]
     n1 --> n0
-    click n0 "../modules/GuardedTaskModal.md"
-    click n1 "../modules/GuardedTaskModal.md"
+    click n0 "../modules/GuardedTaskDrawer.md"
+    click n1 "../modules/GuardedTaskDrawer.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [GuardedTaskModal](../modules/GuardedTaskModal.md) | 0 | — |
+| [GuardedTaskDrawer](../modules/GuardedTaskDrawer.md) | 0 | — |
 
 ### References
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `GuardedTaskModal` | type_reference | [GuardedTaskModal](../modules/GuardedTaskModal.md) | — |
+| `GuardedTaskDrawer` | type_reference | [GuardedTaskDrawer](../modules/GuardedTaskDrawer.md) | — |

@@ -1,13 +1,13 @@
 # DateChipProps
 
-**Location:** `frontend/src/pages/CalendarPage.tsx:1252`
+**Location:** `frontend/src/components/settings/WorkCalendarSettings.tsx:993`
 **Kind:** Interface
 **Bases:** —
-**Module:** [CalendarPage](../modules/CalendarPage.md)
+**Module:** [WorkCalendarSettings](../modules/WorkCalendarSettings.md)
 
 ## Description
 
-_Auto-generated from `DateChipProps` in `frontend/src/pages/CalendarPage.tsx`._
+_Auto-generated from `DateChipProps` in `frontend/src/components/settings/WorkCalendarSettings.tsx`._
 
 ## Attributes
 
@@ -15,7 +15,6 @@ _Auto-generated from `DateChipProps` in `frontend/src/pages/CalendarPage.tsx`._
 |------|------|----------|---------|-------------|
 | `dateKey` | `string` | Yes | — | — |
 | `locale` | `Locale` | Yes | — | — |
-| `iconTone` | `'red' \| 'amber'` | Yes | — | — |
 | `label` | `string` | Yes | — | — |
 | `onRemove` | `() => void` | Yes | — | — |
 
@@ -26,10 +25,23 @@ _Auto-generated from `DateChipProps` in `frontend/src/pages/CalendarPage.tsx`._
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-*No generated relationships detected.*
+```mermaid
+flowchart LR
+    n0["DateChipProps (frontend/src/components/settings/WorkCalendarSettings.tsx)"]
+    n1["DateChip (frontend/src/components/settings/WorkCalendarSettings.tsx)"]
+    n1 --> n0
+    click n0 "../modules/WorkCalendarSettings.md"
+    click n1 "../modules/WorkCalendarSettings.md"
+```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [CalendarPage](../modules/CalendarPage.md) | 0 | `dateKey`, `iconTone`, `label`, `locale`, `onRemove` |
+| [WorkCalendarSettings](../modules/WorkCalendarSettings.md) | 0 | `dateKey`, `label`, `locale`, `onRemove` |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `DateChip` | type_reference | [WorkCalendarSettings](../modules/WorkCalendarSettings.md) | — |

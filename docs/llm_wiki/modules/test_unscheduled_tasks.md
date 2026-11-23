@@ -98,3 +98,4 @@ flowchart LR
 | `test_readiness_names_the_missing_scheduling_step` | `(iteration_id, assignee_id, expected)` | `@pytest.mark.parametrize(('iteration_id', 'assignee_id', 'expected'), [(None, None, 'add it to an iteration'), (1, None, 'Assign it to a capacity row in this iteration'), (1, 7, 'run the scheduler for this iteration')])` | — |
 | `test_scheduler_reports_unassigned_and_outside_assignee_tasks` | *(async)* `(delivery_store)` | — | — |
 | `test_agent_capacity_row_assignment_and_apply_schedule_an_unassigned_task` | *(async)* `(delivery_store)` | — | — |
+| `test_schedule_omits_undated_deferred_work_on_apply` | *(async)* `(delivery_store)` | — | — |

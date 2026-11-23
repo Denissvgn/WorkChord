@@ -1,6 +1,6 @@
 # ManagementSection
 
-**Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:37`
+**Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:39`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TemplateLabelSettings](../modules/TemplateLabelSettings.md)

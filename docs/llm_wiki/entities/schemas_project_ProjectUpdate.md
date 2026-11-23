@@ -1,6 +1,6 @@
 # ProjectUpdate
 
-**Location:** `backend/app/schemas/project.py:131`
+**Location:** `backend/app/schemas/project.py:132`
 **Kind:** Pydantic model
 **Bases:** `PlanningInputRevisions`
 **Module:** [schemas_project](../modules/schemas_project.md)
@@ -14,7 +14,8 @@ Schema for updating a project.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `timezone` | `WorkingZone \| None` | `timezone` | No | Yes | `None` | — | — | — |
-| `name` | `Optional[str]` | `name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
+| `require_different_review_publisher` | `bool \| None` | `require_different_review_publisher` | No | Yes | `None` | — | — | — |
+| `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `status` | `Optional[ProjectStatus]` | `status` | No | Yes | `None` | — | — | — |
 | `health` | `Optional[ProjectHealth]` | `health` | No | Yes | `None` | — | — | — |
@@ -82,7 +83,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_project](../modules/schemas_project.md) | 0 | `completed_at`, `description`, `health`, `initiative_id`, `name`, `owner_id`, `owner_profile_id`, `sort_order`, `start_date`, `status`, `target_date`, `timezone` |
+| [schemas_project](../modules/schemas_project.md) | 0 | `completed_at`, `description`, `health`, `initiative_id`, `name`, `owner_id`, `owner_profile_id`, `require_different_review_publisher`, `sort_order`, `start_date`, `status`, `target_date` |
 
 ### Structure
 

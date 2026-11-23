@@ -1,6 +1,6 @@
 # Props
 
-**Location:** `frontend/src/components/settings/EffortModifierCard.tsx:10`
+**Location:** `frontend/src/components/settings/EffortModifierCard.tsx:14`
 **Kind:** Interface
 **Bases:** —
 **Module:** [EffortModifierCard](../modules/EffortModifierCard.md)

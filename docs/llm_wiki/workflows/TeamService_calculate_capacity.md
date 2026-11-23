@@ -9,13 +9,12 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `capacity_service.CapacityService`
-2. `capacity_service.CapacityService.calendar_for`
+2. `capacity_service.CapacityService.coverage_for`
 3. `capacity_service.CapacityService.calendar_status`
 4. `calendar_service.CalendarService.get_working_dates`
 5. `calendar_service.CalendarService`
 6. `capacity_service.CapacityService.absence_ranges`
-7. `capacity_service.day_hours`
-8. `schemas_team.MemberCapacity`
+7. `schemas_team.MemberCapacity`
 
 ## Touches
 

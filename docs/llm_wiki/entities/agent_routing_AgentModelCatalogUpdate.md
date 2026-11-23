@@ -1,6 +1,6 @@
 # AgentModelCatalogUpdate
 
-**Location:** `backend/app/schemas/agent_routing.py:278`
+**Location:** `backend/app/schemas/agent_routing.py:280`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -23,8 +23,9 @@ Optimistic partial update for one catalog entry.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `expected_revision` | `PositiveRevision` | `expected_revision` | Yes | No | — | — | — | — |
-| `provider` | `str \| None` | `provider` | No | Yes | `None` | max_length=120; min_length=1 | — | — |
-| `configured_model_alias` | `str \| None` | `configured_model_alias` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
+| `provider` | `str \| None` | `provider` | No | Yes | `None` | min_length=1; max_length=120 | — | — |
+| `publisher_key` | `RoutingKey \| None` | `publisher_key` | No | Yes | `None` | — | — | — |
+| `configured_model_alias` | `str \| None` | `configured_model_alias` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
 | `reasoning_tier` | `ReasoningTier \| None` | `reasoning_tier` | No | Yes | `None` | — | — | — |
 | `context_tier` | `ModelContextTier \| None` | `context_tier` | No | Yes | `None` | — | — | — |
 | `modality_tags` | `list[str] \| None` | `modality_tags` | No | Yes | `None` | — | — | — |
@@ -74,7 +75,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing](../modules/agent_routing.md) | 4 | `configured_model_alias`, `context_tier`, `cost_tier`, `enabled`, `expected_revision`, `last_verified_at`, `latency_tier`, `modality_tags`, `provider`, `reasoning_tier`, `reconcile_live_assignments` |
+| [agent_routing](../modules/agent_routing.md) | 4 | `configured_model_alias`, `context_tier`, `cost_tier`, `enabled`, `expected_revision`, `last_verified_at`, `latency_tier`, `modality_tags`, `provider`, `publisher_key`, `reasoning_tier`, `reconcile_live_assignments` |
 
 ### Structure
 

@@ -6,6 +6,8 @@
 
 Team API router.
 
+The member deletion endpoint accepts the complete affected iteration revision map. Callers can request unused-only removal when another allocation reference would invalidate their intent.
+
 ## Imports
 
 | Source | Symbols |
@@ -83,7 +85,7 @@ flowchart LR
 | `create_team_member` | *(async)* `(iteration_id: int, data: TeamMemberCreate, service: Annotated[TeamService, Depends(get_team_service)])` | `@router.post('/iterations/{iteration_id}/team', response_model=TeamMemberResponse, status_code=status.HTTP_201_CREATED)` | Add a team member to an iteration. |
 | `get_team_member` | *(async)* `(member_id: int, service: Annotated[TeamService, Depends(get_team_service)])` | `@router.get('/team-members/{member_id}', response_model=TeamMemberResponse)` | Get team member by ID. |
 | `update_team_member` | *(async)* `(member_id: int, data: TeamMemberUpdate, service: Annotated[TeamService, Depends(get_team_service)])` | `@router.put('/team-members/{member_id}', response_model=TeamMemberResponse)` | Update a team member. |
-| `delete_team_member` | *(async)* `(member_id: int, service: Annotated[TeamService, Depends(get_team_service)])` | `@router.delete('/team-members/{member_id}', response_model=MessageResponse)` | Delete a team member. |
+| `delete_team_member` | *(async)* `(member_id: int, service: Annotated[TeamService, Depends(get_team_service)], unused_only: bool = False)` | `@router.delete('/team-members/{member_id}', response_model=MessageResponse)` | Delete a team member. Set unused_only to refuse removal of a referenced allocation. |
 | `get_member_capacity` | *(async)* `(member_id: int, service: Annotated[TeamService, Depends(get_team_service)])` | `@router.get('/team-members/{member_id}/capacity', response_model=MemberCapacity)` | Calculate capacity for a team member. |
 | `get_member_workload` | *(async)* `(member_id: int, service: Annotated[TeamService, Depends(get_team_service)])` | `@router.get('/team-members/{member_id}/workload', response_model=MemberWorkload)` | Get workload information for a team member. |
 | `get_vacations` | *(async)* `(member_id: int, service: Annotated[TeamService, Depends(get_team_service)])` | `@router.get('/team-members/{member_id}/vacations', response_model=list[VacationResponse])` | Get vacations for a team member. |

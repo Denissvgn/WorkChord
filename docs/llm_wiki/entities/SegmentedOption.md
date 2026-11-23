@@ -1,6 +1,6 @@
 # SegmentedOption
 
-**Location:** `frontend/src/components/ui/SegmentedControl.tsx:4`
+**Location:** `frontend/src/components/ui/SegmentedControl.tsx:5`
 **Kind:** Interface
 **Bases:** —
 **Module:** [SegmentedControl](../modules/SegmentedControl.md)
@@ -29,9 +29,12 @@ _Auto-generated from `SegmentedOption` in `frontend/src/components/ui/SegmentedC
 flowchart LR
     n0["SegmentedOption (frontend/src/components/ui/SegmentedControl.tsx)"]
     n1["SegmentedControl (frontend/src/components/ui/SegmentedControl.tsx)"]
+    n2["ViewSwitch (frontend/src/components/ui/ViewSwitch.tsx)"]
     n1 --> n0
+    n2 --> n0
     click n0 "../modules/SegmentedControl.md"
     click n1 "../modules/SegmentedControl.md"
+    click n2 "../modules/ViewSwitch.md"
 ```
 
 ### Summary
@@ -45,3 +48,4 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `SegmentedControl` | type_reference | [SegmentedControl](../modules/SegmentedControl.md) | — |
+| `ViewSwitch` | type_reference | [ViewSwitch](../modules/ViewSwitch.md) | — |

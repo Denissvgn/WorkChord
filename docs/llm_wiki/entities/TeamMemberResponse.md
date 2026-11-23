@@ -1,6 +1,6 @@
 # TeamMemberResponse
 
-**Location:** `backend/app/schemas/team.py:285`
+**Location:** `backend/app/schemas/team.py:294`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_team](../modules/schemas_team.md)
@@ -14,6 +14,12 @@ Schema for team member response.
 | Setting | Value | Source |
 |---------|-------|--------|
 | `from_attributes` | `True` | config_class |
+
+## Validators
+
+| Method | Scope | Fields | Mode | Options |
+|--------|-------|--------|------|---------|
+| `_assignee_profile_for_every_reader` | model | — | wrap | — |
 
 ## Attributes
 
@@ -33,7 +39,9 @@ Schema for team member response.
 
 ## Methods
 
-*No declared methods.*
+| Method | Signature | Decorators | Description |
+|--------|-----------|------------|-------------|
+| `_assignee_profile_for_every_reader` | `(data: Any, handler)` | `@model_validator(mode='wrap')`, `@classmethod` | Embed the reader-safe profile part when the reader cannot read the whole profile. |
 
 ## Relationships
 
@@ -71,7 +79,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_team](../modules/schemas_team.md) | 0 | `availability_percent`, `email`, `id`, `iteration_id`, `name`, `operational_utilization`, `position`, `professionalism_coefficient`, `profile`, `profile_id`, `vacations` |
+| [schemas_team](../modules/schemas_team.md) | 1 | `availability_percent`, `email`, `id`, `iteration_id`, `name`, `operational_utilization`, `position`, `professionalism_coefficient`, `profile`, `profile_id`, `vacations` |
 
 ### Structure
 

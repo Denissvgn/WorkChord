@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/layout/Breadcrumbs.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/scope/useScopeLink` | `useScopeLink` | — | compiler-dependent |
 | `lucide-react` | `ChevronRight` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 | `react-router-dom` | `Link` | — | compiler-dependent |
@@ -26,17 +27,17 @@ _Auto-generated from `frontend/src/components/layout/Breadcrumbs.tsx`._
 ```mermaid
 flowchart LR
     n0["frontend/src/components/layout/Breadcrumbs.tsx"]
-    n1["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
-    n2["frontend/src/pages/PlanMasterPage.tsx"]
+    n1["frontend/src/components/team/AgentManifestWorkflow.tsx"]
+    n2["frontend/src/features/scope/useScopeLink.ts"]
     n3["frontend/src/pages/ProjectDetailPage.tsx"]
     n4["frontend/src/pages/ProjectReleaseDetailPage.tsx"]
+    n0 --> n2
     n1 --> n0
-    n2 --> n0
     n3 --> n0
     n4 --> n0
     click n0 "../modules/Breadcrumbs.md"
-    click n1 "../modules/AgentTeamSetupMasterPage.md"
-    click n2 "../modules/PlanMasterPage.md"
+    click n1 "../modules/AgentManifestWorkflow.md"
+    click n2 "../modules/useScopeLink.md"
     click n3 "../modules/ProjectDetailPage.md"
     click n4 "../modules/ProjectReleaseDetailPage.md"
 ```
@@ -45,10 +46,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) |
-| Inbound | [PlanMasterPage](../modules/PlanMasterPage.md) |
+| Inbound | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) |
 | Inbound | [ProjectDetailPage](../modules/ProjectDetailPage.md) |
 | Inbound | [ProjectReleaseDetailPage](../modules/ProjectReleaseDetailPage.md) |
+| Outbound | [useScopeLink](../modules/useScopeLink.md) |
 
 ### External packages
 
@@ -60,8 +61,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [BreadcrumbItem](../entities/BreadcrumbItem.md) | Interface | 5 | — | — |
-| [BreadcrumbsProps](../entities/BreadcrumbsProps.md) | Interface | 10 | — | — |
+| [BreadcrumbItem](../entities/BreadcrumbItem.md) | Interface | 6 | — | — |
+| [BreadcrumbsProps](../entities/BreadcrumbsProps.md) | Interface | 11 | — | — |
 
 ## Functions
 

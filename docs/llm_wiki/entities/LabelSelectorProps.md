@@ -1,6 +1,6 @@
 # LabelSelectorProps
 
-**Location:** `frontend/src/components/labels/LabelSelector.tsx:12`
+**Location:** `frontend/src/components/labels/LabelSelector.tsx:13`
 **Kind:** Interface
 **Bases:** —
 **Module:** [LabelSelector](../modules/LabelSelector.md)

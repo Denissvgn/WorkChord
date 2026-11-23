@@ -1,6 +1,6 @@
 # AgentTeamPlanAction
 
-**Location:** `frontend/src/types/agent.ts:723`
+**Location:** `frontend/src/types/agent.ts:724`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -38,10 +38,10 @@ _Auto-generated from `AgentTeamPlanAction` in `frontend/src/types/agent.ts`._
 ```mermaid
 flowchart LR
     n0["AgentTeamPlanAction (frontend/src/types/agent.ts)"]
-    n1["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
+    n1["frontend/src/components/team/AgentManifestWorkflow.tsx"]
     n1 --> n0
     click n0 "../modules/types_agent.md"
-    click n1 "../modules/AgentTeamSetupMasterPage.md"
+    click n1 "../modules/AgentManifestWorkflow.md"
 ```
 
 ### Summary
@@ -54,4 +54,4 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `AgentTeamSetupMasterPage` | import | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) | — |
+| `AgentManifestWorkflow` | import | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) | — |

@@ -1,6 +1,6 @@
 # RoadmapMilestonePage
 
-**Location:** `backend/app/schemas/project.py:233`
+**Location:** `backend/app/schemas/project.py:235`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_project](../modules/schemas_project.md)

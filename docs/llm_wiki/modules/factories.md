@@ -13,7 +13,7 @@ Deterministic mapped-model and representative legacy-database factories.
 | `__future__` | `annotations` |
 | `datetime` | `UTC`, `date`, `datetime` |
 | `pathlib` | `Path` |
-| `sqlalchemy` | `Boolean`, `Date`, `DateTime`, `Float`, `Integer`, `JSON`, `LargeBinary`, `Numeric`, `inspect` |
+| `sqlalchemy` | `Boolean`, `Column`, `Date`, `DateTime`, `Float`, `Integer`, `JSON`, `LargeBinary`, `Numeric`, `inspect` |
 | `sqlalchemy.sql.sqltypes` | `String` |
 | `sqlalchemy.types` | `TypeDecorator` |
 | `sqlite3` | `sqlite3` |
@@ -48,4 +48,4 @@ flowchart LR
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [MappedModelFactory](../entities/MappedModelFactory.md) | 16 | — | Build any registered SQLAlchemy model with deterministic safe values. |
-| [LegacySQLiteFactory](../entities/LegacySQLiteFactory.md) | 80 | — | Create representative pre-Alembic SQLite sources for migration tests. |
+| [LegacySQLiteFactory](../entities/LegacySQLiteFactory.md) | 83 | — | Create representative pre-Alembic SQLite sources for migration tests. |

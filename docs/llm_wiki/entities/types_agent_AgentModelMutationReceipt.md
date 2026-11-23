@@ -15,7 +15,7 @@ _Auto-generated from `AgentModelMutationReceipt` in `frontend/src/types/agent.ts
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `operation` | `string` | Yes | — | — |
-| `actor_id` | `number` | Yes | — | — |
+| `actor_id` | `number \| null` | Yes | — | — |
 | `target_type` | `'model_catalog' \| 'model_binding'` | Yes | — | — |
 | `target_id` | `number` | Yes | — | — |
 | `idempotency_key` | `string` | Yes | — | — |

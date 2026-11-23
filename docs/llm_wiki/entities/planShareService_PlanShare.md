@@ -32,10 +32,13 @@ _Auto-generated from `PlanShare` in `frontend/src/services/planShareService.ts`.
 ```mermaid
 flowchart LR
     n0["PlanShare (frontend/src/services/planShareService.ts)"]
-    n1["frontend/src/pages/PlanMasterPage.tsx"]
+    n1["frontend/src/components/planning/PlanShareSection.test.tsx"]
+    n2["frontend/src/components/planning/PlanShareSection.tsx"]
     n1 --> n0
+    n2 --> n0
     click n0 "../modules/planShareService.md"
-    click n1 "../modules/PlanMasterPage.md"
+    click n1 "../modules/PlanShareSection.test.md"
+    click n2 "../modules/PlanShareSection.md"
 ```
 
 ### Summary
@@ -48,4 +51,5 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `PlanMasterPage` | import | [PlanMasterPage](../modules/PlanMasterPage.md) | — |
+| `PlanShareSection.test` | import | [PlanShareSection.test](../modules/PlanShareSection.test.md) | — |
+| `PlanShareSection` | import | [PlanShareSection](../modules/PlanShareSection.md) | — |

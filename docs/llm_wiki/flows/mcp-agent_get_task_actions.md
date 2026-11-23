@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_get_task_actions` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 20 more
+**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 26 more
 
 **Complete modules touched:**
 
@@ -17,12 +17,18 @@
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
+- [execution_planning_window](../modules/execution_planning_window.md)
+- [execution_reconciliation](../modules/execution_reconciliation.md)
+- [github_links](../modules/github_links.md)
 - [identity_service](../modules/identity_service.md)
 - [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [mcp_server](../modules/mcp_server.md)
 - [models_identity](../modules/models_identity.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
+- [planning_window_reconciliation](../modules/planning_window_reconciliation.md)
+- [retained_planning_output](../modules/retained_planning_output.md)
+- [review_provenance](../modules/review_provenance.md)
 - [schemas_task_domain](../modules/schemas_task_domain.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
@@ -53,19 +59,19 @@ sequenceDiagram
     participant p13 as action_projection
     participant p14 as TaskBriefService.require_review
     participant p15 as AgentWorkService._start_blockers
-    participant p16 as AgentWorkService._selection_pending
+    participant p16 as window_authority_matches
     participant p17 as require_scope
     participant p18 as DeliveryDependencyService.projection
-    participant p19 as AgentService.authenticate
-    participant p20 as require_identity_writes
-    participant p21 as AgentWorkService._resolve_rollout
-    participant p22 as AgentWorkService._is_model_aware_assignment
+    participant p19 as different_publisher_required
+    participant p20 as AgentService.authenticate
+    participant p21 as require_identity_writes
+    participant p22 as recovery_attestation_hint
     participant p23 as DeliveryDependencyService.reconcile
-    participant p24 as AgentWorkService._validate_assignment_actor
-    participant p25 as DiscussionService.enqueue
-    participant p26 as sha256_hex
-    participant p27 as AgentWorkService._working_today
-    participant p28 as actor_has_scope
+    participant p24 as AgentWorkService._resolve_rollout
+    participant p25 as AgentWorkService._shadow_handoff
+    participant p26 as AgentWorkService._selection_pending
+    participant p27 as DiscussionService.enqueue
+    participant p28 as AgentWorkService._is_model_aware_assignment
     participant p29 as ToolError
     participant p30 as (…).model_dump
     p0->>p1: _tool_call
@@ -83,26 +89,26 @@ sequenceDiagram
     p5->>p13: action_projection
     p5->>p14: TaskBriefService.require_review
     p5->>p15: AgentWorkService._start_blockers
-    p15->>p16: AgentWorkService._selection_pending
+    p15->>p16: window_authority_matches
     p10->>p17: require_scope
     p12->>p18: DeliveryDependencyService.projection
-    p9->>p19: AgentService.authenticate
-    p11->>p20: require_identity_writes
-    p15->>p21: AgentWorkService._resolve_rollout
-    p15->>p22: AgentWorkService._is_model_aware_assignment
+    p14->>p19: different_publisher_required
+    p9->>p20: AgentService.authenticate
+    p11->>p21: require_identity_writes
+    p15->>p22: recovery_attestation_hint
     p8->>p23: DeliveryDependencyService.reconcile
-    p15->>p24: AgentWorkService._validate_assignment_actor
-    p8->>p25: DiscussionService.enqueue
-    p14->>p26: sha256_hex
-    p15->>p27: AgentWorkService._working_today
-    p17->>p28: actor_has_scope
+    p15->>p24: AgentWorkService._resolve_rollout
+    p15->>p25: AgentWorkService._shadow_handoff
+    p15->>p26: AgentWorkService._selection_pending
+    p8->>p27: DiscussionService.enqueue
+    p15->>p28: AgentWorkService._is_model_aware_assignment
     p1-->>p29: ToolError(_structured_tool_error(...))
     p2-->>p30: (…).model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 560 interactions; 530 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 935 interactions; 905 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 132 (131 omitted); unresolved 1 of 280 (279 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 234 (233 omitted); unresolved 1 of 477 (476 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -116,7 +122,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 148 groups; 140 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 196 groups; 188 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -129,9 +135,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 149; effect analysis evaluated: 100, partial: 5, unavailable: 44. Counts include steps omitted from the displayed trace.
+Source steps: 225; effect analysis evaluated: 159, partial: 10, unavailable: 56. Counts include steps omitted from the displayed trace.
 
-Collector observations for 105 source steps with known totals: observed: 534, emitted: 492, omitted: 42. Unavailable totals are excluded.
+Collector observations for 169 source steps with known totals: observed: 987, emitted: 913, omitted: 74. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -140,7 +146,7 @@ Collector observations for 105 source steps with known totals: observed: 534, em
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
 | `agent_get_task_actions` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
-| `_tool_call` | `available` | `partial` | `available` | `18` | `12` | `6` |
+| `_tool_call` | `available` | `partial` | `available` | `19` | `12` | `7` |
 | `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -190,7 +196,7 @@ flowchart LR
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
 | `agent_get_task_actions` | `task_id: int` | - | - | `...` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -206,7 +212,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_get_task_actions | _tool_call | 1032 | `_tool_call('tasks:read', ...)` |
+| agent_get_task_actions | _tool_call | 1076 | `_tool_call('tasks:read', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

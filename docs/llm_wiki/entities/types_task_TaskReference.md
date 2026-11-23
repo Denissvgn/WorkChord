@@ -1,6 +1,6 @@
 # TaskReference
 
-**Location:** `frontend/src/types/task.ts:464`
+**Location:** `frontend/src/types/task.ts:466`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -38,10 +38,28 @@ _Auto-generated from `TaskReference` in `frontend/src/types/task.ts`._
 ```mermaid
 flowchart LR
     n0["TaskReference (frontend/src/types/task.ts)"]
-    n1["frontend/src/pages/MyWorkPage.tsx"]
+    n1["frontend/src/components/planning/PlanWorkSection.tsx"]
+    n2["taskSearchResultCopy (frontend/src/components/tasks/taskSearchResults.ts)"]
+    n3["loadProjectBacklog (frontend/src/features/overview/overviewBacklog.ts)"]
+    n4["frontend/src/features/overview/overviewSignals.test.ts"]
+    n5["backlogRoots (frontend/src/features/overview/overviewSignals.ts)"]
+    n6["frontend/src/pages/MyWorkPage.tsx"]
+    n7["frontend/src/pages/OverviewPage.test.tsx"]
     n1 --> n0
+    n2 --> n0
+    n3 --> n0
+    n4 --> n0
+    n5 --> n0
+    n6 --> n0
+    n7 --> n0
     click n0 "../modules/types_task.md"
-    click n1 "../modules/MyWorkPage.md"
+    click n1 "../modules/PlanWorkSection.md"
+    click n2 "../modules/taskSearchResults.md"
+    click n3 "../modules/overviewBacklog.md"
+    click n4 "../modules/overviewSignals.test.md"
+    click n5 "../modules/overviewSignals.md"
+    click n6 "../modules/MyWorkPage.md"
+    click n7 "../modules/OverviewPage.test.md"
 ```
 
 ### Summary
@@ -54,4 +72,10 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `PlanWorkSection` | import | [PlanWorkSection](../modules/PlanWorkSection.md) | — |
+| `taskSearchResultCopy` | type_reference | [taskSearchResults](../modules/taskSearchResults.md) | — |
+| `loadProjectBacklog` | type_reference | [overviewBacklog](../modules/overviewBacklog.md) | — |
+| `overviewSignals.test` | import | [overviewSignals.test](../modules/overviewSignals.test.md) | — |
+| `backlogRoots` | type_reference | [overviewSignals](../modules/overviewSignals.md) | — |
 | `MyWorkPage` | import | [MyWorkPage](../modules/MyWorkPage.md) | — |
+| `OverviewPage.test` | import | [OverviewPage.test](../modules/OverviewPage.test.md) | — |

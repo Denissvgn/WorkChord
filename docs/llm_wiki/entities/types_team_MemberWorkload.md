@@ -1,6 +1,6 @@
 # MemberWorkload
 
-**Location:** `frontend/src/types/team.ts:143`
+**Location:** `frontend/src/types/team.ts:145`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_team](../modules/types_team.md)
@@ -35,13 +35,16 @@ _Auto-generated from `MemberWorkload` in `frontend/src/types/team.ts`._
 ```mermaid
 flowchart LR
     n0["MemberWorkload (frontend/src/types/team.ts)"]
-    n1["frontend/src/components/team/TeamList.tsx"]
-    n2["frontend/src/services/teamService.ts"]
+    n1["CapacityTable (frontend/src/components/capacity/CapacityTable.tsx)"]
+    n2["frontend/src/components/capacity/TeamList.tsx"]
+    n3["frontend/src/services/teamService.ts"]
     n1 --> n0
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/types_team.md"
-    click n1 "../modules/TeamList.md"
-    click n2 "../modules/teamService.md"
+    click n1 "../modules/CapacityTable.md"
+    click n2 "../modules/TeamList.md"
+    click n3 "../modules/teamService.md"
 ```
 
 ### Summary
@@ -54,5 +57,6 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `CapacityTable` | type_reference | [CapacityTable](../modules/CapacityTable.md) | — |
 | `TeamList` | import | [TeamList](../modules/TeamList.md) | — |
 | `teamService` | import | [teamService](../modules/teamService.md) | — |

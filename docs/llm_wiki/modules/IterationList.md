@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/iteration/IterationList.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/scope/useWorkScope` | `useWorkScope` | — | compiler-dependent |
 | `../../services/exportService` | `exportService` | — | compiler-dependent |
 | `../../services/iterationService` | `iterationService` | — | compiler-dependent |
 | `../../services/planningInputService` | `ObservedRevisions` | Specifier | compiler-dependent |
@@ -22,13 +23,11 @@ _Auto-generated from `frontend/src/components/iteration/IterationList.tsx`._
 | `../common/ConfirmDialog` | `ConfirmDialog` | — | compiler-dependent |
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
 | `./IterationCapacityLine` | `IterationCapacityLine` | — | compiler-dependent |
-| `./IterationImportDialog` | `IterationImportDialog` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` | — | compiler-dependent |
-| `clsx` | `clsx` | — | compiler-dependent |
-| `lucide-react` | `Calendar`, `Trash2`, `ArrowRight`, `Download`, `Upload`, `FolderOpen` | — | compiler-dependent |
-| `react` | `useState`, `useRef` | — | compiler-dependent |
+| `lucide-react` | `Trash2`, `Download`, `FolderOpen` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
-| `react-router-dom` | `Link`, `useNavigate` | — | compiler-dependent |
+| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -56,25 +55,25 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (2) |
+| Inbound | `frontend` (1) |
 | Outbound | `frontend` (12) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 6 | 0 |
+| typescript | 5 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [IterationListProps](../entities/IterationListProps.md) | Interface | 20 | — | — |
+| [IterationListProps](../entities/IterationListProps.md) | Interface | 19 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `IterationList` | `({ onEdit }: IterationListProps)` | — | — |
+| `IterationList` | `({ onOpen, onEdit, projectId }: IterationListProps)` | — | — |

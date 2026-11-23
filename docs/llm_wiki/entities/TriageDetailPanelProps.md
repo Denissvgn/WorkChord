@@ -1,13 +1,13 @@
 # TriageDetailPanelProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1168`
+**Location:** `frontend/src/components/triage/TriageDetailPanel.tsx:27`
 **Kind:** Interface
 **Bases:** —
-**Module:** [TriagePage](../modules/TriagePage.md)
+**Module:** [TriageDetailPanel](../modules/TriageDetailPanel.md)
 
 ## Description
 
-_Auto-generated from `TriageDetailPanelProps` in `frontend/src/pages/TriagePage.tsx`._
+_Auto-generated from `TriageDetailPanelProps` in `frontend/src/components/triage/TriageDetailPanel.tsx`._
 
 ## Attributes
 
@@ -29,10 +29,23 @@ _Auto-generated from `TriageDetailPanelProps` in `frontend/src/pages/TriagePage.
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-*No generated relationships detected.*
+```mermaid
+flowchart LR
+    n0["TriageDetailPanelProps (frontend/src/components/triage/TriageDetailPanel.tsx)"]
+    n1["TriageDetailPanel (frontend/src/components/triage/TriageDetailPanel.tsx)"]
+    n1 --> n0
+    click n0 "../modules/TriageDetailPanel.md"
+    click n1 "../modules/TriageDetailPanel.md"
+```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TriagePage](../modules/TriagePage.md) | 0 | `canConvert`, `item`, `iterationsById`, `onAction`, `onConvert`, `onMarkSuggestion`, `onRequestLinksChanged`, `projectsById` |
+| [TriageDetailPanel](../modules/TriageDetailPanel.md) | 0 | `canConvert`, `item`, `iterationsById`, `onAction`, `onConvert`, `onMarkSuggestion`, `onRequestLinksChanged`, `projectsById` |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `TriageDetailPanel` | type_reference | [TriageDetailPanel](../modules/TriageDetailPanel.md) | — |

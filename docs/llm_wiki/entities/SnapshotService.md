@@ -59,7 +59,7 @@ flowchart LR
     n9["HierarchyRepairService.repair (backend/app/services/hierarchy_repair_service.py)"]
     n10["IterationService._reconcile_tasks_for_project_scope (backend/app/services/iteration_service.py)"]
     n11["PlanShareService.create (backend/app/services/plan_share_service.py)"]
-    n12["TaskBriefService._locked (backend/app/services/task_brief_service.py)"]
+    n12["_planning_proof (backend/app/services/planning_window_reconciliation.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -84,7 +84,7 @@ flowchart LR
     click n9 "../modules/hierarchy_repair_service.md"
     click n10 "../modules/iteration_service.md"
     click n11 "../modules/plan_share_service.md"
-    click n12 "../modules/task_brief_service.md"
+    click n12 "../modules/planning_window_reconciliation.md"
 ```
 
 ### Summary
@@ -108,6 +108,6 @@ flowchart LR
 | `HierarchyRepairService.repair` | call | [hierarchy_repair_service](../modules/hierarchy_repair_service.md) | 1 |
 | `IterationService._reconcile_tasks_for_project_scope` | call | [iteration_service](../modules/iteration_service.md) | 1 |
 | `PlanShareService.create` | call | [plan_share_service](../modules/plan_share_service.md) | 1 |
-| `TaskBriefService._locked` | call | [task_brief_service](../modules/task_brief_service.md) | 1 |
+| `_planning_proof` | call | [planning_window_reconciliation](../modules/planning_window_reconciliation.md) | 1 |
 
-> References: showing 12 of 48 logical references; 36 omitted by the 12-row generated summary limit.
+> References: showing 12 of 53 logical references; 41 omitted by the 12-row generated summary limit.

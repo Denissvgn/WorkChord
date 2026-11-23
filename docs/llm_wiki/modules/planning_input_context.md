@@ -10,6 +10,8 @@ Profile observations include a bounded current skill snapshot and all affected i
 
 Member and legacy vacation observations include all allocations of each affected durable person. Allocation and import intent is resolved read-only before returning complete maps; CSV and member previews reject oversized input and scopes. Member observations include bounded vacation rows. Missing or inaccessible shared inputs use a dedicated not-found exception.
 
+An iteration observation returns a complete list of its additional calendar IDs with its revision. Calendar changes account for direct iteration selections and the selected annual records of profile owners. A stale draft must observe the current planning inputs again.
+
 ## Imports
 
 | Source | Symbols |
@@ -17,7 +19,7 @@ Member and legacy vacation observations include all allocations of each affected
 | `app.authority` | `AuthorityError`, `internal_authority`, `require_operator`, `require_project` |
 | `app.commands` | `PlanningConflict` |
 | `app.config` | `get_settings` |
-| `app.models.calendar` | `Calendar`, `Calendar` |
+| `app.models.calendar` | `Calendar`, `iteration_annual_calendars`, `profile_annual_calendars`, `Calendar`, `iteration_annual_calendars` |
 | `app.models.capacity` | `ProfileAvailability` |
 | `app.models.iteration` | `Iteration`, `Iteration` |
 | `app.models.project` | `Project`, `Project` |
@@ -49,7 +51,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (7) |
+| Inbound | `backend` (8) |
 | Outbound | `backend` (11) |
 
 ### External packages
@@ -58,7 +60,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

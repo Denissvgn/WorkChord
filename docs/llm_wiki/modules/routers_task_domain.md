@@ -36,6 +36,7 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.services.work_metrics` | `METRIC_MATCHES`, `aggregate_metrics` |
 | `decimal` | `Decimal` |
 | `fastapi` | `APIRouter`, `Depends`, `HTTPException`, `Query` |
+| `pydantic` | `BaseModel` |
 | `sqlalchemy` | `select`, `or_`, `or_` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `typing` | `Annotated`, `Literal` |
@@ -65,7 +66,7 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| python | 2 | 0 |
+| python | 3 | 0 |
 
 > All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
@@ -73,7 +74,9 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DB](../entities/routers_task_domain_DB.md) | Type alias | 23 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
+| [DB](../entities/routers_task_domain_DB.md) | Type alias | 25 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
+| [MetricMatchItem](../entities/MetricMatchItem.md) | Pydantic model | 93 | `BaseModel` | — |
+| [MetricMatchPage](../entities/routers_task_domain_MetricMatchPage.md) | Pydantic model | 101 | `BaseModel` | — |
 
 ## Functions
 
@@ -82,9 +85,9 @@ flowchart LR
 | `planning_input_context` | *(async)* `(kind: Literal['calendar', 'project', 'iteration', 'profile', 'member', 'vacation'], resource_id: int, db: DB, creating_member: bool = False)` | `@router.get('/tasks/planning-inputs/{kind}/{resource_id}/context', response_model=PlanningInputContext)` | — |
 | `member_planning_context` | *(async)* `(resource_id: int, data: MemberPlanningIntent, db: DB, creating_member: bool = False)` | `@router.post('/tasks/planning-inputs/member/{resource_id}/context', response_model=PlanningInputContext)` | — |
 | `domain_result` | *(async)* `(awaitable)` | — | — |
-| `delivery_metrics` | *(async)* `(db: DB, project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366))` | `@router.get('/tasks/delivery-metrics', response_model=DeliveryMetricsResponse)` | — |
-| `execution_usage_summary` | *(async)* `(db: DB, project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366), budget_amount: Decimal \| None = Query(default=None, ge=0, max_digits=18, decimal_places=6), budget_currency: str \| None = Query(default=None, pattern='^[A-Z]{3}$'))` | `@router.get('/tasks/execution-usage', response_model=ExecutionUsageSummary)` | — |
-| `metric_matches` | *(async)* `(db: DB, metric: str = Query(max_length=40), project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), release_id: int \| None = Query(default=None, ge=1), limit: int = Query(default=200, ge=1, le=500))` | `@router.get('/tasks/metric-matches')` | The tasks behind one work-metric count, chosen by the predicate that counts them. |
+| `delivery_metrics` | *(async)* `(db: DB, project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366), backlog: bool = Query(default=False, description="Only this project's work with no iteration, using scope at observation for history."), all_projects: bool = Query(default=False, description='Aggregate all accessible projects; omit project_id, iteration_id and backlog filters.'), all_projects_backlog: bool = Query(default=False, description='With all_projects, include only work with no iteration; history uses recorded scope.'))` | `@router.get('/tasks/delivery-metrics', response_model=DeliveryMetricsResponse)` | — |
+| `execution_usage_summary` | *(async)* `(db: DB, project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366), budget_amount: Decimal \| None = Query(default=None, ge=0, max_digits=18, decimal_places=6), budget_currency: str \| None = Query(default=None, pattern='^[A-Z]{3}$'), backlog: bool = Query(default=False, description="Only this project's work with no iteration, using recorded scope for history."), all_projects: bool = Query(default=False, description='Aggregate all accessible projects; omit project_id, iteration_id and backlog filters.'), all_projects_backlog: bool = Query(default=False, description='With all_projects, include only work with no iteration; history uses recorded scope.'))` | `@router.get('/tasks/execution-usage', response_model=ExecutionUsageSummary)` | — |
+| `metric_matches` | *(async)* `(db: DB, metric: str = Query(max_length=40), project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), release_id: int \| None = Query(default=None, ge=1), limit: int = Query(default=200, ge=1, le=500), after_id: int \| None = Query(default=None, ge=0))` | `@router.get('/tasks/metric-matches', response_model=MetricMatchPage, response_model_exclude_unset=True)` | The tasks behind one work-metric count, chosen by the predicate that counts them. |
 | `lookup_tasks` | *(async)* `(db: DB, project_id: int \| None = None, iteration_id: int \| None = None, q: str \| None = Query(default=None, max_length=200), backlog_only: bool = False, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0), task_status: str \| None = None, parent_id: int \| None = Query(default=None, ge=1), roots_only: bool = False)` | `@router.get('/tasks/lookup', response_model=TaskReferencePage)` | — |
 | `task_capabilities` | *(async)* `(db: DB)` | `@router.get('/tasks/capabilities')` | — |
 | `human_my_work` | *(async)* `(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0), project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), backlog_only: bool = False)` | `@router.get('/tasks/my-work', response_model=HumanWorkResponse)` | — |

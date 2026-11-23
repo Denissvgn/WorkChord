@@ -1,6 +1,6 @@
 # MemberWorkload
 
-**Location:** `backend/app/schemas/team.py:330`
+**Location:** `backend/app/schemas/team.py:349`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_team](../modules/schemas_team.md)
@@ -9,10 +9,14 @@
 
 Workload information for a team member.
 
+A workload can carry the list of missing annual records and any unresolved personal calendar policy. Those fields let a reader interpret a partial capacity total while the owner completes their selections.
+
 ## Attributes
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `missing_calendar_years` | `list[int]` | `missing_calendar_years` | No | No | factory: `list` | — | — | — |
+| `calendar_uncertain` | `bool` | `calendar_uncertain` | No | No | `False` | — | — | — |
 | `team_member_id` | `int` | `team_member_id` | Yes | No | — | — | — | — |
 | `name` | `str` | `name` | Yes | No | — | — | — | — |
 | `capacity_days` | `float` | `capacity_days` | Yes | No | — | — | — | — |
@@ -56,7 +60,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_team](../modules/schemas_team.md) | 0 | `allocated_days`, `allocated_hours`, `capacity_days`, `capacity_hours`, `free_days`, `free_hours`, `name`, `nominal_day_hours`, `team_member_id`, `workload_percent`, `workload_status` |
+| [schemas_team](../modules/schemas_team.md) | 0 | `allocated_days`, `allocated_hours`, `calendar_uncertain`, `capacity_days`, `capacity_hours`, `free_days`, `free_hours`, `missing_calendar_years`, `name`, `nominal_day_hours`, `team_member_id`, `workload_percent` |
 
 ### Structure
 

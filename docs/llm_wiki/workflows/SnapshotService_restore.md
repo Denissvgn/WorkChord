@@ -1,7 +1,7 @@
 # SnapshotService_restore
 
 **Entry point:** `snapshot_service.SnapshotService.restore`
-**Modules involved:** [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [models_task](../modules/models_task.md), [recovery](../modules/recovery.md), [snapshot_service](../modules/snapshot_service.md), [snapshots](../modules/snapshots.md), [task_brief_service](../modules/task_brief_service.md), [task_domain_service](../modules/task_domain_service.md), [task_recovery_service](../modules/task_recovery_service.md), [task_service](../modules/task_service.md), [team_member](../modules/team_member.md), [team_service](../modules/team_service.md)
+**Modules involved:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [models_task](../modules/models_task.md), [recovery](../modules/recovery.md), [snapshot_service](../modules/snapshot_service.md), [snapshots](../modules/snapshots.md), [task_brief_service](../modules/task_brief_service.md), [task_domain_service](../modules/task_domain_service.md), [task_recovery_service](../modules/task_recovery_service.md), [task_service](../modules/task_service.md), [team_member](../modules/team_member.md), [team_service](../modules/team_service.md)
 
 > Restore supported IDs in place, retain history and invalidate current execution acceptance.
 
@@ -15,25 +15,29 @@
 5. `snapshots._validate_snapshot_task_payloads`
 6. `task_service.TaskService.get_all_tasks`
 7. `task_service.TaskService._require_unclaimed_structure`
-8. `team_member.TeamMember`
-9. `team_service.TeamService.detach_absence_adapters`
-10. `team_service.TeamService`
-11. `team_member.Vacation`
-12. `delivery_dependency_service.DeliveryDependencyService.require_unreferenced`
-13. `delivery_dependency_service.DeliveryDependencyService`
-14. `task_recovery_service.reserve_restored_task_version`
-15. `models_task.Task`
-16. `task_domain_service.require_owner`
-17. `task_brief_service.TaskBriefService.restore_brief`
-18. `task_brief_service.TaskBriefService`
-19. `recovery.TaskScheduleBaseline`
-20. `task_service.TaskService.record_task_event`
-21. `models_task.TaskDependency`
-22. `task_service.TaskService.record_task_event`
+8. `calendar_service.CalendarService`
+9. `calendar_service.CalendarService.get_by_id`
+10. `calendar_service.CalendarService.selected_years`
+11. `team_member.TeamMember`
+12. `team_service.TeamService.detach_absence_adapters`
+13. `team_service.TeamService`
+14. `team_member.Vacation`
+15. `delivery_dependency_service.DeliveryDependencyService.require_unreferenced`
+16. `delivery_dependency_service.DeliveryDependencyService`
+17. `task_recovery_service.reserve_restored_task_version`
+18. `models_task.Task`
+19. `task_domain_service.require_owner`
+20. `task_brief_service.TaskBriefService.restore_brief`
+21. `task_brief_service.TaskBriefService`
+22. `recovery.TaskScheduleBaseline`
+23. `task_service.TaskService.record_task_event`
+24. `models_task.TaskDependency`
+25. `task_service.TaskService.record_task_event`
 
 ## Touches
 
 - [authority](../modules/authority.md)
+- [calendar_service](../modules/calendar_service.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)

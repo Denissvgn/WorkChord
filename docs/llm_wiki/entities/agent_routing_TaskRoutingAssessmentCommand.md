@@ -1,6 +1,6 @@
 # TaskRoutingAssessmentCommand
 
-**Location:** `backend/app/schemas/agent_routing.py:610`
+**Location:** `backend/app/schemas/agent_routing.py:618`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -23,7 +23,7 @@ Authorized client input; identity and policy fields are server-owned.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1; strict=True | — | — |
+| `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | strict=True; ge=1 | — | — |
 | `band` | `TaskDifficultyBand` | `band` | Yes | No | — | — | — | — |
 | `axes` | `TaskDifficultyAxes` | `axes` | Yes | No | — | — | — | — |
 | `required_skill_levels` | `dict[str, SkillLevel]` | `required_skill_levels` | No | No | factory: `dict` | — | — | — |

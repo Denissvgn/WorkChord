@@ -24,5 +24,7 @@ Prepare job-local APT sources for bounded signed package installation. The nativ
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `_repository_hosts` | `(text: str) -> set[str]` | — | Hosts named by the repository lines of a one-line or deb822 source file. |
+| `disable_unused_sources` | `(root: Path) -> None` | — | Set aside source files whose every repository is an unused runner repository. |
 | `prepare` | `(root: Path, architecture: str) -> None` | — | Replace the direct or mirror-list Ubuntu source; retain suites and signing. |
 | `main` | `() -> None` | — | — |

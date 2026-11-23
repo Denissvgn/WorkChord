@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # AgentPipelinePage.test Module
 
 **Path:** `frontend/src/pages/AgentPipelinePage.test.tsx`

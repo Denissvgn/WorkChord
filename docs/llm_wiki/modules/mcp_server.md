@@ -8,6 +8,8 @@ MCP server facade for external LLM-agent integrations.
 
 MCP uses the shared principal/project authority and command owner. Its established bearer actor-key format is validated and normalized before resolution; conflicting credentials remain rejected. Schedule preview selects a rollback context and returns structured version conflicts through the tool boundary. Every tool is registered with one of three behavior declarations (read-only, write, removal), all closed-world, because a client with nobody to approve calls refuses a tool it must assume is destructive; only the three tools that remove a record are declared destructive.
 
+A planning command rejected by the domain returns its scoped conflict code and public message over MCP. The PM can use the same reason reported by REST to refresh or reconcile the plan. An unexpected implementation exception retains the generic error response.
+
 ## Imports
 
 | Source | Symbols |
@@ -15,18 +17,23 @@ MCP uses the shared principal/project authority and command owner. Its establish
 | `app` | `mcp_agent_tools` |
 | `app.agent_key_file` | `AgentKeyFileError`, `read_agent_key_file` |
 | `app.authority` | `AuthorityError` |
-| `app.commands` | `command_transaction`, `AggregateVersionConflict`, `HierarchyScopeError`, `AggregateVersionConflict`, `HierarchyScopeError` |
+| `app.commands` | `command_transaction`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AggregateVersionConflict`, `HierarchyScopeError` |
 | `app.config` | `get_settings` |
 | `app.database` | `async_session_maker`, `close_database`, `init_db` |
 | `app.http_authority` | `resolve_http_identity` |
 | `app.maintenance` | `MaintenanceModeError`, `enforce_mcp_access` |
 | `app.models.agent` | `AgentActor` |
 | `app.mutation_versions` | `MissingMutationRevision` |
+| `app.schemas.agent` | `AgentRetainedOutputAttestation` |
 | `app.services.agent_model_catalog_service` | `AgentModelConflictError` |
 | `app.services.agent_routing_service` | `AgentRoutingConflictError` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `AgentService`, `actor_has_scope`, `require_scope` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupConflictError` |
+| `app.services.execution_reconciliation` | `reconcile_execution_request` |
 | `app.services.identity_service` | `IdentityService` |
+| `app.services.planning_window_reconciliation` | `reconcile_window` |
+| `app.services.retained_planning_output` | `attest_retained_output` |
+| `app.services.review_evidence` | `record_review_evidence` |
 | `app.services.task_service` | `TaskVersionConflictError` |
 | `app.services.triage_service` | `TriageConflictError` |
 | `argparse` | `argparse` |
@@ -65,8 +72,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (11) |
-| Outbound | `backend` (17) |
+| Inbound | `backend` (18) |
+| Outbound | `backend` (22) |
 
 ### External packages
 
@@ -74,7 +81,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

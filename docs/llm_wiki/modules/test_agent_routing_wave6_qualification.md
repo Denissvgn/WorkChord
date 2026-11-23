@@ -67,7 +67,7 @@ flowchart LR
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [ScenarioBase](../entities/ScenarioBase.md) | 86 | — | — |
-| [Candidate](../entities/Candidate.md) | 94 | — | — |
+| [Candidate](../entities/test_agent_routing_wave6_qualification_Candidate.md) | 94 | — | — |
 | [PersistedState](../entities/PersistedState.md) | 101 | — | — |
 
 ## Functions

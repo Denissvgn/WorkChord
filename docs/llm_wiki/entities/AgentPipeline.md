@@ -1,6 +1,6 @@
 # AgentPipeline
 
-**Location:** `frontend/src/types/agent.ts:632`
+**Location:** `frontend/src/types/agent.ts:633`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -31,13 +31,25 @@ _Auto-generated from `AgentPipeline` in `frontend/src/types/agent.ts`._
 ```mermaid
 flowchart LR
     n0["AgentPipeline (frontend/src/types/agent.ts)"]
-    n1["frontend/src/pages/AgentPipelinePage.test.tsx"]
-    n2["frontend/src/services/agentService.ts"]
+    n1["frontend/src/components/tasks/assigneeDisplay.test.tsx"]
+    n2["frontend/src/components/tasks/usePipeline.ts"]
+    n3["frontend/src/features/overview/overviewSignals.ts"]
+    n4["frontend/src/pages/OverviewPage.test.tsx"]
+    n5["frontend/src/pages/TasksPage.pipeline.test.tsx"]
+    n6["frontend/src/services/agentService.ts"]
     n1 --> n0
     n2 --> n0
+    n3 --> n0
+    n4 --> n0
+    n5 --> n0
+    n6 --> n0
     click n0 "../modules/types_agent.md"
-    click n1 "../modules/AgentPipelinePage.test.md"
-    click n2 "../modules/agentService.md"
+    click n1 "../modules/assigneeDisplay.test.md"
+    click n2 "../modules/usePipeline.md"
+    click n3 "../modules/overviewSignals.md"
+    click n4 "../modules/OverviewPage.test.md"
+    click n5 "../modules/TasksPage.pipeline.test.md"
+    click n6 "../modules/agentService.md"
 ```
 
 ### Summary
@@ -50,5 +62,9 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `AgentPipelinePage.test` | import | [AgentPipelinePage.test](../modules/AgentPipelinePage.test.md) | — |
+| `assigneeDisplay.test` | import | [assigneeDisplay.test](../modules/assigneeDisplay.test.md) | — |
+| `usePipeline` | import | [usePipeline](../modules/usePipeline.md) | — |
+| `overviewSignals` | import | [overviewSignals](../modules/overviewSignals.md) | — |
+| `OverviewPage.test` | import | [OverviewPage.test](../modules/OverviewPage.test.md) | — |
+| `TasksPage.pipeline.test` | import | [TasksPage.pipeline.test](../modules/TasksPage.pipeline.test.md) | — |
 | `agentService` | import | [agentService](../modules/agentService.md) | — |

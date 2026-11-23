@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/settings/GitHubSettingsPanel.tsx`.
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../i18n/seedDisplay` | `githubRuleDisplay` | — | compiler-dependent |
 | `../../services/githubService` | `githubService` | — | compiler-dependent |
 | `../../types/github` | `GitHubAutomationEventType`, `GitHubAutomationTargetStatus`, `GitHubStatusAutomationRule`, `GitHubStatusAutomationRuleCreate` | Declaration | erased |
@@ -21,10 +22,12 @@ _Auto-generated from `frontend/src/components/settings/GitHubSettingsPanel.tsx`.
 | `../common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `../ui/SlideOverDrawer` | `SlideOverDrawer` | — | compiler-dependent |
 | `./AdminAccessGate` | `AdminAccessGate` | — | compiler-dependent |
 | `./SettingsUnsavedBar` | `SettingsUnsavedBar` | — | compiler-dependent |
+| `./sharedUnlock` | `useSettingsReadOnly` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
-| `lucide-react` | `Edit2`, `Github`, `Loader2`, `Plus`, `Save`, `Trash2`, `X` | — | compiler-dependent |
+| `lucide-react` | `Edit2`, `Eye`, `Github`, `Loader2`, `Plus`, `Save`, `Trash2`, `X` | — | compiler-dependent |
 | `react` | `useId`, `useMemo`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 
@@ -56,7 +59,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (13) |
+| Outbound | `frontend` (16) |
 
 ### External packages
 
@@ -64,13 +67,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [FormErrors](../entities/FormErrors.md) | Type alias | 47 | `Partial<Record<'name' \| 'sort_order', string>>` | — |
+| [FormErrors](../entities/FormErrors.md) | Type alias | 50 | `Partial<Record<'name' \| 'sort_order', string>>` | — |
 
 ## Functions
 

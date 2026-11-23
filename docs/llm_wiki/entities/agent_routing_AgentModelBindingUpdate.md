@@ -1,6 +1,6 @@
 # AgentModelBindingUpdate
 
-**Location:** `backend/app/schemas/agent_routing.py:407`
+**Location:** `backend/app/schemas/agent_routing.py:410`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -48,12 +48,14 @@ flowchart LR
     n4["AgentModelBindingUpdate.require_binding_change (backend/app/schemas/agent_routing.py)"]
     n5["AgentModelCatalogService.update_binding (backend/app/services/agent_model_catalog_service.py)"]
     n6["test_model_updates_reject_null_for_non_nullable_fields (backend/tests/test_agent_model_catalog_api.py)"]
+    n7["test_scoped_source_packet_from_submission_through_verdict (backend/tests/test_scoped_review_evidence.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/agent_routing.md"
     click n1 "../modules/agent_routing.md"
     click n2 "../modules/mcp_agent_tools.md"
@@ -61,6 +63,7 @@ flowchart LR
     click n4 "../modules/agent_routing.md"
     click n5 "../modules/agent_model_catalog_service.md"
     click n6 "../modules/test_agent_model_catalog_api.md"
+    click n7 "../modules/test_scoped_review_evidence.md"
 ```
 
 ### Summary
@@ -84,3 +87,4 @@ flowchart LR
 | `AgentModelBindingUpdate.require_binding_change` | type_reference | [agent_routing](../modules/agent_routing.md) | — |
 | `AgentModelCatalogService.update_binding` | type_reference | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | — |
 | `test_model_updates_reject_null_for_non_nullable_fields` | type_reference | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | — |
+| `test_scoped_source_packet_from_submission_through_verdict` | call | [test_scoped_review_evidence](../modules/test_scoped_review_evidence.md) | 1 |

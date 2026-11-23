@@ -13,9 +13,10 @@ _Auto-generated from `ButtonProps` in `frontend/src/components/common/Button.tsx
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
-| `variant` | `'primary' \| 'secondary' \| 'danger' \| 'warning' \| 'ghost' \| 'outline'` | No | — | — |
-| `size` | `'sm' \| 'md' \| 'lg'` | No | — | — |
+| `variant` | `ButtonVariant` | No | — | — |
+| `size` | `ButtonSize` | No | — | — |
 | `isLoading` | `boolean` | No | — | — |
+| `iconOnly` | `boolean` | No | — | — |
 
 ## Methods
 
@@ -36,7 +37,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [Button](../modules/Button.md) | 0 | `isLoading`, `size`, `variant` |
+| [Button](../modules/Button.md) | 0 | `iconOnly`, `isLoading`, `size`, `variant` |
 
 ### Structure
 

@@ -1,6 +1,6 @@
 # TaskAgentReadinessBadgeProps
 
-**Location:** `frontend/src/components/tasks/TaskAgentReadinessBadge.tsx:11`
+**Location:** `frontend/src/components/tasks/TaskAgentReadinessBadge.tsx:12`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskAgentReadinessBadge](../modules/TaskAgentReadinessBadge.md)

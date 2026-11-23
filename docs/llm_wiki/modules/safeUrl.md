@@ -19,17 +19,21 @@ _Auto-generated from `frontend/src/utils/safeUrl.ts`._
 flowchart LR
     n0["frontend/src/components/requestSources/RequestSourceLinksPanel.tsx"]
     n1["frontend/src/components/tasks/TaskTimelinePanel.tsx"]
-    n2["frontend/src/pages/TriagePage.tsx"]
-    n3["frontend/src/utils/safeUrl.ts"]
-    n0 --> n3
+    n2["frontend/src/components/triage/TriageConvertSource.tsx"]
+    n3["frontend/src/components/triage/TriageDetailPanel.tsx"]
+    n4["frontend/src/utils/safeUrl.ts"]
+    n0 --> n4
     n1 --> n0
-    n1 --> n3
-    n2 --> n0
+    n1 --> n4
     n2 --> n3
+    n2 --> n4
+    n3 --> n0
+    n3 --> n4
     click n0 "../modules/RequestSourceLinksPanel.md"
     click n1 "../modules/TaskTimelinePanel.md"
-    click n2 "../modules/TriagePage.md"
-    click n3 "../modules/safeUrl.md"
+    click n2 "../modules/TriageConvertSource.md"
+    click n3 "../modules/TriageDetailPanel.md"
+    click n4 "../modules/safeUrl.md"
 ```
 
 ### Internal neighbors
@@ -38,7 +42,8 @@ flowchart LR
 |---|---|
 | Inbound | [RequestSourceLinksPanel](../modules/RequestSourceLinksPanel.md) |
 | Inbound | [TaskTimelinePanel](../modules/TaskTimelinePanel.md) |
-| Inbound | [TriagePage](../modules/TriagePage.md) |
+| Inbound | [TriageConvertSource](../modules/TriageConvertSource.md) |
+| Inbound | [TriageDetailPanel](../modules/TriageDetailPanel.md) |
 
 ## Functions
 

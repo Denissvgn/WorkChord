@@ -8,26 +8,31 @@ Manages durable profiles and iteration allocations while adapting legacy vacatio
 
 Capacity and workload reads can omit task relationship hydration. Workload hours use the canonical scoped inclusion selector; private person calendar and absence factors remain the same basis as scheduling and readiness.
 
+Workload reads identify uncovered years and unresolved personal calendar rules alongside known capacity. The displayed day equivalents require a finite, positive normal day length from the primary calendar.
+
+Removing a proven unused allocation preserves unrelated task versions. The optional unused-only precondition refuses removal if the row is referenced or its history cannot be verified. The shared profile and allocations in other iterations retain their identities.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `internal_authority`, `internal_authority`, `internal_authority`, `internal_authority` |
-| `app.commands` | `atomic_command`, `commit_or_flush`, `schedule_input_command`, `PlanningConflict`, `PlanningConflict` |
+| `app.authority` | `internal_authority`, `internal_authority`, `internal_authority`, `internal_authority`, `internal_authority` |
+| `app.commands` | `atomic_command`, `commit_or_flush`, `schedule_input_command`, `PlanningConflict`, `PlanningConflict`, `PlanningConflict` |
 | `app.models.capacity` | `ProfileAbsence`, `ProfileAbsence`, `ProfileAbsence`, `ProfileAbsence` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.task` | `Task` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile`, `TeamMemberProfileSkill`, `Vacation` |
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_BOUNDED_LIST_ITEMS` |
-| `app.schemas.team` | `TeamMemberCreate`, `TeamMemberProfileCreate`, `TeamMemberProfileSkillCreate`, `TeamMemberProfileSkillUpdate`, `TeamMemberProfileUpdate`, `TeamMemberOptionResponse`, `TeamMemberUpdate`, `VacationCreate`, `VacationUpdate`, `VacationImportError`, `VacationImportResponse`, `MemberCapacity`, `MemberWorkload` |
+| `app.schemas.team` | `TeamMemberCreate`, `TeamMemberProfileCreate`, `TeamMemberProfileSkillCreate`, `TeamMemberProfileSkillUpdate`, `TeamMemberProfileUpdate`, `TeamMemberOptionResponse`, `TeamMemberProfileCompact`, `TeamMemberUpdate`, `VacationCreate`, `VacationUpdate`, `VacationImportError`, `VacationImportResponse`, `MemberCapacity`, `MemberWorkload` |
 | `app.services.calendar_service` | `CalendarService` |
-| `app.services.capacity_service` | `CapacityService`, `CapacityService`, `CapacityService`, `CapacityService`, `day_hours`, `CapacityService` |
+| `app.services.capacity_service` | `CapacityService`, `CapacityService`, `CapacityService`, `CapacityService`, `CapacityService` |
 | `app.services.work_metrics` | `included_work_ids` |
 | `app.sql_semantics` | `portable_case_insensitive_equal` |
 | `app.utils.import_parser` | `parse_team_members_text` |
 | `csv` | `csv` |
 | `datetime` | `date` |
 | `io` | `StringIO` |
+| `math` | `math` |
 | `sqlalchemy` | `select`, `func` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `sqlalchemy.orm` | `selectinload` |
@@ -51,7 +56,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (17) |
+| Inbound | `backend` (19) |
 | Outbound | `backend` (13) |
 
 ### External packages
@@ -60,10 +65,10 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TeamService](../entities/TeamService.md) | 36 | — | Service for team member operations. |
+| [TeamService](../entities/TeamService.md) | 39 | — | Service for team member operations. |

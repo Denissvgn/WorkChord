@@ -1,13 +1,13 @@
 # TeamFormProps
 
-**Location:** `frontend/src/components/team/TeamForm.tsx:23`
+**Location:** `frontend/src/components/capacity/TeamForm.tsx:24`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TeamForm](../modules/TeamForm.md)
 
 ## Description
 
-_Auto-generated from `TeamFormProps` in `frontend/src/components/team/TeamForm.tsx`._
+_Auto-generated from `TeamFormProps` in `frontend/src/components/capacity/TeamForm.tsx`._
 
 ## Attributes
 
@@ -29,8 +29,8 @@ _Auto-generated from `TeamFormProps` in `frontend/src/components/team/TeamForm.t
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["TeamFormProps (frontend/src/components/team/TeamForm.tsx)"]
-    n1["TeamForm (frontend/src/components/team/TeamForm.tsx)"]
+    n0["TeamFormProps (frontend/src/components/capacity/TeamForm.tsx)"]
+    n1["TeamForm (frontend/src/components/capacity/TeamForm.tsx)"]
     n1 --> n0
     click n0 "../modules/TeamForm.md"
     click n1 "../modules/TeamForm.md"

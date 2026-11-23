@@ -29,9 +29,12 @@ _Auto-generated from `SavedViewScope` in `frontend/src/types/savedView.ts`._
 flowchart LR
     n0["SavedViewScope (frontend/src/types/savedView.ts)"]
     n1["frontend/src/components/tasks/SavedViewsControl.tsx"]
+    n2["frontend/src/components/tasks/useSavedViewManager.tsx"]
     n1 --> n0
+    n2 --> n0
     click n0 "../modules/savedView.md"
     click n1 "../modules/SavedViewsControl.md"
+    click n2 "../modules/useSavedViewManager.md"
 ```
 
 ### Summary
@@ -45,3 +48,4 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `SavedViewsControl` | import | [SavedViewsControl](../modules/SavedViewsControl.md) | — |
+| `useSavedViewManager` | import | [useSavedViewManager](../modules/useSavedViewManager.md) | — |

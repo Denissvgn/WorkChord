@@ -13,11 +13,15 @@ services, then stores an exact actor-attributed receipt in the same transaction.
 
 Composed planning mutations share one transaction and retain exact durable mutation receipts. Schedule preview has an explicit rollback owner and a transient receipt with original input versions; apply validates the observed task set and input digest. A preview cannot publish snapshots, idempotency records or outbound work.
 
+The PM preview digest includes the relevant iteration and personal annual calendar rules. Apply checks this digest and the full task-version map before updating the planned dates. SQLite uses a scoped iteration update for its write reservation. On PostgreSQL the service takes shared locks on the selected annual records in ID order.
+
+Preview and apply use the observed iteration revision in the forecast digest. A command that already owns a revision reservation uses its recorded pre-command revision consistently, including after the scheduler writes its outputs. A previously held forecast must be refreshed after another reservation.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
-| `app.commands` | `commit_or_flush`, `atomic_command`, `current_command`, `preview_command` |
+| `app.commands` | `commit_or_flush`, `atomic_command`, `current_command`, `lock_planning`, `preview_command`, `PlanningConflict` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord` |
 | `app.models.calendar` | `Calendar` |
 | `app.models.iteration` | `Iteration` |
@@ -31,6 +35,8 @@ Composed planning mutations share one transaction and retain exact durable mutat
 | `app.schemas.team` | `TeamMemberCreate`, `TeamMemberProfileCreate`, `TeamMemberProfileResponse`, `TeamMemberProfileUpdate`, `TeamMemberResponse`, `TeamMemberUpdate`, `VacationCreate`, `VacationResponse`, `VacationUpdate` |
 | `app.services.agent_profile_catalog_service` | `AgentProfileCatalogService` |
 | `app.services.agent_service` | `AgentConflictError`, `require_scope`, `validate_idempotency_key` |
+| `app.services.calendar_rules` | `AnnualCalendars` |
+| `app.services.capacity_service` | `CapacityService` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.project_service` | `ProjectService` |
 | `app.services.scheduler_service` | `SchedulerService` |
@@ -40,7 +46,7 @@ Composed planning mutations share one transaction and retain exact durable mutat
 | `hashlib` | `hashlib` |
 | `json` | `json` |
 | `secrets` | `secrets` |
-| `sqlalchemy` | `select`, `text` |
+| `sqlalchemy` | `select`, `update` |
 | `sqlalchemy.exc` | `IntegrityError` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `typing` | `Any` |
@@ -63,8 +69,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (7) |
-| Outbound | `backend` (19) |
+| Inbound | `backend` (10) |
+| Outbound | `backend` (21) |
 
 ### External packages
 
@@ -72,7 +78,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

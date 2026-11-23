@@ -19,22 +19,26 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/pages/CalendarPage.tsx"]
-    n1["frontend/src/services/calendarService.ts"]
-    n2["frontend/src/types/calendar.ts"]
-    n0 --> n1
-    n0 --> n2
+    n0["frontend/src/components/iteration/AnnualCalendarFields.tsx"]
+    n1["frontend/src/components/settings/WorkCalendarSettings.tsx"]
+    n2["frontend/src/services/calendarService.ts"]
+    n3["frontend/src/types/calendar.ts"]
+    n0 --> n3
     n1 --> n2
-    click n0 "../modules/CalendarPage.md"
-    click n1 "../modules/calendarService.md"
-    click n2 "../modules/types_calendar.md"
+    n1 --> n3
+    n2 --> n3
+    click n0 "../modules/AnnualCalendarFields.md"
+    click n1 "../modules/WorkCalendarSettings.md"
+    click n2 "../modules/calendarService.md"
+    click n3 "../modules/types_calendar.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [CalendarPage](../modules/CalendarPage.md) |
+| Inbound | [AnnualCalendarFields](../modules/AnnualCalendarFields.md) |
+| Inbound | [WorkCalendarSettings](../modules/WorkCalendarSettings.md) |
 | Inbound | [calendarService](../modules/calendarService.md) |
 
 ## Classes
@@ -45,5 +49,5 @@ flowchart LR
 | [CalendarCreate](../entities/types_calendar_CalendarCreate.md) | Interface | 12 | — | — |
 | [CalendarUpdate](../entities/types_calendar_CalendarUpdate.md) | Interface | 20 | — | — |
 | [WorkingDaysResponse](../entities/types_calendar_WorkingDaysResponse.md) | Interface | 28 | — | — |
-| [CalendarImportError](../entities/types_calendar_CalendarImportError.md) | Interface | 35 | — | — |
-| [CalendarImportResponse](../entities/types_calendar_CalendarImportResponse.md) | Interface | 40 | — | — |
+| [CalendarImportError](../entities/types_calendar_CalendarImportError.md) | Interface | 36 | — | — |
+| [CalendarImportResponse](../entities/types_calendar_CalendarImportResponse.md) | Interface | 41 | — | — |

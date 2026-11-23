@@ -23,35 +23,39 @@ flowchart LR
     n0["backend/app/config.py"]
     n1["backend/app/http_authority.py"]
     n2["backend/app/routers/agent.py"]
-    n3["backend/app/routers/export.py"]
-    n4["backend/app/routers/identity.py"]
-    n5["backend/app/routers/llm.py"]
-    n6["backend/app/routers/snapshots.py"]
-    n7["backend/app/security.py"]
-    n8["backend/app/settings_read.py"]
+    n3["backend/app/routers/agent_catalog.py"]
+    n4["backend/app/routers/export.py"]
+    n5["backend/app/routers/identity.py"]
+    n6["backend/app/routers/llm.py"]
+    n7["backend/app/routers/snapshots.py"]
+    n8["backend/app/security.py"]
+    n9["backend/app/settings_read.py"]
     n1 --> n0
-    n1 --> n7
     n1 --> n8
+    n1 --> n9
     n2 --> n0
-    n2 --> n7
-    n3 --> n7
-    n4 --> n0
-    n4 --> n1
-    n4 --> n7
-    n5 --> n7
-    n6 --> n3
-    n6 --> n7
-    n7 --> n0
-    n8 --> n7
+    n2 --> n8
+    n3 --> n2
+    n3 --> n8
+    n4 --> n8
+    n5 --> n0
+    n5 --> n1
+    n5 --> n8
+    n6 --> n8
+    n7 --> n4
+    n7 --> n8
+    n8 --> n0
+    n9 --> n8
     click n0 "../modules/config.md"
     click n1 "../modules/http_authority.md"
     click n2 "../modules/routers_agent.md"
-    click n3 "../modules/export.md"
-    click n4 "../modules/routers_identity.md"
-    click n5 "../modules/routers_llm.md"
-    click n6 "../modules/snapshots.md"
-    click n7 "../modules/security.md"
-    click n8 "../modules/settings_read.md"
+    click n3 "../modules/agent_catalog.md"
+    click n4 "../modules/export.md"
+    click n5 "../modules/routers_identity.md"
+    click n6 "../modules/routers_llm.md"
+    click n7 "../modules/snapshots.md"
+    click n8 "../modules/security.md"
+    click n9 "../modules/settings_read.md"
 ```
 
 ### Internal neighbors
@@ -60,6 +64,7 @@ flowchart LR
 |---|---|
 | Inbound | [http_authority](../modules/http_authority.md) |
 | Inbound | [routers_agent](../modules/routers_agent.md) |
+| Inbound | [agent_catalog](../modules/agent_catalog.md) |
 | Inbound | [export](../modules/export.md) |
 | Inbound | [routers_identity](../modules/routers_identity.md) |
 | Inbound | [routers_llm](../modules/routers_llm.md) |

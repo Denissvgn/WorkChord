@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # GuardedTaskModal Module
 
 **Path:** `frontend/src/components/tasks/GuardedTaskModal.tsx`

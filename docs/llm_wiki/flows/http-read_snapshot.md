@@ -161,34 +161,34 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | read_snapshot | SnapshotService.get_snapshot | 283 | `SnapshotService(db).get_snapshot(iteration_id, filename)` |
-| SnapshotService.get_snapshot | SNAPSHOT_FILENAME_PATTERN.fullmatch | 306 | `SNAPSHOT_FILENAME_PATTERN.fullmatch(filename)` |
-| SnapshotService.get_snapshot | SnapshotPathError | 307 | `SnapshotPathError('Invalid snapshot filename')` |
-| SnapshotService.get_snapshot | self.db.scalar | 308 | `self.db.scalar(...)` |
-| SnapshotService.get_snapshot | select(…).where | 308 | `select(ApplicationSnapshot).where(..., ...)` |
-| SnapshotService.get_snapshot | select | 308 | `select(ApplicationSnapshot)` |
-| SnapshotService.get_snapshot | SnapshotService._payload_visible | 309 | `self._payload_visible(row.payload)` |
-| SnapshotService._payload_visible | self.db.info.get | 317 | `self.db.info.get('authority')` |
-| SnapshotService._payload_visible | list | 320 | `list(payload.get(...))` |
-| SnapshotService._payload_visible | payload.get | 320 | `payload.get('tasks', [...])` |
-| SnapshotService._payload_visible | tasks.pop | 322 | `tasks.pop(data not statically known)` |
+| SnapshotService.get_snapshot | SNAPSHOT_FILENAME_PATTERN.fullmatch | 301 | `SNAPSHOT_FILENAME_PATTERN.fullmatch(filename)` |
+| SnapshotService.get_snapshot | SnapshotPathError | 302 | `SnapshotPathError('Invalid snapshot filename')` |
+| SnapshotService.get_snapshot | self.db.scalar | 303 | `self.db.scalar(...)` |
+| SnapshotService.get_snapshot | select(…).where | 303 | `select(ApplicationSnapshot).where(..., ...)` |
+| SnapshotService.get_snapshot | select | 303 | `select(ApplicationSnapshot)` |
+| SnapshotService.get_snapshot | SnapshotService._payload_visible | 304 | `self._payload_visible(row.payload)` |
+| SnapshotService._payload_visible | self.db.info.get | 312 | `self.db.info.get('authority')` |
+| SnapshotService._payload_visible | list | 315 | `list(payload.get(...))` |
+| SnapshotService._payload_visible | payload.get | 315 | `payload.get('tasks', [...])` |
+| SnapshotService._payload_visible | tasks.pop | 317 | `tasks.pop(data not statically known)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `tasks.pop` | `SnapshotService._payload_visible` | 322 |
-| mutation | `tasks.extend` | `SnapshotService._payload_visible` | 325 |
+| mutation | `tasks.pop` | `SnapshotService._payload_visible` | 317 |
+| mutation | `tasks.extend` | `SnapshotService._payload_visible` | 320 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `SnapshotService.get_snapshot` | `SNAPSHOT_FILENAME_PATTERN.fullmatch` | 306 |
-| unresolved_call | `SnapshotService.get_snapshot` | `self.db.scalar` | 308 |
-| unresolved_call | `SnapshotService.get_snapshot` | `select(ApplicationSnapshot).where` | 308 |
-| external_call | `SnapshotService.get_snapshot` | `select` | 308 |
-| unresolved_call | `SnapshotService._payload_visible` | `self.db.info.get` | 317 |
-| unresolved_call | `SnapshotService._payload_visible` | `payload.get` | 320 |
+| unresolved_call | `SnapshotService.get_snapshot` | `SNAPSHOT_FILENAME_PATTERN.fullmatch` | 301 |
+| unresolved_call | `SnapshotService.get_snapshot` | `self.db.scalar` | 303 |
+| unresolved_call | `SnapshotService.get_snapshot` | `select(ApplicationSnapshot).where` | 303 |
+| external_call | `SnapshotService.get_snapshot` | `select` | 303 |
+| unresolved_call | `SnapshotService._payload_visible` | `self.db.info.get` | 312 |
+| unresolved_call | `SnapshotService._payload_visible` | `payload.get` | 315 |
 | step_limit | `read_snapshot` | `first 12 steps` | 0 |
 
 ## Behavior

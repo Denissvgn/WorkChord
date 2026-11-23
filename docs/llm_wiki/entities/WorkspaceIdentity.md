@@ -37,18 +37,42 @@ _Auto-generated from `WorkspaceIdentity` in `frontend/src/features/identity/iden
 flowchart LR
     n0["WorkspaceIdentity (frontend/src/features/identity/identityService.ts)"]
     n1["frontend/src/components/settings/AdminAccessGate.test.tsx"]
-    n2["frontend/src/components/settings/ConnectedReadersPanel.test.tsx"]
-    n3["frontend/src/features/identity/identityContext.ts"]
-    n4["frontend/src/features/identity/IdentityProvider.tsx"]
+    n2["frontend/src/components/settings/AdminAccessPanel.test.tsx"]
+    n3["frontend/src/components/settings/ConnectedReadersPanel.test.tsx"]
+    n4["frontend/src/components/tasks/TaskReadView.operatorKey.test.tsx"]
+    n5["frontend/src/features/firstRun/GetStartedFlow.test.tsx"]
+    n6["frontend/src/features/firstRun/GetStartedPanel.test.tsx"]
+    n7["frontend/src/features/firstRun/sampleProject.test.tsx"]
+    n8["frontend/src/features/identity/identityContext.ts"]
+    n9["frontend/src/features/identity/IdentityProvider.tsx"]
+    n10["frontend/src/pages/destinationEmptyStates.test.tsx"]
+    n11["frontend/src/pages/SettingsPage.labels.test.tsx"]
+    n12["frontend/src/pages/SettingsPage.readOnlyPanels.test.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
+    n6 --> n0
+    n7 --> n0
+    n8 --> n0
+    n9 --> n0
+    n10 --> n0
+    n11 --> n0
+    n12 --> n0
     click n0 "../modules/identityService.md"
     click n1 "../modules/AdminAccessGate.test.md"
-    click n2 "../modules/ConnectedReadersPanel.test.md"
-    click n3 "../modules/identityContext.md"
-    click n4 "../modules/IdentityProvider.md"
+    click n2 "../modules/AdminAccessPanel.test.md"
+    click n3 "../modules/ConnectedReadersPanel.test.md"
+    click n4 "../modules/TaskReadView.operatorKey.test.md"
+    click n5 "../modules/GetStartedFlow.test.md"
+    click n6 "../modules/GetStartedPanel.test.md"
+    click n7 "../modules/sampleProject.test.md"
+    click n8 "../modules/identityContext.md"
+    click n9 "../modules/IdentityProvider.md"
+    click n10 "../modules/destinationEmptyStates.test.md"
+    click n11 "../modules/SettingsPage.labels.test.md"
+    click n12 "../modules/SettingsPage.readOnlyPanels.test.md"
 ```
 
 ### Summary
@@ -62,6 +86,16 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `AdminAccessGate.test` | import | [AdminAccessGate.test](../modules/AdminAccessGate.test.md) | — |
+| `AdminAccessPanel.test` | import | [AdminAccessPanel.test](../modules/AdminAccessPanel.test.md) | — |
 | `ConnectedReadersPanel.test` | import | [ConnectedReadersPanel.test](../modules/ConnectedReadersPanel.test.md) | — |
+| `TaskReadView.operatorKey.test` | import | [TaskReadView.operatorKey.test](../modules/TaskReadView.operatorKey.test.md) | — |
+| `GetStartedFlow.test` | import | [GetStartedFlow.test](../modules/GetStartedFlow.test.md) | — |
+| `GetStartedPanel.test` | import | [GetStartedPanel.test](../modules/GetStartedPanel.test.md) | — |
+| `sampleProject.test` | import | [sampleProject.test](../modules/sampleProject.test.md) | — |
 | `identityContext` | import | [identityContext](../modules/identityContext.md) | — |
 | `IdentityProvider` | import | [IdentityProvider](../modules/IdentityProvider.md) | — |
+| `destinationEmptyStates.test` | import | [destinationEmptyStates.test](../modules/destinationEmptyStates.test.md) | — |
+| `SettingsPage.labels.test` | import | [SettingsPage.labels.test](../modules/SettingsPage.labels.test.md) | — |
+| `SettingsPage.readOnlyPanels.test` | import | [SettingsPage.readOnlyPanels.test](../modules/SettingsPage.readOnlyPanels.test.md) | — |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

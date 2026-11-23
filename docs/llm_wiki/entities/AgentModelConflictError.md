@@ -1,6 +1,6 @@
 # AgentModelConflictError
 
-**Location:** `backend/app/services/agent_model_catalog_service.py:54`
+**Location:** `backend/app/services/agent_model_catalog_service.py:55`
 **Kind:** Class
 **Bases:** `AgentConflictError`
 **Module:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md)
@@ -36,7 +36,9 @@ flowchart LR
     n8["AgentModelCatalogService._replay (backend/app/services/agent_model_catalog_service.py)"]
     n9["AgentModelCatalogService._require_default_slot (backend/app/services/agent_model_catalog_service.py)"]
     n10["AgentModelCatalogService._require_reconciliation (backend/app/services/agent_model_catalog_service.py)"]
-    n11["backend/tests/test_agent_model_catalog_api.py"]
+    n11["reconcile_execution (backend/app/services/execution_reconciliation.py)"]
+    n12["reconcile_window (backend/app/services/planning_window_reconciliation.py)"]
+    n13["backend/tests/test_agent_model_catalog_api.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -48,6 +50,8 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
+    n13 --> n0
     click n0 "../modules/agent_model_catalog_service.md"
     click n1 "../modules/agent_service.md"
     click n2 "../modules/mcp_server.md"
@@ -59,7 +63,9 @@ flowchart LR
     click n8 "../modules/agent_model_catalog_service.md"
     click n9 "../modules/agent_model_catalog_service.md"
     click n10 "../modules/agent_model_catalog_service.md"
-    click n11 "../modules/test_agent_model_catalog_api.md"
+    click n11 "../modules/execution_reconciliation.md"
+    click n12 "../modules/planning_window_reconciliation.md"
+    click n13 "../modules/test_agent_model_catalog_api.md"
 ```
 
 ### Summary
@@ -87,4 +93,6 @@ flowchart LR
 | `AgentModelCatalogService._replay` | call | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | 2 |
 | `AgentModelCatalogService._require_default_slot` | call | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | 1 |
 | `AgentModelCatalogService._require_reconciliation` | call | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | 1 |
+| `reconcile_execution` | call | [execution_reconciliation](../modules/execution_reconciliation.md) | 2 |
+| `reconcile_window` | call | [planning_window_reconciliation](../modules/planning_window_reconciliation.md) | 2 |
 | `test_agent_model_catalog_api` | import | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | — |

@@ -25,39 +25,40 @@ Live paged work retains four pages with one separate foreground head-discovery r
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/projects/TimeEntriesReport.tsx"]
-    n1["frontend/src/components/tasks/BacklogPanel.tsx"]
-    n2["frontend/src/components/tasks/PagedTaskBrowser.tsx"]
-    n3["frontend/src/components/tasks/TaskDiscussion.tsx"]
-    n4["frontend/src/components/tasks/TimeEntriesPanel.tsx"]
-    n5["frontend/src/features/useLiveWindow.test.tsx"]
-    n6["frontend/src/features/useLiveWindow.ts"]
-    n7["frontend/src/pages/MyWorkPage.tsx"]
-    n8["frontend/src/pages/RoadmapPage.tsx"]
-    n0 --> n4
-    n0 --> n6
-    n1 --> n6
-    n2 --> n6
-    n3 --> n6
-    n4 --> n6
-    n5 --> n6
-    n7 --> n6
-    n8 --> n6
-    click n0 "../modules/TimeEntriesReport.md"
-    click n1 "../modules/BacklogPanel.md"
-    click n2 "../modules/PagedTaskBrowser.md"
-    click n3 "../modules/TaskDiscussion.md"
-    click n4 "../modules/TimeEntriesPanel.md"
-    click n5 "../modules/useLiveWindow.test.md"
-    click n6 "../modules/useLiveWindow.md"
-    click n7 "../modules/MyWorkPage.md"
-    click n8 "../modules/RoadmapPage.md"
+    n0["frontend/src/components/projects/RoadmapView.tsx"]
+    n1["frontend/src/components/projects/TimeEntriesReport.tsx"]
+    n2["frontend/src/components/tasks/BacklogPanel.tsx"]
+    n3["frontend/src/components/tasks/PagedTaskBrowser.tsx"]
+    n4["frontend/src/components/tasks/TaskDiscussion.tsx"]
+    n5["frontend/src/components/tasks/TimeEntriesPanel.tsx"]
+    n6["frontend/src/features/useLiveWindow.test.tsx"]
+    n7["frontend/src/features/useLiveWindow.ts"]
+    n8["frontend/src/pages/MyWorkPage.tsx"]
+    n0 --> n7
+    n1 --> n5
+    n1 --> n7
+    n2 --> n7
+    n3 --> n7
+    n4 --> n7
+    n5 --> n7
+    n6 --> n7
+    n8 --> n7
+    click n0 "../modules/RoadmapView.md"
+    click n1 "../modules/TimeEntriesReport.md"
+    click n2 "../modules/BacklogPanel.md"
+    click n3 "../modules/PagedTaskBrowser.md"
+    click n4 "../modules/TaskDiscussion.md"
+    click n5 "../modules/TimeEntriesPanel.md"
+    click n6 "../modules/useLiveWindow.test.md"
+    click n7 "../modules/useLiveWindow.md"
+    click n8 "../modules/MyWorkPage.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [RoadmapView](../modules/RoadmapView.md) |
 | Inbound | [TimeEntriesReport](../modules/TimeEntriesReport.md) |
 | Inbound | [BacklogPanel](../modules/BacklogPanel.md) |
 | Inbound | [PagedTaskBrowser](../modules/PagedTaskBrowser.md) |
@@ -65,7 +66,6 @@ flowchart LR
 | Inbound | [TimeEntriesPanel](../modules/TimeEntriesPanel.md) |
 | Inbound | [useLiveWindow.test](../modules/useLiveWindow.test.md) |
 | Inbound | [MyWorkPage](../modules/MyWorkPage.md) |
-| Inbound | [RoadmapPage](../modules/RoadmapPage.md) |
 
 ### External packages
 

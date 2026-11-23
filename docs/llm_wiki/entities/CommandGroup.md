@@ -1,6 +1,6 @@
 # CommandGroup
 
-**Location:** `frontend/src/components/layout/CommandMenu.tsx:35`
+**Location:** `frontend/src/components/layout/CommandMenu.tsx:42`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [CommandMenu](../modules/CommandMenu.md)

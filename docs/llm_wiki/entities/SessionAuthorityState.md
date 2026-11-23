@@ -31,10 +31,10 @@ _Auto-generated from `SessionAuthorityState` in `frontend/src/features/agentTeam
 ```mermaid
 flowchart LR
     n0["SessionAuthorityState (frontend/src/features/agentTeamSetup/statusScopes.ts)"]
-    n1["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
+    n1["frontend/src/components/team/AgentManifestWorkflow.tsx"]
     n1 --> n0
     click n0 "../modules/statusScopes.md"
-    click n1 "../modules/AgentTeamSetupMasterPage.md"
+    click n1 "../modules/AgentManifestWorkflow.md"
 ```
 
 ### Summary
@@ -47,4 +47,4 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `AgentTeamSetupMasterPage` | import | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) | — |
+| `AgentManifestWorkflow` | import | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) | — |

@@ -1,6 +1,6 @@
 # TaskStatusStats
 
-**Location:** `frontend/src/types/task.ts:385`
+**Location:** `frontend/src/types/task.ts:387`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

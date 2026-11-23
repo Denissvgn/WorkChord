@@ -47,8 +47,9 @@ the same audited command and read-model paths.
 | `app.services.agent_team_setup_service` | `AgentTeamSetupService` |
 | `app.services.agent_work_service` | `AgentWorkService` |
 | `app.services.assignee_recommendation_service` | `AssigneeRecommendationService` |
+| `app.services.calendar_rules` | `AnnualCalendars` |
 | `app.services.execution_usage_service` | `ExecutionUsageService` |
-| `app.services.external_link_service` | `ExternalLinkService` |
+| `app.services.external_link_service` | `ExternalLinkConflictError`, `ExternalLinkService` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.label_service` | `LabelService` |
 | `app.services.project_service` | `ProjectService` |
@@ -97,8 +98,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (13) |
-| Outbound | `backend` (51) |
+| Inbound | `backend` (14) |
+| Outbound | `backend` (52) |
 
 ### External packages
 
@@ -106,7 +107,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 64 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 66 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -247,6 +248,7 @@ flowchart LR
 | `list_saved_views` | *(async)* `(db: AsyncSession, view_type: Optional[str] = None) -> list[dict[str, Any]]` | — | MCP handler: list shared/system saved views visible without a user session. |
 | `list_external_links` | *(async)* `(db: AsyncSession, entity_type: str, entity_id: int) -> list[dict[str, Any]]` | — | MCP handler: list external links for a supported entity. |
 | `create_task_github_link` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int, url: str, *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any] \| None` | — | MCP handler: idempotently link a GitHub URL to a task. |
+| `create_release_github_link` | *(async)* `(db: AsyncSession, actor: AgentActor, release_id: int, url: str, *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any] \| None` | — | MCP handler: idempotently link a GitHub pull request, commit, or tag to a release. |
 | `delete_external_link` | *(async)* `(db: AsyncSession, actor: AgentActor, link_id: int, *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: idempotently delete an external link. |
 | `search_request_sources` | *(async)* `(db: AsyncSession, q: Optional[str] = None, source_type: Optional[str] = None, limit: int = 20) -> list[dict[str, Any]]` | — | MCP handler: search request sources. |
 | `list_request_source_links` | *(async)* `(db: AsyncSession, target_type: str, target_id: int) -> list[dict[str, Any]]` | — | MCP handler: list request-source links for a target. |

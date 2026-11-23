@@ -1,6 +1,6 @@
 # AgentWorkTerminalResponse
 
-**Location:** `backend/app/schemas/agent.py:1094`
+**Location:** `backend/app/schemas/agent.py:1200`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -34,18 +34,21 @@ flowchart LR
     n4["AgentWorkService._terminal_work (backend/app/services/agent_work_service.py)"]
     n5["AgentWorkService.fail (backend/app/services/agent_work_service.py)"]
     n6["AgentWorkService.submit (backend/app/services/agent_work_service.py)"]
+    n7["backend/app/services/review_provenance.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/routers_agent.md"
     click n3 "../modules/routers_agent.md"
     click n4 "../modules/agent_work_service.md"
     click n5 "../modules/agent_work_service.md"
     click n6 "../modules/agent_work_service.md"
+    click n7 "../modules/review_provenance.md"
 ```
 
 ### Summary
@@ -70,3 +73,4 @@ flowchart LR
 | `AgentWorkService._terminal_work` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `AgentWorkService.fail` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `AgentWorkService.submit` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
+| `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |

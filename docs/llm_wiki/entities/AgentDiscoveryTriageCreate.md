@@ -1,6 +1,6 @@
 # AgentDiscoveryTriageCreate
 
-**Location:** `backend/app/schemas/agent.py:1206`
+**Location:** `backend/app/schemas/agent.py:1337`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -28,11 +28,11 @@ Claim-bound report of work discovered outside the assigned scope.
 | `task_id` | `int` | `task_id` | Yes | No | — | — | — | — |
 | `assignment_id` | `int` | `assignment_id` | Yes | No | — | — | — | — |
 | `run_id` | `int` | `run_id` | Yes | No | — | — | — | — |
-| `claim_id` | `str` | `claim_id` | Yes | No | — | max_length=64; min_length=16 | — | — |
+| `claim_id` | `str` | `claim_id` | Yes | No | — | min_length=16; max_length=64 | — | — |
 | `claim_generation` | `int` | `claim_generation` | Yes | No | — | ge=1 | — | — |
 | `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1 | — | — |
-| `title` | `str` | `title` | Yes | No | — | max_length=500; min_length=1 | — | — |
-| `description` | `str` | `description` | Yes | No | — | max_length=12000; min_length=1 | — | — |
+| `title` | `str` | `title` | Yes | No | — | min_length=1; max_length=500 | — | — |
+| `description` | `str` | `description` | Yes | No | — | min_length=1; max_length=12000 | — | — |
 | `blocking` | `bool` | `blocking` | No | No | `False` | — | — | — |
 | `evidence` | `dict[str, Any]` | `evidence` | No | No | factory: `dict` | max_length=unknown (MAX_AGENT_JSON_FIELDS) | — | — |
 | `suggested_labels` | `list[str]` | `suggested_labels` | No | No | factory: `list` | max_length=50 | — | — |
@@ -54,14 +54,17 @@ flowchart LR
     n2["report_discovery (backend/app/mcp_agent_tools.py)"]
     n3["report_agent_discovery (backend/app/routers/agent.py)"]
     n4["AgentWorkService.report_discovery (backend/app/services/agent_work_service.py)"]
+    n5["backend/tests/test_managed_worker_discovery.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
     click n4 "../modules/agent_work_service.md"
+    click n5 "../modules/test_managed_worker_discovery.md"
 ```
 
 ### Summary
@@ -83,3 +86,4 @@ flowchart LR
 | `report_discovery` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `report_agent_discovery` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `AgentWorkService.report_discovery` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
+| `test_managed_worker_discovery` | import | [test_managed_worker_discovery](../modules/test_managed_worker_discovery.md) | — |

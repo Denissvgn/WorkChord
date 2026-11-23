@@ -1,6 +1,6 @@
 # AgentReviewVerdictResponse
 
-**Location:** `backend/app/schemas/agent.py:1125`
+**Location:** `backend/app/schemas/agent.py:1234`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -30,12 +30,15 @@ flowchart LR
     n1["BaseModel"]
     n2["submit_my_agent_review_verdict (backend/app/routers/agent.py)"]
     n3["AgentWorkService.review (backend/app/services/agent_work_service.py)"]
+    n4["backend/app/services/review_provenance.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
+    n4 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/routers_agent.md"
     click n3 "../modules/agent_work_service.md"
+    click n4 "../modules/review_provenance.md"
 ```
 
 ### Summary
@@ -57,3 +60,4 @@ flowchart LR
 | `submit_my_agent_review_verdict` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `AgentWorkService.review` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 | `AgentWorkService.review` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
+| `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |

@@ -14,6 +14,10 @@ Allocation recovery validates stable lifetime provenance before any writes, pres
 
 Saved planning graphs include complete person lifetime provenance for allocation profiles and all recursive task owners. Preflight validates these references before any recovery mutation, using internal ID/token projections without serializing private profile data; current owner eligibility remains required.
 
+Iteration snapshots preserve the selected annual calendar IDs. Restoring an older snapshot that recorded only the primary calendar restores that single selection. The service validates the saved annual records before restoring the iteration.
+
+Snapshot restoration compares the database’s physical allocation foreign keys with the mapped application references before it detaches a capacity row. SQLite identifiers are compared case-insensitively. An unknown reference holds the restore so that external owners and the saved allocation lifetime can be reconciled.
+
 ## Imports
 
 | Source | Symbols |
@@ -21,7 +25,6 @@ Saved planning graphs include complete person lifetime provenance for allocation
 | `app.authority` | `internal_authority`, `internal_authority`, `require_operator` |
 | `app.commands` | `atomic_command`, `current_command`, `lock_iterations`, `PlanningConflict`, `PlanningConflict`, `PlanningConflict`, `PlanningConflict` |
 | `app.config` | `get_settings` |
-| `app.database` | `Base` |
 | `app.models.agent` | `AgentRun`, `AgentTaskAssignment` |
 | `app.models.autonomy` | `AgentWorkPackage` |
 | `app.models.delivery_dependency` | `DeliveryDependency` |
@@ -30,6 +33,8 @@ Saved planning graphs include complete person lifetime provenance for allocation
 | `app.models.task` | `Task`, `Task`, `TaskDependency` |
 | `app.models.team_member` | `TeamMemberProfile`, `TeamMemberProfile`, `TeamMember`, `TeamMemberProfile`, `TeamMember`, `Vacation` |
 | `app.routers.snapshots` | `_validate_snapshot_task_payloads` |
+| `app.services.allocation_removal` | `foreign_keys_to_members`, `mapped_allocation_references` |
+| `app.services.calendar_service` | `CalendarService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.task_brief_service` | `TaskBriefService` |
@@ -43,7 +48,7 @@ Saved planning graphs include complete person lifetime provenance for allocation
 | `json` | `json` |
 | `pathlib` | `Path` |
 | `re` | `re` |
-| `sqlalchemy` | `select`, `delete`, `inspect`, `or_`, `func` |
+| `sqlalchemy` | `select`, `delete`, `or_`, `func` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `uuid` | `UUID`, `UUID` |
 
@@ -65,8 +70,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (20) |
-| Outbound | `backend` (20) |
+| Inbound | `backend` (23) |
+| Outbound | `backend` (21) |
 
 ### External packages
 
@@ -74,7 +79,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

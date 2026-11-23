@@ -10,15 +10,18 @@ _Auto-generated from `frontend/src/components/layout/ContextHelp.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Button` | `Button` | — | compiler-dependent |
+| `../../features/scope/useScopeLink` | `useScopeLink` | — | compiler-dependent |
 | `../../hooks/useSingleKeyShortcutPreference` | `useSingleKeyShortcutPreference` | — | compiler-dependent |
-| `../../navigation/helpContexts` | `HelpContentProvider` | Specifier | compiler-dependent |
+| `../../navigation/helpContexts` | `WorkflowGuideKey` | Specifier | compiler-dependent |
 | `../../navigation/helpContexts` | `getHelpContext` | — | compiler-dependent |
 | `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
-| `../planning/PlanningWorkflowGuide` | `PlanningWorkflowHelpContent` | — | compiler-dependent |
+| `../planning/PlanningWorkflowHelpContent` | `PlanningWorkflowHelpContent` | — | compiler-dependent |
 | `../settings/SettingsGoalHelpContent` | `SettingsGoalHelpContent` | — | compiler-dependent |
-| `../tasks/TaskWorkflowGuide` | `TaskWorkflowHelpContent` | — | compiler-dependent |
+| `../tasks/TaskWorkflowHelpContent` | `TaskWorkflowHelpContent` | — | compiler-dependent |
 | `../ui` | `SlideOverDrawer` | — | compiler-dependent |
 | `./commandMenuEvents` | `openCommandMenu` | — | compiler-dependent |
+| `./setupGuideEvents` | `openSetupGuide` | — | compiler-dependent |
 | `lucide-react` | `ArrowDownUp`, `ChevronRight`, `CircleHelp`, `Command`, `CornerDownLeft`, `Keyboard` | — | compiler-dependent |
 | `react` | `useId`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
@@ -29,7 +32,7 @@ _Auto-generated from `frontend/src/components/layout/ContextHelp.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `ContextHelp` |
-| Constants | `PROVIDER_COPY_KEYS`, `TASK_SHORTCUTS` |
+| Constants | `TASK_SHORTCUTS` |
 
 ## Local dependency map
 
@@ -38,61 +41,29 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/common/Checkbox.tsx"]
-    n1["frontend/src/components/layout/AppTopNav.tsx"]
-    n2["frontend/src/components/layout/commandMenuEvents.ts"]
-    n3["frontend/src/components/layout/ContextHelp.test.tsx"]
-    n4["frontend/src/components/layout/ContextHelp.tsx"]
-    n5["frontend/src/components/planning/PlanningWorkflowGuide.tsx"]
-    n6["frontend/src/components/settings/SettingsGoalHelpContent.tsx"]
-    n7["frontend/src/components/tasks/TaskWorkflowGuide.tsx"]
-    n8["frontend/src/components/ui/index.ts"]
-    n9["frontend/src/hooks/useSingleKeyShortcutPreference.ts"]
-    n10["frontend/src/navigation/helpContexts.ts"]
-    n1 --> n2
-    n1 --> n4
-    n3 --> n4
-    n4 --> n0
-    n4 --> n2
-    n4 --> n5
-    n4 --> n6
-    n4 --> n7
-    n4 --> n8
-    n4 --> n9
-    n4 --> n10
-    click n0 "../modules/Checkbox.md"
-    click n1 "../modules/AppTopNav.md"
-    click n2 "../modules/commandMenuEvents.md"
-    click n3 "../modules/ContextHelp.test.md"
-    click n4 "../modules/ContextHelp.md"
-    click n5 "../modules/PlanningWorkflowGuide.md"
-    click n6 "../modules/SettingsGoalHelpContent.md"
-    click n7 "../modules/TaskWorkflowGuide.md"
-    click n8 "../modules/index.md"
-    click n9 "../modules/useSingleKeyShortcutPreference.md"
-    click n10 "../modules/helpContexts.md"
+    n0["frontend"]
+    n1["frontend/src/components/layout/ContextHelp.tsx"]
+    n0 --> n1
+    n1 --> n0
+    click n1 "../modules/ContextHelp.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [AppTopNav](../modules/AppTopNav.md) |
-| Inbound | [ContextHelp.test](../modules/ContextHelp.test.md) |
-| Outbound | [Checkbox](../modules/Checkbox.md) |
-| Outbound | [commandMenuEvents](../modules/commandMenuEvents.md) |
-| Outbound | [PlanningWorkflowGuide](../modules/PlanningWorkflowGuide.md) |
-| Outbound | [SettingsGoalHelpContent](../modules/SettingsGoalHelpContent.md) |
-| Outbound | [TaskWorkflowGuide](../modules/TaskWorkflowGuide.md) |
-| Outbound | [index](../modules/index.md) |
-| Outbound | [useSingleKeyShortcutPreference](../modules/useSingleKeyShortcutPreference.md) |
-| Outbound | [helpContexts](../modules/helpContexts.md) |
+| Inbound | `frontend` (3) |
+| Outbound | `frontend` (11) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | typescript | 4 | 0 |
+
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

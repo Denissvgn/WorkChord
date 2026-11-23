@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_pipeline_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 18 more
+**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 24 more
 
 **Complete modules touched:**
 
@@ -16,13 +16,19 @@
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
+- [execution_planning_window](../modules/execution_planning_window.md)
+- [execution_reconciliation](../modules/execution_reconciliation.md)
+- [github_links](../modules/github_links.md)
 - [identity_service](../modules/identity_service.md)
 - [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [mcp_server](../modules/mcp_server.md)
 - [models_identity](../modules/models_identity.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
+- [planning_window_reconciliation](../modules/planning_window_reconciliation.md)
 - [query_limits](../modules/query_limits.md)
+- [retained_planning_output](../modules/retained_planning_output.md)
+- [review_provenance](../modules/review_provenance.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_service](../modules/task_service.md)
@@ -44,26 +50,26 @@ sequenceDiagram
     participant p6 as _agent_context
     participant p7 as AgentWorkService._start_blockers
     participant p8 as get_settings
-    participant p9 as AgentWorkService._selection_pending
+    participant p9 as window_authority_matches
     participant p10 as command_transaction
     participant p11 as _authenticate_agent_key
-    participant p12 as _require_scope_requirement
-    participant p13 as AgentWorkService._resolve_rollout
+    participant p12 as recovery_attestation_hint
+    participant p13 as _require_scope_requirement
     participant p14 as IdentityService.actor_context
-    participant p15 as AgentWorkService._is_model_aware_assignment
-    participant p16 as AgentWorkService._validate_assignment_actor
-    participant p17 as AgentWorkService._working_today
-    participant p18 as DeliveryDependencyService.ready
-    participant p19 as AgentTeamSetupService.routing_readiness
-    participant p20 as require_scope
-    participant p21 as AgentWorkService._routing_snapshot
-    participant p22 as evaluate_actor_authorization
-    participant p23 as working_today
-    participant p24 as DeliveryDependencyService.projection
-    participant p25 as AgentService.authenticate
-    participant p26 as require_identity_writes
-    participant p27 as DeliveryDependencyService.reconcile
-    participant p28 as IdentityService.context
+    participant p15 as AgentWorkService._resolve_rollout
+    participant p16 as AgentWorkService._shadow_handoff
+    participant p17 as AgentWorkService._selection_pending
+    participant p18 as AgentWorkService._is_model_aware_assignment
+    participant p19 as AgentWorkService._validate_assignment_actor
+    participant p20 as AgentWorkService._working_today
+    participant p21 as DeliveryDependencyService.ready
+    participant p22 as assignment_matches
+    participant p23 as AgentWorkService._supervised_recovery
+    participant p24 as require_scope
+    participant p25 as AgentTeamSetupService.routing_readiness
+    participant p26 as supervised_rework_evidence
+    participant p27 as evaluate_actor_authorization
+    participant p28 as working_today
     participant p29 as json.dumps (backend/app/mcp_server.py:_json_resource)
     participant p30 as task.model_dump
     p0->>p1: _json_resource
@@ -74,33 +80,33 @@ sequenceDiagram
     p3->>p6: _agent_context
     p4->>p7: AgentWorkService._start_blockers
     p5->>p8: get_settings
-    p7->>p9: AgentWorkService._selection_pending
+    p7->>p9: window_authority_matches
     p6->>p10: command_transaction
     p6->>p11: _authenticate_agent_key
-    p6->>p12: _require_scope_requirement
-    p7->>p13: AgentWorkService._resolve_rollout
+    p7->>p12: recovery_attestation_hint
+    p6->>p13: _require_scope_requirement
     p6->>p14: IdentityService.actor_context
-    p7->>p15: AgentWorkService._is_model_aware_assignment
-    p7->>p16: AgentWorkService._validate_assignment_actor
-    p7->>p17: AgentWorkService._working_today
-    p7->>p18: DeliveryDependencyService.ready
-    p13->>p19: AgentTeamSetupService.routing_readiness
-    p12->>p20: require_scope
-    p9->>p21: AgentWorkService._routing_snapshot
-    p16->>p22: evaluate_actor_authorization
-    p17->>p23: working_today
-    p18->>p24: DeliveryDependencyService.projection
-    p11->>p25: AgentService.authenticate
-    p14->>p26: require_identity_writes
-    p10->>p27: DeliveryDependencyService.reconcile
-    p14->>p28: IdentityService.context
+    p7->>p15: AgentWorkService._resolve_rollout
+    p7->>p16: AgentWorkService._shadow_handoff
+    p7->>p17: AgentWorkService._selection_pending
+    p7->>p18: AgentWorkService._is_model_aware_assignment
+    p7->>p19: AgentWorkService._validate_assignment_actor
+    p7->>p20: AgentWorkService._working_today
+    p7->>p21: DeliveryDependencyService.ready
+    p9->>p22: assignment_matches
+    p16->>p23: AgentWorkService._supervised_recovery
+    p13->>p24: require_scope
+    p15->>p25: AgentTeamSetupService.routing_readiness
+    p16->>p26: supervised_rework_evidence
+    p19->>p27: evaluate_actor_authorization
+    p20->>p28: working_today
     p1-->>p29: json.dumps (backend/app/mcp_server.py:_json_resource)(value, ensure_ascii=False, default=str)
     p2-->>p30: task.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 444 interactions; 414 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 809 interactions; 779 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 117 (116 omitted); unresolved 1 of 218 (217 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 217 (216 omitted); unresolved 1 of 411 (410 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -114,7 +120,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 105 groups; 97 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 150 groups; 142 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -127,9 +133,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 110; effect analysis evaluated: 77, partial: 4, unavailable: 29. Counts include steps omitted from the displayed trace.
+Source steps: 182; effect analysis evaluated: 133, partial: 9, unavailable: 40. Counts include steps omitted from the displayed trace.
 
-Collector observations for 81 source steps with known totals: observed: 429, emitted: 388, omitted: 41. Unavailable totals are excluded.
+Collector observations for 142 source steps with known totals: observed: 868, emitted: 795, omitted: 73. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -139,7 +145,7 @@ Collector observations for 81 source steps with known totals: observed: 429, emi
 |---|---|---|---|---:|---:|---:|
 | `agent_pipeline_resource` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `_json_resource` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
-| `_tool_call` | `available` | `partial` | `available` | `18` | `12` | `6` |
+| `_tool_call` | `available` | `partial` | `available` | `19` | `12` | `7` |
 | `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -190,7 +196,7 @@ flowchart LR
 |---|---|---|---|---|
 | `agent_pipeline_resource` | - | - | - | `...` |
 | `_json_resource` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]` | - | - | `json.dumps(...)` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -205,8 +211,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_pipeline_resource | _json_resource | 2287 | `_json_resource('planning:read', ...)` |
-| _json_resource | _tool_call | 363 | `_tool_call(required_scope, func)` |
+| agent_pipeline_resource | _json_resource | 2353 | `_json_resource('planning:read', ...)` |
+| _json_resource | _tool_call | 364 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

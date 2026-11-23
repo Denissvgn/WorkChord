@@ -8,6 +8,10 @@ Owns versioned person calendar and absence commands, date-based capacity project
 
 Commitment projections select only required scalar task fields after complete scoped ancestry validation. Shared capacity conflicts remain aggregate constraints and never serialize private work or absence details.
 
+Personal calendar choices apply to each relevant year across that person's allocations. With inherited rules, the service compares the allocations active on each local date. A missing year or incompatible overlapping policies keeps the available hours unknown. Changing an explicit annual selection checks the prior rules of the person's issued work, including the inherited rules that applied before their first personal selection.
+
+An uncovered year in a saved commitment leaves its proportional daily effort uncertain, including when its allocation belongs to another project. The draft carries a warning for the visible capacity owner. Publishing a baseline requires that owner to reconcile the underlying annual rules.
+
 ## Imports
 
 | Source | Symbols |
@@ -20,12 +24,17 @@ Commitment projections select only required scalar task fields after complete sc
 | `app.models.iteration` | `Iteration` |
 | `app.models.task` | `Task`, `Task`, `Task` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile`, `Vacation` |
+| `app.services.calendar_rules` | `AnnualCalendars`, `YearRules`, `rule_signature`, `task_uses_years` |
+| `app.services.calendar_service` | `CalendarService` |
+| `app.services.execution_planning_window` | `live_assignments` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.work_metrics` | `included_work_ids` |
+| `collections` | `defaultdict` |
+| `dataclasses` | `dataclass` |
 | `datetime` | `date`, `timedelta` |
 | `sqlalchemy` | `delete`, `select`, `update` |
-| `sqlalchemy.orm` | `selectinload` |
+| `sqlalchemy.orm` | `selectinload`, `selectinload`, `selectinload` |
 
 ## Local dependency map
 
@@ -47,9 +56,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (8) |
+| Inbound | `backend` (12) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (11) |
+| Outbound | `backend` (14) |
 
 ### External packages
 
@@ -57,17 +66,19 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [CapacityService](../entities/CapacityService.md) | 27 | — | — |
+| [CommitmentRate](../entities/CommitmentRate.md) | 37 | — | — |
+| [PeriodCommitments](../entities/PeriodCommitments.md) | 52 | — | Fold baseline rates at interval boundaries without expanding each task into daily rows. |
+| [CapacityService](../entities/CapacityService.md) | 103 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `day_hours` | `(calendar, day)` | — | Nominal local-date hours, with each holiday/weekend/short-day rule applied once. |
-| `calendar_signature` | `(calendar)` | — | — |
+| `day_hours` | `(calendar, day)` | — | Return the hours of one matching record for existing single-date callers. |
+| `agreed_calendar` | `(coverages, year)` | — | Resolve actual overlapping allocation rules, retaining ambiguity and missing coverage. |

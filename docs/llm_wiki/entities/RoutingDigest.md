@@ -1,6 +1,6 @@
 # RoutingDigest
 
-**Location:** `backend/app/schemas/agent_routing.py:71`
+**Location:** `backend/app/schemas/agent_routing.py:72`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [agent_routing](../modules/agent_routing.md)

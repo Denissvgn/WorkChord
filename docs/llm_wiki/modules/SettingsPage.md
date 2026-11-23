@@ -10,43 +10,50 @@ _Auto-generated from `frontend/src/pages/SettingsPage.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../components/common/Button` | `Button` | — | compiler-dependent |
 | `../components/common/Checkbox` | `Checkbox` | — | compiler-dependent |
 | `../components/settings/AccessKeysSummary` | `AccessKeysSummary` | — | compiler-dependent |
 | `../components/settings/AdminAccessGate` | `AdminAccessGate` | — | compiler-dependent |
 | `../components/settings/AdminAccessPanel` | `AdminAccessPanel` | — | compiler-dependent |
 | `../components/settings/AgentAccessPanel` | `AgentAccessPanel` | — | compiler-dependent |
-| `../components/settings/AgentModelAdministration` | `AgentModelAdministration` | — | compiler-dependent |
 | `../components/settings/ConnectedReadersPanel` | `ConnectedReadersPanel` | — | compiler-dependent |
 | `../components/settings/EmailSettingsPanel` | `EmailSettingsPanel` | — | compiler-dependent |
 | `../components/settings/GitHubSettingsPanel` | `GitHubSettingsPanel` | — | compiler-dependent |
 | `../components/settings/InterfaceLanguageSettings` | `InterfaceLanguageSettings` | — | compiler-dependent |
 | `../components/settings/OutboundWebhooksPanel` | `OutboundWebhooksPanel` | — | compiler-dependent |
+| `../components/settings/ReadOnlyFieldset` | `ReadOnlyFieldset` | — | compiler-dependent |
 | `../components/settings/RuntimeConfigSettings` | `RuntimeConfigSettings` | — | compiler-dependent |
 | `../components/settings/SchedulingRulesSettings` | `SchedulingRulesSettings` | — | compiler-dependent |
 | `../components/settings/SystemHealthPanel` | `SystemHealthPanel` | — | compiler-dependent |
 | `../components/settings/TemplateLabelSettings` | `TemplateLabelSettings` | — | compiler-dependent |
+| `../components/settings/WorkCalendarSettings` | `WorkCalendarSettings` | — | compiler-dependent |
+| `../components/settings/settingsFieldLabels` | `SettingsSectionId` | Declaration | erased |
+| `../components/settings/settingsFieldLabels` | `SETTINGS_FIELD_LABEL_KEYS` | — | compiler-dependent |
+| `../components/settings/sharedUnlock` | `SharedUnlockContext` | — | compiler-dependent |
 | `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
-| `../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../hooks/useAdminAccess` | `useAdminAccess`, `useKeylessReader` | — | compiler-dependent |
 | `../hooks/useSingleKeyShortcutPreference` | `useSingleKeyShortcutPreference` | — | compiler-dependent |
 | `../store/themeStore` | `useThemeStore` | — | compiler-dependent |
 | `lucide-react` | `LucideIcon` | Declaration | erased |
-| `lucide-react` | `Activity`, `AlertTriangle`, `ArrowRight`, `Bell`, `Bot`, `CalendarClock`, `Check`, `Github`, `KeyRound`, `Keyboard`, `Palette`, `Search`, `ServerCog`, `Settings2`, `Tags`, `Webhook` | — | compiler-dependent |
-| `react` | `KeyboardEvent` | Declaration | erased |
-| `react` | `useEffect`, `useMemo`, `useState` | — | compiler-dependent |
+| `lucide-react` | `Activity`, `ArrowRight`, `Building2`, `CalendarClock`, `CalendarDays`, `Check`, `Github`, `Globe2`, `Inbox`, `KeyRound`, `Keyboard`, `LockKeyhole`, `Mail`, `Monitor`, `Palette`, `Search`, `ServerCog`, `Sparkles`, `Tags`, `Webhook` | — | compiler-dependent |
+| `react` | `KeyboardEvent`, `ReactNode` | Declaration | erased |
+| `react` | `useEffect`, `useId`, `useMemo`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
-| `react-router-dom` | `Link`, `useSearchParams` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `Navigate`, `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
 | Exports | `default` |
-| Constants | `SETTINGS_GROUPS`, `SETTINGS_DESTINATIONS` |
-| Module calls | `SETTINGS_DESTINATIONS = flatMap` |
+| Constants | `SETTINGS_GROUPS`, `SETTINGS_SECTIONS`, `SEARCH_GROUPS`, `DEFAULT_SECTION`, `LAST_SECTION_STORAGE_KEY`, `RENAMED_TABS` |
+| Module calls | `SETTINGS_SECTIONS = flatMap` |
 
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -62,8 +69,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (1) |
-| Outbound | `frontend` (19) |
+| Inbound | `frontend` (5) |
+| Outbound | `frontend` (23) |
 
 ### External packages
 
@@ -71,15 +78,14 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SettingsDestination](../entities/SettingsDestination.md) | Interface | 48 | — | — |
-| [SettingsGroup](../entities/SettingsGroup.md) | Interface | 62 | — | — |
-| [SettingsTab](../entities/SettingsTab.md) | Type alias | 44 | `'appearance' \| 'scheduling' \| 'templates_labels' \| 'models_agents' \| 'github' \| 'webhooks' \| 'notifications' \| 'admin_access' \| 'runtime' \| 'about'` | — |
-| [SettingsPageTab](../entities/SettingsPageTab.md) | Type alias | 45 | `'overview' \| SettingsTab` | — |
-| [SettingsGroupId](../entities/SettingsGroupId.md) | Type alias | 46 | `'personal' \| 'planning' \| 'agents' \| 'integrations' \| 'system'` | — |
-| [SettingsDestinationHeader](../entities/SettingsDestinationHeader.md) | Type alias | 57 | <pre><code>Pick&#60;&#10;    SettingsDestination&#44;&#10;    &#39;labelKey&#39; &#124; &#39;descriptionKey&#39; &#124; &#39;icon&#39;&#10;&#62;</code></pre> | — |
+| [SavedInPart](../entities/SavedInPart.md) | Interface | 57 | — | One part of a section whose parts are kept in different places. |
+| [SettingsSection](../entities/SettingsSection.md) | Interface | 63 | — | — |
+| [SettingsGroup](../entities/SettingsGroup.md) | Interface | 75 | — | — |
+| [SettingsGroupId](../entities/SettingsGroupId.md) | Type alias | 53 | `'myPreferences' \| 'workspace' \| 'connections' \| 'accessSystem'` | — |
+| [SavedIn](../entities/SavedIn.md) | Type alias | 55 | `'browser' \| 'workspace'` | Where a section's values are kept: in this browser only, or on the server for everyone. |

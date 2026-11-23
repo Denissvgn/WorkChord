@@ -26,25 +26,20 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/gantt/GanttChart.tsx"]
-    n1["frontend/src/components/gantt/UnscheduledTasks.test.tsx"]
-    n2["frontend/src/components/gantt/UnscheduledTasks.tsx"]
-    n3["frontend/src/types/gantt.ts"]
-    n0 --> n2
-    n0 --> n3
+    n0["frontend/src/components/gantt/UnscheduledTasks.test.tsx"]
+    n1["frontend/src/components/gantt/UnscheduledTasks.tsx"]
+    n2["frontend/src/types/gantt.ts"]
+    n0 --> n1
     n1 --> n2
-    n2 --> n3
-    click n0 "../modules/GanttChart.md"
-    click n1 "../modules/UnscheduledTasks.test.md"
-    click n2 "../modules/UnscheduledTasks.md"
-    click n3 "../modules/types_gantt.md"
+    click n0 "../modules/UnscheduledTasks.test.md"
+    click n1 "../modules/UnscheduledTasks.md"
+    click n2 "../modules/types_gantt.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [GanttChart](../modules/GanttChart.md) |
 | Inbound | [UnscheduledTasks.test](../modules/UnscheduledTasks.test.md) |
 | Outbound | [types_gantt](../modules/types_gantt.md) |
 

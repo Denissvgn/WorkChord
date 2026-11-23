@@ -13,7 +13,7 @@
 
 | Signal | Values |
 |--------|--------|
-| Exports | `EditorIssue`, `fieldIssues`, `lineForPath`, `lineRange`, `manifestPathLines`, `pathIssue`, `syntaxIssue` |
+| Exports | `EditorIssue`, `fieldIssues`, `lineForPath`, `lineRange`, `pathIssue`, `syntaxIssue` |
 
 ## Local dependency map
 
@@ -22,22 +22,22 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/features/agentTeamSetup/manifestLocations.test.ts"]
-    n1["frontend/src/features/agentTeamSetup/manifestLocations.ts"]
-    n2["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
-    n0 --> n1
-    n2 --> n1
-    click n0 "../modules/manifestLocations.test.md"
-    click n1 "../modules/manifestLocations.md"
-    click n2 "../modules/AgentTeamSetupMasterPage.md"
+    n0["frontend/src/components/team/AgentManifestWorkflow.tsx"]
+    n1["frontend/src/features/agentTeamSetup/manifestLocations.test.ts"]
+    n2["frontend/src/features/agentTeamSetup/manifestLocations.ts"]
+    n0 --> n2
+    n1 --> n2
+    click n0 "../modules/AgentManifestWorkflow.md"
+    click n1 "../modules/manifestLocations.test.md"
+    click n2 "../modules/manifestLocations.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) |
 | Inbound | [manifestLocations.test](../modules/manifestLocations.test.md) |
-| Inbound | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) |
 
 ## Classes
 
@@ -49,7 +49,6 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `manifestPathLines` | `(text: string) -> Map<string, number>` | — | Paths such as `workers[0].role` mapped to the 1-based line where their key or value starts. |
 | `lineForPath` | `(text: string, path: string) -> number \| null` | — | The line of a path, or of its nearest parent that exists in the text. |
 | `syntaxIssue` | `(text: string, error: unknown) -> EditorIssue \| null` | — | A JSON syntax error with the line it happened on, when the browser reports a position. |
 | `pathIssue` | `(text: string, message: string) -> EditorIssue` | — | The secret check names a JSON path such as `$.workers[0].token`. |

@@ -1,6 +1,6 @@
 # KanbanBoardProps
 
-**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx:38`
+**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx:48`
 **Kind:** Interface
 **Bases:** —
 **Module:** [KanbanBoard](../modules/KanbanBoard.md)
@@ -15,6 +15,9 @@ _Auto-generated from `KanbanBoardProps` in `frontend/src/components/tasks/Kanban
 |------|------|----------|---------|-------------|
 | `iterationId` | `number` | Yes | — | — |
 | `filters` | `TaskFilters` | No | — | — |
+| `onCreateTask` | `() => void` | No | — | — |
+| `hasActiveFilters` | `boolean` | No | — | — |
+| `onClearFilters` | `() => void` | No | — | — |
 
 ## Methods
 
@@ -36,7 +39,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [KanbanBoard](../modules/KanbanBoard.md) | 0 | `filters`, `iterationId` |
+| [KanbanBoard](../modules/KanbanBoard.md) | 0 | `filters`, `hasActiveFilters`, `iterationId`, `onClearFilters`, `onCreateTask` |
 
 ### References
 

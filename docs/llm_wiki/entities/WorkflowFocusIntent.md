@@ -1,13 +1,13 @@
 # WorkflowFocusIntent
 
-**Location:** `frontend/src/pages/AgentTeamSetupMasterPage.tsx:135`
+**Location:** `frontend/src/components/team/AgentManifestWorkflow.tsx:136`
 **Kind:** Interface
 **Bases:** —
-**Module:** [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md)
+**Module:** [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md)
 
 ## Description
 
-_Auto-generated from `WorkflowFocusIntent` in `frontend/src/pages/AgentTeamSetupMasterPage.tsx`._
+_Auto-generated from `WorkflowFocusIntent` in `frontend/src/components/team/AgentManifestWorkflow.tsx`._
 
 ## Attributes
 
@@ -30,4 +30,4 @@ _Auto-generated from `WorkflowFocusIntent` in `frontend/src/pages/AgentTeamSetup
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) | 0 | `origin`, `target`, `token` |
+| [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) | 0 | `origin`, `target`, `token` |

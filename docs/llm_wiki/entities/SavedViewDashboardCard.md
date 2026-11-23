@@ -34,16 +34,13 @@ _Auto-generated from `SavedViewDashboardCard` in `frontend/src/types/savedView.t
 ```mermaid
 flowchart LR
     n0["SavedViewDashboardCard (frontend/src/types/savedView.ts)"]
-    n1["SavedViewDashboardCards (frontend/src/components/dashboard/SavedViewDashboardCards.tsx)"]
-    n2["savedViewDisplay (frontend/src/i18n/seedDisplay.ts)"]
-    n3["frontend/src/services/savedViewService.ts"]
+    n1["savedViewDisplay (frontend/src/i18n/seedDisplay.ts)"]
+    n2["frontend/src/services/savedViewService.ts"]
     n1 --> n0
     n2 --> n0
-    n3 --> n0
     click n0 "../modules/savedView.md"
-    click n1 "../modules/SavedViewDashboardCards.md"
-    click n2 "../modules/seedDisplay.md"
-    click n3 "../modules/savedViewService.md"
+    click n1 "../modules/seedDisplay.md"
+    click n2 "../modules/savedViewService.md"
 ```
 
 ### Summary
@@ -56,6 +53,5 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `SavedViewDashboardCards` | type_reference | [SavedViewDashboardCards](../modules/SavedViewDashboardCards.md) | — |
 | `savedViewDisplay` | type_reference | [seedDisplay](../modules/seedDisplay.md) | — |
 | `savedViewService` | import | [savedViewService](../modules/savedViewService.md) | — |

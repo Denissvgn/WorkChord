@@ -1,6 +1,6 @@
 # TaskTimelinePanelProps
 
-**Location:** `frontend/src/components/tasks/TaskTimelinePanel.tsx:17`
+**Location:** `frontend/src/components/tasks/TaskTimelinePanel.tsx:18`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskTimelinePanel](../modules/TaskTimelinePanel.md)

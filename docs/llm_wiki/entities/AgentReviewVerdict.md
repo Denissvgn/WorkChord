@@ -1,6 +1,6 @@
 # AgentReviewVerdict
 
-**Location:** `backend/app/schemas/agent.py:1103`
+**Location:** `backend/app/schemas/agent.py:1209`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -25,10 +25,13 @@ Verifier-scoped pass or rejection command.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `observed_model` | `str \| None` | `observed_model` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `reviewed_candidate_digest` | `str \| None` | `reviewed_candidate_digest` | No | Yes | `None` | pattern='^[a-f0-9]{64}$' | — | — |
+| `reviewed_packet_sha256` | `str \| None` | `reviewed_packet_sha256` | No | Yes | `None` | pattern='^[a-f0-9]{64}$' | — | — |
 | `assignment_id` | `int` | `assignment_id` | Yes | No | — | — | — | — |
 | `verdict` | `Literal['pass', 'reject']` | `verdict` | Yes | No | — | — | — | — |
 | `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1 | — | — |
-| `evidence` | `dict[str, Any]` | `evidence` | Yes | No | — | max_length=100; min_length=1 | — | — |
+| `evidence` | `dict[str, Any]` | `evidence` | Yes | No | — | min_length=1; max_length=100 | — | — |
 | `reason` | `Optional[str]` | `reason` | No | Yes | `None` | max_length=4000 | — | — |
 | `rework_actor_id` | `Optional[int]` | `rework_actor_id` | No | Yes | `None` | — | — | — |
 | `rework_queue_rank` | `int` | `rework_queue_rank` | No | No | `0` | ge=0 | — | — |
@@ -52,7 +55,10 @@ flowchart LR
     n5["backend/tests/support/runtime_peer.py"]
     n6["test_inactive_rollout_blocks_queued_model_aware_verification_review (backend/tests/test_agent_routing_rollout.py)"]
     n7["test_rejection_telemetry_normalizes_adversarial_legacy_lineage (backend/tests/test_agent_routing_service.py)"]
-    n8["test_managed_assigned_submission_and_independent_rework (backend/tests/test_task_domain.py)"]
+    n8["test_omitted_review_fields_preserve_preexisting_idempotency_hashes (backend/tests/test_review_provenance.py)"]
+    n9["test_supervised_execution_and_exact_independent_review (backend/tests/test_review_provenance.py)"]
+    n10["test_scoped_source_packet_from_submission_through_verdict (backend/tests/test_scoped_review_evidence.py)"]
+    n11["test_managed_assigned_submission_and_independent_rework (backend/tests/test_task_domain.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -61,6 +67,9 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
+    n10 --> n0
+    n11 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
@@ -68,14 +77,17 @@ flowchart LR
     click n5 "../modules/runtime_peer.md"
     click n6 "../modules/test_agent_routing_rollout.md"
     click n7 "../modules/test_agent_routing_service.md"
-    click n8 "../modules/test_task_domain.md"
+    click n8 "../modules/test_review_provenance.md"
+    click n9 "../modules/test_review_provenance.md"
+    click n10 "../modules/test_scoped_review_evidence.md"
+    click n11 "../modules/test_task_domain.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 1 | `assignment_id`, `evidence`, `expected_task_version`, `reason`, `rework_actor_id`, `rework_queue_rank`, `verdict` |
+| [schemas_agent](../modules/schemas_agent.md) | 1 | `assignment_id`, `evidence`, `expected_task_version`, `observed_model`, `reason`, `reviewed_candidate_digest`, `reviewed_packet_sha256`, `rework_actor_id`, `rework_queue_rank`, `verdict` |
 
 ### Structure
 
@@ -93,4 +105,7 @@ flowchart LR
 | `runtime_peer` | import | [runtime_peer](../modules/runtime_peer.md) | — |
 | `test_inactive_rollout_blocks_queued_model_aware_verification_review` | call | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) | 1 |
 | `test_rejection_telemetry_normalizes_adversarial_legacy_lineage` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
+| `test_omitted_review_fields_preserve_preexisting_idempotency_hashes` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
+| `test_supervised_execution_and_exact_independent_review` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
+| `test_scoped_source_packet_from_submission_through_verdict` | call | [test_scoped_review_evidence](../modules/test_scoped_review_evidence.md) | 1 |
 | `test_managed_assigned_submission_and_independent_rework` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |

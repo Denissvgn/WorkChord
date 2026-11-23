@@ -86,9 +86,9 @@ sequenceDiagram
     p0-->>p30: data.model_dump (backend/app/routers/agent…date_planning_triage_item)(mode='json', exclude_unset=True)
 ```
 
-> Call sequence diagram shows 30 of 106 interactions; 76 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 107 interactions; 77 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 41 (40 omitted); unresolved 1 of 29 (28 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 42 (41 omitted); unresolved 1 of 29 (28 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -102,7 +102,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_agent_tools.py:_triage_command_replay` | 22 | - | external | 4 |
 | `backend/app/mcp_agent_tools.py:_triage_command_replay` | 22 | [backend/app/mcp_agent_tools.py](../modules/mcp_agent_tools.md) | internal | 1 |
 | `backend/app/mcp_agent_tools.py:_triage_command_request_hash` | 27 | - | external | 2 |
-> Omission summary shows 8 of 30 groups; 22 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 31 groups; 23 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -134,7 +134,7 @@ Collector observations for 27 source steps with known totals: observed: 168, emi
 | `_mutate_triage_item` | `available` | `partial` | `available` | `15` | `14` | `1` |
 | `_triage_command_context` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
 | `validate_idempotency_key` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
-| `ValueError` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `ValueError (backend/app/services/agen…:validate_idempotency_key)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 
 ```mermaid
 flowchart LR
@@ -149,7 +149,7 @@ flowchart LR
     s9["9. _mutate_triage_item"]
     s10["10. _triage_command_context"]
     s11["11. validate_idempotency_key"]
-    s12["12. ValueError"]
+    s12["12. ValueError (backend/app/services/agen…:validate_idempotency_key)"]
     s1 -->|"require_scope(actor, 'planning:write')"| s2
     s2 -->|"actor_has_scope(actor, scope)"| s3
     s3 -->|"actor_scopes(actor)"| s4
@@ -160,7 +160,7 @@ flowchart LR
     s8 -->|"_mutate_triage_item(…)"| s9
     s9 -->|"_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)"| s10
     s10 -->|"validate_idempotency_key(idempotency_key, required=True)"| s11
-    s11 -. "ValueError('Idempotency-Key is required')" .-> s12
+    s11 -. "ValueError (backend/app/services/agen…:validate_idempotency_key)('Idempotency-Key is required')" .-> s12
     click s1 "../modules/routers_agent_planning.md"
     click s2 "../modules/agent_service.md"
     click s3 "../modules/agent_service.md"
@@ -187,23 +187,23 @@ flowchart LR
 | `_mutate_triage_item` | `db: AsyncSession`, `actor: AgentActor`, `triage_item_id: int`, `operation: str`, `idempotency_key: str`, `rationale: str`, `correlation_id: str`, `data: BaseModel` | `TriageItemResponse` | - | `replay`, `None`, `replay`, `None`, `...` |
 | `_triage_command_context` | `idempotency_key: str`, `rationale: str`, `correlation_id: str` | - | - | `AgentPlanningCommandContext(...)` |
 | `validate_idempotency_key` | `value: Optional[str]`, `required: bool` | - | - | `None`, `value` |
-| `ValueError` | - | - | - | - |
+| `ValueError (backend/app/services/agen…:validate_idempotency_key)` | - | - | - | - |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
 | update_planning_triage_item | require_scope | 672 | `require_scope(actor, 'planning:write')` |
-| require_scope | actor_has_scope | 101 | `actor_has_scope(actor, scope)` |
+| require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
-| require_scope | AgentPermissionError | 102 | `AgentPermissionError(...)` |
+| require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
 | update_planning_triage_item | update_triage_item | 673 | `mcp_agent_tools.update_triage_item(db, actor, triage_item_id, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| update_triage_item | _mutate_triage_item | 2426 | `_mutate_triage_item(db, actor, triage_item_id, operation='triage.update', idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id, data=TriageItemUpdate(...), service_method='update')` |
+| update_triage_item | _mutate_triage_item | 2431 | `_mutate_triage_item(db, actor, triage_item_id, operation='triage.update', idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id, data=TriageItemUpdate(...), service_method='update')` |
 | _mutate_triage_item | _triage_command_context | 417 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 | _triage_command_context | validate_idempotency_key | 221 | `validate_idempotency_key(idempotency_key, required=True)` |
-| validate_idempotency_key | ValueError | 111 | `ValueError('Idempotency-Key is required')` |
+| validate_idempotency_key | ValueError (backend/app/services/agen…:validate_idempotency_key) | 123 | `ValueError('Idempotency-Key is required')` |
 
 ### Boundary effects
 
@@ -215,7 +215,7 @@ flowchart LR
 |---|---|---|---:|
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | external_call | `actor_scopes` | `isinstance` | 90 |
-| external_call | `validate_idempotency_key` | `ValueError` | 111 |
+| external_call | `validate_idempotency_key` | `ValueError` | 123 |
 | step_limit | `update_planning_triage_item` | `first 12 steps` | 0 |
 
 ## Behavior

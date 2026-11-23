@@ -1,6 +1,6 @@
 # TaskFilters
 
-**Location:** `frontend/src/components/tasks/TaskFiltersBar.tsx:16`
+**Location:** `frontend/src/components/tasks/TaskFiltersBar.tsx:14`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskFiltersBar](../modules/TaskFiltersBar.md)
@@ -16,6 +16,8 @@ _Auto-generated from `TaskFilters` in `frontend/src/components/tasks/TaskFilters
 | `planningIssue` | `PlanningTaskIssue \| null` | Yes | — | — |
 | `assigneeId` | `number \| null` | Yes | — | — |
 | `projectId` | `number \| null` | Yes | — | — |
+| `milestoneId` | `number \| null` | Yes | — | — |
+| `needsAttention` | `boolean \| null` | Yes | — | — |
 | `priority` | `number \| null` | Yes | — | — |
 | `status` | `string \| null` | Yes | — | — |
 | `hasDependency` | `boolean \| null` | Yes | — | — |
@@ -41,17 +43,17 @@ _Auto-generated from `TaskFilters` in `frontend/src/components/tasks/TaskFilters
 flowchart LR
     n0["TaskFilters (frontend/src/components/tasks/TaskFiltersBar.tsx)"]
     n1["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
-    n2["frontend/src/components/tasks/SavedViewsControl.tsx"]
-    n3["TaskFiltersBar (frontend/src/components/tasks/TaskFiltersBar.tsx)"]
-    n4["frontend/src/components/tasks/TaskList.tsx"]
-    n5["filtersFromSavedView (frontend/src/features/savedViews/taskViewState.ts)"]
-    n6["frontend/src/pages/TasksPage.tsx"]
-    n7["filterSignature (frontend/src/utils/savedViewState.ts)"]
-    n8["savedViewModified (frontend/src/utils/savedViewState.ts)"]
-    n9["frontend/src/utils/taskFilterDefaults.ts"]
-    n10["filterTaskWithChildren (frontend/src/utils/taskFilters.ts)"]
-    n11["taskMatchesFilters (frontend/src/utils/taskFilters.ts)"]
-    n12["selectVisibleWork (frontend/src/utils/visibleWork.ts)"]
+    n2["PipelineView (frontend/src/components/tasks/PipelineView.tsx)"]
+    n3["frontend/src/components/tasks/TaskFiltersBar.test.tsx"]
+    n4["TaskFiltersBar (frontend/src/components/tasks/TaskFiltersBar.tsx)"]
+    n5["frontend/src/components/tasks/TaskList.test.tsx"]
+    n6["frontend/src/components/tasks/TaskList.tsx"]
+    n7["frontend/src/components/tasks/useSavedViewManager.tsx"]
+    n8["overviewListFilters (frontend/src/features/overview/overviewSignals.ts)"]
+    n9["activeFilterCount (frontend/src/features/savedViews/taskViewParams.ts)"]
+    n10["filtersFromSearchParams (frontend/src/features/savedViews/taskViewParams.ts)"]
+    n11["writeFiltersToSearchParams (frontend/src/features/savedViews/taskViewParams.ts)"]
+    n12["filtersFromSavedView (frontend/src/features/savedViews/taskViewState.ts)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -66,38 +68,40 @@ flowchart LR
     n12 --> n0
     click n0 "../modules/TaskFiltersBar.md"
     click n1 "../modules/KanbanBoard.md"
-    click n2 "../modules/SavedViewsControl.md"
-    click n3 "../modules/TaskFiltersBar.md"
-    click n4 "../modules/TaskList.md"
-    click n5 "../modules/taskViewState.md"
-    click n6 "../modules/TasksPage.md"
-    click n7 "../modules/savedViewState.md"
-    click n8 "../modules/savedViewState.md"
-    click n9 "../modules/taskFilterDefaults.md"
-    click n10 "../modules/taskFilters.md"
-    click n11 "../modules/taskFilters.md"
-    click n12 "../modules/visibleWork.md"
+    click n2 "../modules/PipelineView.md"
+    click n3 "../modules/TaskFiltersBar.test.md"
+    click n4 "../modules/TaskFiltersBar.md"
+    click n5 "../modules/TaskList.test.md"
+    click n6 "../modules/TaskList.md"
+    click n7 "../modules/useSavedViewManager.md"
+    click n8 "../modules/overviewSignals.md"
+    click n9 "../modules/taskViewParams.md"
+    click n10 "../modules/taskViewParams.md"
+    click n11 "../modules/taskViewParams.md"
+    click n12 "../modules/taskViewState.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TaskFiltersBar](../modules/TaskFiltersBar.md) | 0 | `agentReady`, `assigneeId`, `endDateFrom`, `endDateTo`, `hasDependency`, `isBlocked`, `isIterationOverflow`, `isOverdue`, `labelGroupKeys`, `labelSlugs`, `planningIssue`, `priority` |
+| [TaskFiltersBar](../modules/TaskFiltersBar.md) | 0 | `agentReady`, `assigneeId`, `endDateFrom`, `endDateTo`, `hasDependency`, `isBlocked`, `isIterationOverflow`, `isOverdue`, `labelGroupKeys`, `labelSlugs`, `milestoneId`, `needsAttention` |
 
 ### References
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `KanbanBoard` | import | [KanbanBoard](../modules/KanbanBoard.md) | — |
-| `SavedViewsControl` | import | [SavedViewsControl](../modules/SavedViewsControl.md) | — |
+| `PipelineView` | type_reference | [PipelineView](../modules/PipelineView.md) | — |
+| `TaskFiltersBar.test` | import | [TaskFiltersBar.test](../modules/TaskFiltersBar.test.md) | — |
 | `TaskFiltersBar` | type_reference | [TaskFiltersBar](../modules/TaskFiltersBar.md) | — |
+| `TaskList.test` | import | [TaskList.test](../modules/TaskList.test.md) | — |
 | `TaskList` | import | [TaskList](../modules/TaskList.md) | — |
+| `useSavedViewManager` | import | [useSavedViewManager](../modules/useSavedViewManager.md) | — |
+| `overviewListFilters` | type_reference | [overviewSignals](../modules/overviewSignals.md) | — |
+| `activeFilterCount` | type_reference | [taskViewParams](../modules/taskViewParams.md) | — |
+| `filtersFromSearchParams` | type_reference | [taskViewParams](../modules/taskViewParams.md) | — |
+| `writeFiltersToSearchParams` | type_reference | [taskViewParams](../modules/taskViewParams.md) | — |
 | `filtersFromSavedView` | type_reference | [taskViewState](../modules/taskViewState.md) | — |
-| `TasksPage` | import | [TasksPage](../modules/TasksPage.md) | — |
-| `filterSignature` | type_reference | [savedViewState](../modules/savedViewState.md) | — |
-| `savedViewModified` | type_reference | [savedViewState](../modules/savedViewState.md) | — |
-| `taskFilterDefaults` | import | [taskFilterDefaults](../modules/taskFilterDefaults.md) | — |
-| `filterTaskWithChildren` | type_reference | [taskFilters](../modules/taskFilters.md) | — |
-| `taskMatchesFilters` | type_reference | [taskFilters](../modules/taskFilters.md) | — |
-| `selectVisibleWork` | type_reference | [visibleWork](../modules/visibleWork.md) | — |
+
+> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.

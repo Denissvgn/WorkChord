@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # PlanMasterPage Module
 
 **Path:** `frontend/src/pages/PlanMasterPage.tsx`

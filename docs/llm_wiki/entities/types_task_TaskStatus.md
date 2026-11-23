@@ -1,6 +1,6 @@
 # TaskStatus
 
-**Location:** `frontend/src/types/task.ts:49`
+**Location:** `frontend/src/types/task.ts:51`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -34,12 +34,12 @@ flowchart LR
     n4["frontend/src/components/tasks/StatusChangeControl.tsx"]
     n5["frontend/src/components/tasks/TaskBulkOperationsPanel.tsx"]
     n6["frontend/src/components/tasks/taskEditorContract.ts"]
-    n7["isTaskStatus (frontend/src/components/ui/tone.ts)"]
-    n8["canTransition (frontend/src/features/taskTransitions.ts)"]
-    n9["frontend/src/pages/AgentPipelinePage.tsx"]
-    n10["frontend/src/pages/OverviewPage.test.tsx"]
-    n11["frontend/src/pages/OverviewPage.tsx"]
-    n12["frontend/src/services/taskService.ts"]
+    n7["frontend/src/components/tasks/TaskList.tsx"]
+    n8["frontend/src/components/tasks/TaskRow.tsx"]
+    n9["isDone (frontend/src/components/tasks/taskStateChip.ts)"]
+    n10["frontend/src/components/tasks/useAgentRowFacts.ts"]
+    n11["frontend/src/components/tasks/useTaskRowEdits.ts"]
+    n12["isTaskStatus (frontend/src/components/ui/tone.ts)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -59,12 +59,12 @@ flowchart LR
     click n4 "../modules/StatusChangeControl.md"
     click n5 "../modules/TaskBulkOperationsPanel.md"
     click n6 "../modules/taskEditorContract.md"
-    click n7 "../modules/tone.md"
-    click n8 "../modules/taskTransitions.md"
-    click n9 "../modules/AgentPipelinePage.md"
-    click n10 "../modules/OverviewPage.test.md"
-    click n11 "../modules/OverviewPage.md"
-    click n12 "../modules/taskService.md"
+    click n7 "../modules/TaskList.md"
+    click n8 "../modules/TaskRow.md"
+    click n9 "../modules/taskStateChip.md"
+    click n10 "../modules/useAgentRowFacts.md"
+    click n11 "../modules/useTaskRowEdits.md"
+    click n12 "../modules/tone.md"
 ```
 
 ### Summary
@@ -83,11 +83,11 @@ flowchart LR
 | `StatusChangeControl` | import | [StatusChangeControl](../modules/StatusChangeControl.md) | — |
 | `TaskBulkOperationsPanel` | import | [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md) | — |
 | `taskEditorContract` | import | [taskEditorContract](../modules/taskEditorContract.md) | — |
+| `TaskList` | import | [TaskList](../modules/TaskList.md) | — |
+| `TaskRow` | import | [TaskRow](../modules/TaskRow.md) | — |
+| `isDone` | type_reference | [taskStateChip](../modules/taskStateChip.md) | — |
+| `useAgentRowFacts` | import | [useAgentRowFacts](../modules/useAgentRowFacts.md) | — |
+| `useTaskRowEdits` | import | [useTaskRowEdits](../modules/useTaskRowEdits.md) | — |
 | `isTaskStatus` | type_reference | [tone](../modules/tone.md) | — |
-| `canTransition` | type_reference | [taskTransitions](../modules/taskTransitions.md) | — |
-| `AgentPipelinePage` | import | [AgentPipelinePage](../modules/AgentPipelinePage.md) | — |
-| `OverviewPage.test` | import | [OverviewPage.test](../modules/OverviewPage.test.md) | — |
-| `OverviewPage` | import | [OverviewPage](../modules/OverviewPage.md) | — |
-| `taskService` | import | [taskService](../modules/taskService.md) | — |
 
-> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

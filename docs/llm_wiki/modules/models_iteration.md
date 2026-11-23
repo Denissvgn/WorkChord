@@ -11,7 +11,7 @@ Iteration model.
 | Source | Symbols |
 |--------|---------|
 | `app.database` | `Base` |
-| `app.models.calendar` | `Calendar` |
+| `app.models.calendar` | `iteration_annual_calendars`, `Calendar` |
 | `app.models.plan_share` | `PlanShare` |
 | `app.models.project` | `Project` |
 | `app.models.task` | `Task` |
@@ -41,7 +41,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (57) |
+| Inbound | `backend` (75) |
 | Inbound | `scripts` (3) |
 | Outbound | `backend` (6) |
 
@@ -51,10 +51,10 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 61 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 79 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [Iteration](../entities/models_iteration_Iteration.md) | 18 | `Base` | Development iteration (sprint) model. |
+| [Iteration](../entities/models_iteration_Iteration.md) | 19 | `Base` | Development iteration (sprint) model. |

@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # attentionRanking.test Module
 
 **Path:** `frontend/src/features/overview/attentionRanking.test.ts`

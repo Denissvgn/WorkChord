@@ -12,19 +12,24 @@ _Auto-generated from `frontend/src/components/tasks/TaskFiltersBar.test.tsx`._
 |--------|---------|-----------|------------------|
 | `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
 | `../../utils/taskFilterDefaults` | `defaultFilters` | — | compiler-dependent |
+| `./TaskFiltersBar` | `TaskFilters` | Specifier | compiler-dependent |
 | `./TaskFiltersBar` | `TaskFiltersBar` | — | compiler-dependent |
-| `@testing-library/react` | `screen` | — | compiler-dependent |
+| `@testing-library/react` | `fireEvent`, `screen`, `within` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
 | `vitest` | `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
+| Constants | `QUICK` |
 | Module calls | `mock`, `mock`, `mock`, `describe` |
 
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/TaskFiltersBar.test.tsx"]
@@ -54,4 +59,4 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 2 | 0 |
+| typescript | 3 | 0 |

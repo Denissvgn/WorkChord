@@ -10,11 +10,13 @@ _Auto-generated from `frontend/src/components/ui/index.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `ActionGroup`, `FormGrid`, `InlineEmptyState`, `InlineField`, `MetricGrid`, `OverflowMenu`, `OverflowMenuItem`, `PageActions`, `PageHeader`, `PageLayout`, `Pill`, `PillTone`, `STATUS_TONE`, `SectionCard`, `SlideOverDrawer`, `StatusSegment`, `StatusSegmentStrip`, `StickyRail`, `TableFrame`, `Toolbar`, `isTaskStatus`, `pillToneClassName`, `toneBorderClassName`, `toneDotClassName`, `toneGradientClassName`, `toneLineVar`, `toneSoftVar`, `toneSolidClassName`, `toneVar`, `wcPillClass` |
+| Exports | `FilterBar`, `FilterBarFilter`, `FilterBarOption`, `FormGrid`, `InlineEmptyState`, `InlineField`, `OverflowMenu`, `OverflowMenuItem`, `PageActions`, `PageHeader`, `PageLayout`, `PageToolbar`, `Pill`, `PillTone`, `STATUS_TONE`, `SectionCard`, `SegmentedControl`, `SegmentedOption`, `SlideOverDrawer`, `StatusSegment`, `StatusSegmentStrip`, `StickyRail`, `TableFrame`, `ViewSwitch`, `isTaskStatus`, `pillToneClassName`, `toneBorderClassName`, `toneDotClassName`, `toneGradientClassName`, `toneLineVar`, `toneSoftVar`, `toneSolidClassName`, `toneVar`, `wcPillClass` |
 
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -29,6 +31,6 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (23) |
+| Inbound | `frontend` (42) |
 
-> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 42 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

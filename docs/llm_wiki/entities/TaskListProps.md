@@ -1,6 +1,6 @@
 # TaskListProps
 
-**Location:** `frontend/src/components/tasks/TaskList.tsx:80`
+**Location:** `frontend/src/components/tasks/TaskList.tsx:85`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskList](../modules/TaskList.md)
@@ -16,7 +16,9 @@ _Auto-generated from `TaskListProps` in `frontend/src/components/tasks/TaskList.
 | `iterationId` | `number` | Yes | — | — |
 | `filters` | `TaskFilters` | No | — | — |
 | `sortKey` | `SortKey` | Yes | — | — |
-| `onSortKeyChange` | `(sortKey: SortKey) => void` | Yes | — | — |
+| `groupByStatus` | `boolean` | No | — | — |
+| `leadingRow` | `ReactNode` | No | — | — |
+| `selectionBarHost` | `HTMLElement \| null` | No | — | — |
 | `hasActiveFilters` | `boolean` | No | — | — |
 | `activeViewName` | `string` | No | — | — |
 | `onClearFilters` | `() => void` | No | — | — |
@@ -46,7 +48,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TaskList](../modules/TaskList.md) | 0 | `activeViewName`, `filters`, `hasActiveFilters`, `iterationId`, `onClearFilters`, `onCreateTask`, `onModeChange`, `onOpenTask`, `onSortKeyChange`, `preselectAllInBulk`, `requestedMode`, `sortKey` |
+| [TaskList](../modules/TaskList.md) | 0 | `activeViewName`, `filters`, `groupByStatus`, `hasActiveFilters`, `iterationId`, `leadingRow`, `onClearFilters`, `onCreateTask`, `onModeChange`, `onOpenTask`, `preselectAllInBulk`, `requestedMode` |
 
 ### References
 

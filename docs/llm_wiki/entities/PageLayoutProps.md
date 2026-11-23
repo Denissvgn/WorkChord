@@ -1,6 +1,6 @@
 # PageLayoutProps
 
-**Location:** `frontend/src/components/ui/PageLayout.tsx:4`
+**Location:** `frontend/src/components/ui/PageLayout.tsx:6`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PageLayout](../modules/PageLayout.md)

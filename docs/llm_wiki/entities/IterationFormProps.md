@@ -1,6 +1,6 @@
 # IterationFormProps
 
-**Location:** `frontend/src/components/iteration/IterationForm.tsx:25`
+**Location:** `frontend/src/components/iteration/IterationForm.tsx:29`
 **Kind:** Interface
 **Bases:** —
 **Module:** [IterationForm](../modules/IterationForm.md)
@@ -16,6 +16,7 @@ _Auto-generated from `IterationFormProps` in `frontend/src/components/iteration/
 | `initialData` | `Iteration` | No | — | — |
 | `lockedProject` | <pre><code>&#123;&#10;        id&#58; number&#59;&#10;        name&#58; string&#59;&#10;    &#125;</code></pre> | No | — | — |
 | `hideProjectScope` | `boolean` | No | — | — |
+| `defaultProjectId` | `number` | No | — | — |
 | `onSuccess` | `(iteration?: Iteration, iterations?: Iteration[]) => void` | Yes | — | — |
 | `onCancel` | `() => void` | Yes | — | — |
 | `onStateChange` | `(state: { dirty: boolean; pending: boolean }) => void` | No | — | — |
@@ -40,7 +41,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [IterationForm](../modules/IterationForm.md) | 0 | `hideProjectScope`, `initialData`, `lockedProject`, `onCancel`, `onStateChange`, `onSuccess` |
+| [IterationForm](../modules/IterationForm.md) | 0 | `defaultProjectId`, `hideProjectScope`, `initialData`, `lockedProject`, `onCancel`, `onStateChange`, `onSuccess` |
 
 ### References
 

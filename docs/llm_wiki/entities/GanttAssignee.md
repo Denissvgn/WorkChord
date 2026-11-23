@@ -15,6 +15,7 @@ Assignee info for Gantt task.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `name` | `str` | `name` | Yes | No | — | — | — | — |
+| `kind` | `Optional[Literal['human', 'agent', 'hybrid']]` | `kind` | No | Yes | `None` | — | — | Kind of the assignee's profile. Read-only; null when it is not known. |
 
 ## Methods
 
@@ -38,7 +39,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `id`, `name` |
+| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `id`, `kind`, `name` |
 
 ### Structure
 

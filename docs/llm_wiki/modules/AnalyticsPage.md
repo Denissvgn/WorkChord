@@ -11,19 +11,18 @@ _Auto-generated from `frontend/src/pages/AnalyticsPage.tsx`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../components/analytics/DeliveryAnalytics` | `DeliveryAnalytics` | — | compiler-dependent |
+| `../components/analytics/ExecutionUsagePanel` | `ExecutionUsagePanel` | — | compiler-dependent |
 | `../components/analytics/OnTrackSummary` | `OnTrackSummary` | — | compiler-dependent |
 | `../components/analytics/StatusDistribution` | `StatusDistribution` | — | compiler-dependent |
-| `../components/analytics/TaskStatusFlow` | `TaskStatusFlow` | — | compiler-dependent |
-| `../components/dashboard/SavedViewDashboardCards` | `SavedViewDashboardCards` | — | compiler-dependent |
+| `../components/analytics/useAnalyticsScope` | `useAnalyticsScope` | — | compiler-dependent |
+| `../components/common/Select` | `Select` | — | compiler-dependent |
 | `../components/feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` | — | compiler-dependent |
-| `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
+| `../components/ui` | `PageHeader`, `PageLayout`, `PageToolbar` | — | compiler-dependent |
+| `../features/scope/useWorkScope` | `useWorkScope` | — | compiler-dependent |
 | `../services/iterationService` | `iterationService` | — | compiler-dependent |
-| `../services/taskService` | `taskService` | — | compiler-dependent |
-| `../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
-| `../types/task` | `TaskStatusLog` | Declaration | erased |
-| `../utils/formatDate` | `formatDate` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
@@ -35,12 +34,11 @@ _Auto-generated from `frontend/src/pages/AnalyticsPage.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
-This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
-
 ```mermaid
 flowchart LR
     n0["frontend"]
     n1["frontend/src/pages/AnalyticsPage.tsx"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/AnalyticsPage.md"
 ```
@@ -51,18 +49,13 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `frontend` (13) |
+| Inbound | `frontend` (4) |
+| Outbound | `frontend` (11) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 2 | 0 |
+| typescript | 3 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
-
-## Classes
-
-| Class | Kind | Line | Bases / Target | Description |
-|-------|------|------|----------------|-------------|
-| [HistoryGroup](../entities/HistoryGroup.md) | Interface | 17 | — | — |
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

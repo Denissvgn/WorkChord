@@ -184,13 +184,13 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | get_task_timeline_page | domain_result | 1029 | `domain_result(...)` |
-| domain_result | HTTPException | 51 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 53 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 53 | `str(exc)` |
-| domain_result | HTTPException | 55 | `HTTPException(422, detail=[...])` |
+| domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
 | domain_result | str | 55 | `str(exc)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 57 | `str(exc)` |
+| domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | get_task_timeline_page | TaskTimelineService.page | 1029 | `TaskTimelineService(db).page(task_id, limit=limit, cursor=cursor)` |
 | TaskTimelineService.page | ValueError (backend/app/services/task…:TaskTimelineService.page) | 45 | `ValueError('Use a timeline page limit from 1 to 500')` |
 | TaskTimelineService.page | self.db.scalar | 47 | `self.db.scalar(...)` |
@@ -206,11 +206,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 51 |
-| unresolved_call | `domain_result` | `exc.detail` | 51 |
 | external_call | `domain_result` | `HTTPException` | 53 |
+| unresolved_call | `domain_result` | `exc.detail` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
+| external_call | `domain_result` | `HTTPException` | 59 |
 | external_call | `TaskTimelineService.page` | `ValueError` | 45 |
 | unresolved_call | `TaskTimelineService.page` | `self.db.scalar` | 47 |
 | step_limit | `get_task_timeline_page` | `first 12 steps` | 0 |

@@ -28,22 +28,22 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 ```mermaid
 flowchart LR
     n0["frontend/src/components/settings/AgentTeamStepList.tsx"]
-    n1["frontend/src/features/agentTeamSetup/masters.ts"]
-    n2["frontend/src/features/agentTeamSetup/useAgentTeamReadiness.ts"]
-    n3["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
+    n1["frontend/src/components/team/AgentManifestWorkflow.tsx"]
+    n2["frontend/src/features/agentTeamSetup/masters.ts"]
+    n3["frontend/src/features/agentTeamSetup/useAgentTeamReadiness.ts"]
     n4["frontend/src/services/agentService.ts"]
-    n0 --> n1
     n0 --> n2
-    n2 --> n1
-    n2 --> n4
-    n3 --> n0
-    n3 --> n1
+    n0 --> n3
+    n1 --> n0
+    n1 --> n2
+    n1 --> n3
+    n1 --> n4
     n3 --> n2
     n3 --> n4
     click n0 "../modules/AgentTeamStepList.md"
-    click n1 "../modules/agentTeamSetup_masters.md"
-    click n2 "../modules/useAgentTeamReadiness.md"
-    click n3 "../modules/AgentTeamSetupMasterPage.md"
+    click n1 "../modules/AgentManifestWorkflow.md"
+    click n2 "../modules/agentTeamSetup_masters.md"
+    click n3 "../modules/useAgentTeamReadiness.md"
     click n4 "../modules/agentService.md"
 ```
 
@@ -52,7 +52,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [AgentTeamStepList](../modules/AgentTeamStepList.md) |
-| Inbound | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) |
+| Inbound | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) |
 | Outbound | [agentTeamSetup_masters](../modules/agentTeamSetup_masters.md) |
 | Outbound | [agentService](../modules/agentService.md) |
 

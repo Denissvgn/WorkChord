@@ -28,72 +28,32 @@ Those role rules apply to contracts coming in. `load_stored_agent_team_member` a
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/autonomy/canonical.py"]
-    n1["backend/app/routers/agent.py"]
-    n2["backend/app/schemas/agent_team_setup.py"]
-    n3["backend/app/services/agent_team_setup_service.py"]
-    n4["backend/tests/test_agent_skill_routing_guidance.py"]
-    n5["backend/tests/test_agent_team_catalog.py"]
-    n6["backend/tests/test_agent_team_setup.py"]
-    n7["backend/tests/test_agent_team_setup_qualification.py"]
-    n8["backend/tests/test_agent_team_setup_stored_contract.py"]
-    n9["scripts/ci/check_model_aware_routing_closeout.py"]
-    n10["scripts/generate_agent_team_contract.py"]
-    n11["scripts/generate_agent_team_report_contract.py"]
-    n1 --> n2
-    n1 --> n3
-    n2 --> n0
-    n3 --> n2
-    n4 --> n1
-    n4 --> n2
-    n5 --> n2
-    n5 --> n3
-    n6 --> n2
-    n6 --> n3
-    n7 --> n2
-    n7 --> n3
-    n7 --> n6
-    n8 --> n2
-    n8 --> n3
-    n8 --> n6
-    n9 --> n2
-    n10 --> n2
-    n11 --> n2
-    click n0 "../modules/autonomy_canonical.md"
-    click n1 "../modules/routers_agent.md"
-    click n2 "../modules/agent_team_setup.md"
-    click n3 "../modules/agent_team_setup_service.md"
-    click n4 "../modules/test_agent_skill_routing_guidance.md"
-    click n5 "../modules/test_agent_team_catalog.md"
-    click n6 "../modules/test_agent_team_setup.md"
-    click n7 "../modules/test_agent_team_setup_qualification.md"
-    click n8 "../modules/test_agent_team_setup_stored_contract.md"
-    click n9 "../modules/check_model_aware_routing_closeout.md"
-    click n10 "../modules/generate_agent_team_contract.md"
-    click n11 "../modules/generate_agent_team_report_contract.md"
+    n0["backend"]
+    n1["backend/app/schemas/agent_team_setup.py"]
+    n2["scripts"]
+    n0 --> n1
+    n1 --> n0
+    n2 --> n1
+    click n1 "../modules/agent_team_setup.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [routers_agent](../modules/routers_agent.md) |
-| Inbound | [agent_team_setup_service](../modules/agent_team_setup_service.md) |
-| Inbound | [test_agent_skill_routing_guidance](../modules/test_agent_skill_routing_guidance.md) |
-| Inbound | [test_agent_team_catalog](../modules/test_agent_team_catalog.md) |
-| Inbound | [test_agent_team_setup](../modules/test_agent_team_setup.md) |
-| Inbound | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) |
-| Inbound | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) |
-| Inbound | [check_model_aware_routing_closeout](../modules/check_model_aware_routing_closeout.md) |
-| Inbound | [generate_agent_team_contract](../modules/generate_agent_team_contract.md) |
-| Inbound | [generate_agent_team_report_contract](../modules/generate_agent_team_report_contract.md) |
-| Outbound | [autonomy_canonical](../modules/autonomy_canonical.md) |
+| Inbound | `backend` (12) |
+| Inbound | `scripts` (3) |
+| Outbound | `backend` (1) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 1 | 0 |
+
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

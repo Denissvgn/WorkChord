@@ -1,6 +1,6 @@
 # Calendar
 
-**Location:** `backend/app/models/calendar.py:14`
+**Location:** `backend/app/models/calendar.py:27`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_calendar](../modules/models_calendar.md)
@@ -39,15 +39,16 @@ flowchart LR
     n0["Calendar (backend/app/models/calendar.py)"]
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
-    n3["backend/app/models/iteration.py"]
-    n4["backend/app/services/agent_planning_service.py"]
-    n5["CalendarService._parse_holiday_csv (backend/app/services/calendar_service.py)"]
-    n6["CalendarService.calculate_working_days (backend/app/services/calendar_service.py)"]
-    n7["CalendarService.create (backend/app/services/calendar_service.py)"]
-    n8["CalendarService.get_all (backend/app/services/calendar_service.py)"]
-    n9["CalendarService.get_by_id (backend/app/services/calendar_service.py)"]
-    n10["CalendarService.get_or_create_default (backend/app/services/calendar_service.py)"]
-    n11["CalendarService.get_working_dates (backend/app/services/calendar_service.py)"]
+    n3["backend/app/models/capacity.py"]
+    n4["backend/app/models/iteration.py"]
+    n5["backend/app/services/agent_planning_service.py"]
+    n6["AnnualCalendars.__init__ (backend/app/services/calendar_rules.py)"]
+    n7["rule_signature (backend/app/services/calendar_rules.py)"]
+    n8["YearRules.__init__ (backend/app/services/calendar_rules.py)"]
+    n9["CalendarService._parse_holiday_csv (backend/app/services/calendar_service.py)"]
+    n10["CalendarService.calculate_working_days (backend/app/services/calendar_service.py)"]
+    n11["CalendarService.create (backend/app/services/calendar_service.py)"]
+    n12["CalendarService.get_all (backend/app/services/calendar_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -59,18 +60,20 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/models_calendar.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
-    click n3 "../modules/models_iteration.md"
-    click n4 "../modules/agent_planning_service.md"
-    click n5 "../modules/calendar_service.md"
-    click n6 "../modules/calendar_service.md"
-    click n7 "../modules/calendar_service.md"
-    click n8 "../modules/calendar_service.md"
+    click n3 "../modules/models_capacity.md"
+    click n4 "../modules/models_iteration.md"
+    click n5 "../modules/agent_planning_service.md"
+    click n6 "../modules/calendar_rules.md"
+    click n7 "../modules/calendar_rules.md"
+    click n8 "../modules/calendar_rules.md"
     click n9 "../modules/calendar_service.md"
     click n10 "../modules/calendar_service.md"
     click n11 "../modules/calendar_service.md"
+    click n12 "../modules/calendar_service.md"
 ```
 
 ### Summary
@@ -90,16 +93,16 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
+| `capacity` | import | [models_capacity](../modules/models_capacity.md) | — |
 | `iteration` | import | [models_iteration](../modules/models_iteration.md) | — |
 | `agent_planning_service` | import | [agent_planning_service](../modules/agent_planning_service.md) | — |
+| `AnnualCalendars.__init__` | type_reference | [calendar_rules](../modules/calendar_rules.md) | — |
+| `rule_signature` | type_reference | [calendar_rules](../modules/calendar_rules.md) | — |
+| `YearRules.__init__` | type_reference | [calendar_rules](../modules/calendar_rules.md) | — |
 | `CalendarService._parse_holiday_csv` | type_reference | [calendar_service](../modules/calendar_service.md) | — |
 | `CalendarService.calculate_working_days` | type_reference | [calendar_service](../modules/calendar_service.md) | — |
 | `CalendarService.create` | call | [calendar_service](../modules/calendar_service.md) | 1 |
 | `CalendarService.create` | type_reference | [calendar_service](../modules/calendar_service.md) | — |
 | `CalendarService.get_all` | type_reference | [calendar_service](../modules/calendar_service.md) | — |
-| `CalendarService.get_by_id` | type_reference | [calendar_service](../modules/calendar_service.md) | — |
-| `CalendarService.get_or_create_default` | call | [calendar_service](../modules/calendar_service.md) | 1 |
-| `CalendarService.get_or_create_default` | type_reference | [calendar_service](../modules/calendar_service.md) | — |
-| `CalendarService.get_working_dates` | type_reference | [calendar_service](../modules/calendar_service.md) | — |
 
-> References: showing 12 of 40 logical references; 28 omitted by the 12-row generated summary limit.
+> References: showing 12 of 52 logical references; 40 omitted by the 12-row generated summary limit.

@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/releases/ReleaseForm.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
 | `../../services/projectService` | `projectService` | — | compiler-dependent |
@@ -57,7 +58,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (11) |
+| Outbound | `frontend` (12) |
 
 ### External packages
 
@@ -65,15 +66,15 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ReleaseFormProps](../entities/ReleaseFormProps.md) | Interface | 25 | — | — |
-| [FlattenedTask](../entities/ReleaseForm_FlattenedTask.md) | Type alias | 32 | <pre><code>&#123;&#10;    task&#58; Task&#59;&#10;    level&#58; number&#59;&#10;&#125;</code></pre> | — |
-| [ReleaseFormState](../entities/ReleaseFormState.md) | Type alias | 37 | <pre><code>&#123;&#10;    name&#58; string&#59;&#10;    description&#58; string&#59;&#10;    status&#58; ReleaseStatus&#59;&#10;    target&#95;date&#58; string&#59;&#10;    shipped&#95;at&#58; string&#59;&#10;    version&#58; string&#59;&#10;    environment&#58; string&#59;&#10;    task&#95;ids&#58; number&#91;&#93;&#59;&#10;&#125;</code></pre> | — |
+| [ReleaseFormProps](../entities/ReleaseFormProps.md) | Interface | 26 | — | — |
+| [FlattenedTask](../entities/ReleaseForm_FlattenedTask.md) | Type alias | 33 | <pre><code>&#123;&#10;    task&#58; Task&#59;&#10;    level&#58; number&#59;&#10;&#125;</code></pre> | — |
+| [ReleaseFormState](../entities/ReleaseFormState.md) | Type alias | 38 | <pre><code>&#123;&#10;    name&#58; string&#59;&#10;    description&#58; string&#59;&#10;    status&#58; ReleaseStatus&#59;&#10;    target&#95;date&#58; string&#59;&#10;    shipped&#95;at&#58; string&#59;&#10;    version&#58; string&#59;&#10;    environment&#58; string&#59;&#10;    task&#95;ids&#58; number&#91;&#93;&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 

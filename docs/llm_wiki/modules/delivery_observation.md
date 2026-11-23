@@ -40,7 +40,8 @@ flowchart LR
     n7["backend/app/services/delivery_metrics_service.py"]
     n8["backend/app/services/execution_usage_service.py"]
     n9["backend/app/utils/time.py"]
-    n10["backend/tests/test_delivery_metrics.py"]
+    n10["backend/tests/test_analytics_scopes.py"]
+    n11["backend/tests/test_delivery_metrics.py"]
     n1 --> n2
     n1 --> n3
     n1 --> n4
@@ -72,10 +73,16 @@ flowchart LR
     n8 --> n5
     n8 --> n7
     n8 --> n9
+    n10 --> n2
     n10 --> n3
-    n10 --> n4
     n10 --> n5
     n10 --> n7
+    n10 --> n8
+    n10 --> n9
+    n11 --> n3
+    n11 --> n4
+    n11 --> n5
+    n11 --> n7
     click n0 "../modules/app_database.md"
     click n1 "../modules/models___init__.md"
     click n2 "../modules/models_agent.md"
@@ -86,7 +93,8 @@ flowchart LR
     click n7 "../modules/delivery_metrics_service.md"
     click n8 "../modules/execution_usage_service.md"
     click n9 "../modules/time.md"
-    click n10 "../modules/test_delivery_metrics.md"
+    click n10 "../modules/test_analytics_scopes.md"
+    click n11 "../modules/test_delivery_metrics.md"
 ```
 
 ### Internal neighbors
@@ -96,6 +104,7 @@ flowchart LR
 | Inbound | [models___init__](../modules/models___init__.md) |
 | Inbound | [delivery_metrics_service](../modules/delivery_metrics_service.md) |
 | Inbound | [execution_usage_service](../modules/execution_usage_service.md) |
+| Inbound | [test_analytics_scopes](../modules/test_analytics_scopes.md) |
 | Inbound | [test_delivery_metrics](../modules/test_delivery_metrics.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [models_agent](../modules/models_agent.md) |

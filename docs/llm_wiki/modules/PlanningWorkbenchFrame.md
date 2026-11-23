@@ -19,7 +19,7 @@ _Auto-generated from `frontend/src/components/planning/PlanningWorkbenchFrame.ts
 
 | Signal | Values |
 |--------|--------|
-| Exports | `PlanningWorkbenchFact`, `PlanningWorkbenchFrame` |
+| Exports | `PlanningWorkbenchFrame` |
 
 ## Local dependency map
 
@@ -29,25 +29,22 @@ flowchart LR
     n0["frontend/src/components/planning/PlanningWorkbenchFrame.test.tsx"]
     n1["frontend/src/components/planning/PlanningWorkbenchFrame.tsx"]
     n2["frontend/src/components/planning/PlanReturnBar.tsx"]
-    n3["frontend/src/components/ui/index.ts"]
-    n4["frontend/src/pages/CalendarPage.tsx"]
+    n3["frontend/src/components/settings/WorkCalendarSettings.tsx"]
+    n4["frontend/src/components/ui/index.ts"]
     n5["frontend/src/pages/GanttPage.tsx"]
-    n6["frontend/src/pages/RoadmapPage.tsx"]
     n0 --> n1
     n1 --> n2
-    n1 --> n3
-    n4 --> n1
-    n4 --> n3
+    n1 --> n4
+    n3 --> n1
+    n3 --> n4
     n5 --> n1
-    n6 --> n1
-    n6 --> n3
+    n5 --> n4
     click n0 "../modules/PlanningWorkbenchFrame.test.md"
     click n1 "../modules/PlanningWorkbenchFrame.md"
     click n2 "../modules/PlanReturnBar.md"
-    click n3 "../modules/index.md"
-    click n4 "../modules/CalendarPage.md"
+    click n3 "../modules/WorkCalendarSettings.md"
+    click n4 "../modules/index.md"
     click n5 "../modules/GanttPage.md"
-    click n6 "../modules/RoadmapPage.md"
 ```
 
 ### Internal neighbors
@@ -55,9 +52,8 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [PlanningWorkbenchFrame.test](../modules/PlanningWorkbenchFrame.test.md) |
-| Inbound | [CalendarPage](../modules/CalendarPage.md) |
+| Inbound | [WorkCalendarSettings](../modules/WorkCalendarSettings.md) |
 | Inbound | [GanttPage](../modules/GanttPage.md) |
-| Inbound | [RoadmapPage](../modules/RoadmapPage.md) |
 | Outbound | [PlanReturnBar](../modules/PlanReturnBar.md) |
 | Outbound | [index](../modules/index.md) |
 

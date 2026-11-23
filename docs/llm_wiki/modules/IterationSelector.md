@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # IterationSelector Module
 
 **Path:** `frontend/src/components/iteration/IterationSelector.tsx`

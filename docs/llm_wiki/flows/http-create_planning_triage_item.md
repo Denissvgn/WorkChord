@@ -89,9 +89,9 @@ sequenceDiagram
     p0-->>p30: data.model_dump (backend/app/routers/agent…eate_planning_triage_item)(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 150 interactions; 120 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 151 interactions; 121 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 50 (49 omitted); unresolved 1 of 45 (44 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 51 (50 omitted); unresolved 1 of 45 (44 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -105,7 +105,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_agent_tools.py:create_triage_item` | 8 | - | unresolved | 2 |
 | `backend/app/mcp_agent_tools.py:_triage_command_replay` | 22 | - | unresolved | 3 |
 | `backend/app/mcp_agent_tools.py:_triage_command_replay` | 22 | - | external | 4 |
-> Omission summary shows 8 of 59 groups; 51 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 60 groups; 52 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -198,16 +198,16 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | create_planning_triage_item | require_scope | 619 | `require_scope(actor, 'planning:write')` |
-| require_scope | actor_has_scope | 101 | `actor_has_scope(actor, scope)` |
+| require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
-| require_scope | AgentPermissionError | 102 | `AgentPermissionError(...)` |
+| require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
 | create_planning_triage_item | create_triage_item | 620 | `mcp_agent_tools.create_triage_item(db, actor, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| create_triage_item | _triage_command_context | 2262 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| create_triage_item | _triage_command_context | 2267 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 | _triage_command_context | validate_idempotency_key | 221 | `validate_idempotency_key(idempotency_key, required=True)` |
-| validate_idempotency_key | ValueError (backend/app/services/agen…:validate_idempotency_key) | 111 | `ValueError('Idempotency-Key is required')` |
-| validate_idempotency_key | value.strip | 115 | `value.strip(data not statically known)` |
+| validate_idempotency_key | ValueError (backend/app/services/agen…:validate_idempotency_key) | 123 | `ValueError('Idempotency-Key is required')` |
+| validate_idempotency_key | value.strip | 127 | `value.strip(data not statically known)` |
 
 ### Boundary effects
 
@@ -219,8 +219,8 @@ flowchart LR
 |---|---|---|---:|
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | external_call | `actor_scopes` | `isinstance` | 90 |
-| external_call | `validate_idempotency_key` | `ValueError` | 111 |
-| unresolved_call | `validate_idempotency_key` | `value.strip` | 115 |
+| external_call | `validate_idempotency_key` | `ValueError` | 123 |
+| unresolved_call | `validate_idempotency_key` | `value.strip` | 127 |
 | step_limit | `create_planning_triage_item` | `first 12 steps` | 0 |
 | truncated_flow | `create_planning_triage_item` | `depth limit` | 0 |
 

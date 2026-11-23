@@ -27,13 +27,16 @@ _Auto-generated from `frontend/src/store/themeStore.ts`._
 ```mermaid
 flowchart LR
     n0["frontend/src/components/layout/AppShell.tsx"]
-    n1["frontend/src/pages/SettingsPage.tsx"]
-    n2["frontend/src/store/themeStore.ts"]
-    n0 --> n2
-    n1 --> n2
+    n1["frontend/src/components/layout/BareLayout.tsx"]
+    n2["frontend/src/pages/SettingsPage.tsx"]
+    n3["frontend/src/store/themeStore.ts"]
+    n0 --> n3
+    n1 --> n3
+    n2 --> n3
     click n0 "../modules/AppShell.md"
-    click n1 "../modules/SettingsPage.md"
-    click n2 "../modules/themeStore.md"
+    click n1 "../modules/BareLayout.md"
+    click n2 "../modules/SettingsPage.md"
+    click n3 "../modules/themeStore.md"
 ```
 
 ### Internal neighbors
@@ -41,6 +44,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [AppShell](../modules/AppShell.md) |
+| Inbound | [BareLayout](../modules/BareLayout.md) |
 | Inbound | [SettingsPage](../modules/SettingsPage.md) |
 
 ### External packages

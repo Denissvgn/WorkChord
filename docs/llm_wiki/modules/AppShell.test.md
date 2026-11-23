@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/layout/AppShell.test.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Button` | `Button` | — | compiler-dependent |
 | `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
 | `./AppShell` | `AppShell` | — | compiler-dependent |
 | `@testing-library/react` | `screen` | — | compiler-dependent |
@@ -29,20 +30,24 @@ _Auto-generated from `frontend/src/components/layout/AppShell.test.tsx`._
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/layout/AppShell.test.tsx"]
-    n1["frontend/src/components/layout/AppShell.tsx"]
-    n2["frontend/src/test/renderWithProviders.tsx"]
-    n0 --> n1
-    n0 --> n2
-    click n0 "../modules/AppShell.test.md"
-    click n1 "../modules/AppShell.md"
-    click n2 "../modules/renderWithProviders.md"
+    n0["frontend/src/components/common/Button.tsx"]
+    n1["frontend/src/components/layout/AppShell.test.tsx"]
+    n2["frontend/src/components/layout/AppShell.tsx"]
+    n3["frontend/src/test/renderWithProviders.tsx"]
+    n1 --> n0
+    n1 --> n2
+    n1 --> n3
+    click n0 "../modules/Button.md"
+    click n1 "../modules/AppShell.test.md"
+    click n2 "../modules/AppShell.md"
+    click n3 "../modules/renderWithProviders.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Outbound | [Button](../modules/Button.md) |
 | Outbound | [AppShell](../modules/AppShell.md) |
 | Outbound | [renderWithProviders](../modules/renderWithProviders.md) |
 

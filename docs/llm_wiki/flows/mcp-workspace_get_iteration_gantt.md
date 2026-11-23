@@ -2,12 +2,13 @@
 
 **Entry point:** `workspace_get_iteration_gantt` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [commands](../modules/commands.md), and 21 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), [calendar_service](../modules/calendar_service.md), and 23 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
 - [authority](../modules/authority.md)
+- [calendar_rules](../modules/calendar_rules.md)
 - [calendar_service](../modules/calendar_service.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
@@ -25,6 +26,7 @@
 - [schemas_calendar](../modules/schemas_calendar.md)
 - [schemas_gantt](../modules/schemas_gantt.md)
 - [schemas_iteration](../modules/schemas_iteration.md)
+- [schemas_team](../modules/schemas_team.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_hierarchy_service](../modules/task_hierarchy_service.md)
@@ -54,20 +56,20 @@ sequenceDiagram
     participant p12 as TeamService.get_by_iteration
     participant p13 as IdentityService.actor_context
     participant p14 as CalendarService.calculate_working_days
-    participant p15 as _task_to_gantt
-    participant p16 as require_scope
-    participant p17 as AgentService.authenticate
-    participant p18 as TaskService._task_graph_query
-    participant p19 as require_identity_writes
-    participant p20 as task_signals
-    participant p21 as DeliveryDependencyService.reconcile
-    participant p22 as TaskService._load_iteration_tree
-    participant p23 as DiscussionService.enqueue
-    participant p24 as actor_has_scope
-    participant p25 as TaskHierarchyService._load_iteration_tree
-    participant p26 as working_today
-    participant p27 as commit_or_flush
-    participant p28 as DeliveryDependencyService.validate_cycles
+    participant p15 as AnnualCalendars.for_iteration
+    participant p16 as _task_to_gantt
+    participant p17 as require_scope
+    participant p18 as AgentService.authenticate
+    participant p19 as TaskService._task_graph_query
+    participant p20 as require_identity_writes
+    participant p21 as task_signals
+    participant p22 as DeliveryDependencyService.reconcile
+    participant p23 as TaskService._load_iteration_tree
+    participant p24 as DiscussionService.enqueue
+    participant p25 as TeamService._attach_assignee_profiles
+    participant p26 as actor_has_scope
+    participant p27 as TaskHierarchyService._load_iteration_tree
+    participant p28 as working_today
     participant p29 as LookupError
     participant p30 as func
     p0->>p1: _tool_call
@@ -84,27 +86,27 @@ sequenceDiagram
     p6->>p12: TeamService.get_by_iteration
     p4->>p13: IdentityService.actor_context
     p6->>p14: CalendarService.calculate_working_days
-    p6->>p15: _task_to_gantt
-    p11->>p16: require_scope
-    p9->>p17: AgentService.authenticate
-    p10->>p18: TaskService._task_graph_query
-    p13->>p19: require_identity_writes
-    p15->>p20: task_signals
-    p8->>p21: DeliveryDependencyService.reconcile
-    p10->>p22: TaskService._load_iteration_tree
-    p8->>p23: DiscussionService.enqueue
-    p16->>p24: actor_has_scope
-    p22->>p25: TaskHierarchyService._load_iteration_tree
-    p20->>p26: working_today
-    p17->>p27: commit_or_flush
-    p21->>p28: DeliveryDependencyService.validate_cycles
+    p6->>p15: AnnualCalendars.for_iteration
+    p6->>p16: _task_to_gantt
+    p11->>p17: require_scope
+    p9->>p18: AgentService.authenticate
+    p10->>p19: TaskService._task_graph_query
+    p13->>p20: require_identity_writes
+    p16->>p21: task_signals
+    p8->>p22: DeliveryDependencyService.reconcile
+    p10->>p23: TaskService._load_iteration_tree
+    p8->>p24: DiscussionService.enqueue
+    p12->>p25: TeamService._attach_assignee_profiles
+    p17->>p26: actor_has_scope
+    p23->>p27: TaskHierarchyService._load_iteration_tree
+    p21->>p28: working_today
     p2-->>p29: LookupError('Iteration not found')
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 430 interactions; 400 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 443 interactions; 413 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 142 (141 omitted); unresolved 1 of 172 (171 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 141 (140 omitted); unresolved 1 of 180 (179 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -118,7 +120,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 121 groups; 113 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 128 groups; 120 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -131,9 +133,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 117; effect analysis evaluated: 73, partial: 2, unavailable: 42. Counts include steps omitted from the displayed trace.
+Source steps: 123; effect analysis evaluated: 76, partial: 2, unavailable: 45. Counts include steps omitted from the displayed trace.
 
-Collector observations for 75 source steps with known totals: observed: 342, emitted: 332, omitted: 10. Unavailable totals are excluded.
+Collector observations for 78 source steps with known totals: observed: 354, emitted: 342, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -142,7 +144,7 @@ Collector observations for 75 source steps with known totals: observed: 342, emi
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
 | `workspace_get_iteration_gantt` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
-| `_tool_call` | `available` | `partial` | `available` | `18` | `12` | `6` |
+| `_tool_call` | `available` | `partial` | `available` | `19` | `12` | `7` |
 | `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -192,7 +194,7 @@ flowchart LR
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
 | `workspace_get_iteration_gantt` | `iteration_id: int` | - | - | `...` |
-| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError`, `AgentRoutingConflictError` | - | `...` |
+| `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -208,7 +210,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_get_iteration_gantt | _tool_call | 1603 | `_tool_call((...), ...)` |
+| workspace_get_iteration_gantt | _tool_call | 1647 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

@@ -1,6 +1,6 @@
 # TaskMilestone
 
-**Location:** `backend/app/schemas/task.py:156`
+**Location:** `backend/app/schemas/task.py:160`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

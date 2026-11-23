@@ -41,7 +41,6 @@ flowchart LR
     n7["frontend/src/utils/workNumbers.ts"]
     n0 --> n1
     n0 --> n5
-    n0 --> n6
     n1 --> n2
     n1 --> n3
     n1 --> n5
@@ -49,7 +48,6 @@ flowchart LR
     n1 --> n7
     n3 --> n6
     n4 --> n1
-    n4 --> n6
     click n0 "../modules/IterationOutlook.test.md"
     click n1 "../modules/StatusDistribution.md"
     click n2 "../modules/MetricCount.md"

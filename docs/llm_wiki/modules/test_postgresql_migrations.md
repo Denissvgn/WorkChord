@@ -11,6 +11,7 @@ Real PostgreSQL migration, locking, and schema contract tests.
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
+| `alembic` | `command` |
 | `app` | `models` |
 | `app.config` | `get_settings` |
 | `app.database` | `Base` |
@@ -82,13 +83,14 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| python | 2 | 1 |
+| python | 3 | 1 |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `sync_engine` | `(database_url: str)` | — | — |
+| `test_existing_projects_keep_their_review_policy_on_upgrade` | `(postgres_database, configure_database)` | `@pytest.mark.postgresql`, `@pytest.mark.integration`, `@pytest.mark.allow_network` | — |
 | `test_fresh_postgresql_schema_only_bootstrap` | `(postgres_database, configure_database) -> None` | `@pytest.mark.postgresql`, `@pytest.mark.integration`, `@pytest.mark.allow_network` | — |
 | `test_runtime_role_cannot_create_schema_objects_or_roles` | `(postgres_database, configure_database) -> None` | `@pytest.mark.postgresql`, `@pytest.mark.integration`, `@pytest.mark.allow_network` | — |
 | `test_nonempty_postgresql_upgrade_requires_external_backup_gate` | `(postgres_database, configure_database, monkeypatch) -> None` | `@pytest.mark.postgresql`, `@pytest.mark.integration`, `@pytest.mark.allow_network` | — |

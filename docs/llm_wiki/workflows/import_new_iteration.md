@@ -12,8 +12,7 @@
 2. `commands.planning_input_reservation`
 3. `schemas_iteration.IterationCreate`
 4. `iteration_service.IterationService`
-5. `iteration_service.IterationService.create`
-6. `commands.lock_iterations`
+5. `commands.lock_iterations`
 
 ## Touches
 

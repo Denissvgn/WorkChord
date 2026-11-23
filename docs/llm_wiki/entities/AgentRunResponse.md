@@ -1,6 +1,6 @@
 # AgentRunResponse
 
-**Location:** `backend/app/schemas/agent.py:445`
+**Location:** `backend/app/schemas/agent.py:461`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -13,6 +13,7 @@ Agent run response.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `execution_provenance` | `dict[str, Any] \| None` | `execution_provenance` | No | Yes | `None` | — | — | — |
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `task_id` | `Optional[int]` | `task_id` | Yes | Yes | — | — | — | — |
 | `actor_id` | `int` | `actor_id` | Yes | No | — | — | — | — |
@@ -81,7 +82,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 0 | `actor_id`, `artifact_links`, `assignment_id`, `claim_generation`, `commit_url`, `configured_model_alias`, `ended_at`, `error`, `heartbeat_at`, `id`, `metadata`, `model` |
+| [schemas_agent](../modules/schemas_agent.md) | 0 | `actor_id`, `artifact_links`, `assignment_id`, `claim_generation`, `commit_url`, `configured_model_alias`, `ended_at`, `error`, `execution_provenance`, `heartbeat_at`, `id`, `metadata` |
 
 ### Structure
 

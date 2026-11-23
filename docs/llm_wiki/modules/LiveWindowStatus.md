@@ -26,19 +26,19 @@ _Auto-generated from `frontend/src/components/feedback/LiveWindowStatus.tsx`._
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
     n1["frontend/src/components/feedback/LiveWindowStatus.tsx"]
-    n2["frontend/src/components/projects/TimeEntriesReport.tsx"]
-    n3["frontend/src/components/tasks/BacklogPanel.tsx"]
-    n4["frontend/src/components/tasks/PagedTaskBrowser.tsx"]
-    n5["frontend/src/components/tasks/TaskDiscussion.tsx"]
-    n6["frontend/src/components/tasks/TimeEntriesPanel.tsx"]
-    n7["frontend/src/pages/MyWorkPage.tsx"]
-    n8["frontend/src/pages/RoadmapPage.tsx"]
+    n2["frontend/src/components/projects/RoadmapView.tsx"]
+    n3["frontend/src/components/projects/TimeEntriesReport.tsx"]
+    n4["frontend/src/components/tasks/BacklogPanel.tsx"]
+    n5["frontend/src/components/tasks/PagedTaskBrowser.tsx"]
+    n6["frontend/src/components/tasks/TaskDiscussion.tsx"]
+    n7["frontend/src/components/tasks/TimeEntriesPanel.tsx"]
+    n8["frontend/src/pages/MyWorkPage.tsx"]
     n1 --> n0
     n2 --> n0
     n2 --> n1
-    n2 --> n6
     n3 --> n0
     n3 --> n1
+    n3 --> n7
     n4 --> n0
     n4 --> n1
     n5 --> n0
@@ -51,26 +51,26 @@ flowchart LR
     n8 --> n1
     click n0 "../modules/Button.md"
     click n1 "../modules/LiveWindowStatus.md"
-    click n2 "../modules/TimeEntriesReport.md"
-    click n3 "../modules/BacklogPanel.md"
-    click n4 "../modules/PagedTaskBrowser.md"
-    click n5 "../modules/TaskDiscussion.md"
-    click n6 "../modules/TimeEntriesPanel.md"
-    click n7 "../modules/MyWorkPage.md"
-    click n8 "../modules/RoadmapPage.md"
+    click n2 "../modules/RoadmapView.md"
+    click n3 "../modules/TimeEntriesReport.md"
+    click n4 "../modules/BacklogPanel.md"
+    click n5 "../modules/PagedTaskBrowser.md"
+    click n6 "../modules/TaskDiscussion.md"
+    click n7 "../modules/TimeEntriesPanel.md"
+    click n8 "../modules/MyWorkPage.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [RoadmapView](../modules/RoadmapView.md) |
 | Inbound | [TimeEntriesReport](../modules/TimeEntriesReport.md) |
 | Inbound | [BacklogPanel](../modules/BacklogPanel.md) |
 | Inbound | [PagedTaskBrowser](../modules/PagedTaskBrowser.md) |
 | Inbound | [TaskDiscussion](../modules/TaskDiscussion.md) |
 | Inbound | [TimeEntriesPanel](../modules/TimeEntriesPanel.md) |
 | Inbound | [MyWorkPage](../modules/MyWorkPage.md) |
-| Inbound | [RoadmapPage](../modules/RoadmapPage.md) |
 | Outbound | [Button](../modules/Button.md) |
 
 ### External packages

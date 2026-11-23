@@ -10,6 +10,10 @@ YAML and fallback scheduling, incremental rescheduling and reservations use comp
 
 A calculation may also follow actual dates. Given the day a task started or was submitted, it places planned work on or after that day, lets finished work free its assignee from that day, keeps running work on its assignee at least through it, and leaves the dates of work it cannot place. The task that just started takes its assignee's row first. When only a task's dates change, its queued agent assignments move to the new task version; model-aware assignments do not, because their routing evidence is bound to the exact version.
 
+An estimate consumes the dated hours of each selected annual record. If a forecast reaches an uncovered year, the scheduler retains the existing dates and reports the missing year. A successful date-only apply reports a model-bound queue entry that needs a fresh selection and identifies an accepted assignment whose dates would need to move.
+
+Applying dates that change accepted work is guarded regardless of how the iteration or person selected their calendars. An unchanged accepted task retains its version while eligible planned work can move.
+
 ## Imports
 
 | Source | Symbols |
@@ -24,6 +28,7 @@ A calculation may also follow actual dates. Given the day a task started or was 
 | `app.models.team_member` | `TeamMember`, `Vacation` |
 | `app.schemas.gantt` | `SchedulingDecision`, `ScheduleResult`, `UnscheduledTask`, `WorkloadIssue` |
 | `app.services.agent_work_service` | `AgentWorkService` |
+| `app.services.calendar_rules` | `AnnualCalendars` |
 | `app.services.calendar_service` | `CalendarService` |
 | `app.services.capacity_service` | `CapacityService`, `CapacityService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
@@ -31,12 +36,12 @@ A calculation may also follow actual dates. Given the day a task started or was 
 | `app.services.scheduling_rules_service` | `SchedulingRulesService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.team_service` | `TeamService` |
-| `app.services.work_metrics` | `effective_work_flags`, `effective_work_flags`, `effective_work_flags` |
-| `asyncio` | `asyncio` |
-| `collections` | `defaultdict`, `defaultdict`, `defaultdict` |
+| `app.services.work_metrics` | `effective_work_flags`, `effective_work_flags`, `working_today`, `effective_work_flags` |
+| `collections` | `defaultdict` |
 | `dataclasses` | `dataclass`, `field` |
 | `datetime` | `date`, `timedelta` |
 | `enum` | `Enum` |
+| `heapq` | `heapq` |
 | `logging` | `logging` |
 | `math` | `math` |
 | `sqlalchemy` | `select` |
@@ -61,8 +66,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (11) |
-| Outbound | `backend` (18) |
+| Inbound | `backend` (14) |
+| Outbound | `backend` (19) |
 
 ### External packages
 
@@ -70,21 +75,22 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ChangeType](../entities/ChangeType.md) | Enum | 26 | `Enum` | Types of changes that trigger incremental rescheduling. |
-| [TaskChange](../entities/TaskChange.md) | Class | 40 | — | Represents a change to a task for incremental rescheduling. |
-| [RescheduleResult](../entities/RescheduleResult.md) | Class | 51 | — | Result of an incremental reschedule operation. |
-| [MemberSchedule](../entities/MemberSchedule.md) | Class | 61 | — | Optimized schedule tracking with O(D) slot finding using sliding window. |
-| [SchedulerService](../entities/SchedulerService.md) | Class | 307 | — | Service for automatic task scheduling. |
-| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1497 | — | Handles incremental rescheduling when a single task changes. |
+| [MissingCalendarYear](../entities/MissingCalendarYear.md) | Class | 28 | `PlanningConflict` | — |
+| [ChangeType](../entities/ChangeType.md) | Enum | 34 | `Enum` | Types of changes that trigger incremental rescheduling. |
+| [TaskChange](../entities/TaskChange.md) | Class | 48 | — | Represents a change to a task for incremental rescheduling. |
+| [RescheduleResult](../entities/RescheduleResult.md) | Class | 59 | — | Result of an incremental reschedule operation. |
+| [MemberSchedule](../entities/MemberSchedule.md) | Class | 69 | — | Optimized schedule tracking with O(D) slot finding using sliding window. |
+| [SchedulerService](../entities/SchedulerService.md) | Class | 340 | — | Service for automatic task scheduling. |
+| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1324 | — | Handles incremental rescheduling when a single task changes. |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `rebind_queued_assignments` | *(async)* `(db: AsyncSession, task_id: int, previous_version: int, new_version: int) -> None` | — | Keep queued dispatch valid when only a task's dates changed. |
+| `rebind_queued_assignments` | *(async)* `(db: AsyncSession, task_id: int, previous_version: int, new_version: int, *, protect_issued: bool = False) -> list[dict]` | — | Keep queued dispatch valid when only a task's dates changed. |

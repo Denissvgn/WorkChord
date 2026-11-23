@@ -38,7 +38,7 @@ _Auto-generated from `GanttTask` in `frontend/src/types/gantt.ts`._
 | `is_outside_constraints` | `boolean` | Yes | — | — |
 | `tags` | `string[]` | Yes | — | — |
 | `milestone` | <pre><code>&#123;&#10;        id&#58; number&#59;&#10;        project&#95;id&#58; number&#59;&#10;        name&#58; string&#59;&#10;        status&#58; string&#59;&#10;        target&#95;date&#63;&#58; string &#124; null&#59;&#10;    &#125; &#124; null</code></pre> | No | — | — |
-| `assignee` | `{ id: number; name: string } \| null` | No | — | — |
+| `assignee` | `{ id: number; name: string; kind?: 'human' \| 'agent' \| 'hybrid' \| null } \| null` | No | — | — |
 | `assignees` | `Array<{ id: number; name: string }>` | Yes | — | — |
 | `children` | `GanttTask[]` | Yes | — | — |
 | `dependencies` | `number[]` | Yes | — | — |
@@ -62,11 +62,14 @@ flowchart LR
     n3["frontend/src/components/gantt/GanttChart.test.tsx"]
     n4["frontend/src/components/gantt/GanttChart.tsx"]
     n5["frontend/src/components/gantt/ScheduleExplanationDetails.tsx"]
-    n6["frontend/src/components/gantt/TaskEditModal.test.tsx"]
-    n7["frontend/src/components/gantt/TaskEditModal.tsx"]
-    n8["frontend/src/features/planningMasters/usePlanningReadiness.test.tsx"]
-    n9["frontend/src/pages/GanttPage.test.tsx"]
-    n10["frontend/src/pages/GanttPage.tsx"]
+    n6["frontend/src/components/gantt/TaskEditDrawer.test.tsx"]
+    n7["frontend/src/components/gantt/TaskEditDrawer.tsx"]
+    n8["frontend/src/components/planning/PlanScheduleSection.tsx"]
+    n9["frontend/src/components/tasks/assigneeDisplay.test.tsx"]
+    n10["TaskAssigneeDisplay (frontend/src/components/tasks/TaskAssigneeDisplay.tsx)"]
+    n11["useTaskAssigneeDisplay (frontend/src/components/tasks/useTaskAssigneeDisplay.ts)"]
+    n12["scheduleLeaves (frontend/src/features/planningMasters/scheduleEvidence.ts)"]
+    n13["frontend/src/features/planningMasters/usePlanningReadiness.test.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -77,17 +80,23 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
+    n12 --> n0
+    n13 --> n0
     click n0 "../modules/types_gantt.md"
     click n1 "../modules/GanttChart.md"
     click n2 "../modules/GanttBarInputs.md"
     click n3 "../modules/GanttChart.test.md"
     click n4 "../modules/GanttChart.md"
     click n5 "../modules/ScheduleExplanationDetails.md"
-    click n6 "../modules/TaskEditModal.test.md"
-    click n7 "../modules/TaskEditModal.md"
-    click n8 "../modules/usePlanningReadiness.test.md"
-    click n9 "../modules/GanttPage.test.md"
-    click n10 "../modules/GanttPage.md"
+    click n6 "../modules/TaskEditDrawer.test.md"
+    click n7 "../modules/TaskEditDrawer.md"
+    click n8 "../modules/PlanScheduleSection.md"
+    click n9 "../modules/assigneeDisplay.test.md"
+    click n10 "../modules/TaskAssigneeDisplay.md"
+    click n11 "../modules/useTaskAssigneeDisplay.md"
+    click n12 "../modules/scheduleEvidence.md"
+    click n13 "../modules/usePlanningReadiness.test.md"
 ```
 
 ### Summary
@@ -110,8 +119,13 @@ flowchart LR
 | `GanttChart.test` | import | [GanttChart.test](../modules/GanttChart.test.md) | — |
 | `GanttChart` | import | [GanttChart](../modules/GanttChart.md) | — |
 | `ScheduleExplanationDetails` | import | [ScheduleExplanationDetails](../modules/ScheduleExplanationDetails.md) | — |
-| `TaskEditModal.test` | import | [TaskEditModal.test](../modules/TaskEditModal.test.md) | — |
-| `TaskEditModal` | import | [TaskEditModal](../modules/TaskEditModal.md) | — |
+| `TaskEditDrawer.test` | import | [TaskEditDrawer.test](../modules/TaskEditDrawer.test.md) | — |
+| `TaskEditDrawer` | import | [TaskEditDrawer](../modules/TaskEditDrawer.md) | — |
+| `PlanScheduleSection` | import | [PlanScheduleSection](../modules/PlanScheduleSection.md) | — |
+| `assigneeDisplay.test` | import | [assigneeDisplay.test](../modules/assigneeDisplay.test.md) | — |
+| `TaskAssigneeDisplay` | type_reference | [TaskAssigneeDisplay](../modules/TaskAssigneeDisplay.md) | — |
+| `useTaskAssigneeDisplay` | type_reference | [useTaskAssigneeDisplay](../modules/useTaskAssigneeDisplay.md) | — |
+| `scheduleLeaves` | type_reference | [scheduleEvidence](../modules/scheduleEvidence.md) | — |
 | `usePlanningReadiness.test` | import | [usePlanningReadiness.test](../modules/usePlanningReadiness.test.md) | — |
-| `GanttPage.test` | import | [GanttPage.test](../modules/GanttPage.test.md) | — |
-| `GanttPage` | import | [GanttPage](../modules/GanttPage.md) | — |
+
+> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.

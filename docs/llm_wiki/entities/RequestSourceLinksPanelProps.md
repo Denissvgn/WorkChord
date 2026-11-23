@@ -1,6 +1,6 @@
 # RequestSourceLinksPanelProps
 
-**Location:** `frontend/src/components/requestSources/RequestSourceLinksPanel.tsx:20`
+**Location:** `frontend/src/components/requestSources/RequestSourceLinksPanel.tsx:22`
 **Kind:** Interface
 **Bases:** —
 **Module:** [RequestSourceLinksPanel](../modules/RequestSourceLinksPanel.md)

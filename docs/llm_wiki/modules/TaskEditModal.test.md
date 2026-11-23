@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # TaskEditModal.test Module
 
 **Path:** `frontend/src/components/gantt/TaskEditModal.test.tsx`

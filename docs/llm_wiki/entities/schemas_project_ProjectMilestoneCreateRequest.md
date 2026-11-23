@@ -1,6 +1,6 @@
 # ProjectMilestoneCreateRequest
 
-**Location:** `backend/app/schemas/project.py:193`
+**Location:** `backend/app/schemas/project.py:195`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_project](../modules/schemas_project.md)
@@ -19,7 +19,7 @@ API request for creating a project-scoped milestone.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=255 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `target_date` | `Optional[date]` | `target_date` | No | Yes | `None` | — | — | — |
 | `completed_at` | `Optional[datetime]` | `completed_at` | No | Yes | `None` | — | — | — |

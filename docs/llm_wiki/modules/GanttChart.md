@@ -10,29 +10,27 @@ _Auto-generated from `frontend/src/components/gantt/GanttChart.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../features/planningMasters/planningTaskIssues` | `planningIssueTasksHref` | — | compiler-dependent |
+| `../../features/scope/useScopeLink` | `useScopeLink` | — | compiler-dependent |
 | `../../i18n/dateLocale` | `dateFnsLocale` | — | compiler-dependent |
-| `../../services/ganttService` | `ganttService` | — | compiler-dependent |
-| `../../types/gantt` | `GanttTask`, `SchedulePreviewResponse` | Declaration | erased |
+| `../../types/gantt` | `GanttTask` | Declaration | erased |
 | `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
-| `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
-| `../feedback/toast` | `useToast` | — | compiler-dependent |
-| `../ui` | `OverflowMenu`, `SlideOverDrawer` | — | compiler-dependent |
+| `../common/ButtonLink` | `ButtonLink` | — | compiler-dependent |
+| `../tasks/TaskAssigneeDisplay` | `TaskAssigneeDisplay` | — | compiler-dependent |
+| `../ui` | `FilterBar`, `OverflowMenu`, `PageToolbar` | — | compiler-dependent |
+| `../ui/OverflowMenu` | `OverflowMenuItem` | Declaration | erased |
 | `../ui/tone` | `STATUS_TONE`, `toneSolidClassName` | — | compiler-dependent |
 | `./GanttBarInputs` | `GanttBarInputs` | — | compiler-dependent |
-| `./TaskEditModal` | `TaskEditModal` | — | compiler-dependent |
-| `./UnscheduledTasks` | `UnscheduledTasks` | — | compiler-dependent |
-| `@tanstack/react-query` | `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `./TaskEditDrawer` | `TaskEditDrawer` | — | compiler-dependent |
 | `@tanstack/react-virtual` | `useVirtualizer` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
 | `date-fns` | `eachDayOfInterval`, `format`, `isSameDay`, `addDays`, `differenceInCalendarDays`, `parseISO`, `startOfDay` | — | compiler-dependent |
-| `lucide-react` | `RefreshCw`, `ChevronRight`, `ChevronDown`, `ZoomIn`, `ZoomOut`, `Minimize2`, `Maximize2`, `Calendar`, `CalendarOff`, `CalendarRange`, `Crosshair`, `GitBranch`, `ListFilter`, `Eye`, `Pin`, `X`, `UserX`, `ChevronsDownUp`, `ChevronsUpDown` | — | compiler-dependent |
+| `lucide-react` | `ChevronRight`, `ChevronDown`, `ZoomIn`, `ZoomOut`, `Minimize2`, `Maximize2`, `Calendar`, `CalendarOff`, `CalendarRange`, `Crosshair`, `GitBranch`, `ListFilter`, `Pin`, `X`, `UserX`, `ChevronsDownUp`, `ChevronsUpDown` | — | compiler-dependent |
 | `react` | `CSSProperties`, `KeyboardEvent`, `PointerEvent` | Declaration | erased |
 | `react` | `useState`, `useMemo`, `useRef`, `useEffect`, `useCallback`, `useId` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
-| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -61,22 +59,22 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (2) |
+| Inbound | `frontend` (3) |
 | Outbound | `frontend` (14) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 8 | 0 |
+| typescript | 6 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [GanttChartProps](../entities/GanttChartProps.md) | Interface | 26 | — | — |
+| [GanttChartProps](../entities/GanttChartProps.md) | Interface | 24 | — | — |
 | [FlattenedTask](../entities/GanttChart_FlattenedTask.md) | Interface | 71 | `GanttTask` | — |
 | [TaskTimelineDates](../entities/TaskTimelineDates.md) | Interface | 104 | — | — |
 | [GanttGroupBy](../entities/GanttGroupBy.md) | Type alias | 76 | `typeof GROUP_OPTIONS[number]` | — |
@@ -87,4 +85,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `GanttChart` | <pre><code>&#40;&#123;&#10;    iterationId&#44;&#10;    iterationRevision&#44;    startDate&#44;&#10;    endDate&#44;&#10;    tasks&#44;&#10;    weekends&#44;&#10;    holidays&#44;&#10;    memberVacations&#44;&#10;    sandboxMode &#61; false&#44;&#10;    onSaveSandbox&#44;&#10;&#125;&#58; GanttChartProps&#41;</code></pre> | — | — |
+| `GanttChart` | <pre><code>&#40;&#123;&#10;    iterationId&#44;&#10;    hoursPerDay &#61; 8&#44;&#10;    startDate&#44;&#10;    endDate&#44;&#10;    tasks&#44;&#10;    weekends&#44;&#10;    holidays&#44;&#10;    memberVacations&#44;&#10;    sandboxMode &#61; false&#44;&#10;    onSaveSandbox&#44;&#10;    onChartActionsChange&#44;&#10;&#125;&#58; GanttChartProps&#41;</code></pre> | — | — |

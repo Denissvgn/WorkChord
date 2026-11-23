@@ -2,7 +2,16 @@
 
 **Entry point:** `create_absence` (`http`)
 **Source:** [routers_capacity](../modules/routers_capacity.md)
-**Modules touched:** [authority](../modules/authority.md), [capacity_service](../modules/capacity_service.md), [commands](../modules/commands.md), [config](../modules/config.md), [routers_capacity](../modules/routers_capacity.md)
+**Modules touched:** [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), [capacity_service](../modules/capacity_service.md), [commands](../modules/commands.md), and 2 more
+
+**Complete modules touched:**
+
+- [authority](../modules/authority.md)
+- [calendar_rules](../modules/calendar_rules.md)
+- [capacity_service](../modules/capacity_service.md)
+- [commands](../modules/commands.md)
+- [config](../modules/config.md)
+- [routers_capacity](../modules/routers_capacity.md)
 
 ## Call sequence
 
@@ -18,7 +27,7 @@ sequenceDiagram
     participant p4 as CapacityService.require_visible
     participant p5 as get_settings
     participant p6 as internal_authority
-    participant p7 as calendar_signature
+    participant p7 as rule_signature
     participant p8 as AuthorityError
     participant p9 as PlanningConflict
     participant p10 as Settings
@@ -46,7 +55,7 @@ sequenceDiagram
     p1->>p4: CapacityService.require_visible
     p3->>p5: get_settings
     p1->>p6: internal_authority
-    p1->>p7: calendar_signature
+    p1->>p7: rule_signature
     p3->>p8: AuthorityError
     p4->>p9: PlanningConflict
     p5->>p10: Settings
@@ -85,7 +94,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/capacity_service.py:CapacityService.require_visible` | 11 | - | external | 2 |
 | `backend/app/services/capacity_service.py:CapacityService.require_visible` | 11 | [backend/app/authority.py](../modules/authority.md) | internal | 2 |
 | `backend/app/authority.py:internal_authority` | 22 | - | unresolved | 1 |
-| `backend/app/services/capacity_service.py:calendar_signature` | 37 | - | external | 6 |
+| `backend/app/services/calendar_rules.py:rule_signature` | 37 | - | external | 6 |
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -175,17 +184,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_absence | CapacityService | 44 | `CapacityService(db)` |
-| create_absence | service.save_absence | 45 | `service.save_absence(profile_id, data.start_date, data.end_date)` |
-| create_absence | CapacityService.detail | 46 | `service.detail(profile_id)` |
-| CapacityService.detail | CapacityService.require_owner | 101 | `self.require_owner(profile_id)` |
-| CapacityService.require_owner | self.db.info.get (backend/app/services/capa…acityService.require_owner) | 32 | `self.db.info.get('authority')` |
-| CapacityService.require_owner | get_settings | 34 | `get_settings(data not statically known)` |
+| create_absence | CapacityService | 45 | `CapacityService(db)` |
+| create_absence | service.save_absence | 46 | `service.save_absence(profile_id, data.start_date, data.end_date)` |
+| create_absence | CapacityService.detail | 47 | `service.detail(profile_id)` |
+| CapacityService.detail | CapacityService.require_owner | 220 | `self.require_owner(profile_id)` |
+| CapacityService.require_owner | self.db.info.get (backend/app/services/capa…acityService.require_owner) | 108 | `self.db.info.get('authority')` |
+| CapacityService.require_owner | get_settings | 110 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |
-| CapacityService.require_owner | AuthorityError | 35 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
-| CapacityService.require_owner | AuthorityError | 38 | `AuthorityError('profile_owner_required', 'Only this person or an operator can manage their availability.')` |
-| CapacityService.detail | CapacityService.require_visible | 102 | `self.require_visible(profile_id)` |
-| CapacityService.require_visible | self.db.info.get (backend/app/services/capa…ityService.require_visible) | 41 | `self.db.info.get('authority')` |
+| CapacityService.require_owner | AuthorityError | 111 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
+| CapacityService.require_owner | AuthorityError | 114 | `AuthorityError('profile_owner_required', 'Only this person or an operator can manage their availability.')` |
+| CapacityService.detail | CapacityService.require_visible | 221 | `self.require_visible(profile_id)` |
+| CapacityService.require_visible | self.db.info.get (backend/app/services/capa…ityService.require_visible) | 117 | `self.db.info.get('authority')` |
 
 ### Boundary effects
 
@@ -195,9 +204,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_absence` | `service.save_absence` | 45 |
-| unresolved_call | `CapacityService.require_owner` | `self.db.info.get` | 32 |
-| unresolved_call | `CapacityService.require_visible` | `self.db.info.get` | 41 |
+| unresolved_call | `create_absence` | `service.save_absence` | 46 |
+| unresolved_call | `CapacityService.require_owner` | `self.db.info.get` | 108 |
+| unresolved_call | `CapacityService.require_visible` | `self.db.info.get` | 117 |
 | step_limit | `create_absence` | `first 12 steps` | 0 |
 
 ## Behavior

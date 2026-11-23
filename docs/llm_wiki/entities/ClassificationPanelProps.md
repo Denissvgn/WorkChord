@@ -1,13 +1,13 @@
 # ClassificationPanelProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1501`
+**Location:** `frontend/src/components/triage/TriageSuggestions.tsx:140`
 **Kind:** Interface
 **Bases:** —
-**Module:** [TriagePage](../modules/TriagePage.md)
+**Module:** [TriageSuggestions](../modules/TriageSuggestions.md)
 
 ## Description
 
-_Auto-generated from `ClassificationPanelProps` in `frontend/src/pages/TriagePage.tsx`._
+_Auto-generated from `ClassificationPanelProps` in `frontend/src/components/triage/TriageSuggestions.tsx`._
 
 ## Attributes
 
@@ -29,10 +29,23 @@ _Auto-generated from `ClassificationPanelProps` in `frontend/src/pages/TriagePag
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-*No generated relationships detected.*
+```mermaid
+flowchart LR
+    n0["ClassificationPanelProps (frontend/src/components/triage/TriageSuggestions.tsx)"]
+    n1["ClassificationPanel (frontend/src/components/triage/TriageSuggestions.tsx)"]
+    n1 --> n0
+    click n0 "../modules/TriageSuggestions.md"
+    click n1 "../modules/TriageSuggestions.md"
+```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TriagePage](../modules/TriagePage.md) | 0 | `classifyError`, `error`, `isClassifying`, `isError`, `isLoading`, `onClassify`, `onRetry`, `suggestions` |
+| [TriageSuggestions](../modules/TriageSuggestions.md) | 0 | `classifyError`, `error`, `isClassifying`, `isError`, `isLoading`, `onClassify`, `onRetry`, `suggestions` |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `ClassificationPanel` | type_reference | [TriageSuggestions](../modules/TriageSuggestions.md) | — |

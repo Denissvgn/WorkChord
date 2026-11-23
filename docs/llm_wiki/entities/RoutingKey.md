@@ -1,6 +1,6 @@
 # RoutingKey
 
-**Location:** `backend/app/schemas/agent_routing.py:58`
+**Location:** `backend/app/schemas/agent_routing.py:59`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [agent_routing](../modules/agent_routing.md)

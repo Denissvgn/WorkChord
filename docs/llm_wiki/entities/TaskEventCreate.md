@@ -1,6 +1,6 @@
 # TaskEventCreate
 
-**Location:** `backend/app/schemas/agent.py:306`
+**Location:** `backend/app/schemas/agent.py:322`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -26,12 +26,12 @@ Request to append a task event.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `event_type` | `str` | `event_type` | Yes | No | — | max_length=100; min_length=1 | — | — |
+| `event_type` | `str` | `event_type` | Yes | No | — | min_length=1; max_length=100 | — | — |
 | `payload` | `dict[str, Any]` | `payload` | No | No | factory: `dict` | max_length=unknown (MAX_AGENT_JSON_FIELDS) | — | — |
 | `trace_id` | `Optional[str]` | `trace_id` | No | Yes | `None` | max_length=255 | — | — |
 | `span_id` | `Optional[str]` | `span_id` | No | Yes | `None` | max_length=255 | — | — |
 | `correlation_id` | `Optional[str]` | `correlation_id` | No | Yes | `None` | max_length=255 | — | — |
-| `claim_id` | `Optional[str]` | `claim_id` | No | Yes | `None` | max_length=64; min_length=16 | — | — |
+| `claim_id` | `Optional[str]` | `claim_id` | No | Yes | `None` | min_length=16; max_length=64 | — | — |
 | `claim_generation` | `Optional[int]` | `claim_generation` | No | Yes | `None` | ge=1 | — | — |
 
 ## Methods
@@ -52,16 +52,19 @@ flowchart LR
     n3["append_task_event (backend/app/routers/agent.py)"]
     n4["AgentService._task_event_matches (backend/app/services/agent_service.py)"]
     n5["AgentService.append_task_event (backend/app/services/agent_service.py)"]
+    n6["_require_original_private_fence (backend/app/services/retained_planning_output.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
+    n6 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
     click n4 "../modules/agent_service.md"
     click n5 "../modules/agent_service.md"
+    click n6 "../modules/retained_planning_output.md"
 ```
 
 ### Summary
@@ -84,3 +87,4 @@ flowchart LR
 | `append_task_event` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `AgentService._task_event_matches` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `AgentService.append_task_event` | type_reference | [agent_service](../modules/agent_service.md) | — |
+| `_require_original_private_fence` | call | [retained_planning_output](../modules/retained_planning_output.md) | 1 |

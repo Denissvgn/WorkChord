@@ -10,6 +10,7 @@ Displays delivery readiness and adds or removes typed prerequisites using the de
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../../services/api` | `api` | — | compiler-dependent |
 | `../../services/projectService` | `projectService` | — | compiler-dependent |
@@ -36,54 +37,59 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
-    n1["frontend/src/components/feedback/QueryState.tsx"]
-    n2["frontend/src/components/tasks/DeliveryDependencies.tsx"]
-    n3["frontend/src/components/tasks/TaskForm.tsx"]
-    n4["frontend/src/components/tasks/TaskReadView.tsx"]
-    n5["frontend/src/features/mutationFeedback.ts"]
-    n6["frontend/src/services/api.ts"]
-    n7["frontend/src/services/projectService.ts"]
-    n8["frontend/src/services/taskService.ts"]
-    n9["frontend/src/types/task.ts"]
-    n10["frontend/src/utils/apiError.ts"]
-    n1 --> n0
-    n1 --> n10
+    n1["frontend/src/components/common/Select.tsx"]
+    n2["frontend/src/components/feedback/QueryState.tsx"]
+    n3["frontend/src/components/tasks/DeliveryDependencies.tsx"]
+    n4["frontend/src/components/tasks/TaskForm.tsx"]
+    n5["frontend/src/components/tasks/TaskReadView.tsx"]
+    n6["frontend/src/features/mutationFeedback.ts"]
+    n7["frontend/src/services/api.ts"]
+    n8["frontend/src/services/projectService.ts"]
+    n9["frontend/src/services/taskService.ts"]
+    n10["frontend/src/types/task.ts"]
+    n11["frontend/src/utils/apiError.ts"]
     n2 --> n0
-    n2 --> n1
-    n2 --> n5
-    n2 --> n6
-    n2 --> n7
-    n2 --> n8
-    n2 --> n9
-    n2 --> n10
+    n2 --> n11
     n3 --> n0
     n3 --> n1
     n3 --> n2
-    n3 --> n5
+    n3 --> n6
     n3 --> n7
     n3 --> n8
     n3 --> n9
     n3 --> n10
+    n3 --> n11
     n4 --> n0
+    n4 --> n1
     n4 --> n2
+    n4 --> n3
+    n4 --> n6
     n4 --> n8
     n4 --> n9
     n4 --> n10
-    n7 --> n6
-    n7 --> n9
-    n8 --> n6
-    n8 --> n9
+    n4 --> n11
+    n5 --> n0
+    n5 --> n3
+    n5 --> n6
+    n5 --> n9
+    n5 --> n10
+    n5 --> n11
+    n8 --> n7
+    n8 --> n10
+    n9 --> n7
+    n9 --> n10
     click n0 "../modules/Button.md"
-    click n1 "../modules/QueryState.md"
-    click n2 "../modules/DeliveryDependencies.md"
-    click n3 "../modules/TaskForm.md"
-    click n4 "../modules/TaskReadView.md"
-    click n5 "../modules/mutationFeedback.md"
-    click n6 "../modules/api.md"
-    click n7 "../modules/projectService.md"
-    click n8 "../modules/taskService.md"
-    click n9 "../modules/types_task.md"
-    click n10 "../modules/apiError.md"
+    click n1 "../modules/Select.md"
+    click n2 "../modules/QueryState.md"
+    click n3 "../modules/DeliveryDependencies.md"
+    click n4 "../modules/TaskForm.md"
+    click n5 "../modules/TaskReadView.md"
+    click n6 "../modules/mutationFeedback.md"
+    click n7 "../modules/api.md"
+    click n8 "../modules/projectService.md"
+    click n9 "../modules/taskService.md"
+    click n10 "../modules/types_task.md"
+    click n11 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
@@ -93,6 +99,7 @@ flowchart LR
 | Inbound | [TaskForm](../modules/TaskForm.md) |
 | Inbound | [TaskReadView](../modules/TaskReadView.md) |
 | Outbound | [Button](../modules/Button.md) |
+| Outbound | [Select](../modules/Select.md) |
 | Outbound | [QueryState](../modules/QueryState.md) |
 | Outbound | [mutationFeedback](../modules/mutationFeedback.md) |
 | Outbound | [api](../modules/api.md) |
@@ -111,7 +118,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Dependency](../entities/Dependency.md) | Interface | 13 | — | — |
+| [Dependency](../entities/Dependency.md) | Interface | 14 | — | — |
 
 ## Functions
 

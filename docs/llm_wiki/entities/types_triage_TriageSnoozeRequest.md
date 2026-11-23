@@ -26,13 +26,16 @@ _Auto-generated from `TriageSnoozeRequest` in `frontend/src/types/triage.ts`._
 ```mermaid
 flowchart LR
     n0["TriageSnoozeRequest (frontend/src/types/triage.ts)"]
-    n1["frontend/src/pages/TriagePage.tsx"]
-    n2["frontend/src/services/triageService.ts"]
+    n1["frontend/src/components/triage/TriageActionModal.tsx"]
+    n2["frontend/src/pages/TriagePage.tsx"]
+    n3["frontend/src/services/triageService.ts"]
     n1 --> n0
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/types_triage.md"
-    click n1 "../modules/TriagePage.md"
-    click n2 "../modules/triageService.md"
+    click n1 "../modules/TriageActionModal.md"
+    click n2 "../modules/TriagePage.md"
+    click n3 "../modules/triageService.md"
 ```
 
 ### Summary
@@ -45,5 +48,6 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `TriageActionModal` | import | [TriageActionModal](../modules/TriageActionModal.md) | — |
 | `TriagePage` | import | [TriagePage](../modules/TriagePage.md) | — |
 | `triageService` | import | [triageService](../modules/triageService.md) | — |

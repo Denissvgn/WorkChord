@@ -13,7 +13,7 @@ Calendar model.
 | `app.database` | `Base` |
 | `app.models.iteration` | `Iteration` |
 | `datetime` | `date` |
-| `sqlalchemy` | `JSON`, `Float`, `Integer`, `String` |
+| `sqlalchemy` | `JSON`, `Column`, `Float`, `ForeignKey`, `Integer`, `String`, `Table` |
 | `sqlalchemy.orm` | `Mapped`, `mapped_column`, `relationship` |
 | `typing` | `TYPE_CHECKING` |
 
@@ -37,7 +37,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (28) |
+| Inbound | `backend` (35) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (2) |
 
@@ -47,10 +47,10 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 37 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [Calendar](../entities/models_calendar_Calendar.md) | 14 | `Base` | Production calendar model. |
+| [Calendar](../entities/models_calendar_Calendar.md) | 27 | `Base` | Production calendar model. |

@@ -1,6 +1,6 @@
 # TemplateFormState
 
-**Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:38`
+**Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:40`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TemplateLabelSettings](../modules/TemplateLabelSettings.md)
@@ -19,7 +19,7 @@ _Auto-generated from `TemplateFormState` in `frontend/src/components/settings/Te
 | `default_title` | `string` | Yes | — | — |
 | `default_description` | `string` | Yes | — | — |
 | `default_priority` | `string` | Yes | — | — |
-| `default_effort_days` | `string` | Yes | — | — |
+| `default_effort_hours` | `string` | Yes | — | — |
 | `default_labels` | `string[]` | Yes | — | — |
 | `default_checklist` | `string` | Yes | — | — |
 | `default_payload` | `string` | Yes | — | — |
@@ -39,4 +39,4 @@ _Auto-generated from `TemplateFormState` in `frontend/src/components/settings/Te
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TemplateLabelSettings](../modules/TemplateLabelSettings.md) | 0 | `default_checklist`, `default_description`, `default_effort_days`, `default_labels`, `default_payload`, `default_priority`, `default_title`, `description`, `is_active`, `name`, `sort_order`, `template_type` |
+| [TemplateLabelSettings](../modules/TemplateLabelSettings.md) | 0 | `default_checklist`, `default_description`, `default_effort_hours`, `default_labels`, `default_payload`, `default_priority`, `default_title`, `description`, `is_active`, `name`, `sort_order`, `template_type` |

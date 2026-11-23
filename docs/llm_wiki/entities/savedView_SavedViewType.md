@@ -25,23 +25,10 @@ _Auto-generated from `SavedViewType` in `frontend/src/types/savedView.ts`._
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-```mermaid
-flowchart LR
-    n0["SavedViewType (frontend/src/types/savedView.ts)"]
-    n1["frontend/src/components/dashboard/SavedViewDashboardCards.tsx"]
-    n1 --> n0
-    click n0 "../modules/savedView.md"
-    click n1 "../modules/SavedViewDashboardCards.md"
-```
+*No generated relationships detected.*
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
 | [savedView](../modules/savedView.md) | 0 | — |
-
-### References
-
-| Reference | Kind | Source | Call sites |
-|---|---|---|---:|
-| `SavedViewDashboardCards` | import | [SavedViewDashboardCards](../modules/SavedViewDashboardCards.md) | — |

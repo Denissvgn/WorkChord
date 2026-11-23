@@ -1,6 +1,6 @@
 # AgentTaskAssignment
 
-**Location:** `backend/app/models/agent.py:850`
+**Location:** `backend/app/models/agent.py:865`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)
@@ -28,6 +28,7 @@ Durable delegation of task execution or verification to one actor.
 | `model_binding_id` | `Mapped[Optional[int]]` | `mapped_column(Integer, ForeignKey('agent_model_bindings.id', ondelete='RESTRICT'), nullable=True, index=True)` | — |
 | `model_binding_revision` | `Mapped[Optional[int]]` | `mapped_column(Integer, nullable=True)` | — |
 | `routing_snapshot` | `Mapped[str]` | `mapped_column(Text, default='{}', nullable=False)` | — |
+| `review_selection` | `Mapped[Optional[dict]]` | `mapped_column(JSON(none_as_null=True))` | — |
 | `reason` | `Mapped[Optional[str]]` | `mapped_column(Text, nullable=True)` | — |
 | `created_at` | `Mapped[datetime]` | `mapped_column(UTCDateTime(), default=utc_now, nullable=False, index=True)` | — |
 | `updated_at` | `Mapped[datetime]` | `mapped_column(UTCDateTime(), default=utc_now, onupdate=utc_now, nullable=False)` | — |
@@ -120,4 +121,4 @@ flowchart LR
 | `AgentRoutingService.validate_assignment_selection` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `agent_service` | import | [agent_service](../modules/agent_service.md) | — |
 
-> References: showing 12 of 62 logical references; 50 omitted by the 12-row generated summary limit.
+> References: showing 12 of 91 logical references; 79 omitted by the 12-row generated summary limit.

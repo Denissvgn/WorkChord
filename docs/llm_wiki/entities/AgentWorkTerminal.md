@@ -1,6 +1,6 @@
 # AgentWorkTerminal
 
-**Location:** `backend/app/schemas/agent.py:1071`
+**Location:** `backend/app/schemas/agent.py:1169`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -19,15 +19,19 @@ Atomically fail or cancel an active assignment.
 
 | Method | Scope | Fields | Mode | Options |
 |--------|-------|--------|------|---------|
+| `validate_retained_commits` | field | commit_urls | after | — |
 | `validate_evidence_size` | field | evidence | after | — |
 
 ## Attributes
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `observed_model` | `str \| None` | `observed_model` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `output_state` | `Literal['no_output', 'retained'] \| None` | `output_state` | No | Yes | `None` | — | — | — |
+| `commit_urls` | `list[str]` | `commit_urls` | No | No | factory: `list` | max_length=unknown (MAX_AGENT_ARTIFACT_LINKS) | — | — |
 | `assignment_id` | `int` | `assignment_id` | Yes | No | — | — | — | — |
 | `run_id` | `int` | `run_id` | Yes | No | — | — | — | — |
-| `claim_id` | `str` | `claim_id` | Yes | No | — | max_length=64; min_length=16 | — | — |
+| `claim_id` | `str` | `claim_id` | Yes | No | — | min_length=16; max_length=64 | — | — |
 | `claim_generation` | `int` | `claim_generation` | Yes | No | — | ge=1 | — | — |
 | `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1 | — | — |
 | `status` | `Literal['failed', 'canceled']` | `status` | Yes | No | — | — | — | — |
@@ -39,6 +43,7 @@ Atomically fail or cancel an active assignment.
 
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
+| `validate_retained_commits` | `(value)` | `@field_validator('commit_urls')`, `@classmethod` | — |
 | `validate_evidence_size` | `(value: dict[str, Any]) -> dict[str, Any]` | `@field_validator('evidence')`, `@classmethod` | — |
 
 ## Relationships
@@ -77,7 +82,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 1 | `assignment_id`, `claim_generation`, `claim_id`, `error`, `evidence`, `expected_task_version`, `run_id`, `status`, `summary` |
+| [schemas_agent](../modules/schemas_agent.md) | 2 | `assignment_id`, `claim_generation`, `claim_id`, `commit_urls`, `error`, `evidence`, `expected_task_version`, `observed_model`, `output_state`, `run_id`, `status`, `summary` |
 
 ### Structure
 

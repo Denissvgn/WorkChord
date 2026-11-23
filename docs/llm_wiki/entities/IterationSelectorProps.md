@@ -1,3 +1,5 @@
+> ⚠️ **Stale:** Source no longer found in codebase. Run `llm-wiki lint` to audit.
+
 # IterationSelectorProps
 
 **Location:** `frontend/src/components/iteration/IterationSelector.tsx:10`

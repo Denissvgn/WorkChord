@@ -1,13 +1,13 @@
 # DuplicateSuggestionsPanelProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1377`
+**Location:** `frontend/src/components/triage/TriageSuggestions.tsx:16`
 **Kind:** Interface
 **Bases:** —
-**Module:** [TriagePage](../modules/TriagePage.md)
+**Module:** [TriageSuggestions](../modules/TriageSuggestions.md)
 
 ## Description
 
-_Auto-generated from `DuplicateSuggestionsPanelProps` in `frontend/src/pages/TriagePage.tsx`._
+_Auto-generated from `DuplicateSuggestionsPanelProps` in `frontend/src/components/triage/TriageSuggestions.tsx`._
 
 ## Attributes
 
@@ -29,10 +29,23 @@ _Auto-generated from `DuplicateSuggestionsPanelProps` in `frontend/src/pages/Tri
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-*No generated relationships detected.*
+```mermaid
+flowchart LR
+    n0["DuplicateSuggestionsPanelProps (frontend/src/components/triage/TriageSuggestions.tsx)"]
+    n1["DuplicateSuggestionsPanel (frontend/src/components/triage/TriageSuggestions.tsx)"]
+    n1 --> n0
+    click n0 "../modules/TriageSuggestions.md"
+    click n1 "../modules/TriageSuggestions.md"
+```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TriagePage](../modules/TriagePage.md) | 0 | `error`, `isError`, `isLoading`, `iterationsById`, `onMarkSuggestion`, `onRetry`, `projectsById`, `suggestions` |
+| [TriageSuggestions](../modules/TriageSuggestions.md) | 0 | `error`, `isError`, `isLoading`, `iterationsById`, `onMarkSuggestion`, `onRetry`, `projectsById`, `suggestions` |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `DuplicateSuggestionsPanel` | type_reference | [TriageSuggestions](../modules/TriageSuggestions.md) | — |

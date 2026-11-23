@@ -1,6 +1,6 @@
 # TaskDetail
 
-**Location:** `frontend/src/types/task.ts:472`
+**Location:** `frontend/src/types/task.ts:474`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -31,22 +31,28 @@ _Auto-generated from `TaskDetail` in `frontend/src/types/task.ts`._
 ```mermaid
 flowchart LR
     n0["TaskDetail (frontend/src/types/task.ts)"]
-    n1["frontend/src/components/gantt/TaskEditModal.test.tsx"]
-    n2["frontend/src/components/tasks/CurrentTaskModal.test.tsx"]
+    n1["frontend/src/components/gantt/TaskEditDrawer.test.tsx"]
+    n2["frontend/src/components/tasks/CurrentTaskDrawer.test.tsx"]
     n3["TaskContextSummary (frontend/src/components/tasks/TaskContextSummary.tsx)"]
-    n4["frontend/src/components/tasks/TaskEditorDrawer.test.tsx"]
-    n5["frontend/src/services/taskService.ts"]
+    n4["frontend/src/components/tasks/TaskEditorDrawer.flow.test.tsx"]
+    n5["frontend/src/components/tasks/TaskEditorDrawer.test.tsx"]
+    n6["frontend/src/services/taskService.ts"]
+    n7["taskDetailResponse (frontend/src/test/fixtures/taskDetail.ts)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
+    n6 --> n0
+    n7 --> n0
     click n0 "../modules/types_task.md"
-    click n1 "../modules/TaskEditModal.test.md"
-    click n2 "../modules/CurrentTaskModal.test.md"
+    click n1 "../modules/TaskEditDrawer.test.md"
+    click n2 "../modules/CurrentTaskDrawer.test.md"
     click n3 "../modules/TaskContextSummary.md"
-    click n4 "../modules/TaskEditorDrawer.test.md"
-    click n5 "../modules/taskService.md"
+    click n4 "../modules/TaskEditorDrawer.flow.test.md"
+    click n5 "../modules/TaskEditorDrawer.test.md"
+    click n6 "../modules/taskService.md"
+    click n7 "../modules/taskDetail.md"
 ```
 
 ### Summary
@@ -59,8 +65,10 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `TaskEditModal.test` | import | [TaskEditModal.test](../modules/TaskEditModal.test.md) | — |
-| `CurrentTaskModal.test` | import | [CurrentTaskModal.test](../modules/CurrentTaskModal.test.md) | — |
+| `TaskEditDrawer.test` | import | [TaskEditDrawer.test](../modules/TaskEditDrawer.test.md) | — |
+| `CurrentTaskDrawer.test` | import | [CurrentTaskDrawer.test](../modules/CurrentTaskDrawer.test.md) | — |
 | `TaskContextSummary` | type_reference | [TaskContextSummary](../modules/TaskContextSummary.md) | — |
+| `TaskEditorDrawer.flow.test` | import | [TaskEditorDrawer.flow.test](../modules/TaskEditorDrawer.flow.test.md) | — |
 | `TaskEditorDrawer.test` | import | [TaskEditorDrawer.test](../modules/TaskEditorDrawer.test.md) | — |
 | `taskService` | import | [taskService](../modules/taskService.md) | — |
+| `taskDetailResponse` | type_reference | [taskDetail](../modules/taskDetail.md) | — |

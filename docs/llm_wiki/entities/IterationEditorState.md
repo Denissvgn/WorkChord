@@ -1,6 +1,6 @@
 # IterationEditorState
 
-**Location:** `frontend/src/components/projects/ProjectIterationsSection.tsx:25`
+**Location:** `frontend/src/components/projects/ProjectIterationsSection.tsx:26`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [ProjectIterationsSection](../modules/ProjectIterationsSection.md)

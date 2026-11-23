@@ -38,8 +38,8 @@ _Auto-generated from `Release` in `frontend/src/types/release.ts`._
 flowchart LR
     n0["Release (frontend/src/types/release.ts)"]
     n1["WorkMetrics (frontend/src/types/workMetrics.ts)"]
-    n2["ReleaseForm (frontend/src/components/releases/ReleaseForm.tsx)"]
-    n3["frontend/src/pages/ProjectDetailPage.tsx"]
+    n2["ProjectReleasesTab (frontend/src/components/projects/ProjectReleasesTab.tsx)"]
+    n3["ReleaseForm (frontend/src/components/releases/ReleaseForm.tsx)"]
     n4["frontend/src/pages/ProjectReleaseDetailPage.tsx"]
     n5["frontend/src/services/releaseService.ts"]
     n0 --> n1
@@ -49,8 +49,8 @@ flowchart LR
     n5 --> n0
     click n0 "../modules/types_release.md"
     click n1 "../modules/workMetrics.md"
-    click n2 "../modules/ReleaseForm.md"
-    click n3 "../modules/ProjectDetailPage.md"
+    click n2 "../modules/ProjectReleasesTab.md"
+    click n3 "../modules/ReleaseForm.md"
     click n4 "../modules/ProjectReleaseDetailPage.md"
     click n5 "../modules/releaseService.md"
 ```
@@ -71,7 +71,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `ProjectReleasesTab` | type_reference | [ProjectReleasesTab](../modules/ProjectReleasesTab.md) | — |
 | `ReleaseForm` | type_reference | [ReleaseForm](../modules/ReleaseForm.md) | — |
-| `ProjectDetailPage` | import | [ProjectDetailPage](../modules/ProjectDetailPage.md) | — |
 | `ProjectReleaseDetailPage` | import | [ProjectReleaseDetailPage](../modules/ProjectReleaseDetailPage.md) | — |
 | `releaseService` | import | [releaseService](../modules/releaseService.md) | — |

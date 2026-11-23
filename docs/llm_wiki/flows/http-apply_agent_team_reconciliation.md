@@ -136,17 +136,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| apply_agent_team_reconciliation | AgentPlanningCommandContext | 533 | `AgentPlanningCommandContext(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
-| apply_agent_team_reconciliation | service.apply | 538 | `service.apply(actor, data, command=command)` |
-| apply_agent_team_reconciliation | _handle_agent_error | 540 | `_handle_agent_error(exc, structured=True)` |
-| _handle_agent_error | isinstance | 326 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 328 | `str(exc)` |
+| apply_agent_team_reconciliation | AgentPlanningCommandContext | 535 | `AgentPlanningCommandContext(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| apply_agent_team_reconciliation | service.apply | 540 | `service.apply(actor, data, command=command)` |
+| apply_agent_team_reconciliation | _handle_agent_error | 542 | `_handle_agent_error(exc, structured=True)` |
+| _handle_agent_error | isinstance | 328 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 330 | `str(exc)` |
-| _handle_agent_error | HTTPException | 332 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
-| _handle_agent_error | isinstance | 333 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 334 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 334 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 335 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| _handle_agent_error | str | 332 | `str(exc)` |
+| _handle_agent_error | HTTPException | 334 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
+| _handle_agent_error | isinstance | 335 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException | 336 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 336 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 337 | `isinstance(exc, AgentTeamSetupConflictError)` |
 
 ### Boundary effects
 
@@ -156,13 +156,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `apply_agent_team_reconciliation` | `service.apply` | 538 |
-| external_call | `_handle_agent_error` | `isinstance` | 326 |
-| external_call | `_handle_agent_error` | `HTTPException` | 332 |
-| external_call | `_handle_agent_error` | `isinstance` | 333 |
+| unresolved_call | `apply_agent_team_reconciliation` | `service.apply` | 540 |
+| external_call | `_handle_agent_error` | `isinstance` | 328 |
 | external_call | `_handle_agent_error` | `HTTPException` | 334 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 334 |
 | external_call | `_handle_agent_error` | `isinstance` | 335 |
+| external_call | `_handle_agent_error` | `HTTPException` | 336 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 336 |
+| external_call | `_handle_agent_error` | `isinstance` | 337 |
 | step_limit | `apply_agent_team_reconciliation` | `first 12 steps` | 0 |
 
 ## Behavior

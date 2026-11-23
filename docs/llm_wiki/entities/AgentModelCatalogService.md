@@ -1,6 +1,6 @@
 # AgentModelCatalogService
 
-**Location:** `backend/app/services/agent_model_catalog_service.py:84`
+**Location:** `backend/app/services/agent_model_catalog_service.py:85`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md)
@@ -19,6 +19,7 @@ Expose secret-free reads and replay-safe admin model mutations.
 |--------|-----------|------------|-------------|
 | `__init__` | `(db: AsyncSession)` | — | — |
 | `_require_read` | `(actor: AgentActor) -> None` | `@staticmethod` | — |
+| `_audit_actor` | `(principal: AgentActor) -> dict[str, Any]` | `@staticmethod` | — |
 | `_request_hash` | `(payload: dict[str, Any]) -> str` | `@staticmethod` | — |
 | `_audited_request` | `(data: Any, command: AgentPlanningCommandContext) -> dict[str, Any]` | `@staticmethod` | — |
 | `_replay` | *(async)* `(*, actor_id: int, operation: str, target_type: str, idempotency_target_id: int, idempotency_key: str, request_payload: dict[str, Any]) -> AgentModelMutationReceipt \| None` | — | — |
@@ -96,7 +97,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | 29 | — |
+| [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | 30 | — |
 
 ### References
 
@@ -115,4 +116,4 @@ flowchart LR
 | `create_agent_model_binding` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
 | `create_agent_model_catalog_entry` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
 
-> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.
+> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.

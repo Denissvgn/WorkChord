@@ -127,13 +127,13 @@ flowchart LR
 |---|---|---:|---|
 | get_iteration_status_history | IterationService | 1043 | `IterationService(db)` |
 | get_iteration_status_history | IterationService.get_by_id | 1044 | `iteration_service.get_by_id(iteration_id)` |
-| IterationService.get_by_id | self.db.execute | 323 | `self.db.execute(...)` |
-| IterationService.get_by_id | select(…).options(…).where | 324 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
-| IterationService.get_by_id | select(…).options | 324 | `select(Iteration).options(selectinload(...), selectinload(...))` |
-| IterationService.get_by_id | select | 324 | `select(Iteration)` |
-| IterationService.get_by_id | selectinload | 326 | `selectinload(Iteration.calendar)` |
-| IterationService.get_by_id | selectinload | 327 | `selectinload(Iteration.project)` |
-| IterationService.get_by_id | result.scalar_one_or_none | 331 | `result.scalar_one_or_none(data not statically known)` |
+| IterationService.get_by_id | self.db.execute | 338 | `self.db.execute(...)` |
+| IterationService.get_by_id | select(…).options(…).where | 339 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
+| IterationService.get_by_id | select(…).options | 339 | `select(Iteration).options(selectinload(...), selectinload(...))` |
+| IterationService.get_by_id | select | 339 | `select(Iteration)` |
+| IterationService.get_by_id | selectinload | 341 | `selectinload(Iteration.calendar)` |
+| IterationService.get_by_id | selectinload | 342 | `selectinload(Iteration.project)` |
+| IterationService.get_by_id | result.scalar_one_or_none | 346 | `result.scalar_one_or_none(data not statically known)` |
 | get_iteration_status_history | HTTPException | 1046 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 | get_iteration_status_history | service.get_iteration_status_history | 1051 | `service.get_iteration_status_history(iteration_id)` |
 
@@ -145,13 +145,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 323 |
-| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 324 |
-| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 324 |
-| external_call | `IterationService.get_by_id` | `select` | 324 |
-| external_call | `IterationService.get_by_id` | `selectinload` | 326 |
-| external_call | `IterationService.get_by_id` | `selectinload` | 327 |
-| unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 331 |
+| unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 338 |
+| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 339 |
+| unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 339 |
+| external_call | `IterationService.get_by_id` | `select` | 339 |
+| external_call | `IterationService.get_by_id` | `selectinload` | 341 |
+| external_call | `IterationService.get_by_id` | `selectinload` | 342 |
+| unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 346 |
 | external_call | `get_iteration_status_history` | `HTTPException` | 1046 |
 | unresolved_call | `get_iteration_status_history` | `service.get_iteration_status_history` | 1051 |
 | step_limit | `get_iteration_status_history` | `first 12 steps` | 0 |

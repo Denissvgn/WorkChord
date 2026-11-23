@@ -1,9 +1,9 @@
 # ProjectUpdateFormStore
 
-**Location:** `frontend/src/pages/ProjectDetailPage.tsx:171`
+**Location:** `frontend/src/components/projects/projectDetailShared.ts:101`
 **Kind:** Type alias
 **Bases:** —
-**Module:** [ProjectDetailPage](../modules/ProjectDetailPage.md)
+**Module:** [projectDetailShared](../modules/projectDetailShared.md)
 **Target:**
 
 ```typescript
@@ -15,7 +15,7 @@
 
 ## Description
 
-_Auto-generated from `ProjectUpdateFormStore` in `frontend/src/pages/ProjectDetailPage.tsx`._
+_Auto-generated from `ProjectUpdateFormStore` in `frontend/src/components/projects/projectDetailShared.ts`._
 
 ## Attributes
 
@@ -28,10 +28,23 @@ _Auto-generated from `ProjectUpdateFormStore` in `frontend/src/pages/ProjectDeta
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-*No generated relationships detected.*
+```mermaid
+flowchart LR
+    n0["ProjectUpdateFormStore (frontend/src/components/projects/projectDetailShared.ts)"]
+    n1["frontend/src/pages/ProjectDetailPage.tsx"]
+    n1 --> n0
+    click n0 "../modules/projectDetailShared.md"
+    click n1 "../modules/ProjectDetailPage.md"
+```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [ProjectDetailPage](../modules/ProjectDetailPage.md) | 0 | — |
+| [projectDetailShared](../modules/projectDetailShared.md) | 0 | — |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `ProjectDetailPage` | import | [ProjectDetailPage](../modules/ProjectDetailPage.md) | — |

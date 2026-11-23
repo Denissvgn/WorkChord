@@ -16,13 +16,13 @@ _Auto-generated from `TriageConvertToTaskRequest` in `backend/app/schemas/triage
 | `brief` | `Optional[TaskBrief]` | `brief` | No | Yes | `None` | — | — | — |
 | `owner_profile_id` | `Optional[int]` | `owner_profile_id` | No | Yes | `None` | ge=1 | — | — |
 | `iteration_id` | `int` | `iteration_id` | Yes | No | — | — | — | — |
-| `title` | `Optional[str]` | `title` | No | Yes | `None` | max_length=500; min_length=1 | — | — |
+| `title` | `Optional[str]` | `title` | No | Yes | `None` | min_length=1; max_length=500 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
 | `assignee_id` | `Optional[int]` | `assignee_id` | No | Yes | `None` | — | — | — |
 | `priority` | `Optional[int]` | `priority` | No | Yes | `None` | ge=1; le=10 | — | — |
 | `tags` | `Optional[list[str]]` | `tags` | No | Yes | `None` | — | — | — |
-| `effort_days` | `Optional[float]` | `effort_days` | No | Yes | `None` | allow_inf_nan=False; ge=0 | — | — |
+| `effort_days` | `Optional[float]` | `effort_days` | No | Yes | `None` | ge=0; allow_inf_nan=False | — | — |
 | `effort_hours` | `Optional[float]` | `effort_hours` | No | Yes | `None` | — | — | — |
 | `depends_on` | `list[int]` | `depends_on` | No | No | factory: `list` | — | — | Task IDs |
 | `scope` | `list[str]` | `scope` | No | No | factory: `list` | — | — | — |

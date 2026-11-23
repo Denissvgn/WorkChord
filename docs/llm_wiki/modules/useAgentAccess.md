@@ -26,23 +26,29 @@ _Auto-generated from `frontend/src/hooks/useAgentAccess.ts`._
 flowchart LR
     n0["frontend/src/components/agent/TaskRoutingPanel.tsx"]
     n1["frontend/src/components/settings/AgentAccessPanel.tsx"]
-    n2["frontend/src/components/settings/AgentModelAdministration.tsx"]
-    n3["frontend/src/hooks/useAgentAccess.ts"]
-    n4["frontend/src/pages/AgentPipelinePage.tsx"]
-    n5["frontend/src/utils/agentAccess.ts"]
-    n0 --> n3
-    n1 --> n3
-    n1 --> n5
-    n2 --> n3
-    n3 --> n5
-    n4 --> n0
-    n4 --> n3
+    n2["frontend/src/components/tasks/PipelineTaskEvidence.tsx"]
+    n3["frontend/src/components/tasks/usePipeline.ts"]
+    n4["frontend/src/components/team/AgentModelAdministration.tsx"]
+    n5["frontend/src/components/team/TeamDirectory.tsx"]
+    n6["frontend/src/hooks/useAgentAccess.ts"]
+    n7["frontend/src/utils/agentAccess.ts"]
+    n0 --> n6
+    n1 --> n6
+    n1 --> n7
+    n2 --> n0
+    n2 --> n6
+    n3 --> n6
+    n4 --> n6
+    n5 --> n6
+    n6 --> n7
     click n0 "../modules/TaskRoutingPanel.md"
     click n1 "../modules/AgentAccessPanel.md"
-    click n2 "../modules/AgentModelAdministration.md"
-    click n3 "../modules/useAgentAccess.md"
-    click n4 "../modules/AgentPipelinePage.md"
-    click n5 "../modules/agentAccess.md"
+    click n2 "../modules/PipelineTaskEvidence.md"
+    click n3 "../modules/usePipeline.md"
+    click n4 "../modules/AgentModelAdministration.md"
+    click n5 "../modules/TeamDirectory.md"
+    click n6 "../modules/useAgentAccess.md"
+    click n7 "../modules/agentAccess.md"
 ```
 
 ### Internal neighbors
@@ -51,8 +57,10 @@ flowchart LR
 |---|---|
 | Inbound | [TaskRoutingPanel](../modules/TaskRoutingPanel.md) |
 | Inbound | [AgentAccessPanel](../modules/AgentAccessPanel.md) |
+| Inbound | [PipelineTaskEvidence](../modules/PipelineTaskEvidence.md) |
+| Inbound | [usePipeline](../modules/usePipeline.md) |
 | Inbound | [AgentModelAdministration](../modules/AgentModelAdministration.md) |
-| Inbound | [AgentPipelinePage](../modules/AgentPipelinePage.md) |
+| Inbound | [TeamDirectory](../modules/TeamDirectory.md) |
 | Outbound | [agentAccess](../modules/agentAccess.md) |
 
 ### External packages

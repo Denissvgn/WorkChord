@@ -52,7 +52,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_calendars | service.get_all | 30 | `service.get_all(data not statically known)` |
+| get_calendars | service.get_all | 31 | `service.get_all(data not statically known)` |
 
 ### Boundary effects
 
@@ -62,7 +62,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_calendars` | `service.get_all` | 30 |
+| unresolved_call | `get_calendars` | `service.get_all` | 31 |
 
 ## Behavior
 

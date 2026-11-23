@@ -1,6 +1,6 @@
 # ProjectResponse
 
-**Location:** `backend/app/schemas/project.py:276`
+**Location:** `backend/app/schemas/project.py:278`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_project](../modules/schemas_project.md)
@@ -20,6 +20,7 @@ Schema for project response.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `timezone` | `str` | `timezone` | No | No | `'UTC'` | — | — | — |
+| `require_different_review_publisher` | `bool` | `require_different_review_publisher` | No | No | `False` | — | — | — |
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `name` | `str` | `name` | Yes | No | — | — | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |

@@ -38,10 +38,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (25) |
+| Inbound | `frontend` (50) |
 | Outbound | `frontend` (1) |
 
-> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 51 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -49,11 +49,11 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [IterationProject](../entities/IterationProject.md) | Interface | 2 | — | — |
 | [Iteration](../entities/types_iteration_Iteration.md) | Interface | 9 | — | — |
-| [IterationCreate](../entities/types_iteration_IterationCreate.md) | Interface | 23 | — | — |
-| [IterationUpdate](../entities/types_iteration_IterationUpdate.md) | Interface | 32 | — | — |
-| [IterationSeriesCreate](../entities/types_iteration_IterationSeriesCreate.md) | Interface | 45 | — | — |
-| [IterationSeriesResponse](../entities/types_iteration_IterationSeriesResponse.md) | Interface | 55 | — | — |
-| [IterationSummary](../entities/types_iteration_IterationSummary.md) | Interface | 59 | `WorkMetrics` | — |
-| [IterationPlanningReadinessSummary](../entities/types_iteration_IterationPlanningReadinessSummary.md) | Interface | 82 | — | — |
-| [PlanCheckpoint](../entities/types_iteration_PlanCheckpoint.md) | Interface | 103 | — | — |
-| [IterationSeriesStop](../entities/types_iteration_IterationSeriesStop.md) | Type alias | 41 | <pre><code>&#124; &#123; mode&#58; &#39;count&#39;&#59; count&#58; number &#125;&#10;    &#124; &#123; mode&#58; &#39;until&#95;date&#39;&#59; until&#95;date&#58; string &#125;</code></pre> | — |
+| [IterationCreate](../entities/types_iteration_IterationCreate.md) | Interface | 25 | — | — |
+| [IterationUpdate](../entities/types_iteration_IterationUpdate.md) | Interface | 35 | — | — |
+| [IterationSeriesCreate](../entities/types_iteration_IterationSeriesCreate.md) | Interface | 49 | — | — |
+| [IterationSeriesResponse](../entities/types_iteration_IterationSeriesResponse.md) | Interface | 60 | — | — |
+| [IterationSummary](../entities/types_iteration_IterationSummary.md) | Interface | 64 | `WorkMetrics` | — |
+| [IterationPlanningReadinessSummary](../entities/types_iteration_IterationPlanningReadinessSummary.md) | Interface | 88 | — | — |
+| [PlanCheckpoint](../entities/types_iteration_PlanCheckpoint.md) | Interface | 112 | — | — |
+| [IterationSeriesStop](../entities/types_iteration_IterationSeriesStop.md) | Type alias | 45 | <pre><code>&#124; &#123; mode&#58; &#39;count&#39;&#59; count&#58; number &#125;&#10;    &#124; &#123; mode&#58; &#39;until&#95;date&#39;&#59; until&#95;date&#58; string &#125;</code></pre> | — |

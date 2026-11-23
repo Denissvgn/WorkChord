@@ -1,6 +1,6 @@
 # TeamProfileManagerProps
 
-**Location:** `frontend/src/components/team/TeamProfileManager.tsx:68`
+**Location:** `frontend/src/components/team/TeamProfileManager.tsx:91`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TeamProfileManager](../modules/TeamProfileManager.md)
@@ -13,10 +13,10 @@ _Auto-generated from `TeamProfileManagerProps` in `frontend/src/components/team/
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
-| `currentIterationId` | `number \| null` | No | — | — |
-| `currentIterationName` | `string \| null` | No | — | — |
-| `assignedProfileIds` | `number[]` | No | — | — |
-| `onAssignProfile` | `(profile: TeamMemberProfile) => void` | No | — | — |
+| `row` | `DirectoryRow \| null` | Yes | — | — |
+| `onClose` | `() => void` | Yes | — | — |
+| `onCreated` | `(profileId: number) => void` | Yes | — | — |
+| `fallbackFocusRef` | `RefObject<HTMLElement \| null>` | No | — | — |
 
 ## Methods
 
@@ -38,7 +38,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TeamProfileManager](../modules/TeamProfileManager.md) | 0 | `assignedProfileIds`, `currentIterationId`, `currentIterationName`, `onAssignProfile` |
+| [TeamProfileManager](../modules/TeamProfileManager.md) | 0 | `fallbackFocusRef`, `onClose`, `onCreated`, `row` |
 
 ### References
 

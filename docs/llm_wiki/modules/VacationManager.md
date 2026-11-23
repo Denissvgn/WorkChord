@@ -1,10 +1,10 @@
 # VacationManager Module
 
-**Path:** `frontend/src/components/team/VacationManager.tsx`
+**Path:** `frontend/src/components/capacity/VacationManager.tsx`
 
 ## Description
 
-_Auto-generated from `frontend/src/components/team/VacationManager.tsx`._
+Absence changes use the member’s observed planning context. A deletion confirmation retains the revision map read for that absence, and a successful update refreshes the member data shown in the capacity editor.
 
 ## Imports
 
@@ -22,7 +22,7 @@ _Auto-generated from `frontend/src/components/team/VacationManager.tsx`._
 | `../common/Modal` | `Modal` | — | compiler-dependent |
 | `../common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
 | `../planning/PlanningInputBoundary` | `PlanningInputBoundary` | — | compiler-dependent |
-| `./VacationCsvImport` | `VacationCsvImport` | — | compiler-dependent |
+| `./capacityMutations` | `refreshCapacity` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQueryClient` | — | compiler-dependent |
 | `lucide-react` | `Plane`, `Trash2`, `Plus`, `Calendar` | — | compiler-dependent |
 | `react` | `ReactNode` | Declaration | erased |
@@ -43,7 +43,7 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 ```mermaid
 flowchart LR
     n0["frontend"]
-    n1["frontend/src/components/team/VacationManager.tsx"]
+    n1["frontend/src/components/capacity/VacationManager.tsx"]
     n0 --> n1
     n1 --> n0
     click n1 "../modules/VacationManager.md"

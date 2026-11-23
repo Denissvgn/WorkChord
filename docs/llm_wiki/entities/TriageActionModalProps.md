@@ -1,13 +1,13 @@
 # TriageActionModalProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:387`
+**Location:** `frontend/src/components/triage/TriageActionModal.tsx:24`
 **Kind:** Interface
 **Bases:** —
-**Module:** [TriagePage](../modules/TriagePage.md)
+**Module:** [TriageActionModal](../modules/TriageActionModal.md)
 
 ## Description
 
-_Auto-generated from `TriageActionModalProps` in `frontend/src/pages/TriagePage.tsx`._
+_Auto-generated from `TriageActionModalProps` in `frontend/src/components/triage/TriageActionModal.tsx`._
 
 ## Attributes
 
@@ -32,10 +32,23 @@ _Auto-generated from `TriageActionModalProps` in `frontend/src/pages/TriagePage.
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-*No generated relationships detected.*
+```mermaid
+flowchart LR
+    n0["TriageActionModalProps (frontend/src/components/triage/TriageActionModal.tsx)"]
+    n1["TriageActionModal (frontend/src/components/triage/TriageActionModal.tsx)"]
+    n1 --> n0
+    click n0 "../modules/TriageActionModal.md"
+    click n1 "../modules/TriageActionModal.md"
+```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TriagePage](../modules/TriagePage.md) | 0 | `action`, `allTriageItems`, `defaultDuplicate`, `defaultSnooze`, `error`, `isSubmitting`, `item`, `iterations`, `onClose`, `onSubmit`, `selectedIterationId` |
+| [TriageActionModal](../modules/TriageActionModal.md) | 0 | `action`, `allTriageItems`, `defaultDuplicate`, `defaultSnooze`, `error`, `isSubmitting`, `item`, `iterations`, `onClose`, `onSubmit`, `selectedIterationId` |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `TriageActionModal` | type_reference | [TriageActionModal](../modules/TriageActionModal.md) | — |

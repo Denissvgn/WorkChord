@@ -14,18 +14,19 @@
 4. `authority.AuthorityError`
 5. `services_work_metrics.effective_work_flags`
 6. `commands.PlanningConflict`
-7. `authority.require_project`
-8. `task_brief_service.TaskBriefService.require_review`
-9. `task_brief_service.TaskBriefService`
-10. `language_service.resolve_runtime_ui_language`
-11. `delivery_dependency_service.DeliveryDependencyService.ready`
-12. `delivery_dependency_service.DeliveryDependencyService`
-13. `language_service.task_requires_schedule_message`
-14. `language_service.incomplete_dependency_message`
-15. `snapshot_service.SnapshotService`
-16. `task_brief_service.TaskBriefService.record_review`
-17. `task_brief_service.TaskBriefService`
-18. `commands.commit_or_flush`
+7. `commands.current_command`
+8. `authority.require_project`
+9. `task_brief_service.TaskBriefService.require_review`
+10. `task_brief_service.TaskBriefService`
+11. `language_service.resolve_runtime_ui_language`
+12. `delivery_dependency_service.DeliveryDependencyService.ready`
+13. `delivery_dependency_service.DeliveryDependencyService`
+14. `language_service.task_requires_schedule_message`
+15. `language_service.incomplete_dependency_message`
+16. `snapshot_service.SnapshotService`
+17. `task_brief_service.TaskBriefService.record_review`
+18. `task_brief_service.TaskBriefService`
+19. `commands.commit_or_flush`
 
 ## Touches
 

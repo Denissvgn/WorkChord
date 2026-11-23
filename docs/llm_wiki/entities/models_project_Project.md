@@ -16,6 +16,7 @@ Outcome-oriented planning container above tasks and iterations. SQLite allocates
 | `id` | `Mapped[int]` | `mapped_column(Integer, primary_key=True, autoincrement=True)` | — |
 | `name` | `Mapped[str]` | `mapped_column(String(255), nullable=False)` | — |
 | `timezone` | `Mapped[str]` | `mapped_column(String(64), default='UTC', server_default='UTC', nullable=False)` | — |
+| `require_different_review_publisher` | `Mapped[bool]` | `mapped_column(Boolean, default=False, server_default=false(), nullable=False)` | — |
 | `description` | `Mapped[Optional[str]]` | `mapped_column(Text, nullable=True)` | — |
 | `status` | `Mapped[str]` | `mapped_column(String(50), default=ProjectStatus.PLANNED.value, nullable=False, index=True)` | — |
 | `health` | `Mapped[str]` | `mapped_column(String(50), default=ProjectHealth.UNKNOWN.value, nullable=False, index=True)` | — |
@@ -119,4 +120,4 @@ flowchart LR
 | `task_domain` | import | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `AgentWorkService.create_project_update` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 
-> References: showing 12 of 62 logical references; 50 omitted by the 12-row generated summary limit.
+> References: showing 12 of 87 logical references; 75 omitted by the 12-row generated summary limit.

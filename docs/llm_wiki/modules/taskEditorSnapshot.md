@@ -26,7 +26,7 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/tasks/GuardedTaskModal.tsx"]
+    n0["frontend/src/components/tasks/GuardedTaskDrawer.tsx"]
     n1["frontend/src/components/tasks/TaskEditorDrawer.tsx"]
     n2["frontend/src/components/tasks/taskEditorSnapshot.ts"]
     n3["frontend/src/services/taskService.ts"]
@@ -38,7 +38,7 @@ flowchart LR
     n2 --> n3
     n2 --> n4
     n3 --> n4
-    click n0 "../modules/GuardedTaskModal.md"
+    click n0 "../modules/GuardedTaskDrawer.md"
     click n1 "../modules/TaskEditorDrawer.md"
     click n2 "../modules/taskEditorSnapshot.md"
     click n3 "../modules/taskService.md"
@@ -49,7 +49,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | [GuardedTaskModal](../modules/GuardedTaskModal.md) |
+| Inbound | [GuardedTaskDrawer](../modules/GuardedTaskDrawer.md) |
 | Inbound | [TaskEditorDrawer](../modules/TaskEditorDrawer.md) |
 | Outbound | [taskService](../modules/taskService.md) |
 | Outbound | [types_task](../modules/types_task.md) |

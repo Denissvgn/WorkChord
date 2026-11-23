@@ -36,6 +36,7 @@ flowchart LR
     n1 --> n2
     n2 --> n0
     n2 --> n4
+    n3 --> n0
     n3 --> n2
     click n0 "../modules/Button.md"
     click n1 "../modules/SettingsAccessAndAbout.test.md"

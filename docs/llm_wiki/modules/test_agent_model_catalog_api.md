@@ -18,6 +18,7 @@ Focused Wave 2 model administration and actor-roster qualification.
 | `app.main` | `app` |
 | `app.mcp_server` | `_structured_tool_error`, `mcp` |
 | `app.models.agent` | `AgentActor`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRun`, `AgentTaskAssignment`, `TaskEvent` |
+| `app.models.identity` | `Principal`, `WorkspaceAuthorityState`, `WorkspaceMembership` |
 | `app.models.team_member` | `TeamMemberProfile`, `TeamMemberProfileSkill` |
 | `app.routers` | `agent`, `agent_planning` |
 | `app.schemas.agent` | `AgentActorCreate`, `AgentTaskAssignmentCreate`, `AgentTaskAssignmentUpdate`, `AgentWorkBegin`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareAgentWorkBegin` |
@@ -46,6 +47,7 @@ Focused Wave 2 model administration and actor-roster qualification.
 flowchart LR
     n0["backend"]
     n1["backend/tests/test_agent_model_catalog_api.py"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/test_agent_model_catalog_api.md"
 ```
@@ -56,7 +58,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (18) |
+| Inbound | `backend` (1) |
+| Outbound | `backend` (19) |
 
 ### External packages
 
@@ -64,7 +67,7 @@ flowchart LR
 |---|---:|---:|
 | python | 4 | 1 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -77,6 +80,10 @@ flowchart LR
 | `test_model_updates_reject_null_for_non_nullable_fields` | `(schema, payload: dict[str, Any]) -> None` | `@pytest.mark.parametrize(('schema', 'payload'), ((AgentModelCatalogUpdate, {'expected_revision': 1, 'provider': None}), (AgentModelBindingUpdate, {'expected_revision': 1, 'tool_tags': None})))` | — |
 | `_http_client` | *(async)* `(app: FastAPI, db: AsyncSession) -> httpx.AsyncClient` | — | — |
 | `test_rest_and_mcp_model_authorization_idempotency_and_conflicts` | *(async)* `(db_session: AsyncSession) -> None` | `@pytest.mark.sqlite`, `@pytest.mark.asyncio` | — |
+| `_command_headers` | `(command_key: str) -> dict[str, str]` | — | — |
+| `_catalog_round_trip` | *(async)* `(client: httpx.AsyncClient, credential: dict[str, str], catalog_key: str) -> dict[str, httpx.Response]` | — | Create, update, disable and read one entry with one credential. |
+| `test_model_catalog_routes_accept_admin_key_agent_key_and_refuse_neither` | *(async)* `(db_session: AsyncSession, monkeypatch: pytest.MonkeyPatch, auth_mode: str) -> None` | `@pytest.mark.sqlite`, `@pytest.mark.asyncio`, `@pytest.mark.parametrize('auth_mode', ['managed', 'trusted_local'])` | — |
+| `test_binding_and_preset_routes_preserve_credential_permissions` | *(async)* `(db_session: AsyncSession, monkeypatch: pytest.MonkeyPatch, auth_mode: str, credential: str, mutation_status: int, read_status: int) -> None` | `@pytest.mark.sqlite`, `@pytest.mark.asyncio`, `@pytest.mark.parametrize('auth_mode', ['managed', 'trusted_local'])`, `@pytest.mark.parametrize(('credential', 'mutation_status', 'read_status'), [('admin', 200, 200), ('agent', 200, 200), ('reader', 403, 200), ('reader_with_admin', 401, 401), ('none', 401, 401), ('wrong_admin', 401, 401), ('wrong_agent', 401, 401)])` | — |
 | `test_binding_disable_requires_explicit_reconciliation_and_marks_queue_stale` | *(async)* `(db_session: AsyncSession, actor_factory, task_factory) -> None` | `@pytest.mark.sqlite`, `@pytest.mark.asyncio` | — |
 | `test_rest_and_mcp_rosters_are_identical_and_secret_free` | *(async)* `(db_session: AsyncSession) -> None` | `@pytest.mark.sqlite`, `@pytest.mark.asyncio` | — |
 | `_seed_roster_actors` | *(async)* `(db: AsyncSession, *, catalog_id: int, start: int, count: int) -> None` | — | — |

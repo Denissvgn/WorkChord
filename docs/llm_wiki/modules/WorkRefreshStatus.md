@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/feedback/WorkRefreshStatus.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../components/common/Button` | `Button` | — | compiler-dependent |
 | `../../features/workQueryFreshness` | `WORKSPACE_QUERY_POLICIES` | — | compiler-dependent |
 | `@tanstack/react-query` | `notifyManager`, `useQueryClient` | — | compiler-dependent |
 | `react` | `useEffect`, `useReducer`, `useState` | — | compiler-dependent |
@@ -27,17 +28,21 @@ _Auto-generated from `frontend/src/components/feedback/WorkRefreshStatus.tsx`._
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/feedback/WorkRefreshStatus.test.tsx"]
-    n1["frontend/src/components/feedback/WorkRefreshStatus.tsx"]
-    n2["frontend/src/components/layout/AppShell.tsx"]
-    n3["frontend/src/features/workQueryFreshness.ts"]
-    n0 --> n1
-    n1 --> n3
-    n2 --> n1
-    click n0 "../modules/WorkRefreshStatus.test.md"
-    click n1 "../modules/WorkRefreshStatus.md"
-    click n2 "../modules/AppShell.md"
-    click n3 "../modules/workQueryFreshness.md"
+    n0["frontend/src/components/common/Button.tsx"]
+    n1["frontend/src/components/feedback/WorkRefreshStatus.test.tsx"]
+    n2["frontend/src/components/feedback/WorkRefreshStatus.tsx"]
+    n3["frontend/src/components/layout/AppShell.tsx"]
+    n4["frontend/src/features/workQueryFreshness.ts"]
+    n1 --> n0
+    n1 --> n2
+    n2 --> n0
+    n2 --> n4
+    n3 --> n2
+    click n0 "../modules/Button.md"
+    click n1 "../modules/WorkRefreshStatus.test.md"
+    click n2 "../modules/WorkRefreshStatus.md"
+    click n3 "../modules/AppShell.md"
+    click n4 "../modules/workQueryFreshness.md"
 ```
 
 ### Internal neighbors
@@ -46,6 +51,7 @@ flowchart LR
 |---|---|
 | Inbound | [WorkRefreshStatus.test](../modules/WorkRefreshStatus.test.md) |
 | Inbound | [AppShell](../modules/AppShell.md) |
+| Outbound | [Button](../modules/Button.md) |
 | Outbound | [workQueryFreshness](../modules/workQueryFreshness.md) |
 
 ### External packages

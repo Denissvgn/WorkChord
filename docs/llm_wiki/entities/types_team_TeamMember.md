@@ -1,6 +1,6 @@
 # TeamMember
 
-**Location:** `frontend/src/types/team.ts:110`
+**Location:** `frontend/src/types/team.ts:112`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_team](../modules/types_team.md)
@@ -35,18 +35,18 @@ _Auto-generated from `TeamMember` in `frontend/src/types/team.ts`._
 ```mermaid
 flowchart LR
     n0["TeamMember (frontend/src/types/team.ts)"]
-    n1["frontend/src/components/planning/PlanQuickAddCapacity.test.tsx"]
-    n2["PlanQuickAddCapacity (frontend/src/components/planning/PlanQuickAddCapacity.tsx)"]
-    n3["frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx"]
-    n4["frontend/src/components/team/ImportTeamModal.test.tsx"]
-    n5["frontend/src/components/team/TeamForm.test.tsx"]
-    n6["frontend/src/components/team/TeamForm.tsx"]
-    n7["frontend/src/components/team/TeamList.test.tsx"]
-    n8["frontend/src/components/team/TeamList.tsx"]
-    n9["frontend/src/components/team/VacationManager.tsx"]
-    n10["frontend/src/features/planningMasters/usePlanningReadiness.test.tsx"]
-    n11["countPlanningExceptions (frontend/src/features/planningMasters/usePlanningReadiness.ts)"]
-    n12["enrichPlanningTeamMembers (frontend/src/features/planningMasters/usePlanningReadiness.ts)"]
+    n1["addCapacityRows (frontend/src/components/capacity/capacityMutations.ts)"]
+    n2["frontend/src/components/capacity/CapacitySection.test.tsx"]
+    n3["CapacitySection (frontend/src/components/capacity/CapacitySection.tsx)"]
+    n4["CapacityTable (frontend/src/components/capacity/CapacityTable.tsx)"]
+    n5["frontend/src/components/capacity/PlanQuickAddCapacity.test.tsx"]
+    n6["PlanQuickAddCapacity (frontend/src/components/capacity/PlanQuickAddCapacity.tsx)"]
+    n7["frontend/src/components/capacity/TeamForm.test.tsx"]
+    n8["frontend/src/components/capacity/TeamForm.tsx"]
+    n9["frontend/src/components/capacity/TeamList.test.tsx"]
+    n10["frontend/src/components/capacity/TeamList.tsx"]
+    n11["frontend/src/components/capacity/VacationManager.tsx"]
+    n12["frontend/src/components/planning/PlanBlockersSection.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -60,18 +60,18 @@ flowchart LR
     n11 --> n0
     n12 --> n0
     click n0 "../modules/types_team.md"
-    click n1 "../modules/PlanQuickAddCapacity.test.md"
-    click n2 "../modules/PlanQuickAddCapacity.md"
-    click n3 "../modules/KanbanBoard.test.md"
-    click n4 "../modules/ImportTeamModal.test.md"
-    click n5 "../modules/TeamForm.test.md"
-    click n6 "../modules/TeamForm.md"
-    click n7 "../modules/TeamList.test.md"
-    click n8 "../modules/TeamList.md"
-    click n9 "../modules/VacationManager.md"
-    click n10 "../modules/usePlanningReadiness.test.md"
-    click n11 "../modules/usePlanningReadiness.md"
-    click n12 "../modules/usePlanningReadiness.md"
+    click n1 "../modules/capacityMutations.md"
+    click n2 "../modules/CapacitySection.test.md"
+    click n3 "../modules/CapacitySection.md"
+    click n4 "../modules/CapacityTable.md"
+    click n5 "../modules/PlanQuickAddCapacity.test.md"
+    click n6 "../modules/PlanQuickAddCapacity.md"
+    click n7 "../modules/TeamForm.test.md"
+    click n8 "../modules/TeamForm.md"
+    click n9 "../modules/TeamList.test.md"
+    click n10 "../modules/TeamList.md"
+    click n11 "../modules/VacationManager.md"
+    click n12 "../modules/PlanBlockersSection.md"
 ```
 
 ### Summary
@@ -84,17 +84,17 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `addCapacityRows` | type_reference | [capacityMutations](../modules/capacityMutations.md) | — |
+| `CapacitySection.test` | import | [CapacitySection.test](../modules/CapacitySection.test.md) | — |
+| `CapacitySection` | type_reference | [CapacitySection](../modules/CapacitySection.md) | — |
+| `CapacityTable` | type_reference | [CapacityTable](../modules/CapacityTable.md) | — |
 | `PlanQuickAddCapacity.test` | import | [PlanQuickAddCapacity.test](../modules/PlanQuickAddCapacity.test.md) | — |
 | `PlanQuickAddCapacity` | type_reference | [PlanQuickAddCapacity](../modules/PlanQuickAddCapacity.md) | — |
-| `KanbanBoard.test` | import | [KanbanBoard.test](../modules/KanbanBoard.test.md) | — |
-| `ImportTeamModal.test` | import | [ImportTeamModal.test](../modules/ImportTeamModal.test.md) | — |
 | `TeamForm.test` | import | [TeamForm.test](../modules/TeamForm.test.md) | — |
 | `TeamForm` | import | [TeamForm](../modules/TeamForm.md) | — |
 | `TeamList.test` | import | [TeamList.test](../modules/TeamList.test.md) | — |
 | `TeamList` | import | [TeamList](../modules/TeamList.md) | — |
 | `VacationManager` | import | [VacationManager](../modules/VacationManager.md) | — |
-| `usePlanningReadiness.test` | import | [usePlanningReadiness.test](../modules/usePlanningReadiness.test.md) | — |
-| `countPlanningExceptions` | type_reference | [usePlanningReadiness](../modules/usePlanningReadiness.md) | — |
-| `enrichPlanningTeamMembers` | type_reference | [usePlanningReadiness](../modules/usePlanningReadiness.md) | — |
+| `PlanBlockersSection` | import | [PlanBlockersSection](../modules/PlanBlockersSection.md) | — |
 
-> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.
+> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.

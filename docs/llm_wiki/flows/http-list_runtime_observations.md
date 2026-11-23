@@ -142,14 +142,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_runtime_observations | _refuse_agents | 1543 | `_refuse_agents(db, agent_api_key)` |
-| _refuse_agents | service_db.info.get | 1501 | `service_db.info.get('authority')` |
-| _refuse_agents | HTTPException (backend/app/routers/agent.py:_refuse_agents) | 1503 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Runtime observations are advisory and are not available to agents.')` |
-| list_runtime_observations | db.info.get | 1544 | `db.info.get('authority')` |
-| list_runtime_observations | _reads_work_as_person | 1545 | `_reads_work_as_person(authority)` |
-| _reads_work_as_person | bool | 265 | `bool(authority.projects)` |
-| list_runtime_observations | HTTPException (backend/app/routers/agent…:list_runtime_observations) | 1546 | `HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Sign in to read observations.')` |
-| list_runtime_observations | RuntimeObservationService.list | 1547 | `RuntimeObservationService(db).list(task_id=task_id, run_id=run_id, harness_kind=harness_kind, harness_session_id=harness_session_id, limit=limit)` |
+| list_runtime_observations | _refuse_agents | 1560 | `_refuse_agents(db, agent_api_key)` |
+| _refuse_agents | service_db.info.get | 1518 | `service_db.info.get('authority')` |
+| _refuse_agents | HTTPException (backend/app/routers/agent.py:_refuse_agents) | 1520 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Runtime observations are advisory and are not available to agents.')` |
+| list_runtime_observations | db.info.get | 1561 | `db.info.get('authority')` |
+| list_runtime_observations | _reads_work_as_person | 1562 | `_reads_work_as_person(authority)` |
+| _reads_work_as_person | bool | 267 | `bool(authority.projects)` |
+| list_runtime_observations | HTTPException (backend/app/routers/agent…:list_runtime_observations) | 1563 | `HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Sign in to read observations.')` |
+| list_runtime_observations | RuntimeObservationService.list | 1564 | `RuntimeObservationService(db).list(task_id=task_id, run_id=run_id, harness_kind=harness_kind, harness_session_id=harness_session_id, limit=limit)` |
 | RuntimeObservationService.list | select | 100 | `select(AgentRuntimeObservation)` |
 | RuntimeObservationService.list | query.where | 102 | `query.where(...)` |
 | RuntimeObservationService.list | query.where | 104 | `query.where(...)` |
@@ -162,10 +162,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `_refuse_agents` | `service_db.info.get` | 1501 |
-| external_call | `_refuse_agents` | `HTTPException` | 1503 |
-| unresolved_call | `list_runtime_observations` | `db.info.get` | 1544 |
-| external_call | `list_runtime_observations` | `HTTPException` | 1546 |
+| unresolved_call | `_refuse_agents` | `service_db.info.get` | 1518 |
+| external_call | `_refuse_agents` | `HTTPException` | 1520 |
+| unresolved_call | `list_runtime_observations` | `db.info.get` | 1561 |
+| external_call | `list_runtime_observations` | `HTTPException` | 1563 |
 | external_call | `RuntimeObservationService.list` | `select` | 100 |
 | unresolved_call | `RuntimeObservationService.list` | `query.where` | 102 |
 | unresolved_call | `RuntimeObservationService.list` | `query.where` | 104 |

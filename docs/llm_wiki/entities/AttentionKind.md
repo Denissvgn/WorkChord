@@ -1,23 +1,18 @@
 # AttentionKind
 
-**Location:** `frontend/src/features/overview/attentionRanking.ts:5`
+**Location:** `frontend/src/features/overview/overviewSignals.ts:224`
 **Kind:** Type alias
 **Bases:** —
-**Module:** [attentionRanking](../modules/attentionRanking.md)
+**Module:** [overviewSignals](../modules/overviewSignals.md)
 **Target:**
 
 ```typescript
-| 'overdue'
-    | 'project-risk'
-    | 'pace'
-    | 'project-update'
-    | 'unassigned'
-    | 'intake'
+typeof ATTENTION_KINDS[number]
 ```
 
 ## Description
 
-_Auto-generated from `AttentionKind` in `frontend/src/features/overview/attentionRanking.ts`._
+_Auto-generated from `AttentionKind` in `frontend/src/features/overview/overviewSignals.ts`._
 
 ## Attributes
 
@@ -32,10 +27,10 @@ _Auto-generated from `AttentionKind` in `frontend/src/features/overview/attentio
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["AttentionKind (frontend/src/features/overview/attentionRanking.ts)"]
+    n0["AttentionKind (frontend/src/features/overview/overviewSignals.ts)"]
     n1["frontend/src/pages/OverviewPage.tsx"]
     n1 --> n0
-    click n0 "../modules/attentionRanking.md"
+    click n0 "../modules/overviewSignals.md"
     click n1 "../modules/OverviewPage.md"
 ```
 
@@ -43,7 +38,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [attentionRanking](../modules/attentionRanking.md) | 0 | — |
+| [overviewSignals](../modules/overviewSignals.md) | 0 | — |
 
 ### References
 

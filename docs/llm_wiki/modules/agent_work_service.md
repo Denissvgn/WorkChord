@@ -16,13 +16,23 @@ Assigned normal execution compares scheduled starts with the project working dat
 
 A calculated start date in the future does not hold assigned work back. Work may begin once its dependencies are done; only a planning period that has not begun and a real earliest-start date hold it. After an atomic begin or submit, the planned work of the iteration is recalculated around the actual dates inside the same command.
 
+A team controller can advance another actor’s queue only for the revision and scope authorized by the current dispatch or recovery command. Recovery checks the selected worker and every owner whose assignment, run or claim would change. A successful retry returns the original assignment receipt without consuming another planning revision.
+
+When independent review returns work to its original submitter, the assigned-work queue shows the effective reviewer profile and worker binding. The worker starts that exact assignment with its current queue revision and observed model. The new run records the handback while the original assignment, submission and verdict retain their recorded contents.
+
+A worker can continue across a verified planning-only reservation using its current task version and original live claim. It still needs its own current assignment, model and team authority. After expiry, ordinary PM recovery creates a new assignment and claim generation.
+
+A change to a queued verification's reviewer or binding requires fresh evidence for that selection. The PM can cancel or reorder the queue after a receipt expires or is revoked. Both acceptance and rejection require a currently valid receipt when the assignment uses one.
+
+Work discovery, fencing and recovery read the same live assignment and run states used by planning-window and allocation checks. An unused allocation can be removed without advancing the versions of unrelated issued tasks.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
 | `app.authority` | `internal_authority`, `internal_authority` |
-| `app.commands` | `atomic_command`, `commit_or_flush` |
+| `app.commands` | `atomic_command`, `commit_or_flush`, `current_command` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord`, `AgentModelBinding`, `AgentRun`, `AgentTaskAssignment`, `TaskEvent` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project`, `ProjectUpdateEntry` |
@@ -39,16 +49,22 @@ A calculated start date in the future does not hold assigned work back. Work may
 | `app.services.agent_routing_observability` | `RoutingOperationalEvent`, `opaque_value_digest`, `record_routing_operational_event` |
 | `app.services.agent_routing_policy` | `MODEL_FAILURE_CATEGORIES`, `ROUTING_DECISION_AUTHORITY`, `ROUTING_DECISION_LINEAGE_FIELDS`, `ROUTING_LINEAGE_AUTHORITY`, `ROUTING_POLICY_VERSION`, `canonical_routing_json_bytes`, `evaluate_actor_authorization`, `normalize_model_failure_category`, `validate_routing_packet_size` |
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutError`, `AgentRoutingRolloutMode`, `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
-| `app.services.agent_routing_service` | `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingService`, `AgentRoutingService`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError` |
+| `app.services.agent_routing_service` | `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingService`, `AgentRoutingService`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key`, `AgentService` |
-| `app.services.agent_team_setup_service` | `AgentTeamSetupService`, `AgentTeamSetupService`, `AgentTeamSetupService` |
+| `app.services.agent_team_setup_service` | `AgentTeamMembershipBoundary`, `AgentTeamSetupService`, `AgentTeamSetupService`, `AgentTeamSetupConflictError`, `AgentTeamSetupService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
+| `app.services.execution_planning_window` | `LIVE_ASSIGNMENT_STATES`, `LIVE_RUN_STATE`, `assignment_matches`, `require_window_authority`, `window_authority_matches` |
+| `app.services.external_link_service` | `ExternalLinkService` |
 | `app.services.project_service` | `ProjectService` |
+| `app.services.retained_planning_output` | `REQUIRED`, `REQUIRED`, `recovery_attestation_hint`, `REQUIRED`, `recovery_attestation_hint` |
+| `app.services.review_evidence` | `check_supervised_selection`, `check_supervised_selection` |
+| `app.services.review_provenance` | `ReworkReadCache`, `actor_provenance`, `different_publisher_required`, `rework_binding_identity`, `select_reviewer`, `supervised_rework_evidence`, `record_terminal_observation`, `record_terminal_observation`, `observe_review_candidate`, `verify_verdict`, `mark_server_interruption` |
 | `app.services.scheduler_service` | `SchedulerService` |
 | `app.services.task_brief_service` | `TaskBriefService`, `TaskBriefService`, `brief_definition_blockers`, `brief_definition_blockers` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.services.triage_service` | `TriageService` |
 | `app.services.work_metrics` | `effective_work_flags`, `working_today`, `effective_work_flags`, `effective_work_flags`, `effective_work_flags` |
+| `app.utils.github_links` | `GitHubLinkError`, `parse_github_url` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `base64` | `base64` |
 | `binascii` | `binascii` |
@@ -60,7 +76,7 @@ A calculated start date in the future does not hold assigned work back. Work may
 | `sqlalchemy` | `func`, `or_`, `select`, `text` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `sqlalchemy.orm` | `selectinload` |
-| `typing` | `Any`, `Callable`, `Iterable`, `Optional` |
+| `typing` | `TYPE_CHECKING`, `Any`, `Callable`, `Iterable`, `Optional` |
 
 ## Local dependency map
 
@@ -80,8 +96,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (18) |
-| Outbound | `backend` (29) |
+| Inbound | `backend` (28) |
+| Outbound | `backend` (35) |
 
 ### External packages
 
@@ -89,13 +105,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 45 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 60 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentWorkService](../entities/AgentWorkService.md) | 176 | — | Coordinate PM dispatch and low-freedom worker lifecycle commands. |
+| [AgentWorkService](../entities/AgentWorkService.md) | 184 | — | Coordinate PM dispatch and low-freedom worker lifecycle commands. |
 
 ## Functions
 

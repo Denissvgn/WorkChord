@@ -2,10 +2,11 @@
 
 **Entry point:** `list_project_iterations` (`http`)
 **Source:** [projects](../modules/projects.md)
-**Modules touched:** [calendar_service](../modules/calendar_service.md), [config](../modules/config.md), [iteration_service](../modules/iteration_service.md), [language_service](../modules/language_service.md), and 5 more
+**Modules touched:** [calendar_rules](../modules/calendar_rules.md), [calendar_service](../modules/calendar_service.md), [config](../modules/config.md), [iteration_service](../modules/iteration_service.md), and 6 more
 
 **Complete modules touched:**
 
+- [calendar_rules](../modules/calendar_rules.md)
 - [calendar_service](../modules/calendar_service.md)
 - [config](../modules/config.md)
 - [iteration_service](../modules/iteration_service.md)
@@ -30,65 +31,65 @@ sequenceDiagram
     participant p4 as resolve_runtime_ui_language
     participant p5 as entity_not_found_message
     participant p6 as CalendarService.calculate_working_days
-    participant p7 as RuntimeSettingsService.get_app_settings
-    participant p8 as localized
-    participant p9 as get_settings
-    participant p10 as RuntimeSettingsService.resolve
-    participant p11 as RuntimeSettingsService._definition
-    participant p12 as RuntimeSettingsService._decrypt_secret
-    participant p13 as RuntimeSettingsService._coerce
-    participant p14 as CalendarService
-    participant p15 as IterationResponse
-    participant p16 as IterationService._response_project
-    participant p17 as normalize_language
-    participant p18 as RuntimeSettingsService
-    participant p19 as WorkingDaysResponse
-    participant p20 as Settings
-    participant p21 as RuntimeSettingsService._row
-    participant p22 as RuntimeSettingsService._env_value
-    participant p23 as RuntimeSettingsError
-    participant p24 as RuntimeSettingsService._fernet
-    participant p25 as RuntimeSettingsEncryptionError
-    participant p26 as normalize_provider_api_url
-    participant p27 as HTTPException
-    participant p28 as service.list_iterations
-    participant p29 as _RESOURCE_LABELS.get
-    participant p30 as set
+    participant p7 as AnnualCalendars.for_iteration
+    participant p8 as RuntimeSettingsService.get_app_settings
+    participant p9 as localized
+    participant p10 as get_settings
+    participant p11 as RuntimeSettingsService.resolve
+    participant p12 as RuntimeSettingsService._definition
+    participant p13 as RuntimeSettingsService._decrypt_secret
+    participant p14 as RuntimeSettingsService._coerce
+    participant p15 as CalendarService
+    participant p16 as IterationResponse
+    participant p17 as IterationService._response_project
+    participant p18 as normalize_language
+    participant p19 as AnnualCalendars
+    participant p20 as RuntimeSettingsService
+    participant p21 as WorkingDaysResponse
+    participant p22 as Settings
+    participant p23 as RuntimeSettingsService._row
+    participant p24 as RuntimeSettingsService._env_value
+    participant p25 as RuntimeSettingsError
+    participant p26 as RuntimeSettingsService._fernet
+    participant p27 as RuntimeSettingsEncryptionError
+    participant p28 as normalize_provider_api_url
+    participant p29 as HTTPException
+    participant p30 as service.list_iterations
     p0->>p1: _not_found_detail
     p0->>p2: IterationService.to_response
     p0->>p3: IterationService
     p1->>p4: resolve_runtime_ui_language
     p1->>p5: entity_not_found_message
     p2->>p6: CalendarService.calculate_working_days
-    p4->>p7: RuntimeSettingsService.get_app_settings
-    p5->>p8: localized
-    p4->>p9: get_settings
-    p7->>p10: RuntimeSettingsService.resolve
-    p10->>p11: RuntimeSettingsService._definition
-    p10->>p12: RuntimeSettingsService._decrypt_secret
-    p10->>p13: RuntimeSettingsService._coerce
-    p2->>p14: CalendarService
-    p2->>p15: IterationResponse
-    p2->>p16: IterationService._response_project
-    p4->>p17: normalize_language
-    p4->>p18: RuntimeSettingsService
-    p6->>p19: WorkingDaysResponse
-    p9->>p20: Settings
-    p10->>p21: RuntimeSettingsService._row
-    p10->>p22: RuntimeSettingsService._env_value
-    p11->>p23: RuntimeSettingsError
-    p12->>p24: RuntimeSettingsService._fernet
-    p12->>p25: RuntimeSettingsEncryptionError
-    p13->>p26: normalize_provider_api_url
-    p0-->>p27: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
-    p0-->>p28: service.list_iterations(project_id)
-    p5-->>p29: _RESOURCE_LABELS.get(entity, (...))
-    p6-->>p30: set(...)
+    p2->>p7: AnnualCalendars.for_iteration
+    p4->>p8: RuntimeSettingsService.get_app_settings
+    p5->>p9: localized
+    p4->>p10: get_settings
+    p8->>p11: RuntimeSettingsService.resolve
+    p11->>p12: RuntimeSettingsService._definition
+    p11->>p13: RuntimeSettingsService._decrypt_secret
+    p11->>p14: RuntimeSettingsService._coerce
+    p2->>p15: CalendarService
+    p2->>p16: IterationResponse
+    p2->>p17: IterationService._response_project
+    p4->>p18: normalize_language
+    p7->>p19: AnnualCalendars
+    p4->>p20: RuntimeSettingsService
+    p6->>p21: WorkingDaysResponse
+    p10->>p22: Settings
+    p11->>p23: RuntimeSettingsService._row
+    p11->>p24: RuntimeSettingsService._env_value
+    p12->>p25: RuntimeSettingsError
+    p13->>p26: RuntimeSettingsService._fernet
+    p13->>p27: RuntimeSettingsEncryptionError
+    p14->>p28: normalize_provider_api_url
+    p0-->>p29: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
+    p0-->>p30: service.list_iterations(project_id)
 ```
 
-> Call sequence diagram shows 30 of 83 interactions; 53 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 86 interactions; 56 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 2 of 19 (17 omitted); unresolved 2 of 18 (16 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 17 (16 omitted); unresolved 1 of 20 (19 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -102,7 +103,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/system_settings_service.py:RuntimeSettingsService._decrypt_secret` | 20 | - | unresolved | 3 |
 | `backend/app/services/system_settings_service.py:RuntimeSettingsService._coerce` | 26 | - | external | 8 |
 | `backend/app/services/system_settings_service.py:RuntimeSettingsService._coerce` | 26 | [backend/app/services/system_settings_service.py](../modules/system_settings_service.md) | internal | 14 |
-> Omission summary shows 8 of 21 groups; 13 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 23 groups; 15 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -115,9 +116,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 47; effect analysis evaluated: 25, partial: 0, unavailable: 22. Counts include steps omitted from the displayed trace.
+Source steps: 50; effect analysis evaluated: 26, partial: 0, unavailable: 24. Counts include steps omitted from the displayed trace.
 
-Collector observations for 25 source steps with known totals: observed: 96, emitted: 96, omitted: 0. Unavailable totals are excluded.
+Collector observations for 26 source steps with known totals: observed: 99, emitted: 99, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.

@@ -101,27 +101,27 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| import_team_members | service.import_members | 370 | `service.import_members(iteration_id, data.text, expected_revisions=...)` |
-| import_team_members | service.get_by_id | 374 | `service.get_by_id(member.id)` |
-| import_team_members | full_members.append | 375 | `full_members.append(full_member)` |
-| import_team_members | TeamImportResponse | 377 | `TeamImportResponse(imported_count=len(...), members=full_members)` |
-| import_team_members | len | 378 | `len(full_members)` |
-| import_team_members | HTTPException | 382 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| import_team_members | str | 384 | `str(e)` |
+| import_team_members | service.import_members | 371 | `service.import_members(iteration_id, data.text, expected_revisions=...)` |
+| import_team_members | service.get_by_id | 375 | `service.get_by_id(member.id)` |
+| import_team_members | full_members.append | 376 | `full_members.append(full_member)` |
+| import_team_members | TeamImportResponse | 378 | `TeamImportResponse(imported_count=len(...), members=full_members)` |
+| import_team_members | len | 379 | `len(full_members)` |
+| import_team_members | HTTPException | 383 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| import_team_members | str | 385 | `str(e)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `full_members.append` | `import_team_members` | 375 |
+| mutation | `full_members.append` | `import_team_members` | 376 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `import_team_members` | `service.import_members` | 370 |
-| unresolved_call | `import_team_members` | `service.get_by_id` | 374 |
-| external_call | `import_team_members` | `HTTPException` | 382 |
+| unresolved_call | `import_team_members` | `service.import_members` | 371 |
+| unresolved_call | `import_team_members` | `service.get_by_id` | 375 |
+| external_call | `import_team_members` | `HTTPException` | 383 |
 
 ## Behavior
 

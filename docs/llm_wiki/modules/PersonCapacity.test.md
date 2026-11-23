@@ -20,7 +20,7 @@ _Auto-generated from `frontend/src/components/tasks/PersonCapacity.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `api` |
-| Module calls | `api = hoisted`, `mock`, `beforeEach`, `it` |
+| Module calls | `api = hoisted`, `mock`, `beforeEach`, `it`, `it` |
 
 ## Local dependency map
 

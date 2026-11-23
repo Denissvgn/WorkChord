@@ -26,65 +26,29 @@ Brief revisions, criterion progress and review verdicts are append-only records.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/database.py"]
-    n1["backend/app/models/__init__.py"]
-    n2["backend/app/models/delivery_observation.py"]
-    n3["backend/app/models/task_brief.py"]
-    n4["backend/app/routers/task_domain.py"]
-    n5["backend/app/services/task_brief_service.py"]
-    n6["backend/app/services/task_recovery_service.py"]
-    n7["backend/app/utils/time.py"]
-    n8["backend/tests/test_task_domain.py"]
-    n9["backend/tests/test_task_domain_integrity.py"]
-    n1 --> n2
-    n1 --> n3
-    n2 --> n0
-    n2 --> n3
-    n2 --> n7
-    n3 --> n0
-    n3 --> n7
-    n4 --> n0
-    n4 --> n3
-    n4 --> n5
-    n5 --> n3
-    n6 --> n3
-    n8 --> n3
-    n8 --> n5
-    n8 --> n7
-    n9 --> n3
-    n9 --> n5
-    n9 --> n8
-    click n0 "../modules/app_database.md"
-    click n1 "../modules/models___init__.md"
-    click n2 "../modules/delivery_observation.md"
-    click n3 "../modules/models_task_brief.md"
-    click n4 "../modules/routers_task_domain.md"
-    click n5 "../modules/task_brief_service.md"
-    click n6 "../modules/task_recovery_service.md"
-    click n7 "../modules/time.md"
-    click n8 "../modules/test_task_domain.md"
-    click n9 "../modules/test_task_domain_integrity.md"
+    n0["backend"]
+    n1["backend/app/models/task_brief.py"]
+    n0 --> n1
+    n1 --> n0
+    click n1 "../modules/models_task_brief.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [models___init__](../modules/models___init__.md) |
-| Inbound | [delivery_observation](../modules/delivery_observation.md) |
-| Inbound | [routers_task_domain](../modules/routers_task_domain.md) |
-| Inbound | [task_brief_service](../modules/task_brief_service.md) |
-| Inbound | [task_recovery_service](../modules/task_recovery_service.md) |
-| Inbound | [test_task_domain](../modules/test_task_domain.md) |
-| Inbound | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) |
-| Outbound | [app_database](../modules/app_database.md) |
-| Outbound | [time](../modules/time.md) |
+| Inbound | `backend` (10) |
+| Outbound | `backend` (2) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 1 | 0 |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

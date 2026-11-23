@@ -16,7 +16,7 @@ _Auto-generated from `frontend/src/features/agentTeamSetup/statusScopes.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `AgentTeamStatusScopes`, `RuntimeReadinessState`, `SessionAuthorityState`, `TopologyConfigurationState`, `deriveAgentTeamStatusScopes` |
+| Exports | `RuntimeReadinessState`, `SessionAuthorityState`, `TopologyConfigurationState`, `deriveAgentTeamStatusScopes` |
 
 ## Local dependency map
 
@@ -25,18 +25,18 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/features/agentTeamSetup/statusScopes.test.ts"]
-    n1["frontend/src/features/agentTeamSetup/statusScopes.ts"]
-    n2["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
+    n0["frontend/src/components/team/AgentManifestWorkflow.tsx"]
+    n1["frontend/src/features/agentTeamSetup/statusScopes.test.ts"]
+    n2["frontend/src/features/agentTeamSetup/statusScopes.ts"]
     n3["frontend/src/types/agent.ts"]
-    n0 --> n1
+    n0 --> n2
     n0 --> n3
+    n1 --> n2
     n1 --> n3
-    n2 --> n1
     n2 --> n3
-    click n0 "../modules/statusScopes.test.md"
-    click n1 "../modules/statusScopes.md"
-    click n2 "../modules/AgentTeamSetupMasterPage.md"
+    click n0 "../modules/AgentManifestWorkflow.md"
+    click n1 "../modules/statusScopes.test.md"
+    click n2 "../modules/statusScopes.md"
     click n3 "../modules/types_agent.md"
 ```
 
@@ -44,8 +44,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
+| Inbound | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) |
 | Inbound | [statusScopes.test](../modules/statusScopes.test.md) |
-| Inbound | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) |
 | Outbound | [types_agent](../modules/types_agent.md) |
 
 ## Classes

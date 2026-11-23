@@ -66,7 +66,7 @@ Uses the bundle service's deployed, integrity-validated catalog for role-package
 | `acknowledge_runtime` | *(async)* `(api_key: str, acknowledgement: AgentTeamRuntimeAcknowledgement) -> AgentTeamRuntimeAcknowledgementResponse` | — | Accept only the exact restricted onboarding handoff acknowledgement. |
 | `membership_boundary` | *(async)* `(actor_id: int) -> AgentTeamMembershipBoundary \| None` | — | Return the live, drift-aware topology boundary for one bound actor. |
 | `require_dispatch_member` | *(async)* `(principal: AgentActor, target_actor_id: int) -> AgentTeamMembershipBoundary \| None` | — | Fail closed when a bound caller selects outside its active roster. |
-| `routing_readiness` | *(async)* `(actor: AgentActor) -> AgentRoutingTopologyReadiness` | — | Project authoritative setup state into the rollout readiness hook. |
+| `routing_readiness` | *(async)* `(actor: AgentActor, *, observed_boundaries: dict[int, AgentTeamMembershipBoundary \| None] \| None = None) -> AgentRoutingTopologyReadiness` | — | Project authoritative setup state into the rollout readiness hook. |
 
 ## Relationships
 
@@ -133,4 +133,4 @@ flowchart LR
 | `get_agent_team_starting_points` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `get_agent_team_topology` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 
-> References: showing 12 of 46 logical references; 34 omitted by the 12-row generated summary limit.
+> References: showing 12 of 50 logical references; 38 omitted by the 12-row generated summary limit.
