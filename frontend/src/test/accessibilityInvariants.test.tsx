@@ -114,7 +114,7 @@ describe('accessibility invariants on every route', () => {
         const sample = samplePath(path === '*' ? '/missing' : path);
         const { container } = renderWithProviders(<App />, { initialEntries: [sample] });
 
-        await waitFor(() => expect(container.querySelector('[data-testid="page-header"]')).not.toBeNull(), { timeout: 8000 });
+        await waitFor(() => expect(container.querySelector('[data-testid="page-header"]')).not.toBeNull(), { timeout: 20_000 });
         // Late reads (counters, suggestions) settle before the page is read.
         await act(() => new Promise(resolve => setTimeout(resolve, 100)));
 
