@@ -16,6 +16,7 @@ from app.models.agent import (
     AgentActor,
     AgentModelBinding,
     AgentModelCatalogEntry,
+    AgentRun,
     AgentTaskAssignment,
     TaskEvent,
 )
@@ -468,18 +469,29 @@ async def test_preview_is_deterministic_and_relevant_mutation_invalidates_it(
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    ("snapshot_authority", "expected_blocker"),
+    ("snapshot_authority", "run_receipt", "expected_blocker"),
     (
         (
             "agent-routing-service-v1",
+            None,
             "verification_profile_not_independent",
         ),
-        (None, "verification_independence_unverifiable"),
+        # A compatibility assignment without a run has no recorded profile.
+        (None, None, "verification_independence_unverifiable"),
+        # Its run's authenticated begin names the historical profile, even
+        # though the implementation actor now holds another profile.
+        (None, "historical", "verification_profile_not_independent"),
+        (None, "current", None),
+        # A profile change before the terminal command counts both profiles.
+        (None, "changed_to_historical", "verification_profile_not_independent"),
+        # A receipt that names another actor is not the run's own evidence.
+        (None, "foreign_actor", "verification_independence_unverifiable"),
     ),
 )
 async def test_verification_independence_requires_authoritative_profile_history(
     snapshot_authority: str | None,
-    expected_blocker: str,
+    run_receipt: str | None,
+    expected_blocker: str | None,
     db_session: AsyncSession,
     profile_factory,
     actor_factory,
@@ -582,6 +594,45 @@ async def test_verification_independence_requires_authoritative_profile_history(
         ]
     )
     await db_session.commit()
+    if run_receipt is not None:
+        execution = await db_session.scalar(
+            select(AgentTaskAssignment).where(
+                AgentTaskAssignment.task_id == task.id,
+                AgentTaskAssignment.purpose == "execution",
+            )
+        )
+        begun, terminal = {
+            "historical": (historical_profile.id, historical_profile.id),
+            "current": (
+                current_implementation_profile.id,
+                current_implementation_profile.id,
+            ),
+            "changed_to_historical": (
+                current_implementation_profile.id,
+                historical_profile.id,
+            ),
+            "foreign_actor": (historical_profile.id, historical_profile.id),
+        }[run_receipt]
+        db_session.add(
+            AgentRun(
+                task_id=task.id,
+                actor_id=implementation_actor.id,
+                assignment_id=execution.id,
+                status="succeeded",
+                execution_provenance={
+                    "actor_id": (
+                        verifier.id
+                        if run_receipt == "foreign_actor"
+                        else implementation_actor.id
+                    ),
+                    "profile_id": begun,
+                    "profile_revision": None,
+                    "source": "authenticated_work_begin",
+                    "terminal_profile_id": terminal,
+                },
+            )
+        )
+        await db_session.commit()
     routing = AgentRoutingService(db_session)
     command_values = _assessment_command(
         task_version=task.version
@@ -605,14 +656,22 @@ async def test_verification_independence_requires_authoritative_profile_history(
         ),
     )
 
-    assert preview.recommended_candidate is None
-    verifier_exclusion = next(
+    verifier_row = next(
         item
-        for item in preview.exclusions
+        for item in [*preview.eligible_candidates, *preview.exclusions]
         if item.actor_id == verifier.id
         and item.model_binding_id == binding.id
     )
-    assert expected_blocker in verifier_exclusion.hard_blocker_codes
+    independence_codes = {
+        "verification_actor_not_independent",
+        "verification_profile_not_independent",
+        "verification_independence_unverifiable",
+    }
+    if expected_blocker is None:
+        assert not independence_codes & set(verifier_row.hard_blocker_codes)
+    else:
+        assert preview.recommended_candidate is None
+        assert expected_blocker in verifier_row.hard_blocker_codes
 
 
 @pytest.mark.asyncio

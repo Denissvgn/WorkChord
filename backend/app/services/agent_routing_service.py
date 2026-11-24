@@ -33,7 +33,9 @@ from app.models.iteration import Iteration
 from app.models.task import Task, TaskStatus
 from app.models.team_member import TeamMember, TeamMemberProfile
 from app.query_limits import CollectionLimitExceededError
-from app.services.review_provenance import different_publisher_required, historical_profile, review_history
+from app.services.review_provenance import (
+    different_publisher_required, execution_profile_history, historical_profile, review_history,
+)
 from app.schemas.agent_planning import AgentPlanningCommandContext
 from app.schemas.agent_routing import (
     AgentRoutingCandidate,
@@ -1638,6 +1640,10 @@ class AgentRoutingService:
             }
             if history.required_reviewer_profiles is not None:
                 input_evidence["review_history"]["required_reviewer_profile_ids"] = list(history.required_reviewer_profiles)
+        execution_history = None
+        if history is None and data.purpose == "verification":
+            execution_history = await execution_profile_history(self.db, task_assignments)
+            input_evidence["execution_history"] = execution_history
         if data.review_evidence_id is not None:
             review_evidence = await resolve(self.db, task, data.review_evidence_id, history)
             if review_evidence["assessment_id"] != assessment.id:
@@ -1670,7 +1676,10 @@ class AgentRoutingService:
             )
             global_blockers = sorted(set(global_blockers))
 
-        if history is None:
+        if execution_history is not None:
+            execution_actor_ids = [row["actor_id"] for row in execution_history]
+            execution_profile_ids = [row["profile_id"] for row in execution_history]
+        elif history is None:
             fulfilled = [
                 assignment for assignment in task_assignments
                 if assignment.purpose == "execution" and assignment.state == "fulfilled"

@@ -359,6 +359,72 @@ def historical_profile(assignment):
     return None
 
 
+def _begin_profile(run):
+    """The authenticated begin receipt, or its audited reconciliation, names the run's own profile."""
+    receipt = run.execution_provenance
+    if not isinstance(receipt, dict) or receipt.get("actor_id") != run.actor_id:
+        return None
+    value, revision = receipt.get("profile_id"), receipt.get("profile_revision")
+    if type(value) is not int or value <= 0 or (revision is not None and not str(revision).startswith(f"p{value}-")):
+        return None
+    return value
+
+
+async def execution_profile_history(db, assignments):
+    """Name each fulfilled execution's actor and profile from server-owned records only.
+
+    A server-owned routing decision supplies the profile. Without one, as for a
+    compatibility dispatch, every run of that assignment supplies the profile its
+    authenticated begin recorded. A profile change before the terminal command
+    adds the terminal profile. Anything else stays unknown; current membership is
+    never consulted.
+    """
+    fulfilled = sorted((item for item in assignments if item.purpose == "execution" and item.state == "fulfilled"),
+                       key=lambda item: item.id)
+    rows, pending = [], {}
+    for assignment in fulfilled:
+        profile_id = historical_profile(assignment)
+        if profile_id is None:
+            pending[assignment.id] = assignment
+            continue
+        rows.append({"assignment_id": assignment.id, "run_id": None, "actor_id": assignment.actor_id,
+                     "profile_id": profile_id, "source": "routing_decision"})
+    runs = []
+    if pending:
+        query = (select(AgentRun).where(AgentRun.assignment_id.in_(list(pending))).order_by(AgentRun.id)
+                 .limit(MAX_BOUNDED_LIST_ITEMS + 1))
+        runs = (await db.scalars(query)).all()
+        if len(runs) > MAX_BOUNDED_LIST_ITEMS:
+            runs = []
+    by_assignment = {}
+    for run in runs:
+        by_assignment.setdefault(run.assignment_id, []).append(run)
+    for assignment in pending.values():
+        attempts = by_assignment.get(assignment.id)
+        if not attempts:
+            rows.append({"assignment_id": assignment.id, "run_id": None, "actor_id": assignment.actor_id,
+                         "profile_id": None, "source": "unavailable"})
+            continue
+        for run in attempts:
+            begun = (_begin_profile(run) if run.actor_id == assignment.actor_id and run.task_id == assignment.task_id
+                     else None)
+            rows.append({"assignment_id": assignment.id, "run_id": run.id, "actor_id": run.actor_id,
+                         "profile_id": begun, "source": "run_begin" if begun else "unavailable"})
+            terminal = run.execution_provenance.get("terminal_profile_id", begun) if begun else begun
+            if terminal != begun:
+                rows.append({"assignment_id": assignment.id, "run_id": run.id, "actor_id": run.actor_id,
+                             "profile_id": terminal if type(terminal) is int and terminal > 0 else None,
+                             "source": "run_terminal"})
+    return sorted(rows, key=lambda row: (row["assignment_id"], row["run_id"] or 0, row["source"]))
+
+
+async def require_independent_profile(db, assignments, reviewer, reviewer_profile_id=None):
+    """Refuse a reviewer whose profile is known to have executed this task."""
+    profiles = {reviewer.profile_id, reviewer_profile_id} - {None}
+    if any(row["profile_id"] in profiles for row in await execution_profile_history(db, assignments)):
+        _conflict("verification_profile_not_independent", "The review profile contributed to this task.")
+
+
 async def actor_provenance(db, actor, *, observed_model=None, binding_id=None, lock=False):
     """Capture the authenticated actor's profile and exact operator-declared model at this instant."""
     from app.services.agent_routing_service import AgentRoutingService
