@@ -6,7 +6,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1736 | [Open section](#entities) |
+| Entities | 1733 | [Open section](#entities) |
 | Modules | 1100 | [Open section](#modules) |
 | Workflows | 219 | [Open section](#workflows) |
 | Guides | 0 | No pages |
@@ -1753,9 +1753,6 @@ Retained history; these declarations are absent from the selected source invento
 - [SidebarAttentionAction](entities/SidebarAttentionAction.md)
 - [SortableTemplateRowProps](entities/SortableTemplateRowProps.md)
 - [StepState](entities/StepState.md)
-- [StepStatus](entities/StepStatus.md)
-- [TaskEditModalContentProps](entities/TaskEditModalContentProps.md)
-- [TaskStatusFlowProps](entities/TaskStatusFlowProps.md)
 - [TeamPageAction](entities/TeamPageAction.md)
 - [Translate](entities/Translate.md)
 - [WorkspaceAttention](entities/WorkspaceAttention.md)
