@@ -105,8 +105,8 @@ from app.services.agent_routing_rollout import (
 )
 from app.services.agent_model_catalog_service import AgentModelCatalogService
 from app.services.review_provenance import (
-    ReworkReadCache, actor_provenance, different_publisher_required, rework_binding_identity,
-    select_reviewer, supervised_rework_evidence,
+    ReworkReadCache, actor_provenance, different_publisher_required, require_independent_profile,
+    rework_binding_identity, select_reviewer, supervised_rework_evidence,
 )
 from app.services.task_service import TaskService, TaskVersionConflictError
 from app.services.project_service import ProjectService
@@ -1544,6 +1544,8 @@ class AgentWorkService:
                 await check_supervised_selection(self.db,task,principal,review_selection,data.reviewer_profile_id)
             if review_selection is None and getattr(data, "review_binding_id", None):
                 raise ValueError("An explicit supervised review binding requires the project publisher policy.")
+            if review_selection is None:
+                await require_independent_profile(self.db, task_assignments, target, data.reviewer_profile_id)
         assignment = AgentTaskAssignment(
             review_selection=review_selection,
             task_id=task.id,
@@ -1869,6 +1871,9 @@ class AgentWorkService:
                 from app.services.review_evidence import check_supervised_selection
                 await check_supervised_selection(self.db,task,principal,assignment.review_selection,
                     data.reviewer_profile_id or assignment.reviewer_profile_id)
+            if assignment.review_selection is None:
+                await require_independent_profile(self.db, task_assignments, selected_actor,
+                    data.reviewer_profile_id if "reviewer_profile_id" in data.model_fields_set else assignment.reviewer_profile_id)
         elif data.review_evidence_id is not None:
             raise ValueError("Review evidence is available only for verification.")
         if selected_actor.id != assignment.actor_id:
@@ -2975,6 +2980,9 @@ class AgentWorkService:
             from app.services.review_provenance import record_terminal_observation
             await record_terminal_observation(self.db, actor, run, data.observed_model, submitting=success,
                 output_state=getattr(data, "output_state", None), commit_urls=data.commit_urls, evidence=data.evidence)
+        if run.execution_provenance:
+            # Review independence counts a profile changed during the run as a second contributor.
+            run.execution_provenance = {**run.execution_provenance, "terminal_profile_id": actor.profile_id}
         now = utc_now()
         run.status = "succeeded" if success else data.status
         run.ended_at = now
