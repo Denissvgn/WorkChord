@@ -243,11 +243,11 @@ def test_public_proxy_routes_well_known_discovery_documents_to_backend() -> None
         (production_gateway, "http://workchord_backend"),
     ):
         assert "location ^~ /.well-known/workchord/ {" in gateway
-        assert "location = /.well-known/workchord-build.json {" in gateway
         assert "location = /.well-known/workchord-agent-skills.json {" in gateway
-        assert gateway.count(f"proxy_pass {upstream};") >= 4
-        # The SPA fallback must remain for every other path.
-        assert "try_files $uri $uri/ /index.html;" in gateway or "location / {" in gateway
+        # The frontend image serves its own build identity; it must not be proxied.
+        assert "workchord-build.json" not in gateway
+        # /health, /api, the agent-connect prefix and the agent-skills document.
+        assert gateway.count(f"proxy_pass {upstream};") == 4
 
 
 def test_security_and_recovery_scripts_are_fail_closed() -> None:

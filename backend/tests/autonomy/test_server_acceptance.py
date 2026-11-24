@@ -734,6 +734,7 @@ def _application_probe_client(
     *,
     agent_connect_body: bytes,
     agent_connect_content_type: str,
+    gateway_build_identity: dict | None = None,
 ):
     from app.autonomy import server_acceptance
 
@@ -767,20 +768,27 @@ def _application_probe_client(
     def handler(request: httpx.Request) -> httpx.Response:
         json_type = {"content-type": "application/json"}
         path = request.url.path
-        if request.url.host == "frontend" and path == "/.well-known/workchord-build.json":
-            return httpx.Response(200, headers=json_type, json=gateway_identity)
+        if request.url.host == "frontend":
+            # The gateway serves its own build identity and never the backend's.
+            if path == "/.well-known/workchord-build.json":
+                return httpx.Response(
+                    200,
+                    headers=json_type,
+                    json=gateway_build_identity or gateway_identity,
+                )
+            if path == "/health":
+                return httpx.Response(200, headers=json_type, json={"status": "ok"})
+            if path == "/.well-known/workchord/agent-connect.json":
+                return httpx.Response(
+                    200,
+                    headers={"content-type": agent_connect_content_type},
+                    content=agent_connect_body,
+                )
+            return httpx.Response(404)
         if path == "/health/ready":
             return httpx.Response(200, headers=json_type, json=ready)
         if path == "/.well-known/workchord-build.json":
             return httpx.Response(200, headers=json_type, json=backend_identity)
-        if path == "/health":
-            return httpx.Response(200, headers=json_type, json={"status": "ok"})
-        if path == "/.well-known/workchord/agent-connect.json":
-            return httpx.Response(
-                200,
-                headers={"content-type": agent_connect_content_type},
-                content=agent_connect_body,
-            )
         return httpx.Response(404)
 
     real_client = httpx.Client
@@ -823,6 +831,34 @@ def test_application_probe_rejects_web_page_instead_of_agent_connect(
     with pytest.raises(
         ServerAcceptanceError,
         match="application-agent-connect-not-json",
+    ):
+        _probe_application(
+            "http://backend:8001",
+            gateway_url="http://frontend",
+            expected_source_revision=SOURCE_REVISION,
+            timeout_seconds=1.0,
+        )
+
+
+def test_application_probe_rejects_gateway_serving_backend_build_identity(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from app.autonomy.server_acceptance import _probe_application
+
+    _application_probe_client(
+        monkeypatch,
+        agent_connect_body=json.dumps({"auth_mode": "managed"}).encode(),
+        agent_connect_content_type="application/json",
+        gateway_build_identity={
+            "schema_version": "workchord-build-identity-v1",
+            "component": "backend",
+            "source_revision": SOURCE_REVISION,
+            "artifact_digest": "c" * 64,
+        },
+    )
+    with pytest.raises(
+        ServerAcceptanceError,
+        match="application-build-component-mismatch",
     ):
         _probe_application(
             "http://backend:8001",
