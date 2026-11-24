@@ -204,6 +204,31 @@ applicable historical evidence under its operation’s locks.
 Verification uses the originally selected artifact and reviewer. A rework
 begin still checks its independent rejection and the original submitter.
 
+While the extension's window is open, the worker can keep reporting on its
+original run. Progress and checkpoint events leave the window in force. The
+next renewal or submission moves the assignment to the current task version,
+and the window is then no longer needed. A failure with retained output ends
+the run and the window, and the task enters the PM's recovery list. A worker
+blocker changes the task state the window recorded. The task shows as
+blocked; the worker can no longer renew, submit or fail that run, and the PM
+resolves the blocker and recovers the work.
+
+A runtime may re-acknowledge during a window only to adopt
+`iteration-window-execution-recovery-v1`. Existing work continues when that
+feature is the only difference from the acknowledgement in force when the
+window opened. Any other acknowledgement change, topology revision, model
+binding, membership or review policy change ends the window's authority.
+Renew, submit and fail then report that the fence `no longer matches current
+ownership`. The task appears in the PM's recovery list, and the PM uses the
+typed recovery path below.
+
+Downgrading the database below schema revision `20261121_0019`, or restoring
+a backup taken before it, removes every stored window. Assignments that relied
+on a window no longer match their task version, so their workers cannot renew,
+submit or fail. Let that work finish before rolling back where possible.
+Otherwise the PM recovers each affected task with the typed requeue once its
+lease expires. On SQLite, this downgrade needs SQLite 3.35 or later.
+
 For a cutoff applied before `iteration-window-execution-recovery-v1`, a
 workspace operator can preview a single task with
 `POST /api/agent/tasks/{task_id}/reconcile-planning-window` or

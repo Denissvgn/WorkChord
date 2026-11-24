@@ -463,6 +463,124 @@ def advance_server_clock_past(monkeypatch, instant):
 
     monkeypatch.setattr(server_time, "datetime", ShiftedDatetime)
 
+
+async def reacknowledge(factory, worker, key, *, extra_feature=None):
+    """Refresh the worker runtime so that it adopts the planning-window feature."""
+    from app.agent_contract import EXECUTION_PLANNING_WINDOW_FEATURE
+    from app.models.agent import AgentTeamTopologyMember
+    from app.schemas.agent_team_setup import AgentTeamRuntimeAcknowledgement
+    from app.services.agent_team_setup_service import AgentTeamSetupService
+
+    async with factory() as session:
+        roster = await session.scalar(
+            select(AgentTeamTopologyMember).where(AgentTeamTopologyMember.actor_id == worker.id)
+        )
+        acknowledgement = json.loads(roster.runtime_acknowledgement_payload)
+        assert EXECUTION_PLANNING_WINDOW_FEATURE not in acknowledgement["server_features"]
+        acknowledgement["server_features"].append(EXECUTION_PLANNING_WINDOW_FEATURE)
+        if extra_feature:
+            acknowledgement["server_features"].append(extra_feature)
+        prior_digest = roster.runtime_acknowledgement_digest
+        acknowledgement["expected_previous_acknowledgement_digest"] = prior_digest
+        renewed = await AgentTeamSetupService(session).acknowledge_runtime(
+            key, AgentTeamRuntimeAcknowledgement.model_validate(acknowledgement)
+        )
+        assert renewed.acknowledgement_digest != prior_digest and renewed.topology_runtime_ready
+
+
+async def report_under_window(call, factory, lane, task, current, running, worker, wk, pk, retained):
+    """Report, renew and end live work while a sealed forward planning window is in force."""
+    from app.services.execution_planning_window import current_window
+
+    renew = ("agent_renew_my_work", "/api/agent/me/work/renew")
+    submit = ("agent_submit_my_work", "/api/agent/me/work/submit")
+    fail = ("agent_fail_my_work", "/api/agent/me/work/fail")
+    claim = {"claim_id": running["claim_id"], "claim_generation": running["claim_generation"]}
+    live = {**fence(running), "expected_task_version": current.version}
+    handback = {
+        **live,
+        "observed_model": retained["observed_model"],
+        "output_state": "retained",
+        "status": "failed",
+        "summary": "Hand back the retained draft notes",
+        "evidence": {"artifact": "the retained draft notes"},
+    }
+
+    async def observe():
+        async with factory() as read:
+            saved = await read.get(Task, task.id)
+            run = await read.get(AgentRun, running["run"]["id"])
+            return saved, current_window(saved), run.status
+
+    if lane in {"checkpoint", "progress", "blocker"}:
+        body = {
+            "checkpoint": {"output_state": "retained", "note": "Draft notes saved"},
+            "progress": {"completed": "first half of the notes"},
+            "blocker": {"blocker": "Waiting for the release owner to confirm the notes"},
+        }[lane]
+        event = await call(
+            "agent_append_task_event",
+            f"/api/agent/tasks/{task.id}/events",
+            wk,
+            task_id=task.id,
+            payload={"event_type": f"agent.{lane}", "payload": body, **claim},
+            receipt=f"{lane}-under-window",
+        )
+        assert event["event_type"] == f"agent.{lane}"
+    if lane.startswith("reacknowledged"):
+        await reacknowledge(
+            factory,
+            worker,
+            wk,
+            extra_feature="unrelated-server-feature-v1" if lane == "reacknowledged_other" else None,
+        )
+    saved, window, status = await observe()
+    assert saved.version == current.version and status == "running"
+    if lane in {"checkpoint", "progress", "reacknowledged"}:
+        # The report or feature-only acknowledgement leaves the window and run in force.
+        assert window == current.execution_planning_window
+        renewed = await call(*renew, wk, payload=live, receipt=f"renew-after-{lane}")
+        # Renewal re-anchors the original assignment at a newly reserved
+        # version, so the window has done its job and is no longer current.
+        assert renewed["run"]["id"] == running["run"]["id"]
+        assert renewed["assignment"]["task_version"] == renewed["task"]["version"] == current.version + 1
+        saved, window, status = await observe()
+        assert window is None and status == "running" and saved.claim_id
+        done = await call(*submit, wk, payload={**fence(renewed), **retained}, receipt=f"submit-after-{lane}")
+        assert done["run"]["id"] == running["run"]["id"] and done["run"]["status"] == "succeeded"
+        assert done["task"]["status"] == "resolved"
+        return
+    if lane == "fail":
+        assert window == current.execution_planning_window
+        ended = await call(*fail, wk, payload=handback, receipt="retain-under-window")
+        assert ended["recovery_required"] and ended["run"]["id"] == running["run"]["id"]
+        assert ended["run"]["status"] == "failed" and ended["assignment"]["state"] == "cancelled"
+        saved, window, status = await observe()
+        # Failure reserves a new version, which deliberately ends the window.
+        assert status == "failed" and saved.version > current.version and window is None
+        assert not saved.claim_id
+        (item,) = (await call("agent_list_recovery_tasks", "/api/agent/recovery", pk))["items"]
+        assert item["task"]["id"] == task.id
+        return
+    if lane == "blocker":
+        # The worker's own blocker changes the task state the window was sealed
+        # against. The task is visibly blocked, and the PM resolves it.
+        assert window is None and saved.blocked_reason
+        expected_error = "scope changed"
+    else:
+        # Any acknowledgement change beyond adopting the planning-window feature
+        # ends the window's authority. The PM must recover the work.
+        assert window == current.execution_planning_window
+        expected_error = "no longer matches current ownership"
+    await call(*renew, wk, payload=live, receipt=f"renew-after-{lane}", error=expected_error)
+    await call(*fail, wk, payload=handback, receipt=f"retain-after-{lane}", error=expected_error)
+    saved, _, status = await observe()
+    assert status == "running" and saved.version == current.version and saved.claim_id
+    if lane == "reacknowledged_other":
+        (item,) = (await call("agent_list_recovery_tasks", "/api/agent/recovery", pk))["items"]
+        assert item["task"]["id"] == task.id and item["recovery_codes"], item
+
+
 @databases
 @pytest.mark.parametrize("transport", ["rest", "mcp"])
 @pytest.mark.parametrize(
@@ -490,6 +608,12 @@ def advance_server_clock_past(monkeypatch, instant):
         "queued_recovery",
         "legacy_queued_normal",
         "legacy_queued_recovery",
+        "checkpoint",
+        "progress",
+        "fail",
+        "blocker",
+        "reacknowledged",
+        "reacknowledged_other",
     ],
 )
 @pytest.mark.usefixtures("deployed_agent_skill_release")
@@ -1422,6 +1546,10 @@ async def test_date_only_reservation(
                 error="no longer matches current ownership"
                 if lane == "authority_changed"
                 else "scope changed",
+            )
+        elif lane in {"checkpoint", "progress", "fail", "blocker", "reacknowledged", "reacknowledged_other"}:
+            await report_under_window(
+                call, db_session_factory, lane, task, current, running, worker, wk, pk, retained
             )
         elif lane == "substantive":
             await call(

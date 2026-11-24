@@ -185,6 +185,10 @@ same resumption states apply.
 PostgreSQL recovery is forward-only. A database restore discards writes made
 after its recovery point, including renewals. Treat each protected claim by
 its recorded resumption state, and recover lost claims through the PM.
+A rollback that removes iteration-extension windows also strands the work
+that relied on them; the
+[model-aware routing runbook](model-aware-routing.md#extending-an-iteration-with-assigned-work)
+describes the PM recovery.
 
 ## Limits
 
