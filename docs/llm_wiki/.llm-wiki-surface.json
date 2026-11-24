@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1752,
+      "entities": 1733,
       "flows": 573,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 1128,
+      "modules": 1100,
       "workflows": 219
     },
     "dependency_architecture": 2,
-    "total": 3688
+    "total": 3641
   },
   "dependency_pages": {
     "count": 2,
@@ -46353,7 +46353,6 @@
         "entities/StatusSegment.md",
         "entities/StatusTone.md",
         "entities/StepState.md",
-        "entities/StepStatus.md",
         "entities/StopMode.md",
         "entities/StrictBundleModel.md",
         "entities/StrictContractModel.md",
@@ -46408,7 +46407,6 @@
         "entities/TaskDifficultyScore.md",
         "entities/TaskDomainService.md",
         "entities/TaskEditDrawerProps.md",
-        "entities/TaskEditModalContentProps.md",
         "entities/TaskEditorAvailability.md",
         "entities/TaskEditorDefaultsContext.md",
         "entities/TaskEditorFieldDefinition.md",
@@ -46466,7 +46464,6 @@
         "entities/TaskStateChip.md",
         "entities/TaskStatusAmendment.md",
         "entities/TaskStatusChange.md",
-        "entities/TaskStatusFlowProps.md",
         "entities/TaskStatusLogResponse.md",
         "entities/TaskStatusService.md",
         "entities/TaskSubscription.md",
@@ -52056,19 +52053,6 @@
       "title": "AttentionKind"
     },
     {
-      "canonical_path": "entities/AttentionSeverity.md",
-      "id": "AttentionSeverity",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/AttentionSeverity",
-      "outgoing_internal_links": [
-        "modules/attentionRanking.md",
-        "modules/OverviewPage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "AttentionSeverity"
-    },
-    {
       "canonical_path": "entities/AttentionSource.md",
       "id": "AttentionSource",
       "kind": "entities",
@@ -56323,18 +56307,6 @@
       "title": "IterationResponse"
     },
     {
-      "canonical_path": "entities/IterationSelectorProps.md",
-      "id": "IterationSelectorProps",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/IterationSelectorProps",
-      "outgoing_internal_links": [
-        "modules/IterationSelector.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "IterationSelectorProps"
-    },
-    {
       "canonical_path": "entities/IterationSeriesItem.md",
       "id": "IterationSeriesItem",
       "kind": "entities",
@@ -59403,18 +59375,6 @@
       "title": "PlanningJob"
     },
     {
-      "canonical_path": "entities/PlanningMember.md",
-      "id": "PlanningMember",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/PlanningMember",
-      "outgoing_internal_links": [
-        "modules/PlanMasterPage.test.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "PlanningMember"
-    },
-    {
       "canonical_path": "entities/PlanningQueryFeedback.md",
       "id": "PlanningQueryFeedback",
       "kind": "entities",
@@ -60496,18 +60456,6 @@
       "title": "QueryFeedbackSource"
     },
     {
-      "canonical_path": "entities/QueryKey.md",
-      "id": "QueryKey",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/QueryKey",
-      "outgoing_internal_links": [
-        "modules/PlanMasterPage.test.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "QueryKey"
-    },
-    {
       "canonical_path": "entities/QueryLoadingStateProps.md",
       "id": "QueryLoadingStateProps",
       "kind": "entities",
@@ -60566,19 +60514,6 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/QuickCapture.tsx",
       "title": "QuickCaptureTarget"
-    },
-    {
-      "canonical_path": "entities/RankableAttention.md",
-      "id": "RankableAttention",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/RankableAttention",
-      "outgoing_internal_links": [
-        "modules/attentionRanking.md",
-        "modules/attentionRanking.test.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "RankableAttention"
     },
     {
       "canonical_path": "entities/RateLimitWindow.md",
@@ -60681,30 +60616,6 @@
       "role": "semantic",
       "source_path": "scripts/load/run.py",
       "title": "Recorder"
-    },
-    {
-      "canonical_path": "entities/RecoveryFocusIntent.md",
-      "id": "RecoveryFocusIntent",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/RecoveryFocusIntent",
-      "outgoing_internal_links": [
-        "modules/PlanMasterPage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "RecoveryFocusIntent"
-    },
-    {
-      "canonical_path": "entities/RecoveryFocusTarget.md",
-      "id": "RecoveryFocusTarget",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/RecoveryFocusTarget",
-      "outgoing_internal_links": [
-        "modules/PlanMasterPage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "RecoveryFocusTarget"
     },
     {
       "canonical_path": "entities/RedactionClass.md",
@@ -61360,30 +61271,6 @@
       "role": "semantic",
       "source_path": "frontend/src/features/planningMasters/atRiskReasons.ts",
       "title": "RiskFields"
-    },
-    {
-      "canonical_path": "entities/RoadmapFilterDescriptor.md",
-      "id": "RoadmapFilterDescriptor",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/RoadmapFilterDescriptor",
-      "outgoing_internal_links": [
-        "modules/RoadmapPage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "RoadmapFilterDescriptor"
-    },
-    {
-      "canonical_path": "entities/RoadmapGroup.md",
-      "id": "RoadmapGroup",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/RoadmapGroup",
-      "outgoing_internal_links": [
-        "modules/RoadmapPage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "RoadmapGroup"
     },
     {
       "canonical_path": "entities/RoadmapMarker.md",
@@ -62265,18 +62152,6 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/saved_view.py",
       "title": "SavedViewDashboardCardResponse"
-    },
-    {
-      "canonical_path": "entities/SavedViewDashboardCardsProps.md",
-      "id": "SavedViewDashboardCardsProps",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/SavedViewDashboardCardsProps",
-      "outgoing_internal_links": [
-        "modules/SavedViewDashboardCards.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "SavedViewDashboardCardsProps"
     },
     {
       "canonical_path": "entities/SavedViewDuplicate.md",
@@ -65692,30 +65567,6 @@
       "title": "SharedUnlock"
     },
     {
-      "canonical_path": "entities/ShareFocusIntent.md",
-      "id": "ShareFocusIntent",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/ShareFocusIntent",
-      "outgoing_internal_links": [
-        "modules/PlanMasterPage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "ShareFocusIntent"
-    },
-    {
-      "canonical_path": "entities/ShareFocusTarget.md",
-      "id": "ShareFocusTarget",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/ShareFocusTarget",
-      "outgoing_internal_links": [
-        "modules/PlanMasterPage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "ShareFocusTarget"
-    },
-    {
       "canonical_path": "entities/SidebarAttentionAction.md",
       "id": "SidebarAttentionAction",
       "kind": "entities",
@@ -66317,30 +66168,6 @@
       "title": "StatusTone"
     },
     {
-      "canonical_path": "entities/StepDataState.md",
-      "id": "StepDataState",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/StepDataState",
-      "outgoing_internal_links": [
-        "modules/PlanMasterPage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "StepDataState"
-    },
-    {
-      "canonical_path": "entities/StepPresentationState.md",
-      "id": "StepPresentationState",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/StepPresentationState",
-      "outgoing_internal_links": [
-        "modules/PlanMasterPage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "StepPresentationState"
-    },
-    {
       "canonical_path": "entities/StepState.md",
       "id": "StepState",
       "kind": "entities",
@@ -66351,19 +66178,6 @@
       "role": "semantic",
       "source_path": null,
       "title": "StepState"
-    },
-    {
-      "canonical_path": "entities/StepStatus.md",
-      "id": "StepStatus",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/StepStatus",
-      "outgoing_internal_links": [
-        "modules/PlanMasterPage.md",
-        "modules/planningMasters_masters.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "StepStatus"
     },
     {
       "canonical_path": "entities/StopMode.md",
@@ -67153,30 +66967,6 @@
       "role": "semantic",
       "source_path": "frontend/src/components/gantt/TaskEditDrawer.tsx",
       "title": "TaskEditDrawerProps"
-    },
-    {
-      "canonical_path": "entities/TaskEditModalContentProps.md",
-      "id": "TaskEditModalContentProps",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TaskEditModalContentProps",
-      "outgoing_internal_links": [
-        "modules/TaskEditModal.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "TaskEditModalContentProps"
-    },
-    {
-      "canonical_path": "entities/TaskEditModalProps.md",
-      "id": "TaskEditModalProps",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TaskEditModalProps",
-      "outgoing_internal_links": [
-        "modules/TaskEditModal.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "TaskEditModalProps"
     },
     {
       "canonical_path": "entities/TaskEditorAvailability.md",
@@ -67973,18 +67763,6 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/task.py",
       "title": "TaskStatusChange"
-    },
-    {
-      "canonical_path": "entities/TaskStatusFlowProps.md",
-      "id": "TaskStatusFlowProps",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TaskStatusFlowProps",
-      "outgoing_internal_links": [
-        "modules/TaskStatusFlow.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "TaskStatusFlowProps"
     },
     {
       "canonical_path": "entities/TaskStatusLogResponse.md",
@@ -72269,18 +72047,6 @@
       "title": "VacationResponse"
     },
     {
-      "canonical_path": "entities/VacationRow.md",
-      "id": "VacationRow",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/VacationRow",
-      "outgoing_internal_links": [
-        "modules/CalendarPage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "VacationRow"
-    },
-    {
       "canonical_path": "entities/VacationUpdate.md",
       "id": "VacationUpdate",
       "kind": "entities",
@@ -74197,35 +73963,6 @@
       "title": "AgentModelAdministration.test Module"
     },
     {
-      "canonical_path": "modules/AgentPipelinePage.md",
-      "id": "AgentPipelinePage",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/AgentPipelinePage",
-      "outgoing_internal_links": [
-        "modules/AgentPipelinePage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "AgentPipelinePage Module"
-    },
-    {
-      "canonical_path": "modules/AgentPipelinePage.test.md",
-      "id": "AgentPipelinePage.test",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/AgentPipelinePage.test",
-      "outgoing_internal_links": [
-        "modules/AgentPipelinePage.md",
-        "modules/AgentPipelinePage.test.md",
-        "modules/i18n.md",
-        "modules/renderWithProviders.md",
-        "modules/types_agent.md",
-        "modules/types_task.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "AgentPipelinePage.test Module"
-    },
-    {
       "canonical_path": "modules/agentService.md",
       "id": "agentService",
       "kind": "modules",
@@ -74330,39 +74067,6 @@
       "role": "semantic",
       "source_path": "frontend/src/features/agentTeamSetup/masters.test.ts",
       "title": "masters.test Module"
-    },
-    {
-      "canonical_path": "modules/AgentTeamSetupMasterPage.md",
-      "id": "AgentTeamSetupMasterPage",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/AgentTeamSetupMasterPage",
-      "outgoing_internal_links": [
-        "entities/AgentTeamActionReceiptStatus.md",
-        "entities/StatusTone.md",
-        "entities/WorkflowFocusIntent.md",
-        "entities/WorkflowFocusTarget.md",
-        "modules/AgentTeamSetupMasterPage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "AgentTeamSetupMasterPage Module"
-    },
-    {
-      "canonical_path": "modules/AgentTeamSetupMasterPage.test.md",
-      "id": "AgentTeamSetupMasterPage.test",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/AgentTeamSetupMasterPage.test",
-      "outgoing_internal_links": [
-        "modules/accessibilityInvariants.md",
-        "modules/AgentTeamSetupMasterPage.md",
-        "modules/AgentTeamSetupMasterPage.test.md",
-        "modules/i18n.md",
-        "modules/renderWithProviders.md",
-        "modules/types_agent.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "AgentTeamSetupMasterPage.test Module"
     },
     {
       "canonical_path": "modules/AgentTeamStepList.md",
@@ -74916,38 +74620,6 @@
       "title": "AtRiskTaskReasons Module"
     },
     {
-      "canonical_path": "modules/attentionRanking.md",
-      "id": "attentionRanking",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/attentionRanking",
-      "outgoing_internal_links": [
-        "entities/AttentionKind.md",
-        "entities/AttentionSeverity.md",
-        "entities/RankableAttention.md",
-        "modules/attentionRanking.md",
-        "modules/attentionRanking.test.md",
-        "modules/OverviewPage.md",
-        "modules/types_task.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "attentionRanking Module"
-    },
-    {
-      "canonical_path": "modules/attentionRanking.test.md",
-      "id": "attentionRanking.test",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/attentionRanking.test",
-      "outgoing_internal_links": [
-        "modules/attentionRanking.md",
-        "modules/attentionRanking.test.md",
-        "modules/types_task.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "attentionRanking.test Module"
-    },
-    {
       "canonical_path": "modules/authority.md",
       "id": "authority",
       "kind": "modules",
@@ -75374,36 +75046,6 @@
       "role": "semantic",
       "source_path": "backend/app/services/calendar_service.py",
       "title": "calendar_service Module"
-    },
-    {
-      "canonical_path": "modules/CalendarPage.md",
-      "id": "CalendarPage",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/CalendarPage",
-      "outgoing_internal_links": [
-        "entities/CalendarDraft.md",
-        "entities/DateChipProps.md",
-        "entities/DateListProps.md",
-        "entities/VacationRow.md",
-        "modules/CalendarPage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "CalendarPage Module"
-    },
-    {
-      "canonical_path": "modules/CalendarPage.test.md",
-      "id": "CalendarPage.test",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/CalendarPage.test",
-      "outgoing_internal_links": [
-        "modules/CalendarPage.md",
-        "modules/CalendarPage.test.md",
-        "modules/renderWithProviders.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "CalendarPage.test Module"
     },
     {
       "canonical_path": "modules/CalendarRedirect.test.md",
@@ -76218,21 +75860,6 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/CurrentTaskDrawer.test.tsx",
       "title": "CurrentTaskDrawer.test Module"
-    },
-    {
-      "canonical_path": "modules/CurrentTaskModal.test.md",
-      "id": "CurrentTaskModal.test",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/CurrentTaskModal.test",
-      "outgoing_internal_links": [
-        "modules/CurrentTaskModal.test.md",
-        "modules/GuardedTaskModal.md",
-        "modules/renderWithProviders.md",
-        "modules/types_task.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "CurrentTaskModal.test Module"
     },
     {
       "canonical_path": "modules/database_config.md",
@@ -77819,19 +77446,6 @@
       "title": "GuardedTaskDrawer Module"
     },
     {
-      "canonical_path": "modules/GuardedTaskModal.md",
-      "id": "GuardedTaskModal",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/GuardedTaskModal",
-      "outgoing_internal_links": [
-        "entities/FormProps.md",
-        "modules/GuardedTaskModal.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "GuardedTaskModal Module"
-    },
-    {
       "canonical_path": "modules/handoff.md",
       "id": "handoff",
       "kind": "modules",
@@ -78456,20 +78070,6 @@
       "title": "IterationList Module"
     },
     {
-      "canonical_path": "modules/IterationList.test.md",
-      "id": "IterationList.test",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/IterationList.test",
-      "outgoing_internal_links": [
-        "modules/IterationList.md",
-        "modules/IterationList.test.md",
-        "modules/renderWithProviders.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "IterationList.test Module"
-    },
-    {
       "canonical_path": "modules/IterationOutlook.test.md",
       "id": "IterationOutlook.test",
       "kind": "modules",
@@ -78506,26 +78106,6 @@
       "title": "iterations Module"
     },
     {
-      "canonical_path": "modules/IterationSelector.md",
-      "id": "IterationSelector",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/IterationSelector",
-      "outgoing_internal_links": [
-        "entities/IterationSelectorProps.md",
-        "modules/GanttPage.md",
-        "modules/IterationSelector.md",
-        "modules/iterationService.md",
-        "modules/iterationStore.md",
-        "modules/QueryState.md",
-        "modules/TasksPage.md",
-        "modules/TeamPage.md",
-        "modules/types_iteration.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "IterationSelector Module"
-    },
-    {
       "canonical_path": "modules/iterationService.md",
       "id": "iterationService",
       "kind": "modules",
@@ -78536,24 +78116,6 @@
       "role": "semantic",
       "source_path": "frontend/src/services/iterationService.ts",
       "title": "iterationService Module"
-    },
-    {
-      "canonical_path": "modules/IterationsPage.md",
-      "id": "IterationsPage",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/IterationsPage",
-      "outgoing_internal_links": [
-        "modules/index.md",
-        "modules/IterationForm.md",
-        "modules/IterationImportDialog.md",
-        "modules/IterationList.md",
-        "modules/IterationsPage.md",
-        "modules/PlanReturnBar.md",
-        "modules/types_iteration.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "IterationsPage Module"
     },
     {
       "canonical_path": "modules/iterationStore.md",
@@ -80989,49 +80551,6 @@
       "title": "PlanIterations.test Module"
     },
     {
-      "canonical_path": "modules/PlanMasterPage.md",
-      "id": "PlanMasterPage",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/PlanMasterPage",
-      "outgoing_internal_links": [
-        "entities/EvidenceItem.md",
-        "entities/RecoveryFocusIntent.md",
-        "entities/RecoveryFocusTarget.md",
-        "entities/ShareFocusIntent.md",
-        "entities/ShareFocusTarget.md",
-        "entities/StepDataState.md",
-        "entities/StepPresentationState.md",
-        "modules/PlanMasterPage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "PlanMasterPage Module"
-    },
-    {
-      "canonical_path": "modules/PlanMasterPage.test.md",
-      "id": "PlanMasterPage.test",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/PlanMasterPage.test",
-      "outgoing_internal_links": [
-        "entities/PlanningMember.md",
-        "entities/QueryKey.md",
-        "modules/accessibilityInvariants.md",
-        "modules/i18n.md",
-        "modules/PlanMasterPage.md",
-        "modules/PlanMasterPage.test.md",
-        "modules/planningMasters_masters.md",
-        "modules/renderWithProviders.md",
-        "modules/resources.en.md",
-        "modules/resources.ru.md",
-        "modules/types_iteration.md",
-        "modules/types_task.md",
-        "modules/usePlanningReadiness.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "PlanMasterPage.test Module"
-    },
-    {
       "canonical_path": "modules/planning-masters.test.md",
       "id": "planning-masters.test",
       "kind": "modules",
@@ -81363,38 +80882,6 @@
       "role": "semantic",
       "source_path": "frontend/src/components/planning/PlanningWorkbenchFrame.test.tsx",
       "title": "PlanningWorkbenchFrame.test Module"
-    },
-    {
-      "canonical_path": "modules/PlanningWorkflowGuide.md",
-      "id": "PlanningWorkflowGuide",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/PlanningWorkflowGuide",
-      "outgoing_internal_links": [
-        "entities/GuideItem.md",
-        "entities/PlanningSurface.md",
-        "modules/Button.md",
-        "modules/ContextHelp.md",
-        "modules/PlanningWorkflowGuide.md",
-        "modules/PlanningWorkflowGuide.test.md",
-        "modules/SlideOverDrawer.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "PlanningWorkflowGuide Module"
-    },
-    {
-      "canonical_path": "modules/PlanningWorkflowGuide.test.md",
-      "id": "PlanningWorkflowGuide.test",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/PlanningWorkflowGuide.test",
-      "outgoing_internal_links": [
-        "modules/PlanningWorkflowGuide.md",
-        "modules/PlanningWorkflowGuide.test.md",
-        "modules/renderWithProviders.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "PlanningWorkflowGuide.test Module"
     },
     {
       "canonical_path": "modules/PlanningWorkflowHelpContent.md",
@@ -82661,38 +82148,6 @@
       "title": "review_provenance Module"
     },
     {
-      "canonical_path": "modules/RoadmapPage.md",
-      "id": "RoadmapPage",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/RoadmapPage",
-      "outgoing_internal_links": [
-        "entities/DateRange.md",
-        "entities/InitiativeGroupInfo.md",
-        "entities/RoadmapFilterDescriptor.md",
-        "entities/RoadmapGroup.md",
-        "entities/RoadmapMarker.md",
-        "entities/RoadmapRow.md",
-        "modules/RoadmapPage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "RoadmapPage Module"
-    },
-    {
-      "canonical_path": "modules/RoadmapPage.test.md",
-      "id": "RoadmapPage.test",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/RoadmapPage.test",
-      "outgoing_internal_links": [
-        "modules/renderWithProviders.md",
-        "modules/RoadmapPage.md",
-        "modules/RoadmapPage.test.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "RoadmapPage.test Module"
-    },
-    {
       "canonical_path": "modules/RoadmapView.md",
       "id": "RoadmapView",
       "kind": "modules",
@@ -83426,24 +82881,6 @@
       "role": "semantic",
       "source_path": "frontend/src/types/savedView.ts",
       "title": "savedView Module"
-    },
-    {
-      "canonical_path": "modules/SavedViewDashboardCards.md",
-      "id": "SavedViewDashboardCards",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/SavedViewDashboardCards",
-      "outgoing_internal_links": [
-        "entities/SavedViewDashboardCardsProps.md",
-        "modules/AnalyticsPage.md",
-        "modules/QueryState.md",
-        "modules/savedView.md",
-        "modules/SavedViewDashboardCards.md",
-        "modules/savedViewService.md",
-        "modules/seedDisplay.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "SavedViewDashboardCards Module"
     },
     {
       "canonical_path": "modules/SavedViewsControl.md",
@@ -84898,21 +84335,6 @@
       "title": "Select.test Module"
     },
     {
-      "canonical_path": "modules/selectWorkNowTasks.md",
-      "id": "selectWorkNowTasks",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/selectWorkNowTasks",
-      "outgoing_internal_links": [
-        "modules/OverviewPage.md",
-        "modules/OverviewPage.test.md",
-        "modules/selectWorkNowTasks.md",
-        "modules/types_task.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "selectWorkNowTasks Module"
-    },
-    {
       "canonical_path": "modules/serve_disposable_api.md",
       "id": "serve_disposable_api",
       "kind": "modules",
@@ -85354,35 +84776,6 @@
       "role": "semantic",
       "source_path": "frontend/src/components/layout/shellViewport.test.tsx",
       "title": "shellViewport.test Module"
-    },
-    {
-      "canonical_path": "modules/SidebarIterationCard.md",
-      "id": "SidebarIterationCard",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/SidebarIterationCard",
-      "outgoing_internal_links": [
-        "modules/AppSidebar.md",
-        "modules/SidebarIterationCard.md",
-        "modules/SidebarIterationCard.test.md",
-        "modules/usePlanningNavigationSummary.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "SidebarIterationCard Module"
-    },
-    {
-      "canonical_path": "modules/SidebarIterationCard.test.md",
-      "id": "SidebarIterationCard.test",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/SidebarIterationCard.test",
-      "outgoing_internal_links": [
-        "modules/renderWithProviders.md",
-        "modules/SidebarIterationCard.md",
-        "modules/SidebarIterationCard.test.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "SidebarIterationCard.test Module"
     },
     {
       "canonical_path": "modules/signing.md",
@@ -86455,42 +85848,6 @@
       "title": "TaskEditDrawer.test Module"
     },
     {
-      "canonical_path": "modules/TaskEditModal.md",
-      "id": "TaskEditModal",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/TaskEditModal",
-      "outgoing_internal_links": [
-        "entities/TaskEditModalProps.md",
-        "modules/GanttChart.md",
-        "modules/GanttPage.md",
-        "modules/TaskEditModal.md",
-        "modules/TaskEditModal.test.md",
-        "modules/TaskEditorDrawer.md",
-        "modules/teamService.md",
-        "modules/types_gantt.md",
-        "modules/types_task.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "TaskEditModal Module"
-    },
-    {
-      "canonical_path": "modules/TaskEditModal.test.md",
-      "id": "TaskEditModal.test",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/TaskEditModal.test",
-      "outgoing_internal_links": [
-        "modules/renderWithProviders.md",
-        "modules/TaskEditModal.md",
-        "modules/TaskEditModal.test.md",
-        "modules/types_gantt.md",
-        "modules/types_task.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "TaskEditModal.test Module"
-    },
-    {
       "canonical_path": "modules/taskEditorContract.md",
       "id": "taskEditorContract",
       "kind": "modules",
@@ -86957,22 +86314,6 @@
       "title": "tasks Module"
     },
     {
-      "canonical_path": "modules/TaskSearch.md",
-      "id": "TaskSearch",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/TaskSearch",
-      "outgoing_internal_links": [
-        "modules/Button.md",
-        "modules/QueryState.md",
-        "modules/TaskSearch.md",
-        "modules/taskService.md",
-        "modules/TasksPage.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "TaskSearch Module"
-    },
-    {
       "canonical_path": "modules/taskSearchResults.md",
       "id": "taskSearchResults",
       "kind": "modules",
@@ -87121,23 +86462,6 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/taskStateChip.ts",
       "title": "taskStateChip Module"
-    },
-    {
-      "canonical_path": "modules/TaskStatusFlow.md",
-      "id": "TaskStatusFlow",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/TaskStatusFlow",
-      "outgoing_internal_links": [
-        "modules/AnalyticsPage.md",
-        "modules/formatDate.md",
-        "modules/IterationOutlook.test.md",
-        "modules/TaskStatusFlow.md",
-        "modules/tone.md",
-        "modules/types_task.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "TaskStatusFlow Module"
     },
     {
       "canonical_path": "modules/TaskTextEditorModal.md",
@@ -87301,21 +86625,6 @@
       "role": "semantic",
       "source_path": "frontend/src/features/savedViews/taskViewState.ts",
       "title": "taskViewState Module"
-    },
-    {
-      "canonical_path": "modules/TaskWorkflowGuide.md",
-      "id": "TaskWorkflowGuide",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/TaskWorkflowGuide",
-      "outgoing_internal_links": [
-        "modules/Button.md",
-        "modules/ContextHelp.md",
-        "modules/SlideOverDrawer.md",
-        "modules/TaskWorkflowGuide.md"
-      ],
-      "role": "semantic",
-      "source_path": null,
-      "title": "TaskWorkflowGuide Module"
     },
     {
       "canonical_path": "modules/TaskWorkflowHelpContent.md",
@@ -108925,5 +108234,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:1a80af6dc50ddf9b4209b6995b80f5b3b522b710c419bca58fd2fb91580ac693"
+  "source_hash": "sha256:8d162b0af641a657e8732cfcee945ea55b614eb4b3056faface5a62938dc180a"
 }
