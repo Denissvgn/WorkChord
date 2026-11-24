@@ -1447,6 +1447,7 @@ def _run_detail_response(service: AgentService, run) -> AgentRunDetailResponse:
         for evt in run.events
     ]
     return AgentRunDetailResponse(
+        execution_provenance=run.execution_provenance,
         id=run.id,
         task_id=run.task_id,
         actor_id=run.actor_id,
