@@ -98,6 +98,18 @@ if [ -f "$env_file" ]; then
     . "$env_file"
 fi
 
+# Optional operator settings that survive every rewrite of the environment file.
+carried_setting_names="WORKCHORD_AUTH_MODE MODEL_AWARE_ROUTING_MODE AGENT_TEAM_CREDENTIAL_SINK_REF AGENT_SKILL_BUNDLES_PUBLIC AGENT_SKILL_BUNDLE_TRUSTED_CHECKSUMS_SHA256 CORS_ORIGINS AGENT_LAST_SEEN_INTERVAL_SECONDS TRUSTED_PROXY_IPS"
+
+# An optional credential sink in the server's own folder: a private directory
+# that is mounted into the backend. It is created here, never by Docker.
+sink_overlay=""
+if [ -n "${WORKCHORD_CREDENTIAL_SINK_HOST_DIR:-}" ]; then
+    sink_overlay="-f docker-compose.credential-sink.yml"
+    mkdir -p "$WORKCHORD_CREDENTIAL_SINK_HOST_DIR"
+    chmod 700 "$WORKCHORD_CREDENTIAL_SINK_HOST_DIR"
+fi
+
 random_hex() {
     openssl rand -hex "$1"
 }
@@ -176,6 +188,18 @@ temporary_env="$env_file.tmp"
     printf 'WORKCHORD_SESSION_COOKIE_SECURE=%s\n' "$WORKCHORD_SESSION_COOKIE_SECURE"
     printf "MCP_ALLOWED_HOSTS='%s'\n" "$MCP_ALLOWED_HOSTS"
     printf "MCP_ALLOWED_ORIGINS='%s'\n" "$MCP_ALLOWED_ORIGINS"
+    if [ -n "$sink_overlay" ]; then
+        printf 'WORKCHORD_CREDENTIAL_SINK_HOST_DIR=%s\n' "$WORKCHORD_CREDENTIAL_SINK_HOST_DIR"
+    fi
+    for carried_name in $carried_setting_names; do
+        eval "carried_value=\${$carried_name:-}"
+        if [ -n "$carried_value" ]; then
+            case "$carried_value" in
+                *"'"*) echo "Refusing a quote inside $carried_name" >&2; exit 1 ;;
+            esac
+            printf "%s='%s'\n" "$carried_name" "$carried_value"
+        fi
+    done
 } >"$temporary_env"
 mv "$temporary_env" "$env_file"
 chmod 600 "$env_file"
@@ -192,6 +216,7 @@ compose() {
         --env-file "$env_file" \
         -f docker-compose.yml \
         -f docker-compose.server.yml \
+        $sink_overlay \
         --profile autonomy \
         "$@"
 }
@@ -212,7 +237,14 @@ fi
 compose up --detach --wait --wait-timeout 180 postgres openbao minio valkey
 compose stop frontend delivery-worker backend
 compose run --rm --no-deps database-bootstrap
-compose run --rm --no-deps migration
+# An existing database needs the recovery point the operator verified first.
+if [ -n "${WORKCHORD_MIGRATION_BACKUP_REFERENCE:-}" ]; then
+    compose run --rm --no-deps migration \
+        python -m app.cli.upgrade --no-repairs \
+        --external-backup-reference "$WORKCHORD_MIGRATION_BACKUP_REFERENCE"
+else
+    compose run --rm --no-deps migration
+fi
 compose run --rm --no-deps database-security
 compose run --rm --no-deps repair
 compose run --rm --no-deps openbao-bootstrap
