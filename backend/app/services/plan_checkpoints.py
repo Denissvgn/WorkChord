@@ -23,6 +23,7 @@ def plan_checkpoints(
     tasks_agent_without_capacity: int = 0,
     risk_count: int,
     calendar_covers_iteration: bool = True,
+    inverted_dependency_count: int = 0,
 ) -> list[dict[str, Any]]:
     """Return the ordered checkpoints for one existing planning period."""
 
@@ -59,6 +60,10 @@ def plan_checkpoints(
         items.append(checkpoint("schedule", "blocked", "complete_earlier_checkpoints"))
     elif not has_schedule:
         items.append(checkpoint("schedule", "todo", "schedule_not_built"))
+    elif inverted_dependency_count > 0:
+        # Saved dates stay as they are; a schedule preview shows the corrected order.
+        items.append(checkpoint("schedule", "todo", "saved_dependencies_inverted",
+                                inverted_dependencies=inverted_dependency_count))
     else:
         items.append(checkpoint("schedule", "done"))
     if items[-1]["state"] != "done":

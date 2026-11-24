@@ -209,6 +209,55 @@ One-shot jobs exit nonzero on an unknown schema, multiple Alembic heads, failed
 backup boundary, wrong role, or failed repair. Do not start web/worker services
 after such an exit.
 
+### Upgrading a database with a long retained history
+
+Before a pending migration changes anything, the migration job checks every
+retained audit, event, snapshot, run, and time-record row for project-identity
+conflicts. It reads the history in bounded pages, so a deployment that has
+been in use for a long time migrates with the packaged release image; no
+patched image or skipped check is needed. Its memory does not grow with the
+history, but its duration does, so measure it on a restore first. A database
+already at the head revision skips the check.
+
+1. On the running deployment, record the current revision with
+   `.venv/bin/python -m app.cli.upgrade --check` and the row counts of
+   `command_audit`, `task_events`, `agent_run_events`, `agent_runs`,
+   `application_snapshots`, `time_entries`, and `time_entry_revisions`.
+2. Rehearse on an [isolated restore](postgresql-backup-restore.md#isolated-restore-drill)
+   of the latest verified backup. Run the release's migration job with an
+   external backup reference, then its repair job, then `--check`. Confirm the
+   head revision, the same row counts, and validation-only smoke reads. Record
+   how long the migration job took; the production window must allow for it.
+3. In production, stop the old release's web and worker services so that no
+   history is appended during the check. Confirm the verified backup or PITR
+   point that rollback will use, and set `DATABASE_EXTERNAL_BACKUP_REFERENCE`
+   to it.
+4. Run `docker compose -f docker-compose.prod.yml up migration`, then
+   `up repair`. Each must exit 0. Then run `--check` and start the release's
+   services as described above.
+5. Build the release image from unmodified source. A deployment that carried a
+   local patch to bypass the history check should drop that patch.
+
+A refusal names its code and, at most, 100 table and record identifiers. It
+reports `data_changed: false`, and the database stays on its prior revision.
+Restart the previous release on it, then investigate the named records.
+
+| Code | Meaning |
+| --- | --- |
+| `project_identity_ambiguous` | A retained row refers to a project created after the row. Its history may belong to an earlier project with the same identifier. |
+| `project_history_invalid` | A retained payload is not valid JSON. |
+| `project_history_scan_limit` | A single retained value is larger than 16 MiB. |
+| `project_history_schema_incompatible` | A history table lacks the timestamp the check compares. |
+
+Never edit or delete audit history to make the check pass. Never stamp a
+revision, and never run the check from a patched image.
+
+Rollback before writes reopen uses the verified backup or PITR point from step
+3 and the previous release image. Restore into a new database (never with
+`--clean` into a nonempty one), check it with that image's `--check`, and
+point the previous release at it. After the new release has accepted writes,
+recover forward instead.
+
 ## Web, worker, readiness, and observability
 
 Web replicas serve HTTP/MCP only. `workchord-worker` is the dedicated durable

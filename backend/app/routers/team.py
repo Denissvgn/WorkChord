@@ -15,6 +15,7 @@ from app.schemas.team import (
     TeamMemberProfileSkillCreate, TeamMemberProfileSkillResponse,
     TeamMemberProfileSkillUpdate, TeamMemberProfileUpdate,
     CapacityAdjustmentCommand, CapacityAdjustmentResponse, CapacityAdjustmentResult,
+    TeamMemberProfileSeedKeyBind,
 )
 from app.schemas.common import MessageResponse
 from app.services.team_service import TeamService
@@ -99,6 +100,22 @@ async def update_team_member_profile(
 ):
     """Update a reusable capability profile."""
     profile = await service.update_profile(profile_id, data)
+    if not profile:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Team member profile with id {profile_id} not found",
+        )
+    return profile
+
+
+@router.post("/team-member-profiles/{profile_id}/seed-key", response_model=TeamMemberProfileResponse)
+async def bind_team_member_profile_seed_key(
+    profile_id: int,
+    data: TeamMemberProfileSeedKeyBind,
+    service: Annotated[TeamService, Depends(get_team_service)],
+):
+    """Operator-only: bind a seed key once to an existing profile that has none."""
+    profile = await service.bind_profile_seed_key(profile_id, data)
     if not profile:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

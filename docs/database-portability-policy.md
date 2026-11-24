@@ -54,8 +54,15 @@ It does not run DDL.
   bootstrap an empty target, or `python -m app.cli.upgrade --no-repairs` to
   upgrade a recognized database. It never creates application-owned rows.
   A database already at the head revision returns before the project-identity
-  history scan, so a long retained history never blocks a routine start; a
-  database with a pending migration is scanned before any change.
+  history scan, so a routine start does not reread the retained history. A
+  database with a pending migration is scanned before any change. The scan
+  reads every retained history row in bounded pages, so it has no row limit
+  and its memory does not grow with the history; its duration does. It
+  refuses with `data_changed: false` when a retained row predates the project
+  it names (`project_identity_ambiguous`), cannot be read as JSON
+  (`project_history_invalid`), or holds a single value larger than 16 MiB
+  (`project_history_scan_limit`). See
+  [upgrading a database with a long retained history](runbooks/postgresql-operations.md#upgrading-a-database-with-a-long-retained-history).
 - After schema work succeeds, the separate `repair` role runs
   `python -m app.cli.upgrade --repairs-only` to serialize post-copy seed and
   compatibility repairs on an already current schema.

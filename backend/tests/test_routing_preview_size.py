@@ -1,5 +1,7 @@
 """The routed decision, its wire defaults, and its digest share one exact byte budget."""
 
+import json
+
 import pytest
 
 from app.config import get_settings
@@ -10,6 +12,7 @@ from app.schemas.agent_routing import AgentRoutingPreviewResponse
 from app.services import agent_routing_service
 from app.services.agent_routing_policy import MAX_ROUTING_PACKET_BYTES, canonical_routing_json_bytes
 from app.services.agent_routing_service import AgentRoutingService
+from app.services.agent_service import hash_api_key
 from app.utils.time import utc_now
 from tests.test_agent_routing_service import _assessment_command, _command_context
 from tests.test_agent_team_setup_qualification import provision_ready_topology, routing_base
@@ -26,7 +29,7 @@ def restore_settings_cache():
 
 @database_engines
 @pytest.mark.parametrize("primary", ["rest", "mcp"])
-@pytest.mark.usefixtures("deployed_agent_skill_release")
+@pytest.mark.usefixtures("deployed_agent_skill_release", "qualified_model_aware_routing_test_context")
 async def test_preview_bounds_final_rest_and_mcp_decisions(
     db_session,
     db_session_factory,
@@ -61,7 +64,10 @@ async def test_preview_bounds_final_rest_and_mcp_decisions(
         "assessment_id": assessment.assessment.id,
         "expected_task_version": task.version,
     }
-    key = team.sink.keys[team.manifest.controller.actor_key]
+    # A team-bound PM only receives its own team's rows. An operator without a
+    # team boundary receives every actor's row, so it exercises the byte bound.
+    key = "routing-size-operator"
+    await actor_factory(role="pm", scopes=json.dumps(["admin"]), api_key_hash=hash_api_key(key))
     now = utc_now().replace(microsecond=0)
     monkeypatch.setattr(agent_routing_service, "utc_now", lambda: now)
 

@@ -1,17 +1,22 @@
 """Team member service with business logic."""
 
 from app.authority import internal_authority
-from app.commands import atomic_command, commit_or_flush, schedule_input_command
+from app.authority import AuthorityError
+from app.commands import PlanningConflict, atomic_command, commit_or_flush, schedule_input_command
 import csv
 from datetime import date
 from io import StringIO
 import math
 from typing import Sequence
 
-from sqlalchemy import select, func
+from uuid import uuid4
+
+from sqlalchemy import select, func, update
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.models.identity import CommandAudit
 from app.models.team_member import TeamMember, TeamMemberProfile, TeamMemberProfileSkill, Vacation
 from app.models.task import Task
 from app.models.iteration import Iteration
@@ -19,6 +24,7 @@ from app.query_limits import CollectionLimitExceededError, MAX_BOUNDED_LIST_ITEM
 from app.schemas.team import (
     TeamMemberCreate,
     TeamMemberProfileCreate,
+    TeamMemberProfileSeedKeyBind,
     TeamMemberProfileSkillCreate,
     TeamMemberProfileSkillUpdate,
     TeamMemberProfileUpdate,
@@ -231,6 +237,78 @@ class TeamService:
             await commit_or_flush(self.db)
         else:
             await self.db.flush()
+        await self.db.refresh(profile)
+        return await self._get_profile_by_id(profile.id)
+
+    @atomic_command
+    async def bind_profile_seed_key(
+        self,
+        profile_id: int,
+        data: TeamMemberProfileSeedKeyBind,
+        *,
+        commit: bool = True,
+    ) -> TeamMemberProfile | None:
+        """Bind a seed key once to an existing unkeyed profile, in place.
+
+        The profile row keeps its id, so capacity, availability, assignments and
+        history links stay attached. A seed key is not a scheduling input, so no
+        planning revision or task version advances. Agent credentials are refused
+        in every mode; only the operator or a trusted-local person may bind.
+        """
+        authority = self.db.info.get("authority")
+        if authority is not None and (
+            authority.kind == "agent" or not (authority.operator or authority.local)
+        ):
+            raise AuthorityError(
+                "operator_required", "Workspace operator permission is required."
+            )
+        profile = await self._get_profile_by_id(profile_id)
+        if not profile:
+            return None
+        if profile.seed_key is not None:
+            raise PlanningConflict(
+                "profile_seed_key_already_bound",
+                "This profile already has a seed key and it cannot be changed.",
+            )
+        taken = await self.db.scalar(
+            select(TeamMemberProfile.id).where(TeamMemberProfile.seed_key == data.seed_key)
+        )
+        if taken is not None:
+            raise PlanningConflict(
+                "profile_seed_key_in_use",
+                "Another profile already uses this seed key.",
+            )
+        try:
+            # Conditional write: a binding committed by another session since the
+            # profile was loaded is never overwritten.
+            bound = await self.db.execute(
+                update(TeamMemberProfile)
+                .where(TeamMemberProfile.id == profile_id, TeamMemberProfile.seed_key.is_(None))
+                .values(seed_key=data.seed_key)
+                .execution_options(synchronize_session=False)
+            )
+            if bound.rowcount != 1:
+                raise PlanningConflict(
+                    "profile_seed_key_already_bound",
+                    "This profile already has a seed key and it cannot be changed.",
+                )
+            self.db.add(CommandAudit(
+                principal_id=getattr(authority, "principal_id", None),
+                action="team_member_profile_seed_key_bound",
+                source=getattr(authority, "source", None) or "operator",
+                correlation_id=getattr(authority, "correlation_id", None) or uuid4().hex,
+                reason=data.reason,
+                details={"profile_id": profile_id, "seed_key": data.seed_key},
+            ))
+            if commit:
+                await commit_or_flush(self.db)
+            else:
+                await self.db.flush()
+        except IntegrityError as error:
+            raise PlanningConflict(
+                "profile_seed_key_in_use",
+                "Another profile already uses this seed key.",
+            ) from error
         await self.db.refresh(profile)
         return await self._get_profile_by_id(profile.id)
 

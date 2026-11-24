@@ -47,6 +47,7 @@ export const PIPELINE_STAGES = [
     'assigned_waiting',
     'start_ready',
     'executing',
+    'active_outside_run',
     'verification_required',
     'recovery_required',
 ] as const satisfies ReadonlyArray<keyof AgentPipeline>;

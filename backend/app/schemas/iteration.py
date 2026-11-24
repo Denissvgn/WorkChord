@@ -127,6 +127,16 @@ class PlanCheckpoint(BaseModel):
     counts: dict[str, int] = Field(default_factory=dict)
 
 
+class InvertedDependency(BaseModel):
+    """A saved dependency whose dates start the dependent on or before its prerequisite's last day."""
+    task_id: int
+    task_title: str
+    task_start_date: date
+    prerequisite_id: int
+    prerequisite_title: str
+    prerequisite_end_date: date
+
+
 class IterationPlanningReadinessSummary(BaseModel):
     """Compact planning inputs used by persistent navigation."""
     iteration_id: int
@@ -148,6 +158,8 @@ class IterationPlanningReadinessSummary(BaseModel):
     tasks_agent_without_capacity: int = 0
     has_schedule: bool
     risk_count: int
+    # Saved dependency pairs placed out of order; a schedule preview shows the corrected dates.
+    inverted_dependencies: list[InvertedDependency] = Field(default_factory=list)
     checkpoints: list[PlanCheckpoint] = Field(default_factory=list)
     checkpoints_done: int = 0
     checkpoints_total: int = 6

@@ -1,5 +1,6 @@
 """Team member schemas."""
 
+from app.schemas.agent_team_setup import STABLE_KEY_PATTERN
 from app.schemas.planning_inputs import PlanningInputRevisions, WorkingZone
 from datetime import date, datetime
 from typing import Any, Literal, Optional
@@ -246,6 +247,17 @@ class TeamMemberProfileUpdate(PlanningInputRevisions):
     @field_validator("email", "headline", "summary", "notes", mode="after")
     @classmethod
     def trim_optional_text(cls, value: Optional[str]) -> Optional[str]:
+        return _clean_optional_text(value)
+
+
+class TeamMemberProfileSeedKeyBind(BaseModel):
+    """Operator request that binds a stable seed key to a profile that has none."""
+    seed_key: str = Field(..., min_length=1, max_length=100, pattern=STABLE_KEY_PATTERN)
+    reason: Optional[str] = Field(default=None, max_length=500)
+
+    @field_validator("seed_key", "reason", mode="after")
+    @classmethod
+    def trim_text(cls, value: Optional[str]) -> Optional[str]:
         return _clean_optional_text(value)
 
 

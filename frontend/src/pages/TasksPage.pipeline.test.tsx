@@ -29,7 +29,7 @@ vi.mock('../components/tasks/taskEditorSnapshot', () => ({ readTaskEditorSnapsho
 vi.mock('../components/tasks/TaskReadView', () => ({ TASK_PART_PARAM: 'part', TaskReadView: ({ task }: { task: Task }) => <p>Shared task view: {task.title}</p> }));
 vi.mock('../components/agent/TaskRoutingPanel', () => ({ TaskRoutingPanel: () => <p>Task routing</p> }));
 
-const stages: (keyof AgentPipeline)[] = ['needs_definition', 'ready_to_assign', 'assigned_waiting', 'start_ready', 'executing', 'verification_required', 'recovery_required'];
+const stages: (keyof AgentPipeline)[] = ['needs_definition', 'ready_to_assign', 'assigned_waiting', 'start_ready', 'executing', 'active_outside_run', 'verification_required', 'recovery_required'];
 const task = (id: number, overrides: Partial<Task> = {}): Task => ({
     id, title: `Work item ${id}`, description: 'Delivery work', iteration_id: 1, project_id: 3,
     priority: 2, effort_days: null, effort_hours: null, status: 'planned', is_overdue: false,
@@ -41,7 +41,7 @@ const task = (id: number, overrides: Partial<Task> = {}): Task => ({
 });
 const pipeline = (tasks: Task[] = []): AgentPipeline => ({
     needs_definition: tasks, ready_to_assign: [], assigned_waiting: [], start_ready: [],
-    executing: [], verification_required: [], recovery_required: [],
+    executing: [], active_outside_run: [], verification_required: [], recovery_required: [],
 });
 const LocationProbe = () => { const location = useLocation(); return <output data-testid="pipeline-location">{location.pathname}{location.search}{location.hash}</output>; };
 const renderTasks = (url = '/tasks?layout=pipeline&project=all&iteration=1') => renderWithProviders(<>
@@ -76,7 +76,7 @@ describe('Tasks pipeline view', () => {
         Element.prototype.scrollIntoView = vi.fn();
     });
 
-    it('offers three Tasks views and shows all seven response stage counts with human decision marks', async () => {
+    it('offers three Tasks views and shows all eight response stage counts with human decision marks', async () => {
         const response = Object.fromEntries(stages.map((stage, index) => [stage, Array.from({ length: index + 1 }, (_, n) => task(index * 10 + n + 1))])) as unknown as AgentPipeline;
         api.pipeline.mockResolvedValue(response);
         const { container, user } = renderTasks();
@@ -84,15 +84,27 @@ describe('Tasks pipeline view', () => {
         expectPageChrome(container.querySelector<HTMLElement>('.tasks-workbench')!);
         expect(within(screen.getByRole('group', { name: 'Task layout' })).getAllByRole('button')).toHaveLength(3);
         expect(screen.getAllByTestId('page-toolbar')).toHaveLength(1);
-        expect(within(nav).getAllByRole('button')).toHaveLength(7);
+        expect(within(nav).getAllByRole('button')).toHaveLength(8);
         expect(within(nav).getAllByText(i18n.t('agentPipeline.needsDecision'))).toHaveLength(3);
         for (const stage of stages) {
-            expect(screen.getByTestId(`column-${stage}`)).toHaveTextContent(String(response[stage].length));
+            expect(screen.getByTestId(`column-${stage}`)).toHaveTextContent(String(response[stage]?.length));
         }
         await user.click(screen.getByTestId('column-executing'));
         expect(screen.getAllByTestId(/^task-card-/)).toHaveLength(5);
         expect(screen.getAllByText('Why it is here: Add acceptance criteria.')).toHaveLength(5);
         expect(screen.getAllByText('Estimate unknown')).toHaveLength(5);
+    });
+
+    it('shows active work outside a run with its assignee as the next accountable person and no recovery action', async () => {
+        api.pipeline.mockResolvedValue({ ...pipeline(), active_outside_run: [task(61, { status: 'active', assignee: { id: 9, name: 'Capacity Agent', kind: 'agent' } })] });
+        const { user } = renderTasks();
+        await strip();
+        expect(screen.getByTestId('column-active_outside_run')).toHaveTextContent(i18n.t('agentPipeline.columns.active_outside_run.title'));
+        await user.click(screen.getByTestId('column-active_outside_run'));
+        expect(screen.getByTestId('task-card-61')).toBeInTheDocument();
+        expect(screen.getByText(i18n.t('agentPipeline.nextAccountable', { name: 'Capacity Agent' }))).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: i18n.t('agentPipeline.actions.recover') })).not.toBeInTheDocument();
+        expect(within(screen.getByTestId('column-active_outside_run')).queryByText(i18n.t('agentPipeline.needsDecision'))).not.toBeInTheDocument();
     });
 
     it('filters pipeline work by project and iteration scope, Agent chip and text in the shared toolbar', async () => {
@@ -202,7 +214,7 @@ describe('Tasks pipeline view', () => {
         expect(document.body).not.toHaveTextContent('private upstream error');
         api.pipeline.mockResolvedValue(pipeline());
         await userRetry();
-        expect(within(await strip()).getAllByRole('button')).toHaveLength(7);
+        expect(within(await strip()).getAllByRole('button')).toHaveLength(8);
         expect(screen.getByText(i18n.t('agentPipeline.emptyTitle'))).toBeVisible();
     });
 
