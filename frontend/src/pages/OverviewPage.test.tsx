@@ -414,7 +414,7 @@ describe('Overview', () => {
     });
 
     it.each(STAGES.map(stage => ({ stage })))('links the $stage stage count to that stage of the pipeline view, which holds that many tasks', async ({ stage }) => {
-        const expected = { needs_definition: 2, ready_to_assign: 1, assigned_waiting: 1, start_ready: 0, executing: 2, verification_required: 1, recovery_required: 0 }[stage];
+        const expected = { needs_definition: 2, ready_to_assign: 1, assigned_waiting: 1, start_ready: 0, executing: 2, active_outside_run: 0, verification_required: 1, recovery_required: 0 }[stage];
         const { user } = renderOverview();
         const count = await screen.findByTestId(`overview-stage-${stage}`);
         await waitFor(() => expect(count).toHaveTextContent(String(expected)));
