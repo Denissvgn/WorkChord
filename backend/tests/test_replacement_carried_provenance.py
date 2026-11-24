@@ -18,7 +18,6 @@ from app.services.task_replacement_service import carried_contributors
 from app.utils.time import utc_now
 from tests import test_agent_team_setup_qualification as setup_qualification
 from tests.test_agent_routing_wave6_qualification import _assessment_command
-from tests.test_agent_team_setup_qualification import provision_ready_topology
 from tests.test_review_provenance_transports import databases, fence
 from tests.test_scoped_review_evidence import through
 from tests.test_task_replacement import BASE, _replacement, _scenario
@@ -43,6 +42,13 @@ def _with_second_verifier(payload):
                   "credential_ref": "agent-team-secure-sink/second-verifier"})
     payload["verifiers"].append(extra)
     return payload
+
+
+def _use_two_verifiers(monkeypatch):
+    """Provision the usual topology with a second verifier inside the same topology."""
+    monkeypatch.setattr(setup_qualification, "topology_manifest",
+                        lambda **kwargs: setup_qualification.AgentTeamMaster.model_validate(
+                            _with_second_verifier(setup_qualification.topology_payload(**kwargs))))
 
 
 def row_for(preview, actor_id):
@@ -89,16 +95,23 @@ async def test_routing_preview_excludes_a_carried_contributor_without_the_strict
     monkeypatch.setenv("MODEL_AWARE_ROUTING_MODE", "shadow")
     monkeypatch.setenv("WORKCHORD_AUTH_MODE", "trusted_local")
     get_settings.cache_clear()
+    _use_two_verifiers(monkeypatch)
     (team, member, verifier, _, original, replacement, *_rest, unattributed) = await _scenario(
         db_session, task_factory, team_member_factory, strict=False)
-    worker, reviewer = team.actors[member.actor_key], team.actors[verifier.actor_key]
+    worker = team.actors[member.actor_key]
+    carried_author = team.actors[verifier.actor_key]
+    control = team.actors[team.manifest.verifiers[1].actor_key]
     pm_key = team.sink.keys[team.manifest.controller.actor_key]
-    frozen_original, frozen_replacement = await _carry_run(db_session, worker, original, replacement, unattributed)
+    # The first verifier authored the carried run. The worker executes the replacement itself, so it is
+    # excluded for that reason alone; only the carried history can exclude the first verifier.
+    frozen_original, frozen_replacement = await _carry_run(
+        db_session, carried_author, original, replacement, unattributed)
     iteration = await db_session.get(Iteration, replacement.iteration_id)
-    await team_member_factory(profile=reviewer.profile, iteration=iteration)
+    await team_member_factory(profile=carried_author.profile, iteration=iteration)
+    await team_member_factory(profile=control.profile, iteration=iteration)
     await db_session.commit()
-    replacement_id, reviewer_id, reviewer_profile_id, worker_id = (
-        frozen_replacement.id, reviewer.id, reviewer.profile_id, worker.id)
+    replacement_id, carried_id, control_id, control_profile_id = (
+        frozen_replacement.id, carried_author.id, control.id, control.profile_id)
     await through(transport, db_session_factory, monkeypatch, "agent_record_task_replacement",
                   f"/api/agent/planning/tasks/{frozen_original.id}/replacement", pm_key,
                   _replacement(frozen_original, frozen_replacement, [unattributed.id]), task_id=frozen_original.id,
@@ -113,14 +126,14 @@ async def test_routing_preview_excludes_a_carried_contributor_without_the_strict
     preview = await through(transport, db_session_factory, monkeypatch, "agent_preview_task_routing",
                             f"/api/agent/tasks/{replacement_id}/routing-preview", pm_key,
                             {"purpose": "verification", "assessment_id": created["assessment"]["id"],
-                             "expected_task_version": version, "reviewer_profile_id": reviewer_profile_id,
-                             "focus_actor_id": worker_id}, task_id=replacement_id)
-    carried_row = row_for(preview, worker_id)
+                             "expected_task_version": version, "reviewer_profile_id": control_profile_id,
+                             "focus_actor_id": carried_id}, task_id=replacement_id)
+    carried_row = row_for(preview, carried_id)
     assert "verification_actor_not_independent" in carried_row["hard_blocker_codes"]
     assert carried_row["eligible"] is False
-    control_row = row_for(preview, reviewer_id)
+    control_row = row_for(preview, control_id)
     assert control_row["hard_blocker_codes"] == [] and control_row["eligible"] is True
-    assert preview["recommended_candidate"]["actor_id"] == reviewer_id
+    assert preview["recommended_candidate"]["actor_id"] == control_id
 
 
 @databases
@@ -133,9 +146,7 @@ async def test_verification_reassignment_refuses_a_carried_contributor(
     monkeypatch.setenv("WORKCHORD_AUTH_MODE", "trusted_local")
     get_settings.cache_clear()
     # The same topology carries a second verifier with its own profile, so one can verify the other's work.
-    monkeypatch.setattr(setup_qualification, "topology_manifest",
-                        lambda **kwargs: setup_qualification.AgentTeamMaster.model_validate(
-                            _with_second_verifier(setup_qualification.topology_payload(**kwargs))))
+    _use_two_verifiers(monkeypatch)
     (team, member, verifier, _, original, replacement, *_rest, unattributed) = await _scenario(
         db_session, task_factory, team_member_factory, strict=False)
     reviewer = team.actors[verifier.actor_key]
