@@ -410,10 +410,8 @@ ls "$NEW_SINK" | wc -l
 # file when it names one (the source copy's own HEAD can be older than the
 # pinned images); otherwise take it from the old backend's build identity.
 OLD_REVISION="$(sed -n 's/^# WorkChord main \([0-9a-f]\{7,40\}\).*/\1/p' "${OLD_FILES[-1]}" | head -1)"
-OLD_VERSION="$(git -C "$OLD_SOURCE" show "$OLD_REVISION:backend/pyproject.toml" 2>/dev/null | sed -n 's/^version = "\(.*\)"/\1/p')"
-# The old source copy usually lacks the old revision, so OLD_VERSION is then
-# empty: set it by hand from the old backend's build identity.
-#   curl -fsS http://127.0.0.1:8480/.well-known/workchord-build.json
+# If empty, the old revision is not in this repository's history; set OLD_VERSION by hand from that revision's backend/pyproject.toml.
+OLD_VERSION="$(git -C "$WORKCHORD_INSTANCE_HOME" show "$OLD_REVISION:backend/pyproject.toml" 2>/dev/null | sed -n 's/^version = "\(.*\)"/\1/p')"
 echo "replaces revision=${OLD_REVISION:?set OLD_REVISION by hand} version=${OLD_VERSION:-unknown}"
 python3 scripts/server/write_deployment_record.py \
   --folder "$WORKCHORD_INSTANCE_HOME" --operator "$USER" \
