@@ -7,6 +7,7 @@ import pytest
 from sqlalchemy import select
 
 from app.main import app
+from app.models.iteration import Iteration
 from app.models.task import Task, TaskDependency
 from app.models.team_member import TeamMember, TeamMemberProfile
 from app.services.agent_readiness import evaluate_agent_readiness
@@ -173,21 +174,36 @@ async def test_a_task_that_never_had_dates_is_not_reported_as_cleared(delivery_s
         assert item.reason == "no_assignee" and item.dates_cleared is False
 
 
-async def test_rest_schedule_and_preview_responses_name_cleared_tasks(delivery_store):
+async def _separate_shared_owner_iterations(db, scenario):
+    """The seeded owner sits in two overlapping iterations; move the second so a baseline commit is accepted."""
+    other = await db.get(Iteration, scenario.iterations[1])
+    other.start_date, other.end_date = date(2026, 2, 2), date(2026, 2, 27)
+    # Seeded finished and running work stays within one day's productive hours.
+    for offset, key in enumerate(("active", "resolved", "closed_urgent", "closed_low")):
+        task = await db.get(Task, scenario.tasks[key])
+        task.start_date = task.end_date = date(2026, 1, 12 + offset)
+        task.effort_hours = 2
+    await db.commit()
+
+
+async def test_rest_schedule_and_preview_responses_name_cleared_tasks(delivery_store, monkeypatch):
+    # Forecasts start at the working date; pin it inside the seeded iteration.
+    monkeypatch.setattr("app.services.work_metrics.working_today", lambda *_: date(2026, 1, 5))
     factory, scenario, _ = delivery_store
     async with factory() as db:
+        await _separate_shared_owner_iterations(db, scenario)
         iteration_id, *ids = await _ownerless_chain(db, scenario)
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
         preview = await client.post(f"/api/iterations/{iteration_id}/schedule/preview", json={"changes": []})
         assert preview.status_code == 200, preview.text
         _assert_chain_reported(preview.json()["schedule_result"]["unscheduled"], *ids)
-        # The apply route returns the same ScheduleResult model, so it carries the same entries.
-        schema = (await client.get("/openapi.json")).json()["components"]["schemas"]["UnscheduledTask"]["properties"]
-        assert {"dates_cleared", "also"} <= set(schema)
         applied = await client.post(f"/api/iterations/{iteration_id}/schedule")
-        assert applied.status_code in {200, 409}, applied.text
-        if applied.status_code == 200:
-            _assert_chain_reported(applied.json()["unscheduled"], *ids)
+        assert applied.status_code == 200, applied.text
+        _assert_chain_reported(applied.json()["unscheduled"], *ids)
+    async with factory() as db:
+        rows = (await db.scalars(select(Task).where(Task.id.in_(ids)))).all()
+        assert len(rows) == 4
+        assert all(row.start_date is None and row.end_date is None for row in rows)
 
 
 async def test_agent_schedule_preview_names_cleared_tasks(delivery_store):
