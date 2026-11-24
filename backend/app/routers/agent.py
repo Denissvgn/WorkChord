@@ -13,6 +13,7 @@ from app.models.agent import AgentActor
 from app.models.team_member import TeamMemberProfile
 from app.security import ADMIN_API_KEY_HEADER, admin_api_key_is_valid
 from app.schemas.agent import (
+    AgentAssignmentPage,
     AgentActorCreate,
     AgentActorCreatedResponse,
     AgentActorRosterItem,
@@ -788,6 +789,38 @@ async def create_agent_assignment(
             idempotency_key=idempotency_key,
             rationale=rationale,
             correlation_id=correlation_id,
+        )
+    except Exception as exc:
+        _handle_agent_error(exc, structured=True)
+
+
+@router.get("/agent/assignments/page", response_model=AgentAssignmentPage)
+async def list_agent_assignments_page(
+    actor: Annotated[AgentActor | None, Depends(get_assignment_reader)],
+    service: Annotated[AgentWorkService, Depends(get_agent_work_service)],
+    task_id: Optional[int] = Query(default=None, ge=1),
+    actor_id: Optional[int] = Query(default=None, ge=1),
+    purpose: Optional[str] = Query(default=None),
+    state: Optional[str] = Query(default=None),
+    limit: int = Query(default=200, ge=1, le=500),
+    cursor: Optional[str] = Query(default=None, max_length=256),
+):
+    """Read every assignment of the caller's scope, one stable page at a time.
+
+    Same filters, scope and projection as the plain listing. Pages are ordered by
+    assignment id, not queue order. Follow next_cursor until has_more is false;
+    every row present for the whole read is returned exactly once, even if its
+    rank or actor changes meanwhile. Rows created during the read may appear.
+    """
+    try:
+        if actor is None:
+            return await service.list_assignments_for_people_page(
+                task_id=task_id, actor_id=actor_id, purpose=purpose,
+                state=state, limit=limit, cursor=cursor,
+            )
+        return await service.list_assignments_page(
+            actor, task_id=task_id, actor_id=actor_id, purpose=purpose,
+            state=state, limit=limit, cursor=cursor,
         )
     except Exception as exc:
         _handle_agent_error(exc, structured=True)
