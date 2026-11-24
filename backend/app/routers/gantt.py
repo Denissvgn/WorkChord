@@ -13,7 +13,7 @@ from app.schemas.gantt import (
     SchedulePreviewRequest, SchedulePreviewResponse, WorkloadIssue, SchedulingDecision
 )
 from app.schemas.gantt import ScheduleApplyRequest
-from app.schemas.iteration import IterationResponse
+from app.schemas.iteration import IterationProjectSummary, IterationResponse
 from app.services.scheduler_service import SchedulerService
 from app.services.iteration_service import IterationService
 from app.services.task_service import TaskService
@@ -151,6 +151,14 @@ async def get_gantt_data(
             detail=f"Iteration with id {iteration_id} not found"
         )
 
+    # Read the owning project while the eager-loaded relationship is still fresh;
+    # lazy loading would fail inside this async request.
+    project_summary = (
+        IterationProjectSummary.model_validate(iteration.project)
+        if iteration.project is not None
+        else None
+    )
+
     # Get calendar info (sync operation, uses cached calendar from iteration)
     calendar_service = CalendarService(db)
     working_days_info = calendar_service.calculate_working_days(
@@ -205,6 +213,8 @@ async def get_gantt_data(
             calendar_id=iteration.calendar_id,
             additional_calendar_ids=[row.id for row in iteration.additional_calendars],
             missing_calendar_years=working_days_info.missing_calendar_years,
+            project_id=iteration.project_id,
+            project=project_summary,
             start_date=iteration.start_date,
             end_date=iteration.end_date,
             working_days=working_days_info.working_days,
