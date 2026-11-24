@@ -5,7 +5,7 @@ import json
 import sqlite3
 from urllib.parse import quote
 
-from sqlalchemy import MetaData, String, Table, cast, create_engine, func, inspect, select, text
+from sqlalchemy import JSON, MetaData, String, Table, cast, create_engine, func, inspect, select, text
 from sqlalchemy.pool import NullPool
 
 # The scan reads every retained history row. These bound what it holds at once, not
@@ -74,6 +74,21 @@ def _pages(connection, history, columns, *, page_rows, joined=None):
         if len(rows) < page_rows:
             return
         last = rows[-1][0]
+
+
+def decode_history_value(column, value):
+    """Decode one encoded value from ``history_values`` the way the checks have always read it.
+
+    A JSON column whose stored value is itself a JSON string holds an encoded payload, so
+    that string is decoded once more. Text columns are decoded once. Raises ``ValueError``
+    or ``TypeError`` when either decode fails.
+    """
+    if value is None:
+        return None
+    payload = json.loads(value)
+    if isinstance(payload, str) and isinstance(column.type, JSON):
+        payload = json.loads(payload)
+    return payload
 
 
 def history_values(connection, history, column, columns=(), *, admit, page_rows=HISTORY_PAGE_ROWS):
@@ -217,7 +232,7 @@ def inspect_project_identity(connection, *, max_history_rows=None, max_history_b
 
         for row, value in history_values(connection, history, column, selected, admit=admit, page_rows=page_rows):
             try:
-                payload = None if value is None else json.loads(value)
+                payload = decode_history_value(history.c[column], value)
             except (ValueError, TypeError):
                 raise ProjectIdentityError("project_history_invalid", [{"table": name, "record_id": row[0]}]) from None
             ids = set(_project_ids(payload))

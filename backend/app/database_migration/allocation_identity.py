@@ -1,10 +1,8 @@
 """Reserve numeric allocation identities retained by immutable recovery history."""
 
-import json
-
 from sqlalchemy import MetaData, Table, func, inspect, select, text
 
-from app.database_migration.project_identity import HISTORY_VALUE_CHARACTERS, history_values
+from app.database_migration.project_identity import HISTORY_VALUE_CHARACTERS, decode_history_value, history_values
 
 
 def allocation_floor(connection, table_name="team_members"):
@@ -36,7 +34,7 @@ def allocation_floor(connection, table_name="team_members"):
         if column not in table.c:continue
         extra = [table.c.action] if name == "command_audit" else []
         for row, payload in history_values(connection, table, column, extra, admit=admit):
-            payload = json.loads(payload) if isinstance(payload, str) else payload
+            payload = decode_history_value(table.c[column], payload)
             if payload is None:continue
             if name == "command_audit":
                 action = row[2]

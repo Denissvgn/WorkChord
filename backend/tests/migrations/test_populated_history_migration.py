@@ -162,12 +162,25 @@ def test_populated_history_migrates_to_head_and_rolls_back(dialect, request, tmp
         engine.dispose()
 
 
-def _predating_audit(db):
-    _insert(db, "command_audit", [dict(principal_id=1, project_id=3, action="projects:edit", source="rest",
+def _audit(db, details, action="projects:edit"):
+    _insert(db, "command_audit", [dict(principal_id=1, project_id=3, action=action, source="rest",
                                        correlation_id="predates-identity", created_at=datetime(2024, 6, 1, tzinfo=UTC),
-                                       details={"entity_id": 3})])
+                                       details=details)])
     history = Table("command_audit", MetaData(), autoload_with=db)
-    return "project_identity_ambiguous", "command_audit", db.scalar(select(func.max(history.c.id)))
+    return db.scalar(select(func.max(history.c.id)))
+
+
+def _predating_audit(db):
+    return "project_identity_ambiguous", "command_audit", _audit(db, {"entity_id": 3})
+
+
+def _encoded_predating_audit(db):
+    # The JSON column holds a JSON string that itself encodes the payload.
+    return "project_identity_ambiguous", "command_audit", _audit(db, json.dumps({"project_id": 3}), "tasks:edit")
+
+
+def _bare_string_audit(db):
+    return "project_history_invalid", "command_audit", _audit(db, "abc", "tasks:edit")
 
 
 def _unreadable_event(db):
@@ -178,7 +191,8 @@ def _unreadable_event(db):
 
 
 @pytest.mark.parametrize("dialect", DIALECTS)
-@pytest.mark.parametrize("inconsistency", [_predating_audit, _unreadable_event], ids=["predates-identity", "invalid"])
+@pytest.mark.parametrize("inconsistency", [_predating_audit, _encoded_predating_audit, _bare_string_audit, _unreadable_event],
+                         ids=["predates-identity", "encoded-predates-identity", "bare-string", "invalid"])
 def test_inconsistent_row_after_a_long_history_still_refuses_the_migration(
         dialect, inconsistency, request, tmp_path, configure_database):
     url, path = _database(dialect, request, tmp_path, configure_database)
