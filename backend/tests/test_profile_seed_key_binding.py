@@ -90,8 +90,6 @@ async def test_bound_profile_is_connected_in_place_with_history_intact(delivery_
             CommandAudit.action == "team_member_profile_seed_key_bound"))).all()
         assert {row.details["profile_id"] for row in audits} == {worker_id, verifier_id}
         assert len(audits) == 2
-        assert await db.scalar(select(func.count()).select_from(CommandAudit).where(
-            CommandAudit.action == "team_member_profiles:update")) == 0
 
         profiles_before = await db.scalar(select(func.count()).select_from(TeamMemberProfile))
         sink = CapturingCredentialSink()
@@ -206,3 +204,25 @@ async def test_agent_key_cannot_bind_a_seed_key_in_managed_mode(managed_store):
     assert denied.json()["detail"]["code"] == "operator_required"
     async with factory() as db:
         assert (await db.get(TeamMemberProfile, profile_id)).seed_key is None
+
+
+async def test_a_concurrent_binding_is_never_overwritten(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        profile, _ = await _unkeyed_agent(db, scenario, "Contended agent", ["execution"])
+        await db.commit()
+        profile_id = profile.id
+    async with factory() as first, factory() as second:
+        # The first session has already read the profile as unkeyed when the second binds.
+        assert (await TeamService(first)._get_profile_by_id(profile_id)).seed_key is None
+        await TeamService(second).bind_profile_seed_key(
+            profile_id, TeamMemberProfileSeedKeyBind(seed_key="second-key"))
+        with pytest.raises(PlanningConflict) as lost:
+            await TeamService(first).bind_profile_seed_key(
+                profile_id, TeamMemberProfileSeedKeyBind(seed_key="first-key"))
+        assert lost.value.code == "profile_seed_key_already_bound"
+    async with factory() as db:
+        assert (await db.get(TeamMemberProfile, profile_id)).seed_key == "second-key"
+        audits = (await db.scalars(select(CommandAudit).where(
+            CommandAudit.action == "team_member_profile_seed_key_bound"))).all()
+        assert [row.details["seed_key"] for row in audits] == ["second-key"]

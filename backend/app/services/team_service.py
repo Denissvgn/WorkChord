@@ -11,7 +11,7 @@ from typing import Sequence
 
 from uuid import uuid4
 
-from sqlalchemy import select, func
+from sqlalchemy import select, func, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -278,18 +278,28 @@ class TeamService:
                 "profile_seed_key_in_use",
                 "Another profile already uses this seed key.",
             )
-        profile.seed_key = data.seed_key
-        # The explicit entry below replaces the generic per-row audit entry.
-        self.db.info.setdefault("authority_audited", set()).add(id(profile))
-        self.db.add(CommandAudit(
-            principal_id=getattr(authority, "principal_id", None),
-            action="team_member_profile_seed_key_bound",
-            source=getattr(authority, "source", None) or "operator",
-            correlation_id=getattr(authority, "correlation_id", None) or uuid4().hex,
-            reason=data.reason,
-            details={"profile_id": profile.id, "seed_key": data.seed_key},
-        ))
         try:
+            # Conditional write: a binding committed by another session since the
+            # profile was loaded is never overwritten.
+            bound = await self.db.execute(
+                update(TeamMemberProfile)
+                .where(TeamMemberProfile.id == profile_id, TeamMemberProfile.seed_key.is_(None))
+                .values(seed_key=data.seed_key)
+                .execution_options(synchronize_session=False)
+            )
+            if bound.rowcount != 1:
+                raise PlanningConflict(
+                    "profile_seed_key_already_bound",
+                    "This profile already has a seed key and it cannot be changed.",
+                )
+            self.db.add(CommandAudit(
+                principal_id=getattr(authority, "principal_id", None),
+                action="team_member_profile_seed_key_bound",
+                source=getattr(authority, "source", None) or "operator",
+                correlation_id=getattr(authority, "correlation_id", None) or uuid4().hex,
+                reason=data.reason,
+                details={"profile_id": profile_id, "seed_key": data.seed_key},
+            ))
             if commit:
                 await commit_or_flush(self.db)
             else:
