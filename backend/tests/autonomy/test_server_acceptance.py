@@ -727,3 +727,106 @@ def test_resp_parser_handles_acceptance_reply_shapes(
     expected: object,
 ) -> None:
     assert _read_resp(BytesIO(wire)) == expected
+
+
+def _application_probe_client(
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    agent_connect_body: bytes,
+    agent_connect_content_type: str,
+):
+    from app.autonomy import server_acceptance
+
+    ready = {
+        "status": "ready",
+        "database": {
+            "backend": "postgresql",
+            "url": "postgresql+psycopg://workchord_runtime:not-recorded@postgres/workchord",
+            "connected": True,
+            "schema_current": True,
+            "current_revision": "rev",
+            "expected_revision": "rev",
+        },
+        "migration_gate": {"clear": True},
+    }
+    backend_identity = {
+        "schema_version": "workchord-build-identity-v1",
+        "component": "backend",
+        "source_revision": SOURCE_REVISION,
+        "artifact_digest": "c" * 64,
+        "expected_frontend_artifact_digest": "d" * 64,
+        "contract_manifest_digest": DIGEST,
+    }
+    gateway_identity = {
+        "schema_version": "workchord-build-identity-v1",
+        "component": "frontend",
+        "source_revision": SOURCE_REVISION,
+        "artifact_digest": "d" * 64,
+    }
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        json_type = {"content-type": "application/json"}
+        path = request.url.path
+        if request.url.host == "frontend" and path == "/.well-known/workchord-build.json":
+            return httpx.Response(200, headers=json_type, json=gateway_identity)
+        if path == "/health/ready":
+            return httpx.Response(200, headers=json_type, json=ready)
+        if path == "/.well-known/workchord-build.json":
+            return httpx.Response(200, headers=json_type, json=backend_identity)
+        if path == "/health":
+            return httpx.Response(200, headers=json_type, json={"status": "ok"})
+        if path == "/.well-known/workchord/agent-connect.json":
+            return httpx.Response(
+                200,
+                headers={"content-type": agent_connect_content_type},
+                content=agent_connect_body,
+            )
+        return httpx.Response(404)
+
+    real_client = httpx.Client
+
+    def client_factory(**kwargs):
+        return real_client(transport=httpx.MockTransport(handler), **kwargs)
+
+    monkeypatch.setattr(server_acceptance.httpx, "Client", client_factory)
+
+
+def test_application_probe_requires_agent_connect_json_through_gateway(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from app.autonomy.server_acceptance import _probe_application
+
+    _application_probe_client(
+        monkeypatch,
+        agent_connect_body=json.dumps({"auth_mode": "managed", "api_prefix": "/api"}).encode(),
+        agent_connect_content_type="application/json; charset=utf-8",
+    )
+    probed = _probe_application(
+        "http://backend:8001",
+        gateway_url="http://frontend",
+        expected_source_revision=SOURCE_REVISION,
+        timeout_seconds=1.0,
+    )
+    assert probed.status == "ready"
+
+
+def test_application_probe_rejects_web_page_instead_of_agent_connect(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from app.autonomy.server_acceptance import _probe_application
+
+    _application_probe_client(
+        monkeypatch,
+        agent_connect_body=b"<!doctype html><html></html>",
+        agent_connect_content_type="text/html",
+    )
+    with pytest.raises(
+        ServerAcceptanceError,
+        match="application-agent-connect-not-json",
+    ):
+        _probe_application(
+            "http://backend:8001",
+            gateway_url="http://frontend",
+            expected_source_revision=SOURCE_REVISION,
+            timeout_seconds=1.0,
+        )
