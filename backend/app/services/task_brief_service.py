@@ -263,6 +263,8 @@ class TaskBriefService:
     async def require_review(self, task: Task, *, accepting: bool):
         """One independence and evidence boundary for human and assigned-agent review."""
         require_project(self.db, task.project_id, "review")
+        from app.services.task_replacement_service import require_acceptable
+        await require_acceptable(self.db, task, accepting=accepting)
         from app.commands import current_command
         from app.services.review_provenance import different_publisher_required
         if await different_publisher_required(self.db, task.project_id):

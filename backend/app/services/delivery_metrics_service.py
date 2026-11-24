@@ -70,7 +70,7 @@ def summarize_observations(rows, start, end):
             elif row.kind == "restored":
                 active = resolved = None
                 pending = True
-            elif row.kind in {"removed", "structural"}:
+            elif row.kind in {"removed", "structural", "replaced"}:
                 pending = False
             elif row.kind == "canceled":
                 pending = False
@@ -117,7 +117,7 @@ class DeliveryMetricsService:
         row = DeliveryObservation
         episodes = {"started", "rework_started", "reopened", "reopened_planned", "restored"}
         pending = episodes | {"captured", "resolved"}
-        states = pending | {"removed", "structural", "canceled", "accepted"}
+        states = pending | {"removed", "structural", "replaced", "canceled", "accepted"}
 
         def rank(kinds, *, earliest=False):
             order = (row.observed_at.asc(), row.id.asc()) if earliest else (row.observed_at.desc(), row.id.desc())

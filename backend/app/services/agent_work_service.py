@@ -3866,10 +3866,11 @@ class AgentWorkService:
                 self._advance_dispatch_queue(principal, owner, boundary, scope="recovery:write")
 
         for run in stale_runs:
-            from app.services.review_provenance import mark_server_interruption
+            from app.services.review_provenance import mark_server_interruption, record_server_end_profile
             if ((run.execution_provenance or {}).get("different_publisher_required") or
                     await different_publisher_required(self.db, task.project_id)):
                 await mark_server_interruption(self.db, run)
+            await record_server_end_profile(self.db, run)
             run.status = "canceled"
             run.ended_at = now
             run.heartbeat_at = now

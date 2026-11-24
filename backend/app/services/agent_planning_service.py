@@ -854,6 +854,35 @@ class AgentPlanningService:
             mutate=mutate,
         )
 
+    async def record_task_replacement(
+        self,
+        task_id: int,
+        actor: AgentActor,
+        data: Any,
+        *,
+        command: AgentPlanningCommandContext,
+    ) -> AgentPlanningReceipt:
+        """Replace an unaccepted task with a fresh one under a recorded owner decision."""
+        from app.schemas.task_replacement import TaskReplacementResponse
+        from app.services.task_replacement_service import TaskReplacementService
+
+        payload = {"task_id": task_id, "data": data.model_dump(mode="json")}
+
+        async def mutate() -> MutationResult:
+            result = await TaskReplacementService(self.db).record(task_id, data, commit=False)
+            return task_id, TaskReplacementResponse.model_validate(result).model_dump(mode="json")
+
+        return await self._execute(
+            actor=actor,
+            scope="planning:write",
+            operation="planning.task.replacement",
+            target_type="task",
+            idempotency_target_id=task_id,
+            command=command,
+            request_payload=payload,
+            mutate=mutate,
+        )
+
     async def _iteration_tasks_for_update(self, iteration_id: int) -> list[Task]:
         result = await self.db.execute(
             select(Task)

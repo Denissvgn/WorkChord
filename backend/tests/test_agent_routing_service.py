@@ -486,6 +486,12 @@ async def test_preview_is_deterministic_and_relevant_mutation_invalidates_it(
         (None, "changed_to_historical", "verification_profile_not_independent"),
         # A receipt that names another actor is not the run's own evidence.
         (None, "foreign_actor", "verification_independence_unverifiable"),
+        # A begin receipt without the profile's revision is not evidence.
+        (None, "missing_revision", "verification_independence_unverifiable"),
+        # A run the server ended may have changed profile before it stopped;
+        # without its recorded terminal profile, that profile is unknown.
+        (None, "server_ended_unrecorded", "verification_independence_unverifiable"),
+        (None, "server_ended_recorded", None),
     ),
 )
 async def test_verification_independence_requires_authoritative_profile_history(
@@ -612,24 +618,42 @@ async def test_verification_independence_requires_authoritative_profile_history(
                 historical_profile.id,
             ),
             "foreign_actor": (historical_profile.id, historical_profile.id),
+            "missing_revision": (historical_profile.id, historical_profile.id),
+            "server_ended_unrecorded": (
+                current_implementation_profile.id,
+                current_implementation_profile.id,
+            ),
+            "server_ended_recorded": (
+                current_implementation_profile.id,
+                current_implementation_profile.id,
+            ),
         }[run_receipt]
+        receipt = {
+            "actor_id": (
+                verifier.id
+                if run_receipt == "foreign_actor"
+                else implementation_actor.id
+            ),
+            "profile_id": begun,
+            "profile_revision": (
+                None if run_receipt == "missing_revision" else f"p{begun}-recorded"
+            ),
+            "source": "authenticated_work_begin",
+            "terminal_profile_id": terminal,
+        }
+        if run_receipt == "server_ended_unrecorded":
+            del receipt["terminal_profile_id"]
         db_session.add(
             AgentRun(
                 task_id=task.id,
                 actor_id=implementation_actor.id,
                 assignment_id=execution.id,
-                status="succeeded",
-                execution_provenance={
-                    "actor_id": (
-                        verifier.id
-                        if run_receipt == "foreign_actor"
-                        else implementation_actor.id
-                    ),
-                    "profile_id": begun,
-                    "profile_revision": None,
-                    "source": "authenticated_work_begin",
-                    "terminal_profile_id": terminal,
-                },
+                status=(
+                    "canceled"
+                    if run_receipt.startswith("server_ended")
+                    else "succeeded"
+                ),
+                execution_provenance=receipt,
             )
         )
         await db_session.commit()

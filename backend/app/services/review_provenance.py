@@ -365,9 +365,24 @@ def _begin_profile(run):
     if not isinstance(receipt, dict) or receipt.get("actor_id") != run.actor_id:
         return None
     value, revision = receipt.get("profile_id"), receipt.get("profile_revision")
-    if type(value) is not int or value <= 0 or (revision is not None and not str(revision).startswith(f"p{value}-")):
+    # The begin receipt captures the profile's revision; one without it is not evidence.
+    if type(value) is not int or value <= 0 or not isinstance(revision, str) or not revision.startswith(f"p{value}-"):
         return None
     return value
+
+
+def _server_ended(run):
+    """The server, not the worker's terminal command, ended this run."""
+    terminal = (run.execution_provenance or {}).get("terminal_model") or {}
+    return run.status in {"canceled", "cancelled"} or terminal.get("source") == "server_interruption"
+
+
+async def record_server_end_profile(db, run):
+    """When the server ends a run, record the actor's profile as the terminal command would."""
+    if not run.execution_provenance:
+        return
+    profile_id = await db.scalar(select(AgentActor.profile_id).where(AgentActor.id == run.actor_id))
+    run.execution_provenance = {**run.execution_provenance, "terminal_profile_id": profile_id}
 
 
 async def execution_profile_history(db, assignments):
@@ -376,8 +391,9 @@ async def execution_profile_history(db, assignments):
     A server-owned routing decision supplies the profile. Without one, as for a
     compatibility dispatch, every run of that assignment supplies the profile its
     authenticated begin recorded. A profile change before the terminal command
-    adds the terminal profile. Anything else stays unknown; current membership is
-    never consulted.
+    adds the terminal profile. A run the server ended without recording its
+    terminal profile may have changed profile mid-run, so that profile is unknown.
+    Anything else stays unknown; current membership is never consulted.
     """
     fulfilled = sorted((item for item in assignments if item.purpose == "execution" and item.state == "fulfilled"),
                        key=lambda item: item.id)
@@ -410,7 +426,10 @@ async def execution_profile_history(db, assignments):
                      else None)
             rows.append({"assignment_id": assignment.id, "run_id": run.id, "actor_id": run.actor_id,
                          "profile_id": begun, "source": "run_begin" if begun else "unavailable"})
-            terminal = run.execution_provenance.get("terminal_profile_id", begun) if begun else begun
+            if begun and "terminal_profile_id" not in run.execution_provenance and _server_ended(run):
+                terminal = None
+            else:
+                terminal = run.execution_provenance.get("terminal_profile_id", begun) if begun else begun
             if terminal != begun:
                 rows.append({"assignment_id": assignment.id, "run_id": run.id, "actor_id": run.actor_id,
                              "profile_id": terminal if type(terminal) is int and terminal > 0 else None,
@@ -691,8 +710,19 @@ async def _manual_history(db, task):
     return ReviewHistory([], await _submission_candidate(db, task, submitted, source), manual_execution=proof)
 
 
-async def review_history(db, task, assignments, *, strict):
-    """A failed or recovered run can have produced retained work. Include every actual attempt."""
+async def review_history(db, task, assignments, *, strict, include_carried=True):
+    """A failed or recovered run can have produced retained work. Include every actual attempt.
+
+    A clean replacement also counts each original run whose commits it carries.
+    """
+    history = await _attempt_history(db, task, assignments, strict=strict)
+    if strict and include_carried:
+        from app.services.task_replacement_service import carried_contributors
+        history.contributors.extend(await carried_contributors(db, task))
+    return history
+
+
+async def _attempt_history(db, task, assignments, *, strict):
     executions = {item.id: item for item in assignments if item.purpose == "execution"}
     query = select(AgentRun).where(AgentRun.task_id == task.id).order_by(AgentRun.id).limit(MAX_BOUNDED_LIST_ITEMS + 1)
     runs = (await db.scalars(query)).all()
@@ -842,6 +872,13 @@ async def select_reviewer(db, task, assignments, reviewer, *, binding_id=None, r
             _conflict("verification_evidence_unavailable", "Scoped evidence requires independent verification.")
         return None
     history = await review_history(db, task, assignments, strict=True)
+    from app.services.task_replacement_service import attributed
+    held = sorted({row["run_id"] for row in history.contributors
+                   if row.get("carried_from_task_id") and not attributed(row) and row.get("run_id")})
+    if held:
+        _conflict("replacement_contribution_unattributed",
+                  "This replacement carries commits from an unattributed run and stays held.",
+                  missing=[{"run_id": run_id, "facts": ["carried_contribution_attribution"]} for run_id in held])
     receipt = await actor_provenance(db, reviewer, binding_id=binding_id, lock=True)
     if not receipt["profile_id"] or any(row["profile_id"] is None for row in history.contributors):
         _conflict("verification_independence_unverifiable", "An implementation or verifier profile lacks historical evidence.",

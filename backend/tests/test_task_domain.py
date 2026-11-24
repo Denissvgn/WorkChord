@@ -227,7 +227,11 @@ async def test_cancel_requires_current_execution_ownership_and_invalidates_fence
         assignment = AgentTaskAssignment(task_id=task.id, actor_id=scenario.actors[0], purpose="execution", state="accepted", task_version=task.version)
         db.add(assignment)
         await db.flush()
-        run = AgentRun(task_id=task.id, actor_id=scenario.actors[0], assignment_id=assignment.id, claim_generation=4, status="running")
+        from app.models.agent import AgentActor
+        profile_id = (await db.get(AgentActor, scenario.actors[0])).profile_id
+        run = AgentRun(task_id=task.id, actor_id=scenario.actors[0], assignment_id=assignment.id, claim_generation=4, status="running",
+                       execution_provenance={"actor_id": scenario.actors[0], "profile_id": profile_id,
+                                             "profile_revision": f"p{profile_id}-begin", "source": "authenticated_work_begin"})
         db.add(run)
         await db.commit()
         task_id, version, assignment_id, run_id = task.id, task.version, assignment.id, run.id
@@ -236,7 +240,10 @@ async def test_cancel_requires_current_execution_ownership_and_invalidates_fence
         task = await TaskDomainService(db).command(task_id, TaskActionRequest(action="cancel", expected_version=version, reason="Stop this work",
             expected_claim_generation=4, expected_running_run_ids=[run_id], expected_live_assignment_ids=[assignment_id]))
         assert task.canceled_at is not None and task.claimed_by is None and task.claim_generation == 5
-        assert (await db.get(AgentRun, run_id)).status == "cancelled"
+        ended = await db.get(AgentRun, run_id)
+        assert ended.status == "cancelled"
+        # The server ended the run, so it records the actor's profile as the terminal command would.
+        assert ended.execution_provenance["terminal_profile_id"] == profile_id
         assert (await db.get(AgentTaskAssignment, assignment_id)).state == "cancelled"
         assert task.status == "active"
         with pytest.raises(AuthorityError):
