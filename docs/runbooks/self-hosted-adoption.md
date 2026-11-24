@@ -223,9 +223,10 @@ Run this on the old project, shortly before the window, while it still serves.
 
 ~~~bash
 export PG_IMAGE="$(sed -n 's/^    image: \(postgres:[^ ]*\)$/\1/p' "$WORKCHORD_INSTANCE_HOME/docker-compose.yml" | head -1)"
-old_compose --profile backup run --rm --no-deps \
-  -e POSTGRES_BACKUP_URL="postgresql://postgres:$(sed -n 's/^POSTGRES_PASSWORD=//p' "$OLD_ENV")@postgres:5432/workchord" \
-  base-backup
+# A shell variable wins over the env file, and Compose reads it when it parses
+# the file, so it reaches the job's DATABASE_BACKUP_URL (`run -e` would not).
+POSTGRES_BACKUP_URL="postgresql://postgres:$(sed -n 's/^POSTGRES_PASSWORD=//p' "$OLD_ENV")@postgres:5432/workchord" \
+  old_compose --profile backup run --rm --no-deps base-backup
 docker run --rm -v "${OLD_PROJECT}_workchord_postgresql_backups:/backups:ro" "$PG_IMAGE" \
   sh -c 'ls -1 /backups/base | tail -3; for d in /backups/base/workchord-*; do test -f "$d/backup_label" -a -f "$d/workchord-files.sha256" && echo "verified: $d"; done | tail -1'
 ~~~
@@ -258,11 +259,40 @@ prune_wal "$OLD_PROJECT" --dry-run
 ~~~
 
 Exit status 3 right after a fresh backup only means its start segment is not
-archived yet: run `SELECT pg_switch_wal()` on the old database and repeat.
+archived yet: switch the segment and repeat the dry run:
 
-**Do not run the real prune on the old archive yet.** It is not needed for the
-cutover (the archive is not copied), and the old project is the rollback path.
-It runs in step 12.
+~~~bash
+old_compose exec -T postgres psql -U postgres -d workchord -Atc 'SELECT pg_switch_wal()'
+sleep 10
+prune_wal "$OLD_PROJECT" --dry-run
+~~~
+
+When the dry run is clean, prune for real:
+
+~~~bash
+prune_wal "$OLD_PROJECT"
+~~~
+
+This is safe now. It keeps every segment from the start of the backup you just
+verified. Rollback A and B start the old PostgreSQL on its untouched data
+volume and never read the archive. Rollback C restores from this backup and
+replays only later segments, which are kept. No earlier base backup exists, so
+the removed segments cannot recover anything.
+
+## Before the window: pending deliveries
+
+The new stack runs the outbound delivery worker, which the old instance may not
+have been running. Pending webhook deliveries would be sent the moment it
+starts. Look first, read-only:
+
+~~~bash
+old_compose exec -T postgres psql -U postgres -d workchord -c \
+  "select status, count(*), min(created_at) from outbound_webhook_deliveries group by status"
+~~~
+
+If `pending` is not zero, decide with the owner whether those deliveries should
+still go out; if not, mark them failed through the API or the settings page
+before the window. Do not edit the table by hand.
 
 ## 6. Announce the window
 
@@ -291,7 +321,7 @@ old_compose exec -T postgres psql -U postgres -d workchord -Atc "$COUNTS" >"$DUM
 Stop the old stack. Stop is not `down`: containers and volumes stay.
 
 ~~~bash
-old_compose stop
+old_compose stop --timeout 60
 docker run --rm -v "${OLD_PROJECT}_workchord_postgresql18_data:/var/lib/postgresql:ro" \
   "$PG_IMAGE" sh -c 'pg_controldata /var/lib/postgresql/18/docker | grep "cluster state"'
 ~~~
@@ -305,7 +335,8 @@ crashed cluster.
 ~~~bash
 OLD_DATA="${OLD_PROJECT}_workchord_postgresql18_data"
 NEW_DATA="${NEW_PROJECT}_workchord_postgresql18_data"
-docker volume inspect "$NEW_DATA" >/dev/null 2>&1 && echo "STOP: $NEW_DATA already exists" 
+set -e   # fail fast: a failed check below must stop the block
+if docker volume inspect "$NEW_DATA" >/dev/null 2>&1; then echo "STOP: $NEW_DATA already exists"; false; fi
 docker volume create \
   --label "com.docker.compose.project=$NEW_PROJECT" \
   --label com.docker.compose.volume=workchord_postgresql18_data "$NEW_DATA"
@@ -317,13 +348,19 @@ volume_digest() {
     'cd /v && find . -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum;
      find . -printf "%p %U:%G %m\n" | sort | sha256sum'
 }
-diff <(volume_digest "$OLD_DATA") <(volume_digest "$NEW_DATA") && echo "database volume copy identical"
+diff <(volume_digest "$OLD_DATA") <(volume_digest "$NEW_DATA")
+echo "database volume copy identical"
 
 mkdir -p -m 700 "$NEW_SINK"
 cp -Rp "$OLD_SINK/." "$NEW_SINK/"
-diff -r "$OLD_SINK" "$NEW_SINK" && echo "sink identical"
+diff -r "$OLD_SINK" "$NEW_SINK"
+echo "sink identical"
 ls "$NEW_SINK" | wc -l
+set +e
 ~~~
+
+Paste the block into a shell you can restart: with `set -e` a failed check ends
+the shell, which is the point. Run `set +e` again in a new shell if it did.
 
 If a digest differs or the sink differs, do not continue: remove the copy
 (`docker volume rm "$NEW_DATA"`, and `rm -rf "$NEW_SINK"` after listing it),
@@ -367,11 +404,18 @@ ls "$NEW_SINK" | wc -l
 ## 10. Write the deployment record, hand over, close the window
 
 ~~~bash
+# The revision the old images were built from. Read it from the old release
+# file when it names one (the source copy's own HEAD can be older than the
+# pinned images); otherwise take it from the old backend's build identity.
+OLD_REVISION="$(sed -n 's/^# WorkChord main \([0-9a-f]\{7,40\}\).*/\1/p' "${OLD_FILES[-1]}" | head -1)"
+OLD_VERSION="$(git -C "$OLD_SOURCE" show "$OLD_REVISION:backend/pyproject.toml" 2>/dev/null | sed -n 's/^version = "\(.*\)"/\1/p')"
+echo "replaces revision=${OLD_REVISION:?set OLD_REVISION by hand} version=${OLD_VERSION:-unknown}"
 python3 scripts/server/write_deployment_record.py \
   --folder "$WORKCHORD_INSTANCE_HOME" --operator "$USER" \
   --replaces-project "$OLD_PROJECT" \
-  --replaces-revision "$(git -C "$OLD_SOURCE" rev-parse HEAD)" \
-  --replaces-version <old WorkChord version>
+  --compose-file docker-compose.yml --compose-file docker-compose.server.yml \
+  --compose-file docker-compose.credential-sink.yml \
+  --replaces-revision "$OLD_REVISION" --replaces-version "$OLD_VERSION"
 cat .runtime/autonomy/deployment-record.json
 ~~~
 
@@ -409,17 +453,10 @@ hours from then on.
 ## 12. Retire the old project
 
 Keep the old project untouched until the new stack has run long enough that
-you no longer want the option to go back (agree the period with the team). Then:
+you no longer want the option to go back (agree the period with the team).
 
-~~~bash
-prune_wal "$OLD_PROJECT" --dry-run
-prune_wal "$OLD_PROJECT"
-~~~
-
-This reclaims the old archive down to the verified base backup. Rolling back
-still works afterwards, because the old data volume does not depend on its
-archive. When the owner approves removing the old project, list and then remove
-its resources. This is permanent:
+The old archive was pruned in step 5. When the owner approves removing the old
+project, list and then remove its resources. This is permanent:
 
 ~~~bash
 old_compose down --remove-orphans
@@ -443,7 +480,7 @@ PM, as the maintenance runbook describes.
 
 ~~~bash
 new_compose down                       # keeps the new volumes for inspection
-old_compose up --detach                # same files, same pinned images, original volumes
+old_compose up --detach --no-build backend frontend   # the pinned images, original volumes
 curl -fsS http://127.0.0.1:8480/health/ready
 ~~~
 
@@ -462,7 +499,7 @@ already ran: it ran on the copy. Then:
 ### B. A failure inside the window, before acceptance passed
 
 The same commands as A apply. The old data volume was only read, so
-`old_compose up --detach` is enough.
+`old_compose up --detach --no-build backend frontend` is enough.
 
 ### C. The old data volume is gone or was modified
 
