@@ -1543,6 +1543,10 @@ export const russianResources = {
                         title: 'В работе',
                         description: 'Агент сейчас работает над задачей.',
                     },
+                    active_outside_run: {
+                        title: 'В работе вне запуска',
+                        description: 'Задача отмечена как активная, но в WorkChord для неё нет назначения, захвата или запуска: работа идёт вне системы.',
+                    },
                     verification_required: {
                         title: 'Ждёт проверки',
                         description: 'Отправлено на проверку и ждёт независимого проверяющего.',
@@ -1552,6 +1556,8 @@ export const russianResources = {
                         description: 'Назначение, захват и запуск не согласованы, поэтому работа не может продолжиться сама.',
                     },
                 },
+                nextAccountable: 'Следующий ответственный: {{name}}',
+                noCapacityOwner: 'Для этой задачи не указан исполнитель.',
                 noTasksInState: 'В этом состоянии нет задач',
                 stateUpdated: 'Состояние обновлено',
                 taskNumber: 'Задача №{{id}}',

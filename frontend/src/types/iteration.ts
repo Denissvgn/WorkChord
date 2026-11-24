@@ -103,6 +103,15 @@ export interface IterationPlanningReadinessSummary {
     team_agent_count?: number;
     has_schedule: boolean;
     risk_count: number;
+    /** Saved dependency pairs whose dates start the dependent on or before its prerequisite ends. */
+    inverted_dependencies?: Array<{
+        task_id: number;
+        task_title: string;
+        task_start_date: string;
+        prerequisite_id: number;
+        prerequisite_title: string;
+        prerequisite_end_date: string;
+    }>;
     /** The six plan checkpoints, derived on the server; the PM agent reads the same list. */
     checkpoints?: PlanCheckpoint[];
     checkpoints_done?: number;

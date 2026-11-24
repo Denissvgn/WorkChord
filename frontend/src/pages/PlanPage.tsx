@@ -124,6 +124,9 @@ const checkpointResult = (
             return parts.length > 0 ? parts.join(' · ') : t('plan.page.state.attention');
         }
         case 'schedule':
+            if (counts.inverted_dependencies) {
+                return t('plan.status.savedDependenciesInverted', { count: counts.inverted_dependencies });
+            }
             return state === 'done' ? t('plan.status.scheduleBuilt') : t('plan.status.scheduleNotBuilt');
         default:
             return state === 'done'

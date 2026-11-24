@@ -1536,6 +1536,7 @@ class AgentService:
         assigned_waiting = []
         start_ready = []
         executing = []
+        active_outside_run = []
         verification_required = []
         recovery_required = []
 
@@ -1610,8 +1611,17 @@ class AgentService:
                 continue
 
             if task.status == TaskStatus.ACTIVE.value:
-                if await work_service._pending_recovery_signal(task.id):
+                # Positive evidence of an execution record that no longer
+                # holds (a recovery signal or an expired claim) is the only
+                # route into recovery; the recovery list uses the same rule.
+                if has_live_execution or await work_service._pending_recovery_signal(task.id):
                     recovery_required.append(task_resp)
+                else:
+                    # Active with no assignment, claim, run or recovery
+                    # signal: the work happens outside a WorkChord run. The
+                    # capacity owner on the task is the next accountable
+                    # person; nothing here can be recovered automatically.
+                    active_outside_run.append(task_resp)
                 continue
 
             # 3. Planned work without an execution assignment: ready to
@@ -1627,6 +1637,7 @@ class AgentService:
             "assigned_waiting": assigned_waiting,
             "start_ready": start_ready,
             "executing": executing,
+            "active_outside_run": active_outside_run,
             "verification_required": verification_required,
             "recovery_required": recovery_required,
         }

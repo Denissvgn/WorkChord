@@ -119,17 +119,26 @@ const DETAIL_ROUTES: Array<[RegExp, (match: RegExpMatchArray) => unknown]> = [
     [/^\/plan-shares\/[^/]+$/, () => WORKSPACE_SHARE],
 ];
 
-/** Answers every GET from the workspace above, with the unplanned ones failing by URL. Restored by `vi.restoreAllMocks`. */
+/**
+ * Answers every GET from the workspace above, with the unplanned ones failing by URL. `pending` lists the
+ * GETs still waiting for an answer, so a page stuck on a read shows which one. Restored by `vi.restoreAllMocks`.
+ */
 export const installWorkspaceApi = (extra: Array<[RegExp, (match: RegExpMatchArray) => unknown]> = []) => {
     const unplanned: string[] = [];
+    const pending: string[] = [];
     vi.spyOn(api, 'get').mockImplementation(async (url: string) => {
         const path = url.split('?')[0];
-        for (const [pattern, answer] of [...extra, ...ROUTES, ...DETAIL_ROUTES]) {
-            const match = path.match(pattern);
-            if (match) return { data: answer(match) } as never;
+        pending.push(url);
+        try {
+            for (const [pattern, answer] of [...extra, ...ROUTES, ...DETAIL_ROUTES]) {
+                const match = path.match(pattern);
+                if (match) return { data: await answer(match) } as never;
+            }
+            unplanned.push(path);
+            throw new Error(`Request nobody planned for: GET ${path}`);
+        } finally {
+            pending.splice(pending.indexOf(url), 1);
         }
-        unplanned.push(path);
-        throw new Error(`Request nobody planned for: GET ${path}`);
     });
-    return { unplanned };
+    return { unplanned, pending };
 };

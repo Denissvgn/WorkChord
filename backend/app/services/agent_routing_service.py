@@ -1188,6 +1188,19 @@ class AgentRoutingService:
         return capacity
 
     @staticmethod
+    def _caller_visible_actor_ids(boundary: Any) -> frozenset[int] | None:
+        """Return the actors whose rows a team-bound caller may receive.
+
+        A caller without a topology boundary keeps the full view. A bound
+        caller sees only its own topology's members; every other actor is
+        blocked by the topology gate for that caller and can never be eligible.
+        """
+
+        if boundary is None:
+            return None
+        return boundary.member_actor_ids | boundary.runtime_ready_actor_ids
+
+    @staticmethod
     def _member_for_candidate(
         *,
         task: Task,
@@ -1588,8 +1601,20 @@ class AgentRoutingService:
         eligible_rows: list[tuple[tuple[Any, ...], dict[str, Any]]] = []
         exclusion_rows: list[dict[str, Any]] = []
         examined_pairs = 0
+        # Drop other teams' actors before scoring, ordering and trimming, so
+        # a team-bound caller never receives their operational rows and they
+        # cannot crowd its own members out of the bounded response. The input
+        # digest above still covers every actor, and each kept row is gated
+        # exactly as before, so eligibility and reviewer independence are
+        # unchanged.
+        visible_actor_ids = self._caller_visible_actor_ids(topology_boundary)
+        candidate_actors = (
+            actors
+            if visible_actor_ids is None
+            else [actor for actor in actors if actor.id in visible_actor_ids]
+        )
 
-        for actor in actors:
+        for actor in candidate_actors:
             profile = self._profile_evidence(actor.profile)
             profile_revision = self._profile_revision(actor.profile)
             queued, accepted = assignment_counts.get(actor.id, (0, 0))
@@ -2526,23 +2551,37 @@ class AgentRoutingService:
                 ),
                 None,
             )
+            if selected_exclusion is not None:
+                selection_blockers = [
+                    blocker.value
+                    if hasattr(blocker, "value")
+                    else str(blocker)
+                    for blocker in selected_exclusion.hard_blocker_codes
+                ]
+            else:
+                from app.services.agent_team_setup_service import (
+                    AgentTeamSetupService,
+                )
+
+                # Rows outside the preview requester's topology are not
+                # returned, so name the topology gate that blocks them.
+                visible_actor_ids = self._caller_visible_actor_ids(
+                    await AgentTeamSetupService(self.db).membership_boundary(
+                        preview_request_actor_id
+                    )
+                )
+                selection_blockers = [
+                    RoutingBlockerCode.ACTOR_TOPOLOGY_INCOMPATIBLE.value
+                    if visible_actor_ids is not None
+                    and selected_actor.id not in visible_actor_ids
+                    else RoutingBlockerCode.NO_ELIGIBLE_CANDIDATE.value
+                ]
             raise AgentRoutingConflictError(
                 "routing_selection_ineligible",
                 "Selected actor and model binding are not eligible",
                 actor_id=selected_actor.id,
                 model_binding_id=data.model_binding_id,
-                hard_blocker_codes=(
-                    [
-                        blocker.value
-                        if hasattr(blocker, "value")
-                        else str(blocker)
-                        for blocker in selected_exclusion.hard_blocker_codes
-                    ]
-                    if selected_exclusion is not None
-                    else [
-                        RoutingBlockerCode.NO_ELIGIBLE_CANDIDATE.value
-                    ]
-                ),
+                hard_blocker_codes=selection_blockers,
             )
         if selected.model_binding_revision != data.model_binding_revision:
             raise AgentRoutingConflictError(

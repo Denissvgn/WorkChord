@@ -532,7 +532,10 @@ class TaskTimelinePage(BaseModel):
 
 
 class AgentPipelineResponse(BaseModel):
-    """Agent supervision pipeline; every open task appears in exactly one stage.
+    """Agent supervision pipeline; every open, non-deferred task appears in exactly one stage.
+
+    ``active_outside_run`` holds active work with no assignment, claim, run or
+    recovery signal; the task's capacity owner (``assignee``) is accountable.
 
     Stage names and meanings come from ``config/workflow-vocabulary.json``.
     """
@@ -541,6 +544,7 @@ class AgentPipelineResponse(BaseModel):
     assigned_waiting: list[TaskResponse]
     start_ready: list[TaskResponse]
     executing: list[TaskResponse]
+    active_outside_run: list[TaskResponse]
     verification_required: list[TaskResponse]
     recovery_required: list[TaskResponse]
 
@@ -921,6 +925,10 @@ class AgentTaskContextResponse(BaseModel):
     timeline: list[TaskTimelineItem] = Field(default_factory=list)
     definition_ready: bool = False
     start_ready: bool = False
+    started: bool = Field(
+        default=False,
+        description="True when the assignment was accepted and its run is already active; start gates no longer apply.",
+    )
     blocker_codes: list[str] = Field(default_factory=list)
 
     @computed_field

@@ -121,3 +121,42 @@ git clone --shared <WorkChord repository> <isolated clone directory>
 ```
 
 Run the wiki commands from the isolated clone once the preflight passes.
+
+### Replay the wiki from a canonical checkout
+
+A preview (`sync --dry-run`) never reads the extraction cache, while an
+ordinary owning `sync` reads it. The cache serializes mappings in sorted key
+order, but fresh extraction keeps the order in the source. A list built by
+iterating such a mapping, for example the unresolved keyword settings recorded
+for a FastAPI application, can therefore come out in a different order in the
+two runs. The advisory `llm-wiki/sync-analysis-v2.payload_hash` then differs
+even though the Markdown, concepts, relationships and ownership records are
+identical, so the owning run rewrites packed objects that the preview did not
+report.
+
+Use one full-reconstruction profile for both the preview and the owning run.
+It ignores the extraction cache and the reused analysis, so both runs build
+their evidence from fresh extraction of identical inputs:
+
+```bash
+.venv/bin/python scripts/ci/wiki_lock_root_preflight.py --checkout <checkout>
+llm-wiki sync --dry-run --rebuild-cache --rebuild-knowledge --jobs 1 --src-dir . --wiki-dir docs/llm_wiki
+llm-wiki sync --rebuild-cache --rebuild-knowledge --jobs 1 --src-dir . --wiki-dir docs/llm_wiki
+```
+
+- Run the preflight first and stop if it refuses.
+- Review the complete preview, then run the owning command with exactly the same
+  arguments minus `--dry-run`. Add the same `--source-selection <profile>`,
+  `--cache-dir` and `--helper-cache-dir` values to both commands when the
+  repository uses them.
+- Do not substitute `--no-cache`: it skips the analysis capture entirely, so the
+  run does not produce the evidence commitment that the other modes compare. An ordinary
+  `sync` (warm cache) remains valid for everyday maintenance, but do not compare
+  its result with a preview.
+- In a linked worktree, set `LLM_WIKI_CACHE_DIR` to the main checkout's Git
+  directory so the prepared extractor helpers are found. It does not change the
+  lock root, which the preflight checks.
+- A full run takes roughly ten minutes. Afterwards, run the same preview again
+  and confirm it reports no changes, then run `llm-wiki lint --strict --jobs 1`
+  and `llm-wiki ci-check --format json --jobs 1` with the same source and wiki
+  arguments, and confirm the ownership records are unchanged.

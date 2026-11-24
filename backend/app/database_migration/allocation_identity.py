@@ -1,8 +1,8 @@
 """Reserve numeric allocation identities retained by immutable recovery history."""
 
-import json
+from sqlalchemy import MetaData, Table, func, inspect, select, text
 
-from sqlalchemy import MetaData, Table, cast, String, func, inspect, select, text
+from app.database_migration.project_identity import HISTORY_VALUE_CHARACTERS, decode_history_value, history_values
 
 
 def allocation_floor(connection, table_name="team_members"):
@@ -19,25 +19,25 @@ def allocation_floor(connection, table_name="team_members"):
                 table = Table(name, metadata, autoload_with=connection, extend_existing=True)
                 for column in foreign["constrained_columns"]:
                     floor = max(floor, int(connection.scalar(select(func.max(table.c[column]))) or 0))
-    scanned_rows = scanned_bytes = 0
     surfaces = [("application_snapshots", "payload"), ("command_audit", "details"),
                 ("task_events", "payload"), ("agent_run_events", "payload"),
                 ("agent_runs", "run_metadata"), ("agent_idempotency_records", "response_payload")]
+
+    def admit(_row, size):
+        if size > HISTORY_VALUE_CHARACTERS:
+            raise RuntimeError("Allocation recovery history holds a value too large for the identity scan")
+
+    # Every retained row is read, in bounded pages and value batches, however long the history.
     for name, column in surfaces:
         if name not in inspector.get_table_names():continue
         table = Table(name, metadata, autoload_with=connection, extend_existing=True)
         if column not in table.c:continue
-        rows = connection.execute(select(table.c.id, func.length(cast(table.c[column], String))).order_by(table.c.id).execution_options(stream_results=True))
-        for identifier, size in rows:
-            scanned_rows += 1
-            scanned_bytes += int(size or 0)
-            if scanned_rows > 10000 or scanned_bytes > 256 * 1024 * 1024 or int(size or 0) > 16 * 1024 * 1024:
-                raise RuntimeError("Allocation recovery history exceeds the bounded identity scan")
-            payload = connection.scalar(select(table.c[column]).where(table.c.id == identifier))
-            payload = json.loads(payload) if isinstance(payload, str) else payload
+        extra = [table.c.action] if name == "command_audit" else []
+        for row, payload in history_values(connection, table, column, extra, admit=admit):
+            payload = decode_history_value(table.c[column], payload)
             if payload is None:continue
             if name == "command_audit":
-                action = connection.scalar(select(table.c.action).where(table.c.id == identifier))
+                action = row[2]
                 if action.startswith(table_name + ":") and isinstance(payload, dict):
                     value = payload.get("entity_id")
                     if type(value) is int and value > 0:floor = max(floor, value)
