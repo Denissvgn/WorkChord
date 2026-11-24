@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import itertools
 import json
 
 from sqlalchemy import select
@@ -123,8 +124,76 @@ def candidate_version(task):
     return window["from"] if window else task.version
 
 
+async def feature_free_acknowledgement(db, member):
+    """Return a member's acknowledgement digest as if it lacked only the planning-window feature.
+
+    A runtime can re-acknowledge after an upgrade solely to adopt
+    ``EXECUTION_PLANNING_WINDOW_FEATURE``. The stored bytes must reproduce the
+    current digest, and they must list that feature exactly once. Removing it
+    reproduces the previous acknowledgement only when every other field is
+    identical. Any other result is ``None``.
+    """
+    from app.services.agent_team_setup_service import _digest
+
+    encoded = await db.scalar(
+        select(AgentTeamTopologyMember.runtime_acknowledgement_payload).where(
+            AgentTeamTopologyMember.actor_id == member.id,
+            AgentTeamTopologyMember.topology_id == member.team_id,
+        )
+    )
+    try:
+        current = json.loads(encoded)
+        features = current["server_features"]
+        if (
+            not isinstance(features, list)
+            or features.count(EXECUTION_PLANNING_WINDOW_FEATURE) != 1
+            or _digest(current) != member.runtime_acknowledgement_digest
+        ):
+            return None
+        return _digest(
+            {**current, "server_features": [v for v in features if v != EXECUTION_PLANNING_WINDOW_FEATURE]}
+        )
+    except (ValueError, TypeError, KeyError):
+        return None
+
+
 async def authority_stamp(db, task, assignment, *, lock=False, as_of=None):
     """Fingerprint the actual scope, roster and bindings of both assignment principals."""
+    basis = await _authority_basis(db, task, assignment, lock=lock, as_of=as_of)
+    return digest(basis[0]) if basis else None
+
+
+async def authority_matches(db, task, assignment, expected, *, lock=False):
+    """Compare a sealed stamp with current authority.
+
+    The only tolerated difference is a member that has since re-acknowledged
+    solely to add the planning-window feature. Every other roster, topology
+    revision, permission, binding, link or policy change still mismatches.
+    """
+    if not expected:
+        return False
+    basis = await _authority_basis(db, task, assignment, lock=lock)
+    if basis is None:
+        return False
+    fields, members = basis
+    if digest(fields) == expected:
+        return True
+    slot = members[0]._fields.index("runtime_acknowledgement_digest")
+    choices = []
+    for member in members:
+        earlier = await feature_free_acknowledgement(db, member)
+        choices.append((member[slot],) if earlier is None else (member[slot], earlier))
+    for combination in itertools.product(*choices):
+        rows = [
+            (*tuple(member)[:slot], value, *tuple(member)[slot + 1 :])
+            for member, value in zip(members, combination)
+        ]
+        if digest({**fields, "members": rows}) == expected:
+            return True
+    return False
+
+
+async def _authority_basis(db, task, assignment, *, lock=False, as_of=None):
     from app.models.agent import TaskEvent
 
     def fenced(query):
@@ -262,37 +331,10 @@ async def authority_stamp(db, task, assignment, *, lock=False, as_of=None):
             ) != (member.id, member.actor_key, member.topology_key, member.revision, True):
                 return None
             historical_digest = ack.get("acknowledgement_digest")
-            if historical_digest != member.runtime_acknowledgement_digest:
-                # A runtime can acknowledge the newly advertised optional command
-                # after upgrading. Reconstruct the exact previous acknowledged
-                # bytes. Every field other than that one capability must match.
-                from app.services.agent_team_setup_service import _digest
-
-                encoded = await db.scalar(
-                    select(AgentTeamTopologyMember.runtime_acknowledgement_payload).where(
-                        AgentTeamTopologyMember.actor_id == member.id
-                    )
-                )
-                try:
-                    current = json.loads(encoded)
-                    features = current["server_features"]
-                    if (
-                        not isinstance(features, list)
-                        or features.count(EXECUTION_PLANNING_WINDOW_FEATURE) != 1
-                        or _digest(current) != member.runtime_acknowledgement_digest
-                        or _digest(
-                            {
-                                **current,
-                                "server_features": [
-                                    v for v in features if v != EXECUTION_PLANNING_WINDOW_FEATURE
-                                ],
-                            }
-                        )
-                        != historical_digest
-                    ):
-                        return None
-                except (ValueError, TypeError, KeyError):
-                    return None
+            if historical_digest != member.runtime_acknowledgement_digest and (
+                historical_digest != await feature_free_acknowledgement(db, member)
+            ):
+                return None
     bindings = (
         await db.execute(
             fenced(
@@ -329,7 +371,7 @@ async def authority_stamp(db, task, assignment, *, lock=False, as_of=None):
             )
         )
     ).all()
-    return digest(
+    return (
         {
             "project": task.project_id,
             "strict": policy,
@@ -338,7 +380,8 @@ async def authority_stamp(db, task, assignment, *, lock=False, as_of=None):
             "permissions": [tuple(row) for row in permissions],
             "members": [tuple(row) for row in members],
             "bindings": [tuple(row) for row in bindings],
-        }
+        },
+        members,
     )
 
 
@@ -348,7 +391,7 @@ async def window_authority_matches(db, task, assignment, *, lock=False):
     if not assignment_matches(task, assignment):
         return False
     expected = current_window(task).get("authority", {}).get(str(assignment.id))
-    return bool(expected and await authority_stamp(db, task, assignment, lock=lock) == expected)
+    return await authority_matches(db, task, assignment, expected, lock=lock)
 
 
 async def require_window_authority(db, task, assignment):
@@ -579,8 +622,13 @@ async def seal_authority(db, task, window, assignments, *, prior=None, lock=Fals
         if as_of is None and not await original_ownership(db, task, row, utc_now()):
             continue
         stamp = await authority_stamp(db, task, row, lock=lock, as_of=as_of)
+        sealed = prior.get("authority", {}).get(key) if prior else None
         if stamp and (
-            row.task_version == task.version - 1 or prior and prior.get("authority", {}).get(key) == stamp
+            row.task_version == task.version - 1
+            or sealed == stamp
+            or sealed
+            and as_of is None
+            and await authority_matches(db, task, row, sealed, lock=lock)
         ):
             stamps[key] = stamp
     window["assignments"] = {key: value for key, value in window["assignments"].items() if key in stamps}

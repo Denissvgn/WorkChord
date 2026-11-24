@@ -3,6 +3,9 @@
 Use Python 3.11–3.13 and Node.js 22 with npm. The commands below use Python 3.12
 and start from the repository root.
 
+A SQLite database needs SQLite 3.35 or later, as linked into Python's `sqlite3`
+module. Check it with `python3 -c "import sqlite3; print(sqlite3.sqlite_version)"`.
+
 ## Install
 
 ```bash

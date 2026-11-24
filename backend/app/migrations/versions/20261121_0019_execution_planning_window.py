@@ -15,6 +15,8 @@ def upgrade():
 
 def downgrade():
     # This nullable, unindexed column can be dropped natively on both
-    # supported engines. Rebuilding the referenced tasks table would endanger
-    # assignment and run history on SQLite.
+    # supported engines (SQLite 3.35 or later). Rebuilding the referenced tasks
+    # table would endanger assignment and run history on SQLite. Dropping the
+    # column discards every live window, so work that relied on one needs PM
+    # recovery afterward.
     op.drop_column("tasks", "execution_planning_window")
