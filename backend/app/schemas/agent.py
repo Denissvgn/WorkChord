@@ -908,6 +908,10 @@ class AgentTaskContextResponse(BaseModel):
     timeline: list[TaskTimelineItem] = Field(default_factory=list)
     definition_ready: bool = False
     start_ready: bool = False
+    started: bool = Field(
+        default=False,
+        description="True when the assignment was accepted and its run is already active; start gates no longer apply.",
+    )
     blocker_codes: list[str] = Field(default_factory=list)
 
     @computed_field

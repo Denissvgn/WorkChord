@@ -484,6 +484,8 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
         assert resumed["assignment"]["routing_snapshot"]["review_floor"] == {
             "review_mode": "independent", "reviewer_profile_ids": [reviewer.profile_id], "independence_must_be_revalidated": True}
         assert (await call(*work, worker_key))["state"] == "resume"
+        started = await call("agent_get_complete_task_context", f"/api/agent/tasks/{task.id}/context", worker_key, task_id=task.id)
+        print("PROBE", started["start_ready"], started["blocker_codes"], started["assignment"]["state"])
         assert await stored_history(db_session_factory, rework["id"], review["id"], assigned["id"]) == previous_history
         async with db_session_factory() as audit:
             assert (await audit.get(AgentRun, running["run"]["id"])).execution_provenance == original_execution

@@ -2133,14 +2133,22 @@ class AgentWorkService:
         brief = parse_task_brief(task.description)
         definition_blockers = self._definition_blockers(task)
         assignment_view = self.assignment_response(assignment) if assignment else None
-        if assignment and assignment.queue_class == "rework" and assignment.state == "accepted":
+        started = False
+        if assignment and assignment.queue_class in {"rework", "recovery"} and assignment.state == "accepted":
             active_runs = (await self.db.scalars(select(AgentRun).where(
                 AgentRun.assignment_id == assignment.id, AgentRun.task_id == task.id,
                 AgentRun.actor_id == assignment.actor_id, AgentRun.claim_generation == task.claim_generation,
                 AgentRun.status == LIVE_RUN_STATE).limit(2))).all()
             if len(active_runs) == 1:
-                assignment_view = self._execution_assignment_view(assignment, active_runs[0])
-        start_blockers = await self._start_blockers(task, assignment, utc_now(), assignment_view=assignment_view)
+                started = True
+                if assignment.queue_class == "rework":
+                    assignment_view = self._execution_assignment_view(assignment, active_runs[0])
+        if started:
+            # Already-begun work is judged like the worker queue judges it: selection and
+            # claim gates were settled at begin, so only drift that stops the run remains.
+            start_blockers = await self._started_blockers(task, assignment)
+        else:
+            start_blockers = await self._start_blockers(task, assignment, utc_now(), assignment_view=assignment_view)
         parent_chain: list[dict[str, Any]] = []
         parent = task.parent
         seen: set[int] = set()
@@ -2185,8 +2193,9 @@ class AgentWorkService:
             request_sources=request_sources,
             timeline=timeline,
             definition_ready=not definition_blockers,
-            start_ready=not start_blockers,
-            blocker_codes=sorted(set(definition_blockers + start_blockers)),
+            start_ready=not started and not start_blockers,
+            started=started,
+            blocker_codes=sorted(set((definition_blockers if not started else []) + start_blockers)),
         )
 
     @atomic_command
@@ -4136,6 +4145,16 @@ class AgentWorkService:
             task, await self._working_today(task, utc_now()), started=started
         )
 
+    async def _started_blockers(self, task: Task, assignment: AgentTaskAssignment) -> list[str]:
+        """Blockers that remain for an accepted assignment whose run already began."""
+        from app.services.work_metrics import effective_work_flags
+        blockers: list[str] = []
+        if effective_work_flags(task)["effective_is_deferred"]:
+            blockers.append("task_deferred")
+        if not await window_authority_matches(self.db, task, assignment):
+            blockers.append("assignment_task_version_stale")
+        return blockers
+
     async def _start_blockers(
         self,
         task: Task,
@@ -4295,12 +4314,7 @@ class AgentWorkService:
                 blockers.append("not_before_future")
         else:
             if assignment.state == "accepted":
-                blockers = []
-                from app.services.work_metrics import effective_work_flags
-                if effective_work_flags(task)["effective_is_deferred"]:
-                    blockers.append("task_deferred")
-                if not await window_authority_matches(self.db, task, assignment):
-                    blockers.append("assignment_task_version_stale")
+                blockers = await self._started_blockers(task, assignment)
             else:
                 blockers = await self._start_blockers(task, assignment, now, assignment_view=assignment_view, rework_read=rework_read)
         queue_class_rank = QUEUE_CLASS_RANK.get(assignment.queue_class, 99)
