@@ -1481,6 +1481,10 @@ export const englishResources = {
                         title: 'In progress',
                         description: 'An agent is working on it now.',
                     },
+                    active_outside_run: {
+                        title: 'Active outside a run',
+                        description: 'Marked active, but WorkChord has no assignment, claim, or run for it, so the work happens elsewhere.',
+                    },
                     verification_required: {
                         title: 'Waiting for review',
                         description: 'Submitted for review and waiting for an independent reviewer.',
@@ -1490,6 +1494,8 @@ export const englishResources = {
                         description: 'The assignment, claim, and run disagree, so the work cannot continue on its own.',
                     },
                 },
+                nextAccountable: 'Next accountable: {{name}}',
+                noCapacityOwner: 'No assignee is set for this task.',
                 noTasksInState: 'No tasks in this state',
                 stateUpdated: 'State updated',
                 taskNumber: 'Task #{{id}}',

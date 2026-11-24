@@ -9,7 +9,7 @@ import { protectedQueryRetry } from '../../utils/protectedQueries';
 
 const EMPTY_PIPELINE: AgentPipeline = {
     needs_definition: [], ready_to_assign: [], assigned_waiting: [], start_ready: [],
-    executing: [], verification_required: [], recovery_required: [],
+    executing: [], active_outside_run: [], verification_required: [], recovery_required: [],
 };
 
 export function usePipeline(enabled: boolean) {

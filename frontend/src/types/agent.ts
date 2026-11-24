@@ -636,6 +636,7 @@ export interface AgentPipeline {
     assigned_waiting: Task[];
     start_ready: Task[];
     executing: Task[];
+    active_outside_run?: Task[];
     verification_required: Task[];
     recovery_required: Task[];
 }

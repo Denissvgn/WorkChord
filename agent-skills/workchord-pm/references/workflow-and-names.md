@@ -110,6 +110,7 @@ Agent pipeline stages, in order; each task is in exactly one stage:
 | Assigned, waiting (`assigned_waiting`) | Assigned to an agent that cannot start yet because of the schedule, a dependency, or its start time. | Clear the start blocker or wait for it; never reassign to get around it. |
 | Ready to start (`start_ready`) | Assigned to an agent that may start it now. | Nothing; the assigned agent starts it from My Work. |
 | In progress (`executing`) | An agent is working on it now. | Watch the claim expiry, progress, and blockers; recover only through typed recovery. |
+| Active outside a run (`active_outside_run`) | Marked active, but WorkChord has no assignment, claim, or run for it, so the work happens elsewhere. | Ask the capacity owner for status; recover only when the recovery list shows evidence. |
 | Waiting for review (`verification_required`) | Submitted for review and waiting for an independent reviewer. | Make sure an independent reviewer has a verification assignment. |
 | Needs recovery (`recovery_required`) | The assignment, claim, and run disagree, so the work cannot continue on its own. | Read the recovery diagnosis and requeue through typed recovery. |
 
