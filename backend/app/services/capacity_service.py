@@ -50,14 +50,25 @@ class CommitmentRate:
 
 
 class PeriodCommitments:
-    """Fold baseline rates at interval boundaries without expanding each task into daily rows."""
+    """Fold baseline rates at interval boundaries without expanding each task into daily rows.
 
-    def __init__(self, tasks, members, coverages, start, end):
+    Known effort is spread over the baseline in proportion to the owner's
+    productive hours on each date. Without dated adjustments the owner's
+    productivity factor is constant and cancels, so the spread follows calendar
+    hours. A row with dated adjustments weights each date by its percentage on
+    that date, the same per-date factor the scheduler uses to place the work.
+    """
+
+    def __init__(self, tasks, members, coverages, start, end, dated=None):
         self.coverages = coverages
         self.events = defaultdict(list)
         self.active = {}
         self.uncovered = False
-        owners = {member.id: member for member in members}
+        self.dated = dated
+        # Owners whose per-hour rates are weighted by the percentage on each date.
+        self.weighted = set()
+        weighted_totals = {}
+        owners = self.owners = {member.id: member for member in members}
         for task in tasks:
             first, last = task.baseline_start_date, task.baseline_end_date
             if not first or not last:
@@ -75,6 +86,17 @@ class PeriodCommitments:
                 continue
             elif task.effort_hours is None:
                 rate.unknown_effort = 1
+            elif dated is not None and dated.has_adjustments(owner.id):
+                key = (owner.id, first, last)
+                if key not in weighted_totals:
+                    weighted_totals[key] = sum(
+                        rule.hours(day) * dated.percent(owner, day) / 100
+                        for day, rule in coverages[owner.id].dated_rules(first, last))
+                if weighted_totals[key] > 0 and owner.operational_utilization < 100 and owner.professionalism_coefficient > 0:
+                    self.weighted.add(owner.id)
+                    rate.per_hour = task.effort_hours / weighted_totals[key]
+                else:
+                    rate.per_workday = task.effort_hours / totals[1]
             elif owner.availability_percent > 0 and owner.operational_utilization < 100 and owner.professionalism_coefficient > 0:
                 # The owner's constant productivity factor cancels from the proportional share.
                 rate.per_hour = task.effort_hours / totals[0]
@@ -94,7 +116,8 @@ class PeriodCommitments:
         for owner, rate in self.active.items():
             hours = self.coverages[owner].hours(day) or 0
             if hours:
-                total += rate.per_hour * hours + rate.per_workday
+                weight = self.dated.percent(self.owners[owner], day) / 100 if owner in self.weighted else 1.0
+                total += rate.per_hour * hours * weight + rate.per_workday
                 unknown |= rate.unknown_effort > 0
             unknown |= rate.unknown_coverage > 0
         return total, unknown
@@ -333,9 +356,9 @@ class CapacityService:
             included = await included_work_ids(self.db, {member.iteration_id for member in members})
             tasks = list((await self.db.execute(select(Task.id, Task.assignee_id, Task.baseline_start_date, Task.baseline_end_date, Task.effort_hours).where(Task.assignee_id.in_([m.id for m in members]),
                 Task.id.in_(included), Task.status != "closed"))).all())
-            commitments = PeriodCommitments(tasks, members, member_coverages, start, end)
             from app.services.capacity_adjustments import load_dated_availability
             dated = await load_dated_availability(self.db, [m.id for m in members])
+            commitments = PeriodCommitments(tasks, members, member_coverages, start, end, dated)
             resolved_calendars = {}
             result = []
             day = start

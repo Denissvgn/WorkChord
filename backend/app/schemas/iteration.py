@@ -171,3 +171,102 @@ class IterationPage(BaseModel):
     next_after_id: int | None
     upper_id: int
     consistency: str = "live_bounded_id_order"
+
+
+class IterationDateMoveRequest(PlanningInputRevisions):
+    """A proposed iteration start, end and calendar to check against shared capacity."""
+
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+    calendar_id: Optional[int] = None
+    additional_calendar_ids: list[int] | None = Field(default=None, max_length=100)
+
+    @model_validator(mode="after")
+    def validate_proposal(self) -> "IterationDateMoveRequest":
+        proposed = self.model_fields_set & {"start_date", "end_date", "calendar_id", "additional_calendar_ids"}
+        if not proposed:
+            raise ValueError("Propose a start date, an end date or a calendar")
+        for name in sorted(proposed):
+            if getattr(self, name) is None:
+                raise ValueError(f"{name} cannot be null; leave it out to keep the current value")
+        if self.start_date and self.end_date and self.start_date > self.end_date:
+            raise ValueError("start_date must be before or equal to end_date")
+        return self
+
+    def as_update(self) -> IterationUpdate:
+        """The iteration update that applies this proposal."""
+        return IterationUpdate(**self.model_dump(exclude_unset=True))
+
+
+class IterationPeriod(BaseModel):
+    """An iteration's dates and annual calendars."""
+
+    start_date: date
+    end_date: date
+    calendar_id: int
+    additional_calendar_ids: list[int] = Field(default_factory=list)
+    working_days: int
+    missing_calendar_years: list[int] = Field(default_factory=list)
+
+
+class DateMoveBooking(BaseModel):
+    """Hours one other iteration books from the same person on one date."""
+
+    iteration_id: int
+    project_id: Optional[int] = None
+    hours: float
+
+
+class DateMoveShortfall(BaseModel):
+    """One person and date where the proposed period requests more than the person has."""
+
+    profile_id: int
+    member_ids: list[int]
+    date: date
+    available_hours: float
+    requested_hours: float
+    booked_elsewhere_hours: float
+    # Hours booked in iterations the caller cannot read, without naming them.
+    private_booked_hours: float = 0.0
+    bookings: list[DateMoveBooking] = Field(default_factory=list)
+    overallocated_hours: float
+    shortfall_hours: float
+    current_overallocated_hours: Optional[float] = None
+
+
+class DateMoveProfile(BaseModel):
+    """How the proposed period fits one person of the iteration team."""
+
+    profile_id: int
+    member_ids: list[int]
+    shortfall_days: int
+    shortfall_hours: float
+    first_shortfall_date: Optional[date] = None
+    calendar_uncertain: bool = False
+    missing_calendar_years: list[int] = Field(default_factory=list)
+
+
+class IterationDateMovePreview(BaseModel):
+    """Shared capacity for a proposed iteration period. Nothing is saved."""
+
+    applied: bool = False
+    iteration_id: int
+    current: IterationPeriod
+    proposed: IterationPeriod
+    profiles: list[DateMoveProfile]
+    shortfalls: list[DateMoveShortfall]
+    shortfalls_truncated: bool = False
+    max_shortfalls: int
+    unlinked_member_ids: list[int] = Field(default_factory=list)
+    expected_revisions: dict[int, int]
+    planning_revision: Optional[int] = None
+    apply_with: str = (
+        "Update the iteration with the same start_date, end_date and calendar fields and these "
+        "expected_revisions; a changed iteration is refused. Bookings in other iterations are not "
+        "fenced by that update: preview again if planning_revision has changed."
+    )
+    formula: str = (
+        "requested = this iteration's capacity rows: person calendar hours after absence × the row's percentage "
+        "on that date; booked elsewhere = the same for every other row of the person; "
+        "overallocated = requested + booked elsewhere − available; shortfall = min(requested, overallocated)"
+    )

@@ -348,12 +348,15 @@ class CapacityAdjustmentService:
         first, last = min(reduced), max(reduced)
         dates = set(reduced)
         with internal_authority(self.db):
+            # Lock the candidate task rows, in ID order, before reading their live
+            # assignments: issuing work locks its task row first, so a concurrent issue
+            # waits for this command or is seen by it. The lock changes no task version.
             tasks = (await self.db.execute(
                 select(Task.id, Task.start_date, Task.end_date)
                 .where(Task.assignee_id == member.id, Task.status != "closed",
                        Task.start_date.is_not(None), Task.end_date.is_not(None),
                        Task.start_date <= last, Task.end_date >= first)
-                .order_by(Task.id)
+                .order_by(Task.id).with_for_update(of=Task)
             )).all()
             affected = [task.id for task in tasks if any(day in dates for day in _days(max(task.start_date, first), min(task.end_date, last)))]
             issued = await live_assignments(self.db, affected, lock=True)

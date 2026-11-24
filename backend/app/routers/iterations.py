@@ -8,6 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.schemas.iteration import (
     IterationCreate,
+    IterationDateMovePreview,
+    IterationDateMoveRequest,
     IterationPlanningReadinessSummary,
     IterationSeriesCreate,
     IterationSeriesResponse,
@@ -143,6 +145,23 @@ async def update_iteration(
             detail=f"Iteration with id {iteration_id} not found"
         )
     return service.to_response(iteration)
+
+
+@router.post("/iterations/{iteration_id}/date-move/preview", response_model=IterationDateMovePreview)
+async def preview_iteration_date_move(
+    iteration_id: int,
+    data: IterationDateMoveRequest,
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+):
+    """Show each person's shortfall on each date of a proposed period without changing anything.
+
+    Apply with the iteration update, sending the same fields and the returned expected_revisions.
+    """
+    from app.services.iteration_date_move import IterationDateMoveService
+    try:
+        return await IterationDateMoveService(db).preview(iteration_id, data)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
 @router.delete("/iterations/{iteration_id}", response_model=MessageResponse)
