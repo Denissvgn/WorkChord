@@ -742,6 +742,18 @@ const scheduleWorkspace = (end = '2026-08-10') => {
 };
 
 describe('schedule and review inside Plan', () => {
+    it('tells the PM to preview when saved dates start work before its prerequisites end', async () => {
+        scheduleWorkspace();
+        services.iterations.getPlanningReadiness.mockResolvedValue(summary([
+            ...scheduleReady.checkpoints!.slice(0, 4),
+            checkpoint('schedule', 'todo', ['saved_dependencies_inverted'], { inverted_dependencies: 2 }),
+            checkpoint('review', 'blocked', ['build_schedule_first']),
+        ], { team_member_count: 1, team_capacity_hours: 64, task_count: 1, has_schedule: true }));
+        renderPlan();
+        expect((await screen.findAllByText(/Saved dates start 2 tasks before their prerequisites end/)).length).toBeGreaterThan(0);
+        expect(stateText('schedule')).toBe('Next');
+    });
+
     it('calculates and applies assigned work without leaving Plan and reads Schedule Done from the server', async () => {
         scheduleWorkspace();
         const { user } = renderPlan();

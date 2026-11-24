@@ -85,6 +85,8 @@ const LABEL_KEYS: Array<{ section: keyof Vocabulary; id: string; field: 'name' |
     { section: 'pipeline_stages', id: 'start_ready', field: 'description', keys: ['agentPipeline.columns.start_ready.description'] },
     { section: 'pipeline_stages', id: 'executing', field: 'name', keys: ['agentPipeline.columns.executing.title'] },
     { section: 'pipeline_stages', id: 'executing', field: 'description', keys: ['agentPipeline.columns.executing.description'] },
+    { section: 'pipeline_stages', id: 'active_outside_run', field: 'name', keys: ['agentPipeline.columns.active_outside_run.title'] },
+    { section: 'pipeline_stages', id: 'active_outside_run', field: 'description', keys: ['agentPipeline.columns.active_outside_run.description'] },
     { section: 'pipeline_stages', id: 'verification_required', field: 'name', keys: ['agentPipeline.columns.verification_required.title'] },
     { section: 'pipeline_stages', id: 'verification_required', field: 'description', keys: ['agentPipeline.columns.verification_required.description'] },
     { section: 'pipeline_stages', id: 'recovery_required', field: 'name', keys: ['agentPipeline.columns.recovery_required.title'] },
