@@ -643,6 +643,8 @@ class IterationService:
             .join(TeamMemberProfile, TeamMemberProfile.id == TeamMember.profile_id)
             .where(TeamMember.iteration_id == iteration_id, TeamMemberProfile.profile_kind == "agent")
         ) or 0)
+        from app.services.dependency_order import inverted_saved_dependencies
+        inverted = await inverted_saved_dependencies(self.db, iteration_id)
         inputs = dict(
             team_member_count=len(members),
             team_members_no_capacity=no_capacity,
@@ -657,6 +659,7 @@ class IterationService:
         checkpoints = plan_checkpoints(
             **inputs,
             calendar_covers_iteration=not missing_years,
+            inverted_dependency_count=len(inverted),
         )
         return IterationPlanningReadinessSummary(
             iteration_id=iteration_id,
@@ -667,6 +670,7 @@ class IterationService:
             team_capacity_hours=round(total_hours, 2),
             planned_hours=round(float(task_row[6] or 0), 2),
             assigned_hours=round(float(sum(value or 0 for value in planned_hours.values())), 2),
+            inverted_dependencies=inverted,
             checkpoints=checkpoints,
             checkpoints_done=sum(item["state"] == "done" for item in checkpoints),
             checkpoints_total=len(PLAN_CHECKPOINT_IDS),

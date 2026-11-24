@@ -27,6 +27,8 @@ export interface GanttTask {
     is_optional: boolean;
     is_deferred?: boolean;
     is_outside_constraints: boolean;
+    /** Saved start is on or before a prerequisite's saved end; a schedule preview shows corrected dates. */
+    has_inverted_dependency?: boolean;
     tags: string[];
     milestone?: {
         id: number;
@@ -53,10 +55,20 @@ export interface GanttTask {
     };
 }
 
+export interface InvertedDependency {
+    task_id: number;
+    task_title: string;
+    task_start_date: string;
+    prerequisite_id: number;
+    prerequisite_title: string;
+    prerequisite_end_date: string;
+}
+
 export interface GanttResponse {
     iteration: Iteration;
     tasks: GanttTask[];
     overdue_task_ids: number[];
+    inverted_dependencies?: InvertedDependency[];
     holidays: string[];
     weekends: string[];
     member_vacations: Record<number, string[]>;

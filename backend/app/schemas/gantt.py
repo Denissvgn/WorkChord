@@ -6,7 +6,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 
-from app.schemas.iteration import IterationResponse
+from app.schemas.iteration import InvertedDependency, IterationResponse
 from app.schemas.task import TaskBatchUpdateItem
 
 
@@ -57,6 +57,8 @@ class GanttTask(TaskMetricSignals):
     is_composite: bool = False
     is_optional: bool = False
     is_outside_constraints: bool = False
+    # True when this task's saved start is on or before a prerequisite's saved end.
+    has_inverted_dependency: bool = False
     children: list["GanttTask"] = []
     dependencies: list[int] = []
 
@@ -125,6 +127,8 @@ class GanttResponse(BaseModel):
     iteration: IterationResponse
     tasks: list[GanttTask]
     overdue_task_ids: list[int] = []
+    # Saved dependency pairs whose dates are inverted; correct them with a schedule preview, then apply.
+    inverted_dependencies: list[InvertedDependency] = []
     holidays: list[date] = []
     weekends: list[date] = []
     member_vacations: dict[int, list[date]] = {}  # member_id -> vacation dates

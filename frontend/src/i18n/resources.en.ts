@@ -2678,6 +2678,8 @@ export const englishResources = {
                     noBlockers: 'No blockers',
                     scheduleBuilt: 'Saved schedule dates found',
                     scheduleNotBuilt: 'Saved schedule dates not available',
+                    savedDependenciesInverted_other: 'Saved dates start {{count}} tasks before their prerequisites end. Preview the schedule to see corrected dates.',
+                    savedDependenciesInverted_one: 'Saved dates start {{count}} task before its prerequisite ends. Preview the schedule to see corrected dates.',
                     planReady: 'Plan ready for review',
                     risksToAcknowledge: 'Planning exceptions to review: {{count}}',
                     risksToAcknowledge_one: '{{count}} planning exception to review',

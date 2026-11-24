@@ -172,6 +172,15 @@ async def get_gantt_data(
 
     overdue_ids = _overdue_task_ids(gantt_tasks)
 
+    from app.services.dependency_order import inverted_saved_dependencies
+    inverted = await inverted_saved_dependencies(db, iteration_id)
+    inverted_ids = {pair.task_id for pair in inverted}
+    pending = list(gantt_tasks)
+    while pending:
+        node = pending.pop()
+        node.has_inverted_dependency = node.id in inverted_ids
+        pending.extend(node.children)
+
     # Calculate latest task end date (for overdue range)
     latest_task_end = iteration.end_date
     for task in tasks:
@@ -211,6 +220,7 @@ async def get_gantt_data(
         ),
         tasks=gantt_tasks,
         overdue_task_ids=overdue_ids,
+        inverted_dependencies=inverted,
         holidays=working_days_info.holidays,
         weekends=working_days_info.weekends,
         member_vacations=member_vacations,
