@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 import hashlib
 import json
+import re
 import secrets
 from threading import Lock
 
@@ -31,6 +32,8 @@ from app.services.task_service import TaskService
 
 ACTION = "agent.planning_window_reconciled"
 _SCOPE_FIELDS = ("id", "project_id", "calendar_id", "name", "manager_email", "start_date")
+_EVIDENCE_DIGEST = re.compile(r"[a-f0-9]{64}")
+INVALID_EVIDENCE_DIGEST_MESSAGE = "expected_evidence_digest must be 64 lowercase hexadecimal characters."
 
 
 @dataclass(frozen=True)
@@ -309,6 +312,13 @@ async def reconcile_window(
     rationale=None,
     correlation_id=None,
 ):
+    # Every transport gets the same refusal for a malformed digest, before any
+    # comparison. fullmatch rejects non-ASCII, uppercase and trailing newlines.
+    if expected_evidence_digest is not None and (
+        not isinstance(expected_evidence_digest, str)
+        or not _EVIDENCE_DIGEST.fullmatch(expected_evidence_digest)
+    ):
+        raise ValueError(INVALID_EVIDENCE_DIGEST_MESSAGE)
     require_operator(db)
     principal = db.info["authority"]
     if (
