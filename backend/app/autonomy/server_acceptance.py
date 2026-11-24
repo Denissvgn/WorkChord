@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import base64
 import hmac
+import json
 import socket
 from binascii import Error as Base64Error
 from dataclasses import dataclass
@@ -962,6 +963,17 @@ def _probe_application(
             )
             gateway_identity_response.raise_for_status()
             gateway_identity = gateway_identity_response.json()
+            agent_connect_response = client.get(
+                f"{gateway_url.rstrip('/')}/.well-known/workchord/agent-connect.json"
+            )
+            agent_connect_response.raise_for_status()
+            agent_connect_media_type = (
+                agent_connect_response.headers.get("content-type", "")
+                .split(";", 1)[0]
+                .strip()
+                .lower()
+            )
+            agent_connect_text = agent_connect_response.text
     except (httpx.HTTPError, ValueError) as exc:
         raise ServerAcceptanceError("application-readiness-unavailable", cause=exc) from exc
     if not isinstance(payload, dict) or payload.get("status") != "ready":
@@ -971,6 +983,14 @@ def _probe_application(
         or gateway_health.get("status") != "ok"
     ):
         raise ServerAcceptanceError("application-gateway-not-ready")
+    try:
+        agent_connect = json.loads(agent_connect_text)
+    except ValueError:
+        agent_connect = None
+    if agent_connect_media_type != "application/json" or not isinstance(
+        agent_connect, dict
+    ):
+        raise ServerAcceptanceError("application-agent-connect-not-json")
     if (
         not isinstance(backend_identity, dict)
         or not isinstance(gateway_identity, dict)
