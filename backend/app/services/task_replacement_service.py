@@ -284,8 +284,14 @@ class TaskReplacementService:
         try:
             for model, column, kind in ((TaskDependency, TaskDependency.depends_on_id, "schedule"),
                                         (DeliveryDependency, DeliveryDependency.prerequisite_task_id, "delivery")):
-                edges = (await self.db.scalars(select(model).where(column == original.id).order_by(model.id))).all()
+                # Every dependent must follow, including one in another project; the
+                # decider needs edit access to each, so none is silently left behind.
+                with internal_authority(self.db):
+                    edges = (await self.db.scalars(select(model).where(column == original.id).order_by(model.id))).all()
+                    scopes = dict((await self.db.execute(select(Task.id, Task.project_id).where(
+                        Task.id.in_([edge.task_id for edge in edges])))).all())
                 for edge in edges:
+                    require_project(self.db, scopes.get(edge.task_id), "edit")
                     duplicate = await self.db.scalar(select(model.id).where(model.task_id == edge.task_id,
                                                                             column == replacement.id).limit(1))
                     if edge.task_id == replacement.id or duplicate is not None:
