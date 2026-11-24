@@ -1,4 +1,8 @@
-"""The routed decision, its wire defaults, and its digest share one exact byte budget."""
+"""The routed decision, its defaults, and its digest share one exact canonical byte budget.
+
+The budget counts canonical packet bytes of the validated response. MCP framing and
+HTTP headers are outside it, so raw transport sizes are not asserted here.
+"""
 
 import json
 
@@ -10,7 +14,12 @@ from app.models.iteration import Iteration
 from app.schemas import agent_routing
 from app.schemas.agent_routing import AgentRoutingPreviewResponse
 from app.services import agent_routing_service
-from app.services.agent_routing_policy import MAX_ROUTING_PACKET_BYTES, canonical_routing_json_bytes
+from app.services.agent_routing_policy import (
+    MAX_ROUTING_ELIGIBLE_CANDIDATES,
+    MAX_ROUTING_EXCLUSIONS,
+    MAX_ROUTING_PACKET_BYTES,
+    canonical_routing_json_bytes,
+)
 from app.services.agent_routing_service import AgentRoutingService
 from app.services.agent_service import hash_api_key
 from app.utils.time import utc_now
@@ -129,12 +138,17 @@ async def test_preview_bounds_final_rest_and_mcp_decisions(
     assert len(source.configured_model_alias) <= 255
     await db.commit()
     measured = []
+    attempts = {}
     validate = agent_routing.validate_routing_packet_size
 
     def observe(value, **kwargs):
         if isinstance(value, AgentRoutingPreviewResponse):
             measured.append(len(canonical_routing_json_bytes(value)))
         return validate(value, **kwargs)
+
+    # One validated response per trim step, so the attempts per read are capped
+    # by the row bounds: the worst case drops every row except the recommended one.
+    attempt_cap = MAX_ROUTING_EXCLUSIONS + MAX_ROUTING_ELIGIBLE_CANDIDATES + 2
 
     monkeypatch.setattr(agent_routing, "validate_routing_packet_size", observe)
     for busy in (False, True):
@@ -148,7 +162,9 @@ async def test_preview_bounds_final_rest_and_mcp_decisions(
                 )
             )
             await db.commit()
+        before = len(measured)
         rest = await read(primary)
+        attempts[busy] = len(measured) - before
         secondary = "mcp" if primary == "rest" else "rest"
         assert rest == await read(secondary) == await read(primary)
         assert rest == AgentRoutingPreviewResponse.model_validate(rest).model_dump(mode="json")
@@ -176,6 +192,9 @@ async def test_preview_bounds_final_rest_and_mcp_decisions(
             assert (
                 MAX_ROUTING_PACKET_BYTES < size(ordinary) + increase * n <= MAX_ROUTING_PACKET_BYTES + 64
             )
-        record_property("busy_bytes" if busy else "eligible_bytes", size(rest))
+        assert 1 <= attempts[busy] <= attempt_cap
+        record_property(
+            "busy_canonical_packet_bytes" if busy else "eligible_canonical_packet_bytes", size(rest)
+        )
     assert max(measured) > MAX_ROUTING_PACKET_BYTES
-    record_property("largest_validated_trial_bytes", max(measured))
+    record_property("largest_validated_trial_canonical_packet_bytes", max(measured))

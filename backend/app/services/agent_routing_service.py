@@ -227,12 +227,27 @@ def _routing_row_focus(
     return focused
 
 
-def _bounded_rows(rows: list[Any], limit: int, focus: RoutingRowFocus) -> list[Any]:
-    """Keep the first ``limit`` rows in order, claiming focused rows first."""
+def _bounded_rows(
+    rows: list[Any],
+    limit: int,
+    focus: RoutingRowFocus,
+    *,
+    keep_first: bool = False,
+) -> list[Any]:
+    """Keep the first ``limit`` rows in order, claiming focused rows first.
+
+    With ``keep_first``, row 0 (the recommended candidate) is claimed before
+    any focused row, so a focus can never displace it.
+    """
 
     if focus is None:
         return rows[:limit]
-    kept = set([index for index, row in enumerate(rows) if focus(row)][:limit])
+    kept: set[int] = {0} if keep_first and rows and limit > 0 else set()
+    for index, row in enumerate(rows):
+        if len(kept) >= limit:
+            break
+        if focus(row):
+            kept.add(index)
     for index in range(len(rows)):
         if len(kept) >= limit:
             break
@@ -2051,7 +2066,9 @@ class AgentRoutingService:
         # an actor outside the caller's team matches nothing and the response
         # is exactly the unfocused one.
         focus = _routing_row_focus(data.focus_actor_id, data.focus_model_binding_id)
-        bounded_candidates = _bounded_rows(ranked_candidates, MAX_ROUTING_CANDIDATES, focus)
+        bounded_candidates = _bounded_rows(
+            ranked_candidates, MAX_ROUTING_CANDIDATES, focus, keep_first=True
+        )
         bounded_exclusions = _bounded_rows(exclusions, MAX_ROUTING_EXCLUSIONS, focus)
         generated_at = as_utc(generated_at).replace(microsecond=0)
         expires_at = generated_at + timedelta(
@@ -2146,7 +2163,10 @@ class AgentRoutingService:
                     errors[0].get("ctx", {}).get("error"), RoutingPacketSizeError
                 ):
                     raise
-            # Trim from the tail, sparing the named actor's rows until only
+            # Each pass drops at most one row and is capped by the row bounds, so
+            # the loop validates at most MAX_ROUTING_EXCLUSIONS plus
+            # MAX_ROUTING_CANDIDATES responses. Trim from the tail, sparing the
+            # named actor's rows until only
             # they and the recommended candidate remain.
             if _pop_trimmable(response_values["exclusions"], keep_first=0, focus=focus):
                 response_values["exclusions_omitted"] += 1
