@@ -438,6 +438,8 @@ class SnapshotService:
         from app.services.delivery_dependency_service import DeliveryDependencyService
         from app.models.delivery_dependency import DeliveryDependency
         removed_ids = {task.id for task in current} - ids
+        from app.services.task_replacement_service import require_restore_compatible
+        await require_restore_compatible(self.db, [row for row, _ in flat], current)
         self.db.info.setdefault("delivery_changed_nodes", set()).update(("task", task_id) for task_id in ids)
         await DeliveryDependencyService(self.db).require_unreferenced(removed_ids)
         await self.db.execute(delete(DeliveryDependency).where(DeliveryDependency.task_id.in_(removed_ids)))

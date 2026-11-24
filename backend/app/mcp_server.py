@@ -1651,6 +1651,36 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
+    @mcp.tool(annotations=READ_ONLY_TOOL)
+    async def agent_get_task_replacement(task_id: int) -> dict[str, Any]:
+        """Read the clean-replacement disposition a task takes part in, as original or replacement."""
+        return await _tool_call(
+            "planning:read",
+            lambda db, actor: mcp_agent_tools.get_task_replacement(db, actor, task_id),
+        )
+
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_record_task_replacement(
+        task_id: int,
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Replace an unaccepted task with a fresh one; payload names the replacement, owner decision, base and carried runs."""
+        return await _tool_call(
+            "planning:write",
+            lambda db, actor: mcp_agent_tools.record_task_replacement(
+                db,
+                actor,
+                task_id,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
     @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_vacation(
         member_id: int,

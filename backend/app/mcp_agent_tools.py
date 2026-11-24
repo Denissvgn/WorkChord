@@ -1235,6 +1235,47 @@ async def withdraw_capacity_transfer(
     return receipt.model_dump(mode="json")
 
 
+async def get_task_replacement(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+) -> dict[str, Any]:
+    """MCP handler: read the clean-replacement disposition a task takes part in."""
+    from app.schemas.task_replacement import TaskReplacementResponse
+    from app.services.agent_service import require_scope
+    from app.services.task_replacement_service import TaskReplacementService
+
+    require_scope(actor, "planning:read")
+    result = await TaskReplacementService(db).get(task_id)
+    return TaskReplacementResponse.model_validate(result).model_dump(mode="json")
+
+
+async def record_task_replacement(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: replace an unaccepted task with a fresh one under a recorded owner decision."""
+    from app.schemas.task_replacement import TaskReplacementCreate
+
+    receipt = await AgentPlanningService(db).record_task_replacement(
+        task_id,
+        actor,
+        TaskReplacementCreate.model_validate(payload),
+        command=_planning_command_context(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
 async def create_planning_vacation(
     db: AsyncSession,
     actor: AgentActor,

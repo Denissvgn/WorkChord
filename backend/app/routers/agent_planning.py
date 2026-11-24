@@ -51,6 +51,7 @@ from app.schemas.triage import (
     TriageItemUpdate,
     TriageSnoozeRequest,
 )
+from app.schemas.task_replacement import TaskReplacementCreate, TaskReplacementResponse
 from app.services.agent_planning_service import AgentPlanningService
 from app.services.agent_routing_service import (
     AgentRoutingConflictError,
@@ -364,6 +365,41 @@ async def patch_planning_task(
             data,
             command=command,
         )
+    except Exception as exc:
+        _handle_agent_error(exc)
+
+
+@router.get(
+    "/agent/planning/tasks/{task_id}/replacement",
+    response_model=TaskReplacementResponse,
+)
+async def get_task_replacement(
+    task_id: int,
+    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+):
+    """Read the clean-replacement disposition this task takes part in."""
+    try:
+        return await mcp_agent_tools.get_task_replacement(db, actor, task_id)
+    except Exception as exc:
+        _handle_agent_error(exc)
+
+
+@router.post(
+    "/agent/planning/tasks/{task_id}/replacement",
+    response_model=AgentPlanningReceipt,
+    status_code=status.HTTP_201_CREATED,
+)
+async def record_task_replacement(
+    task_id: int,
+    data: TaskReplacementCreate,
+    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    service: Annotated[AgentPlanningService, Depends(get_agent_planning_service)],
+    command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)],
+):
+    """Replace an unaccepted task with a fresh one under a recorded owner decision."""
+    try:
+        return await service.record_task_replacement(task_id, actor, data, command=command)
     except Exception as exc:
         _handle_agent_error(exc)
 

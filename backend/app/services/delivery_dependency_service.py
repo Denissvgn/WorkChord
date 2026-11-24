@@ -89,6 +89,12 @@ class DeliveryDependencyService:
         else:
             query = select(Task).where(Task.milestone_id == target.id, Task.is_summary.is_(False))
         leaves = (await self.db.scalars(query)).all()
+        from app.models.task_replacement import TaskReplacement
+        with internal_authority(self.db):
+            replaced = set((await self.db.scalars(select(TaskReplacement.original_task_id).where(
+                TaskReplacement.original_task_id.in_([leaf.id for leaf in leaves])))).all())
+        # A replaced original's deliverable is counted once, through its replacement.
+        leaves = [leaf for leaf in leaves if leaf.id not in replaced]
         return bool(leaves) and all([await self._accepted("task", leaf) for leaf in leaves])
 
     async def ready(self, task_id):
@@ -157,6 +163,12 @@ class DeliveryDependencyService:
                 query = query.where(DeliveryDependency.prerequisite_task_id.in_(task_ids), DeliveryDependency.task_id.notin_(task_ids))
             if await self.db.scalar(query.limit(1)) is not None:
                 raise PlanningConflict("delivery_dependency_referenced", "Remove incoming delivery dependencies before deleting or moving this work.")
+            if task_ids:
+                from app.models.task_replacement import TaskReplacement
+                linked = await self.db.scalar(select(TaskReplacement.id).where(
+                    TaskReplacement.original_task_id.in_(task_ids) | TaskReplacement.replacement_task_id.in_(task_ids)).limit(1))
+                if linked is not None:
+                    raise PlanningConflict("task_replacement_referenced", "A replacement disposition retains this work for audit.")
 
     async def reconcile(self):
         nodes = self.db.info.pop("delivery_changed_nodes", set())

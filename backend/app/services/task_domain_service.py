@@ -191,6 +191,14 @@ class TaskDomainService:
         from app.services.delivery_dependency_service import DeliveryDependencyService
         dependencies_complete = not bool(await self.db.scalar(select(unavailable))) and await DeliveryDependencyService(self.db).ready(task.id)
         actions = action_projection(task, self.db.info.get("authority"), dependencies_complete=dependencies_complete, live_assignment=bool(assignments or runs))
+        from app.services.task_replacement_service import replaced_by
+        relation = await replaced_by(self.db, task.id)
+        if relation is not None:
+            # Reopening would count the replaced deliverable twice.
+            reopen = next(item for item in actions if item["action"] == "reopen")
+            reopen["allowed"] = False
+            reopen["blockers"].append({"code": "task_replaced",
+                                       "message": f"Task {relation.replacement_task_id} delivers this work instead."})
         authority = self.db.info.get("authority")
         review_action = next(item for item in actions if item["action"] == "review")
         import copy
@@ -315,10 +323,13 @@ class TaskDomainService:
         for assignment in assignments:
             assignment.state, assignment.reason = "cancelled", data.reason
         for run in runs:
-            from app.services.review_provenance import different_publisher_required, mark_server_interruption
+            from app.services.review_provenance import (
+                different_publisher_required, mark_server_interruption, record_server_end_profile,
+            )
             if ((run.execution_provenance or {}).get("different_publisher_required") or
                     await different_publisher_required(self.db, task.project_id)):
                 await mark_server_interruption(self.db, run)
+            await record_server_end_profile(self.db, run)
             run.status, run.ended_at, run.error = "cancelled", utc_now(), data.reason
         task.claimed_by = task.claim_id = task.claim_expires_at = None
         task.claim_generation += 1

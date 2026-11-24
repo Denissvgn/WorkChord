@@ -44,6 +44,7 @@ async def test_strict_recovery_and_provider_review(db_session, db_session_factor
     team = await provision_ready_topology(db)
     member, verifier = team.manifest.workers[0], team.manifest.verifiers[0]
     worker, reviewer = team.actors[member.actor_key], team.actors[verifier.actor_key]
+    worker_profile_id = worker.profile_id
     pm_key = team.sink.keys[team.manifest.controller.actor_key]
     worker_key, reviewer_key = team.sink.keys[member.actor_key], team.sink.keys[verifier.actor_key]
     base = await routing_base(db, topology=team, actor_key=member.actor_key, team_member_factory=team_member_factory,
@@ -104,6 +105,8 @@ async def test_strict_recovery_and_provider_review(db_session, db_session_factor
             terminal, sources = await recover_terminal_observation(audit, interrupted_run)
             assert (terminal is not None and bool(sources)) == sealed
             assert interrupted_run.execution_provenance["terminal_model"]["output_state"] == ("no_output" if sealed else "unknown")
+            # PM recovery ended the run, so it records the actor's profile as the terminal command would.
+            assert interrupted_run.execution_provenance["terminal_profile_id"] == worker_profile_id
             if sealed:
                 interrupted_run.execution_provenance = {key: value for key, value in interrupted_run.execution_provenance.items()
                                                         if key != "interruption_checkpoint"}

@@ -94,6 +94,7 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
                       "maintenance_windows", "maintenance_window_receipts"):
             assert after_rows.pop(table) == []
         assert after_rows.pop("team_member_capacity_adjustments") == []
+        assert after_rows.pop("task_replacements") == []
         for table, columns in LATER_COLUMNS.items():
             for row in after_rows[table]:
                 for column, value in columns.items():
@@ -141,6 +142,8 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         # A later revision records dated adjustments on capacity rows.
         assert after_catalog.pop("team_member_capacity_adjustments")["checks"] == [
             "ck_team_member_capacity_adjustments_dates", "ck_team_member_capacity_adjustments_percent"]
+        # A later revision records audited clean-replacement dispositions.
+        assert after_catalog.pop("task_replacements")["checks"] == ["ck_task_replacements_distinct"]
         assert after_catalog == before_catalog
         with engine.begin() as db:
             assert "AUTOINCREMENT" in db.scalar(text("SELECT sql FROM sqlite_master WHERE name='projects'"))

@@ -311,3 +311,20 @@ async def backlog_snapshots(project_id: int, db: DB):
 async def restore_backlog(project_id: int, snapshot_id: int, data: BacklogRestoreRequest, db: DB):
     from app.services.backlog_snapshot_service import BacklogSnapshotService
     return await domain_result(BacklogSnapshotService(db).restore(project_id, snapshot_id, data.expected_versions, reason=data.reason))
+
+
+from app.schemas.task_replacement import TaskReplacementCreate, TaskReplacementResponse
+
+
+@router.get("/tasks/{task_id}/replacement", response_model=TaskReplacementResponse)
+async def task_replacement(task_id: int, db: DB):
+    """Read the clean-replacement disposition this task takes part in, as original or replacement."""
+    from app.services.task_replacement_service import TaskReplacementService
+    return await domain_result(TaskReplacementService(db).get(task_id))
+
+
+@router.post("/tasks/{task_id}/replacement", response_model=TaskReplacementResponse, status_code=201)
+async def record_task_replacement(task_id: int, data: TaskReplacementCreate, db: DB):
+    """Replace this unaccepted task with a fresh one; only the project's PM or an operator may decide."""
+    from app.services.task_replacement_service import TaskReplacementService
+    return await domain_result(TaskReplacementService(db).record(task_id, data))
