@@ -22,7 +22,7 @@ from app.http_authority import enforce_http_authority
 from app.routers import identity, task_domain, capacity, delivery_dependencies, discussion, time_entries
 from app.runtime_telemetry import metrics
 from app.mutation_versions import MissingMutationRevision
-from app.routers import agent, agent_catalog, agent_connect, agent_planning, agent_skill_bundles, calendars, iterations, team, tasks, projects, gantt, github, intake, llm, export, snapshots, plan_shares, session, scheduling_rules, email_settings, triage, templates, labels, saved_views, request_sources, outbound_webhooks, system_settings
+from app.routers import agent, agent_catalog, agent_connect, agent_planning, agent_skill_bundles, calendars, iterations, team, tasks, projects, gantt, github, intake, llm, export, snapshots, plan_shares, session, scheduling_rules, email_settings, triage, templates, labels, saved_views, request_sources, outbound_webhooks, system_settings, maintenance_windows
 from app.mcp_server import mcp, mount_mcp_http
 
 settings = get_settings()
@@ -243,6 +243,7 @@ app.include_router(saved_views.router, prefix=settings.api_prefix, tags=["Saved 
 app.include_router(request_sources.router, prefix=settings.api_prefix, tags=["Request Sources"])
 app.include_router(outbound_webhooks.router, prefix=settings.api_prefix, tags=["Outbound Webhooks"])
 app.include_router(system_settings.router, prefix=settings.api_prefix, tags=["System Settings"])
+app.include_router(maintenance_windows.router, prefix=settings.api_prefix, tags=["Maintenance Windows"])
 mount_mcp_http(app, f"{settings.api_prefix}/mcp")
 
 

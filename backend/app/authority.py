@@ -459,7 +459,8 @@ def authorize_domain_writes(session, _flush_context, _instances):
             raise AuthorityError()
         global_tables = {"system_settings", "principals", "identity_subjects", "workspace_memberships", "workspace_authority_state",
                          "project_memberships", "principal_profile_links", "outbound_webhook_targets", "agent_model_bindings", "agent_actors",
-                         "team_member_profiles", "team_member_profile_skills", "calendars"}
+                         "team_member_profiles", "team_member_profile_skills", "calendars", "maintenance_windows",
+                         "maintenance_window_receipts"}
         if table in global_tables and not authority.operator and not (authority.local and table in {"calendars", "team_member_profiles", "team_member_profile_skills"}):
             raise AuthorityError("operator_required", "Workspace operator permission is required.")
         if isinstance(obj, Task) and inspect(obj).attrs.project_id.history.deleted:
