@@ -14,6 +14,7 @@ from app.schemas.team import (
     TeamMemberProfileCreate, TeamMemberProfileResponse,
     TeamMemberProfileSkillCreate, TeamMemberProfileSkillResponse,
     TeamMemberProfileSkillUpdate, TeamMemberProfileUpdate,
+    CapacityAdjustmentCommand, CapacityAdjustmentResponse, CapacityAdjustmentResult,
     TeamMemberProfileSeedKeyBind,
 )
 from app.schemas.common import MessageResponse
@@ -269,6 +270,48 @@ async def delete_team_member(
             detail=f"Team member with id {member_id} not found"
         )
     return MessageResponse(message=f"Team member {member_id} deleted", success=True)
+
+
+@router.get(
+    "/team-members/{member_id}/capacity-adjustments",
+    response_model=list[CapacityAdjustmentResponse],
+)
+async def list_capacity_adjustments(
+    member_id: int,
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+    include_withdrawn: bool = False,
+):
+    """List a capacity row's dated adjustments; include withdrawn ones to read their history."""
+    from app.services.capacity_adjustments import CapacityAdjustmentService
+    return await CapacityAdjustmentService(db).list_adjustments(member_id, include_withdrawn=include_withdrawn)
+
+
+@router.post(
+    "/team-members/{member_id}/capacity-adjustments/preview",
+    response_model=CapacityAdjustmentResult,
+)
+async def preview_capacity_adjustment(
+    member_id: int,
+    data: CapacityAdjustmentCommand,
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+):
+    """Show effective capacity on the changed dates without changing anything."""
+    from app.services.capacity_adjustments import CapacityAdjustmentService
+    return await CapacityAdjustmentService(db).preview(member_id, data)
+
+
+@router.post(
+    "/team-members/{member_id}/capacity-adjustments",
+    response_model=CapacityAdjustmentResult,
+)
+async def apply_capacity_adjustment(
+    member_id: int,
+    data: CapacityAdjustmentCommand,
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+):
+    """Record or withdraw dated adjustments. Send the member context's complete X-Expected-Revisions."""
+    from app.services.capacity_adjustments import CapacityAdjustmentService
+    return await CapacityAdjustmentService(db).apply(member_id, data)
 
 
 @router.get("/team-members/{member_id}/capacity", response_model=MemberCapacity)

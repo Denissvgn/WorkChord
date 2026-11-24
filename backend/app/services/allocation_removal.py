@@ -255,9 +255,15 @@ def mapped_allocation_references(db):
     return names
 
 
+# A dated adjustment describes the allocation itself and is removed with it; it is not a use.
+_ALLOCATION_ATTRIBUTES = {("team_member_capacity_adjustments", "team_member_id")}
+
+
 async def _direct_reference(db, member_id):
     queries = [
-        select(column).where(column == member_id).exists() for column in _mapped_references().values()
+        select(column).where(column == member_id).exists()
+        for key, column in _mapped_references().items()
+        if key not in _ALLOCATION_ATTRIBUTES
     ]
     return bool(await db.scalar(select(or_(*queries))))
 

@@ -39,6 +39,8 @@ from app.schemas.project import (
     ProjectUpdate,
 )
 from app.schemas.team import (
+    CapacityAdjustmentCommand,
+    CapacityAdjustmentResult,
     TeamMemberCreate,
     TeamMemberProfileCreate,
     TeamMemberProfileResponse,
@@ -824,6 +826,34 @@ class AgentPlanningService:
             mutate=mutate,
         )
 
+    async def apply_capacity_adjustment(
+        self,
+        member_id: int,
+        actor: AgentActor,
+        data: CapacityAdjustmentCommand,
+        *,
+        command: AgentPlanningCommandContext,
+    ) -> AgentPlanningReceipt:
+        """Record or withdraw dated adjustments on one capacity row."""
+        from app.services.capacity_adjustments import CapacityAdjustmentService
+
+        payload = {"member_id": member_id, "data": data.model_dump(mode="json", exclude_unset=True)}
+
+        async def mutate() -> MutationResult:
+            result = await CapacityAdjustmentService(self.db).apply(member_id, data, commit=False)
+            return member_id, CapacityAdjustmentResult.model_validate(result).model_dump(mode="json")
+
+        return await self._execute(
+            actor=actor,
+            scope="team:write",
+            operation="planning.team_member.capacity_adjustment",
+            target_type="team_member",
+            idempotency_target_id=member_id,
+            command=command,
+            request_payload=payload,
+            mutate=mutate,
+        )
+
     async def _iteration_tasks_for_update(self, iteration_id: int) -> list[Task]:
         result = await self.db.execute(
             select(Task)
@@ -1136,6 +1166,11 @@ class AgentPlanningService:
         snapshot["member_calendars"] = [
             (member.id, (await capacities.coverage_for(member)).signature()) for member in members
         ]
+        from app.services.capacity_adjustments import load_dated_availability
+        dated = await load_dated_availability(self.db, member_ids)
+        if dated.ranges:
+            # Present only when a row has dated adjustments, so existing digests are unchanged.
+            snapshot["capacity_adjustments"] = [(member_id, dated.signature(member_id)) for member_id in sorted(dated.ranges)]
         return self._canonical_digest(snapshot), self._canonical_digest(rules)
 
     @staticmethod

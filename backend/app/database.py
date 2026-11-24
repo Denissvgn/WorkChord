@@ -41,7 +41,7 @@ class Base(DeclarativeBase):
 
 async def request_command_mode(request: Request) -> str:
     """Match DTO preview defaults before creating the root transaction."""
-    if request.url.path.endswith("/schedule/preview"):
+    if request.url.path.endswith(("/schedule/preview", "/capacity-adjustments/preview")):
         return "preview"
     if request.method == "POST" and request.url.path.endswith(("/bulk-operations", "/import-legacy")):
         from pydantic import TypeAdapter, ValidationError

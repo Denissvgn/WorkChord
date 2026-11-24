@@ -53,7 +53,7 @@ from app.models.release import Release, ReleaseStatus, release_tasks
 from app.models.request_source import RequestSource, RequestSourceLink, RequestSourceType
 from app.models.saved_view import SavedView, SavedViewScope, SavedViewType
 from app.models.system_settings import SystemSetting
-from app.models.team_member import TeamMember, TeamMemberProfile, TeamMemberProfileSkill, Vacation
+from app.models.team_member import TeamMember, TeamMemberCapacityAdjustment, TeamMemberProfile, TeamMemberProfileSkill, Vacation
 from app.models.template import TemplateType, WorkTemplate
 from app.models.task import Task, TaskDependency, TaskStatus
 from app.models.task_status_log import TaskStatusLog
@@ -128,6 +128,7 @@ __all__ = [
     "TaskEvent",
     "TaskRoutingAssessment",
     "Vacation",
+    "TeamMemberCapacityAdjustment",
     "Task",
     "TaskDependency",
     "TaskStatus",

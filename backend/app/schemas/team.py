@@ -399,3 +399,101 @@ class AssigneeRecommendationResponse(BaseModel):
     weakness_matches: list[str] = Field(default_factory=list)
     workload_warnings: list[str] = Field(default_factory=list)
     rationale: str
+
+
+class CapacityAdjustmentItem(BaseModel):
+    """One dated replacement of a capacity row's availability percentage."""
+
+    start_date: date
+    end_date: date
+    availability_percent: float = Field(ge=0, le=100)
+    reason: Optional[str] = Field(default=None, max_length=1000)
+
+    @model_validator(mode="after")
+    def validate_date_range(self) -> "CapacityAdjustmentItem":
+        if self.start_date > self.end_date:
+            raise ValueError("start_date must be before or equal to end_date")
+        if (self.end_date - self.start_date).days > 365:
+            raise ValueError("An adjustment covers at most 366 days")
+        self.reason = _clean_optional_text(self.reason)
+        return self
+
+
+class CapacityAdjustmentCommand(PlanningInputRevisions):
+    """Record and withdraw dated adjustments on one capacity row in one command."""
+
+    adjustments: list[CapacityAdjustmentItem] = Field(default_factory=list, max_length=50)
+    withdraw_adjustment_ids: list[int] = Field(default_factory=list, max_length=50)
+    reason: str = Field(min_length=1, max_length=1000)
+
+    @model_validator(mode="after")
+    def validate_change(self) -> "CapacityAdjustmentCommand":
+        self.reason = self.reason.strip()
+        if not self.reason:
+            raise ValueError("Give a reason for the adjustment")
+        if not self.adjustments and not self.withdraw_adjustment_ids:
+            raise ValueError("Record or withdraw at least one adjustment")
+        if any(value < 1 for value in self.withdraw_adjustment_ids):
+            raise ValueError("Use positive adjustment IDs")
+        if len(set(self.withdraw_adjustment_ids)) != len(self.withdraw_adjustment_ids):
+            raise ValueError("Name each withdrawn adjustment once")
+        return self
+
+
+class CapacityAdjustmentResponse(BaseModel):
+    """A recorded or withdrawn dated adjustment, with who recorded it."""
+
+    id: Optional[int] = None
+    team_member_id: int
+    start_date: date
+    end_date: date
+    availability_percent: float
+    base_availability_percent: float
+    reason: str
+    group_token: Optional[str] = None
+    created_by_principal_id: Optional[int] = None
+    created_at: Optional[datetime] = None
+    withdrawn_at: Optional[datetime] = None
+    withdrawn_by_principal_id: Optional[int] = None
+    withdrawal_reason: Optional[str] = None
+    withdrawn_group_token: Optional[str] = None
+    active: bool = True
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class EffectiveCapacityDay(BaseModel):
+    """One date of this row and of every row sharing its person, before and after the change."""
+
+    date: date
+    availability_percent_before: float
+    availability_percent_after: float
+    row_hours_before: Optional[float] = None
+    row_hours_after: Optional[float] = None
+    available_hours: Optional[float] = None
+    allocated_hours_before: Optional[float] = None
+    allocated_hours_after: Optional[float] = None
+    overallocated_hours_before: Optional[float] = None
+    overallocated_hours_after: Optional[float] = None
+
+
+class CapacityAdjustmentResult(BaseModel):
+    """Effective capacity for the changed dates and the adjustments the command records."""
+
+    applied: bool
+    member_id: int
+    iteration_id: int
+    profile_id: Optional[int] = None
+    group_token: Optional[str] = None
+    created: list[CapacityAdjustmentResponse]
+    withdrawn: list[CapacityAdjustmentResponse]
+    active_adjustments: list[CapacityAdjustmentResponse]
+    reduced_dates: list[date]
+    effective_capacity: list[EffectiveCapacityDay]
+    observed_revisions: dict[int, int]
+    resulting_revisions: dict[int, int] = Field(default_factory=dict)
+    planning_revision: Optional[int] = None
+    formula: str = (
+        "row hours = person calendar hours after absence × the row's percentage on that date; "
+        "allocated = the sum of row hours over every row of the same person"
+    )

@@ -188,6 +188,51 @@ class Vacation(Base):
     team_member: Mapped["TeamMember"] = relationship("TeamMember", back_populates="vacations")
 
 
+class TeamMemberCapacityAdjustment(Base):
+    """A dated replacement of one capacity row's availability percentage.
+
+    On each date from ``start_date`` through ``end_date`` the row counts
+    ``availability_percent`` instead of its own percentage; every other date keeps
+    the row's percentage. Rows are never edited: a change withdraws an adjustment
+    and records a new one, so the prior value and who changed it stay readable.
+    Adjustments recorded by one command share ``group_token`` (for example both
+    rows of a capacity transfer).
+    """
+    __tablename__ = "team_member_capacity_adjustments"
+    __table_args__ = (
+        CheckConstraint("end_date >= start_date", name="ck_team_member_capacity_adjustments_dates"),
+        CheckConstraint(
+            "availability_percent >= 0 AND availability_percent <= 100",
+            name="ck_team_member_capacity_adjustments_percent",
+        ),
+        Index("ix_team_member_capacity_adjustments_member_dates", "team_member_id", "start_date", "end_date"),
+        Index("ix_team_member_capacity_adjustments_group_token", "group_token"),
+        {"sqlite_autoincrement": True},
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    team_member_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("team_members.id", ondelete="CASCADE"), nullable=False
+    )
+    start_date: Mapped[date] = mapped_column(Date, nullable=False)
+    end_date: Mapped[date] = mapped_column(Date, nullable=False)
+    availability_percent: Mapped[float] = mapped_column(Float, nullable=False)
+    # The row's own percentage when the adjustment was recorded.
+    base_availability_percent: Mapped[float] = mapped_column(Float, nullable=False)
+    reason: Mapped[str] = mapped_column(Text, nullable=False)
+    group_token: Mapped[str] = mapped_column(String(36), nullable=False)
+    created_by_principal_id: Mapped[int | None] = mapped_column(
+        ForeignKey("principals.id", ondelete="SET NULL"), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now, nullable=False)
+    withdrawn_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)
+    withdrawn_by_principal_id: Mapped[int | None] = mapped_column(
+        ForeignKey("principals.id", ondelete="SET NULL"), nullable=True
+    )
+    withdrawal_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    withdrawn_group_token: Mapped[str | None] = mapped_column(String(36), nullable=True)
+
+
 # The kind of the row's profile, read with the row. A task names its assignee by this row, and
 # every reader of the task needs to know whether that assignee is an agent, including readers
 # who may not read the profile itself. The subquery reads the profile table directly so that

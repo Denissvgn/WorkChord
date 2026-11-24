@@ -33,6 +33,7 @@ Current `FOR UPDATE` inventory:
 | Atomic assignment/work lifecycle | `Task -> AgentActor -> AgentTaskAssignment -> AgentRun` | ordered helpers in `AgentWorkService` |
 | Legacy claim/event/run lifecycle | `Task` or `AgentRun` | focused transitions in `AgentService`; live uniqueness indexes are the final fence |
 | Planning preview/apply | `PlanningState -> Iteration -> Calendar[id...] [FOR SHARE] -> Task[id...] -> TaskDependency[id...] -> TeamMember[id...] -> Vacation[id...]` | The planning revision serializes shared capacity inputs. The PM command scopes its work rows to the authorized iteration. |
+| Dated capacity adjustment | `PlanningState -> Iteration[id...] -> TeamMember -> TeamMemberCapacityAdjustment[active...] -> AgentTaskAssignment[id...]` | The planning revision serializes it with schedules and dispatch. No task row is reserved; live assignments are read only to refuse a reduction under issued work. |
 | Profile preset creation | `TeamMemberProfile` | seed-key uniqueness plus locked re-read |
 | Triage reservation | `TriageItem` | `TriageService.get_by_id(for_update=True)` |
 | Delivery queue | due `OutboundWebhookDelivery[id...]` | PostgreSQL `FOR UPDATE SKIP LOCKED`; SQLite compare-and-set lease update |
@@ -77,6 +78,31 @@ revision, allocation references and any issued owner. An ordinary removal uses
 its existing conservative task reservation if it cannot prove a planning-only
 change. If a concurrent planning change invalidates an otherwise unused observation,
 the guarded request asks for a fresh context.
+
+A capacity row's availability percentage applies to its whole iteration. A
+dated adjustment replaces that percentage from a start date through an end date
+inside the row's iteration, and every capacity calculation (shared person
+capacity, member capacity and workload, readiness, routing and the scheduler)
+reads the adjusted percentage on those dates only. Read the member's
+planning-input context, which lists its active adjustments, and send its
+complete `X-Expected-Revisions` with
+`POST /api/team-members/{member_id}/capacity-adjustments`. One command records
+new adjustments and withdraws earlier ones together, so moving capacity between
+two rows of the same person is two adjustments on two rows.
+`POST /api/team-members/{member_id}/capacity-adjustments/preview` returns the
+effective capacity of the row and of every row of the same person for the
+changed dates and changes nothing. The command advances the shared planning
+revision and the revisions of every iteration that has a row of the same
+person, records a recovery snapshot of each, and writes a command audit entry.
+It reserves no task version, so issued work stays current. A reduction on a date
+where this row's issued work is scheduled returns `capacity_adjustment_in_use`
+with the affected task and assignment IDs. Adjustments are never edited:
+withdrawing one keeps it, with who withdrew it and why, in
+`GET /api/team-members/{member_id}/capacity-adjustments?include_withdrawn=true`.
+An adjustment is part of its row; it does not count as a use of an unused
+allocation and is removed with the row. To downgrade a database to a release
+without adjustments, withdraw every active adjustment first; the downgrade
+refuses to discard an active one.
 
 To downgrade a database with annual selections to a release that supports only
 one calendar per owner, export the iteration and profile selections and clear

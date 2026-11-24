@@ -93,6 +93,7 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         for table in ("iteration_annual_calendars", "profile_annual_calendars",
                       "maintenance_windows", "maintenance_window_receipts"):
             assert after_rows.pop(table) == []
+        assert after_rows.pop("team_member_capacity_adjustments") == []
         for table, columns in LATER_COLUMNS.items():
             for row in after_rows[table]:
                 for column, value in columns.items():
@@ -137,6 +138,9 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         assert "ck_maintenance_window_receipts_kind" in after_catalog.pop("maintenance_window_receipts")["checks"]
         # A later revision adds the advisory runtime observation table.
         assert after_catalog.pop("agent_runtime_observations")["checks"] == ["ck_agent_runtime_observations_kind"]
+        # A later revision records dated adjustments on capacity rows.
+        assert after_catalog.pop("team_member_capacity_adjustments")["checks"] == [
+            "ck_team_member_capacity_adjustments_dates", "ck_team_member_capacity_adjustments_percent"]
         assert after_catalog == before_catalog
         with engine.begin() as db:
             assert "AUTOINCREMENT" in db.scalar(text("SELECT sql FROM sqlite_master WHERE name='projects'"))

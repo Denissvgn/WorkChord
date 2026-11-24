@@ -91,6 +91,8 @@ class MemberSchedule:
     productivity_factor: float = 1.0
     short_dates: set[date] = field(default_factory=set)
     annual_calendars: AnnualCalendars | None = None
+    # Dates whose capacity-row percentage a dated adjustment replaces, with their factor.
+    dated_factors: dict[date, float] = field(default_factory=dict)
 
     # Optimization: date-to-index mapping for O(1) lookups
     _date_to_idx: dict[date, int] = field(default_factory=dict, repr=False)
@@ -286,7 +288,11 @@ class MemberSchedule:
                 remaining = required
             elif self._is_projectable_working_day(current):
                 hours = self.annual_calendars.hours(current) if self.annual_calendars else self.nominal_day_hours - (current in self.short_dates)
-                capacity = hours * self.productivity_factor if required_hours is not None else 1.0
+                factor = self.dated_factors.get(current, self.productivity_factor)
+                if required_hours is not None:
+                    capacity = hours * factor
+                else:
+                    capacity = 0.0 if self.dated_factors.get(current, 1.0) <= 0 else 1.0
                 if capacity > 0:
                     allocated.append(current)
                     remaining -= capacity
@@ -451,7 +457,10 @@ class SchedulerService:
                 reason="Provide a positive effort estimate to schedule this task."))
         unavailable_ids = {task.id for task in unavailable_estimates}
         for task in leaf_tasks:
-            if task.assignee and (task.assignee.availability_percent <= 0 or task.assignee.operational_utilization >= 100):
+            dated = getattr(self, "_dated_availability", None)
+            no_share = task.assignee is not None and task.assignee.availability_percent <= 0 and not (
+                dated is not None and dated.any_positive(task.assignee))
+            if task.assignee and (no_share or task.assignee.operational_utilization >= 100):
                 unavailable_ids.add(task.id)
                 unscheduled_reasons[task.id] = "no_capacity"
                 task.start_date = task.end_date = task.calculated_effort_days = None
@@ -941,7 +950,9 @@ class SchedulerService:
 
         self._member_day_hours = {}
         from app.services.capacity_service import CapacityService
+        from app.services.capacity_adjustments import load_dated_availability
         shared_capacity = CapacityService(self.db)
+        self._dated_availability = dated = await load_dated_availability(self.db, [member.id for member in team_members])
         for member in team_members:
             coverage = await shared_capacity.coverage_for(member)
             calendar = coverage.primary
@@ -967,6 +978,10 @@ class SchedulerService:
                 capacity_days=capacity.adjusted_days if capacity else 0,
                 working_dates=working_dates.copy(),
                 vacation_dates=vacation_dates,
+                dated_factors={
+                    day: percent / 100 * (1 - member.operational_utilization / 100) * member.professionalism_coefficient
+                    for day, percent in dated.adjusted_days(member)
+                },
             )
 
             # Log available dates after excluding vacations

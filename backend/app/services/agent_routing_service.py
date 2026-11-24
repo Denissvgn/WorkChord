@@ -1127,8 +1127,12 @@ class AgentRoutingService:
         primary = AnnualCalendars(iteration.calendar)
         original_dates = primary.working_dates(iteration.start_date, iteration.end_date) if single_year else []
         capacity: dict[int, dict[str, Any]] = {}
+        from app.services.capacity_adjustments import load_dated_availability
+        dated = await load_dated_availability(self.db, [member.id for member in members])
         for member in members:
             annual_basis = {}
+            # Percent-weighted available days; set only for a row with dated adjustments.
+            dated_share = None
             if single_year:
                 # Retain the shipped single-year routing evidence, including how
                 # it counts each recorded vacation and treats shortened days.
@@ -1138,6 +1142,11 @@ class AgentRoutingService:
                 )
                 if iteration.calendar.year not in primary.rules:
                     annual_basis["missing_calendar_years"] = [iteration.calendar.year]
+                if dated.has_adjustments(member.id):
+                    dated_share = sum(dated.percent(member, day) for day in original_dates) - sum(
+                        sum(dated.percent(member, day) for day in original_dates if first <= day <= last)
+                        for first, last in absences
+                    )
             else:
                 coverage = await capacity_service.coverage_for(member)
                 missing_years = coverage.missing_years(iteration.start_date, iteration.end_date)
@@ -1149,7 +1158,17 @@ class AgentRoutingService:
                 )
                 annual_basis = {"annual_calendar_basis": _request_hash({"years": coverage.signature()}),
                                 "missing_calendar_years": missing_years}
-            available_days = available * (member.availability_percent / 100) * (1 - member.operational_utilization / 100)
+                if dated.has_adjustments(member.id):
+                    dated_share = 0.0 if missing_years else sum(
+                        rule.hours(day) / rule.nominal * dated.percent(member, day)
+                        for day, rule in coverage.dated_rules(iteration.start_date, iteration.end_date)
+                        if not any(first <= day <= last for first, last in absences)
+                    )
+            if dated_share is not None:
+                available_days = dated_share / 100 * (1 - member.operational_utilization / 100)
+                annual_basis["dated_availability"] = dated.signature(member.id)
+            else:
+                available_days = available * (member.availability_percent / 100) * (1 - member.operational_utilization / 100)
             committed = allocated_by_member.get(member.id, 0.0)
             required = max(float(task.effort_days), 0.0) if task.effort_days is not None else None
             ratio = (
