@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from datetime import datetime
 from enum import StrEnum
 from typing import Any, Literal, Mapping
@@ -38,6 +39,7 @@ MAX_AGENT_TEAM_MEMBERS = 128
 MAX_AGENT_TEAM_ACTIONS = 256
 MAX_AGENT_TEAM_BLOCKERS = 64
 SHA256_PATTERN = r"^[0-9a-f]{64}$"
+_BINDING_KEY_RE = re.compile(r"^[a-z0-9](?:[a-z0-9._-]{0,118}[a-z0-9])?$")
 STABLE_KEY_PATTERN = r"^[a-z0-9](?:[a-z0-9._-]{0,98}[a-z0-9])?$"
 ACTION_ID_PATTERN = r"^[a-z0-9](?:[a-z0-9._:-]{0,126}[a-z0-9])?$"
 FEATURE_PATTERN = r"^[a-z0-9](?:[a-z0-9._-]{0,126}[a-z0-9])?$"
@@ -209,7 +211,42 @@ class AgentTeamMemberSpec(AgentTeamSetupModel):
     )
     runtime_ref: str = Field(min_length=1, max_length=1_024)
     credential_ref: str = Field(min_length=1, max_length=1_024)
+    declared_tool_tags: dict[str, tuple[str, ...]] = Field(
+        default_factory=dict,
+        exclude_if=lambda value: not value,
+        max_length=16,
+        description=(
+            "Reviewable tool capabilities the operator expects per model "
+            "binding key. They are recorded as declared but unverified and "
+            "never reach routing until the binding itself carries the tag."
+        ),
+    )
     _stored_under_earlier_rules: bool = PrivateAttr(default=False)
+
+    @field_validator("declared_tool_tags")
+    @classmethod
+    def normalize_declared_tool_tags(
+        cls,
+        value: dict[str, tuple[str, ...]],
+    ) -> dict[str, tuple[str, ...]]:
+        normalized: dict[str, tuple[str, ...]] = {}
+        for key, tags in value.items():
+            if not _BINDING_KEY_RE.fullmatch(key):
+                raise ValueError(
+                    "declared_tool_tags keys must be stable model binding keys"
+                )
+            if len(tags) > 32:
+                raise ValueError("declared_tool_tags may hold at most 32 tags")
+            cleaned = tuple(sorted({tag.strip().lower() for tag in tags}))
+            if len(cleaned) != len(tags):
+                raise ValueError("declared_tool_tags entries must be unique")
+            if any(not _BINDING_KEY_RE.fullmatch(tag) for tag in cleaned):
+                raise ValueError(
+                    "declared_tool_tags entries must be stable lowercase keys"
+                )
+            if cleaned:
+                normalized[key] = cleaned
+        return dict(sorted(normalized.items()))
 
     @field_validator("assignment_modes")
     @classmethod
@@ -268,6 +305,10 @@ class AgentTeamMemberSpec(AgentTeamSetupModel):
         if self.default_model_binding_key not in self.model_binding_keys:
             raise ValueError(
                 "default_model_binding_key must name one declared model binding"
+            )
+        if not set(self.declared_tool_tags).issubset(self.model_binding_keys):
+            raise ValueError(
+                "declared_tool_tags must name declared model bindings"
             )
         ensure_agent_team_secret_free(self.model_dump(mode="json"))
         return self
@@ -974,6 +1015,9 @@ class AgentTeamMemberStatus(AgentTeamSetupModel):
     availability: Literal["availability_unknown"] = "availability_unknown"
     blocker_codes: tuple[str, ...] = Field(default=(), max_length=32)
     handoff: AgentTeamRuntimeHandoff | None = None
+    declared_tool_tags: dict[str, tuple[str, ...]] = Field(default_factory=dict)
+    unverified_tool_tags: dict[str, tuple[str, ...]] = Field(default_factory=dict)
+    tool_capability_next_action: str | None = Field(default=None, max_length=500)
 
 
 class AgentTeamSetupStep(AgentTeamSetupModel):
