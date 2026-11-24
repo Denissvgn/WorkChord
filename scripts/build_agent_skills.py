@@ -44,7 +44,7 @@ RELEASE_BASELINE_FILENAME = "release-baseline.json"
 CATALOG_SCHEMA = "workchord-agent-skills/v1"
 RELEASE_SCHEMA = "workchord-agent-skills-release/v1"
 RELEASE_BASELINE_SCHEMA = "workchord-agent-skills-baseline/v2"
-CATALOG_VERSION = "1.23.2"
+CATALOG_VERSION = "1.23.3"
 API_CONTRACT = "workchord-agent/v1"
 SERVER_COMPATIBILITY = ">=1.8.0,<2.0.0"
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
@@ -262,7 +262,13 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             "shadow may append bounded audit evidence.",
             body_model="AgentRoutingPreviewCreate",
             body_required=("purpose", "assessment_id", "expected_task_version"),
-            body_optional=("reviewer_profile_id", "review_evidence_id", "review_assignment_id"),
+            body_optional=(
+                "reviewer_profile_id",
+                "review_evidence_id",
+                "review_assignment_id",
+                "focus_actor_id",
+                "focus_model_binding_id",
+            ),
             path_required=("task_id",),
             tool_required=("task_id", "payload"),
             required_feature=MODEL_AWARE_ROUTING_FEATURE,
@@ -785,7 +791,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
 ROLE_METADATA: dict[str, dict[str, Any]] = {
     "workchord-pm": {
         "role": "pm",
-        "version": "1.21.2",
+        "version": "1.21.3",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -826,7 +832,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-worker": {
         "role": "worker",
-        "version": "1.20.1",
+        "version": "1.20.2",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -854,7 +860,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-reviewer": {
         "role": "verifier",
-        "version": "1.8.2",
+        "version": "1.8.3",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
