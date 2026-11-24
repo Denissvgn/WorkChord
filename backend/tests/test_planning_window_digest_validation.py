@@ -12,6 +12,7 @@ from app.services.agent_service import hash_api_key
 from app.services.identity_service import initialize_control_plane
 from app.services.planning_window_reconciliation import INVALID_EVIDENCE_DIGEST_MESSAGE, reconcile_window
 from tests.test_review_provenance_transports import databases
+from tests.test_team_pm_dispatch import db_session_factory  # noqa: F401
 
 MALFORMED_DIGESTS = {
     "empty": "",
