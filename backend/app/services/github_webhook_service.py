@@ -256,16 +256,21 @@ class GitHubWebhookService:
             "number": pr.get("number"),
             "github_state": pr.get("state"),
             "draft": pr.get("draft"),
-            "merged": pr.get("merged") or bool(pr.get("merged_at")),
             "mergeable": pr.get("mergeable"),
             "mergeable_state": pr.get("mergeable_state"),
-            "github_updated_at": pr.get("updated_at"),
+            **self.status_service.observation_from_payload(pr),
+            "observed_at": self._now_iso(),
+            "observation_source": "webhook",
             "webhook_delivery_id": delivery_id,
             "webhook_action": action,
             "webhook_sender": sender,
             "webhook_received_at": self._now_iso(),
         })
         metadata.pop("status_refresh_error", None)
+        if metadata.get("checks_sha") != metadata.get("head_sha"):
+            # Checks read for an earlier head say nothing about this one.
+            for key in ("checks_state", "checks_total", "checks_sha", "checks_error"):
+                metadata.pop(key, None)
         link.metadata_json = metadata
         return status
 
@@ -427,15 +432,19 @@ class GitHubWebhookService:
                 triage_item_id=item.id,
             )
 
+        # A repeated or out-of-order delivery is kept on the timeline but must
+        # not move the link or run rules a second time.
+        stale = self.status_service.is_stale_observation(link.metadata_json or {}, pr)
         try:
-            status = await self._update_link_from_pr(
-                link,
-                action=action,
-                delivery_id=delivery_id,
-                repo_full_name=repo_full_name,
-                pr=pr,
-                sender=sender,
-            )
+            if not stale:
+                status = await self._update_link_from_pr(
+                    link,
+                    action=action,
+                    delivery_id=delivery_id,
+                    repo_full_name=repo_full_name,
+                    pr=pr,
+                    sender=sender,
+                )
 
             event_type = self._event_type(action, status)
             event_already_recorded = await self._event_exists(delivery_id)
@@ -458,6 +467,18 @@ class GitHubWebhookService:
                     ),
                     actor_type="github",
                     idempotency_key=delivery_id,
+                )
+
+            if stale:
+                await commit_or_flush(self.db)
+                return GitHubWebhookResponse(
+                    accepted=True,
+                    event=event,
+                    action=action,
+                    matched=True,
+                    external_link_id=link.id,
+                    task_id=link.entity_id,
+                    ignored_reason="stale_delivery",
                 )
 
             automation_results = await self.automation_service.apply_rules(

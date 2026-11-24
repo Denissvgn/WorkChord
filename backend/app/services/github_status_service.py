@@ -7,6 +7,7 @@ import re
 from typing import Any, Optional
 
 import httpx
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
@@ -15,11 +16,30 @@ from app.services.external_link_service import (
     ExternalLinkService,
     ExternalLinkValidationError,
 )
+from app.models.agent import TaskEvent
 from app.services.task_context_revision_service import reserve_task_context_revision
 from app.utils.url_policy import normalize_provider_api_url
 
 
 logger = logging.getLogger(__name__)
+
+_FAILED_CONCLUSIONS = {"failure", "timed_out", "cancelled", "action_required", "startup_failure", "stale"}
+
+
+def parse_github_time(value: Any) -> Optional[datetime]:
+    """Parse a GitHub ISO timestamp, or None when it is absent or malformed."""
+    if not isinstance(value, str) or not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+
+
+def payload_merged(payload: dict[str, Any]) -> bool:
+    """Whether a pull request payload describes a merged pull request."""
+    return bool(payload.get("merged") or payload.get("merged_at"))
 
 
 class GitHubStatusService:
@@ -99,6 +119,104 @@ class GitHubStatusService:
         if payload.get("state") == "closed":
             return "closed"
         return "open"
+
+    @staticmethod
+    def observation_from_payload(payload: dict[str, Any]) -> dict[str, Any]:
+        """The head, target and closure facts a pull request payload states.
+
+        GitHub fills ``merge_commit_sha`` with a provisional test merge for an
+        open pull request, so it counts only once the pull request is merged.
+        """
+        head = payload.get("head") if isinstance(payload.get("head"), dict) else {}
+        base = payload.get("base") if isinstance(payload.get("base"), dict) else {}
+        merged = payload_merged(payload)
+        return {
+            "head_sha": head.get("sha"),
+            "head_ref": head.get("ref"),
+            "base_ref": base.get("ref"),
+            "merged": merged,
+            "merge_commit_sha": payload.get("merge_commit_sha") if merged else None,
+            "merged_at": payload.get("merged_at"),
+            "closed_at": payload.get("closed_at"),
+            "github_updated_at": payload.get("updated_at"),
+        }
+
+    @staticmethod
+    def is_stale_observation(metadata: dict[str, Any], payload: dict[str, Any]) -> bool:
+        """Whether a payload is older than what the link already records.
+
+        Deliveries can repeat or arrive out of order. A merge never reverts, and
+        a payload last updated before the recorded state must not replace it.
+        """
+        if metadata.get("merged") and not payload_merged(payload):
+            return True
+        recorded = parse_github_time(metadata.get("github_updated_at"))
+        incoming = parse_github_time(payload.get("updated_at"))
+        return bool(recorded and incoming and incoming < recorded)
+
+    @staticmethod
+    def checks_from_runs(runs_payload: Any) -> dict[str, Any]:
+        """Summarize the check runs GitHub reports for one commit."""
+        runs = runs_payload.get("check_runs") if isinstance(runs_payload, dict) else None
+        if not isinstance(runs, list):
+            return {"checks_state": "unknown", "checks_total": None}
+        if not runs:
+            return {"checks_state": "none", "checks_total": 0}
+        if any(run.get("status") != "completed" for run in runs):
+            state = "pending"
+        elif any(run.get("conclusion") in _FAILED_CONCLUSIONS for run in runs):
+            state = "failure"
+        else:
+            state = "success"
+        return {"checks_state": state, "checks_total": len(runs)}
+
+    async def observe_checks(self, owner: str, repo: str, head_sha: Any) -> dict[str, Any]:
+        """Read the checks of the observed head; a read failure is recorded, not raised."""
+        if not isinstance(head_sha, str) or not head_sha:
+            return {"checks_state": "unknown", "checks_total": None, "checks_sha": None}
+        try:
+            runs = await self._fetch_resource(
+                f"{self.api_url}/repos/{owner}/{repo}/commits/{head_sha}/check-runs?per_page=100"
+            )
+        except Exception as error:
+            return {
+                "checks_state": "unknown",
+                "checks_total": None,
+                "checks_sha": head_sha,
+                "checks_error": self._provider_error_message(error),
+            }
+        return {**self.checks_from_runs(runs), "checks_sha": head_sha, "checks_error": None}
+
+    async def _record_observed_closure(self, link: ExternalLink, status: str, observation: dict[str, Any]) -> None:
+        """Record a merge or unmerged closure seen by catch-up as a GitHub task event, once."""
+        if link.entity_type != ExternalLinkEntityType.TASK.value or status not in {"merged", "closed"}:
+            return
+        marker = observation.get("merge_commit_sha") or observation.get("closed_at") or status
+        key = f"github-observed:{link.id}:{status}:{marker}"
+        if await self.db.scalar(select(TaskEvent.id).where(TaskEvent.idempotency_key == key)):
+            return
+        from app.services.task_service import TaskService
+
+        number = (link.metadata_json or {}).get("number")
+        await TaskService(self.db).record_task_event(
+            link.entity_id,
+            "github_pr_merged" if status == "merged" else "github_pr_closed",
+            {
+                "summary": f"GitHub PR #{number} {'merged' if status == 'merged' else 'closed without merging'} (observed by refresh)",
+                "provider": "github",
+                "github_event": "pull_request",
+                "observed_by": "refresh",
+                "status": status,
+                "pr_number": number,
+                "url": link.url,
+                "head_sha": observation.get("head_sha"),
+                "merge_commit_sha": observation.get("merge_commit_sha"),
+                "external_link_id": link.id,
+                "artifact_links": [link.url] if link.url else [],
+            },
+            actor_type="github",
+            idempotency_key=key,
+        )
 
     async def _fetch_pull_request(
         self,
@@ -268,6 +386,8 @@ class GitHubStatusService:
             link.metadata_json = metadata
             return await self._save_link(link)
 
+        observation = self.observation_from_payload(payload)
+        checks = await self.observe_checks(owner, repo, observation["head_sha"])
         link = await self.link_service.get_by_id(link_id)
         if link is None:
             return None
@@ -279,6 +399,13 @@ class GitHubStatusService:
             )
         metadata = dict(link.metadata_json or {})
         status = self.status_from_payload(payload)
+        if self.is_stale_observation(metadata, payload):
+            # A webhook already recorded something newer; keep it and note the check.
+            metadata["status_refreshed_at"] = refreshed_at
+            metadata["observed_at"] = refreshed_at
+            link.metadata_json = metadata
+            return await self._save_link(link)
+        previous_status = link.status
         await self._reserve_task_context_revision(link, outcome="refreshed")
         title = payload.get("title")
         if isinstance(title, str) and title:
@@ -288,13 +415,17 @@ class GitHubStatusService:
         metadata.update({
             "github_state": payload.get("state"),
             "draft": payload.get("draft"),
-            "merged": payload.get("merged"),
             "mergeable": payload.get("mergeable"),
             "mergeable_state": payload.get("mergeable_state"),
-            "github_updated_at": payload.get("updated_at"),
             "status_refreshed_at": refreshed_at,
+            "observed_at": refreshed_at,
+            "observation_source": "refresh",
+            **observation,
+            **checks,
         })
         metadata.pop("status_refresh_error", None)
         link.metadata_json = metadata
+        if previous_status != status:
+            await self._record_observed_closure(link, status, observation)
 
         return await self._save_link(link)

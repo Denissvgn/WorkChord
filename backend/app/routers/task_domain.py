@@ -323,6 +323,23 @@ async def task_replacement(task_id: int, db: DB):
     return await domain_result(TaskReplacementService(db).get(task_id))
 
 
+from app.schemas.github import GitHubReconciliationResponse
+
+
+@router.get("/tasks/{task_id}/github-reconciliation", response_model=GitHubReconciliationResponse)
+async def task_github_reconciliation(task_id: int, db: DB):
+    """Compare the commits a task submitted with its linked pull requests as last observed."""
+    from app.services.github_reconciliation_service import GitHubReconciliationService
+    return await domain_result(GitHubReconciliationService(db).view(task_id))
+
+
+@router.post("/tasks/{task_id}/github-reconciliation/catch-up", response_model=GitHubReconciliationResponse)
+async def task_github_catch_up(task_id: int, db: DB):
+    """Read this task's own pull requests from GitHub for events a webhook never delivered."""
+    from app.services.github_reconciliation_service import GitHubReconciliationService
+    return await domain_result(GitHubReconciliationService(db).catch_up(task_id))
+
+
 @router.post("/tasks/{task_id}/replacement", response_model=TaskReplacementResponse, status_code=201)
 async def record_task_replacement(task_id: int, data: TaskReplacementCreate, db: DB):
     """Replace this unaccepted task with a fresh one; only the project's PM or an operator may decide."""
