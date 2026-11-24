@@ -202,7 +202,9 @@ startup instructions name the same tools, and the team `next_action` points at
 them. To verify a capability, the operator adds the tag to the binding with a
 binding edit once it has been confirmed on the runtime. The edit moves the
 binding revision, so the runtime acknowledges the new revision before the
-member is ready again. The declaration is not an acknowledgement and never
+member is ready again. Adding a declaration to a live team is a member-contract
+change, so the runtime acknowledges it again, and the later binding edit needs
+another acknowledgement. The declaration is not an acknowledgement and never
 adds a tag by itself.
 
 ### Interpret status

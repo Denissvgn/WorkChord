@@ -14,7 +14,6 @@ from pydantic import (
     PrivateAttr,
     ValidationInfo,
     field_validator,
-    model_serializer,
     model_validator,
 )
 
@@ -214,6 +213,7 @@ class AgentTeamMemberSpec(AgentTeamSetupModel):
     credential_ref: str = Field(min_length=1, max_length=1_024)
     declared_tool_tags: dict[str, tuple[str, ...]] = Field(
         default_factory=dict,
+        exclude_if=lambda value: not value,
         max_length=16,
         description=(
             "Reviewable tool capabilities the operator expects per model "
@@ -222,13 +222,6 @@ class AgentTeamMemberSpec(AgentTeamSetupModel):
         ),
     )
     _stored_under_earlier_rules: bool = PrivateAttr(default=False)
-
-    @model_serializer(mode="wrap")
-    def _omit_empty_declarations(self, handler: Any) -> dict[str, Any]:
-        payload = handler(self)
-        if not payload.get("declared_tool_tags"):
-            payload.pop("declared_tool_tags", None)
-        return payload
 
     @field_validator("declared_tool_tags")
     @classmethod

@@ -2295,12 +2295,20 @@ class AgentTeamSetupService:
     def _tool_capability_action(gaps: dict[str, tuple[str, ...]]) -> str | None:
         if not gaps:
             return None
-        listing = "; ".join(
-            f"{key}: {', '.join(tags)}" for key, tags in sorted(gaps.items())
-        )
+        names = sorted({tag for tags in gaps.values() for tag in tags})
+        shown: list[str] = []
+        used = 0
+        for name in names:
+            if shown and used + len(name) > 200:
+                break
+            shown.append(name)
+            used += len(name) + 2
+        listing = ", ".join(shown)
+        if len(names) > len(shown):
+            listing += f" and {len(names) - len(shown)} more"
         return (
-            f"Declared but unverified tool capabilities stay excluded from routing ({listing}). "
-            "Add each tag to its model binding with a binding edit, then have the "
+            f"Declared tool capabilities are unverified and excluded from routing: {listing}. "
+            "Add them to the model binding with a binding edit, then have the "
             "runtime re-acknowledge the new binding revision."
         )
 
@@ -3407,10 +3415,9 @@ class AgentTeamSetupService:
             response = response.model_copy(
                 update={
                     "next_action": (
-                        f"{response.next_action}. Declared tool capabilities are "
-                        "unverified: edit the binding, then re-acknowledge (see "
-                        "each member's tool_capability_next_action)."
-                    )[:255]
+                        f"{response.next_action}. Some declared tool capabilities "
+                        "are unverified; see tool_capability_next_action."
+                    )
                 }
             )
         return response

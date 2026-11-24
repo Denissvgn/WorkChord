@@ -1038,6 +1038,29 @@ async def test_starting_points_offer_a_valid_catalog_filled_template_and_the_app
     assert validation.valid is True, validation
 
 
+@pytest.fixture
+async def db_session_factory(request, db_session_factory):
+    if getattr(request, "param", "sqlite") == "sqlite":
+        yield db_session_factory
+        return
+    from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+    from app import database
+    database_target = request.getfixturevalue("postgres_database")
+    engine = create_async_engine(database_target.url)
+    try:
+        async with engine.begin() as connection:
+            await connection.run_sync(database.Base.metadata.create_all)
+        yield async_sessionmaker(engine, expire_on_commit=False)
+    finally:
+        await engine.dispose()
+
+
+both_databases = pytest.mark.parametrize("db_session_factory", [
+    pytest.param("sqlite", marks=pytest.mark.sqlite),
+    pytest.param("postgresql", marks=[pytest.mark.postgresql, pytest.mark.allow_network]),
+], indirect=True)
+
+
 async def _apply_example(db_session: AsyncSession, payload: dict[str, Any], key: str):
     from app.services.identity_service import initialize_control_plane
     await initialize_control_plane(db_session)
@@ -1085,6 +1108,7 @@ def test_declared_tool_tags_are_optional_validated_and_digest_neutral() -> None:
             AgentTeamMaster.model_validate(broken)
 
 
+@both_databases
 @pytest.mark.asyncio
 async def test_declared_tool_tags_stay_unverified_until_the_binding_carries_them(db_session: AsyncSession) -> None:
     from app.services.agent_routing_policy import evaluate_model_envelope
@@ -1134,6 +1158,7 @@ async def test_declared_tool_tags_stay_unverified_until_the_binding_carries_them
     assert member.handoff.model_binding_revisions["implementation-default"] == binding.revision
 
 
+@both_databases
 @pytest.mark.asyncio
 async def test_reconciliation_without_declarations_records_no_tool_capabilities(db_session: AsyncSession) -> None:
     manifest, service, admin = await _apply_example(db_session, example_payload(), "no-declared-tools")
@@ -1146,3 +1171,25 @@ async def test_reconciliation_without_declarations_records_no_tool_capabilities(
         for item in status.members
     )
     assert "unverified" not in status.next_action
+
+
+@both_databases
+@pytest.mark.asyncio
+async def test_largest_declaration_keeps_apply_status_and_handoff_valid(db_session: AsyncSession) -> None:
+    payload = example_payload()
+    worker = payload["workers"][0]
+    extra = [f"extra-binding-{index:02d}" for index in range(15)]
+    worker["model_binding_keys"] = [*worker["model_binding_keys"], *extra]
+    worker["declared_tool_tags"] = {
+        key: [f"tool-capability-{index:02d}-{'x' * 90}" for index in range(32)]
+        for key in worker["model_binding_keys"]
+    }
+    assert len(worker["declared_tool_tags"]) == 16
+    manifest, service, admin = await _apply_example(db_session, payload, "largest-declaration")
+    status = await service.status(admin, topology_key=manifest.topology_key)
+    member = next(item for item in status.members if item.actor_key == manifest.workers[0].actor_key)
+    assert sum(len(tags) for tags in member.unverified_tool_tags.values()) == 16 * 32
+    assert len(member.tool_capability_next_action) <= 500 and "more" in member.tool_capability_next_action
+    assert member.tool_capability_next_action.endswith(".")
+    assert any(line == member.tool_capability_next_action for line in member.handoff.startup_instructions)
+    assert len(status.next_action) <= 255 and status.next_action.endswith(".")
