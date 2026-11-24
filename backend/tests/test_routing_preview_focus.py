@@ -1,9 +1,11 @@
 """A focused routing preview keeps a named team actor's rows inside the bounded response."""
 
 import json
+from types import SimpleNamespace
 
 import pytest
 from pydantic import ValidationError
+from sqlalchemy import select
 
 from app.config import get_settings
 from app.models.agent import AgentActor, AgentModelBinding, AgentModelCatalogEntry, AgentRun, AgentTaskAssignment
@@ -16,7 +18,12 @@ from app.services.agent_routing_policy import (
     MAX_ROUTING_PACKET_BYTES,
     canonical_routing_json_bytes,
 )
-from app.services.agent_routing_service import AgentRoutingConflictError, AgentRoutingService
+from app.services.agent_routing_service import (
+    AgentRoutingConflictError,
+    AgentRoutingService,
+    _bounded_rows,
+    _routing_row_focus,
+)
 from app.services.agent_work_service import AgentWorkService
 from app.services.task_service import TaskService
 from app.utils.time import utc_now
@@ -435,3 +442,271 @@ async def test_focus_returns_named_reviewer_blockers_on_rest_and_mcp(
     )
     assert plain["exclusions_omitted"] > 0
     assert await read(pm_key, focus_actor_id=reviewer.id, focus_model_binding_id=reviewer_binding.id) == plain
+
+
+@pytest.mark.sqlite
+def test_bounded_rows_keep_first_row_ahead_of_focused_rows():
+    def row(actor_id, binding_id):
+        return SimpleNamespace(actor_id=actor_id, model_binding_id=binding_id)
+
+    recommended = row(1, 10)
+    rows = [recommended, *(row(2, index) for index in range(40))]
+    focus = _routing_row_focus(2, None)
+    kept = _bounded_rows(rows, 25, focus, keep_first=True)
+    assert len(kept) == 25 and kept[0] is recommended
+    assert [item.model_binding_id for item in kept[1:]] == list(range(24))
+    # Without the guard the focused rows fill every slot.
+    unguarded = _bounded_rows(rows, 25, focus)
+    assert len(unguarded) == 25 and all(item is not recommended for item in unguarded)
+    # Without a focus the first rows are kept in order, the guard included.
+    assert _bounded_rows(rows, 3, None, keep_first=True) == rows[:3]
+    assert _bounded_rows([], 25, focus, keep_first=True) == []
+    assert _bounded_rows(rows, 0, focus, keep_first=True) == []
+
+
+@database_engines
+@pytest.mark.parametrize("primary", ["rest", "mcp"])
+@pytest.mark.usefixtures("deployed_agent_skill_release", "qualified_model_aware_routing_test_context")
+async def test_focused_digest_selects_only_its_named_binding(
+    db_session,
+    db_session_factory,
+    actor_factory,
+    team_member_factory,
+    task_factory,
+    monkeypatch,
+    primary,
+):
+    db = db_session
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "trusted_local")
+    get_settings.cache_clear()
+    team = await provision_ready_topology(db)
+    worker = team.actors["operations-worker"]
+    teammate = team.actors[team.manifest.workers[0].actor_key]
+    base = await routing_base(
+        db,
+        topology=team,
+        actor_key="operations-worker",
+        team_member_factory=team_member_factory,
+        task_factory=task_factory,
+        title="Prepare the bounded release package",
+        skill_key="security-review",
+    )
+    task, pm = base.task, base.pm
+    named = default_candidate(worker).binding
+    teammate_binding = default_candidate(teammate).binding
+    await bind_fillers(db, teammate, "teammate-filler", TEAM_FILLER_ROWS, enabled=False)
+    await bind_fillers(
+        db,
+        worker,
+        "worker-alternative",
+        WORKER_ALTERNATIVES,
+        enabled=True,
+        alias=LONG_ALIAS,
+        tool_tags=EXTRA_TOOL_TAGS,
+    )
+    await db.commit()
+    await acknowledge_all(team.service, team.manifest, team.sink.keys)
+    outsider = await actor_factory(name="outside-team-worker", display_name="Outside Team Worker")
+    outside_catalog = catalog_entry("outside-team-runtime")
+    db.add(outside_catalog)
+    await db.flush()
+    outside_binding = AgentModelBinding(
+        actor_id=outsider.id, model_catalog_id=outside_catalog.id, is_default=True, enabled=True, revision=1
+    )
+    db.add(outside_binding)
+    await db.commit()
+    other_binding = (
+        await db.execute(
+            select(AgentModelBinding)
+            .where(
+                AgentModelBinding.actor_id == worker.id,
+                AgentModelBinding.id != named.id,
+                AgentModelBinding.enabled.is_(True),
+            )
+            .order_by(AgentModelBinding.id)
+        )
+    ).scalars().first()
+    assert other_binding is not None
+    ids = {
+        "worker": worker.id,
+        "named": named.id,
+        "named_revision": named.revision,
+        "teammate": teammate.id,
+        "teammate_binding": teammate_binding.id,
+        "teammate_revision": teammate_binding.revision,
+        "other": other_binding.id,
+        "other_revision": other_binding.revision,
+        "outsider": outsider.id,
+        "outside_binding": outside_binding.id,
+        "outside_revision": outside_binding.revision,
+    }
+    assessment = (
+        await AgentRoutingService(db).create_assessment(
+            task.id,
+            pm,
+            _assessment_command(task_version=task.version, required_skill_levels={"security-review": 3}),
+            _command_context("assess-focus-attack"),
+        )
+    ).assessment
+    now = utc_now().replace(microsecond=0)
+    monkeypatch.setattr(agent_routing_service, "utc_now", lambda: now)
+    read = preview_reader(
+        db_session_factory,
+        monkeypatch,
+        task.id,
+        {"purpose": "execution", "assessment_id": assessment.id, "expected_task_version": task.version},
+    )
+    pm_key = team.sink.keys[team.manifest.controller.actor_key]
+    plain = await read(pm_key)
+    focused_named = await read(pm_key, focus_actor_id=ids["worker"], focus_model_binding_id=ids["named"])
+    focused_teammate = await read(pm_key, focus_actor_id=ids["teammate"])
+    assert focused_named["preview_id"] == plain["preview_id"] == focused_teammate["preview_id"]
+    assert len({plain["preview_digest"], focused_named["preview_digest"], focused_teammate["preview_digest"]}) == 3
+    assert not find([*plain["eligible_candidates"], *plain["exclusions"]], ids["worker"], ids["named"])
+    assert find(focused_named["eligible_candidates"], ids["worker"], ids["named"])
+
+    def selection(actor, binding, revision, preview_id, digest):
+        return {
+            "task_id": task.id,
+            "actor_id": actor,
+            "expected_task_version": task.version,
+            "purpose": "execution",
+            "assessment_id": assessment.id,
+            "model_binding_id": binding,
+            "model_binding_revision": revision,
+            "routing_preview_id": preview_id,
+            "routing_preview_digest": digest,
+            "reason": "Select the named worker and model.",
+        }
+
+    named_digest, named_preview = focused_named["preview_digest"], focused_named["preview_id"]
+    forged_preview = ".".join(named_preview.split(".")[:3] + ["0" * 64])
+    refusals = {
+        "another actor": (
+            selection(ids["teammate"], ids["teammate_binding"], ids["teammate_revision"], named_preview, named_digest),
+            "routing_preview_digest_mismatch",
+        ),
+        "another binding of the same worker": (
+            selection(ids["worker"], ids["other"], ids["other_revision"], named_preview, named_digest),
+            "routing_preview_digest_mismatch",
+        ),
+        "an outsider": (
+            selection(ids["outsider"], ids["outside_binding"], ids["outside_revision"], named_preview, named_digest),
+            "agent_team_actor_outside_topology",
+        ),
+        "a teammate-focused digest": (
+            selection(
+                ids["worker"],
+                ids["named"],
+                ids["named_revision"],
+                plain["preview_id"],
+                focused_teammate["preview_digest"],
+            ),
+            "routing_preview_digest_mismatch",
+        ),
+        "a forged digest": (
+            selection(ids["worker"], ids["named"], ids["named_revision"], named_preview, "0" * 64),
+            "routing_preview_digest_mismatch",
+        ),
+        "a forged preview id": (
+            selection(ids["worker"], ids["named"], ids["named_revision"], forged_preview, named_digest),
+            "routing_preview_stale",
+        ),
+    }
+    for number, (label, (payload, code)) in enumerate(refusals.items()):
+        await through(
+            primary,
+            db_session_factory,
+            monkeypatch,
+            "agent_create_assignment",
+            "/api/agent/assignments",
+            pm_key,
+            payload,
+            receipt=f"focus-refused-{number}",
+            error=code,
+        )
+        async with db_session_factory() as recorded:
+            assert not await recorded.scalar(
+                select(AgentTaskAssignment.id).where(AgentTaskAssignment.task_id == task.id)
+            ), label
+
+    accepted = await through(
+        primary,
+        db_session_factory,
+        monkeypatch,
+        "agent_create_assignment",
+        "/api/agent/assignments",
+        pm_key,
+        selection(ids["worker"], ids["named"], ids["named_revision"], named_preview, named_digest),
+        receipt="focus-legitimate",
+    )
+    assert accepted["actor_id"] == ids["worker"] and accepted["model_binding_id"] == ids["named"]
+    assert accepted["routing_snapshot"]["routing_preview_digest"] == named_digest
+
+
+@database_engines
+@pytest.mark.usefixtures("deployed_agent_skill_release", "qualified_model_aware_routing_test_context")
+async def test_focused_rows_that_fill_the_bound_keep_the_recommendation(
+    db_session,
+    db_session_factory,
+    team_member_factory,
+    task_factory,
+    monkeypatch,
+):
+    db = db_session
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "trusted_local")
+    get_settings.cache_clear()
+    team = await provision_ready_topology(db)
+    worker = team.actors["operations-worker"]
+    teammate = team.actors[team.manifest.workers[0].actor_key]
+    base = await routing_base(
+        db,
+        topology=team,
+        actor_key="operations-worker",
+        team_member_factory=team_member_factory,
+        task_factory=task_factory,
+        title="Prepare the bounded release package",
+        skill_key="security-review",
+    )
+    task, pm = base.task, base.pm
+    await bind_fillers(
+        db,
+        worker,
+        "worker-alternative",
+        WORKER_ALTERNATIVES,
+        enabled=True,
+        alias=LONG_ALIAS,
+        tool_tags=EXTRA_TOOL_TAGS,
+    )
+    await db.commit()
+    await acknowledge_all(team.service, team.manifest, team.sink.keys)
+    named = default_candidate(worker).binding
+    named_pair = (worker.id, named.id)
+    assessment = (
+        await AgentRoutingService(db).create_assessment(
+            task.id,
+            pm,
+            _assessment_command(task_version=task.version, required_skill_levels={"security-review": 3}),
+            _command_context("assess-focus-fill"),
+        )
+    ).assessment
+    now = utc_now().replace(microsecond=0)
+    monkeypatch.setattr(agent_routing_service, "utc_now", lambda: now)
+    # With a bound of one, the focused named row alone fills the candidate list.
+    monkeypatch.setattr(agent_routing_service, "MAX_ROUTING_CANDIDATES", 1)
+    read = preview_reader(
+        db_session_factory,
+        monkeypatch,
+        task.id,
+        {"purpose": "execution", "assessment_id": assessment.id, "expected_task_version": task.version},
+    )
+    pm_key = team.sink.keys[team.manifest.controller.actor_key]
+    plain = await read(pm_key)
+    recommended = plain["recommended_candidate"]
+    assert recommended["model_binding_id"] != named_pair[1]
+    assert plain["eligible_candidates"] == [recommended]
+    # The focus claims the one slot, yet index 0 stays the recommendation.
+    focused = await read(pm_key, focus_actor_id=named_pair[0], focus_model_binding_id=named_pair[1])
+    assert focused["recommended_candidate"] == recommended
+    assert focused["eligible_candidates"] == [recommended]
+    assert focused["eligible_candidates_omitted"] == plain["eligible_candidates_omitted"]

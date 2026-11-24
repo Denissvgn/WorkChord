@@ -312,6 +312,24 @@ unfocused one. A preview focused on the actor being selected, alone or with
 the selected binding, can be used for that assignment; the server recomputes
 it at selection time.
 
+## Packet size and the preview digest
+
+The 32,768-byte limit applies to the canonical serialized preview response
+after the server fills in model defaults and the digest fields. It is not a
+limit on the raw HTTP body or on MCP framing: JSON-RPC envelopes, MCP text
+wrapping, and HTTP headers are outside it. A client that measures bytes should
+measure the response body it receives, and should not expect that number to
+equal the canonical size.
+
+The server computes `preview_digest` over a projection of the response that
+uses UTC `+00:00` timestamps and omits the model defaults of the top-level
+response fields; nested candidate and exclusion rows keep their defaults. The
+body a client receives uses the schema's own datetime format and includes all
+defaults, so the digest cannot be recomputed from the body. Clients must send
+back the `preview_digest` and `preview_id` exactly as the server returned them
+when creating or updating an assignment. Only the server can re-derive the
+digest, and it does so when it recomputes the preview at selection time.
+
 ## Rollback
 
 1. Set `MODEL_AWARE_ROUTING_MODE=off` on every application replica and restart
