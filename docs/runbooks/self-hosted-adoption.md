@@ -30,7 +30,7 @@ sink. It does not declare the old volumes external.
   copied. The WAL archive is not copied. A WAL archive is only useful together
   with a base backup that precedes it, so the new stack starts an empty archive
   and takes its first base backup right after acceptance (step 11). The old
-  archive stays with the old project and is pruned or removed later (step 12).
+  archive stays with the old project and is pruned in step 5 and removed later (step 12).
 
 The cost is disk space for one more database copy and a short outage while
 the copy runs. Both are measured in the rehearsal.
