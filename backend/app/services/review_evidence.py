@@ -281,6 +281,9 @@ async def check_supervised_selection(db, task, principal, selection, reviewer_pr
         expected_task_version=task.version,
         reviewer_profile_id=reviewer_profile_id,
         review_evidence_id=scope["id"],
+        # Keep the named reviewer's row, and so its blockers, in the bounded result.
+        focus_actor_id=scope["reviewer"]["actor_id"],
+        focus_model_binding_id=scope["reviewer"]["binding_id"],
     )
     preview = await routing._build_preview(
         task=task, data=data, generated_at=utc_now(), requesting_actor_id=principal.id

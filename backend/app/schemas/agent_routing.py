@@ -931,6 +931,11 @@ class AgentRoutingPreviewCreate(RoutingContractModel):
     reviewer_profile_id: int | None = Field(default=None, strict=True, ge=1)
     review_evidence_id: int | None = Field(default=None, strict=True, ge=1, exclude_if=lambda value: value is None)
     review_assignment_id: int | None = Field(default=None, strict=True, ge=1, exclude_if=lambda value: value is None)
+    # A named actor, and optionally one of its bindings, whose rows the
+    # bounded response keeps ahead of other rows. It changes no eligibility
+    # and never reveals an actor outside the caller's visible team.
+    focus_actor_id: int | None = Field(default=None, strict=True, ge=1, exclude_if=lambda value: value is None)
+    focus_model_binding_id: int | None = Field(default=None, strict=True, ge=1, exclude_if=lambda value: value is None)
 
     @model_validator(mode="after")
     def require_review_purpose(self):
@@ -938,6 +943,8 @@ class AgentRoutingPreviewCreate(RoutingContractModel):
             raise ValueError("Review evidence is available only for verification.")
         if self.review_assignment_id is not None and self.review_evidence_id is None:
             raise ValueError("An assignment evidence readback requires its receipt identifier.")
+        if self.focus_model_binding_id is not None and self.focus_actor_id is None:
+            raise ValueError("A focused model binding requires its focus_actor_id.")
         return self
 
 
