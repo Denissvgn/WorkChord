@@ -30,9 +30,12 @@ async def recovery_api(transport, factory, monkeypatch):
     async with server.session_manager.run() if server else nullcontext():
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=application),
                                      base_url="http://localhost:8001") as client:
-            async def call(tool, path, key, *, task_id=None, payload=None, receipt=None, error=None):
+            async def call(tool, path, key, *, task_id=None, payload=None, receipt=None, error=None, assignment_id=None):
                 headers = {"X-Agent-API-Key": key}
                 args = {}
+                if assignment_id is not None:
+                    args["assignment_id"] = assignment_id
+                    path = f"{path}?assignment_id={assignment_id}"
                 if task_id is not None:
                     args["task_id"] = task_id
                 if payload is not None:
