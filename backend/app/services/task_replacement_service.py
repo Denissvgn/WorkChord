@@ -63,23 +63,45 @@ async def attempt_history(db, task):
         return await review_history(db, task, await _assignments(db, task.id), strict=True, include_carried=False)
 
 
+def _carried_bound_row(original_task_id, reason):
+    """A contributor row that holds the replacement: the carried chain is too long or cyclic to read."""
+    return {"run_id": None, "actor_id": None, "profile_id": None, "publisher_key": None,
+            "missing": [reason], "carried_from_task_id": original_task_id, "truncated": reason}
+
+
 async def carried_contributors(db, task):
-    """Contributor rows for the original runs this replacement carries, read from current records."""
-    relation = await replacing(db, task.id)
-    if relation is None or not relation.carried_run_ids:
-        return []
-    with internal_authority(db):
-        original = await db.get(Task, relation.original_task_id)
-    history = await attempt_history(db, original)
-    carried = set(relation.carried_run_ids)
-    rows = [{**row, "carried_from_task_id": original.id} for row in history.contributors if row.get("run_id") in carried]
-    for run_id in sorted(carried - {row["run_id"] for row in rows}):
-        # A carried run without a contributor record cannot show who wrote its commits.
-        rows.append({"run_id": run_id, "actor_id": None, "profile_id": None, "publisher_key": None,
-                     "missing": ["contributor_record"], "carried_from_task_id": original.id})
-    # Runs carried from a replacement may build on what that replacement carried in turn,
-    # so the earlier original's carried runs count here too and can hold this replacement.
-    return rows + await carried_contributors(db, original)
+    """Contributor rows for the original runs this replacement carries, read from current records.
+
+    The walk through earlier replacements is bounded like carried_profile_history: depth, visited
+    task ids and carried run count. A bound that is hit ends the walk with a held row.
+    """
+    from app.services.review_provenance import MAX_CARRIED_HISTORY_RUNS, MAX_CARRIED_REPLACEMENT_DEPTH
+    rows, visited, loaded, current = [], {task.id}, 0, task
+    while True:
+        relation = await replacing(db, current.id)
+        if relation is None or not relation.carried_run_ids:
+            return rows
+        if len(visited) > MAX_CARRIED_REPLACEMENT_DEPTH:
+            return rows + [_carried_bound_row(relation.original_task_id, "carried_history_depth")]
+        if relation.original_task_id in visited:
+            return rows + [_carried_bound_row(relation.original_task_id, "carried_history_cycle")]
+        loaded += len(relation.carried_run_ids)
+        if loaded > MAX_CARRIED_HISTORY_RUNS:
+            return rows + [_carried_bound_row(relation.original_task_id, "carried_history_runs")]
+        with internal_authority(db):
+            original = await db.get(Task, relation.original_task_id)
+        history = await attempt_history(db, original)
+        carried = set(relation.carried_run_ids)
+        level = [{**row, "carried_from_task_id": original.id} for row in history.contributors if row.get("run_id") in carried]
+        for run_id in sorted(carried - {row["run_id"] for row in level}):
+            # A carried run without a contributor record cannot show who wrote its commits.
+            level.append({"run_id": run_id, "actor_id": None, "profile_id": None, "publisher_key": None,
+                          "missing": ["contributor_record"], "carried_from_task_id": original.id})
+        rows.extend(level)
+        visited.add(original.id)
+        # Runs carried from a replacement may build on what that replacement carried in turn,
+        # so the earlier original's carried runs count here too and can hold this replacement.
+        current = original
 
 
 async def require_acceptable(db, task, *, accepting):

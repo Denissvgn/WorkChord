@@ -401,31 +401,57 @@ def _run_profile_rows(assignment_id, run, begun):
     return rows
 
 
+# Bounds on the walk through earlier replacements. A bound that is hit fails closed.
+MAX_CARRIED_REPLACEMENT_DEPTH = 32
+MAX_CARRIED_HISTORY_RUNS = MAX_BOUNDED_LIST_ITEMS
+
+
+def carried_history_truncated(original_task_id, reason):
+    """An unknown row that ends a carried walk early; every independence check treats it as unprovable."""
+    return {"assignment_id": None, "run_id": None, "actor_id": None, "profile_id": None,
+            "source": "unavailable", "carried_from_task_id": original_task_id, "truncated": reason}
+
+
 async def carried_profile_history(db, task_id):
-    """Actors and profiles of the original runs a replacement carries, through every earlier replacement."""
+    """Actors and profiles of the original runs a replacement carries, through every earlier replacement.
+
+    The walk is bounded by MAX_CARRIED_REPLACEMENT_DEPTH links, MAX_CARRIED_HISTORY_RUNS carried runs,
+    and a visited set of task ids. A bound that is hit, or a cycle, ends the history with a
+    ``truncated`` row, which fails closed: the history cannot prove independence.
+    """
     from app.authority import internal_authority
     from app.services.task_replacement_service import replacing
-    relation = await replacing(db, task_id)
-    if relation is None or not relation.carried_run_ids:
-        return []
-    with internal_authority(db):
-        runs = (await db.scalars(select(AgentRun).where(AgentRun.id.in_(relation.carried_run_ids))
-                                 .order_by(AgentRun.id))).all()
-        assignments = {item.id: item for item in (await db.scalars(select(AgentTaskAssignment).where(
-            AgentTaskAssignment.id.in_([run.assignment_id for run in runs if run.assignment_id])))).all()}
-    rows = []
-    for run in runs:
-        assignment = assignments.get(run.assignment_id)
-        begun = _begin_profile(run)
-        if begun is None and assignment is not None and assignment.actor_id == run.actor_id:
-            begun = historical_profile(assignment)
-        rows.extend({**row, "carried_from_task_id": relation.original_task_id}
-                    for row in _run_profile_rows(run.assignment_id, run, begun))
-    for run_id in sorted(set(relation.carried_run_ids) - {run.id for run in runs}):
-        rows.append({"assignment_id": None, "run_id": run_id, "actor_id": None, "profile_id": None,
-                     "source": "unavailable", "carried_from_task_id": relation.original_task_id})
-    # A carried run of a replacement may itself build on the earlier original's carried work.
-    return rows + await carried_profile_history(db, relation.original_task_id)
+    rows, visited, loaded, current = [], {task_id}, 0, task_id
+    while True:
+        relation = await replacing(db, current)
+        if relation is None or not relation.carried_run_ids:
+            return rows
+        original_id = relation.original_task_id
+        if len(visited) > MAX_CARRIED_REPLACEMENT_DEPTH:
+            return rows + [carried_history_truncated(original_id, "carried_history_depth")]
+        if original_id in visited:
+            return rows + [carried_history_truncated(original_id, "carried_history_cycle")]
+        loaded += len(relation.carried_run_ids)
+        if loaded > MAX_CARRIED_HISTORY_RUNS:
+            return rows + [carried_history_truncated(original_id, "carried_history_runs")]
+        visited.add(original_id)
+        with internal_authority(db):
+            runs = (await db.scalars(select(AgentRun).where(AgentRun.id.in_(relation.carried_run_ids))
+                                     .order_by(AgentRun.id))).all()
+            assignments = {item.id: item for item in (await db.scalars(select(AgentTaskAssignment).where(
+                AgentTaskAssignment.id.in_([run.assignment_id for run in runs if run.assignment_id])))).all()}
+        for run in runs:
+            assignment = assignments.get(run.assignment_id)
+            begun = _begin_profile(run)
+            if begun is None and assignment is not None and assignment.actor_id == run.actor_id:
+                begun = historical_profile(assignment)
+            rows.extend({**row, "carried_from_task_id": original_id}
+                        for row in _run_profile_rows(run.assignment_id, run, begun))
+        for run_id in sorted(set(relation.carried_run_ids) - {run.id for run in runs}):
+            rows.append({"assignment_id": None, "run_id": run_id, "actor_id": None, "profile_id": None,
+                         "source": "unavailable", "carried_from_task_id": original_id})
+        # A carried run of a replacement may itself build on the earlier original's carried work.
+        current = original_id
 
 
 async def execution_profile_history(db, assignments, *, task_id=None):
@@ -476,6 +502,8 @@ async def execution_profile_history(db, assignments, *, task_id=None):
 async def require_independent_profile(db, assignments, reviewer, reviewer_profile_id=None, *, task_id=None):
     """Refuse a reviewer whose actor or profile is known to have executed this task or work it carries."""
     history = await execution_profile_history(db, assignments, task_id=task_id)
+    if any(row.get("truncated") for row in history):
+        _conflict("verification_independence_unverifiable", "The carried replacement history is too long or cyclic to prove independence.")
     if any(row.get("carried_from_task_id") and row["actor_id"] == reviewer.id for row in history):
         _conflict("verification_actor_not_independent", "An actor whose run this replacement carries cannot verify it.")
     profiles = {reviewer.profile_id, reviewer_profile_id} - {None}
