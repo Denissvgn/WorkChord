@@ -82,6 +82,12 @@ export function PipelineView({ query, project, iteration, search, agent, filters
             description: t('agentPipeline.columns.executing.description')
         },
         {
+            id: 'active_outside_run' as const,
+            title: t('agentPipeline.columns.active_outside_run.title'),
+            tasks: filterAndSegment(pipeline.active_outside_run ?? []),
+            description: t('agentPipeline.columns.active_outside_run.description')
+        },
+        {
             id: 'verification_required' as const,
             title: t('agentPipeline.columns.verification_required.title'),
             tasks: filterAndSegment(pipeline.verification_required),
@@ -134,7 +140,7 @@ export function PipelineView({ query, project, iteration, search, agent, filters
         <p className="text-xs text-content-secondary" role="status">{t('agentPipeline.showingActiveTasks', { count: filteredTaskCount })}</p>
             {/* One strip, left to right: the stages a task moves through. */}
             <nav aria-label={t('agentPipeline.stagesLabel')} className="overflow-x-auto">
-                <ol className="flex min-w-max gap-1 xl:grid xl:min-w-0 xl:grid-cols-7">
+                <ol className="flex min-w-max gap-1 xl:grid xl:min-w-0 xl:grid-cols-8">
                     {columns.map((column, index) => (
                         <li key={column.id} className="flex items-stretch">
                             <Button
@@ -187,6 +193,11 @@ export function PipelineView({ query, project, iteration, search, agent, filters
                                             {t('agentPipeline.taskNumber', { id: task.id })} · {task.title}
                                         </Button>
                                         <p className="text-sm text-content-primary">{t('agentPipeline.reason', { reason: reasons })}</p>
+                                        {activeStage.id === 'active_outside_run' && (
+                                            <p className="text-sm text-content-secondary">
+                                                {task.assignee ? t('agentPipeline.nextAccountable', { name: task.assignee.name }) : t('agentPipeline.noCapacityOwner')}
+                                            </p>
+                                        )}
                                         <p className="flex flex-wrap gap-x-3 text-xs text-content-secondary">
                                             {task.project && <span className="inline-flex items-center gap-1"><Folder aria-hidden="true" className="h-3.5 w-3.5" />{task.project.name}</span>}
                                             <span className="inline-flex items-center gap-1"><Calendar aria-hidden="true" className="h-3.5 w-3.5" />{effort}</span>

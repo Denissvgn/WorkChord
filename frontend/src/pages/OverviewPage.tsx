@@ -226,7 +226,7 @@ const OverviewPage = () => {
         ? iterations.find(item => item.id === scopeIteration) ?? null
         : null;
     const stageCount = (stage: PipelineStage) => ({
-        value: pipelineTasksInScope(pipelineQuery.pipeline[stage], linkProject, scopeIteration).length,
+        value: pipelineTasksInScope(pipelineQuery.pipeline[stage] ?? [], linkProject, scopeIteration).length,
         to: scopeLink(pipelineStageHref(stage)),
     });
 
