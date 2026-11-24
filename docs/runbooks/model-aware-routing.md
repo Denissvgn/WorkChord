@@ -35,6 +35,70 @@ Before merging an externally hosted pull request, the PM can use the same verifi
 
 An operator can revoke an issued receipt through the same command with `action=revoke` and `evidence_id`. Changing the candidate, task revisions or reviewer binding requires fresh evidence. A revoked, expired or retired issuer cannot support either verdict. The PM can reorder or cancel the queued assignment and select a fresh receipt. An assessment is immutable and unique for its task version and policy. If an existing assessment requires tests, supply the named results or use a genuine versioned planning change and fresh assessment before offering source alone. A completed verdict and its audit record remain historical. A later rework submission requires a new candidate-bound decision. Clients can discover this protocol through `scoped-review-evidence-v1`.
 
+## Reassigning receipt-backed verification
+
+A review receipt is bound to one verifier actor, one model binding and its
+revision, one candidate commit, one packet digest and one expiry. The server
+rechecks every one of those facts when the receipt is consumed, so a receipt
+cannot follow a queued verification assignment to another verifier or binding.
+Moving a receipt-backed verification assignment to a different verifier or
+binding therefore needs a new receipt. On a supervised update, changing
+`actor_id`, `review_binding_id` or `reviewer_profile_id` to another verifier or
+binding without a fresh `review_evidence_id` is refused with
+`verification_evidence_unavailable`.
+
+When the new verifier already has every required tool natively, without a
+scoped receipt, the supported route is to cancel the old assignment and create
+a fresh verification assignment with no receipt:
+
+1. Re-read the old assignment and the reviewer's queue. Confirm that it is still
+   `queued` and note its `expected_queue_revision`.
+2. Cancel it with `PATCH /api/agent/assignments/{assignment_id}` (MCP
+   `agent_update_assignment`) using `state` `cancelled`, the current
+   `expected_queue_revision`, and a `reason`. The cancellation skips the review
+   evidence checks, so it does not need a receipt.
+3. Preview the new verifier with `POST /api/agent/tasks/{task_id}/routing-preview`
+   (MCP `agent_preview_task_routing`) using `purpose` `verification`, the current
+   `assessment_id`, the current `expected_task_version`, and the optional
+   `reviewer_profile_id`. Omit `review_evidence_id` and `review_assignment_id`.
+   The new verifier must appear as an eligible candidate for the exact binding.
+   Its own tool tags must satisfy the assessment's required tool tags. For a
+   scoped review, the receipt is what relaxes the `host-shell` requirement, so a
+   verifier that needs a receipt to meet it is not eligible for this route.
+4. Create the fresh assignment with `POST /api/agent/assignments` (MCP
+   `agent_create_assignment`) using `purpose` `verification`, the new `actor_id`,
+   the current `expected_task_version`, and, in supervised mode, the exact
+   `review_binding_id` and `reviewer_profile_id`. Do not set
+   `review_evidence_id`. In enforced mode, use the model-aware create body with
+   the `assessment_id`, `model_binding_id`, `model_binding_revision`, and the
+   signed `routing_preview_id` and `routing_preview_digest` from the preview in
+   step 3. Supply the normal `Idempotency-Key`, `X-Agent-Rationale` and
+   `X-Correlation-ID` headers, or the MCP `idempotency_key`, `rationale` and
+   `correlation_id` arguments.
+5. Re-read the new assignment. Its `review_selection` should carry the new
+   reviewer and candidate, and no `review_evidence` key.
+
+The fresh assignment passes the same checks as any verification dispatch:
+
+- the candidate is exact and still matches the task's current revisions;
+- on a project that requires an independent publisher, the verifier's publisher
+  differs from every contributing publisher;
+- the verifier is not an implementation actor, its profile did not contribute to
+  the task, and any manual-execution profile rule still holds;
+- the requested reviewer profile matches the verifier's profile;
+- the routing policy, binding revision, model envelope, capacity and schedule
+  pass in the current preview;
+- the verdict later requires the observed model to match the new binding and
+  the reviewed candidate digest to match the current candidate.
+
+Nothing from the earlier assignment is erased. The cancelled row, its
+`review_selection` and the receipt's operator event remain in the task history,
+and cancelling does not revoke the receipt. Use `action=revoke` only when the
+packet itself must be withdrawn. A receipt never moves to the new verifier, so
+it cannot be used in the fresh assignment. Any completed verdict and its audit
+record stay historical. If the candidate, task revisions or binding change
+later, issue a fresh receipt before any scoped review.
+
 ## Rollout modes
 
 `MODEL_AWARE_ROUTING_MODE` is restart-bound and must have the same value on all
