@@ -84,6 +84,10 @@ export interface UnscheduledTask {
     task_title: string;
     reason: UnscheduledReason;
     message: string;
+    /** The task held dates before this run and the run removed them. */
+    dates_cleared?: boolean;
+    /** Causes of its own that keep it undated once the main reason is resolved. */
+    also?: UnscheduledReason[];
 }
 
 export interface ScheduleResult {

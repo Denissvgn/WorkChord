@@ -181,6 +181,29 @@ def parse_task_brief(description: Optional[str]) -> dict[str, str]:
     }
 
 
+def encode_assignment_cursor(last_id: int) -> str:
+    """Pack the last returned assignment id into an opaque cursor."""
+    raw = json.dumps({"after_id": last_id}, separators=(",", ":")).encode()
+    return base64.urlsafe_b64encode(raw).decode().rstrip("=")
+
+
+def decode_assignment_cursor(cursor: str) -> int:
+    """Read a cursor made by this listing; anything else is a validation error."""
+    try:
+        padded = cursor + "=" * (-len(cursor) % 4)
+        value = json.loads(base64.urlsafe_b64decode(padded.encode()))
+        if (
+            isinstance(value, dict)
+            and set(value) == {"after_id"}
+            and type(value["after_id"]) is int
+            and value["after_id"] >= 0
+        ):
+            return value["after_id"]
+    except (ValueError, binascii.Error):
+        pass
+    raise ValueError("Invalid assignment cursor")
+
+
 class AgentWorkService:
     """Coordinate PM dispatch and low-freedom worker lifecycle commands."""
 
@@ -1170,6 +1193,7 @@ class AgentWorkService:
         purpose: Optional[str] = None,
         state: Optional[str] = None,
         limit: int = 200,
+        after_id: Optional[int] = None,
     ) -> list[AgentTaskAssignmentResponse]:
         """Return a secret-free durable assignment projection for restart-safe reads."""
         self._require_any_scope(principal, "assignments:read", "planning:read")
@@ -1187,13 +1211,18 @@ class AgentWorkService:
             query = query.where(AgentTaskAssignment.purpose == purpose)
         if state is not None:
             query = query.where(AgentTaskAssignment.state == state)
-        result = await self.db.execute(
-            query.order_by(
+        if after_id is not None:
+            # Paging uses the immutable id: rank and actor can change between pages.
+            query = query.where(AgentTaskAssignment.id > after_id).order_by(
+                AgentTaskAssignment.id
+            )
+        else:
+            query = query.order_by(
                 AgentTaskAssignment.actor_id,
                 AgentTaskAssignment.queue_rank,
                 AgentTaskAssignment.id,
-            ).limit(limit)
-        )
+            )
+        result = await self.db.execute(query.limit(limit))
         assignments = list(result.scalars().all())
         binding_ids = sorted(
             {
@@ -1225,6 +1254,66 @@ class AgentWorkService:
             for item in assignments
         ]
 
+    async def list_assignments_page(
+        self,
+        principal: AgentActor,
+        *,
+        task_id: Optional[int] = None,
+        actor_id: Optional[int] = None,
+        purpose: Optional[str] = None,
+        state: Optional[str] = None,
+        limit: int = 200,
+        cursor: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """One page ordered by assignment id; every row present throughout is returned once."""
+        after = decode_assignment_cursor(cursor) if cursor is not None else 0
+        rows = await self.list_assignments(
+            principal,
+            task_id=task_id,
+            actor_id=actor_id,
+            purpose=purpose,
+            state=state,
+            limit=limit + 1,
+            after_id=after,
+        )
+        items, has_more = rows[:limit], len(rows) > limit
+        return {
+            "items": items,
+            "has_more": has_more,
+            "next_cursor": encode_assignment_cursor(items[-1].id)
+            if has_more
+            else None,
+        }
+
+    async def list_assignments_for_people_page(
+        self,
+        *,
+        task_id: Optional[int] = None,
+        actor_id: Optional[int] = None,
+        purpose: Optional[str] = None,
+        state: Optional[str] = None,
+        limit: int = 200,
+        cursor: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """One page ordered by assignment id; every row present throughout is returned once."""
+        after = decode_assignment_cursor(cursor) if cursor is not None else 0
+        rows = await self.list_assignments_for_people(
+            task_id=task_id,
+            actor_id=actor_id,
+            purpose=purpose,
+            state=state,
+            limit=limit + 1,
+            after_id=after,
+        )
+        items, has_more = rows[:limit], len(rows) > limit
+        return {
+            "items": items,
+            "has_more": has_more,
+            "next_cursor": encode_assignment_cursor(items[-1].id)
+            if has_more
+            else None,
+        }
+
     async def list_assignments_for_people(
         self,
         *,
@@ -1233,6 +1322,7 @@ class AgentWorkService:
         purpose: Optional[str] = None,
         state: Optional[str] = None,
         limit: int = 200,
+        after_id: Optional[int] = None,
     ) -> list[AgentAssignmentReadItem]:
         """List the assignments of the tasks this request's reader can see.
 
@@ -1252,13 +1342,17 @@ class AgentWorkService:
             query = query.where(AgentTaskAssignment.purpose == purpose)
         if state is not None:
             query = query.where(AgentTaskAssignment.state == state)
-        assignments = list((await self.db.execute(
-            query.order_by(
+        if after_id is not None:
+            query = query.where(AgentTaskAssignment.id > after_id).order_by(
+                AgentTaskAssignment.id
+            )
+        else:
+            query = query.order_by(
                 AgentTaskAssignment.task_id,
                 AgentTaskAssignment.queue_rank,
                 AgentTaskAssignment.id,
-            ).limit(limit)
-        )).scalars().all())
+            )
+        assignments = list((await self.db.execute(query.limit(limit))).scalars().all())
         actor_ids = {item.actor_id for item in assignments}
         binding_ids = {item.model_binding_id for item in assignments if item.model_binding_id is not None}
         actors: dict[int, AgentActor] = {}

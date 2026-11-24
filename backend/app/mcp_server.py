@@ -763,6 +763,34 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
+    @mcp.tool(annotations=READ_ONLY_TOOL)
+    async def agent_list_assignments_page(
+        task_id: Optional[int] = None,
+        actor_id: Optional[int] = None,
+        purpose: Optional[str] = None,
+        state: Optional[str] = None,
+        limit: int = 200,
+        cursor: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """Read all durable assignments page by page, ordered by assignment id (not queue order).
+
+        Pass next_cursor back as cursor until has_more is false; every row present for
+        the whole read is returned exactly once. limit must be 1 to 500.
+        """
+        return await _tool_call(
+            ("assignments:read", "planning:read"),
+            lambda db, actor: mcp_agent_tools.list_agent_assignments_page(
+                db,
+                actor,
+                task_id=task_id,
+                actor_id=actor_id,
+                purpose=purpose,
+                state=state,
+                limit=limit,
+                cursor=cursor,
+            ),
+        )
+
     @mcp.tool(annotations=WRITE_TOOL)
     async def agent_update_assignment(
         assignment_id: int,

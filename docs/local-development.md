@@ -92,3 +92,29 @@ The [container quickstart](../README.md#get-started) runs a local PostgreSQL
 workspace. For shared deployments, use the
 [server](runbooks/self-hosted-server-acceptance.md) and
 [PostgreSQL](runbooks/postgresql-deployment.md) guides.
+
+## Maintain the LLM wiki
+
+The wiki writer keeps its storage and governance locks under the nearest
+directory named `.git` above the checkout it runs from. A linked worktree
+stores `.git` as a file, which the writer skips, so a worktree nested inside
+another checkout can place those locks in the enclosing repository. Before
+running the writer from a worktree, check where the locks would go:
+
+```bash
+.venv/bin/python scripts/ci/wiki_lock_root_preflight.py --checkout <checkout>
+```
+
+The preflight reads Git metadata only. It prints the effective lock root and
+exits non-zero when that root is not the repository the checkout belongs to.
+It does not open locks or run the writer.
+
+When the preflight refuses, run the writer from an isolated clone that has its
+own `.git` directory and shares object storage with the repository:
+
+```bash
+git clone --shared <WorkChord repository> <isolated clone directory>
+.venv/bin/python scripts/ci/wiki_lock_root_preflight.py --checkout <isolated clone directory>
+```
+
+Run the wiki commands from the isolated clone once the preflight passes.

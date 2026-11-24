@@ -1674,6 +1674,36 @@ async def list_agent_assignments(
     return [assignment.model_dump(mode="json") for assignment in assignments]
 
 
+async def list_agent_assignments_page(
+    db: AsyncSession,
+    actor: AgentActor,
+    *,
+    task_id: Optional[int] = None,
+    actor_id: Optional[int] = None,
+    purpose: Optional[str] = None,
+    state: Optional[str] = None,
+    limit: int = 200,
+    cursor: Optional[str] = None,
+) -> dict[str, Any]:
+    """MCP handler: one page, ordered by assignment id, with a next cursor."""
+    if not 1 <= limit <= 500:
+        raise ValueError("limit must be between 1 and 500")
+    page = await AgentWorkService(db).list_assignments_page(
+        actor,
+        task_id=task_id,
+        actor_id=actor_id,
+        purpose=purpose,
+        state=state,
+        limit=limit,
+        cursor=cursor,
+    )
+    return {
+        "items": [item.model_dump(mode="json") for item in page["items"]],
+        "has_more": page["has_more"],
+        "next_cursor": page["next_cursor"],
+    }
+
+
 async def update_agent_assignment(
     db: AsyncSession,
     actor: AgentActor,
