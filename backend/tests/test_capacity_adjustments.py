@@ -1,8 +1,10 @@
 """Dated capacity adjustments change capacity on their dates only and leave issued work current."""
 
+import asyncio
 import json
 from contextlib import asynccontextmanager
-from datetime import date
+from datetime import date, timedelta
+from types import SimpleNamespace
 
 import httpx
 import pytest
@@ -21,6 +23,9 @@ from app.models.recovery import ApplicationSnapshot
 from app.models.task import Task
 from app.models.team_member import TeamMember, TeamMemberCapacityAdjustment
 from app.services.agent_service import hash_api_key
+from app.services.calendar_rules import AnnualCalendars
+from app.services.capacity_adjustments import DatedAvailability
+from app.services.capacity_service import PeriodCommitments
 from app.services.identity_service import IdentityService, initialize_control_plane
 from app.services.scheduler_service import SchedulerService
 from app.services.team_service import TeamService
@@ -396,3 +401,95 @@ async def test_restoring_the_prior_snapshot_withdraws_the_adjustment_and_keeps_i
         assert (await person_days(api, pid))[str(FIRST)] == (8.0, 8.0, 0.0)
         active = (await api.get(f"/api/team-members/{mid}/capacity-adjustments", headers=headers())).json()
         assert [(row["start_date"], row["availability_percent"]) for row in active] == [(str(FIRST), 0.0)]
+
+
+@pytest.mark.parametrize("db_session_factory", [
+    pytest.param("postgresql", marks=[pytest.mark.postgresql, pytest.mark.allow_network]),
+], indirect=True)
+async def test_a_reduction_waits_for_a_concurrent_lock_on_the_rows_tasks(
+    db_session, db_session_factory, profile_factory, team_member_factory, monkeypatch
+):
+    """Issuing work locks its task row first, so the reduction locks the same rows before reading assignments."""
+    db = db_session
+    await managed(db, db_session_factory, monkeypatch)
+    profile, projects, (pi_row, _) = await shared_person(db, profile_factory, team_member_factory)
+    task = Task(title="Pi planned work", iteration_id=pi_row.iteration_id, project_id=projects[0].id,
+                assignee_id=pi_row.id, status="planned", start_date=FIRST, end_date=SECOND, effort_hours=16)
+    db.add(task)
+    await db.commit()
+    task_id, version, mid = task.id, task.version, pi_row.id
+    async with client() as api:
+        observed = (await api.get(f"/api/tasks/planning-inputs/member/{mid}/context", headers=headers())).json()["expected_revisions"]
+        async with db_session_factory() as issuer:
+            await issuer.execute(select(Task.id).where(Task.id == task_id).with_for_update())
+            pending = asyncio.create_task(api.post(f"/api/team-members/{mid}/capacity-adjustments",
+                                                   json=reduce_two_days(), headers=headers(observed)))
+            await asyncio.sleep(1.0)
+            assert not pending.done(), (await pending).text
+            await issuer.rollback()
+        applied = await asyncio.wait_for(pending, timeout=30)
+        assert applied.status_code == 200, applied.text
+    async with db_session_factory() as current:
+        assert (await current.get(Task, task_id)).version == version
+
+
+@database_engines
+async def test_viewers_and_managers_of_other_projects_cannot_adjust_capacity(
+    db_session, db_session_factory, profile_factory, team_member_factory, monkeypatch
+):
+    from tests.test_iteration_date_move import human
+
+    db = db_session
+    monkeypatch.setenv("CORS_ORIGINS", json.dumps(["https://test"]))
+    await managed(db, db_session_factory, monkeypatch)
+    profile, projects, (pi_row, _) = await shared_person(db, profile_factory, team_member_factory)
+    elsewhere = Project(name="Elsewhere")
+    db.add(elsewhere)
+    await db.commit()
+    mid = pi_row.id
+    viewer = await human(db, {project.id: "viewer" for project in projects}, workspace_member=False)
+    other_manager = await human(db, {elsewhere.id: "manager"})
+    async with client() as api:
+        observed = (await api.get(f"/api/tasks/planning-inputs/member/{mid}/context", headers=headers())).json()["expected_revisions"]
+    revision_header = {"X-Expected-Revisions": json.dumps(observed)}
+    async with viewer() as api:
+        listed = await api.get(f"/api/team-members/{mid}/capacity-adjustments")
+        assert listed.status_code == 200 and listed.json() == []
+        preview = await api.post(f"/api/team-members/{mid}/capacity-adjustments/preview", json=reduce_two_days())
+        assert preview.status_code == 403, preview.text
+        applied = await api.post(f"/api/team-members/{mid}/capacity-adjustments", json=reduce_two_days(),
+                                 headers=revision_header)
+        assert applied.status_code == 403, applied.text
+    async with other_manager() as api:
+        for response in (
+            await api.get(f"/api/team-members/{mid}/capacity-adjustments"),
+            await api.post(f"/api/team-members/{mid}/capacity-adjustments/preview", json=reduce_two_days()),
+            await api.post(f"/api/team-members/{mid}/capacity-adjustments", json=reduce_two_days(),
+                           headers=revision_header),
+        ):
+            assert response.status_code in {403, 404}, response.text
+            assert "availability_percent" not in response.text
+    async with db_session_factory() as current:
+        assert await current.scalar(select(func.count()).select_from(TeamMemberCapacityAdjustment)) == 0
+        assert dict((await current.execute(select(Iteration.id, Iteration.revision))).all()) == {
+            int(key): value for key, value in observed.items()}
+
+
+def test_saved_commitments_spread_by_the_percentage_on_each_date():
+    calendar = Calendar(id=1, name="Spread 2027", year=2027, timezone="UTC", nominal_day_hours=8,
+                        holidays=[], weekend_days=[5, 6], short_days=[])
+    coverage = AnnualCalendars(calendar)
+    owner = SimpleNamespace(id=7, availability_percent=100, operational_utilization=0, professionalism_coefficient=1)
+    week = [date(2027, 1, 4) + timedelta(days=offset) for offset in range(5)]
+    work = [SimpleNamespace(assignee_id=7, baseline_start_date=week[0], baseline_end_date=week[-1], effort_hours=20)]
+
+    plain = PeriodCommitments(work, [owner], {7: coverage}, week[0], week[-1])
+    assert [plain.for_day(day)[0] for day in week] == [4.0] * 5
+    dated = DatedAvailability({7: [(week[0], week[0], 0.0), (week[1], week[1], 50.0)]})
+    spread = PeriodCommitments(work, [owner], {7: coverage}, week[0], week[-1], dated)
+    # Monday carries nothing and Tuesday half a day's share; all twenty hours stay committed.
+    values = [spread.for_day(day)[0] for day in week]
+    assert values == pytest.approx([0.0, 20 / 7, 40 / 7, 40 / 7, 40 / 7]) and sum(values) == pytest.approx(20)
+    unrelated = PeriodCommitments(work, [owner], {7: coverage}, week[0], week[-1],
+                                  DatedAvailability({8: [(week[0], week[0], 0.0)]}))
+    assert [unrelated.for_day(day)[0] for day in week] == [4.0] * 5

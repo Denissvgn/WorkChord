@@ -33,7 +33,7 @@ Current `FOR UPDATE` inventory:
 | Atomic assignment/work lifecycle | `Task -> AgentActor -> AgentTaskAssignment -> AgentRun` | ordered helpers in `AgentWorkService` |
 | Legacy claim/event/run lifecycle | `Task` or `AgentRun` | focused transitions in `AgentService`; live uniqueness indexes are the final fence |
 | Planning preview/apply | `PlanningState -> Iteration -> Calendar[id...] [FOR SHARE] -> Task[id...] -> TaskDependency[id...] -> TeamMember[id...] -> Vacation[id...]` | The planning revision serializes shared capacity inputs. The PM command scopes its work rows to the authorized iteration. |
-| Dated capacity adjustment | `PlanningState -> Iteration[id...] -> TeamMember -> TeamMemberCapacityAdjustment[active...] -> AgentTaskAssignment[id...]` | The planning revision serializes it with schedules and dispatch. No task row is reserved; live assignments are read only to refuse a reduction under issued work. |
+| Dated capacity adjustment | `PlanningState -> Iteration[id...] -> TeamMember -> TeamMemberCapacityAdjustment[active...] -> Task[id...] -> AgentTaskAssignment[id...]` | The planning revision serializes it with schedules and dispatch. The row's tasks on reduced dates are locked, without a version change, before their live assignments are read to refuse a reduction under issued work. |
 | Profile preset creation | `TeamMemberProfile` | seed-key uniqueness plus locked re-read |
 | Triage reservation | `TriageItem` | `TriageService.get_by_id(for_update=True)` |
 | Delivery queue | due `OutboundWebhookDelivery[id...]` | PostgreSQL `FOR UPDATE SKIP LOCKED`; SQLite compare-and-set lease update |
@@ -100,7 +100,32 @@ with the affected task and assignment IDs. Adjustments are never edited:
 withdrawing one keeps it, with who withdrew it and why, in
 `GET /api/team-members/{member_id}/capacity-adjustments?include_withdrawn=true`.
 An adjustment is part of its row; it does not count as a use of an unused
-allocation and is removed with the row. To downgrade a database to a release
+allocation and is removed with the row. Iteration export and import do not
+carry adjustments; record them again after an import.
+
+Saved commitments in shared person capacity spread a task's known effort over
+its baseline in proportion to the row's percentage on each date, so a date an
+adjustment lowers carries less of the commitment. The scheduler places effort
+hours with each date's own percentage as well. Its whole-task effort estimate,
+which orders work for the scheduling pass rules and sizes the uninterrupted
+slot it searches for, keeps the row's own percentage: that estimate has no
+dates, and the forecast start and end dates still come from the dated
+placement.
+
+To check a proposed iteration start, end or calendar against the people's
+other bookings before changing it, send the proposed fields to
+`POST /api/iterations/{iteration_id}/date-move/preview`. It needs edit
+permission on the iteration and changes nothing. For each person of the
+iteration team it reports every date of the proposed period where the hours
+the iteration's rows would request, added to the hours the person's rows in
+other iterations already book, exceed the person's available hours, with dated
+adjustments applied. Bookings in iterations you cannot read are reported only
+as a total. Apply the move with the iteration update, sending the same fields
+and the returned `expected_revisions`; the update is refused if the iteration
+changed since the preview. Bookings in other iterations are not part of that
+fence, so preview again if the returned `planning_revision` has moved on.
+Agents use the `agent_preview_iteration_date_move` MCP tool and apply with
+`agent_update_iteration`. To downgrade a database to a release
 without adjustments, withdraw every active adjustment first; the downgrade
 refuses to discard an active one.
 

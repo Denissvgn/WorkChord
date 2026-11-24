@@ -1075,6 +1075,12 @@ class SchedulerService:
         coefficient = task.assignee.professionalism_coefficient if task.assignee else 1.0
         operational_util = task.assignee.operational_utilization if task.assignee else 0.0
 
+        # Dated capacity adjustments are deliberately not applied here. This estimate has
+        # no dates: it ranks work for the pass rules ("adjusted_effort") and sizes the
+        # contiguous slot that find_uninterrupted_slot looks for. MemberSchedule.allocate
+        # then places the task's effort hours with each date's own factor (dated_factors),
+        # so forecast start and end dates honour every adjustment. A dated factor here would
+        # need the start date being searched for and would reorder passes for adjusted rows.
         return self.rules_service.calculate_adjusted_effort(
             base_effort=(task.effort_hours / getattr(self, "_member_day_hours", {}).get(task.assignee_id, task.nominal_day_hours or 8))
                 / (task.assignee.availability_percent / 100 if task.assignee and task.assignee.availability_percent else 1),
