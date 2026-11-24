@@ -888,6 +888,11 @@ class AgentActorRosterItem(AgentActorResponse):
     queued_assignments: int = 0
     accepted_assignments: int = 0
     running_runs: int = 0
+    # "team": limited to the caller's bound topology (topology_key/revision
+    # say which). "workspace": every actor, not a dispatchable team.
+    roster_scope: Literal["team", "workspace"] = "workspace"
+    topology_key: Optional[str] = None
+    topology_revision: Optional[int] = None
 
 
 class AgentDependencyContext(BaseModel):
