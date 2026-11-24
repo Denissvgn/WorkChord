@@ -947,14 +947,14 @@ async def test_setup_scenario_09_live_roster_and_routing_matrix_is_topology_boun
     )
     assert advanced_preview.recommended_candidate is not None
     assert advanced_preview.recommended_candidate.actor_id == advanced_actor.id
-    outsider_exclusion = _exclusion(
-        advanced_preview,
-        actor_id=outsider.id,
-        binding_id=outsider_binding.id,
-    )
-    assert "actor_topology_incompatible" in (
-        outsider_exclusion.hard_blocker_codes
-    )
+    # The topology-bound PM receives no row for an actor outside its team.
+    assert outsider.id not in {
+        row.actor_id
+        for row in (
+            *advanced_preview.eligible_candidates,
+            *advanced_preview.exclusions,
+        )
+    }
 
     no_candidate_task = await task_factory(
         iteration=iteration,
@@ -1338,21 +1338,17 @@ async def test_setup_scenario_12_revision_and_cross_topology_paths_fail_closed(
         base=base,
         assessment=assessment,
     )
-    for actor_id, binding_id in (
-        (
-            secondary_worker.id,
-            default_candidate(secondary_worker).binding.id,
-        ),
-        (unbound.id, unbound_binding.id),
-    ):
-        exclusion = _exclusion(
-            refreshed_preview,
-            actor_id=actor_id,
-            binding_id=binding_id,
+    # Another team's actor and an unmanaged actor are outside this PM's
+    # topology, so neither appears in its preview rows.
+    returned_actor_ids = {
+        row.actor_id
+        for row in (
+            *refreshed_preview.eligible_candidates,
+            *refreshed_preview.exclusions,
         )
-        assert "actor_topology_incompatible" in (
-            exclusion.hard_blocker_codes
-        )
+    }
+    assert secondary_worker.id not in returned_actor_ids
+    assert unbound.id not in returned_actor_ids
 
     work_service = AgentWorkService(db_session)
     monkeypatch.setenv("MODEL_AWARE_ROUTING_MODE", "off")
