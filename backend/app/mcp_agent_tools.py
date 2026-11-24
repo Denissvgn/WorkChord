@@ -1152,6 +1152,89 @@ async def apply_capacity_adjustment(
     return receipt.model_dump(mode="json")
 
 
+async def preview_capacity_transfer(
+    db: AsyncSession,
+    actor: AgentActor,
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    """MCP handler: show every row's effective capacity with a temporary transfer without recording it."""
+    from app.schemas.team import CapacityTransferCommand, CapacityTransferResult
+    from app.services.agent_service import require_scope
+    from app.services.capacity_transfers import CapacityTransferService
+
+    require_scope(actor, "team:write")
+    result = await CapacityTransferService(db).preview(CapacityTransferCommand.model_validate(payload))
+    return CapacityTransferResult.model_validate(result).model_dump(mode="json")
+
+
+async def apply_capacity_transfer(
+    db: AsyncSession,
+    actor: AgentActor,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: lend capacity between rows of one person until a return date."""
+    from app.schemas.team import CapacityTransferCommand
+
+    receipt = await AgentPlanningService(db).apply_capacity_transfer(
+        actor,
+        CapacityTransferCommand.model_validate(payload),
+        command=_planning_command_context(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def preview_capacity_transfer_withdrawal(
+    db: AsyncSession,
+    actor: AgentActor,
+    group_token: str,
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    """MCP handler: show the capacity every row of a transfer gets back without recording it."""
+    from app.schemas.team import CapacityTransferResult, CapacityTransferWithdrawal
+    from app.services.agent_service import require_scope
+    from app.services.capacity_transfers import CapacityTransferService
+
+    require_scope(actor, "team:write")
+    result = await CapacityTransferService(db).preview_withdrawal(
+        group_token, CapacityTransferWithdrawal.model_validate(payload)
+    )
+    return CapacityTransferResult.model_validate(result).model_dump(mode="json")
+
+
+async def withdraw_capacity_transfer(
+    db: AsyncSession,
+    actor: AgentActor,
+    group_token: str,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: return the lent capacity of every row of one transfer together."""
+    from app.schemas.team import CapacityTransferWithdrawal
+
+    receipt = await AgentPlanningService(db).withdraw_capacity_transfer(
+        group_token,
+        actor,
+        CapacityTransferWithdrawal.model_validate(payload),
+        command=_planning_command_context(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
 async def get_task_replacement(
     db: AsyncSession,
     actor: AgentActor,

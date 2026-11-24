@@ -68,6 +68,8 @@ Require `start_ready` for normal autonomous work. Confirm that:
 - this actor has the queued execution assignment;
 - no foreign live claim/run exists.
 
+When the complete context reports `started: true`, your accepted assignment's run is already active. Its selection and claim gates were settled when you began, so `start_ready` is `false` and the blocker list shows only drift that stops the run (`task_deferred`, `assignment_task_version_stale`). Do not begin again. Continue the run: renew, record evidence, and submit. `started` changes only what the context displays; begin, renew, and submit gates are unchanged.
+
 For assigned rework or recovery, require an `active` task with rejection or
 recovery evidence, no current execution owner, and a fresh exact assignment.
 Do not force it through the normal planned-ready list. Read the latest review's

@@ -44,7 +44,7 @@ RELEASE_BASELINE_FILENAME = "release-baseline.json"
 CATALOG_SCHEMA = "workchord-agent-skills/v1"
 RELEASE_SCHEMA = "workchord-agent-skills-release/v1"
 RELEASE_BASELINE_SCHEMA = "workchord-agent-skills-baseline/v2"
-CATALOG_VERSION = "1.23.3"
+CATALOG_VERSION = "1.23.4"
 API_CONTRACT = "workchord-agent/v1"
 SERVER_COMPATIBILITY = ">=1.8.0,<2.0.0"
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
@@ -282,6 +282,16 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             "Reconcile durable queue ownership and order.",
             query_optional=("task_id", "actor_id", "purpose", "state", "limit"),
             tool_optional=("task_id", "actor_id", "purpose", "state", "limit"),
+        ),
+        _assigned_work_operation(
+            "assignment-page",
+            "PM",
+            "GET",
+            "/api/agent/assignments/page",
+            "agent_list_assignments_page",
+            "Read every assignment beyond one page, ordered by assignment id; pass next_cursor as cursor until has_more is false.",
+            query_optional=("task_id", "actor_id", "purpose", "state", "limit", "cursor"),
+            tool_optional=("task_id", "actor_id", "purpose", "state", "limit", "cursor"),
         ),
         _assigned_work_operation(
             "assignment-create",
@@ -791,7 +801,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
 ROLE_METADATA: dict[str, dict[str, Any]] = {
     "workchord-pm": {
         "role": "pm",
-        "version": "1.21.3",
+        "version": "1.21.4",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -832,7 +842,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-worker": {
         "role": "worker",
-        "version": "1.20.2",
+        "version": "1.20.3",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -860,7 +870,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-reviewer": {
         "role": "verifier",
-        "version": "1.8.3",
+        "version": "1.8.4",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,

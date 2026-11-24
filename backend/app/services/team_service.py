@@ -554,6 +554,8 @@ class TeamService:
         if not member:
             return False
 
+        from app.services.capacity_transfers import refuse_removing_transfer_row
+        await refuse_removing_transfer_row(self.db, member_id)
         await self.db.delete(member)
         await commit_or_flush(self.db)
         return True

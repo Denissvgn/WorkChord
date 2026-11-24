@@ -41,6 +41,9 @@ from app.schemas.project import (
 from app.schemas.team import (
     CapacityAdjustmentCommand,
     CapacityAdjustmentResult,
+    CapacityTransferCommand,
+    CapacityTransferResult,
+    CapacityTransferWithdrawal,
     TeamMemberCreate,
     TeamMemberProfileCreate,
     TeamMemberProfileResponse,
@@ -849,6 +852,62 @@ class AgentPlanningService:
             operation="planning.team_member.capacity_adjustment",
             target_type="team_member",
             idempotency_target_id=member_id,
+            command=command,
+            request_payload=payload,
+            mutate=mutate,
+        )
+
+    async def apply_capacity_transfer(
+        self,
+        actor: AgentActor,
+        data: CapacityTransferCommand,
+        *,
+        command: AgentPlanningCommandContext,
+    ) -> AgentPlanningReceipt:
+        """Lend capacity between rows of one person until a return date, every side in one command."""
+        from app.services.capacity_transfers import CapacityTransferService
+
+        payload = {"data": data.model_dump(mode="json", exclude_unset=True)}
+
+        async def mutate() -> MutationResult:
+            result = await CapacityTransferService(self.db).apply(data, commit=False)
+            return data.target_member_id, CapacityTransferResult.model_validate(result).model_dump(mode="json")
+
+        return await self._execute(
+            actor=actor,
+            scope="team:write",
+            operation="planning.capacity_transfer.apply",
+            target_type="team_member",
+            idempotency_target_id=data.target_member_id,
+            command=command,
+            request_payload=payload,
+            mutate=mutate,
+        )
+
+    async def withdraw_capacity_transfer(
+        self,
+        group_token: str,
+        actor: AgentActor,
+        data: CapacityTransferWithdrawal,
+        *,
+        command: AgentPlanningCommandContext,
+    ) -> AgentPlanningReceipt:
+        """Return the lent capacity of every row of one transfer together."""
+        from app.services.capacity_transfers import CapacityTransferService
+
+        payload = {"group_token": group_token, "data": data.model_dump(mode="json", exclude_unset=True)}
+
+        async def mutate() -> MutationResult:
+            result = await CapacityTransferService(self.db).withdraw(group_token, data, commit=False)
+            return result["target"]["member_id"], CapacityTransferResult.model_validate(result).model_dump(mode="json")
+
+        # The group token in the hashed request identifies the transfer; no row ID is read before authorization.
+        return await self._execute(
+            actor=actor,
+            scope="team:write",
+            operation="planning.capacity_transfer.withdraw",
+            target_type="capacity_transfer",
+            idempotency_target_id=0,
             command=command,
             request_payload=payload,
             mutate=mutate,

@@ -34,6 +34,7 @@ Current `FOR UPDATE` inventory:
 | Legacy claim/event/run lifecycle | `Task` or `AgentRun` | focused transitions in `AgentService`; live uniqueness indexes are the final fence |
 | Planning preview/apply | `PlanningState -> Iteration -> Calendar[id...] [FOR SHARE] -> Task[id...] -> TaskDependency[id...] -> TeamMember[id...] -> Vacation[id...]` | The planning revision serializes shared capacity inputs. The PM command scopes its work rows to the authorized iteration. |
 | Dated capacity adjustment | `PlanningState -> Iteration[id...] -> TeamMember -> TeamMemberCapacityAdjustment[active...] -> Task[id...] -> AgentTaskAssignment[id...]` | The planning revision serializes it with schedules and dispatch. The row's tasks on reduced dates are locked, without a version change, before their live assignments are read to refuse a reduction under issued work. |
+| Capacity transfer | `PlanningState -> Iteration[id...] -> TeamMember[id...] -> TeamMemberCapacityAdjustment[active...] -> Task[id...] -> AgentTaskAssignment[id...]` | One command reserves the planning scope of every row it changes, then locks the rows and their active adjustments in ID order. Each row whose capacity is lowered has its tasks on those dates locked, without a version change, before their live assignments are read. |
 | Profile preset creation | `TeamMemberProfile` | seed-key uniqueness plus locked re-read |
 | Triage reservation | `TriageItem` | `TriageService.get_by_id(for_update=True)` |
 | Delivery queue | due `OutboundWebhookDelivery[id...]` | PostgreSQL `FOR UPDATE SKIP LOCKED`; SQLite compare-and-set lease update |
@@ -102,6 +103,41 @@ withdrawing one keeps it, with who withdrew it and why, in
 An adjustment is part of its row; it does not count as a use of an unused
 allocation and is removed with the row. Iteration export and import do not
 carry adjustments; record them again after an import.
+
+A temporary capacity transfer lends part of the percentage of one or more rows
+of a person to another row of the same person, usually in another project, for
+a bounded date range. `POST /api/team-capacity-transfers/preview` takes the
+target row, each source row with the percentage it lends, the start and end
+dates and a reason, and returns each row's percentage and hours before and
+after on every date of the transfer, the person's totals over all of their
+rows, and the observed revisions. Send those revisions as
+`X-Expected-Revisions` with `POST /api/team-capacity-transfers` to record it.
+The command records one dated adjustment per row with one shared group token:
+each source counts its own percentage less what it lends and the target its own
+percentage plus everything it receives, on the transfer's dates only. The rows'
+own percentages are not edited, so they apply again from the day after the end
+date without any further command or scheduled job. A transfer starts today or
+later, lies within every row's iteration, may not overlap another active
+adjustment on any of its rows, and is refused with `capacity_adjustment_in_use`
+when a source row's issued work is scheduled on its dates. It changes no task,
+assignment or run. Any change to an affected iteration after the observation is
+an `iteration_version_conflict`.
+`POST /api/team-capacity-transfers/{group_token}/withdraw` (with a matching
+`/withdraw/preview`) returns the capacity of every row together. Dates already
+passed keep what they were lent, recorded as a new transfer under the
+withdrawal's group token, and only today and later dates return; a transfer
+whose dates have all passed cannot be withdrawn. Restoring the target is refused
+with `capacity_adjustment_in_use` while its issued work is scheduled on the
+returned dates. One side of a transfer cannot be withdrawn through the row's
+adjustment command, and a row with an unfinished transfer cannot be removed.
+`GET /api/team-capacity-transfers/{group_token}` reads every row of a transfer.
+Recording or withdrawing a transfer needs edit access to every iteration the
+person has a row in; a transfer with a row the caller cannot read is reported
+as not found. Each row's project receives its own command audit entry that names
+only that row, linked to the others by the group token. MCP agents use
+`agent_preview_capacity_transfer`, `agent_apply_capacity_transfer`,
+`agent_preview_capacity_transfer_withdrawal` and
+`agent_withdraw_capacity_transfer`.
 
 Saved commitments in shared person capacity spread a task's known effort over
 its baseline in proportion to the row's percentage on each date, so a date an

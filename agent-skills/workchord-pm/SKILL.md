@@ -28,6 +28,11 @@ The phases below give the detailed contract for each step. Use the names in
    confirm the controller identity, topology revision, required runtime
    acknowledgements, and `runtime_ready` state. Treat
    `availability_unknown` as intentional until a concrete task is evaluated.
+   When a member lists `unverified_tool_tags`, its declared tool capabilities
+   are excluded from routing (preview shows `model_tool_missing`) until the
+   operator adds the tags to the binding and the runtime re-acknowledges. Report
+   `tool_capability_next_action` to the operator; never treat a declaration as
+   a capability.
 4. Confirm the actor identity, scopes, role, profile binding, work policy, server/API compatibility, and selected project or iteration.
 5. Stop before mutation when identity, planning scope, required permission, or server feature support is ambiguous.
 6. Read [system-map-and-authority.md](references/system-map-and-authority.md) before establishing a workspace or changing cross-object plans.
@@ -176,9 +181,13 @@ compatibility routing and state explicitly that the actor/model choice was not
 model-aware. Never infer missing model capability from a deployment name,
 provider-facing model name, profile summary, or local prose.
 
-When `agent-team-master-v1` is present, the roster is scoped to the caller's
-current runtime-ready topology. Preserve the topology revision from status and
-routing preview evidence. Any setup, membership, package, profile, binding, or
+When `agent-team-master-v1` is present, read team status first. If
+`caller_binding` is `unbound` (`roster_scope: none`), you have no dispatchable
+team: report the `next_action` to the operator and do not assign work. Roster
+items marked `roster_scope: workspace` are the whole workspace, not your team,
+so never dispatch from them. Only items marked `roster_scope: team` whose
+`topology_revision` matches the revision in status and routing preview evidence
+are dispatchable; preserve that revision. Any setup, membership, package, profile, binding, or
 acknowledgement change requires a fresh status read and a fresh routing preview;
 never dispatch to an actor visible only in a manifest or an older receipt.
 
