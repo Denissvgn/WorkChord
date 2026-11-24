@@ -46,6 +46,8 @@ actor key, role, package identity, profile revision, binding-revision map,
 required server features, and supported assignment modes from the handoff and
 runtime. Do not add credential values, prompts, environment data, or logs.
 
+If the operator edits a binding's declared tool tags, the runtime must acknowledge the new binding revision again before the member is ready. Until then, do not act as if the new tags are available, and report any task that needs them as blocked by a missing tool.
+
 A successful acknowledgement activates only that exact identity. A revision,
 package, profile, binding, feature, role, mode, or actor mismatch is a stop
 condition: retain the handoff, report the bounded conflict code to the operator,

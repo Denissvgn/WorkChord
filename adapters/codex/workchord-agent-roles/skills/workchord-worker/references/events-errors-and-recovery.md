@@ -92,6 +92,7 @@ Do not create replacement tasks or self-assign discovery work.
 | `404` | Refetch identity/work/context; stop if the authoritative object is gone |
 | assignment/claim/version/fence `409` | Refetch full work and context; re-evaluate; never blind-retry |
 | pagination `409 stale_cursor` | Discard the opaque cursor and restart the same read from its first page |
+| `409 maintenance_window_admission_closed` | Start nothing new; keep renewing and submit or fail live work; retry the start after the window closes |
 | `400`/`422` validation | Correct the request or escalate; never retry unchanged |
 | `429` | Honor retry timing; reuse the same key only for an identical idempotent request |
 | timeout/`5xx` | Back off; re-read state before retrying; preserve the key for an identical supported operation |

@@ -10,6 +10,7 @@ Use this reference to route definition-ready work, create an ordered dispatch, s
 - [Order assigned work](#order-assigned-work)
 - [Schedule and re-read](#schedule-and-re-read)
 - [Supervise delivery](#supervise-delivery)
+- [Coordinate a maintenance window](#coordinate-a-maintenance-window)
 - [Complete phase contracts](#complete-phase-contracts)
 
 ## Route Capacity Ownership
@@ -226,6 +227,10 @@ Read the preview's `unscheduled` list before you apply. Each entry names a task 
 | `predecessor_unscheduled` | Correct the predecessor first; this task follows it. |
 | `not_placed` | Check the task's constraint dates and dependencies. |
 
+Each `unscheduled` entry also carries two fields besides its reason. `dates_cleared: true` means the task held dates before this run and the run removed them, so its bar left the Gantt; correct the input its reason names and calculate again, and never write the dates back by hand. `also` lists further reason codes that keep the task undated after its main reason is fixed. For example, `predecessor_unscheduled` with `also: ["no_assignee"]` means fix the predecessor and the task's own assignee. Clear every listed reason before you expect the task to be placed.
+
+Plan readiness (`plan-readiness`) and the Gantt response list `inverted_dependencies`: each pair is a saved dependency whose saved dates start the dependent on or before its prerequisite's last day. Saved dates stay as they are until a schedule is applied, so the Schedule checkpoint stays `todo` with reason `saved_dependencies_inverted`. Preview the schedule, check that the preview shows the dependent after its prerequisite, then apply it. If the dependent is in the preview's `unscheduled` list (for example, because it is blocked), the preview cannot fix its order: correct that reason first, then preview again.
+
 The calculation moves Planned leaves only. Active, Implemented, and Accepted tasks keep their dates and keep their place on their assignee's row.
 
 ### Start order and dates
@@ -283,6 +288,16 @@ For executing work:
 9. Re-read pipeline and affected task after intervention.
 
 Never edit worker-produced artifacts, finish the worker run, or transition active work merely to make the board look consistent. Treat push notifications as hints and refetch authoritative state before acting.
+
+## Coordinate a Maintenance Window
+
+An operator may announce a coordinated maintenance window for a release. While a window is announced or in progress, the server refuses every new start with `maintenance_window_admission_closed` (HTTP 409). Work that already holds a live claim keeps renewing and submitting. You can still plan and queue work, but nothing begins until the window closes.
+
+1. Read `GET /api/agent/me/maintenance-windows/current`. It shows the window, its planned end, `pm_notice_required`, and `pm_notice_recorded`. Its `my_live_claims` lists only your own live claims, so a PM normally sees none.
+2. If `pm_notice_required` is true, record your receipt with `POST /api/agent/me/maintenance-windows/{window_id}/notice-receipt` using your own key. A receipt says only that you were told; it does not admit any claim. Receipts are accepted only while the window is `announced`; otherwise the server refuses with `maintenance_window_state_conflict`.
+3. Find the run owners you must notify from the pipeline and run reads: `GET /api/agent/pipeline` shows the running and claimed work, and `GET /api/agent/runs/{run_id}` shows each run's owner. Tell every run owner on your team about the window and its planned end. Each owner must acknowledge its own live claim with `POST /api/agent/me/maintenance-windows/{window_id}/acknowledge`; you cannot acknowledge for it.
+4. Do not treat your notice receipt or a missing acknowledgement as consent for any claim. The window protects only the claims whose owners acknowledged it. The operator cannot begin the window while any live claim lacks its owner's acknowledgement (`owner_acknowledgement_missing`). An owner that did not acknowledge finishes its work before the window begins; the operator decides whether to wait or cancel the window.
+5. Dispatch resumes after the window closes. Re-read the queue and the assignment before you assign new work.
 
 ## Complete Phase Contracts
 

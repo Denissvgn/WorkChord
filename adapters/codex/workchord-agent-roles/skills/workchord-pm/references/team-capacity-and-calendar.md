@@ -11,6 +11,7 @@ Use this reference to create a feasible execution timebox and staff it with reus
 - [Create iteration capacity rows](#create-iteration-capacity-rows)
 - [Read the live routing inventory](#read-the-live-routing-inventory)
 - [Review capacity and workload](#review-capacity-and-workload)
+- [Change capacity over dates](#change-capacity-over-dates)
 - [Complete phase contracts](#complete-phase-contracts)
 
 ## Create the Outcome and Timebox
@@ -185,6 +186,19 @@ For every prospective capacity owner:
 Until the live capabilities contract states that aggregate iteration capacity and member vacation calculations are reconciled, use per-member capacity and workload detail for assignment decisions. Record any difference from the iteration summary rather than choosing the more convenient number.
 
 Do not hide overload by lowering effort, increasing professionalism, or removing vacations. Adjust scope, dates, allocation, assignee, or deferral explicitly.
+
+## Change Capacity Over Dates
+
+Use dated changes instead of editing a row's base percentage when the change covers only some dates. Every command has the same shape: preview first, read the effective capacity and the refusal or shortfall, then apply the same payload, sending the preview's `observed_revisions` map as `expected_revisions`. The adjustment and transfer previews return `observed_revisions`; only the iteration date-move preview returns `expected_revisions`. Use the MCP tools below; the matching application REST routes are a separate human/session surface.
+
+| Need | Preview, then apply | Use it for |
+| --- | --- | --- |
+| A row works a different share on some dates | `agent_preview_capacity_adjustment` (`/api/team-members/{member_id}/capacity-adjustments/preview`), then `agent_apply_capacity_adjustment` (`/api/team-members/{member_id}/capacity-adjustments`) | One dated replacement of a row's availability percentage, up to 366 days. Withdraw earlier adjustments in the same command with `withdraw_adjustment_ids`. |
+| A person lends part of a row's capacity to another row until a return date | `agent_preview_capacity_transfer` (`/api/team-capacity-transfers/preview`), then `agent_apply_capacity_transfer` (`/api/team-capacity-transfers`) | A temporary transfer between rows of one person or agent profile. Shares return on their own after `end_date`. |
+| Return a transfer early | `agent_preview_capacity_transfer_withdrawal`, then `agent_withdraw_capacity_transfer` (`/api/team-capacity-transfers/{group_token}/withdraw`) | Give back every row of one transfer together. Dates already elapsed keep their lent capacity. |
+| Move an iteration's start, end, or calendar | `agent_preview_iteration_date_move` (`/api/iterations/{id}/date-move/preview`), then `agent_update_iteration` with the same fields and the returned `expected_revisions` | Check each person's shortfall on each date before the period changes. A changed iteration is refused. |
+
+Before you apply, read the preview's `effective_capacity` or `shortfalls` and confirm the changed dates. Refusals name the rule, for example `capacity_adjustment_overlap` (an existing adjustment covers some of the dates; withdraw it in the same command to replace it), `capacity_adjustment_outside_iteration`, `capacity_adjustment_unscheduled` (add the row to an iteration first), `capacity_transfer_in_past` (a transfer starts today or later), `capacity_transfer_out_of_range` (a source would go below zero or the target above 100 percent), `capacity_transfer_profile_mismatch`, `capacity_transfer_ended`, and `date_move_range_invalid`. Correct the input and preview again; never retry the same payload unchanged. A changed iteration refuses the command with `iteration_version_conflict`; a changed planning scope refuses it with `planning_scope_changed`. Re-read the preview before you apply again.
 
 ## Complete Phase Contracts
 

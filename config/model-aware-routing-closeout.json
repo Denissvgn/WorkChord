@@ -136,7 +136,7 @@
     }
   ],
   "representative_master": {
-    "expected_digest": "faf0e5fef69b7c722aa7a117a14b07bfca58803f565f69911d83091e25611740",
+    "expected_digest": "fc18c36be31c5fea4c12dd8263c6d71b72bde87165293becd410d03c34be5b7f",
     "path": "config/examples/agent-team-master.json"
   },
   "schema_version": "model-aware-routing-closeout-v1",
