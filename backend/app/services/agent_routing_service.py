@@ -2163,11 +2163,11 @@ class AgentRoutingService:
                     errors[0].get("ctx", {}).get("error"), RoutingPacketSizeError
                 ):
                     raise
-            # Each pass drops at most one row and is capped by the row bounds, so
-            # the loop validates at most MAX_ROUTING_EXCLUSIONS plus
-            # MAX_ROUTING_CANDIDATES responses. Trim from the tail, sparing the
-            # named actor's rows until only
-            # they and the recommended candidate remain.
+            # Each pass drops at most one row. Without a focus the loop validates
+            # at most 1 + MAX_ROUTING_EXCLUSIONS + (MAX_ROUTING_CANDIDATES - 1)
+            # responses; a focus adds one pass when it is dropped (76 with the
+            # default limits). Trim from the tail, sparing the named actor's rows
+            # until only they and the recommended candidate remain.
             if _pop_trimmable(response_values["exclusions"], keep_first=0, focus=focus):
                 response_values["exclusions_omitted"] += 1
                 continue

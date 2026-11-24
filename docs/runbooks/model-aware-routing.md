@@ -322,13 +322,13 @@ measure the response body it receives, and should not expect that number to
 equal the canonical size.
 
 The server computes `preview_digest` over a projection of the response that
-uses UTC `+00:00` timestamps and omits model defaults. The body a client
-receives uses the schema's own datetime format and includes those defaults, so
-the digest cannot be recomputed from the body. Clients must send back the
-`preview_digest` and `preview_id` exactly as the server returned them, both
-when they create an assignment and when they verify a preview. Only the server
-can re-derive the digest, and it does so when it recomputes the preview at
-selection time.
+uses UTC `+00:00` timestamps and omits the model defaults of the top-level
+response fields; nested candidate and exclusion rows keep their defaults. The
+body a client receives uses the schema's own datetime format and includes all
+defaults, so the digest cannot be recomputed from the body. Clients must send
+back the `preview_digest` and `preview_id` exactly as the server returned them
+when creating or updating an assignment. Only the server can re-derive the
+digest, and it does so when it recomputes the preview at selection time.
 
 ## Rollback
 

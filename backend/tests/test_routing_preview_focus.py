@@ -642,3 +642,71 @@ async def test_focused_digest_selects_only_its_named_binding(
     )
     assert accepted["actor_id"] == ids["worker"] and accepted["model_binding_id"] == ids["named"]
     assert accepted["routing_snapshot"]["routing_preview_digest"] == named_digest
+
+
+@database_engines
+@pytest.mark.usefixtures("deployed_agent_skill_release", "qualified_model_aware_routing_test_context")
+async def test_focused_rows_that_fill_the_bound_keep_the_recommendation(
+    db_session,
+    db_session_factory,
+    team_member_factory,
+    task_factory,
+    monkeypatch,
+):
+    db = db_session
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "trusted_local")
+    get_settings.cache_clear()
+    team = await provision_ready_topology(db)
+    worker = team.actors["operations-worker"]
+    teammate = team.actors[team.manifest.workers[0].actor_key]
+    base = await routing_base(
+        db,
+        topology=team,
+        actor_key="operations-worker",
+        team_member_factory=team_member_factory,
+        task_factory=task_factory,
+        title="Prepare the bounded release package",
+        skill_key="security-review",
+    )
+    task, pm = base.task, base.pm
+    await bind_fillers(
+        db,
+        worker,
+        "worker-alternative",
+        WORKER_ALTERNATIVES,
+        enabled=True,
+        alias=LONG_ALIAS,
+        tool_tags=EXTRA_TOOL_TAGS,
+    )
+    await db.commit()
+    await acknowledge_all(team.service, team.manifest, team.sink.keys)
+    named = default_candidate(worker).binding
+    named_pair = (worker.id, named.id)
+    assessment = (
+        await AgentRoutingService(db).create_assessment(
+            task.id,
+            pm,
+            _assessment_command(task_version=task.version, required_skill_levels={"security-review": 3}),
+            _command_context("assess-focus-fill"),
+        )
+    ).assessment
+    now = utc_now().replace(microsecond=0)
+    monkeypatch.setattr(agent_routing_service, "utc_now", lambda: now)
+    # With a bound of one, the focused named row alone fills the candidate list.
+    monkeypatch.setattr(agent_routing_service, "MAX_ROUTING_CANDIDATES", 1)
+    read = preview_reader(
+        db_session_factory,
+        monkeypatch,
+        task.id,
+        {"purpose": "execution", "assessment_id": assessment.id, "expected_task_version": task.version},
+    )
+    pm_key = team.sink.keys[team.manifest.controller.actor_key]
+    plain = await read(pm_key)
+    recommended = plain["recommended_candidate"]
+    assert recommended["model_binding_id"] != named_pair[1]
+    assert plain["eligible_candidates"] == [recommended]
+    # The focus claims the one slot, yet index 0 stays the recommendation.
+    focused = await read(pm_key, focus_actor_id=named_pair[0], focus_model_binding_id=named_pair[1])
+    assert focused["recommended_candidate"] == recommended
+    assert focused["eligible_candidates"] == [recommended]
+    assert focused["eligible_candidates_omitted"] == plain["eligible_candidates_omitted"]
