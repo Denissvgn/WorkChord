@@ -267,6 +267,26 @@ Use the authenticated agent capability endpoint to inspect:
 - rollout and topology-readiness blocker codes;
 - the authoritative topology identity and revision, when available.
 
+## Diagnosing a named actor in a bounded preview
+
+A preview returns at most 25 eligible candidates and 50 exclusions within a
+32,768-byte packet, and reports the rest in `eligible_candidates_omitted` and
+`exclusions_omitted`. When a team has more rows than that, a named worker or
+reviewer can be among the omitted rows. Add `focus_actor_id`, and optionally
+`focus_model_binding_id`, to the same execution or verification preview
+request on `POST /api/agent/tasks/{task_id}/routing-preview` or MCP
+`agent_preview_task_routing`. The response then keeps that actor's rows (one
+binding's row, or all of the actor's rows) in their ranked or sorted place,
+with the same hard blocker codes, and trims other rows first. The omission
+counts still cover every row left out, and the preview digest covers the
+response as returned.
+
+A focus changes no eligibility. A team-bound caller sees only its own team's
+actors, so a focus on any other actor is ignored and the response equals the
+unfocused one. A preview focused on the actor being selected, alone or with
+the selected binding, can be used for that assignment; the server recomputes
+it at selection time.
+
 ## Rollback
 
 1. Set `MODEL_AWARE_ROUTING_MODE=off` on every application replica and restart

@@ -11,7 +11,7 @@ import hmac
 import json
 import math
 import secrets
-from typing import Any, Sequence
+from typing import Any, Callable, Sequence
 
 from sqlalchemy import func, select, text, update
 from pydantic import ValidationError
@@ -200,6 +200,54 @@ def _json_projection(value: Any) -> Any:
             for key, item in value.items()
         }
     return value
+
+
+RoutingRowFocus = Callable[[Any], bool] | None
+
+
+def _routing_row_focus(
+    actor_id: int | None,
+    model_binding_id: int | None,
+) -> RoutingRowFocus:
+    """Match the named actor's rows: one binding's row, or all of them.
+
+    A binding-less actor row (no model binding at all) belongs to every
+    binding focus of that actor, because it carries the actor's blockers.
+    """
+
+    if actor_id is None:
+        return None
+
+    def focused(row: Any) -> bool:
+        return row.actor_id == actor_id and (
+            model_binding_id is None
+            or row.model_binding_id in {None, model_binding_id}
+        )
+
+    return focused
+
+
+def _bounded_rows(rows: list[Any], limit: int, focus: RoutingRowFocus) -> list[Any]:
+    """Keep the first ``limit`` rows in order, claiming focused rows first."""
+
+    if focus is None:
+        return rows[:limit]
+    kept = set([index for index, row in enumerate(rows) if focus(row)][:limit])
+    for index in range(len(rows)):
+        if len(kept) >= limit:
+            break
+        kept.add(index)
+    return [row for index, row in enumerate(rows) if index in kept]
+
+
+def _pop_trimmable(rows: list[Any], *, keep_first: int, focus: RoutingRowFocus) -> bool:
+    """Drop the last row after ``keep_first`` that is not focused."""
+
+    for index in range(len(rows) - 1, keep_first - 1, -1):
+        if focus is None or not focus(rows[index]):
+            del rows[index]
+            return True
+    return False
 
 
 class AgentRoutingService:
@@ -1998,8 +2046,13 @@ class AgentRoutingService:
                 ),
             )
         ]
-        bounded_candidates = ranked_candidates[:MAX_ROUTING_CANDIDATES]
-        bounded_exclusions = exclusions[:MAX_ROUTING_EXCLUSIONS]
+        # A named actor's rows are kept ahead of the bounds, in their ranked
+        # or sorted position. Only rows built above can match, so a focus on
+        # an actor outside the caller's team matches nothing and the response
+        # is exactly the unfocused one.
+        focus = _routing_row_focus(data.focus_actor_id, data.focus_model_binding_id)
+        bounded_candidates = _bounded_rows(ranked_candidates, MAX_ROUTING_CANDIDATES, focus)
+        bounded_exclusions = _bounded_rows(exclusions, MAX_ROUTING_EXCLUSIONS, focus)
         generated_at = as_utc(generated_at).replace(microsecond=0)
         expires_at = generated_at + timedelta(
             seconds=ROUTING_PREVIEW_TTL_SECONDS
@@ -2093,13 +2146,16 @@ class AgentRoutingService:
                     errors[0].get("ctx", {}).get("error"), RoutingPacketSizeError
                 ):
                     raise
-            if response_values["exclusions"]:
-                response_values["exclusions"].pop()
+            # Trim from the tail, sparing the named actor's rows until only
+            # they and the recommended candidate remain.
+            if _pop_trimmable(response_values["exclusions"], keep_first=0, focus=focus):
                 response_values["exclusions_omitted"] += 1
                 continue
-            if len(response_values["eligible_candidates"]) > 1:
-                response_values["eligible_candidates"].pop()
+            if _pop_trimmable(response_values["eligible_candidates"], keep_first=1, focus=focus):
                 response_values["eligible_candidates_omitted"] += 1
+                continue
+            if focus is not None:
+                focus = None
                 continue
             raise AgentRoutingConflictError(
                 "routing_preview_packet_too_large",
@@ -2538,6 +2594,31 @@ class AgentRoutingService:
                 current_preview_id=recomputed.preview_id,
                 current_input_digest=recomputed.input_digest,
             )
+        if not secrets.compare_digest(
+            recomputed.preview_digest,
+            data.routing_preview_digest,
+        ):
+            # A preview focused on the selected actor (and binding) holds the
+            # same inputs but may keep that actor's rows beyond the bounds.
+            # Recompute it for the selection itself; no other focus applies.
+            for focus_binding_id in (data.model_binding_id, None):
+                focused = await self._build_preview(
+                    task=task,
+                    data=preview_request.model_copy(
+                        update={
+                            "focus_actor_id": selected_actor.id,
+                            "focus_model_binding_id": focus_binding_id,
+                        }
+                    ),
+                    generated_at=issued_at,
+                    requesting_actor_id=preview_request_actor_id,
+                )
+                if secrets.compare_digest(
+                    focused.preview_digest,
+                    data.routing_preview_digest,
+                ):
+                    recomputed = focused
+                    break
         if not secrets.compare_digest(
             recomputed.preview_digest,
             data.routing_preview_digest,

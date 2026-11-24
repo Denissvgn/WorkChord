@@ -52,7 +52,9 @@ fields.
    evidence. Preserve its preview ID, input digest, generation/expiry time,
    assessment ID/version, task version, actor queue revisions, binding
    revisions, ordered eligible candidates, excluded candidates, blocker codes,
-   and review policy.
+   and review policy. If a named team member or binding is in neither list
+   because rows were omitted, repeat the same preview with `focus_actor_id`
+   and optional `focus_model_binding_id` to see its exact row and blockers.
 4. Inspect every hard exclusion. Require actor authorization and purpose
    compatibility, matching profile/capacity ownership, skills and weaknesses,
    adequate model/tool/data-policy metadata, availability, workload, vacation,
