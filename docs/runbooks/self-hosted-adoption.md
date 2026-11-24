@@ -56,7 +56,8 @@ The Compose project is `workchord-server`. The default instance folder is
 
 ## 0. Variables and helpers
 
-Set these once in the shell that runs the whole procedure. The old values come
+Run every block in zsh or in bash 4.3 or newer (the macOS system `/bin/bash` 3.2
+rejects `${OLD_FILES[-1]}`). Set these once in the shell that runs the whole procedure. The old values come
 from the running project:
 
 ~~~bash
@@ -282,17 +283,18 @@ the removed segments cannot recover anything.
 ## Before the window: pending deliveries
 
 The new stack runs the outbound delivery worker, which the old instance may not
-have been running. Pending webhook deliveries would be sent the moment it
-starts. Look first, read-only:
+have been running. Pending deliveries would be sent the moment it
+starts. The table holds webhook, email and inbox delivery rows. Look first, read-only:
 
 ~~~bash
 old_compose exec -T postgres psql -U postgres -d workchord -c \
   "select status, count(*), min(created_at) from outbound_webhook_deliveries group by status"
 ~~~
 
-If `pending` is not zero, decide with the owner whether those deliveries should
-still go out; if not, mark them failed through the API or the settings page
-before the window. Do not edit the table by hand.
+If `pending` is not zero, ask the owner whether those deliveries may go out.
+There is no supported way to discard pending deliveries. If the owner does not
+want them sent, do not start the window; report it. Do not edit the table by
+hand.
 
 ## 6. Announce the window
 
@@ -409,6 +411,9 @@ ls "$NEW_SINK" | wc -l
 # pinned images); otherwise take it from the old backend's build identity.
 OLD_REVISION="$(sed -n 's/^# WorkChord main \([0-9a-f]\{7,40\}\).*/\1/p' "${OLD_FILES[-1]}" | head -1)"
 OLD_VERSION="$(git -C "$OLD_SOURCE" show "$OLD_REVISION:backend/pyproject.toml" 2>/dev/null | sed -n 's/^version = "\(.*\)"/\1/p')"
+# The old source copy usually lacks the old revision, so OLD_VERSION is then
+# empty: set it by hand from the old backend's build identity.
+#   curl -fsS http://127.0.0.1:8480/.well-known/workchord-build.json
 echo "replaces revision=${OLD_REVISION:?set OLD_REVISION by hand} version=${OLD_VERSION:-unknown}"
 python3 scripts/server/write_deployment_record.py \
   --folder "$WORKCHORD_INSTANCE_HOME" --operator "$USER" \
