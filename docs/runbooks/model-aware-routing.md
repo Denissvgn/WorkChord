@@ -39,13 +39,20 @@ An operator can revoke an issued receipt through the same command with `action=r
 
 A review receipt is bound to one verifier actor, one model binding and its
 revision, one candidate commit, one packet digest and one expiry. The server
-rechecks every one of those facts when the receipt is consumed, so a receipt
-cannot follow a queued verification assignment to another verifier or binding.
-Moving a receipt-backed verification assignment to a different verifier or
-binding therefore needs a new receipt. On a supervised update, changing
-`actor_id`, `review_binding_id` or `reviewer_profile_id` to another verifier or
-binding without a fresh `review_evidence_id` is refused with
-`verification_evidence_unavailable`.
+rechecks those facts when the receipt is consumed, so a receipt cannot be used
+by a different verifier or binding. Changing only `reviewer_profile_id` keeps
+the receipt, and the server refuses that change with `reviewer_profile_mismatch`.
+
+On a supervised update (`AgentTaskAssignmentUpdate`), changing `actor_id` or
+`review_binding_id` to another verifier or binding without a fresh
+`review_evidence_id` is refused with `verification_evidence_unavailable`. The
+model-aware update (`ModelAwareAgentTaskAssignmentUpdate`) does not apply that
+guard. It rebuilds the signed preview without the receipt, so only a verifier
+that is natively capable can be selected. It also overwrites the row's earlier
+`review_selection`. The operator's receipt event survives, but the assignment
+no longer shows the earlier evidence. Do not use the model-aware update for
+this change. Use cancel-and-recreate, which keeps the old assignment's
+`review_selection` intact.
 
 When the new verifier already has every required tool natively, without a
 scoped receipt, the supported route is to cancel the old assignment and create
@@ -57,13 +64,17 @@ a fresh verification assignment with no receipt:
    `agent_update_assignment`) using `state` `cancelled`, the current
    `expected_queue_revision`, and a `reason`. The cancellation skips the review
    evidence checks, so it does not need a receipt.
-3. Preview the new verifier with `POST /api/agent/tasks/{task_id}/routing-preview`
-   (MCP `agent_preview_task_routing`) using `purpose` `verification`, the current
+3. Run the verification preview for the new verifier with
+   `POST /api/agent/tasks/{task_id}/routing-preview` (MCP
+   `agent_preview_task_routing`) using `purpose` `verification`, the current
    `assessment_id`, the current `expected_task_version`, and the optional
    `reviewer_profile_id`. Omit `review_evidence_id` and `review_assignment_id`.
-   The new verifier must appear as an eligible candidate for the exact binding.
-   Its own tool tags must satisfy the assessment's required tool tags. For a
-   scoped review, the receipt is what relaxes the `host-shell` requirement, so a
+   In supervised mode the server does not rerun this preview when the assignment
+   is created without a receipt. The PM must read the result and act on it
+   before step 4. The new verifier must appear as an eligible candidate for the
+   exact binding, with no `model_tool_missing` or other exclusion for it. Its
+   own tool tags must satisfy the assessment's required tool tags. For a scoped
+   review, the receipt is what relaxes the `host-shell` requirement, so a
    verifier that needs a receipt to meet it is not eligible for this route.
 4. Create the fresh assignment with `POST /api/agent/assignments` (MCP
    `agent_create_assignment`) using `purpose` `verification`, the new `actor_id`,
@@ -72,24 +83,31 @@ a fresh verification assignment with no receipt:
    `review_evidence_id`. In enforced mode, use the model-aware create body with
    the `assessment_id`, `model_binding_id`, `model_binding_revision`, and the
    signed `routing_preview_id` and `routing_preview_digest` from the preview in
-   step 3. Supply the normal `Idempotency-Key`, `X-Agent-Rationale` and
-   `X-Correlation-ID` headers, or the MCP `idempotency_key`, `rationale` and
-   `correlation_id` arguments.
+   step 3. The server verifies that preview on the enforced-mode create. Supply
+   the normal `Idempotency-Key`, `X-Agent-Rationale` and `X-Correlation-ID`
+   headers, or the MCP `idempotency_key`, `rationale` and `correlation_id`
+   arguments.
 5. Re-read the new assignment. Its `review_selection` should carry the new
    reviewer and candidate, and no `review_evidence` key.
 
-The fresh assignment passes the same checks as any verification dispatch:
+Checks enforced by the server on every verification create, supervised or
+enforced, when the project requires an independent publisher:
 
-- the candidate is exact and still matches the task's current revisions;
-- on a project that requires an independent publisher, the verifier's publisher
-  differs from every contributing publisher;
+- the verifier's publisher differs from every contributing publisher, and the
+  candidate history is known;
 - the verifier is not an implementation actor, its profile did not contribute to
   the task, and any manual-execution profile rule still holds;
-- the requested reviewer profile matches the verifier's profile;
-- the routing policy, binding revision, model envelope, capacity and schedule
-  pass in the current preview;
-- the verdict later requires the observed model to match the new binding and
-  the reviewed candidate digest to match the current candidate.
+- a requested `reviewer_profile_id` matches the verifier's profile.
+
+Checks that the server enforces only on the enforced-mode create, using the
+signed preview: the routing policy, binding revision, model envelope, capacity
+and schedule. In supervised mode these are a manual check in step 3, and the
+PM must act on the preview result.
+
+Verdict-time checks apply later to the new assignment: the observed model must
+match the new binding, and a `pass` verdict requires the reviewed candidate
+digest to match the current candidate. A reject or other non-pass verdict does
+not need that digest.
 
 Nothing from the earlier assignment is erased. The cancelled row, its
 `review_selection` and the receipt's operator event remain in the task history,
