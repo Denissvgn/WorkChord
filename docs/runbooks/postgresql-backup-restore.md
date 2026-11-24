@@ -49,6 +49,64 @@ wrapper fixes that volume to mode 0700 and PostgreSQL ownership before the
 official entrypoint drops privileges. Production uses the managed equivalent
 and alerts before archive lag exceeds 300 seconds.
 
+## WAL archive retention
+
+The self-operated primary archives every WAL segment into the
+`workchord_postgresql_wal_archive` volume. Segments are only needed to replay
+forward from a base backup, so the `wal-archive-retention` service in
+`docker-compose.yml` prunes them with `pg_archivecleanup`
+(`scripts/database_backup/prune_wal_archive.sh`).
+
+Rule:
+
+- The anchor is the newest verified base backup under `/backups/base`. A base
+  backup is verified when `base-backup` finished it: the final
+  `workchord-<timestamp>` directory exists (it is only renamed into place after
+  `pg_verifybackup` passes) and contains `backup_label` and
+  `workchord-files.sha256`. In-progress `.workchord-*` directories are ignored.
+- The oldest segment kept is the one named by `START WAL LOCATION` in that
+  backup's `backup_label`. Everything older, including older `.backup` history
+  files, is removed. Timeline `.history` files are never removed.
+- With no verified base backup the job deletes nothing and says so. It also
+  deletes nothing, and exits with status 3, if the start segment of the anchor
+  backup is not in the archive (the archive does not belong to that backup).
+- It runs every `WAL_PRUNE_INTERVAL_SECONDS` (default 21600, six hours) and is
+  safe to repeat: a second run removes nothing.
+
+Recovery window: point-in-time recovery is possible from the newest verified
+base backup to the latest archived segment, so the window is the age of that
+backup. Older base backups stay restorable to the consistent point captured in
+the backup itself (the streamed WAL is inside it) but no longer to later points.
+Run `base-backup` at least as often as the window you need, and raise
+`WAL_PRUNE_KEEP_BACKUPS` (default 1) to anchor on the Nth newest verified
+backup when a longer window is required. The 35-day coverage objective above
+applies to the managed production service; on this layout it requires a
+base-backup cadence and `WAL_PRUNE_KEEP_BACKUPS` that reach back 35 days.
+
+Take a fresh base backup first (`docker compose --profile backup run --rm
+base-backup`): the archive written before the first verified base backup
+cannot be pruned until one exists. Then preview and prune by hand, for example
+the first time on a large archive:
+
+~~~bash
+docker compose run --rm --no-deps wal-archive-retention \
+  /bin/bash /opt/workchord/prune_wal_archive.sh --dry-run
+docker compose run --rm --no-deps wal-archive-retention \
+  /bin/bash /opt/workchord/prune_wal_archive.sh
+~~~
+
+The self-hosted layout (`docker-compose.server.yml`) is an overlay on
+`docker-compose.yml`: it inherits the archive settings and the retention
+service, so it needs no separate configuration. There, add
+`-f docker-compose.yml -f docker-compose.server.yml` and the project name to
+the commands above.
+
+To restore a point in time from the retained backup, copy the backup directory
+to a new data directory (mode 0700), create `recovery.signal`, set
+`restore_command = 'cp <archive>/%f %p'` and a `recovery_target_time` or
+`recovery_target_lsn` with `recovery_target_action = promote`, and start
+PostgreSQL on an isolated port.
+
 ## Isolated restore drill
 
 1. Resolve an empty database named
