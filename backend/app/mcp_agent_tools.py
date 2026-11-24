@@ -1090,6 +1090,50 @@ async def update_planning_team_member(
     return receipt.model_dump(mode="json")
 
 
+async def preview_capacity_adjustment(
+    db: AsyncSession,
+    actor: AgentActor,
+    member_id: int,
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    """MCP handler: show effective capacity for a dated adjustment without recording it."""
+    from app.schemas.team import CapacityAdjustmentCommand, CapacityAdjustmentResult
+    from app.services.agent_service import require_scope
+    from app.services.capacity_adjustments import CapacityAdjustmentService
+
+    require_scope(actor, "team:write")
+    result = await CapacityAdjustmentService(db).preview(
+        member_id, CapacityAdjustmentCommand.model_validate(payload)
+    )
+    return CapacityAdjustmentResult.model_validate(result).model_dump(mode="json")
+
+
+async def apply_capacity_adjustment(
+    db: AsyncSession,
+    actor: AgentActor,
+    member_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: record or withdraw dated adjustments on one capacity row."""
+    from app.schemas.team import CapacityAdjustmentCommand
+
+    receipt = await AgentPlanningService(db).apply_capacity_adjustment(
+        member_id,
+        actor,
+        CapacityAdjustmentCommand.model_validate(payload),
+        command=_planning_command_context(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
 async def create_planning_vacation(
     db: AsyncSession,
     actor: AgentActor,

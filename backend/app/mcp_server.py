@@ -1552,6 +1552,40 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
+    @mcp.tool(annotations=READ_ONLY_TOOL)
+    async def agent_preview_capacity_adjustment(
+        member_id: int,
+        payload: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Show effective capacity for dated adjustments on one capacity row without recording them."""
+        return await _tool_call(
+            "team:write",
+            lambda db, actor: mcp_agent_tools.preview_capacity_adjustment(db, actor, member_id, payload),
+            preview=True,
+        )
+
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_apply_capacity_adjustment(
+        member_id: int,
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Record or withdraw dated adjustments on one capacity row; payload carries expected_revisions."""
+        return await _tool_call(
+            "team:write",
+            lambda db, actor: mcp_agent_tools.apply_capacity_adjustment(
+                db,
+                actor,
+                member_id,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
     @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_vacation(
         member_id: int,

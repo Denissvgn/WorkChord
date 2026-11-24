@@ -164,6 +164,12 @@ async def observe_planning_input(db, kind, resource_id, *, creating_member=False
         if len(vacations) > 500:
             raise PlanningConflict('planning_scope_oversized', 'This member exceeds the supported vacation context limit.')
         resource['vacations'] = [dict(vacation) for vacation in vacations]
+        from app.models.team_member import TeamMemberCapacityAdjustment as Adjustment
+        adjustments = (await db.execute(select(*Adjustment.__table__.columns).where(Adjustment.team_member_id == resource_id,
+            Adjustment.withdrawn_at.is_(None)).order_by(Adjustment.start_date, Adjustment.id).limit(501))).mappings().all()
+        if len(adjustments) > 500:
+            raise PlanningConflict('planning_scope_oversized', 'This member exceeds the supported adjustment context limit.')
+        resource['capacity_adjustments'] = [dict(adjustment) for adjustment in adjustments]
     if kind == 'profile':
         from app.models.team_member import TeamMemberProfileSkill
         skills = (await db.execute(select(*TeamMemberProfileSkill.__table__.columns)

@@ -334,6 +334,8 @@ class CapacityService:
             tasks = list((await self.db.execute(select(Task.id, Task.assignee_id, Task.baseline_start_date, Task.baseline_end_date, Task.effort_hours).where(Task.assignee_id.in_([m.id for m in members]),
                 Task.id.in_(included), Task.status != "closed"))).all())
             commitments = PeriodCommitments(tasks, members, member_coverages, start, end)
+            from app.services.capacity_adjustments import load_dated_availability
+            dated = await load_dated_availability(self.db, [m.id for m in members])
             resolved_calendars = {}
             result = []
             day = start
@@ -363,10 +365,10 @@ class CapacityService:
                 def hours(member):
                     return 0.0 if absent else member_coverages[member.id].hours(day) or 0.0
                 incomplete = any(member_coverages[m.id].by_year.get(day.year) is None for m in scheduled)
-                allocated = sum(hours(m) * m.availability_percent / 100 for m in scheduled)
-                private_busy = sum(hours(m) * m.availability_percent / 100 for m in scheduled
+                allocated = sum(hours(m) * dated.percent(m, day) / 100 for m in scheduled)
+                private_busy = sum(hours(m) * dated.percent(m, day) / 100 for m in scheduled
                     if authority and not (authority.operator or authority.local or authority.allows(m.iteration.project_id, "read")))
-                productive = sum(hours(m) * m.availability_percent / 100 *
+                productive = sum(hours(m) * dated.percent(m, day) / 100 *
                     (1 - m.operational_utilization / 100) * m.professionalism_coefficient for m in scheduled)
                 committed, unknown_commitment = commitments.for_day(day)
                 result.append({"date": day, "available_hours": round(available, 4) if calendar else None,
@@ -387,7 +389,7 @@ class CapacityService:
                     "availability_percent": m.availability_percent, "operational_utilization": m.operational_utilization,
                     "professionalism_coefficient": m.professionalism_coefficient} for m in members
                     if authority is None or authority.operator or authority.local or authority.allows(m.iteration.project_id, "read")],
-                "formula": "allocated = person calendar hours after absence × availability; productive = allocated × (1 − utilization) × coefficient",
+                "formula": "allocated = person calendar hours after absence × availability on that date; productive = allocated × (1 − utilization) × coefficient",
                 "rounding": "Round output hours to 4 decimals; calculate using unrounded values."}
 
     async def schedule_issues(self, iteration, members):

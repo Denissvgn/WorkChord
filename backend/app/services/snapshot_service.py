@@ -126,6 +126,7 @@ class SnapshotService:
             physical = await connection.run_sync(foreign_keys_to_members)
             known = {("tasks", "assignee_id"), ("projects", "owner_id"), ("initiatives", "owner_id"),
                      ("vacations", "team_member_id"), ("agent_task_assignments", "team_member_id"),
+                     ("team_member_capacity_adjustments", "team_member_id"),
                      ("triage_classification_suggestions", "suggested_assignee_id")}
             mapped = mapped_allocation_references(self.db)
             if physical != mapped or physical - known:
@@ -210,6 +211,8 @@ class SnapshotService:
 
         tasks = await TaskService(self.db).get_by_iteration(iteration_id)
         team_members = await TeamService(self.db).get_by_iteration(iteration_id)
+        from app.services.capacity_adjustments import active_adjustment_rows
+        adjustments = await active_adjustment_rows(self.db, [member.id for member in team_members])
         created_at = utc_now()
 
         payload = {
@@ -224,7 +227,7 @@ class SnapshotService:
                 "manager_email": iteration.manager_email,
             },
             "team_members": [
-                self._member_to_export(member)
+                self._member_to_export(member, adjustments.get(member.id, ()))
                 for member in team_members
             ],
             "tasks": [
@@ -409,6 +412,10 @@ class SnapshotService:
                     setattr(member, key, data[key])
             member.iteration_id = iteration_id
             members[member.id] = member
+            if "capacity_adjustments" in data:
+                await self.db.flush()
+                from app.services.capacity_adjustments import restore_adjustments
+                await restore_adjustments(self.db, member, data["capacity_adjustments"], filename)
             # Person availability is shared across iterations and is never restored from one plan.
             if member.profile_id is not None:
                 continue
@@ -568,9 +575,19 @@ class SnapshotService:
             "children": [self._task_to_export(c) for c in task.children],
         }
 
-    def _member_to_export(self, member) -> dict:
+    def _member_to_export(self, member, adjustments=()) -> dict:
         """Convert team member to export format."""
         return {
+            "capacity_adjustments": [
+                {
+                    "id": row.id,
+                    "start_date": row.start_date.isoformat(),
+                    "end_date": row.end_date.isoformat(),
+                    "availability_percent": row.availability_percent,
+                    "reason": row.reason,
+                }
+                for row in adjustments
+            ],
             "id": member.id,
             "allocation_token": member.allocation_token,
             "profile_id": member.profile_id,

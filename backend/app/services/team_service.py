@@ -685,11 +685,20 @@ class TeamService:
             coverage, member.iteration.start_date, member.iteration.end_date)
         ranges = await capacity_service.absence_ranges(member)
         absent = {day for day in working if any(start <= day <= end for start, end in ranges)}
-        available_days = (len(working) - len(absent)) * member.availability_percent / 100
+        from app.services.capacity_adjustments import load_dated_availability
+        dated = await load_dated_availability(self.db, [member.id])
+        if dated.has_adjustments(member.id):
+            # A dated adjustment replaces the row's percentage on its own dates only.
+            present = [day for day in working if day not in absent]
+            available_days = sum(dated.percent(member, day) for day in present) / 100
+            hours = sum(coverage.hours(day) * dated.percent(member, day) for day in present) / 100
+            hours *= (1 - member.operational_utilization / 100) * member.professionalism_coefficient
+        else:
+            available_days = (len(working) - len(absent)) * member.availability_percent / 100
+            hours = sum(coverage.hours(day) for day in working if day not in absent)
+            hours *= member.availability_percent / 100 * (1 - member.operational_utilization / 100) * member.professionalism_coefficient
         effective_days = available_days * (1 - member.operational_utilization / 100)
         adjusted_days = effective_days * member.professionalism_coefficient
-        hours = sum(coverage.hours(day) for day in working if day not in absent)
-        hours *= member.availability_percent / 100 * (1 - member.operational_utilization / 100) * member.professionalism_coefficient
         missing_years = coverage.missing_years(member.iteration.start_date, member.iteration.end_date)
         return MemberCapacity(team_member_id=member_id, working_days=len(working),
             vacation_days=len(absent), available_days=round(available_days, 2),
