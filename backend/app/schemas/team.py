@@ -497,3 +497,136 @@ class CapacityAdjustmentResult(BaseModel):
         "row hours = person calendar hours after absence × the row's percentage on that date; "
         "allocated = the sum of row hours over every row of the same person"
     )
+
+
+class CapacityTransferSource(BaseModel):
+    """A capacity row that lends part of its availability percentage."""
+
+    member_id: int = Field(ge=1)
+    transferred_percent: float = Field(gt=0, le=100)
+
+
+class CapacityTransferCommand(PlanningInputRevisions):
+    """Lend availability from one or more rows to a row of the same person for a bounded date range.
+
+    Each source row counts its own percentage minus ``transferred_percent`` on each
+    date from ``start_date`` through ``end_date``; the target row counts its own
+    percentage plus the sum of the lent percentages. Every other date keeps each
+    row's own percentage, so the shares return after ``end_date`` on their own.
+    """
+
+    target_member_id: int = Field(ge=1)
+    sources: list[CapacityTransferSource] = Field(min_length=1, max_length=20)
+    start_date: date
+    end_date: date
+    reason: str = Field(min_length=1, max_length=1000)
+
+    @model_validator(mode="after")
+    def validate_transfer(self) -> "CapacityTransferCommand":
+        self.reason = self.reason.strip()
+        if not self.reason:
+            raise ValueError("Give a reason for the transfer")
+        if self.start_date > self.end_date:
+            raise ValueError("start_date must be before or equal to end_date")
+        if (self.end_date - self.start_date).days > 365:
+            raise ValueError("A transfer covers at most 366 days")
+        members = [source.member_id for source in self.sources]
+        if len(set(members)) != len(members):
+            raise ValueError("Name each source row once")
+        if self.target_member_id in members:
+            raise ValueError("A row cannot lend capacity to itself")
+        return self
+
+
+class CapacityTransferWithdrawal(PlanningInputRevisions):
+    """Return the lent capacity of every row of one transfer together."""
+
+    reason: str = Field(min_length=1, max_length=1000)
+
+    @model_validator(mode="after")
+    def validate_reason(self) -> "CapacityTransferWithdrawal":
+        self.reason = self.reason.strip()
+        if not self.reason:
+            raise ValueError("Give a reason for returning the capacity")
+        return self
+
+
+class CapacityTransferDay(BaseModel):
+    """One date of one row of a transfer, before and after the command."""
+
+    date: date
+    availability_percent_before: float
+    availability_percent_after: float
+    row_hours_before: Optional[float] = None
+    row_hours_after: Optional[float] = None
+
+
+class CapacityTransferSide(BaseModel):
+    """One row of a transfer: the target that receives or a source that lends."""
+
+    role: Literal["target", "source"]
+    member_id: int
+    iteration_id: Optional[int] = None
+    project_id: Optional[int] = None
+    base_availability_percent: float
+    transferred_percent: float
+    availability_percent: float
+    adjustment: Optional[CapacityAdjustmentResponse] = None
+    retained: Optional[CapacityAdjustmentResponse] = None
+    effective_capacity: list[CapacityTransferDay] = Field(default_factory=list)
+
+
+class PersonCapacityDay(BaseModel):
+    """The person's totals over every row of the same profile on one date."""
+
+    date: date
+    available_hours: Optional[float] = None
+    allocated_hours_before: Optional[float] = None
+    allocated_hours_after: Optional[float] = None
+    overallocated_hours_before: Optional[float] = None
+    overallocated_hours_after: Optional[float] = None
+
+
+class CapacityTransferResult(BaseModel):
+    """Effective capacity of every row of a transfer, and the adjustments the command records or withdraws."""
+
+    applied: bool
+    action: Literal["transfer", "withdrawal"]
+    group_token: Optional[str] = None
+    withdrawal_group_token: Optional[str] = None
+    profile_id: Optional[int] = None
+    start_date: date
+    end_date: date
+    returns_on: date
+    restored_from: Optional[date] = None
+    reason: str
+    target: CapacityTransferSide
+    sources: list[CapacityTransferSide]
+    person_capacity: list[PersonCapacityDay] = Field(default_factory=list)
+    observed_revisions: dict[int, int]
+    resulting_revisions: dict[int, int] = Field(default_factory=dict)
+    planning_revision: Optional[int] = None
+    formula: str = (
+        "source percentage = its own percentage - the lent percentage; target percentage = its own "
+        "percentage + the sum of lent percentages, on each date of the transfer only; "
+        "row hours = person calendar hours after absence × the row's percentage on that date"
+    )
+
+
+class CapacityTransferRecord(BaseModel):
+    """A recorded transfer: every row it changes and whether it is still active."""
+
+    group_token: str
+    active: bool
+    profile_id: Optional[int] = None
+    start_date: date
+    end_date: date
+    returns_on: date
+    reason: str
+    created_by_principal_id: Optional[int] = None
+    created_at: Optional[datetime] = None
+    withdrawn_at: Optional[datetime] = None
+    withdrawal_reason: Optional[str] = None
+    withdrawn_group_token: Optional[str] = None
+    target: CapacityTransferSide
+    sources: list[CapacityTransferSide]

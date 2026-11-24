@@ -208,6 +208,8 @@ class CapacityAdjustmentService:
             raise PlanningConflict("capacity_adjustment_unavailable",
                 "These adjustments are not active on this capacity row: " + ", ".join(map(str, missing)) + ". Reload its adjustments.")
         withdrawn = [by_id[value] for value in data.withdraw_adjustment_ids]
+        from app.services.capacity_transfers import refuse_withdrawing_transfer_side
+        await refuse_withdrawing_transfer_side(self.db, withdrawn)
         remaining = [row for row in active if row.id not in set(data.withdraw_adjustment_ids)]
         items = sorted(data.adjustments, key=lambda item: (item.start_date, item.end_date))
         for item in items:

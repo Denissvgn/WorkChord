@@ -1,7 +1,7 @@
 """Team API router."""
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Path, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
@@ -15,6 +15,7 @@ from app.schemas.team import (
     TeamMemberProfileSkillCreate, TeamMemberProfileSkillResponse,
     TeamMemberProfileSkillUpdate, TeamMemberProfileUpdate,
     CapacityAdjustmentCommand, CapacityAdjustmentResponse, CapacityAdjustmentResult,
+    CapacityTransferCommand, CapacityTransferRecord, CapacityTransferResult, CapacityTransferWithdrawal,
     TeamMemberProfileSeedKeyBind,
 )
 from app.schemas.common import MessageResponse
@@ -312,6 +313,58 @@ async def apply_capacity_adjustment(
     """Record or withdraw dated adjustments. Send the member context's complete X-Expected-Revisions."""
     from app.services.capacity_adjustments import CapacityAdjustmentService
     return await CapacityAdjustmentService(db).apply(member_id, data)
+
+
+@router.post("/team-capacity-transfers/preview", response_model=CapacityTransferResult)
+async def preview_capacity_transfer(
+    data: CapacityTransferCommand,
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+):
+    """Show every row's effective capacity with a temporary transfer without changing anything."""
+    from app.services.capacity_transfers import CapacityTransferService
+    return await CapacityTransferService(db).preview(data)
+
+
+@router.post("/team-capacity-transfers", response_model=CapacityTransferResult)
+async def apply_capacity_transfer(
+    data: CapacityTransferCommand,
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+):
+    """Lend capacity between rows of one person until a return date. Send the preview's complete X-Expected-Revisions."""
+    from app.services.capacity_transfers import CapacityTransferService
+    return await CapacityTransferService(db).apply(data)
+
+
+@router.get("/team-capacity-transfers/{group_token}", response_model=CapacityTransferRecord)
+async def get_capacity_transfer(
+    group_token: Annotated[str, Path(max_length=36)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+):
+    """Read every row of one capacity transfer and whether it is still active."""
+    from app.services.capacity_transfers import CapacityTransferService
+    return await CapacityTransferService(db).get(group_token)
+
+
+@router.post("/team-capacity-transfers/{group_token}/withdraw/preview", response_model=CapacityTransferResult)
+async def preview_capacity_transfer_withdrawal(
+    group_token: Annotated[str, Path(max_length=36)],
+    data: CapacityTransferWithdrawal,
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+):
+    """Show the capacity every row of a transfer gets back without changing anything."""
+    from app.services.capacity_transfers import CapacityTransferService
+    return await CapacityTransferService(db).preview_withdrawal(group_token, data)
+
+
+@router.post("/team-capacity-transfers/{group_token}/withdraw", response_model=CapacityTransferResult)
+async def withdraw_capacity_transfer(
+    group_token: Annotated[str, Path(max_length=36)],
+    data: CapacityTransferWithdrawal,
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+):
+    """Return the lent capacity of every row of a transfer together; elapsed dates keep it."""
+    from app.services.capacity_transfers import CapacityTransferService
+    return await CapacityTransferService(db).withdraw(group_token, data)
 
 
 @router.get("/team-members/{member_id}/capacity", response_model=MemberCapacity)

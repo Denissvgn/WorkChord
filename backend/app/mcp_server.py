@@ -1586,6 +1586,71 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
+    @mcp.tool(annotations=READ_ONLY_TOOL)
+    async def agent_preview_capacity_transfer(
+        payload: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Show every row's effective capacity with a temporary transfer between rows of one person without recording it."""
+        return await _tool_call(
+            "team:write",
+            lambda db, actor: mcp_agent_tools.preview_capacity_transfer(db, actor, payload),
+            preview=True,
+        )
+
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_apply_capacity_transfer(
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Lend capacity from source rows to a target row of the same person until a return date; payload carries expected_revisions."""
+        return await _tool_call(
+            "team:write",
+            lambda db, actor: mcp_agent_tools.apply_capacity_transfer(
+                db,
+                actor,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
+    @mcp.tool(annotations=READ_ONLY_TOOL)
+    async def agent_preview_capacity_transfer_withdrawal(
+        group_token: str,
+        payload: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Show the capacity every row of a transfer gets back without recording it."""
+        return await _tool_call(
+            "team:write",
+            lambda db, actor: mcp_agent_tools.preview_capacity_transfer_withdrawal(db, actor, group_token, payload),
+            preview=True,
+        )
+
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_withdraw_capacity_transfer(
+        group_token: str,
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Return the lent capacity of every row of one transfer together; payload carries expected_revisions."""
+        return await _tool_call(
+            "team:write",
+            lambda db, actor: mcp_agent_tools.withdraw_capacity_transfer(
+                db,
+                actor,
+                group_token,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
     @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_vacation(
         member_id: int,

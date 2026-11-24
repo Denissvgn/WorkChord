@@ -241,8 +241,13 @@ async def planning_input_reservation(db, kind, values):
         history = await inspect_allocation_history(db, values["member_id"])
     await lock_planning(db)
     # A dated capacity adjustment observes the same scope as its capacity row.
-    resolved_kind = 'member' if kind in ('member_removal', 'member_capacity_adjustment') else 'vacation' if 'vacation_id' in values else kind
-    ids = await affected_iteration_ids(db, resolved_kind, values)
+    resolved_kind = 'member' if kind in ('member_removal', 'member_capacity_adjustment', 'capacity_transfer') else 'vacation' if 'vacation_id' in values else kind
+    if kind == 'capacity_transfer':
+        # A transfer observes the scopes of every row it changes, together.
+        from app.services.capacity_transfers import transfer_iteration_ids
+        ids = await transfer_iteration_ids(db, values)
+    else:
+        ids = await affected_iteration_ids(db, resolved_kind, values)
     data = values.get('data')
     body_expected = values.get('expected_revisions', getattr(data, 'expected_revisions', None))
     explicit_body = ('expected_revisions' in values and values['expected_revisions'] is not None
@@ -279,9 +284,9 @@ async def planning_input_reservation(db, kind, values):
             snapshot = (await db.execute(select(ApplicationSnapshot.id, ApplicationSnapshot.checksum, ApplicationSnapshot.input_revision)
                 .where(ApplicationSnapshot.iteration_id == iteration_id, ApplicationSnapshot.filename == filename))).one()
             extension.update(snapshot_id=snapshot.id, snapshot_sha256=snapshot.checksum, input_revision=snapshot.input_revision)
-    # A dated capacity adjustment changes no task: its command refuses reducing issued work
-    # instead of reserving every open task version in the affected iterations.
-    tasks = [] if unused_allocation or kind == "member_capacity_adjustment" else list((await db.scalars(select(Task).where(Task.iteration_id.in_(ids), Task.status != 'closed').order_by(Task.id))).all())
+    # A dated capacity adjustment or transfer changes no task: its command refuses reducing
+    # issued work instead of reserving every open task version in the affected iterations.
+    tasks = [] if unused_allocation or kind in ("member_capacity_adjustment", "capacity_transfer") else list((await db.scalars(select(Task).where(Task.iteration_id.in_(ids), Task.status != 'closed').order_by(Task.id))).all())
     if kind == "iteration" and parent is None and len(ids) == 1:
         from app.services.calendar_rules import reserve_iteration_annuals
         if await reserve_iteration_annuals(db, ids[0], data, tasks):
