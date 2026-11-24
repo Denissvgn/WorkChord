@@ -148,6 +148,19 @@ or inaccessible prerequisite makes the dependent work unavailable again.
 Unlink a delivery prerequisite before deleting referenced work or changing its
 project scope.
 
+A task prerequisite can also name a **target branch** (`target_branch` on
+`POST /api/tasks/{task_id}/delivery-dependencies`) when the dependent work needs
+the prerequisite's code on that branch, not only its acceptance. It stays held
+until the prerequisite is Accepted and a linked pull request is observed merged
+into that branch. Readiness reads the stored GitHub observations and never calls
+GitHub; run the prerequisite's GitHub catch-up to refresh them. The hold is
+listed as `delivery_holds` on the agent pipeline and the task context, each with
+its reason, the observed pull requests and the next owner: the reviewer for an
+open pull request awaiting acceptance, the worker for unfinished work, and the
+PM for a merge that is not yet observed. A merge never accepts a task. An
+ordinary dependency (`depends_on`) is unchanged and releases the dependent task
+once its predecessor is Implemented.
+
 Use the task's work controls to commit it to an iteration or return planned
 work to the backlog. Preview the schedule before applying it. A preview saves
 nothing. Shared availability changes invalidate its planning revision; reload

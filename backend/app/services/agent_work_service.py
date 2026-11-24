@@ -2303,8 +2303,11 @@ class AgentWorkService:
         from app.services.agent_service import AgentService
 
         timeline = await AgentService(self.db).get_task_timeline(task.id)
+        context_task = self.task_service.task_to_response(task)
+        from app.services.delivery_dependency_service import DeliveryDependencyService
+        context_task.delivery_holds = await DeliveryDependencyService(self.db).holds(task.id)
         return AgentTaskContextResponse(
-            task=self.task_service.task_to_response(task),
+            task=context_task,
             assignment=assignment_view,
             task_brief=brief,
             parent_chain=parent_chain,
@@ -4384,8 +4387,11 @@ class AgentWorkService:
             if task.min_start_date is not None and task.min_start_date > today:
                 blockers.append("min_start_future")
         from app.services.delivery_dependency_service import DeliveryDependencyService
-        if not await DeliveryDependencyService(self.db).ready(task.id):
+        delivery_holds = await DeliveryDependencyService(self.db).holds(task.id)
+        if delivery_holds:
             blockers.append("delivery_prerequisite_unavailable")
+            if any(hold["reason"] == "prerequisite_merge_not_observed" for hold in delivery_holds):
+                blockers.append("delivery_merge_not_observed")
         for edge in task.dependencies:
             dependency = edge.depends_on
             if dependency.canceled_at or dependency.status not in {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}:

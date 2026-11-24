@@ -278,6 +278,8 @@ weak ETag with `If-None-Match`/`304`. `GET /api/agent/me/reviews` and
 | Labels/templates/views | `workspace_list_label_groups`, `workspace_list_labels`, `workspace_list_templates`, `workspace_list_saved_views` |
 | External links | `workspace_list_external_links`, `workspace_create_task_github_link`, `workspace_create_release_github_link`, `workspace_delete_external_link`; a GitHub link is a pull request, issue, branch, commit (full SHA), or release tag URL; mutations require idempotency key, rationale, and correlation ID |
 | Request sources | `workspace_search_request_sources`, `workspace_list_request_source_links`, `workspace_create_request_source_link`, `workspace_unlink_request_source`; mutations require idempotency key, rationale, and correlation ID |
+| Task replacement | `agent_get_task_replacement` (`GET /api/agent/planning/tasks/{task_id}/replacement`), `agent_record_task_replacement` (`POST /api/agent/planning/tasks/{task_id}/replacement`); the record is a durable mutation with idempotency key, rationale, and correlation ID. See [verification-rework-and-recovery.md](verification-rework-and-recovery.md#replace-unattributable-work) |
+| GitHub reconciliation | `GET /api/tasks/{task_id}/github-reconciliation` and `POST /api/tasks/{task_id}/github-reconciliation/catch-up` on a person's or operator's authority; no agent tool exists, so ask a person to run catch-up when the PM role cannot. See [verification-rework-and-recovery.md](verification-rework-and-recovery.md#read-the-github-reconciliation) |
 | Routing advice | `recommendations_for_task`, `recommendations_for_triage` |
 | Runtime status | `system_get_runtime_config_status`, admin-only; do not use for normal PM work |
 

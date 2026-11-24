@@ -223,7 +223,7 @@ Read the preview's `unscheduled` list before you apply. Each entry names a task 
 | `assignee_not_in_iteration` | Add the assignee's profile to the iteration, or reassign the task. |
 | `no_estimate` | Set a positive `effort_hours`. |
 | `no_capacity` | Give the assignee's row productive capacity, or reassign the task. |
-| `prerequisites_pending` | Wait for the delivery prerequisite to be Accepted. |
+| `prerequisites_pending` | Wait for the delivery prerequisite to be Accepted, and merged on its `target_branch` when it names one. Read `delivery_holds` for the reason and next owner. |
 | `predecessor_unscheduled` | Correct the predecessor first; this task follows it. |
 | `not_placed` | Check the task's constraint dates and dependencies. |
 
@@ -239,7 +239,7 @@ The server refuses to begin a task with `schedule_missing` when it has no dates.
 
 When the server advertises `schedule-follows-actuals-v1`, a calculated start date in the future does not hold work back:
 
-- An agent may begin a task as soon as every dependency is Implemented or Accepted, every delivery prerequisite is Accepted, and the task is next in its queue.
+- An agent may begin a task as soon as every dependency is Implemented or Accepted, every delivery prerequisite is Accepted (and, when it names a `target_branch`, observed merged there), and the task is next in its queue. A merge-sensitive prerequisite is mapped as described in [plan-mapping-and-roadmap.md](plan-mapping-and-roadmap.md#map-a-prerequisite-that-needs-merged-code); the PM runs GitHub catch-up for a missing merge observation, and a person with merge rights merges an accepted pull request.
 - At the start, the server sets the task's start date to today and recalculates the planned work of the iteration. The tasks behind it, on its assignee's row and along its dependencies, move to the dates that now apply, earlier or later.
 - At submit, the server sets the task's end date to today and recalculates again, so the assignee's next task moves up.
 - Each moved task records why on its timeline. You do not preview or apply anything for these moves.

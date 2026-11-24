@@ -144,6 +144,8 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
             "ck_team_member_capacity_adjustments_dates", "ck_team_member_capacity_adjustments_percent"]
         # A later revision records audited clean-replacement dispositions.
         assert after_catalog.pop("task_replacements")["checks"] == ["ck_task_replacements_distinct"]
+        # A later revision lets a delivery prerequisite name the branch its code must merge on.
+        assert after_catalog["delivery_dependencies"]["columns"].pop("target_branch") == {"type": {"family": "text"}, "nullable": True}
         assert after_catalog == before_catalog
         with engine.begin() as db:
             assert "AUTOINCREMENT" in db.scalar(text("SELECT sql FROM sqlite_master WHERE name='projects'"))
