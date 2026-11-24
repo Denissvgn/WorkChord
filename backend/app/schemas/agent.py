@@ -788,6 +788,14 @@ class AgentAssignmentReadItem(BaseModel):
     updated_at: datetime
 
 
+class AgentAssignmentPage(BaseModel):
+    """One page of assignments; pass next_cursor back as cursor to read on."""
+
+    items: list[AgentTaskAssignmentResponse] | list[AgentAssignmentReadItem]
+    has_more: bool
+    next_cursor: str | None = None
+
+
 class AgentRoutingTopologyReadinessResponse(BaseModel):
     """Bounded server-owned topology readiness exposed to agent clients."""
 
