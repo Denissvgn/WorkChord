@@ -81,3 +81,90 @@ class GitHubWebhookResponse(BaseModel):
     triage_item_id: Optional[int] = None
     ignored_reason: Optional[str] = None
     automation_results: list[GitHubStatusAutomationResult] = Field(default_factory=list)
+
+
+class GitHubSubmissionReview(BaseModel):
+    """One review assignment bound to a submitted commit."""
+
+    assignment_id: int
+    actor_id: Optional[int] = None
+    state: str
+
+
+class GitHubPullSubmission(BaseModel):
+    """One run's submitted commit for a pull request, with the review that saw it."""
+
+    run_id: int
+    commit_sha: str
+    commit_url: Optional[str] = None
+    pr_url: Optional[str] = None
+    submitted_at: Optional[datetime] = None
+    reviews: list[GitHubSubmissionReview] = Field(default_factory=list)
+
+
+class GitHubPullChecks(BaseModel):
+    """Checks GitHub reported for the observed head commit."""
+
+    state: Optional[str] = None
+    total: Optional[int] = None
+    sha: Optional[str] = None
+    error: Optional[str] = None
+
+
+class GitHubPullReview(BaseModel):
+    """The WorkChord review state of the task, decided only by the independent reviewer."""
+
+    accepted: bool
+    state: str
+
+
+class GitHubPullReconciliation(BaseModel):
+    """A linked pull request compared with what the task submitted."""
+
+    link_id: int
+    url: Optional[str] = None
+    title: Optional[str] = None
+    state: str
+    submitted_sha: Optional[str] = None
+    submissions: list[GitHubPullSubmission] = Field(default_factory=list)
+    observed_head_sha: Optional[str] = None
+    target_branch: Optional[str] = None
+    checks: GitHubPullChecks
+    merged: bool
+    merge_commit_sha: Optional[str] = None
+    merged_at: Optional[str] = None
+    closed_at: Optional[str] = None
+    observed_at: Optional[datetime] = None
+    observation_source: Optional[str] = None
+    observation_error: Optional[str] = None
+    review: GitHubPullReview
+    differences: list[str] = Field(default_factory=list)
+    next_owner: str
+    next_action: str
+
+
+class GitHubReplacementRole(BaseModel):
+    """The replacement disposition the task takes part in."""
+
+    role: Literal["original", "replacement"]
+    original_task_id: int
+    replacement_task_id: int
+
+
+class GitHubSuccessor(BaseModel):
+    """The task that replaced this one, with its own pull requests."""
+
+    task_id: int
+    status: str
+    pull_requests: list[GitHubPullReconciliation] = Field(default_factory=list)
+
+
+class GitHubReconciliationResponse(BaseModel):
+    """What a task submitted against what GitHub shows now, and who acts next."""
+
+    task_id: int
+    task_status: str
+    accepted: bool
+    replacement: Optional[GitHubReplacementRole] = None
+    successor: Optional[GitHubSuccessor] = None
+    pull_requests: list[GitHubPullReconciliation] = Field(default_factory=list)
