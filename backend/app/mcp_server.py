@@ -1631,6 +1631,22 @@ def create_mcp_server() -> FastMCP:
         )
 
     @mcp.tool(annotations=READ_ONLY_TOOL)
+    async def agent_preview_iteration_date_move(
+        iteration_id: int,
+        payload: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Show each person's shortfall on each date of a proposed iteration start, end or calendar without saving it.
+
+        payload takes start_date, end_date, calendar_id and additional_calendar_ids. Apply with
+        agent_update_iteration, sending the same fields and the returned expected_revisions.
+        """
+        return await _tool_call(
+            "planning:write",
+            lambda db, actor: mcp_agent_tools.preview_iteration_date_move(db, actor, iteration_id, payload),
+            preview=True,
+        )
+
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_preview_schedule(
         iteration_id: int,
         idempotency_key: str,

@@ -1108,6 +1108,24 @@ async def preview_capacity_adjustment(
     return CapacityAdjustmentResult.model_validate(result).model_dump(mode="json")
 
 
+async def preview_iteration_date_move(
+    db: AsyncSession,
+    actor: AgentActor,
+    iteration_id: int,
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    """MCP handler: show each person's shortfall for a proposed iteration period without saving it."""
+    from app.schemas.iteration import IterationDateMovePreview, IterationDateMoveRequest
+    from app.services.agent_service import require_scope
+    from app.services.iteration_date_move import IterationDateMoveService
+
+    require_scope(actor, "planning:write")
+    result = await IterationDateMoveService(db).preview(
+        iteration_id, IterationDateMoveRequest.model_validate(payload)
+    )
+    return IterationDateMovePreview.model_validate(result).model_dump(mode="json")
+
+
 async def apply_capacity_adjustment(
     db: AsyncSession,
     actor: AgentActor,
