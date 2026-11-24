@@ -1705,6 +1705,47 @@
           "title": "HumanWorkResponse",
           "type": "object"
         },
+        "InvertedDependency": {
+          "description": "A saved dependency whose dates start the dependent on or before its prerequisite's last day.",
+          "properties": {
+            "prerequisite_end_date": {
+              "format": "date",
+              "title": "Prerequisite End Date",
+              "type": "string"
+            },
+            "prerequisite_id": {
+              "title": "Prerequisite Id",
+              "type": "integer"
+            },
+            "prerequisite_title": {
+              "title": "Prerequisite Title",
+              "type": "string"
+            },
+            "task_id": {
+              "title": "Task Id",
+              "type": "integer"
+            },
+            "task_start_date": {
+              "format": "date",
+              "title": "Task Start Date",
+              "type": "string"
+            },
+            "task_title": {
+              "title": "Task Title",
+              "type": "string"
+            }
+          },
+          "required": [
+            "task_id",
+            "task_title",
+            "task_start_date",
+            "prerequisite_id",
+            "prerequisite_title",
+            "prerequisite_end_date"
+          ],
+          "title": "InvertedDependency",
+          "type": "object"
+        },
         "IterationCreate": {
           "description": "Schema for creating an iteration.",
           "properties": {
@@ -1864,6 +1905,13 @@
             "has_schedule": {
               "title": "Has Schedule",
               "type": "boolean"
+            },
+            "inverted_dependencies": {
+              "items": {
+                "$ref": "#/components/schemas/InvertedDependency"
+              },
+              "title": "Inverted Dependencies",
+              "type": "array"
             },
             "iteration_id": {
               "title": "Iteration Id",
