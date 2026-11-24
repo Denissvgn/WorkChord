@@ -69,11 +69,71 @@ class DeliveryDependencyService:
             if not visible:
                 result.append({"id": edge.id, "kind": kind, "ready": False, "reason": "prerequisite_unavailable"})
                 continue
-            ready = await self._accepted(kind, target)
-            result.append({"id": edge.id, "kind": kind, "target_id": target.id,
+            accepted = await self._accepted(kind, target)
+            entry = {"id": edge.id, "kind": kind, "target_id": target.id,
                 "title": target.title if kind == "task" else target.name,
-                "ready": ready, "reason": None if ready else "prerequisite_acceptance_required"})
+                "target_branch": edge.target_branch, "merge": None, "hold": None}
+            if edge.target_branch is None:
+                entry.update(ready=accepted, reason=None if accepted else "prerequisite_acceptance_required")
+            else:
+                merge = await self._merge_evidence(target, edge.target_branch)
+                ready = accepted and merge["verified"]
+                entry.update(ready=ready, merge=merge)
+                if not ready:
+                    entry["reason"] = "prerequisite_acceptance_required" if not accepted else "prerequisite_merge_not_observed"
+                    entry["hold"] = self._hold(target, edge.target_branch, accepted, merge, entry["reason"])
+                else:
+                    entry["reason"] = None
+            result.append(entry)
         return result
+
+    async def holds(self, task_id):
+        """Prerequisites that keep a task from starting, each with its reason and next owner."""
+        return [item for item in await self.projection(task_id) if not item["ready"]]
+
+    async def _merge_evidence(self, target, branch):
+        """Read stored pull request observations only; this never calls GitHub."""
+        from app.services.github_reconciliation_service import GitHubReconciliationService, pull_state
+        pulls = []
+        for link in await GitHubReconciliationService(self.db)._pull_links(target.id):
+            meta = link.metadata_json or {}
+            pulls.append({"link_id": link.id, "url": link.url, "state": pull_state(link), "target_branch": meta.get("base_ref"),
+                "merge_commit_sha": meta.get("merge_commit_sha"), "observed_at": meta.get("observed_at") or meta.get("status_refreshed_at")})
+        verified = [pull for pull in pulls if pull["state"] == "merged" and pull["target_branch"] == branch and pull["merge_commit_sha"]]
+        if verified:
+            state = "merged_on_target"
+        elif not pulls or all(pull["state"] == "unobserved" for pull in pulls):
+            state = "not_observed"
+        elif any(pull["state"] in {"open", "draft"} for pull in pulls):
+            state = "open_pull_request"
+        elif any(pull["state"] == "merged" for pull in pulls):
+            state = "merged_on_other_branch"
+        else:
+            state = "closed_unmerged"
+        return {"state": state, "verified": bool(verified), "target_branch": branch, "pull_requests": pulls}
+
+    @staticmethod
+    def _hold(target, branch, accepted, merge, reason):
+        """Name who acts next for a prerequisite that needs accepted code on a branch."""
+        label = f"task {target.id}"
+        state = merge["state"]
+        if not accepted:
+            owner = "reviewer" if target.status == "resolved" else "worker"
+            if state == "merged_on_target":
+                action = f"Code for {label} is merged on {branch}; the independent reviewer must still accept it."
+            elif owner == "reviewer":
+                action = f"Review and accept {label}; its code must also be merged on {branch}."
+            else:
+                action = f"Finish and submit {label}; it must then be accepted and merged on {branch}."
+            case = "open_pull_request" if state == "open_pull_request" else "not_accepted"
+        else:
+            owner, case = "pm", state
+            action = {
+                "open_pull_request": f"Have the accepted pull request for {label} merged into {branch}, then run GitHub catch-up for it.",
+                "merged_on_other_branch": f"The pull request for {label} merged into a branch other than {branch}; merge it into {branch} or change the prerequisite branch.",
+                "closed_unmerged": f"The pull request for {label} closed without merging; reopen it or record a replacement task.",
+            }.get(state, f"No merge into {branch} is observed for {label}; link its pull request if missing, then run GitHub catch-up.")
+        return {"case": case, "reason": reason, "next_owner": owner, "next_action": action}
 
     async def _accepted(self, kind, target):
         if kind == "task" and not target.is_summary:
@@ -101,13 +161,14 @@ class DeliveryDependencyService:
         return all(item["ready"] for item in await self.projection(task_id))
 
     @atomic_command
-    async def add(self, task_id, kind, target_id, expected_version):
+    async def add(self, task_id, kind, target_id, expected_version, target_branch=None):
         from app.services.task_service import TaskService
         from app.services.task_brief_service import clear_execution_evidence
         if kind not in {"task", "milestone"}:
             raise ValueError("Use a task or milestone prerequisite")
         if kind == "task" and task_id == target_id:
             raise PlanningConflict("delivery_dependency_cycle", "A task cannot depend on itself.")
+        target_branch = self._branch(target_branch, kind)
         await lock_planning(self.db)
         service = TaskService(self.db)
         task = await service.get_by_id(task_id)
@@ -122,16 +183,32 @@ class DeliveryDependencyService:
         column = DeliveryDependency.prerequisite_task_id if kind == "task" else DeliveryDependency.prerequisite_milestone_id
         existing = await self.db.scalar(select(DeliveryDependency).where(DeliveryDependency.task_id == task_id, column == target_id))
         service.ensure_expected_version(task, expected_version)
-        if existing:
+        if target_branch is not None and target.is_summary:
+            raise ValueError("A target branch applies to a leaf task prerequisite")
+        if existing and existing.target_branch == target_branch:
             return await self.projection(task_id)
         await service.reserve_task_version(task, expected_version)
         await service._require_unclaimed_structure([task.id])
-        self.db.add(DeliveryDependency(task_id=task_id, **{column.key: target_id}))
+        if existing:
+            existing.target_branch = target_branch
+        else:
+            self.db.add(DeliveryDependency(task_id=task_id, target_branch=target_branch, **{column.key: target_id}))
         self.db.info.setdefault("delivery_changed_nodes", set()).add(("task", task.id))
         clear_execution_evidence(task)
         await self.db.flush()
         await self.validate_cycles()
         return await self.projection(task_id)
+
+    @staticmethod
+    def _branch(value, kind):
+        if value is None:
+            return None
+        if kind != "task":
+            raise ValueError("A target branch applies only to a task prerequisite")
+        branch = value.strip().removeprefix("refs/heads/")
+        if not branch or len(branch) > 255 or any(char.isspace() for char in branch):
+            raise ValueError("Use a branch name without spaces")
+        return branch
 
     @atomic_command
     async def remove(self, task_id, edge_id, expected_version):

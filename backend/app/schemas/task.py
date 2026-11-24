@@ -251,6 +251,10 @@ class TaskResponse(TaskMetricSignals):
     external_links: list[ExternalLinkResponse] = Field(default_factory=list)
     request_count: int = 0
     agent_readiness: TaskAgentReadiness = Field(default_factory=TaskAgentReadiness)
+    delivery_holds: list[dict[str, Any]] = Field(
+        default_factory=list,
+        description="Delivery prerequisites not yet satisfied, each with reason, hold case and next owner. Filled on the agent pipeline and task context.",
+    )
     version: int = 1
     claimed_by: Optional[TaskClaimedBy] = None
     claim_expires_at: Optional[datetime] = None

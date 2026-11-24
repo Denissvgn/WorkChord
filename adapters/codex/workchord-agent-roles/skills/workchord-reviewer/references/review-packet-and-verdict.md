@@ -89,6 +89,16 @@ the task. Read `task.external_links` in the complete context and the worker's
    commit messages and the pull request name `WC-<task-id>`, unless the worker
    stated that the repository's rules forbid it.
 
+A pull request that GitHub shows as merged does not make the task Accepted and
+is not a verdict. When the PM or a person shares the task's GitHub
+reconciliation (`GET /api/tasks/{task_id}/github-reconciliation`), compare its
+`submitted_sha` with the commit you reviewed. If the observed head differs, or
+the entry says `head_differs_from_submission`, return Request changes asking
+for a submission of the current head. Merged code you have not reviewed is
+still unreviewed: review the submitted commit, then record your verdict. Later
+tasks may wait for the merge on a named branch; that gate reads your Accept
+together with the merge, so never accept earlier to release it.
+
 When the task changes no repository, accept an empty link list only with a
 stated reason in `delivery_trace.none` that fits the task's brief.
 

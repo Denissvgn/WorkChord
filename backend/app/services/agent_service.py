@@ -1569,8 +1569,18 @@ class AgentService:
 
         work_service = AgentWorkService(self.db)
 
+        from app.authority import internal_authority
+        from app.models.delivery_dependency import DeliveryDependency
+        from app.services.delivery_dependency_service import DeliveryDependencyService
+
+        with internal_authority(self.db):
+            with_delivery = set((await self.db.scalars(
+                select(DeliveryDependency.task_id).where(DeliveryDependency.task_id.in_(task_ids)))).all())
+
         for task in tasks:
             task_resp = self.task_service.task_to_response(task)
+            if task.id in with_delivery:
+                task_resp.delivery_holds = await DeliveryDependencyService(self.db).holds(task.id)
 
             assignment = assignments_by_task.get(task.id)
             has_live_execution = (

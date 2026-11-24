@@ -9,6 +9,7 @@ Use this reference to route resolved work to an independent reviewer, follow its
 - [Read the verdict](#read-the-verdict)
 - [Close work with its delivery trace](#close-work-with-its-delivery-trace)
 - [Return work for rework](#return-work-for-rework)
+- [Reconcile the pull request and replace unattributable work](#reconcile-the-pull-request-and-replace-unattributable-work)
 - [Recover stale or inconsistent execution](#recover-stale-or-inconsistent-execution)
 - [Triage discoveries](#triage-discoveries)
 - [Publish project updates](#publish-project-updates)
@@ -218,6 +219,22 @@ In supervised v0:
 5. Track the manual rework owner because the current global ready list contains only planned tasks.
 
 Never leave rejected active work without an explicit next owner. Never reset it to `planned` merely to make it appear in the ready list.
+
+## Reconcile the Pull Request and Replace Unattributable Work
+
+### Read the GitHub reconciliation
+
+`GET /api/tasks/{task_id}/github-reconciliation` compares what each run submitted with what GitHub last showed for the task's linked pull requests. It is a read-through view of stored observations. Each pull request entry carries `state` (`open`, `draft`, `merged`, `closed_unmerged`, `unobserved`), the submitted and observed head SHA, `target_branch`, `checks`, `merged`, `merge_commit_sha`, `observed_at`, `review`, `differences`, `next_owner` and `next_action`. Differences include `never_observed`, `observation_failed`, `head_differs_from_submission`, `checks_not_observed_for_head`, `merged_without_acceptance`, `closed_without_merge` and `task_replaced`. `next_owner` is `pm`, `worker`, `reviewer` or `none`.
+
+`POST /api/tasks/{task_id}/github-reconciliation/catch-up` reads the task's own pull requests from GitHub for events a deployment never received, then returns the same view. It needs edit access. Use it when an entry is `unobserved` or its checks are not observed for the current head.
+
+A merge never accepts or closes a task. A pull request merged outside WorkChord keeps its task unaccepted (`merged_without_acceptance`), and the independent verdict on the submitted commit is still required. If the head differs from the submitted commit, have the worker submit the current head before review.
+
+### Replace unattributable work
+
+When a task's runs lack the model attribution the review policy needs, the task can never be accepted. The project's PM actor, a project manager or a workspace operator records a clean replacement: create the replacement as an ordinary planned task in the same project (and milestone), then send `agent_record_task_replacement` (`POST /api/agent/planning/tasks/{original_id}/replacement`, or `POST /api/tasks/{original_id}/replacement` for a person) with `replacement_task_id`, `expected_original_version`, `expected_replacement_version`, `reason`, `owner_decision`, `base_commit_url` and `carried_run_ids`. `agent_get_task_replacement` (`GET /api/agent/planning/tasks/{task_id}/replacement`) reads the disposition for either task.
+
+The original must be unaccepted leaf work with no live execution. The command keeps the original with its attempts, withdraws it from delivery counts, and moves schedule and delivery dependents and open release membership to the replacement. Only the replacement can be accepted, and it is reviewed on its own runs plus every carried run. Carrying a run with no attribution keeps the replacement held (`replacement_contribution_unattributed`). Never reopen or review the original.
 
 ## Recover Stale or Inconsistent Execution
 
