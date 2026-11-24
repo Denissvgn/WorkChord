@@ -89,6 +89,10 @@ class UnscheduledTask(BaseModel):
     task_title: str
     reason: UnscheduledReason
     message: str
+    # The task held dates before this run and the run removed them.
+    dates_cleared: bool = False
+    # Causes of its own that keep it undated once the main reason is resolved.
+    also: list[UnscheduledReason] = []
 
 
 class WorkloadIssue(BaseModel):
