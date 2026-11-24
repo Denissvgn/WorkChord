@@ -1545,7 +1545,8 @@ class AgentWorkService:
             if review_selection is None and getattr(data, "review_binding_id", None):
                 raise ValueError("An explicit supervised review binding requires the project publisher policy.")
             if review_selection is None:
-                await require_independent_profile(self.db, task_assignments, target, data.reviewer_profile_id)
+                await require_independent_profile(self.db, task_assignments, target, data.reviewer_profile_id,
+                                                  task_id=task.id)
         assignment = AgentTaskAssignment(
             review_selection=review_selection,
             task_id=task.id,
@@ -1873,7 +1874,8 @@ class AgentWorkService:
                     data.reviewer_profile_id or assignment.reviewer_profile_id)
             if assignment.review_selection is None:
                 await require_independent_profile(self.db, task_assignments, selected_actor,
-                    data.reviewer_profile_id if "reviewer_profile_id" in data.model_fields_set else assignment.reviewer_profile_id)
+                    data.reviewer_profile_id if "reviewer_profile_id" in data.model_fields_set else assignment.reviewer_profile_id,
+                    task_id=task.id)
         elif data.review_evidence_id is not None:
             raise ValueError("Review evidence is available only for verification.")
         if selected_actor.id != assignment.actor_id:

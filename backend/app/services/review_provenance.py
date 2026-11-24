@@ -385,7 +385,50 @@ async def record_server_end_profile(db, run):
     run.execution_provenance = {**run.execution_provenance, "terminal_profile_id": profile_id}
 
 
-async def execution_profile_history(db, assignments):
+def _run_profile_rows(assignment_id, run, begun):
+    """The begin profile of one run and, when it differs or is unknown, its terminal profile."""
+    rows = [{"assignment_id": assignment_id, "run_id": run.id, "actor_id": run.actor_id,
+             "profile_id": begun, "source": "run_begin" if begun else "unavailable"}]
+    receipt = run.execution_provenance or {}
+    if begun and "terminal_profile_id" not in receipt and _server_ended(run):
+        terminal = None
+    else:
+        terminal = receipt.get("terminal_profile_id", begun) if begun else begun
+    if terminal != begun:
+        rows.append({"assignment_id": assignment_id, "run_id": run.id, "actor_id": run.actor_id,
+                     "profile_id": terminal if type(terminal) is int and terminal > 0 else None,
+                     "source": "run_terminal"})
+    return rows
+
+
+async def carried_profile_history(db, task_id):
+    """Actors and profiles of the original runs a replacement carries, through every earlier replacement."""
+    from app.authority import internal_authority
+    from app.services.task_replacement_service import replacing
+    relation = await replacing(db, task_id)
+    if relation is None or not relation.carried_run_ids:
+        return []
+    with internal_authority(db):
+        runs = (await db.scalars(select(AgentRun).where(AgentRun.id.in_(relation.carried_run_ids))
+                                 .order_by(AgentRun.id))).all()
+        assignments = {item.id: item for item in (await db.scalars(select(AgentTaskAssignment).where(
+            AgentTaskAssignment.id.in_([run.assignment_id for run in runs if run.assignment_id])))).all()}
+    rows = []
+    for run in runs:
+        assignment = assignments.get(run.assignment_id)
+        begun = _begin_profile(run)
+        if begun is None and assignment is not None and assignment.actor_id == run.actor_id:
+            begun = historical_profile(assignment)
+        rows.extend({**row, "carried_from_task_id": relation.original_task_id}
+                    for row in _run_profile_rows(run.assignment_id, run, begun))
+    for run_id in sorted(set(relation.carried_run_ids) - {run.id for run in runs}):
+        rows.append({"assignment_id": None, "run_id": run_id, "actor_id": None, "profile_id": None,
+                     "source": "unavailable", "carried_from_task_id": relation.original_task_id})
+    # A carried run of a replacement may itself build on the earlier original's carried work.
+    return rows + await carried_profile_history(db, relation.original_task_id)
+
+
+async def execution_profile_history(db, assignments, *, task_id=None):
     """Name each fulfilled execution's actor and profile from server-owned records only.
 
     A server-owned routing decision supplies the profile. Without one, as for a
@@ -393,7 +436,8 @@ async def execution_profile_history(db, assignments):
     authenticated begin recorded. A profile change before the terminal command
     adds the terminal profile. A run the server ended without recording its
     terminal profile may have changed profile mid-run, so that profile is unknown.
-    Anything else stays unknown; current membership is never consulted.
+    Anything else stays unknown; current membership is never consulted. With
+    ``task_id``, a replacement also names each original run it carries.
     """
     fulfilled = sorted((item for item in assignments if item.purpose == "execution" and item.state == "fulfilled"),
                        key=lambda item: item.id)
@@ -424,23 +468,18 @@ async def execution_profile_history(db, assignments):
         for run in attempts:
             begun = (_begin_profile(run) if run.actor_id == assignment.actor_id and run.task_id == assignment.task_id
                      else None)
-            rows.append({"assignment_id": assignment.id, "run_id": run.id, "actor_id": run.actor_id,
-                         "profile_id": begun, "source": "run_begin" if begun else "unavailable"})
-            if begun and "terminal_profile_id" not in run.execution_provenance and _server_ended(run):
-                terminal = None
-            else:
-                terminal = run.execution_provenance.get("terminal_profile_id", begun) if begun else begun
-            if terminal != begun:
-                rows.append({"assignment_id": assignment.id, "run_id": run.id, "actor_id": run.actor_id,
-                             "profile_id": terminal if type(terminal) is int and terminal > 0 else None,
-                             "source": "run_terminal"})
-    return sorted(rows, key=lambda row: (row["assignment_id"], row["run_id"] or 0, row["source"]))
+            rows.extend(_run_profile_rows(assignment.id, run, begun))
+    rows = sorted(rows, key=lambda row: (row["assignment_id"], row["run_id"] or 0, row["source"]))
+    return rows + (await carried_profile_history(db, task_id) if task_id is not None else [])
 
 
-async def require_independent_profile(db, assignments, reviewer, reviewer_profile_id=None):
-    """Refuse a reviewer whose profile is known to have executed this task."""
+async def require_independent_profile(db, assignments, reviewer, reviewer_profile_id=None, *, task_id=None):
+    """Refuse a reviewer whose actor or profile is known to have executed this task or work it carries."""
+    history = await execution_profile_history(db, assignments, task_id=task_id)
+    if any(row.get("carried_from_task_id") and row["actor_id"] == reviewer.id for row in history):
+        _conflict("verification_actor_not_independent", "An actor whose run this replacement carries cannot verify it.")
     profiles = {reviewer.profile_id, reviewer_profile_id} - {None}
-    if any(row["profile_id"] in profiles for row in await execution_profile_history(db, assignments)):
+    if any(row["profile_id"] in profiles for row in history):
         _conflict("verification_profile_not_independent", "The review profile contributed to this task.")
 
 

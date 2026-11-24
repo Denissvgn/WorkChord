@@ -1642,7 +1642,7 @@ class AgentRoutingService:
                 input_evidence["review_history"]["required_reviewer_profile_ids"] = list(history.required_reviewer_profiles)
         execution_history = None
         if history is None and data.purpose == "verification":
-            execution_history = await execution_profile_history(self.db, task_assignments)
+            execution_history = await execution_profile_history(self.db, task_assignments, task_id=task.id)
             input_evidence["execution_history"] = execution_history
         if data.review_evidence_id is not None:
             review_evidence = await resolve(self.db, task, data.review_evidence_id, history)

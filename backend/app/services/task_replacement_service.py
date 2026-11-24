@@ -77,7 +77,9 @@ async def carried_contributors(db, task):
         # A carried run without a contributor record cannot show who wrote its commits.
         rows.append({"run_id": run_id, "actor_id": None, "profile_id": None, "publisher_key": None,
                      "missing": ["contributor_record"], "carried_from_task_id": original.id})
-    return rows
+    # Runs carried from a replacement may build on what that replacement carried in turn,
+    # so the earlier original's carried runs count here too and can hold this replacement.
+    return rows + await carried_contributors(db, original)
 
 
 async def require_acceptable(db, task, *, accepting):
@@ -89,6 +91,37 @@ async def require_acceptable(db, task, *, accepting):
     if accepting and any(not attributed(row) for row in await carried_contributors(db, task)):
         raise AuthorityError("replacement_contribution_unattributed",
                              "This replacement carries commits from an unattributed run and stays held.", 409)
+
+
+async def require_restore_compatible(db, rows, current):
+    """Refuse a snapshot restore that would undo or bypass a replacement disposition.
+
+    ``rows`` are the snapshot's task rows and ``current`` the tasks it replaces.
+    A restore may not change a disposition task's canceled state or status, nor
+    any dependency that touches one: the original would come back unaccepted
+    forever, its dependents would wait on it, and the deliverable would count twice.
+    """
+    ids = {row["id"] for row in rows} | {task.id for task in current}
+    with internal_authority(db):
+        pairs = (await db.execute(select(TaskReplacement.original_task_id, TaskReplacement.replacement_task_id).where(
+            TaskReplacement.original_task_id.in_(ids) | TaskReplacement.replacement_task_id.in_(ids)))).all()
+        linked = {task_id for pair in pairs for task_id in pair}
+        if not linked:
+            return
+        present = {}
+        for source, target in (await db.execute(select(TaskDependency.task_id, TaskDependency.depends_on_id)
+                                                 .where(TaskDependency.task_id.in_(ids)))).all():
+            present.setdefault(source, set()).add(target)
+    by_id = {task.id: task for task in current}
+    for row in rows:
+        task = by_id.get(row["id"])
+        changed = set(row.get("dependencies") or ()) ^ present.get(row["id"], set())
+        state_changed = row["id"] in linked and (
+            task is None or bool(row.get("canceled_at")) != (task.canceled_at is not None) or row.get("status") != task.status)
+        if state_changed or (changed and (row["id"] in linked or changed & linked)):
+            raise PlanningConflict("restore_conflicts_with_task_replacement",
+                                   f"Restoring would change task {row['id']}, which a replacement disposition records. "
+                                   "Restore a snapshot taken after the replacement, or adjust the work directly.")
 
 
 def _contributor(row):

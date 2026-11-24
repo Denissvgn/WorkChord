@@ -383,3 +383,151 @@ async def test_held_replacement_is_refused_acceptance_without_the_strict_policy(
     await TaskBriefService(db_session).require_review(held, accepting=False)
     assert json.loads(json.dumps((await TaskReplacementService(db_session).get(original.id))["acceptance"],
                                  default=str))["state"] == "held"
+
+
+@databases
+@pytest.mark.parametrize("transport", ["rest", "mcp"])
+@pytest.mark.parametrize("overlap", ["same_actor", "same_profile"])
+@pytest.mark.usefixtures("deployed_agent_skill_release")
+async def test_carried_contributor_cannot_verify_without_the_strict_policy(
+    db_session, db_session_factory, task_factory, team_member_factory, actor_factory, monkeypatch, transport, overlap,
+):
+    monkeypatch.setenv("MODEL_AWARE_ROUTING_MODE", "shadow")
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "trusted_local")
+    get_settings.cache_clear()
+    (team, member, verifier, _, original, replacement, *_rest, unattributed) = await _scenario(
+        db_session, task_factory, team_member_factory, strict=False)
+    worker, reviewer = team.actors[member.actor_key], team.actors[verifier.actor_key]
+    pm_key, worker_key = team.sink.keys[team.manifest.controller.actor_key], team.sink.keys[member.actor_key]
+    # The carried run was executed by the reviewer itself, or by another actor holding its profile.
+    author = reviewer if overlap == "same_actor" else await actor_factory(profile=reviewer.profile)
+    run = await db_session.get(AgentRun, unattributed.id)
+    run.actor_id = author.id
+    run.execution_provenance = {"actor_id": author.id, "profile_id": reviewer.profile_id,
+                                "profile_revision": f"p{reviewer.profile_id}-begin", "source": "authenticated_work_begin",
+                                "terminal_profile_id": reviewer.profile_id}
+    (await db_session.get(AgentTaskAssignment, run.assignment_id)).actor_id = author.id
+    await db_session.commit()
+    ids = {"worker": worker.id, "reviewer": reviewer.id, "author": author.id, "profile": reviewer.profile_id,
+           "run": run.id, "replacement": replacement.id, "version": replacement.version}
+    await through(transport, db_session_factory, monkeypatch, "agent_record_task_replacement",
+                  f"/api/agent/planning/tasks/{original.id}/replacement", pm_key,
+                  _replacement(original, replacement, [ids["run"]]), task_id=original.id, receipt="carry-reviewer-run")
+    head = "a" * 40
+    async with recovery_api(transport, db_session_factory, monkeypatch) as call:
+        assigned = await call("agent_create_assignment", "/api/agent/assignments", pm_key, payload={
+            "task_id": ids["replacement"], "actor_id": ids["worker"], "expected_task_version": ids["version"]},
+            receipt="carry-execution")
+        decision = await call("agent_get_my_work", "/api/agent/me/work", worker_key)
+        claim = await call("agent_begin_my_work", "/api/agent/me/work/begin", worker_key, payload={
+            "assignment_id": assigned["id"], "queue_revision": decision["queue_revision"],
+            "model": member.default_model_binding_key}, receipt="carry-begin")
+        submitted = await call("agent_submit_my_work", "/api/agent/me/work/submit", worker_key, payload={
+            **fence(claim), "observed_model": member.default_model_binding_key, "summary": "Rebuilt on carried work",
+            "evidence": {"tests": "passed"}, "commit_url": URL + "commit/" + head, "pr_url": URL + "pull/11"},
+            receipt="carry-submit")
+    expected = "verification_actor_not_independent" if overlap == "same_actor" else "verification_profile_not_independent"
+    await through(transport, db_session_factory, monkeypatch, "agent_create_assignment", "/api/agent/assignments", pm_key,
+                  {"task_id": ids["replacement"], "actor_id": ids["reviewer"], "purpose": "verification",
+                   "expected_task_version": submitted["task"]["version"], "reviewer_profile_id": ids["profile"]},
+                  receipt="carried-author-review", error=expected)
+    async with db_session_factory() as audit:
+        from app.services.review_provenance import execution_profile_history
+        assignments = (await audit.scalars(select(AgentTaskAssignment).where(
+            AgentTaskAssignment.task_id == ids["replacement"]))).all()
+        history = await execution_profile_history(audit, assignments, task_id=ids["replacement"])
+        # The verification preview reads the same history, so it excludes the carried run's author too.
+        carried = [row for row in history if row.get("carried_from_task_id")]
+        assert {(row["run_id"], row["actor_id"], row["profile_id"]) for row in carried} == {
+            (ids["run"], ids["author"], ids["profile"])}
+        await audit.rollback()
+
+
+@pytest.mark.sqlite
+async def test_a_chained_replacement_inherits_the_earlier_carried_work(db_session, task_factory, actor_factory,
+                                                                      monkeypatch):
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "trusted_local")
+    get_settings.cache_clear()
+    from app.services.task_replacement_service import carried_contributors
+    project, original, first = await _plain(db_session, task_factory)
+    second = await task_factory(title="Second", project_id=project.id, status="planned",
+                                iteration=await db_session.get(Iteration, original.iteration_id))
+    worker = await actor_factory()
+    worker_id = worker.id
+    frozen = [SimpleNamespace(id=task.id, version=task.version) for task in (original, first, second)]
+
+    async def attempt(task):
+        execution = AgentTaskAssignment(task_id=task.id, actor_id=worker_id, purpose="execution", queue_class="normal",
+                                        state="fulfilled", task_version=task.version, routing_snapshot="{}")
+        db_session.add(execution)
+        await db_session.flush()
+        run = AgentRun(task_id=task.id, actor_id=worker_id, assignment_id=execution.id, status="succeeded")
+        db_session.add(run)
+        await db_session.commit()
+        return run.id
+
+    service = TaskReplacementService(db_session)
+    carried = await attempt(frozen[0])
+    await service.record(frozen[0].id, _data(frozen[0], frozen[1], carried_run_ids=[carried]))
+    # The first replacement then ran; its own run is carried into the second replacement.
+    rebuilt = await attempt(frozen[1])
+    await service.record(frozen[1].id, _data(frozen[1], frozen[2], carried_run_ids=[rebuilt]))
+    run_ids = [carried, rebuilt]
+    rows = await carried_contributors(db_session, await db_session.get(Task, frozen[2].id))
+    assert {(row["run_id"], row["carried_from_task_id"]) for row in rows} == {
+        (run_ids[1], frozen[1].id), (run_ids[0], frozen[0].id)}
+
+
+async def _replaced_pair(db, task_factory, *, backlog):
+    project = Project(name="Restorable")
+    db.add(project)
+    await db.flush()
+    if backlog:
+        original, replacement, dependent = (Task(title=title, project_id=project.id, status=status)
+                                            for title, status in (("Original", "resolved"), ("Replacement", "planned"),
+                                                                  ("Dependent", "planned")))
+        db.add_all([original, replacement, dependent])
+        await db.flush()
+    else:
+        original = await task_factory(title="Original", project_id=project.id, status="resolved")
+        iteration = await db.get(Iteration, original.iteration_id)
+        iteration.project_id = project.id
+        replacement = await task_factory(title="Replacement", project_id=project.id, status="planned", iteration=iteration)
+        dependent = await task_factory(title="Dependent", project_id=project.id, status="planned", iteration=iteration)
+    db.add(TaskDependency(task_id=dependent.id, depends_on_id=original.id))
+    await db.commit()
+    frozen = [SimpleNamespace(id=task.id, version=task.version, iteration_id=task.iteration_id)
+              for task in (original, replacement, dependent)]
+    await TaskReplacementService(db).record(frozen[0].id, _data(frozen[0], frozen[1]))
+    return project.id, frozen
+
+
+@databases
+@pytest.mark.parametrize("scope", ["iteration", "backlog"])
+async def test_restoring_a_pre_replacement_snapshot_is_refused(db_session, task_factory, monkeypatch, scope):
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "trusted_local")
+    get_settings.cache_clear()
+    from app.commands import PlanningConflict
+    from app.models.recovery import ApplicationSnapshot
+    project_id, (original, replacement, dependent) = await _replaced_pair(db_session, task_factory,
+                                                                         backlog=scope == "backlog")
+    if scope == "iteration":
+        from app.services.snapshot_service import SnapshotService
+        saved = [item for item in await SnapshotService(db_session).list_snapshots(original.iteration_id)
+                 if item["reason"] == "before_task_replacement"]
+        assert len(saved) == 1
+        restore = SnapshotService(db_session).restore(original.iteration_id, saved[0]["filename"])
+    else:
+        from app.services.backlog_snapshot_service import BacklogSnapshotService
+        snapshot = await db_session.scalar(select(ApplicationSnapshot.id).where(
+            ApplicationSnapshot.project_id == project_id).order_by(ApplicationSnapshot.id.desc()).limit(1))
+        versions = dict((await db_session.execute(select(Task.id, Task.version).where(
+            Task.project_id == project_id, Task.iteration_id.is_(None)))).all())
+        restore = BacklogSnapshotService(db_session).restore(project_id, snapshot, versions, reason="Undo the replacement")
+    with pytest.raises(PlanningConflict) as refused:
+        await restore
+    assert refused.value.code == "restore_conflicts_with_task_replacement"
+    # Nothing changed: the original stays withdrawn and its dependent still waits on the replacement.
+    assert (await db_session.get(Task, original.id)).canceled_at is not None
+    assert (await db_session.scalar(select(TaskDependency.depends_on_id).where(
+        TaskDependency.task_id == dependent.id))) == replacement.id
