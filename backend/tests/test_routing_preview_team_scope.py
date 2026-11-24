@@ -5,8 +5,9 @@ import json
 import pytest
 
 from app.config import get_settings
-from app.models.agent import AgentActor, AgentModelBinding, AgentModelCatalogEntry, AgentTaskAssignment
+from app.models.agent import AgentActor, AgentModelBinding, AgentModelCatalogEntry, AgentRun, AgentTaskAssignment
 from app.models.iteration import Iteration
+from app.models.project import Project
 from app.schemas.agent import ModelAwareAgentTaskAssignmentCreate
 from app.schemas.agent_routing import AgentRoutingPreviewCreate
 from app.services import agent_routing_service
@@ -288,3 +289,135 @@ async def test_team_pm_preview_excludes_other_teams_rows_on_rest_and_mcp(
         )
     assert ineligible.value.code == "routing_selection_ineligible"
     assert ineligible.value.context["hard_blocker_codes"] == ["actor_topology_incompatible"]
+
+
+@database_engines
+@pytest.mark.parametrize("shared_publisher", [True, False])
+@pytest.mark.usefixtures("deployed_agent_skill_release", "qualified_model_aware_routing_test_context")
+async def test_publisher_independence_from_out_of_team_implementer_is_unchanged(
+    db_session,
+    db_session_factory,
+    profile_factory,
+    actor_factory,
+    team_member_factory,
+    task_factory,
+    monkeypatch,
+    shared_publisher,
+):
+    db = db_session
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "trusted_local")
+    get_settings.cache_clear()
+    team = await provision_ready_topology(db)
+    reviewer = team.actors["independent-verifier"]
+    base = await routing_base(
+        db,
+        topology=team,
+        actor_key="operations-worker",
+        team_member_factory=team_member_factory,
+        task_factory=task_factory,
+        title="Review work delivered outside the team",
+        skill_key="security-review",
+    )
+    task, pm = base.task, base.pm
+    iteration = await db.get(Iteration, task.iteration_id)
+    await team_member_factory(profile=reviewer.profile, iteration=iteration)
+    project = Project(name="Independent publisher review", require_different_review_publisher=True)
+    db.add(project)
+    await db.flush()
+    task.project_id = iteration.project_id = project.id
+    reviewer_catalog = default_candidate(reviewer).catalog
+    reviewer_catalog.publisher_key = "maker-a" if shared_publisher else "maker-b"
+    await actor_factory(
+        role="pm",
+        name="publisher-scope-operator",
+        display_name="Publisher Scope Operator",
+        scopes=json.dumps(["admin"]),
+        api_key_hash=hash_api_key(OPERATOR_KEY),
+    )
+    await db.commit()
+
+    request = _assessment_command(
+        task_version=task.version,
+        required_skill_levels={"security-review": 3},
+        minimum_reasoning_tier=3,
+        minimum_context_tier="large",
+        axes={"reasoning": 3, "ambiguity": 2, "context_breadth": 2, "risk": 3, "verification_burden": 3},
+        reason_codes=("security", "specialist-verification"),
+    )
+    assessment = (
+        await AgentRoutingService(db).create_assessment(task.id, pm, request, _command_context("assess-publisher"))
+    ).assessment
+
+    # The work was delivered by an actor outside the team on a "maker-a" model.
+    implementer_profile = await profile_factory(assignment_modes=["execution"])
+    implementer = await actor_factory(
+        profile=implementer_profile,
+        name="outside-team-implementer",
+        display_name="Outside Team Implementer",
+    )
+    execution = AgentTaskAssignment(
+        task_id=task.id, actor_id=implementer.id, task_version=task.version, purpose="execution", state="fulfilled"
+    )
+    db.add(execution)
+    await db.flush()
+    db.add(
+        AgentRun(
+            task_id=task.id,
+            actor_id=implementer.id,
+            assignment_id=execution.id,
+            status="succeeded",
+            ended_at=utc_now(),
+            execution_provenance={"publisher_key": "maker-a", "profile_id": implementer_profile.id},
+        )
+    )
+    task.status = "resolved"
+    await db.commit()
+    body = {
+        "purpose": "verification",
+        "assessment_id": assessment.id,
+        "expected_task_version": task.version,
+        "reviewer_profile_id": reviewer.profile_id,
+    }
+    now = utc_now().replace(microsecond=0)
+    monkeypatch.setattr(agent_routing_service, "utc_now", lambda: now)
+
+    async def both(key):
+        responses = [
+            await through(
+                transport,
+                db_session_factory,
+                monkeypatch,
+                "agent_preview_task_routing",
+                f"/api/agent/tasks/{task.id}/routing-preview",
+                key,
+                body,
+                task_id=task.id,
+            )
+            for transport in ("rest", "mcp")
+        ]
+        assert responses[0] == responses[1]
+        return responses[0]
+
+    scoped = await both(team.sink.keys[team.manifest.controller.actor_key])
+    full = await both(OPERATOR_KEY)
+    team_ids = {actor.id for actor in team.actors.values()}
+    assert {row["actor_id"] for row in rows(scoped)} <= team_ids
+    assert implementer.id in {row["actor_id"] for row in rows(full)}
+    assert "outside-team-implementer" not in json.dumps(scoped)
+
+    def reviewer_row(preview):
+        (row,) = [row for row in rows(preview) if row["actor_id"] == reviewer.id]
+        return row
+
+    # The out-of-team implementer's publisher still decides the in-team
+    # reviewer's independence, exactly as in the full operator view.
+    scoped_row, full_row = reviewer_row(scoped), reviewer_row(full)
+    assert scoped_row["hard_blocker_codes"] == full_row["hard_blocker_codes"]
+    assert scoped_row["eligible"] is full_row["eligible"]
+    if shared_publisher:
+        assert "verification_publisher_not_independent" in scoped_row["hard_blocker_codes"]
+        assert scoped["recommended_candidate"] is None
+    else:
+        assert "verification_publisher_not_independent" not in scoped_row["hard_blocker_codes"]
+        assert scoped_row["eligible"] is True
+        assert scoped["recommended_candidate"]["actor_id"] == reviewer.id
