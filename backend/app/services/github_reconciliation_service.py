@@ -127,6 +127,8 @@ class GitHubReconciliationService:
         submitted = submissions[-1] if submissions else None
         head = meta.get("head_sha")
         head_differs = bool(submitted and head and head != submitted["commit_sha"])
+        checked = bool(head) and meta.get("checks_sha") == head
+        checks_state = meta.get("checks_state") if checked else None
         differences = []
         if state == "unobserved":
             differences.append("never_observed")
@@ -134,13 +136,15 @@ class GitHubReconciliationService:
             differences.append("observation_failed")
         if head_differs:
             differences.append("head_differs_from_submission")
+        if head and not checked:
+            differences.append("checks_not_observed_for_head")
         if state == "merged" and not accepted:
             differences.append("merged_without_acceptance")
         if state == "closed_unmerged":
             differences.append("closed_without_merge")
         if replaced:
             differences.append("task_replaced")
-        owner, action = self._next(state, meta, submitted, head_differs, accepted, replaced, relation, reviews)
+        owner, action = self._next(state, meta, checks_state, submitted, head_differs, accepted, replaced, relation, reviews)
         observed = meta.get("observed_at") or meta.get("status_refreshed_at") or meta.get("webhook_received_at")
         return {
             "link_id": link.id, "url": link.url, "title": link.title, "state": state,
@@ -148,8 +152,10 @@ class GitHubReconciliationService:
             "submissions": submissions,
             "observed_head_sha": head,
             "target_branch": meta.get("base_ref"),
-            "checks": {"state": meta.get("checks_state"), "total": meta.get("checks_total"),
-                       "sha": meta.get("checks_sha"), "error": meta.get("checks_error")},
+            "checks": {"state": checks_state or ("not_observed" if head else None),
+                       "total": meta.get("checks_total") if checked else None,
+                       "sha": meta.get("checks_sha") if checked else None,
+                       "error": meta.get("checks_error") if checked else None},
             "merged": state == "merged", "merge_commit_sha": meta.get("merge_commit_sha"),
             "merged_at": meta.get("merged_at"), "closed_at": meta.get("closed_at"),
             "observed_at": parse_github_time(observed), "observation_source": meta.get("observation_source"),
@@ -159,7 +165,7 @@ class GitHubReconciliationService:
         }
 
     @staticmethod
-    def _next(state, meta, submitted, head_differs, accepted, replaced, relation, reviews):
+    def _next(state, meta, checks_state, submitted, head_differs, accepted, replaced, relation, reviews):
         if replaced:
             return "pm", f"Continue on replacement task {relation.replacement_task_id}; this task is withdrawn."
         if accepted:
@@ -171,10 +177,12 @@ class GitHubReconciliationService:
         if state == "closed_unmerged":
             return "pm", "Closed without merging; reopen the pull request or replace the task."
         if head_differs:
-            return "pm", "The head moved past the submitted commit; have the worker submit the current head, then request review."
+            return "pm", "The head differs from the submitted commit; have the worker submit the current head, then request review."
         if state == "draft":
             return "worker", "Mark the pull request ready for review."
-        if meta.get("checks_state") == "failure":
+        if state != "merged" and meta.get("head_sha") and checks_state is None:
+            return "pm", "Checks are not observed for the current head; run catch-up."
+        if state != "merged" and checks_state == "failure":
             return "worker", "Fix the failing checks on the current head."
         pending = bool(reviews) and reviews[-1].state in {"queued", "accepted"}
         if state == "merged":

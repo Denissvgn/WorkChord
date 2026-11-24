@@ -273,3 +273,34 @@ async def test_a_replaced_task_points_at_its_successor_and_its_own_pull_request(
     own = await GitHubReconciliationService(db_session).view(replacement)
     assert own["replacement"]["role"] == "replacement" and own["successor"] is None
     assert own["pull_requests"][0]["submitted_sha"] == SHA_B
+
+
+@pytest.mark.parametrize("old_checks, old_owner", [("failure", "worker"), ("success", "pm")])
+async def test_checks_read_for_an_older_head_are_not_reported_for_the_new_head(
+    db_session, task_factory, actor_factory, github, old_checks, old_owner
+):
+    project = await _project(db_session)
+    task, link = await _delivery(db_session, task_factory, actor_factory, project, submitted=SHA_B)
+    task_id, link_id = task.id, link.id
+    _as(db_session, project)
+    github.runs = [{"status": "completed", "conclusion": old_checks}]
+    github.pull = github.payload(SHA_A, "2026-07-01T10:00:00Z")
+    service = GitHubReconciliationService(db_session)
+    before = (await service.catch_up(task_id))["pull_requests"][0]
+    assert (before["checks"]["state"], before["checks"]["sha"]) == (old_checks, SHA_A)
+    assert before["next_owner"] == "pm" and "head_differs_from_submission" in before["differences"]
+
+    await _webhook(db_session).process("pull_request", "d-9", _delivery_payload(
+        "synchronize", github.payload(SHA_B, "2026-07-01T11:00:00Z")))
+    after = (await service.view(task_id))["pull_requests"][0]
+    assert after["observed_head_sha"] == SHA_B
+    assert (after["checks"]["state"], after["checks"]["sha"]) == ("not_observed", None)
+    assert "checks_not_observed_for_head" in after["differences"]
+    assert (after["next_owner"], "catch-up" in after["next_action"]) == ("pm", True)
+
+    github.pull = github.payload(SHA_B, "2026-07-01T11:30:00Z")
+    github.runs = [{"status": "completed", "conclusion": "success"}]
+    restored = (await service.catch_up(task_id))["pull_requests"][0]
+    assert (restored["checks"]["state"], restored["checks"]["sha"]) == ("success", SHA_B)
+    assert "checks_not_observed_for_head" not in restored["differences"]
+    assert restored["next_owner"] == "pm" and "reviewer" in restored["next_action"]

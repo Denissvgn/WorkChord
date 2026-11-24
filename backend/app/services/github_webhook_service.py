@@ -267,6 +267,10 @@ class GitHubWebhookService:
             "webhook_received_at": self._now_iso(),
         })
         metadata.pop("status_refresh_error", None)
+        if metadata.get("checks_sha") != metadata.get("head_sha"):
+            # Checks read for an earlier head say nothing about this one.
+            for key in ("checks_state", "checks_total", "checks_sha", "checks_error"):
+                metadata.pop(key, None)
         link.metadata_json = metadata
         return status
 

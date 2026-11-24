@@ -202,10 +202,10 @@ class GitHubStatusService:
             link.entity_id,
             "github_pr_merged" if status == "merged" else "github_pr_closed",
             {
-                "summary": f"GitHub PR #{number} {'merged' if status == 'merged' else 'closed without merging'} (observed by catch-up)",
+                "summary": f"GitHub PR #{number} {'merged' if status == 'merged' else 'closed without merging'} (observed by refresh)",
                 "provider": "github",
                 "github_event": "pull_request",
-                "observed_by": "catch_up",
+                "observed_by": "refresh",
                 "status": status,
                 "pr_number": number,
                 "url": link.url,
