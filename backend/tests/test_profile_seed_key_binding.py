@@ -1,12 +1,13 @@
 """Binding a seed key to an existing unkeyed planning profile keeps its history."""
 
+from datetime import date
+
 import pytest
 from sqlalchemy import func, select
 
 from app.commands import PlanningConflict
-from app.models.agent import AgentActor, AgentModelCatalogEntry
+from app.models.agent import AgentActor, AgentTaskAssignment, AgentModelCatalogEntry
 from app.models.identity import CommandAudit
-from app.models.iteration import Iteration
 from app.models.task import Task
 from app.models.team_member import TeamMember, TeamMemberProfile
 from app.schemas.agent_planning import AgentPlanningCommandContext
@@ -17,7 +18,6 @@ from app.schemas.agent_team_setup import (
 )
 from app.schemas.team import TeamMemberProfileSeedKeyBind
 from app.services.agent_team_setup_service import AgentTeamSetupService
-from app.services.planning_input_context import PlanningInputUnavailable
 from app.services.team_service import TeamService
 from tests.test_agent_team_setup import CapturingCredentialSink, example_payload, operator
 from tests.test_delivery_scenarios import delivery_store  # noqa: F401 - fixture
@@ -48,7 +48,12 @@ async def _snapshot(db, profile_ids):
     tasks = (await db.execute(
         select(Task.id, Task.assignee_id, Task.status, Task.iteration_id).order_by(Task.id)
     )).all()
-    return [tuple(row) for row in members], [tuple(row) for row in tasks]
+    versions = (await db.execute(select(Task.id, Task.version).order_by(Task.id))).all()
+    assignments = (await db.execute(
+        select(AgentTaskAssignment.id, AgentTaskAssignment.task_version)
+        .order_by(AgentTaskAssignment.id))).all()
+    return ([tuple(row) for row in members], [tuple(row) for row in tasks],
+            [tuple(row) for row in versions], [tuple(row) for row in assignments])
 
 
 async def test_bound_profile_is_connected_in_place_with_history_intact(delivery_store):
@@ -61,7 +66,8 @@ async def test_bound_profile_is_connected_in_place_with_history_intact(delivery_
         verifier, _ = await _unkeyed_agent(db, scenario, "Imported reviewer", ["verification"])
         scheduled = Task(title="Scheduled work", status="planned", priority=2,
                          iteration_id=scenario.iterations[0], project_id=scenario.projects[0],
-                         assignee_id=worker_member.id, effort_days=1, effort_hours=8)
+                         assignee_id=worker_member.id, effort_days=1, effort_hours=8,
+                         start_date=date(2026, 1, 12), end_date=date(2026, 1, 13))
         db.add(scheduled)
         for key in {member.default_model_binding_key for member in manifest.all_members}:
             db.add(AgentModelCatalogEntry(
@@ -72,8 +78,6 @@ async def test_bound_profile_is_connected_in_place_with_history_intact(delivery_
         worker_id, verifier_id, task_id = worker.id, verifier.id, scheduled.id
         worker_member_id = worker_member.id
         before = await _snapshot(db, [worker_id, verifier_id])
-        revision_before = await db.scalar(
-            select(Iteration.revision).where(Iteration.id == scenario.iterations[0]))
 
         service = TeamService(db)
         bound = await service.bind_profile_seed_key(worker_id, TeamMemberProfileSeedKeyBind(
@@ -82,11 +86,12 @@ async def test_bound_profile_is_connected_in_place_with_history_intact(delivery_
         await service.bind_profile_seed_key(
             verifier_id, TeamMemberProfileSeedKeyBind(seed_key=verifier_key))
         assert await _snapshot(db, [worker_id, verifier_id]) == before
-        assert await db.scalar(
-            select(Iteration.revision).where(Iteration.id == scenario.iterations[0])) > revision_before
         audits = (await db.scalars(select(CommandAudit).where(
             CommandAudit.action == "team_member_profile_seed_key_bound"))).all()
         assert {row.details["profile_id"] for row in audits} == {worker_id, verifier_id}
+        assert len(audits) == 2
+        assert await db.scalar(select(func.count()).select_from(CommandAudit).where(
+            CommandAudit.action == "team_member_profiles:update")) == 0
 
         profiles_before = await db.scalar(select(func.count()).select_from(TeamMemberProfile))
         sink = CapturingCredentialSink()
@@ -132,9 +137,8 @@ async def test_binding_refuses_keyed_duplicate_and_invalid_keys(delivery_store):
                 profile_id, TeamMemberProfileSeedKeyBind(seed_key="shared-delivery-owner"))
         assert duplicate.value.code == "profile_seed_key_in_use"
         assert (await db.get(TeamMemberProfile, scenario.profile)).seed_key == "shared-delivery-owner"
-        with pytest.raises(PlanningInputUnavailable):
-            await service.bind_profile_seed_key(
-                999999, TeamMemberProfileSeedKeyBind(seed_key="x1"))
+        assert await service.bind_profile_seed_key(
+            999999, TeamMemberProfileSeedKeyBind(seed_key="x1")) is None
     for bad in ("Has Capitals", "-leading", "", "x" * 101):
         with pytest.raises(ValueError):
             TeamMemberProfileSeedKeyBind(seed_key=bad)
@@ -149,7 +153,8 @@ async def test_only_the_operator_can_bind_a_seed_key_over_http(managed_store):
     url = f"/api/team-member-profiles/{profile_id}/seed-key"
     async with client(tokens[0], **{"X-CSRF-Token": "csrf-0", "Origin": "https://test"}) as editor:
         denied = await editor.post(url, json={"seed_key": "imported-agent"})
-        assert denied.status_code in {401, 403, 404}, denied.text
+        assert denied.status_code == 403, denied.text
+        assert denied.json()["detail"]["code"] == "operator_required"
     async with factory() as db:
         assert (await db.get(TeamMemberProfile, profile_id)).seed_key is None
     async with client(**{"X-Admin-API-Key": "managed-operator-fixture"}) as admin:
@@ -161,3 +166,43 @@ async def test_only_the_operator_can_bind_a_seed_key_over_http(managed_store):
     async with factory() as db:
         assert await db.scalar(select(func.count()).select_from(CommandAudit).where(
             CommandAudit.action == "team_member_profile_seed_key_bound")) == 1
+
+
+async def _agent_attempt(factory, scenario, monkeypatch=None, role="pm"):
+    async with factory() as db:
+        profile, _ = await _unkeyed_agent(db, scenario, "Imported agent", ["execution"])
+        actor = await db.get(AgentActor, scenario.actors[0])
+        actor.role = role
+        actor.scopes = '["tasks:read","team:read","team:write"]'
+        await db.commit()
+        return profile.id
+
+
+async def test_agent_key_cannot_bind_a_seed_key_in_trusted_local_mode(delivery_store, monkeypatch):
+    from app.config import get_settings
+    factory, scenario, _ = delivery_store
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "trusted_local")
+    get_settings.cache_clear()
+    try:
+        profile_id = await _agent_attempt(factory, scenario)
+        async with client(**{"X-Agent-API-Key": scenario.actor_keys[0]}) as agent:
+            denied = await agent.post(
+                f"/api/team-member-profiles/{profile_id}/seed-key", json={"seed_key": "agent-chosen"})
+        assert denied.status_code == 403, denied.text
+        assert denied.json()["detail"]["code"] == "operator_required"
+        async with factory() as db:
+            assert (await db.get(TeamMemberProfile, profile_id)).seed_key is None
+    finally:
+        get_settings.cache_clear()
+
+
+async def test_agent_key_cannot_bind_a_seed_key_in_managed_mode(managed_store):
+    factory, scenario, _, _ = managed_store
+    profile_id = await _agent_attempt(factory, scenario)
+    async with client(**{"X-Agent-API-Key": scenario.actor_keys[0]}) as agent:
+        denied = await agent.post(
+            f"/api/team-member-profiles/{profile_id}/seed-key", json={"seed_key": "agent-chosen"})
+    assert denied.status_code == 403, denied.text
+    assert denied.json()["detail"]["code"] == "operator_required"
+    async with factory() as db:
+        assert (await db.get(TeamMemberProfile, profile_id)).seed_key is None

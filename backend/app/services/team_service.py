@@ -1,6 +1,7 @@
 """Team member service with business logic."""
 
 from app.authority import internal_authority
+from app.authority import AuthorityError
 from app.commands import PlanningConflict, atomic_command, commit_or_flush, schedule_input_command
 import csv
 from datetime import date
@@ -239,7 +240,7 @@ class TeamService:
         await self.db.refresh(profile)
         return await self._get_profile_by_id(profile.id)
 
-    @schedule_input_command("profile")
+    @atomic_command
     async def bind_profile_seed_key(
         self,
         profile_id: int,
@@ -250,9 +251,17 @@ class TeamService:
         """Bind a seed key once to an existing unkeyed profile, in place.
 
         The profile row keeps its id, so capacity, availability, assignments and
-        history links stay attached. Operator authority is enforced by the
-        planning-input reservation that wraps this command.
+        history links stay attached. A seed key is not a scheduling input, so no
+        planning revision or task version advances. Agent credentials are refused
+        in every mode; only the operator or a trusted-local person may bind.
         """
+        authority = self.db.info.get("authority")
+        if authority is not None and (
+            authority.kind == "agent" or not (authority.operator or authority.local)
+        ):
+            raise AuthorityError(
+                "operator_required", "Workspace operator permission is required."
+            )
         profile = await self._get_profile_by_id(profile_id)
         if not profile:
             return None
@@ -270,7 +279,8 @@ class TeamService:
                 "Another profile already uses this seed key.",
             )
         profile.seed_key = data.seed_key
-        authority = self.db.info.get("authority")
+        # The explicit entry below replaces the generic per-row audit entry.
+        self.db.info.setdefault("authority_audited", set()).add(id(profile))
         self.db.add(CommandAudit(
             principal_id=getattr(authority, "principal_id", None),
             action="team_member_profile_seed_key_bound",
