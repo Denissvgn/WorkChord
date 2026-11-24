@@ -383,7 +383,8 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
             assert queue["state"] == "wait" and blocked["assignment"]["id"] == rework["id"]
             assert "routing_selection_pending" in blocked["blocker_codes"]
             context = await call("agent_get_complete_task_context", f"/api/agent/tasks/{task.id}/context", key, task_id=task.id)
-            assert not context["start_ready"] and "routing_selection_pending" in context["blocker_codes"]
+            assert context["started"] is False and not context["start_ready"] and "routing_selection_pending" in context["blocker_codes"]
+            assert ("model_aware_assignment_inactive" in context["blocker_codes"]) == (case != "enforced_after_rejection")
             denial = "agent_team_actor_outside_topology" if case == "worker_membership_lost" else "routing_selection_pending"
             await call(*begin, key, payload={"assignment_id": rework["id"], "queue_revision": queue["queue_revision"],
                        "model": member.default_model_binding_key}, receipt="unavailable-handback", error=denial)
@@ -485,7 +486,21 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
             "review_mode": "independent", "reviewer_profile_ids": [reviewer.profile_id], "independence_must_be_revalidated": True}
         assert (await call(*work, worker_key))["state"] == "resume"
         started = await call("agent_get_complete_task_context", f"/api/agent/tasks/{task.id}/context", worker_key, task_id=task.id)
-        print("PROBE", started["start_ready"], started["blocker_codes"], started["assignment"]["state"])
+        assert started["started"] is True and started["start_ready"] is False and started["assignment"]["state"] == "accepted"
+        assert not {"routing_selection_pending", "model_aware_assignment_inactive", "assignment_not_queued_execution",
+                    "foreign_or_unknown_claim", "assignment_actor_ineligible"} & set(started["blocker_codes"])
+        if case == "same_worker":
+            async with db_session_factory() as audit:
+                gone = await audit.get(AgentActor, worker.id)
+                gone.enabled = False
+                await audit.commit()
+            dead = await call("agent_get_complete_task_context", f"/api/agent/tasks/{task.id}/context", pm_key,
+                              task_id=task.id, assignment_id=rework["id"])
+            assert dead["started"] is False and dead["start_ready"] is False
+            assert "assignment_actor_ineligible" in dead["blocker_codes"]
+            async with db_session_factory() as audit:
+                (await audit.get(AgentActor, worker.id)).enabled = True
+                await audit.commit()
         assert await stored_history(db_session_factory, rework["id"], review["id"], assigned["id"]) == previous_history
         async with db_session_factory() as audit:
             assert (await audit.get(AgentRun, running["run"]["id"])).execution_provenance == original_execution

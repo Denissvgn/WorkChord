@@ -2139,7 +2139,16 @@ class AgentWorkService:
                 AgentRun.assignment_id == assignment.id, AgentRun.task_id == task.id,
                 AgentRun.actor_id == assignment.actor_id, AgentRun.claim_generation == task.claim_generation,
                 AgentRun.status == LIVE_RUN_STATE).limit(2))).all()
-            if len(active_runs) == 1:
+            owner = await self.db.get(AgentActor, assignment.actor_id)
+            try:
+                if owner is None:
+                    raise ValueError("Assignment actor is missing")
+                self._validate_assignment_actor(owner, assignment.purpose)
+                eligible = True
+            except ValueError:
+                eligible = False
+            # An ineligible owner can neither renew nor submit, so the work is not running.
+            if len(active_runs) == 1 and eligible:
                 started = True
                 if assignment.queue_class == "rework":
                     assignment_view = self._execution_assignment_view(assignment, active_runs[0])
@@ -2195,7 +2204,7 @@ class AgentWorkService:
             definition_ready=not definition_blockers,
             start_ready=not started and not start_blockers,
             started=started,
-            blocker_codes=sorted(set((definition_blockers if not started else []) + start_blockers)),
+            blocker_codes=sorted(set(definition_blockers + start_blockers)),
         )
 
     @atomic_command
