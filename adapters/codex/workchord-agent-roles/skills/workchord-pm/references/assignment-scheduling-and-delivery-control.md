@@ -293,10 +293,10 @@ Never edit worker-produced artifacts, finish the worker run, or transition activ
 
 An operator may announce a coordinated maintenance window for a release. While a window is announced or in progress, the server refuses every new start with `maintenance_window_admission_closed` (HTTP 409). Work that already holds a live claim keeps renewing and submitting. You can still plan and queue work, but nothing begins until the window closes.
 
-1. Read `GET /api/agent/me/maintenance-windows/current`. It shows the window, its planned end, `pm_notice_required`, `pm_notice_recorded`, and each live claim your team's agents hold.
-2. If `pm_notice_required` is true, record your receipt with `POST /api/agent/me/maintenance-windows/{window_id}/notice-receipt` using your own key. A receipt says only that you were told; it does not admit any claim.
-3. Tell every run owner on your team about the window and its planned end. Each owner must acknowledge its own live claim with `POST /api/agent/me/maintenance-windows/{window_id}/acknowledge`; you cannot acknowledge for it.
-4. Do not treat your notice receipt or a missing acknowledgement as consent for any claim. The window protects only the claims whose owners acknowledged it. An owner that did not acknowledge finishes its work before the window begins; the operator decides whether to wait or cancel the window.
+1. Read `GET /api/agent/me/maintenance-windows/current`. It shows the window, its planned end, `pm_notice_required`, and `pm_notice_recorded`. Its `my_live_claims` lists only your own live claims, so a PM normally sees none.
+2. If `pm_notice_required` is true, record your receipt with `POST /api/agent/me/maintenance-windows/{window_id}/notice-receipt` using your own key. A receipt says only that you were told; it does not admit any claim. Receipts are accepted only while the window is `announced`; otherwise the server refuses with `maintenance_window_state_conflict`.
+3. Find the run owners you must notify from the pipeline and run reads: `GET /api/agent/pipeline` shows the running and claimed work, and `GET /api/agent/runs/{run_id}` shows each run's owner. Tell every run owner on your team about the window and its planned end. Each owner must acknowledge its own live claim with `POST /api/agent/me/maintenance-windows/{window_id}/acknowledge`; you cannot acknowledge for it.
+4. Do not treat your notice receipt or a missing acknowledgement as consent for any claim. The window protects only the claims whose owners acknowledged it. The operator cannot begin the window while any live claim lacks its owner's acknowledgement (`owner_acknowledgement_missing`). An owner that did not acknowledge finishes its work before the window begins; the operator decides whether to wait or cancel the window.
 5. Dispatch resumes after the window closes. Re-read the queue and the assignment before you assign new work.
 
 ## Complete Phase Contracts

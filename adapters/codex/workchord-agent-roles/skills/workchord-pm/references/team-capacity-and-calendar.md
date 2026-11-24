@@ -189,7 +189,7 @@ Do not hide overload by lowering effort, increasing professionalism, or removing
 
 ## Change Capacity Over Dates
 
-Use dated changes instead of editing a row's base percentage when the change covers only some dates. Every command has the same shape: preview first, read the effective capacity and the refusal or shortfall, then apply the same payload with the `expected_revisions` the preview returned. Use the MCP tools below; the matching application REST routes are a separate human/session surface.
+Use dated changes instead of editing a row's base percentage when the change covers only some dates. Every command has the same shape: preview first, read the effective capacity and the refusal or shortfall, then apply the same payload, sending the preview's `observed_revisions` map as `expected_revisions`. The adjustment and transfer previews return `observed_revisions`; only the iteration date-move preview returns `expected_revisions`. Use the MCP tools below; the matching application REST routes are a separate human/session surface.
 
 | Need | Preview, then apply | Use it for |
 | --- | --- | --- |

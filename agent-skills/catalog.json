@@ -9,14 +9,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-pm-1.21.4.tar.gz",
-          "sha256": "b0b50bde7ea2904fe9216158203f9d41828e330d16b60b2beddfa1d8cab9b36d",
+          "sha256": "a7f01e5cf1954fd98db077ff8f0a392cc346ac64f29073abe2350dc0e6ff99db",
           "size": 215078
         },
         {
           "format": "zip",
           "path": "workchord-pm-1.21.4.zip",
-          "sha256": "d1db82b7bd42d790758c6d8b515135a5ed927b197fa3c0088e263a5cfc27ce79",
-          "size": 200028
+          "sha256": "806e1a6924ff457502a2b05af5e390a2deb1b29f54c77b9ab71c2c02e150115d",
+          "size": 200671
         }
       ],
       "entrypoint": "SKILL.md",
@@ -38,8 +38,8 @@
         },
         {
           "path": "references/assignment-scheduling-and-delivery-control.md",
-          "sha256": "e8aaeab33d875fc9f34eac9db1c3463a9e6291af8a445b86bcced5c38221f4a9",
-          "size": 27010
+          "sha256": "3b99f87dbf058acc952267482768d0d3b724ee36499a70e8d7ea24917fe210de",
+          "size": 27499
         },
         {
           "path": "references/intake-planning-and-task-briefs.md",
@@ -58,8 +58,8 @@
         },
         {
           "path": "references/team-capacity-and-calendar.md",
-          "sha256": "654625bfd237e8f4ae3bb7570357fc37e8b8ff384731bddf5ee54cf54095a853",
-          "size": 20236
+          "sha256": "041352e8681dd8e05a9748e3a24aa0190de768365faa3d413e2d1b493215c80e",
+          "size": 20390
         },
         {
           "path": "references/verification-rework-and-recovery.md",
@@ -192,14 +192,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-worker-1.20.3.tar.gz",
-          "sha256": "4eb71cf511f00a3f1fbad23a4877f171676b12eb62c1dac1afcd4aaac765e1df",
+          "sha256": "2033ca23802f395d4d37dd8359eac51de67e126afe7cdc9f240cca1739499f94",
           "size": 102428
         },
         {
           "format": "zip",
           "path": "workchord-worker-1.20.3.zip",
-          "sha256": "7ad2d62e2fbb57f36c5f162b169307c8eeec969647e107c7f54e28fa9b29ebdc",
-          "size": 95781
+          "sha256": "e8a989d8df99c9b0501c157f0df3463b1720fedbc716d0e4828778645fe11d3b",
+          "size": 96090
         }
       ],
       "entrypoint": "SKILL.md",
@@ -221,8 +221,8 @@
         },
         {
           "path": "references/claim-run-and-task-state.md",
-          "sha256": "9ceddd41c50316af705638aede925fa45e96aeca21cdeec38ea368216686f393",
-          "size": 15107
+          "sha256": "c5b15f89ad4119c580b48182b61d2da38d91f9dddde19332f7971ed32c274e24",
+          "size": 15416
         },
         {
           "path": "references/events-errors-and-recovery.md",
@@ -280,5 +280,5 @@
       "version": "1.20.3"
     }
   ],
-  "source_revision": "sha256:767b4e1413a87de410eac9f1625388e511d3090ba6a47e54b2c9914468137262"
+  "source_revision": "sha256:088c55e5dfdf797441ae5508f1fbb244f06bb19d798f88e02d9e4d526990f6a1"
 }
