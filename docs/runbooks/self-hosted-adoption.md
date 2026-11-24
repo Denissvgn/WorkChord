@@ -318,6 +318,9 @@ While the old stack is still up and drained, record its row counts:
 ~~~bash
 COUNTS="select table_name, (xpath('/row/c/text()', query_to_xml(format('select count(*) as c from workchord.%I', table_name), false, true, '')))[1]::text from information_schema.tables where table_schema='workchord' and table_type='BASE TABLE' order by 1"
 old_compose exec -T postgres psql -U postgres -d workchord -Atc "$COUNTS" >"$DUMPS/counts-old.txt"
+# Save the old backend's build identity now; after step 9 that port serves the new stack.
+curl -fsS http://127.0.0.1:8480/.well-known/workchord-build.json >"$DUMPS/previous-build.json"
+python3 -c 'import json,sys; print("old source_revision:", json.load(open(sys.argv[1]))["source_revision"])' "$DUMPS/previous-build.json"
 ~~~
 
 Stop the old stack. Stop is not `down`: containers and volumes stay.
@@ -408,7 +411,9 @@ ls "$NEW_SINK" | wc -l
 ~~~bash
 # The revision the old images were built from. Read it from the old release
 # file when it names one (the source copy's own HEAD can be older than the
-# pinned images); otherwise take it from the old backend's build identity.
+# pinned images). If the header is missing, set OLD_REVISION by hand from
+# source_revision in $DUMPS/previous-build.json (saved in step 7), not from
+# port 8480, which serves the new stack by now.
 OLD_REVISION="$(sed -n 's/^# WorkChord main \([0-9a-f]\{7,40\}\).*/\1/p' "${OLD_FILES[-1]}" | head -1)"
 # If empty, the old revision is not in this repository's history; set OLD_VERSION by hand from that revision's backend/pyproject.toml.
 OLD_VERSION="$(git -C "$WORKCHORD_INSTANCE_HOME" show "$OLD_REVISION:backend/pyproject.toml" 2>/dev/null | sed -n 's/^version = "\(.*\)"/\1/p')"
