@@ -1023,6 +1023,9 @@ class AgentTeamStatusResponse(AgentTeamSetupModel):
     )
     can_mutate: bool
     next_action: str | None = Field(default=None, max_length=255)
+    feature_advertised: bool = True
+    caller_binding: Literal["operator", "bound", "unbound"] = "operator"
+    roster_scope: Literal["team", "workspace", "none"] = "workspace"
 
 
 class AgentTeamSetupReportCounts(AgentTeamSetupModel):

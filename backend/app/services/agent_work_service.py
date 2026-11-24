@@ -1005,6 +1005,15 @@ class AgentWorkService:
                     queued_assignments=assignment_counts.get((item.id, "queued"), 0),
                     accepted_assignments=assignment_counts.get((item.id, "accepted"), 0),
                     running_runs=running_counts.get(item.id, 0),
+                    roster_scope="team" if boundary is not None else "workspace",
+                    topology_key=(
+                        boundary.topology_key if boundary is not None else None
+                    ),
+                    topology_revision=(
+                        boundary.topology_revision
+                        if boundary is not None
+                        else None
+                    ),
                 )
             )
         return roster
