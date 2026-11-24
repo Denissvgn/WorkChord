@@ -9,6 +9,7 @@ Use this reference when the work already exists as a plan outside WorkChord, suc
 - [Staff the iteration with the agents that do the work](#staff-the-iteration-with-the-agents-that-do-the-work)
 - [Choose the assignee of each task](#choose-the-assignee-of-each-task)
 - [Load in this order](#load-in-this-order)
+- [Map a prerequisite that needs merged code](#map-a-prerequisite-that-needs-merged-code)
 - [Keep the schedule calculated](#keep-the-schedule-calculated)
 - [Keep Projects, Roadmap view true](#keep-projects-roadmap-view-true)
 - [Check the plan before you report it](#check-the-plan-before-you-report-it)
@@ -43,7 +44,8 @@ Give every fact in the source plan one WorkChord record. A label may repeat a fa
 | The plan's own task ID | `external_key`; you may also prefix the title with it | The WorkChord task ID |
 | Task text | Typed `brief` | Description only |
 | Estimate | `effort_hours` | Start and end dates |
-| "B needs A first" | `depends_on` on B | Prose, sort order, or priority |
+| "B needs A first" (B may start once A is Implemented) | `depends_on` on B | Prose, sort order, or priority |
+| "B needs A's code on branch X first" (A Accepted and merged on X) | Delivery prerequisite on B with `target_branch` X | `depends_on`; it releases B at Implemented, before the code is on X |
 | "Not before this date", "no later than this date" | `min_start_date`, `max_end_date` | `start_date`, `end_date` |
 | The person, agent, or model that does the task | Capacity row in `assignee_id`, then an agent assignment at dispatch | A `model:*`, `agent:*`, or `owner:*` label |
 | Reviewer | The reviewer profile's capacity row, `reviewer_profile_id` on the execution assignment, then a verification assignment after submit | A sentence in the brief only |
@@ -94,12 +96,38 @@ Each step is one audited command per record, in the order below. Derive each ide
 4. **Iteration.** Select the annual work calendars covering its dates as described in [Configure Calendars and Iterations](team-capacity-and-calendar.md#configure-calendars-and-iterations). Start it on the day work may begin.
 5. **People and capacity.** Prepare the team: check the existing profiles, rows, and agents against the workers the plan names, add the missing ones, and ask a person who takes the tasks for which the plan names nobody. Read `plan-readiness` until `team` is `done`.
 6. **Tasks.** Create predecessors before the tasks that depend on them, because `depends_on` takes WorkChord task IDs. Send for each leaf: `title`, typed `brief`, `effort_hours`, `priority`, `assignee_id`, `milestone_id`, `project_id`, `depends_on`, `tags`, `external_key`, and `source`. Send `min_start_date` or `max_end_date` only for a real constraint. Send no `start_date` and no `end_date`.
-7. **Compare.** Re-read the iteration's tasks. Every plan ID appears once as an `external_key`, and the dependency edges equal the plan's. `depends_on` works inside one iteration; when a task waits for work in another iteration, ask a person to record the delivery prerequisite unless the live contract gives you a command for it.
+7. **Compare.** Re-read the iteration's tasks. Every plan ID appears once as an `external_key`, and the dependency edges equal the plan's. `depends_on` works inside one iteration; when a task waits for work in another iteration, or needs another task's code on a branch, ask a person to record the delivery prerequisite (see [Map a prerequisite that needs merged code](#map-a-prerequisite-that-needs-merged-code)) unless the live contract gives you a command for it.
 8. **Schedule.** Preview, read every `unscheduled` entry with its reason code, correct the input it names, and apply.
 9. **Roadmap.** Read the calculated end of each milestone's last task. Fill an empty milestone `target_date` with it. When a committed date is earlier than the calculated end, report the gap; do not move the commitment.
 10. **Check.** Run [Check the plan before you report it](#check-the-plan-before-you-report-it).
 11. **Dispatch.** Only now create agent assignments, with `team_member_id` equal to the task's assignee and `reviewer_profile_id` set. Give each agent's queue the order its row has on Gantt.
 12. **Report.** Publish a project update with the plan size, the calculated end, and the open risks.
+
+## Map a Prerequisite That Needs Merged Code
+
+`depends_on` is an ordering edge inside one iteration. It releases the dependent task when the predecessor is Implemented (`resolved`) or Accepted (`closed`). Implemented means the worker submitted; the pull request may still be open and the target branch unchanged. Use `depends_on` when the dependent task only needs the predecessor submitted. Projects that rely on it keep that behavior; nothing here changes it.
+
+When the dependent task's brief needs the predecessor's changed sources on a named branch, `depends_on` is the wrong edge, even inside one iteration. Record a **delivery prerequisite** instead, with the server's `delivery-dependencies-v1` feature:
+
+- A person (project manager or workspace operator) records it: `POST /api/tasks/{task_id}/delivery-dependencies` with `{kind: "task", target_id: <predecessor task ID>, expected_version: <dependent task version>, target_branch: "<branch>"}`. The agent planning commands carry no such command, so ask the person and name the dependent task, the predecessor, and the branch the brief requires. `GET /api/tasks/{task_id}/delivery-dependencies` reads the edges. Posting the same pair again with another `target_branch` retargets the edge; posting it with none keeps only the Accepted gate.
+- Without `target_branch`, the edge waits for the predecessor to be Accepted. With it, the edge also waits for a merge into that branch. `target_branch` applies to a leaf task prerequisite, not to a milestone or a summary task.
+- A merge never accepts a task. Acceptance stays with the independent reviewer's verdict; the merge is evidence read beside it.
+
+Read the hold on the pipeline (`GET /api/agent/pipeline`, `agent_get_pipeline`): each task there has `delivery_holds`, one entry per unsatisfied prerequisite with `reason`, `merge` (the observed pull requests and their target branches), and `hold` with `case`, `next_owner` and `next_action`. The task's execution context shows the same list, and its blocker codes name `delivery_prerequisite_unavailable`, plus `delivery_merge_not_observed` while the merge is the missing piece. Such a task waits in `assigned_waiting` and never appears in `start_ready` while a hold remains. Read these entries, not the iteration's dependency list alone, before you report a task start-ready.
+
+| Observed state of the predecessor | Reason | `hold.case` | Next owner |
+| --- | --- | --- | --- |
+| Implemented, pull request open or draft | `prerequisite_acceptance_required` | `open_pull_request` | `reviewer` reviews and accepts; the code must still merge into the branch |
+| Not yet submitted | `prerequisite_acceptance_required` | `not_accepted` | `worker` |
+| Accepted, no pull request observed, or never read from GitHub | `prerequisite_merge_not_observed` | `not_observed` | `pm`: link the pull request if missing, then run GitHub catch-up |
+| Accepted, pull request still open | `prerequisite_merge_not_observed` | `open_pull_request` | `pm`: have a person with merge rights merge it into the branch, then run catch-up |
+| Accepted, merged into another branch | `prerequisite_merge_not_observed` | `merged_on_other_branch` | `pm`: merge into the named branch, or ask a person to change the edge's branch |
+| Accepted, pull request closed unmerged | `prerequisite_merge_not_observed` | `closed_unmerged` | `pm`: reopen it, or record a task replacement |
+| Accepted, merged into the named branch with a merge commit | none | none | none: the task is released |
+
+Readiness reads stored pull request observations only and never calls GitHub. A missing observation therefore reads as not observed with next owner `pm`. To refresh one, the PM or a person runs `POST /api/tasks/{predecessor_id}/github-reconciliation/catch-up`; `GET /api/tasks/{predecessor_id}/github-reconciliation` shows the same observations with the submitted commit, the observed head, checks, `differences`, and `next_owner`. The merge evidence you act on is an observed `merge_commit_sha` on the named target branch for a pull request linked to the predecessor task. A merge seen on GitHub does not release the task until the predecessor is also Accepted.
+
+If the predecessor's work is withdrawn and rebuilt, record the replacement as described in [Replace unattributable work](verification-rework-and-recovery.md#replace-unattributable-work); delivery dependents move to the replacement, and the replacement's own pull request is the evidence.
 
 ## Keep the Schedule Calculated
 

@@ -18,6 +18,7 @@ class DeliveryDependencyInput(BaseModel):
     kind: Literal["task", "milestone"]
     target_id: int = Field(gt=0)
     expected_version: int = Field(gt=0)
+    target_branch: str | None = Field(default=None, max_length=255)
 
 
 @router.get("/tasks/{task_id}/delivery-dependencies")
@@ -27,7 +28,7 @@ async def list_delivery_dependencies(task_id: int, db: DeliveryDatabase):
 
 @router.post("/tasks/{task_id}/delivery-dependencies")
 async def add_delivery_dependency(task_id: int, data: DeliveryDependencyInput, db: DeliveryDatabase):
-    return await domain_result(DeliveryDependencyService(db).add(task_id, data.kind, data.target_id, data.expected_version))
+    return await domain_result(DeliveryDependencyService(db).add(task_id, data.kind, data.target_id, data.expected_version, data.target_branch))
 
 
 @router.delete("/tasks/{task_id}/delivery-dependencies/{edge_id}")

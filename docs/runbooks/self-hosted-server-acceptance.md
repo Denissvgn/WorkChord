@@ -109,6 +109,15 @@ atomically only after the pending receipt passes offline verification. Preserve
 while the database volume remains, the launcher refuses to invent replacements
 and explains the recovery boundary.
 
+To move an already running Compose project and its database into this layout,
+follow [Adopting a running instance](self-hosted-adoption.md). It uses two
+optional inputs of this script: `WORKCHORD_CREDENTIAL_SINK_HOST_DIR` mounts a
+private host directory as the backend's credential sink (through
+`docker-compose.credential-sink.yml`), and `WORKCHORD_MIGRATION_BACKUP_REFERENCE`
+names the verified recovery point that an existing database needs before its
+migration. After a run, `scripts/server/write_deployment_record.py` writes a
+record that names every service's image.
+
 ## Retained public artifacts
 
 The deployment acceptance workflow retains public artifacts for 14 days,

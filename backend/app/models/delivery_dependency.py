@@ -1,6 +1,6 @@
 """Delivery prerequisites are separate from iteration-local scheduling edges."""
 
-from sqlalchemy import CheckConstraint, ForeignKey, Integer, UniqueConstraint, event, inspect
+from sqlalchemy import CheckConstraint, ForeignKey, Integer, String, UniqueConstraint, event, inspect
 from sqlalchemy.orm import Mapped, Session, mapped_column
 
 from app.database import Base
@@ -18,6 +18,8 @@ class DeliveryDependency(Base):
     task_id: Mapped[int] = mapped_column(ForeignKey("tasks.id", ondelete="CASCADE"), index=True)
     prerequisite_task_id: Mapped[int | None] = mapped_column(ForeignKey("tasks.id", ondelete="RESTRICT"), index=True)
     prerequisite_milestone_id: Mapped[int | None] = mapped_column(ForeignKey("project_milestones.id", ondelete="RESTRICT"), index=True)
+    # Set only on a task prerequisite whose accepted code must also be observed merged on this branch.
+    target_branch: Mapped[str | None] = mapped_column(String(255))
 
 
 @event.listens_for(Session, "before_flush")
