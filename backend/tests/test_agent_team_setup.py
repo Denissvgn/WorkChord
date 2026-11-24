@@ -1036,3 +1036,113 @@ async def test_starting_points_offer_a_valid_catalog_filled_template_and_the_app
     assert template["verifiers"][0]["skill_package"] == example["verifiers"][0]["skill_package"]
     validation = await service.validate(admin, AgentTeamManifestRequest(manifest=AgentTeamMaster.model_validate(template)))
     assert validation.valid is True, validation
+
+
+async def _apply_example(db_session: AsyncSession, payload: dict[str, Any], key: str):
+    from app.services.identity_service import initialize_control_plane
+    await initialize_control_plane(db_session)
+    await db_session.commit()
+    manifest = AgentTeamMaster.model_validate(payload)
+    for binding_key in {k for member in manifest.all_members for k in member.model_binding_keys}:
+        db_session.add(AgentModelCatalogEntry(
+            key=binding_key, provider="configured-provider", configured_model_alias=binding_key,
+            reasoning_tier=2, context_tier="medium", modality_tags=["text"], cost_tier="medium",
+            latency_tier="balanced", enabled=True, revision=1,
+        ))
+    await db_session.commit()
+    service = AgentTeamSetupService(db_session, credential_sink=CapturingCredentialSink())
+    admin = operator()
+    plan = await service.plan(admin, AgentTeamPlanRequest(manifest=manifest, expected_topology_revision=0))
+    await service.apply(
+        admin,
+        AgentTeamApplyRequest(
+            manifest=manifest, expected_topology_revision=0, plan_digest=plan.plan_digest,
+            approved_action_ids=tuple(action.action_id for action in plan.actions),
+        ),
+        command=AgentPlanningCommandContext(idempotency_key=key, rationale="Establish the topology", correlation_id=key),
+    )
+    return manifest, service, admin
+
+
+@pytest.mark.contract
+def test_declared_tool_tags_are_optional_validated_and_digest_neutral() -> None:
+    payload = example_payload()
+    baseline = AgentTeamMaster.model_validate(payload)
+    assert "declared_tool_tags" not in baseline.workers[0].model_dump(mode="json")
+    assert baseline.digest() == AgentTeamMaster.model_validate(
+        {**payload, "workers": [{**payload["workers"][0], "declared_tool_tags": {}}]}
+    ).digest()
+    declared = deepcopy(payload)
+    declared["workers"][0]["declared_tool_tags"] = {"implementation-default": ["Host-Shell"]}
+    member = AgentTeamMaster.model_validate(declared).workers[0]
+    assert member.declared_tool_tags == {"implementation-default": ("host-shell",)}
+    assert AgentTeamMaster.model_validate(declared).digest() != baseline.digest()
+    for bad in ({"unlisted-binding": ["host-shell"]}, {"implementation-default": ["bad tag"]},
+                {"implementation-default": ["host-shell", "host-shell"]}):
+        broken = deepcopy(payload)
+        broken["workers"][0]["declared_tool_tags"] = bad
+        with pytest.raises(ValidationError):
+            AgentTeamMaster.model_validate(broken)
+
+
+@pytest.mark.asyncio
+async def test_declared_tool_tags_stay_unverified_until_the_binding_carries_them(db_session: AsyncSession) -> None:
+    from app.services.agent_routing_policy import evaluate_model_envelope
+    payload = example_payload()
+    payload["workers"][0]["declared_tool_tags"] = {"implementation-default": ["host-shell"]}
+    manifest, service, admin = await _apply_example(db_session, payload, "declared-tools")
+    worker = manifest.workers[0]
+
+    binding = await db_session.scalar(
+        select(AgentModelBinding).join(AgentModelCatalogEntry).join(AgentActor, AgentActor.id == AgentModelBinding.actor_id)
+        .where(AgentActor.name == worker.actor_name, AgentModelCatalogEntry.key == "implementation-default")
+    )
+    assert binding is not None and list(binding.tool_tags) == []
+    required = {"minimum_reasoning_tier": 1, "minimum_context_tier": "small", "modality_tags": ["text"],
+                "tool_tags": ["host-shell"], "data_policy_tags": []}
+
+    def envelope():
+        return evaluate_model_envelope(
+            required, actual_reasoning_tier=2, actual_context_tier="medium", actual_modality_tags=["text"],
+            actual_tool_tags=binding.tool_tags or (), actual_data_policy_tags=[],
+        )
+
+    assert envelope().hard_blocker_codes == ("model_tool_missing",)
+    status = await service.status(admin, topology_key=manifest.topology_key)
+    member = next(item for item in status.members if item.actor_key == worker.actor_key)
+    assert member.declared_tool_tags == {"implementation-default": ("host-shell",)}
+    assert member.unverified_tool_tags == {"implementation-default": ("host-shell",)}
+    assert "host-shell" in (member.tool_capability_next_action or "")
+    assert "binding edit" in member.tool_capability_next_action
+    assert any("host-shell" in line for line in member.handoff.startup_instructions)
+    assert "unverified" in status.next_action
+    others = [item for item in status.members if item.actor_key != worker.actor_key]
+    assert all(not item.unverified_tool_tags and item.tool_capability_next_action is None for item in others)
+    assert all(len(item.handoff.startup_instructions) == 4 for item in others)
+
+    # The operator verifies the capability by editing the binding; the revision moves.
+    binding.tool_tags = ["host-shell"]
+    binding.revision += 1
+    await db_session.commit()
+    assert envelope().eligible is True
+    status = await service.status(admin, topology_key=manifest.topology_key)
+    member = next(item for item in status.members if item.actor_key == worker.actor_key)
+    assert member.declared_tool_tags == {"implementation-default": ("host-shell",)}
+    assert member.unverified_tool_tags == {}
+    assert member.tool_capability_next_action is None
+    assert len(member.handoff.startup_instructions) == 4
+    assert member.handoff.model_binding_revisions["implementation-default"] == binding.revision
+
+
+@pytest.mark.asyncio
+async def test_reconciliation_without_declarations_records_no_tool_capabilities(db_session: AsyncSession) -> None:
+    manifest, service, admin = await _apply_example(db_session, example_payload(), "no-declared-tools")
+    bindings = (await db_session.scalars(select(AgentModelBinding))).all()
+    assert bindings and all(list(binding.tool_tags) == [] for binding in bindings)
+    status = await service.status(admin, topology_key=manifest.topology_key)
+    assert all(
+        not item.declared_tool_tags and not item.unverified_tool_tags and item.tool_capability_next_action is None
+        and len(item.handoff.startup_instructions) == 4
+        for item in status.members
+    )
+    assert "unverified" not in status.next_action

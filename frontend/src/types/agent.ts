@@ -686,6 +686,7 @@ export interface AgentTeamMemberSpec {
     default_model_binding_key: string;
     runtime_ref: string;
     credential_ref: string;
+    declared_tool_tags?: Record<string, string[]>;
 }
 
 export interface AgentTeamMaster {
@@ -823,6 +824,9 @@ export interface AgentTeamMemberStatus {
     availability: 'availability_unknown';
     blocker_codes: string[];
     handoff: AgentTeamRuntimeHandoff | null;
+    declared_tool_tags?: Record<string, string[]>;
+    unverified_tool_tags?: Record<string, string[]>;
+    tool_capability_next_action?: string | null;
 }
 
 export interface AgentTeamSetupStep {

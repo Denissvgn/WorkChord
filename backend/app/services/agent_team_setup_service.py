@@ -1069,6 +1069,11 @@ class AgentTeamSetupService:
                         "actor_key": member.actor_key,
                         "catalog_key": key,
                         "default": desired_default,
+                        **(
+                            {"declared_tool_tags": list(member.declared_tool_tags[key])}
+                            if key in member.declared_tool_tags
+                            else {}
+                        ),
                     }
                 ),
                 allow_object_replacement=allow_binding_replacement,
@@ -2254,6 +2259,51 @@ class AgentTeamSetupService:
             )
         )
 
+    async def _unverified_tool_tags(
+        self,
+        actor: AgentActor | None,
+        member: AgentTeamMemberSpec,
+    ) -> dict[str, tuple[str, ...]]:
+        """Declared tool tags the binding does not carry yet, per binding key.
+
+        Only a binding's own tool tags reach routing, so every tag listed here
+        is still excluded from model selection.
+        """
+
+        if not member.declared_tool_tags:
+            return {}
+        verified: dict[str, set[str]] = {}
+        if actor is not None:
+            result = await self.db.execute(
+                select(AgentModelBinding)
+                .options(selectinload(AgentModelBinding.model_catalog))
+                .where(AgentModelBinding.actor_id == actor.id)
+            )
+            verified = {
+                binding.model_catalog.key: set(binding.tool_tags or [])
+                for binding in result.scalars()
+                if binding.model_catalog is not None
+            }
+        gaps: dict[str, tuple[str, ...]] = {}
+        for key, tags in member.declared_tool_tags.items():
+            missing = tuple(sorted(set(tags) - verified.get(key, set())))
+            if missing:
+                gaps[key] = missing
+        return gaps
+
+    @staticmethod
+    def _tool_capability_action(gaps: dict[str, tuple[str, ...]]) -> str | None:
+        if not gaps:
+            return None
+        listing = "; ".join(
+            f"{key}: {', '.join(tags)}" for key, tags in sorted(gaps.items())
+        )
+        return (
+            f"Declared but unverified tool capabilities stay excluded from routing ({listing}). "
+            "Add each tag to its model binding with a binding edit, then have the "
+            "runtime re-acknowledge the new binding revision."
+        )
+
     async def _handoff(
         self,
         *,
@@ -2265,6 +2315,9 @@ class AgentTeamSetupService:
         actor = member_record.actor
         if actor is None:
             return None
+        tool_action = self._tool_capability_action(
+            await self._unverified_tool_tags(actor, member)
+        )
         return AgentTeamRuntimeHandoff(
             topology_key=topology.topology_key,
             topology_revision=topology.revision,
@@ -2284,6 +2337,7 @@ class AgentTeamSetupService:
                 "Resolve credential_ref through the runtime secret store.",
                 "Send one restricted onboarding acknowledgement before normal work.",
                 "Re-read capabilities and topology status after acknowledgement.",
+                *((tool_action,) if tool_action else ()),
             ),
             credential_ref=member.credential_ref,
         )
@@ -3094,6 +3148,7 @@ class AgentTeamSetupService:
                 for code in blockers
             ):
                 all_binding_ready = False
+            tool_gaps = await self._unverified_tool_tags(actor, desired)
             member_statuses.append(
                 AgentTeamMemberStatus(
                     actor_key=desired.actor_key,
@@ -3132,6 +3187,11 @@ class AgentTeamSetupService:
                     runtime_ready=runtime_ready,
                     blocker_codes=tuple(sorted(blockers)),
                     handoff=None if contract_outdated else handoff,
+                    declared_tool_tags=desired.declared_tool_tags,
+                    unverified_tool_tags=tool_gaps,
+                    tool_capability_next_action=self._tool_capability_action(
+                        tool_gaps
+                    ),
                 )
             )
 
@@ -3326,7 +3386,7 @@ class AgentTeamSetupService:
             topology.blocker_codes = _canonical_json(
                 list(sorted(topology_blockers))
             )
-        return AgentTeamStatusResponse(
+        response = AgentTeamStatusResponse(
             topology_key=topology.topology_key,
             topology_revision=topology.revision,
             manifest_digest=topology.manifest_digest,
@@ -3343,6 +3403,17 @@ class AgentTeamSetupService:
                 else "Resume setup at the first warning or blocked step"
             ),
         )
+        if any(member.unverified_tool_tags for member in member_statuses):
+            response = response.model_copy(
+                update={
+                    "next_action": (
+                        f"{response.next_action}. Declared tool capabilities are "
+                        "unverified: edit the binding, then re-acknowledge (see "
+                        "each member's tool_capability_next_action)."
+                    )[:255]
+                }
+            )
+        return response
 
     async def _increment_ack_attempt(
         self,

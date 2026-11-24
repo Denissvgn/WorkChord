@@ -186,6 +186,25 @@ package, profile, model bindings, features, and assignment modes. Successful
 acknowledgement activates the actor. Repeated failed acknowledgements are
 rate-limited.
 
+### Declare tool capabilities
+
+A member may list the tools it expects each model binding to offer in the
+optional `declared_tool_tags` object, keyed by model binding key (for example
+`{"implementation-default": ["host-shell"]}`). Reconciliation creates bindings
+with no tool tags whatever the manifest declares, so a declaration is a
+reviewable intent, not a capability. Routing reads only the tags on the binding
+itself and keeps reporting `model_tool_missing` for work that needs a declared
+but unverified tool.
+
+Member status lists `declared_tool_tags`, the `unverified_tool_tags` that the
+binding does not carry yet, and a `tool_capability_next_action`; the handoff's
+startup instructions name the same tools, and the team `next_action` points at
+them. To verify a capability, the operator adds the tag to the binding with a
+binding edit once it has been confirmed on the runtime. The edit moves the
+binding revision, so the runtime acknowledges the new revision before the
+member is ready again. The declaration is not an acknowledgement and never
+adds a tag by itself.
+
 ### Interpret status
 
 `GET /api/agent/team-setup/status` and the MCP
