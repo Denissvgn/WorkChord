@@ -75,10 +75,18 @@ if [[ ! -e "${archive_dir}/${oldest_needed}" ]]; then
 fi
 
 echo "Keeping WAL from ${oldest_needed} onward (base backup $(basename "${anchor}"), ${#verified[@]} verified)"
+candidates=$("${cleanup}" -n "${archive_dir}" "${oldest_needed}")
 if [[ "${dry_run}" == "true" ]]; then
   echo "Dry run: files that would be removed:"
-  "${cleanup}" -n "${archive_dir}" "${oldest_needed}" | sed 's/^/  /'
+  [[ -z "${candidates}" ]] || sed 's/^/  /' <<< "${candidates}"
   exit 0
 fi
-removed=$("${cleanup}" -d "${archive_dir}" "${oldest_needed}" 2>&1 | grep -c 'removing file' || true)
+if ! "${cleanup}" "${archive_dir}" "${oldest_needed}"; then
+  echo "pg_archivecleanup failed; the archive may be only partly pruned" >&2
+  exit 4
+fi
+removed=0
+while IFS= read -r candidate; do
+  if [[ -n "${candidate}" && ! -e "${candidate}" ]]; then removed=$(( removed + 1 )); fi
+done <<< "${candidates}"
 echo "Removed ${removed} archived file(s)"

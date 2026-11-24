@@ -20,14 +20,13 @@ BASE_BACKUP_SCRIPT = REPOSITORY_ROOT / "scripts/database_backup/base_backup.sh"
 # Stand-in with pg_archivecleanup's observable behaviour: names that sort
 # before the oldest kept segment are removed (`-n` only lists them).
 FAKE_ARCHIVECLEANUP = """#!/usr/bin/env bash
-mode=$1; directory=$2; oldest=$3
+mode=-d; [[ "$1" == "-n" ]] && mode=-n; [[ "$1" == -* ]] && shift
+directory=$1; oldest=$2
 for path in "${directory}"/*; do
   name=$(basename "${path}")
-  [[ "${name}" =~ ^[0-9A-F]{24}(\\.[0-9A-F]{8}\\.backup)?$ ]] || continue
+  [[ "${name}" =~ ^[0-9A-F]{24}$ ]] || continue
   if [[ "${name:0:24}" < "${oldest}" ]]; then
-    if [[ "${mode}" == "-n" ]]; then echo "${path}"; else
-      echo "pg_archivecleanup: removing file \\"${path}\\"" >&2; rm -f "${path}"
-    fi
+    if [[ "${mode}" == "-n" ]]; then echo "${path}"; else rm -f "${path}"; fi
   fi
 done
 """
@@ -122,7 +121,7 @@ def test_segments_needed_by_the_newest_backup_are_kept(layout) -> None:
     kept = _names(layout)
     assert {_segment(n) for n in range(6, 11)} <= kept
     assert not any(_segment(n) in kept for n in range(1, 6))
-    assert f"{_segment(4)}.00000028.backup" not in kept
+    assert f"{_segment(4)}.00000028.backup" in kept
     assert "00000002.history" in kept
 
 
@@ -167,6 +166,23 @@ def test_archive_that_lacks_the_start_segment_is_left_alone(layout) -> None:
     result = _run(layout)
     assert result.returncode == 3
     assert "missing" in result.stderr
+    assert _names(layout) == before
+
+
+def test_failing_cleanup_is_reported_not_swallowed(layout) -> None:
+    _make_backup(layout["backups"], "workchord-20260103T000000Z", _segment(6))
+    failing = layout["cleanup"].parent / "failing_cleanup"
+    failing.write_text(
+        "#!/usr/bin/env bash\n"
+        '[[ "$1" == "-n" ]] && { echo "$2/' + _segment(1) + '"; exit 0; }\n'
+        "echo 'permission denied' >&2; exit 1\n"
+    )
+    failing.chmod(0o755)
+    before = _names(layout)
+    result = _run(layout, PG_ARCHIVECLEANUP=str(failing))
+    assert result.returncode != 0
+    assert "Removed" not in result.stdout
+    assert "failed" in result.stderr
     assert _names(layout) == before
 
 

@@ -65,11 +65,15 @@ Rule:
   `pg_verifybackup` passes) and contains `backup_label` and
   `workchord-files.sha256`. In-progress `.workchord-*` directories are ignored.
 - The oldest segment kept is the one named by `START WAL LOCATION` in that
-  backup's `backup_label`. Everything older, including older `.backup` history
-  files, is removed. Timeline `.history` files are never removed.
+  backup's `backup_label`. Older WAL segments are removed. Timeline `.history`
+  files and `.backup` history files are kept (they are tiny).
 - With no verified base backup the job deletes nothing and says so. It also
   deletes nothing, and exits with status 3, if the start segment of the anchor
-  backup is not in the archive (the archive does not belong to that backup).
+  backup is not in the archive. Right after a fresh base backup this only means
+  the segment is not archived yet: wait for archiving (or run
+  `SELECT pg_switch_wal()`) and retry. If it persists, the archive does not
+  belong to that backup. A failing `pg_archivecleanup` exits with status 4 and
+  the service logs that pruning failed.
 - It runs every `WAL_PRUNE_INTERVAL_SECONDS` (default 21600, six hours) and is
   safe to repeat: a second run removes nothing.
 
@@ -85,8 +89,10 @@ base-backup cadence and `WAL_PRUNE_KEEP_BACKUPS` that reach back 35 days.
 
 Take a fresh base backup first (`docker compose --profile backup run --rm
 base-backup`): the archive written before the first verified base backup
-cannot be pruned until one exists. Then preview and prune by hand, for example
-the first time on a large archive:
+cannot be pruned until one exists. The service has no compose profile, so
+`docker compose up -d` starts it and it prunes immediately. On an existing large
+archive, run the dry run BEFORE deploying the new compose file, then prune by
+hand once:
 
 ~~~bash
 docker compose run --rm --no-deps wal-archive-retention \
@@ -97,15 +103,23 @@ docker compose run --rm --no-deps wal-archive-retention \
 
 The self-hosted layout (`docker-compose.server.yml`) is an overlay on
 `docker-compose.yml`: it inherits the archive settings and the retention
-service, so it needs no separate configuration. There, add
-`-f docker-compose.yml -f docker-compose.server.yml` and the project name to
-the commands above.
+service, so it needs no separate configuration. Its commands need the project
+name, the environment file and both compose files:
+
+~~~bash
+docker compose --project-name workchord-server \
+  --env-file .runtime/autonomy/server.env \
+  -f docker-compose.yml -f docker-compose.server.yml \
+  run --rm --no-deps wal-archive-retention \
+  /bin/bash /opt/workchord/prune_wal_archive.sh --dry-run
+~~~
 
 To restore a point in time from the retained backup, copy the backup directory
 to a new data directory (mode 0700), create `recovery.signal`, set
 `restore_command = 'cp <archive>/%f %p'` and a `recovery_target_time` or
 `recovery_target_lsn` with `recovery_target_action = promote`, and start
-PostgreSQL on an isolated port.
+PostgreSQL on an isolated port with `-c archive_mode=off` so the restored copy
+cannot write into the live archive.
 
 ## Isolated restore drill
 
