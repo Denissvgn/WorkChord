@@ -807,9 +807,10 @@ async def list_agent_assignments_page(
 ):
     """Read every assignment of the caller's scope, one stable page at a time.
 
-    Same filters, scope and projection as the plain listing. Follow next_cursor
-    until has_more is false; rows keep the listing's order, so no row repeats or
-    is skipped between pages.
+    Same filters, scope and projection as the plain listing. Pages are ordered by
+    assignment id, not queue order. Follow next_cursor until has_more is false;
+    every row present for the whole read is returned exactly once, even if its
+    rank or actor changes meanwhile. Rows created during the read may appear.
     """
     try:
         if actor is None:

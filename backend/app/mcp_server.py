@@ -772,7 +772,11 @@ def create_mcp_server() -> FastMCP:
         limit: int = 200,
         cursor: Optional[str] = None,
     ) -> dict[str, Any]:
-        """Read all durable assignments page by page; pass next_cursor back as cursor."""
+        """Read all durable assignments page by page, ordered by assignment id (not queue order).
+
+        Pass next_cursor back as cursor until has_more is false; every row present for
+        the whole read is returned exactly once. limit must be 1 to 500.
+        """
         return await _tool_call(
             ("assignments:read", "planning:read"),
             lambda db, actor: mcp_agent_tools.list_agent_assignments_page(

@@ -1685,7 +1685,9 @@ async def list_agent_assignments_page(
     limit: int = 200,
     cursor: Optional[str] = None,
 ) -> dict[str, Any]:
-    """MCP handler: one stable page of durable assignments with a next cursor."""
+    """MCP handler: one page, ordered by assignment id, with a next cursor."""
+    if not 1 <= limit <= 500:
+        raise ValueError("limit must be between 1 and 500")
     page = await AgentWorkService(db).list_assignments_page(
         actor,
         task_id=task_id,
