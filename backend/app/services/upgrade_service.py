@@ -315,6 +315,19 @@ def run_alembic_upgrade(
                 "initialize a new empty database. Unversioned schemas are never stamped automatically."
             )
         _validate_managed_revision(before)
+        if require_empty and before.state != "empty":
+            raise UpgradeError(
+                f"Schema-only bootstrap requires an empty database; found {before.state}"
+            )
+
+        if before.is_current and before.state == "alembic_managed":
+            # Nothing will be migrated, so no project identity is rebuilt and there is
+            # nothing for the history scan to protect. Running it here would refuse every
+            # start of a database whose retained history has outgrown the scan's bound.
+            if run_repairs:
+                asyncio.run(run_post_migration_repairs())
+            return before, None, inspect_database(connection=connection)
+
         from app.database_migration.project_identity import ProjectIdentityError, inspect_project_identity
         try:
             inspect_project_identity(connection)
@@ -322,15 +335,6 @@ def run_alembic_upgrade(
             error = UpgradeError(str(exc))
             error.diagnostics = exc.detail()
             raise error from exc
-        if require_empty and before.state != "empty":
-            raise UpgradeError(
-                f"Schema-only bootstrap requires an empty database; found {before.state}"
-            )
-
-        if before.is_current and before.state == "alembic_managed":
-            if run_repairs:
-                asyncio.run(run_post_migration_repairs())
-            return before, None, inspect_database(connection=connection)
 
         backup_path = _backup_precondition(
             before=before,

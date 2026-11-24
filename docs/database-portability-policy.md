@@ -53,6 +53,9 @@ It does not run DDL.
 - The `migration` role runs `python -m app.cli.upgrade --schema-only` to
   bootstrap an empty target, or `python -m app.cli.upgrade --no-repairs` to
   upgrade a recognized database. It never creates application-owned rows.
+  A database already at the head revision returns before the project-identity
+  history scan, so a long retained history never blocks a routine start; a
+  database with a pending migration is scanned before any change.
 - After schema work succeeds, the separate `repair` role runs
   `python -m app.cli.upgrade --repairs-only` to serialize post-copy seed and
   compatibility repairs on an already current schema.
