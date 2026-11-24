@@ -1,5 +1,6 @@
 """Binding a seed key to an existing unkeyed planning profile keeps its history."""
 
+import asyncio
 from datetime import date
 
 import pytest
@@ -212,14 +213,30 @@ async def test_a_concurrent_binding_is_never_overwritten(delivery_store):
         profile, _ = await _unkeyed_agent(db, scenario, "Contended agent", ["execution"])
         await db.commit()
         profile_id = profile.id
+    loaded, release = asyncio.Event(), asyncio.Event()
     async with factory() as first, factory() as second:
-        # The first session has already read the profile as unkeyed when the second binds.
-        assert (await TeamService(first)._get_profile_by_id(profile_id)).seed_key is None
+        first_service = TeamService(first)
+        original = first_service._get_profile_by_id
+
+        async def load_then_wait(identifier):
+            # Hold the first command after it has read the profile as unkeyed.
+            found = await original(identifier)
+            if loaded.is_set():
+                return found
+            assert found.seed_key is None
+            loaded.set()
+            await release.wait()
+            return found
+
+        first_service._get_profile_by_id = load_then_wait
+        racing = asyncio.create_task(first_service.bind_profile_seed_key(
+            profile_id, TeamMemberProfileSeedKeyBind(seed_key="first-key")))
+        await loaded.wait()
         await TeamService(second).bind_profile_seed_key(
             profile_id, TeamMemberProfileSeedKeyBind(seed_key="second-key"))
+        release.set()
         with pytest.raises(PlanningConflict) as lost:
-            await TeamService(first).bind_profile_seed_key(
-                profile_id, TeamMemberProfileSeedKeyBind(seed_key="first-key"))
+            await racing
         assert lost.value.code == "profile_seed_key_already_bound"
     async with factory() as db:
         assert (await db.get(TeamMemberProfile, profile_id)).seed_key == "second-key"
