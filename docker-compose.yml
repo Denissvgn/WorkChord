@@ -256,6 +256,23 @@ services:
       - workchord
     restart: "no"
 
+  wal-archive-retention:
+    image: postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
+    environment:
+      WAL_PRUNE_KEEP_BACKUPS: ${WAL_PRUNE_KEEP_BACKUPS:-1}
+      WAL_PRUNE_INTERVAL_SECONDS: ${WAL_PRUNE_INTERVAL_SECONDS:-21600}
+    volumes:
+      - workchord_postgresql_wal_archive:/var/lib/postgresql/wal-archive
+      - workchord_postgresql_backups:/backups:ro
+      - ./scripts/database_backup/prune_wal_archive.sh:/opt/workchord/prune_wal_archive.sh:ro
+    command:
+      - /bin/bash
+      - -c
+      - while true; do /bin/bash /opt/workchord/prune_wal_archive.sh || echo "WAL archive pruning failed; retrying next interval" >&2; sleep "$${WAL_PRUNE_INTERVAL_SECONDS}"; done
+    networks:
+      - workchord
+    restart: unless-stopped
+
   restore-verify:
     image: postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296
     profiles: ["restore"]

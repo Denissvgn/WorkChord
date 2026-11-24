@@ -508,6 +508,77 @@ async def test_fresh_apply_replay_onboarding_and_runtime_readiness(
             controller,
         )
         assert rest.json()["can_mutate"] is False
+        assert rest.json()["caller_binding"] == "bound"
+        assert rest.json()["roster_scope"] == "team"
+        assert rest.json()["feature_advertised"] is True
+
+        bound_roster = await client.get(
+            "/api/agent/actors",
+            headers={"X-Agent-API-Key": controller_key},
+        )
+        assert bound_roster.status_code == 200, bound_roster.text
+        bound_items = bound_roster.json()
+        assert bound_items
+        assert {item["roster_scope"] for item in bound_items} == {"team"}
+        assert {item["topology_key"] for item in bound_items} == {
+            manifest.topology_key
+        }
+        assert {item["topology_revision"] for item in bound_items} == {
+            ready.topology_revision
+        }
+        assert outsider.id not in {item["id"] for item in bound_items}
+        assert bound_items == await mcp_agent_tools.list_agent_actor_roster(
+            db_session,
+            controller,
+        )
+
+        unbound_key = "pmag_unbound_pm_key"
+        unbound = AgentActor(
+            name="unbound-pm",
+            display_name="Unbound PM",
+            api_key_hash=hash_api_key(unbound_key),
+            scopes='["planning:read", "assignments:read"]',
+            enabled=True,
+            lifecycle_state="active",
+            role="pm",
+        )
+        from app.authority import internal_authority
+        with internal_authority(db_session):
+            db_session.add(unbound)
+            await db_session.commit()
+        unbound_status = await client.get(
+            "/api/agent/team-setup/status",
+            headers={"X-Agent-API-Key": unbound_key},
+        )
+        assert unbound_status.status_code == 200, unbound_status.text
+        body = unbound_status.json()
+        assert body["caller_binding"] == "unbound"
+        assert body["roster_scope"] == "none"
+        assert body["feature_advertised"] is True
+        assert body["blocker_codes"] == ["caller_not_bound_to_topology"]
+        assert body["next_action"]
+        assert body["topology_key"] is None
+        assert body["members"] == []
+        assert body == await mcp_agent_tools.get_agent_team_setup_status(
+            db_session,
+            unbound,
+        )
+        assert manifest.topology_key not in unbound_status.text
+        unbound_roster = await client.get(
+            "/api/agent/actors",
+            headers={"X-Agent-API-Key": unbound_key},
+        )
+        assert unbound_roster.status_code == 200, unbound_roster.text
+        workspace_items = unbound_roster.json()
+        assert workspace_items
+        assert {item["roster_scope"] for item in workspace_items} == {
+            "workspace"
+        }
+        assert {item["topology_revision"] for item in workspace_items} == {None}
+        assert workspace_items == await mcp_agent_tools.list_agent_actor_roster(
+            db_session,
+            unbound,
+        )
 
         report = await client.get(
             "/api/agent/team-setup/report",

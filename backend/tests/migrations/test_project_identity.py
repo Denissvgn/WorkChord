@@ -90,7 +90,8 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         run_alembic_upgrade(backup=False, run_repairs=False)
         after_rows = database_rows(engine)
         assert after_rows.pop("agent_runtime_observations") == []
-        for table in ("iteration_annual_calendars", "profile_annual_calendars"):
+        for table in ("iteration_annual_calendars", "profile_annual_calendars",
+                      "maintenance_windows", "maintenance_window_receipts"):
             assert after_rows.pop(table) == []
         assert after_rows.pop("team_member_capacity_adjustments") == []
         for table, columns in LATER_COLUMNS.items():
@@ -132,6 +133,9 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         # A later revision records which annual calendars an iteration or profile spans.
         for table in ("iteration_annual_calendars", "profile_annual_calendars"):
             assert after_catalog.pop(table)["columns"]["calendar_id"]["nullable"] is False
+        # A later revision records coordinated maintenance windows and their receipts.
+        assert "ck_maintenance_windows_state" in after_catalog.pop("maintenance_windows")["checks"]
+        assert "ck_maintenance_window_receipts_kind" in after_catalog.pop("maintenance_window_receipts")["checks"]
         # A later revision adds the advisory runtime observation table.
         assert after_catalog.pop("agent_runtime_observations")["checks"] == ["ck_agent_runtime_observations_kind"]
         # A later revision records dated adjustments on capacity rows.

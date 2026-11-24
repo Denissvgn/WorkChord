@@ -31,6 +31,7 @@ from app.models.external_link import ExternalLink, ExternalLinkEntityType, Exter
 from app.models.github import GitHubStatusAutomationRule
 from app.models.iteration import Iteration
 from app.models.label import Label, LabelGroup
+from app.models.maintenance import MaintenanceWindow, MaintenanceWindowReceipt
 from app.models.outbound_webhook import (
     OutboundDeliveryChannel,
     OutboundWebhookDelivery,
@@ -95,6 +96,8 @@ __all__ = [
     "Iteration",
     "Label",
     "LabelGroup",
+    "MaintenanceWindow",
+    "MaintenanceWindowReceipt",
     "OutboundDeliveryChannel",
     "OutboundWebhookDelivery",
     "OutboundWebhookDeliveryStatus",

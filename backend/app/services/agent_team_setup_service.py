@@ -117,6 +117,13 @@ class AgentTeamSetupConflictError(AgentConflictError):
         return {"code": self.code, "message": self.message, **self.context}
 
 
+CALLER_NOT_BOUND_BLOCKER = "caller_not_bound_to_topology"
+
+
+class AgentTeamCallerUnboundError(AgentPermissionError):
+    """A PM asked for team status but is not bound to any live topology."""
+
+
 @dataclass(frozen=True)
 class AgentTeamMembershipBoundary:
     """Current topology/revision and active member set for exact-actor routing."""
@@ -2584,7 +2591,7 @@ class AgentTeamSetupService:
         )
         bound_key = result.scalar_one_or_none()
         if bound_key is None:
-            raise AgentPermissionError(
+            raise AgentTeamCallerUnboundError(
                 "Only a topology-bound PM may read agent-team status"
             )
         if topology_key is not None and topology_key != bound_key:
@@ -2688,10 +2695,28 @@ class AgentTeamSetupService:
     ) -> AgentTeamStatusResponse:
         """Return backend-derived secret-free setup and runtime readiness."""
 
-        topology, can_mutate = await self._select_status_topology(
-            actor,
-            topology_key,
-        )
+        try:
+            topology, can_mutate = await self._select_status_topology(
+                actor,
+                topology_key,
+            )
+        except AgentTeamCallerUnboundError:
+            # Nothing about any topology is read: an unbound PM learns only
+            # that it is unbound and what an operator must do next.
+            return AgentTeamStatusResponse(
+                topology_state="absent",
+                runtime_ready=False,
+                blocker_codes=(CALLER_NOT_BOUND_BLOCKER,),
+                steps=(),
+                can_mutate=False,
+                next_action=(
+                    "Ask an operator to bind this actor as the PM of an "
+                    "agent-team topology; do not dispatch from the "
+                    "workspace roster"
+                ),
+                caller_binding="unbound",
+                roster_scope="none",
+            )
         if topology is None:
             return AgentTeamStatusResponse(
                 topology_state="absent",
@@ -2700,11 +2725,19 @@ class AgentTeamSetupService:
                 steps=self._absent_steps(),
                 can_mutate=can_mutate,
                 next_action="Validate and plan an agent-team master",
+                caller_binding="operator" if can_mutate else "bound",
+                roster_scope="workspace" if can_mutate else "team",
             )
-        return await self._status_for_topology(
+        result = await self._status_for_topology(
             topology,
             can_mutate=can_mutate,
             persist_state=False,
+        )
+        return result.model_copy(
+            update={
+                "caller_binding": "operator" if can_mutate else "bound",
+                "roster_scope": "workspace" if can_mutate else "team",
+            }
         )
 
     async def topology(

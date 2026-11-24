@@ -414,6 +414,8 @@ class AgentService:
         existing = await self._task_from_idempotency(actor, "task_claimed", idempotency_key)
         if existing:
             return existing
+        from app.services.maintenance_window_service import require_start_admission
+        await require_start_admission(self.db)
 
         await self.db.execute(select(Task.id).where(Task.id == task_id).with_for_update())
         task = await self.task_service.get_by_id(task_id)
@@ -1065,6 +1067,8 @@ class AgentService:
             existing = result.scalar_one_or_none()
             if existing:
                 return existing
+        from app.services.maintenance_window_service import require_start_admission
+        await require_start_admission(self.db)
 
         if data.assignment_id is not None:
             assignment = await self.db.get(AgentTaskAssignment, data.assignment_id)

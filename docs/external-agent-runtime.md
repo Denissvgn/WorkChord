@@ -187,6 +187,19 @@ Typed fail/cancel and PM recovery retain historical attempts and require
 current ownership/revision inputs. A provider outage or missing credential is
 an external blocker, not evidence that a higher model tier is needed.
 
+## Keep a claim through a maintenance window
+
+While an operator has a maintenance window open, a new begin, claim or run
+start returns HTTP 409 `maintenance_window_admission_closed`. Retry it after
+the window's planned end. Live work continues as usual. To keep a live claim
+through the restart, read `GET /api/agent/me/maintenance-windows/current`,
+acknowledge with `POST /api/agent/me/maintenance-windows/{window_id}/acknowledge`
+and your task, claim ID, claim generation and run, then renew with at least
+`minimum_lease_seconds`. Retry a request that fails during the outage with the
+same idempotency key. A PM records
+`POST /api/agent/me/maintenance-windows/{window_id}/notice-receipt`. See the
+[maintenance window runbook](runbooks/control-plane-maintenance-window.md).
+
 ## Interpret readiness and routing
 
 `configured` identifies server metadata; current acknowledgement identifies an

@@ -820,7 +820,8 @@ class SchedulerService:
 
         # Check workload balance
         workload_issues = self._check_workload_balance(member_schedules)
-        unscheduled = self._unscheduled_tasks(all_tasks, member_schedules, unscheduled_reasons, predecessor_messages)
+        unscheduled = self._unscheduled_tasks(all_tasks, member_schedules, unscheduled_reasons, predecessor_messages,
+                                              before_dates)
         # Causes found only now (no assignee, assignee outside the iteration) also explain themselves as decisions.
         for item in unscheduled:
             if item.reason in {"no_assignee", "assignee_not_in_iteration", "not_placed"}:
@@ -903,6 +904,7 @@ class SchedulerService:
         member_schedules: dict[int, "MemberSchedule"],
         known_reasons: dict[int, str],
         messages: dict[int, str] | None = None,
+        before_dates: dict[int, tuple[date | None, date | None]] | None = None,
     ) -> list[UnscheduledTask]:
         """Planned leaf tasks still without dates, each with the first cause that applies."""
         from app.models.task import TaskStatus
@@ -915,18 +917,27 @@ class SchedulerService:
                 continue
             if self._effective_flags(task)["effective_is_deferred"]:
                 continue
+            own_cause = None
+            if not task.assignee_id:
+                own_cause = "no_assignee"
+            elif task.assignee_id not in member_schedules:
+                own_cause = "assignee_not_in_iteration"
             if task.blocked_reason:
                 reason = "blocked"
             elif task.id in known_reasons:
                 reason = known_reasons[task.id]
-            elif not task.assignee_id:
-                reason = "no_assignee"
-            elif task.assignee_id not in member_schedules:
-                reason = "assignee_not_in_iteration"
+            elif own_cause:
+                reason = own_cause
             else:
                 reason = "not_placed"
+            message = (messages or {}).get(task.id, self.UNSCHEDULED_MESSAGES[reason])
+            # A task waiting on a predecessor still has its own cause to fix afterwards.
+            also = [own_cause] if own_cause and reason == "predecessor_unscheduled" else []
+            if also:
+                message = f"{message} It also needs a fix of its own: {self.UNSCHEDULED_MESSAGES[own_cause]}"
+            had_dates = any(value is not None for value in (before_dates or {}).get(task.id, (None, None)))
             unscheduled.append(UnscheduledTask(task_id=task.id, task_title=task.title, reason=reason,
-                message=(messages or {}).get(task.id, self.UNSCHEDULED_MESSAGES[reason])))
+                message=message, dates_cleared=had_dates, also=also))
         return unscheduled
 
     async def _build_member_schedules(

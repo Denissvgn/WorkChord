@@ -61,6 +61,7 @@ from app.schemas.agent import (
     AgentRunDetailResponse,
 )
 from app.schemas.common import MessageResponse
+from app.schemas.maintenance import MaintenanceOwnerAcknowledgement
 from app.schemas.agent_skill_bundle import SkillBundleCatalogResponse
 from app.schemas.agent_routing import (
     AgentRoutingPreviewCreate,
@@ -1068,6 +1069,48 @@ async def renew_my_agent_work(
         _handle_agent_error(exc, structured=True)
 
 
+@router.get("/agent/me/maintenance-windows/current", response_model=dict[str, Any])
+async def get_my_maintenance_window(
+    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+):
+    """Return the open maintenance window and the caller's live claims it covers."""
+    from app.services.maintenance_window_service import MaintenanceWindowService
+    try:
+        return await MaintenanceWindowService(db).current_for_actor(actor)
+    except Exception as exc:
+        _handle_agent_error(exc, structured=True)
+
+
+@router.post("/agent/me/maintenance-windows/{window_id}/acknowledge", response_model=dict[str, Any])
+async def acknowledge_maintenance_window(
+    window_id: int,
+    data: MaintenanceOwnerAcknowledgement,
+    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+):
+    """Acknowledge a bounded window as the owner of one live claim, bound to its current fence."""
+    from app.services.maintenance_window_service import MaintenanceWindowService
+    try:
+        return await MaintenanceWindowService(db).acknowledge(actor, window_id, data)
+    except Exception as exc:
+        _handle_agent_error(exc, structured=True)
+
+
+@router.post("/agent/me/maintenance-windows/{window_id}/notice-receipt", response_model=dict[str, Any])
+async def record_maintenance_notice_receipt(
+    window_id: int,
+    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+):
+    """Record that this PM has received the maintenance notice."""
+    from app.services.maintenance_window_service import MaintenanceWindowService
+    try:
+        return await MaintenanceWindowService(db).record_own_notice(actor, window_id)
+    except Exception as exc:
+        _handle_agent_error(exc, structured=True)
+
+
 @router.post("/agent/me/work/fail", response_model=AgentWorkTerminalResponse)
 async def fail_my_agent_work(
     data: AgentWorkTerminal,
@@ -1447,6 +1490,7 @@ def _run_detail_response(service: AgentService, run) -> AgentRunDetailResponse:
         for evt in run.events
     ]
     return AgentRunDetailResponse(
+        execution_provenance=run.execution_provenance,
         id=run.id,
         task_id=run.task_id,
         actor_id=run.actor_id,

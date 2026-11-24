@@ -1028,6 +1028,15 @@ class AgentWorkService:
                     queued_assignments=assignment_counts.get((item.id, "queued"), 0),
                     accepted_assignments=assignment_counts.get((item.id, "accepted"), 0),
                     running_runs=running_counts.get(item.id, 0),
+                    roster_scope="team" if boundary is not None else "workspace",
+                    topology_key=(
+                        boundary.topology_key if boundary is not None else None
+                    ),
+                    topology_revision=(
+                        boundary.topology_revision
+                        if boundary is not None
+                        else None
+                    ),
                 )
             )
         return roster
@@ -2329,6 +2338,8 @@ class AgentWorkService:
         )
         if replay:
             return await self._replay_live_fence_receipt(actor, replay)
+        from app.services.maintenance_window_service import require_start_admission
+        await require_start_admission(self.db)
         if assignment.purpose != "execution" or assignment.state != "queued":
             raise AgentConflictError("Assignment is not queued execution work")
         if actor.queue_revision != data.queue_revision:
