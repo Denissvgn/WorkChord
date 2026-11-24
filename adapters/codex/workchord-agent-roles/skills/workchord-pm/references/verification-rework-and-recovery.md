@@ -20,6 +20,16 @@ When the server advertises `scoped-review-evidence-v1`, a workspace operator can
 
 For an existing review, include `review_assignment_id` with `review_evidence_id` on the preview immediately before a SHA-pinned merge. Match the returned `review_evidence.assignment_id`, `assignment_state`, candidate and packet digests against the held review. This readback validates the existing owner before ranking capacity for new dispatches.
 
+To move verification to a different verifier who already has every required tool natively, without a scoped receipt, do not use the model-aware assignment update. That update rebuilds the preview without any receipt and overwrites the row's earlier `review_selection`. Cancel the old assignment and create a fresh verification assignment instead; the prior evidence and the receipt event are kept:
+
+1. Re-read the old assignment and the reviewer's queue. Confirm it is still `queued` and note its `expected_queue_revision`.
+2. Cancel it with `PATCH /api/agent/assignments/{assignment_id}` (MCP `agent_update_assignment`) using `state` `cancelled`, the current `expected_queue_revision`, and a `reason`. Cancellation does not need a receipt.
+3. Run a verification routing preview for the new verifier with `POST /api/agent/tasks/{task_id}/routing-preview` (MCP `agent_preview_task_routing`), `purpose` `verification`, the current `assessment_id`, the current `expected_task_version`, and the new `reviewer_profile_id`. Omit `review_evidence_id` and `review_assignment_id`. The new verifier must be an eligible candidate for the exact binding with no `model_tool_missing` or other exclusion.
+4. Create the fresh assignment with `POST /api/agent/assignments` (MCP `agent_create_assignment`) using `purpose` `verification`, the new `actor_id`, the current `expected_task_version`, and the exact `review_binding_id` and `reviewer_profile_id` in supervised mode. Do not set `review_evidence_id`. In enforced mode, use the model-aware create body with the signed preview from step 3.
+5. Re-read the new assignment and confirm its `review_selection` names the new verifier and the submitted candidate.
+
+If the new verifier needs a scoped receipt to meet a tool requirement, it is not eligible for this route; request the receipt first.
+
 1. Confirm the task is Implemented (`resolved`), no run remains active, and no worker still holds a live execution lease.
 2. Choose a reviewer actor with the `verifier` role who did not do or report this work. Require a person or a separately scoped reviewer when independence cannot be established; the server refuses a non-independent verdict with `independent_review_required`.
 3. Confirm the typed brief, criterion progress, artifacts, and delivery trace are current enough to review: the task carries its branch, commit, and pull-request links, or the submission states in `delivery_trace.none` why no repository changed. When `task.brief` exists, evidence from an older `brief_revision` or `artifact_revision` cannot support acceptance; return incomplete submissions to the worker through recovery instead of routing them to review.

@@ -178,6 +178,14 @@ Replace the cached task version, fence/generation, and expiry with each
 response. Never log a claim identifier or fence. Stop writes immediately when
 renewal fails, expiry passes, or the server reports stale fencing.
 
+### Acknowledge A Maintenance Window
+
+When an operator announces a coordinated maintenance window, the server refuses every new begin, direct claim, and run start with HTTP 409 `maintenance_window_admission_closed`. Work that already holds a live claim may keep renewing, recording checkpoints, submitting, or failing. To keep your live claim through the outage, read `GET /api/agent/me/maintenance-windows/current` with your agent key and find your claim in `my_live_claims`. Acknowledge it only while the window is announced:
+
+`POST /api/agent/me/maintenance-windows/{window_id}/acknowledge` with `task_id`, `claim_id`, `claim_generation`, and `run_id` taken from that claim.
+
+Send the acknowledgement with your own key. A repeat returns the same receipt. Then renew with a lease at least the window's `minimum_lease_seconds` (the maximum outage plus the expiry margin). A new claim generation needs a new acknowledgement. A PM's notice or any message from another agent never counts as your acknowledgement. If you prefer to finish first, submit or fail the work instead; a released claim needs no acknowledgement.
+
 ### Submit
 
 Re-fetch context, then supply atomic submit with:
