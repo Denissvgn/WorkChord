@@ -106,6 +106,29 @@ const SHELL_AND_PAGE_READS: Array<[RegExp, () => unknown]> = [
     [/^\/(tasks\/review-queue|notifications)$/, () => ({ ...PAGE, items: [] })],
 ];
 
+const DIAGNOSTIC_LIMIT = 6_000;
+
+/** What a route that did not render left behind: its main area, reads nobody answered, and console errors or warnings. */
+const renderDiagnostics = (
+    route: string,
+    api: { unplanned: string[]; pending: string[] },
+    consoleSpies: Array<{ level: string; spy: { mock: { calls: unknown[][] } } }>,
+) => {
+    const main = document.querySelector('#workspace-main') ?? document.querySelector('main');
+    const mainLabel = main ? (main.id ? `#${main.id}` : main.tagName.toLowerCase()) : 'missing';
+    const mainHtml = (main?.outerHTML ?? '(no main landmark)').slice(0, DIAGNOSTIC_LIMIT);
+    const consoleLines = consoleSpies.flatMap(({ level, spy }) => spy.mock.calls.map(args => `[${level}] ${args.map(arg => (arg instanceof Error ? arg.message : String(arg))).join(' ')}`));
+    return [
+        `Route ${route} did not render its page header.`,
+        `Main area (${mainLabel}, first ${DIAGNOSTIC_LIMIT} characters):`,
+        mainHtml,
+        `Unplanned GET requests: ${JSON.stringify(api.unplanned)}`,
+        `Pending GET requests: ${JSON.stringify(api.pending)}`,
+        `Console errors and warnings (${consoleLines.length}):`,
+        ...consoleLines,
+    ].join('\n');
+};
+
 /** Pages that open outside the workspace shell, without its sidebar and top bar. */
 const BARE_ROUTES = new Set(['/welcome', '/plan/share/:publicId', '/mobile/connect']);
 
@@ -116,11 +139,17 @@ describe('accessibility invariants on every route', () => {
     }, 120_000);
 
     it.each(routeRegistry)('route $path names its landmarks and controls and keeps one h1', async ({ path }) => {
-        const { unplanned } = installWorkspaceApi(SHELL_AND_PAGE_READS);
+        const api = installWorkspaceApi(SHELL_AND_PAGE_READS);
+        const { unplanned } = api;
+        const consoleSpies = (['error', 'warn'] as const).map(level => ({ level, spy: vi.spyOn(console, level) }));
         const sample = samplePath(path === '*' ? '/missing' : path);
         const { container } = renderWithProviders(<App />, { initialEntries: [sample] });
 
-        await waitFor(() => expect(container.querySelector('[data-testid="page-header"]')).not.toBeNull(), { timeout: 20_000 });
+        try {
+            await waitFor(() => expect(container.querySelector('[data-testid="page-header"]')).not.toBeNull(), { timeout: 20_000 });
+        } catch (error) {
+            throw new Error(renderDiagnostics(path, api, consoleSpies), { cause: error });
+        }
         // Late reads (counters, suggestions) settle before the page is read.
         await act(() => new Promise(resolve => setTimeout(resolve, 100)));
 
