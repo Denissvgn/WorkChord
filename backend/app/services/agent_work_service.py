@@ -2338,6 +2338,8 @@ class AgentWorkService:
         )
         if replay:
             return await self._replay_live_fence_receipt(actor, replay)
+        from app.services.maintenance_window_service import require_start_admission
+        await require_start_admission(self.db)
         if assignment.purpose != "execution" or assignment.state != "queued":
             raise AgentConflictError("Assignment is not queued execution work")
         if actor.queue_revision != data.queue_revision:

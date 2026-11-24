@@ -34,6 +34,10 @@ async def test_legacy_run_start_classifies_reported_model_evidence(
         def add(self, value: AgentRun) -> None:
             self.added = value
 
+        async def scalar(self, _statement: Any) -> None:
+            # No maintenance window is open.
+            return None
+
         async def flush(self) -> None:
             assert self.added is not None
             self.added.id = 1

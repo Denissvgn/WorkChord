@@ -20,7 +20,7 @@ from app.settings_read import READABLE_SETTINGS_PATHS, settings_reader
 
 PUBLIC_PATHS = {"/health", "/health/live", "/health/ready", "/.well-known/workchord-build.json", "/openapi.json", "/docs", "/redoc", "/docs/oauth2-redirect"}
 AUTH_PUBLIC_PATHS = {"/auth/me", "/auth/login", "/auth/callback", "/auth/bootstrap"}
-OPERATOR_PREFIXES = ("/system-settings", "/settings", "/email-settings", "/scheduling-rules", "/outbound-webhooks", "/github/status-automation-rules")
+OPERATOR_PREFIXES = ("/system-settings", "/settings", "/email-settings", "/scheduling-rules", "/outbound-webhooks", "/github/status-automation-rules", "/maintenance-windows")
 KNOWN_PREFIXES = ("/tasks", "/time-entries", "/notifications", "/iterations", "/projects", "/initiatives", "/milestones", "/releases", "/roadmap", "/team", "/calendars",
                   "/employees", "/vacations", "/request-source-links",
                   "/triage", "/labels", "/label-groups", "/templates", "/saved-views", "/plan-shares", "/request-sources",

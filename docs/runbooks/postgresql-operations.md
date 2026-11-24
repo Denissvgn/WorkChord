@@ -252,6 +252,12 @@ Seal that evidence using the migration runbook. One replica's in-memory zero
 is never sufficient. A fingerprint mismatch, missing replica, active lease, or
 source/WAL change is a mandatory stop.
 
+A same-database release deploys when no project has a running run and there
+is no live claim. To restart while a worker keeps its live claim, use a
+[coordinated maintenance window](control-plane-maintenance-window.md). Only
+the claim owner's own acknowledgement admits a claim to it, and every PM is
+notified before the window begins.
+
 ## Backup, failover, rollback, and qualification
 
 PostgreSQL release evidence requires managed or self-operated base backup,
