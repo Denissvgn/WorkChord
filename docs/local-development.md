@@ -149,9 +149,10 @@ file. A sync there recorded the working tree as `dirty` even when it was clean
 ([python-wiki-llm#187](https://github.com/Denissvgn/python-wiki-llm/issues/187)),
 so no later preview of the committed wiki reached a fixpoint. They also kept
 their locks under the nearest `.git` directory, which for a nested worktree is
-the enclosing repository. 6.1.1 fixes both: a sync in a clean linked worktree
-records `clean`, a wiki committed with a `dirty` record is corrected by its
-next sync, and locks stay in the worktree's own Git directory. The
+the enclosing repository. The 6.1.1 changelog says both are fixed: a sync in
+a clean linked worktree records `clean`, a wiki committed with a `dirty` record
+is corrected by its next sync, and locks stay in the worktree's own Git
+directory. Those fixes have not been verified in this repository. The
 full-reconstruction profile below has been qualified from a normal checkout
 only, so keep the release refresh there. The workaround for an older writer is
 the same normal checkout.
@@ -209,12 +210,16 @@ llm-wiki sync --rebuild-cache --rebuild-knowledge --jobs 1 --src-dir . --wiki-di
 - Run both commands from a normal checkout (see above). A fresh clone needs its
   own prepared extractor helper: run `llm-wiki prepare-extractors --src-dir .`
   once before the preview.
-- Compare previews only in checkouts at the same absolute path as the one that
-  ran the owning sync. In 6.1.1 the `llm-wiki/sync-analysis-v2` commitment
-  includes the absolute source root, so a clone elsewhere reports a changed
-  knowledge index and manifest (about 15 packed objects) although every
-  source, page and concept matches. `lint --strict` and `ci-check` pass in
-  either location.
+- Compare previews only in a checkout at the same absolute path as the one
+  that ran the owning sync, with the same `origin` remote URL
+  (`https://github.com/Denissvgn/WorkChord.git`). In 6.1.1 the
+  `llm-wiki/sync-analysis-v2` commitment includes the absolute source root,
+  and the recorded repository identity comes from the `origin` URL. A clone
+  at another path, or one whose `origin` is a local path, reports a changed
+  knowledge index and manifest although every source, page and concept
+  matches. Fix a local-path origin with
+  `git remote set-url origin https://github.com/Denissvgn/WorkChord.git`.
+  `lint --strict` and `ci-check` pass in either case.
 - A full run takes roughly ten minutes. Afterwards, run the same preview again
   and confirm it reports no changes, then run `llm-wiki lint --strict --jobs 1`
   and `llm-wiki ci-check --format json --jobs 1` with the same source and wiki
