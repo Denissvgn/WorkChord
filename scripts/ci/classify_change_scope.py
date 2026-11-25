@@ -4,8 +4,9 @@
 Documentation-only changes run the documentation checks instead of the build
 and test jobs. A change qualifies only when every changed path is under
 ``docs/`` or is a Markdown file at the repository root, and none of those paths
-is an operator document that the backend tests read (the PostgreSQL
-documentation set, except ``README.md``, which the documentation checks cover).
+is a document that a full-pipeline check or test reads: the PostgreSQL
+documentation set (including ``README.md``) and the evidence documents listed in
+``config/model-aware-routing-closeout.json``.
 Anything else, and any doubt (unknown event, missing base commit, git failure,
 empty change), runs the full pipeline.
 
@@ -16,26 +17,50 @@ Usage in GitHub Actions: write the printed ``docs_only=...`` line to
 
 from __future__ import annotations
 
+import json
 import os
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 import subprocess
 import sys
 
 from check_postgresql_documentation import DOCUMENTS
 
-CHECKED_DOCUMENTS = frozenset(path.as_posix() for path in DOCUMENTS) - {"README.md"}
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+CLOSEOUT_INVENTORY = REPOSITORY_ROOT / "config" / "model-aware-routing-closeout.json"
+
+
+def _inventory_documents(inventory: Path) -> frozenset[str]:
+    """Return every documentation path the routing closeout check requires."""
+
+    def strings(value):
+        if isinstance(value, str):
+            yield value
+        elif isinstance(value, dict):
+            for item in value.values():
+                yield from strings(item)
+        elif isinstance(value, list):
+            for item in value:
+                yield from strings(item)
+
+    data = json.loads(inventory.read_text(encoding="utf-8"))
+    return frozenset(value for value in strings(data) if _is_documentation_path(value))
+
+
+def _is_documentation_path(path: str) -> bool:
+    parts = PurePosixPath(path).parts
+    if len(parts) > 1 and parts[0] == "docs":
+        return True
+    return len(parts) == 1 and parts[0].lower().endswith(".md")
+
+
+CHECKED_DOCUMENTS = frozenset(path.as_posix() for path in DOCUMENTS) | _inventory_documents(CLOSEOUT_INVENTORY)
 CLASSIFIED_EVENTS = frozenset({"pull_request", "push"})
 ZERO_SHA = "0" * 40
 
 
 def is_documentation(path: str) -> bool:
     """Return True when a changed path is documentation that no check reads."""
-    if path in CHECKED_DOCUMENTS:
-        return False
-    parts = PurePosixPath(path).parts
-    if len(parts) > 1 and parts[0] == "docs":
-        return True
-    return len(parts) == 1 and parts[0].lower().endswith(".md")
+    return path not in CHECKED_DOCUMENTS and _is_documentation_path(path)
 
 
 def docs_only(paths: list[str]) -> bool:

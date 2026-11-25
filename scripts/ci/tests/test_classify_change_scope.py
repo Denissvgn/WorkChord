@@ -25,10 +25,17 @@ class PathRules(unittest.TestCase):
         self.assertTrue(scope.is_documentation("docs/llm_wiki/.llm-wiki-manifest.json"))
         self.assertTrue(scope.is_documentation("docs/local-development.md"))
         self.assertTrue(scope.is_documentation("SECURITY.md"))
-        self.assertTrue(scope.is_documentation("README.md"))
 
-    def test_operator_documents_read_by_tests_run_everything(self):
+    def test_documents_read_by_full_pipeline_checks_run_everything(self):
+        self.assertFalse(scope.is_documentation("README.md"))
         self.assertFalse(scope.is_documentation("docs/database-runtime-policy.md"))
+        self.assertFalse(scope.is_documentation("docs/agent-team-setup.md"))
+        self.assertFalse(scope.is_documentation("docs/runbooks/model-aware-routing.md"))
+
+    def test_closeout_inventory_documents_are_derived(self):
+        documents = scope._inventory_documents(scope.CLOSEOUT_INVENTORY)
+        self.assertIn("docs/agent-team-setup.md", documents)
+        self.assertTrue(documents <= scope.CHECKED_DOCUMENTS)
         self.assertFalse(scope.is_documentation("docs/runbooks/postgresql-operations.md"))
 
     def test_code_and_nested_markdown_are_not_documentation(self):
