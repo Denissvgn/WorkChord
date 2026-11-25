@@ -14,8 +14,8 @@ Schema for updating a calendar.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `timezone` | `WorkingZone \| None` | `timezone` | No | Yes | `None` | — | — | — |
-| `nominal_day_hours` | `float \| None` | `nominal_day_hours` | No | Yes | `None` | gt=0; le=24; allow_inf_nan=False | — | — |
-| `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `nominal_day_hours` | `float \| None` | `nominal_day_hours` | No | Yes | `None` | allow_inf_nan=False; gt=0; le=24 | — | — |
+| `name` | `Optional[str]` | `name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `year` | `Optional[int]` | `year` | No | Yes | `None` | ge=2000; le=2100 | — | — |
 | `holidays` | `Optional[list[str]]` | `holidays` | No | Yes | `None` | — | — | — |
 | `weekend_days` | `Optional[list[int]]` | `weekend_days` | No | Yes | `None` | — | — | — |

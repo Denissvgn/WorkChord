@@ -15,12 +15,12 @@ _Auto-generated from `CorrelatedProviderAction` in `backend/app/autonomy/provide
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `schema_version` | `Literal['workchord-correlated-provider-action-v1']` | `schema_version` | No | No | `'workchord-correlated-provider-action-v1'` | — | — | — |
 | `lease_digest` | `str` | `lease_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
-| `operation` | `str` | `operation` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `operation` | `str` | `operation` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `resource_ref` | `str` | `resource_ref` | Yes | No | — | max_length=2048; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
-| `resource_generation_before` | `str` | `resource_generation_before` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `resource_generation_after` | `str` | `resource_generation_after` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `provider_request_id` | `str` | `provider_request_id` | Yes | No | — | min_length=1; max_length=512 | — | — |
-| `provider_event_id` | `str` | `provider_event_id` | Yes | No | — | min_length=1; max_length=512 | — | — |
+| `resource_generation_before` | `str` | `resource_generation_before` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `resource_generation_after` | `str` | `resource_generation_after` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `provider_request_id` | `str` | `provider_request_id` | Yes | No | — | max_length=512; min_length=1 | — | — |
+| `provider_event_id` | `str` | `provider_event_id` | Yes | No | — | max_length=512; min_length=1 | — | — |
 | `mutation_receipt_digest` | `str` | `mutation_receipt_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `audit_observation_digest` | `str` | `audit_observation_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 

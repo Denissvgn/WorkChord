@@ -31,7 +31,7 @@ PM command to dispatch a task to an exact actor.
 | `team_member_id` | `Optional[int]` | `team_member_id` | No | Yes | `None` | — | — | — |
 | `purpose` | `AgentAssignmentPurpose` | `purpose` | No | No | `'execution'` | — | — | — |
 | `review_binding_id` | `int \| None` | `review_binding_id` | No | Yes | `None` | ge=1 | — | — |
-| `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
+| `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | ge=1; strict=True | — | — |
 | `queue_class` | `AgentAssignmentQueueClass` | `queue_class` | No | No | `'normal'` | — | — | — |
 | `queue_rank` | `int` | `queue_rank` | No | No | `1000` | ge=0 | — | — |
 | `not_before` | `Optional[datetime]` | `not_before` | No | Yes | `None` | — | — | — |

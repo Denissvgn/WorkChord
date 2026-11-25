@@ -24,7 +24,7 @@ _Auto-generated from `AutonomousDagContract` in `backend/app/autonomy/orchestrat
 | `release_fingerprint` | `str` | `release_fingerprint` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `charter_digest` | `str` | `charter_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `contract_manifest_digest` | `str` | `contract_manifest_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
-| `nodes` | `tuple[DagNodeSpec, ...]` | `nodes` | Yes | No | — | min_length=1; max_length=10000 | — | — |
+| `nodes` | `tuple[DagNodeSpec, ...]` | `nodes` | Yes | No | — | max_length=10000; min_length=1 | — | — |
 
 ## Methods
 

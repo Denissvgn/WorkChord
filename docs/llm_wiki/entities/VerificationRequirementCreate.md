@@ -22,7 +22,7 @@ _Auto-generated from `VerificationRequirementCreate` in `backend/app/schemas/aut
 | `slot_key` | `str` | `slot_key` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `verifier_logical_key` | `str` | `verifier_logical_key` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `criterion_schema` | `str` | `criterion_schema` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
-| `evaluator_version` | `str` | `evaluator_version` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `evaluator_version` | `str` | `evaluator_version` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `executor_independence_group` | `str` | `executor_independence_group` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `verifier_independence_group` | `str` | `verifier_independence_group` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 

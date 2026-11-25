@@ -27,7 +27,7 @@ _Auto-generated from `TaskActionRequest` in `backend/app/schemas/task_domain.py`
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `action` | `TaskAction` | `action` | Yes | No | — | — | — | — |
 | `expected_version` | `int` | `expected_version` | Yes | No | — | ge=1 | — | — |
-| `reason` | `str` | `reason` | Yes | No | — | min_length=1; max_length=2000 | — | — |
+| `reason` | `str` | `reason` | Yes | No | — | max_length=2000; min_length=1 | — | — |
 | `iteration_id` | `int \| None` | `iteration_id` | No | Yes | `None` | ge=1 | — | — |
 | `expected_revisions` | `dict[int, int]` | `expected_revisions` | No | No | factory: `dict` | — | — | — |
 | `expected_claim_generation` | `int \| None` | `expected_claim_generation` | No | Yes | `None` | ge=0 | — | — |

@@ -28,7 +28,7 @@ _Auto-generated from `AgentWorkPackageCreate` in `backend/app/schemas/autonomy.p
 | `source_contract_digest` | `str` | `source_contract_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `external_journal_revision` | `int` | `external_journal_revision` | Yes | No | — | ge=1 | — | — |
 | `external_journal_head_digest` | `str` | `external_journal_head_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
-| `requirements` | `tuple[VerificationRequirementCreate, ...]` | `requirements` | Yes | No | — | min_length=1; max_length=64 | — | — |
+| `requirements` | `tuple[VerificationRequirementCreate, ...]` | `requirements` | Yes | No | — | max_length=64; min_length=1 | — | — |
 
 ## Methods
 

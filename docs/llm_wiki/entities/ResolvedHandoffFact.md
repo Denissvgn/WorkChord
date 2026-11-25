@@ -21,7 +21,7 @@ A resolver-produced source fact; prose/booleans cannot substitute.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `fact_kind` | `str` | `fact_kind` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `object_digest` | `str` | `object_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
-| `object_uri` | `str` | `object_uri` | Yes | No | — | min_length=1; max_length=2048 | — | — |
+| `object_uri` | `str` | `object_uri` | Yes | No | — | max_length=2048; min_length=1 | — | — |
 | `evidence` | `SignedAutonomousEvidence` | `evidence` | Yes | No | — | — | — | — |
 
 ## Methods

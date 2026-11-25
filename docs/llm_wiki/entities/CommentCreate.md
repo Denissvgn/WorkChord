@@ -13,7 +13,7 @@ _Auto-generated from `CommentCreate` in `backend/app/routers/discussion.py`._
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `body` | `str` | `body` | Yes | No | — | min_length=1; max_length=12000 | — | — |
+| `body` | `str` | `body` | Yes | No | — | max_length=12000; min_length=1 | — | — |
 | `mentions` | `list[PositiveInt]` | `mentions` | No | No | factory: `list` | max_length=25 | — | — |
 
 ## Methods

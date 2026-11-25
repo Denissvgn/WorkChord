@@ -21,8 +21,8 @@ _Auto-generated from `StatusRulesContract` in `backend/app/autonomy/status.py`._
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `schema_version` | `Literal['workchord-postgresql-status-rules-v1']` | `schema_version` | Yes | No | — | — | — | — |
 | `waiver_policy` | `Literal['forbidden']` | `waiver_policy` | Yes | No | — | — | — | — |
-| `tasks` | `tuple[StatusRule, ...]` | `tasks` | Yes | No | — | min_length=1; max_length=256 | — | — |
-| `gates` | `tuple[StatusRule, ...]` | `gates` | Yes | No | — | min_length=15; max_length=15 | — | — |
+| `tasks` | `tuple[StatusRule, ...]` | `tasks` | Yes | No | — | max_length=256; min_length=1 | — | — |
+| `gates` | `tuple[StatusRule, ...]` | `gates` | Yes | No | — | max_length=15; min_length=15 | — | — |
 
 ## Methods
 

@@ -21,7 +21,7 @@ _Auto-generated from `SourceCollectorRegistry` in `backend/app/autonomy/provider
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `schema_version` | `Literal['workchord-source-collector-registry-v1']` | `schema_version` | No | No | `'workchord-source-collector-registry-v1'` | — | — | — |
 | `registry_revision` | `int` | `registry_revision` | Yes | No | — | ge=1 | — | — |
-| `bindings` | `tuple[CollectorBinding, ...]` | `bindings` | Yes | No | — | min_length=1; max_length=2048 | — | — |
+| `bindings` | `tuple[CollectorBinding, ...]` | `bindings` | Yes | No | — | max_length=2048; min_length=1 | — | — |
 
 ## Methods
 

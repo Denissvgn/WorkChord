@@ -4010,3 +4010,23 @@ Kept the retirement of wiki pages for deleted frontend sources (PR #84) as the d
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-11-25
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:4d998d36afef3d5a4d042c7ae81921165a4a55b6e25e2da129de3e9171ece1cf`
+- Pages created: 0
+- Pages updated: 160
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3602
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no

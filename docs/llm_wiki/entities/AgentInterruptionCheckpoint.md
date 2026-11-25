@@ -26,7 +26,7 @@ The worker has stopped producing output under this fence.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `observed_model` | `str` | `observed_model` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `observed_model` | `str` | `observed_model` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `output_state` | `Literal['no_output', 'retained']` | `output_state` | Yes | No | — | — | — | — |
 | `commit_urls` | `list[str]` | `commit_urls` | No | No | factory: `list` | max_length=unknown (MAX_AGENT_ARTIFACT_LINKS) | — | — |
 

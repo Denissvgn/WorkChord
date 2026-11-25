@@ -20,8 +20,8 @@ An operator's record that a PM was told through another channel.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `actor_id` | `int` | `actor_id` | Yes | No | — | ge=1 | — | — |
-| `channel` | `str` | `channel` | Yes | No | — | min_length=1; max_length=60 | — | — |
-| `reference` | `str` | `reference` | Yes | No | — | min_length=1; max_length=500 | — | — |
+| `channel` | `str` | `channel` | Yes | No | — | max_length=60; min_length=1 | — | — |
+| `reference` | `str` | `reference` | Yes | No | — | max_length=500; min_length=1 | — | — |
 
 ## Methods
 

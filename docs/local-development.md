@@ -98,21 +98,76 @@ workspace. For shared deployments, use the
 
 ## Maintain the LLM wiki
 
-The wiki writer keeps its storage and governance locks under the nearest
-directory named `.git` above the checkout it runs from. A linked worktree
-stores `.git` as a file, which the writer skips, so a worktree nested inside
-another checkout can place those locks in the enclosing repository. Before
-running the writer from a worktree, check where the locks would go:
+### Install the wiki tool
+
+The wiki in `docs/llm_wiki/` is maintained with llm-wiki 6.1.1: the
+`agent-wiki-cli` package and its `llm-wiki-engine` dependency, both at 6.1.1.
+Use that version for every command that writes the wiki. An older writer
+rewrites records it does not understand, and a newer reader then refuses the
+wiki and asks for a complete recovery.
+
+6.1.1 is not yet on PyPI. Until it is, install it from the upstream source at
+the commit that carries the 6.1.1 release:
+
+```bash
+git clone https://github.com/Denissvgn/python-wiki-llm.git <llm-wiki source>
+git -C <llm-wiki source> checkout cbbf3ebbaf4e0b539fc7ceee8ec2d516280bf455
+.venv/bin/pip install "<llm-wiki source>/src" "<llm-wiki source>"
+.venv/bin/llm-wiki --version
+```
+
+The first path installs `llm-wiki-engine` and the second `agent-wiki-cli`; the
+version check prints `llm-wiki 6.1.1`. Once
+`.venv/bin/pip index versions agent-wiki-cli` lists 6.1.1, switch to the
+published release:
+
+```bash
+.venv/bin/pip uninstall -y agent-wiki-cli llm-wiki-engine
+.venv/bin/pip install "agent-wiki-cli==6.1.1"
+```
+
+Uninstall first: pip treats the source install as the same version and would
+otherwise keep it. The published release carries the same code, so the wiki
+needs no further change.
+
+After installing or switching, refresh the managed agent instructions and
+references, and prepare the TypeScript extractor helper (it needs Node.js):
+
+```bash
+.venv/bin/llm-wiki upgrade --src-dir . --wiki-dir docs/llm_wiki --agent generic --quality-hints --skills --issue-reporting
+.venv/bin/llm-wiki prepare-extractors --src-dir .
+```
+
+### Run the writer from a normal checkout
+
+Run every command that writes the wiki from a normal checkout, one whose
+`.git` is a directory, for example a fresh `git clone`. Previews
+(`sync --dry-run`), `lint` and `ci-check` can run anywhere.
+
+Writers before 6.1.1 had two defects in linked worktrees, where `.git` is a
+file. A sync there recorded the working tree as `dirty` even when it was clean
+([python-wiki-llm#187](https://github.com/Denissvgn/python-wiki-llm/issues/187)),
+so no later preview of the committed wiki reached a fixpoint. They also kept
+their locks under the nearest `.git` directory, which for a nested worktree is
+the enclosing repository. 6.1.1 fixes both: a sync in a clean linked worktree
+records `clean`, a wiki committed with a `dirty` record is corrected by its
+next sync, and locks stay in the worktree's own Git directory. The
+full-reconstruction profile below has been qualified from a normal checkout
+only, so keep the release refresh there. The workaround for an older writer is
+the same normal checkout.
+
+Before a writing run, confirm the checkout with the preflight:
 
 ```bash
 .venv/bin/python scripts/ci/wiki_lock_root_preflight.py --checkout <checkout>
 ```
 
-The preflight reads Git metadata only. It prints the effective lock root and
-exits non-zero when that root is not the repository the checkout belongs to.
-It does not open locks or run the writer.
+The preflight reads Git metadata only. It prints the lock root that a writer
+before 6.1.1 would use and exits non-zero when that root is not the repository
+the checkout belongs to. It passes in a normal checkout and refuses a nested
+linked worktree. It does not open locks or run the writer.
 
-When the preflight refuses, run the writer from an isolated clone that has its
+When the preflight refuses, run the writer from a separate clone that has its
 own `.git` directory and shares object storage with the repository:
 
 ```bash
@@ -120,19 +175,17 @@ git clone --shared <WorkChord repository> <isolated clone directory>
 .venv/bin/python scripts/ci/wiki_lock_root_preflight.py --checkout <isolated clone directory>
 ```
 
-Run the wiki commands from the isolated clone once the preflight passes.
+Run the wiki commands from that clone once the preflight passes.
 
 ### Replay the wiki from a canonical checkout
 
 A preview (`sync --dry-run`) never reads the extraction cache, while an
-ordinary owning `sync` reads it. The cache serializes mappings in sorted key
-order, but fresh extraction keeps the order in the source. A list built by
-iterating such a mapping, for example the unresolved keyword settings recorded
-for a FastAPI application, can therefore come out in a different order in the
-two runs. The advisory `llm-wiki/sync-analysis-v2.payload_hash` then differs
-even though the Markdown, concepts, relationships and ownership records are
-identical, so the owning run rewrites packed objects that the preview did not
-report.
+ordinary owning `sync` reads it. Before 6.1.1, a list built from a cached
+mapping, for example the unresolved keyword settings recorded for a FastAPI
+application, could come out in a different order in the two runs. The advisory
+`llm-wiki/sync-analysis-v2.payload_hash` then differed and the owning run
+rewrote packed objects that the preview did not report. 6.1.1 records the same
+commitment in both runs.
 
 Use one full-reconstruction profile for both the preview and the owning run.
 It ignores the extraction cache and the reused analysis, so both runs build
@@ -153,9 +206,9 @@ llm-wiki sync --rebuild-cache --rebuild-knowledge --jobs 1 --src-dir . --wiki-di
   run does not produce the evidence commitment that the other modes compare. An ordinary
   `sync` (warm cache) remains valid for everyday maintenance, but do not compare
   its result with a preview.
-- In a linked worktree, set `LLM_WIKI_CACHE_DIR` to the main checkout's Git
-  directory so the prepared extractor helpers are found. It does not change the
-  lock root, which the preflight checks.
+- Run both commands from a normal checkout (see above). A fresh clone needs its
+  own prepared extractor helper: run `llm-wiki prepare-extractors --src-dir .`
+  once before the preview.
 - A full run takes roughly ten minutes. Afterwards, run the same preview again
   and confirm it reports no changes, then run `llm-wiki lint --strict --jobs 1`
   and `llm-wiki ci-check --format json --jobs 1` with the same source and wiki

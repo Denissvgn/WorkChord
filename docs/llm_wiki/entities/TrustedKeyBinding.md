@@ -15,9 +15,9 @@ _Auto-generated from `TrustedKeyBinding` in `backend/app/autonomy/contracts/char
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `logical_key` | `str` | `logical_key` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `key_ref` | `str` | `key_ref` | Yes | No | — | max_length=1024; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
-| `issuer` | `str` | `issuer` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `allowed_subject` | `str` | `allowed_subject` | Yes | No | — | min_length=1; max_length=512 | — | — |
-| `intended_use` | `str` | `intended_use` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `issuer` | `str` | `issuer` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `allowed_subject` | `str` | `allowed_subject` | Yes | No | — | max_length=512; min_length=1 | — | — |
+| `intended_use` | `str` | `intended_use` | Yes | No | — | max_length=255; min_length=1 | — | — |
 
 ## Methods
 

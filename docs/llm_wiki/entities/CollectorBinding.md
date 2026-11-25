@@ -17,7 +17,7 @@ _Auto-generated from `CollectorBinding` in `backend/app/autonomy/providers.py`._
 | `source_system` | `str` | `source_system` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `collector_identity` | `Literal['pg-source-collector']` | `collector_identity` | No | No | `'pg-source-collector'` | — | — | — |
 | `maximum_age_seconds` | `int` | `maximum_age_seconds` | Yes | No | — | ge=1; le=2592000 | — | — |
-| `completeness_rule` | `str` | `completeness_rule` | Yes | No | — | min_length=1; max_length=1024 | — | — |
+| `completeness_rule` | `str` | `completeness_rule` | Yes | No | — | max_length=1024; min_length=1 | — | — |
 | `source_query_schema` | `str` | `source_query_schema` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 
 ## Methods

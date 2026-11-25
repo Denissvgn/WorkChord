@@ -19,7 +19,7 @@ Operator request that binds a stable seed key to a profile that has none.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `seed_key` | `str` | `seed_key` | Yes | No | — | min_length=1; max_length=100; pattern=unknown (STABLE_KEY_PATTERN) | — | — |
+| `seed_key` | `str` | `seed_key` | Yes | No | — | max_length=100; min_length=1; pattern=unknown (STABLE_KEY_PATTERN) | — | — |
 | `reason` | `Optional[str]` | `reason` | No | Yes | `None` | max_length=500 | — | — |
 
 ## Methods

@@ -15,7 +15,7 @@ Schema for creating a project.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `timezone` | `WorkingZone` | `timezone` | No | No | `'UTC'` | — | — | — |
 | `require_different_review_publisher` | `bool` | `require_different_review_publisher` | No | No | `False` | — | — | — |
-| `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `status` | `ProjectStatus` | `status` | No | No | `ProjectStatus.PLANNED` | — | — | — |
 | `health` | `ProjectHealth` | `health` | No | No | `ProjectHealth.UNKNOWN` | — | — | — |

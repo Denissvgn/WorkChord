@@ -26,7 +26,7 @@ _Auto-generated from `BootstrapActionManifest` in `backend/app/autonomy/contract
 | `journal_expected_head_digest` | `str` | `journal_expected_head_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `issued_at` | `datetime` | `issued_at` | Yes | No | — | — | — | — |
 | `expires_at` | `datetime` | `expires_at` | Yes | No | — | — | — | — |
-| `slots` | `tuple[BootstrapActionSlot, ...]` | `slots` | Yes | No | — | min_length=1; max_length=100000 | — | — |
+| `slots` | `tuple[BootstrapActionSlot, ...]` | `slots` | Yes | No | — | max_length=100000; min_length=1 | — | — |
 
 ## Methods
 

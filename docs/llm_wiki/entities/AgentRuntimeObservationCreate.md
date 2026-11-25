@@ -30,14 +30,14 @@ the other kinds describe the session's state.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `kind` | `ObservationKind` | `kind` | Yes | No | — | — | — | — |
-| `harness_kind` | `str` | `harness_kind` | Yes | No | — | min_length=1; max_length=40 | — | — |
-| `harness_session_id` | `str` | `harness_session_id` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `harness_kind` | `str` | `harness_kind` | Yes | No | — | max_length=40; min_length=1 | — | — |
+| `harness_session_id` | `str` | `harness_session_id` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `observed_at` | `datetime` | `observed_at` | Yes | No | — | — | — | — |
-| `idempotency_key` | `str` | `idempotency_key` | Yes | No | — | min_length=1; max_length=128; pattern='^[A-Za-z0-9._:-]+$' | — | — |
+| `idempotency_key` | `str` | `idempotency_key` | Yes | No | — | max_length=128; min_length=1; pattern='^[A-Za-z0-9._:-]+$' | — | — |
 | `task_id` | `Optional[int]` | `task_id` | No | Yes | `None` | ge=1 | — | — |
 | `run_id` | `Optional[int]` | `run_id` | No | Yes | `None` | ge=1 | — | — |
 | `subject_actor_id` | `Optional[int]` | `subject_actor_id` | No | Yes | `None` | ge=1 | — | — |
-| `observed_model` | `Optional[str]` | `observed_model` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `observed_model` | `Optional[str]` | `observed_model` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 
 ## Methods
 

@@ -24,7 +24,7 @@ _Auto-generated from `WorkPackageContract` in `backend/app/autonomy/orchestratio
 | `package_version` | `int` | `package_version` | Yes | No | — | ge=1 | — | — |
 | `execution_task_id` | `str \| None` | `execution_task_id` | No | Yes | `None` | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `artifact_set_digest` | `str` | `artifact_set_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
-| `requirements` | `tuple[VerificationRequirementContract, ...]` | `requirements` | Yes | No | — | min_length=1; max_length=64 | — | — |
+| `requirements` | `tuple[VerificationRequirementContract, ...]` | `requirements` | Yes | No | — | max_length=64; min_length=1 | — | — |
 | `predecessor_package_digest` | `str \| None` | `predecessor_package_digest` | No | Yes | `None` | pattern=unknown (SHA256_PATTERN) | — | — |
 
 ## Methods

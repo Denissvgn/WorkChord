@@ -34,9 +34,9 @@ Exact immutable bytes made available to a separate manual process.
 | `retention_due_at` | `datetime` | `retention_due_at` | Yes | No | — | — | — | — |
 | `capacity_boundary` | `CapacityClaimBoundary` | `capacity_boundary` | Yes | No | — | — | — | — |
 | `availability_claim_allowed` | `bool` | `availability_claim_allowed` | Yes | No | — | — | — | — |
-| `candidate_notes` | `str` | `candidate_notes` | Yes | No | — | min_length=1; max_length=100000 | — | — |
+| `candidate_notes` | `str` | `candidate_notes` | Yes | No | — | max_length=100000; min_length=1 | — | — |
 | `candidate_notes_sha256` | `str` | `candidate_notes_sha256` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
-| `evidence` | `tuple[HandoffEvidenceReference, ...]` | `evidence` | Yes | No | — | min_length=1; max_length=512 | — | — |
+| `evidence` | `tuple[HandoffEvidenceReference, ...]` | `evidence` | Yes | No | — | max_length=512; min_length=1 | — | — |
 | `handoff_digest` | `str` | `handoff_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 
 ## Methods
