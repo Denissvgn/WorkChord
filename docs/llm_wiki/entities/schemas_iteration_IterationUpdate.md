@@ -1,7 +1,7 @@
 # IterationUpdate
 
 **Location:** `backend/app/schemas/iteration.py:23`
-**Kind:** Pydantic model
+**Kind:** Class
 **Bases:** `PlanningInputRevisions`
 **Module:** [schemas_iteration](../modules/schemas_iteration.md)
 
@@ -36,14 +36,13 @@ flowchart LR
     n3["update_iteration (backend/app/routers/agent_planning.py)"]
     n4["update_iteration (backend/app/routers/iterations.py)"]
     n5["backend/app/schemas/__init__.py"]
-    n6["AgentPlanningService.update_iteration (backend/app/services/agent_planning_service.py)"]
-    n7["IterationService.changed_calendar_selection (backend/app/services/iteration_service.py)"]
-    n8["IterationService.update (backend/app/services/iteration_service.py)"]
-    n9["test_interior_year_and_snapshot_use_the_explicit_owner (backend/tests/test_annual_calendar_coverage.py)"]
-    n10["test_invalid_annual_bindings_and_reverse_dependencies (backend/tests/test_annual_calendar_coverage.py)"]
-    n11["test_legacy_iteration_entirely_outside_its_primary_year_is_explicitly_held (backend/tests/test_annual_calendar_coverage.py)"]
-    n12["test_replacing_issued_annual_rules_is_scoped_to_the_affected_tasks (backend/tests/test_annual_calendar_coverage.py)"]
-    n13["backend/tests/test_annual_calendar_work_control.py"]
+    n6["IterationDateMoveRequest.as_update (backend/app/schemas/iteration.py)"]
+    n7["AgentPlanningService.update_iteration (backend/app/services/agent_planning_service.py)"]
+    n8["IterationService.changed_calendar_selection (backend/app/services/iteration_service.py)"]
+    n9["IterationService.update (backend/app/services/iteration_service.py)"]
+    n10["test_interior_year_and_snapshot_use_the_explicit_owner (backend/tests/test_annual_calendar_coverage.py)"]
+    n11["test_invalid_annual_bindings_and_reverse_dependencies (backend/tests/test_annual_calendar_coverage.py)"]
+    n12["test_legacy_iteration_entirely_outside_its_primary_year_is_explicitly_held (backend/tests/test_annual_calendar_coverage.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -56,21 +55,19 @@ flowchart LR
     n10 --> n0
     n11 --> n0
     n12 --> n0
-    n13 --> n0
     click n0 "../modules/schemas_iteration.md"
     click n1 "../modules/planning_inputs.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent_planning.md"
     click n4 "../modules/iterations.md"
     click n5 "../modules/schemas___init__.md"
-    click n6 "../modules/agent_planning_service.md"
-    click n7 "../modules/iteration_service.md"
+    click n6 "../modules/schemas_iteration.md"
+    click n7 "../modules/agent_planning_service.md"
     click n8 "../modules/iteration_service.md"
-    click n9 "../modules/test_annual_calendar_coverage.md"
+    click n9 "../modules/iteration_service.md"
     click n10 "../modules/test_annual_calendar_coverage.md"
     click n11 "../modules/test_annual_calendar_coverage.md"
     click n12 "../modules/test_annual_calendar_coverage.md"
-    click n13 "../modules/test_annual_calendar_work_control.md"
 ```
 
 ### Summary
@@ -93,13 +90,13 @@ flowchart LR
 | `update_iteration` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 | `update_iteration` | type_reference | [iterations](../modules/iterations.md) | — |
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
+| `IterationDateMoveRequest.as_update` | call | [schemas_iteration](../modules/schemas_iteration.md) | 1 |
+| `IterationDateMoveRequest.as_update` | type_reference | [schemas_iteration](../modules/schemas_iteration.md) | — |
 | `AgentPlanningService.update_iteration` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `IterationService.changed_calendar_selection` | type_reference | [iteration_service](../modules/iteration_service.md) | — |
 | `IterationService.update` | type_reference | [iteration_service](../modules/iteration_service.md) | — |
 | `test_interior_year_and_snapshot_use_the_explicit_owner` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
 | `test_invalid_annual_bindings_and_reverse_dependencies` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
 | `test_legacy_iteration_entirely_outside_its_primary_year_is_explicitly_held` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
-| `test_replacing_issued_annual_rules_is_scoped_to_the_affected_tasks` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
-| `test_annual_calendar_work_control` | import | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | — |
 
-> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.
+> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.

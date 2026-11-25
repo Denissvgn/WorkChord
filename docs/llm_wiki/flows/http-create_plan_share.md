@@ -2,11 +2,12 @@
 
 **Entry point:** `create_plan_share` (`http`)
 **Source:** [plan_shares](../modules/plan_shares.md)
-**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [iteration_service](../modules/iteration_service.md), [models_plan_share](../modules/models_plan_share.md), and 9 more
+**Modules touched:** [authority](../modules/authority.md), [capacity_adjustments](../modules/capacity_adjustments.md), [commands](../modules/commands.md), [iteration_service](../modules/iteration_service.md), and 10 more
 
 **Complete modules touched:**
 
 - [authority](../modules/authority.md)
+- [capacity_adjustments](../modules/capacity_adjustments.md)
 - [commands](../modules/commands.md)
 - [iteration_service](../modules/iteration_service.md)
 - [models_plan_share](../modules/models_plan_share.md)
@@ -35,27 +36,27 @@ sequenceDiagram
     participant p5 as SnapshotService._validate_reason
     participant p6 as TaskService.get_by_iteration
     participant p7 as TeamService.get_by_iteration
-    participant p8 as SnapshotService._task_to_export
-    participant p9 as SnapshotService.profile_lifetimes
-    participant p10 as SnapshotService._profile_references
-    participant p11 as TaskService._task_graph_query
-    participant p12 as TaskService._load_iteration_tree
-    participant p13 as TeamService._attach_assignee_profiles
-    participant p14 as TaskHierarchyService._load_iteration_tree
-    participant p15 as SnapshotService
-    participant p16 as utc_now
-    participant p17 as PlanShareService._owner_filter
-    participant p18 as PlanShare
-    participant p19 as PlanShareService._share_snapshot
-    participant p20 as PlanShareService._query
-    participant p21 as current_command
-    participant p22 as IterationService
-    participant p23 as IterationService.get_by_id
-    participant p24 as TaskService
-    participant p25 as TeamService
-    participant p26 as SnapshotService._member_to_export
-    participant p27 as internal_authority
-    participant p28 as SnapshotPathError
+    participant p8 as active_adjustment_rows
+    participant p9 as SnapshotService._task_to_export
+    participant p10 as SnapshotService.profile_lifetimes
+    participant p11 as SnapshotService._profile_references
+    participant p12 as TaskService._task_graph_query
+    participant p13 as TaskService._load_iteration_tree
+    participant p14 as TeamService._attach_assignee_profiles
+    participant p15 as TaskHierarchyService._load_iteration_tree
+    participant p16 as SnapshotService
+    participant p17 as utc_now
+    participant p18 as PlanShareService._owner_filter
+    participant p19 as PlanShare
+    participant p20 as PlanShareService._share_snapshot
+    participant p21 as PlanShareService._query
+    participant p22 as current_command
+    participant p23 as IterationService
+    participant p24 as IterationService.get_by_id
+    participant p25 as TaskService
+    participant p26 as TeamService
+    participant p27 as SnapshotService._member_to_export
+    participant p28 as internal_authority
     participant p29 as HTTPException
     participant p30 as service.to_response
     p0->>p1: PlanShareService.create
@@ -65,34 +66,34 @@ sequenceDiagram
     p3->>p5: SnapshotService._validate_reason
     p3->>p6: TaskService.get_by_iteration
     p3->>p7: TeamService.get_by_iteration
-    p3->>p8: SnapshotService._task_to_export
-    p3->>p9: SnapshotService.profile_lifetimes
-    p9->>p10: SnapshotService._profile_references
-    p6->>p11: TaskService._task_graph_query
-    p6->>p12: TaskService._load_iteration_tree
-    p7->>p13: TeamService._attach_assignee_profiles
-    p12->>p14: TaskHierarchyService._load_iteration_tree
-    p1->>p15: SnapshotService
-    p1->>p16: utc_now
-    p1->>p17: PlanShareService._owner_filter
-    p1->>p18: PlanShare
-    p1->>p19: PlanShareService._share_snapshot
-    p1->>p20: PlanShareService._query
-    p4->>p21: current_command
-    p3->>p22: IterationService
-    p3->>p23: IterationService.get_by_id
-    p3->>p24: TaskService
-    p3->>p25: TeamService
-    p3->>p26: SnapshotService._member_to_export
-    p9->>p27: internal_authority
-    p5->>p28: SnapshotPathError
+    p3->>p8: active_adjustment_rows
+    p3->>p9: SnapshotService._task_to_export
+    p3->>p10: SnapshotService.profile_lifetimes
+    p10->>p11: SnapshotService._profile_references
+    p6->>p12: TaskService._task_graph_query
+    p6->>p13: TaskService._load_iteration_tree
+    p7->>p14: TeamService._attach_assignee_profiles
+    p13->>p15: TaskHierarchyService._load_iteration_tree
+    p1->>p16: SnapshotService
+    p1->>p17: utc_now
+    p1->>p18: PlanShareService._owner_filter
+    p1->>p19: PlanShare
+    p1->>p20: PlanShareService._share_snapshot
+    p1->>p21: PlanShareService._query
+    p4->>p22: current_command
+    p3->>p23: IterationService
+    p3->>p24: IterationService.get_by_id
+    p3->>p25: TaskService
+    p3->>p26: TeamService
+    p3->>p27: SnapshotService._member_to_export
+    p8->>p28: internal_authority
     p0-->>p29: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
     p0-->>p30: service.to_response(share)
 ```
 
-> Call sequence diagram shows 30 of 203 interactions; 173 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 218 interactions; 188 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 53 (52 omitted); unresolved 1 of 106 (105 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 55 (54 omitted); unresolved 1 of 117 (116 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -100,13 +101,13 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | --- | --- | --- | --- | --- |
 | `backend/app/services/snapshot_service.py:SnapshotService._validate_reason` | 5 | - | unresolved | 2 |
 | `backend/app/services/snapshot_service.py:SnapshotService._validate_reason` | 5 | - | external | 1 |
+| `backend/app/services/snapshot_service.py:SnapshotService._validate_reason` | 5 | [backend/app/services/snapshot_service.py](../modules/snapshot_service.md) | internal | 1 |
 | `backend/app/services/iteration_service.py:IterationService.get_by_id` | 11 | - | unresolved | 4 |
 | `backend/app/services/iteration_service.py:IterationService.get_by_id` | 11 | - | external | 3 |
 | `backend/app/services/task_service.py:TaskService.get_by_iteration` | 19 | - | unresolved | 6 |
 | `backend/app/services/task_service.py:TaskService._task_graph_query` | 23 | [backend/app/services/task_hierarchy_service.py](../modules/task_hierarchy_service.md) | internal | 2 |
 | `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._task_graph_query` | 24 | - | unresolved | 6 |
-| `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._task_graph_query` | 24 | - | external | 8 |
-> Omission summary shows 8 of 50 groups; 42 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 54 groups; 46 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -117,9 +118,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 45; effect analysis evaluated: 29, partial: 0, unavailable: 16. Counts include steps omitted from the displayed trace.
+Source steps: 47; effect analysis evaluated: 31, partial: 0, unavailable: 16. Counts include steps omitted from the displayed trace.
 
-Collector observations for 29 source steps with known totals: observed: 106, emitted: 106, omitted: 0. Unavailable totals are excluded.
+Collector observations for 31 source steps with known totals: observed: 116, emitted: 116, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -129,7 +130,7 @@ Collector observations for 29 source steps with known totals: observed: 106, emi
 | `create_plan_share` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
 | `PlanShareService` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
 | `PlanShareService.create` | `available` | `evaluated` | `available` | `8` | `8` | `0` |
-| `SnapshotService.build_snapshot_data` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `SnapshotService.build_snapshot_data` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
 | `SnapshotService._validate_reason` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `str(…).strip` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `str (backend/app/services/snap…tService._validate_reason)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
@@ -185,7 +186,7 @@ flowchart LR
 | `create_plan_share` | `iteration_id: int`, `response: Response`, `current_session: Annotated[UserSession, Depends(session_service.get_current_session)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status` | `response.headers[...]` | `service.to_response(...)` |
 | `PlanShareService` | - | - | - | - |
 | `PlanShareService.create` | `iteration_id: int`, `session: UserSession` | `PlanShare`, `self.db`, `PlanShare` | - | `None`, `result.scalar_one(...)` |
-| `SnapshotService.build_snapshot_data` | `iteration_id: int`, `reason: str` | `self.db` | `payload[...]` | `None`, `payload` |
+| `SnapshotService.build_snapshot_data` | `iteration_id: int`, `reason: str` | `self.db`, `self.db` | `payload[...]` | `None`, `payload` |
 | `SnapshotService._validate_reason` | `reason: str` | - | - | `normalized` |
 | `str(…).strip` | - | - | - | - |
 | `str (backend/app/services/snap…tService._validate_reason)` | - | - | - | - |
@@ -202,13 +203,13 @@ flowchart LR
 | create_plan_share | PlanShareService | 54 | `PlanShareService(db)` |
 | create_plan_share | PlanShareService.create | 55 | `service.create(iteration_id, current_session)` |
 | PlanShareService.create | SnapshotService.build_snapshot_data | 135 | `SnapshotService(self.db).build_snapshot_data(iteration_id, 'plan_share')` |
-| SnapshotService.build_snapshot_data | SnapshotService._validate_reason | 203 | `self._validate_reason(reason)` |
-| SnapshotService._validate_reason | str(…).strip | 153 | `str(reason).strip(data not statically known)` |
-| SnapshotService._validate_reason | str (backend/app/services/snap…tService._validate_reason) | 153 | `str(reason)` |
-| SnapshotService._validate_reason | SNAPSHOT_REASON_PATTERN.fullmatch | 154 | `SNAPSHOT_REASON_PATTERN.fullmatch(normalized)` |
-| SnapshotService._validate_reason | SnapshotPathError | 155 | `SnapshotPathError('Snapshot reason must contain only letters, numbers, dots, underscores, and hyphens.')` |
-| SnapshotService.build_snapshot_data | IterationService | 204 | `IterationService(self.db)` |
-| SnapshotService.build_snapshot_data | IterationService.get_by_id | 205 | `iteration_service.get_by_id(iteration_id)` |
+| SnapshotService.build_snapshot_data | SnapshotService._validate_reason | 204 | `self._validate_reason(reason)` |
+| SnapshotService._validate_reason | str(…).strip | 154 | `str(reason).strip(data not statically known)` |
+| SnapshotService._validate_reason | str (backend/app/services/snap…tService._validate_reason) | 154 | `str(reason)` |
+| SnapshotService._validate_reason | SNAPSHOT_REASON_PATTERN.fullmatch | 155 | `SNAPSHOT_REASON_PATTERN.fullmatch(normalized)` |
+| SnapshotService._validate_reason | SnapshotPathError | 156 | `SnapshotPathError('Snapshot reason must contain only letters, numbers, dots, underscores, and hyphens.')` |
+| SnapshotService.build_snapshot_data | IterationService | 205 | `IterationService(self.db)` |
+| SnapshotService.build_snapshot_data | IterationService.get_by_id | 206 | `iteration_service.get_by_id(iteration_id)` |
 | IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 338 | `self.db.execute(...)` |
 
 ### Boundary effects
@@ -221,8 +222,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `SnapshotService._validate_reason` | `str(reason).strip` | 153 |
-| unresolved_call | `SnapshotService._validate_reason` | `SNAPSHOT_REASON_PATTERN.fullmatch` | 154 |
+| unresolved_call | `SnapshotService._validate_reason` | `str(reason).strip` | 154 |
+| unresolved_call | `SnapshotService._validate_reason` | `SNAPSHOT_REASON_PATTERN.fullmatch` | 155 |
 | unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 338 |
 | step_limit | `create_plan_share` | `first 12 steps` | 0 |
 

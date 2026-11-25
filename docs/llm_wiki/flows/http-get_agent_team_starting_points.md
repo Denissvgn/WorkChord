@@ -135,17 +135,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_agent_team_starting_points | service.starting_points | 557 | `service.starting_points(actor, server_url=...)` |
-| get_agent_team_starting_points | str(…).rstrip | 557 | `str(request.base_url).rstrip('/')` |
-| get_agent_team_starting_points | str (backend/app/routers/agent…agent_team_starting_points) | 557 | `str(request.base_url)` |
-| get_agent_team_starting_points | _handle_agent_error | 559 | `_handle_agent_error(exc, structured=True)` |
-| _handle_agent_error | isinstance | 328 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str (backend/app/routers/agent.py:_handle_agent_error) | 330 | `str(exc)` |
+| get_agent_team_starting_points | service.starting_points | 559 | `service.starting_points(actor, server_url=...)` |
+| get_agent_team_starting_points | str(…).rstrip | 559 | `str(request.base_url).rstrip('/')` |
+| get_agent_team_starting_points | str (backend/app/routers/agent…agent_team_starting_points) | 559 | `str(request.base_url)` |
+| get_agent_team_starting_points | _handle_agent_error | 561 | `_handle_agent_error(exc, structured=True)` |
+| _handle_agent_error | isinstance | 330 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str (backend/app/routers/agent.py:_handle_agent_error) | 332 | `str(exc)` |
-| _handle_agent_error | HTTPException | 334 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
-| _handle_agent_error | isinstance | 335 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 336 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 336 | `exc.detail(data not statically known)` |
+| _handle_agent_error | str (backend/app/routers/agent.py:_handle_agent_error) | 334 | `str(exc)` |
+| _handle_agent_error | HTTPException | 336 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
+| _handle_agent_error | isinstance | 337 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException | 338 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 338 | `exc.detail(data not statically known)` |
 
 ### Boundary effects
 
@@ -155,13 +155,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_agent_team_starting_points` | `service.starting_points` | 557 |
-| unresolved_call | `get_agent_team_starting_points` | `str(request.base_url).rstrip` | 557 |
-| external_call | `_handle_agent_error` | `isinstance` | 328 |
-| external_call | `_handle_agent_error` | `HTTPException` | 334 |
-| external_call | `_handle_agent_error` | `isinstance` | 335 |
+| unresolved_call | `get_agent_team_starting_points` | `service.starting_points` | 559 |
+| unresolved_call | `get_agent_team_starting_points` | `str(request.base_url).rstrip` | 559 |
+| external_call | `_handle_agent_error` | `isinstance` | 330 |
 | external_call | `_handle_agent_error` | `HTTPException` | 336 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 336 |
+| external_call | `_handle_agent_error` | `isinstance` | 337 |
+| external_call | `_handle_agent_error` | `HTTPException` | 338 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 338 |
 | step_limit | `get_agent_team_starting_points` | `first 12 steps` | 0 |
 
 ## Behavior

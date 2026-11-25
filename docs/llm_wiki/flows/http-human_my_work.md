@@ -2,7 +2,7 @@
 
 **Entry point:** `human_my_work` (`http`)
 **Source:** [routers_task_domain](../modules/routers_task_domain.md)
-**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 23 more
+**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 25 more
 
 **Complete modules touched:**
 
@@ -19,6 +19,7 @@
 - [execution_planning_window](../modules/execution_planning_window.md)
 - [execution_reconciliation](../modules/execution_reconciliation.md)
 - [github_links](../modules/github_links.md)
+- [github_reconciliation_service](../modules/github_reconciliation_service.md)
 - [identity_service](../modules/identity_service.md)
 - [planning_window_reconciliation](../modules/planning_window_reconciliation.md)
 - [retained_planning_output](../modules/retained_planning_output.md)
@@ -30,6 +31,7 @@
 - [task_detail](../modules/task_detail.md)
 - [task_detail_service](../modules/task_detail_service.md)
 - [task_domain_service](../modules/task_domain_service.md)
+- [task_replacement_service](../modules/task_replacement_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -52,23 +54,23 @@ sequenceDiagram
     participant p9 as get_settings
     participant p10 as DeliveryDependencyService.ready
     participant p11 as action_projection
-    participant p12 as TaskBriefService.require_review
-    participant p13 as AgentWorkService._start_blockers
-    participant p14 as window_authority_matches
-    participant p15 as DeliveryDependencyService.projection
-    participant p16 as different_publisher_required
-    participant p17 as recovery_attestation_hint
-    participant p18 as AgentWorkService._resolve_rollout
-    participant p19 as AgentWorkService._shadow_handoff
-    participant p20 as AgentWorkService._selection_pending
-    participant p21 as AgentWorkService._is_model_aware_assignment
-    participant p22 as AgentWorkService._validate_assignment_actor
-    participant p23 as sha256_hex
-    participant p24 as AgentWorkService._working_today
-    participant p25 as assignment_matches
-    participant p26 as AgentWorkService._supervised_recovery
-    participant p27 as AgentTeamSetupService.routing_readiness
-    participant p28 as supervised_rework_evidence
+    participant p12 as replaced_by
+    participant p13 as TaskBriefService.require_review
+    participant p14 as AgentWorkService._start_blockers
+    participant p15 as window_authority_matches
+    participant p16 as DeliveryDependencyService.projection
+    participant p17 as require_acceptable
+    participant p18 as different_publisher_required
+    participant p19 as recovery_attestation_hint
+    participant p20 as AgentWorkService._resolve_rollout
+    participant p21 as AgentWorkService._shadow_handoff
+    participant p22 as AgentWorkService._selection_pending
+    participant p23 as AgentWorkService._is_model_aware_assignment
+    participant p24 as AgentWorkService._validate_assignment_actor
+    participant p25 as sha256_hex
+    participant p26 as AgentWorkService._working_today
+    participant p27 as DeliveryDependencyService.holds
+    participant p28 as assignment_matches
     participant p29 as HTTPException
     participant p30 as self.db.info.get (backend/app/services/task…TaskDetailService.my_work)
     p0->>p1: TaskDetailService.my_work
@@ -82,30 +84,30 @@ sequenceDiagram
     p4->>p9: get_settings
     p7->>p10: DeliveryDependencyService.ready
     p7->>p11: action_projection
-    p7->>p12: TaskBriefService.require_review
-    p7->>p13: AgentWorkService._start_blockers
-    p13->>p14: window_authority_matches
-    p10->>p15: DeliveryDependencyService.projection
-    p12->>p16: different_publisher_required
-    p13->>p17: recovery_attestation_hint
-    p13->>p18: AgentWorkService._resolve_rollout
-    p13->>p19: AgentWorkService._shadow_handoff
-    p13->>p20: AgentWorkService._selection_pending
-    p13->>p21: AgentWorkService._is_model_aware_assignment
-    p13->>p22: AgentWorkService._validate_assignment_actor
-    p12->>p23: sha256_hex
-    p13->>p24: AgentWorkService._working_today
-    p14->>p25: assignment_matches
-    p19->>p26: AgentWorkService._supervised_recovery
-    p18->>p27: AgentTeamSetupService.routing_readiness
-    p19->>p28: supervised_rework_evidence
+    p7->>p12: replaced_by
+    p7->>p13: TaskBriefService.require_review
+    p7->>p14: AgentWorkService._start_blockers
+    p14->>p15: window_authority_matches
+    p10->>p16: DeliveryDependencyService.projection
+    p13->>p17: require_acceptable
+    p13->>p18: different_publisher_required
+    p14->>p19: recovery_attestation_hint
+    p14->>p20: AgentWorkService._resolve_rollout
+    p14->>p21: AgentWorkService._shadow_handoff
+    p14->>p22: AgentWorkService._selection_pending
+    p14->>p23: AgentWorkService._is_model_aware_assignment
+    p14->>p24: AgentWorkService._validate_assignment_actor
+    p13->>p25: sha256_hex
+    p14->>p26: AgentWorkService._working_today
+    p14->>p27: DeliveryDependencyService.holds
+    p15->>p28: assignment_matches
     p0-->>p29: HTTPException(422, detail=[...])
     p1-->>p30: self.db.info.get (backend/app/services/task…TaskDetailService.my_work)('authority')
 ```
 
-> Call sequence diagram shows 30 of 781 interactions; 751 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 757 interactions; 727 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 193 (192 omitted); unresolved 1 of 423 (422 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 184 (183 omitted); unresolved 1 of 388 (387 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -119,7 +121,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_detail_service.py:TaskDetailService.my_work` | 2 | [backend/app/services/task_detail_service.py](../modules/task_detail_service.md) | internal | 2 |
 | `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | unresolved | 9 |
 | `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | external | 2 |
-> Omission summary shows 8 of 140 groups; 132 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 156 groups; 148 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -132,9 +134,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 166; effect analysis evaluated: 122, partial: 8, unavailable: 36. Counts include steps omitted from the displayed trace.
+Source steps: 186; effect analysis evaluated: 140, partial: 7, unavailable: 39. Counts include steps omitted from the displayed trace.
 
-Collector observations for 130 source steps with known totals: observed: 828, emitted: 766, omitted: 62. Unavailable totals are excluded.
+Collector observations for 147 source steps with known totals: observed: 909, emitted: 852, omitted: 57. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

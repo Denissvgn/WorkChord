@@ -1,6 +1,6 @@
 # AgentActorRosterItem
 
-**Location:** `backend/app/schemas/agent.py:871`
+**Location:** `backend/app/schemas/agent.py:883`
 **Kind:** Pydantic model
 **Bases:** `AgentActorResponse`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -20,6 +20,9 @@ Secret-free actor dispatch roster item.
 | `queued_assignments` | `int` | `queued_assignments` | No | No | `0` | — | — | — |
 | `accepted_assignments` | `int` | `accepted_assignments` | No | No | `0` | — | — | — |
 | `running_runs` | `int` | `running_runs` | No | No | `0` | — | — | — |
+| `roster_scope` | `Literal['team', 'workspace']` | `roster_scope` | No | No | `'workspace'` | — | — | — |
+| `topology_key` | `Optional[str]` | `topology_key` | No | Yes | `None` | — | — | — |
+| `topology_revision` | `Optional[int]` | `topology_revision` | No | Yes | `None` | — | — | — |
 
 ## Methods
 
@@ -47,7 +50,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 0 | `accepted_assignments`, `actor_revision`, `eligible_model_bindings`, `profile`, `profile_revision`, `queued_assignments`, `running_runs` |
+| [schemas_agent](../modules/schemas_agent.md) | 0 | `accepted_assignments`, `actor_revision`, `eligible_model_bindings`, `profile`, `profile_revision`, `queued_assignments`, `roster_scope`, `running_runs`, `topology_key`, `topology_revision` |
 
 ### Structure
 

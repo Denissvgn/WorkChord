@@ -2,7 +2,7 @@
 
 **Entry point:** `health_check` (`http`)
 **Source:** [app_main](../modules/app_main.md)
-**Modules touched:** [app_main](../modules/app_main.md), [config](../modules/config.md), [maintenance](../modules/maintenance.md)
+**Modules touched:** [app_main](../modules/app_main.md), [app_maintenance](../modules/app_maintenance.md), [config](../modules/config.md)
 
 ## Call sequence
 
@@ -98,10 +98,10 @@ flowchart LR
     b0["network socket.gethostname"]
     s2 -. "network socket.gethostname" .-> b0
     click s1 "../modules/app_main.md"
-    click s2 "../modules/maintenance.md"
+    click s2 "../modules/app_maintenance.md"
     click s3 "../modules/config.md"
     click s4 "../modules/config.md"
-    click s6 "../modules/maintenance.md"
+    click s6 "../modules/app_maintenance.md"
     click s7 "../modules/config.md"
     classDef boundary stroke:#b45309,stroke-dasharray: 4 2
     class b0 boundary
@@ -128,7 +128,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| health_check | maintenance_state | 252 | `maintenance_state(data not statically known)` |
+| health_check | maintenance_state | 253 | `maintenance_state(data not statically known)` |
 | maintenance_state | get_settings | 57 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |
 | maintenance_state | socket.gethostname | 59 | `socket.gethostname(data not statically known)` |

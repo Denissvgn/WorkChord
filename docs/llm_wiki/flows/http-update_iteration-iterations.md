@@ -75,25 +75,25 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_iteration | service.update | 134 | `service.update(iteration_id, data)` |
-| update_iteration | HTTPException | 136 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| update_iteration | str | 138 | `str(e)` |
-| update_iteration | HTTPException | 141 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| update_iteration | service.to_response | 145 | `service.to_response(iteration)` |
+| update_iteration | service.update | 136 | `service.update(iteration_id, data)` |
+| update_iteration | HTTPException | 138 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| update_iteration | str | 140 | `str(e)` |
+| update_iteration | HTTPException | 143 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| update_iteration | service.to_response | 147 | `service.to_response(iteration)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `service.update` | `update_iteration` | 134 |
+| mutation | `service.update` | `update_iteration` | 136 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `update_iteration` | `HTTPException` | 136 |
-| external_call | `update_iteration` | `HTTPException` | 141 |
-| unresolved_call | `update_iteration` | `service.to_response` | 145 |
+| external_call | `update_iteration` | `HTTPException` | 138 |
+| external_call | `update_iteration` | `HTTPException` | 143 |
+| unresolved_call | `update_iteration` | `service.to_response` | 147 |
 
 ## Behavior
 

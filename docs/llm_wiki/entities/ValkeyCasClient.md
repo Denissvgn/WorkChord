@@ -1,6 +1,6 @@
 # ValkeyCasClient
 
-**Location:** `backend/app/autonomy/server_acceptance.py:666`
+**Location:** `backend/app/autonomy/server_acceptance.py:667`
 **Kind:** Class
 **Bases:** —
 **Module:** [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md)

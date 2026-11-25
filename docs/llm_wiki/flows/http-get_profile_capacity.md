@@ -2,12 +2,13 @@
 
 **Entry point:** `get_profile_capacity` (`http`)
 **Source:** [routers_capacity](../modules/routers_capacity.md)
-**Modules touched:** [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), [capacity_service](../modules/capacity_service.md), [commands](../modules/commands.md), and 2 more
+**Modules touched:** [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), [capacity_adjustments](../modules/capacity_adjustments.md), [capacity_service](../modules/capacity_service.md), and 3 more
 
 **Complete modules touched:**
 
 - [authority](../modules/authority.md)
 - [calendar_rules](../modules/calendar_rules.md)
+- [capacity_adjustments](../modules/capacity_adjustments.md)
 - [capacity_service](../modules/capacity_service.md)
 - [commands](../modules/commands.md)
 - [routers_capacity](../modules/routers_capacity.md)
@@ -28,27 +29,28 @@ sequenceDiagram
     participant p5 as AnnualCalendars.for_iteration
     participant p6 as CapacityService.absence_ranges
     participant p7 as included_work_ids
-    participant p8 as PeriodCommitments.for_day
-    participant p9 as PlanningConflict
-    participant p10 as internal_authority
-    participant p11 as AnnualCalendars
-    participant p12 as PeriodCommitments
-    participant p13 as agreed_calendar
-    participant p14 as CommitmentRate
-    participant p15 as AuthorityError
-    participant p16 as select (backend/app/services/capa…pacityService._projection)
-    participant p17 as self.db.info.get (backend/app/services/capa…pacityService._projection)
-    participant p18 as self.db.scalar (backend/app/services/capa…pacityService._projection)
-    participant p19 as select(…).where (backend/app/services/capa…pacityService._projection)
-    participant p20 as self.db.get (backend/app/services/capa…pacityService._projection)
-    participant p21 as list (backend/app/services/capa…pacityService._projection)
-    participant p22 as (…).all (backend/app/services/capa…ityService._projection, 2)
-    participant p23 as self.db.scalars
-    participant p24 as select(…).join(…).where(…).options
-    participant p25 as select(…).join(…).where (backend/app/services/capa…pacityService._projection)
-    participant p26 as select(…).join (backend/app/services/capa…pacityService._projection)
-    participant p27 as selectinload(…).selectinload
-    participant p28 as selectinload
+    participant p8 as load_dated_availability
+    participant p9 as PeriodCommitments.for_day
+    participant p10 as PlanningConflict
+    participant p11 as internal_authority
+    participant p12 as AnnualCalendars
+    participant p13 as PeriodCommitments
+    participant p14 as agreed_calendar
+    participant p15 as DatedAvailability
+    participant p16 as CommitmentRate
+    participant p17 as AuthorityError
+    participant p18 as select (backend/app/services/capa…pacityService._projection)
+    participant p19 as self.db.info.get (backend/app/services/capa…pacityService._projection)
+    participant p20 as self.db.scalar (backend/app/services/capa…pacityService._projection)
+    participant p21 as select(…).where (backend/app/services/capa…pacityService._projection)
+    participant p22 as self.db.get (backend/app/services/capa…pacityService._projection)
+    participant p23 as list (backend/app/services/capa…pacityService._projection)
+    participant p24 as (…).all (backend/app/services/capa…ityService._projection, 2)
+    participant p25 as self.db.scalars
+    participant p26 as select(…).join(…).where(…).options
+    participant p27 as select(…).join(…).where (backend/app/services/capa…pacityService._projection)
+    participant p28 as select(…).join (backend/app/services/capa…pacityService._projection)
+    participant p29 as selectinload(…).selectinload
     p0->>p1: CapacityService.projection
     p0->>p2: CapacityService
     p1->>p3: CapacityService._projection
@@ -56,34 +58,34 @@ sequenceDiagram
     p3->>p5: AnnualCalendars.for_iteration
     p3->>p6: CapacityService.absence_ranges
     p3->>p7: included_work_ids
-    p3->>p8: PeriodCommitments.for_day
-    p1->>p9: PlanningConflict
-    p3->>p10: internal_authority
-    p3->>p11: AnnualCalendars
-    p3->>p12: PeriodCommitments
-    p3->>p13: agreed_calendar
-    p8->>p14: CommitmentRate
-    p4->>p15: AuthorityError
-    p3-->>p16: select (backend/app/services/capa…pacityService._projection)(PlanningState.revision)
-    p3-->>p17: self.db.info.get (backend/app/services/capa…pacityService._projection)('authority')
-    p3-->>p18: self.db.scalar (backend/app/services/capa…pacityService._projection)(...)
-    p3-->>p19: select(…).where (backend/app/services/capa…pacityService._projection)(...)
-    p3-->>p20: self.db.get (backend/app/services/capa…pacityService._projection)(ProfileAvailability, profile_id)
-    p3-->>p21: list (backend/app/services/capa…pacityService._projection)(...)
-    p3-->>p22: (…).all (backend/app/services/capa…ityService._projection, 2)
-    p3-->>p23: self.db.scalars(...)
-    p3-->>p24: select(…).join(…).where(…).options(...)
-    p3-->>p25: select(…).join(…).where (backend/app/services/capa…pacityService._projection)(..., ..., ...)
-    p3-->>p26: select(…).join (backend/app/services/capa…pacityService._projection)(Iteration)
-    p3-->>p16: select (backend/app/services/capa…pacityService._projection)(TeamMember)
-    p3-->>p27: selectinload(…).selectinload(Iteration.calendar)
-    p3-->>p28: selectinload(TeamMember.iteration)
-    p3-->>p20: self.db.get (backend/app/services/capa…pacityService._projection)(Calendar, setting.calendar_id)
+    p3->>p8: load_dated_availability
+    p3->>p9: PeriodCommitments.for_day
+    p1->>p10: PlanningConflict
+    p3->>p11: internal_authority
+    p3->>p12: AnnualCalendars
+    p3->>p13: PeriodCommitments
+    p3->>p14: agreed_calendar
+    p8->>p15: DatedAvailability
+    p9->>p16: CommitmentRate
+    p4->>p17: AuthorityError
+    p3-->>p18: select (backend/app/services/capa…pacityService._projection)(PlanningState.revision)
+    p3-->>p19: self.db.info.get (backend/app/services/capa…pacityService._projection)('authority')
+    p3-->>p20: self.db.scalar (backend/app/services/capa…pacityService._projection)(...)
+    p3-->>p21: select(…).where (backend/app/services/capa…pacityService._projection)(...)
+    p3-->>p22: self.db.get (backend/app/services/capa…pacityService._projection)(ProfileAvailability, profile_id)
+    p3-->>p23: list (backend/app/services/capa…pacityService._projection)(...)
+    p3-->>p24: (…).all (backend/app/services/capa…ityService._projection, 2)
+    p3-->>p25: self.db.scalars(...)
+    p3-->>p26: select(…).join(…).where(…).options(...)
+    p3-->>p27: select(…).join(…).where (backend/app/services/capa…pacityService._projection)(..., ..., ...)
+    p3-->>p28: select(…).join (backend/app/services/capa…pacityService._projection)(Iteration)
+    p3-->>p18: select (backend/app/services/capa…pacityService._projection)(TeamMember)
+    p3-->>p29: selectinload(…).selectinload(Iteration.calendar)
 ```
 
-> Call sequence diagram shows 30 of 158 interactions; 128 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 176 interactions; 146 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 4 of 55 (51 omitted); unresolved 11 of 83 (72 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 3 of 57 (54 omitted); unresolved 10 of 95 (85 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -94,10 +96,10 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/capacity_service.py:CapacityService.require_visible` | 5 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
 | `backend/app/authority.py:internal_authority` | 16 | - | unresolved | 1 |
 | `backend/app/services/capacity_service.py:CapacityService.require_visible` | 5 | [backend/app/commands.py](../modules/commands.md) | internal | 1 |
+| `backend/app/services/capacity_service.py:CapacityService._projection` | 4 | - | external | 32 |
+| `backend/app/services/capacity_service.py:CapacityService._projection` | 4 | - | unresolved | 25 |
 | `backend/app/services/calendar_rules.py:AnnualCalendars.for_iteration` | 37 | [backend/app/services/calendar_rules.py](../modules/calendar_rules.md) | internal | 1 |
-| `backend/app/services/capacity_service.py:CapacityService._projection` | 4 | - | external | 31 |
-| `backend/app/services/capacity_service.py:CapacityService.absence_ranges` | 42 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
-> Omission summary shows 8 of 17 groups; 9 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 21 groups; 13 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -108,9 +110,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 21; effect analysis evaluated: 12, partial: 0, unavailable: 9. Counts include steps omitted from the displayed trace.
+Source steps: 25; effect analysis evaluated: 14, partial: 0, unavailable: 11. Counts include steps omitted from the displayed trace.
 
-Collector observations for 12 source steps with known totals: observed: 54, emitted: 54, omitted: 0. Unavailable totals are excluded.
+Collector observations for 14 source steps with known totals: observed: 65, emitted: 65, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -120,7 +122,7 @@ Collector observations for 12 source steps with known totals: observed: 54, emit
 | `get_profile_capacity` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
 | `CapacityService.projection` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
 | `PlanningConflict` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
-| `CapacityService._projection` | `available` | `evaluated` | `available` | `14` | `14` | `0` |
+| `CapacityService._projection` | `available` | `evaluated` | `available` | `15` | `15` | `0` |
 | `CapacityService.require_visible` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
 | `self.db.info.get (backend/app/services/capa…tyService.require_visible)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `self.db.scalar (backend/app/services/capa…tyService.require_visible)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
@@ -182,7 +184,7 @@ flowchart LR
 | `get_profile_capacity` | `profile_id: int`, `start: date`, `end: date`, `db: Database` | - | - | `...` |
 | `CapacityService.projection` | `profile_id`, `start`, `end` | - | - | `...` |
 | `PlanningConflict` | - | - | - | - |
-| `CapacityService._projection` | `profile_id`, `start`, `end` | `self.db`, `PlanningState`, `ProfileAvailability`, `Calendar`, `self.db` | `resolved_calendars[...]` | `{...}` |
+| `CapacityService._projection` | `profile_id`, `start`, `end` | `self.db`, `PlanningState`, `ProfileAvailability`, `Calendar`, `self.db`, `self.db` | `resolved_calendars[...]` | `{...}` |
 | `CapacityService.require_visible` | `profile_id` | `self.db`, `TeamMemberProfile` | - | - |
 | `self.db.info.get (backend/app/services/capa…tyService.require_visible)` | - | - | - | - |
 | `self.db.scalar (backend/app/services/capa…tyService.require_visible)` | - | - | - | - |
@@ -197,37 +199,37 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | get_profile_capacity | CapacityService.projection | 60 | `CapacityService(db).projection(profile_id, start, end)` |
-| CapacityService.projection | PlanningConflict | 308 | `PlanningConflict('capacity_range_invalid', 'Choose an inclusive date range of at most 366 days.')` |
-| CapacityService.projection | CapacityService._projection | 309 | `self._projection(profile_id, start, end)` |
-| CapacityService._projection | CapacityService.require_visible | 312 | `self.require_visible(profile_id)` |
-| CapacityService.require_visible | self.db.info.get (backend/app/services/capa…tyService.require_visible) | 117 | `self.db.info.get('authority')` |
-| CapacityService.require_visible | self.db.scalar (backend/app/services/capa…tyService.require_visible) | 119 | `self.db.scalar(...)` |
-| CapacityService.require_visible | select(…).where(…).limit (backend/app/services/capa…ervice.require_visible, 1) | 119 | `select(TeamMember.id).where(TeamMember.profile_id == profile_id).limit(1)` |
-| CapacityService.require_visible | select(…).where (backend/app/services/capa…ervice.require_visible, 1) | 119 | `select(TeamMember.id).where(...)` |
-| CapacityService.require_visible | select (backend/app/services/capa…tyService.require_visible) | 119 | `select(TeamMember.id)` |
-| CapacityService.require_visible | self.db.scalar (backend/app/services/capa…tyService.require_visible) | 122 | `self.db.scalar(...)` |
-| CapacityService.require_visible | select(…).where(…).limit (backend/app/services/capa…tyService.require_visible) | 122 | `select(Task.id).where(Task.owner_profile_id == profile_id).limit(1)` |
+| CapacityService.projection | PlanningConflict | 331 | `PlanningConflict('capacity_range_invalid', 'Choose an inclusive date range of at most 366 days.')` |
+| CapacityService.projection | CapacityService._projection | 332 | `self._projection(profile_id, start, end)` |
+| CapacityService._projection | CapacityService.require_visible | 335 | `self.require_visible(profile_id)` |
+| CapacityService.require_visible | self.db.info.get (backend/app/services/capa…tyService.require_visible) | 140 | `self.db.info.get('authority')` |
+| CapacityService.require_visible | self.db.scalar (backend/app/services/capa…tyService.require_visible) | 142 | `self.db.scalar(...)` |
+| CapacityService.require_visible | select(…).where(…).limit (backend/app/services/capa…ervice.require_visible, 1) | 142 | `select(TeamMember.id).where(TeamMember.profile_id == profile_id).limit(1)` |
+| CapacityService.require_visible | select(…).where (backend/app/services/capa…ervice.require_visible, 1) | 142 | `select(TeamMember.id).where(...)` |
+| CapacityService.require_visible | select (backend/app/services/capa…tyService.require_visible) | 142 | `select(TeamMember.id)` |
+| CapacityService.require_visible | self.db.scalar (backend/app/services/capa…tyService.require_visible) | 145 | `self.db.scalar(...)` |
+| CapacityService.require_visible | select(…).where(…).limit (backend/app/services/capa…tyService.require_visible) | 145 | `select(Task.id).where(Task.owner_profile_id == profile_id).limit(1)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `missing_years.add` | `CapacityService._projection` | 357 |
-| mutation | `observed_zones.add` | `CapacityService._projection` | 360 |
-| mutation | `observed_years.add` | `CapacityService._projection` | 361 |
-| mutation | `result.append` | `CapacityService._projection` | 372 |
+| mutation | `missing_years.add` | `CapacityService._projection` | 382 |
+| mutation | `observed_zones.add` | `CapacityService._projection` | 385 |
+| mutation | `observed_years.add` | `CapacityService._projection` | 386 |
+| mutation | `result.append` | `CapacityService._projection` | 397 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `CapacityService.require_visible` | `self.db.info.get` | 117 |
-| unresolved_call | `CapacityService.require_visible` | `self.db.scalar` | 119 |
-| unresolved_call | `CapacityService.require_visible` | `select(TeamMember.id).where(TeamMember.profile_id == profile_id).limit` | 119 |
-| unresolved_call | `CapacityService.require_visible` | `select(TeamMember.id).where` | 119 |
-| external_call | `CapacityService.require_visible` | `select` | 119 |
-| unresolved_call | `CapacityService.require_visible` | `self.db.scalar` | 122 |
-| unresolved_call | `CapacityService.require_visible` | `select(Task.id).where(Task.owner_profile_id == profile_id).limit` | 122 |
+| unresolved_call | `CapacityService.require_visible` | `self.db.info.get` | 140 |
+| unresolved_call | `CapacityService.require_visible` | `self.db.scalar` | 142 |
+| unresolved_call | `CapacityService.require_visible` | `select(TeamMember.id).where(TeamMember.profile_id == profile_id).limit` | 142 |
+| unresolved_call | `CapacityService.require_visible` | `select(TeamMember.id).where` | 142 |
+| external_call | `CapacityService.require_visible` | `select` | 142 |
+| unresolved_call | `CapacityService.require_visible` | `self.db.scalar` | 145 |
+| unresolved_call | `CapacityService.require_visible` | `select(Task.id).where(Task.owner_profile_id == profile_id).limit` | 145 |
 | step_limit | `get_profile_capacity` | `first 12 steps` | 0 |
 
 ## Behavior

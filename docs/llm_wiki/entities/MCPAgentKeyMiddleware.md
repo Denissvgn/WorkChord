@@ -28,15 +28,16 @@ flowchart LR
     n0["MCPAgentKeyMiddleware (backend/app/mcp_server.py)"]
     n1["create_mcp_http_app (backend/app/mcp_server.py)"]
     n2["calendar_edit (backend/tests/test_annual_calendar_work_control.py)"]
-    n3["cancel_unconfirmable (backend/tests/test_execution_planning_window.py)"]
-    n4["operator_call (backend/tests/test_execution_planning_window.py)"]
-    n5["worker_attest (backend/tests/test_execution_planning_window.py)"]
-    n6["test_reconciliation_uses_operator_and_archived_catalog (backend/tests/test_execution_reconciliation.py)"]
-    n7["test_mcp_http_uses_the_same_principal_and_project_boundary (backend/tests/test_identity_lifecycle.py)"]
-    n8["test_scoped_single_year_forecast (backend/tests/test_pm_forecast_calendar.py)"]
-    n9["through (backend/tests/test_scoped_review_evidence.py)"]
-    n10["assignment_api (backend/tests/test_team_pm_dispatch.py)"]
-    n11["recovery_api (backend/tests/test_team_pm_recovery.py)"]
+    n3["test_mcp_planning_tools_preview_and_apply_one_receipt (backend/tests/test_capacity_adjustments.py)"]
+    n4["test_mcp_tools_preview_apply_and_withdraw_a_transfer (backend/tests/test_capacity_transfers.py)"]
+    n5["cancel_unconfirmable (backend/tests/test_execution_planning_window.py)"]
+    n6["operator_call (backend/tests/test_execution_planning_window.py)"]
+    n7["worker_attest (backend/tests/test_execution_planning_window.py)"]
+    n8["test_reconciliation_uses_operator_and_archived_catalog (backend/tests/test_execution_reconciliation.py)"]
+    n9["test_mcp_http_uses_the_same_principal_and_project_boundary (backend/tests/test_identity_lifecycle.py)"]
+    n10["test_mcp_preview_then_update_with_returned_revisions (backend/tests/test_iteration_date_move.py)"]
+    n11["test_mcp_refuses_malformed_digest_with_typed_code (backend/tests/test_planning_window_digest_validation.py)"]
+    n12["test_scoped_single_year_forecast (backend/tests/test_pm_forecast_calendar.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -48,18 +49,20 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/mcp_server.md"
     click n1 "../modules/mcp_server.md"
     click n2 "../modules/test_annual_calendar_work_control.md"
-    click n3 "../modules/test_execution_planning_window.md"
-    click n4 "../modules/test_execution_planning_window.md"
+    click n3 "../modules/test_capacity_adjustments.md"
+    click n4 "../modules/test_capacity_transfers.md"
     click n5 "../modules/test_execution_planning_window.md"
-    click n6 "../modules/test_execution_reconciliation.md"
-    click n7 "../modules/test_identity_lifecycle.md"
-    click n8 "../modules/test_pm_forecast_calendar.md"
-    click n9 "../modules/test_scoped_review_evidence.md"
-    click n10 "../modules/test_team_pm_dispatch.md"
-    click n11 "../modules/test_team_pm_recovery.md"
+    click n6 "../modules/test_execution_planning_window.md"
+    click n7 "../modules/test_execution_planning_window.md"
+    click n8 "../modules/test_execution_reconciliation.md"
+    click n9 "../modules/test_identity_lifecycle.md"
+    click n10 "../modules/test_iteration_date_move.md"
+    click n11 "../modules/test_planning_window_digest_validation.md"
+    click n12 "../modules/test_pm_forecast_calendar.md"
 ```
 
 ### Summary
@@ -74,12 +77,15 @@ flowchart LR
 |---|---|---|---:|
 | `create_mcp_http_app` | call | [mcp_server](../modules/mcp_server.md) | 1 |
 | `calendar_edit` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
+| `test_mcp_planning_tools_preview_and_apply_one_receipt` | call | [test_capacity_adjustments](../modules/test_capacity_adjustments.md) | 1 |
+| `test_mcp_tools_preview_apply_and_withdraw_a_transfer` | call | [test_capacity_transfers](../modules/test_capacity_transfers.md) | 1 |
 | `cancel_unconfirmable` | call | [test_execution_planning_window](../modules/test_execution_planning_window.md) | 1 |
 | `operator_call` | call | [test_execution_planning_window](../modules/test_execution_planning_window.md) | 1 |
 | `worker_attest` | call | [test_execution_planning_window](../modules/test_execution_planning_window.md) | 1 |
 | `test_reconciliation_uses_operator_and_archived_catalog` | call | [test_execution_reconciliation](../modules/test_execution_reconciliation.md) | 2 |
 | `test_mcp_http_uses_the_same_principal_and_project_boundary` | call | [test_identity_lifecycle](../modules/test_identity_lifecycle.md) | 1 |
+| `test_mcp_preview_then_update_with_returned_revisions` | call | [test_iteration_date_move](../modules/test_iteration_date_move.md) | 1 |
+| `test_mcp_refuses_malformed_digest_with_typed_code` | call | [test_planning_window_digest_validation](../modules/test_planning_window_digest_validation.md) | 1 |
 | `test_scoped_single_year_forecast` | call | [test_pm_forecast_calendar](../modules/test_pm_forecast_calendar.md) | 1 |
-| `through` | call | [test_scoped_review_evidence](../modules/test_scoped_review_evidence.md) | 1 |
-| `assignment_api` | call | [test_team_pm_dispatch](../modules/test_team_pm_dispatch.md) | 1 |
-| `recovery_api` | call | [test_team_pm_recovery](../modules/test_team_pm_recovery.md) | 1 |
+
+> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.

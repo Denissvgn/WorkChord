@@ -1,6 +1,6 @@
 # ObjectStoreAcceptance
 
-**Location:** `backend/app/autonomy/server_acceptance.py:108`
+**Location:** `backend/app/autonomy/server_acceptance.py:109`
 **Kind:** Pydantic model
 **Bases:** `StrictContractModel`
 **Module:** [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md)

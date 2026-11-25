@@ -14,8 +14,8 @@ The bounded retained-history floor also qualifies person profile IDs from physic
 
 | Source | Symbols |
 |--------|---------|
-| `json` | `json` |
-| `sqlalchemy` | `MetaData`, `Table`, `cast`, `String`, `func`, `inspect`, `select`, `text` |
+| `app.database_migration.project_identity` | `HISTORY_VALUE_CHARACTERS`, `decode_history_value`, `history_values` |
+| `sqlalchemy` | `MetaData`, `Table`, `func`, `inspect`, `select`, `text` |
 
 ## Local dependency map
 
@@ -23,13 +23,16 @@ The bounded retained-history floor also qualifies person profile IDs from physic
 ```mermaid
 flowchart LR
     n0["backend/app/database_migration/allocation_identity.py"]
-    n1["backend/app/migrations/versions/20261009_0010_allocation_identity.py"]
-    n2["backend/app/migrations/versions/20261009_0011_profile_identity.py"]
-    n1 --> n0
+    n1["backend/app/database_migration/project_identity.py"]
+    n2["backend/app/migrations/versions/20261009_0010_allocation_identity.py"]
+    n3["backend/app/migrations/versions/20261009_0011_profile_identity.py"]
+    n0 --> n1
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/allocation_identity.md"
-    click n1 "../modules/20261009_0010_allocation_identity.md"
-    click n2 "../modules/20261009_0011_profile_identity.md"
+    click n1 "../modules/project_identity.md"
+    click n2 "../modules/20261009_0010_allocation_identity.md"
+    click n3 "../modules/20261009_0011_profile_identity.md"
 ```
 
 ### Internal neighbors
@@ -38,6 +41,7 @@ flowchart LR
 |---|---|
 | Inbound | [20261009_0010_allocation_identity](../modules/20261009_0010_allocation_identity.md) |
 | Inbound | [20261009_0011_profile_identity](../modules/20261009_0011_profile_identity.md) |
+| Outbound | [project_identity](../modules/project_identity.md) |
 
 ### External packages
 

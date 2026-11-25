@@ -1,6 +1,6 @@
 # TasksImportRequest
 
-**Location:** `backend/app/schemas/task.py:335`
+**Location:** `backend/app/schemas/task.py:339`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

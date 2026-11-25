@@ -103,4 +103,4 @@ flowchart LR
 | `refresh_github_external_link` | type_reference | [tasks](../modules/tasks.md) | — |
 | `update_external_link` | type_reference | [tasks](../modules/tasks.md) | — |
 
-> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.
+> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.

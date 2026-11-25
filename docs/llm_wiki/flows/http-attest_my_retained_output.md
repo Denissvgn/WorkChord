@@ -2,7 +2,7 @@
 
 **Entry point:** `attest_my_retained_output` (`http`)
 **Source:** [routers_agent](../modules/routers_agent.md)
-**Modules touched:** [agent_planning_service](../modules/agent_planning_service.md), [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), and 24 more
+**Modules touched:** [agent_planning_service](../modules/agent_planning_service.md), [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), and 23 more
 
 **Complete modules touched:**
 
@@ -10,7 +10,6 @@
 - [agent_routing_policy](../modules/agent_routing_policy.md)
 - [agent_routing_service](../modules/agent_routing_service.md)
 - [agent_service](../modules/agent_service.md)
-- [agent_team_setup](../modules/agent_team_setup.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [agent_work_service](../modules/agent_work_service.md)
 - [authority](../modules/authority.md)
@@ -59,15 +58,15 @@ sequenceDiagram
     participant p15 as authority_stamp
     participant p16 as actor_provenance
     participant p17 as _authenticate_checkpoint
-    participant p18 as parse_github_url
-    participant p19 as DeliveryDependencyService.validate_cycles
-    participant p20 as SnapshotService._task_to_export
-    participant p21 as DiscussionService.recipient_authorized
-    participant p22 as AgentRoutingService._profile_revision
-    participant p23 as TaskService.reserve_task_version
-    participant p24 as clear_execution_evidence
-    participant p25 as _snapshot_task
-    participant p26 as _digest
+    participant p18 as _authority_basis
+    participant p19 as parse_github_url
+    participant p20 as DeliveryDependencyService.validate_cycles
+    participant p21 as SnapshotService._task_to_export
+    participant p22 as DiscussionService.recipient_authorized
+    participant p23 as AgentRoutingService._profile_revision
+    participant p24 as TaskService.reserve_task_version
+    participant p25 as clear_execution_evidence
+    participant p26 as _snapshot_task
     participant p27 as DeliveryDependencyService.graph
     participant p28 as lock_iterations
     participant p29 as isinstance (backend/app/routers/agent.py:_handle_agent_error)
@@ -89,24 +88,24 @@ sequenceDiagram
     p6->>p15: authority_stamp
     p6->>p16: actor_provenance
     p6->>p17: _authenticate_checkpoint
-    p17->>p18: parse_github_url
-    p10->>p19: DeliveryDependencyService.validate_cycles
-    p14->>p20: SnapshotService._task_to_export
-    p13->>p21: DiscussionService.recipient_authorized
-    p16->>p22: AgentRoutingService._profile_revision
-    p10->>p23: TaskService.reserve_task_version
-    p10->>p24: clear_execution_evidence
-    p14->>p25: _snapshot_task
-    p15->>p26: _digest
-    p19->>p27: DeliveryDependencyService.graph
-    p23->>p28: lock_iterations
+    p15->>p18: _authority_basis
+    p17->>p19: parse_github_url
+    p10->>p20: DeliveryDependencyService.validate_cycles
+    p14->>p21: SnapshotService._task_to_export
+    p13->>p22: DiscussionService.recipient_authorized
+    p16->>p23: AgentRoutingService._profile_revision
+    p10->>p24: TaskService.reserve_task_version
+    p10->>p25: clear_execution_evidence
+    p14->>p26: _snapshot_task
+    p20->>p27: DeliveryDependencyService.graph
+    p24->>p28: lock_iterations
     p2-->>p29: isinstance (backend/app/routers/agent.py:_handle_agent_error)(exc, AgentPermissionError)
     p1-->>p30: data.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 744 interactions; 714 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 740 interactions; 710 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 222 (221 omitted); unresolved 1 of 371 (370 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 220 (219 omitted); unresolved 1 of 369 (368 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -120,7 +119,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/agent_service.py:validate_idempotency_key` | 9 | - | unresolved | 1 |
 | `backend/app/commands.py:command_transaction` | 18 | [backend/app/commands.py](../modules/commands.md) | internal | 2 |
 | `backend/app/commands.py:current_command` | 19 | - | external | 2 |
-> Omission summary shows 8 of 153 groups; 145 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 151 groups; 143 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -135,7 +134,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 152; effect analysis evaluated: 109, partial: 5, unavailable: 38. Counts include steps omitted from the displayed trace.
 
-Collector observations for 114 source steps with known totals: observed: 579, emitted: 558, omitted: 21. Unavailable totals are excluded.
+Collector observations for 114 source steps with known totals: observed: 587, emitted: 567, omitted: 20. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -211,7 +210,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| attest_my_retained_output | attest_retained_output | 1015 | `attest_retained_output(service.db, actor, run_id, data, idempotency_key=idempotency_key)` |
+| attest_my_retained_output | attest_retained_output | 1049 | `attest_retained_output(service.db, actor, run_id, data, idempotency_key=idempotency_key)` |
 | attest_retained_output | require_scope | 294 | `require_scope(actor, 'work:execute')` |
 | require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |

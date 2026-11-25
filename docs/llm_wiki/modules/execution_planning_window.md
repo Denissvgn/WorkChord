@@ -30,6 +30,7 @@ The planning-window and allocation commands share the durable live assignment an
 | `app.services.review_provenance` | `actor_provenance`, `rework_binding_identity` |
 | `app.utils.time` | `utc_now` |
 | `hashlib` | `hashlib` |
+| `itertools` | `itertools` |
 | `json` | `json` |
 | `sqlalchemy` | `select` |
 
@@ -51,7 +52,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (9) |
+| Inbound | `backend` (10) |
 | Outbound | `backend` (14) |
 
 ### External packages
@@ -60,7 +61,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -72,7 +73,10 @@ flowchart LR
 | `current_window` | `(task)` | — | — |
 | `assignment_matches` | `(task, assignment)` | — | — |
 | `candidate_version` | `(task)` | — | — |
+| `feature_free_acknowledgement` | *(async)* `(db, member)` | — | Return a member's acknowledgement digest as if it lacked only the planning-window feature. |
 | `authority_stamp` | *(async)* `(db, task, assignment, *, lock = False, as_of = None)` | — | Fingerprint the actual scope, roster and bindings of both assignment principals. |
+| `authority_matches` | *(async)* `(db, task, assignment, expected, *, lock = False)` | — | Compare a sealed stamp with current authority. |
+| `_authority_basis` | *(async)* `(db, task, assignment, *, lock = False, as_of = None)` | — | — |
 | `window_authority_matches` | *(async)* `(db, task, assignment, *, lock = False)` | — | — |
 | `require_window_authority` | *(async)* `(db, task, assignment)` | — | — |
 | `make_window` | `(task, old_version, assignments, *, prior = None, evidence)` | — | — |

@@ -1,6 +1,6 @@
 # AgentTeamSetupReportEvidence
 
-**Location:** `backend/app/schemas/agent_team_setup.py:1065`
+**Location:** `backend/app/schemas/agent_team_setup.py:1112`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)

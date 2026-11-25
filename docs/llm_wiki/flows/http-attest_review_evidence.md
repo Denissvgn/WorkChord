@@ -15,7 +15,6 @@
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
-- [execution_planning_window](../modules/execution_planning_window.md)
 - [github_links](../modules/github_links.md)
 - [identity_service](../modules/identity_service.md)
 - [models_agent](../modules/models_agent.md)
@@ -28,6 +27,7 @@
 - [schemas_agent_planning](../modules/schemas_agent_planning.md)
 - [services_review_evidence](../modules/services_review_evidence.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_replacement_service](../modules/task_replacement_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 - [url_policy](../modules/url_policy.md)
@@ -54,17 +54,17 @@ sequenceDiagram
     participant p12 as _conflict (backend/app/services/review_provenance.py)
     participant p13 as canonical_routing_json_bytes
     participant p14 as review_history
-    participant p15 as actor_provenance
-    participant p16 as DeliveryDependencyService.reconcile
+    participant p15 as DeliveryDependencyService.reconcile
+    participant p16 as actor_provenance
     participant p17 as DiscussionService.enqueue
     participant p18 as resolve
-    participant p19 as _event
-    participant p20 as _validate_json_native
-    participant p21 as _manual_history
-    participant p22 as history_digest
-    participant p23 as require_project
-    participant p24 as _issuer_identity
-    participant p25 as no_output_corroborated
+    participant p19 as _attempt_history
+    participant p20 as _event
+    participant p21 as _validate_json_native
+    participant p22 as carried_contributors
+    participant p23 as history_digest
+    participant p24 as require_project
+    participant p25 as _issuer_identity
     participant p26 as DeliveryDependencyService.validate_cycles
     participant p27 as DiscussionService.recipient_authorized
     participant p28 as AgentRoutingService._profile_revision
@@ -84,27 +84,27 @@ sequenceDiagram
     p9->>p12: _conflict (backend/app/services/review_provenance.py)
     p5->>p13: canonical_routing_json_bytes
     p9->>p14: review_history
-    p9->>p15: actor_provenance
-    p6->>p16: DeliveryDependencyService.reconcile
+    p6->>p15: DeliveryDependencyService.reconcile
+    p9->>p16: actor_provenance
     p6->>p17: DiscussionService.enqueue
     p9->>p18: resolve
-    p18->>p19: _event
-    p13->>p20: _validate_json_native
-    p14->>p21: _manual_history
-    p18->>p22: history_digest
-    p11->>p23: require_project
-    p18->>p24: _issuer_identity
-    p14->>p25: no_output_corroborated
-    p16->>p26: DeliveryDependencyService.validate_cycles
+    p14->>p19: _attempt_history
+    p18->>p20: _event
+    p13->>p21: _validate_json_native
+    p14->>p22: carried_contributors
+    p18->>p23: history_digest
+    p11->>p24: require_project
+    p18->>p25: _issuer_identity
+    p15->>p26: DeliveryDependencyService.validate_cycles
     p17->>p27: DiscussionService.recipient_authorized
-    p15->>p28: AgentRoutingService._profile_revision
+    p16->>p28: AgentRoutingService._profile_revision
     p2-->>p29: isinstance (backend/app/routers/agent…ng.py:_handle_agent_error)(exc, AgentPermissionError)
     p1-->>p30: TypeAdapter(…).validate_python(payload)
 ```
 
-> Call sequence diagram shows 30 of 784 interactions; 754 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 750 interactions; 720 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 213 (212 omitted); unresolved 1 of 367 (366 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 202 (201 omitted); unresolved 1 of 352 (351 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -118,7 +118,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/review_evidence.py:record_review_evidence` | 2 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
 | `backend/app/services/review_evidence.py:record_review_evidence` | 2 | - | external | 12 |
 | `backend/app/services/review_evidence.py:record_review_evidence` | 2 | [backend/app/schemas/agent_planning.py](../modules/schemas_agent_planning.md) | internal | 1 |
-> Omission summary shows 8 of 151 groups; 143 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 153 groups; 145 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -131,9 +131,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 205; effect analysis evaluated: 146, partial: 5, unavailable: 54. Counts include steps omitted from the displayed trace.
+Source steps: 197; effect analysis evaluated: 146, partial: 5, unavailable: 46. Counts include steps omitted from the displayed trace.
 
-Collector observations for 151 source steps with known totals: observed: 828, emitted: 806, omitted: 22. Unavailable totals are excluded.
+Collector observations for 151 source steps with known totals: observed: 789, emitted: 767, omitted: 22. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -215,22 +215,22 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | attest_review_evidence | record_review_evidence | 84 | `record_review_evidence(db, actor, task_id, data, idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| record_review_evidence | require_operator | 320 | `require_operator(db)` |
+| record_review_evidence | require_operator | 323 | `require_operator(db)` |
 | require_operator | db.info.get (backend/app/authority.py:require_operator) | 84 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 86 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
-| record_review_evidence | is_admin_key_principal | 323 | `is_admin_key_principal(actor)` |
-| record_review_evidence | actor_has_scope | 327 | `actor_has_scope(actor, 'admin')` |
+| record_review_evidence | is_admin_key_principal | 326 | `is_admin_key_principal(actor)` |
+| record_review_evidence | actor_has_scope | 330 | `actor_has_scope(actor, 'admin')` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
-| record_review_evidence | AuthorityError | 329 | `AuthorityError('operator_required', 'The authenticated workspace operator must attest review evidence.')` |
-| record_review_evidence | TypeAdapter(…).validate_python | 333 | `TypeAdapter(ReviewEvidenceCommand).validate_python(payload)` |
+| record_review_evidence | AuthorityError | 332 | `AuthorityError('operator_required', 'The authenticated workspace operator must attest review evidence.')` |
+| record_review_evidence | TypeAdapter(…).validate_python | 336 | `TypeAdapter(ReviewEvidenceCommand).validate_python(payload)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.add` | `record_review_evidence` | 452 |
+| mutation | `db.add` | `record_review_evidence` | 455 |
 
 ### Static analysis gaps
 
@@ -239,7 +239,7 @@ flowchart LR
 | unresolved_call | `require_operator` | `db.info.get` | 84 |
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | external_call | `actor_scopes` | `isinstance` | 90 |
-| unresolved_call | `record_review_evidence` | `TypeAdapter(ReviewEvidenceCommand).validate_python` | 333 |
+| unresolved_call | `record_review_evidence` | `TypeAdapter(ReviewEvidenceCommand).validate_python` | 336 |
 | step_limit | `attest_review_evidence` | `first 12 steps` | 0 |
 | truncated_flow | `attest_review_evidence` | `depth limit` | 0 |
 

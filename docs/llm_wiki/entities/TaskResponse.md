@@ -78,6 +78,7 @@ Schema for task response.
 | `external_links` | `list[ExternalLinkResponse]` | `external_links` | No | No | factory: `list` | — | — | — |
 | `request_count` | `int` | `request_count` | No | No | `0` | — | — | — |
 | `agent_readiness` | `TaskAgentReadiness` | `agent_readiness` | No | No | factory: `TaskAgentReadiness` | — | — | — |
+| `delivery_holds` | `list[dict[str, Any]]` | `delivery_holds` | No | No | factory: `list` | — | — | Delivery prerequisites not yet satisfied, each with reason, hold case and next owner. Filled on the agent pipeline and task context. |
 | `version` | `int` | `version` | No | No | `1` | — | — | — |
 | `claimed_by` | `Optional[TaskClaimedBy]` | `claimed_by` | No | Yes | `None` | — | — | — |
 | `claim_expires_at` | `Optional[datetime]` | `claim_expires_at` | No | Yes | `None` | — | — | — |

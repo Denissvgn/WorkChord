@@ -2,18 +2,19 @@
 
 **Entry point:** `agent_start_run` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), and 14 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 15 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
 - [identity_service](../modules/identity_service.md)
-- [maintenance](../modules/maintenance.md)
+- [maintenance_window_service](../modules/maintenance_window_service.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [mcp_server](../modules/mcp_server.md)
 - [models_agent](../modules/models_agent.md)
@@ -46,21 +47,21 @@ sequenceDiagram
     participant p11 as _authenticate_agent_key
     participant p12 as _require_scope_requirement
     participant p13 as IdentityService.actor_context
-    participant p14 as emit_outbound_webhook_event
-    participant p15 as OutboundWebhookService.safe_emit_event
-    participant p16 as require_scope
-    participant p17 as AgentService.authenticate
-    participant p18 as require_identity_writes
-    participant p19 as DeliveryDependencyService.reconcile
-    participant p20 as DiscussionService.enqueue
-    participant p21 as actor_has_scope
-    participant p22 as OutboundWebhookService.enqueue_event
-    participant p23 as commit_or_flush
-    participant p24 as DeliveryDependencyService.validate_cycles
-    participant p25 as DiscussionService.recipient_authorized
-    participant p26 as TaskService.reserve_task_version
-    participant p27 as clear_execution_evidence
-    participant p28 as AgentService
+    participant p14 as require_start_admission
+    participant p15 as emit_outbound_webhook_event
+    participant p16 as OutboundWebhookService.safe_emit_event
+    participant p17 as require_scope
+    participant p18 as AgentService.authenticate
+    participant p19 as require_identity_writes
+    participant p20 as DeliveryDependencyService.reconcile
+    participant p21 as DiscussionService.enqueue
+    participant p22 as actor_has_scope
+    participant p23 as OutboundWebhookService.enqueue_event
+    participant p24 as commit_or_flush
+    participant p25 as DeliveryDependencyService.validate_cycles
+    participant p26 as DiscussionService.recipient_authorized
+    participant p27 as TaskService.reserve_task_version
+    participant p28 as clear_execution_evidence
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -76,42 +77,42 @@ sequenceDiagram
     p4->>p11: _authenticate_agent_key
     p4->>p12: _require_scope_requirement
     p4->>p13: IdentityService.actor_context
-    p5->>p14: emit_outbound_webhook_event
-    p14->>p15: OutboundWebhookService.safe_emit_event
-    p12->>p16: require_scope
-    p11->>p17: AgentService.authenticate
-    p13->>p18: require_identity_writes
-    p10->>p19: DeliveryDependencyService.reconcile
-    p10->>p20: DiscussionService.enqueue
-    p16->>p21: actor_has_scope
-    p15->>p22: OutboundWebhookService.enqueue_event
-    p17->>p23: commit_or_flush
-    p19->>p24: DeliveryDependencyService.validate_cycles
-    p20->>p25: DiscussionService.recipient_authorized
-    p19->>p26: TaskService.reserve_task_version
-    p19->>p27: clear_execution_evidence
-    p2->>p28: AgentService
+    p5->>p14: require_start_admission
+    p5->>p15: emit_outbound_webhook_event
+    p15->>p16: OutboundWebhookService.safe_emit_event
+    p12->>p17: require_scope
+    p11->>p18: AgentService.authenticate
+    p13->>p19: require_identity_writes
+    p10->>p20: DeliveryDependencyService.reconcile
+    p10->>p21: DiscussionService.enqueue
+    p17->>p22: actor_has_scope
+    p16->>p23: OutboundWebhookService.enqueue_event
+    p18->>p24: commit_or_flush
+    p20->>p25: DeliveryDependencyService.validate_cycles
+    p21->>p26: DiscussionService.recipient_authorized
+    p20->>p27: TaskService.reserve_task_version
+    p20->>p28: clear_execution_evidence
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 297 interactions; 267 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 306 interactions; 276 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 81 (80 omitted); unresolved 1 of 118 (117 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 82 (81 omitted); unresolved 1 of 122 (121 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
 | `backend/app/config.py:get_settings` | 4 | [backend/app/config.py](../modules/config.md) | internal | 1 |
-| `backend/app/maintenance.py:enforce_mcp_access` | 3 | [backend/app/maintenance.py](../modules/maintenance.md) | internal | 2 |
+| `backend/app/maintenance.py:enforce_mcp_access` | 3 | [backend/app/maintenance.py](../modules/app_maintenance.md) | internal | 2 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | external | 4 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | unresolved | 3 |
 | `backend/app/mcp_server.py:_agent_context` | 15 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 3 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 91 groups; 83 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 96 groups; 88 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -124,9 +125,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 99; effect analysis evaluated: 66, partial: 2, unavailable: 31. Counts include steps omitted from the displayed trace.
+Source steps: 103; effect analysis evaluated: 69, partial: 2, unavailable: 32. Counts include steps omitted from the displayed trace.
 
-Collector observations for 68 source steps with known totals: observed: 293, emitted: 281, omitted: 12. Unavailable totals are excluded.
+Collector observations for 71 source steps with known totals: observed: 302, emitted: 290, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -174,10 +175,10 @@ flowchart LR
     s6 -. "scope.endswith(':write')" .-> s12
     click s1 "../modules/mcp_server.md"
     click s2 "../modules/mcp_server.md"
-    click s3 "../modules/maintenance.md"
+    click s3 "../modules/app_maintenance.md"
     click s4 "../modules/config.md"
     click s5 "../modules/config.md"
-    click s6 "../modules/maintenance.md"
+    click s6 "../modules/app_maintenance.md"
 ```
 
 ### Step data
@@ -201,7 +202,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_start_run | _tool_call | 1262 | `_tool_call('runs:write', ...)` |
+| agent_start_run | _tool_call | 1290 | `_tool_call('runs:write', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

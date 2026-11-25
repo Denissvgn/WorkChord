@@ -33,8 +33,9 @@ flowchart LR
     n8["run_database_repairs (backend/app/services/upgrade_service.py)"]
     n9["backend/tests/database_migration/test_project_identity_scope.py"]
     n10["backend/tests/migrations/test_initial_schema.py"]
-    n11["backend/tests/migrations/test_postgresql_migrations.py"]
-    n12["backend/tests/migrations/test_sqlite_migrations.py"]
+    n11["backend/tests/migrations/test_populated_history_migration.py"]
+    n12["backend/tests/migrations/test_postgresql_migrations.py"]
+    n13["backend/tests/migrations/test_sqlite_migrations.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -47,6 +48,7 @@ flowchart LR
     n10 --> n0
     n11 --> n0
     n12 --> n0
+    n13 --> n0
     click n0 "../modules/upgrade_service.md"
     click n2 "../modules/upgrade.md"
     click n3 "../modules/upgrade_service.md"
@@ -57,8 +59,9 @@ flowchart LR
     click n8 "../modules/upgrade_service.md"
     click n9 "../modules/test_project_identity_scope.md"
     click n10 "../modules/test_initial_schema.md"
-    click n11 "../modules/test_postgresql_migrations.md"
-    click n12 "../modules/test_sqlite_migrations.md"
+    click n11 "../modules/test_populated_history_migration.md"
+    click n12 "../modules/test_postgresql_migrations.md"
+    click n13 "../modules/test_sqlite_migrations.md"
 ```
 
 ### Summary
@@ -86,5 +89,8 @@ flowchart LR
 | `run_database_repairs` | call | [upgrade_service](../modules/upgrade_service.md) | 1 |
 | `test_project_identity_scope` | import | [test_project_identity_scope](../modules/test_project_identity_scope.md) | — |
 | `test_initial_schema` | import | [test_initial_schema](../modules/test_initial_schema.md) | — |
+| `test_populated_history_migration` | import | [test_populated_history_migration](../modules/test_populated_history_migration.md) | — |
 | `test_postgresql_migrations` | import | [test_postgresql_migrations](../modules/test_postgresql_migrations.md) | — |
 | `test_sqlite_migrations` | import | [test_sqlite_migrations](../modules/test_sqlite_migrations.md) | — |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

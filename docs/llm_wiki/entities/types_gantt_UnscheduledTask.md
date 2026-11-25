@@ -1,6 +1,6 @@
 # UnscheduledTask
 
-**Location:** `frontend/src/types/gantt.ts:70`
+**Location:** `frontend/src/types/gantt.ts:82`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)
@@ -17,6 +17,8 @@ A planned task the scheduler left without dates, with the cause and the server's
 | `task_title` | `string` | Yes | — | — |
 | `reason` | `UnscheduledReason` | Yes | — | — |
 | `message` | `string` | Yes | — | — |
+| `dates_cleared` | `boolean` | No | — | — |
+| `also` | `UnscheduledReason[]` | No | — | — |
 
 ## Methods
 
@@ -38,7 +40,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_gantt](../modules/types_gantt.md) | 0 | `message`, `reason`, `task_id`, `task_title` |
+| [types_gantt](../modules/types_gantt.md) | 0 | `also`, `dates_cleared`, `message`, `reason`, `task_id`, `task_title` |
 
 ### References
 

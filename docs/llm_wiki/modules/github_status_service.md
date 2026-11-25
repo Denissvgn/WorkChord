@@ -14,15 +14,18 @@ Candidate verification reads a pull request’s current head or compares an immu
 |--------|---------|
 | `app.commands` | `commit_or_flush` |
 | `app.config` | `get_settings` |
+| `app.models.agent` | `TaskEvent` |
 | `app.models.external_link` | `ExternalLink`, `ExternalLinkEntityType` |
 | `app.services.external_link_service` | `ExternalLinkService`, `ExternalLinkValidationError` |
 | `app.services.system_settings_service` | `RuntimeSettingsService` |
 | `app.services.task_context_revision_service` | `reserve_task_context_revision` |
+| `app.services.task_service` | `TaskService` |
 | `app.utils.url_policy` | `normalize_provider_api_url` |
 | `datetime` | `datetime`, `timezone` |
 | `httpx` | `httpx` |
 | `logging` | `logging` |
 | `re` | `re` |
+| `sqlalchemy` | `select` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `typing` | `Any`, `Optional` |
 
@@ -44,8 +47,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (7) |
-| Outbound | `backend` (7) |
+| Inbound | `backend` (10) |
+| Outbound | `backend` (9) |
 
 ### External packages
 
@@ -53,10 +56,17 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [GitHubStatusService](../entities/GitHubStatusService.md) | 25 | — | Refresh cached GitHub pull request metadata for external links. |
+| [GitHubStatusService](../entities/GitHubStatusService.md) | 45 | — | Refresh cached GitHub pull request metadata for external links. |
+
+## Functions
+
+| Function | Signature | Decorators | Description |
+|----------|-----------|------------|-------------|
+| `parse_github_time` | `(value: Any) -> Optional[datetime]` | — | Parse a GitHub ISO timestamp, or None when it is absent or malformed. |
+| `payload_merged` | `(payload: dict[str, Any]) -> bool` | — | Whether a pull request payload describes a merged pull request. |

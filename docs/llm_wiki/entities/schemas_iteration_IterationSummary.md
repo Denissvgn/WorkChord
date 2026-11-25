@@ -1,7 +1,7 @@
 # IterationSummary
 
 **Location:** `backend/app/schemas/iteration.py:99`
-**Kind:** Pydantic model
+**Kind:** Class
 **Bases:** `WorkMetricSummary`
 **Module:** [schemas_iteration](../modules/schemas_iteration.md)
 

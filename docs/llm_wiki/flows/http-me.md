@@ -2,17 +2,17 @@
 
 **Entry point:** `me` (`http`)
 **Source:** [routers_identity](../modules/routers_identity.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), and 8 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 8 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [http_authority](../modules/http_authority.md)
 - [identity_service](../modules/identity_service.md)
-- [maintenance](../modules/maintenance.md)
 - [models_identity](../modules/models_identity.md)
 - [routers_identity](../modules/routers_identity.md)
 - [security](../modules/security.md)

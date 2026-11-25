@@ -51,7 +51,7 @@ flowchart LR
     n9["ReleaseService.get_by_id (backend/app/services/release_service.py)"]
     n10["ReleaseService.list_for_project (backend/app/services/release_service.py)"]
     n11["ReleaseService.update (backend/app/services/release_service.py)"]
-    n12["test_a_pm_links_a_release_to_its_merge_pull_request_and_tag (backend/tests/test_work_delivery_links.py)"]
+    n12["backend/app/services/task_replacement_service.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -76,7 +76,7 @@ flowchart LR
     click n9 "../modules/release_service.md"
     click n10 "../modules/release_service.md"
     click n11 "../modules/release_service.md"
-    click n12 "../modules/test_work_delivery_links.md"
+    click n12 "../modules/task_replacement_service.md"
 ```
 
 ### Summary
@@ -106,4 +106,6 @@ flowchart LR
 | `ReleaseService.get_by_id` | type_reference | [release_service](../modules/release_service.md) | — |
 | `ReleaseService.list_for_project` | type_reference | [release_service](../modules/release_service.md) | — |
 | `ReleaseService.update` | type_reference | [release_service](../modules/release_service.md) | — |
-| `test_a_pm_links_a_release_to_its_merge_pull_request_and_tag` | call | [test_work_delivery_links](../modules/test_work_delivery_links.md) | 1 |
+| `task_replacement_service` | import | [task_replacement_service](../modules/task_replacement_service.md) | — |
+
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

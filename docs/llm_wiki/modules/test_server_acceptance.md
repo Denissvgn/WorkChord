@@ -11,9 +11,10 @@ Self-hosted server acceptance contract and adapter tests.
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
+| `app.autonomy` | `server_acceptance` |
 | `app.autonomy.canonical` | `canonical_json_bytes`, `sha256_hex` |
 | `app.autonomy.contracts.postgresql` | `load_postgresql_contract_bundle` |
-| `app.autonomy.server_acceptance` | `ApplicationAcceptance`, `CasAcceptance`, `LockedAcceptanceObject`, `ObjectStoreAcceptance`, `OpenBaoTransitClient`, `S3ObjectLockClient`, `ServerAcceptanceCandidate`, `ServerAcceptanceConfig`, `ServerAcceptanceError`, `ServerAcceptanceReceipt`, `TransitSignerAcceptance`, `ValkeyCasClient`, `_read_resp`, `_signed_report_payload`, `build_blocked_result`, `run_server_acceptance`, `verify_receipt_current_build`, `verify_receipt_trusted_signer` |
+| `app.autonomy.server_acceptance` | `ApplicationAcceptance`, `CasAcceptance`, `LockedAcceptanceObject`, `ObjectStoreAcceptance`, `OpenBaoTransitClient`, `S3ObjectLockClient`, `ServerAcceptanceCandidate`, `ServerAcceptanceConfig`, `ServerAcceptanceError`, `ServerAcceptanceReceipt`, `TransitSignerAcceptance`, `ValkeyCasClient`, `_read_resp`, `_signed_report_payload`, `build_blocked_result`, `run_server_acceptance`, `verify_receipt_current_build`, `verify_receipt_trusted_signer`, `_probe_application`, `_probe_application`, `_probe_application` |
 | `app.autonomy.status` | `ResolvedStatusEvidence` |
 | `app.build_identity` | `BackendBuildIdentity`, `load_backend_build_identity`, `package_artifact_digest` |
 | `app.cli.server_acceptance` | `_emit`, `main` |
@@ -106,3 +107,7 @@ flowchart LR
 | `test_minio_adapter_proves_locked_exact_version_survives_delete` | `() -> None` | — | — |
 | `test_valkey_probe_uses_independent_writer_and_confirms_aof` | `(monkeypatch) -> None` | — | — |
 | `test_resp_parser_handles_acceptance_reply_shapes` | `(wire: bytes, expected: object) -> None` | `@pytest.mark.parametrize(('wire', 'expected'), [(b'+PONG\r\n', 'PONG'), (b'$5\r\nvalue\r\n', b'value'), (b'$-1\r\n', None), (b':2\r\n', 2)])` | — |
+| `_application_probe_client` | `(monkeypatch: pytest.MonkeyPatch, *, agent_connect_body: bytes, agent_connect_content_type: str, gateway_build_identity: dict \| None = None)` | — | — |
+| `test_application_probe_requires_agent_connect_json_through_gateway` | `(monkeypatch: pytest.MonkeyPatch) -> None` | — | — |
+| `test_application_probe_rejects_web_page_instead_of_agent_connect` | `(monkeypatch: pytest.MonkeyPatch) -> None` | — | — |
+| `test_application_probe_rejects_gateway_serving_backend_build_identity` | `(monkeypatch: pytest.MonkeyPatch) -> None` | — | — |

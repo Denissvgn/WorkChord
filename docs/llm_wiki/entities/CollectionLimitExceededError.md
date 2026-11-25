@@ -35,10 +35,10 @@ flowchart LR
     n7["AgentService.get_pipeline (backend/app/services/agent_service.py)"]
     n8["AgentService.get_task_timeline (backend/app/services/agent_service.py)"]
     n9["AgentWorkService.list_actor_roster (backend/app/services/agent_work_service.py)"]
-    n10["DeliveryMetricsService._window_observations (backend/app/services/delivery_metrics_service.py)"]
-    n11["DeliveryMetricsService.report (backend/app/services/delivery_metrics_service.py)"]
-    n12["ExecutionUsageService._history (backend/app/services/execution_usage_service.py)"]
-    n13["ExecutionUsageService.summary (backend/app/services/execution_usage_service.py)"]
+    n10["CapacityAdjustmentService.list_adjustments (backend/app/services/capacity_adjustments.py)"]
+    n11["DeliveryMetricsService._window_observations (backend/app/services/delivery_metrics_service.py)"]
+    n12["DeliveryMetricsService.report (backend/app/services/delivery_metrics_service.py)"]
+    n13["ExecutionUsageService._history (backend/app/services/execution_usage_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -61,9 +61,9 @@ flowchart LR
     click n7 "../modules/agent_service.md"
     click n8 "../modules/agent_service.md"
     click n9 "../modules/agent_work_service.md"
-    click n10 "../modules/delivery_metrics_service.md"
+    click n10 "../modules/capacity_adjustments.md"
     click n11 "../modules/delivery_metrics_service.md"
-    click n12 "../modules/execution_usage_service.md"
+    click n12 "../modules/delivery_metrics_service.md"
     click n13 "../modules/execution_usage_service.md"
 ```
 
@@ -91,9 +91,9 @@ flowchart LR
 | `AgentService.get_pipeline` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentService.get_task_timeline` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentWorkService.list_actor_roster` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
+| `CapacityAdjustmentService.list_adjustments` | call | [capacity_adjustments](../modules/capacity_adjustments.md) | 1 |
 | `DeliveryMetricsService._window_observations` | call | [delivery_metrics_service](../modules/delivery_metrics_service.md) | 1 |
 | `DeliveryMetricsService.report` | call | [delivery_metrics_service](../modules/delivery_metrics_service.md) | 3 |
 | `ExecutionUsageService._history` | call | [execution_usage_service](../modules/execution_usage_service.md) | 1 |
-| `ExecutionUsageService.summary` | call | [execution_usage_service](../modules/execution_usage_service.md) | 1 |
 
-> References: showing 12 of 40 logical references; 28 omitted by the 12-row generated summary limit.
+> References: showing 12 of 42 logical references; 30 omitted by the 12-row generated summary limit.

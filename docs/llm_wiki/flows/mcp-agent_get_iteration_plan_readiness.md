@@ -2,22 +2,24 @@
 
 **Entry point:** `agent_get_iteration_plan_readiness` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), [calendar_service](../modules/calendar_service.md), and 21 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), and 23 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [calendar_rules](../modules/calendar_rules.md)
 - [calendar_service](../modules/calendar_service.md)
+- [capacity_adjustments](../modules/capacity_adjustments.md)
 - [capacity_service](../modules/capacity_service.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
+- [dependency_order](../modules/dependency_order.md)
 - [discussion_service](../modules/discussion_service.md)
 - [identity_service](../modules/identity_service.md)
 - [iteration_service](../modules/iteration_service.md)
-- [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [mcp_server](../modules/mcp_server.md)
 - [models_identity](../modules/models_identity.md)
@@ -55,19 +57,19 @@ sequenceDiagram
     participant p13 as TeamService.get_by_iteration
     participant p14 as TeamService.calculate_capacity
     participant p15 as CapacityService.schedule_issues
-    participant p16 as plan_checkpoints
-    participant p17 as TeamService.get_by_id
-    participant p18 as require_scope
-    participant p19 as AgentService.authenticate
-    participant p20 as CapacityService.coverage_for
-    participant p21 as CapacityService.calendar_status
-    participant p22 as require_identity_writes
-    participant p23 as CalendarService.get_working_dates
-    participant p24 as CapacityService.absence_ranges
-    participant p25 as DeliveryDependencyService.reconcile
-    participant p26 as CapacityService._projection
-    participant p27 as DiscussionService.enqueue
-    participant p28 as TeamService._attach_assignee_profiles
+    participant p16 as inverted_saved_dependencies
+    participant p17 as plan_checkpoints
+    participant p18 as TeamService.get_by_id
+    participant p19 as require_scope
+    participant p20 as AgentService.authenticate
+    participant p21 as CapacityService.coverage_for
+    participant p22 as CapacityService.calendar_status
+    participant p23 as require_identity_writes
+    participant p24 as CalendarService.get_working_dates
+    participant p25 as CapacityService.absence_ranges
+    participant p26 as DeliveryDependencyService.reconcile
+    participant p27 as load_dated_availability
+    participant p28 as CapacityService._projection
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -85,40 +87,40 @@ sequenceDiagram
     p4->>p13: TeamService.get_by_iteration
     p4->>p14: TeamService.calculate_capacity
     p4->>p15: CapacityService.schedule_issues
-    p4->>p16: plan_checkpoints
-    p14->>p17: TeamService.get_by_id
-    p11->>p18: require_scope
-    p10->>p19: AgentService.authenticate
-    p14->>p20: CapacityService.coverage_for
-    p14->>p21: CapacityService.calendar_status
-    p12->>p22: require_identity_writes
-    p14->>p23: CalendarService.get_working_dates
-    p14->>p24: CapacityService.absence_ranges
-    p9->>p25: DeliveryDependencyService.reconcile
-    p15->>p26: CapacityService._projection
-    p9->>p27: DiscussionService.enqueue
-    p13->>p28: TeamService._attach_assignee_profiles
+    p4->>p16: inverted_saved_dependencies
+    p4->>p17: plan_checkpoints
+    p14->>p18: TeamService.get_by_id
+    p11->>p19: require_scope
+    p10->>p20: AgentService.authenticate
+    p14->>p21: CapacityService.coverage_for
+    p14->>p22: CapacityService.calendar_status
+    p12->>p23: require_identity_writes
+    p14->>p24: CalendarService.get_working_dates
+    p14->>p25: CapacityService.absence_ranges
+    p9->>p26: DeliveryDependencyService.reconcile
+    p14->>p27: load_dated_availability
+    p15->>p28: CapacityService._projection
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 645 interactions; 615 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 691 interactions; 661 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 221 (220 omitted); unresolved 1 of 275 (274 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 227 (226 omitted); unresolved 1 of 306 (305 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
 | `backend/app/config.py:get_settings` | 4 | [backend/app/config.py](../modules/config.md) | internal | 1 |
-| `backend/app/maintenance.py:enforce_mcp_access` | 3 | [backend/app/maintenance.py](../modules/maintenance.md) | internal | 2 |
+| `backend/app/maintenance.py:enforce_mcp_access` | 3 | [backend/app/maintenance.py](../modules/app_maintenance.md) | internal | 2 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | external | 4 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | unresolved | 3 |
 | `backend/app/mcp_server.py:_agent_context` | 15 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 3 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 148 groups; 140 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 157 groups; 149 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -131,9 +133,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 150; effect analysis evaluated: 104, partial: 3, unavailable: 43. Counts include steps omitted from the displayed trace.
+Source steps: 159; effect analysis evaluated: 110, partial: 3, unavailable: 46. Counts include steps omitted from the displayed trace.
 
-Collector observations for 107 source steps with known totals: observed: 483, emitted: 465, omitted: 18. Unavailable totals are excluded.
+Collector observations for 113 source steps with known totals: observed: 516, emitted: 496, omitted: 20. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -181,10 +183,10 @@ flowchart LR
     s6 -. "scope.endswith(':write')" .-> s12
     click s1 "../modules/mcp_server.md"
     click s2 "../modules/mcp_server.md"
-    click s3 "../modules/maintenance.md"
+    click s3 "../modules/app_maintenance.md"
     click s4 "../modules/config.md"
     click s5 "../modules/config.md"
-    click s6 "../modules/maintenance.md"
+    click s6 "../modules/app_maintenance.md"
 ```
 
 ### Step data
@@ -208,7 +210,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_get_iteration_plan_readiness | _tool_call | 1631 | `_tool_call((...), ...)` |
+| agent_get_iteration_plan_readiness | _tool_call | 1804 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

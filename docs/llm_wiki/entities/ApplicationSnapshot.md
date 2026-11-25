@@ -46,10 +46,10 @@ flowchart LR
     n7["backend/tests/migrations/test_allocation_identity.py"]
     n8["backend/tests/migrations/test_profile_identity.py"]
     n9["backend/tests/test_allocation_recovery.py"]
-    n10["backend/tests/test_effective_deferral.py"]
-    n11["backend/tests/test_execution_planning_window.py"]
-    n12["backend/tests/test_identity_lifecycle.py"]
-    n13["backend/tests/test_managed_authority.py"]
+    n10["backend/tests/test_capacity_adjustments.py"]
+    n11["backend/tests/test_effective_deferral.py"]
+    n12["backend/tests/test_execution_planning_window.py"]
+    n13["backend/tests/test_identity_lifecycle.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -73,10 +73,10 @@ flowchart LR
     click n7 "../modules/test_allocation_identity.md"
     click n8 "../modules/test_profile_identity.md"
     click n9 "../modules/test_allocation_recovery.md"
-    click n10 "../modules/test_effective_deferral.md"
-    click n11 "../modules/test_execution_planning_window.md"
-    click n12 "../modules/test_identity_lifecycle.md"
-    click n13 "../modules/test_managed_authority.md"
+    click n10 "../modules/test_capacity_adjustments.md"
+    click n11 "../modules/test_effective_deferral.md"
+    click n12 "../modules/test_execution_planning_window.md"
+    click n13 "../modules/test_identity_lifecycle.md"
 ```
 
 ### Summary
@@ -103,9 +103,9 @@ flowchart LR
 | `test_allocation_identity` | import | [test_allocation_identity](../modules/test_allocation_identity.md) | — |
 | `test_profile_identity` | import | [test_profile_identity](../modules/test_profile_identity.md) | — |
 | `test_allocation_recovery` | import | [test_allocation_recovery](../modules/test_allocation_recovery.md) | — |
+| `test_capacity_adjustments` | import | [test_capacity_adjustments](../modules/test_capacity_adjustments.md) | — |
 | `test_effective_deferral` | import | [test_effective_deferral](../modules/test_effective_deferral.md) | — |
 | `test_execution_planning_window` | import | [test_execution_planning_window](../modules/test_execution_planning_window.md) | — |
 | `test_identity_lifecycle` | import | [test_identity_lifecycle](../modules/test_identity_lifecycle.md) | — |
-| `test_managed_authority` | import | [test_managed_authority](../modules/test_managed_authority.md) | — |
 
-> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
+> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.

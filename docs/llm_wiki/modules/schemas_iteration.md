@@ -34,7 +34,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (15) |
+| Inbound | `backend` (17) |
 | Outbound | `backend` (2) |
 
 ### External packages
@@ -43,7 +43,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -58,5 +58,12 @@ flowchart LR
 | [IterationSeriesResponse](../entities/schemas_iteration_IterationSeriesResponse.md) | 94 | `BaseModel` | Response returned after creating an iteration series. |
 | [IterationSummary](../entities/schemas_iteration_IterationSummary.md) | 99 | `WorkMetricSummary` | Summary statistics for an iteration. |
 | [PlanCheckpoint](../entities/schemas_iteration_PlanCheckpoint.md) | 122 | `BaseModel` | One of the six plan checkpoints, in the order people and the PM work them. |
-| [IterationPlanningReadinessSummary](../entities/schemas_iteration_IterationPlanningReadinessSummary.md) | 130 | `BaseModel` | Compact planning inputs used by persistent navigation. |
-| [IterationPage](../entities/IterationPage.md) | 156 | `BaseModel` | — |
+| [InvertedDependency](../entities/schemas_iteration_InvertedDependency.md) | 130 | `BaseModel` | A saved dependency whose dates start the dependent on or before its prerequisite's last day. |
+| [IterationPlanningReadinessSummary](../entities/schemas_iteration_IterationPlanningReadinessSummary.md) | 140 | `BaseModel` | Compact planning inputs used by persistent navigation. |
+| [IterationPage](../entities/IterationPage.md) | 168 | `BaseModel` | — |
+| [IterationDateMoveRequest](../entities/IterationDateMoveRequest.md) | 176 | `PlanningInputRevisions` | A proposed iteration start, end and calendar to check against shared capacity. |
+| [IterationPeriod](../entities/IterationPeriod.md) | 201 | `BaseModel` | An iteration's dates and annual calendars. |
+| [DateMoveBooking](../entities/DateMoveBooking.md) | 212 | `BaseModel` | Hours one other iteration books from the same person on one date. |
+| [DateMoveShortfall](../entities/DateMoveShortfall.md) | 220 | `BaseModel` | One person and date where the proposed period requests more than the person has. |
+| [DateMoveProfile](../entities/DateMoveProfile.md) | 237 | `BaseModel` | How the proposed period fits one person of the iteration team. |
+| [IterationDateMovePreview](../entities/IterationDateMovePreview.md) | 249 | `BaseModel` | Shared capacity for a proposed iteration period. Nothing is saved. |

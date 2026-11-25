@@ -11,6 +11,7 @@
 - [agent_service](../modules/agent_service.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [agent_work_service](../modules/agent_work_service.md)
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
@@ -20,7 +21,6 @@
 - [execution_reconciliation](../modules/execution_reconciliation.md)
 - [github_links](../modules/github_links.md)
 - [identity_service](../modules/identity_service.md)
-- [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [mcp_server](../modules/mcp_server.md)
 - [models_identity](../modules/models_identity.md)
@@ -53,25 +53,25 @@ sequenceDiagram
     participant p7 as _agent_context
     participant p8 as AgentWorkService._definition_blockers
     participant p9 as AgentWorkService.assignment_response
-    participant p10 as AgentWorkService._execution_assignment_view
-    participant p11 as AgentWorkService._start_blockers
-    participant p12 as AgentService.get_task_timeline
-    participant p13 as get_settings
-    participant p14 as window_authority_matches
-    participant p15 as command_transaction
-    participant p16 as TaskTimelineService.page
-    participant p17 as _authenticate_agent_key
-    participant p18 as recovery_attestation_hint
-    participant p19 as _require_scope_requirement
-    participant p20 as IdentityService.actor_context
-    participant p21 as AgentWorkService._resolve_rollout
-    participant p22 as AgentWorkService._shadow_handoff
-    participant p23 as AgentWorkService._selection_pending
-    participant p24 as AgentWorkService._is_model_aware_assignment
-    participant p25 as AgentWorkService._validate_assignment_actor
-    participant p26 as AgentWorkService._working_today
-    participant p27 as DeliveryDependencyService.ready
-    participant p28 as assignment_matches
+    participant p10 as AgentWorkService._validate_assignment_actor
+    participant p11 as AgentWorkService._execution_assignment_view
+    participant p12 as AgentWorkService._started_blockers
+    participant p13 as AgentWorkService._start_blockers
+    participant p14 as AgentService.get_task_timeline
+    participant p15 as get_settings
+    participant p16 as evaluate_actor_authorization
+    participant p17 as window_authority_matches
+    participant p18 as command_transaction
+    participant p19 as TaskTimelineService.page
+    participant p20 as _authenticate_agent_key
+    participant p21 as recovery_attestation_hint
+    participant p22 as _require_scope_requirement
+    participant p23 as IdentityService.actor_context
+    participant p24 as AgentWorkService._resolve_rollout
+    participant p25 as AgentWorkService._shadow_handoff
+    participant p26 as AgentWorkService._selection_pending
+    participant p27 as AgentWorkService._is_model_aware_assignment
+    participant p28 as AgentWorkService._working_today
     participant p29 as int (backend/app/mcp_server.py…ete_task_context_resource)
     participant p30 as context.model_dump
     p0->>p1: _json_resource
@@ -83,46 +83,46 @@ sequenceDiagram
     p3->>p7: _agent_context
     p4->>p8: AgentWorkService._definition_blockers
     p4->>p9: AgentWorkService.assignment_response
-    p4->>p10: AgentWorkService._execution_assignment_view
-    p4->>p11: AgentWorkService._start_blockers
-    p4->>p12: AgentService.get_task_timeline
-    p5->>p13: get_settings
-    p11->>p14: window_authority_matches
-    p7->>p15: command_transaction
-    p12->>p16: TaskTimelineService.page
-    p7->>p17: _authenticate_agent_key
-    p11->>p18: recovery_attestation_hint
-    p7->>p19: _require_scope_requirement
-    p7->>p20: IdentityService.actor_context
-    p11->>p21: AgentWorkService._resolve_rollout
-    p11->>p22: AgentWorkService._shadow_handoff
-    p11->>p23: AgentWorkService._selection_pending
-    p11->>p24: AgentWorkService._is_model_aware_assignment
-    p11->>p25: AgentWorkService._validate_assignment_actor
-    p11->>p26: AgentWorkService._working_today
-    p11->>p27: DeliveryDependencyService.ready
-    p14->>p28: assignment_matches
+    p4->>p10: AgentWorkService._validate_assignment_actor
+    p4->>p11: AgentWorkService._execution_assignment_view
+    p4->>p12: AgentWorkService._started_blockers
+    p4->>p13: AgentWorkService._start_blockers
+    p4->>p14: AgentService.get_task_timeline
+    p5->>p15: get_settings
+    p10->>p16: evaluate_actor_authorization
+    p12->>p17: window_authority_matches
+    p7->>p18: command_transaction
+    p14->>p19: TaskTimelineService.page
+    p7->>p20: _authenticate_agent_key
+    p13->>p21: recovery_attestation_hint
+    p7->>p22: _require_scope_requirement
+    p7->>p23: IdentityService.actor_context
+    p13->>p24: AgentWorkService._resolve_rollout
+    p13->>p25: AgentWorkService._shadow_handoff
+    p13->>p26: AgentWorkService._selection_pending
+    p13->>p27: AgentWorkService._is_model_aware_assignment
+    p13->>p28: AgentWorkService._working_today
     p0-->>p29: int (backend/app/mcp_server.py…ete_task_context_resource)(task_id)
     p2-->>p30: context.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 920 interactions; 890 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 851 interactions; 821 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 252 (251 omitted); unresolved 1 of 455 (454 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 229 (228 omitted); unresolved 1 of 402 (401 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
 | `backend/app/config.py:get_settings` | 5 | [backend/app/config.py](../modules/config.md) | internal | 1 |
-| `backend/app/maintenance.py:enforce_mcp_access` | 4 | [backend/app/maintenance.py](../modules/maintenance.md) | internal | 2 |
+| `backend/app/maintenance.py:enforce_mcp_access` | 4 | [backend/app/maintenance.py](../modules/app_maintenance.md) | internal | 2 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 7 | - | external | 4 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 7 | - | unresolved | 3 |
 | `backend/app/mcp_server.py:_agent_context` | 16 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 3 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 182 groups; 174 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 181 groups; 173 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -135,9 +135,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 214; effect analysis evaluated: 157, partial: 9, unavailable: 48. Counts include steps omitted from the displayed trace.
+Source steps: 221; effect analysis evaluated: 164, partial: 8, unavailable: 49. Counts include steps omitted from the displayed trace.
 
-Collector observations for 166 source steps with known totals: observed: 984, emitted: 911, omitted: 73. Unavailable totals are excluded.
+Collector observations for 172 source steps with known totals: observed: 1018, emitted: 950, omitted: 68. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -186,10 +186,10 @@ flowchart LR
     click s1 "../modules/mcp_server.md"
     click s2 "../modules/mcp_server.md"
     click s3 "../modules/mcp_server.md"
-    click s4 "../modules/maintenance.md"
+    click s4 "../modules/app_maintenance.md"
     click s5 "../modules/config.md"
     click s6 "../modules/config.md"
-    click s7 "../modules/maintenance.md"
+    click s7 "../modules/app_maintenance.md"
 ```
 
 ### Step data
@@ -213,7 +213,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| complete_task_context_resource | _json_resource | 2341 | `_json_resource((...), ...)` |
+| complete_task_context_resource | _json_resource | 2514 | `_json_resource((...), ...)` |
 | _json_resource | _tool_call | 364 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

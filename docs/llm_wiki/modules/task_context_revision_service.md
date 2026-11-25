@@ -53,8 +53,10 @@ flowchart LR
     n4 --> n3
     n4 --> n9
     n5 --> n0
+    n5 --> n2
     n5 --> n4
     n5 --> n9
+    n5 --> n10
     n6 --> n0
     n6 --> n2
     n6 --> n5

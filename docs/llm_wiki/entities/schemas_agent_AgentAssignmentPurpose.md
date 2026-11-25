@@ -1,6 +1,6 @@
 # AgentAssignmentPurpose
 
-**Location:** `backend/app/schemas/agent.py:555`
+**Location:** `backend/app/schemas/agent.py:559`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [schemas_agent](../modules/schemas_agent.md)

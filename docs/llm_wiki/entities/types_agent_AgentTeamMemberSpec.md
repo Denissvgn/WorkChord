@@ -1,6 +1,6 @@
 # AgentTeamMemberSpec
 
-**Location:** `frontend/src/types/agent.ts:676`
+**Location:** `frontend/src/types/agent.ts:677`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -25,6 +25,7 @@ _Auto-generated from `AgentTeamMemberSpec` in `frontend/src/types/agent.ts`._
 | `default_model_binding_key` | `string` | Yes | — | — |
 | `runtime_ref` | `string` | Yes | — | — |
 | `credential_ref` | `string` | Yes | — | — |
+| `declared_tool_tags` | `Record<string, string[]>` | No | — | — |
 
 ## Methods
 
@@ -64,7 +65,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_agent](../modules/types_agent.md) | 0 | `actor_key`, `actor_name`, `assignment_modes`, `credential_ref`, `default_model_binding_key`, `display_name`, `model_binding_keys`, `profile_key`, `role`, `runtime_ref`, `scope_preset`, `skill_package` |
+| [types_agent](../modules/types_agent.md) | 0 | `actor_key`, `actor_name`, `assignment_modes`, `credential_ref`, `declared_tool_tags`, `default_model_binding_key`, `display_name`, `model_binding_keys`, `profile_key`, `role`, `runtime_ref`, `scope_preset` |
 
 ### References
 

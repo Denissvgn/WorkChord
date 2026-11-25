@@ -1,6 +1,6 @@
 # ServerAcceptanceError
 
-**Location:** `backend/app/autonomy/server_acceptance.py:43`
+**Location:** `backend/app/autonomy/server_acceptance.py:44`
 **Kind:** Class
 **Bases:** `RuntimeError`
 **Module:** [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md)
@@ -82,7 +82,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `_probe_application` | call | [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md) | 9 |
+| `_probe_application` | call | [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md) | 10 |
 | `build_blocked_result` | type_reference | [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md) | — |
 | `OpenBaoTransitClient._request` | call | [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md) | 2 |
 | `OpenBaoTransitClient.probe` | call | [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md) | 6 |

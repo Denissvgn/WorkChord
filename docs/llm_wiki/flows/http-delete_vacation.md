@@ -73,9 +73,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| delete_vacation | service.delete_vacation | 331 | `service.delete_vacation(vacation_id)` |
-| delete_vacation | HTTPException | 333 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| delete_vacation | MessageResponse | 337 | `MessageResponse(message=..., success=True)` |
+| delete_vacation | service.delete_vacation | 444 | `service.delete_vacation(vacation_id)` |
+| delete_vacation | HTTPException | 446 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| delete_vacation | MessageResponse | 450 | `MessageResponse(message=..., success=True)` |
 
 ### Boundary effects
 
@@ -85,8 +85,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `delete_vacation` | `service.delete_vacation` | 331 |
-| external_call | `delete_vacation` | `HTTPException` | 333 |
+| unresolved_call | `delete_vacation` | `service.delete_vacation` | 444 |
+| external_call | `delete_vacation` | `HTTPException` | 446 |
 
 ## Behavior
 

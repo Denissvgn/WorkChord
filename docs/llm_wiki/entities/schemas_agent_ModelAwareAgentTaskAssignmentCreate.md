@@ -1,6 +1,6 @@
 # ModelAwareAgentTaskAssignmentCreate
 
-**Location:** `backend/app/schemas/agent.py:613`
+**Location:** `backend/app/schemas/agent.py:617`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -69,7 +69,8 @@ flowchart LR
     n9["_dispatch (backend/tests/test_agent_routing_wave6_qualification.py)"]
     n10["backend/tests/test_agent_skill_routing_guidance.py"]
     n11["test_model_aware_commands_own_selection_and_observed_model_fields (backend/tests/test_agent_work_routing_lineage.py)"]
-    n12["test_saved_allocation_uses_typed_decision_and_both_native_lineage_writers (backend/tests/test_unused_allocation.py)"]
+    n12["test_focus_returns_named_worker_blockers_and_selection_on_rest_and_mcp (backend/tests/test_routing_preview_focus.py)"]
+    n13["test_team_pm_preview_excludes_other_teams_rows_on_rest_and_mcp (backend/tests/test_routing_preview_team_scope.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -82,6 +83,7 @@ flowchart LR
     n10 --> n0
     n11 --> n0
     n12 --> n0
+    n13 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
@@ -93,7 +95,8 @@ flowchart LR
     click n9 "../modules/test_agent_routing_wave6_qualification.md"
     click n10 "../modules/test_agent_skill_routing_guidance.md"
     click n11 "../modules/test_agent_work_routing_lineage.md"
-    click n12 "../modules/test_unused_allocation.md"
+    click n12 "../modules/test_routing_preview_focus.md"
+    click n13 "../modules/test_routing_preview_team_scope.md"
 ```
 
 ### Summary
@@ -122,4 +125,7 @@ flowchart LR
 | `_dispatch` | call | [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md) | 1 |
 | `test_agent_skill_routing_guidance` | import | [test_agent_skill_routing_guidance](../modules/test_agent_skill_routing_guidance.md) | — |
 | `test_model_aware_commands_own_selection_and_observed_model_fields` | call | [test_agent_work_routing_lineage](../modules/test_agent_work_routing_lineage.md) | 1 |
-| `test_saved_allocation_uses_typed_decision_and_both_native_lineage_writers` | call | [test_unused_allocation](../modules/test_unused_allocation.md) | 1 |
+| `test_focus_returns_named_worker_blockers_and_selection_on_rest_and_mcp` | call | [test_routing_preview_focus](../modules/test_routing_preview_focus.md) | 1 |
+| `test_team_pm_preview_excludes_other_teams_rows_on_rest_and_mcp` | call | [test_routing_preview_team_scope](../modules/test_routing_preview_team_scope.md) | 1 |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

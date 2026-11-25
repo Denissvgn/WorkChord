@@ -1,6 +1,6 @@
 # IterationPlanningReadinessSummary
 
-**Location:** `backend/app/schemas/iteration.py:130`
+**Location:** `backend/app/schemas/iteration.py:140`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_iteration](../modules/schemas_iteration.md)
@@ -29,6 +29,7 @@ Compact planning inputs used by persistent navigation.
 | `tasks_agent_without_capacity` | `int` | `tasks_agent_without_capacity` | No | No | `0` | — | — | — |
 | `has_schedule` | `bool` | `has_schedule` | Yes | No | — | — | — | — |
 | `risk_count` | `int` | `risk_count` | Yes | No | — | — | — | — |
+| `inverted_dependencies` | `list[InvertedDependency]` | `inverted_dependencies` | No | No | factory: `list` | — | — | — |
 | `checkpoints` | `list[PlanCheckpoint]` | `checkpoints` | No | No | factory: `list` | — | — | — |
 | `checkpoints_done` | `int` | `checkpoints_done` | No | No | `0` | — | — | — |
 | `checkpoints_total` | `int` | `checkpoints_total` | No | No | `6` | — | — | — |
@@ -64,7 +65,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `additional_calendar_ids`, `assigned_hours`, `calendar_name`, `checkpoints`, `checkpoints_done`, `checkpoints_total`, `has_schedule`, `iteration_id`, `missing_calendar_years`, `planned_hours`, `risk_count`, `task_count` |
+| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `additional_calendar_ids`, `assigned_hours`, `calendar_name`, `checkpoints`, `checkpoints_done`, `checkpoints_total`, `has_schedule`, `inverted_dependencies`, `iteration_id`, `missing_calendar_years`, `planned_hours`, `risk_count` |
 
 ### Structure
 

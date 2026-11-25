@@ -1,6 +1,6 @@
 # ModelAwareAgentWorkBegin
 
-**Location:** `backend/app/schemas/agent.py:1014`
+**Location:** `backend/app/schemas/agent.py:1035`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

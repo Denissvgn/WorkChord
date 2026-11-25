@@ -1,6 +1,6 @@
 # ReviewHistory
 
-**Location:** `backend/app/services/review_provenance.py:513`
+**Location:** `backend/app/services/review_provenance.py:665`
 **Kind:** Class
 **Bases:** —
 **Module:** [review_provenance](../modules/review_provenance.md)
@@ -34,8 +34,8 @@ _Auto-generated from `ReviewHistory` in `backend/app/services/review_provenance.
 ```mermaid
 flowchart LR
     n0["ReviewHistory (backend/app/services/review_provenance.py)"]
-    n1["_manual_history (backend/app/services/review_provenance.py)"]
-    n2["review_history (backend/app/services/review_provenance.py)"]
+    n1["_attempt_history (backend/app/services/review_provenance.py)"]
+    n2["_manual_history (backend/app/services/review_provenance.py)"]
     n1 --> n0
     n2 --> n0
     click n0 "../modules/review_provenance.md"
@@ -53,5 +53,5 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `_attempt_history` | call | [review_provenance](../modules/review_provenance.md) | 4 |
 | `_manual_history` | call | [review_provenance](../modules/review_provenance.md) | 13 |
-| `review_history` | call | [review_provenance](../modules/review_provenance.md) | 4 |

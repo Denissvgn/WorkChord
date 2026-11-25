@@ -1,6 +1,6 @@
 # GanttResponse
 
-**Location:** `backend/app/schemas/gantt.py:123`
+**Location:** `backend/app/schemas/gantt.py:129`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)
@@ -16,6 +16,7 @@ Full Gantt chart response.
 | `iteration` | `IterationResponse` | `iteration` | Yes | No | — | — | — | — |
 | `tasks` | `list[GanttTask]` | `tasks` | Yes | No | — | — | — | — |
 | `overdue_task_ids` | `list[int]` | `overdue_task_ids` | No | No | `[]` | — | — | — |
+| `inverted_dependencies` | `list[InvertedDependency]` | `inverted_dependencies` | No | No | `[]` | — | — | — |
 | `holidays` | `list[date]` | `holidays` | No | No | `[]` | — | — | — |
 | `weekends` | `list[date]` | `weekends` | No | No | `[]` | — | — | — |
 | `member_vacations` | `dict[int, list[date]]` | `member_vacations` | No | No | `{}` | — | — | — |
@@ -46,7 +47,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `holidays`, `iteration`, `member_vacations`, `overdue_task_ids`, `schedule_result`, `tasks`, `weekends` |
+| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `holidays`, `inverted_dependencies`, `iteration`, `member_vacations`, `overdue_task_ids`, `schedule_result`, `tasks`, `weekends` |
 
 ### Structure
 

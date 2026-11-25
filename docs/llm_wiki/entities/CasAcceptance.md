@@ -1,6 +1,6 @@
 # CasAcceptance
 
-**Location:** `backend/app/autonomy/server_acceptance.py:115`
+**Location:** `backend/app/autonomy/server_acceptance.py:116`
 **Kind:** Pydantic model
 **Bases:** `StrictContractModel`
 **Module:** [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md)

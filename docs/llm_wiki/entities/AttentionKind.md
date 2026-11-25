@@ -1,6 +1,6 @@
 # AttentionKind
 
-**Location:** `frontend/src/features/overview/overviewSignals.ts:224`
+**Location:** `frontend/src/features/overview/overviewSignals.ts:225`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [overviewSignals](../modules/overviewSignals.md)

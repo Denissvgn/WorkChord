@@ -23,18 +23,18 @@ sequenceDiagram
     participant p9 as list
     participant p10 as (…).mappings().first
     participant p11 as str
-    participant p12 as (…).mappings (backend/app/services/plan…:observe_planning_input, 2)
+    participant p12 as (…).mappings (backend/app/services/plan…:observe_planning_input, 3)
     participant p13 as db.execute
-    participant p14 as select(…).where (backend/app/services/plan…:observe_planning_input, 2)
+    participant p14 as select(…).where (backend/app/services/plan…:observe_planning_input, 3)
     participant p15 as select
     participant p16 as dict
     participant p17 as (…).all
     participant p18 as db.scalars
-    participant p19 as select(…).where(…).order_by (backend/app/services/plan…:observe_planning_input, 2)
-    participant p20 as select(…).where (backend/app/services/plan…:observe_planning_input, 3)
-    participant p21 as (…).mappings().all (backend/app/services/plan…:observe_planning_input, 1)
-    participant p22 as (…).mappings (backend/app/services/plan…:observe_planning_input, 1)
-    participant p23 as select(…).where(…).order_by(…).limit (backend/app/services/plan…:observe_planning_input, 1)
+    participant p19 as select(…).where(…).order_by (backend/app/services/plan…:observe_planning_input, 3)
+    participant p20 as select(…).where (backend/app/services/plan…:observe_planning_input, 4)
+    participant p21 as (…).mappings().all (backend/app/services/plan…:observe_planning_input, 2)
+    participant p22 as (…).mappings (backend/app/services/plan…:observe_planning_input, 2)
+    participant p23 as select(…).where(…).order_by(…).limit (backend/app/services/plan…:observe_planning_input, 2)
     p0->>p1: observe_planning_input
     p0->>p2: domain_result
     p1->>p3: PlanningInputUnavailable
@@ -47,37 +47,37 @@ sequenceDiagram
     p2-->>p7: HTTPException (backend/app/routers/task_domain.py:domain_result)(404, detail=str(...))
     p1-->>p10: (…).mappings().first
     p2-->>p11: str(exc)
-    p1-->>p12: (…).mappings (backend/app/services/plan…:observe_planning_input, 2)
+    p1-->>p12: (…).mappings (backend/app/services/plan…:observe_planning_input, 3)
     p2-->>p7: HTTPException (backend/app/routers/task_domain.py:domain_result)(422, detail=[...])
     p1-->>p13: db.execute(...)
     p2-->>p11: str(exc)
-    p1-->>p14: select(…).where (backend/app/services/plan…:observe_planning_input, 2)(...)
+    p1-->>p14: select(…).where (backend/app/services/plan…:observe_planning_input, 3)(...)
     p2-->>p7: HTTPException (backend/app/routers/task_domain.py:domain_result)(404, detail='Task not found or inaccessible')
     p1-->>p15: select(...)
     p1-->>p16: dict(row)
     p1-->>p9: list(...)
     p1-->>p17: (…).all
     p1-->>p18: db.scalars(...)
-    p1-->>p19: select(…).where(…).order_by (backend/app/services/plan…:observe_planning_input, 2)(annual.calendar_id)
-    p1-->>p20: select(…).where (backend/app/services/plan…:observe_planning_input, 3)(...)
+    p1-->>p19: select(…).where(…).order_by (backend/app/services/plan…:observe_planning_input, 3)(annual.calendar_id)
+    p1-->>p20: select(…).where (backend/app/services/plan…:observe_planning_input, 4)(...)
     p1-->>p15: select(annual.calendar_id)
-    p1-->>p21: (…).mappings().all (backend/app/services/plan…:observe_planning_input, 1)
-    p1-->>p22: (…).mappings (backend/app/services/plan…:observe_planning_input, 1)
+    p1-->>p21: (…).mappings().all (backend/app/services/plan…:observe_planning_input, 2)
+    p1-->>p22: (…).mappings (backend/app/services/plan…:observe_planning_input, 2)
     p1-->>p13: db.execute(...)
-    p1-->>p23: select(…).where(…).order_by(…).limit (backend/app/services/plan…:observe_planning_input, 1)(501)
+    p1-->>p23: select(…).where(…).order_by(…).limit (backend/app/services/plan…:observe_planning_input, 2)(501)
 ```
 
-> Call sequence diagram shows 30 of 51 interactions; 21 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 62 interactions; 32 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 12 of 20 (8 omitted); unresolved 14 of 24 (10 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 12 of 23 (11 omitted); unresolved 14 of 31 (17 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
-| `backend/app/services/planning_input_context.py:observe_planning_input` | 11 | - | unresolved | 10 |
-| `backend/app/services/planning_input_context.py:observe_planning_input` | 11 | - | external | 8 |
-| `backend/app/services/planning_input_context.py:observe_planning_input` | 11 | [backend/app/commands.py](../modules/commands.md) | internal | 3 |
+| `backend/app/services/planning_input_context.py:observe_planning_input` | 11 | - | unresolved | 17 |
+| `backend/app/services/planning_input_context.py:observe_planning_input` | 11 | - | external | 11 |
+| `backend/app/services/planning_input_context.py:observe_planning_input` | 11 | [backend/app/commands.py](../modules/commands.md) | internal | 4 |
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -88,9 +88,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 8; effect analysis evaluated: 3, partial: 0, unavailable: 5. Counts include steps omitted from the displayed trace.
+Source steps: 9; effect analysis evaluated: 3, partial: 0, unavailable: 6. Counts include steps omitted from the displayed trace.
 
-Collector observations for 3 source steps with known totals: observed: 18, emitted: 18, omitted: 0. Unavailable totals are excluded.
+Collector observations for 3 source steps with known totals: observed: 19, emitted: 19, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -107,7 +107,7 @@ Collector observations for 3 source steps with known totals: observed: 18, emitt
 | `HTTPException (backend/app/routers/task_domain.py:domain_result)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `HTTPException (backend/app/routers/task_domain.py:domain_result)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `observe_planning_input` | `available` | `evaluated` | `available` | `10` | `10` | `0` |
+| `observe_planning_input` | `available` | `evaluated` | `available` | `11` | `11` | `0` |
 | `revisions` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 
 ```mermaid
@@ -154,7 +154,7 @@ flowchart LR
 | `HTTPException (backend/app/routers/task_domain.py:domain_result)` | - | - | - | - |
 | `str` | - | - | - | - |
 | `HTTPException (backend/app/routers/task_domain.py:domain_result)` | - | - | - | - |
-| `observe_planning_input` | `db`, `kind`, `resource_id`, `creating_member`, `intent` | - | `values[...]`, `resource[...]`, `resource[...]`, `resource[...]` | `{...}` |
+| `observe_planning_input` | `db`, `kind`, `resource_id`, `creating_member`, `intent` | - | `values[...]`, `resource[...]`, `resource[...]`, `resource[...]`, `resource[...]` | `{...}` |
 | `revisions` | - | - | - | - |
 
 ### Call data

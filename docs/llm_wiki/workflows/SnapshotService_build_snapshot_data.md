@@ -1,7 +1,7 @@
 # SnapshotService_build_snapshot_data
 
 **Entry point:** `snapshot_service.SnapshotService.build_snapshot_data`
-**Modules involved:** [iteration_service](../modules/iteration_service.md), [snapshot_service](../modules/snapshot_service.md), [task_service](../modules/task_service.md), [team_service](../modules/team_service.md), [time](../modules/time.md)
+**Modules involved:** [capacity_adjustments](../modules/capacity_adjustments.md), [iteration_service](../modules/iteration_service.md), [snapshot_service](../modules/snapshot_service.md), [task_service](../modules/task_service.md), [team_service](../modules/team_service.md), [time](../modules/time.md)
 
 > Build one JSON-native immutable representation of an iteration.
 
@@ -14,10 +14,12 @@
 4. `task_service.TaskService`
 5. `team_service.TeamService.get_by_iteration`
 6. `team_service.TeamService`
-7. `time.utc_now`
+7. `capacity_adjustments.active_adjustment_rows`
+8. `time.utc_now`
 
 ## Touches
 
+- [capacity_adjustments](../modules/capacity_adjustments.md)
 - [iteration_service](../modules/iteration_service.md)
 - [snapshot_service](../modules/snapshot_service.md)
 - [task_service](../modules/task_service.md)

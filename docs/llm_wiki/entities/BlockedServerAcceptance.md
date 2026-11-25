@@ -1,6 +1,6 @@
 # BlockedServerAcceptance
 
-**Location:** `backend/app/autonomy/server_acceptance.py:260`
+**Location:** `backend/app/autonomy/server_acceptance.py:261`
 **Kind:** Pydantic model
 **Bases:** `StrictContractModel`
 **Module:** [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md)

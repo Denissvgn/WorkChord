@@ -14,6 +14,7 @@
 | `frontend` | build: `.` | `${WORKCHORD_HTTP_BIND:-127.0.0.1}:${WORKCHORD_HTTP_PORT:-80}:80` | `{'backend': {'condition': 'service_healthy'}}` |
 | `logical-backup` | `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296` |  | `{'postgres': {'condition': 'service_healthy'}}` |
 | `base-backup` | `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296` |  | `{'postgres': {'condition': 'service_healthy'}}` |
+| `wal-archive-retention` | `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296` |  |  |
 | `restore-verify` | `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296` |  | `{'postgres': {'condition': 'service_healthy'}}` |
 
 ### postgres
@@ -73,6 +74,13 @@
 - **Environment:** `{'DATABASE_BACKUP_URL': '${POSTGRES_BACKUP_URL:-postgresql://postgres:workchord-local-only@postgres:5432/workchord}', 'DEPLOYMENT_ENVIRONMENT': 'development', 'BACKUP_ENCRYPTION_CONFIRMED': '${BACKUP_ENCRYPTION_CONFIRMED:-true}'}`
 - **Depends on:** `{'postgres': {'condition': 'service_healthy'}}`
 - **Command:** `['/bin/bash', '/opt/workchord/base_backup.sh']`
+
+### wal-archive-retention
+
+- **Image:** `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296`
+- **Volumes:** `workchord_postgresql_wal_archive:/var/lib/postgresql/wal-archive`, `workchord_postgresql_backups:/backups:ro`, `./scripts/database_backup/prune_wal_archive.sh:/opt/workchord/prune_wal_archive.sh:ro`
+- **Environment:** `{'WAL_PRUNE_KEEP_BACKUPS': '${WAL_PRUNE_KEEP_BACKUPS:-1}', 'WAL_PRUNE_INTERVAL_SECONDS': '${WAL_PRUNE_INTERVAL_SECONDS:-21600}'}`
+- **Command:** `['/bin/bash', '-c', 'while true; do /bin/bash /opt/workchord/prune_wal_archive.sh \|\| echo "WAL archive pruning failed; retrying next interval" >&2; sleep "$${WAL_PRUNE_INTERVAL_SECONDS}"; done']`
 
 ### restore-verify
 

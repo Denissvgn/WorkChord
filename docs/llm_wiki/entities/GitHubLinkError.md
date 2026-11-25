@@ -26,11 +26,13 @@ flowchart LR
     n1["ValueError"]
     n2["backend/app/services/agent_work_service.py"]
     n3["backend/app/services/external_link_service.py"]
-    n4["backend/app/services/review_provenance.py"]
-    n5["_commit (backend/app/utils/github_links.py)"]
-    n6["parse_github_url (backend/app/utils/github_links.py)"]
-    n7["require_github_link (backend/app/utils/github_links.py)"]
-    n8["backend/tests/test_work_delivery_links.py"]
+    n4["backend/app/services/github_reconciliation_service.py"]
+    n5["backend/app/services/review_provenance.py"]
+    n6["backend/app/services/task_replacement_service.py"]
+    n7["_commit (backend/app/utils/github_links.py)"]
+    n8["parse_github_url (backend/app/utils/github_links.py)"]
+    n9["require_github_link (backend/app/utils/github_links.py)"]
+    n10["backend/tests/test_work_delivery_links.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -39,14 +41,18 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
+    n10 --> n0
     click n0 "../modules/github_links.md"
     click n2 "../modules/agent_work_service.md"
     click n3 "../modules/external_link_service.md"
-    click n4 "../modules/review_provenance.md"
-    click n5 "../modules/github_links.md"
-    click n6 "../modules/github_links.md"
+    click n4 "../modules/github_reconciliation_service.md"
+    click n5 "../modules/review_provenance.md"
+    click n6 "../modules/task_replacement_service.md"
     click n7 "../modules/github_links.md"
-    click n8 "../modules/test_work_delivery_links.md"
+    click n8 "../modules/github_links.md"
+    click n9 "../modules/github_links.md"
+    click n10 "../modules/test_work_delivery_links.md"
 ```
 
 ### Summary
@@ -67,7 +73,9 @@ flowchart LR
 |---|---|---|---:|
 | `agent_work_service` | import | [agent_work_service](../modules/agent_work_service.md) | — |
 | `external_link_service` | import | [external_link_service](../modules/external_link_service.md) | — |
+| `github_reconciliation_service` | import | [github_reconciliation_service](../modules/github_reconciliation_service.md) | — |
 | `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |
+| `task_replacement_service` | import | [task_replacement_service](../modules/task_replacement_service.md) | — |
 | `_commit` | call | [github_links](../modules/github_links.md) | 1 |
 | `parse_github_url` | call | [github_links](../modules/github_links.md) | 4 |
 | `require_github_link` | call | [github_links](../modules/github_links.md) | 1 |

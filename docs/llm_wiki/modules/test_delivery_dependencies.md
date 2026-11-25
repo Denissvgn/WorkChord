@@ -34,6 +34,7 @@ Cross-project readiness, cycle prevention and retained acceptance history.
 flowchart LR
     n0["backend"]
     n1["backend/tests/test_delivery_dependencies.py"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/test_delivery_dependencies.md"
 ```
@@ -44,6 +45,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
+| Inbound | `backend` (1) |
 | Outbound | `backend` (13) |
 
 ### External packages
@@ -52,7 +54,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 1 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

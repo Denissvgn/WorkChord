@@ -13,7 +13,7 @@
 5. `time.as_utc`
 6. `services_work_metrics.effective_work_flags`
 7. `authority.internal_authority`
-8. `delivery_dependency_service.DeliveryDependencyService.ready`
+8. `delivery_dependency_service.DeliveryDependencyService.holds`
 9. `delivery_dependency_service.DeliveryDependencyService`
 10. `time.as_utc`
 11. `time.as_utc`

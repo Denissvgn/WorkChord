@@ -25,7 +25,8 @@
 15. `agent_routing_service.AgentRoutingConflictError`
 16. `review_provenance.select_reviewer`
 17. `services_review_evidence.check_supervised_selection`
-18. `commands.commit_or_flush`
+18. `review_provenance.require_independent_profile`
+19. `commands.commit_or_flush`
 
 ## Touches
 

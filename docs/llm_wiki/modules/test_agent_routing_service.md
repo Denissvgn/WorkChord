@@ -11,7 +11,7 @@ End-to-end service coverage for authoritative Wave 3 routing.
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
-| `app.models.agent` | `AgentActor`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentTaskAssignment`, `TaskEvent` |
+| `app.models.agent` | `AgentActor`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRun`, `AgentTaskAssignment`, `TaskEvent` |
 | `app.models.team_member` | `TeamMemberProfileSkill` |
 | `app.schemas.agent` | `AgentTaskAssignmentCreate`, `AgentReviewVerdict`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareAgentWorkBegin` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
@@ -47,7 +47,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (6) |
+| Inbound | `backend` (8) |
 | Outbound | `backend` (10) |
 
 ### External packages
@@ -56,7 +56,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 1 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -71,7 +71,7 @@ flowchart LR
 | `test_selection_input_fence_serializes_sqlite_routing_transactions` | *(async)* `(db_session: AsyncSession, db_session_factory, task_factory) -> None` | `@pytest.mark.asyncio` | — |
 | `test_assessment_history_trims_deterministic_tail_to_packet_limit` | *(async)* `(db_session: AsyncSession, actor_factory, task_factory) -> None` | `@pytest.mark.asyncio` | — |
 | `test_preview_is_deterministic_and_relevant_mutation_invalidates_it` | *(async)* `(db_session: AsyncSession, profile_factory, actor_factory, team_member_factory, task_factory) -> None` | `@pytest.mark.asyncio` | — |
-| `test_verification_independence_requires_authoritative_profile_history` | *(async)* `(snapshot_authority: str \| None, expected_blocker: str, db_session: AsyncSession, profile_factory, actor_factory, team_member_factory, task_factory) -> None` | `@pytest.mark.asyncio`, `@pytest.mark.parametrize(('snapshot_authority', 'expected_blocker'), (('agent-routing-service-v1', 'verification_profile_not_independent'), (None, 'verification_independence_unverifiable')))` | — |
+| `test_verification_independence_requires_authoritative_profile_history` | *(async)* `(snapshot_authority: str \| None, run_receipt: str \| None, expected_blocker: str \| None, db_session: AsyncSession, profile_factory, actor_factory, team_member_factory, task_factory) -> None` | `@pytest.mark.asyncio`, `@pytest.mark.parametrize(('snapshot_authority', 'run_receipt', 'expected_blocker'), (('agent-routing-service-v1', None, 'verification_profile_not_independent'), (None, None, 'verification_independence_unverifiable'), (None, 'historical', 'verification_profile_not_independent'), (None, 'current', None), (None, 'changed_to_historical', 'verification_profile_not_independent'), (None, 'foreign_actor', 'verification_independence_unverifiable'), (None, 'missing_revision', 'verification_independence_unverifiable'), (None, 'server_ended_unrecorded', 'verification_independence_unverifiable'), (None, 'server_ended_recorded', None)))` | — |
 | `test_model_aware_assignment_and_begin_enforce_observed_model` | *(async)* `(db_session: AsyncSession, profile_factory, actor_factory, team_member_factory, task_factory) -> None` | `@pytest.mark.asyncio` | — |
 | `test_completed_rework_update_persists_prior_and_new_routing_lineage` | *(async)* `(db_session: AsyncSession, profile_factory, actor_factory, team_member_factory, task_factory) -> None` | `@pytest.mark.asyncio` | — |
 | `test_rejection_telemetry_normalizes_adversarial_legacy_lineage` | *(async)* `(db_session: AsyncSession, profile_factory, actor_factory, task_factory) -> None` | `@pytest.mark.asyncio` | — |

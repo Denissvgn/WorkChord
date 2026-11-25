@@ -12,8 +12,9 @@ _Auto-generated from `frontend/src/components/feedback/WorkRefreshStatus.tsx`._
 |--------|---------|-----------|------------------|
 | `../../components/common/Button` | `Button` | — | compiler-dependent |
 | `../../features/workQueryFreshness` | `WORKSPACE_QUERY_POLICIES` | — | compiler-dependent |
+| `@tanstack/react-query` | `Query`, `QueryClient` | Specifier | compiler-dependent |
 | `@tanstack/react-query` | `notifyManager`, `useQueryClient` | — | compiler-dependent |
-| `react` | `useEffect`, `useReducer`, `useState` | — | compiler-dependent |
+| `react` | `useCallback`, `useEffect`, `useState`, `useSyncExternalStore` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals

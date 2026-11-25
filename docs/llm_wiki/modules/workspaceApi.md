@@ -72,4 +72,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `installWorkspaceApi` | `(extra: Array<[RegExp, (match: RegExpMatchArray) => unknown]> = [])` | — | Answers every GET from the workspace above, with the unplanned ones failing by URL. Restored by `vi.restoreAllMocks`. |
+| `installWorkspaceApi` | `(extra: Array<[RegExp, (match: RegExpMatchArray) => unknown]> = [])` | — | Answers every GET from the workspace above, with the unplanned ones failing by URL. `pending` lists the |

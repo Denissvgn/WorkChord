@@ -32,14 +32,18 @@ Preview and apply use the observed iteration revision in the forecast digest. A 
 | `app.schemas.iteration` | `IterationCreate`, `IterationUpdate` |
 | `app.schemas.project` | `ProjectCreate`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneResponse`, `ProjectMilestoneUpdate`, `ProjectResponse`, `ProjectUpdate` |
 | `app.schemas.task` | `TaskCreate`, `TaskResponse`, `TaskUpdate` |
-| `app.schemas.team` | `TeamMemberCreate`, `TeamMemberProfileCreate`, `TeamMemberProfileResponse`, `TeamMemberProfileUpdate`, `TeamMemberResponse`, `TeamMemberUpdate`, `VacationCreate`, `VacationResponse`, `VacationUpdate` |
+| `app.schemas.task_replacement` | `TaskReplacementResponse` |
+| `app.schemas.team` | `CapacityAdjustmentCommand`, `CapacityAdjustmentResult`, `CapacityTransferCommand`, `CapacityTransferResult`, `CapacityTransferWithdrawal`, `TeamMemberCreate`, `TeamMemberProfileCreate`, `TeamMemberProfileResponse`, `TeamMemberProfileUpdate`, `TeamMemberResponse`, `TeamMemberUpdate`, `VacationCreate`, `VacationResponse`, `VacationUpdate` |
 | `app.services.agent_profile_catalog_service` | `AgentProfileCatalogService` |
 | `app.services.agent_service` | `AgentConflictError`, `require_scope`, `validate_idempotency_key` |
 | `app.services.calendar_rules` | `AnnualCalendars` |
+| `app.services.capacity_adjustments` | `CapacityAdjustmentService`, `load_dated_availability` |
 | `app.services.capacity_service` | `CapacityService` |
+| `app.services.capacity_transfers` | `CapacityTransferService`, `CapacityTransferService` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.project_service` | `ProjectService` |
 | `app.services.scheduler_service` | `SchedulerService` |
+| `app.services.task_replacement_service` | `TaskReplacementService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.team_service` | `TeamService` |
 | `collections.abc` | `Awaitable`, `Callable`, `Mapping` |
@@ -70,7 +74,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (10) |
-| Outbound | `backend` (21) |
+| Outbound | `backend` (25) |
 
 ### External packages
 
@@ -78,11 +82,11 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [_SchedulePreviewComplete](../entities/SchedulePreviewComplete.md) | 70 | `Exception` | Internal signal used to roll back a schedule preview savepoint. |
-| [AgentPlanningService](../entities/AgentPlanningService.md) | 78 | — | Expose bounded PM setup commands without bypassing domain services. |
+| [_SchedulePreviewComplete](../entities/SchedulePreviewComplete.md) | 75 | `Exception` | Internal signal used to roll back a schedule preview savepoint. |
+| [AgentPlanningService](../entities/AgentPlanningService.md) | 83 | — | Expose bounded PM setup commands without bypassing domain services. |

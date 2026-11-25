@@ -1,6 +1,6 @@
 # DeliveryRisk
 
-**Location:** `frontend/src/features/overview/overviewSignals.ts:184`
+**Location:** `frontend/src/features/overview/overviewSignals.ts:185`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [overviewSignals](../modules/overviewSignals.md)

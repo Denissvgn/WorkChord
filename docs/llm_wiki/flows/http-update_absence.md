@@ -187,14 +187,14 @@ flowchart LR
 | update_absence | CapacityService | 52 | `CapacityService(db)` |
 | update_absence | service.save_absence | 53 | `service.save_absence(profile_id, data.start_date, data.end_date, absence_id=absence_id, expected_version=data.expected_version, deleted=data.deleted)` |
 | update_absence | CapacityService.detail | 55 | `service.detail(profile_id)` |
-| CapacityService.detail | CapacityService.require_owner | 220 | `self.require_owner(profile_id)` |
-| CapacityService.require_owner | self.db.info.get (backend/app/services/capa…acityService.require_owner) | 108 | `self.db.info.get('authority')` |
-| CapacityService.require_owner | get_settings | 110 | `get_settings(data not statically known)` |
+| CapacityService.detail | CapacityService.require_owner | 243 | `self.require_owner(profile_id)` |
+| CapacityService.require_owner | self.db.info.get (backend/app/services/capa…acityService.require_owner) | 131 | `self.db.info.get('authority')` |
+| CapacityService.require_owner | get_settings | 133 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |
-| CapacityService.require_owner | AuthorityError | 111 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
-| CapacityService.require_owner | AuthorityError | 114 | `AuthorityError('profile_owner_required', 'Only this person or an operator can manage their availability.')` |
-| CapacityService.detail | CapacityService.require_visible | 221 | `self.require_visible(profile_id)` |
-| CapacityService.require_visible | self.db.info.get (backend/app/services/capa…ityService.require_visible) | 117 | `self.db.info.get('authority')` |
+| CapacityService.require_owner | AuthorityError | 134 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
+| CapacityService.require_owner | AuthorityError | 137 | `AuthorityError('profile_owner_required', 'Only this person or an operator can manage their availability.')` |
+| CapacityService.detail | CapacityService.require_visible | 244 | `self.require_visible(profile_id)` |
+| CapacityService.require_visible | self.db.info.get (backend/app/services/capa…ityService.require_visible) | 140 | `self.db.info.get('authority')` |
 
 ### Boundary effects
 
@@ -205,8 +205,8 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | unresolved_call | `update_absence` | `service.save_absence` | 53 |
-| unresolved_call | `CapacityService.require_owner` | `self.db.info.get` | 108 |
-| unresolved_call | `CapacityService.require_visible` | `self.db.info.get` | 117 |
+| unresolved_call | `CapacityService.require_owner` | `self.db.info.get` | 131 |
+| unresolved_call | `CapacityService.require_visible` | `self.db.info.get` | 140 |
 | step_limit | `update_absence` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -65,5 +65,5 @@ flowchart LR
 |---|---|---|---:|
 | `receive_github_webhook` | type_reference | [routers_github](../modules/routers_github.md) | — |
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
-| `GitHubWebhookService.process` | call | [github_webhook_service](../modules/github_webhook_service.md) | 6 |
+| `GitHubWebhookService.process` | call | [github_webhook_service](../modules/github_webhook_service.md) | 7 |
 | `GitHubWebhookService.process` | type_reference | [github_webhook_service](../modules/github_webhook_service.md) | — |

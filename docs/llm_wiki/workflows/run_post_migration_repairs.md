@@ -1,14 +1,14 @@
 # run_post_migration_repairs
 
 **Entry point:** `upgrade_service.run_post_migration_repairs`
-**Modules involved:** [calendar_service](../modules/calendar_service.md), [commands](../modules/commands.md), [github_status_automation_service](../modules/github_status_automation_service.md), [identity_service](../modules/identity_service.md), [label_service](../modules/label_service.md), [maintenance](../modules/maintenance.md), [saved_view_service](../modules/saved_view_service.md), [system_settings_service](../modules/system_settings_service.md), [template_service](../modules/template_service.md), [upgrade_service](../modules/upgrade_service.md)
+**Modules involved:** [app_maintenance](../modules/app_maintenance.md), [calendar_service](../modules/calendar_service.md), [commands](../modules/commands.md), [github_status_automation_service](../modules/github_status_automation_service.md), [identity_service](../modules/identity_service.md), [label_service](../modules/label_service.md), [saved_view_service](../modules/saved_view_service.md), [system_settings_service](../modules/system_settings_service.md), [template_service](../modules/template_service.md), [upgrade_service](../modules/upgrade_service.md)
 
 > Run idempotent seeders and compatibility repairs after migrations.
 
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
-1. `maintenance.require_background_writes_enabled`
+1. `app_maintenance.require_background_writes_enabled`
 2. `identity_service.initialize_control_plane`
 3. `commands.commit_or_flush`
 4. `calendar_service.CalendarService.get_or_create_default`
@@ -26,12 +26,12 @@
 
 ## Touches
 
+- [app_maintenance](../modules/app_maintenance.md)
 - [calendar_service](../modules/calendar_service.md)
 - [commands](../modules/commands.md)
 - [github_status_automation_service](../modules/github_status_automation_service.md)
 - [identity_service](../modules/identity_service.md)
 - [label_service](../modules/label_service.md)
-- [maintenance](../modules/maintenance.md)
 - [saved_view_service](../modules/saved_view_service.md)
 - [system_settings_service](../modules/system_settings_service.md)
 - [template_service](../modules/template_service.md)

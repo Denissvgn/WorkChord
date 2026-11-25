@@ -16,6 +16,7 @@ _Auto-generated from `DeliveryDependencyInput` in `backend/app/routers/delivery_
 | `kind` | `Literal['task', 'milestone']` | `kind` | Yes | No | — | — | — | — |
 | `target_id` | `int` | `target_id` | Yes | No | — | gt=0 | — | — |
 | `expected_version` | `int` | `expected_version` | Yes | No | — | gt=0 | — | — |
+| `target_branch` | `str \| None` | `target_branch` | No | Yes | `None` | max_length=255 | — | — |
 
 ## Methods
 
@@ -39,7 +40,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [delivery_dependencies](../modules/delivery_dependencies.md) | 0 | `expected_version`, `kind`, `target_id` |
+| [delivery_dependencies](../modules/delivery_dependencies.md) | 0 | `expected_version`, `kind`, `target_branch`, `target_id` |
 
 ### Structure
 

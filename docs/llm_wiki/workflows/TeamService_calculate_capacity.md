@@ -1,7 +1,7 @@
 # TeamService_calculate_capacity
 
 **Entry point:** `team_service.TeamService.calculate_capacity`
-**Modules involved:** [calendar_service](../modules/calendar_service.md), [capacity_service](../modules/capacity_service.md), [schemas_team](../modules/schemas_team.md), [team_service](../modules/team_service.md)
+**Modules involved:** [calendar_service](../modules/calendar_service.md), [capacity_adjustments](../modules/capacity_adjustments.md), [capacity_service](../modules/capacity_service.md), [schemas_team](../modules/schemas_team.md), [team_service](../modules/team_service.md)
 
 > Calculate capacity for a team member.
 
@@ -14,11 +14,13 @@
 4. `calendar_service.CalendarService.get_working_dates`
 5. `calendar_service.CalendarService`
 6. `capacity_service.CapacityService.absence_ranges`
-7. `schemas_team.MemberCapacity`
+7. `capacity_adjustments.load_dated_availability`
+8. `schemas_team.MemberCapacity`
 
 ## Touches
 
 - [calendar_service](../modules/calendar_service.md)
+- [capacity_adjustments](../modules/capacity_adjustments.md)
 - [capacity_service](../modules/capacity_service.md)
 - [schemas_team](../modules/schemas_team.md)
 - [team_service](../modules/team_service.md)

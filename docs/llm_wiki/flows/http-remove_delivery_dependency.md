@@ -112,7 +112,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| remove_delivery_dependency | domain_result | 35 | `domain_result(...)` |
+| remove_delivery_dependency | domain_result | 36 | `domain_result(...)` |
 | domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
@@ -120,8 +120,8 @@ flowchart LR
 | domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 57 | `str(exc)` |
 | domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| remove_delivery_dependency | DeliveryDependencyService(…).remove | 35 | `DeliveryDependencyService(db).remove(task_id, edge_id, expected_version)` |
-| remove_delivery_dependency | DeliveryDependencyService | 35 | `DeliveryDependencyService(db)` |
+| remove_delivery_dependency | DeliveryDependencyService(…).remove | 36 | `DeliveryDependencyService(db).remove(task_id, edge_id, expected_version)` |
+| remove_delivery_dependency | DeliveryDependencyService | 36 | `DeliveryDependencyService(db)` |
 
 ### Boundary effects
 
@@ -136,7 +136,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
-| unresolved_call | `remove_delivery_dependency` | `DeliveryDependencyService(db).remove` | 35 |
+| unresolved_call | `remove_delivery_dependency` | `DeliveryDependencyService(db).remove` | 36 |
 
 ## Behavior
 

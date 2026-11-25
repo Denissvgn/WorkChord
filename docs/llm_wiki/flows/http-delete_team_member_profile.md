@@ -73,9 +73,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| delete_team_member_profile | service.delete_profile | 115 | `service.delete_profile(profile_id)` |
-| delete_team_member_profile | HTTPException | 117 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| delete_team_member_profile | MessageResponse | 121 | `MessageResponse(message=..., success=True)` |
+| delete_team_member_profile | service.delete_profile | 134 | `service.delete_profile(profile_id)` |
+| delete_team_member_profile | HTTPException | 136 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| delete_team_member_profile | MessageResponse | 140 | `MessageResponse(message=..., success=True)` |
 
 ### Boundary effects
 
@@ -85,8 +85,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `delete_team_member_profile` | `service.delete_profile` | 115 |
-| external_call | `delete_team_member_profile` | `HTTPException` | 117 |
+| unresolved_call | `delete_team_member_profile` | `service.delete_profile` | 134 |
+| external_call | `delete_team_member_profile` | `HTTPException` | 136 |
 
 ## Behavior
 

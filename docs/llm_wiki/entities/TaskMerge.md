@@ -1,6 +1,6 @@
 # TaskMerge
 
-**Location:** `backend/app/schemas/task.py:265`
+**Location:** `backend/app/schemas/task.py:269`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

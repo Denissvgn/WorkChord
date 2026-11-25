@@ -65,7 +65,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (17) |
+| Inbound | `backend` (19) |
 | Outbound | `backend` (17) |
 
 ### External packages
@@ -74,15 +74,16 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 36 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [AgentTeamSetupConflictError](../entities/AgentTeamSetupConflictError.md) | 107 | `AgentConflictError` | Stable conflict envelope shared by setup REST and MCP reads. |
-| [AgentTeamMembershipBoundary](../entities/AgentTeamMembershipBoundary.md) | 121 | — | Current topology/revision and active member set for exact-actor routing. |
-| [AgentTeamSetupService](../entities/AgentTeamSetupService.md) | 176 | — | Reconcile one portable topology without making the UI a control plane. |
+| [AgentTeamCallerUnboundError](../entities/AgentTeamCallerUnboundError.md) | 123 | `AgentPermissionError` | A PM asked for team status but is not bound to any live topology. |
+| [AgentTeamMembershipBoundary](../entities/AgentTeamMembershipBoundary.md) | 128 | — | Current topology/revision and active member set for exact-actor routing. |
+| [AgentTeamSetupService](../entities/AgentTeamSetupService.md) | 183 | — | Reconcile one portable topology without making the UI a control plane. |
 
 ## Functions
 

@@ -28,16 +28,16 @@ flowchart LR
     n1["BaseModel"]
     n2["CalendarCreate (backend/app/schemas/calendar.py)"]
     n3["CalendarUpdate (backend/app/schemas/calendar.py)"]
-    n4["IterationUpdate (backend/app/schemas/iteration.py)"]
-    n5["ProjectUpdate (backend/app/schemas/project.py)"]
-    n6["TeamImportRequest (backend/app/schemas/team.py)"]
-    n7["TeamMemberCreate (backend/app/schemas/team.py)"]
-    n8["TeamMemberProfileSkillCreate (backend/app/schemas/team.py)"]
-    n9["TeamMemberProfileSkillUpdate (backend/app/schemas/team.py)"]
-    n10["TeamMemberProfileUpdate (backend/app/schemas/team.py)"]
-    n11["TeamMemberUpdate (backend/app/schemas/team.py)"]
-    n12["VacationCreate (backend/app/schemas/team.py)"]
-    n13["VacationUpdate (backend/app/schemas/team.py)"]
+    n4["IterationDateMoveRequest (backend/app/schemas/iteration.py)"]
+    n5["IterationUpdate (backend/app/schemas/iteration.py)"]
+    n6["ProjectUpdate (backend/app/schemas/project.py)"]
+    n7["CapacityAdjustmentCommand (backend/app/schemas/team.py)"]
+    n8["CapacityTransferCommand (backend/app/schemas/team.py)"]
+    n9["CapacityTransferWithdrawal (backend/app/schemas/team.py)"]
+    n10["TeamImportRequest (backend/app/schemas/team.py)"]
+    n11["TeamMemberCreate (backend/app/schemas/team.py)"]
+    n12["TeamMemberProfileSkillCreate (backend/app/schemas/team.py)"]
+    n13["TeamMemberProfileSkillUpdate (backend/app/schemas/team.py)"]
     n14["backend/app/schemas/calendar.py"]
     n15["backend/app/schemas/iteration.py"]
     n16["backend/app/schemas/project.py"]
@@ -65,8 +65,8 @@ flowchart LR
     click n2 "../modules/schemas_calendar.md"
     click n3 "../modules/schemas_calendar.md"
     click n4 "../modules/schemas_iteration.md"
-    click n5 "../modules/schemas_project.md"
-    click n6 "../modules/schemas_team.md"
+    click n5 "../modules/schemas_iteration.md"
+    click n6 "../modules/schemas_project.md"
     click n7 "../modules/schemas_team.md"
     click n8 "../modules/schemas_team.md"
     click n9 "../modules/schemas_team.md"
@@ -94,16 +94,16 @@ flowchart LR
 | Base | `BaseModel` | — |
 | Subclass | `CalendarCreate` | [schemas_calendar](../modules/schemas_calendar.md) |
 | Subclass | `CalendarUpdate` | [schemas_calendar](../modules/schemas_calendar.md) |
+| Subclass | `IterationDateMoveRequest` | [schemas_iteration](../modules/schemas_iteration.md) |
 | Subclass | `IterationUpdate` | [schemas_iteration](../modules/schemas_iteration.md) |
 | Subclass | `ProjectUpdate` | [schemas_project](../modules/schemas_project.md) |
+| Subclass | `CapacityAdjustmentCommand` | [schemas_team](../modules/schemas_team.md) |
+| Subclass | `CapacityTransferCommand` | [schemas_team](../modules/schemas_team.md) |
+| Subclass | `CapacityTransferWithdrawal` | [schemas_team](../modules/schemas_team.md) |
 | Subclass | `TeamImportRequest` | [schemas_team](../modules/schemas_team.md) |
 | Subclass | `TeamMemberCreate` | [schemas_team](../modules/schemas_team.md) |
 | Subclass | `TeamMemberProfileSkillCreate` | [schemas_team](../modules/schemas_team.md) |
 | Subclass | `TeamMemberProfileSkillUpdate` | [schemas_team](../modules/schemas_team.md) |
-| Subclass | `TeamMemberProfileUpdate` | [schemas_team](../modules/schemas_team.md) |
-| Subclass | `TeamMemberUpdate` | [schemas_team](../modules/schemas_team.md) |
-| Subclass | `VacationCreate` | [schemas_team](../modules/schemas_team.md) |
-| Subclass | `VacationUpdate` | [schemas_team](../modules/schemas_team.md) |
 
 ### References
 

@@ -1,6 +1,6 @@
 # SchedulerService
 
-**Location:** `backend/app/services/scheduler_service.py:340`
+**Location:** `backend/app/services/scheduler_service.py:346`
 **Kind:** Class
 **Bases:** —
 **Module:** [scheduler_service](../modules/scheduler_service.md)
@@ -20,7 +20,7 @@ Service for automatic task scheduling.
 | `__init__` | `(db: AsyncSession)` | — | — |
 | `schedule_iteration` | *(async)* `(iteration_id: int, *, commit: bool = True, expected_revision: int \| None = None, expected_planning_revision: int \| None = None, commit_baseline: bool = False, protect_issued: bool = False, rebaseline_reason: str \| None = None, follow_date: date \| None = None, anchor_task_id: int \| None = None) -> ScheduleResult` | `@atomic_command` | Schedule an iteration, optionally leaving commit ownership to the caller. |
 | `follow_actual_dates` | *(async)* `(task: Task, today: date, *, started: bool = False) -> list[int]` | — | Move planned work to what really happened after ``task`` started or finished. |
-| `_unscheduled_tasks` | `(all_tasks: Sequence[Task], member_schedules: dict[int, 'MemberSchedule'], known_reasons: dict[int, str], messages: dict[int, str] \| None = None) -> list[UnscheduledTask]` | — | Planned leaf tasks still without dates, each with the first cause that applies. |
+| `_unscheduled_tasks` | `(all_tasks: Sequence[Task], member_schedules: dict[int, 'MemberSchedule'], known_reasons: dict[int, str], messages: dict[int, str] \| None = None, before_dates: dict[int, tuple[date \| None, date \| None]] \| None = None) -> list[UnscheduledTask]` | — | Planned leaf tasks still without dates, each with the first cause that applies. |
 | `_build_member_schedules` | *(async)* `(iteration: Iteration, team_members: Sequence[TeamMember]) -> dict[int, MemberSchedule]` | — | Build schedule tracking for each team member. |
 | `_topological_sort` | `(tasks: list[Task]) -> list[Task]` | — | Sort tasks respecting dependencies. |
 | `_topological_sort_children` | `(children: list[Task], child_ids: set[int]) -> list[Task]` | — | Sort child tasks respecting internal dependencies, then by (is_optional, priority). |
@@ -97,4 +97,4 @@ flowchart LR
 | `IncrementalScheduler.__init__` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `test_capacity_scheduler_and_profile_owner_use_each_selected_day` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
 
-> References: showing 12 of 47 logical references; 35 omitted by the 12-row generated summary limit.
+> References: showing 12 of 50 logical references; 38 omitted by the 12-row generated summary limit.

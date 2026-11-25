@@ -31,19 +31,22 @@ flowchart LR
     n2["str"]
     n3["backend/app/models/__init__.py"]
     n4["backend/app/services/external_link_service.py"]
-    n5["backend/app/services/github_status_service.py"]
-    n6["backend/app/services/github_webhook_service.py"]
+    n5["backend/app/services/github_reconciliation_service.py"]
+    n6["backend/app/services/github_status_service.py"]
+    n7["backend/app/services/github_webhook_service.py"]
     n0 --> n1
     n0 --> n2
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/models_external_link.md"
     click n3 "../modules/models___init__.md"
     click n4 "../modules/external_link_service.md"
-    click n5 "../modules/github_status_service.md"
-    click n6 "../modules/github_webhook_service.md"
+    click n5 "../modules/github_reconciliation_service.md"
+    click n6 "../modules/github_status_service.md"
+    click n7 "../modules/github_webhook_service.md"
 ```
 
 ### Summary
@@ -65,5 +68,6 @@ flowchart LR
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `external_link_service` | import | [external_link_service](../modules/external_link_service.md) | — |
+| `github_reconciliation_service` | import | [github_reconciliation_service](../modules/github_reconciliation_service.md) | — |
 | `github_status_service` | import | [github_status_service](../modules/github_status_service.md) | — |
 | `github_webhook_service` | import | [github_webhook_service](../modules/github_webhook_service.md) | — |

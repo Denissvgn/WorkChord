@@ -1,6 +1,6 @@
 # AgentRoutingService
 
-**Location:** `backend/app/services/agent_routing_service.py:205`
+**Location:** `backend/app/services/agent_routing_service.py:270`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_routing_service](../modules/agent_routing_service.md)
@@ -37,6 +37,7 @@ Create immutable assessments and deterministic exact-actor previews.
 | `_parse_preview_id` | `(preview_id: str) -> tuple[datetime, int]` | `@staticmethod` | — |
 | `_preview_context` | *(async)* `(task: Task) -> tuple[Iteration, list[TeamMember], list[AgentActor], list[AgentTaskAssignment], list[AgentRun], dict[int, tuple[int, int]], dict[int, int]]` | — | — |
 | `_capacity_inputs` | *(async)* `(*, task: Task, iteration: Iteration, members: Sequence[TeamMember]) -> dict[int, dict[str, Any]]` | — | — |
+| `_caller_visible_actor_ids` | `(boundary: Any) -> frozenset[int] \| None` | `@staticmethod` | Return the actors whose rows a team-bound caller may receive. |
 | `_member_for_candidate` | `(*, task: Task, purpose: str, profile_id: int \| None, members: Sequence[TeamMember]) -> TeamMember \| None` | `@staticmethod` | — |
 | `_routing_input_evidence` | `(*, task: Task, assessment: TaskRoutingAssessment, purpose: str, strict_review: bool, reviewer_profile_id: int \| None, iteration: Iteration, members: Sequence[TeamMember], actors: Sequence[AgentActor], task_assignments: Sequence[AgentTaskAssignment], running_task_runs: Sequence[AgentRun], assignment_counts: dict[int, tuple[int, int]], running_counts: dict[int, int], capacity: dict[int, dict[str, Any]]) -> dict[str, Any]` | `@staticmethod` | — |
 | `_build_preview` | *(async)* `(*, task: Task, data: AgentRoutingPreviewCreate, generated_at: datetime, requesting_actor_id: int) -> AgentRoutingPreviewResponse` | — | — |
@@ -87,7 +88,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing_service](../modules/agent_routing_service.md) | 26 | — |
+| [agent_routing_service](../modules/agent_routing_service.md) | 27 | — |
 
 ### References
 
@@ -106,4 +107,4 @@ flowchart LR
 | `get_task_routing_assessment` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 | `list_task_routing_assessments` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 
-> References: showing 12 of 33 logical references; 21 omitted by the 12-row generated summary limit.
+> References: showing 12 of 41 logical references; 29 omitted by the 12-row generated summary limit.

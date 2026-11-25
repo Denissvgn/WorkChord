@@ -1,6 +1,6 @@
 # SnapshotIdentity
 
-**Location:** `backend/app/services/planning_window_reconciliation.py:37`
+**Location:** `backend/app/services/planning_window_reconciliation.py:40`
 **Kind:** Class
 **Bases:** —
 **Module:** [planning_window_reconciliation](../modules/planning_window_reconciliation.md)

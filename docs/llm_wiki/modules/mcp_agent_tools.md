@@ -24,7 +24,7 @@ the same audited command and read-model paths.
 | `app.schemas.agent_routing` | `AgentModelBindingCreate`, `AgentModelBindingDisable`, `AgentModelBindingUpdate`, `AgentModelCatalogCreate`, `AgentModelCatalogDisable`, `AgentModelCatalogUpdate`, `AgentRoutingPreviewCreate`, `TaskRoutingAssessmentCommand` |
 | `app.schemas.agent_skill_bundle` | `SkillBundleCatalogResponse`, `SkillBundleManifestResponse` |
 | `app.schemas.execution_usage` | `ExecutionUsageWrite` |
-| `app.schemas.iteration` | `IterationCreate`, `IterationPlanningReadinessSummary`, `IterationSummary`, `IterationUpdate` |
+| `app.schemas.iteration` | `IterationCreate`, `IterationPlanningReadinessSummary`, `IterationSummary`, `IterationUpdate`, `IterationDateMovePreview`, `IterationDateMoveRequest` |
 | `app.schemas.label` | `LabelGroupResponse`, `LabelResponse` |
 | `app.schemas.project` | `ProjectCreate`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneResponse`, `ProjectMilestoneUpdate`, `ProjectResponse`, `ProjectUpdate`, `ProjectUpdateEntryResponse` |
 | `app.schemas.release` | `ReleaseResponse` |
@@ -34,7 +34,8 @@ the same audited command and read-model paths.
 | `app.schemas.task` | `TaskCreate` |
 | `app.schemas.task_brief` | `BriefWrite` |
 | `app.schemas.task_domain` | `TaskActionRequest` |
-| `app.schemas.team` | `MemberCapacity`, `MemberWorkload`, `TeamMemberProfileResponse`, `TeamMemberProfileCreate`, `TeamMemberProfileUpdate`, `TeamMemberCreate`, `TeamMemberResponse`, `TeamMemberUpdate`, `VacationCreate`, `VacationResponse`, `VacationUpdate` |
+| `app.schemas.task_replacement` | `TaskReplacementResponse`, `TaskReplacementCreate` |
+| `app.schemas.team` | `MemberCapacity`, `MemberWorkload`, `TeamMemberProfileResponse`, `TeamMemberProfileCreate`, `TeamMemberProfileUpdate`, `TeamMemberCreate`, `TeamMemberResponse`, `TeamMemberUpdate`, `VacationCreate`, `VacationResponse`, `VacationUpdate`, `CapacityAdjustmentCommand`, `CapacityAdjustmentResult`, `CapacityAdjustmentCommand`, `CapacityTransferCommand`, `CapacityTransferResult`, `CapacityTransferCommand`, `CapacityTransferResult`, `CapacityTransferWithdrawal`, `CapacityTransferWithdrawal` |
 | `app.schemas.template` | `TemplateType`, `WorkTemplateResponse` |
 | `app.schemas.triage` | `TriageActionRequest`, `TriageClassificationSuggestionResponse`, `TriageConvertToTaskRequest`, `TriageConvertToTaskResponse`, `TriageDuplicateRequest`, `TriageItemCreate`, `TriageItemResponse`, `TriageItemStatus`, `TriageItemUpdate`, `TriageSnoozeRequest`, `TriageTaskDraftRequest`, `TriageConvertToBacklogRequest` |
 | `app.services.agent_model_catalog_service` | `AgentModelCatalogService` |
@@ -42,14 +43,17 @@ the same audited command and read-model paths.
 | `app.services.agent_profile_catalog_service` | `AgentProfileCatalogService` |
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
 | `app.services.agent_routing_service` | `AgentRoutingService` |
-| `app.services.agent_service` | `AgentConflictError`, `AgentService`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key`, `actor_has_scope`, `AgentPermissionError` |
+| `app.services.agent_service` | `AgentConflictError`, `AgentService`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key`, `require_scope`, `require_scope`, `require_scope`, `require_scope`, `require_scope`, `actor_has_scope`, `AgentPermissionError` |
 | `app.services.agent_skill_bundle_service` | `AgentSkillBundleService`, `SkillBundleArtifactError`, `SkillBundleNotFoundError` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupService` |
 | `app.services.agent_work_service` | `AgentWorkService` |
 | `app.services.assignee_recommendation_service` | `AssigneeRecommendationService` |
 | `app.services.calendar_rules` | `AnnualCalendars` |
+| `app.services.capacity_adjustments` | `CapacityAdjustmentService` |
+| `app.services.capacity_transfers` | `CapacityTransferService`, `CapacityTransferService` |
 | `app.services.execution_usage_service` | `ExecutionUsageService` |
 | `app.services.external_link_service` | `ExternalLinkConflictError`, `ExternalLinkService` |
+| `app.services.iteration_date_move` | `IterationDateMoveService` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.label_service` | `LabelService` |
 | `app.services.project_service` | `ProjectService` |
@@ -61,6 +65,7 @@ the same audited command and read-model paths.
 | `app.services.task_context_revision_service` | `TaskContextVersionConflictError`, `lock_task_context` |
 | `app.services.task_detail_service` | `TaskDetailService` |
 | `app.services.task_domain_service` | `domain_capabilities`, `TaskDomainService`, `TaskDomainService` |
+| `app.services.task_replacement_service` | `TaskReplacementService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.team_service` | `TeamService` |
 | `app.services.template_service` | `TemplateService` |
@@ -98,8 +103,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (14) |
-| Outbound | `backend` (52) |
+| Inbound | `backend` (19) |
+| Outbound | `backend` (57) |
 
 ### External packages
 
@@ -107,7 +112,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 66 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 76 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -163,6 +168,15 @@ flowchart LR
 | `update_planning_profile` | *(async)* `(db: AsyncSession, actor: AgentActor, profile_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: update one reusable team profile. |
 | `create_planning_team_member` | *(async)* `(db: AsyncSession, actor: AgentActor, iteration_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: add one capacity owner to an iteration. |
 | `update_planning_team_member` | *(async)* `(db: AsyncSession, actor: AgentActor, member_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: update one iteration capacity owner. |
+| `preview_capacity_adjustment` | *(async)* `(db: AsyncSession, actor: AgentActor, member_id: int, payload: dict[str, Any]) -> dict[str, Any]` | — | MCP handler: show effective capacity for a dated adjustment without recording it. |
+| `preview_iteration_date_move` | *(async)* `(db: AsyncSession, actor: AgentActor, iteration_id: int, payload: dict[str, Any]) -> dict[str, Any]` | — | MCP handler: show each person's shortfall for a proposed iteration period without saving it. |
+| `apply_capacity_adjustment` | *(async)* `(db: AsyncSession, actor: AgentActor, member_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: record or withdraw dated adjustments on one capacity row. |
+| `preview_capacity_transfer` | *(async)* `(db: AsyncSession, actor: AgentActor, payload: dict[str, Any]) -> dict[str, Any]` | — | MCP handler: show every row's effective capacity with a temporary transfer without recording it. |
+| `apply_capacity_transfer` | *(async)* `(db: AsyncSession, actor: AgentActor, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: lend capacity between rows of one person until a return date. |
+| `preview_capacity_transfer_withdrawal` | *(async)* `(db: AsyncSession, actor: AgentActor, group_token: str, payload: dict[str, Any]) -> dict[str, Any]` | — | MCP handler: show the capacity every row of a transfer gets back without recording it. |
+| `withdraw_capacity_transfer` | *(async)* `(db: AsyncSession, actor: AgentActor, group_token: str, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: return the lent capacity of every row of one transfer together. |
+| `get_task_replacement` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any]` | — | MCP handler: read the clean-replacement disposition a task takes part in. |
+| `record_task_replacement` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: replace an unaccepted task with a fresh one under a recorded owner decision. |
 | `create_planning_vacation` | *(async)* `(db: AsyncSession, actor: AgentActor, member_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: add one validated vacation period. |
 | `update_planning_vacation` | *(async)* `(db: AsyncSession, actor: AgentActor, vacation_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: update one validated vacation period. |
 | `preview_planning_schedule` | *(async)* `(db: AsyncSession, actor: AgentActor, iteration_id: int, *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: preview schedule changes in a rolled-back savepoint. |
@@ -191,6 +205,7 @@ flowchart LR
 | `disable_agent_model_binding` | *(async)* `(db: AsyncSession, actor: AgentActor, binding_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: soft-disable one actor binding. |
 | `create_agent_assignment` | *(async)* `(db: AsyncSession, actor: AgentActor, payload: dict[str, Any], *, idempotency_key: Optional[str] = None, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: dispatch one task to an exact actor. |
 | `list_agent_assignments` | *(async)* `(db: AsyncSession, actor: AgentActor, *, task_id: Optional[int] = None, actor_id: Optional[int] = None, purpose: Optional[str] = None, state: Optional[str] = None, limit: int = 200) -> list[dict[str, Any]]` | — | MCP handler: list durable assignments within the authorized queue boundary. |
+| `list_agent_assignments_page` | *(async)* `(db: AsyncSession, actor: AgentActor, *, task_id: Optional[int] = None, actor_id: Optional[int] = None, purpose: Optional[str] = None, state: Optional[str] = None, limit: int = 200, cursor: Optional[str] = None) -> dict[str, Any]` | — | MCP handler: one page, ordered by assignment id, with a next cursor. |
 | `update_agent_assignment` | *(async)* `(db: AsyncSession, actor: AgentActor, assignment_id: int, payload: dict[str, Any], *, idempotency_key: Optional[str] = None, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: reassign, reorder, defer, or cancel queued work. |
 | `get_my_work` | *(async)* `(db: AsyncSession, actor: AgentActor, *, limit: int = 20, cursor: Optional[str] = None) -> dict[str, Any]` | — | MCP handler: return the authoritative current/next work decision. |
 | `list_my_claims` | *(async)* `(db: AsyncSession, actor: AgentActor) -> list[dict[str, Any]]` | — | MCP handler: list claims currently owned by this actor. |

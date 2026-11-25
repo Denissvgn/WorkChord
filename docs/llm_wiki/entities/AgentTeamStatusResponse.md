@@ -1,6 +1,6 @@
 # AgentTeamStatusResponse
 
-**Location:** `backend/app/schemas/agent_team_setup.py:994`
+**Location:** `backend/app/schemas/agent_team_setup.py:1038`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
@@ -26,6 +26,9 @@ _Auto-generated from `AgentTeamStatusResponse` in `backend/app/schemas/agent_tea
 | `pending_action_ids` | `tuple[str, ...]` | `pending_action_ids` | No | No | `()` | max_length=unknown (MAX_AGENT_TEAM_ACTIONS) | — | — |
 | `can_mutate` | `bool` | `can_mutate` | Yes | No | — | — | — | — |
 | `next_action` | `str \| None` | `next_action` | No | Yes | `None` | max_length=255 | — | — |
+| `feature_advertised` | `bool` | `feature_advertised` | No | No | `True` | — | — | — |
+| `caller_binding` | `Literal['operator', 'bound', 'unbound']` | `caller_binding` | No | No | `'operator'` | — | — | — |
+| `roster_scope` | `Literal['team', 'workspace', 'none']` | `roster_scope` | No | No | `'workspace'` | — | — | — |
 
 ## Methods
 
@@ -59,7 +62,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_team_setup](../modules/agent_team_setup.md) | 0 | `availability`, `blocker_codes`, `can_mutate`, `manifest_digest`, `members`, `next_action`, `pending_action_ids`, `runtime_ready`, `schema_version`, `steps`, `topology_key`, `topology_revision` |
+| [agent_team_setup](../modules/agent_team_setup.md) | 0 | `availability`, `blocker_codes`, `caller_binding`, `can_mutate`, `feature_advertised`, `manifest_digest`, `members`, `next_action`, `pending_action_ids`, `roster_scope`, `runtime_ready`, `schema_version` |
 
 ### Structure
 
@@ -75,5 +78,5 @@ flowchart LR
 | `AgentTeamSetupService._status_for_topology` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 | `AgentTeamSetupService._status_for_topology` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService.report` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
-| `AgentTeamSetupService.status` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
+| `AgentTeamSetupService.status` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 2 |
 | `AgentTeamSetupService.status` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |

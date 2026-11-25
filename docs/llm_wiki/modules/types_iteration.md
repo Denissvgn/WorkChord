@@ -55,5 +55,5 @@ flowchart LR
 | [IterationSeriesResponse](../entities/types_iteration_IterationSeriesResponse.md) | Interface | 60 | — | — |
 | [IterationSummary](../entities/types_iteration_IterationSummary.md) | Interface | 64 | `WorkMetrics` | — |
 | [IterationPlanningReadinessSummary](../entities/types_iteration_IterationPlanningReadinessSummary.md) | Interface | 88 | — | — |
-| [PlanCheckpoint](../entities/types_iteration_PlanCheckpoint.md) | Interface | 112 | — | — |
+| [PlanCheckpoint](../entities/types_iteration_PlanCheckpoint.md) | Interface | 121 | — | — |
 | [IterationSeriesStop](../entities/types_iteration_IterationSeriesStop.md) | Type alias | 45 | <pre><code>&#124; &#123; mode&#58; &#39;count&#39;&#59; count&#58; number &#125;&#10;    &#124; &#123; mode&#58; &#39;until&#95;date&#39;&#59; until&#95;date&#58; string &#125;</code></pre> | — |

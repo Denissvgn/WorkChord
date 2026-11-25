@@ -57,8 +57,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_member_workload | service.get_workload | 278 | `service.get_workload(member_id)` |
-| get_member_workload | HTTPException | 280 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_member_workload | service.get_workload | 391 | `service.get_workload(member_id)` |
+| get_member_workload | HTTPException | 393 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 
 ### Boundary effects
 
@@ -68,8 +68,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_member_workload` | `service.get_workload` | 278 |
-| external_call | `get_member_workload` | `HTTPException` | 280 |
+| unresolved_call | `get_member_workload` | `service.get_workload` | 391 |
+| external_call | `get_member_workload` | `HTTPException` | 393 |
 
 ## Behavior
 

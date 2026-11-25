@@ -107,12 +107,12 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [AttentionCandidate](../entities/AttentionCandidate.md) | Interface | 226 | — | — |
+| [AttentionCandidate](../entities/AttentionCandidate.md) | Interface | 227 | — | — |
 | [OverviewTaskList](../entities/OverviewTaskList.md) | Type alias | 23 | `keyof typeof OVERVIEW_TASK_LISTS` | — |
-| [PipelineStage](../entities/PipelineStage.md) | Type alias | 54 | `typeof PIPELINE_STAGES[number]` | — |
-| [OverviewCountList](../entities/OverviewCountList.md) | Type alias | 77 | `OverviewTaskList` | A list Overview can show itself, for task counts that no single Tasks list holds: a sum |
-| [DeliveryRisk](../entities/DeliveryRisk.md) | Type alias | 184 | `'overdue' \| 'late-start' \| 'outside-limits' \| 'blocked' \| null` | — |
-| [AttentionKind](../entities/AttentionKind.md) | Type alias | 224 | `typeof ATTENTION_KINDS[number]` | — |
+| [PipelineStage](../entities/PipelineStage.md) | Type alias | 55 | `typeof PIPELINE_STAGES[number]` | — |
+| [OverviewCountList](../entities/OverviewCountList.md) | Type alias | 78 | `OverviewTaskList` | A list Overview can show itself, for task counts that no single Tasks list holds: a sum |
+| [DeliveryRisk](../entities/DeliveryRisk.md) | Type alias | 185 | `'overdue' \| 'late-start' \| 'outside-limits' \| 'blocked' \| null` | — |
+| [AttentionKind](../entities/AttentionKind.md) | Type alias | 225 | `typeof ATTENTION_KINDS[number]` | — |
 
 ## Functions
 

@@ -40,7 +40,7 @@ Scheduled and backlog restoration share a version allocator under the owning sco
 | `import_legacy` | *(async)* `(iteration_id: int, *, dry_run = True, limit = 25) -> list[dict]` | `@atomic_command` | Inventory legacy files without inventing trust for ambiguous preview-era content. |
 | `restore` | *(async)* `(iteration_id: int, filename: str, *, expected_revision = None) -> dict` | `@atomic_command` | Restore supported IDs in place, retain history and invalidate current execution acceptance. |
 | `_task_to_export` | `(task) -> dict` | — | Convert task to export format recursively. |
-| `_member_to_export` | `(member) -> dict` | — | Convert team member to export format. |
+| `_member_to_export` | `(member, adjustments = ()) -> dict` | — | Convert team member to export format. |
 
 ## Relationships
 
@@ -110,4 +110,4 @@ flowchart LR
 | `PlanShareService.create` | call | [plan_share_service](../modules/plan_share_service.md) | 1 |
 | `_planning_proof` | call | [planning_window_reconciliation](../modules/planning_window_reconciliation.md) | 1 |
 
-> References: showing 12 of 53 logical references; 41 omitted by the 12-row generated summary limit.
+> References: showing 12 of 55 logical references; 43 omitted by the 12-row generated summary limit.

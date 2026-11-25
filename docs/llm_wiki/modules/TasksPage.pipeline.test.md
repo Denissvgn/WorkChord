@@ -22,7 +22,7 @@ _Auto-generated from `frontend/src/pages/TasksPage.pipeline.test.tsx`._
 | `@testing-library/react` | `screen`, `waitFor`, `within` | — | compiler-dependent |
 | `react-router-dom` | `Route`, `Routes`, `useLocation` | — | compiler-dependent |
 | `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
-| Unresolved `dynamic-import` | — (line 219; deferred) | — | unclassified |
+| Unresolved `dynamic-import` | — (line 231; deferred) | — | unclassified |
 
 ## Module Signals
 

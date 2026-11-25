@@ -3928,3 +3928,85 @@ A controller can recover eligible work for its own team. Formal review can bind 
 - Workflow pages created: 0
 - Dependency pages initialized: 0
 - Surface policy updated: no
+
+## 2026-11-25
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:b60a7a6d44332b75f147a362a0e6e6be2caf5254159420c0f92a43537ad3af2a`
+- Pages created: 162
+- Pages updated: 770
+- Pages metadata-only: 7
+- Pages skipped (unchanged): 2856
+- Pages deprecated: 1
+- Semantic fields preserved: 69
+- Moved entities: none
+- Flow pages initialized: 41 (http=27, mcp=10, process=4)
+- Workflow pages created: 12
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 1
+- Infrastructure changed: 4
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 9
+- Generated surface pages retired: 1
+
+## 2026-11-25 — Architectural refresh for the 1.9.0 changes
+
+The wiki was rebuilt in one owning full-reconstruction sync. New pages describe task replacements with carried review provenance, GitHub pull request reconciliation and catch-up, delivery prerequisites with a target branch, temporary capacity transfers and dated capacity adjustments, the iteration date-move preview, the coordinated maintenance window, the profile seed-key bind, the stable assignment page, and the self-hosted adoption scripts and wiki lock-root preflight. The module for the control-plane maintenance authority is now named `app_maintenance` because a model module of the same name was added. Behavior sections of the new flows and workflows record the supported conditions and refusals.
+
+## 2026-11-25 — Retired frontend-source pages stay retired
+
+Kept the retirement of wiki pages for deleted frontend sources (PR #84) as the disposition; no historical-source section is restored.
+
+## 2026-11-25
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:b60a7a6d44332b75f147a362a0e6e6be2caf5254159420c0f92a43537ad3af2a`
+- Pages created: 0
+- Pages updated: 5
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3757
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-11-25
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:b60a7a6d44332b75f147a362a0e6e6be2caf5254159420c0f92a43537ad3af2a`
+- Pages created: 0
+- Pages updated: 160
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3602
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-11-25
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:b60a7a6d44332b75f147a362a0e6e6be2caf5254159420c0f92a43537ad3af2a`
+- Pages created: 0
+- Pages updated: 160
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3602
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

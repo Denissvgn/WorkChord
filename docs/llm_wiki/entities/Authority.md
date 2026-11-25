@@ -108,4 +108,4 @@ flowchart LR
 | `test_hidden_person_protects_shared_master_without_leaking_their_identity` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
 | `test_private_cross_year_commitment_warns_the_draft_and_holds_only_baseline_commit` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
 
-> References: showing 12 of 53 logical references; 41 omitted by the 12-row generated summary limit.
+> References: showing 12 of 55 logical references; 43 omitted by the 12-row generated summary limit.

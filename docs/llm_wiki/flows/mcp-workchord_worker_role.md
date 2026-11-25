@@ -2,18 +2,18 @@
 
 **Entry point:** `workchord_worker_role` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), and 10 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 10 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
 - [identity_service](../modules/identity_service.md)
-- [maintenance](../modules/maintenance.md)
 - [mcp_server](../modules/mcp_server.md)
 - [models_identity](../modules/models_identity.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
@@ -214,7 +214,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workchord_worker_role | _skill_bundle_prompt | 2453 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended worker skill version, then read workchord://skill-bundles/workchord-worker/{version}/SKILL.md. Follow that skill, call workchord://agent/me/work, and execute only the exact server-selected assignment.')` |
+| workchord_worker_role | _skill_bundle_prompt | 2626 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended worker skill version, then read workchord://skill-bundles/workchord-worker/{version}/SKILL.md. Follow that skill, call workchord://agent/me/work, and execute only the exact server-selected assignment.')` |
 | _skill_bundle_prompt | _agent_context | 370 | `_agent_context(_skill_bundle_scope_requirement(...))` |
 | _agent_context | _current_agent_key | 278 | `_current_agent_key(data not statically known)` |
 | _current_agent_key | _http_agent_key.get | 205 | `_http_agent_key.get(data not statically known)` |

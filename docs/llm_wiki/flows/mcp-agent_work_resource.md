@@ -11,6 +11,7 @@
 - [agent_service](../modules/agent_service.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [agent_work_service](../modules/agent_work_service.md)
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
@@ -20,7 +21,6 @@
 - [execution_reconciliation](../modules/execution_reconciliation.md)
 - [github_links](../modules/github_links.md)
 - [identity_service](../modules/identity_service.md)
-- [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [mcp_server](../modules/mcp_server.md)
 - [models_identity](../modules/models_identity.md)
@@ -62,13 +62,13 @@ sequenceDiagram
     participant p19 as _require_scope_requirement
     participant p20 as IdentityService.actor_context
     participant p21 as window_authority_matches
-    participant p22 as AgentWorkService._start_blockers
-    participant p23 as AgentWorkService.run_response
-    participant p24 as assignment_matches
-    participant p25 as require_scope
-    participant p26 as evaluate_actor_authorization
-    participant p27 as AgentService.authenticate
-    participant p28 as require_identity_writes
+    participant p22 as AgentWorkService._started_blockers
+    participant p23 as AgentWorkService._start_blockers
+    participant p24 as AgentWorkService.run_response
+    participant p25 as assignment_matches
+    participant p26 as require_scope
+    participant p27 as evaluate_actor_authorization
+    participant p28 as AgentService.authenticate
     participant p29 as json.dumps (backend/app/mcp_server.py:_json_resource)
     participant p30 as decision.model_dump
     p0->>p1: _json_resource
@@ -92,34 +92,34 @@ sequenceDiagram
     p7->>p19: _require_scope_requirement
     p7->>p20: IdentityService.actor_context
     p8->>p21: window_authority_matches
-    p9->>p22: AgentWorkService._start_blockers
-    p9->>p23: AgentWorkService.run_response
-    p21->>p24: assignment_matches
-    p19->>p25: require_scope
-    p14->>p26: evaluate_actor_authorization
-    p17->>p27: AgentService.authenticate
-    p20->>p28: require_identity_writes
+    p9->>p22: AgentWorkService._started_blockers
+    p9->>p23: AgentWorkService._start_blockers
+    p9->>p24: AgentWorkService.run_response
+    p21->>p25: assignment_matches
+    p19->>p26: require_scope
+    p14->>p27: evaluate_actor_authorization
+    p17->>p28: AgentService.authenticate
     p1-->>p29: json.dumps (backend/app/mcp_server.py:_json_resource)(value, ensure_ascii=False, default=str)
     p2-->>p30: decision.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 721 interactions; 691 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 639 interactions; 609 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 199 (198 omitted); unresolved 1 of 336 (335 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 175 (174 omitted); unresolved 1 of 278 (277 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
 | `backend/app/config.py:get_settings` | 5 | [backend/app/config.py](../modules/config.md) | internal | 1 |
-| `backend/app/maintenance.py:enforce_mcp_access` | 4 | [backend/app/maintenance.py](../modules/maintenance.md) | internal | 2 |
+| `backend/app/maintenance.py:enforce_mcp_access` | 4 | [backend/app/maintenance.py](../modules/app_maintenance.md) | internal | 2 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 7 | - | external | 4 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 7 | - | unresolved | 3 |
 | `backend/app/mcp_server.py:_agent_context` | 16 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 3 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 162 groups; 154 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 160 groups; 152 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -134,7 +134,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 187; effect analysis evaluated: 131, partial: 8, unavailable: 48. Counts include steps omitted from the displayed trace.
 
-Collector observations for 139 source steps with known totals: observed: 814, emitted: 757, omitted: 57. Unavailable totals are excluded.
+Collector observations for 139 source steps with known totals: observed: 827, emitted: 770, omitted: 57. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -183,10 +183,10 @@ flowchart LR
     click s1 "../modules/mcp_server.md"
     click s2 "../modules/mcp_server.md"
     click s3 "../modules/mcp_server.md"
-    click s4 "../modules/maintenance.md"
+    click s4 "../modules/app_maintenance.md"
     click s5 "../modules/config.md"
     click s6 "../modules/config.md"
-    click s7 "../modules/maintenance.md"
+    click s7 "../modules/app_maintenance.md"
 ```
 
 ### Step data
@@ -210,7 +210,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_work_resource | _json_resource | 2325 | `_json_resource((...), ...)` |
+| agent_work_resource | _json_resource | 2498 | `_json_resource((...), ...)` |
 | _json_resource | _tool_call | 364 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

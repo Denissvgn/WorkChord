@@ -7,7 +7,10 @@
 
 ## Description
 
-Agent supervision pipeline; every open task appears in exactly one stage.
+Agent supervision pipeline; every open, non-deferred task appears in exactly one stage.
+
+``active_outside_run`` holds active work with no assignment, claim, run or
+recovery signal; the task's capacity owner (``assignee``) is accountable.
 
 Stage names and meanings come from ``config/workflow-vocabulary.json``.
 
@@ -20,6 +23,7 @@ Stage names and meanings come from ``config/workflow-vocabulary.json``.
 | `assigned_waiting` | `list[TaskResponse]` | `assigned_waiting` | Yes | No | — | — | — | — |
 | `start_ready` | `list[TaskResponse]` | `start_ready` | Yes | No | — | — | — | — |
 | `executing` | `list[TaskResponse]` | `executing` | Yes | No | — | — | — | — |
+| `active_outside_run` | `list[TaskResponse]` | `active_outside_run` | Yes | No | — | — | — | — |
 | `verification_required` | `list[TaskResponse]` | `verification_required` | Yes | No | — | — | — | — |
 | `recovery_required` | `list[TaskResponse]` | `recovery_required` | Yes | No | — | — | — | — |
 
@@ -48,7 +52,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 0 | `assigned_waiting`, `executing`, `needs_definition`, `ready_to_assign`, `recovery_required`, `start_ready`, `verification_required` |
+| [schemas_agent](../modules/schemas_agent.md) | 0 | `active_outside_run`, `assigned_waiting`, `executing`, `needs_definition`, `ready_to_assign`, `recovery_required`, `start_ready`, `verification_required` |
 
 ### Structure
 

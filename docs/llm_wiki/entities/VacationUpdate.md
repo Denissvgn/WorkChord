@@ -1,7 +1,7 @@
 # VacationUpdate
 
-**Location:** `backend/app/schemas/team.py:41`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/team.py:42`
+**Kind:** Class
 **Bases:** `PlanningInputRevisions`
 **Module:** [schemas_team](../modules/schemas_team.md)
 

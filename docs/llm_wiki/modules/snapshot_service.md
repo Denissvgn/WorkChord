@@ -35,11 +35,13 @@ Snapshot restoration compares the database’s physical allocation foreign keys 
 | `app.routers.snapshots` | `_validate_snapshot_task_payloads` |
 | `app.services.allocation_removal` | `foreign_keys_to_members`, `mapped_allocation_references` |
 | `app.services.calendar_service` | `CalendarService` |
+| `app.services.capacity_adjustments` | `active_adjustment_rows`, `restore_adjustments` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.task_domain_service` | `require_owner` |
 | `app.services.task_recovery_service` | `reserve_restored_task_version` |
+| `app.services.task_replacement_service` | `require_restore_compatible` |
 | `app.services.task_service` | `TaskService`, `TaskService` |
 | `app.services.team_service` | `TeamService`, `TeamService` |
 | `app.utils.time` | `utc_now` |
@@ -70,8 +72,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (23) |
-| Outbound | `backend` (21) |
+| Inbound | `backend` (25) |
+| Outbound | `backend` (23) |
 
 ### External packages
 
@@ -79,7 +81,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 41 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

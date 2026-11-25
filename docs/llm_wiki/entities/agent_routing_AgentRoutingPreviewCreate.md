@@ -25,6 +25,8 @@ Non-dispatching exact-actor preview bound to current task state.
 | `reviewer_profile_id` | `int \| None` | `reviewer_profile_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
 | `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
 | `review_assignment_id` | `int \| None` | `review_assignment_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
+| `focus_actor_id` | `int \| None` | `focus_actor_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
+| `focus_model_binding_id` | `int \| None` | `focus_model_binding_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
 
 ## Methods
 
@@ -84,7 +86,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing](../modules/agent_routing.md) | 1 | `assessment_id`, `expected_task_version`, `purpose`, `review_assignment_id`, `review_evidence_id`, `reviewer_profile_id` |
+| [agent_routing](../modules/agent_routing.md) | 1 | `assessment_id`, `expected_task_version`, `focus_actor_id`, `focus_model_binding_id`, `purpose`, `review_assignment_id`, `review_evidence_id`, `reviewer_profile_id` |
 
 ### Structure
 
@@ -109,4 +111,4 @@ flowchart LR
 | `test_preview_contract_accepts_eligible_and_explicit_no_candidate_states` | call | [test_agent_routing_wave3_contract](../modules/test_agent_routing_wave3_contract.md) | 1 |
 | `_preview_with_parity` | call | [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md) | 1 |
 
-> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.
+> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.

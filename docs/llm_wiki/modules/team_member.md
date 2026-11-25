@@ -44,7 +44,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (67) |
+| Inbound | `backend` (77) |
 | Outbound | `backend` (6) |
 
 ### External packages
@@ -53,7 +53,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 69 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 79 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -63,3 +63,4 @@ flowchart LR
 | [TeamMemberProfile](../entities/team_member_TeamMemberProfile.md) | 71 | `Base` | Reusable person profile for durable capability and preference metadata. |
 | [TeamMemberProfileSkill](../entities/team_member_TeamMemberProfileSkill.md) | 128 | `Base` | Structured skill or weakness attached to a reusable team-member profile. |
 | [Vacation](../entities/team_member_Vacation.md) | 170 | `Base` | Vacation period for a team member. |
+| [TeamMemberCapacityAdjustment](../entities/TeamMemberCapacityAdjustment.md) | 191 | `Base` | A dated replacement of one capacity row's availability percentage. |

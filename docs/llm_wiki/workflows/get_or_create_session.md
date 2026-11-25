@@ -1,7 +1,7 @@
 # get_or_create_session
 
 **Entry point:** `session_service.get_or_create_session`
-**Modules involved:** [commands](../modules/commands.md), [config](../modules/config.md), [maintenance](../modules/maintenance.md), [session_service](../modules/session_service.md), [time](../modules/time.md)
+**Modules involved:** [app_maintenance](../modules/app_maintenance.md), [commands](../modules/commands.md), [config](../modules/config.md), [session_service](../modules/session_service.md), [time](../modules/time.md)
 
 > Resolve an opaque token or create a fresh session without IP ownership.
 
@@ -9,7 +9,7 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `config.get_settings`
-2. `maintenance.MaintenanceModeError`
+2. `app_maintenance.MaintenanceModeError`
 3. `time.utc_now`
 4. `config.get_settings`
 5. `time.as_utc`
@@ -17,9 +17,9 @@
 
 ## Touches
 
+- [app_maintenance](../modules/app_maintenance.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
-- [maintenance](../modules/maintenance.md)
 - [session_service](../modules/session_service.md)
 - [time](../modules/time.md)
 

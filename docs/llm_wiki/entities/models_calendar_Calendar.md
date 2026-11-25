@@ -105,4 +105,4 @@ flowchart LR
 | `CalendarService.create` | type_reference | [calendar_service](../modules/calendar_service.md) | — |
 | `CalendarService.get_all` | type_reference | [calendar_service](../modules/calendar_service.md) | — |
 
-> References: showing 12 of 52 logical references; 40 omitted by the 12-row generated summary limit.
+> References: showing 12 of 60 logical references; 48 omitted by the 12-row generated summary limit.

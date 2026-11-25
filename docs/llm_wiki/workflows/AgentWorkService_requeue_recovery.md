@@ -30,12 +30,13 @@
 20. `agent_service.AgentConflictError`
 21. `review_provenance.different_publisher_required`
 22. `review_provenance.mark_server_interruption`
-23. `commands.current_command`
-24. `agent_service.AgentConflictError`
-25. `models_agent.AgentTaskAssignment`
-26. `schemas_agent.AgentRecoveryRequeueResponse`
-27. `agent_routing_policy.canonical_routing_json_bytes`
-28. `commands.commit_or_flush`
+23. `review_provenance.record_server_end_profile`
+24. `commands.current_command`
+25. `agent_service.AgentConflictError`
+26. `models_agent.AgentTaskAssignment`
+27. `schemas_agent.AgentRecoveryRequeueResponse`
+28. `agent_routing_policy.canonical_routing_json_bytes`
+29. `commands.commit_or_flush`
 
 ## Touches
 

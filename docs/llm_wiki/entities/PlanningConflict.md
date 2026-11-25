@@ -38,9 +38,9 @@ flowchart LR
     n10["is_unused_allocation (backend/app/services/allocation_removal.py)"]
     n11["reserve_iteration_annuals (backend/app/services/calendar_rules.py)"]
     n12["CalendarService.delete (backend/app/services/calendar_service.py)"]
-    n13["CapacityService.invalidate_profile (backend/app/services/capacity_service.py)"]
-    n14["CapacityService.projection (backend/app/services/capacity_service.py)"]
-    n15["CapacityService.require_visible (backend/app/services/capacity_service.py)"]
+    n13["CapacityAdjustmentService._change (backend/app/services/capacity_adjustments.py)"]
+    n14["CapacityAdjustmentService._refuse_reducing_issued_work (backend/app/services/capacity_adjustments.py)"]
+    n15["CapacityService.invalidate_profile (backend/app/services/capacity_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -68,8 +68,8 @@ flowchart LR
     click n10 "../modules/allocation_removal.md"
     click n11 "../modules/calendar_rules.md"
     click n12 "../modules/calendar_service.md"
-    click n13 "../modules/capacity_service.md"
-    click n14 "../modules/capacity_service.md"
+    click n13 "../modules/capacity_adjustments.md"
+    click n14 "../modules/capacity_adjustments.md"
     click n15 "../modules/capacity_service.md"
 ```
 
@@ -100,8 +100,8 @@ flowchart LR
 | `is_unused_allocation` | call | [allocation_removal](../modules/allocation_removal.md) | 1 |
 | `reserve_iteration_annuals` | call | [calendar_rules](../modules/calendar_rules.md) | 2 |
 | `CalendarService.delete` | call | [calendar_service](../modules/calendar_service.md) | 2 |
+| `CapacityAdjustmentService._change` | call | [capacity_adjustments](../modules/capacity_adjustments.md) | 7 |
+| `CapacityAdjustmentService._refuse_reducing_issued_work` | call | [capacity_adjustments](../modules/capacity_adjustments.md) | 1 |
 | `CapacityService.invalidate_profile` | call | [capacity_service](../modules/capacity_service.md) | 2 |
-| `CapacityService.projection` | call | [capacity_service](../modules/capacity_service.md) | 1 |
-| `CapacityService.require_visible` | call | [capacity_service](../modules/capacity_service.md) | 1 |
 
-> References: showing 12 of 56 logical references; 44 omitted by the 12-row generated summary limit.
+> References: showing 12 of 72 logical references; 60 omitted by the 12-row generated summary limit.

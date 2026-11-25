@@ -15,9 +15,10 @@ Gantt API router.
 | `app.models.task` | `Task` |
 | `app.routers.tasks` | `apply_batch_update_items` |
 | `app.schemas.gantt` | `GanttResponse`, `GanttTask`, `GanttAssignee`, `GanttMilestone`, `ScheduleResult`, `SchedulePreviewRequest`, `SchedulePreviewResponse`, `WorkloadIssue`, `SchedulingDecision`, `ScheduleApplyRequest` |
-| `app.schemas.iteration` | `IterationResponse` |
+| `app.schemas.iteration` | `IterationProjectSummary`, `IterationResponse` |
 | `app.services.calendar_rules` | `AnnualCalendars` |
 | `app.services.calendar_service` | `CalendarService` |
+| `app.services.dependency_order` | `inverted_saved_dependencies` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.scheduler_service` | `SchedulerService` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
@@ -48,8 +49,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (4) |
-| Outbound | `backend` (13) |
+| Inbound | `backend` (5) |
+| Outbound | `backend` (14) |
 
 ### External packages
 
@@ -57,7 +58,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

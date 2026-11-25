@@ -2,14 +2,14 @@
 
 **Entry point:** `link_profile` (`http`)
 **Source:** [routers_identity](../modules/routers_identity.md)
-**Modules touched:** [authority](../modules/authority.md), [config](../modules/config.md), [identity_service](../modules/identity_service.md), [maintenance](../modules/maintenance.md), and 2 more
+**Modules touched:** [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [config](../modules/config.md), [identity_service](../modules/identity_service.md), and 2 more
 
 **Complete modules touched:**
 
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [config](../modules/config.md)
 - [identity_service](../modules/identity_service.md)
-- [maintenance](../modules/maintenance.md)
 - [models_identity](../modules/models_identity.md)
 - [routers_identity](../modules/routers_identity.md)
 
@@ -133,7 +133,7 @@ flowchart LR
     click s5 "../modules/identity_service.md"
     click s6 "../modules/config.md"
     click s7 "../modules/config.md"
-    click s8 "../modules/maintenance.md"
+    click s8 "../modules/app_maintenance.md"
     click s9 "../modules/config.md"
     click s10 "../modules/authority.md"
     classDef boundary stroke:#b45309,stroke-dasharray: 4 2

@@ -55,11 +55,11 @@ flowchart LR
     n6["append_run_event (backend/app/mcp_agent_tools.py)"]
     n7["append_task_event (backend/app/mcp_agent_tools.py)"]
     n8["apply_agent_profile_preset (backend/app/mcp_agent_tools.py)"]
-    n9["apply_planning_schedule (backend/app/mcp_agent_tools.py)"]
-    n10["begin_my_work (backend/app/mcp_agent_tools.py)"]
-    n11["claim_task (backend/app/mcp_agent_tools.py)"]
-    n12["classify_triage_item (backend/app/mcp_agent_tools.py)"]
-    n13["convert_triage_to_task (backend/app/mcp_agent_tools.py)"]
+    n9["apply_capacity_adjustment (backend/app/mcp_agent_tools.py)"]
+    n10["apply_capacity_transfer (backend/app/mcp_agent_tools.py)"]
+    n11["apply_planning_schedule (backend/app/mcp_agent_tools.py)"]
+    n12["begin_my_work (backend/app/mcp_agent_tools.py)"]
+    n13["claim_task (backend/app/mcp_agent_tools.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -112,10 +112,10 @@ flowchart LR
 | `append_run_event` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `append_task_event` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `apply_agent_profile_preset` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
+| `apply_capacity_adjustment` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
+| `apply_capacity_transfer` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `apply_planning_schedule` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `begin_my_work` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `claim_task` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
-| `classify_triage_item` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
-| `convert_triage_to_task` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 
-> References: showing 12 of 401 logical references; 389 omitted by the 12-row generated summary limit.
+> References: showing 12 of 435 logical references; 423 omitted by the 12-row generated summary limit.

@@ -27,7 +27,7 @@ _Auto-generated from `frontend/src/test/accessibilityInvariants.test.tsx`._
 
 | Signal | Values |
 |--------|--------|
-| Constants | `PAGE`, `TRIAGE_ITEM`, `SHELL_AND_PAGE_READS`, `BARE_ROUTES` |
+| Constants | `PAGE`, `TRIAGE_ITEM`, `SHELL_AND_PAGE_READS`, `DIAGNOSTIC_LIMIT`, `BARE_ROUTES` |
 | Module calls | `afterEach`, `describe`, `BARE_ROUTES = Set`, `describe` |
 
 ## Local dependency map

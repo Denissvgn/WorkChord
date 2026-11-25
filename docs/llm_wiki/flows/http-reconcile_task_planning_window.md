@@ -2,7 +2,7 @@
 
 **Entry point:** `reconcile_task_planning_window` (`http`)
 **Source:** [agent_catalog](../modules/agent_catalog.md)
-**Modules touched:** [agent_catalog](../modules/agent_catalog.md), [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_planning_service](../modules/agent_planning_service.md), and 27 more
+**Modules touched:** [agent_catalog](../modules/agent_catalog.md), [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_planning_service](../modules/agent_planning_service.md), and 26 more
 
 **Complete modules touched:**
 
@@ -12,7 +12,6 @@
 - [agent_routing_policy](../modules/agent_routing_policy.md)
 - [agent_routing_service](../modules/agent_routing_service.md)
 - [agent_service](../modules/agent_service.md)
-- [agent_team_setup](../modules/agent_team_setup.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
@@ -60,21 +59,21 @@ sequenceDiagram
     participant p13 as authority_stamp
     participant p14 as TaskService._load_iteration_tree
     participant p15 as task_context
-    participant p16 as DeliveryDependencyService.reconcile
-    participant p17 as DiscussionService.enqueue
-    participant p18 as SnapshotService._task_to_export
-    participant p19 as actor_provenance
-    participant p20 as _snapshot_task
-    participant p21 as TaskHierarchyService._load_iteration_tree
-    participant p22 as DeliveryDependencyService.validate_cycles
-    participant p23 as _canonical_snapshot_checksum
-    participant p24 as DiscussionService.recipient_authorized
-    participant p25 as AgentRoutingService._profile_revision
-    participant p26 as TaskService.reserve_task_version
-    participant p27 as clear_execution_evidence
-    participant p28 as _digest
+    participant p16 as authority_matches
+    participant p17 as DeliveryDependencyService.reconcile
+    participant p18 as DiscussionService.enqueue
+    participant p19 as SnapshotService._task_to_export
+    participant p20 as actor_provenance
+    participant p21 as _snapshot_task
+    participant p22 as TaskHierarchyService._load_iteration_tree
+    participant p23 as _authority_basis
+    participant p24 as DeliveryDependencyService.validate_cycles
+    participant p25 as _canonical_snapshot_checksum
+    participant p26 as DiscussionService.recipient_authorized
+    participant p27 as AgentRoutingService._profile_revision
+    participant p28 as TaskService.reserve_task_version
     participant p29 as HTTPException (backend/app/routers/agent…cile_task_planning_window)
-    participant p30 as exc.detail (backend/app/routers/agent…og.py:_handle_model_error)
+    participant p30 as _EVIDENCE_DIGEST.fullmatch
     p0->>p1: reconcile_window
     p0->>p2: _handle_model_error
     p1->>p3: require_operator
@@ -90,40 +89,40 @@ sequenceDiagram
     p11->>p13: authority_stamp
     p7->>p14: TaskService._load_iteration_tree
     p10->>p15: task_context
-    p5->>p16: DeliveryDependencyService.reconcile
-    p5->>p17: DiscussionService.enqueue
-    p8->>p18: SnapshotService._task_to_export
-    p9->>p19: actor_provenance
-    p8->>p20: _snapshot_task
-    p14->>p21: TaskHierarchyService._load_iteration_tree
-    p16->>p22: DeliveryDependencyService.validate_cycles
-    p20->>p23: _canonical_snapshot_checksum
-    p17->>p24: DiscussionService.recipient_authorized
-    p19->>p25: AgentRoutingService._profile_revision
-    p16->>p26: TaskService.reserve_task_version
-    p16->>p27: clear_execution_evidence
-    p13->>p28: _digest
+    p11->>p16: authority_matches
+    p5->>p17: DeliveryDependencyService.reconcile
+    p5->>p18: DiscussionService.enqueue
+    p8->>p19: SnapshotService._task_to_export
+    p9->>p20: actor_provenance
+    p8->>p21: _snapshot_task
+    p14->>p22: TaskHierarchyService._load_iteration_tree
+    p13->>p23: _authority_basis
+    p17->>p24: DeliveryDependencyService.validate_cycles
+    p21->>p25: _canonical_snapshot_checksum
+    p18->>p26: DiscussionService.recipient_authorized
+    p20->>p27: AgentRoutingService._profile_revision
+    p17->>p28: TaskService.reserve_task_version
     p0-->>p29: HTTPException (backend/app/routers/agent…cile_task_planning_window)(status_code=422, detail=str(...))
-    p2-->>p30: exc.detail (backend/app/routers/agent…og.py:_handle_model_error)
+    p1-->>p30: _EVIDENCE_DIGEST.fullmatch(expected_evidence_digest)
 ```
 
-> Call sequence diagram shows 30 of 723 interactions; 693 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 733 interactions; 703 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 234 (233 omitted); unresolved 1 of 369 (368 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 238 (237 omitted); unresolved 1 of 370 (369 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
-| `backend/app/authority.py:require_operator` | 3 | - | unresolved | 1 |
-| `backend/app/authority.py:require_operator` | 3 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
+| `backend/app/services/planning_window_reconciliation.py:reconcile_window` | 2 | - | external | 21 |
+| `backend/app/authority.py:require_operator` | 6 | - | unresolved | 1 |
+| `backend/app/authority.py:require_operator` | 6 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
 | `backend/app/services/planning_window_reconciliation.py:reconcile_window` | 2 | [backend/app/services/agent_service.py](../modules/agent_service.md) | internal | 1 |
-| `backend/app/services/agent_service.py:actor_has_scope` | 7 | [backend/app/services/agent_service.py](../modules/agent_service.md) | internal | 1 |
-| `backend/app/services/agent_service.py:actor_scopes` | 8 | - | external | 2 |
+| `backend/app/services/agent_service.py:actor_has_scope` | 10 | [backend/app/services/agent_service.py](../modules/agent_service.md) | internal | 1 |
+| `backend/app/services/agent_service.py:actor_scopes` | 11 | - | external | 2 |
 | `backend/app/services/planning_window_reconciliation.py:reconcile_window` | 2 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
 | `backend/app/services/planning_window_reconciliation.py:reconcile_window` | 2 | [backend/app/schemas/agent_planning.py](../modules/schemas_agent_planning.md) | internal | 1 |
-| `backend/app/services/planning_window_reconciliation.py:reconcile_window` | 2 | - | external | 19 |
-> Omission summary shows 8 of 148 groups; 140 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 151 groups; 143 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -136,9 +135,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 121; effect analysis evaluated: 81, partial: 9, unavailable: 31. Counts include steps omitted from the displayed trace.
+Source steps: 126; effect analysis evaluated: 85, partial: 10, unavailable: 31. Counts include steps omitted from the displayed trace.
 
-Collector observations for 90 source steps with known totals: observed: 548, emitted: 483, omitted: 65. Unavailable totals are excluded.
+Collector observations for 95 source steps with known totals: observed: 600, emitted: 531, omitted: 69. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -147,7 +146,10 @@ Collector observations for 90 source steps with known totals: observed: 548, emi
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
 | `reconcile_task_planning_window` | `available` | `partial` | `available` | `13` | `10` | `3` |
-| `reconcile_window` | `available` | `partial` | `available` | `27` | `24` | `3` |
+| `reconcile_window` | `available` | `partial` | `available` | `28` | `24` | `4` |
+| `isinstance (backend/app/services/plan…ation.py:reconcile_window)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_EVIDENCE_DIGEST.fullmatch` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `ValueError (backend/app/services/plan…ation.py:reconcile_window)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `require_operator` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `db.info.get (backend/app/authority.py:require_operator)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `AuthorityError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -155,35 +157,32 @@ Collector observations for 90 source steps with known totals: observed: 548, emi
 | `actor_has_scope` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
 | `actor_scopes` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
 | `json.loads (backend/app/services/agent_service.py:actor_scopes)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `isinstance (backend/app/services/agent_service.py:actor_scopes)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `AuthorityError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
-| `AgentPlanningCommandContext` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
 
 ```mermaid
 flowchart LR
     s1["1. reconcile_task_planning_window"]
     s2["2. reconcile_window"]
-    s3["3. require_operator"]
-    s4["4. db.info.get (backend/app/authority.py:require_operator)"]
-    s5["5. AuthorityError"]
-    s6["6. is_admin_key_principal"]
-    s7["7. actor_has_scope"]
-    s8["8. actor_scopes"]
-    s9["9. json.loads (backend/app/services/agent_service.py:actor_scopes)"]
-    s10["10. isinstance (backend/app/services/agent_service.py:actor_scopes)"]
-    s11["11. AuthorityError"]
-    s12["12. AgentPlanningCommandContext"]
+    s3["3. isinstance (backend/app/services/plan…ation.py:reconcile_window)"]
+    s4["4. _EVIDENCE_DIGEST.fullmatch"]
+    s5["5. ValueError (backend/app/services/plan…ation.py:reconcile_window)"]
+    s6["6. require_operator"]
+    s7["7. db.info.get (backend/app/authority.py:require_operator)"]
+    s8["8. AuthorityError"]
+    s9["9. is_admin_key_principal"]
+    s10["10. actor_has_scope"]
+    s11["11. actor_scopes"]
+    s12["12. json.loads (backend/app/services/agent_service.py:actor_scopes)"]
     s1 -->|"reconcile_window(…)"| s2
-    s2 -->|"require_operator(db)"| s3
-    s3 -. "db.info.get (backend/app/authority.py:require_operator)('authority')" .-> s4
-    s3 -->|"AuthorityError('operator_required', 'Workspace operator permission is required.')"| s5
-    s2 -->|"is_admin_key_principal(actor)"| s6
-    s2 -->|"actor_has_scope(actor, 'admin')"| s7
-    s7 -->|"actor_scopes(actor)"| s8
-    s8 -. "json.loads (backend/app/services/agent_service.py:actor_scopes)(actor.scopes)" .-> s9
-    s8 -. "isinstance (backend/app/services/agent_service.py:actor_scopes)(scopes, list)" .-> s10
-    s2 -->|"AuthorityError('operator_required', 'An authenticated workspace operator is required.')"| s11
-    s2 -->|"AgentPlanningCommandContext(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)"| s12
+    s2 -. "isinstance (backend/app/services/plan…ation.py:reconcile_window)(expected_evidence_digest, str)" .-> s3
+    s2 -. "_EVIDENCE_DIGEST.fullmatch(expected_evidence_digest)" .-> s4
+    s2 -. "ValueError (backend/app/services/plan…ation.py:reconcile_window)(INVALID_EVIDENCE_DIGEST_MESSAGE)" .-> s5
+    s2 -->|"require_operator(db)"| s6
+    s6 -. "db.info.get (backend/app/authority.py:require_operator)('authority')" .-> s7
+    s6 -->|"AuthorityError('operator_required', 'Workspace operator permission is required.')"| s8
+    s2 -->|"is_admin_key_principal(actor)"| s9
+    s2 -->|"actor_has_scope(actor, 'admin')"| s10
+    s10 -->|"actor_scopes(actor)"| s11
+    s11 -. "json.loads (backend/app/services/agent_service.py:actor_scopes)(actor.scopes)" .-> s12
     b0["mutation db.add"]
     s2 -. "mutation db.add" .-> b0
     b1["mutation result.update"]
@@ -192,13 +191,11 @@ flowchart LR
     s2 -. "mutation db.add" .-> b2
     click s1 "../modules/agent_catalog.md"
     click s2 "../modules/planning_window_reconciliation.md"
-    click s3 "../modules/authority.md"
-    click s5 "../modules/authority.md"
-    click s6 "../modules/agent_service.md"
-    click s7 "../modules/agent_service.md"
-    click s8 "../modules/agent_service.md"
-    click s11 "../modules/authority.md"
-    click s12 "../modules/schemas_agent_planning.md"
+    click s6 "../modules/authority.md"
+    click s8 "../modules/authority.md"
+    click s9 "../modules/agent_service.md"
+    click s10 "../modules/agent_service.md"
+    click s11 "../modules/agent_service.md"
     classDef boundary stroke:#b45309,stroke-dasharray: 4 2
     class b0 boundary
     class b1 boundary
@@ -210,7 +207,10 @@ flowchart LR
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
 | `reconcile_task_planning_window` | `task_id: int`, `actor: Annotated[AgentActor, Depends(get_model_catalog_principal)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]`, `planning_receipt_id: Annotated[int \| None, Query(gt=0)]`, `planning_actor_id: Annotated[int \| None, Query(gt=0)]`, `planning_command_key: Annotated[str \| None, Query(min_length=1, max_length=255)]`, `apply: bool`, `expected_evidence_digest: Annotated[str \| None, Query(pattern='^[a-f0-9]{64}$')]` | `AgentModelConflictError` | - | `...` |
-| `reconcile_window` | `db`, `actor`, `task_id`, `receipt_id`, `planning_actor_id`, `planning_command_key`, `apply`, `expected_evidence_digest` | `Task`, `Task`, `Iteration`, `CommandAudit`, `ACTION`, `CommandAudit`, `ACTION`, `ACTION` | `result[...]`, `task.execution_planning_window` | `previous.details[...]`, `result`, `result` |
+| `reconcile_window` | `db`, `actor`, `task_id`, `receipt_id`, `planning_actor_id`, `planning_command_key`, `apply`, `expected_evidence_digest` | `INVALID_EVIDENCE_DIGEST_MESSAGE`, `Task`, `Task`, `Iteration`, `CommandAudit`, `ACTION`, `CommandAudit`, `ACTION` | `result[...]`, `task.execution_planning_window` | `previous.details[...]`, `result`, `result` |
+| `isinstance (backend/app/services/plan…ation.py:reconcile_window)` | - | - | - | - |
+| `_EVIDENCE_DIGEST.fullmatch` | - | - | - | - |
+| `ValueError (backend/app/services/plan…ation.py:reconcile_window)` | - | - | - | - |
 | `require_operator` | `db` | - | - | - |
 | `db.info.get (backend/app/authority.py:require_operator)` | - | - | - | - |
 | `AuthorityError` | - | - | - | - |
@@ -218,41 +218,40 @@ flowchart LR
 | `actor_has_scope` | `actor: AgentActor`, `scope: str` | - | - | `...` |
 | `actor_scopes` | `actor: AgentActor` | `json` | - | `...` |
 | `json.loads (backend/app/services/agent_service.py:actor_scopes)` | - | - | - | - |
-| `isinstance (backend/app/services/agent_service.py:actor_scopes)` | - | - | - | - |
-| `AuthorityError` | - | - | - | - |
-| `AgentPlanningCommandContext` | - | - | - | - |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
 | reconcile_task_planning_window | reconcile_window | 130 | `reconcile_window(db, actor, task_id, planning_receipt_id, apply=apply, planning_actor_id=planning_actor_id, planning_command_key=planning_command_key, expected_evidence_digest=expected_evidence_digest, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
-| reconcile_window | require_operator | 312 | `require_operator(db)` |
+| reconcile_window | isinstance (backend/app/services/plan…ation.py:reconcile_window) | 318 | `isinstance(expected_evidence_digest, str)` |
+| reconcile_window | _EVIDENCE_DIGEST.fullmatch | 319 | `_EVIDENCE_DIGEST.fullmatch(expected_evidence_digest)` |
+| reconcile_window | ValueError (backend/app/services/plan…ation.py:reconcile_window) | 321 | `ValueError(INVALID_EVIDENCE_DIGEST_MESSAGE)` |
+| reconcile_window | require_operator | 322 | `require_operator(db)` |
 | require_operator | db.info.get (backend/app/authority.py:require_operator) | 84 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 86 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
-| reconcile_window | is_admin_key_principal | 318 | `is_admin_key_principal(actor)` |
-| reconcile_window | actor_has_scope | 322 | `actor_has_scope(actor, 'admin')` |
+| reconcile_window | is_admin_key_principal | 328 | `is_admin_key_principal(actor)` |
+| reconcile_window | actor_has_scope | 332 | `actor_has_scope(actor, 'admin')` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 87 | `json.loads(actor.scopes)` |
-| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
-| reconcile_window | AuthorityError | 325 | `AuthorityError('operator_required', 'An authenticated workspace operator is required.')` |
-| reconcile_window | AgentPlanningCommandContext | 328 | `AgentPlanningCommandContext(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.add` | `reconcile_window` | 449 |
-| mutation | `result.update` | `reconcile_window` | 451 |
-| mutation | `db.add` | `reconcile_window` | 452 |
+| mutation | `db.add` | `reconcile_window` | 459 |
+| mutation | `result.update` | `reconcile_window` | 461 |
+| mutation | `db.add` | `reconcile_window` | 462 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
+| external_call | `reconcile_window` | `isinstance` | 318 |
+| unresolved_call | `reconcile_window` | `_EVIDENCE_DIGEST.fullmatch` | 319 |
+| external_call | `reconcile_window` | `ValueError` | 321 |
 | unresolved_call | `require_operator` | `db.info.get` | 84 |
 | external_call | `actor_scopes` | `json.loads` | 87 |
-| external_call | `actor_scopes` | `isinstance` | 90 |
 | step_limit | `reconcile_task_planning_window` | `first 12 steps` | 0 |
 | truncated_flow | `reconcile_task_planning_window` | `depth limit` | 0 |
 

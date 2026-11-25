@@ -62,9 +62,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| import_team_vacations | service.import_vacations | 351 | `service.import_vacations(iteration_id, data.csv_text)` |
-| import_team_vacations | HTTPException | 353 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| import_team_vacations | str | 355 | `str(e)` |
+| import_team_vacations | service.import_vacations | 464 | `service.import_vacations(iteration_id, data.csv_text)` |
+| import_team_vacations | HTTPException | 466 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| import_team_vacations | str | 468 | `str(e)` |
 
 ### Boundary effects
 
@@ -74,8 +74,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `import_team_vacations` | `service.import_vacations` | 351 |
-| external_call | `import_team_vacations` | `HTTPException` | 353 |
+| unresolved_call | `import_team_vacations` | `service.import_vacations` | 464 |
+| external_call | `import_team_vacations` | `HTTPException` | 466 |
 
 ## Behavior
 

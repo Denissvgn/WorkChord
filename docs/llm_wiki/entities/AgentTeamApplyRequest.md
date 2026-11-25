@@ -1,6 +1,6 @@
 # AgentTeamApplyRequest
 
-**Location:** `backend/app/schemas/agent_team_setup.py:782`
+**Location:** `backend/app/schemas/agent_team_setup.py:823`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
@@ -44,11 +44,13 @@ flowchart LR
     n3["AgentTeamApplyRequest.confirmations_are_approved (backend/app/schemas/agent_team_setup.py)"]
     n4["AgentTeamSetupService._apply_request_digest (backend/app/services/agent_team_setup_service.py)"]
     n5["AgentTeamSetupService.apply (backend/app/services/agent_team_setup_service.py)"]
-    n6["test_confirmed_identity_replacement_disables_old_actor (backend/tests/test_agent_team_setup.py)"]
-    n7["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
-    n8["test_uncertain_delivery_requires_explicit_new_reference_recovery (backend/tests/test_agent_team_setup.py)"]
-    n9["apply_manifest (backend/tests/test_agent_team_setup_qualification.py)"]
-    n10["apply_every_action (backend/tests/test_agent_team_setup_stored_contract.py)"]
+    n6["_apply_example (backend/tests/test_agent_team_setup.py)"]
+    n7["test_confirmed_identity_replacement_disables_old_actor (backend/tests/test_agent_team_setup.py)"]
+    n8["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
+    n9["test_uncertain_delivery_requires_explicit_new_reference_recovery (backend/tests/test_agent_team_setup.py)"]
+    n10["apply_manifest (backend/tests/test_agent_team_setup_qualification.py)"]
+    n11["apply_every_action (backend/tests/test_agent_team_setup_stored_contract.py)"]
+    n12["test_bound_profile_is_connected_in_place_with_history_intact (backend/tests/test_profile_seed_key_binding.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -59,6 +61,8 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
+    n12 --> n0
     click n0 "../modules/agent_team_setup.md"
     click n1 "../modules/agent_team_setup.md"
     click n2 "../modules/routers_agent.md"
@@ -68,8 +72,10 @@ flowchart LR
     click n6 "../modules/test_agent_team_setup.md"
     click n7 "../modules/test_agent_team_setup.md"
     click n8 "../modules/test_agent_team_setup.md"
-    click n9 "../modules/test_agent_team_setup_qualification.md"
-    click n10 "../modules/test_agent_team_setup_stored_contract.md"
+    click n9 "../modules/test_agent_team_setup.md"
+    click n10 "../modules/test_agent_team_setup_qualification.md"
+    click n11 "../modules/test_agent_team_setup_stored_contract.md"
+    click n12 "../modules/test_profile_seed_key_binding.md"
 ```
 
 ### Summary
@@ -92,8 +98,10 @@ flowchart LR
 | `AgentTeamApplyRequest.confirmations_are_approved` | type_reference | [agent_team_setup](../modules/agent_team_setup.md) | — |
 | `AgentTeamSetupService._apply_request_digest` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService.apply` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
+| `_apply_example` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 1 |
 | `test_confirmed_identity_replacement_disables_old_actor` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 2 |
 | `test_fresh_apply_replay_onboarding_and_runtime_readiness` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 1 |
 | `test_uncertain_delivery_requires_explicit_new_reference_recovery` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 2 |
 | `apply_manifest` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |
 | `apply_every_action` | call | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | 1 |
+| `test_bound_profile_is_connected_in_place_with_history_intact` | call | [test_profile_seed_key_binding](../modules/test_profile_seed_key_binding.md) | 1 |

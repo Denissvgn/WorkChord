@@ -1,6 +1,6 @@
 # AgentWorkService
 
-**Location:** `backend/app/services/agent_work_service.py:184`
+**Location:** `backend/app/services/agent_work_service.py:207`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_work_service](../modules/agent_work_service.md)
@@ -56,8 +56,10 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `_pending_recovery_signal` | *(async)* `(task_id: int) -> TaskEvent \| None` | — | Return the latest lifecycle event if it still requires ownership. |
 | `_validate_assignment_actor` | `(actor: AgentActor, purpose: str) -> None` | `@staticmethod` | Require authority before separate profile/model compatibility evidence. |
 | `_validate_assignment_context` | *(async)* `(task: Task, *, team_member_id: Optional[int], reviewer_profile_id: Optional[int]) -> None` | — | Validate optional capacity and reviewer references against live records. |
-| `list_assignments` | *(async)* `(principal: AgentActor, *, task_id: Optional[int] = None, actor_id: Optional[int] = None, purpose: Optional[str] = None, state: Optional[str] = None, limit: int = 200) -> list[AgentTaskAssignmentResponse]` | — | Return a secret-free durable assignment projection for restart-safe reads. |
-| `list_assignments_for_people` | *(async)* `(*, task_id: Optional[int] = None, actor_id: Optional[int] = None, purpose: Optional[str] = None, state: Optional[str] = None, limit: int = 200) -> list[AgentAssignmentReadItem]` | — | List the assignments of the tasks this request's reader can see. |
+| `list_assignments` | *(async)* `(principal: AgentActor, *, task_id: Optional[int] = None, actor_id: Optional[int] = None, purpose: Optional[str] = None, state: Optional[str] = None, limit: int = 200, after_id: Optional[int] = None) -> list[AgentTaskAssignmentResponse]` | — | Return a secret-free durable assignment projection for restart-safe reads. |
+| `list_assignments_page` | *(async)* `(principal: AgentActor, *, task_id: Optional[int] = None, actor_id: Optional[int] = None, purpose: Optional[str] = None, state: Optional[str] = None, limit: int = 200, cursor: Optional[str] = None) -> dict[str, Any]` | — | One page ordered by assignment id; every row present throughout is returned once. |
+| `list_assignments_for_people_page` | *(async)* `(*, task_id: Optional[int] = None, actor_id: Optional[int] = None, purpose: Optional[str] = None, state: Optional[str] = None, limit: int = 200, cursor: Optional[str] = None) -> dict[str, Any]` | — | One page ordered by assignment id; every row present throughout is returned once. |
+| `list_assignments_for_people` | *(async)* `(*, task_id: Optional[int] = None, actor_id: Optional[int] = None, purpose: Optional[str] = None, state: Optional[str] = None, limit: int = 200, after_id: Optional[int] = None) -> list[AgentAssignmentReadItem]` | — | List the assignments of the tasks this request's reader can see. |
 | `create_assignment` | *(async)* `(principal: AgentActor, data: AgentTaskAssignmentCreate \| ModelAwareAgentTaskAssignmentCreate, *, idempotency_key: Optional[str] = None, rationale: str, correlation_id: str) -> AgentTaskAssignmentResponse` | `@atomic_command` | Dispatch one task to one provisioned actor. |
 | `update_assignment` | *(async)* `(assignment_id: int, principal: AgentActor, data: AgentTaskAssignmentUpdate \| ModelAwareAgentTaskAssignmentUpdate, *, idempotency_key: Optional[str] = None, rationale: str, correlation_id: str) -> AgentTaskAssignmentResponse` | `@atomic_command` | Reassign, reorder, or cancel queued work. |
 | `get_work` | *(async)* `(actor: AgentActor, *, limit: int = 20, cursor: Optional[str] = None, _rework_read: ReworkReadCache \| None = None) -> AgentWorkDecisionResponse` | — | Return the authoritative resume/begin/wait/recovery decision. |
@@ -78,6 +80,7 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `_definition_blockers` | `(task: Task) -> list[str]` | — | — |
 | `_working_today` | *(async)* `(task: Task, now: datetime) -> date` | — | Today in the task's project time zone, as the schedule counts days. |
 | `_follow_actual_dates` | *(async)* `(task: Task, *, started: bool) -> None` | — | Recalculate planned work around a task that just started or was submitted. |
+| `_started_blockers` | *(async)* `(task: Task, assignment: AgentTaskAssignment) -> list[str]` | — | Blockers that remain for an accepted assignment whose run already began. |
 | `_start_blockers` | *(async)* `(task: Task, assignment: Optional[AgentTaskAssignment], now: datetime, *, assignment_view: AgentTaskAssignmentResponse \| None = None, rework_read: ReworkReadCache \| None = None) -> list[str]` | — | — |
 | `_work_item` | *(async)* `(assignment: AgentTaskAssignment, position: int, now: datetime, *, running: Optional[Iterable[AgentRun]] = None, rework_read: ReworkReadCache \| None = None) -> AgentWorkItem` | — | — |
 | `_current_recovery_codes` | *(async)* `(actor: AgentActor, accepted: list[AgentTaskAssignment], running: list[AgentRun], now: datetime) -> list[str]` | — | — |
@@ -120,8 +123,8 @@ flowchart LR
     n8["get_my_work (backend/app/mcp_agent_tools.py)"]
     n9["list_agent_actor_roster (backend/app/mcp_agent_tools.py)"]
     n10["list_agent_assignments (backend/app/mcp_agent_tools.py)"]
-    n11["list_agent_recovery_tasks (backend/app/mcp_agent_tools.py)"]
-    n12["list_my_claims (backend/app/mcp_agent_tools.py)"]
+    n11["list_agent_assignments_page (backend/app/mcp_agent_tools.py)"]
+    n12["list_agent_recovery_tasks (backend/app/mcp_agent_tools.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -153,7 +156,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_work_service](../modules/agent_work_service.md) | 86 | — |
+| [agent_work_service](../modules/agent_work_service.md) | 89 | — |
 
 ### References
 
@@ -169,7 +172,7 @@ flowchart LR
 | `get_my_work` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `list_agent_actor_roster` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `list_agent_assignments` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
+| `list_agent_assignments_page` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `list_agent_recovery_tasks` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
-| `list_my_claims` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 78 logical references; 66 omitted by the 12-row generated summary limit.
+> References: showing 12 of 82 logical references; 70 omitted by the 12-row generated summary limit.

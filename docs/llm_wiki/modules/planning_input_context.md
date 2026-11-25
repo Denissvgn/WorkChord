@@ -24,7 +24,7 @@ An iteration observation returns a complete list of its additional calendar IDs 
 | `app.models.iteration` | `Iteration`, `Iteration` |
 | `app.models.project` | `Project`, `Project` |
 | `app.models.task` | `Task` |
-| `app.models.team_member` | `TeamMember`, `TeamMember`, `TeamMemberProfile`, `Vacation`, `TeamMember`, `TeamMemberProfile`, `Vacation`, `TeamMemberProfileSkill` |
+| `app.models.team_member` | `TeamMember`, `TeamMember`, `TeamMemberProfile`, `Vacation`, `TeamMember`, `TeamMemberProfile`, `Vacation`, `TeamMemberCapacityAdjustment`, `TeamMemberProfileSkill` |
 | `app.services.team_service` | `TeamService` |
 | `app.utils.import_parser` | `parse_team_members_text` |
 | `csv` | `csv` |
@@ -51,7 +51,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (8) |
+| Inbound | `backend` (11) |
 | Outbound | `backend` (11) |
 
 ### External packages
@@ -60,7 +60,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

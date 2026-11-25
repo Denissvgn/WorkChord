@@ -156,17 +156,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_agent_actor | require_scope | 667 | `require_scope(actor, 'admin')` |
+| create_agent_actor | require_scope | 669 | `require_scope(actor, 'admin')` |
 | require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
-| create_agent_actor | service.create_actor | 668 | `service.create_actor(data, principal=actor)` |
-| create_agent_actor | _handle_agent_error | 673 | `_handle_agent_error(exc)` |
-| _handle_agent_error | isinstance (backend/app/routers/agent.py:_handle_agent_error) | 328 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 330 | `str(exc)` |
+| create_agent_actor | service.create_actor | 670 | `service.create_actor(data, principal=actor)` |
+| create_agent_actor | _handle_agent_error | 675 | `_handle_agent_error(exc)` |
+| _handle_agent_error | isinstance (backend/app/routers/agent.py:_handle_agent_error) | 330 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 332 | `str(exc)` |
+| _handle_agent_error | str | 334 | `str(exc)` |
 
 ### Boundary effects
 
@@ -178,8 +178,8 @@ flowchart LR
 |---|---|---|---:|
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | external_call | `actor_scopes` | `isinstance` | 90 |
-| unresolved_call | `create_agent_actor` | `service.create_actor` | 668 |
-| external_call | `_handle_agent_error` | `isinstance` | 328 |
+| unresolved_call | `create_agent_actor` | `service.create_actor` | 670 |
+| external_call | `_handle_agent_error` | `isinstance` | 330 |
 | step_limit | `create_agent_actor` | `first 12 steps` | 0 |
 
 ## Behavior

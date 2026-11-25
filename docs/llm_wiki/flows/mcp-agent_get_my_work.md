@@ -11,6 +11,7 @@
 - [agent_service](../modules/agent_service.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [agent_work_service](../modules/agent_work_service.md)
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
@@ -20,7 +21,6 @@
 - [execution_reconciliation](../modules/execution_reconciliation.md)
 - [github_links](../modules/github_links.md)
 - [identity_service](../modules/identity_service.md)
-- [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [mcp_server](../modules/mcp_server.md)
 - [models_identity](../modules/models_identity.md)
@@ -66,9 +66,9 @@ sequenceDiagram
     participant p23 as DeliveryDependencyService.reconcile
     participant p24 as DiscussionService.enqueue
     participant p25 as window_authority_matches
-    participant p26 as AgentWorkService._start_blockers
-    participant p27 as AgentWorkService.run_response
-    participant p28 as actor_has_scope
+    participant p26 as AgentWorkService._started_blockers
+    participant p27 as AgentWorkService._start_blockers
+    participant p28 as AgentWorkService.run_response
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -96,30 +96,30 @@ sequenceDiagram
     p8->>p23: DeliveryDependencyService.reconcile
     p8->>p24: DiscussionService.enqueue
     p12->>p25: window_authority_matches
-    p13->>p26: AgentWorkService._start_blockers
-    p13->>p27: AgentWorkService.run_response
-    p18->>p28: actor_has_scope
+    p13->>p26: AgentWorkService._started_blockers
+    p13->>p27: AgentWorkService._start_blockers
+    p13->>p28: AgentWorkService.run_response
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 758 interactions; 728 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 676 interactions; 646 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 201 (200 omitted); unresolved 1 of 360 (359 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 177 (176 omitted); unresolved 1 of 302 (301 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
 | `backend/app/config.py:get_settings` | 4 | [backend/app/config.py](../modules/config.md) | internal | 1 |
-| `backend/app/maintenance.py:enforce_mcp_access` | 3 | [backend/app/maintenance.py](../modules/maintenance.md) | internal | 2 |
+| `backend/app/maintenance.py:enforce_mcp_access` | 3 | [backend/app/maintenance.py](../modules/app_maintenance.md) | internal | 2 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | external | 4 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | unresolved | 3 |
 | `backend/app/mcp_server.py:_agent_context` | 15 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 3 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 179 groups; 171 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 177 groups; 169 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -134,7 +134,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 198; effect analysis evaluated: 139, partial: 8, unavailable: 51. Counts include steps omitted from the displayed trace.
 
-Collector observations for 147 source steps with known totals: observed: 850, emitted: 793, omitted: 57. Unavailable totals are excluded.
+Collector observations for 147 source steps with known totals: observed: 863, emitted: 806, omitted: 57. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -182,10 +182,10 @@ flowchart LR
     s6 -. "scope.endswith(':write')" .-> s12
     click s1 "../modules/mcp_server.md"
     click s2 "../modules/mcp_server.md"
-    click s3 "../modules/maintenance.md"
+    click s3 "../modules/app_maintenance.md"
     click s4 "../modules/config.md"
     click s5 "../modules/config.md"
-    click s6 "../modules/maintenance.md"
+    click s6 "../modules/app_maintenance.md"
 ```
 
 ### Step data
@@ -209,7 +209,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_get_my_work | _tool_call | 794 | `_tool_call((...), ...)` |
+| agent_get_my_work | _tool_call | 822 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

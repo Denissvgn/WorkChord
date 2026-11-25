@@ -1,7 +1,7 @@
 # TeamMemberProfileSkillCreate
 
-**Location:** `backend/app/schemas/team.py:107`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/team.py:108`
+**Kind:** Class
 **Bases:** `PlanningInputRevisions`
 **Module:** [schemas_team](../modules/schemas_team.md)
 

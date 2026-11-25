@@ -27,6 +27,7 @@ Formal review on a project with the different-publisher policy requires the assi
 | `app.services.identity_service` | `acting_principal_id` |
 | `app.services.review_provenance` | `different_publisher_required` |
 | `app.services.snapshot_service` | `SnapshotService` |
+| `app.services.task_replacement_service` | `require_acceptable` |
 | `app.services.task_service` | `TaskService` |
 | `copy` | `copy` |
 | `re` | `re` |
@@ -51,8 +52,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (20) |
-| Outbound | `backend` (12) |
+| Inbound | `backend` (22) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -60,7 +61,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
