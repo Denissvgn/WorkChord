@@ -23,4 +23,4 @@
 
 ## Behavior
 
-Refuses a reduction that would change the capacity a row's issued work was planned with, naming the dates; an increase or a change on unscheduled dates is allowed.
+Refuses a reduction that would change the capacity a row's issued work was planned with, naming the affected task and assignment IDs so they can be finished or reconciled first, or other dates reduced instead.
