@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type { IterationPlanningReadinessSummary } from '../../types/iteration';
 import { formatDate } from '../../utils/formatDate';
 import { derivePlanningRecovery } from './masters';
@@ -6,8 +7,6 @@ import { planStepHref, withPlanReturn } from './planningReturn';
 import type { PlanningStepId } from './planningReturn';
 import { PLANNING_ITERATION_PARAM, planningIssueTasksHref } from './planningTaskIssues';
 import type { PlanningTaskIssue } from './planningTaskIssues';
-
-type Translate = (key: string, options?: Record<string, unknown>) => string;
 
 type EvidenceItem = {
     label: string;
@@ -49,7 +48,7 @@ export const readinessWithServerCounts = (
 export const checkpointEvidence = (
     stepId: PlanningStepId,
     readiness: PlanReadiness,
-    t: Translate,
+    t: TFunction,
     language: string,
     iterationId: number,
 ): EvidenceItem[] => {
@@ -144,7 +143,7 @@ export const checkpointEvidence = (
 export const checkpointOwnerLink = (
     stepId: PlanningStepId,
     readiness: PlanReadiness,
-    t: Translate,
+    t: TFunction,
     iterationId: number,
 ): OwnerLink => {
     const recovery = derivePlanningRecovery(stepId, readiness);
