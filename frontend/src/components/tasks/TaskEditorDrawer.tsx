@@ -13,6 +13,7 @@ import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 import { TaskContextSummary } from './TaskContextSummary';
 import { TaskForm } from './TaskForm';
 import { TaskReadView } from './TaskReadView';
+import { useTaskViewSession } from './taskViewSession';
 import { useIdentity } from '../../features/identity/identityContext';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 
@@ -136,6 +137,8 @@ const TaskEditorDrawerContent = ({
     const draftKey = draftScope === null || !editorTask ? null
         : `workchord-draft:${draftScope}:direct:${resolvedIterationId}:${editorTask.project_id ?? 'none'}:${editorTask.id}`;
 
+    const [viewSession, updateViewSession] = useTaskViewSession(draftKey);
+
     return (
         <SlideOverDrawer
             open
@@ -186,6 +189,8 @@ const TaskEditorDrawerContent = ({
                         key={editorTask.version}
                         task={editorTask}
                         draftKey={draftKey}
+                        session={viewSession}
+                        onSession={updateViewSession}
                         onTaskUpdated={latest => setOpeningSnapshot(latest)}
                         onEditAll={() => setEditAll(true)}
                         onDirty={guard.setDirty}

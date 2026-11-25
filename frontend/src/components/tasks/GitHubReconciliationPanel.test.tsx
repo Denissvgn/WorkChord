@@ -6,9 +6,12 @@ import type { WorkspaceIdentity } from '../../features/identity/identityService'
 import type { GitHubPullReconciliation, GitHubReconciliation } from '../../types/github';
 import type { Task } from '../../types/task';
 import { GitHubReconciliationPanel } from './GitHubReconciliationPanel';
+import { useTaskViewSession } from './taskViewSession';
 
 const service = vi.hoisted(() => ({ getReconciliation: vi.fn(), catchUp: vi.fn() }));
+const tasks = vi.hoisted(() => ({ getById: vi.fn() }));
 vi.mock('../../services/githubService', () => ({ githubService: service }));
+vi.mock('../../services/taskService', () => ({ taskService: tasks }));
 
 const task = { id: 41, version: 3, project_id: 5, title: 'Add export' } as unknown as Task;
 
@@ -26,10 +29,15 @@ const identity = (overrides: Partial<WorkspaceIdentity> = {}): WorkspaceIdentity
     mode: 'managed', authenticated: true, configured: true, principal: { id: 1, kind: 'human', display_name: 'Pat' }, profile: null,
     workspace_role: 'member', projects: { '5': 'editor' }, csrf_token: null, ...overrides,
 });
-const renderPanel = (value: WorkspaceIdentity = identity()) => renderWithProviders(
-    <IdentityContext.Provider value={{ identity: value, refresh: vi.fn(), signOut: vi.fn() }}><GitHubReconciliationPanel task={task} /></IdentityContext.Provider>);
+const onTaskUpdated = vi.fn();
+const Harness = ({ value }: { value: WorkspaceIdentity }) => {
+    const [session, onSession] = useTaskViewSession('draft');
+    return <IdentityContext.Provider value={{ identity: value, refresh: vi.fn(), signOut: vi.fn() }}>
+        <GitHubReconciliationPanel task={task} session={session} onSession={onSession} onTaskUpdated={onTaskUpdated} /></IdentityContext.Provider>;
+};
+const renderPanel = (value: WorkspaceIdentity = identity()) => renderWithProviders(<Harness value={value} />);
 
-beforeEach(() => { vi.clearAllMocks(); });
+beforeEach(() => { vi.clearAllMocks(); tasks.getById.mockResolvedValue({ ...task, version: 4 }); });
 
 describe('GitHub reconciliation panel', () => {
     it('says a pull request is unobserved and what to do next', async () => {
@@ -86,6 +94,17 @@ describe('GitHub reconciliation panel', () => {
         expect(screen.getByText('Closed without merging; reopen the pull request or replace the task.')).toBeInTheDocument();
     });
 
+    it('names review states and observation sources, and falls back to an unknown code', async () => {
+        service.getReconciliation.mockResolvedValue(view(
+            pull({ link_id: 1, review: { accepted: false, state: 'queued' }, observation_source: 'refresh' }),
+            pull({ link_id: 2, review: { accepted: false, state: 'new_state' }, observation_source: 'other_source' })));
+        renderPanel();
+        expect(await screen.findByText('Review queued')).toBeInTheDocument();
+        expect(screen.getByText(/Read from GitHub/)).toBeInTheDocument();
+        expect(screen.getByText('new_state')).toBeInTheDocument();
+        expect(screen.getByText(/other_source/)).toBeInTheDocument();
+    });
+
     it('says when no pull request is linked', async () => {
         service.getReconciliation.mockResolvedValue(view());
         renderPanel();
@@ -108,6 +127,25 @@ describe('GitHub reconciliation panel', () => {
             expect(service.catchUp).toHaveBeenCalledWith(41);
             expect(await screen.findByText('Catch-up finished. The view shows what GitHub reports now.')).toBeInTheDocument();
             expect(screen.queryByText('This pull request has not been read from GitHub yet.')).not.toBeInTheDocument();
+        });
+
+        it('hands the refreshed task to the page so its next versioned action is not stale', async () => {
+            service.getReconciliation.mockResolvedValue(view(pull()));
+            service.catchUp.mockResolvedValue(view(pull()));
+            const { user } = renderPanel();
+            await user.click(await screen.findByRole('button', { name: 'Run catch-up' }));
+            await waitFor(() => expect(onTaskUpdated).toHaveBeenCalledWith({ ...task, version: 4 }));
+            expect(tasks.getById).toHaveBeenCalledWith(41);
+        });
+
+        it('still finishes when the task refresh fails', async () => {
+            service.getReconciliation.mockResolvedValue(view(pull()));
+            service.catchUp.mockResolvedValue(view(pull()));
+            tasks.getById.mockRejectedValue(new Error('offline'));
+            const { user } = renderPanel();
+            await user.click(await screen.findByRole('button', { name: 'Run catch-up' }));
+            expect(await screen.findByText('Catch-up finished. The view shows what GitHub reports now.')).toBeInTheDocument();
+            expect(onTaskUpdated).not.toHaveBeenCalled();
         });
 
         it('is disabled and busy while it runs', async () => {

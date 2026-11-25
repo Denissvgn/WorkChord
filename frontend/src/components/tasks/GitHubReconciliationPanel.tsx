@@ -2,6 +2,8 @@ import { useId } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { githubService } from '../../services/githubService';
+import { taskService } from '../../services/taskService';
+import type { TaskViewSession, TaskViewSessionUpdate } from './taskViewSession';
 import type { GitHubPullReconciliation, GitHubReconciliation } from '../../types/github';
 import type { Task } from '../../types/task';
 import { useProjectEditAccess } from '../../features/identity/useProjectEditAccess';
@@ -15,6 +17,8 @@ const KNOWN_DIFFERENCES = ['never_observed', 'observation_failed', 'head_differs
     'merged_without_acceptance', 'closed_without_merge', 'task_replaced'];
 const KNOWN_OWNERS = ['pm', 'worker', 'reviewer', 'none'];
 const KNOWN_STATES = ['unobserved', 'open', 'draft', 'merged', 'closed_unmerged'];
+const KNOWN_REVIEWS = ['not_requested', 'queued', 'accepted', 'fulfilled', 'cancelled'];
+const KNOWN_SOURCES = ['webhook', 'refresh'];
 const KNOWN_CHECKS = ['success', 'failure', 'pending', 'not_observed'];
 
 const Row = ({ label, children }: { label: string; children: React.ReactNode }) => (
@@ -34,6 +38,9 @@ const PullRequest = ({ pull, language }: { pull: GitHubPullReconciliation; langu
     const checks = pull.checks.state
         ? (KNOWN_CHECKS.includes(pull.checks.state) ? t(`teamwork.ghChecks_${pull.checks.state}`) : pull.checks.state)
         : null;
+    const review = pull.review.accepted ? t('teamwork.ghAccepted')
+        : KNOWN_REVIEWS.includes(pull.review.state) ? t(`teamwork.ghReview_${pull.review.state}`) : pull.review.state;
+    const source = pull.observation_source && (KNOWN_SOURCES.includes(pull.observation_source) ? t(`teamwork.ghSource_${pull.observation_source}`) : pull.observation_source);
     const owner = KNOWN_OWNERS.includes(pull.next_owner) ? t(`teamwork.ghOwner_${pull.next_owner}`) : pull.next_owner;
     const when = (value?: string | null) => (value ? formatDateTime(value, language) : null);
     return <li className="space-y-3 rounded-md border border-border p-3">
@@ -65,9 +72,9 @@ const PullRequest = ({ pull, language }: { pull: GitHubPullReconciliation; langu
             </Row>
             <Row label={t('teamwork.ghObserved')}>
                 {pull.observed_at ? t('teamwork.ghObservedAt', { when: when(pull.observed_at) }) : t('teamwork.ghNeverObserved')}
-                {pull.observation_source && <> · {pull.observation_source}</>}
+                {source && <> · {source}</>}
             </Row>
-            <Row label={t('teamwork.ghReview')}>{pull.review.accepted ? t('teamwork.ghAccepted') : pull.review.state.replace(/_/g, ' ')}</Row>
+            <Row label={t('teamwork.ghReview')}>{review}</Row>
         </dl>
         {pull.observation_error && <p role="status" className="rounded-md bg-feedback-danger-muted px-3 py-2 text-sm text-feedback-danger-foreground">{t('teamwork.ghObservationFailed', { error: pull.observation_error })}</p>}
         {pull.differences.length > 0 && <div>
@@ -80,7 +87,9 @@ const PullRequest = ({ pull, language }: { pull: GitHubPullReconciliation; langu
 };
 
 /** Per linked pull request: the submitted commit against what GitHub last showed, and who acts next. */
-export const GitHubReconciliationPanel = ({ task }: { task: Task }) => {
+export const GitHubReconciliationPanel = ({ task, session, onSession, onTaskUpdated }: {
+    task: Task; session: TaskViewSession; onSession: TaskViewSessionUpdate; onTaskUpdated: (task: Task) => void;
+}) => {
     const { t, i18n } = useTranslation();
     const headingId = useId();
     const queryClient = useQueryClient();
@@ -90,10 +99,20 @@ export const GitHubReconciliationPanel = ({ task }: { task: Task }) => {
     const view = useQuery({ queryKey: key, queryFn: ({ signal }) => githubService.getReconciliation(task.id, signal) });
     // feedback-policy: mutation pending,inline - catch-up disables repeat runs and names a failure beside the action.
     const catchUp = useMutation({
-        mutationFn: () => githubService.catchUp(task.id),
-        onSuccess: latest => {
-            queryClient.setQueryData<GitHubReconciliation>(key, latest);
+        mutationFn: async () => {
+            const latestView = await githubService.catchUp(task.id);
+            // Catch-up records new observations, which advances the task version; hand over the current task.
+            let latest: Task | null = null;
+            try { latest = await taskService.getById(task.id); } catch { /* The view is still current; the next read of the task refreshes it. */ }
+            return { latestView, latest };
+        },
+        onMutate: () => onSession({ catchUpDone: false }),
+        onSuccess: ({ latestView, latest }) => {
+            queryClient.setQueryData<GitHubReconciliation>(key, latestView);
+            queryClient.setQueryData<GitHubReconciliation>(['github-reconciliation', task.id, latest?.version ?? task.version], latestView);
             void queryClient.invalidateQueries({ queryKey: ['delivery-dependencies'] });
+            onSession({ catchUpDone: true });
+            if (latest) onTaskUpdated(latest);
         },
     });
     const data = view.data;
@@ -109,7 +128,7 @@ export const GitHubReconciliationPanel = ({ task }: { task: Task }) => {
         {view.isLoading && <p role="status">{t('common.loading')}</p>}
         {view.isError && <QueryErrorState error={view.error} fallback={t('teamwork.ghLoadFailed')} onRetry={() => void view.refetch()} />}
         {catchUp.isError && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(catchUp.error, t('teamwork.ghCatchUpFailed'))}</p>}
-        {catchUp.isSuccess && !catchUp.isPending && <p role="status" className="text-sm text-content-secondary">{t('teamwork.ghCatchUpDone')}</p>}
+        {session.catchUpDone && !catchUp.isPending && !catchUp.isError && <p role="status" className="text-sm text-content-secondary">{t('teamwork.ghCatchUpDone')}</p>}
         {data?.replacement && <p className="rounded-md bg-surface-muted px-3 py-2 text-sm">
             {data.replacement.role === 'original'
                 ? t('teamwork.ghReplacedBy', { id: data.replacement.replacement_task_id })

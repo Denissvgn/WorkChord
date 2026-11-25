@@ -234,6 +234,13 @@ export const teamworkEnglish = {
     "ghChecks_failure": "Failing",
     "ghChecks_pending": "Running",
     "ghChecks_not_observed": "Not observed",
+    "ghReview_not_requested": "Not requested",
+    "ghReview_queued": "Review queued",
+    "ghReview_accepted": "Accepted",
+    "ghReview_fulfilled": "Review done",
+    "ghReview_cancelled": "Review cancelled",
+    "ghSource_webhook": "GitHub webhook",
+    "ghSource_refresh": "Read from GitHub",
     "ghReplacedBy": "This task was replaced by task {{id}}.",
     "ghReplacesTask": "This task replaces task {{id}}.",
     "ghSuccessorPulls": "Pull requests of replacement task {{id}}"

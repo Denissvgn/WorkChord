@@ -11,6 +11,7 @@ import { Button } from '../common/Button';
 import { QueryErrorState } from '../feedback/QueryState';
 import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
+import { useTaskViewSession, type TaskViewSession, type TaskViewSessionUpdate } from './taskViewSession';
 import { PREREQUISITE_RETARGET_FEATURE, useProjectEditAccess } from '../../features/identity/useProjectEditAccess';
 
 import { Select } from '../../components/common/Select';
@@ -19,18 +20,15 @@ type Dependency = DeliveryPrerequisite;
 const HOLD_CASES = ['not_accepted', 'open_pull_request', 'merged_on_other_branch', 'merge_branch_unknown', 'closed_unmerged', 'not_observed'];
 const HOLD_OWNERS = ['pm', 'worker', 'reviewer'];
 
-interface Retained { open: boolean; editing: { edge: number; draft: string } | null; conflict: boolean }
-// A saved change replaces the task version, which remounts the task view; what the person was doing survives that.
-const retainedByTask = new Map<number, Retained>();
-const useRetainedState = (taskId: number) => {
-    const [state, setState] = useState<Retained>(() => retainedByTask.get(taskId) ?? { open: false, editing: null, conflict: false });
-    const latest = useRef(state);
-    const retain = (patch: Partial<Retained>) => {
-        latest.current = { ...latest.current, ...patch };
-        retainedByTask.set(taskId, latest.current);
-        setState(latest.current);
-    };
-    return [state, retain] as const;
+interface BranchDraft { edge: number; draft: string; base: string }
+const readBranchDraft = (key: string | null): BranchDraft | null => {
+    try {
+        const value = JSON.parse(key ? sessionStorage.getItem(key) ?? 'null' : 'null');
+        if (!value || typeof value.savedAt !== 'number' || Date.now() - value.savedAt < 0 || Date.now() - value.savedAt >= 86400000
+            || !Number.isSafeInteger(value.edge) || value.edge < 1 || typeof value.draft !== 'string' || value.draft.length > 255
+            || typeof value.base !== 'string' || value.base.length > 255) return null;
+        return { edge: value.edge, draft: value.draft, base: value.base };
+    } catch { return null; }
 };
 
 const BranchLine = ({ edge }: { edge: Dependency }) => {
@@ -52,14 +50,25 @@ const Hold = ({ edge }: { edge: Dependency }) => {
     </div>;
 };
 
-export const DeliveryDependencies = ({ task, disabled, onPending, onUpdated }: { task: Task; disabled: boolean; onPending: (pending: boolean) => void; onUpdated: (task: Task) => void }) => {
+const ignoreDirty = () => undefined;
+
+/** Without a held session or draft scope (the full form), the list keeps its own state and does not persist drafts. */
+export const DeliveryDependencies = ({ task, disabled, draftKey = null, session: heldSession, onSession: onHeldSession, onDirty = ignoreDirty, onPending, onUpdated }: {
+    task: Task; disabled: boolean; draftKey?: string | null; session?: TaskViewSession; onSession?: TaskViewSessionUpdate;
+    onDirty?: (dirty: boolean) => void; onPending: (pending: boolean) => void; onUpdated: (task: Task) => void;
+}) => {
+    const [ownSession, ownUpdate] = useTaskViewSession(null);
+    const session = heldSession ?? ownSession;
+    const onSession = onHeldSession ?? ownUpdate;
     const { t } = useTranslation();
     const id = useId();
-    const [retained, retain] = useRetainedState(task.id);
-    const { open: expanded, editing, conflict } = retained;
-    const setExpanded = (open: boolean) => retain({ open });
-    const setEditing = (next: Retained['editing']) => retain({ editing: next });
-    const setConflict = (next: boolean) => retain({ conflict: next });
+    const storageKey = draftKey ? `${draftKey}:prerequisite-branch` : null;
+    const sessionOpen = session.prerequisitesOpen;
+    const conflict = session.branchConflict;
+    const setExpanded = (open: boolean) => onSession({ prerequisitesOpen: open });
+    const setConflict = (next: boolean) => onSession({ branchConflict: next });
+    const [draft, setEditing] = useState<BranchDraft | null>(() => readBranchDraft(storageKey));
+    const expanded = sessionOpen || draft !== null;
     const [kind, setKind] = useState<'task' | 'milestone'>('task');
     const [text, setText] = useState('');
     const [projectId, setProjectId] = useState<number | null>(task.project_id ?? null);
@@ -68,11 +77,23 @@ export const DeliveryDependencies = ({ task, disabled, onPending, onUpdated }: {
     const { canEdit, features } = useProjectEditAccess(task.project_id);
     const canRetarget = canEdit && features.includes(PREREQUISITE_RETARGET_FEATURE);
     const branchInput = useRef<HTMLInputElement>(null);
-    const editingEdge = editing?.edge;
+    const editingEdge = draft?.edge;
     // Opening the form moves the keyboard to its field; closing it returns focus to the page by unmounting.
     useEffect(() => { if (editingEdge !== undefined) branchInput.current?.focus(); }, [editingEdge]);
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
     const edges = useQuery({ queryKey: ['delivery-dependencies', task.id, task.version], enabled: expanded, queryFn: async () => (await api.get<Dependency[]>(`/tasks/${task.id}/delivery-dependencies`)).data });
+    // A restored draft for a prerequisite that no longer exists is dropped rather than shown or counted as unsaved.
+    const editing = draft && !(edges.isSuccess && !edges.data.some(item => item.id === draft.edge)) ? draft : null;
+    const dirty = editing !== null && editing.draft !== editing.base;
+    useEffect(() => {
+        onDirty(dirty);
+        if (!storageKey) return;
+        try {
+            if (dirty && editing) sessionStorage.setItem(storageKey, JSON.stringify({ ...editing, savedAt: Date.now() }));
+            else sessionStorage.removeItem(storageKey);
+        } catch { /* The draft stays in memory when storage is unavailable. */ }
+    }, [dirty, editing, onDirty, storageKey]);
+    useEffect(() => () => onDirty(false), [onDirty]);
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
     const tasks = useQuery({ queryKey: ['dependency-task-search', text], enabled: expanded && kind === 'task' && text.trim().length > 0,
         queryFn: () => taskService.lookup({ q: text, limit: 20 }) });
@@ -101,9 +122,11 @@ export const DeliveryDependencies = ({ task, disabled, onPending, onUpdated }: {
         onError: async error => {
             if (getApiErrorStatus(error) !== 409) return;
             setConflict(true);
-            const latest = await taskService.getById(task.id);
-            await edges.refetch();
-            onUpdated(latest);
+            try {
+                const latest = await taskService.getById(task.id);
+                await edges.refetch();
+                onUpdated(latest);
+            } catch { /* The notice stays; the list can be refreshed by reopening the task. */ }
         },
     });
     useEffect(() => onPending(mutation.isPending || retarget.isPending), [mutation.isPending, retarget.isPending, onPending]);
@@ -121,9 +144,9 @@ export const DeliveryDependencies = ({ task, disabled, onPending, onUpdated }: {
                     <span className="flex flex-wrap gap-1">
                         {canRetarget && edge.kind === 'task' && edge.title !== undefined && !open && <Button type="button" variant="ghost" size="sm" disabled={disabled || retarget.isPending}
                             aria-label={t(edge.target_branch ? 'teamwork.changeBranchFor' : 'teamwork.setBranchFor', { name: edge.title })}
-                            onClick={() => { retarget.reset(); setConflict(false); setEditing({ edge: edge.id, draft: edge.target_branch ?? '' }); }}>
+                            onClick={() => { retarget.reset(); setConflict(false); setEditing({ edge: edge.id, draft: edge.target_branch ?? '', base: edge.target_branch ?? '' }); }}>
                             {t(edge.target_branch ? 'teamwork.changeBranch' : 'teamwork.setBranch')}</Button>}
-                        <Button type="button" variant="ghost" size="sm" disabled={disabled} onClick={() => mutation.mutate(edge.id)}>{t('teamwork.unlink')}</Button>
+                        {canEdit && <Button type="button" variant="ghost" size="sm" disabled={disabled} onClick={() => mutation.mutate(edge.id)}>{t('teamwork.unlink')}</Button>}
                     </span>
                 </div>
                 <BranchLine edge={edge} />
@@ -132,7 +155,7 @@ export const DeliveryDependencies = ({ task, disabled, onPending, onUpdated }: {
                     <label className="field-lbl" htmlFor={`${id}-branch-${edge.id}`}>{t('teamwork.targetBranch')}</label>
                     <input id={`${id}-branch-${edge.id}`} className="input w-full" value={editing.draft} maxLength={255} ref={branchInput}
                         aria-describedby={`${id}-branch-help-${edge.id}`} aria-invalid={retarget.isError && !conflict}
-                        onChange={event => setEditing({ edge: edge.id, draft: event.target.value })} />
+                        onChange={event => setEditing({ ...editing, draft: event.target.value })} />
                     <p id={`${id}-branch-help-${edge.id}`} className="text-xs text-content-secondary">{t('teamwork.targetBranchHelp')}</p>
                     {conflict && <p role="alert" className="text-sm text-feedback-warning-foreground">{t('teamwork.branchConflict')}</p>}
                     {retarget.isError && !conflict && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(retarget.error, t('teamwork.saveFailed'))}</p>}
@@ -146,7 +169,7 @@ export const DeliveryDependencies = ({ task, disabled, onPending, onUpdated }: {
                 </form>}
             </li>;
         })}</ul>
-        <fieldset disabled={disabled} className="space-y-2"><legend className="text-sm font-medium">{t('teamwork.addPrerequisite')}</legend>
+        {canEdit && <fieldset disabled={disabled} className="space-y-2"><legend className="text-sm font-medium">{t('teamwork.addPrerequisite')}</legend>
             <label className="field-lbl" htmlFor={`${id}-kind`}>{t('teamwork.prerequisiteType')}</label>
             <Select id={`${id}-kind`} className="input w-full" value={kind} onChange={event => { setKind(event.target.value as 'task' | 'milestone'); setTargetId(null); }}><option value="task">{t('teamwork.task')}</option><option value="milestone">{t('teamwork.milestone')}</option></Select>
             {kind === 'task' ? <><label className="field-lbl" htmlFor={`${id}-search`}>{t('teamwork.searchTasks')}</label><input id={`${id}-search`} className="input w-full" value={text} maxLength={200} onChange={event => { setText(event.target.value); setTargetId(null); }} />
@@ -163,7 +186,7 @@ export const DeliveryDependencies = ({ task, disabled, onPending, onUpdated }: {
                     {(projects.isError || milestones.isError) && <QueryErrorState error={projects.error ?? milestones.error} fallback={t('teamwork.loadFailed')} onRetry={() => { void projects.refetch(); void milestones.refetch(); }} />}
                     <label className="field-lbl" htmlFor={`${id}-milestone`}>{t('teamwork.milestone')}</label><Select id={`${id}-milestone`} className="input w-full" value={targetId ?? ''} onChange={event => setTargetId(Number(event.target.value) || null)}><option value="">{t('teamwork.chooseMilestone')}</option>{milestones.data?.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</Select></>}
             <Button type="button" size="sm" disabled={!targetId || disabled} isLoading={mutation.isPending} onClick={() => mutation.mutate(undefined)}>{t('teamwork.addPrerequisite')}</Button>
-        </fieldset>
+        </fieldset>}
         {mutation.isError && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(mutation.error, t('teamwork.saveFailed'))}</p>}
     </details>;
 };

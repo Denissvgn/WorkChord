@@ -236,6 +236,13 @@ export const teamworkRussian = {
     "ghChecks_failure": "Не пройдены",
     "ghChecks_pending": "Выполняются",
     "ghChecks_not_observed": "Не наблюдались",
+    "ghReview_not_requested": "Не запрошена",
+    "ghReview_queued": "Проверка в очереди",
+    "ghReview_accepted": "Принято",
+    "ghReview_fulfilled": "Проверка выполнена",
+    "ghReview_cancelled": "Проверка отменена",
+    "ghSource_webhook": "Вебхук GitHub",
+    "ghSource_refresh": "Прочитано из GitHub",
     "ghReplacedBy": "Эта задача заменена задачей {{id}}.",
     "ghReplacesTask": "Эта задача заменяет задачу {{id}}.",
     "ghSuccessorPulls": "Pull request заменяющей задачи {{id}}"

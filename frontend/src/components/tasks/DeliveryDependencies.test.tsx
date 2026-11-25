@@ -5,7 +5,9 @@ import { IdentityContext } from '../../features/identity/identityContext';
 import type { WorkspaceIdentity } from '../../features/identity/identityService';
 import type { DeliveryPrerequisite } from '../../types/github';
 import type { Task } from '../../types/task';
+import { useState } from 'react';
 import { DeliveryDependencies } from './DeliveryDependencies';
+import { useTaskViewSession } from './taskViewSession';
 
 const mocks = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn(), delete: vi.fn(), retarget: vi.fn(), getById: vi.fn(), lookup: vi.fn() }));
 vi.mock('../../services/api', () => ({ default: { get: mocks.get, post: mocks.post, delete: mocks.delete } }));
@@ -13,8 +15,7 @@ vi.mock('../../services/githubService', () => ({ githubService: { retargetPrereq
 vi.mock('../../services/taskService', () => ({ taskService: { getById: mocks.getById, lookup: mocks.lookup } }));
 vi.mock('../../services/projectService', () => ({ projectService: { getAll: vi.fn(), getMilestones: vi.fn() } }));
 
-// Each test uses its own task, because an open editor is remembered per task across remounts.
-let task = { id: 700, version: 5, project_id: 5, title: 'Ship export' } as unknown as Task;
+const task = { id: 7, version: 5, project_id: 5, title: 'Ship export' } as unknown as Task;
 const edge = (overrides: Partial<DeliveryPrerequisite> = {}): DeliveryPrerequisite => ({
     id: 11, kind: 'task', target_id: 3, title: 'Build API', ready: false, reason: 'prerequisite_merge_not_observed',
     target_branch: 'main', merge: { state: 'not_observed', verified: false, target_branch: 'main' },
@@ -35,7 +36,7 @@ const conflict = { response: { status: 409, data: { detail: 'Task version is sta
 
 beforeEach(() => {
     vi.clearAllMocks();
-    task = { ...task, id: task.id + 1 } as Task;
+    sessionStorage.clear();
     mocks.get.mockResolvedValue({ data: [edge()] });
     mocks.getById.mockResolvedValue({ ...task, version: 6 });
     mocks.lookup.mockResolvedValue({ items: [{ id: 3, title: 'Build API' }] });
@@ -135,34 +136,83 @@ describe('prerequisite target branch', () => {
         expect(screen.getByLabelText('Target branch')).toHaveValue('develop');
     });
 
-    it('keeps the list open, the draft and the notice when the task view remounts on a new version', async () => {
-        mocks.retarget.mockRejectedValue(conflict);
-        const view = (version: number) => <IdentityContext.Provider value={{ identity: identity(), refresh: vi.fn(), signOut: vi.fn() }}>
-            <DeliveryDependencies key={version} task={{ ...task, version } as Task} disabled={false} onPending={vi.fn()}
-                onUpdated={() => rerender(view(6))} /></IdentityContext.Provider>;
-        const { user, rerender } = renderWithProviders(view(5));
-        await user.click(screen.getByText('Delivery prerequisites'));
-        await user.click(await screen.findByRole('button', { name: 'Change target branch for Build API' }));
-        await user.clear(screen.getByLabelText('Target branch'));
-        await user.type(screen.getByLabelText('Target branch'), 'develop');
-        await user.click(screen.getByRole('button', { name: 'Save branch' }));
-        expect(await screen.findByRole('alert')).toHaveTextContent('This task changed while you were editing.');
-        await waitFor(() => expect(screen.getByLabelText('Target branch')).toHaveValue('develop'));
-        expect(screen.getByText('Build API', { exact: false })).toBeInTheDocument();
-    });
+    describe('across the task view remounting on a new version', () => {
+        const onDirty = vi.fn();
+        // Mirrors the drawer: the session lives above the remount boundary, the view is keyed by version.
+        const Drawer = ({ person }: { person: string }) => {
+            const draftKey = `workchord-draft:${person}:task:7`;
+            const [session, onSession] = useTaskViewSession(draftKey);
+            const [version, setVersion] = useState(5);
+            return <IdentityContext.Provider value={{ identity: identity(), refresh: vi.fn(), signOut: vi.fn() }}>
+                <DeliveryDependencies key={version} task={{ ...task, version } as Task} disabled={false} draftKey={draftKey}
+                    session={session} onSession={onSession} onDirty={onDirty} onPending={vi.fn()} onUpdated={() => setVersion(6)} />
+            </IdentityContext.Provider>;
+        };
+        const startEditing = async (user: ReturnType<typeof renderWithProviders>['user']) => {
+            await user.click(screen.getByText('Delivery prerequisites'));
+            await user.click(await screen.findByRole('button', { name: 'Change target branch for Build API' }));
+            await user.clear(screen.getByLabelText('Target branch'));
+            await user.type(screen.getByLabelText('Target branch'), 'develop');
+        };
 
-    it('keeps the list open after a saved change so the new hold reason is visible', async () => {
-        mocks.retarget.mockResolvedValue([]);
-        const view = (version: number) => <IdentityContext.Provider value={{ identity: identity(), refresh: vi.fn(), signOut: vi.fn() }}>
-            <DeliveryDependencies key={version} task={{ ...task, version } as Task} disabled={false} onPending={vi.fn()}
-                onUpdated={() => rerender(view(6))} /></IdentityContext.Provider>;
-        const { user, rerender } = renderWithProviders(view(5));
-        await user.click(screen.getByText('Delivery prerequisites'));
-        await user.click(await screen.findByRole('button', { name: 'Change target branch for Build API' }));
-        await user.click(screen.getByRole('button', { name: 'Clear branch' }));
-        await waitFor(() => expect(mocks.retarget).toHaveBeenCalled());
-        expect(await screen.findByText('Build API', { exact: false })).toBeVisible();
-        expect(screen.queryByLabelText('Target branch')).not.toBeInTheDocument();
+        it('keeps the list open, the draft and the notice after a stale version, and reports the draft as unsaved', async () => {
+            mocks.retarget.mockRejectedValue(conflict);
+            const { user } = renderWithProviders(<Drawer person="1" />);
+            await startEditing(user);
+            expect(onDirty).toHaveBeenLastCalledWith(true);
+            await user.click(screen.getByRole('button', { name: 'Save branch' }));
+            expect(await screen.findByRole('alert')).toHaveTextContent('This task changed while you were editing.');
+            await waitFor(() => expect(mocks.getById).toHaveBeenCalled());
+            await waitFor(() => expect(screen.getByLabelText('Target branch')).toHaveValue('develop'));
+            expect(screen.getByRole('alert')).toHaveTextContent('This task changed while you were editing.');
+            expect(onDirty).toHaveBeenLastCalledWith(true);
+        });
+
+        it('keeps the list open after a saved change and clears the draft', async () => {
+            mocks.retarget.mockResolvedValue([]);
+            const { user } = renderWithProviders(<Drawer person="1" />);
+            await user.click(screen.getByText('Delivery prerequisites'));
+            await user.click(await screen.findByRole('button', { name: 'Change target branch for Build API' }));
+            await user.click(screen.getByRole('button', { name: 'Clear branch' }));
+            await waitFor(() => expect(mocks.retarget).toHaveBeenCalled());
+            expect(await screen.findByText('Build API', { exact: false })).toBeVisible();
+            expect(screen.queryByLabelText('Target branch')).not.toBeInTheDocument();
+            expect(sessionStorage.length).toBe(0);
+            expect(onDirty).toHaveBeenLastCalledWith(false);
+        });
+
+        it('does not report an unchanged field as unsaved, and clears the draft on cancel', async () => {
+            const { user } = renderWithProviders(<Drawer person="1" />);
+            await user.click(screen.getByText('Delivery prerequisites'));
+            await user.click(await screen.findByRole('button', { name: 'Change target branch for Build API' }));
+            expect(onDirty).toHaveBeenLastCalledWith(false);
+            await user.type(screen.getByLabelText('Target branch'), 'x');
+            expect(sessionStorage.length).toBe(1);
+            await user.click(screen.getByRole('button', { name: 'Cancel' }));
+            expect(sessionStorage.length).toBe(0);
+            expect(onDirty).toHaveBeenLastCalledWith(false);
+        });
+
+        it('offers the same person their draft in a new drawer but shows nobody else a draft or notice', async () => {
+            const first = renderWithProviders(<Drawer person="1" />);
+            await startEditing(first.user);
+            first.unmount();
+            const other = renderWithProviders(<Drawer person="2" />);
+            expect(screen.queryByLabelText('Target branch')).not.toBeInTheDocument();
+            other.unmount();
+            renderWithProviders(<Drawer person="1" />);
+            expect(await screen.findByLabelText('Target branch')).toHaveValue('develop');
+        });
+
+        it('survives a failing task refresh after a stale version', async () => {
+            mocks.retarget.mockRejectedValue(conflict);
+            mocks.getById.mockRejectedValue(new Error('offline'));
+            const { user } = renderWithProviders(<Drawer person="1" />);
+            await startEditing(user);
+            await user.click(screen.getByRole('button', { name: 'Save branch' }));
+            expect(await screen.findByRole('alert')).toHaveTextContent('This task changed while you were editing.');
+            expect(screen.getByLabelText('Target branch')).toHaveValue('develop');
+        });
     });
 
     it('shows the server message for an invalid branch and keeps the draft', async () => {
