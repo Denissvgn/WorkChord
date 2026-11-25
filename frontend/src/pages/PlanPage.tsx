@@ -5,6 +5,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { ArrowRight, Check, ChevronDown, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import clsx from 'clsx';
 import { Button } from '../components/common/Button';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
@@ -40,7 +41,7 @@ import type { IterationPlanningReadinessSummary } from '../types/iteration';
 import { formatDecimal } from '../utils/workNumbers';
 import { formatDate } from '../utils/formatDate';
 
-type Translate = ReturnType<typeof useTranslation>['t'];
+type Translate = TFunction;
 type Readiness = ReturnType<typeof usePlanningReadiness>;
 
 const STEP_PARAM = 'step';
