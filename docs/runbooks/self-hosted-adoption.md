@@ -205,8 +205,13 @@ Then start the application on the restored copy and read it:
 
 ~~~bash
 reh up --detach --wait --no-deps backend frontend
-curl -fsS http://127.0.0.1:18480/health/ready
+reh exec -T backend python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:8001/health/ready').read().decode())"
+curl -fsS http://127.0.0.1:18480/health
 ~~~
+
+Readiness is not exposed through the web port: the frontend answers 404 for
+`/health/ready`. Read it from inside the backend container, as above. The
+`/health` check through the port is liveness only.
 
 Add the timings to the rest of the window budget (stop, copy, startup,
 acceptance; step 9 gives the commands you can time) and a margin, and use the
@@ -392,7 +397,8 @@ other input: the environment file is already complete, so it rotates nothing.
 Check the result:
 
 ~~~bash
-curl -fsS http://127.0.0.1:8480/health/ready
+new_compose exec -T backend python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:8001/health/ready').read().decode())"
+curl -fsS http://127.0.0.1:8480/health
 new_compose ps --all
 ~~~
 
@@ -489,7 +495,8 @@ PM, as the maintenance runbook describes.
 ~~~bash
 new_compose down                       # keeps the new volumes for inspection
 old_compose up --detach --no-build backend frontend   # the pinned images, original volumes
-curl -fsS http://127.0.0.1:8480/health/ready
+old_compose exec -T backend python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:8001/health/ready').read().decode())"
+curl -fsS http://127.0.0.1:8480/health
 ~~~
 
 The old stack starts against the original volume and sink, at the old schema
