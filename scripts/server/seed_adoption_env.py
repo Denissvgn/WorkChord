@@ -11,7 +11,8 @@ existing file. `accept_self_hosted.sh` then reads the file like any other
 
 `--migrate-env FILE` instead upgrades an existing `server.env` in place: it
 replaces the settings of the earlier MinIO evidence store with freshly generated
-evidence-store credentials and keeps every other line as it is.
+evidence-store credentials, adds a readiness-detail token when the file has
+none, and keeps every other line as it is.
 """
 
 import argparse
@@ -54,10 +55,12 @@ def quote(value):
     return value if re.fullmatch(r'[A-Za-z0-9_@%+=:,./-]*', value) else f"'{value}'"
 
 
-def evidence_store_credentials():
+def generated_service_values():
+    """Values of the acceptance services that no stored data depends on."""
     hexed = secrets.token_hex
     return {'EVIDENCE_STORE_ROOT_ACCESS_KEY': 'wc' + hexed(8), 'EVIDENCE_STORE_ROOT_SECRET_KEY': hexed(24),
-        'AUTONOMY_EVIDENCE_ACCESS_KEY': 'wcaccept' + hexed(8), 'AUTONOMY_EVIDENCE_SECRET_KEY': hexed(24)}
+        'AUTONOMY_EVIDENCE_ACCESS_KEY': 'wcaccept' + hexed(8), 'AUTONOMY_EVIDENCE_SECRET_KEY': hexed(24),
+        'WORKCHORD_READINESS_DETAIL_TOKEN': hexed(24)}
 
 
 def build(old, settings, http_port, postgres_port, bind, session_cookie_secure):
@@ -72,7 +75,7 @@ def build(old, settings, http_port, postgres_port, bind, session_cookie_secure):
         'WORKCHORD_BACKUP_PASSWORD': hexed(24), 'OPENBAO_DEV_ROOT_TOKEN': hexed(24),
         'WORKCHORD_HTTP_BIND': bind, 'WORKCHORD_HTTP_PORT': str(http_port), 'POSTGRES_HOST_PORT': str(postgres_port),
         'WORKCHORD_SESSION_COOKIE_SECURE': 'true' if session_cookie_secure else 'false'})
-    values.update(evidence_store_credentials())
+    values.update(generated_service_values())
     values.update({
         'DATABASE_MIGRATION_URL': f"postgresql+psycopg://workchord_migrator:{values['WORKCHORD_MIGRATOR_PASSWORD']}@postgres:5432/workchord",
         'DATABASE_RUNTIME_URL': f"postgresql+psycopg://workchord_runtime:{values['WORKCHORD_RUNTIME_PASSWORD']}@postgres:5432/workchord",
@@ -100,14 +103,14 @@ def write(path, values):
 
 
 def migrate(path):
-    """Replace the earlier MinIO settings of an existing environment file in place."""
+    """Replace earlier MinIO settings and add missing service values, in place."""
     path = Path(path)
     if path.is_symlink() or not path.is_file():
         raise ValueError('The environment file to migrate must be a regular file')
     lines = path.read_text().splitlines()
     present = set(read_env(path))
     legacy = [name for name in LEGACY_EVIDENCE_STORE if name in present]
-    added = {name: value for name, value in evidence_store_credentials().items() if name not in present}
+    added = {name: value for name, value in generated_service_values().items() if name not in present}
     if not legacy and not added:
         return [], []
     kept = [line for line in lines if line.strip().split('=', 1)[0].strip() not in LEGACY_EVIDENCE_STORE]

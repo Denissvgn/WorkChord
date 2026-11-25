@@ -142,6 +142,7 @@ def test_seed_copies_durable_values_generates_new_identities_and_never_overwrite
     assert values['AUTONOMY_EVIDENCE_ACCESS_KEY'].startswith('wcaccept')
     assert values['EVIDENCE_STORE_ROOT_ACCESS_KEY'] != values['AUTONOMY_EVIDENCE_ACCESS_KEY']
     assert not any(name.startswith(('MINIO_', 'AUTONOMY_MINIO_')) for name in values)
+    assert len(values['WORKCHORD_READINESS_DETAIL_TOKEN']) == 48
     assert seed.main(['--old-env', str(old), '--output', str(output)]) == 1
 
 
@@ -160,11 +161,20 @@ def test_seed_migrates_an_existing_server_env_in_place(tmp_path, capsys):
     assert "MCP_ALLOWED_HOSTS='[\"localhost:*\"]'" in text and values['POSTGRES_PASSWORD'] == 'pg'
     assert values['AUTONOMY_EVIDENCE_ACCESS_KEY'].startswith('wcaccept')
     assert len(values['EVIDENCE_STORE_ROOT_SECRET_KEY']) == 48
+    assert len(values['WORKCHORD_READINESS_DETAIL_TOKEN']) == 48
     assert stat.S_IMODE(env.stat().st_mode) == 0o600
     assert seed.main(['--migrate-env', str(env)]) == 0
     assert 'needs no migration' in capsys.readouterr().out
     assert seed.read_env(env) == values
     assert sorted(path.name for path in tmp_path.iterdir()) == ['server.env']
+    # A file already on the new store gains only the token, and keeps an existing one.
+    env.write_text('POSTGRES_PASSWORD=pg\n' + ''.join(
+        f'{name}={values[name]}\n' for name in values if name.startswith(('EVIDENCE_', 'AUTONOMY_EVIDENCE_'))))
+    assert seed.main(['--migrate-env', str(env)]) == 0
+    assert 'added WORKCHORD_READINESS_DETAIL_TOKEN (mode 600)' in capsys.readouterr().out
+    token = seed.read_env(env)['WORKCHORD_READINESS_DETAIL_TOKEN']
+    assert seed.main(['--migrate-env', str(env)]) == 0
+    assert seed.read_env(env)['WORKCHORD_READINESS_DETAIL_TOKEN'] == token
     with pytest.raises(SystemExit):
         seed.main(['--migrate-env', str(env), '--output', str(tmp_path / 'other.env')])
     assert seed.main(['--migrate-env', str(tmp_path / 'missing.env')]) == 1

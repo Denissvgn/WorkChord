@@ -52,6 +52,7 @@ services:
       MCP_ALLOWED_HOSTS: '${MCP_ALLOWED_HOSTS:-["localhost:*","127.0.0.1:*","[::1]:*"]}'
       MCP_ALLOWED_ORIGINS: '${MCP_ALLOWED_ORIGINS:-["http://localhost:*","http://127.0.0.1:*"]}'
       MCP_UNSAFE_ALLOW_PUBLIC_BINDING: "false"
+      READINESS_DETAIL_TOKEN: ${WORKCHORD_READINESS_DETAIL_TOKEN:?Set WORKCHORD_READINESS_DETAIL_TOKEN}
     volumes:
       - workchord_server_data:/app/data
 
@@ -249,6 +250,7 @@ services:
     environment:
       DEPLOYMENT_ENVIRONMENT: development
       AUTONOMY_BACKEND_URL: http://backend:8001
+      AUTONOMY_READINESS_DETAIL_TOKEN: ${WORKCHORD_READINESS_DETAIL_TOKEN:?Set WORKCHORD_READINESS_DETAIL_TOKEN}
       AUTONOMY_GATEWAY_URL: http://frontend
       AUTONOMY_SIGNER_URL: http://openbao:8200
       AUTONOMY_SIGNER_TOKEN_FILE: /run/workchord-autonomy/openbao-token

@@ -158,6 +158,21 @@ value, and leaves a file that needs no migration unchanged. A former
 `AUTONOMY_EVIDENCE_RETENTION_DAYS` instead. Evidence stored by MinIO stays in
 the old `workchord_autonomy_minio` volume, which the new store does not read.
 Remove that volume once its retention has expired and no receipt depends on it.
+Receipts produced with MinIO (`implementation` `minio-s3-object-lock`) no longer
+verify; rerun acceptance to obtain a current receipt.
+
+## Readiness detail token
+
+With the default `WORKCHORD_AUTH_MODE=managed`, `/health/ready` answers only
+`{"status": ...}`. Acceptance needs its database and migration-gate details, so
+the backend returns the full payload to a caller that presents
+`WORKCHORD_READINESS_DETAIL_TOKEN` in the `X-Readiness-Detail-Token` header. The
+server Compose file passes that value to the backend and the acceptance
+container only; every other caller still receives the status-only answer. The
+launcher generates the token when `server.env` has none, and
+`seed_adoption_env.py --migrate-env` adds it to an existing file in the same
+step as the evidence-store migration above. Treat it like the other generated
+secrets.
 
 ## Adopting a running instance
 

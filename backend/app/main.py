@@ -1,3 +1,4 @@
+import hmac
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, status, Depends
@@ -259,11 +260,24 @@ async def liveness_check():
     return {"status": "ok", "maintenance": maintenance_state()}
 
 
+def _readiness_detail_authorized(request: Request, expected: str) -> bool:
+    """Compare the optional readiness-detail token in constant time."""
+    if not expected:
+        return False
+    presented = request.headers.get("x-readiness-detail-token", "")
+    return hmac.compare_digest(
+        presented.encode("utf-8"), expected.encode("utf-8")
+    )
+
+
 @app.get("/health/ready")
 async def readiness_check(request: Request):
     """Fail when the database is unavailable or not at packaged Alembic head."""
     ready, payload = await readiness_snapshot()
-    if get_settings().workchord_auth_mode == "managed":
+    settings = get_settings()
+    if settings.workchord_auth_mode == "managed" and not _readiness_detail_authorized(
+        request, settings.readiness_detail_token
+    ):
         payload = {"status": "ready" if ready else "not_ready"}
     return JSONResponse(status_code=200 if ready else 503, content=payload)
 

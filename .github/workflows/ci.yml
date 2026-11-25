@@ -211,6 +211,7 @@ jobs:
           EVIDENCE_STORE_ROOT_SECRET_KEY: workchord-ci-evidence-store-only
           AUTONOMY_EVIDENCE_ACCESS_KEY: workchordciaccept
           AUTONOMY_EVIDENCE_SECRET_KEY: workchord-ci-accept-only
+          WORKCHORD_READINESS_DETAIL_TOKEN: workchord-ci-readiness-only
           POSTGRES_PASSWORD: workchord-ci-postgres-only
           WORKCHORD_MIGRATOR_PASSWORD: workchord-ci-migrator-only
           WORKCHORD_RUNTIME_PASSWORD: workchord-ci-runtime-only

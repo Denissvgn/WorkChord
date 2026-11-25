@@ -19,7 +19,9 @@ case "$AUTONOMY_EVIDENCE_ACCESS_KEY" in
         ;;
 esac
 
-# Credentials travel through the environment, never through argv.
+# The root credentials reach the admin CLI through its environment. The admin
+# CLI accepts the acceptance identity's secret only as an argument, so it is
+# visible in this one-shot container's process list while the call runs.
 export ADMIN_ACCESS_KEY="$EVIDENCE_STORE_ROOT_ACCESS_KEY"
 export ADMIN_SECRET_KEY="$EVIDENCE_STORE_ROOT_SECRET_KEY"
 export ADMIN_ENDPOINT_URL="$endpoint"

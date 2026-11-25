@@ -305,6 +305,7 @@ class ServerAcceptanceConfig:
     valkey_host: str
     valkey_port: int
     timeout_seconds: float = 10.0
+    readiness_detail_token: str = ""
 
 
 class OpenBaoTransitClient:
@@ -802,6 +803,7 @@ def run_server_acceptance(
         gateway_url=config.gateway_url,
         expected_source_revision=source_revision,
         timeout_seconds=config.timeout_seconds,
+        readiness_detail_token=config.readiness_detail_token,
     )
     if application.backend_artifact_digest != build_identity.artifact_digest:
         raise ServerAcceptanceError("acceptance-backend-artifact-mismatch")
@@ -948,10 +950,20 @@ def _probe_application(
     gateway_url: str,
     expected_source_revision: str,
     timeout_seconds: float,
+    readiness_detail_token: str = "",
 ) -> ApplicationAcceptance:
+    # A managed-mode backend reveals readiness details only to this token.
+    readiness_headers = (
+        {"X-Readiness-Detail-Token": readiness_detail_token}
+        if readiness_detail_token
+        else {}
+    )
     try:
         with httpx.Client(timeout=timeout_seconds, trust_env=False) as client:
-            response = client.get(f"{backend_url.rstrip('/')}/health/ready")
+            response = client.get(
+                f"{backend_url.rstrip('/')}/health/ready",
+                headers=readiness_headers,
+            )
             response.raise_for_status()
             payload = response.json()
             backend_identity_response = client.get(

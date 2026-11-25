@@ -266,6 +266,10 @@ def main(argv: list[str] | None = None) -> int:
             valkey_host=_required(args.valkey_host, "valkey-host-missing"),
             valkey_port=args.valkey_port,
             timeout_seconds=args.timeout_seconds,
+            # Read from the environment only, so the secret never enters argv.
+            readiness_detail_token=os.getenv(
+                "AUTONOMY_READINESS_DETAIL_TOKEN", ""
+            ),
         )
         result = run_server_acceptance(config)
     except OSError as exc:

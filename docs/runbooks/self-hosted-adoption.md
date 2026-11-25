@@ -159,8 +159,9 @@ to run against an existing database without it.
 
 An instance already in this layout keeps its `server.env` across releases. A
 file written before the acceptance evidence store moved from MinIO to the
-Versity S3 Gateway still names `MINIO_*` and `AUTONOMY_MINIO_*` settings. The
-acceptance script replaces them on its next run. Before running Docker Compose
+Versity S3 Gateway still names `MINIO_*` and `AUTONOMY_MINIO_*` settings and
+lacks `WORKCHORD_READINESS_DETAIL_TOKEN`. The acceptance script replaces and
+adds them on its next run. Before running Docker Compose
 by hand against such a file, migrate it in place:
 
 ~~~bash
@@ -169,7 +170,8 @@ python3 "$WORKCHORD_INSTANCE_HOME/scripts/server/seed_adoption_env.py" \
 ~~~
 
 The [acceptance runbook](self-hosted-server-acceptance.md#evidence-store)
-describes the new settings and the old evidence volume.
+describes the new settings, the readiness detail token and the old evidence
+volume.
 
 ## 4. Isolated rehearsal on a restored copy
 

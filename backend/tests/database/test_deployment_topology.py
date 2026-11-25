@@ -196,6 +196,16 @@ def test_self_hosted_server_acceptance_uses_internal_pinned_analogues() -> None:
     assert not any(
         name.startswith("EVIDENCE_STORE_ROOT_") for name in acceptance["environment"]
     )
+    readiness_token = (
+        "${WORKCHORD_READINESS_DETAIL_TOKEN:?Set WORKCHORD_READINESS_DETAIL_TOKEN}"
+    )
+    assert services["backend"]["environment"]["READINESS_DETAIL_TOKEN"] == readiness_token
+    assert (
+        acceptance["environment"]["AUTONOMY_READINESS_DETAIL_TOKEN"] == readiness_token
+    )
+    for name, service in services.items():
+        if name not in {"backend", "autonomy-acceptance"}:
+            assert readiness_token not in json.dumps(service.get("environment", {}))
     assert (
         acceptance["depends_on"]["evidence-store-bootstrap"]["condition"]
         == "service_completed_successfully"

@@ -763,6 +763,7 @@ def _application_probe_client(
     agent_connect_body: bytes,
     agent_connect_content_type: str,
     gateway_build_identity: dict | None = None,
+    seen_readiness_tokens: list[str | None] | None = None,
 ):
     from app.autonomy import server_acceptance
 
@@ -814,6 +815,10 @@ def _application_probe_client(
                 )
             return httpx.Response(404)
         if path == "/health/ready":
+            if seen_readiness_tokens is not None:
+                seen_readiness_tokens.append(
+                    request.headers.get("x-readiness-detail-token")
+                )
             return httpx.Response(200, headers=json_type, json=ready)
         if path == "/.well-known/workchord-build.json":
             return httpx.Response(200, headers=json_type, json=backend_identity)
@@ -844,6 +849,29 @@ def test_application_probe_requires_agent_connect_json_through_gateway(
         timeout_seconds=1.0,
     )
     assert probed.status == "ready"
+
+
+def test_application_probe_presents_the_readiness_detail_token_only_when_set(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from app.autonomy.server_acceptance import _probe_application
+
+    seen: list[str | None] = []
+    _application_probe_client(
+        monkeypatch,
+        agent_connect_body=json.dumps({"auth_mode": "managed"}).encode(),
+        agent_connect_content_type="application/json",
+        seen_readiness_tokens=seen,
+    )
+    for token in ("detail-secret", ""):
+        _probe_application(
+            "http://backend:8001",
+            gateway_url="http://frontend",
+            expected_source_revision=SOURCE_REVISION,
+            timeout_seconds=1.0,
+            readiness_detail_token=token,
+        )
+    assert seen == ["detail-secret", None]
 
 
 def test_application_probe_rejects_web_page_instead_of_agent_connect(

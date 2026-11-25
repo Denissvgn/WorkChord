@@ -104,7 +104,10 @@ only in their service daemons and one-shot bootstrap jobs; they are withheld
 from the acceptance container, which receives short-lived or bucket-scoped
 credentials. The evidence store's `COMPLIANCE` retention is enforced by its S3
 API; it keeps object data and lock metadata in a Docker volume, so anyone with
-root access to the Docker host can still remove that evidence.
+root access to the Docker host can still remove that evidence. In managed
+mode, `/health/ready` reveals its database and migration details only to a
+caller presenting the generated readiness detail token, which the profile gives
+to the backend and the acceptance container alone.
 The application listener defaults to loopback and requires a TLS reverse proxy
 for remote access.
 

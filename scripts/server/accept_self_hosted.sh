@@ -123,6 +123,9 @@ random_hex() {
 : "${AUTONOMY_EVIDENCE_ACCESS_KEY:=wcaccept$(random_hex 8)}"
 : "${AUTONOMY_EVIDENCE_SECRET_KEY:=$(random_hex 24)}"
 : "${OPENBAO_DEV_ROOT_TOKEN:=$(random_hex 24)}"
+# Shared by the backend and the acceptance job only; it unlocks the detailed
+# readiness payload that managed mode otherwise withholds.
+: "${WORKCHORD_READINESS_DETAIL_TOKEN:=$(random_hex 24)}"
 : "${SETTINGS_ENCRYPTION_KEY:=$(openssl rand -base64 32 | tr '/+' '_-')}"
 : "${AGENT_BOOTSTRAP_API_KEY:=wcboot_$(random_hex 24)}"
 : "${WORKCHORD_ADMIN_API_KEY:=wcadmin_$(random_hex 24)}"
@@ -181,6 +184,7 @@ temporary_env="$env_file.tmp"
     printf 'AUTONOMY_EVIDENCE_ACCESS_KEY=%s\n' "$AUTONOMY_EVIDENCE_ACCESS_KEY"
     printf 'AUTONOMY_EVIDENCE_SECRET_KEY=%s\n' "$AUTONOMY_EVIDENCE_SECRET_KEY"
     printf 'OPENBAO_DEV_ROOT_TOKEN=%s\n' "$OPENBAO_DEV_ROOT_TOKEN"
+    printf 'WORKCHORD_READINESS_DETAIL_TOKEN=%s\n' "$WORKCHORD_READINESS_DETAIL_TOKEN"
     printf 'SETTINGS_ENCRYPTION_KEY=%s\n' "$SETTINGS_ENCRYPTION_KEY"
     printf 'AGENT_BOOTSTRAP_API_KEY=%s\n' "$AGENT_BOOTSTRAP_API_KEY"
     printf 'WORKCHORD_ADMIN_API_KEY=%s\n' "$WORKCHORD_ADMIN_API_KEY"
