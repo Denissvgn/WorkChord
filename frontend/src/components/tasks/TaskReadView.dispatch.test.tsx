@@ -10,6 +10,7 @@ vi.mock('../../services/teamService', () => ({ teamService: { getByIteration: se
 vi.mock('../../services/taskService', () => ({ taskService: { actions: services.actions, getDetail: services.detail, getById: services.task } }));
 vi.mock('../../services/iterationService', () => ({ iterationService: { getAll: vi.fn().mockResolvedValue([]) } }));
 vi.mock('./DeliveryDependencies', () => ({ DeliveryDependencies: () => null }));
+vi.mock('./GitHubReconciliationPanel', () => ({ GitHubReconciliationPanel: () => null }));
 vi.mock('./TimeEntriesPanel', () => ({ TimeEntriesPanel: () => null }));
 
 const task = {

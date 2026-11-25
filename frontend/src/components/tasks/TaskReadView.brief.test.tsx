@@ -9,6 +9,7 @@ const service = vi.hoisted(() => ({ writeBrief: vi.fn(), actions: vi.fn(), getDe
 vi.mock('../../services/taskService', () => ({ taskService: service }));
 vi.mock('../../services/iterationService', () => ({ iterationService: { getAll: vi.fn().mockResolvedValue([]) } }));
 vi.mock('./DeliveryDependencies', () => ({ DeliveryDependencies: () => null }));
+vi.mock('./GitHubReconciliationPanel', () => ({ GitHubReconciliationPanel: () => null }));
 vi.mock('./TaskDiscussion', () => ({ TaskDiscussion: () => null }));
 vi.mock('./TimeEntriesPanel', () => ({ TimeEntriesPanel: () => null }));
 vi.mock('./TaskTimelinePanel', () => ({ TaskTimelinePanel: () => null }));

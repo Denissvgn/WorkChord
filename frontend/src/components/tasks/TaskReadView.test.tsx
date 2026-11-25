@@ -10,6 +10,7 @@ const service = vi.hoisted(() => ({ writeBrief: vi.fn(), actions: vi.fn(), comma
 vi.mock('../../services/taskService', () => ({ taskService: service }));
 vi.mock('./TaskWorkPanel', () => ({ TaskWorkPanel: () => <p>Work panel</p> }));
 vi.mock('./DeliveryDependencies', () => ({ DeliveryDependencies: () => null }));
+vi.mock('./GitHubReconciliationPanel', () => ({ GitHubReconciliationPanel: () => <p>Reconciliation panel</p> }));
 vi.mock('./TaskDiscussion', () => ({ TaskDiscussion: () => <p>Discussion</p> }));
 vi.mock('./TimeEntriesPanel', () => ({ TimeEntriesPanel: () => null }));
 vi.mock('./TaskTimelinePanel', () => ({ TaskTimelinePanel: () => <p>History</p> }));
@@ -56,6 +57,7 @@ describe('read-first task view', () => {
         const { user } = renderView();
         await user.click(screen.getByRole('button', { name: 'Work & review · 1 of 2 criteria' }));
         expect(screen.getByText('Work panel')).toBeInTheDocument();
+        expect(screen.getByText('Reconciliation panel')).toBeInTheDocument();
         expect(screen.getByTestId('location')).toHaveTextContent('task=312&part=work');
         await user.click(screen.getByRole('button', { name: 'Activity' }));
         expect(screen.getByText('Discussion')).toBeInTheDocument();
