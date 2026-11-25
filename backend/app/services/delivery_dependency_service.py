@@ -123,15 +123,15 @@ class DeliveryDependencyService:
         state = merge["state"]
         if not accepted:
             canceled = getattr(target, "canceled_at", None) is not None
-            # A submitted or closed task waits on an independent verdict. A closed task whose acceptance
-            # no longer matches its version was changed after it was accepted: only the reviewer's
-            # verdict restores it, so the worker is not asked to redo work it already submitted.
-            owner = "pm" if canceled else "reviewer" if target.status in {"resolved", "closed"} else "worker"
+            # A submitted task waits on the independent reviewer. A closed task has no status transitions
+            # and verification needs a submitted task, so one whose acceptance no longer matches its
+            # version can only be reopened, which is the project manager's audited command.
+            owner = "pm" if canceled or target.status == "closed" else "reviewer" if target.status == "resolved" else "worker"
             if canceled:
                 action = f"{label} was canceled; record a replacement task for it."
             elif target.status == "closed":
-                merged_note = f"its code is merged on {branch}" if state == "merged_on_target" else f"its code must also be merged on {branch}"
-                action = f"Accept {label} again: its acceptance no longer matches its current version; {merged_note}."
+                action = (f"Reopen {label}; its acceptance no longer matches its current version. It must be resubmitted "
+                    f"and accepted again by the independent reviewer, and its code merged on {branch}.")
             elif state == "merged_on_target":
                 action = f"Code for {label} is merged on {branch}; the independent reviewer must still accept it."
             elif owner == "reviewer":
@@ -144,7 +144,7 @@ class DeliveryDependencyService:
             action = {
                 "open_pull_request": f"Have the accepted pull request for {label} merged into {branch}, then run GitHub catch-up for it.",
                 "merged_on_other_branch": f"The pull request for {label} merged into a branch other than {branch}; merge it into {branch} or change the prerequisite branch.",
-                "merge_branch_unknown": f"The merge branch of the pull request for {label} is not recorded; run GitHub catch-up for {label} to read it, then check that it merged into {branch}.",
+                "merge_branch_unknown": f"The merge of the pull request for {label} into {branch} is not confirmed (base branch or merge commit not recorded); run GitHub catch-up for {label} to read it.",
                 "closed_unmerged": f"The pull request for {label} closed without merging; reopen it or record a replacement task.",
             }.get(state, f"No merge into {branch} is observed for {label}; link its pull request if missing, then run GitHub catch-up.")
         return {"case": case, "reason": reason, "next_owner": owner, "next_action": action}

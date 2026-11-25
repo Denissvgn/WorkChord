@@ -119,11 +119,9 @@ Read the hold on the pipeline (`GET /api/agent/pipeline`, `agent_get_pipeline`):
 | --- | --- | --- | --- |
 | Implemented, pull request open or draft | `prerequisite_acceptance_required` | `open_pull_request` | `reviewer` reviews and accepts; the code must still merge into the branch |
 | Not yet submitted | `prerequisite_acceptance_required` | `not_accepted` | `worker` |
-| Closed, but its acceptance no longer matches its current version | `prerequisite_acceptance_required` | `not_accepted` | `reviewer` accepts it again |
 | Accepted, no pull request observed, or never read from GitHub | `prerequisite_merge_not_observed` | `not_observed` | `pm`: link the pull request if missing, then run GitHub catch-up |
 | Accepted, pull request still open | `prerequisite_merge_not_observed` | `open_pull_request` | `pm`: have a person with merge rights merge it into the branch, then run catch-up |
 | Accepted, merged into another branch | `prerequisite_merge_not_observed` | `merged_on_other_branch` | `pm`: merge into the named branch, or ask a person to change the edge's branch |
-| Accepted, a pull request merged but its base branch is not recorded | `prerequisite_merge_not_observed` | `merge_branch_unknown` | `pm`: run GitHub catch-up for the predecessor to read the branch |
 | Accepted, pull request closed unmerged | `prerequisite_merge_not_observed` | `closed_unmerged` | `pm`: reopen it, or record a task replacement |
 | Accepted, merged into the named branch with a merge commit | none | none | none: the task is released |
 

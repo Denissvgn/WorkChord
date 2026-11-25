@@ -145,7 +145,33 @@ async def test_merged_pull_request_without_a_recorded_base_branch_asks_for_catch
         assert (await hold(db, second.id))["ready"]
 
 
-async def test_closed_prerequisite_with_stale_acceptance_asks_the_reviewer_not_the_worker(delivery_store):
+async def test_merged_without_a_merge_commit_on_the_target_is_not_confirmed(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first, second = await pair(db, scenario)
+        await observe(db, first, 45, status="merged", merge=False)
+        await accept(db, first)
+        await DeliveryDependencyService(db).add(second.id, "task", first.id, second.version, "main")
+        item = await hold(db, second.id)
+        assert item["merge"]["state"] == "merge_branch_unknown" and not item["ready"]
+        assert item["hold"]["next_owner"] == "pm" and "catch-up" in item["hold"]["next_action"]
+        assert "other than" not in item["hold"]["next_action"]
+
+
+async def test_canceled_prerequisite_is_replaced_by_the_pm(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first, second = await pair(db, scenario)
+        await observe(db, first, 46, status="merged")
+        await accept(db, first)
+        first.canceled_at = utc_now()
+        await db.commit()
+        await DeliveryDependencyService(db).add(second.id, "task", first.id, second.version, "main")
+        item = await hold(db, second.id)
+        assert item["hold"]["next_owner"] == "pm" and "replacement" in item["hold"]["next_action"]
+
+
+async def test_closed_prerequisite_with_stale_acceptance_is_reopened_by_the_pm(delivery_store):
     factory, scenario, _ = delivery_store
     async with factory() as db:
         first, second = await pair(db, scenario)
@@ -156,4 +182,4 @@ async def test_closed_prerequisite_with_stale_acceptance_asks_the_reviewer_not_t
         await DeliveryDependencyService(db).add(second.id, "task", first.id, second.version, "main")
         item = await hold(db, second.id)
         assert item["reason"] == "prerequisite_acceptance_required" and item["hold"]["case"] == "not_accepted"
-        assert item["hold"]["next_owner"] == "reviewer" and "Accept" in item["hold"]["next_action"]
+        assert item["hold"]["next_owner"] == "pm" and "Reopen" in item["hold"]["next_action"]
