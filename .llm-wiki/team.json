@@ -1,0 +1,34 @@
+{
+  "agent": {
+    "prompt_template": null,
+    "required_lint_rules": [],
+    "required_skills": []
+  },
+  "conventions": {
+    "canonical_naming": true,
+    "require_log": true,
+    "required_dirs": [
+      "entities",
+      "modules",
+      "workflows",
+      "infrastructure"
+    ],
+    "required_entity_sections": [
+      "Description",
+      "Attributes",
+      "Methods",
+      "Relationships"
+    ],
+    "required_files": [
+      "index.md",
+      "log.md"
+    ],
+    "required_infrastructure_sections": [],
+    "required_module_sections": [
+      "Description"
+    ],
+    "workflow_filename_pattern": "^[A-Za-z0-9_.-]+$"
+  },
+  "version": 1,
+  "wiki_dir": "docs/llm_wiki"
+}
