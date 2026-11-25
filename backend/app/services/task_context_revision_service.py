@@ -59,7 +59,8 @@ async def reserve_task_context_revision(
         }, ensure_ascii=False, default=str)))
         if accepted and task.accepted_version != version:
             task.accepted_version = version
-            db.info.setdefault("observation_acceptance_preservations", set()).add((task_id, version))
+            # The flush authority check accepts exactly this move of acceptance, once.
+            db.info.setdefault("observation_acceptance_preservations", {})[(task_id, version)] = previous_version
             db.add(TaskEvent(task_id=task_id, actor_type="system", event_type="acceptance_preserved_after_observation",
                              payload=json.dumps({
                                  "previous_version": previous_version, "current_version": version,

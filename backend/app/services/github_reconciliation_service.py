@@ -52,10 +52,11 @@ async def observed_head_keeps_acceptance(db, link: ExternalLink, head_sha: Optio
     Acceptance covers the submitted commit. A head that differs from it, as the
     reconciliation's ``head_differs_from_submission`` reports, is code no reviewer
     accepted. Without a submission for the link, a head that moved from the one
-    recorded before is treated the same way.
+    recorded before is treated the same way. An observation that names no head
+    cannot show which code it covers, so it does not keep acceptance.
     """
     if not head_sha:
-        return True
+        return False
     service = GitHubReconciliationService(db)
     links = await service._pull_links(link.entity_id)
     runs = (await db.scalars(select(AgentRun).where(AgentRun.task_id == link.entity_id).order_by(AgentRun.id)

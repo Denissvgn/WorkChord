@@ -361,8 +361,9 @@ class GitHubStatusService:
     ) -> None:
         """Fence a task assignment before provider data dirties its linked context.
 
-        Recording an observation keeps a current acceptance unless the observed
-        head is not the commit the acceptance covers.
+        Recording an observation keeps a current acceptance only when the observed
+        head is the commit the acceptance covers. A recorded provider error observes
+        no pull request state, so it keeps acceptance.
         """
         if link.entity_type != ExternalLinkEntityType.TASK.value:
             return
@@ -374,7 +375,8 @@ class GitHubStatusService:
             context_kind="external_link",
             action="github_status_refresh",
             details={"external_link_id": link.id, "outcome": outcome},
-            preserve_acceptance=await observed_head_keeps_acceptance(self.db, link, head_sha),
+            preserve_acceptance=(outcome == "provider_error"
+                                 or await observed_head_keeps_acceptance(self.db, link, head_sha)),
         )
 
     async def refresh_pull_request_status(self, link_id: int) -> Optional[ExternalLink]:

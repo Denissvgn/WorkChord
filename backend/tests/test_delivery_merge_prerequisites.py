@@ -2,9 +2,13 @@
 
 import json
 
+import httpx
 import pytest
 from sqlalchemy import select
+from sqlalchemy.orm.attributes import set_committed_value
 
+from app.authority import Authority, AuthorityError
+from app.commands import command_transaction
 from app.config import get_settings
 from app.models.agent import AgentActor, AgentRun, TaskEvent
 from app.models.identity import Principal
@@ -14,9 +18,11 @@ from app.schemas.task_brief import BriefWrite, TaskBrief
 from app.services.delivery_dependency_service import DeliveryDependencyService
 from app.services.external_link_service import ExternalLinkService
 from app.services.github_reconciliation_service import GitHubReconciliationService
+from app.services.github_status_service import GitHubStatusService
 from app.services.github_webhook_service import GitHubWebhookService
 from app.services.request_source_service import RequestSourceService
 from app.services.task_brief_service import TaskBriefService
+from app.services.task_context_revision_service import reserve_task_context_revision
 from app.utils.time import utc_now
 from tests.test_delivery_dependencies import pair
 from tests.test_delivery_scenarios import delivery_store  # noqa: F401
@@ -298,3 +304,152 @@ async def test_a_brief_change_still_makes_acceptance_stale(delivery_store):
         first = await db.get(Task, first_id)
         assert first.accepted_version != first.version and await preserved_events(db, first_id) == []
         assert not (await hold(db, second_id))["ready"]
+
+
+@pytest.mark.parametrize("observer", ["catch_up", "webhook"])
+async def test_an_observation_without_a_head_makes_acceptance_stale(delivery_store, github, observer):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, second_id = await accepted_with_pull_request(db, scenario)
+        await record_merge(db, observer, github, first_id, None)
+    async with factory() as db:
+        first = await db.get(Task, first_id)
+        assert first.accepted_version != first.version and await preserved_events(db, first_id) == []
+        assert (await hold(db, second_id))["hold"]["case"] == "not_accepted"
+
+
+async def test_a_recorded_provider_error_keeps_acceptance(delivery_store, github, monkeypatch):
+    async def unavailable(self, owner, repo, number):
+        raise httpx.ConnectError("GitHub unavailable")
+
+    monkeypatch.setattr(GitHubStatusService, "_fetch_pull_request", unavailable)
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, _ = await accepted_with_pull_request(db, scenario)
+        accepted_version = (await db.get(Task, first_id)).version
+        view = await GitHubReconciliationService(db).catch_up(first_id)
+        assert view["pull_requests"][0]["observation_error"] == "GitHub request failed"
+    async with factory() as db:
+        first = await db.get(Task, first_id)
+        assert first.version > accepted_version and first.accepted_version == first.version
+        (event,) = await preserved_events(db, first_id)
+        assert json.loads(event.payload)["details"]["outcome"] == "provider_error"
+
+
+def edit_only_agent(db, project_id):
+    """A PM agent that may edit planning but holds no work:execute scope."""
+    db.info["authority"] = Authority(None, "agent", projects={project_id: "manager"}, actor_role="pm",
+                                     source="mcp", scopes=frozenset({"planning:read", "planning:write"}))
+
+
+async def preserve(db, task_id):
+    return await reserve_task_context_revision(db, task_id, context_kind="external_link",
+                                               action="github_status_refresh", preserve_acceptance=True)
+
+
+async def test_an_edit_only_agent_carries_acceptance_only_through_a_preserving_observation(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, _ = await accepted_with_pull_request(db, scenario)
+        project_id = (await db.get(Task, first_id)).project_id
+    async with factory() as db:
+        edit_only_agent(db, project_id)
+        async with command_transaction(db):
+            version = await preserve(db, first_id)
+    async with factory() as db:
+        first = await db.get(Task, first_id)
+        assert first.version == version and first.accepted_version == version
+        assert len(await preserved_events(db, first_id)) == 1
+
+
+async def test_an_edit_only_agent_cannot_refresh_a_stale_acceptance_by_hand(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, _ = await accepted_with_pull_request(db, scenario)
+        first = await db.get(Task, first_id)
+        first.version += 1
+        await db.commit()
+        project_id = first.project_id
+    async with factory() as db:
+        edit_only_agent(db, project_id)
+        first = await db.get(Task, first_id)
+        first.accepted_version = first.version
+        with pytest.raises(AuthorityError):
+            await db.flush()
+        await db.rollback()
+
+
+@pytest.mark.parametrize("offset", [5, None, -2], ids=["ahead", "cleared", "behind"])
+async def test_a_preserving_observation_grants_no_other_acceptance_value(delivery_store, offset):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, _ = await accepted_with_pull_request(db, scenario)
+        project_id = (await db.get(Task, first_id)).project_id
+    async with factory() as db:
+        edit_only_agent(db, project_id)
+        with pytest.raises(AuthorityError):
+            async with command_transaction(db):
+                version = await preserve(db, first_id)
+                first = await db.get(Task, first_id)
+                first.accepted_version = None if offset is None else version + offset
+                await db.flush()
+    async with factory() as db:
+        first = await db.get(Task, first_id)
+        assert first.accepted_version == first.version and await preserved_events(db, first_id) == []
+
+
+async def test_a_preserving_observation_authorizes_one_flush(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, _ = await accepted_with_pull_request(db, scenario)
+        first = await db.get(Task, first_id)
+        project_id, previous = first.project_id, first.accepted_version
+    async with factory() as db:
+        edit_only_agent(db, project_id)
+        with pytest.raises(AuthorityError):
+            async with command_transaction(db):
+                version = await preserve(db, first_id)
+                await db.flush()
+                first = await db.get(Task, first_id)
+                assert first.accepted_version == version
+                # Replay the same move: the grant was consumed by the first flush.
+                set_committed_value(first, "accepted_version", previous)
+                first.accepted_version = version
+                await db.flush()
+
+
+async def test_undoing_a_preserved_acceptance_leaves_it_stale(delivery_store):
+    """version - 1 is the acceptance before the reservation: no grant is used and acceptance is stale."""
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, _ = await accepted_with_pull_request(db, scenario)
+        project_id = (await db.get(Task, first_id)).project_id
+    async with factory() as db:
+        edit_only_agent(db, project_id)
+        async with command_transaction(db):
+            version = await preserve(db, first_id)
+            first = await db.get(Task, first_id)
+            first.accepted_version = version - 1
+            assert ("observation_acceptance_preservations" in db.info
+                    and db.info["observation_acceptance_preservations"] == {(first_id, version): version - 1})
+    async with factory() as db:
+        first = await db.get(Task, first_id)
+        assert first.version == version and first.accepted_version == version - 1
+
+
+async def test_a_preserving_observation_grants_nothing_from_another_previous_acceptance(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, _ = await accepted_with_pull_request(db, scenario)
+        first = await db.get(Task, first_id)
+        project_id, previous = first.project_id, first.accepted_version
+    async with factory() as db:
+        edit_only_agent(db, project_id)
+        with pytest.raises(AuthorityError):
+            async with command_transaction(db):
+                version = await preserve(db, first_id)
+                first = await db.get(Task, first_id)
+                # The row carries an acceptance other than the one current before the reservation.
+                set_committed_value(first, "accepted_version", previous - 1)
+                first.accepted_version = version
+                await db.flush()

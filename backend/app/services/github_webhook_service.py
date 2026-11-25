@@ -230,8 +230,8 @@ class GitHubWebhookService:
     ) -> Optional[ExternalLink]:
         """Reserve the task context, then re-read the link under its lock.
 
-        The delivery is an observation: a current acceptance stays current unless
-        the delivered head is not the commit the acceptance covers.
+        The delivery is an observation: a current acceptance stays current only
+        when the delivered head is the commit the acceptance covers.
         """
         from app.services.github_reconciliation_service import observed_head_keeps_acceptance
 
