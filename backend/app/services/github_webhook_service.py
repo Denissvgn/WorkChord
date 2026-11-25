@@ -226,8 +226,15 @@ class GitHubWebhookService:
         *,
         action: str,
         delivery_id: Optional[str],
+        head_sha: Optional[str] = None,
     ) -> Optional[ExternalLink]:
-        """Reserve the task context, then re-read the link under its lock."""
+        """Reserve the task context, then re-read the link under its lock.
+
+        The delivery is an observation: a current acceptance stays current unless
+        the delivered head is not the commit the acceptance covers.
+        """
+        from app.services.github_reconciliation_service import observed_head_keeps_acceptance
+
         await reserve_task_context_revision(
             self.db,
             link.entity_id,
@@ -238,6 +245,7 @@ class GitHubWebhookService:
                 "delivery_id": delivery_id,
                 "webhook_action": action,
             },
+            preserve_acceptance=await observed_head_keeps_acceptance(self.db, link, head_sha),
         )
         return await self.status_service.lock_link_after_task(link.id)
 
@@ -458,7 +466,10 @@ class GitHubWebhookService:
             if not stale:
                 # A concurrent catch-up or delivery for this link commits first;
                 # judge staleness and the closure against what it recorded.
-                locked = await self._lock_link_for_update(link, action=action, delivery_id=delivery_id)
+                locked = await self._lock_link_for_update(
+                    link, action=action, delivery_id=delivery_id,
+                    head_sha=self.status_service.observation_from_payload(pr)["head_sha"],
+                )
                 if locked is None:
                     await self.db.rollback()
                     return GitHubWebhookResponse(

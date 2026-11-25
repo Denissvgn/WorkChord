@@ -30,8 +30,15 @@ async def reserve_task_context_revision(
     context_kind: str,
     action: str,
     details: dict[str, Any] | None = None,
+    preserve_acceptance: bool = False,
 ) -> int | None:
-    """Reserve the shared task version and append context evidence under its command owner."""
+    """Reserve the shared task version and append context evidence under its command owner.
+
+    ``preserve_acceptance`` is only for revisions that record an observation of
+    already linked provider state (GitHub catch-up, refresh and webhooks): an
+    acceptance current before the revision stays current after it, and the
+    timeline records that. Every other context change leaves acceptance stale.
+    """
     from app.services.task_service import TaskService, TaskVersionConflictError
     from app.services.snapshot_service import SnapshotService
     async with command_transaction(db, commit=False):
@@ -41,6 +48,8 @@ async def reserve_task_context_revision(
         if task is None:
             return None
         await SnapshotService(db).create_snapshot(task.iteration_id, "before_context_change")
+        previous_version = task.version
+        accepted = preserve_acceptance and _acceptance_current(task)
         try:
             version = await TaskService(db).reserve_task_version(task, task.version)
         except TaskVersionConflictError as exc:
@@ -48,4 +57,18 @@ async def reserve_task_context_revision(
         db.add(TaskEvent(task_id=task_id, actor_type="system", event_type="task_context_changed", payload=json.dumps({
             "context_kind": context_kind, "action": action, "details": details or {}, "version": version,
         }, ensure_ascii=False, default=str)))
+        if accepted and task.accepted_version != version:
+            task.accepted_version = version
+            db.info.setdefault("observation_acceptance_preservations", set()).add((task_id, version))
+            db.add(TaskEvent(task_id=task_id, actor_type="system", event_type="acceptance_preserved_after_observation",
+                             payload=json.dumps({
+                                 "previous_version": previous_version, "current_version": version,
+                                 "context_kind": context_kind, "action": action, "details": details or {},
+                                 "reason": "A provider observation was recorded without changing the accepted work",
+                             }, ensure_ascii=False, default=str)))
         return version
+
+
+def _acceptance_current(task: Task) -> bool:
+    return (task.status == "closed" and task.canceled_at is None and task.accepted_at is not None
+            and task.accepted_by_principal_id is not None and task.accepted_version == task.version)

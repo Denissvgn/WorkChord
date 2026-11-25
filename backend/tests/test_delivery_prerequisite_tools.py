@@ -327,16 +327,8 @@ async def test_catch_up_records_the_missed_merge_and_releases_the_dependent(team
                                arguments={"task_id": prerequisite})
         assert ok and [pull["state"] for pull in again["pull_requests"]] == ["merged"]
         ok, (after,) = await _list(call, PM_KEY, dependent)
-        assert ok and after["merge"]["state"] == "merged_on_target" and after["merge"]["verified"], json.dumps(after)
-        # A recorded observation changes the prerequisite's version, so the merge
-        # releases the dependent once the acceptance matches the current version.
-        async with factory() as db:
-            with internal_authority(db):
-                task = await db.get(Task, prerequisite)
-                task.accepted_version = task.version
-            await db.commit()
-        ok, (after,) = await _list(call, PM_KEY, dependent)
-    assert ok and after["ready"] and after["hold"] is None, json.dumps(after)
+    assert ok and after["merge"]["state"] == "merged_on_target" and after["merge"]["verified"], json.dumps(after)
+    assert after["ready"] and after["hold"] is None, json.dumps(after)
     async with factory() as db:
         merges = (await db.scalars(select(TaskEvent).where(TaskEvent.task_id == prerequisite,
             TaskEvent.event_type.like("%merge%")))).all()

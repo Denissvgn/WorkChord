@@ -442,6 +442,11 @@ def authorize_domain_writes(session, _flush_context, _instances):
                 action = "execute"
             if changed <= {"progress", "artifact_revision", "accepted_at", "accepted_by_principal_id", "accepted_version", "version", "updated_at"}:
                 action = "execute"
+            if (changed <= {"accepted_version", "version", "updated_at"} and (obj.id, obj.accepted_version)
+                    in session.info.get("observation_acceptance_preservations", set())):
+                # A recorded provider observation carried the current acceptance to the
+                # revision it reserved; it needs only the authority the observation needs.
+                action = "edit"
             history = inspect(obj).attrs.status.history
             rollup = obj.id in session.info.get("derived_rollups", set()) and obj.is_summary
             if history.has_changes() and obj.status in {"active", "resolved"}:

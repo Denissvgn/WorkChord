@@ -357,16 +357,24 @@ class GitHubStatusService:
         link: ExternalLink,
         *,
         outcome: str,
+        head_sha: Optional[str] = None,
     ) -> None:
-        """Fence a task assignment before provider data dirties its linked context."""
+        """Fence a task assignment before provider data dirties its linked context.
+
+        Recording an observation keeps a current acceptance unless the observed
+        head is not the commit the acceptance covers.
+        """
         if link.entity_type != ExternalLinkEntityType.TASK.value:
             return
+        from app.services.github_reconciliation_service import observed_head_keeps_acceptance
+
         await reserve_task_context_revision(
             self.db,
             link.entity_id,
             context_kind="external_link",
             action="github_status_refresh",
             details={"external_link_id": link.id, "outcome": outcome},
+            preserve_acceptance=await observed_head_keeps_acceptance(self.db, link, head_sha),
         )
 
     async def refresh_pull_request_status(self, link_id: int) -> Optional[ExternalLink]:
@@ -424,7 +432,7 @@ class GitHubStatusService:
             metadata["observed_at"] = refreshed_at
             link.metadata_json = metadata
             return await self._save_link(link)
-        await self._reserve_task_context_revision(link, outcome="refreshed")
+        await self._reserve_task_context_revision(link, outcome="refreshed", head_sha=observation["head_sha"])
         # Another catch-up or a webhook may have recorded this observation while
         # this one waited for the lock; decide from what it committed.
         link = await self.lock_link_after_task(link_id)
