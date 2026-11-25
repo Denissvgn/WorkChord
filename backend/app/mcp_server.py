@@ -10,7 +10,7 @@ from typing import Any, AsyncIterator, Callable, Optional
 
 from mcp.server.fastmcp import FastMCP
 from app.commands import command_transaction, AggregateVersionConflict, HierarchyScopeError, PlanningConflict
-from app.authority import AuthorityError
+from app.authority import AGENT_TASK_READ_SCOPES, AGENT_TASK_WRITE_SCOPES, AuthorityError
 from app.services.identity_service import IdentityService
 from mcp.server.fastmcp.exceptions import ToolError
 from mcp.server.transport_security import TransportSecuritySettings
@@ -1674,6 +1674,76 @@ def create_mcp_server() -> FastMCP:
                 db,
                 actor,
                 task_id,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
+    @mcp.tool(annotations=READ_ONLY_TOOL)
+    async def agent_get_github_reconciliation(task_id: int) -> dict[str, Any]:
+        """Compare a task's submitted commits with its linked pull requests as last observed, with who acts next."""
+        return await _tool_call(
+            AGENT_TASK_READ_SCOPES,
+            lambda db, actor: mcp_agent_tools.get_github_reconciliation(db, actor, task_id),
+        )
+
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_run_github_catch_up(task_id: int) -> dict[str, Any]:
+        """Read this task's own pull requests from GitHub for events a webhook never delivered, then return the reconciliation."""
+        return await _tool_call(
+            AGENT_TASK_WRITE_SCOPES,
+            lambda db, actor: mcp_agent_tools.run_github_catch_up(db, actor, task_id),
+        )
+
+    @mcp.tool(annotations=READ_ONLY_TOOL)
+    async def agent_list_delivery_dependencies(task_id: int) -> list[dict[str, Any]]:
+        """List a task's delivery prerequisites with their ids, target branches, readiness and holds."""
+        return await _tool_call(
+            AGENT_TASK_READ_SCOPES,
+            lambda db, actor: mcp_agent_tools.list_delivery_dependencies(db, actor, task_id),
+        )
+
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_add_delivery_dependency(
+        task_id: int,
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Record a delivery prerequisite; payload is {kind, target_id, expected_version, target_branch?}."""
+        return await _tool_call(
+            AGENT_TASK_WRITE_SCOPES,
+            lambda db, actor: mcp_agent_tools.add_delivery_dependency(
+                db,
+                actor,
+                task_id,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_retarget_delivery_dependency(
+        task_id: int,
+        edge_id: int,
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Change or clear a task prerequisite's target branch; payload is {expected_version, target_branch} (null clears)."""
+        return await _tool_call(
+            AGENT_TASK_WRITE_SCOPES,
+            lambda db, actor: mcp_agent_tools.retarget_delivery_dependency(
+                db,
+                actor,
+                task_id,
+                edge_id,
                 payload,
                 idempotency_key=idempotency_key,
                 rationale=rationale,

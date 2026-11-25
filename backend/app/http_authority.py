@@ -8,7 +8,7 @@ from typing import Annotated
 from fastapi import Depends, Request
 from sqlalchemy import select
 
-from app.authority import Authority, AuthorityError, internal_authority
+from app.authority import AGENT_TASK_READ_SCOPES, AGENT_TASK_WRITE_SCOPES, Authority, AuthorityError, internal_authority
 from app.database import get_db
 from app.config import get_settings
 from app.models.identity import Principal, WorkspaceAuthorityState
@@ -166,7 +166,7 @@ async def enforce_http_authority(request: Request, db: Annotated[object, Depends
         authority = replace(authority, source="agent_rest")
     elif authority.kind == "agent":
         read = request.method in {"GET", "HEAD"}
-        required = {"tasks:read", "planning:read", "admin"} if read else {"tasks:write", "planning:write", "admin"}
+        required = set(AGENT_TASK_READ_SCOPES if read else AGENT_TASK_WRITE_SCOPES)
         if relative.startswith(("/team", "/employees", "/vacations")):
             required = {"team:read", "admin"} if read else {"team:write", "admin"}
         if not authority.scopes.intersection(required) and not relative.endswith("/status"):

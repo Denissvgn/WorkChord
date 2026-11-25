@@ -1276,6 +1276,101 @@ async def record_task_replacement(
     return receipt.model_dump(mode="json")
 
 
+async def get_github_reconciliation(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+) -> dict[str, Any]:
+    """MCP handler: GET /api/tasks/{task_id}/github-reconciliation."""
+    from app.schemas.github import GitHubReconciliationResponse
+    from app.services.github_reconciliation_service import GitHubReconciliationService
+
+    result = await GitHubReconciliationService(db).view(task_id)
+    return GitHubReconciliationResponse.model_validate(result).model_dump(mode="json")
+
+
+async def run_github_catch_up(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+) -> dict[str, Any]:
+    """MCP handler: POST /api/tasks/{task_id}/github-reconciliation/catch-up.
+
+    The service reads GitHub before it takes any lock and records each merge or
+    closure once, so a repeated call refreshes rather than duplicates.
+    """
+    from app.schemas.github import GitHubReconciliationResponse
+    from app.services.github_reconciliation_service import GitHubReconciliationService
+
+    result = await GitHubReconciliationService(db).catch_up(task_id)
+    return GitHubReconciliationResponse.model_validate(result).model_dump(mode="json")
+
+
+async def list_delivery_dependencies(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+) -> list[dict[str, Any]]:
+    """MCP handler: GET /api/tasks/{task_id}/delivery-dependencies."""
+    from app.services.delivery_dependency_service import DeliveryDependencyService
+
+    return _dump(await DeliveryDependencyService(db).projection(task_id))
+
+
+async def add_delivery_dependency(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: POST /api/tasks/{task_id}/delivery-dependencies as an audited planning command."""
+    from app.schemas.delivery_dependency import DeliveryDependencyInput
+
+    receipt = await AgentPlanningService(db).add_delivery_dependency(
+        task_id,
+        actor,
+        DeliveryDependencyInput.model_validate(payload),
+        command=_planning_command_context(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def retarget_delivery_dependency(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+    edge_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: PATCH /api/tasks/{task_id}/delivery-dependencies/{edge_id} as an audited planning command."""
+    from app.schemas.delivery_dependency import DeliveryDependencyRetarget
+
+    receipt = await AgentPlanningService(db).retarget_delivery_dependency(
+        task_id,
+        edge_id,
+        actor,
+        DeliveryDependencyRetarget.model_validate(payload),
+        command=_planning_command_context(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
 async def create_planning_vacation(
     db: AsyncSession,
     actor: AgentActor,

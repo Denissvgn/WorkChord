@@ -11,6 +11,13 @@ from sqlalchemy.sql.elements import TextClause
 from app.config import get_settings
 
 
+# An agent credential reaches the /api/tasks routes with any one of these scopes;
+# the domain command then checks the project role. MCP tools over the same
+# commands require the same alternatives.
+AGENT_TASK_READ_SCOPES = ("tasks:read", "planning:read", "admin")
+AGENT_TASK_WRITE_SCOPES = ("tasks:write", "planning:write", "admin")
+
+
 class AuthorityError(RuntimeError):
     def __init__(self, code="permission_denied", message="You do not have permission for this action.", status=403):
         self.code, self.status = code, status

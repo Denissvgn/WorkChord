@@ -11,6 +11,8 @@ ANNUAL_CALENDAR_FEATURE = "annual-calendar-coverage-v1"
 SKILL_BUNDLES_FEATURE = "skill-bundles-v1"
 AGENT_TEAM_MASTER_FEATURE = "agent-team-master-v1"
 WORK_DELIVERY_LINKS_FEATURE = "work-delivery-links-v1"
+GITHUB_RECONCILIATION_FEATURE = "github-reconciliation-v1"
+DELIVERY_PREREQUISITE_BRANCHES_FEATURE = "delivery-prerequisite-branches-v1"
 
 # Add a feature only after every REST/MCP read, mutation, validation, and
 # compatibility boundary behind it is live. In particular, the Wave 1 routing
@@ -43,6 +45,12 @@ AGENT_CONTRACT_FEATURES: tuple[str, ...] = (
     # Begin takes branch_url and submit takes branch_url and commit_urls; WorkChord
     # links the branch, commits, and pull request to the task as GitHub links.
     WORK_DELIVERY_LINKS_FEATURE,
+    # agent_get_github_reconciliation reads a task's pull requests as last observed;
+    # agent_run_github_catch_up reads them from GitHub with the REST catch-up's authority.
+    GITHUB_RECONCILIATION_FEATURE,
+    # agent_list_delivery_dependencies, agent_add_delivery_dependency and
+    # agent_retarget_delivery_dependency record or change a prerequisite's target branch.
+    DELIVERY_PREREQUISITE_BRANCHES_FEATURE,
     SKILL_BUNDLES_FEATURE,
 )
 

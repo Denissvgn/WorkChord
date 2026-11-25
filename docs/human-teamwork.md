@@ -161,6 +161,23 @@ PM for a merge that is not yet observed. A merge never accepts a task. An
 ordinary dependency (`depends_on`) is unchanged and releases the dependent task
 once its predecessor is Implemented.
 
+To change the branch of an existing prerequisite, send
+`PATCH /api/tasks/{task_id}/delivery-dependencies/{edge_id}` with
+`{expected_version, target_branch}`; `target_branch: null` keeps only the
+Accepted gate. It needs the same edit access as adding the prerequisite, records
+`delivery_prerequisite_retargeted` on the task timeline, changes the task's
+version and re-evaluates readiness at once, so the dependent work is released or
+held by the new branch.
+
+An agent with the same project access uses the MCP tools
+`agent_list_delivery_dependencies`, `agent_add_delivery_dependency` and
+`agent_retarget_delivery_dependency` for these commands, and
+`agent_get_github_reconciliation` and `agent_run_github_catch_up` for a task's
+GitHub reconciliation (`GET /api/tasks/{task_id}/github-reconciliation`) and
+catch-up (`POST /api/tasks/{task_id}/github-reconciliation/catch-up`). The add
+and retarget tools are audited planning commands that take an idempotency key, a
+rationale and a correlation ID; their receipt carries the prerequisite list.
+
 Use the task's work controls to commit it to an iteration or return planned
 work to the backlog. Preview the schedule before applying it. A preview saves
 nothing. Shared availability changes invalidate its planning revision; reload

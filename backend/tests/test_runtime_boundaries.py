@@ -215,9 +215,18 @@ def test_application_has_one_fail_closed_boundary_for_all_rest_mutations() -> No
 
 
 def test_every_mcp_tool_uses_scope_classification_and_mutators_are_write_only() -> None:
+    from app import authority, mcp_server
+
     source_path = Path(__file__).resolve().parents[1] / "app/mcp_server.py"
     module = ast.parse(source_path.read_text(encoding="utf-8"))
+    named_scopes = {
+        "AGENT_TASK_READ_SCOPES": authority.AGENT_TASK_READ_SCOPES,
+        "AGENT_TASK_WRITE_SCOPES": authority.AGENT_TASK_WRITE_SCOPES,
+        "ROUTING_READ_SCOPE_REQUIREMENT": mcp_server.ROUTING_READ_SCOPE_REQUIREMENT,
+    }
     mutation_prefixes = (
+        "run_",
+        "retarget_",
         "create_",
         "update_",
         "delete_",
@@ -273,10 +282,16 @@ def test_every_mcp_tool_uses_scope_classification_and_mutators_are_write_only() 
         assert len(calls) == 1, f"{node.name} must use exactly one _tool_call boundary"
 
         scope_node = calls[0].args[0]
-        try:
-            scope = ast.literal_eval(scope_node)
-        except (ValueError, TypeError):
+        if isinstance(scope_node, ast.Name):
+            # A named requirement must be a known shared constant; an unknown name fails.
+            assert scope_node.id in named_scopes, f"{node.name} uses unknown scope constant {scope_node.id}"
+            scope = named_scopes[scope_node.id]
+        elif isinstance(scope_node, ast.Call):
+            assert ast.unparse(scope_node.func) == "_skill_bundle_scope_requirement", (
+                f"{node.name} uses an unclassified dynamic scope")
             scope = None  # Dynamic skill-catalog scope is read-only by contract.
+        else:
+            scope = ast.literal_eval(scope_node)
         scopes = (scope,) if isinstance(scope, str) else scope or ()
         mutating = scope_requirement_is_mutating(scopes)
         semantic_name = node.name.removeprefix("agent_")

@@ -201,17 +201,60 @@ class DeliveryDependencyService:
             raise ValueError("A target branch applies to a leaf task prerequisite")
         if existing and existing.target_branch == target_branch:
             return await self.projection(task_id)
+        if existing:
+            await self._change_branch(service, task, existing, kind, target_branch, expected_version)
+            return await self.projection(task_id)
         await service.reserve_task_version(task, expected_version)
         await service._require_unclaimed_structure([task.id])
-        if existing:
-            existing.target_branch = target_branch
-        else:
-            self.db.add(DeliveryDependency(task_id=task_id, target_branch=target_branch, **{column.key: target_id}))
+        self.db.add(DeliveryDependency(task_id=task_id, target_branch=target_branch, **{column.key: target_id}))
         self.db.info.setdefault("delivery_changed_nodes", set()).add(("task", task.id))
         clear_execution_evidence(task)
         await self.db.flush()
         await self.validate_cycles()
         return await self.projection(task_id)
+
+    @atomic_command
+    async def retarget(self, task_id, edge_id, expected_version, target_branch):
+        """Change or clear the branch on which a prerequisite's accepted code must be merged."""
+        from app.services.task_service import TaskService
+        await lock_planning(self.db)
+        service = TaskService(self.db)
+        task = await service.get_by_id(task_id)
+        if task is None:
+            raise ValueError("Task not found or inaccessible")
+        require_project(self.db, task.project_id, "edit")
+        edge = await self.db.scalar(select(DeliveryDependency).where(DeliveryDependency.id == edge_id,
+            DeliveryDependency.task_id == task_id))
+        if edge is None:
+            raise LookupError("Delivery prerequisite not found")
+        kind = "task" if edge.prerequisite_task_id else "milestone"
+        target_branch = self._branch(target_branch, kind)
+        model = Task if kind == "task" else ProjectMilestone
+        target = await self.db.scalar(select(model).where(model.id == (edge.prerequisite_task_id or edge.prerequisite_milestone_id)))
+        if target is None:
+            raise ValueError("Prerequisite not found or inaccessible")
+        require_project(self.db, target.project_id, "read")
+        service.ensure_expected_version(task, expected_version)
+        if target_branch is not None and target.is_summary:
+            raise ValueError("A target branch applies to a leaf task prerequisite")
+        if edge.target_branch != target_branch:
+            await self._change_branch(service, task, edge, kind, target_branch, expected_version)
+        return await self.projection(task_id)
+
+    async def _change_branch(self, service, task, edge, kind, target_branch, expected_version):
+        """Retarget one existing prerequisite, record it on the task timeline and re-evaluate dependents."""
+        from app.services.task_brief_service import clear_execution_evidence
+        await service.reserve_task_version(task, expected_version)
+        await service._require_unclaimed_structure([task.id])
+        previous = edge.target_branch
+        edge.target_branch = target_branch
+        self.db.info.setdefault("delivery_changed_nodes", set()).add(("task", task.id))
+        clear_execution_evidence(task)
+        await service.record_task_event(task.id, "delivery_prerequisite_retargeted", {
+            "delivery_dependency_id": edge.id, "kind": kind,
+            "target_id": edge.prerequisite_task_id or edge.prerequisite_milestone_id,
+            "previous_target_branch": previous, "target_branch": target_branch})
+        await self.db.flush()
 
     @staticmethod
     def _branch(value, kind):
