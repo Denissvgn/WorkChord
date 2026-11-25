@@ -71,13 +71,11 @@ class GitHubReconciliationService:
         task = await self._task(task_id, "edit")
         ids = [link.id for link in (await self._pull_links(task.id))[:MAX_CATCH_UP_LINKS]]
         github = await GitHubStatusService.from_runtime(self.db)
-        for link_id in ids:
-            await github.refresh_pull_request_status(link_id)
-            # Each link's observation is an independent fact. The refresh only
-            # flushes under the request's command, and the next link rolls back
-            # before its own GitHub request to hold no lock across it, so settle
-            # this link now or that rollback would discard it.
-            await self.db.commit()
+        # Read every link from GitHub first, holding no lock and no reservation,
+        # then record them all in one transaction under one task revision.
+        fetched = [item for item in [await github.fetch_pull_request(link_id) for link_id in ids] if item is not None]
+        if fetched:
+            await github.record_fetched_pull_requests(task_id, fetched)
         return await self.view(task_id)
 
     async def view(self, task_id: int) -> dict[str, Any]:

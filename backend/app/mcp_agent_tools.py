@@ -1296,8 +1296,11 @@ async def run_github_catch_up(
 ) -> dict[str, Any]:
     """MCP handler: POST /api/tasks/{task_id}/github-reconciliation/catch-up.
 
-    The service reads GitHub before it takes any lock and records each merge or
-    closure once, so a repeated call refreshes rather than duplicates.
+    The service reads every linked pull request from GitHub before it takes any
+    lock, then records all observations in one transaction under one task
+    revision, and each merge or closure once, so a repeated call refreshes
+    rather than duplicates. A provider error is cached on its link and the call
+    still succeeds; any other raised error records nothing for any link.
     """
     from app.schemas.github import GitHubReconciliationResponse
     from app.services.github_reconciliation_service import GitHubReconciliationService

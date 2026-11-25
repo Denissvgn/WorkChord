@@ -1,6 +1,7 @@
 """GitHub pull request status refresh service."""
 
 from app.commands import commit_or_flush
+from dataclasses import dataclass
 from datetime import datetime, timezone
 import logging
 import re
@@ -22,6 +23,21 @@ from app.utils.url_policy import normalize_provider_api_url
 
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class FetchedPullRequest:
+    """One pull request link as read from GitHub, before anything is locked or saved."""
+
+    link_id: int
+    owner: str
+    repo: str
+    number: int
+    refreshed_at: str
+    payload: Optional[dict[str, Any]] = None
+    observation: Optional[dict[str, Any]] = None
+    checks: Optional[dict[str, Any]] = None
+    error: Optional[Exception] = None
 
 _FAILED_CONCLUSIONS = {"failure", "timed_out", "cancelled", "action_required", "startup_failure", "stale"}
 
@@ -369,11 +385,11 @@ class GitHubStatusService:
             details={"external_link_id": link.id, "outcome": outcome},
         )
 
-    async def refresh_pull_request_status(self, link_id: int) -> Optional[ExternalLink]:
-        """Refresh a GitHub PR link and cache status metadata.
+    async def fetch_pull_request(self, link_id: int) -> Optional[FetchedPullRequest]:
+        """Read one linked pull request from GitHub while holding no lock.
 
-        Provider failures are cached on the link and returned as a successful
-        response so task loading and link display remain resilient.
+        Nothing is reserved yet, so releasing the read transaction here cannot
+        discard anything a command owner has claimed.
         """
         link = await self.link_service.get_by_id(link_id)
         if not link:
@@ -384,29 +400,85 @@ class GitHubStatusService:
         # The provider request needs only immutable plain values. Release the
         # read transaction before crossing the network boundary.
         await self.db.rollback()
-
+        fetched = FetchedPullRequest(link_id, owner, repo, number, refreshed_at)
         try:
-            payload = await self._fetch_pull_request(owner, repo, number)
+            fetched.payload = await self._fetch_pull_request(owner, repo, number)
         except Exception as error:
-            # GitHub availability must not make linked tasks unreadable. Cache a
-            # redacted provider error and retain the prior link status.
+            # GitHub availability must not make linked tasks unreadable. The
+            # apply step caches a redacted provider error and retains the prior status.
             logger.warning(
                 "GitHub pull-request refresh failed",
                 exc_info=True,
                 extra={"link_id": link_id, "owner": owner, "repo": repo, "number": number},
             )
+            fetched.error = error
+            return fetched
+        fetched.observation = self.observation_from_payload(fetched.payload)
+        fetched.checks = await self.observe_checks(owner, repo, fetched.observation["head_sha"])
+        return fetched
+
+    async def refresh_pull_request_status(self, link_id: int) -> Optional[ExternalLink]:
+        """Refresh a GitHub PR link and cache status metadata.
+
+        Provider failures are cached on the link and returned as a successful
+        response so task loading and link display remain resilient.
+        """
+        fetched = await self.fetch_pull_request(link_id)
+        if fetched is None:
+            return None
+        return await self.apply_fetched_pull_request(fetched)
+
+    async def record_fetched_pull_requests(self, task_id: int, fetched: list[FetchedPullRequest]) -> None:
+        """Record several already fetched links of one task under one task revision.
+
+        Runs inside one command: the task context (planning, iteration, task) is
+        reserved once, then each link is locked and saved in order. A raised
+        error rolls back every link together; a provider error is cached on its
+        link like any other observation.
+        """
+        from app.commands import command_transaction
+
+        async with command_transaction(self.db):
+            needs_revision = False
+            for item in fetched:
+                link = await self.link_service.get_by_id(item.link_id)
+                if link is None:
+                    continue
+                if item.error is not None or not self.is_stale_observation(link.metadata_json or {}, item.payload):
+                    needs_revision = True
+            if needs_revision:
+                await reserve_task_context_revision(
+                    self.db,
+                    task_id,
+                    context_kind="external_link",
+                    action="github_status_refresh",
+                    details={"external_link_ids": [item.link_id for item in fetched], "outcome": "refreshed"},
+                )
+            for item in fetched:
+                await self.apply_fetched_pull_request(item, reserved=True)
+
+    async def apply_fetched_pull_request(
+        self, fetched: FetchedPullRequest, *, reserved: bool = False,
+    ) -> Optional[ExternalLink]:
+        """Save a fetched observation: reserve the task context, lock the link, then write.
+
+        ``reserved`` means the caller already reserved the task context for this
+        command, so nothing here reserves again or releases the transaction.
+        """
+        link_id, owner, repo, number = fetched.link_id, fetched.owner, fetched.repo, fetched.number
+        refreshed_at, payload, observation, checks = fetched.refreshed_at, fetched.payload, fetched.observation, fetched.checks
+        if fetched.error is not None:
             link = await self.link_service.get_by_id(link_id)
             if link is None:
                 return None
             metadata = dict(link.metadata_json or {})
-            await self._reserve_task_context_revision(link, outcome="provider_error")
+            if not reserved:
+                await self._reserve_task_context_revision(link, outcome="provider_error")
             metadata["status_refreshed_at"] = refreshed_at
-            metadata["status_refresh_error"] = self._provider_error_message(error)
+            metadata["status_refresh_error"] = self._provider_error_message(fetched.error)
             link.metadata_json = metadata
             return await self._save_link(link)
 
-        observation = self.observation_from_payload(payload)
-        checks = await self.observe_checks(owner, repo, observation["head_sha"])
         link = await self.link_service.get_by_id(link_id)
         if link is None:
             return None
@@ -424,12 +496,14 @@ class GitHubStatusService:
             metadata["observed_at"] = refreshed_at
             link.metadata_json = metadata
             return await self._save_link(link)
-        await self._reserve_task_context_revision(link, outcome="refreshed")
+        if not reserved:
+            await self._reserve_task_context_revision(link, outcome="refreshed")
         # Another catch-up or a webhook may have recorded this observation while
         # this one waited for the lock; decide from what it committed.
         link = await self.lock_link_after_task(link_id)
         if link is None:
-            await self.db.rollback()
+            if not reserved:
+                await self.db.rollback()
             return None
         if self._pr_metadata(link) != (owner, repo, number):
             raise ExternalLinkValidationError(

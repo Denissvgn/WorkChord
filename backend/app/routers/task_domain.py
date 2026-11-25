@@ -335,7 +335,13 @@ async def task_github_reconciliation(task_id: int, db: DB):
 
 @router.post("/tasks/{task_id}/github-reconciliation/catch-up", response_model=GitHubReconciliationResponse)
 async def task_github_catch_up(task_id: int, db: DB):
-    """Read this task's own pull requests from GitHub for events a webhook never delivered."""
+    """Read this task's own pull requests from GitHub for events a webhook never delivered.
+
+    Every link is read first, then all observations are recorded in one
+    transaction under one task revision. A provider error is cached on its link
+    and the call still succeeds; any other raised error (for example a link
+    edited during the call) records nothing for any link.
+    """
     from app.services.github_reconciliation_service import GitHubReconciliationService
     return await domain_result(GitHubReconciliationService(db).catch_up(task_id))
 

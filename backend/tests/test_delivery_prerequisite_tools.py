@@ -13,6 +13,7 @@ from app.authority import internal_authority
 from app.models.agent import AgentActor, TaskEvent
 from app.models.delivery_dependency import DeliveryDependency
 from app.models.identity import Principal, ProjectMembership
+from app.models.iteration import Iteration
 from app.models.project import Project
 from app.models.task import Task
 from app.models.user_session import UserSession
@@ -360,12 +361,27 @@ async def test_catch_up_records_every_linked_pull_requests_own_observation(team,
         41: github.payload("3" * 40, merged_at, number=41, state="closed"),
     }
     github.pulls[41]["closed_at"] = merged_at
+    async with factory() as db:
+        with internal_authority(db):
+            before = await db.get(Task, prerequisite)
+            version_before, iteration_id = before.version, before.iteration_id
+            revision_before = (await db.get(Iteration, iteration_id)).revision
     async with transport_api(transport, factory, monkeypatch) as call:
-        for _ in range(2):
+        for attempt in range(2):
             ok, view = await call(PM_KEY, "agent_run_github_catch_up", "POST",
                                   f"/api/tasks/{prerequisite}/github-reconciliation/catch-up",
                                   arguments={"task_id": prerequisite})
             assert ok, view
+            if attempt == 0:
+                async with factory() as db:
+                    with internal_authority(db):
+                        first = await db.get(Task, prerequisite)
+                        revision_after = (await db.get(Iteration, iteration_id)).revision
+                        changed = [json.loads(event.payload)["version"] for event in (await db.scalars(
+                            select(TaskEvent).where(TaskEvent.task_id == prerequisite,
+                                                    TaskEvent.event_type == "task_context_changed"))).all()
+                                   if json.loads(event.payload)["version"] > version_before]
+                        version_after = first.version
     seen = {pull["url"].rsplit("/", 1)[-1]: (pull["state"], pull["observed_head_sha"]) for pull in view["pull_requests"]}
     assert seen == {"39": ("open", "1" * 40), "40": ("merged", "2" * 40), "41": ("closed_unmerged", "3" * 40)}
     async with factory() as db:
@@ -378,3 +394,6 @@ async def test_catch_up_records_every_linked_pull_requests_own_observation(team,
     assert [(link.status, link.metadata_json["head_sha"]) for link in links] == [
         ("open", "1" * 40), ("merged", "2" * 40), ("closed", "3" * 40)]
     assert sorted(event.event_type for event in events) == ["github_pr_closed", "github_pr_merged"]
+    # The first catch-up reserves the task and its iteration once for all three links.
+    assert version_after == version_before + 1 and changed == [version_after]
+    assert revision_after == revision_before + 1
