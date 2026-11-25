@@ -23,9 +23,9 @@ Optimistic partial update for one catalog entry.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `expected_revision` | `PositiveRevision` | `expected_revision` | Yes | No | — | — | — | — |
-| `provider` | `str \| None` | `provider` | No | Yes | `None` | min_length=1; max_length=120 | — | — |
+| `provider` | `str \| None` | `provider` | No | Yes | `None` | max_length=120; min_length=1 | — | — |
 | `publisher_key` | `RoutingKey \| None` | `publisher_key` | No | Yes | `None` | — | — | — |
-| `configured_model_alias` | `str \| None` | `configured_model_alias` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `configured_model_alias` | `str \| None` | `configured_model_alias` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `reasoning_tier` | `ReasoningTier \| None` | `reasoning_tier` | No | Yes | `None` | — | — | — |
 | `context_tier` | `ModelContextTier \| None` | `context_tier` | No | Yes | `None` | — | — | — |
 | `modality_tags` | `list[str] \| None` | `modality_tags` | No | Yes | `None` | — | — | — |

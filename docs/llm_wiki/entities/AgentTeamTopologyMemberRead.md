@@ -27,7 +27,7 @@ of this read.
 | `runtime_ready` | `bool` | `runtime_ready` | Yes | No | — | — | — | — |
 | `model_binding_keys` | `tuple[str, ...]` | `model_binding_keys` | No | No | `()` | max_length=16 | — | — |
 | `default_model_binding_key` | `str \| None` | `default_model_binding_key` | No | Yes | `None` | — | — | — |
-| `runtime_ref` | `str` | `runtime_ref` | Yes | No | — | min_length=1; max_length=1024 | — | — |
+| `runtime_ref` | `str` | `runtime_ref` | Yes | No | — | max_length=1024; min_length=1 | — | — |
 
 ## Methods
 

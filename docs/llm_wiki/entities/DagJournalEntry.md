@@ -28,7 +28,7 @@ _Auto-generated from `DagJournalEntry` in `backend/app/autonomy/orchestration.py
 | `from_state` | `DagNodeState \| None` | `from_state` | Yes | Yes | — | — | — | — |
 | `to_state` | `DagNodeState` | `to_state` | Yes | No | — | — | — | — |
 | `transition` | `str` | `transition` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
-| `controller_subject` | `str` | `controller_subject` | Yes | No | — | min_length=1; max_length=512 | — | — |
+| `controller_subject` | `str` | `controller_subject` | Yes | No | — | max_length=512; min_length=1 | — | — |
 | `cas_revision` | `int` | `cas_revision` | Yes | No | — | ge=1 | — | — |
 | `lease_digest` | `str \| None` | `lease_digest` | No | Yes | `None` | pattern=unknown (SHA256_PATTERN) | — | — |
 | `attempt_start_digest` | `str \| None` | `attempt_start_digest` | No | Yes | `None` | pattern=unknown (SHA256_PATTERN) | — | — |

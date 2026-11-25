@@ -21,12 +21,12 @@ Provider-neutral signature metadata without an embedded trust key.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `schema_version` | `Literal['workchord-remote-signature-v1']` | `schema_version` | No | No | `'workchord-remote-signature-v1'` | — | — | — |
 | `key_ref` | `str` | `key_ref` | Yes | No | — | max_length=512; pattern=unknown (KEY_REF_PATTERN) | — | — |
-| `key_version` | `str` | `key_version` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `issuer` | `str` | `issuer` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `subject` | `str` | `subject` | Yes | No | — | min_length=1; max_length=512 | — | — |
+| `key_version` | `str` | `key_version` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `issuer` | `str` | `issuer` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `subject` | `str` | `subject` | Yes | No | — | max_length=512; min_length=1 | — | — |
 | `algorithm` | `Literal['ed25519', 'ecdsa-p256-sha256', 'rsa-pss-sha256']` | `algorithm` | Yes | No | — | — | — | — |
 | `payload_sha256` | `str` | `payload_sha256` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
-| `signature_base64` | `str` | `signature_base64` | Yes | No | — | min_length=4; max_length=16384 | — | — |
+| `signature_base64` | `str` | `signature_base64` | Yes | No | — | max_length=16384; min_length=4 | — | — |
 
 ## Methods
 

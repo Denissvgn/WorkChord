@@ -25,7 +25,7 @@ Schema for manually linking a GitHub artifact to a task.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `url` | `str` | `url` | Yes | No | — | min_length=1; max_length=1000 | — | — |
+| `url` | `str` | `url` | Yes | No | — | max_length=1000; min_length=1 | — | — |
 
 ## Methods
 

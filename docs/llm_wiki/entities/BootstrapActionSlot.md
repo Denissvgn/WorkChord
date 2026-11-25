@@ -22,9 +22,9 @@ One finite externally preissued bootstrap mutation slot.
 | `ordinal` | `int` | `ordinal` | Yes | No | — | ge=1; le=100000 | — | — |
 | `slot_id` | `str` | `slot_id` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `subject` | `Literal['pg-bootstrap-controller', 'pg-bootstrap-builder', 'pg-bootstrap-verifier']` | `subject` | Yes | No | — | — | — | — |
-| `action` | `str` | `action` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `action` | `str` | `action` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `target_ref` | `str` | `target_ref` | Yes | No | — | max_length=1024; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
-| `target_generation` | `str` | `target_generation` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `target_generation` | `str` | `target_generation` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `precondition_digest` | `str` | `precondition_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `input_schema` | `str` | `input_schema` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `output_schema` | `str` | `output_schema` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
@@ -33,7 +33,7 @@ One finite externally preissued bootstrap mutation slot.
 | `maximum_calls` | `int` | `maximum_calls` | Yes | No | — | ge=1; le=100 | — | — |
 | `maximum_spend_minor_units` | `int` | `maximum_spend_minor_units` | Yes | No | — | ge=0 | — | — |
 | `nonce` | `str` | `nonce` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
-| `reset_effect` | `str` | `reset_effect` | Yes | No | — | min_length=1; max_length=512 | — | — |
+| `reset_effect` | `str` | `reset_effect` | Yes | No | — | max_length=512; min_length=1 | — | — |
 
 ## Methods
 

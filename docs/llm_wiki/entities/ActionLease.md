@@ -24,7 +24,7 @@ _Auto-generated from `ActionLease` in `backend/app/autonomy/leases.py`._
 | `run_id` | `str` | `run_id` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `task_id` | `str` | `task_id` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `stage_id` | `str` | `stage_id` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
-| `action` | `str` | `action` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `action` | `str` | `action` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `environment` | `Literal['ephemeral', 'rehearsal', 'production']` | `environment` | Yes | No | — | — | — | — |
 | `destructive` | `bool` | `destructive` | Yes | No | — | — | — | — |
 | `release_fingerprint` | `str` | `release_fingerprint` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
@@ -32,7 +32,7 @@ _Auto-generated from `ActionLease` in `backend/app/autonomy/leases.py`._
 | `contract_manifest_digest` | `str` | `contract_manifest_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `resource_logical_key` | `str` | `resource_logical_key` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `resource_ref` | `str` | `resource_ref` | Yes | No | — | max_length=2048; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
-| `resource_generation` | `str` | `resource_generation` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `resource_generation` | `str` | `resource_generation` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `topology_revision` | `int` | `topology_revision` | Yes | No | — | ge=1 | — | — |
 | `attempt_id` | `int` | `attempt_id` | Yes | No | — | ge=1 | — | — |
 | `attempt_start_digest` | `str` | `attempt_start_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |

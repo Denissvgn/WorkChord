@@ -13,7 +13,7 @@ Shared GitHub status automation rule fields.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `enabled` | `bool` | `enabled` | No | No | `False` | — | — | — |
 | `github_event_type` | `GitHubAutomationEventType` | `github_event_type` | Yes | No | — | — | — | — |

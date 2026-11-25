@@ -19,8 +19,8 @@ _Auto-generated from `ReplicaMembershipObservation` in `backend/app/autonomy/pro
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `expected_members` | `tuple[str, ...]` | `expected_members` | Yes | No | — | min_length=1; max_length=1024 | — | — |
-| `observed_members` | `tuple[str, ...]` | `observed_members` | Yes | No | — | min_length=1; max_length=1024 | — | — |
+| `expected_members` | `tuple[str, ...]` | `expected_members` | Yes | No | — | max_length=1024; min_length=1 | — | — |
+| `observed_members` | `tuple[str, ...]` | `observed_members` | Yes | No | — | max_length=1024; min_length=1 | — | — |
 | `scheduler_membership_digest` | `str` | `scheduler_membership_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `connection_ownership_digest` | `str` | `connection_ownership_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 

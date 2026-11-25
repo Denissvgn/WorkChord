@@ -20,11 +20,11 @@ A public key returned by a separately trusted resolver.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `key_ref` | `str` | `key_ref` | Yes | No | — | max_length=512; pattern=unknown (KEY_REF_PATTERN) | — | — |
-| `key_version` | `str` | `key_version` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `issuer` | `str` | `issuer` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `allowed_subjects` | `tuple[str, ...]` | `allowed_subjects` | Yes | No | — | min_length=1; max_length=256 | — | — |
+| `key_version` | `str` | `key_version` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `issuer` | `str` | `issuer` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `allowed_subjects` | `tuple[str, ...]` | `allowed_subjects` | Yes | No | — | max_length=256; min_length=1 | — | — |
 | `algorithm` | `Literal['ed25519', 'ecdsa-p256-sha256', 'rsa-pss-sha256']` | `algorithm` | Yes | No | — | — | — | — |
-| `public_key_pem` | `str` | `public_key_pem` | Yes | No | — | min_length=64; max_length=16384 | — | — |
+| `public_key_pem` | `str` | `public_key_pem` | Yes | No | — | max_length=16384; min_length=64 | — | — |
 | `source_receipt_digest` | `str` | `source_receipt_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 
 ## Methods

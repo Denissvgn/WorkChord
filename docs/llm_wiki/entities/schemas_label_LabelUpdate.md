@@ -19,8 +19,8 @@ Schema for updating a governed label.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `slug` | `Optional[str]` | `slug` | No | Yes | `None` | min_length=1; max_length=100; pattern=unknown (LABEL_SLUG_PATTERN) | — | — |
-| `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `slug` | `Optional[str]` | `slug` | No | Yes | `None` | max_length=100; min_length=1; pattern=unknown (LABEL_SLUG_PATTERN) | — | — |
+| `name` | `Optional[str]` | `name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `group_id` | `Optional[int]` | `group_id` | No | Yes | `None` | — | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `color` | `Optional[str]` | `color` | No | Yes | `None` | pattern=unknown (HEX_COLOR_PATTERN) | — | — |

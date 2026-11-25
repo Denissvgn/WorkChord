@@ -21,8 +21,8 @@ Schema for creating a profile skill or weakness.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `skill_key` | `str` | `skill_key` | Yes | No | — | min_length=1; max_length=120 | — | — |
-| `skill_name` | `str` | `skill_name` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `skill_key` | `str` | `skill_key` | Yes | No | — | max_length=120; min_length=1 | — | — |
+| `skill_name` | `str` | `skill_name` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `category` | `Optional[str]` | `category` | No | Yes | `None` | max_length=120 | — | — |
 | `level` | `int` | `level` | No | No | `3` | ge=1; le=5 | — | — |
 | `interest` | `int` | `interest` | No | No | `3` | ge=1; le=5 | — | — |

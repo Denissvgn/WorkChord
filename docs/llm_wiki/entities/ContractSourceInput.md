@@ -13,11 +13,11 @@ _Auto-generated from `ContractSourceInput` in `backend/app/autonomy/contracts/po
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `logical_key` | `str` | `logical_key` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `logical_key` | `str` | `logical_key` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `sha256` | `str` | `sha256` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `byte_length` | `int` | `byte_length` | Yes | No | — | ge=1; le=100000000 | — | — |
-| `media_type` | `str` | `media_type` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `schema_version` | `str` | `schema_version` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `media_type` | `str` | `media_type` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `schema_version` | `str` | `schema_version` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `archive_requirement` | `Literal['charter-pinned-worm-object']` | `archive_requirement` | Yes | No | — | — | — | — |
 | `packaged_member` | `str \| None` | `packaged_member` | No | Yes | `None` | pattern=unknown (SAFE_MEMBER_PATTERN) | — | — |
 

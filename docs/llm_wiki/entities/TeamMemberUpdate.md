@@ -13,8 +13,8 @@ Schema for updating a team member.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
-| `position` | `Optional[str]` | `position` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `name` | `Optional[str]` | `name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
+| `position` | `Optional[str]` | `position` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `email` | `Optional[str]` | `email` | No | Yes | `None` | max_length=255 | — | — |
 | `profile_id` | `Optional[int]` | `profile_id` | No | Yes | `None` | — | — | — |
 | `availability_percent` | `Optional[float]` | `availability_percent` | No | Yes | `None` | ge=0; le=100 | — | — |

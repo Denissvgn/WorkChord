@@ -23,7 +23,7 @@ _Auto-generated from `VerificationRequirementContract` in `backend/app/autonomy/
 | `verifier_logical_key` | `str` | `verifier_logical_key` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `criterion_schema` | `str` | `criterion_schema` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `artifact_set_digest` | `str` | `artifact_set_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
-| `evaluator_version` | `str` | `evaluator_version` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `evaluator_version` | `str` | `evaluator_version` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `executor_independence_group` | `str` | `executor_independence_group` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `required_verifier_independence_group` | `str` | `required_verifier_independence_group` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `maximum_lease_seconds` | `int` | `maximum_lease_seconds` | Yes | No | — | ge=1; le=3600 | — | — |

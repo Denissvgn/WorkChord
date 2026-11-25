@@ -30,8 +30,8 @@ The operator identifies the exact current assessment and task, brief, artifact a
 | `action` | `Literal['issue']` | `action` | Yes | No | — | — | — | — |
 | `expected_task_version` | `Positive` | `expected_task_version` | Yes | No | — | — | — | — |
 | `expected_assessment_id` | `Positive` | `expected_assessment_id` | Yes | No | — | — | — | — |
-| `expected_brief_revision` | `Annotated[int, Field(strict=True, ge=0)]` | `expected_brief_revision` | Yes | No | — | strict=True; ge=0 | — | — |
-| `expected_artifact_revision` | `Annotated[int, Field(strict=True, ge=0)]` | `expected_artifact_revision` | Yes | No | — | strict=True; ge=0 | — | — |
+| `expected_brief_revision` | `Annotated[int, Field(strict=True, ge=0)]` | `expected_brief_revision` | Yes | No | — | ge=0; strict=True | — | — |
+| `expected_artifact_revision` | `Annotated[int, Field(strict=True, ge=0)]` | `expected_artifact_revision` | Yes | No | — | ge=0; strict=True | — | — |
 | `commit_sha` | `str` | `commit_sha` | Yes | No | — | pattern='^[0-9a-f]{40}$' | — | — |
 | `reviewer_actor_id` | `Positive` | `reviewer_actor_id` | Yes | No | — | — | — | — |
 | `binding_id` | `Positive` | `binding_id` | Yes | No | — | — | — | — |
