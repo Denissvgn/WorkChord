@@ -17,7 +17,7 @@
     "scope_preset": "pm-v1",
     "skill_package": {
       "name": "workchord-pm",
-      "sha256": "c1b1ddce2f18c5c189c3dca014416b1f1267e2908f1075d9ebd62e3bcdb96149",
+      "sha256": "916a59fb790beac4d0d67967c9002403cff100a60f8ec148371d3846b01294dc",
       "version": "1.21.6"
     }
   },

@@ -9,14 +9,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-pm-1.21.6.tar.gz",
-          "sha256": "c1b1ddce2f18c5c189c3dca014416b1f1267e2908f1075d9ebd62e3bcdb96149",
+          "sha256": "916a59fb790beac4d0d67967c9002403cff100a60f8ec148371d3846b01294dc",
           "size": 225318
         },
         {
           "format": "zip",
           "path": "workchord-pm-1.21.6.zip",
-          "sha256": "9adc2efaba100d6587e549c0a6b973f170acf5c5cade352651f7a596c821974e",
-          "size": 212376
+          "sha256": "3d52e7b70c305389e9885cb6dc26a9f3500b62d98ab77ed02445e334f2c5f7aa",
+          "size": 212510
         }
       ],
       "entrypoint": "SKILL.md",
@@ -33,8 +33,8 @@
         },
         {
           "path": "references/api-and-mcp.md",
-          "sha256": "156b819f045e927a4a24f1c89f94dda2492f1d89026e33f3a33c0b098496c1c0",
-          "size": 48592
+          "sha256": "2b762aac0795347521ad14f3df8e35ce33dfd55d0a8ed5cfa9f75c34b260b683",
+          "size": 48693
         },
         {
           "path": "references/assignment-scheduling-and-delivery-control.md",
@@ -48,8 +48,8 @@
         },
         {
           "path": "references/plan-mapping-and-roadmap.md",
-          "sha256": "b759152a21b73deedfe9c086fb0d54409d970bcab4a69fcd220c4f07542ad834",
-          "size": 23411
+          "sha256": "e1d28e6641287dea5bf7774fc0571462bb73ae7524ae4208774d0ee8845b4a78",
+          "size": 23444
         },
         {
           "path": "references/system-map-and-authority.md",
@@ -280,5 +280,5 @@
       "version": "1.20.3"
     }
   ],
-  "source_revision": "sha256:40b438c80dacee8bbf272a22e318210176523a254cbe603373d069d4622655fb"
+  "source_revision": "sha256:2bfc32b1e40a2d3ad65c8e3d774bfaec3b8468f5754b108f74d1b226f79844f8"
 }

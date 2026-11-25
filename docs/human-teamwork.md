@@ -157,7 +157,7 @@ GitHub; run the prerequisite's GitHub catch-up to refresh them (a person uses **
 listed as `delivery_holds` on the agent pipeline and the task context, each with
 its reason, the observed pull requests and the next owner: the reviewer for an
 open pull request awaiting acceptance, the worker for unfinished work, and the
-PM for a merge that is not yet observed or confirmed, a merge on another branch, a closed prerequisite whose acceptance no longer matches its version (reopen it; the reviewer must accept it again) or a canceled one (record a replacement). A merge never accepts a task, and an observed merge keeps the prerequisite's acceptance unless its head moved after acceptance. An
+PM for a merge that is not yet observed or confirmed, a merge on another branch, a closed prerequisite whose acceptance no longer matches its version (reopen it; the reviewer must accept it again) or a canceled one (record a replacement). A merge never accepts a task, and an observed merge keeps the prerequisite's acceptance unless its head moved after acceptance or is missing, which makes the acceptance stale. An
 ordinary dependency (`depends_on`) is unchanged and releases the dependent task
 once its predecessor is Implemented.
 
