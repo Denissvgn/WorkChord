@@ -9,6 +9,7 @@ const api = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn(), put: vi.fn() }));
 vi.mock('../../services/api', () => ({ default: api }));
 vi.mock('./TaskWorkPanel', () => ({ TaskWorkPanel: () => null }));
 vi.mock('./DeliveryDependencies', () => ({ DeliveryDependencies: () => null }));
+vi.mock('./GitHubReconciliationPanel', () => ({ GitHubReconciliationPanel: () => null }));
 vi.mock('./TaskDiscussion', () => ({ TaskDiscussion: () => null }));
 vi.mock('./TimeEntriesPanel', () => ({ TimeEntriesPanel: () => null }));
 vi.mock('./TaskTimelinePanel', () => ({ TaskTimelinePanel: () => null }));

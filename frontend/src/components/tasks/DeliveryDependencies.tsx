@@ -1,26 +1,76 @@
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
 import { taskService } from '../../services/taskService';
 import { projectService } from '../../services/projectService';
+import { githubService } from '../../services/githubService';
 import type { Task } from '../../types/task';
+import type { DeliveryPrerequisite } from '../../types/github';
 import { Button } from '../common/Button';
 import { QueryErrorState } from '../feedback/QueryState';
-import { getApiErrorMessage } from '../../utils/apiError';
+import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
+import { PREREQUISITE_RETARGET_FEATURE, useProjectEditAccess } from '../../features/identity/useProjectEditAccess';
 
 import { Select } from '../../components/common/Select';
-interface Dependency { id: number; kind: 'task' | 'milestone'; target_id?: number; title?: string; ready: boolean; reason: string | null }
+
+type Dependency = DeliveryPrerequisite;
+const HOLD_CASES = ['not_accepted', 'open_pull_request', 'merged_on_other_branch', 'merge_branch_unknown', 'closed_unmerged', 'not_observed'];
+const HOLD_OWNERS = ['pm', 'worker', 'reviewer'];
+
+interface Retained { open: boolean; editing: { edge: number; draft: string } | null; conflict: boolean }
+// A saved change replaces the task version, which remounts the task view; what the person was doing survives that.
+const retainedByTask = new Map<number, Retained>();
+const useRetainedState = (taskId: number) => {
+    const [state, setState] = useState<Retained>(() => retainedByTask.get(taskId) ?? { open: false, editing: null, conflict: false });
+    const latest = useRef(state);
+    const retain = (patch: Partial<Retained>) => {
+        latest.current = { ...latest.current, ...patch };
+        retainedByTask.set(taskId, latest.current);
+        setState(latest.current);
+    };
+    return [state, retain] as const;
+};
+
+const BranchLine = ({ edge }: { edge: Dependency }) => {
+    const { t } = useTranslation();
+    if (edge.kind !== 'task') return null;
+    return <p className="text-xs text-content-secondary">
+        {edge.target_branch ? <>{t('teamwork.branchRequired')} <code className="font-mono">{edge.target_branch}</code></> : t('teamwork.branchNone')}
+    </p>;
+};
+
+const Hold = ({ edge }: { edge: Dependency }) => {
+    const { t } = useTranslation();
+    if (!edge.hold) return null;
+    const label = HOLD_CASES.includes(edge.hold.case) ? t(`teamwork.holdCase_${edge.hold.case}`) : edge.hold.case;
+    const owner = HOLD_OWNERS.includes(edge.hold.next_owner) ? t(`teamwork.ghOwner_${edge.hold.next_owner}`) : edge.hold.next_owner;
+    return <div className="rounded-md bg-surface-muted px-3 py-2 text-sm">
+        <p className="font-medium">{label}</p>
+        <p>{t('teamwork.ghNext', { owner })} {edge.hold.next_action}</p>
+    </div>;
+};
 
 export const DeliveryDependencies = ({ task, disabled, onPending, onUpdated }: { task: Task; disabled: boolean; onPending: (pending: boolean) => void; onUpdated: (task: Task) => void }) => {
     const { t } = useTranslation();
     const id = useId();
-    const [expanded, setExpanded] = useState(false);
+    const [retained, retain] = useRetainedState(task.id);
+    const { open: expanded, editing, conflict } = retained;
+    const setExpanded = (open: boolean) => retain({ open });
+    const setEditing = (next: Retained['editing']) => retain({ editing: next });
+    const setConflict = (next: boolean) => retain({ conflict: next });
     const [kind, setKind] = useState<'task' | 'milestone'>('task');
     const [text, setText] = useState('');
     const [projectId, setProjectId] = useState<number | null>(task.project_id ?? null);
     const [targetId, setTargetId] = useState<number | null>(null);
+    const [branch, setBranch] = useState('');
+    const { canEdit, features } = useProjectEditAccess(task.project_id);
+    const canRetarget = canEdit && features.includes(PREREQUISITE_RETARGET_FEATURE);
+    const branchInput = useRef<HTMLInputElement>(null);
+    const editingEdge = editing?.edge;
+    // Opening the form moves the keyboard to its field; closing it returns focus to the page by unmounting.
+    useEffect(() => { if (editingEdge !== undefined) branchInput.current?.focus(); }, [editingEdge]);
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
     const edges = useQuery({ queryKey: ['delivery-dependencies', task.id, task.version], enabled: expanded, queryFn: async () => (await api.get<Dependency[]>(`/tasks/${task.id}/delivery-dependencies`)).data });
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
@@ -36,19 +86,66 @@ export const DeliveryDependencies = ({ task, disabled, onPending, onUpdated }: {
         meta: { success: (_data, remove) => t(remove ? 'feedback.dependencyRemoved' : 'feedback.dependencyAdded', { name: task.title }) } satisfies MutationFeedbackMeta,
         mutationFn: async (remove?: number) => {
         if (remove) await api.delete(`/tasks/${task.id}/delivery-dependencies/${remove}`, { params: { expected_version: task.version } });
-        else await api.post(`/tasks/${task.id}/delivery-dependencies`, { kind, target_id: targetId, expected_version: task.version });
+        else await api.post(`/tasks/${task.id}/delivery-dependencies`, { kind, target_id: targetId, expected_version: task.version,
+            ...(kind === 'task' && branch.trim() ? { target_branch: branch.trim() } : {}) });
         return taskService.getById(task.id);
-    }, onSuccess: async latest => { setTargetId(null); setText(''); await edges.refetch(); onUpdated(latest); } });
-    useEffect(() => onPending(mutation.isPending), [mutation.isPending, onPending]);
-    return <details className="space-y-3 rounded-md border border-border p-3" onToggle={event => setExpanded(event.currentTarget.open)}>
+    }, onSuccess: async latest => { setTargetId(null); setText(''); setBranch(''); await edges.refetch(); onUpdated(latest); } });
+    // feedback-policy: mutation pending,inline - keep the draft when the branch is rejected; a stale version refreshes and says so.
+    const retarget = useMutation({
+        meta: { success: () => t('feedback.prerequisiteBranchSaved', { name: task.title }) } satisfies MutationFeedbackMeta,
+        mutationFn: async ({ edge, target }: { edge: number; target: string | null }) => {
+            await githubService.retargetPrerequisite(task.id, edge, task.version, target);
+            return taskService.getById(task.id);
+        },
+        onSuccess: async latest => { setEditing(null); setConflict(false); await edges.refetch(); onUpdated(latest); },
+        onError: async error => {
+            if (getApiErrorStatus(error) !== 409) return;
+            setConflict(true);
+            const latest = await taskService.getById(task.id);
+            await edges.refetch();
+            onUpdated(latest);
+        },
+    });
+    useEffect(() => onPending(mutation.isPending || retarget.isPending), [mutation.isPending, retarget.isPending, onPending]);
+    const save = (edge: number, target: string) => retarget.mutate({ edge, target: target.trim() === '' ? null : target.trim() });
+    return <details open={expanded} className="space-y-3 rounded-md border border-border p-3" onToggle={event => setExpanded(event.currentTarget.open)}>
         <summary className="cursor-pointer font-medium">{t('teamwork.deliveryDependencies')}</summary>
         <p className="text-sm text-content-secondary">{t('teamwork.dependenciesHelp')}</p>
         {edges.isLoading && <p role="status">{t('common.loading')}</p>}
         {edges.isError && <QueryErrorState error={edges.error} fallback={t('teamwork.loadFailed')} onRetry={() => void edges.refetch()} />}
-        <ul className="space-y-2">{edges.data?.map(edge => <li key={edge.id} className="flex flex-wrap items-center justify-between gap-2 text-sm">
-            <span>{edge.title ?? t('teamwork.taskUnavailable')} · {t(edge.ready ? 'teamwork.prerequisiteReady' : 'teamwork.prerequisiteWaiting')}</span>
-            <Button type="button" variant="ghost" size="sm" disabled={disabled} onClick={() => mutation.mutate(edge.id)}>{t('teamwork.unlink')}</Button>
-        </li>)}</ul>
+        <ul className="space-y-3">{edges.data?.map(edge => {
+            const open = editing?.edge === edge.id;
+            return <li key={edge.id} className="space-y-2 text-sm">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span>{edge.title ?? t('teamwork.taskUnavailable')} · {t(edge.ready ? 'teamwork.prerequisiteReady' : 'teamwork.prerequisiteWaiting')}</span>
+                    <span className="flex flex-wrap gap-1">
+                        {canRetarget && edge.kind === 'task' && edge.title !== undefined && !open && <Button type="button" variant="ghost" size="sm" disabled={disabled || retarget.isPending}
+                            aria-label={t(edge.target_branch ? 'teamwork.changeBranchFor' : 'teamwork.setBranchFor', { name: edge.title })}
+                            onClick={() => { retarget.reset(); setConflict(false); setEditing({ edge: edge.id, draft: edge.target_branch ?? '' }); }}>
+                            {t(edge.target_branch ? 'teamwork.changeBranch' : 'teamwork.setBranch')}</Button>}
+                        <Button type="button" variant="ghost" size="sm" disabled={disabled} onClick={() => mutation.mutate(edge.id)}>{t('teamwork.unlink')}</Button>
+                    </span>
+                </div>
+                <BranchLine edge={edge} />
+                <Hold edge={edge} />
+                {open && <form className="space-y-2 rounded-md border border-border p-3" onSubmit={event => { event.preventDefault(); save(edge.id, editing.draft); }}>
+                    <label className="field-lbl" htmlFor={`${id}-branch-${edge.id}`}>{t('teamwork.targetBranch')}</label>
+                    <input id={`${id}-branch-${edge.id}`} className="input w-full" value={editing.draft} maxLength={255} ref={branchInput}
+                        aria-describedby={`${id}-branch-help-${edge.id}`} aria-invalid={retarget.isError && !conflict}
+                        onChange={event => setEditing({ edge: edge.id, draft: event.target.value })} />
+                    <p id={`${id}-branch-help-${edge.id}`} className="text-xs text-content-secondary">{t('teamwork.targetBranchHelp')}</p>
+                    {conflict && <p role="alert" className="text-sm text-feedback-warning-foreground">{t('teamwork.branchConflict')}</p>}
+                    {retarget.isError && !conflict && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(retarget.error, t('teamwork.saveFailed'))}</p>}
+                    <div className="flex flex-wrap gap-2">
+                        <Button type="submit" size="sm" isLoading={retarget.isPending} disabled={disabled}>{t('teamwork.saveBranch')}</Button>
+                        {edge.target_branch && <Button type="button" variant="secondary" size="sm" disabled={disabled || retarget.isPending}
+                            onClick={() => save(edge.id, '')}>{t('teamwork.clearBranch')}</Button>}
+                        <Button type="button" variant="ghost" size="sm" disabled={retarget.isPending}
+                            onClick={() => { setEditing(null); setConflict(false); retarget.reset(); }}>{t('teamwork.cancelBranch')}</Button>
+                    </div>
+                </form>}
+            </li>;
+        })}</ul>
         <fieldset disabled={disabled} className="space-y-2"><legend className="text-sm font-medium">{t('teamwork.addPrerequisite')}</legend>
             <label className="field-lbl" htmlFor={`${id}-kind`}>{t('teamwork.prerequisiteType')}</label>
             <Select id={`${id}-kind`} className="input w-full" value={kind} onChange={event => { setKind(event.target.value as 'task' | 'milestone'); setTargetId(null); }}><option value="task">{t('teamwork.task')}</option><option value="milestone">{t('teamwork.milestone')}</option></Select>
@@ -56,7 +153,10 @@ export const DeliveryDependencies = ({ task, disabled, onPending, onUpdated }: {
                 {tasks.isLoading && <p role="status">{t('common.loading')}</p>}
                 {tasks.isSuccess && tasks.data.items.length === 0 && <p>{t('teamwork.noResults')}</p>}
                 {tasks.isError && <QueryErrorState error={tasks.error} fallback={t('teamwork.loadFailed')} onRetry={() => void tasks.refetch()} />}
-                <label className="field-lbl" htmlFor={`${id}-target`}>{t('teamwork.prerequisite')}</label><Select id={`${id}-target`} className="input w-full" value={targetId ?? ''} onChange={event => setTargetId(Number(event.target.value) || null)}><option value="">{t('teamwork.chooseTask')}</option>{tasks.data?.items.filter(item => item.id !== task.id).map(item => <option key={item.id} value={item.id}>#{item.id} · {item.title}</option>)}</Select></>
+                <label className="field-lbl" htmlFor={`${id}-target`}>{t('teamwork.prerequisite')}</label><Select id={`${id}-target`} className="input w-full" value={targetId ?? ''} onChange={event => setTargetId(Number(event.target.value) || null)}><option value="">{t('teamwork.chooseTask')}</option>{tasks.data?.items.filter(item => item.id !== task.id).map(item => <option key={item.id} value={item.id}>#{item.id} · {item.title}</option>)}</Select>
+                <label className="field-lbl" htmlFor={`${id}-new-branch`}>{t('teamwork.targetBranchOptional')}</label>
+                <input id={`${id}-new-branch`} className="input w-full" value={branch} maxLength={255} aria-describedby={`${id}-new-branch-help`} onChange={event => setBranch(event.target.value)} />
+                <p id={`${id}-new-branch-help`} className="text-xs text-content-secondary">{t('teamwork.targetBranchHelp')}</p></>
                 : <><label className="field-lbl" htmlFor={`${id}-project`}>{t('teamwork.project')}</label><Select id={`${id}-project`} className="input w-full" value={projectId ?? ''} onChange={event => { setProjectId(Number(event.target.value) || null); setTargetId(null); }}><option value="">{t('teamwork.chooseProject')}</option>{projects.data?.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</Select>
                     {(projects.isLoading || milestones.isLoading) && <p role="status">{t('common.loading')}</p>}
                     {milestones.isSuccess && milestones.data.length === 0 && <p>{t('teamwork.noResults')}</p>}

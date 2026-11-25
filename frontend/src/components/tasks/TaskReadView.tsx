@@ -23,6 +23,7 @@ import { TaskWorkPanel } from './TaskWorkPanel';
 import { useAdminAccess } from '../../hooks/useAdminAccess';
 import { clearAdminApiKey } from '../../utils/adminAccess';
 import { DeliveryDependencies } from './DeliveryDependencies';
+import { GitHubReconciliationPanel } from './GitHubReconciliationPanel';
 import { TaskDiscussion } from './TaskDiscussion';
 import { TimeEntriesPanel } from './TimeEntriesPanel';
 import { TaskTimelinePanel } from './TaskTimelinePanel';
@@ -316,6 +317,7 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
                         onEditBrief={startBriefEdit} onDirty={markDirty} onPending={onPending} onReload={onReload}
                         offerDispatch={offerDispatch}
                         onUpdated={onTaskUpdated} />
+                    <GitHubReconciliationPanel task={task} />
                     <DeliveryDependencies task={task} disabled={locked} onPending={onPending} onUpdated={onTaskUpdated} />
                     {task.project_id && <TimeEntriesPanel projectId={task.project_id} taskId={task.id} draftKey={draftKey} disabled={editingBrief}
                         onDirty={markDirty} onPending={onPending} />}
