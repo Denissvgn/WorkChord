@@ -20,7 +20,7 @@ Administrative update for a provisioned actor.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `display_name` | `Optional[str]` | `display_name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `display_name` | `Optional[str]` | `display_name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `scopes` | `Optional[list[str]]` | `scopes` | No | Yes | `None` | max_length=unknown (len(SUPPORTED_AGENT_SCOPES)) | — | — |
 | `enabled` | `Optional[bool]` | `enabled` | No | Yes | `None` | — | — | — |
 | `role` | `Optional[Literal['pm', 'worker', 'verifier']]` | `role` | No | Yes | `None` | — | — | — |

@@ -14,12 +14,12 @@ _Auto-generated from `StatusEvidenceReference` in `backend/app/autonomy/status.p
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `evidence_kind` | `str` | `evidence_kind` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
-| `immutable_evidence_uri` | `str` | `immutable_evidence_uri` | Yes | No | — | min_length=1; max_length=2048 | — | — |
+| `immutable_evidence_uri` | `str` | `immutable_evidence_uri` | Yes | No | — | max_length=2048; min_length=1 | — | — |
 | `immutable_evidence_checksum` | `str` | `immutable_evidence_checksum` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
-| `workload_identity` | `str` | `workload_identity` | Yes | No | — | min_length=1; max_length=512 | — | — |
+| `workload_identity` | `str` | `workload_identity` | Yes | No | — | max_length=512; min_length=1 | — | — |
 | `source_system` | `str` | `source_system` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `expires_at` | `datetime \| None` | `expires_at` | Yes | Yes | — | — | — | — |
-| `reset_trigger` | `str` | `reset_trigger` | Yes | No | — | min_length=1; max_length=512 | — | — |
+| `reset_trigger` | `str` | `reset_trigger` | Yes | No | — | max_length=512; min_length=1 | — | — |
 
 ## Methods
 

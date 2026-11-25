@@ -19,7 +19,7 @@ Public API payload for creating a saved view.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `view_type` | `SavedViewType` | `view_type` | Yes | No | — | — | — | — |
 | `scope` | `SavedViewScope` | `scope` | No | No | `SavedViewScope.PERSONAL` | — | — | — |

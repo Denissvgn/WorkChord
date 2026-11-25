@@ -307,6 +307,7 @@ export const englishResources = {
                 commandDone: '{{action}}: “{{name}}”.',
                 dependencyAdded: 'Added a dependency to “{{name}}”.',
                 dependencyRemoved: 'Removed a dependency from “{{name}}”.',
+                prerequisiteBranchSaved: 'Saved the target branch for “{{name}}”.',
                 imported_one: 'Imported {{count}} item.',
                 imported_other: 'Imported {{count}} items.',
                 triage_accept: 'Accepted triage item “{{name}}”.',

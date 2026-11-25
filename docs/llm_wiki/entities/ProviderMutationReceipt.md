@@ -22,11 +22,11 @@ Adapter response only; it cannot establish acceptance by itself.
 | `schema_version` | `Literal['workchord-provider-mutation-receipt-v1']` | `schema_version` | No | No | `'workchord-provider-mutation-receipt-v1'` | — | — | — |
 | `lease_digest` | `str` | `lease_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `domain` | `str` | `domain` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
-| `operation` | `str` | `operation` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `operation` | `str` | `operation` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `resource_ref` | `str` | `resource_ref` | Yes | No | — | max_length=2048; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
-| `resource_generation_before` | `str` | `resource_generation_before` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `resource_generation_after` | `str` | `resource_generation_after` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `provider_request_id` | `str` | `provider_request_id` | Yes | No | — | min_length=1; max_length=512 | — | — |
+| `resource_generation_before` | `str` | `resource_generation_before` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `resource_generation_after` | `str` | `resource_generation_after` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `provider_request_id` | `str` | `provider_request_id` | Yes | No | — | max_length=512; min_length=1 | — | — |
 | `response_received_at` | `datetime` | `response_received_at` | Yes | No | — | — | — | — |
 | `raw_response_uri` | `str` | `raw_response_uri` | Yes | No | — | max_length=2048; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
 | `raw_response_sha256` | `str` | `raw_response_sha256` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |

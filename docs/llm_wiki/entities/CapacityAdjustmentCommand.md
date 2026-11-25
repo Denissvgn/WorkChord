@@ -21,7 +21,7 @@ Record and withdraw dated adjustments on one capacity row in one command.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `adjustments` | `list[CapacityAdjustmentItem]` | `adjustments` | No | No | factory: `list` | max_length=50 | — | — |
 | `withdraw_adjustment_ids` | `list[int]` | `withdraw_adjustment_ids` | No | No | factory: `list` | max_length=50 | — | — |
-| `reason` | `str` | `reason` | Yes | No | — | min_length=1; max_length=1000 | — | — |
+| `reason` | `str` | `reason` | Yes | No | — | max_length=1000; min_length=1 | — | — |
 
 ## Methods
 

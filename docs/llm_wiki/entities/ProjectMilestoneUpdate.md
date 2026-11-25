@@ -19,7 +19,7 @@ Schema for updating a project milestone.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `name` | `Optional[str]` | `name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `target_date` | `Optional[date]` | `target_date` | No | Yes | `None` | — | — | — |
 | `completed_at` | `Optional[datetime]` | `completed_at` | No | Yes | `None` | — | — | — |

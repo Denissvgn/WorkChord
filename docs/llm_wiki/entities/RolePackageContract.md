@@ -14,7 +14,7 @@ _Auto-generated from `RolePackageContract` in `backend/app/autonomy/contracts/to
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `package_key` | `str` | `package_key` | Yes | No | — | pattern=unknown (LOGICAL_KEY_PATTERN) | — | — |
-| `version` | `str` | `version` | Yes | No | — | min_length=1; max_length=128 | — | — |
+| `version` | `str` | `version` | Yes | No | — | max_length=128; min_length=1 | — | — |
 | `checksum_sha256` | `str` | `checksum_sha256` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 
 ## Methods

@@ -25,13 +25,13 @@ Verifier-scoped pass or rejection command.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `observed_model` | `str \| None` | `observed_model` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `observed_model` | `str \| None` | `observed_model` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `reviewed_candidate_digest` | `str \| None` | `reviewed_candidate_digest` | No | Yes | `None` | pattern='^[a-f0-9]{64}$' | — | — |
 | `reviewed_packet_sha256` | `str \| None` | `reviewed_packet_sha256` | No | Yes | `None` | pattern='^[a-f0-9]{64}$' | — | — |
 | `assignment_id` | `int` | `assignment_id` | Yes | No | — | — | — | — |
 | `verdict` | `Literal['pass', 'reject']` | `verdict` | Yes | No | — | — | — | — |
 | `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1 | — | — |
-| `evidence` | `dict[str, Any]` | `evidence` | Yes | No | — | min_length=1; max_length=100 | — | — |
+| `evidence` | `dict[str, Any]` | `evidence` | Yes | No | — | max_length=100; min_length=1 | — | — |
 | `reason` | `Optional[str]` | `reason` | No | Yes | `None` | max_length=4000 | — | — |
 | `rework_actor_id` | `Optional[int]` | `rework_actor_id` | No | Yes | `None` | — | — | — |
 | `rework_queue_rank` | `int` | `rework_queue_rank` | No | No | `0` | ge=0 | — | — |

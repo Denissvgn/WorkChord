@@ -20,7 +20,7 @@ _Auto-generated from `BacklogRestoreRequest` in `backend/app/schemas/task_domain
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `expected_versions` | `dict[int, int]` | `expected_versions` | Yes | No | — | — | — | — |
-| `reason` | `str` | `reason` | Yes | No | — | min_length=1; max_length=2000 | — | — |
+| `reason` | `str` | `reason` | Yes | No | — | max_length=2000; min_length=1 | — | — |
 
 ## Methods
 

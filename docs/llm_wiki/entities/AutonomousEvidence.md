@@ -29,11 +29,11 @@ Unsigned canonical source observation submitted to a remote signer.
 | `release_fingerprint` | `str` | `release_fingerprint` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `charter_digest` | `str` | `charter_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `contract_manifest_digest` | `str` | `contract_manifest_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
-| `issuer_workload_identity` | `str` | `issuer_workload_identity` | Yes | No | — | min_length=1; max_length=512 | — | — |
+| `issuer_workload_identity` | `str` | `issuer_workload_identity` | Yes | No | — | max_length=512; min_length=1 | — | — |
 | `issuer_role` | `str` | `issuer_role` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `source_system` | `str` | `source_system` | Yes | No | — | pattern=unknown (IDENTIFIER_PATTERN) | — | — |
 | `source_resource_ref` | `str` | `source_resource_ref` | Yes | No | — | max_length=2048; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
-| `source_resource_generation` | `str` | `source_resource_generation` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `source_resource_generation` | `str` | `source_resource_generation` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `source_receipt_ref` | `str` | `source_receipt_ref` | Yes | No | — | max_length=2048; pattern=unknown (OPAQUE_REF_PATTERN) | — | — |
 | `request_digest` | `str` | `request_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
 | `idempotency_digest` | `str` | `idempotency_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |

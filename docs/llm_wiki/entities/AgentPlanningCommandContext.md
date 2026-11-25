@@ -25,9 +25,9 @@ Required audit metadata carried by every PM setup command.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `idempotency_key` | `str` | `idempotency_key` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `rationale` | `str` | `rationale` | Yes | No | — | min_length=1; max_length=2000 | — | — |
-| `correlation_id` | `str` | `correlation_id` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `idempotency_key` | `str` | `idempotency_key` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `rationale` | `str` | `rationale` | Yes | No | — | max_length=2000; min_length=1 | — | — |
+| `correlation_id` | `str` | `correlation_id` | Yes | No | — | max_length=255; min_length=1 | — | — |
 
 ## Methods
 

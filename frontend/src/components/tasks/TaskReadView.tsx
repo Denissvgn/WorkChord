@@ -23,6 +23,8 @@ import { TaskWorkPanel } from './TaskWorkPanel';
 import { useAdminAccess } from '../../hooks/useAdminAccess';
 import { clearAdminApiKey } from '../../utils/adminAccess';
 import { DeliveryDependencies } from './DeliveryDependencies';
+import { GitHubReconciliationPanel } from './GitHubReconciliationPanel';
+import { useTaskViewSession, type TaskViewSession, type TaskViewSessionUpdate } from './taskViewSession';
 import { TaskDiscussion } from './TaskDiscussion';
 import { TimeEntriesPanel } from './TimeEntriesPanel';
 import { TaskTimelinePanel } from './TaskTimelinePanel';
@@ -65,7 +67,10 @@ const BriefField = ({ label, value }: { label: string; value: string }) => (
  * Read-first task view: Brief, Work & review, Activity. Nothing is an input
  * until a section is edited; the part is kept in the URL beside ?task=<id>.
  */
-export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty, onPending, onReload }: {
+export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: onHeldSession, onTaskUpdated, onEditAll, onDirty, onPending, onReload }: {
+    /** Panel state held by the drawer across version remounts; the view keeps its own when none is given. */
+    session?: TaskViewSession;
+    onSession?: TaskViewSessionUpdate;
     task: Task;
     draftKey: string | null;
     onTaskUpdated: (task: Task) => void;
@@ -84,6 +89,9 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
     const [briefDraft, setBriefDraft] = useState<TaskBrief | null>(null);
     const [reasonDraft, setReasonDraft] = useState<string | null>(null);
     const [sectionDirty, setSectionDirty] = useState(false);
+    const [ownSession, ownUpdate] = useTaskViewSession(draftKey);
+    const session = heldSession ?? ownSession;
+    const updateSession = onHeldSession ?? ownUpdate;
     const editingBrief = briefDraft !== null;
     const locked = editingBrief || sectionDirty;
 
@@ -316,7 +324,8 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
                         onEditBrief={startBriefEdit} onDirty={markDirty} onPending={onPending} onReload={onReload}
                         offerDispatch={offerDispatch}
                         onUpdated={onTaskUpdated} />
-                    <DeliveryDependencies task={task} disabled={locked} onPending={onPending} onUpdated={onTaskUpdated} />
+                    <GitHubReconciliationPanel task={task} session={session} onSession={updateSession} onTaskUpdated={onTaskUpdated} />
+                    <DeliveryDependencies task={task} disabled={editingBrief} draftKey={draftKey} session={session} onSession={updateSession} onDirty={markDirty} onPending={onPending} onUpdated={onTaskUpdated} />
                     {task.project_id && <TimeEntriesPanel projectId={task.project_id} taskId={task.id} draftKey={draftKey} disabled={editingBrief}
                         onDirty={markDirty} onPending={onPending} />}
                 </section>

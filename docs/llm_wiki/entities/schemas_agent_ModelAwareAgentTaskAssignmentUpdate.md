@@ -27,12 +27,12 @@ PM command to reroute queued work through a fresh routing preview.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `expected_queue_revision` | `int` | `expected_queue_revision` | Yes | No | — | ge=1 | — | — |
-| `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
+| `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | ge=1; strict=True | — | — |
 | `assessment_id` | `int` | `assessment_id` | Yes | No | — | ge=1 | — | — |
 | `model_binding_id` | `int` | `model_binding_id` | Yes | No | — | ge=1 | — | — |
 | `model_binding_revision` | `int` | `model_binding_revision` | Yes | No | — | ge=1 | — | — |
-| `routing_preview_id` | `str` | `routing_preview_id` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `routing_preview_digest` | `str` | `routing_preview_digest` | Yes | No | — | min_length=64; max_length=64 | — | — |
+| `routing_preview_id` | `str` | `routing_preview_id` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `routing_preview_digest` | `str` | `routing_preview_digest` | Yes | No | — | max_length=64; min_length=64 | — | — |
 | `actor_id` | `Optional[int]` | `actor_id` | No | Yes | `None` | ge=1 | — | — |
 | `reviewer_profile_id` | `Optional[int]` | `reviewer_profile_id` | No | Yes | `None` | ge=1 | — | — |
 | `queue_rank` | `Optional[int]` | `queue_rank` | No | Yes | `None` | ge=0 | — | — |

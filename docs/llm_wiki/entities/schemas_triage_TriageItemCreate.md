@@ -26,7 +26,7 @@ Schema for creating a triage item.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `title` | `str` | `title` | Yes | No | — | min_length=1; max_length=500 | — | — |
+| `title` | `str` | `title` | Yes | No | — | max_length=500; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `source` | `Optional[str]` | `source` | No | Yes | `None` | max_length=100 | — | — |
 | `source_url` | `Optional[str]` | `source_url` | No | Yes | `None` | max_length=1000 | — | — |

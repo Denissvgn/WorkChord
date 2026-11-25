@@ -29,9 +29,9 @@ Replace an unaccepted original with a fresh task built from a clean base.
 | `replacement_task_id` | `int` | `replacement_task_id` | Yes | No | — | ge=1 | — | — |
 | `expected_original_version` | `int` | `expected_original_version` | Yes | No | — | ge=1 | — | — |
 | `expected_replacement_version` | `int` | `expected_replacement_version` | Yes | No | — | ge=1 | — | — |
-| `reason` | `str` | `reason` | Yes | No | — | min_length=1; max_length=4000 | — | — |
-| `owner_decision` | `str` | `owner_decision` | Yes | No | — | min_length=1; max_length=4000 | — | The owner's recorded decision that authorizes this replacement. |
-| `base_commit_url` | `str` | `base_commit_url` | Yes | No | — | min_length=1; max_length=1000 | — | Immutable GitHub commit the replacement is built from. |
+| `reason` | `str` | `reason` | Yes | No | — | max_length=4000; min_length=1 | — | — |
+| `owner_decision` | `str` | `owner_decision` | Yes | No | — | max_length=4000; min_length=1 | — | The owner's recorded decision that authorizes this replacement. |
+| `base_commit_url` | `str` | `base_commit_url` | Yes | No | — | max_length=1000; min_length=1 | — | Immutable GitHub commit the replacement is built from. |
 | `carried_run_ids` | `list[int]` | `carried_run_ids` | Yes | No | — | max_length=50 | — | Original runs whose commits the replacement carries; empty for a clean rebuild. |
 
 ## Methods

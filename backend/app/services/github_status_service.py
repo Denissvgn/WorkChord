@@ -373,16 +373,26 @@ class GitHubStatusService:
         link: ExternalLink,
         *,
         outcome: str,
+        head_sha: Optional[str] = None,
     ) -> None:
-        """Fence a task assignment before provider data dirties its linked context."""
+        """Fence a task assignment before provider data dirties its linked context.
+
+        Recording an observation keeps a current acceptance only when the observed
+        head is the commit the acceptance covers. A recorded provider error observes
+        no pull request state, so it keeps acceptance.
+        """
         if link.entity_type != ExternalLinkEntityType.TASK.value:
             return
+        from app.services.github_reconciliation_service import observed_head_keeps_acceptance
+
         await reserve_task_context_revision(
             self.db,
             link.entity_id,
             context_kind="external_link",
             action="github_status_refresh",
             details={"external_link_id": link.id, "outcome": outcome},
+            preserve_acceptance=(outcome == "provider_error"
+                                 or await observed_head_keeps_acceptance(self.db, link, head_sha)),
         )
 
     async def fetch_pull_request(self, link_id: int) -> Optional[FetchedPullRequest]:
@@ -438,21 +448,33 @@ class GitHubStatusService:
         """
         from app.commands import command_transaction
 
+        from app.services.github_reconciliation_service import observed_head_keeps_acceptance
+
         async with command_transaction(self.db):
             needs_revision = False
+            keeps_acceptance = True
+            only_errors = True
             for item in fetched:
                 link = await self.link_service.get_by_id(item.link_id)
                 if link is None:
                     continue
-                if item.error is not None or not self.is_stale_observation(link.metadata_json or {}, item.payload):
-                    needs_revision = True
+                if item.error is None and self.is_stale_observation(link.metadata_json or {}, item.payload):
+                    continue
+                needs_revision = True
+                only_errors = only_errors and item.error is not None
+                # A provider error observes no pull request state; every recorded
+                # head must be the commit the acceptance covers.
+                if item.error is None and not await observed_head_keeps_acceptance(
+                        self.db, link, item.observation["head_sha"]):
+                    keeps_acceptance = False
             if needs_revision:
                 await reserve_task_context_revision(
                     self.db,
                     task_id,
                     context_kind="external_link",
                     action="github_status_refresh",
-                    details={"external_link_ids": [item.link_id for item in fetched], "outcome": "refreshed"},
+                    details={"external_link_ids": [item.link_id for item in fetched], "outcome": "provider_error" if only_errors else "refreshed"},
+                    preserve_acceptance=keeps_acceptance,
                 )
             for item in fetched:
                 await self.apply_fetched_pull_request(item, reserved=True)
@@ -497,7 +519,7 @@ class GitHubStatusService:
             link.metadata_json = metadata
             return await self._save_link(link)
         if not reserved:
-            await self._reserve_task_context_revision(link, outcome="refreshed")
+            await self._reserve_task_context_revision(link, outcome="refreshed", head_sha=observation["head_sha"])
         # Another catch-up or a webhook may have recorded this observation while
         # this one waited for the lock; decide from what it committed.
         link = await self.lock_link_after_task(link_id)

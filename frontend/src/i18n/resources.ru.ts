@@ -317,6 +317,7 @@ export const russianResources = {
                 commandDone: '{{action}}: «{{name}}».',
                 dependencyAdded: 'Добавлено ожидание предшественника для «{{name}}».',
                 dependencyRemoved: 'Удалено ожидание предшественника у «{{name}}».',
+                prerequisiteBranchSaved: 'Целевая ветка сохранена для «{{name}}».',
                 imported_one: 'Импортирован {{count}} элемент.',
                 imported_few: 'Импортировано {{count}} элемента.',
                 imported_many: 'Импортировано {{count}} элементов.',

@@ -20,7 +20,7 @@ The live claim owner's acknowledgement, bound to its current fence.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `task_id` | `int` | `task_id` | Yes | No | — | ge=1 | — | — |
-| `claim_id` | `str` | `claim_id` | Yes | No | — | min_length=16; max_length=64 | — | — |
+| `claim_id` | `str` | `claim_id` | Yes | No | — | max_length=64; min_length=16 | — | — |
 | `claim_generation` | `int` | `claim_generation` | Yes | No | — | ge=1 | — | — |
 | `run_id` | `Optional[int]` | `run_id` | No | Yes | `None` | ge=1 | — | — |
 

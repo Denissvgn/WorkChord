@@ -1,5 +1,7 @@
 import api from './api';
 import type {
+    DeliveryPrerequisite,
+    GitHubReconciliation,
     GitHubStatusAutomationRule,
     GitHubStatusAutomationRuleCreate,
     GitHubStatusAutomationRuleUpdate,
@@ -27,4 +29,14 @@ export const githubService = {
         );
         return response.data;
     },
+
+    getReconciliation: async (taskId: number, signal?: AbortSignal) =>
+        (await api.get<GitHubReconciliation>(`/tasks/${taskId}/github-reconciliation`, { signal })).data,
+
+    catchUp: async (taskId: number) =>
+        (await api.post<GitHubReconciliation>(`/tasks/${taskId}/github-reconciliation/catch-up`)).data,
+
+    retargetPrerequisite: async (taskId: number, edgeId: number, expectedVersion: number, targetBranch: string | null) =>
+        (await api.patch<DeliveryPrerequisite[]>(`/tasks/${taskId}/delivery-dependencies/${edgeId}`,
+            { expected_version: expectedVersion, target_branch: targetBranch })).data,
 };

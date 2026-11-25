@@ -26,7 +26,7 @@ Schema for updating a triage item.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `title` | `Optional[str]` | `title` | No | Yes | `None` | min_length=1; max_length=500 | — | — |
+| `title` | `Optional[str]` | `title` | No | Yes | `None` | max_length=500; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `source` | `Optional[str]` | `source` | No | Yes | `None` | max_length=100 | — | — |
 | `source_url` | `Optional[str]` | `source_url` | No | Yes | `None` | max_length=1000 | — | — |

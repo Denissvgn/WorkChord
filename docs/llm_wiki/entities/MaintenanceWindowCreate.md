@@ -19,8 +19,8 @@ Announce one bounded window; it closes admission for new work at once.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `release_label` | `str` | `release_label` | Yes | No | — | min_length=1; max_length=120 | — | — |
-| `reason` | `str` | `reason` | Yes | No | — | min_length=1; max_length=4000 | — | — |
+| `release_label` | `str` | `release_label` | Yes | No | — | max_length=120; min_length=1 | — | — |
+| `reason` | `str` | `reason` | Yes | No | — | max_length=4000; min_length=1 | — | — |
 | `planned_start_at` | `datetime` | `planned_start_at` | Yes | No | — | — | — | — |
 | `planned_end_at` | `datetime` | `planned_end_at` | Yes | No | — | — | — | — |
 | `max_outage_seconds` | `int` | `max_outage_seconds` | Yes | No | — | ge=1; le=3600 | — | — |

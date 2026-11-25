@@ -25,10 +25,10 @@ row's own percentage, so the shares return after ``end_date`` on their own.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `target_member_id` | `int` | `target_member_id` | Yes | No | — | ge=1 | — | — |
-| `sources` | `list[CapacityTransferSource]` | `sources` | Yes | No | — | min_length=1; max_length=20 | — | — |
+| `sources` | `list[CapacityTransferSource]` | `sources` | Yes | No | — | max_length=20; min_length=1 | — | — |
 | `start_date` | `date` | `start_date` | Yes | No | — | — | — | — |
 | `end_date` | `date` | `end_date` | Yes | No | — | — | — | — |
-| `reason` | `str` | `reason` | Yes | No | — | min_length=1; max_length=1000 | — | — |
+| `reason` | `str` | `reason` | Yes | No | — | max_length=1000; min_length=1 | — | — |
 
 ## Methods
 

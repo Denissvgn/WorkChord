@@ -18,6 +18,7 @@ vi.mock('../../services/teamService', () => ({ teamService: { getByIteration: se
 vi.mock('../../services/taskService', () => ({ taskService: { getDetail: services.detail, getById: services.task } }));
 vi.mock('./TaskWorkPanel', () => ({ TaskWorkPanel: () => null }));
 vi.mock('./DeliveryDependencies', () => ({ DeliveryDependencies: () => null }));
+vi.mock('./GitHubReconciliationPanel', () => ({ GitHubReconciliationPanel: () => null }));
 vi.mock('./TaskDiscussion', () => ({ TaskDiscussion: () => null }));
 vi.mock('./TimeEntriesPanel', () => ({ TimeEntriesPanel: () => null }));
 vi.mock('./TaskTimelinePanel', () => ({ TaskTimelinePanel: () => null }));

@@ -20,13 +20,13 @@ Non-dispatching exact-actor preview bound to current task state.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `purpose` | `Literal['execution', 'verification']` | `purpose` | Yes | No | — | — | — | — |
-| `assessment_id` | `int` | `assessment_id` | Yes | No | — | strict=True; ge=1 | — | — |
-| `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | strict=True; ge=1 | — | — |
-| `reviewer_profile_id` | `int \| None` | `reviewer_profile_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
-| `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
-| `review_assignment_id` | `int \| None` | `review_assignment_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
-| `focus_actor_id` | `int \| None` | `focus_actor_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
-| `focus_model_binding_id` | `int \| None` | `focus_model_binding_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
+| `assessment_id` | `int` | `assessment_id` | Yes | No | — | ge=1; strict=True | — | — |
+| `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1; strict=True | — | — |
+| `reviewer_profile_id` | `int \| None` | `reviewer_profile_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `review_evidence_id` | `int \| None` | `review_evidence_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `review_assignment_id` | `int \| None` | `review_assignment_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `focus_actor_id` | `int \| None` | `focus_actor_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `focus_model_binding_id` | `int \| None` | `focus_model_binding_id` | No | Yes | `None` | ge=1; strict=True | — | — |
 
 ## Methods
 

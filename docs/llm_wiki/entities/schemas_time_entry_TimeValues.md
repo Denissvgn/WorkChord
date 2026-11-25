@@ -27,7 +27,7 @@ _Auto-generated from `TimeValues` in `backend/app/schemas/time_entry.py`._
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `work_date` | `date` | `work_date` | Yes | No | — | — | — | — |
-| `timezone` | `str` | `timezone` | Yes | No | — | min_length=1; max_length=64 | — | — |
+| `timezone` | `str` | `timezone` | Yes | No | — | max_length=64; min_length=1 | — | — |
 | `minutes` | `StrictInt` | `minutes` | Yes | No | — | ge=1; le=1440 | — | — |
 | `note` | `str` | `note` | No | No | `''` | max_length=2000 | — | — |
 

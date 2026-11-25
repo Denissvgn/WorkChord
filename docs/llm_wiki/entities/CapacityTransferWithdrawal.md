@@ -19,7 +19,7 @@ Return the lent capacity of every row of one transfer together.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `reason` | `str` | `reason` | Yes | No | — | min_length=1; max_length=1000 | — | — |
+| `reason` | `str` | `reason` | Yes | No | — | max_length=1000; min_length=1 | — | — |
 
 ## Methods
 
