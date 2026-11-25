@@ -1,6 +1,6 @@
 # ProviderSessionDouble
 
-**Location:** `backend/tests/test_runtime_boundaries.py:373`
+**Location:** `backend/tests/test_runtime_boundaries.py:388`
 **Kind:** Class
 **Bases:** —
 **Module:** [test_runtime_boundaries](../modules/test_runtime_boundaries.md)

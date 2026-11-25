@@ -39,6 +39,7 @@ Plan opens the requested checkpoint for the selected iteration, or the first inc
 | `../utils/workNumbers` | `formatDecimal` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQueryClient` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
+| `i18next` | `TFunction` | Declaration | erased |
 | `lucide-react` | `ArrowRight`, `Check`, `ChevronDown`, `RefreshCw` | — | compiler-dependent |
 | `react` | `ReactNode` | Declaration | erased |
 | `react` | `useEffect`, `useRef`, `useState` | — | compiler-dependent |
@@ -79,7 +80,7 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 6 | 0 |
+| typescript | 7 | 0 |
 
 > All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
@@ -87,5 +88,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Translate](../entities/PlanPage_Translate.md) | Type alias | 43 | `ReturnType<typeof useTranslation>['t']` | — |
 | [Readiness](../entities/Readiness.md) | Type alias | 44 | `ReturnType<typeof usePlanningReadiness>` | — |

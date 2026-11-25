@@ -16,7 +16,7 @@ The restricted onboarding acknowledgement has a dedicated token-only boundary. I
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `Authority`, `AuthorityError`, `internal_authority`, `require_project` |
+| `app.authority` | `AGENT_TASK_READ_SCOPES`, `AGENT_TASK_WRITE_SCOPES`, `Authority`, `AuthorityError`, `internal_authority`, `require_project` |
 | `app.config` | `get_settings` |
 | `app.database` | `get_db` |
 | `app.models.identity` | `Principal`, `WorkspaceAuthorityState` |

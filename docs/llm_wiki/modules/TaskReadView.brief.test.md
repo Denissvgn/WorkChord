@@ -23,7 +23,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskReadView.brief.test.tsx`
 | Signal | Values |
 |--------|--------|
 | Constants | `service`, `task` |
-| Module calls | `service = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `beforeEach`, `afterEach`, `it.each(['en', 'ru'])` |
+| Module calls | `service = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `beforeEach`, `afterEach`, `it.each(['en', 'ru'])` |
 
 ## Local dependency map
 

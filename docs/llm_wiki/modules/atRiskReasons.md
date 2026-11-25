@@ -12,6 +12,7 @@ _Auto-generated from `frontend/src/features/planningMasters/atRiskReasons.ts`._
 |--------|---------|-----------|------------------|
 | `../../types/task` | `Task` | Declaration | erased |
 | `./planningTaskIssues` | `isOutsideDateLimits` | — | compiler-dependent |
+| `i18next` | `TFunction` | Declaration | erased |
 
 ## Module Signals
 
@@ -59,15 +60,20 @@ flowchart LR
 | Outbound | [planningTaskIssues](../modules/planningTaskIssues.md) |
 | Outbound | [types_task](../modules/types_task.md) |
 
+### External packages
+
+| Language | Used packages | Undeclared packages |
+|---|---:|---:|
+| typescript | 1 | 0 |
+
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Translate](../entities/atRiskReasons_Translate.md) | Type alias | 4 | `(key: string) => string` | — |
-| [RiskFields](../entities/RiskFields.md) | Type alias | 6 | <pre><code>Pick&#60;Task&#44; &#39;is&#95;overdue&#39; &#124; &#39;is&#95;delayed&#39; &#124; &#39;is&#95;outside&#95;constraints&#39;&#62;&#10;    &#38; Partial&#60;Pick&#60;Task&#44; &#39;start&#95;date&#39; &#124; &#39;end&#95;date&#39; &#124; &#39;min&#95;start&#95;date&#39; &#124; &#39;max&#95;end&#95;date&#39; &#124; &#39;actual&#95;start&#95;date&#39; &#124; &#39;baseline&#95;start&#95;date&#39;&#62;&#62;</code></pre> | — |
+| [RiskFields](../entities/RiskFields.md) | Type alias | 5 | <pre><code>Pick&#60;Task&#44; &#39;is&#95;overdue&#39; &#124; &#39;is&#95;delayed&#39; &#124; &#39;is&#95;outside&#95;constraints&#39;&#62;&#10;    &#38; Partial&#60;Pick&#60;Task&#44; &#39;start&#95;date&#39; &#124; &#39;end&#95;date&#39; &#124; &#39;min&#95;start&#95;date&#39; &#124; &#39;max&#95;end&#95;date&#39; &#124; &#39;actual&#95;start&#95;date&#39; &#124; &#39;baseline&#95;start&#95;date&#39;&#62;&#62;</code></pre> | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `atRiskReasons` | `(task: RiskFields, t: Translate) -> string[]` | — | Why a task counts as an at-risk signal, in the words Plan and the Tasks list share. |
+| `atRiskReasons` | `(task: RiskFields, t: TFunction) -> string[]` | — | Why a task counts as an at-risk signal, in the words Plan and the Tasks list share. |

@@ -1,7 +1,7 @@
 # DeliveryDependencyService_add
 
 **Entry point:** `delivery_dependency_service.DeliveryDependencyService.add`
-**Modules involved:** [authority](../modules/authority.md), [commands](../modules/commands.md), [delivery_dependency](../modules/delivery_dependency.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [task_brief_service](../modules/task_brief_service.md), [task_service](../modules/task_service.md)
+**Modules involved:** [authority](../modules/authority.md), [commands](../modules/commands.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [models_delivery_dependency](../modules/models_delivery_dependency.md), [task_brief_service](../modules/task_brief_service.md), [task_service](../modules/task_service.md)
 
 ## Sequence
 
@@ -15,15 +15,15 @@
 7. `task_service.TaskService.ensure_expected_version`
 8. `task_service.TaskService.reserve_task_version`
 9. `task_service.TaskService._require_unclaimed_structure`
-10. `delivery_dependency.DeliveryDependency`
+10. `models_delivery_dependency.DeliveryDependency`
 11. `task_brief_service.clear_execution_evidence`
 
 ## Touches
 
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
-- [delivery_dependency](../modules/delivery_dependency.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
+- [models_delivery_dependency](../modules/models_delivery_dependency.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_service](../modules/task_service.md)
 

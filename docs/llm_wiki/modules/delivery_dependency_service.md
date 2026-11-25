@@ -17,8 +17,8 @@ Owns typed task/milestone delivery prerequisites, distinct from local schedule d
 | `app.models.task` | `Task`, `TaskDependency` |
 | `app.models.task_replacement` | `TaskReplacement`, `TaskReplacement` |
 | `app.services.github_reconciliation_service` | `GitHubReconciliationService`, `pull_state` |
-| `app.services.task_brief_service` | `clear_execution_evidence`, `clear_execution_evidence`, `clear_execution_evidence` |
-| `app.services.task_service` | `TaskService`, `TaskService`, `TaskService`, `TaskService` |
+| `app.services.task_brief_service` | `clear_execution_evidence`, `clear_execution_evidence`, `clear_execution_evidence`, `clear_execution_evidence` |
+| `app.services.task_service` | `TaskService`, `TaskService`, `TaskService`, `TaskService`, `TaskService` |
 | `collections` | `defaultdict`, `deque` |
 | `sqlalchemy` | `or_`, `select` |
 
@@ -40,7 +40,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (18) |
+| Inbound | `backend` (20) |
 | Outbound | `backend` (9) |
 
 ### External packages
@@ -49,7 +49,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

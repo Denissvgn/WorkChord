@@ -10,6 +10,7 @@ _Auto-generated from `frontend/vite.config.ts`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `@tailwindcss/vite` | `tailwindcss` | — | compiler-dependent |
 | `@vitejs/plugin-react` | `react` | — | compiler-dependent |
 | `node:fs` | `readFileSync` | — | compiler-dependent |
 | `vite` | `defineConfig` | — | compiler-dependent |
@@ -30,4 +31,4 @@ _Auto-generated from `frontend/vite.config.ts`._
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 2 | 0 |
+| typescript | 3 | 0 |

@@ -1,9 +1,14 @@
 # Dependency
 
-**Location:** `frontend/src/components/tasks/DeliveryDependencies.tsx:14`
-**Kind:** Interface
+**Location:** `frontend/src/components/tasks/DeliveryDependencies.tsx:19`
+**Kind:** Type alias
 **Bases:** —
 **Module:** [DeliveryDependencies](../modules/DeliveryDependencies.md)
+**Target:**
+
+```typescript
+DeliveryPrerequisite
+```
 
 ## Description
 
@@ -11,18 +16,11 @@ _Auto-generated from `Dependency` in `frontend/src/components/tasks/DeliveryDepe
 
 ## Attributes
 
-| Name | Type | Required | Default | Description |
-|------|------|----------|---------|-------------|
-| `id` | `number` | Yes | — | — |
-| `kind` | `'task' \| 'milestone'` | Yes | — | — |
-| `target_id` | `number` | No | — | — |
-| `title` | `string` | No | — | — |
-| `ready` | `boolean` | Yes | — | — |
-| `reason` | `string \| null` | Yes | — | — |
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No declared methods.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 
@@ -33,4 +31,4 @@ _Auto-generated from `Dependency` in `frontend/src/components/tasks/DeliveryDepe
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [DeliveryDependencies](../modules/DeliveryDependencies.md) | 0 | `id`, `kind`, `ready`, `reason`, `target_id`, `title` |
+| [DeliveryDependencies](../modules/DeliveryDependencies.md) | 0 | — |

@@ -168,12 +168,12 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | task_owner_options | require_project | 171 | `require_project(db, project_id)` |
-| require_project | db.info.get (backend/app/authority.py:require_project) | 74 | `db.info.get('authority')` |
-| require_project | get_settings | 76 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
-| require_project | AuthorityError | 78 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
-| require_project | authority.allows | 79 | `authority.allows(project_id, action)` |
-| require_project | AuthorityError | 80 | `AuthorityError(data not statically known)` |
+| require_project | db.info.get (backend/app/authority.py:require_project) | 81 | `db.info.get('authority')` |
+| require_project | get_settings | 83 | `get_settings(data not statically known)` |
+| get_settings | Settings | 527 | `Settings(data not statically known)` |
+| require_project | AuthorityError | 85 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
+| require_project | authority.allows | 86 | `authority.allows(project_id, action)` |
+| require_project | AuthorityError | 87 | `AuthorityError(data not statically known)` |
 | task_owner_options | select(…).where (backend/app/routers/task_…n.py:task_owner_options, 1) | 172 | `select(TeamMemberProfile.id, TeamMemberProfile.display_name.label('name')).where(..., ...)` |
 | task_owner_options | select | 172 | `select(TeamMemberProfile.id, TeamMemberProfile.display_name.label(...))` |
 | task_owner_options | TeamMemberProfile.display_name.label | 172 | `TeamMemberProfile.display_name.label('name')` |
@@ -187,8 +187,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_project` | `db.info.get` | 74 |
-| unresolved_call | `require_project` | `authority.allows` | 79 |
+| unresolved_call | `require_project` | `db.info.get` | 81 |
+| unresolved_call | `require_project` | `authority.allows` | 86 |
 | unresolved_call | `task_owner_options` | `select(TeamMemberProfile.id, TeamMemberProfile.display_name.label('name')).where` | 172 |
 | external_call | `task_owner_options` | `select` | 172 |
 | unresolved_call | `task_owner_options` | `TeamMemberProfile.display_name.label` | 172 |

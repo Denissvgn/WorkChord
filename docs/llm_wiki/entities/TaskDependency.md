@@ -58,7 +58,7 @@ flowchart LR
     click n0 "../modules/models_task.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
-    click n3 "../modules/delivery_dependency.md"
+    click n3 "../modules/models_delivery_dependency.md"
     click n4 "../modules/export.md"
     click n5 "../modules/agent_planning_service.md"
     click n6 "../modules/agent_readiness.md"
@@ -88,7 +88,7 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
-| `delivery_dependency` | import | [delivery_dependency](../modules/delivery_dependency.md) | — |
+| `delivery_dependency` | import | [models_delivery_dependency](../modules/models_delivery_dependency.md) | — |
 | `_process_import` | call | [export](../modules/export.md) | 1 |
 | `agent_planning_service` | import | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `_dependency_task` | type_reference | [agent_readiness](../modules/agent_readiness.md) | — |

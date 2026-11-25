@@ -21,6 +21,7 @@ In direct mode the drawer opens `TaskReadView` (Brief, Work & review, Activity) 
 | `./TaskForm` | `TaskForm` | — | compiler-dependent |
 | `./TaskReadView` | `TaskReadView` | — | compiler-dependent |
 | `./taskEditorSnapshot` | `readTaskEditorSnapshot`, `keepNewestTaskSnapshot` | — | compiler-dependent |
+| `./taskViewSession` | `useTaskViewSession` | — | compiler-dependent |
 | `./useDraftDismissal` | `useDraftDismissal` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
 | `lucide-react` | `Loader2` | — | compiler-dependent |
@@ -56,7 +57,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (7) |
-| Outbound | `frontend` (11) |
+| Outbound | `frontend` (12) |
 
 ### External packages
 
@@ -64,13 +65,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DrawerCopy](../entities/DrawerCopy.md) | Type alias | 19 | `ReactNode \| ((task: Task \| null) => ReactNode)` | — |
+| [DrawerCopy](../entities/DrawerCopy.md) | Type alias | 20 | `ReactNode \| ((task: Task \| null) => ReactNode)` | — |
 
 ## Functions
 

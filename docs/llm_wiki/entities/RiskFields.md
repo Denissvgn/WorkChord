@@ -1,6 +1,6 @@
 # RiskFields
 
-**Location:** `frontend/src/features/planningMasters/atRiskReasons.ts:6`
+**Location:** `frontend/src/features/planningMasters/atRiskReasons.ts:5`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [atRiskReasons](../modules/atRiskReasons.md)

@@ -14,7 +14,7 @@ Self-hosted server acceptance contract and adapter tests.
 | `app.autonomy` | `server_acceptance` |
 | `app.autonomy.canonical` | `canonical_json_bytes`, `sha256_hex` |
 | `app.autonomy.contracts.postgresql` | `load_postgresql_contract_bundle` |
-| `app.autonomy.server_acceptance` | `ApplicationAcceptance`, `CasAcceptance`, `LockedAcceptanceObject`, `ObjectStoreAcceptance`, `OpenBaoTransitClient`, `S3ObjectLockClient`, `ServerAcceptanceCandidate`, `ServerAcceptanceConfig`, `ServerAcceptanceError`, `ServerAcceptanceReceipt`, `TransitSignerAcceptance`, `ValkeyCasClient`, `_read_resp`, `_signed_report_payload`, `build_blocked_result`, `run_server_acceptance`, `verify_receipt_current_build`, `verify_receipt_trusted_signer`, `_probe_application`, `_probe_application`, `_probe_application` |
+| `app.autonomy.server_acceptance` | `ApplicationAcceptance`, `CasAcceptance`, `LockedAcceptanceObject`, `ObjectStoreAcceptance`, `OpenBaoTransitClient`, `S3ObjectLockClient`, `ServerAcceptanceCandidate`, `ServerAcceptanceConfig`, `ServerAcceptanceError`, `ServerAcceptanceReceipt`, `TransitSignerAcceptance`, `ValkeyCasClient`, `_read_resp`, `_signed_report_payload`, `build_blocked_result`, `run_server_acceptance`, `verify_receipt_current_build`, `verify_receipt_trusted_signer`, `_probe_application`, `_probe_application`, `_probe_application`, `_probe_application` |
 | `app.autonomy.status` | `ResolvedStatusEvidence` |
 | `app.build_identity` | `BackendBuildIdentity`, `load_backend_build_identity`, `package_artifact_digest` |
 | `app.cli.server_acceptance` | `_emit`, `main` |
@@ -22,6 +22,7 @@ Self-hosted server acceptance contract and adapter tests.
 | `cryptography.hazmat.primitives` | `serialization` |
 | `cryptography.hazmat.primitives.asymmetric.ed25519` | `Ed25519PrivateKey` |
 | `datetime` | `UTC`, `datetime`, `timedelta` |
+| `hashlib` | `hashlib` |
 | `httpx` | `httpx` |
 | `io` | `BytesIO` |
 | `json` | `json` |
@@ -104,10 +105,12 @@ flowchart LR
 | `test_server_acceptance_rejects_production_before_network_access` | `() -> None` | — | — |
 | `test_server_acceptance_success_path_seals_final_receipt` | `(monkeypatch) -> None` | — | — |
 | `test_openbao_transit_requires_nonexportable_key_and_verifies_signature` | `() -> None` | — | — |
-| `test_minio_adapter_proves_locked_exact_version_survives_delete` | `() -> None` | — | — |
+| `test_object_lock_adapter_proves_locked_exact_version_survives_delete` | `() -> None` | — | — |
+| `test_object_lock_adapter_refuses_a_store_that_is_not_ready` | `() -> None` | — | — |
 | `test_valkey_probe_uses_independent_writer_and_confirms_aof` | `(monkeypatch) -> None` | — | — |
 | `test_resp_parser_handles_acceptance_reply_shapes` | `(wire: bytes, expected: object) -> None` | `@pytest.mark.parametrize(('wire', 'expected'), [(b'+PONG\r\n', 'PONG'), (b'$5\r\nvalue\r\n', b'value'), (b'$-1\r\n', None), (b':2\r\n', 2)])` | — |
-| `_application_probe_client` | `(monkeypatch: pytest.MonkeyPatch, *, agent_connect_body: bytes, agent_connect_content_type: str, gateway_build_identity: dict \| None = None)` | — | — |
+| `_application_probe_client` | `(monkeypatch: pytest.MonkeyPatch, *, agent_connect_body: bytes, agent_connect_content_type: str, gateway_build_identity: dict \| None = None, seen_readiness_tokens: list[str \| None] \| None = None)` | — | — |
 | `test_application_probe_requires_agent_connect_json_through_gateway` | `(monkeypatch: pytest.MonkeyPatch) -> None` | — | — |
+| `test_application_probe_presents_the_readiness_detail_token_only_when_set` | `(monkeypatch: pytest.MonkeyPatch) -> None` | — | — |
 | `test_application_probe_rejects_web_page_instead_of_agent_connect` | `(monkeypatch: pytest.MonkeyPatch) -> None` | — | — |
 | `test_application_probe_rejects_gateway_serving_backend_build_identity` | `(monkeypatch: pytest.MonkeyPatch) -> None` | — | — |

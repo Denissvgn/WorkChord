@@ -94,7 +94,7 @@ flowchart LR
     click n19 "../modules/models_calendar.md"
     click n20 "../modules/models_capacity.md"
     click n21 "../modules/models_database_migration.md"
-    click n22 "../modules/delivery_dependency.md"
+    click n22 "../modules/models_delivery_dependency.md"
     click n23 "../modules/delivery_observation.md"
     click n24 "../modules/models_discussion.md"
     click n25 "../modules/models_execution_usage.md"
@@ -136,7 +136,7 @@ flowchart LR
 | `calendar` | import | [models_calendar](../modules/models_calendar.md) | — |
 | `capacity` | import | [models_capacity](../modules/models_capacity.md) | — |
 | `database_migration` | import | [models_database_migration](../modules/models_database_migration.md) | — |
-| `delivery_dependency` | import | [delivery_dependency](../modules/delivery_dependency.md) | — |
+| `delivery_dependency` | import | [models_delivery_dependency](../modules/models_delivery_dependency.md) | — |
 | `delivery_observation` | import | [delivery_observation](../modules/delivery_observation.md) | — |
 | `discussion` | import | [models_discussion](../modules/models_discussion.md) | — |
 | `execution_usage` | import | [models_execution_usage](../modules/models_execution_usage.md) | — |

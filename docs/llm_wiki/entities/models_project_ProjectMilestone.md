@@ -63,7 +63,7 @@ flowchart LR
     click n0 "../modules/models_project.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
-    click n3 "../modules/delivery_dependency.md"
+    click n3 "../modules/models_delivery_dependency.md"
     click n4 "../modules/models_task.md"
     click n5 "../modules/delivery_dependency_service.md"
     click n6 "../modules/iteration_service.md"
@@ -92,7 +92,7 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
-| `delivery_dependency` | import | [delivery_dependency](../modules/delivery_dependency.md) | — |
+| `delivery_dependency` | import | [models_delivery_dependency](../modules/models_delivery_dependency.md) | — |
 | `task` | import | [models_task](../modules/models_task.md) | — |
 | `delivery_dependency_service` | import | [delivery_dependency_service](../modules/delivery_dependency_service.md) | — |
 | `iteration_service` | import | [iteration_service](../modules/iteration_service.md) | — |

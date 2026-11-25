@@ -36,7 +36,7 @@ flowchart LR
     n4 --> n1
     n4 --> n2
     n4 --> n3
-    click n0 "../modules/delivery_dependency.md"
+    click n0 "../modules/models_delivery_dependency.md"
     click n1 "../modules/models_project.md"
     click n2 "../modules/models_task.md"
     click n3 "../modules/upgrade_service.md"
@@ -47,7 +47,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | [delivery_dependency](../modules/delivery_dependency.md) |
+| Outbound | [models_delivery_dependency](../modules/models_delivery_dependency.md) |
 | Outbound | [models_project](../modules/models_project.md) |
 | Outbound | [models_task](../modules/models_task.md) |
 | Outbound | [upgrade_service](../modules/upgrade_service.md) |

@@ -1,6 +1,6 @@
 # GitHubStatusService
 
-**Location:** `backend/app/services/github_status_service.py:45`
+**Location:** `backend/app/services/github_status_service.py:61`
 **Kind:** Class
 **Bases:** —
 **Module:** [github_status_service](../modules/github_status_service.md)
@@ -27,6 +27,8 @@ Refresh cached GitHub pull request metadata for external links.
 | `is_stale_observation` | `(metadata: dict[str, Any], payload: dict[str, Any]) -> bool` | `@staticmethod` | Whether a payload is older than what the link already records. |
 | `checks_from_runs` | `(runs_payload: Any) -> dict[str, Any]` | `@staticmethod` | Summarize the check runs GitHub reports for one commit. |
 | `observe_checks` | *(async)* `(owner: str, repo: str, head_sha: Any) -> dict[str, Any]` | — | Read the checks of the observed head; a read failure is recorded, not raised. |
+| `observed_closure_key` | `(link_id: int, status: str, observation: dict[str, Any]) -> str` | `@staticmethod` | The identity of one merge or unmerged closure of a linked pull request. |
+| `lock_link_after_task` | *(async)* `(link_id: int) -> Optional[ExternalLink]` | — | Re-read a link under a row lock, discarding any cached copy. |
 | `_record_observed_closure` | *(async)* `(link: ExternalLink, status: str, observation: dict[str, Any]) -> None` | — | Record a merge or unmerged closure seen by catch-up as a GitHub task event, once. |
 | `_fetch_pull_request` | *(async)* `(owner: str, repo: str, number: int) -> dict[str, Any]` | — | Fetch one pull request payload from GitHub. |
 | `_fetch_pr_resource` | *(async)* `(owner, repo, number, suffix = '')` | — | — |
@@ -36,8 +38,11 @@ Refresh cached GitHub pull request metadata for external links.
 | `verify_review_head` | *(async)* `(pr, expected_sha, attributed_commits, *, expected_repository = None, failure_context = None)` | — | Observe the exact PR candidate and flag additional, unbound authors. |
 | `_provider_error_message` | `(error: Exception) -> str` | — | Convert provider exceptions into a safe cached message. |
 | `_save_link` | *(async)* `(link: ExternalLink) -> ExternalLink` | — | Persist changed link fields. |
-| `_reserve_task_context_revision` | *(async)* `(link: ExternalLink, *, outcome: str) -> None` | — | Fence a task assignment before provider data dirties its linked context. |
+| `_reserve_task_context_revision` | *(async)* `(link: ExternalLink, *, outcome: str, head_sha: Optional[str] = None) -> None` | — | Fence a task assignment before provider data dirties its linked context. |
+| `fetch_pull_request` | *(async)* `(link_id: int) -> Optional[FetchedPullRequest]` | — | Read one linked pull request from GitHub while holding no lock. |
 | `refresh_pull_request_status` | *(async)* `(link_id: int) -> Optional[ExternalLink]` | — | Refresh a GitHub PR link and cache status metadata. |
+| `record_fetched_pull_requests` | *(async)* `(task_id: int, fetched: list[FetchedPullRequest]) -> None` | — | Record several already fetched links of one task under one task revision. |
+| `apply_fetched_pull_request` | *(async)* `(fetched: FetchedPullRequest, *, reserved: bool = False) -> Optional[ExternalLink]` | — | Save a fetched observation: reserve the task context, lock the link, then write. |
 
 ## Relationships
 
@@ -51,11 +56,11 @@ flowchart LR
     n4["GitHubStatusService.from_runtime (backend/app/services/github_status_service.py)"]
     n5["GitHubWebhookService.__init__ (backend/app/services/github_webhook_service.py)"]
     n6["backend/app/services/review_provenance.py"]
-    n7["backend/tests/test_github_reconciliation.py"]
-    n8["backend/tests/test_manual_review_provenance.py"]
-    n9["test_commit_only_review_verifies_the_entire_pinned_range (backend/tests/test_review_provenance.py)"]
-    n10["test_github_candidate_uses_full_head_and_contributions (backend/tests/test_review_provenance.py)"]
-    n11["backend/tests/test_review_provenance_transports.py"]
+    n7["_catch_up (backend/tests/database/test_github_closure_concurrency.py)"]
+    n8["backend/tests/test_delivery_merge_prerequisites.py"]
+    n9["backend/tests/test_github_reconciliation.py"]
+    n10["backend/tests/test_manual_review_provenance.py"]
+    n11["test_commit_only_review_verifies_the_entire_pinned_range (backend/tests/test_review_provenance.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -74,18 +79,18 @@ flowchart LR
     click n4 "../modules/github_status_service.md"
     click n5 "../modules/github_webhook_service.md"
     click n6 "../modules/review_provenance.md"
-    click n7 "../modules/test_github_reconciliation.md"
-    click n8 "../modules/test_manual_review_provenance.md"
-    click n9 "../modules/test_review_provenance.md"
-    click n10 "../modules/test_review_provenance.md"
-    click n11 "../modules/test_review_provenance_transports.md"
+    click n7 "../modules/test_github_closure_concurrency.md"
+    click n8 "../modules/test_delivery_merge_prerequisites.md"
+    click n9 "../modules/test_github_reconciliation.md"
+    click n10 "../modules/test_manual_review_provenance.md"
+    click n11 "../modules/test_review_provenance.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [github_status_service](../modules/github_status_service.md) | 21 | — |
+| [github_status_service](../modules/github_status_service.md) | 26 | — |
 
 ### References
 
@@ -98,10 +103,10 @@ flowchart LR
 | `GitHubStatusService.from_runtime` | type_reference | [github_status_service](../modules/github_status_service.md) | — |
 | `GitHubWebhookService.__init__` | call | [github_webhook_service](../modules/github_webhook_service.md) | 1 |
 | `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |
+| `_catch_up` | call | [test_github_closure_concurrency](../modules/test_github_closure_concurrency.md) | 1 |
+| `test_delivery_merge_prerequisites` | import | [test_delivery_merge_prerequisites](../modules/test_delivery_merge_prerequisites.md) | — |
 | `test_github_reconciliation` | import | [test_github_reconciliation](../modules/test_github_reconciliation.md) | — |
 | `test_manual_review_provenance` | import | [test_manual_review_provenance](../modules/test_manual_review_provenance.md) | — |
 | `test_commit_only_review_verifies_the_entire_pinned_range` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
-| `test_github_candidate_uses_full_head_and_contributions` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
-| `test_review_provenance_transports` | import | [test_review_provenance_transports](../modules/test_review_provenance_transports.md) | — |
 
-> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
+> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.

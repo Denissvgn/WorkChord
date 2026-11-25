@@ -101,9 +101,9 @@ sequenceDiagram
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 398 interactions; 368 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 403 interactions; 373 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 98 (97 omitted); unresolved 1 of 155 (154 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 99 (98 omitted); unresolved 1 of 157 (156 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -130,9 +130,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 146; effect analysis evaluated: 86, partial: 4, unavailable: 56. Counts include steps omitted from the displayed trace.
+Source steps: 148; effect analysis evaluated: 87, partial: 4, unavailable: 57. Counts include steps omitted from the displayed trace.
 
-Collector observations for 90 source steps with known totals: observed: 462, emitted: 448, omitted: 14. Unavailable totals are excluded.
+Collector observations for 91 source steps with known totals: observed: 467, emitted: 453, omitted: 14. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -207,10 +207,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_create_release_github_link | _tool_call | 2294 | `_tool_call('planning:write', ...)` |
+| workspace_create_release_github_link | _tool_call | 2364 | `_tool_call('planning:write', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
+| get_settings | Settings | 527 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple | 100 | `tuple(required_scope)` |
