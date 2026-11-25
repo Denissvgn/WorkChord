@@ -73,6 +73,11 @@ class GitHubReconciliationService:
         github = await GitHubStatusService.from_runtime(self.db)
         for link_id in ids:
             await github.refresh_pull_request_status(link_id)
+            # Each link's observation is an independent fact. The refresh only
+            # flushes under the request's command, and the next link rolls back
+            # before its own GitHub request to hold no lock across it, so settle
+            # this link now or that rollback would discard it.
+            await self.db.commit()
         return await self.view(task_id)
 
     async def view(self, task_id: int) -> dict[str, Any]:

@@ -32,6 +32,8 @@ class FakeGitHub:
         self.pull = self.payload(SHA_A, "2026-07-01T10:00:00Z")
         self.runs = [{"status": "completed", "conclusion": "success"}]
         self.requests = []
+        # Pull request number -> payload; a number not listed here gets ``pull``.
+        self.pulls = {}
 
     @staticmethod
     def payload(head, updated, *, number=39, state="open", merged_at=None, draft=False):
@@ -47,7 +49,8 @@ class FakeGitHub:
             self.requests.append(request.url.path)
             if request.url.path.endswith("/check-runs"):
                 return httpx.Response(200, json={"total_count": len(self.runs), "check_runs": self.runs})
-            return httpx.Response(200, json=self.pull)
+            number = request.url.path.rsplit("/", 1)[-1]
+            return httpx.Response(200, json=self.pulls.get(int(number), self.pull) if number.isdigit() else self.pull)
 
         return httpx.MockTransport(respond)
 

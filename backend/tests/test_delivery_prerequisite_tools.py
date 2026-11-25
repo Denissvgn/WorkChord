@@ -341,3 +341,40 @@ async def test_catch_up_records_the_missed_merge_and_releases_the_dependent(team
         merges = (await db.scalars(select(TaskEvent).where(TaskEvent.task_id == prerequisite,
             TaskEvent.event_type.like("%merge%")))).all()
     assert len({event.event_type for event in merges}) == len(merges)
+
+
+@pytest.mark.parametrize("transport", ["rest", "mcp"])
+async def test_catch_up_records_every_linked_pull_requests_own_observation(team, github, transport, monkeypatch):
+    from app.models.external_link import ExternalLink
+
+    factory, prerequisite, _, first_link = team
+    async with factory() as db:
+        with internal_authority(db):
+            for number in (40, 41):
+                await ExternalLinkService(db).create_task_github_link(prerequisite, f"{REPO}/pull/{number}", commit=False)
+        await db.commit()
+    merged_at = "2026-11-24T12:00:00Z"
+    github.pulls = {
+        39: github.payload("1" * 40, "2026-11-24T10:00:00Z", number=39),
+        40: github.payload("2" * 40, merged_at, number=40, state="closed", merged_at=merged_at),
+        41: github.payload("3" * 40, merged_at, number=41, state="closed"),
+    }
+    github.pulls[41]["closed_at"] = merged_at
+    async with transport_api(transport, factory, monkeypatch) as call:
+        for _ in range(2):
+            ok, view = await call(PM_KEY, "agent_run_github_catch_up", "POST",
+                                  f"/api/tasks/{prerequisite}/github-reconciliation/catch-up",
+                                  arguments={"task_id": prerequisite})
+            assert ok, view
+    seen = {pull["url"].rsplit("/", 1)[-1]: (pull["state"], pull["observed_head_sha"]) for pull in view["pull_requests"]}
+    assert seen == {"39": ("open", "1" * 40), "40": ("merged", "2" * 40), "41": ("closed_unmerged", "3" * 40)}
+    async with factory() as db:
+        with internal_authority(db):
+            links = (await db.scalars(select(ExternalLink).where(ExternalLink.entity_id == prerequisite)
+                                      .order_by(ExternalLink.id))).all()
+            events = (await db.scalars(select(TaskEvent).where(
+                TaskEvent.task_id == prerequisite, TaskEvent.event_type.in_(["github_pr_merged", "github_pr_closed"])
+            ))).all()
+    assert [(link.status, link.metadata_json["head_sha"]) for link in links] == [
+        ("open", "1" * 40), ("merged", "2" * 40), ("closed", "3" * 40)]
+    assert sorted(event.event_type for event in events) == ["github_pr_closed", "github_pr_merged"]
