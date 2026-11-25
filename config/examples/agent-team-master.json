@@ -17,8 +17,8 @@
     "scope_preset": "pm-v1",
     "skill_package": {
       "name": "workchord-pm",
-      "sha256": "8e48c915b261e96ab41b7b105987ec8b21bddffa032fad9fb6b3eeb23bafe81c",
-      "version": "1.21.5"
+      "sha256": "916a59fb790beac4d0d67967c9002403cff100a60f8ec148371d3846b01294dc",
+      "version": "1.21.6"
     }
   },
   "credential_sink_ref": "agent-team-secure-sink",
