@@ -52,6 +52,7 @@ services:
       MCP_ALLOWED_HOSTS: '${MCP_ALLOWED_HOSTS:-["localhost:*","127.0.0.1:*","[::1]:*"]}'
       MCP_ALLOWED_ORIGINS: '${MCP_ALLOWED_ORIGINS:-["http://localhost:*","http://127.0.0.1:*"]}'
       MCP_UNSAFE_ALLOW_PUBLIC_BINDING: "false"
+      READINESS_DETAIL_TOKEN: ${WORKCHORD_READINESS_DETAIL_TOKEN:?Set WORKCHORD_READINESS_DETAIL_TOKEN}
     volumes:
       - workchord_server_data:/app/data
 
@@ -149,38 +150,73 @@ services:
       - autonomy
     restart: "no"
 
-  minio:
-    image: minio/minio:RELEASE.2025-09-07T16-13-09Z@sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e
+  evidence-store:
+    image: versity/versitygw:v1.11.0@sha256:8319a530d08d537426e2f855bae5280709795dc73a3f0c347973ef915d6343c5
     profiles: ["autonomy"]
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        mkdir -p /data/buckets /data/versions /data/iam &&
+        exec versitygw --port :7070 --health /health --iam-dir /data/iam --quiet
+        posix --versioning-dir /data/versions --fsync /data/buckets
     environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD}
-    command: ["server", "/data", "--console-address", ":9001"]
+      ROOT_ACCESS_KEY: ${EVIDENCE_STORE_ROOT_ACCESS_KEY:?Set EVIDENCE_STORE_ROOT_ACCESS_KEY}
+      ROOT_SECRET_KEY: ${EVIDENCE_STORE_ROOT_SECRET_KEY:?Set EVIDENCE_STORE_ROOT_SECRET_KEY}
     volumes:
-      - workchord_autonomy_minio:/data
+      - workchord_autonomy_evidence:/data
     networks:
       - autonomy
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:7070/health"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+      start_period: 3s
 
-  minio-bootstrap:
-    image: minio/mc:RELEASE.2025-08-13T08-35-41Z@sha256:a7fe349ef4bd8521fb8497f55c6042871b2ae640607cf99d9bede5e9bdf11727
+  evidence-store-accounts:
+    image: versity/versitygw:v1.11.0@sha256:8319a530d08d537426e2f855bae5280709795dc73a3f0c347973ef915d6343c5
     profiles: ["autonomy"]
-    entrypoint: ["/bin/sh", "/opt/workchord/minio-bootstrap.sh"]
+    entrypoint: ["/bin/sh", "/opt/workchord/evidence-store-accounts.sh"]
     command: []
     environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD}
-      AUTONOMY_MINIO_ACCESS_KEY: ${AUTONOMY_MINIO_ACCESS_KEY:?Set AUTONOMY_MINIO_ACCESS_KEY}
-      AUTONOMY_MINIO_SECRET_KEY: ${AUTONOMY_MINIO_SECRET_KEY:?Set AUTONOMY_MINIO_SECRET_KEY}
-      AUTONOMY_MINIO_ENDPOINT: http://minio:9000
-      AUTONOMY_MINIO_EVIDENCE_BUCKET: workchord-server-acceptance
-      AUTONOMY_MINIO_RETENTION: ${AUTONOMY_MINIO_RETENTION:-1d}
+      EVIDENCE_STORE_ROOT_ACCESS_KEY: ${EVIDENCE_STORE_ROOT_ACCESS_KEY:?Set EVIDENCE_STORE_ROOT_ACCESS_KEY}
+      EVIDENCE_STORE_ROOT_SECRET_KEY: ${EVIDENCE_STORE_ROOT_SECRET_KEY:?Set EVIDENCE_STORE_ROOT_SECRET_KEY}
+      AUTONOMY_EVIDENCE_ACCESS_KEY: ${AUTONOMY_EVIDENCE_ACCESS_KEY:?Set AUTONOMY_EVIDENCE_ACCESS_KEY}
+      AUTONOMY_EVIDENCE_SECRET_KEY: ${AUTONOMY_EVIDENCE_SECRET_KEY:?Set AUTONOMY_EVIDENCE_SECRET_KEY}
+      AUTONOMY_EVIDENCE_ENDPOINT: http://evidence-store:7070
     volumes:
-      - ./deploy/autonomy/minio-bootstrap.sh:/opt/workchord/minio-bootstrap.sh:ro
-      - ./deploy/autonomy/minio-acceptance-policy.json:/opt/workchord/minio-acceptance-policy.json:ro
+      - ./deploy/autonomy/evidence-store-accounts.sh:/opt/workchord/evidence-store-accounts.sh:ro
     depends_on:
-      minio:
-        condition: service_started
+      evidence-store:
+        condition: service_healthy
+    networks:
+      - autonomy
+    restart: "no"
+
+  evidence-store-bootstrap:
+    image: amazon/aws-cli:2.42.3@sha256:271de464e935f765aa2afb6ec69881e9f4a9afd3e978214a2b5f5ddcbbc161b5
+    profiles: ["autonomy"]
+    entrypoint: ["/bin/sh", "/opt/workchord/evidence-store-bootstrap.sh"]
+    command: []
+    environment:
+      EVIDENCE_STORE_ROOT_ACCESS_KEY: ${EVIDENCE_STORE_ROOT_ACCESS_KEY:?Set EVIDENCE_STORE_ROOT_ACCESS_KEY}
+      EVIDENCE_STORE_ROOT_SECRET_KEY: ${EVIDENCE_STORE_ROOT_SECRET_KEY:?Set EVIDENCE_STORE_ROOT_SECRET_KEY}
+      AUTONOMY_EVIDENCE_ACCESS_KEY: ${AUTONOMY_EVIDENCE_ACCESS_KEY:?Set AUTONOMY_EVIDENCE_ACCESS_KEY}
+      AUTONOMY_EVIDENCE_ENDPOINT: http://evidence-store:7070
+      AUTONOMY_EVIDENCE_BUCKET: workchord-server-acceptance
+      AUTONOMY_EVIDENCE_REGION: us-east-1
+      AUTONOMY_EVIDENCE_RETENTION_DAYS: ${AUTONOMY_EVIDENCE_RETENTION_DAYS:-1}
+      AWS_CONFIG_FILE: /dev/null
+      AWS_SHARED_CREDENTIALS_FILE: /dev/null
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_PAGER: ""
+    volumes:
+      - ./deploy/autonomy/evidence-store-bootstrap.sh:/opt/workchord/evidence-store-bootstrap.sh:ro
+      - ./deploy/autonomy/evidence-store-acceptance-policy.json:/opt/workchord/evidence-store-acceptance-policy.json:ro
+    depends_on:
+      evidence-store-accounts:
+        condition: service_completed_successfully
     networks:
       - autonomy
     restart: "no"
@@ -214,16 +250,17 @@ services:
     environment:
       DEPLOYMENT_ENVIRONMENT: development
       AUTONOMY_BACKEND_URL: http://backend:8001
+      AUTONOMY_READINESS_DETAIL_TOKEN: ${WORKCHORD_READINESS_DETAIL_TOKEN:?Set WORKCHORD_READINESS_DETAIL_TOKEN}
       AUTONOMY_GATEWAY_URL: http://frontend
       AUTONOMY_SIGNER_URL: http://openbao:8200
       AUTONOMY_SIGNER_TOKEN_FILE: /run/workchord-autonomy/openbao-token
       AUTONOMY_SIGNER_KEY: workchord-server-acceptance
       AUTONOMY_TRUSTED_SIGNER_PUBLIC_KEY_FILE: /run/workchord-autonomy/openbao-signer-public-key.b64
-      AUTONOMY_MINIO_ENDPOINT: http://minio:9000
-      AUTONOMY_MINIO_ACCESS_KEY: ${AUTONOMY_MINIO_ACCESS_KEY:?Set AUTONOMY_MINIO_ACCESS_KEY}
-      AUTONOMY_MINIO_SECRET_KEY: ${AUTONOMY_MINIO_SECRET_KEY:?Set AUTONOMY_MINIO_SECRET_KEY}
-      AUTONOMY_MINIO_EVIDENCE_BUCKET: workchord-server-acceptance
-      AUTONOMY_MINIO_REGION: us-east-1
+      AUTONOMY_EVIDENCE_ENDPOINT: http://evidence-store:7070
+      AUTONOMY_EVIDENCE_ACCESS_KEY: ${AUTONOMY_EVIDENCE_ACCESS_KEY:?Set AUTONOMY_EVIDENCE_ACCESS_KEY}
+      AUTONOMY_EVIDENCE_SECRET_KEY: ${AUTONOMY_EVIDENCE_SECRET_KEY:?Set AUTONOMY_EVIDENCE_SECRET_KEY}
+      AUTONOMY_EVIDENCE_BUCKET: workchord-server-acceptance
+      AUTONOMY_EVIDENCE_REGION: us-east-1
       AUTONOMY_VALKEY_HOST: valkey
       AUTONOMY_VALKEY_PORT: "6379"
       AUTONOMY_ACCEPTANCE_TIMEOUT_SECONDS: ${AUTONOMY_ACCEPTANCE_TIMEOUT_SECONDS:-10}
@@ -241,7 +278,7 @@ services:
         condition: service_started
       openbao-bootstrap:
         condition: service_completed_successfully
-      minio-bootstrap:
+      evidence-store-bootstrap:
         condition: service_completed_successfully
       valkey:
         condition: service_healthy
@@ -256,7 +293,7 @@ networks:
     internal: true
 
 volumes:
-  workchord_autonomy_minio:
+  workchord_autonomy_evidence:
   workchord_autonomy_runtime:
   workchord_autonomy_valkey:
   workchord_server_data:

@@ -3,6 +3,11 @@
   "Statement": [
     {
       "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "WORKCHORD_ACCEPTANCE_PRINCIPAL"
+        ]
+      },
       "Action": [
         "s3:PutObject",
         "s3:GetObject",

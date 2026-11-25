@@ -93,15 +93,21 @@ must also keep bootstrap and header-admin paths revoked and use only a current,
 single-use, exact-target policy authorization.
 
 The optional self-hosted server acceptance profile uses an internal-only
-OpenBao dev server, a single-node MinIO object-lock bucket, and a single-node
-Valkey AOF store. Their generated credentials live under ignored `.runtime/`
+OpenBao dev server, a single-node Versity S3 Gateway object-lock bucket, and a
+single-node Valkey AOF store. Their generated credentials live under ignored `.runtime/`
 state, and their administrative ports are not published by the profile. Do not
 expose those services or treat their receipt as production evidence. The
 receipt schema fixes production authorization, production autonomy, and
 production-gate satisfaction to `false` and keeps the program decision
-`NO-SHIP`. OpenBao and MinIO administrative credentials are present only in
-their service daemons and one-shot bootstrap jobs; they are withheld from the
-acceptance container, which receives short-lived or bucket-scoped credentials.
+`NO-SHIP`. OpenBao and evidence-store administrative credentials are present
+only in their service daemons and one-shot bootstrap jobs; they are withheld
+from the acceptance container, which receives short-lived or bucket-scoped
+credentials. The evidence store's `COMPLIANCE` retention is enforced by its S3
+API; it keeps object data and lock metadata in a Docker volume, so anyone with
+root access to the Docker host can still remove that evidence. In managed
+mode, `/health/ready` reveals its database and migration details only to a
+caller presenting the generated readiness detail token, which the profile gives
+to the backend and the acceptance container alone.
 The application listener defaults to loopback and requires a TLS reverse proxy
 for remote access.
 

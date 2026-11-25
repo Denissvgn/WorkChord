@@ -82,7 +82,7 @@ provider/production authority.
 
 The [self-hosted server acceptance profile](self-hosted-server-acceptance.md)
 provides a smaller installation check backed by PostgreSQL, OpenBao Transit,
-MinIO object retention, and Valkey CAS containers. It emits its own schema and
+Versity S3 Gateway object retention, and Valkey CAS containers. It emits its own schema and
 never creates `SignedAutonomousEvidence`, `VerifiedPreflightArtifact`, status
 evidence, or a production handoff.
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import hashlib
 import json
 from datetime import UTC, datetime, timedelta
 from io import BytesIO
@@ -102,7 +103,7 @@ def _candidate() -> ServerAcceptanceCandidate:
             round_trip_verified=True,
         ),
         "object_store": ObjectStoreAcceptance(
-            endpoint="http://minio:9000",
+            endpoint="http://evidence-store:7070",
             bucket="workchord-server-acceptance",
             ready=True,
         ),
@@ -382,7 +383,7 @@ def test_server_acceptance_rejects_production_before_network_access() -> None:
         signer_token="not-recorded",
         signer_key="workchord-server-acceptance",
         trusted_signer_public_key_base64=PUBLIC_KEY_BASE64,
-        object_store_url="http://minio:9000",
+        object_store_url="http://evidence-store:7070",
         object_store_access_key="not-recorded",
         object_store_secret_key="not-recorded",
         object_store_bucket="workchord-server-acceptance",
@@ -497,7 +498,7 @@ def test_server_acceptance_success_path_seals_final_receipt(
             signer_token="not-recorded",
             signer_key="workchord-server-acceptance",
             trusted_signer_public_key_base64=PUBLIC_KEY_BASE64,
-            object_store_url="http://minio:9000",
+            object_store_url="http://evidence-store:7070",
             object_store_access_key="not-recorded",
             object_store_secret_key="not-recorded",
             object_store_bucket="workchord-server-acceptance",
@@ -577,18 +578,22 @@ def test_openbao_transit_requires_nonexportable_key_and_verifies_signature() -> 
     assert seen_paths[-1] == "/v1/transit/verify/workchord-server-acceptance"
 
 
-def test_minio_adapter_proves_locked_exact_version_survives_delete() -> None:
+def test_object_lock_adapter_proves_locked_exact_version_survives_delete() -> None:
     payload = b'{"accepted":true}'
     delete_seen = False
 
     def handler(request: httpx.Request) -> httpx.Response:
         nonlocal delete_seen
-        if request.url.path == "/minio/health/ready":
+        if request.url.path == "/health":
             return httpx.Response(200)
         assert request.headers["authorization"].startswith("AWS4-HMAC-SHA256 ")
         assert request.url.path.endswith("/report.signed.json")
         if request.method == "PUT":
             assert request.content == payload
+            assert request.headers["x-amz-checksum-sha256"] == base64.b64encode(
+                hashlib.sha256(payload).digest()
+            ).decode("ascii")
+            assert "x-amz-checksum-sha256" in request.headers["authorization"]
             return httpx.Response(200, headers={"x-amz-version-id": "version-1"})
         assert request.url.params["versionId"] == "version-1"
         if request.method == "GET":
@@ -605,12 +610,12 @@ def test_minio_adapter_proves_locked_exact_version_survives_delete() -> None:
             )
         if request.method == "DELETE":
             delete_seen = True
-            return httpx.Response(204)
+            return httpx.Response(403)
         raise AssertionError(request.method)
 
     http_client = httpx.Client(transport=httpx.MockTransport(handler))
     client = S3ObjectLockClient(
-        endpoint="http://minio:9000",
+        endpoint="http://evidence-store:7070",
         access_key="not-recorded",
         secret_key="not-recorded",
         region="us-east-1",
@@ -631,7 +636,30 @@ def test_minio_adapter_proves_locked_exact_version_survives_delete() -> None:
     assert ready.ready is True
     assert stored.object_sha256 == sha256_hex(payload)
     assert stored.exact_version_delete_blocked is True
+    assert stored.delete_response_status == 403
+    assert stored.implementation == "versitygw-s3-object-lock"
     assert delete_seen is True
+
+
+def test_object_lock_adapter_refuses_a_store_that_is_not_ready() -> None:
+    http_client = httpx.Client(
+        transport=httpx.MockTransport(lambda request: httpx.Response(503))
+    )
+    client = S3ObjectLockClient(
+        endpoint="http://evidence-store:7070",
+        access_key="not-recorded",
+        secret_key="not-recorded",
+        region="us-east-1",
+        timeout_seconds=1,
+        client=http_client,
+    )
+    try:
+        with pytest.raises(ServerAcceptanceError) as raised:
+            client.probe_ready("workchord-server-acceptance")
+    finally:
+        http_client.close()
+
+    assert raised.value.code == "object-store-not-ready"
 
 
 def test_valkey_probe_uses_independent_writer_and_confirms_aof(
@@ -735,6 +763,7 @@ def _application_probe_client(
     agent_connect_body: bytes,
     agent_connect_content_type: str,
     gateway_build_identity: dict | None = None,
+    seen_readiness_tokens: list[str | None] | None = None,
 ):
     from app.autonomy import server_acceptance
 
@@ -786,6 +815,10 @@ def _application_probe_client(
                 )
             return httpx.Response(404)
         if path == "/health/ready":
+            if seen_readiness_tokens is not None:
+                seen_readiness_tokens.append(
+                    request.headers.get("x-readiness-detail-token")
+                )
             return httpx.Response(200, headers=json_type, json=ready)
         if path == "/.well-known/workchord-build.json":
             return httpx.Response(200, headers=json_type, json=backend_identity)
@@ -816,6 +849,29 @@ def test_application_probe_requires_agent_connect_json_through_gateway(
         timeout_seconds=1.0,
     )
     assert probed.status == "ready"
+
+
+def test_application_probe_presents_the_readiness_detail_token_only_when_set(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from app.autonomy.server_acceptance import _probe_application
+
+    seen: list[str | None] = []
+    _application_probe_client(
+        monkeypatch,
+        agent_connect_body=json.dumps({"auth_mode": "managed"}).encode(),
+        agent_connect_content_type="application/json",
+        seen_readiness_tokens=seen,
+    )
+    for token in ("detail-secret", ""):
+        _probe_application(
+            "http://backend:8001",
+            gateway_url="http://frontend",
+            expected_source_revision=SOURCE_REVISION,
+            timeout_seconds=1.0,
+            readiness_detail_token=token,
+        )
+    assert seen == ["detail-secret", None]
 
 
 def test_application_probe_rejects_web_page_instead_of_agent_connect(

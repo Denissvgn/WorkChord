@@ -14,7 +14,8 @@ The optional self-hosted server profile references these separately distributed
 container images:
 
 - OpenBao, licensed under MPL-2.0.
-- MinIO Server and MinIO Client, licensed under AGPL-3.0.
+- Versity S3 Gateway (`versity/versitygw`), licensed under Apache-2.0.
+- AWS Command Line Interface (`amazon/aws-cli`), licensed under Apache-2.0.
 - Valkey, licensed under BSD-3-Clause.
 
 Those images are pulled from their publishers and are not vendored into the

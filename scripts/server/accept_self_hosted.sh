@@ -69,10 +69,6 @@ if [ "$server_database_volume_exists" = "true" ]; then
         WORKCHORD_MIGRATOR_PASSWORD \
         WORKCHORD_RUNTIME_PASSWORD \
         WORKCHORD_BACKUP_PASSWORD \
-        MINIO_ROOT_USER \
-        MINIO_ROOT_PASSWORD \
-        AUTONOMY_MINIO_ACCESS_KEY \
-        AUTONOMY_MINIO_SECRET_KEY \
         OPENBAO_DEV_ROOT_TOKEN \
         SETTINGS_ENCRYPTION_KEY \
         AGENT_BOOTSTRAP_API_KEY \
@@ -118,11 +114,18 @@ random_hex() {
 : "${WORKCHORD_MIGRATOR_PASSWORD:=$(random_hex 24)}"
 : "${WORKCHORD_RUNTIME_PASSWORD:=$(random_hex 24)}"
 : "${WORKCHORD_BACKUP_PASSWORD:=$(random_hex 24)}"
-: "${MINIO_ROOT_USER:=wc$(random_hex 8)}"
-: "${MINIO_ROOT_PASSWORD:=$(random_hex 24)}"
-: "${AUTONOMY_MINIO_ACCESS_KEY:=wcaccept$(random_hex 8)}"
-: "${AUTONOMY_MINIO_SECRET_KEY:=$(random_hex 24)}"
+# The evidence-store credentials are not bound to stored data: the store takes
+# its root identity at startup and its bootstrap re-applies the acceptance
+# identity. Settings named after the earlier MinIO store are dropped when the
+# file is rewritten below.
+: "${EVIDENCE_STORE_ROOT_ACCESS_KEY:=wc$(random_hex 8)}"
+: "${EVIDENCE_STORE_ROOT_SECRET_KEY:=$(random_hex 24)}"
+: "${AUTONOMY_EVIDENCE_ACCESS_KEY:=wcaccept$(random_hex 8)}"
+: "${AUTONOMY_EVIDENCE_SECRET_KEY:=$(random_hex 24)}"
 : "${OPENBAO_DEV_ROOT_TOKEN:=$(random_hex 24)}"
+# Shared by the backend and the acceptance job only; it unlocks the detailed
+# readiness payload that managed mode otherwise withholds.
+: "${WORKCHORD_READINESS_DETAIL_TOKEN:=$(random_hex 24)}"
 : "${SETTINGS_ENCRYPTION_KEY:=$(openssl rand -base64 32 | tr '/+' '_-')}"
 : "${AGENT_BOOTSTRAP_API_KEY:=wcboot_$(random_hex 24)}"
 : "${WORKCHORD_ADMIN_API_KEY:=wcadmin_$(random_hex 24)}"
@@ -176,11 +179,12 @@ temporary_env="$env_file.tmp"
     printf 'DATABASE_RUNTIME_URL=%s\n' "$DATABASE_RUNTIME_URL"
     printf 'POSTGRES_DATABASE_URL=%s\n' "$POSTGRES_DATABASE_URL"
     printf 'POSTGRES_BACKUP_URL=%s\n' "$POSTGRES_BACKUP_URL"
-    printf 'MINIO_ROOT_USER=%s\n' "$MINIO_ROOT_USER"
-    printf 'MINIO_ROOT_PASSWORD=%s\n' "$MINIO_ROOT_PASSWORD"
-    printf 'AUTONOMY_MINIO_ACCESS_KEY=%s\n' "$AUTONOMY_MINIO_ACCESS_KEY"
-    printf 'AUTONOMY_MINIO_SECRET_KEY=%s\n' "$AUTONOMY_MINIO_SECRET_KEY"
+    printf 'EVIDENCE_STORE_ROOT_ACCESS_KEY=%s\n' "$EVIDENCE_STORE_ROOT_ACCESS_KEY"
+    printf 'EVIDENCE_STORE_ROOT_SECRET_KEY=%s\n' "$EVIDENCE_STORE_ROOT_SECRET_KEY"
+    printf 'AUTONOMY_EVIDENCE_ACCESS_KEY=%s\n' "$AUTONOMY_EVIDENCE_ACCESS_KEY"
+    printf 'AUTONOMY_EVIDENCE_SECRET_KEY=%s\n' "$AUTONOMY_EVIDENCE_SECRET_KEY"
     printf 'OPENBAO_DEV_ROOT_TOKEN=%s\n' "$OPENBAO_DEV_ROOT_TOKEN"
+    printf 'WORKCHORD_READINESS_DETAIL_TOKEN=%s\n' "$WORKCHORD_READINESS_DETAIL_TOKEN"
     printf 'SETTINGS_ENCRYPTION_KEY=%s\n' "$SETTINGS_ENCRYPTION_KEY"
     printf 'AGENT_BOOTSTRAP_API_KEY=%s\n' "$AGENT_BOOTSTRAP_API_KEY"
     printf 'WORKCHORD_ADMIN_API_KEY=%s\n' "$WORKCHORD_ADMIN_API_KEY"
@@ -228,13 +232,13 @@ if [ "$isolated" = "true" ]; then
 fi
 compose config --quiet
 if [ "$isolated" = "true" ]; then compose pull postgres; fi
-compose pull openbao minio minio-bootstrap valkey
+compose pull openbao evidence-store evidence-store-bootstrap valkey
 compose build backend frontend
 if [ "$isolated" = "true" ]; then
     compose config --images >"$runtime_dir/images.txt"
     python3 "$script_dir/isolated_rehearsal.py" images --runtime-root "$runtime_dir" <"$runtime_dir/images.txt"
 fi
-compose up --detach --wait --wait-timeout 180 postgres openbao minio valkey
+compose up --detach --wait --wait-timeout 180 postgres openbao evidence-store valkey
 compose stop frontend delivery-worker backend
 compose run --rm --no-deps database-bootstrap
 # An existing database needs the recovery point the operator verified first.
@@ -248,7 +252,8 @@ fi
 compose run --rm --no-deps database-security
 compose run --rm --no-deps repair
 compose run --rm --no-deps openbao-bootstrap
-compose run --rm --no-deps minio-bootstrap
+compose run --rm --no-deps evidence-store-accounts
+compose run --rm --no-deps evidence-store-bootstrap
 compose up --detach --wait --wait-timeout 240 --no-deps \
     backend delivery-worker frontend
 pending_name="pending-${WORKCHORD_SOURCE_REVISION}-$$.json"

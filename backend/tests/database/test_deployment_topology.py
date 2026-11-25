@@ -20,9 +20,13 @@ OPENBAO_IMAGE = (
     "openbao/openbao:2.6.1@sha256:"
     "5b2486ab0fb90bbc788cc345b0a08616dfb375873ee8be5df3a2fd4d378a67e0"
 )
-MINIO_IMAGE = (
-    "minio/minio:RELEASE.2025-09-07T16-13-09Z@sha256:"
-    "14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e"
+EVIDENCE_STORE_IMAGE = (
+    "versity/versitygw:v1.11.0@sha256:"
+    "8319a530d08d537426e2f855bae5280709795dc73a3f0c347973ef915d6343c5"
+)
+EVIDENCE_BOOTSTRAP_IMAGE = (
+    "amazon/aws-cli:2.42.3@sha256:"
+    "271de464e935f765aa2afb6ec69881e9f4a9afd3e978214a2b5f5ddcbbc161b5"
 )
 VALKEY_IMAGE = (
     "valkey/valkey:8.1.9-alpine@sha256:"
@@ -154,15 +158,20 @@ def test_self_hosted_server_acceptance_uses_internal_pinned_analogues() -> None:
     services = compose["services"]
 
     assert services["openbao"]["image"] == OPENBAO_IMAGE
-    assert services["minio"]["image"] == MINIO_IMAGE
+    assert services["evidence-store"]["image"] == EVIDENCE_STORE_IMAGE
+    assert services["evidence-store-accounts"]["image"] == EVIDENCE_STORE_IMAGE
+    assert (
+        services["evidence-store-bootstrap"]["image"] == EVIDENCE_BOOTSTRAP_IMAGE
+    )
     assert services["valkey"]["image"] == VALKEY_IMAGE
     assert compose["networks"]["autonomy"]["internal"] is True
     for service_name in (
         "database-bootstrap",
         "openbao",
         "openbao-bootstrap",
-        "minio",
-        "minio-bootstrap",
+        "evidence-store",
+        "evidence-store-accounts",
+        "evidence-store-bootstrap",
         "valkey",
         "autonomy-acceptance",
     ):
@@ -181,13 +190,42 @@ def test_self_hosted_server_acceptance_uses_internal_pinned_analogues() -> None:
         == "/run/workchord-autonomy/openbao-signer-public-key.b64"
     )
     assert (
-        acceptance["environment"]["AUTONOMY_MINIO_ACCESS_KEY"]
-        == "${AUTONOMY_MINIO_ACCESS_KEY:?Set AUTONOMY_MINIO_ACCESS_KEY}"
+        acceptance["environment"]["AUTONOMY_EVIDENCE_ACCESS_KEY"]
+        == "${AUTONOMY_EVIDENCE_ACCESS_KEY:?Set AUTONOMY_EVIDENCE_ACCESS_KEY}"
     )
-    assert "MINIO_ROOT_PASSWORD" not in acceptance["environment"]
+    assert not any(
+        name.startswith("EVIDENCE_STORE_ROOT_") for name in acceptance["environment"]
+    )
+    readiness_token = (
+        "${WORKCHORD_READINESS_DETAIL_TOKEN:?Set WORKCHORD_READINESS_DETAIL_TOKEN}"
+    )
+    assert services["backend"]["environment"]["READINESS_DETAIL_TOKEN"] == readiness_token
     assert (
-        services["minio-bootstrap"]["environment"]["AUTONOMY_MINIO_RETENTION"]
-        == "${AUTONOMY_MINIO_RETENTION:-1d}"
+        acceptance["environment"]["AUTONOMY_READINESS_DETAIL_TOKEN"] == readiness_token
+    )
+    for name, service in services.items():
+        if name not in {"backend", "autonomy-acceptance"}:
+            assert readiness_token not in json.dumps(service.get("environment", {}))
+    assert (
+        acceptance["depends_on"]["evidence-store-bootstrap"]["condition"]
+        == "service_completed_successfully"
+    )
+    evidence_store = services["evidence-store"]
+    assert "--iam-dir /data/iam" in evidence_store["command"][0]
+    assert "--versioning-dir /data/versions" in evidence_store["command"][0]
+    assert "--fsync" in evidence_store["command"][0]
+    assert evidence_store["volumes"] == ["workchord_autonomy_evidence:/data"]
+    assert (
+        services["evidence-store-bootstrap"]["environment"][
+            "AUTONOMY_EVIDENCE_RETENTION_DAYS"
+        ]
+        == "${AUTONOMY_EVIDENCE_RETENTION_DAYS:-1}"
+    )
+    assert (
+        services["evidence-store-bootstrap"]["depends_on"]["evidence-store-accounts"][
+            "condition"
+        ]
+        == "service_completed_successfully"
     )
     assert services["backend"]["volumes"] == [
         "workchord_server_data:/app/data"
@@ -270,11 +308,14 @@ def test_security_and_recovery_scripts_are_fail_closed() -> None:
         REPOSITORY_ROOT / "scripts/server/accept_self_hosted.sh"
     ).read_text()
     dockerignore = (REPOSITORY_ROOT / ".dockerignore").read_text().splitlines()
-    minio_policy = json.loads(
+    evidence_policy = json.loads(
         (
-            REPOSITORY_ROOT / "deploy/autonomy/minio-acceptance-policy.json"
+            REPOSITORY_ROOT / "deploy/autonomy/evidence-store-acceptance-policy.json"
         ).read_text()
     )
+    evidence_bootstrap = (
+        REPOSITORY_ROOT / "deploy/autonomy/evidence-store-bootstrap.sh"
+    ).read_text()
 
     for role in ("owner_role", "migrator_role", "runtime_role", "readonly_role", "backup_role"):
         assert f":{{?{role}}}" in security
@@ -313,8 +354,19 @@ def test_security_and_recovery_scripts_are_fail_closed() -> None:
     assert "pending-" in server_entrypoint
     assert "docker volume inspect" in server_entrypoint
     assert ".runtime" in dockerignore
-    minio_actions = set(minio_policy["Statement"][0]["Action"])
-    assert minio_actions == {
+    (evidence_statement,) = evidence_policy["Statement"]
+    assert evidence_statement["Effect"] == "Allow"
+    assert evidence_statement["Principal"] == {
+        "AWS": ["WORKCHORD_ACCEPTANCE_PRINCIPAL"]
+    }
+    assert evidence_statement["Resource"] == [
+        "arn:aws:s3:::workchord-server-acceptance/*"
+    ]
+    assert "--object-lock-enabled-for-bucket" in evidence_bootstrap
+    assert '\\"Mode\\":\\"COMPLIANCE\\"' in evidence_bootstrap
+    assert "--no-sign-request" in evidence_bootstrap
+    evidence_actions = set(evidence_statement["Action"])
+    assert evidence_actions == {
         "s3:PutObject",
         "s3:GetObject",
         "s3:GetObjectVersion",

@@ -107,7 +107,7 @@ class TransitSignerAcceptance(StrictContractModel):
 
 
 class ObjectStoreAcceptance(StrictContractModel):
-    implementation: Literal["minio-s3-object-lock"] = "minio-s3-object-lock"
+    implementation: Literal["versitygw-s3-object-lock"] = "versitygw-s3-object-lock"
     endpoint: str = Field(pattern=r"^https?://[^@\s]+$")
     bucket: str = Field(pattern=r"^[a-z0-9][a-z0-9.-]{1,62}$")
     ready: Literal[True] = True
@@ -171,7 +171,7 @@ class ServerAcceptanceCandidate(StrictContractModel):
 
 
 class LockedAcceptanceObject(StrictContractModel):
-    implementation: Literal["minio-s3-object-lock"] = "minio-s3-object-lock"
+    implementation: Literal["versitygw-s3-object-lock"] = "versitygw-s3-object-lock"
     bucket: str = Field(pattern=r"^[a-z0-9][a-z0-9.-]{1,62}$")
     object_key: str = Field(min_length=1, max_length=1024)
     version_id: str = Field(min_length=1, max_length=1024)
@@ -305,6 +305,7 @@ class ServerAcceptanceConfig:
     valkey_host: str
     valkey_port: int
     timeout_seconds: float = 10.0
+    readiness_detail_token: str = ""
 
 
 class OpenBaoTransitClient:
@@ -486,7 +487,7 @@ class S3ObjectLockClient:
 
     def probe_ready(self, bucket: str) -> ObjectStoreAcceptance:
         try:
-            response = self._client.get(f"{self.endpoint}/minio/health/ready")
+            response = self._client.get(f"{self.endpoint}/health")
         except httpx.HTTPError as exc:
             raise ServerAcceptanceError("object-store-unavailable", cause=exc) from exc
         if response.status_code != 200:
@@ -510,7 +511,13 @@ class S3ObjectLockClient:
             bucket=bucket,
             object_key=object_key,
             body=payload,
-            headers={"content-type": "application/json"},
+            headers={
+                "content-type": "application/json",
+                # S3 refuses an unchecksummed write into an object-lock bucket.
+                "x-amz-checksum-sha256": base64.b64encode(
+                    sha256(payload).digest()
+                ).decode("ascii"),
+            },
         )
         if put.status_code not in {200, 201}:
             raise ServerAcceptanceError("locked-object-write-failed")
@@ -796,6 +803,7 @@ def run_server_acceptance(
         gateway_url=config.gateway_url,
         expected_source_revision=source_revision,
         timeout_seconds=config.timeout_seconds,
+        readiness_detail_token=config.readiness_detail_token,
     )
     if application.backend_artifact_digest != build_identity.artifact_digest:
         raise ServerAcceptanceError("acceptance-backend-artifact-mismatch")
@@ -942,10 +950,20 @@ def _probe_application(
     gateway_url: str,
     expected_source_revision: str,
     timeout_seconds: float,
+    readiness_detail_token: str = "",
 ) -> ApplicationAcceptance:
+    # A managed-mode backend reveals readiness details only to this token.
+    readiness_headers = (
+        {"X-Readiness-Detail-Token": readiness_detail_token}
+        if readiness_detail_token
+        else {}
+    )
     try:
         with httpx.Client(timeout=timeout_seconds, trust_env=False) as client:
-            response = client.get(f"{backend_url.rstrip('/')}/health/ready")
+            response = client.get(
+                f"{backend_url.rstrip('/')}/health/ready",
+                headers=readiness_headers,
+            )
             response.raise_for_status()
             payload = response.json()
             backend_identity_response = client.get(

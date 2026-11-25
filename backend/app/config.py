@@ -117,6 +117,9 @@ class Settings(BaseSettings):
     mcp_unsafe_allow_public_binding: bool = False
     workchord_admin_api_key: str = ""
     workchord_auth_mode: Literal["managed", "trusted_local"] = "managed"
+    # A caller presenting this value in X-Readiness-Detail-Token receives the
+    # detailed readiness payload in managed mode. Empty keeps it status-only.
+    readiness_detail_token: str = ""
     time_entries_enabled: bool = False
     oidc_issuer_url: str = ""
     oidc_client_id: str = ""

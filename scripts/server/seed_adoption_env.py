@@ -8,6 +8,11 @@ new, private `server.env`, and generates fresh values for the identities that
 the self-hosted layout adds. It never prints a value and never overwrites an
 existing file. `accept_self_hosted.sh` then reads the file like any other
 `server.env`.
+
+`--migrate-env FILE` instead upgrades an existing `server.env` in place: it
+replaces the settings of the earlier MinIO evidence store with freshly generated
+evidence-store credentials, adds a readiness-detail token when the file has
+none, and keeps every other line as it is.
 """
 
 import argparse
@@ -25,6 +30,9 @@ CARRIED_OPTIONAL = ['WORKCHORD_AUTH_MODE', 'MODEL_AWARE_ROUTING_MODE', 'AGENT_TE
 # Settings the operator may add with --set; each is preserved by accept_self_hosted.sh.
 SETTABLE = ['MCP_ALLOWED_HOSTS', 'MCP_ALLOWED_ORIGINS', 'AGENT_LAST_SEEN_INTERVAL_SECONDS', 'TRUSTED_PROXY_IPS',
     'WORKCHORD_AUTH_MODE', 'MODEL_AWARE_ROUTING_MODE', 'CORS_ORIGINS']
+# Settings of the earlier MinIO evidence store; migrate() replaces them.
+LEGACY_EVIDENCE_STORE = ['MINIO_ROOT_USER', 'MINIO_ROOT_PASSWORD', 'AUTONOMY_MINIO_ACCESS_KEY',
+    'AUTONOMY_MINIO_SECRET_KEY', 'AUTONOMY_MINIO_RETENTION']
 NAME = re.compile(r'[A-Z][A-Z0-9_]*')
 
 
@@ -47,6 +55,14 @@ def quote(value):
     return value if re.fullmatch(r'[A-Za-z0-9_@%+=:,./-]*', value) else f"'{value}'"
 
 
+def generated_service_values():
+    """Values of the acceptance services that no stored data depends on."""
+    hexed = secrets.token_hex
+    return {'EVIDENCE_STORE_ROOT_ACCESS_KEY': 'wc' + hexed(8), 'EVIDENCE_STORE_ROOT_SECRET_KEY': hexed(24),
+        'AUTONOMY_EVIDENCE_ACCESS_KEY': 'wcaccept' + hexed(8), 'AUTONOMY_EVIDENCE_SECRET_KEY': hexed(24),
+        'WORKCHORD_READINESS_DETAIL_TOKEN': hexed(24)}
+
+
 def build(old, settings, http_port, postgres_port, bind, session_cookie_secure):
     missing = [name for name in CARRIED_REQUIRED if not old.get(name)]
     if missing:
@@ -56,11 +72,10 @@ def build(old, settings, http_port, postgres_port, bind, session_cookie_secure):
     values.update({name: old[name] for name in CARRIED_OPTIONAL if old.get(name)})
     values.update({
         'WORKCHORD_MIGRATOR_PASSWORD': hexed(24), 'WORKCHORD_RUNTIME_PASSWORD': hexed(24),
-        'WORKCHORD_BACKUP_PASSWORD': hexed(24), 'MINIO_ROOT_USER': 'wc' + hexed(8), 'MINIO_ROOT_PASSWORD': hexed(24),
-        'AUTONOMY_MINIO_ACCESS_KEY': 'wcaccept' + hexed(8), 'AUTONOMY_MINIO_SECRET_KEY': hexed(24),
-        'OPENBAO_DEV_ROOT_TOKEN': hexed(24),
+        'WORKCHORD_BACKUP_PASSWORD': hexed(24), 'OPENBAO_DEV_ROOT_TOKEN': hexed(24),
         'WORKCHORD_HTTP_BIND': bind, 'WORKCHORD_HTTP_PORT': str(http_port), 'POSTGRES_HOST_PORT': str(postgres_port),
         'WORKCHORD_SESSION_COOKIE_SECURE': 'true' if session_cookie_secure else 'false'})
+    values.update(generated_service_values())
     values.update({
         'DATABASE_MIGRATION_URL': f"postgresql+psycopg://workchord_migrator:{values['WORKCHORD_MIGRATOR_PASSWORD']}@postgres:5432/workchord",
         'DATABASE_RUNTIME_URL': f"postgresql+psycopg://workchord_runtime:{values['WORKCHORD_RUNTIME_PASSWORD']}@postgres:5432/workchord",
@@ -87,10 +102,37 @@ def write(path, values):
             stream.write(f'{name}={quote(values[name])}\n')
 
 
+def migrate(path):
+    """Replace earlier MinIO settings and add missing service values, in place."""
+    path = Path(path)
+    if path.is_symlink() or not path.is_file():
+        raise ValueError('The environment file to migrate must be a regular file')
+    lines = path.read_text().splitlines()
+    present = set(read_env(path))
+    legacy = [name for name in LEGACY_EVIDENCE_STORE if name in present]
+    added = {name: value for name, value in generated_service_values().items() if name not in present}
+    if not legacy and not added:
+        return [], []
+    kept = [line for line in lines if line.strip().split('=', 1)[0].strip() not in LEGACY_EVIDENCE_STORE]
+    kept += [f'{name}={quote(value)}' for name, value in added.items()]
+    temporary = path.with_name(path.name + '.migrating')
+    descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        with os.fdopen(descriptor, 'w') as stream:
+            stream.write('\n'.join(kept) + '\n')
+        os.replace(temporary, path)
+    except BaseException:
+        temporary.unlink(missing_ok=True)
+        raise
+    return legacy, sorted(added)
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--old-env', type=Path, required=True)
-    parser.add_argument('--output', type=Path, required=True, help='The new server.env (must not exist)')
+    parser.add_argument('--old-env', type=Path)
+    parser.add_argument('--output', type=Path, help='The new server.env (must not exist)')
+    parser.add_argument('--migrate-env', type=Path, metavar='FILE',
+        help='Upgrade an existing server.env in place instead of seeding a new one')
     parser.add_argument('--http-port', type=int, default=8080)
     parser.add_argument('--postgres-port', type=int, default=55432)
     parser.add_argument('--bind', default='127.0.0.1')
@@ -98,6 +140,22 @@ def main(argv=None):
         help='Mark session cookies Secure; leave off only for loopback-only plain HTTP')
     parser.add_argument('--set', dest='settings', action='append', default=[], metavar='NAME=VALUE')
     args = parser.parse_args(argv)
+    if args.migrate_env:
+        if args.old_env or args.output or args.settings:
+            parser.error('--migrate-env cannot be combined with --old-env, --output or --set')
+        try:
+            removed, added = migrate(args.migrate_env)
+        except (ValueError, FileExistsError, OSError) as error:
+            print(f'Refused: {error}', file=sys.stderr)
+            return 1
+        if not removed and not added:
+            print(f'{args.migrate_env} needs no migration')
+        else:
+            print(f'Migrated {args.migrate_env}: removed {", ".join(removed) or "nothing"}; '
+                f'added {", ".join(added) or "nothing"} (mode 600)')
+        return 0
+    if not args.old_env or not args.output:
+        parser.error('--old-env and --output are required unless --migrate-env is given')
     try:
         values = build(read_env(args.old_env), args.settings, args.http_port, args.postgres_port, args.bind,
             args.session_cookie_secure)
