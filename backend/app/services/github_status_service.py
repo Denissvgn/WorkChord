@@ -187,12 +187,31 @@ class GitHubStatusService:
             }
         return {**self.checks_from_runs(runs), "checks_sha": head_sha, "checks_error": None}
 
+    @staticmethod
+    def observed_closure_key(link_id: int, status: str, observation: dict[str, Any]) -> str:
+        """The identity of one merge or unmerged closure of a linked pull request."""
+        marker = observation.get("merge_commit_sha") or observation.get("closed_at") or status
+        return f"github-observed:{link_id}:{status}:{marker}"
+
+    async def lock_link_after_task(self, link_id: int) -> Optional[ExternalLink]:
+        """Re-read a link under a row lock, discarding any cached copy.
+
+        Callers take the task context lock first (iteration, task, then link,
+        the order link edits use), so concurrent catch-ups and webhooks for one
+        link see each other's committed status and closure events.
+        """
+        return await self.db.scalar(
+            select(ExternalLink)
+            .where(ExternalLink.id == link_id)
+            .with_for_update()
+            .execution_options(populate_existing=True)
+        )
+
     async def _record_observed_closure(self, link: ExternalLink, status: str, observation: dict[str, Any]) -> None:
         """Record a merge or unmerged closure seen by catch-up as a GitHub task event, once."""
         if link.entity_type != ExternalLinkEntityType.TASK.value or status not in {"merged", "closed"}:
             return
-        marker = observation.get("merge_commit_sha") or observation.get("closed_at") or status
-        key = f"github-observed:{link.id}:{status}:{marker}"
+        key = self.observed_closure_key(link.id, status, observation)
         if await self.db.scalar(select(TaskEvent.id).where(TaskEvent.idempotency_key == key)):
             return
         from app.services.task_service import TaskService
@@ -405,8 +424,24 @@ class GitHubStatusService:
             metadata["observed_at"] = refreshed_at
             link.metadata_json = metadata
             return await self._save_link(link)
-        previous_status = link.status
         await self._reserve_task_context_revision(link, outcome="refreshed")
+        # Another catch-up or a webhook may have recorded this observation while
+        # this one waited for the lock; decide from what it committed.
+        link = await self.lock_link_after_task(link_id)
+        if link is None:
+            await self.db.rollback()
+            return None
+        if self._pr_metadata(link) != (owner, repo, number):
+            raise ExternalLinkValidationError(
+                "GitHub pull request link changed during refresh"
+            )
+        metadata = dict(link.metadata_json or {})
+        if self.is_stale_observation(metadata, payload):
+            metadata["status_refreshed_at"] = refreshed_at
+            metadata["observed_at"] = refreshed_at
+            link.metadata_json = metadata
+            return await self._save_link(link)
+        previous_status = link.status
         title = payload.get("title")
         if isinstance(title, str) and title:
             link.title = title

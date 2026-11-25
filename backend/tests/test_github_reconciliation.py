@@ -224,6 +224,30 @@ async def test_catch_up_recovers_a_merge_whose_event_was_missed_and_keeps_older_
     assert len(await _events(db_session, task.id, "github_pr_merged")) == 1
 
 
+@pytest.mark.parametrize("merged", [True, False], ids=["merge", "unmerged-closure"])
+async def test_a_closure_seen_by_catch_up_and_then_delivered_stays_one_entry(
+    db_session, task_factory, actor_factory, github, merged
+):
+    project = await _project(db_session)
+    task, link = await _delivery(db_session, task_factory, actor_factory, project)
+    _as(db_session, project)
+    closed = github.payload(SHA_A, "2026-07-01T12:00:00Z", state="closed",
+                            merged_at="2026-07-01T12:00:00Z" if merged else None)
+    closed["closed_at"] = "2026-07-01T12:00:00Z"
+    github.pull = closed
+    await GitHubReconciliationService(db_session).catch_up(task.id)
+    hook = _webhook(db_session)
+    response = await hook.process("pull_request", "d-close", _delivery_payload("closed", closed))
+    assert response.matched
+    event_type = "github_pr_merged" if merged else "github_pr_closed"
+    assert len(await _events(db_session, task.id, event_type)) == 1
+    if not merged:
+        # Closing again after a reopen is a different closure and is recorded.
+        reclosed = {**closed, "closed_at": "2026-07-02T12:00:00Z", "updated_at": "2026-07-02T12:00:00Z"}
+        await hook.process("pull_request", "d-reclose", _delivery_payload("closed", reclosed))
+        assert len(await _events(db_session, task.id, event_type)) == 2
+
+
 async def test_catch_up_never_reads_a_link_outside_the_callers_teams(db_session, task_factory, actor_factory, github):
     mine, theirs = await _project(db_session), await _project(db_session)
     task, link = await _delivery(db_session, task_factory, actor_factory, theirs)

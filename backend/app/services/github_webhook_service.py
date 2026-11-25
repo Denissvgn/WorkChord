@@ -220,16 +220,14 @@ class GitHubWebhookService:
             "artifact_label": f"PR #{number}",
         }
 
-    async def _update_link_from_pr(
+    async def _lock_link_for_update(
         self,
         link: ExternalLink,
         *,
         action: str,
         delivery_id: Optional[str],
-        repo_full_name: str,
-        pr: dict[str, Any],
-        sender: Optional[str],
-    ) -> str:
+    ) -> Optional[ExternalLink]:
+        """Reserve the task context, then re-read the link under its lock."""
         await reserve_task_context_revision(
             self.db,
             link.entity_id,
@@ -241,6 +239,27 @@ class GitHubWebhookService:
                 "webhook_action": action,
             },
         )
+        return await self.status_service.lock_link_after_task(link.id)
+
+    async def _closure_already_recorded(self, link: ExternalLink, event_type: str, status: str, pr: dict[str, Any]) -> bool:
+        """Whether a catch-up already recorded the merge or closure this delivery reports."""
+        if event_type not in {"github_pr_merged", "github_pr_closed"} or status not in {"merged", "closed"}:
+            return False
+        key = self.status_service.observed_closure_key(
+            link.id, status, self.status_service.observation_from_payload(pr)
+        )
+        return await self._event_exists(key)
+
+    async def _update_link_from_pr(
+        self,
+        link: ExternalLink,
+        *,
+        action: str,
+        delivery_id: Optional[str],
+        repo_full_name: str,
+        pr: dict[str, Any],
+        sender: Optional[str],
+    ) -> str:
         status = self.status_service.status_from_payload(pr)
         title = pr.get("title")
         if isinstance(title, str) and title:
@@ -437,6 +456,21 @@ class GitHubWebhookService:
         stale = self.status_service.is_stale_observation(link.metadata_json or {}, pr)
         try:
             if not stale:
+                # A concurrent catch-up or delivery for this link commits first;
+                # judge staleness and the closure against what it recorded.
+                locked = await self._lock_link_for_update(link, action=action, delivery_id=delivery_id)
+                if locked is None:
+                    await self.db.rollback()
+                    return GitHubWebhookResponse(
+                        accepted=True,
+                        event=event,
+                        action=action,
+                        matched=False,
+                        ignored_reason="no_matching_external_link",
+                    )
+                link = locked
+                stale = self.status_service.is_stale_observation(link.metadata_json or {}, pr)
+            if not stale:
                 status = await self._update_link_from_pr(
                     link,
                     action=action,
@@ -447,7 +481,10 @@ class GitHubWebhookService:
                 )
 
             event_type = self._event_type(action, status)
-            event_already_recorded = await self._event_exists(delivery_id)
+            # A merge or closure a catch-up already recorded stays one timeline entry.
+            event_already_recorded = await self._event_exists(delivery_id) or await self._closure_already_recorded(
+                link, event_type, status, pr
+            )
             if not event_already_recorded:
                 await self.task_service.record_task_event(
                     link.entity_id,
