@@ -81,7 +81,7 @@ export const QueryErrorState = ({
                     ) : (
                         <p className="font-semibold">{title ?? t('queryFeedback.title')}</p>
                     )}
-                    <p className="mt-1 break-words text-sm text-content-secondary">{detail}</p>
+                    <p className="mt-1 wrap-break-word text-sm text-content-secondary">{detail}</p>
                     {onRetry && (
                         <Button
                             ref={retryButtonRef}

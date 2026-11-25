@@ -82,7 +82,7 @@ const TeamPage = () => {
                         to={{ search: tabParams(tab).toString() }}
                         onClick={() => setDrawer(null)}
                         className={clsx(
-                            'border-b-2 px-4 py-3 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-action',
+                            'border-b-2 px-4 py-3 text-sm font-medium focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-action',
                             activeTab === tab ? 'border-action text-action' : 'border-transparent text-content-secondary hover:bg-surface-muted',
                         )}
                     >

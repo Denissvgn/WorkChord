@@ -1,0 +1,41 @@
+/*
+ * space-y-* and divide-* with their Tailwind 3 selectors. Tailwind 4 spaces and divides children from a
+ * zero-specificity :where() rule on every child but the last, so a child's own margin or border rule (for
+ * example `.wc .get-started-foot p` in planning-masters.css) now wins where the spacing used to. These rules
+ * put back the Tailwind 3 behaviour: the space or line sits on every visible child after the first and beats
+ * the child's own rules. globals.css imports this file right after the Tailwind utilities.
+ */
+@utility space-y-* {
+  & > :not([hidden]) ~ :not([hidden]) {
+    margin-top: calc(var(--spacing) * --value(number));
+    margin-bottom: 0;
+  }
+}
+
+@utility divide-y {
+  & > :not([hidden]) ~ :not([hidden]) {
+    border-top-width: 1px;
+    border-bottom-width: 0;
+  }
+}
+
+@utility divide-* {
+  & > :not([hidden]) ~ :not([hidden]) {
+    border-color: --value(--color-*);
+  }
+}
+
+/*
+ * Undo what the Tailwind 4 rules set on the other children. These come after the utilities and keep zero
+ * specificity, so they override only the Tailwind 4 :where() rules and every other rule still wins.
+ */
+:where([class*='space-y-'] > *) {
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+:where([class*='divide-'] > *) {
+  border-top-width: 0;
+  border-bottom-width: 0;
+  border-color: #e5e7eb;
+}

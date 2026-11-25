@@ -148,7 +148,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                  variant="secondary">
                     <div className="flex items-center gap-2">
                         <ChevronRight className="w-4 h-4 shrink-0 text-content-tertiary" aria-hidden="true" />
-                        <span className="min-w-0 break-words">
+                        <span className="min-w-0 wrap-break-word">
                             <span className="font-medium text-content-primary">{display.name}</span>
                             {display.isBuiltIn && (
                                 <code className="ms-2 break-all rounded bg-surface-subtle px-1.5 py-0.5 text-xs text-content-secondary">
@@ -158,7 +158,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                         </span>
                     </div>
                     {display.description && (
-                        <p className="ms-6 mt-0.5 break-words text-sm text-content-secondary">{display.description}</p>
+                        <p className="ms-6 mt-0.5 wrap-break-word text-sm text-content-secondary">{display.description}</p>
                     )}
                 </Button>
 
@@ -205,7 +205,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                     {/* Filter Conditions */}
                     <div>
                         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                            <h4 className="min-w-0 break-words text-sm font-medium text-content-primary">{t('settingsScheduling.fields.filterConditions')}</h4>
+                            <h4 className="min-w-0 wrap-break-word text-sm font-medium text-content-primary">{t('settingsScheduling.fields.filterConditions')}</h4>
                             <Button
                                 type="button"
                                 onClick={addCondition}
@@ -237,7 +237,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                                             <Select
                                                 value={field}
                                                 onChange={(e) => handlePartChange(e.target.value, operator, value)}
-                                                className="min-w-0 flex-1 rounded border border-border-strong px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                                className="min-w-0 flex-1 rounded border border-border-strong px-3 py-1.5 text-sm focus:outline-hidden focus:ring-1 focus:ring-focus"
                                                 aria-label={t('settingsScheduling.aria.conditionField', { index: index + 1 })}
                                             >
                                                 {FILTER_FIELDS.map(f => (
@@ -248,7 +248,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                                             <Select
                                                 value={operator}
                                                 onChange={(e) => handlePartChange(field, e.target.value, value)}
-                                                className="col-start-2 w-full rounded border border-border-strong px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-focus md:w-24"
+                                                className="col-start-2 w-full rounded border border-border-strong px-2 py-1.5 text-sm focus:outline-hidden focus:ring-1 focus:ring-focus md:w-24"
                                                 aria-label={t('settingsScheduling.aria.conditionOperator', { index: index + 1 })}
                                             >
                                                 {OPERATORS.map(op => (
@@ -263,7 +263,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                                                         handlePartChange(field, operator, e.target.value);
                                                     }
                                                 }}
-                                                className="col-start-2 w-full rounded border border-border-strong px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-focus md:w-28"
+                                                className="col-start-2 w-full rounded border border-border-strong px-2 py-1.5 text-sm focus:outline-hidden focus:ring-1 focus:ring-focus md:w-28"
                                                 aria-label={t('settingsScheduling.aria.conditionValue', { index: index + 1 })}
                                             >
                                                 {FILTER_VALUES.map(v => (
@@ -277,7 +277,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                                                     type="text"
                                                     value={value}
                                                     onChange={(e) => handlePartChange(field, operator, e.target.value)}
-                                                    className="col-start-2 w-full rounded border border-border-strong bg-surface-muted px-2 py-1.5 font-mono text-sm focus:outline-none focus:ring-1 focus:ring-focus md:w-24"
+                                                    className="col-start-2 w-full rounded border border-border-strong bg-surface-muted px-2 py-1.5 font-mono text-sm focus:outline-hidden focus:ring-1 focus:ring-focus md:w-24"
                                                     placeholder={t('settingsScheduling.fields.value')}
                                                     aria-label={t('settingsScheduling.aria.customConditionValue', { index: index + 1 })}
                                                 />
@@ -300,7 +300,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                     {/* Sort Criteria */}
                     <div>
                         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                            <h4 className="min-w-0 break-words text-sm font-medium text-content-primary">{t('settingsScheduling.fields.sortCriteria')}</h4>
+                            <h4 className="min-w-0 wrap-break-word text-sm font-medium text-content-primary">{t('settingsScheduling.fields.sortCriteria')}</h4>
                             <Button
                                 type="button"
                                 onClick={addSortCriterion}
@@ -320,7 +320,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                                         <Select
                                             value={criterion.field}
                                             onChange={(e) => updateSortCriterion(index, { ...criterion, field: e.target.value })}
-                                            className="min-w-0 flex-1 rounded border border-border-strong px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                            className="min-w-0 flex-1 rounded border border-border-strong px-3 py-1.5 text-sm focus:outline-hidden focus:ring-1 focus:ring-focus"
                                             aria-label={t('settingsScheduling.aria.sortField', { index: index + 1 })}
                                         >
                                             {TASK_FIELDS.map(f => (

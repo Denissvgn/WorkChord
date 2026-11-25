@@ -154,7 +154,7 @@ export const LabelSelector = ({
                         const slug = event.target.value;
                         if (slug) addLabel(slug);
                     }}
-                    className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                    className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                 >
                     <option value="">{t('surfaces.labelSelector.addGovernedLabel')}</option>
                     {availableLabels.map(option => (
@@ -178,7 +178,7 @@ export const LabelSelector = ({
                                 }
                             }}
                             placeholder={resolvedPlaceholder}
-                            className="min-w-0 flex-1 rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                            className="min-w-0 flex-1 rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                         />
                         <Button
                             type="button"

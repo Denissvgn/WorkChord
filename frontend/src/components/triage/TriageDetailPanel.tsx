@@ -233,7 +233,7 @@ export const TriageDetailPanel = ({
 export const InfoBlock = ({ label, value }: { label: string; value: string }) => (
     <div className="rounded-md border border-border bg-surface-card p-3">
         <p className="text-xs font-medium uppercase tracking-wide text-content-secondary">{label}</p>
-        <p className="mt-1 break-words text-content-primary">{value}</p>
+        <p className="mt-1 wrap-break-word text-content-primary">{value}</p>
     </div>
 );
 

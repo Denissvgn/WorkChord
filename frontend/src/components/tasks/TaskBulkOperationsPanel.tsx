@@ -36,7 +36,7 @@ interface TaskBulkOperationsPanelProps {
 const STATUS_OPTIONS: TaskStatus[] = ['planned', 'active', 'resolved', 'closed'];
 const AUTO = '__auto__';
 const NONE = '__none__';
-const selectClassName = 'h-8 rounded-md border border-border-strong bg-surface-card px-2 text-sm text-content-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus';
+const selectClassName = 'h-8 rounded-md border border-border-strong bg-surface-card px-2 text-sm text-content-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus';
 
 class BulkRejected extends Error {
     readonly failures: { taskId: number; message: string }[];

@@ -117,7 +117,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ iteratio
                             overdueTasks.map((task) => (
                                 <div key={task.id} className="p-3 bg-feedback-danger-muted border border-feedback-danger-border rounded-lg">
                                     <div className="flex items-start gap-2 mb-1">
-                                        <AlertCircle className="w-4 h-4 text-feedback-danger flex-shrink-0 mt-0.5" />
+                                        <AlertCircle className="w-4 h-4 text-feedback-danger shrink-0 mt-0.5" />
                                         <div className="font-medium text-feedback-danger-foreground text-sm line-clamp-2">
                                             {task.title}
                                         </div>

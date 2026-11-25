@@ -79,7 +79,7 @@ export const ConstraintsPanel = ({ constraints, onChange }: Props) => {
                         className={`
                             rounded-lg border p-4 transition-all
                             ${constraints[item.key]
-                                ? 'bg-action-muted border-action shadow-sm'
+                                ? 'bg-action-muted border-action shadow-xs'
                                 : 'bg-surface-card border-border hover:border-action'
                             }
                         `}
@@ -93,7 +93,7 @@ export const ConstraintsPanel = ({ constraints, onChange }: Props) => {
                             />
                             <div className="min-w-0">
                                 <span className="font-semibold text-content-primary block mb-1">{t(item.labelKey)}</span>
-                                <p className="break-words text-sm leading-relaxed text-content-secondary">
+                                <p className="wrap-break-word text-sm leading-relaxed text-content-secondary">
                                     {t(item.helpKey)}
                                 </p>
                             </div>
@@ -108,7 +108,7 @@ export const ConstraintsPanel = ({ constraints, onChange }: Props) => {
                     className={`
                         p-4 rounded-lg border transition-all
                         ${constraints.balance_workload
-                            ? 'bg-action-muted border-action shadow-sm'
+                            ? 'bg-action-muted border-action shadow-xs'
                             : 'bg-surface-card border-border hover:border-action'
                         }
                     `}

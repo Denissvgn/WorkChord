@@ -199,7 +199,7 @@ export const updateFreshnessMessage = (
     return null;
 };
 
-export const textareaClassName = 'w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus disabled:bg-surface-muted disabled:text-content-secondary';
+export const textareaClassName = 'w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus disabled:bg-surface-muted disabled:text-content-secondary';
 
 export const healthToTone = (health: ProjectHealth): 'gray' | 'green' | 'yellow' | 'red' => {
     switch(health) {

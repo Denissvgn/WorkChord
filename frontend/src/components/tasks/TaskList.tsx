@@ -416,7 +416,7 @@ export const TaskList = ({
     const renderRowItem = (item: RowItem) => item.kind === 'group' ? (
         <h2 className="m-0">
             <Button data-page-chrome-control="button" type="button" aria-expanded={!item.collapsed} onClick={() => toggleGroup(item.status)}
-                className="flex min-h-7 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-focus" variant="plain">
+                className="flex min-h-7 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus" variant="plain">
                 {item.collapsed ? <ChevronRight aria-hidden="true" className="h-4 w-4" /> : <ChevronDown aria-hidden="true" className="h-4 w-4" />}
                 <span className={statusTextClassName[item.status as Task['status']]}>
                     {t(`statuses.${item.status}`, { defaultValue: item.status })}

@@ -43,7 +43,7 @@ export const TriageRow = ({
             <td className="px-4 py-3">
                 <div className="flex min-w-0 flex-col gap-1">
                     <div className="flex items-center gap-2">
-                        <span className="min-w-0 break-words font-medium text-content-primary">{item.title}</span>
+                        <span className="min-w-0 wrap-break-word font-medium text-content-primary">{item.title}</span>
                         {isDueSnoozed(item) && (
                             <span className="rounded-full bg-feedback-warning-muted px-2 py-0.5 text-xs font-medium text-feedback-warning-foreground">{t('surfaces.triagePage.due')}</span>
                         )}

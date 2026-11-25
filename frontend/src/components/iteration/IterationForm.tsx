@@ -438,7 +438,7 @@ const IterationFormEditor = ({
         <div>
             <label className="block text-sm font-medium text-content-secondary mb-1">{t('iterations.projectScope')}</label>
             {lockedProject ? (
-                <div className="rounded-md border border-border-strong bg-surface-muted px-3 py-2 text-sm text-content-secondary shadow-sm">
+                <div className="rounded-md border border-border-strong bg-surface-muted px-3 py-2 text-sm text-content-secondary shadow-xs">
                     <div className="font-medium">{lockedProject.name}</div>
                     <p className="mt-1 text-xs text-content-tertiary">{t('projectIterations.lockedScopeHelp')}</p>
                 </div>
@@ -454,7 +454,7 @@ const IterationFormEditor = ({
                         }
                         setSingleDraft(current => ({ ...current, project_id: value }));
                     }}
-                    className="w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                    className="w-full rounded-md border border-border-strong px-3 py-2 shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                 >
                     <option value="">{t('iterations.noProjectScope')}</option>
                     {projects?.map(project => (
@@ -537,7 +537,7 @@ const IterationFormEditor = ({
                         <Button
                             type="button"
                             aria-pressed={mode === 'single'}
-                            className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'single' ? 'bg-surface-card text-content-primary shadow-sm ring-1 ring-action' : 'text-content-secondary hover:text-content-primary'}`}
+                            className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'single' ? 'bg-surface-card text-content-primary shadow-xs ring-1 ring-action' : 'text-content-secondary hover:text-content-primary'}`}
                             onClick={() => setMode('single')}
                          variant="secondary">
                             <CalendarRange className="h-4 w-4" />
@@ -546,7 +546,7 @@ const IterationFormEditor = ({
                         <Button
                             type="button"
                             aria-pressed={mode === 'series'}
-                            className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'series' ? 'bg-surface-card text-content-primary shadow-sm ring-1 ring-action' : 'text-content-secondary hover:text-content-primary'}`}
+                            className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'series' ? 'bg-surface-card text-content-primary shadow-xs ring-1 ring-action' : 'text-content-secondary hover:text-content-primary'}`}
                             onClick={() => setMode('series')}
                          variant="secondary">
                             <Repeat className="h-4 w-4" />

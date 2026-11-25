@@ -230,7 +230,7 @@ const ImportTasksBody = ({ iterationId, onClose, initialRevision, isLoading, que
                         }}
                         placeholder={isFullScreen ? t('taskImport.placeholderFull') : t('taskImport.placeholderInline')}
                         className={clsx(
-                            "w-full p-3 border rounded-lg font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-focus",
+                            "w-full p-3 border rounded-lg font-mono text-sm resize-none focus:outline-hidden focus:ring-2 focus:ring-focus",
                             isFullScreen ? "flex-1" : "h-48"
                         )}
                     />
@@ -238,7 +238,7 @@ const ImportTasksBody = ({ iterationId, onClose, initialRevision, isLoading, que
                     {/* Error message */}
                     {error && (
                         <div className="flex items-center gap-2 text-feedback-danger-foreground bg-feedback-danger-muted p-3 rounded-lg">
-                            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                            <AlertCircle className="w-4 h-4 shrink-0" />
                             <span className="text-sm">{error}</span>
                         </div>
                     )}
@@ -246,7 +246,7 @@ const ImportTasksBody = ({ iterationId, onClose, initialRevision, isLoading, que
                     {/* Success indication */}
                     {importMutation.isSuccess && (
                         <div className="flex items-center gap-2 text-feedback-success-foreground bg-feedback-success-muted p-3 rounded-lg">
-                            <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                            <CheckCircle className="w-4 h-4 shrink-0" />
                             <span className="text-sm">
                                 {t('taskImport.success', { tasks: importMutation.data?.task_count, triage: importMutation.data?.triage_count })}
                             </span>

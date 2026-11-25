@@ -133,7 +133,7 @@ const SourceBadge = ({ source }: { source?: RuntimeSettingSource }) => {
     const { t } = useTranslation();
     if (!source) return null;
     return (
-        <span className={`inline-flex max-w-full items-center break-words rounded-full border px-2 py-0.5 text-center text-xs font-medium ${sourceClass[source]}`}>
+        <span className={`inline-flex max-w-full items-center wrap-break-word rounded-full border px-2 py-0.5 text-center text-xs font-medium ${sourceClass[source]}`}>
             {t(`common.${source}`)}
         </span>
     );
@@ -144,7 +144,7 @@ const SecretState = ({ configured, source }: { configured: boolean; source?: Run
     return (
         <div className="flex min-w-0 flex-wrap items-center gap-2 text-sm text-content-secondary">
             <KeyRound aria-hidden="true" className="h-4 w-4" />
-            <span className="break-words">{configured ? t('common.configured') : t('common.notConfigured')}</span>
+            <span className="wrap-break-word">{configured ? t('common.configured') : t('common.notConfigured')}</span>
             <SourceBadge source={source} />
         </div>
     );
@@ -521,7 +521,7 @@ export const RuntimeConfigSettings = ({ parts = ALL_PARTS }: { parts?: readonly 
                     role="alert"
                 >
                     <p className="font-medium">{runtimeText('runtimeValidationSummary', 'Review the highlighted fields before saving.')}</p>
-                    <ul className="mt-2 list-disc space-y-1 break-words pl-5">
+                    <ul className="mt-2 list-disc space-y-1 wrap-break-word pl-5">
                         {errorMessages.map(([field, message]) => <li key={field}>{message}</li>)}
                     </ul>
                 </section>
@@ -537,7 +537,7 @@ export const RuntimeConfigSettings = ({ parts = ALL_PARTS }: { parts?: readonly 
                             <Globe2 aria-hidden="true" className="h-5 w-5 text-feedback-success" />
                             {t('settings.aiOutputLanguage')}
                         </h3>
-                        <p className="break-words text-sm text-content-secondary">{t('settings.aiOutputLanguageDescription')}</p>
+                        <p className="wrap-break-word text-sm text-content-secondary">{t('settings.aiOutputLanguageDescription')}</p>
                     </div>
                     <div className="flex flex-col gap-3">
                         <div>
@@ -549,7 +549,7 @@ export const RuntimeConfigSettings = ({ parts = ALL_PARTS }: { parts?: readonly 
                                 id="ai-language-mode"
                                 value={effectiveAppForm.ai_language_mode}
                                 onChange={event => setAppForm({ ...effectiveAppForm, ai_language_mode: event.target.value as AILanguageMode })}
-                                className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                                className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                             >
                                 <option value="auto">{t('common.language.auto')}</option>
                                 <option value="en">{t('common.language.en')}</option>
@@ -575,7 +575,7 @@ export const RuntimeConfigSettings = ({ parts = ALL_PARTS }: { parts?: readonly 
                                 <ServerCog aria-hidden="true" className="h-5 w-5 text-action" />
                                 {t('settings.llmProvider')}
                             </h3>
-                            <p className="break-words text-sm text-content-secondary">{t('settings.llmProviderDescription')}</p>
+                            <p className="wrap-break-word text-sm text-content-secondary">{t('settings.llmProviderDescription')}</p>
                         </div>
                     </div>
                     <div className="flex flex-col gap-3">
@@ -591,7 +591,7 @@ export const RuntimeConfigSettings = ({ parts = ALL_PARTS }: { parts?: readonly 
                                     setLlmForm({ ...effectiveLlmForm, provider: event.target.value as LLMProvider });
                                     clearFieldError('llm.api_url', 'llm');
                                 }}
-                                className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                                className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                             >
                                 <option value="openai">{t('surfaces.runtimeConfig.openai')}</option>
                                 <option value="openrouter">{t('surfaces.runtimeConfig.openrouter')}</option>
@@ -700,7 +700,7 @@ export const RuntimeConfigSettings = ({ parts = ALL_PARTS }: { parts?: readonly 
                             <ServerCog aria-hidden="true" className="h-5 w-5 text-content-primary" />
                             {t('settings.github')}
                         </h3>
-                        <p className="break-words text-sm text-content-secondary">{t('settings.githubDescription')}</p>
+                        <p className="wrap-break-word text-sm text-content-secondary">{t('settings.githubDescription')}</p>
                     </div>
                     <div className="flex flex-col gap-3">
                         <div>
@@ -802,7 +802,7 @@ export const RuntimeConfigSettings = ({ parts = ALL_PARTS }: { parts?: readonly 
                             <ShieldAlert aria-hidden="true" className="h-5 w-5 text-feedback-warning" />
                             {t('settings.webIntake')}
                         </h3>
-                        <p className="break-words text-sm text-content-secondary">{t('settings.webIntakeDescription')}</p>
+                        <p className="wrap-break-word text-sm text-content-secondary">{t('settings.webIntakeDescription')}</p>
                     </div>
                     <div className="flex flex-col gap-3">
                         <SecretState configured={settings.web_intake.has_token} source={fieldSource(settings.web_intake, 'token')} />
@@ -862,7 +862,7 @@ export const RuntimeConfigSettings = ({ parts = ALL_PARTS }: { parts?: readonly 
                     {settings.restart_required.map(item => (
                         <div key={item.key} className="min-w-0 rounded-md border border-border bg-surface-muted px-3 py-2">
                             <div className="break-all font-mono text-sm font-semibold text-content-primary">{item.key}</div>
-                            <div className="break-words text-sm text-content-secondary">{item.description}</div>
+                            <div className="wrap-break-word text-sm text-content-secondary">{item.description}</div>
                         </div>
                     ))}
                 </div>

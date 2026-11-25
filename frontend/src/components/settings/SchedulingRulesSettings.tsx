@@ -427,7 +427,7 @@ export const SchedulingRulesSettings = () => {
                             ) : (
                                 <ChevronRight aria-hidden="true" className="h-5 w-5 shrink-0" />
                             )}
-                            <span className="break-words">{t('settingsScheduling.sections.modifiers.title')}</span>
+                            <span className="wrap-break-word">{t('settingsScheduling.sections.modifiers.title')}</span>
                         </h3>
                         <span className="shrink-0 text-sm text-content-secondary">
                             {t('settingsScheduling.sections.modifiers.count', { count: localRules.effort_modifiers.length })}
@@ -470,7 +470,7 @@ export const SchedulingRulesSettings = () => {
                             ) : (
                                 <ChevronRight aria-hidden="true" className="h-5 w-5 shrink-0" />
                             )}
-                            <span className="break-words">{t('settingsScheduling.sections.passes.title')}</span>
+                            <span className="wrap-break-word">{t('settingsScheduling.sections.passes.title')}</span>
                         </h3>
                         <span className="shrink-0 text-sm text-content-secondary">
                             {t('settingsScheduling.sections.passes.count', { count: localRules.scheduling_passes.length })}
@@ -525,7 +525,7 @@ export const SchedulingRulesSettings = () => {
                             ) : (
                                 <ChevronRight aria-hidden="true" className="h-5 w-5 shrink-0" />
                             )}
-                            <span className="break-words">{t('settingsScheduling.sections.constraints.title')}</span>
+                            <span className="wrap-break-word">{t('settingsScheduling.sections.constraints.title')}</span>
                         </h3>
                     </Button>
 

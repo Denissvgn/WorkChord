@@ -58,7 +58,7 @@ export const TaskDependencySelector = ({ iterationId, projectId, currentTaskId, 
                             type="checkbox"
                             checked={selectedIds.includes(task.id)}
                             onChange={(e) => handleChange(task.id, e.target.checked)}
-                            className="rounded border-border-strong text-action focus:ring-focus flex-shrink-0"
+                            className="rounded border-border-strong text-action focus:ring-focus shrink-0"
                         />
                         <span className="text-sm truncate" title={task.title}>{task.title}</span>
                     </label>

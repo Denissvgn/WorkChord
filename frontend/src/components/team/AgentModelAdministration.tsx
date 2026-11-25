@@ -676,8 +676,8 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
                 <AlertTriangle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
                 <div className="flex-1">
                     <p className="font-semibold">{t('modelAdministration.conflictTitle')}</p>
-                    <p className="break-words">{conflictMessage}</p>
-                    <p className="mt-1 break-words text-xs">
+                    <p className="wrap-break-word">{conflictMessage}</p>
+                    <p className="mt-1 wrap-break-word text-xs">
                         {t(
                             conflictResolution
                                 ? 'modelAdministration.conflictRecovery'

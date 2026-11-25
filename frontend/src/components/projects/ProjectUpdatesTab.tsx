@@ -27,7 +27,7 @@ export const ProjectUpdatesTab = ({ projectId, updates: projectUpdates, isLoadin
                     const details = updateDetailFields(update);
                     return (
                         <li key={update.id} className="relative">
-                            <span className={clsx('absolute -left-[18px] top-1 h-3 w-3 rounded-full ring-4 ring-surface-card', healthDotClass(update.health))} />
+                            <span className={clsx('absolute left-[-18px] top-1 h-3 w-3 rounded-full ring-4 ring-surface-card', healthDotClass(update.health))} />
                             <div className="flex flex-wrap items-center gap-2">
                                 <Pill tone={healthToTone(update.health)} icon={<span className={clsx('h-1.5 w-1.5 rounded-full', healthDotClass(update.health))} />}>
                                     {t(healthLabelKeys[update.health])}

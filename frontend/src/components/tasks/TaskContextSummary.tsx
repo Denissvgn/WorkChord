@@ -35,7 +35,7 @@ export const TaskContextSummary = ({ detail, onNavigate, onReload }: { detail: T
             {(['children', 'dependencies'] as const).map(kind => <div key={kind}>
                 <h4 className="mb-1 font-medium text-content-primary">{t(kind === 'children' ? 'domain.children' : 'surfaces.taskForm.dependencies')}</h4>
                 <ul className="space-y-1">{query.data![kind].items.map(item => <li key={item.id}>
-                    <Link className="break-words text-action underline" to={scopeLink(`/tasks?task=${item.id}`)} onClick={event => { if (onNavigate) { event.preventDefault(); onNavigate(item.id); } }}>{item.title}</Link>
+                    <Link className="wrap-break-word text-action underline" to={scopeLink(`/tasks?task=${item.id}`)} onClick={event => { if (onNavigate) { event.preventDefault(); onNavigate(item.id); } }}>{item.title}</Link>
                 </li>)}</ul>
                 {query.data![kind].items.length === 0 && <p className="text-content-secondary">{t('common.none')}</p>}
                 {query.data![kind].has_more && <Button type="button" size="sm" variant="ghost" onClick={() => (kind === 'children' ? setChildrenCursor : setDependenciesCursor)(query.data![kind].next_after_id!)}>{t('domain.moreResults')}</Button>}

@@ -132,7 +132,7 @@ const TimeEntriesContent = ({ projectId, taskId, start, end, disabled = false, s
             <ul className="divide-y divide-border">{entries.data?.pages.flatMap(p => p.items).map(row => <li key={row.id} className="space-y-2 py-3">
                 <p className="text-sm"><strong>{t('timeEntries.duration', { count: row.minutes })}</strong> · {formatDate(row.work_date)} · {row.timezone} {row.voided && <span className="text-content-secondary">· {t('timeEntries.voided')}</span>}</p>
                 {!taskId && <p className="text-sm text-content-secondary">{row.task_title ?? t('timeEntries.projectWork')}</p>}
-                {row.note && <p className="whitespace-pre-wrap break-words text-sm">{row.note}</p>}
+                {row.note && <p className="whitespace-pre-wrap wrap-break-word text-sm">{row.note}</p>}
                 <div className="flex flex-wrap gap-2">
                     {!row.voided && <Button type="button" variant="ghost" size="sm" disabled={dirty || disabled || pending} onClick={() => {
                         setDraft({ ...emptyDraft(taskId), ...row, minutes: String(row.minutes), task: row.task_id ? String(row.task_id) : '', reason: '', editing: { id: row.id, version: row.version } }); setCurrent(null); save.reset();
@@ -142,7 +142,7 @@ const TimeEntriesContent = ({ projectId, taskId, start, end, disabled = false, s
                 {historyId === row.id && <div className="space-y-2 bg-surface-muted p-3">
                     {history.isLoading && <p role="status">{t('common.loading')}</p>}
                     {history.isError && <QueryErrorState error={history.error} fallback={t('timeEntries.loadFailed')} onRetry={() => void history.refetch()} />}
-                    {!history.isError && history.data?.pages.flatMap(p => p.items).map(revision => <p className="whitespace-pre-wrap break-words text-sm" key={revision.version}>v{revision.version} · {t('timeEntries.duration', { count: revision.minutes })} · {formatDate(revision.work_date)} · {revision.timezone} · {revision.reason}{revision.voided ? ` · ${t('timeEntries.voided')}` : ''}<br />{revision.note}</p>)}
+                    {!history.isError && history.data?.pages.flatMap(p => p.items).map(revision => <p className="whitespace-pre-wrap wrap-break-word text-sm" key={revision.version}>v{revision.version} · {t('timeEntries.duration', { count: revision.minutes })} · {formatDate(revision.work_date)} · {revision.timezone} · {revision.reason}{revision.voided ? ` · ${t('timeEntries.voided')}` : ''}<br />{revision.note}</p>)}
                     {history.hasNextPage && <Button type="button" variant="ghost" size="sm" disabled={history.isFetchingNextPage} onClick={() => void history.fetchNextPage()}>{t('timeEntries.more')}</Button>}
                 </div>}
             </li>)}</ul>
@@ -187,7 +187,7 @@ const TimeEntriesContent = ({ projectId, taskId, start, end, disabled = false, s
         </div>}
         {current && !privateUnavailable && !reload.isError && <div className="space-y-2 border border-feedback-warning-border p-3 text-sm">
             <p>{t('timeEntries.current')} · v{current.version}: {t('timeEntries.duration', { count: current.minutes })} · {formatDate(current.work_date)}</p>
-            <p className="whitespace-pre-wrap break-words">{current.note}</p>
+            <p className="whitespace-pre-wrap wrap-break-word">{current.note}</p>
             <Button type="button" variant="secondary" size="sm" disabled={current.voided || pending} onClick={() => { setDraft(values => ({ ...values, editing: { id: current.id, version: current.version } })); setCurrent(null); save.reset(); }}>{t('timeEntries.reapply')}</Button>
             {current.voided && <p>{t('timeEntries.voided')}</p>}
         </div>}

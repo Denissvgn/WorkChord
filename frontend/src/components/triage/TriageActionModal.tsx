@@ -168,7 +168,7 @@ export const TriageActionModal = ({
                 )}
                 {error && (
                     <div className="flex items-start gap-2 rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground">
-                        <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
                         <span>{error}</span>
                     </div>
                 )}
@@ -244,7 +244,7 @@ export const TriageActionModal = ({
                         value={reason}
                         required={action === 'clarify'}
                         onChange={event => setReason(event.target.value)}
-                        className="min-h-[90px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        className="min-h-[90px] w-full rounded-md border border-border-strong px-3 py-2 shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                     />
                 </div>
 

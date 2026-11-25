@@ -17,7 +17,7 @@ describe('Button plain variant', () => {
     it('keeps text controls free of shared button box styles', () => {
         render(<Button variant="plain" className="text-left">Task title</Button>);
         const button = screen.getByRole('button', { name: 'Task title' });
-        expect(button).toHaveClass('text-left', 'focus-visible:outline');
+        expect(button).toHaveClass('text-left', 'focus-visible:outline-solid');
         expect(button).not.toHaveClass('btn', 'primary', 'btn-primary', 'min-h-9', 'px-4');
     });
 });

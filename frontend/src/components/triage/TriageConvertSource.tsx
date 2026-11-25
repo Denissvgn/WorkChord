@@ -13,7 +13,7 @@ export const TriageConvertSource = ({ item, projectsById, iterationsById }: { it
     <div className="flex flex-col h-full bg-surface-muted/50 overflow-y-auto p-6 space-y-6">
         <div>
             <h3 className="text-xs font-semibold uppercase tracking-wide text-content-secondary">{t('surfaces.triagePage.rawIntake')}</h3>
-            <div className="mt-2 rounded-lg border border-border bg-surface-card p-4 shadow-sm">
+            <div className="mt-2 rounded-lg border border-border bg-surface-card p-4 shadow-xs">
                 <h4 className="font-semibold text-content-primary text-base mb-2">{item.title}</h4>
                 <p className="whitespace-pre-wrap text-sm text-content-primary leading-relaxed">
                     {item.description || t('surfaces.triagePage.noDescriptionProvided')}

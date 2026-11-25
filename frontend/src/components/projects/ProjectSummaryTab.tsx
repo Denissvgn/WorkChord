@@ -77,7 +77,7 @@ export const ProjectSummaryTab = ({ project, summary, updates: projectUpdates, m
                 >
                     {freshnessWarning && (
                         <div className="mb-3 flex gap-2 rounded-md bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground">
-                            <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
                             <span>{freshnessWarning}</span>
                         </div>
                     )}
@@ -123,7 +123,7 @@ export const ProjectSummaryTab = ({ project, summary, updates: projectUpdates, m
             {/* ── Sticky right rail: facts at a glance ─────────────────── */}
             <StickyRail label={t('surfaces.projectDetail.factsLabel')}>
                 {/* Date risk */}
-                <div className="rounded-xl border border-border bg-surface-card p-5 shadow-sm">
+                <div className="rounded-xl border border-border bg-surface-card p-5 shadow-xs">
                     <div className="mb-3 flex items-center gap-2">
                         <AlertTriangle className="h-4 w-4 text-content-secondary" />
                         <h2 className="text-sm font-semibold tracking-tight text-content-primary">{t('surfaces.projectDetail.targetDateRisk')}</h2>
@@ -154,7 +154,7 @@ export const ProjectSummaryTab = ({ project, summary, updates: projectUpdates, m
                 </div>
 
                 {/* Effort */}
-                <div className="rounded-xl border border-border bg-surface-card p-5 shadow-sm">
+                <div className="rounded-xl border border-border bg-surface-card p-5 shadow-xs">
                     <div className="mb-3 flex items-center gap-2">
                         <Activity className="h-4 w-4 text-content-secondary" />
                         <h2 className="text-sm font-semibold tracking-tight text-content-primary">{t('surfaces.projectDetail.effort')}</h2>

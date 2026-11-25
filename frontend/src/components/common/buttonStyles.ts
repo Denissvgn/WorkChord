@@ -4,7 +4,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'warning' | 'gh
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export const buttonClassName = (variant: ButtonVariant = 'primary', size: ButtonSize = 'md', className?: string, iconOnly = false) => variant === 'plain' ? clsx(
-    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
+    'focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
     className,
 ) : clsx(
     'btn',

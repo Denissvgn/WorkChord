@@ -123,9 +123,9 @@ export const TaskAgentReadinessBadge = ({ readiness, mode = 'compact' }: TaskAge
                 {readiness.criteria.map(criterion => (
                     <div key={criterion.key} className="flex items-start gap-2">
                         {criterion.passed ? (
-                            <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-feedback-success" />
+                            <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-feedback-success" />
                         ) : (
-                            <XCircle className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-feedback-warning" />
+                            <XCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-feedback-warning" />
                         )}
                         <div className="min-w-0">
                             <p className="font-medium text-content-primary text-left truncate">{criterion.label}</p>
@@ -161,7 +161,7 @@ export const TaskAgentReadinessBadge = ({ readiness, mode = 'compact' }: TaskAge
                 }}
                 aria-expanded={isOpen}
                 aria-controls={isOpen ? panelId : undefined}
-                className={clsx('flex items-center rounded-full border px-2 py-0.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-1', badgeClassName)}
+                className={clsx('flex items-center rounded-full border px-2 py-0.5 text-xs font-medium focus:outline-hidden focus:ring-2 focus:ring-focus focus:ring-offset-1', badgeClassName)}
              variant="plain">
                 <Icon className="mr-1 h-3 w-3" />
                 {label}
@@ -173,7 +173,7 @@ export const TaskAgentReadinessBadge = ({ readiness, mode = 'compact' }: TaskAge
                     role="region"
                     aria-label={t('surfaces.taskReadiness.detailsLabel', { status: label })}
                     aria-live="polite"
-                    className="fixed w-80 rounded-md border border-border bg-surface-card p-3 shadow-lg z-[100] animate-in fade-in slide-in-from-top-1 text-left"
+                    className="fixed w-80 rounded-md border border-border bg-surface-card p-3 shadow-lg z-100 animate-in fade-in slide-in-from-top-1 text-left"
                     style={{ left: panelPosition.left, top: panelPosition.top }}
                 >
                     {details}

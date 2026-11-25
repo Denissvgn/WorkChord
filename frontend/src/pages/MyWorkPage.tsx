@@ -184,7 +184,7 @@ const MyWorkPage = () => {
         {queue !== 'inbox' && selectedQuery.isSuccess && items.length === 0 && !(workQueue && workState !== 'ready') && <NextStepEmptyState description={t('emptyStates.myWork.queueBody')} fallback={{ label: t('overview.openTasks'), to: scopeLink('/tasks') }} />}
         {queue === 'inbox' && <>
             <ul className="divide-y divide-border">{inbox.data?.pages.flatMap(page => page.items).map(item => <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
-                <div className="min-w-0"><Button type="button" className="min-h-9 break-words text-left font-medium text-action hover:underline" onClick={() => selectTask(item.task_id)} variant="plain">{item.title}</Button>
+                <div className="min-w-0"><Button type="button" className="min-h-9 wrap-break-word text-left font-medium text-action hover:underline" onClick={() => selectTask(item.task_id)} variant="plain">{item.title}</Button>
                     <p className="text-sm text-content-secondary">{t(`teamwork.event_${item.event_type}`)} · {t(item.read ? 'teamwork.read' : 'teamwork.unread')}</p></div>
                 <Button size="sm" variant="ghost" disabled={read.isPending} onClick={() => read.mutate({ id: item.id, value: !item.read })}>{t(item.read ? 'teamwork.markUnread' : 'teamwork.markRead')}</Button>
             </li>)}</ul>

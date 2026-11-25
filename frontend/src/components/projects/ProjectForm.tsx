@@ -286,7 +286,7 @@ const ProjectFormEditor = ({ initialData, onSuccess, onCancel, revisions, contex
                             owner_id: null,
                             owner_profile_id: event.target.value ? parseInt(event.target.value) : null,
                         })}
-                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
+                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus bg-surface-card"
                     >
                         <option value="">{t('surfaces.projectForm.unassigned')}</option>
                         {selectedOwnerMissing && formData.owner_profile_id && initialData?.owner_profile && (

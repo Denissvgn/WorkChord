@@ -17,7 +17,7 @@ export const TaskAssigneeDisplay = ({ task, iterationId, bar = false, durationDa
                 <span className="truncate" title={task.assignee?.name ?? t('common.unassigned')}><span className="sr-only">{t('taskList.assignee')}: </span>{task.assignee?.name ?? t('common.unassigned')}</span>
                 {durationDays !== undefined && <span className="shrink-0">· {t('units.daysCompact', { count: durationDays })}</span>}
             </span>
-            {dispatch && <span data-agent-dispatch={dispatch} className="truncate pl-[1.125rem] text-wc-micro" title={t(AGENT_DISPATCH_LABEL_KEY[dispatch])}>{t(AGENT_DISPATCH_LABEL_KEY[dispatch])}</span>}
+            {dispatch && <span data-agent-dispatch={dispatch} className="truncate pl-4.5 text-wc-micro" title={t(AGENT_DISPATCH_LABEL_KEY[dispatch])}>{t(AGENT_DISPATCH_LABEL_KEY[dispatch])}</span>}
         </span>
         {reviewer && <span data-reviewer-cell="" className="min-w-0 truncate" title={reviewer.name ? t('taskList.reviewerName', { name: reviewer.name }) : t('taskList.reviewerAnyoneTitle')}>
             {reviewer.name ? t('taskList.reviewerName', { name: reviewer.name }) : t('taskList.reviewerAnyone')}

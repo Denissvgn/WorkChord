@@ -301,7 +301,7 @@ export const ConnectAgentSteps = ({ showTitle = true }: { showTitle?: boolean })
                                 ['profile', candidate.member.profile_key], ['model', candidate.member.default_model_binding_key],
                                 ['package', t(`${P}.packageName`, { name: candidate.member.skill_package.name, version: candidate.member.skill_package.version })],
                             ] as const).map(([label, value]) => <div key={label} className="grid grid-cols-[160px_1fr] gap-4 py-3">
-                                <dt className="text-content-secondary">{t(`${P}.reviewList.${label}`)}</dt><dd className="break-words font-medium">{value}</dd>
+                                <dt className="text-content-secondary">{t(`${P}.reviewList.${label}`)}</dt><dd className="wrap-break-word font-medium">{value}</dd>
                             </div>)}</dl>
                             {!points.data.current && <p className="text-sm text-content-secondary">{t(`${P}.templateNote`)}</p>}
                             {role === 'pm' && replacesPendingPM(points.data.current, status.data!) && (

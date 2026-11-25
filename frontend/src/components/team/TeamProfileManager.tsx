@@ -605,7 +605,7 @@ const ProfileDrawer = ({ row, initial, onClose, onCreated, fallbackFocusRef }: P
                         value={profileForm.summary || ''}
                         onChange={event => setProfileForm({ ...profileForm, summary: event.target.value })}
                         placeholder={t('teamProfiles.summaryPlaceholder')}
-                        className="min-h-[80px] w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        className="min-h-[80px] w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                     />
                     <div className="field">
                         <label htmlFor="profile-kind" className="field-lbl">{t('teamProfiles.profileKind')}</label>

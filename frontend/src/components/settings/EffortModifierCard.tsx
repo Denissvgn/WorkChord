@@ -165,7 +165,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                     aria-controls={expanded ? detailsId : undefined}
                  variant="secondary">
                     <ChevronRight aria-hidden="true" className="w-4 h-4 text-content-tertiary" />
-                    <span className="min-w-0 break-words">
+                    <span className="min-w-0 wrap-break-word">
                         <span className="font-medium text-content-primary">{display.name}</span>
                         {display.isBuiltIn && (
                             <code className="ms-2 break-all rounded bg-surface-subtle px-1.5 py-0.5 text-xs text-content-secondary">
@@ -176,7 +176,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                 </Button>
 
                 {/* Preview */}
-                <div className="order-last w-full truncate font-mono text-sm text-content-secondary sm:order-none sm:max-w-xs">
+                <div className="order-last w-full truncate font-mono text-sm text-content-secondary sm:order-0 sm:max-w-xs">
                     {modifier.formula || modifier.operation || '—'}
                 </div>
 
@@ -227,7 +227,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                                         handleTemplateChange(e.target.value);
                                     }
                                 }}
-                                className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                className="w-full px-3 py-2 border border-border-strong rounded-md shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                             >
                                 <optgroup label={t('settingsScheduling.groups.formulaBased')}>
                                     {FORMULA_TEMPLATES.map(template => (
@@ -251,7 +251,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                                 id={`${detailsId}-operation`}
                                 value={modifier.operation || 'ceil'}
                                 onChange={(e) => handleOperationChange(e.target.value)}
-                                className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                className="w-full px-3 py-2 border border-border-strong rounded-md shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                             >
                                 {MATH_OPERATIONS.map(op => (
                                     <option key={op.value} value={op.value}>{t(op.labelKey)}</option>
@@ -273,7 +273,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                                         id={`${detailsId}-field`}
                                         value={selectedField}
                                         onChange={(e) => handleFieldChange(e.target.value)}
-                                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                                     >
                                         {FORMULA_ASSIGNEE_FIELDS.map(f => (
                                             <option key={f.value} value={f.value}>{t(f.labelKey)}</option>
@@ -296,7 +296,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                                             const nextValue = Number(e.target.value);
                                             handleConstantChange(Number.isFinite(nextValue) ? nextValue : 0);
                                         }}
-                                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                                         step="0.1"
                                         min={requiresPositiveDivisor ? 0.1 : 0}
                                     />
@@ -315,7 +315,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                                         value={modifier.formula || ''}
                                         onChange={(e) => handleCustomFormulaChange(e.target.value)}
                                         placeholder="effort / assignee.professionalism_coefficient"
-                                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm font-mono text-sm bg-surface-muted focus:outline-none focus:ring-1 focus:ring-focus"
+                                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-xs font-mono text-sm bg-surface-muted focus:outline-hidden focus:ring-1 focus:ring-focus"
                                     />
                                     <p className="mt-1 text-xs text-content-secondary">
                                         {t('settingsScheduling.fields.variables')}{' '}

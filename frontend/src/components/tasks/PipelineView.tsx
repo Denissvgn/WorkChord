@@ -149,7 +149,7 @@ export function PipelineView({ query, project, iteration, search, agent, filters
                                 onClick={() => setStageParam(column.id)}
                                 data-testid={`column-${column.id}`}
                                 className={clsx(
-                                    'flex min-h-16 w-full min-w-36 flex-col items-start gap-1 rounded-md border px-3 py-2 text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-focus',
+                                    'flex min-h-16 w-full min-w-36 flex-col items-start gap-1 rounded-md border px-3 py-2 text-left text-sm focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus',
                                     column.id === activeStage.id ? 'border-action bg-action-muted' : 'border-border bg-surface-card hover:bg-surface-hover',
                                 )}
                              variant="plain">
@@ -189,7 +189,7 @@ export function PipelineView({ query, project, iteration, search, agent, filters
                                     <div className="min-w-0 flex-1 space-y-1">
                                         <Button data-page-chrome-control="button" type="button" onClick={() => onOpenTask(task)} data-testid={`task-card-${task.id}`}
                                             aria-label={t('agentPipeline.inspectTask', { title: task.title, state: activeStage.title })}
-                                            className="break-words text-left font-medium text-action hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-focus" variant="plain">
+                                            className="wrap-break-word text-left font-medium text-action hover:underline focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus" variant="plain">
                                             {t('agentPipeline.taskNumber', { id: task.id })} · {task.title}
                                         </Button>
                                         <p className="text-sm text-content-primary">{t('agentPipeline.reason', { reason: reasons })}</p>

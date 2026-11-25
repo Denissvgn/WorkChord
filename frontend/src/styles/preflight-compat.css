@@ -1,0 +1,112 @@
+/*
+ * Tailwind 3 base styles that the Tailwind 4 preflight changed, restored so that no existing screen changes.
+ * globals.css imports this file right after the Tailwind 4 preflight and before the utilities, where the
+ * Tailwind 3 preflight sat, so these rules keep the Tailwind 3 selectors and every utility still overrides them.
+ * `revert` hands a property back to the browser default, which Tailwind 3 left in place.
+ */
+
+/* Default border colour: gray-200, not currentcolor. */
+*,
+::before,
+::after {
+  border-color: #e5e7eb;
+}
+
+/* Placeholders: gray-400, not half-transparent text colour. */
+input::placeholder,
+textarea::placeholder {
+  opacity: 1;
+  color: #9ca3af;
+}
+
+/* Buttons keep the pointer cursor. */
+button,
+[role='button'] {
+  cursor: pointer;
+}
+
+:disabled {
+  cursor: default;
+}
+
+button,
+select {
+  text-transform: none;
+}
+
+/* Form fields keep the browser's background, corner radius and opacity until a class sets them. */
+input:where(:not([type='button'], [type='reset'], [type='submit'])),
+select,
+optgroup,
+textarea {
+  background-color: revert;
+  border-radius: revert;
+  opacity: revert;
+}
+
+button,
+input:where([type='button'], [type='reset'], [type='submit']) {
+  border-radius: revert;
+  opacity: revert;
+}
+
+:where(select:is([multiple], [size])) optgroup {
+  font-weight: revert;
+}
+
+:where(select:is([multiple], [size])) optgroup option {
+  padding-inline-start: revert;
+}
+
+/*
+ * Table cells, options and the file button keep the browser's padding; Tailwind 3 reset only listed elements.
+ * Browsers give table cells their 1px as a table presentational hint, which `revert` skips, so it is spelled out.
+ */
+td,
+th {
+  padding: 1px;
+}
+
+option {
+  padding: revert;
+}
+
+::file-selector-button {
+  margin: revert;
+  padding: revert;
+  border: revert;
+  border-radius: revert;
+  background-color: revert;
+}
+
+[type='search'] {
+  -webkit-appearance: textfield;
+  outline-offset: -2px;
+}
+
+/* Date and time fields keep the browser's inner layout. */
+::-webkit-date-and-time-value {
+  min-height: revert;
+  text-align: revert;
+}
+
+::-webkit-datetime-edit {
+  display: revert;
+}
+
+::-webkit-datetime-edit,
+::-webkit-datetime-edit-fields-wrapper,
+::-webkit-datetime-edit-year-field,
+::-webkit-datetime-edit-month-field,
+::-webkit-datetime-edit-day-field,
+::-webkit-datetime-edit-hour-field,
+::-webkit-datetime-edit-minute-field,
+::-webkit-datetime-edit-second-field,
+::-webkit-datetime-edit-millisecond-field,
+::-webkit-datetime-edit-meridiem-field {
+  padding: revert;
+}
+
+::-webkit-calendar-picker-indicator {
+  line-height: revert;
+}

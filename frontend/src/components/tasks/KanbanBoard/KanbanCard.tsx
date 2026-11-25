@@ -63,7 +63,7 @@ export const KanbanCard = ({ task, onOpen, context }: KanbanCardProps) => {
             ref={setNodeRef}
             style={style}
             data-task-card={task.id}
-            className="group relative bg-surface-card p-4 rounded-xl border border-border-subtle shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing select-none hover:border-border focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+            className="group relative bg-surface-card p-4 rounded-xl border border-border-subtle shadow-xs hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing select-none hover:border-border focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
         >
             <div>
                 {/* Header: the one task ID, its priority and the move handle */}
@@ -71,7 +71,7 @@ export const KanbanCard = ({ task, onOpen, context }: KanbanCardProps) => {
                     <span className="flex items-center gap-1.5 pt-1 text-xs tabular-nums text-content-secondary">#{task.id}
                         <span className={clsx('rounded px-1 font-medium', priorityChipClassName(task.priority))}>P{task.priority}</span></span>
                     <Button type="button" {...attributes} {...listeners} aria-label={t('workStatus.moveTask', { title: task.title })} title={t('workStatus.moveTask', { title: task.title })}
-                        className="-mr-2 -mt-2 flex h-11 w-11 shrink-0 cursor-grab items-center justify-center rounded-md text-content-secondary hover:bg-surface-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus" variant="plain">
+                        className="-mr-2 -mt-2 flex h-11 w-11 shrink-0 cursor-grab items-center justify-center rounded-md text-content-secondary hover:bg-surface-hover focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-focus" variant="plain">
                         <GripVertical className="h-4 w-4" aria-hidden="true" />
                     </Button>
                 </div>
@@ -96,7 +96,7 @@ export const KanbanCard = ({ task, onOpen, context }: KanbanCardProps) => {
                 {'parent_context' in task && Array.isArray(task.parent_context) && task.parent_context.length > 0 &&
                     <p className="mb-1 truncate text-xs text-content-secondary">{task.parent_context.join(' / ')}</p>}
                 <h4 className={clsx('text-sm font-medium leading-snug text-content-primary', chip ? 'mb-2' : 'mb-3')}>
-                    <Button type="button" className="text-left hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                    <Button type="button" className="text-left hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-focus"
                         aria-label={t('workStatus.openTask', { title: task.title })}
                         onClick={event => onOpen?.(task, event.currentTarget)} variant="plain">{task.title}</Button>
                 </h4>

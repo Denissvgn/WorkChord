@@ -608,11 +608,11 @@ const TasksPage = () => {
                     taskTitle={focusedTaskQuery.data?.title}
                     returnActionRef={overviewReturnActionRef}
                 />
-                <div className="tasks-workbench-header-wrap flex-shrink-0">
+                <div className="tasks-workbench-header-wrap shrink-0">
                     {header(<SavedViewPicker manager={savedViewManager} label={viewName} />, true)}
                 </div>
 
-                <div ref={toolbarRef} className="tasks-toolbar-wrap flex-shrink-0">
+                <div ref={toolbarRef} className="tasks-toolbar-wrap shrink-0">
                     {/* While tasks are selected the bulk bar shows here, over the toolbar, so the list does not move. */}
                     <div ref={setSelectionBarHost} className="tasks-selection-slot" />
                     <PageToolbar
@@ -714,7 +714,7 @@ const TasksPage = () => {
                         className="tasks-workbench-content flex-1 overflow-hidden relative"
                     >
                         {isFullScreen && (
-                            <div className="flex justify-between items-center gap-4 px-6 py-4 flex-shrink-0 border-b border-border-subtle">
+                            <div className="flex justify-between items-center gap-4 px-6 py-4 shrink-0 border-b border-border-subtle">
                                 {/* The selection bar covers the title only, so Exit full screen stays in reach. */}
                                 <div className="relative min-w-0 flex-1">
                                     <div ref={setFullscreenSelectionHost} data-testid="fullscreen-selection-slot" className="tasks-selection-slot tasks-selection-slot-fullscreen" />
