@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import hashlib
 import json
 from datetime import UTC, datetime, timedelta
 from io import BytesIO
@@ -589,6 +590,10 @@ def test_object_lock_adapter_proves_locked_exact_version_survives_delete() -> No
         assert request.url.path.endswith("/report.signed.json")
         if request.method == "PUT":
             assert request.content == payload
+            assert request.headers["x-amz-checksum-sha256"] == base64.b64encode(
+                hashlib.sha256(payload).digest()
+            ).decode("ascii")
+            assert "x-amz-checksum-sha256" in request.headers["authorization"]
             return httpx.Response(200, headers={"x-amz-version-id": "version-1"})
         assert request.url.params["versionId"] == "version-1"
         if request.method == "GET":

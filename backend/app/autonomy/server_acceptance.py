@@ -510,7 +510,13 @@ class S3ObjectLockClient:
             bucket=bucket,
             object_key=object_key,
             body=payload,
-            headers={"content-type": "application/json"},
+            headers={
+                "content-type": "application/json",
+                # S3 refuses an unchecksummed write into an object-lock bucket.
+                "x-amz-checksum-sha256": base64.b64encode(
+                    sha256(payload).digest()
+                ).decode("ascii"),
+            },
         )
         if put.status_code not in {200, 201}:
             raise ServerAcceptanceError("locked-object-write-failed")
