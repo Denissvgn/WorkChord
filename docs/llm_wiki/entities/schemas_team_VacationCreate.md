@@ -1,7 +1,7 @@
 # VacationCreate
 
-**Location:** `backend/app/schemas/team.py:28`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/team.py:29`
+**Kind:** Class
 **Bases:** `PlanningInputRevisions`
 **Module:** [schemas_team](../modules/schemas_team.md)
 

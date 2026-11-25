@@ -1,6 +1,6 @@
 # AgentTeamMemberStatus
 
-**Location:** `frontend/src/types/agent.ts:799`
+**Location:** `frontend/src/types/agent.ts:801`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -39,6 +39,9 @@ _Auto-generated from `AgentTeamMemberStatus` in `frontend/src/types/agent.ts`._
 | `availability` | `'availability_unknown'` | Yes | — | — |
 | `blocker_codes` | `string[]` | Yes | — | — |
 | `handoff` | `AgentTeamRuntimeHandoff \| null` | Yes | — | — |
+| `declared_tool_tags` | `Record<string, string[]>` | No | — | — |
+| `unverified_tool_tags` | `Record<string, string[]>` | No | — | — |
+| `tool_capability_next_action` | `string \| null` | No | — | — |
 
 ## Methods
 
@@ -69,7 +72,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_agent](../modules/types_agent.md) | 0 | `accepted_assignments`, `acknowledgement_state`, `actor_id`, `actor_key`, `actor_name`, `availability`, `binding_revisions`, `blocker_codes`, `configured`, `connection_state`, `credential_delivery_state`, `desired` |
+| [types_agent](../modules/types_agent.md) | 0 | `accepted_assignments`, `acknowledgement_state`, `actor_id`, `actor_key`, `actor_name`, `availability`, `binding_revisions`, `blocker_codes`, `configured`, `connection_state`, `credential_delivery_state`, `declared_tool_tags` |
 
 ### References
 

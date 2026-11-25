@@ -2,10 +2,11 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [installed_wheel_postgresql_qualification](../modules/installed_wheel_postgresql_qualification.md)
-**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [catalog](../modules/catalog.md), [cli_closeout](../modules/cli_closeout.md), and 30 more
+**Modules touched:** [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [catalog](../modules/catalog.md), and 30 more
 
 **Complete modules touched:**
 
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [calendar_service](../modules/calendar_service.md)
 - [catalog](../modules/catalog.md)
@@ -20,7 +21,6 @@
 - [identity_service](../modules/identity_service.md)
 - [installed_wheel_postgresql_qualification](../modules/installed_wheel_postgresql_qualification.md)
 - [label_service](../modules/label_service.md)
-- [maintenance](../modules/maintenance.md)
 - [models_agent](../modules/models_agent.md)
 - [models_calendar](../modules/models_calendar.md)
 - [models_github](../modules/models_github.md)
@@ -135,9 +135,9 @@ sequenceDiagram
     p0-->>p30: _parser().parse_args
 ```
 
-> Call sequence diagram shows 30 of 1714 interactions; 1684 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 1716 interactions; 1686 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 536 (535 omitted); unresolved 1 of 671 (670 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 535 (534 omitted); unresolved 1 of 674 (673 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -151,7 +151,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `scripts/ci/installed_wheel_postgresql_qualification.py:_database_url` | 19 | - | external | 2 |
 | `scripts/ci/installed_wheel_postgresql_qualification.py:_target_identifier` | 22 | - | external | 1 |
 | `scripts/ci/installed_wheel_postgresql_qualification.py:_create_database` | 24 | - | external | 24 |
-> Omission summary shows 8 of 372 groups; 364 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 378 groups; 370 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -164,9 +164,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 508; effect analysis evaluated: 332, partial: 9, unavailable: 167. Counts include steps omitted from the displayed trace.
+Source steps: 508; effect analysis evaluated: 335, partial: 9, unavailable: 164. Counts include steps omitted from the displayed trace.
 
-Collector observations for 341 source steps with known totals: observed: 1256, emitted: 1227, omitted: 29. Unavailable totals are excluded.
+Collector observations for 344 source steps with known totals: observed: 1267, emitted: 1238, omitted: 29. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

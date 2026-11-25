@@ -14,21 +14,22 @@
 6. `agent_routing.TaskRoutingAssessmentResponse.from_record`
 7. `review_provenance.different_publisher_required`
 8. `review_provenance.review_history`
-9. `services_review_evidence.resolve`
-10. `services_review_evidence.assignment_observation`
-11. `agent_routing_policy.canonical_routing_json_bytes`
-12. `review_provenance.historical_profile`
-13. `agent_routing_policy.evaluate_actor_authorization`
-14. `agent_service.actor_scopes`
-15. `agent_routing_policy.evaluate_assignment_compatibility`
-16. `agent_routing_policy.evaluate_required_skills`
-17. `query_limits.CollectionLimitExceededError`
-18. `agent_routing_policy.evaluate_model_envelope`
-19. `services_review_evidence.requirements_for`
-20. `agent_routing_policy.routing_candidate_rank_key`
-21. `time.as_utc`
-22. `agent_routing_policy.canonical_routing_json_bytes`
-23. `agent_routing.AgentRoutingPreviewResponse`
+9. `review_provenance.execution_profile_history`
+10. `services_review_evidence.resolve`
+11. `services_review_evidence.assignment_observation`
+12. `agent_routing_policy.canonical_routing_json_bytes`
+13. `review_provenance.historical_profile`
+14. `agent_routing_policy.evaluate_actor_authorization`
+15. `agent_service.actor_scopes`
+16. `agent_routing_policy.evaluate_assignment_compatibility`
+17. `agent_routing_policy.evaluate_required_skills`
+18. `query_limits.CollectionLimitExceededError`
+19. `agent_routing_policy.evaluate_model_envelope`
+20. `services_review_evidence.requirements_for`
+21. `agent_routing_policy.routing_candidate_rank_key`
+22. `time.as_utc`
+23. `agent_routing_policy.canonical_routing_json_bytes`
+24. `agent_routing.AgentRoutingPreviewResponse`
 
 ## Touches
 

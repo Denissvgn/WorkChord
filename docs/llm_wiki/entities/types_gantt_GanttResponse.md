@@ -1,6 +1,6 @@
 # GanttResponse
 
-**Location:** `frontend/src/types/gantt.ts:56`
+**Location:** `frontend/src/types/gantt.ts:67`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)
@@ -16,6 +16,7 @@ _Auto-generated from `GanttResponse` in `frontend/src/types/gantt.ts`._
 | `iteration` | `Iteration` | Yes | — | — |
 | `tasks` | `GanttTask[]` | Yes | — | — |
 | `overdue_task_ids` | `number[]` | Yes | — | — |
+| `inverted_dependencies` | `InvertedDependency[]` | No | — | — |
 | `holidays` | `string[]` | Yes | — | — |
 | `weekends` | `string[]` | Yes | — | — |
 | `member_vacations` | `Record<number, string[]>` | Yes | — | — |
@@ -59,7 +60,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_gantt](../modules/types_gantt.md) | 0 | `holidays`, `iteration`, `member_vacations`, `overdue_task_ids`, `schedule_result`, `tasks`, `weekends` |
+| [types_gantt](../modules/types_gantt.md) | 0 | `holidays`, `inverted_dependencies`, `iteration`, `member_vacations`, `overdue_task_ids`, `schedule_result`, `tasks`, `weekends` |
 
 ### References
 

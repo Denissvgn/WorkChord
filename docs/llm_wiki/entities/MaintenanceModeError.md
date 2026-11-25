@@ -3,7 +3,7 @@
 **Location:** `backend/app/maintenance.py:25`
 **Kind:** Class
 **Bases:** `RuntimeError`
-**Module:** [maintenance](../modules/maintenance.md)
+**Module:** [app_maintenance](../modules/app_maintenance.md)
 
 ## Description
 
@@ -44,11 +44,11 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
-    click n0 "../modules/maintenance.md"
+    click n0 "../modules/app_maintenance.md"
     click n2 "../modules/app_main.md"
-    click n3 "../modules/maintenance.md"
-    click n4 "../modules/maintenance.md"
-    click n5 "../modules/maintenance.md"
+    click n3 "../modules/app_maintenance.md"
+    click n4 "../modules/app_maintenance.md"
+    click n5 "../modules/app_maintenance.md"
     click n6 "../modules/mcp_server.md"
     click n7 "../modules/identity_service.md"
     click n8 "../modules/session_service.md"
@@ -59,7 +59,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [maintenance](../modules/maintenance.md) | 2 | — |
+| [app_maintenance](../modules/app_maintenance.md) | 2 | — |
 
 ### Structure
 
@@ -72,9 +72,9 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `maintenance_mode_error` | type_reference | [app_main](../modules/app_main.md) | — |
-| `enforce_mcp_access` | call | [maintenance](../modules/maintenance.md) | 1 |
-| `require_background_writes_enabled` | call | [maintenance](../modules/maintenance.md) | 1 |
-| `RuntimeBoundaryMiddleware.__call__` | call | [maintenance](../modules/maintenance.md) | 1 |
+| `enforce_mcp_access` | call | [app_maintenance](../modules/app_maintenance.md) | 1 |
+| `require_background_writes_enabled` | call | [app_maintenance](../modules/app_maintenance.md) | 1 |
+| `RuntimeBoundaryMiddleware.__call__` | call | [app_maintenance](../modules/app_maintenance.md) | 1 |
 | `mcp_server` | import | [mcp_server](../modules/mcp_server.md) | — |
 | `require_identity_writes` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `get_or_create_session` | call | [session_service](../modules/session_service.md) | 1 |

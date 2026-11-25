@@ -1,0 +1,143 @@
+# record_task_replacement
+
+**Entry point:** `record_task_replacement` (`http`)
+**Source:** [routers_task_domain](../modules/routers_task_domain.md)
+**Modules touched:** [routers_task_domain](../modules/routers_task_domain.md), [task_replacement_service](../modules/task_replacement_service.md)
+
+## Call sequence
+
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
+<!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
+```mermaid
+sequenceDiagram
+    participant p0 as record_task_replacement
+    participant p1 as domain_result
+    participant p2 as TaskReplacementService(…).record
+    participant p3 as TaskReplacementService
+    participant p4 as HTTPException
+    participant p5 as exc.detail
+    participant p6 as str
+    p0->>p1: domain_result
+    p0-->>p2: TaskReplacementService(…).record(task_id, data)
+    p0->>p3: TaskReplacementService
+    p1-->>p4: HTTPException(409, detail=exc.detail(...))
+    p1-->>p5: exc.detail
+    p1-->>p4: HTTPException(404, detail=str(...))
+    p1-->>p6: str(exc)
+    p1-->>p4: HTTPException(422, detail=[...])
+    p1-->>p6: str(exc)
+    p1-->>p4: HTTPException(404, detail='Task not found or inaccessible')
+```
+
+> Call sequence diagram shows 10 of 10 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 6 of 6 (0 omitted); unresolved 2 of 2 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
+
+## Data flow
+
+<!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 3; effect analysis evaluated: 2, partial: 0, unavailable: 1. Counts include steps omitted from the displayed trace.
+
+Collector observations for 2 source steps with known totals: observed: 7, emitted: 7, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `record_task_replacement` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `domain_result` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `exc.detail` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `TaskReplacementService(…).record` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `TaskReplacementService` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+
+```mermaid
+flowchart LR
+    s1["1. record_task_replacement"]
+    s2["2. domain_result"]
+    s3["3. HTTPException"]
+    s4["4. exc.detail"]
+    s5["5. HTTPException"]
+    s6["6. str"]
+    s7["7. HTTPException"]
+    s8["8. str"]
+    s9["9. HTTPException"]
+    s10["10. TaskReplacementService(…).record"]
+    s11["11. TaskReplacementService"]
+    s1 -->|"domain_result(...)"| s2
+    s2 -. "HTTPException(409, detail=exc.detail(...))" .-> s3
+    s2 -. "exc.detail(data not statically known)" .-> s4
+    s2 -. "HTTPException(404, detail=str(...))" .-> s5
+    s2 -. "str(exc)" .-> s6
+    s2 -. "HTTPException(422, detail=[...])" .-> s7
+    s2 -. "str(exc)" .-> s8
+    s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s9
+    s1 -. "TaskReplacementService(…).record(task_id, data)" .-> s10
+    s1 -->|"TaskReplacementService(db)"| s11
+    click s1 "../modules/routers_task_domain.md"
+    click s2 "../modules/routers_task_domain.md"
+    click s11 "../modules/task_replacement_service.md"
+```
+
+### Step data
+
+| Step | Inputs | Reads | Writes | Returns |
+|---|---|---|---|---|
+| `record_task_replacement` | `task_id: int`, `data: TaskReplacementCreate`, `db: DB` | - | - | `...` |
+| `domain_result` | `awaitable` | `TaskVersionConflictError` | - | `result` |
+| `HTTPException` | - | - | - | - |
+| `exc.detail` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
+| `str` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
+| `str` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
+| `TaskReplacementService(…).record` | - | - | - | - |
+| `TaskReplacementService` | - | - | - | - |
+
+### Call data
+
+| From | To | Line | Call |
+|---|---|---:|---|
+| record_task_replacement | domain_result | 347 | `domain_result(...)` |
+| domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 55 | `str(exc)` |
+| domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 57 | `str(exc)` |
+| domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| record_task_replacement | TaskReplacementService(…).record | 347 | `TaskReplacementService(db).record(task_id, data)` |
+| record_task_replacement | TaskReplacementService | 347 | `TaskReplacementService(db)` |
+
+### Boundary effects
+
+*No boundary-effect observations were captured in this static trace.*
+
+### Static analysis gaps
+
+| Kind | Step | Target | Line |
+|---|---|---|---:|
+| external_call | `domain_result` | `HTTPException` | 53 |
+| unresolved_call | `domain_result` | `exc.detail` | 53 |
+| external_call | `domain_result` | `HTTPException` | 55 |
+| external_call | `domain_result` | `HTTPException` | 57 |
+| external_call | `domain_result` | `HTTPException` | 59 |
+| unresolved_call | `record_task_replacement` | `TaskReplacementService(db).record` | 347 |
+
+## Behavior
+
+Records an audited clean replacement of task work that cannot be attributed. Only the project's PM or an operator may decide. The original must be an unaccepted leaf task with no live assignment, running run or claim; the replacement must be a fresh planned leaf task of the same project and milestone with no attempts, assignments or acceptance, and neither may already take part in a replacement. Carried runs must be recorded contributions of the original. In one command it snapshots the iteration, moves schedule and delivery dependents and open release membership to the replacement, cancels the original with the reason and keeps its attempts and unknown attribution. The original is then never reviewed, and a replacement that carries commits from an unattributed run stays held.

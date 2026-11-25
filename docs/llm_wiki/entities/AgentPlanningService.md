@@ -1,6 +1,6 @@
 # AgentPlanningService
 
-**Location:** `backend/app/services/agent_planning_service.py:78`
+**Location:** `backend/app/services/agent_planning_service.py:83`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_planning_service](../modules/agent_planning_service.md)
@@ -39,6 +39,10 @@ Composed planning mutations share one transaction and retain exact durable mutat
 | `update_team_member` | *(async)* `(member_id: int, actor: AgentActor, data: TeamMemberUpdate, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | — |
 | `create_vacation` | *(async)* `(member_id: int, actor: AgentActor, data: VacationCreate, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | — |
 | `update_vacation` | *(async)* `(vacation_id: int, actor: AgentActor, data: VacationUpdate, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | — |
+| `apply_capacity_adjustment` | *(async)* `(member_id: int, actor: AgentActor, data: CapacityAdjustmentCommand, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Record or withdraw dated adjustments on one capacity row. |
+| `apply_capacity_transfer` | *(async)* `(actor: AgentActor, data: CapacityTransferCommand, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Lend capacity between rows of one person until a return date, every side in one command. |
+| `withdraw_capacity_transfer` | *(async)* `(group_token: str, actor: AgentActor, data: CapacityTransferWithdrawal, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Return the lent capacity of every row of one transfer together. |
+| `record_task_replacement` | *(async)* `(task_id: int, actor: AgentActor, data: Any, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Replace an unaccepted task with a fresh one under a recorded owner decision. |
 | `_iteration_tasks_for_update` | *(async)* `(iteration_id: int) -> list[Task]` | — | — |
 | `_require_iteration_for_update` | *(async)* `(iteration_id: int) -> Iteration` | — | Lock the schedule aggregate root for preview/apply serialization. |
 | `_lock_schedule_task_set` | *(async)* `(iteration_id: int) -> None` | — | Lock only the mutable rows in one scheduling aggregate. |
@@ -57,17 +61,17 @@ Composed planning mutations share one transaction and retain exact durable mutat
 flowchart LR
     n0["AgentPlanningService (backend/app/services/agent_planning_service.py)"]
     n1["apply_agent_profile_preset (backend/app/mcp_agent_tools.py)"]
-    n2["apply_planning_schedule (backend/app/mcp_agent_tools.py)"]
-    n3["create_planning_iteration (backend/app/mcp_agent_tools.py)"]
-    n4["create_planning_milestone (backend/app/mcp_agent_tools.py)"]
-    n5["create_planning_profile (backend/app/mcp_agent_tools.py)"]
-    n6["create_planning_project (backend/app/mcp_agent_tools.py)"]
-    n7["create_planning_task (backend/app/mcp_agent_tools.py)"]
-    n8["create_planning_team_member (backend/app/mcp_agent_tools.py)"]
-    n9["create_planning_vacation (backend/app/mcp_agent_tools.py)"]
-    n10["delete_planning_milestone (backend/app/mcp_agent_tools.py)"]
-    n11["patch_planning_task (backend/app/mcp_agent_tools.py)"]
-    n12["preview_planning_schedule (backend/app/mcp_agent_tools.py)"]
+    n2["apply_capacity_adjustment (backend/app/mcp_agent_tools.py)"]
+    n3["apply_capacity_transfer (backend/app/mcp_agent_tools.py)"]
+    n4["apply_planning_schedule (backend/app/mcp_agent_tools.py)"]
+    n5["create_planning_iteration (backend/app/mcp_agent_tools.py)"]
+    n6["create_planning_milestone (backend/app/mcp_agent_tools.py)"]
+    n7["create_planning_profile (backend/app/mcp_agent_tools.py)"]
+    n8["create_planning_project (backend/app/mcp_agent_tools.py)"]
+    n9["create_planning_task (backend/app/mcp_agent_tools.py)"]
+    n10["create_planning_team_member (backend/app/mcp_agent_tools.py)"]
+    n11["create_planning_vacation (backend/app/mcp_agent_tools.py)"]
+    n12["delete_planning_milestone (backend/app/mcp_agent_tools.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -99,13 +103,15 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_planning_service](../modules/agent_planning_service.md) | 30 | — |
+| [agent_planning_service](../modules/agent_planning_service.md) | 34 | — |
 
 ### References
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `apply_agent_profile_preset` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
+| `apply_capacity_adjustment` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
+| `apply_capacity_transfer` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `apply_planning_schedule` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `create_planning_iteration` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `create_planning_milestone` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
@@ -115,7 +121,5 @@ flowchart LR
 | `create_planning_team_member` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `create_planning_vacation` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `delete_planning_milestone` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
-| `patch_planning_task` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
-| `preview_planning_schedule` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 45 logical references; 33 omitted by the 12-row generated summary limit.
+> References: showing 12 of 51 logical references; 39 omitted by the 12-row generated summary limit.

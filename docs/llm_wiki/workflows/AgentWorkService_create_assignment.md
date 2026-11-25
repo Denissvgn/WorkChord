@@ -21,8 +21,9 @@
 11. `time.utc_now`
 12. `review_provenance.select_reviewer`
 13. `services_review_evidence.check_supervised_selection`
-14. `models_agent.AgentTaskAssignment`
-15. `commands.commit_or_flush`
+14. `review_provenance.require_independent_profile`
+15. `models_agent.AgentTaskAssignment`
+16. `commands.commit_or_flush`
 
 ## Touches
 

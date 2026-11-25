@@ -40,6 +40,7 @@ Wave 3 deployment, security, backup, and reset contracts.
 | `test_rehearsal_and_production_topologies_have_multiple_bounded_replicas` | `() -> None` | — | — |
 | `test_self_hosted_server_acceptance_uses_internal_pinned_analogues` | `() -> None` | — | — |
 | `test_public_proxy_keeps_detailed_readiness_and_metrics_internal` | `() -> None` | — | — |
+| `test_public_proxy_routes_well_known_discovery_documents_to_backend` | `() -> None` | — | — |
 | `test_security_and_recovery_scripts_are_fail_closed` | `() -> None` | — | — |
 | `test_server_image_identity_is_baked_and_not_runtime_overridable` | `() -> None` | — | — |
 | `test_cutover_runbook_names_authority_timers_and_point_of_no_return` | `() -> None` | — | — |

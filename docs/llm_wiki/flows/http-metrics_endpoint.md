@@ -2,15 +2,15 @@
 
 **Entry point:** `metrics_endpoint` (`http`)
 **Source:** [app_main](../modules/app_main.md)
-**Modules touched:** [app_database](../modules/app_database.md), [app_main](../modules/app_main.md), [config](../modules/config.md), [database_config](../modules/database_config.md), and 4 more
+**Modules touched:** [app_database](../modules/app_database.md), [app_main](../modules/app_main.md), [app_maintenance](../modules/app_maintenance.md), [config](../modules/config.md), and 4 more
 
 **Complete modules touched:**
 
 - [app_database](../modules/app_database.md)
 - [app_main](../modules/app_main.md)
+- [app_maintenance](../modules/app_maintenance.md)
 - [config](../modules/config.md)
 - [database_config](../modules/database_config.md)
-- [maintenance](../modules/maintenance.md)
 - [observability](../modules/observability.md)
 - [time](../modules/time.md)
 - [upgrade_service](../modules/upgrade_service.md)
@@ -190,7 +190,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| metrics_endpoint | collect_metrics | 287 | `collect_metrics(data not statically known)` |
+| metrics_endpoint | collect_metrics | 288 | `collect_metrics(data not statically known)` |
 | collect_metrics | readiness_snapshot | 399 | `readiness_snapshot(data not statically known)` |
 | readiness_snapshot | get_settings | 252 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

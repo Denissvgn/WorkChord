@@ -85,20 +85,20 @@ flowchart LR
 | [AgentRunEvent](../entities/types_agent_AgentRunEvent.md) | Interface | 592 | — | — |
 | [AgentRun](../entities/types_agent_AgentRun.md) | Interface | 605 | — | — |
 | [AgentPipeline](../entities/AgentPipeline.md) | Interface | 633 | — | — |
-| [TaskTimelineItem](../entities/types_agent_TaskTimelineItem.md) | Interface | 643 | — | — |
-| [TaskTimelineResponse](../entities/types_agent_TaskTimelineResponse.md) | Interface | 654 | — | — |
-| [AgentTeamSkillPackage](../entities/types_agent_AgentTeamSkillPackage.md) | Interface | 670 | — | — |
-| [AgentTeamMemberSpec](../entities/types_agent_AgentTeamMemberSpec.md) | Interface | 676 | — | — |
-| [AgentTeamMaster](../entities/types_agent_AgentTeamMaster.md) | Interface | 691 | — | — |
-| [AgentTeamValidation](../entities/AgentTeamValidation.md) | Interface | 707 | — | — |
-| [AgentTeamPlanAction](../entities/types_agent_AgentTeamPlanAction.md) | Interface | 724 | — | — |
-| [AgentTeamPlan](../entities/AgentTeamPlan.md) | Interface | 741 | — | — |
-| [AgentTeamActionReceipt](../entities/types_agent_AgentTeamActionReceipt.md) | Interface | 751 | — | — |
-| [AgentTeamApplyResponse](../entities/types_agent_AgentTeamApplyResponse.md) | Interface | 765 | — | — |
-| [AgentTeamRuntimeHandoff](../entities/types_agent_AgentTeamRuntimeHandoff.md) | Interface | 780 | — | — |
-| [AgentTeamMemberStatus](../entities/types_agent_AgentTeamMemberStatus.md) | Interface | 799 | — | — |
-| [AgentTeamSetupStep](../entities/types_agent_AgentTeamSetupStep.md) | Interface | 828 | — | — |
-| [AgentTeamStatus](../entities/AgentTeamStatus.md) | Interface | 835 | — | — |
+| [TaskTimelineItem](../entities/types_agent_TaskTimelineItem.md) | Interface | 644 | — | — |
+| [TaskTimelineResponse](../entities/types_agent_TaskTimelineResponse.md) | Interface | 655 | — | — |
+| [AgentTeamSkillPackage](../entities/types_agent_AgentTeamSkillPackage.md) | Interface | 671 | — | — |
+| [AgentTeamMemberSpec](../entities/types_agent_AgentTeamMemberSpec.md) | Interface | 677 | — | — |
+| [AgentTeamMaster](../entities/types_agent_AgentTeamMaster.md) | Interface | 693 | — | — |
+| [AgentTeamValidation](../entities/AgentTeamValidation.md) | Interface | 709 | — | — |
+| [AgentTeamPlanAction](../entities/types_agent_AgentTeamPlanAction.md) | Interface | 726 | — | — |
+| [AgentTeamPlan](../entities/AgentTeamPlan.md) | Interface | 743 | — | — |
+| [AgentTeamActionReceipt](../entities/types_agent_AgentTeamActionReceipt.md) | Interface | 753 | — | — |
+| [AgentTeamApplyResponse](../entities/types_agent_AgentTeamApplyResponse.md) | Interface | 767 | — | — |
+| [AgentTeamRuntimeHandoff](../entities/types_agent_AgentTeamRuntimeHandoff.md) | Interface | 782 | — | — |
+| [AgentTeamMemberStatus](../entities/types_agent_AgentTeamMemberStatus.md) | Interface | 801 | — | — |
+| [AgentTeamSetupStep](../entities/types_agent_AgentTeamSetupStep.md) | Interface | 833 | — | — |
+| [AgentTeamStatus](../entities/AgentTeamStatus.md) | Interface | 840 | — | — |
 | [JsonPrimitive](../entities/JsonPrimitive.md) | Type alias | 3 | `string \| number \| boolean \| null` | — |
 | [JsonValue](../entities/JsonValue.md) | Type alias | 4 | `JsonPrimitive \| JsonValue[] \| { [key: string]: JsonValue }` | — |
 | [JsonObject](../entities/JsonObject.md) | Type alias | 5 | `{ [key: string]: JsonValue }` | — |
@@ -122,7 +122,7 @@ flowchart LR
 | [ModelAwareRoutingMode](../entities/ModelAwareRoutingMode.md) | Type alias | 116 | `'off' \| 'shadow' \| 'enforced'` | — |
 | [ModelAwareRoutingTopologyStatus](../entities/ModelAwareRoutingTopologyStatus.md) | Type alias | 118 | <pre><code>&#124; &#39;unavailable&#39;&#10;    &#124; &#39;not&#95;ready&#39;&#10;    &#124; &#39;ready&#39;</code></pre> | — |
 | [ModelAwareRoutingTopologySource](../entities/ModelAwareRoutingTopologySource.md) | Type alias | 123 | <pre><code>&#124; &#39;unavailable&#39;&#10;    &#124; &#39;agent&#45;team&#45;master&#45;v1&#39;</code></pre> | — |
-| [AgentTeamRole](../entities/AgentTeamRole.md) | Type alias | 659 | `'pm' \| 'worker' \| 'verifier'` | — |
-| [AgentTeamStepState](../entities/AgentTeamStepState.md) | Type alias | 660 | `'done' \| 'warn' \| 'blocked' \| 'todo'` | — |
-| [AgentTeamLifecycle](../entities/AgentTeamLifecycle.md) | Type alias | 661 | <pre><code>&#124; &#39;desired&#39;&#10;    &#124; &#39;configured&#39;&#10;    &#124; &#39;credential&#95;delivered&#39;&#10;    &#124; &#39;onboarding&#39;&#10;    &#124; &#39;connected&#39;&#10;    &#124; &#39;runtime&#95;ready&#39;&#10;    &#124; &#39;disabled&#39;</code></pre> | — |
-| [AgentTeamReconciliationClass](../entities/types_agent_AgentTeamReconciliationClass.md) | Type alias | 715 | <pre><code>&#124; &#39;create&#39;&#10;    &#124; &#39;safe&#95;update&#39;&#10;    &#124; &#39;no&#95;change&#39;&#10;    &#124; &#39;blocked&#95;conflict&#39;&#10;    &#124; &#39;requires&#95;replacement&#39;&#10;    &#124; &#39;propose&#95;disable&#39;&#10;    &#124; &#39;unmanaged&#39;</code></pre> | — |
+| [AgentTeamRole](../entities/AgentTeamRole.md) | Type alias | 660 | `'pm' \| 'worker' \| 'verifier'` | — |
+| [AgentTeamStepState](../entities/AgentTeamStepState.md) | Type alias | 661 | `'done' \| 'warn' \| 'blocked' \| 'todo'` | — |
+| [AgentTeamLifecycle](../entities/AgentTeamLifecycle.md) | Type alias | 662 | <pre><code>&#124; &#39;desired&#39;&#10;    &#124; &#39;configured&#39;&#10;    &#124; &#39;credential&#95;delivered&#39;&#10;    &#124; &#39;onboarding&#39;&#10;    &#124; &#39;connected&#39;&#10;    &#124; &#39;runtime&#95;ready&#39;&#10;    &#124; &#39;disabled&#39;</code></pre> | — |
+| [AgentTeamReconciliationClass](../entities/types_agent_AgentTeamReconciliationClass.md) | Type alias | 717 | <pre><code>&#124; &#39;create&#39;&#10;    &#124; &#39;safe&#95;update&#39;&#10;    &#124; &#39;no&#95;change&#39;&#10;    &#124; &#39;blocked&#95;conflict&#39;&#10;    &#124; &#39;requires&#95;replacement&#39;&#10;    &#124; &#39;propose&#95;disable&#39;&#10;    &#124; &#39;unmanaged&#39;</code></pre> | — |

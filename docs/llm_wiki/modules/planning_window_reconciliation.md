@@ -34,6 +34,7 @@ An operator can recover existing ownership when the original PM command, authent
 | `datetime` | `date`, `datetime` |
 | `hashlib` | `hashlib` |
 | `json` | `json` |
+| `re` | `re` |
 | `secrets` | `secrets` |
 | `sqlalchemy` | `Text`, `cast`, `func`, `literal`, `literal_column`, `select`, `update` |
 | `threading` | `Lock` |
@@ -56,7 +57,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (4) |
+| Inbound | `backend` (5) |
 | Outbound | `backend` (15) |
 
 ### External packages
@@ -65,14 +66,14 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [SnapshotIdentity](../entities/SnapshotIdentity.md) | 37 | — | — |
-| [_SavedTask](../entities/SavedTask.md) | 46 | — | — |
+| [SnapshotIdentity](../entities/SnapshotIdentity.md) | 40 | — | — |
+| [_SavedTask](../entities/SavedTask.md) | 49 | — | — |
 
 ## Functions
 

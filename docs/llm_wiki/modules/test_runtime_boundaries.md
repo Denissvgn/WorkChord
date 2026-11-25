@@ -65,7 +65,7 @@ flowchart LR
     n9 --> n8
     click n0 "../modules/config.md"
     click n1 "../modules/app_main.md"
-    click n2 "../modules/maintenance.md"
+    click n2 "../modules/app_maintenance.md"
     click n3 "../modules/models_agent.md"
     click n4 "../modules/user_session.md"
     click n5 "../modules/agent_service.md"
@@ -81,7 +81,7 @@ flowchart LR
 |---|---|
 | Outbound | [config](../modules/config.md) |
 | Outbound | [app_main](../modules/app_main.md) |
-| Outbound | [maintenance](../modules/maintenance.md) |
+| Outbound | [app_maintenance](../modules/app_maintenance.md) |
 | Outbound | [models_agent](../modules/models_agent.md) |
 | Outbound | [user_session](../modules/user_session.md) |
 | Outbound | [agent_service](../modules/agent_service.md) |

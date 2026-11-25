@@ -1,6 +1,6 @@
 # TeamService
 
-**Location:** `backend/app/services/team_service.py:39`
+**Location:** `backend/app/services/team_service.py:45`
 **Kind:** Class
 **Bases:** —
 **Module:** [team_service](../modules/team_service.md)
@@ -29,6 +29,7 @@ Service for team member operations.
 | `get_profile` | *(async)* `(profile_id: int) -> TeamMemberProfile \| None` | — | Get a reusable capability profile by id. |
 | `create_profile` | *(async)* `(data: TeamMemberProfileCreate, *, commit: bool = True) -> TeamMemberProfile` | — | Create a profile, optionally leaving commit ownership to the caller. |
 | `update_profile` | *(async)* `(profile_id: int, data: TeamMemberProfileUpdate, *, commit: bool = True) -> TeamMemberProfile \| None` | `@schedule_input_command('profile')` | Update profile metadata, optionally deferring the commit. |
+| `bind_profile_seed_key` | *(async)* `(profile_id: int, data: TeamMemberProfileSeedKeyBind, *, commit: bool = True) -> TeamMemberProfile \| None` | `@atomic_command` | Bind a seed key once to an existing unkeyed profile, in place. |
 | `delete_profile` | *(async)* `(profile_id: int) -> bool` | `@schedule_input_command('profile')` | Delete a reusable profile and detach linked team members. |
 | `add_profile_skill` | *(async)* `(profile_id: int, data: TeamMemberProfileSkillCreate) -> TeamMemberProfileSkill \| None` | `@schedule_input_command('profile')` | Add a skill or weakness to a profile. |
 | `update_profile_skill` | *(async)* `(profile_id: int, skill_id: int, data: TeamMemberProfileSkillUpdate) -> TeamMemberProfileSkill \| None` | `@schedule_input_command('profile')` | Update a profile skill or weakness. |
@@ -66,7 +67,7 @@ flowchart LR
     n9["get_gantt_data (backend/app/routers/gantt.py)"]
     n10["backend/app/routers/snapshots.py"]
     n11["add_vacation (backend/app/routers/team.py)"]
-    n12["create_team_member (backend/app/routers/team.py)"]
+    n12["bind_team_member_profile_seed_key (backend/app/routers/team.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -98,7 +99,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [team_service](../modules/team_service.md) | 31 | — |
+| [team_service](../modules/team_service.md) | 32 | — |
 
 ### References
 
@@ -115,6 +116,6 @@ flowchart LR
 | `get_gantt_data` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
 | `snapshots` | import | [snapshots](../modules/snapshots.md) | — |
 | `add_vacation` | type_reference | [routers_team](../modules/routers_team.md) | — |
-| `create_team_member` | type_reference | [routers_team](../modules/routers_team.md) | — |
+| `bind_team_member_profile_seed_key` | type_reference | [routers_team](../modules/routers_team.md) | — |
 
-> References: showing 12 of 62 logical references; 50 omitted by the 12-row generated summary limit.
+> References: showing 12 of 67 logical references; 55 omitted by the 12-row generated summary limit.

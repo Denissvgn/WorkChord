@@ -11,8 +11,8 @@ Contract and service coverage for portable agent-team setup.
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
-| `app` | `mcp_agent_tools` |
-| `app.authority` | `internal_authority` |
+| `app` | `mcp_agent_tools`, `database` |
+| `app.authority` | `internal_authority`, `internal_authority` |
 | `app.commands` | `command_transaction` |
 | `app.config` | `get_settings` |
 | `app.database` | `get_db` |
@@ -22,9 +22,10 @@ Contract and service coverage for portable agent-team setup.
 | `app.models.identity` | `Principal`, `Principal`, `WorkspaceMembership` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.agent_team_setup` | `MAX_AGENT_TEAM_MANIFEST_BYTES`, `AgentTeamApplyRequest`, `AgentTeamCurrentMember`, `AgentTeamCurrentSnapshot`, `AgentTeamManifestRequest`, `AgentTeamMaster`, `AgentTeamPlanRequest`, `AgentTeamReconciliationClass`, `AgentTeamRuntimeAcknowledgement`, `parse_agent_team_master`, `reconcile_agent_team_master` |
+| `app.services.agent_routing_policy` | `evaluate_model_envelope` |
 | `app.services.agent_service` | `AgentService`, `hash_api_key` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupConflictError`, `AgentTeamSetupService` |
-| `app.services.identity_service` | `initialize_control_plane`, `initialize_control_plane` |
+| `app.services.identity_service` | `initialize_control_plane`, `initialize_control_plane`, `initialize_control_plane` |
 | `app.utils.time` | `utc_now` |
 | `copy` | `deepcopy` |
 | `httpx` | `httpx` |
@@ -33,7 +34,7 @@ Contract and service coverage for portable agent-team setup.
 | `pydantic` | `ValidationError` |
 | `pytest` | `pytest` |
 | `sqlalchemy` | `select` |
-| `sqlalchemy.ext.asyncio` | `AsyncSession` |
+| `sqlalchemy.ext.asyncio` | `AsyncSession`, `async_sessionmaker`, `create_async_engine` |
 | `tests.test_delivery_scenarios` | `delivery_store` |
 | `typing` | `Any` |
 
@@ -55,8 +56,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (5) |
-| Outbound | `backend` (16) |
+| Inbound | `backend` (6) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
@@ -64,7 +65,7 @@ flowchart LR
 |---|---:|---:|
 | python | 4 | 1 |
 
-> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -90,3 +91,9 @@ flowchart LR
 | `test_topologies_share_catalog_and_profile_references_not_identities` | *(async)* `(db_session: AsyncSession) -> None` | `@pytest.mark.asyncio` | — |
 | `test_revision_bound_acknowledgement_with_database_scenarios` | *(async)* `(delivery_store, onboarding_access_mode)` | — | — |
 | `test_starting_points_offer_a_valid_catalog_filled_template_and_the_applied_manifest` | *(async)* `(db_session: AsyncSession) -> None` | — | — |
+| `db_session_factory` | *(async)* `(request, db_session_factory)` | `@pytest.fixture` | — |
+| `_apply_example` | *(async)* `(db_session: AsyncSession, payload: dict[str, Any], key: str)` | — | — |
+| `test_declared_tool_tags_are_optional_validated_and_digest_neutral` | `() -> None` | `@pytest.mark.contract` | — |
+| `test_declared_tool_tags_stay_unverified_until_the_binding_carries_them` | *(async)* `(db_session: AsyncSession) -> None` | `@both_databases`, `@pytest.mark.asyncio` | — |
+| `test_reconciliation_without_declarations_records_no_tool_capabilities` | *(async)* `(db_session: AsyncSession) -> None` | `@both_databases`, `@pytest.mark.asyncio` | — |
+| `test_largest_declaration_keeps_apply_status_and_handoff_valid` | *(async)* `(db_session: AsyncSession) -> None` | `@both_databases`, `@pytest.mark.asyncio` | — |

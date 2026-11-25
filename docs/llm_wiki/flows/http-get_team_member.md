@@ -57,8 +57,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_team_member | service.get_by_id | 210 | `service.get_by_id(member_id)` |
-| get_team_member | HTTPException | 212 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_team_member | service.get_by_id | 229 | `service.get_by_id(member_id)` |
+| get_team_member | HTTPException | 231 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 
 ### Boundary effects
 
@@ -68,8 +68,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_team_member` | `service.get_by_id` | 210 |
-| external_call | `get_team_member` | `HTTPException` | 212 |
+| unresolved_call | `get_team_member` | `service.get_by_id` | 229 |
+| external_call | `get_team_member` | `HTTPException` | 231 |
 
 ## Behavior
 

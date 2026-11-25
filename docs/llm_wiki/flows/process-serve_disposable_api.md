@@ -2,10 +2,11 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [serve_disposable_api](../modules/serve_disposable_api.md)
-**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [commands](../modules/commands.md), [config](../modules/config.md), and 20 more
+**Modules touched:** [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [commands](../modules/commands.md), and 20 more
 
 **Complete modules touched:**
 
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [calendar_service](../modules/calendar_service.md)
 - [commands](../modules/commands.md)
@@ -14,7 +15,6 @@
 - [github_status_automation_service](../modules/github_status_automation_service.md)
 - [identity_service](../modules/identity_service.md)
 - [label_service](../modules/label_service.md)
-- [maintenance](../modules/maintenance.md)
 - [models_calendar](../modules/models_calendar.md)
 - [models_github](../modules/models_github.md)
 - [models_identity](../modules/models_identity.md)
@@ -58,8 +58,8 @@ sequenceDiagram
     participant p3 as migration_connection
     participant p4 as inspect_database
     participant p5 as _validate_managed_revision
-    participant p6 as inspect_project_identity
-    participant p7 as run_post_migration_repairs
+    participant p6 as run_post_migration_repairs
+    participant p7 as inspect_project_identity
     participant p8 as _backup_precondition
     participant p9 as _run_schema_upgrade
     participant p10 as database_configuration
@@ -75,12 +75,12 @@ sequenceDiagram
     participant p20 as SavedViewService.seed_default_views
     participant p21 as GitHubStatusAutomationService.seed_default_rules
     participant p22 as RuntimeSettingsService.migrate_legacy_email_settings
-    participant p23 as parse_database_configuration
-    participant p24 as require_identity_writes
-    participant p25 as sqlite_database_path
-    participant p26 as get_settings
-    participant p27 as head_revision
-    participant p28 as SavedViewService._normalized_system_definition
+    participant p23 as history_values
+    participant p24 as parse_database_configuration
+    participant p25 as require_identity_writes
+    participant p26 as sqlite_database_path
+    participant p27 as get_settings
+    participant p28 as head_revision
     participant p29 as SystemExit
     participant p30 as url.get_backend_name (scripts/ci/serve_disposable_api.py:main)
     p0->>p1: assert_safe_test_database_url
@@ -88,36 +88,36 @@ sequenceDiagram
     p2->>p3: migration_connection
     p2->>p4: inspect_database
     p2->>p5: _validate_managed_revision
-    p2->>p6: inspect_project_identity
-    p2->>p7: run_post_migration_repairs
+    p2->>p6: run_post_migration_repairs
+    p2->>p7: inspect_project_identity
     p2->>p8: _backup_precondition
     p2->>p9: _run_schema_upgrade
     p3->>p10: database_configuration
     p4->>p11: _inspect_database_connection
-    p7->>p12: require_background_writes_enabled
+    p6->>p12: require_background_writes_enabled
     p3->>p13: _sync_engine
-    p7->>p14: initialize_control_plane
-    p7->>p15: commit_or_flush
+    p6->>p14: initialize_control_plane
+    p6->>p15: commit_or_flush
     p8->>p16: backup_sqlite_database
-    p7->>p17: CalendarService.get_or_create_default
-    p7->>p18: TemplateService.seed_default_templates
-    p7->>p19: LabelService.seed_default_labels
-    p7->>p20: SavedViewService.seed_default_views
-    p7->>p21: GitHubStatusAutomationService.seed_default_rules
-    p7->>p22: RuntimeSettingsService.migrate_legacy_email_settings
-    p10->>p23: parse_database_configuration
-    p14->>p24: require_identity_writes
-    p16->>p25: sqlite_database_path
-    p10->>p26: get_settings
-    p11->>p27: head_revision
-    p20->>p28: SavedViewService._normalized_system_definition
+    p6->>p17: CalendarService.get_or_create_default
+    p6->>p18: TemplateService.seed_default_templates
+    p6->>p19: LabelService.seed_default_labels
+    p6->>p20: SavedViewService.seed_default_views
+    p6->>p21: GitHubStatusAutomationService.seed_default_rules
+    p6->>p22: RuntimeSettingsService.migrate_legacy_email_settings
+    p7->>p23: history_values
+    p10->>p24: parse_database_configuration
+    p14->>p25: require_identity_writes
+    p16->>p26: sqlite_database_path
+    p10->>p27: get_settings
+    p11->>p28: head_revision
     p0-->>p29: SystemExit('The browser harness requires its own temporary SQLite database')
     p0-->>p30: url.get_backend_name (scripts/ci/serve_disposable_api.py:main)
 ```
 
-> Call sequence diagram shows 30 of 583 interactions; 553 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 585 interactions; 555 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 170 (169 omitted); unresolved 1 of 212 (211 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 169 (168 omitted); unresolved 1 of 215 (214 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -131,7 +131,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/database_config.py:parse_database_configuration` | 26 | [backend/app/database_config.py](../modules/database_config.md) | internal | 45 |
 | `backend/app/database_config.py:_settings_value` | 29 | - | external | 1 |
 | `backend/app/database_config.py:_settings_value` | 29 | [backend/app/database_config.py](../modules/database_config.md) | internal | 1 |
-> Omission summary shows 8 of 137 groups; 129 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 144 groups; 136 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -144,9 +144,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 202; effect analysis evaluated: 110, partial: 1, unavailable: 91. Counts include steps omitted from the displayed trace.
+Source steps: 202; effect analysis evaluated: 113, partial: 1, unavailable: 88. Counts include steps omitted from the displayed trace.
 
-Collector observations for 111 source steps with known totals: observed: 440, emitted: 432, omitted: 8. Unavailable totals are excluded.
+Collector observations for 114 source steps with known totals: observed: 455, emitted: 447, omitted: 8. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

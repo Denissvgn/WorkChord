@@ -2,21 +2,22 @@
 
 **Entry point:** `workspace_get_team_member_workload` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), [calendar_service](../modules/calendar_service.md), and 17 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), and 18 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [calendar_rules](../modules/calendar_rules.md)
 - [calendar_service](../modules/calendar_service.md)
+- [capacity_adjustments](../modules/capacity_adjustments.md)
 - [capacity_service](../modules/capacity_service.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
 - [identity_service](../modules/identity_service.md)
-- [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [mcp_server](../modules/mcp_server.md)
 - [models_identity](../modules/models_identity.md)
@@ -58,12 +59,12 @@ sequenceDiagram
     participant p20 as CalendarService.get_working_dates
     participant p21 as CapacityService.absence_ranges
     participant p22 as DeliveryDependencyService.reconcile
-    participant p23 as TeamService._attach_assignee_profiles
-    participant p24 as DiscussionService.enqueue
-    participant p25 as actor_has_scope
-    participant p26 as AnnualCalendars.for_iteration
-    participant p27 as commit_or_flush
-    participant p28 as DeliveryDependencyService.validate_cycles
+    participant p23 as load_dated_availability
+    participant p24 as TeamService._attach_assignee_profiles
+    participant p25 as DiscussionService.enqueue
+    participant p26 as actor_has_scope
+    participant p27 as AnnualCalendars.for_iteration
+    participant p28 as commit_or_flush
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -88,33 +89,33 @@ sequenceDiagram
     p8->>p20: CalendarService.get_working_dates
     p8->>p21: CapacityService.absence_ranges
     p10->>p22: DeliveryDependencyService.reconcile
-    p7->>p23: TeamService._attach_assignee_profiles
-    p10->>p24: DiscussionService.enqueue
-    p15->>p25: actor_has_scope
-    p17->>p26: AnnualCalendars.for_iteration
-    p16->>p27: commit_or_flush
-    p22->>p28: DeliveryDependencyService.validate_cycles
+    p8->>p23: load_dated_availability
+    p7->>p24: TeamService._attach_assignee_profiles
+    p10->>p25: DiscussionService.enqueue
+    p15->>p26: actor_has_scope
+    p17->>p27: AnnualCalendars.for_iteration
+    p16->>p28: commit_or_flush
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 398 interactions; 368 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 418 interactions; 388 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 122 (121 omitted); unresolved 1 of 168 (167 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 126 (125 omitted); unresolved 1 of 180 (179 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
 | `backend/app/config.py:get_settings` | 4 | [backend/app/config.py](../modules/config.md) | internal | 1 |
-| `backend/app/maintenance.py:enforce_mcp_access` | 3 | [backend/app/maintenance.py](../modules/maintenance.md) | internal | 2 |
+| `backend/app/maintenance.py:enforce_mcp_access` | 3 | [backend/app/maintenance.py](../modules/app_maintenance.md) | internal | 2 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | external | 4 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | unresolved | 3 |
 | `backend/app/mcp_server.py:_agent_context` | 15 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 3 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 117 groups; 109 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 121 groups; 113 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -127,9 +128,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 109; effect analysis evaluated: 71, partial: 2, unavailable: 36. Counts include steps omitted from the displayed trace.
+Source steps: 113; effect analysis evaluated: 73, partial: 2, unavailable: 38. Counts include steps omitted from the displayed trace.
 
-Collector observations for 73 source steps with known totals: observed: 302, emitted: 290, omitted: 12. Unavailable totals are excluded.
+Collector observations for 75 source steps with known totals: observed: 311, emitted: 299, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -177,10 +178,10 @@ flowchart LR
     s6 -. "scope.endswith(':write')" .-> s12
     click s1 "../modules/mcp_server.md"
     click s2 "../modules/mcp_server.md"
-    click s3 "../modules/maintenance.md"
+    click s3 "../modules/app_maintenance.md"
     click s4 "../modules/config.md"
     click s5 "../modules/config.md"
-    click s6 "../modules/maintenance.md"
+    click s6 "../modules/app_maintenance.md"
 ```
 
 ### Step data
@@ -204,7 +205,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_get_team_member_workload | _tool_call | 1687 | `_tool_call((...), ...)` |
+| workspace_get_team_member_workload | _tool_call | 1860 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

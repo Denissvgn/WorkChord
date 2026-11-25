@@ -1,6 +1,6 @@
 # ServerAcceptanceConfig
 
-**Location:** `backend/app/autonomy/server_acceptance.py:289`
+**Location:** `backend/app/autonomy/server_acceptance.py:290`
 **Kind:** Class
 **Bases:** —
 **Module:** [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md)

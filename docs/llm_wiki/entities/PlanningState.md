@@ -31,10 +31,12 @@ flowchart LR
     n3["backend/app/models/__init__.py"]
     n4["backend/app/services/allocation_removal.py"]
     n5["backend/app/services/capacity_service.py"]
-    n6["backend/tests/test_profile_capacity.py"]
-    n7["backend/tests/test_task_discussion.py"]
-    n8["backend/tests/test_team_pm_recovery.py"]
-    n9["backend/tests/test_unused_allocation.py"]
+    n6["backend/tests/test_capacity_adjustments.py"]
+    n7["backend/tests/test_iteration_date_move.py"]
+    n8["backend/tests/test_profile_capacity.py"]
+    n9["backend/tests/test_task_discussion.py"]
+    n10["backend/tests/test_team_pm_recovery.py"]
+    n11["backend/tests/test_unused_allocation.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -44,16 +46,20 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
+    n11 --> n0
     click n0 "../modules/models_capacity.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/commands.md"
     click n3 "../modules/models___init__.md"
     click n4 "../modules/allocation_removal.md"
     click n5 "../modules/capacity_service.md"
-    click n6 "../modules/test_profile_capacity.md"
-    click n7 "../modules/test_task_discussion.md"
-    click n8 "../modules/test_team_pm_recovery.md"
-    click n9 "../modules/test_unused_allocation.md"
+    click n6 "../modules/test_capacity_adjustments.md"
+    click n7 "../modules/test_iteration_date_move.md"
+    click n8 "../modules/test_profile_capacity.md"
+    click n9 "../modules/test_task_discussion.md"
+    click n10 "../modules/test_team_pm_recovery.md"
+    click n11 "../modules/test_unused_allocation.md"
 ```
 
 ### Summary
@@ -76,6 +82,8 @@ flowchart LR
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `allocation_removal` | import | [allocation_removal](../modules/allocation_removal.md) | — |
 | `capacity_service` | import | [capacity_service](../modules/capacity_service.md) | — |
+| `test_capacity_adjustments` | import | [test_capacity_adjustments](../modules/test_capacity_adjustments.md) | — |
+| `test_iteration_date_move` | import | [test_iteration_date_move](../modules/test_iteration_date_move.md) | — |
 | `test_profile_capacity` | import | [test_profile_capacity](../modules/test_profile_capacity.md) | — |
 | `test_task_discussion` | import | [test_task_discussion](../modules/test_task_discussion.md) | — |
 | `test_team_pm_recovery` | import | [test_team_pm_recovery](../modules/test_team_pm_recovery.md) | — |

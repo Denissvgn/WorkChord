@@ -31,78 +31,29 @@ Project allocation floors, dependent preservation and transactional rebuilds.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/models/calendar.py"]
-    n1["backend/app/models/identity.py"]
-    n2["backend/app/models/iteration.py"]
-    n3["backend/app/models/project.py"]
-    n4["backend/app/models/task.py"]
-    n5["backend/app/models/time_entry.py"]
-    n6["backend/app/services/upgrade_service.py"]
-    n7["backend/tests/database_migration/test_postgresql_transfer.py"]
-    n8["backend/tests/database_migration/test_project_identity_scope.py"]
-    n9["backend/tests/migrations/test_project_identity.py"]
-    n10["backend/tests/support/__init__.py"]
-    n0 --> n2
-    n2 --> n0
-    n2 --> n3
-    n2 --> n4
-    n3 --> n2
-    n3 --> n4
-    n4 --> n2
-    n4 --> n3
-    n7 --> n0
-    n7 --> n2
-    n7 --> n3
-    n7 --> n4
-    n7 --> n5
-    n7 --> n6
-    n7 --> n9
-    n8 --> n1
-    n8 --> n3
-    n8 --> n5
-    n8 --> n6
-    n8 --> n9
-    n9 --> n0
-    n9 --> n1
-    n9 --> n2
-    n9 --> n3
-    n9 --> n4
-    n9 --> n5
-    n9 --> n6
-    n9 --> n10
-    click n0 "../modules/models_calendar.md"
-    click n1 "../modules/models_identity.md"
-    click n2 "../modules/models_iteration.md"
-    click n3 "../modules/models_project.md"
-    click n4 "../modules/models_task.md"
-    click n5 "../modules/models_time_entry.md"
-    click n6 "../modules/upgrade_service.md"
-    click n7 "../modules/test_postgresql_transfer.md"
-    click n8 "../modules/test_project_identity_scope.md"
-    click n9 "../modules/test_project_identity.md"
-    click n10 "../modules/support___init__.md"
+    n0["backend"]
+    n1["backend/tests/migrations/test_project_identity.py"]
+    n0 --> n1
+    n1 --> n0
+    click n1 "../modules/test_project_identity.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [test_postgresql_transfer](../modules/test_postgresql_transfer.md) |
-| Inbound | [test_project_identity_scope](../modules/test_project_identity_scope.md) |
-| Outbound | [models_calendar](../modules/models_calendar.md) |
-| Outbound | [models_identity](../modules/models_identity.md) |
-| Outbound | [models_iteration](../modules/models_iteration.md) |
-| Outbound | [models_project](../modules/models_project.md) |
-| Outbound | [models_task](../modules/models_task.md) |
-| Outbound | [models_time_entry](../modules/models_time_entry.md) |
-| Outbound | [upgrade_service](../modules/upgrade_service.md) |
-| Outbound | [support___init__](../modules/support___init__.md) |
+| Inbound | `backend` (4) |
+| Outbound | `backend` (8) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 3 | 1 |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

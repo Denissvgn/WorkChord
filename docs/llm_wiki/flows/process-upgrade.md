@@ -2,10 +2,11 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [upgrade](../modules/upgrade.md)
-**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [commands](../modules/commands.md), [config](../modules/config.md), and 19 more
+**Modules touched:** [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [commands](../modules/commands.md), and 19 more
 
 **Complete modules touched:**
 
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [calendar_service](../modules/calendar_service.md)
 - [commands](../modules/commands.md)
@@ -14,7 +15,6 @@
 - [github_status_automation_service](../modules/github_status_automation_service.md)
 - [identity_service](../modules/identity_service.md)
 - [label_service](../modules/label_service.md)
-- [maintenance](../modules/maintenance.md)
 - [models_calendar](../modules/models_calendar.md)
 - [models_github](../modules/models_github.md)
 - [models_identity](../modules/models_identity.md)
@@ -57,9 +57,9 @@ sequenceDiagram
     participant p15 as initialize_control_plane
     participant p16 as commit_or_flush
     participant p17 as CalendarService.get_or_create_default
-    participant p18 as inspect_project_identity
-    participant p19 as TemplateService.seed_default_templates
-    participant p20 as LabelService.seed_default_labels
+    participant p18 as TemplateService.seed_default_templates
+    participant p19 as LabelService.seed_default_labels
+    participant p20 as inspect_project_identity
     participant p21 as SavedViewService.seed_default_views
     participant p22 as GitHubStatusAutomationService.seed_default_rules
     participant p23 as _backup_precondition
@@ -87,9 +87,9 @@ sequenceDiagram
     p11->>p15: initialize_control_plane
     p11->>p16: commit_or_flush
     p11->>p17: CalendarService.get_or_create_default
-    p7->>p18: inspect_project_identity
-    p11->>p19: TemplateService.seed_default_templates
-    p11->>p20: LabelService.seed_default_labels
+    p11->>p18: TemplateService.seed_default_templates
+    p11->>p19: LabelService.seed_default_labels
+    p7->>p20: inspect_project_identity
     p11->>p21: SavedViewService.seed_default_views
     p11->>p22: GitHubStatusAutomationService.seed_default_rules
     p7->>p23: _backup_precondition
@@ -102,9 +102,9 @@ sequenceDiagram
     p0-->>p30: build_parser().parse_args(argv)
 ```
 
-> Call sequence diagram shows 30 of 486 interactions; 456 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 488 interactions; 458 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 134 (133 omitted); unresolved 1 of 192 (191 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 133 (132 omitted); unresolved 1 of 195 (194 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -118,7 +118,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/upgrade_service.py:_current_revision` | 19 | - | external | 4 |
 | `backend/app/services/upgrade_service.py:_current_revision` | 19 | - | unresolved | 4 |
 | `backend/app/services/upgrade_service.py:head_revision` | 29 | - | external | 2 |
-> Omission summary shows 8 of 132 groups; 124 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 138 groups; 130 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -131,9 +131,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 161; effect analysis evaluated: 95, partial: 1, unavailable: 65. Counts include steps omitted from the displayed trace.
+Source steps: 161; effect analysis evaluated: 98, partial: 1, unavailable: 62. Counts include steps omitted from the displayed trace.
 
-Collector observations for 96 source steps with known totals: observed: 376, emitted: 368, omitted: 8. Unavailable totals are excluded.
+Collector observations for 99 source steps with known totals: observed: 391, emitted: 383, omitted: 8. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

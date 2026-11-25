@@ -73,9 +73,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| delete_team_member_profile_skill | service.delete_profile_skill | 174 | `service.delete_profile_skill(profile_id, skill_id)` |
-| delete_team_member_profile_skill | HTTPException | 176 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| delete_team_member_profile_skill | MessageResponse | 180 | `MessageResponse(message=..., success=True)` |
+| delete_team_member_profile_skill | service.delete_profile_skill | 193 | `service.delete_profile_skill(profile_id, skill_id)` |
+| delete_team_member_profile_skill | HTTPException | 195 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| delete_team_member_profile_skill | MessageResponse | 199 | `MessageResponse(message=..., success=True)` |
 
 ### Boundary effects
 
@@ -85,8 +85,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `delete_team_member_profile_skill` | `service.delete_profile_skill` | 174 |
-| external_call | `delete_team_member_profile_skill` | `HTTPException` | 176 |
+| unresolved_call | `delete_team_member_profile_skill` | `service.delete_profile_skill` | 193 |
+| external_call | `delete_team_member_profile_skill` | `HTTPException` | 195 |
 
 ## Behavior
 

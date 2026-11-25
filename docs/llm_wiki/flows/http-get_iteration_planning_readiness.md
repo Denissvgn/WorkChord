@@ -57,8 +57,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_iteration_planning_readiness | service.get_planning_readiness_summary | 187 | `service.get_planning_readiness_summary(iteration_id)` |
-| get_iteration_planning_readiness | HTTPException | 189 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_iteration_planning_readiness | service.get_planning_readiness_summary | 206 | `service.get_planning_readiness_summary(iteration_id)` |
+| get_iteration_planning_readiness | HTTPException | 208 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 
 ### Boundary effects
 
@@ -68,8 +68,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_iteration_planning_readiness` | `service.get_planning_readiness_summary` | 187 |
-| external_call | `get_iteration_planning_readiness` | `HTTPException` | 189 |
+| unresolved_call | `get_iteration_planning_readiness` | `service.get_planning_readiness_summary` | 206 |
+| external_call | `get_iteration_planning_readiness` | `HTTPException` | 208 |
 
 ## Behavior
 

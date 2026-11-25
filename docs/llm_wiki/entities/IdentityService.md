@@ -97,4 +97,4 @@ flowchart LR
 | `test_guard_admits_only_the_discovery_the_command_announced` | call | [test_agent_discovery_report](../modules/test_agent_discovery_report.md) | 1 |
 | `test_annual_selection_and_forecast_preserve_live_ownership` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
 
-> References: showing 12 of 32 logical references; 20 omitted by the 12-row generated summary limit.
+> References: showing 12 of 35 logical references; 23 omitted by the 12-row generated summary limit.

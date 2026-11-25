@@ -2,15 +2,15 @@
 
 **Entry point:** `rotate_session` (`http`)
 **Source:** [routers_session](../modules/routers_session.md)
-**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), [identity_service](../modules/identity_service.md), and 4 more
+**Modules touched:** [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), and 4 more
 
 **Complete modules touched:**
 
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [identity_service](../modules/identity_service.md)
-- [maintenance](../modules/maintenance.md)
 - [routers_session](../modules/routers_session.md)
 - [session_service](../modules/session_service.md)
 - [time](../modules/time.md)
@@ -163,7 +163,7 @@ flowchart LR
     click s3 "../modules/identity_service.md"
     click s4 "../modules/config.md"
     click s5 "../modules/config.md"
-    click s6 "../modules/maintenance.md"
+    click s6 "../modules/app_maintenance.md"
     click s7 "../modules/config.md"
     click s8 "../modules/time.md"
     click s11 "../modules/time.md"

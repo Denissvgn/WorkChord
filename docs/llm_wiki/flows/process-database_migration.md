@@ -2,10 +2,11 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [cli_database_migration](../modules/cli_database_migration.md)
-**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [catalog](../modules/catalog.md), [cli_database_migration](../modules/cli_database_migration.md), and 24 more
+**Modules touched:** [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [catalog](../modules/catalog.md), and 24 more
 
 **Complete modules touched:**
 
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [calendar_service](../modules/calendar_service.md)
 - [catalog](../modules/catalog.md)
@@ -18,7 +19,6 @@
 - [github_status_automation_service](../modules/github_status_automation_service.md)
 - [identity_service](../modules/identity_service.md)
 - [label_service](../modules/label_service.md)
-- [maintenance](../modules/maintenance.md)
 - [models_calendar](../modules/models_calendar.md)
 - [models_github](../modules/models_github.md)
 - [models_identity](../modules/models_identity.md)
@@ -107,9 +107,9 @@ sequenceDiagram
     p0-->>p30: build_parser().parse_args(argv)
 ```
 
-> Call sequence diagram shows 30 of 1437 interactions; 1407 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 1439 interactions; 1409 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 433 (432 omitted); unresolved 1 of 533 (532 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 432 (431 omitted); unresolved 1 of 536 (535 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -123,7 +123,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/database_migration/manifest.py:read_document` | 43 | - | external | 2 |
 | `backend/app/database_migration/manifest.py:read_document` | 43 | - | unresolved | 1 |
 | `backend/app/database_migration/manifest.py:read_document` | 43 | [backend/app/database_migration/manifest.py](../modules/database_migration_manifest.md) | internal | 3 |
-> Omission summary shows 8 of 338 groups; 330 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 344 groups; 336 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -136,9 +136,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 472; effect analysis evaluated: 295, partial: 9, unavailable: 168. Counts include steps omitted from the displayed trace.
+Source steps: 472; effect analysis evaluated: 298, partial: 9, unavailable: 165. Counts include steps omitted from the displayed trace.
 
-Collector observations for 304 source steps with known totals: observed: 1145, emitted: 1120, omitted: 25. Unavailable totals are excluded.
+Collector observations for 307 source steps with known totals: observed: 1160, emitted: 1135, omitted: 25. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

@@ -1,6 +1,6 @@
 # AgentTeamMemberStatus
 
-**Location:** `backend/app/schemas/agent_team_setup.py:941`
+**Location:** `backend/app/schemas/agent_team_setup.py:982`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
@@ -39,6 +39,9 @@ Separates desired/configured identity, package acknowledgement, current or stale
 | `availability` | `Literal['availability_unknown']` | `availability` | No | No | `'availability_unknown'` | — | — | — |
 | `blocker_codes` | `tuple[str, ...]` | `blocker_codes` | No | No | `()` | max_length=32 | — | — |
 | `handoff` | `AgentTeamRuntimeHandoff \| None` | `handoff` | No | Yes | `None` | — | — | — |
+| `declared_tool_tags` | `dict[str, tuple[str, ...]]` | `declared_tool_tags` | No | No | factory: `dict` | — | — | — |
+| `unverified_tool_tags` | `dict[str, tuple[str, ...]]` | `unverified_tool_tags` | No | No | factory: `dict` | — | — | — |
+| `tool_capability_next_action` | `str \| None` | `tool_capability_next_action` | No | Yes | `None` | max_length=500 | — | — |
 
 ## Methods
 
@@ -63,7 +66,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_team_setup](../modules/agent_team_setup.md) | 0 | `accepted_assignments`, `acknowledgement_state`, `actor_id`, `actor_key`, `actor_name`, `availability`, `binding_revisions`, `blocker_codes`, `configured`, `connection_state`, `credential_delivery_state`, `desired` |
+| [agent_team_setup](../modules/agent_team_setup.md) | 0 | `accepted_assignments`, `acknowledgement_state`, `actor_id`, `actor_key`, `actor_name`, `availability`, `binding_revisions`, `blocker_codes`, `configured`, `connection_state`, `credential_delivery_state`, `declared_tool_tags` |
 
 ### Structure
 

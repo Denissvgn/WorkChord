@@ -1,7 +1,7 @@
 # AgentWorkService_get_task_context
 
 **Entry point:** `agent_work_service.AgentWorkService.get_task_context`
-**Modules involved:** [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [schemas_agent](../modules/schemas_agent.md), [time](../modules/time.md)
+**Modules involved:** [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [schemas_agent](../modules/schemas_agent.md), [time](../modules/time.md)
 
 > Return complete worker context with brief and dependency states.
 
@@ -19,12 +19,15 @@
 9. `schemas_agent.AgentDependencyContext`
 10. `agent_service.AgentService.get_task_timeline`
 11. `agent_service.AgentService`
-12. `schemas_agent.AgentTaskContextResponse`
+12. `delivery_dependency_service.DeliveryDependencyService.holds`
+13. `delivery_dependency_service.DeliveryDependencyService`
+14. `schemas_agent.AgentTaskContextResponse`
 
 ## Touches
 
 - [agent_service](../modules/agent_service.md)
 - [agent_work_service](../modules/agent_work_service.md)
+- [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [schemas_agent](../modules/schemas_agent.md)
 - [time](../modules/time.md)
 

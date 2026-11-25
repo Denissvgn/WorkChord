@@ -85,9 +85,9 @@ sequenceDiagram
     p0-->>p30: args.trusted_signer_public_key_file.read_text(encoding='utf-8')
 ```
 
-> Call sequence diagram shows 30 of 630 interactions; 600 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 640 interactions; 610 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 230 (229 omitted); unresolved 1 of 211 (210 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 232 (231 omitted); unresolved 1 of 218 (217 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -112,7 +112,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 190; effect analysis evaluated: 103, partial: 2, unavailable: 85. Counts include steps omitted from the displayed trace.
+Source steps: 191; effect analysis evaluated: 103, partial: 2, unavailable: 86. Counts include steps omitted from the displayed trace.
 
 Collector observations for 105 source steps with known totals: observed: 513, emitted: 501, omitted: 12. Unavailable totals are excluded.
 

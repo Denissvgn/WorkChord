@@ -2,19 +2,20 @@
 
 **Entry point:** `agent_claim_task` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_readiness](../modules/agent_readiness.md), [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 16 more
+**Modules touched:** [agent_readiness](../modules/agent_readiness.md), [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), and 17 more
 
 **Complete modules touched:**
 
 - [agent_readiness](../modules/agent_readiness.md)
 - [agent_service](../modules/agent_service.md)
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
 - [identity_service](../modules/identity_service.md)
-- [maintenance](../modules/maintenance.md)
+- [maintenance_window_service](../modules/maintenance_window_service.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [mcp_server](../modules/mcp_server.md)
 - [models_identity](../modules/models_identity.md)
@@ -45,24 +46,24 @@ sequenceDiagram
     participant p8 as _authenticate_agent_key
     participant p9 as AgentService._task_from_idempotency
     participant p10 as _require_scope_requirement
-    participant p11 as IdentityService.actor_context
-    participant p12 as evaluate_agent_readiness
-    participant p13 as emit_outbound_webhook_event
-    participant p14 as OutboundWebhookService.safe_emit_event
-    participant p15 as require_scope
-    participant p16 as AgentService.authenticate
-    participant p17 as require_identity_writes
-    participant p18 as _add_criterion
-    participant p19 as DeliveryDependencyService.reconcile
-    participant p20 as DiscussionService.enqueue
-    participant p21 as actor_has_scope
-    participant p22 as OutboundWebhookService.enqueue_event
-    participant p23 as commit_or_flush
-    participant p24 as DeliveryDependencyService.validate_cycles
-    participant p25 as DiscussionService.recipient_authorized
-    participant p26 as TaskService.reserve_task_version
-    participant p27 as clear_execution_evidence
-    participant p28 as AgentService
+    participant p11 as require_start_admission
+    participant p12 as IdentityService.actor_context
+    participant p13 as evaluate_agent_readiness
+    participant p14 as emit_outbound_webhook_event
+    participant p15 as OutboundWebhookService.safe_emit_event
+    participant p16 as require_scope
+    participant p17 as AgentService.authenticate
+    participant p18 as require_identity_writes
+    participant p19 as _add_criterion
+    participant p20 as DeliveryDependencyService.reconcile
+    participant p21 as DiscussionService.enqueue
+    participant p22 as actor_has_scope
+    participant p23 as OutboundWebhookService.enqueue_event
+    participant p24 as commit_or_flush
+    participant p25 as DeliveryDependencyService.validate_cycles
+    participant p26 as DiscussionService.recipient_authorized
+    participant p27 as TaskService.reserve_task_version
+    participant p28 as clear_execution_evidence
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -75,45 +76,45 @@ sequenceDiagram
     p4->>p8: _authenticate_agent_key
     p5->>p9: AgentService._task_from_idempotency
     p4->>p10: _require_scope_requirement
-    p4->>p11: IdentityService.actor_context
-    p5->>p12: evaluate_agent_readiness
-    p5->>p13: emit_outbound_webhook_event
-    p13->>p14: OutboundWebhookService.safe_emit_event
-    p10->>p15: require_scope
-    p8->>p16: AgentService.authenticate
-    p11->>p17: require_identity_writes
-    p12->>p18: _add_criterion
-    p7->>p19: DeliveryDependencyService.reconcile
-    p7->>p20: DiscussionService.enqueue
-    p15->>p21: actor_has_scope
-    p14->>p22: OutboundWebhookService.enqueue_event
-    p16->>p23: commit_or_flush
-    p19->>p24: DeliveryDependencyService.validate_cycles
-    p20->>p25: DiscussionService.recipient_authorized
-    p19->>p26: TaskService.reserve_task_version
-    p19->>p27: clear_execution_evidence
-    p2->>p28: AgentService
+    p5->>p11: require_start_admission
+    p4->>p12: IdentityService.actor_context
+    p5->>p13: evaluate_agent_readiness
+    p5->>p14: emit_outbound_webhook_event
+    p14->>p15: OutboundWebhookService.safe_emit_event
+    p10->>p16: require_scope
+    p8->>p17: AgentService.authenticate
+    p12->>p18: require_identity_writes
+    p13->>p19: _add_criterion
+    p7->>p20: DeliveryDependencyService.reconcile
+    p7->>p21: DiscussionService.enqueue
+    p16->>p22: actor_has_scope
+    p15->>p23: OutboundWebhookService.enqueue_event
+    p17->>p24: commit_or_flush
+    p20->>p25: DeliveryDependencyService.validate_cycles
+    p21->>p26: DiscussionService.recipient_authorized
+    p20->>p27: TaskService.reserve_task_version
+    p20->>p28: clear_execution_evidence
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 384 interactions; 354 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 393 interactions; 363 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 102 (101 omitted); unresolved 1 of 168 (167 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 103 (102 omitted); unresolved 1 of 172 (171 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
 | `backend/app/config.py:get_settings` | 4 | [backend/app/config.py](../modules/config.md) | internal | 1 |
-| `backend/app/maintenance.py:enforce_mcp_access` | 3 | [backend/app/maintenance.py](../modules/maintenance.md) | internal | 2 |
+| `backend/app/maintenance.py:enforce_mcp_access` | 3 | [backend/app/maintenance.py](../modules/app_maintenance.md) | internal | 2 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | external | 4 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | unresolved | 3 |
 | `backend/app/mcp_server.py:_agent_context` | 15 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 3 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 106 groups; 98 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 111 groups; 103 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -126,9 +127,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 115; effect analysis evaluated: 80, partial: 2, unavailable: 33. Counts include steps omitted from the displayed trace.
+Source steps: 119; effect analysis evaluated: 83, partial: 2, unavailable: 34. Counts include steps omitted from the displayed trace.
 
-Collector observations for 82 source steps with known totals: observed: 409, emitted: 397, omitted: 12. Unavailable totals are excluded.
+Collector observations for 85 source steps with known totals: observed: 418, emitted: 406, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -176,10 +177,10 @@ flowchart LR
     s6 -. "scope.endswith(':write')" .-> s12
     click s1 "../modules/mcp_server.md"
     click s2 "../modules/mcp_server.md"
-    click s3 "../modules/maintenance.md"
+    click s3 "../modules/app_maintenance.md"
     click s4 "../modules/config.md"
     click s5 "../modules/config.md"
-    click s6 "../modules/maintenance.md"
+    click s6 "../modules/app_maintenance.md"
 ```
 
 ### Step data
@@ -203,7 +204,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_claim_task | _tool_call | 1113 | `_tool_call('tasks:write', ...)` |
+| agent_claim_task | _tool_call | 1141 | `_tool_call('tasks:write', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |

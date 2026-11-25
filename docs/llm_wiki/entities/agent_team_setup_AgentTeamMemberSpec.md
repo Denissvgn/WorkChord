@@ -1,6 +1,6 @@
 # AgentTeamMemberSpec
 
-**Location:** `backend/app/schemas/agent_team_setup.py:192`
+**Location:** `backend/app/schemas/agent_team_setup.py:194`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
@@ -15,6 +15,7 @@ Request parsing enforces today's role rules. A contract read through the stored-
 
 | Method | Scope | Fields | Mode | Options |
 |--------|-------|--------|------|---------|
+| `normalize_declared_tool_tags` | field | declared_tool_tags | after | — |
 | `normalize_assignment_modes` | field | assignment_modes | after | — |
 | `normalize_model_binding_keys` | field | model_binding_keys | after | — |
 | `validate_external_references` | field | runtime_ref, credential_ref | after | — |
@@ -36,12 +37,14 @@ Request parsing enforces today's role rules. A contract read through the stored-
 | `default_model_binding_key` | `str` | `default_model_binding_key` | Yes | No | — | max_length=120; pattern=unknown (STABLE_KEY_PATTERN) | — | — |
 | `runtime_ref` | `str` | `runtime_ref` | Yes | No | — | min_length=1; max_length=1024 | — | — |
 | `credential_ref` | `str` | `credential_ref` | Yes | No | — | min_length=1; max_length=1024 | — | — |
+| `declared_tool_tags` | `dict[str, tuple[str, ...]]` | `declared_tool_tags` | No | No | factory: `dict` | max_length=16 | — | Reviewable tool capabilities the operator expects per model binding key. They are recorded as declared but unverified and never reach routing until the binding itself carries the tag. |
 | `_stored_under_earlier_rules` | `bool` | `_stored_under_earlier_rules` | No | No | `PrivateAttr(default=False)` | — | — | — |
 
 ## Methods
 
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
+| `normalize_declared_tool_tags` | `(value: dict[str, tuple[str, ...]]) -> dict[str, tuple[str, ...]]` | `@field_validator('declared_tool_tags')`, `@classmethod` | — |
 | `normalize_assignment_modes` | `(value: tuple[str, ...]) -> tuple[str, ...]` | `@field_validator('assignment_modes')`, `@classmethod` | — |
 | `normalize_model_binding_keys` | `(value: tuple[str, ...]) -> tuple[str, ...]` | `@field_validator('model_binding_keys')`, `@classmethod` | — |
 | `validate_external_references` | `(value: str, info: Any) -> str` | `@field_validator('runtime_ref', 'credential_ref')`, `@classmethod` | — |
@@ -101,7 +104,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_team_setup](../modules/agent_team_setup.md) | 6 | `_stored_under_earlier_rules`, `actor_key`, `actor_name`, `assignment_modes`, `credential_ref`, `default_model_binding_key`, `display_name`, `model_binding_keys`, `profile_key`, `role`, `runtime_ref`, `scope_preset` |
+| [agent_team_setup](../modules/agent_team_setup.md) | 7 | `_stored_under_earlier_rules`, `actor_key`, `actor_name`, `assignment_modes`, `credential_ref`, `declared_tool_tags`, `default_model_binding_key`, `display_name`, `model_binding_keys`, `profile_key`, `role`, `runtime_ref` |
 
 ### Structure
 
@@ -126,4 +129,4 @@ flowchart LR
 | `AgentTeamSetupService._handoff` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._reconcile_bindings` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 
-> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.
+> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.

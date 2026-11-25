@@ -12,9 +12,11 @@ The supervision pipeline places every open task in exactly one stage, in the ord
 
 | Source | Symbols |
 |--------|---------|
+| `app.authority` | `internal_authority` |
 | `app.commands` | `atomic_command`, `commit_or_flush`, `current_command` |
 | `app.config` | `get_settings` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRun`, `AgentRunEvent`, `AgentTaskAssignment`, `TaskEvent` |
+| `app.models.delivery_dependency` | `DeliveryDependency` |
 | `app.models.identity` | `Principal` |
 | `app.models.label` | `Label`, `LabelGroup` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus`, `Task`, `TaskDependency` |
@@ -24,6 +26,8 @@ The supervision pipeline places every open task in exactly one stage, in the ord
 | `app.schemas.task` | `TaskCreate`, `TaskUpdate`, `TaskResponse` |
 | `app.services.agent_readiness` | `evaluate_agent_readiness` |
 | `app.services.agent_work_service` | `AgentWorkService` |
+| `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
+| `app.services.maintenance_window_service` | `require_start_admission`, `require_start_admission` |
 | `app.services.outbound_webhook_service` | `emit_outbound_webhook_event` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.task_timeline_service` | `TaskTimelineService` |
@@ -56,8 +60,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (43) |
-| Outbound | `backend` (16) |
+| Inbound | `backend` (51) |
+| Outbound | `backend` (20) |
 
 ### External packages
 
@@ -65,7 +69,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 57 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 69 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

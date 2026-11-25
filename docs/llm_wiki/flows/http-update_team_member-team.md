@@ -70,23 +70,23 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_team_member | service.update | 227 | `service.update(member_id, data)` |
-| update_team_member | HTTPException | 229 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| update_team_member | str | 231 | `str(e)` |
-| update_team_member | HTTPException | 234 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| update_team_member | service.update | 246 | `service.update(member_id, data)` |
+| update_team_member | HTTPException | 248 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| update_team_member | str | 250 | `str(e)` |
+| update_team_member | HTTPException | 253 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `service.update` | `update_team_member` | 227 |
+| mutation | `service.update` | `update_team_member` | 246 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `update_team_member` | `HTTPException` | 229 |
-| external_call | `update_team_member` | `HTTPException` | 234 |
+| external_call | `update_team_member` | `HTTPException` | 248 |
+| external_call | `update_team_member` | `HTTPException` | 253 |
 
 ## Behavior
 

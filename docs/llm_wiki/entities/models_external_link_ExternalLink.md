@@ -103,4 +103,4 @@ flowchart LR
 | `ExternalLinkService.get_by_id` | type_reference | [external_link_service](../modules/external_link_service.md) | — |
 | `ExternalLinkService.legacy_task_link_response` | type_reference | [external_link_service](../modules/external_link_service.md) | — |
 
-> References: showing 12 of 27 logical references; 15 omitted by the 12-row generated summary limit.
+> References: showing 12 of 31 logical references; 19 omitted by the 12-row generated summary limit.

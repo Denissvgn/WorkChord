@@ -3,7 +3,7 @@
 **Location:** `backend/app/maintenance.py:134`
 **Kind:** Class
 **Bases:** —
-**Module:** [maintenance](../modules/maintenance.md)
+**Module:** [app_maintenance](../modules/app_maintenance.md)
 
 ## Description
 
@@ -30,7 +30,7 @@ flowchart LR
     n2["backend/tests/test_runtime_boundaries.py"]
     n1 --> n0
     n2 --> n0
-    click n0 "../modules/maintenance.md"
+    click n0 "../modules/app_maintenance.md"
     click n1 "../modules/app_main.md"
     click n2 "../modules/test_runtime_boundaries.md"
 ```
@@ -39,7 +39,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [maintenance](../modules/maintenance.md) | 2 | — |
+| [app_maintenance](../modules/app_maintenance.md) | 2 | — |
 
 ### References
 

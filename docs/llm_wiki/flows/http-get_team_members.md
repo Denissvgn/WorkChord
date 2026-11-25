@@ -52,7 +52,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_team_members | service.get_by_iteration | 38 | `service.get_by_iteration(iteration_id)` |
+| get_team_members | service.get_by_iteration | 41 | `service.get_by_iteration(iteration_id)` |
 
 ### Boundary effects
 
@@ -62,7 +62,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_team_members` | `service.get_by_iteration` | 38 |
+| unresolved_call | `get_team_members` | `service.get_by_iteration` | 41 |
 
 ## Behavior
 

@@ -1,7 +1,7 @@
 # CapacityService__projection
 
 **Entry point:** `capacity_service.CapacityService._projection`
-**Modules involved:** [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), [capacity_service](../modules/capacity_service.md), [services_work_metrics](../modules/services_work_metrics.md)
+**Modules involved:** [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), [capacity_adjustments](../modules/capacity_adjustments.md), [capacity_service](../modules/capacity_service.md), [services_work_metrics](../modules/services_work_metrics.md)
 
 ## Sequence
 
@@ -10,11 +10,13 @@
 2. `calendar_rules.AnnualCalendars`
 3. `calendar_rules.AnnualCalendars.for_iteration`
 4. `services_work_metrics.included_work_ids`
+5. `capacity_adjustments.load_dated_availability`
 
 ## Touches
 
 - [authority](../modules/authority.md)
 - [calendar_rules](../modules/calendar_rules.md)
+- [capacity_adjustments](../modules/capacity_adjustments.md)
 - [capacity_service](../modules/capacity_service.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 

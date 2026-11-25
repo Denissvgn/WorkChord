@@ -26,6 +26,7 @@ Importing the recovery models registers the transactional task deletion hook alo
 | `app.models.identity` | `Principal`, `IdentitySubject`, `WorkspaceMembership`, `ProjectMembership`, `PrincipalProfileLink`, `OIDCLoginAttempt`, `OwnershipTransfer`, `CommandAudit` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.label` | `Label`, `LabelGroup` |
+| `app.models.maintenance` | `MaintenanceWindow`, `MaintenanceWindowReceipt` |
 | `app.models.native_connection` | `NativeConnection` |
 | `app.models.outbound_webhook` | `OutboundDeliveryChannel`, `OutboundWebhookDelivery`, `OutboundWebhookDeliveryStatus`, `OutboundWebhookEvent`, `OutboundWebhookTarget` |
 | `app.models.plan_share` | `PlanShare` |
@@ -38,8 +39,9 @@ Importing the recovery models registers the transactional task deletion hook alo
 | `app.models.system_settings` | `SystemSetting` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |
 | `app.models.task_brief` | `TaskBriefRevision`, `TaskProgressRecord`, `TaskReviewRecord` |
+| `app.models.task_replacement` | `TaskReplacement` |
 | `app.models.task_status_log` | `TaskStatusLog` |
-| `app.models.team_member` | `TeamMember`, `TeamMemberProfile`, `TeamMemberProfileSkill`, `Vacation` |
+| `app.models.team_member` | `TeamMember`, `TeamMemberCapacityAdjustment`, `TeamMemberProfile`, `TeamMemberProfileSkill`, `Vacation` |
 | `app.models.template` | `TemplateType`, `WorkTemplate` |
 | `app.models.time_entry` | `TimeEntry`, `TimeEntryRevision` |
 | `app.models.triage` | `TriageClassificationSuggestion`, `TriageItem`, `TriageItemStatus` |
@@ -63,7 +65,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (8) |
-| Outbound | `backend` (32) |
+| Inbound | `backend` (9) |
+| Outbound | `backend` (34) |
 
-> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 43 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

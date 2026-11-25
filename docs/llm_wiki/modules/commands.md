@@ -28,6 +28,7 @@ A capacity allocation removal reserves the shared planning input and affected it
 | `app.runtime_telemetry` | `metrics` |
 | `app.services.allocation_removal` | `inspect_allocation_history`, `is_unused_allocation` |
 | `app.services.calendar_rules` | `reserve_iteration_annuals` |
+| `app.services.capacity_transfers` | `transfer_iteration_ids` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.discussion_service` | `DiscussionService` |
 | `app.services.execution_planning_window` | `current_window`, `extension_input`, `live_assignments`, `make_window`, `seal_authority`, `task_context` |
@@ -63,8 +64,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (95) |
-| Outbound | `backend` (16) |
+| Inbound | `backend` (103) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
@@ -72,7 +73,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 104 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 112 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -89,9 +89,9 @@ sequenceDiagram
     p0-->>p30: (…).status
 ```
 
-> Call sequence diagram shows 30 of 225 interactions; 195 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 254 interactions; 224 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 63 (62 omitted); unresolved 1 of 101 (100 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 78 (77 omitted); unresolved 1 of 111 (110 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -105,7 +105,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService._topology` | 15 | - | external | 5 |
 | `backend/app/schemas/agent_team_setup.py:load_stored_agent_team_master` | 38 | - | unresolved | 1 |
 | `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService._status_for_topology` | 37 | [backend/app/utils/time.py](../modules/time.md) | internal | 3 |
-> Omission summary shows 8 of 41 groups; 33 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 45 groups; 37 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -118,9 +118,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 62; effect analysis evaluated: 34, partial: 2, unavailable: 26. Counts include steps omitted from the displayed trace.
+Source steps: 66; effect analysis evaluated: 38, partial: 2, unavailable: 26. Counts include steps omitted from the displayed trace.
 
-Collector observations for 36 source steps with known totals: observed: 206, emitted: 180, omitted: 26. Unavailable totals are excluded.
+Collector observations for 40 source steps with known totals: observed: 226, emitted: 200, omitted: 26. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -205,32 +205,32 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_agent_capabilities | AgentRoutingRolloutService.status | 413 | `AgentRoutingRolloutService().status(data not statically known)` |
+| get_agent_capabilities | AgentRoutingRolloutService.status | 415 | `AgentRoutingRolloutService().status(data not statically known)` |
 | AgentRoutingRolloutService.status | AgentRoutingRolloutMode | 253 | `AgentRoutingRolloutMode(self.settings.model_aware_routing_mode)` |
 | AgentRoutingRolloutService.status | AgentRoutingRolloutStatus | 258 | `AgentRoutingRolloutStatus(configured_mode=configured, effective_mode=AgentRoutingRolloutMode.OFF, feature_advertised=False, blocker_codes=(...), topology_readiness=readiness)` |
 | AgentRoutingRolloutService.status | AgentRoutingRolloutStatus | 266 | `AgentRoutingRolloutStatus(configured_mode=configured, effective_mode=AgentRoutingRolloutMode.OFF, feature_advertised=False, blocker_codes=(...), topology_readiness=readiness)` |
 | AgentRoutingRolloutService.status | AgentRoutingRolloutStatus | 273 | `AgentRoutingRolloutStatus(configured_mode=configured, effective_mode=configured, feature_advertised=True, blocker_codes=(...), topology_readiness=readiness)` |
-| get_agent_capabilities | AgentRoutingRolloutService | 413 | `AgentRoutingRolloutService(data not statically known)` |
-| get_agent_capabilities | AgentTeamSetupService.routing_readiness | 415 | `AgentTeamSetupService(service.db).routing_readiness(actor)` |
-| AgentTeamSetupService.routing_readiness | AgentTeamSetupService.membership_boundary | 3602 | `self.membership_boundary(actor.id)` |
-| AgentTeamSetupService.membership_boundary | self.db.execute (backend/app/services/agen…rvice.membership_boundary) | 3532 | `self.db.execute(...)` |
-| AgentTeamSetupService.membership_boundary | select(…).join(…).where | 3533 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where(..., ...)` |
-| AgentTeamSetupService.membership_boundary | select(…).join | 3533 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, ...)` |
+| get_agent_capabilities | AgentRoutingRolloutService | 415 | `AgentRoutingRolloutService(data not statically known)` |
+| get_agent_capabilities | AgentTeamSetupService.routing_readiness | 417 | `AgentTeamSetupService(service.db).routing_readiness(actor)` |
+| AgentTeamSetupService.routing_readiness | AgentTeamSetupService.membership_boundary | 3713 | `self.membership_boundary(actor.id)` |
+| AgentTeamSetupService.membership_boundary | self.db.execute (backend/app/services/agen…rvice.membership_boundary) | 3643 | `self.db.execute(...)` |
+| AgentTeamSetupService.membership_boundary | select(…).join(…).where | 3644 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where(..., ...)` |
+| AgentTeamSetupService.membership_boundary | select(…).join | 3644 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, ...)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `features.extend` | `get_agent_capabilities` | 431 |
-| mutation | `features.append` | `get_agent_capabilities` | 448 |
+| mutation | `features.extend` | `get_agent_capabilities` | 433 |
+| mutation | `features.append` | `get_agent_capabilities` | 450 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `AgentTeamSetupService.membership_boundary` | `self.db.execute` | 3532 |
-| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where` | 3533 |
-| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join` | 3533 |
+| unresolved_call | `AgentTeamSetupService.membership_boundary` | `self.db.execute` | 3643 |
+| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where` | 3644 |
+| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join` | 3644 |
 | step_limit | `get_agent_capabilities` | `first 12 steps` | 0 |
 | truncated_flow | `get_agent_capabilities` | `depth limit` | 0 |
 

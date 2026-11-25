@@ -1,6 +1,6 @@
 # AgentTaskContextResponse
 
-**Location:** `backend/app/schemas/agent.py:894`
+**Location:** `backend/app/schemas/agent.py:911`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -24,6 +24,7 @@ Complete task context for an assigned worker.
 | `timeline` | `list[TaskTimelineItem]` | `timeline` | No | No | factory: `list` | — | — | — |
 | `definition_ready` | `bool` | `definition_ready` | No | No | `False` | — | — | — |
 | `start_ready` | `bool` | `start_ready` | No | No | `False` | — | — | — |
+| `started` | `bool` | `started` | No | No | `False` | — | — | True when the assignment was accepted and its run is already active; start gates no longer apply. |
 | `blocker_codes` | `list[str]` | `blocker_codes` | No | No | factory: `list` | — | — | — |
 
 ## Methods
@@ -56,7 +57,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 1 | `assignment`, `blocker_codes`, `definition_ready`, `dependencies`, `parent_chain`, `request_sources`, `start_ready`, `task`, `task_brief`, `timeline` |
+| [schemas_agent](../modules/schemas_agent.md) | 1 | `assignment`, `blocker_codes`, `definition_ready`, `dependencies`, `parent_chain`, `request_sources`, `start_ready`, `started`, `task`, `task_brief`, `timeline` |
 
 ### Structure
 

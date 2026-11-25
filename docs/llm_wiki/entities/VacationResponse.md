@@ -1,6 +1,6 @@
 # VacationResponse
 
-**Location:** `backend/app/schemas/team.py:55`
+**Location:** `backend/app/schemas/team.py:56`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_team](../modules/schemas_team.md)

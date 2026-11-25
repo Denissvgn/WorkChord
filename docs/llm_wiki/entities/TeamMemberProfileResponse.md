@@ -1,6 +1,6 @@
 # TeamMemberProfileResponse
 
-**Location:** `backend/app/schemas/team.py:252`
+**Location:** `backend/app/schemas/team.py:264`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_team](../modules/schemas_team.md)
@@ -46,12 +46,13 @@ flowchart LR
     n1["BaseModel"]
     n2["backend/app/mcp_agent_tools.py"]
     n3["apply_agent_profile_preset (backend/app/routers/agent_catalog.py)"]
-    n4["create_team_member_profile (backend/app/routers/team.py)"]
-    n5["get_team_member_profile (backend/app/routers/team.py)"]
-    n6["list_team_member_profiles (backend/app/routers/team.py)"]
-    n7["update_team_member_profile (backend/app/routers/team.py)"]
-    n8["backend/app/schemas/__init__.py"]
-    n9["backend/app/services/agent_planning_service.py"]
+    n4["bind_team_member_profile_seed_key (backend/app/routers/team.py)"]
+    n5["create_team_member_profile (backend/app/routers/team.py)"]
+    n6["get_team_member_profile (backend/app/routers/team.py)"]
+    n7["list_team_member_profiles (backend/app/routers/team.py)"]
+    n8["update_team_member_profile (backend/app/routers/team.py)"]
+    n9["backend/app/schemas/__init__.py"]
+    n10["backend/app/services/agent_planning_service.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -61,6 +62,7 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/schemas_team.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/agent_catalog.md"
@@ -68,8 +70,9 @@ flowchart LR
     click n5 "../modules/routers_team.md"
     click n6 "../modules/routers_team.md"
     click n7 "../modules/routers_team.md"
-    click n8 "../modules/schemas___init__.md"
-    click n9 "../modules/agent_planning_service.md"
+    click n8 "../modules/routers_team.md"
+    click n9 "../modules/schemas___init__.md"
+    click n10 "../modules/agent_planning_service.md"
 ```
 
 ### Summary
@@ -90,6 +93,7 @@ flowchart LR
 |---|---|---|---:|
 | `mcp_agent_tools` | import | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `apply_agent_profile_preset` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
+| `bind_team_member_profile_seed_key` | type_reference | [routers_team](../modules/routers_team.md) | — |
 | `create_team_member_profile` | type_reference | [routers_team](../modules/routers_team.md) | — |
 | `get_team_member_profile` | type_reference | [routers_team](../modules/routers_team.md) | — |
 | `list_team_member_profiles` | type_reference | [routers_team](../modules/routers_team.md) | — |

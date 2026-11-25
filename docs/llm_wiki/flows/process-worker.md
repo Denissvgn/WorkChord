@@ -2,16 +2,16 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [worker](../modules/worker.md)
-**Modules touched:** [app_database](../modules/app_database.md), [commands](../modules/commands.md), [config](../modules/config.md), [database_runtime](../modules/database_runtime.md), and 6 more
+**Modules touched:** [app_database](../modules/app_database.md), [app_maintenance](../modules/app_maintenance.md), [commands](../modules/commands.md), [config](../modules/config.md), and 6 more
 
 **Complete modules touched:**
 
 - [app_database](../modules/app_database.md)
+- [app_maintenance](../modules/app_maintenance.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [database_runtime](../modules/database_runtime.md)
 - [discussion_service](../modules/discussion_service.md)
-- [maintenance](../modules/maintenance.md)
 - [outbound_webhook_service](../modules/outbound_webhook_service.md)
 - [time](../modules/time.md)
 - [upgrade_service](../modules/upgrade_service.md)

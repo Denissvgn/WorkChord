@@ -67,10 +67,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_iteration | service.create | 80 | `service.create(data)` |
-| create_iteration | HTTPException | 82 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| create_iteration | str | 84 | `str(e)` |
-| create_iteration | service.to_response | 86 | `service.to_response(iteration)` |
+| create_iteration | service.create | 82 | `service.create(data)` |
+| create_iteration | HTTPException | 84 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| create_iteration | str | 86 | `str(e)` |
+| create_iteration | service.to_response | 88 | `service.to_response(iteration)` |
 
 ### Boundary effects
 
@@ -80,9 +80,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_iteration` | `service.create` | 80 |
-| external_call | `create_iteration` | `HTTPException` | 82 |
-| unresolved_call | `create_iteration` | `service.to_response` | 86 |
+| unresolved_call | `create_iteration` | `service.create` | 82 |
+| external_call | `create_iteration` | `HTTPException` | 84 |
+| unresolved_call | `create_iteration` | `service.to_response` | 88 |
 
 ## Behavior
 

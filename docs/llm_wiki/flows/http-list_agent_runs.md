@@ -188,17 +188,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_agent_runs | get_agent_actor | 1472 | `get_agent_actor(service, agent_api_key)` |
-| get_agent_actor | HTTPException (backend/app/routers/agent.py:get_agent_actor) | 175 | `HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Missing X-Agent-API-Key header')` |
-| get_agent_actor | service.authenticate | 179 | `service.authenticate(api_key)` |
-| get_agent_actor | HTTPException (backend/app/routers/agent.py:get_agent_actor) | 181 | `HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid or disabled agent API key')` |
-| list_agent_runs | require_scope | 1474 | `require_scope(actor, 'planning:read')` |
+| list_agent_runs | get_agent_actor | 1549 | `get_agent_actor(service, agent_api_key)` |
+| get_agent_actor | HTTPException (backend/app/routers/agent.py:get_agent_actor) | 177 | `HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Missing X-Agent-API-Key header')` |
+| get_agent_actor | service.authenticate | 181 | `service.authenticate(api_key)` |
+| get_agent_actor | HTTPException (backend/app/routers/agent.py:get_agent_actor) | 183 | `HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid or disabled agent API key')` |
+| list_agent_runs | require_scope | 1551 | `require_scope(actor, 'planning:read')` |
 | require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
-| list_agent_runs | _handle_agent_error | 1476 | `_handle_agent_error(exc)` |
+| list_agent_runs | _handle_agent_error | 1553 | `_handle_agent_error(exc)` |
 
 ### Boundary effects
 
@@ -208,9 +208,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `get_agent_actor` | `HTTPException` | 175 |
-| unresolved_call | `get_agent_actor` | `service.authenticate` | 179 |
-| external_call | `get_agent_actor` | `HTTPException` | 181 |
+| external_call | `get_agent_actor` | `HTTPException` | 177 |
+| unresolved_call | `get_agent_actor` | `service.authenticate` | 181 |
+| external_call | `get_agent_actor` | `HTTPException` | 183 |
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | external_call | `actor_scopes` | `isinstance` | 90 |
 | step_limit | `list_agent_runs` | `first 12 steps` | 0 |

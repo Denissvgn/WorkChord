@@ -1,7 +1,7 @@
 # AgentPlanningService__schedule_input_digest
 
 **Entry point:** `agent_planning_service.AgentPlanningService._schedule_input_digest`
-**Modules involved:** [agent_planning_service](../modules/agent_planning_service.md), [agent_service](../modules/agent_service.md), [calendar_rules](../modules/calendar_rules.md), [capacity_service](../modules/capacity_service.md), [commands](../modules/commands.md)
+**Modules involved:** [agent_planning_service](../modules/agent_planning_service.md), [agent_service](../modules/agent_service.md), [calendar_rules](../modules/calendar_rules.md), [capacity_adjustments](../modules/capacity_adjustments.md), [capacity_service](../modules/capacity_service.md), [commands](../modules/commands.md)
 
 > Hash every mutable input consumed by ``SchedulerService``.
 
@@ -13,12 +13,14 @@
 3. `capacity_service.CapacityService`
 4. `calendar_rules.AnnualCalendars.for_iteration`
 5. `capacity_service.CapacityService.coverage_for`
+6. `capacity_adjustments.load_dated_availability`
 
 ## Touches
 
 - [agent_planning_service](../modules/agent_planning_service.md)
 - [agent_service](../modules/agent_service.md)
 - [calendar_rules](../modules/calendar_rules.md)
+- [capacity_adjustments](../modules/capacity_adjustments.md)
 - [capacity_service](../modules/capacity_service.md)
 - [commands](../modules/commands.md)
 

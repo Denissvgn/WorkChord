@@ -1,6 +1,6 @@
 # AgentTeamApplyResponse
 
-**Location:** `frontend/src/types/agent.ts:765`
+**Location:** `frontend/src/types/agent.ts:767`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

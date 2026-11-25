@@ -27,6 +27,7 @@ checkout ran with the bundled non-production service analogues.
 | `hashlib` | `sha256` |
 | `hmac` | `hmac` |
 | `httpx` | `httpx` |
+| `json` | `json` |
 | `pydantic` | `Field`, `model_validator` |
 | `socket` | `socket` |
 | `typing` | `BinaryIO`, `Literal` |
@@ -94,19 +95,19 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [ServerAcceptanceError](../entities/ServerAcceptanceError.md) | 43 | `RuntimeError` | A sanitized, stable failure from one server-acceptance predicate. |
-| [ApplicationAcceptance](../entities/ApplicationAcceptance.md) | 52 | `StrictContractModel` | — |
-| [TransitSignerAcceptance](../entities/TransitSignerAcceptance.md) | 81 | `StrictContractModel` | — |
-| [ObjectStoreAcceptance](../entities/ObjectStoreAcceptance.md) | 108 | `StrictContractModel` | — |
-| [CasAcceptance](../entities/CasAcceptance.md) | 115 | `StrictContractModel` | — |
-| [ServerAcceptanceCandidate](../entities/ServerAcceptanceCandidate.md) | 126 | `StrictContractModel` | — |
-| [LockedAcceptanceObject](../entities/LockedAcceptanceObject.md) | 172 | `StrictContractModel` | — |
-| [ServerAcceptanceReceipt](../entities/ServerAcceptanceReceipt.md) | 191 | `StrictContractModel` | — |
-| [BlockedServerAcceptance](../entities/BlockedServerAcceptance.md) | 260 | `StrictContractModel` | — |
-| [ServerAcceptanceConfig](../entities/ServerAcceptanceConfig.md) | 289 | — | Runtime inputs, including credentials that never enter a receipt. |
-| [OpenBaoTransitClient](../entities/OpenBaoTransitClient.md) | 309 | — | Small HTTP adapter for the OpenBao/Vault-compatible Transit API. |
-| [S3ObjectLockClient](../entities/S3ObjectLockClient.md) | 459 | — | Path-style S3 client with only the operations required by acceptance. |
-| [ValkeyCasClient](../entities/ValkeyCasClient.md) | 666 | — | Minimal RESP2 client for the bounded persistent CAS acceptance check. |
+| [ServerAcceptanceError](../entities/ServerAcceptanceError.md) | 44 | `RuntimeError` | A sanitized, stable failure from one server-acceptance predicate. |
+| [ApplicationAcceptance](../entities/ApplicationAcceptance.md) | 53 | `StrictContractModel` | — |
+| [TransitSignerAcceptance](../entities/TransitSignerAcceptance.md) | 82 | `StrictContractModel` | — |
+| [ObjectStoreAcceptance](../entities/ObjectStoreAcceptance.md) | 109 | `StrictContractModel` | — |
+| [CasAcceptance](../entities/CasAcceptance.md) | 116 | `StrictContractModel` | — |
+| [ServerAcceptanceCandidate](../entities/ServerAcceptanceCandidate.md) | 127 | `StrictContractModel` | — |
+| [LockedAcceptanceObject](../entities/LockedAcceptanceObject.md) | 173 | `StrictContractModel` | — |
+| [ServerAcceptanceReceipt](../entities/ServerAcceptanceReceipt.md) | 192 | `StrictContractModel` | — |
+| [BlockedServerAcceptance](../entities/BlockedServerAcceptance.md) | 261 | `StrictContractModel` | — |
+| [ServerAcceptanceConfig](../entities/ServerAcceptanceConfig.md) | 290 | — | Runtime inputs, including credentials that never enter a receipt. |
+| [OpenBaoTransitClient](../entities/OpenBaoTransitClient.md) | 310 | — | Small HTTP adapter for the OpenBao/Vault-compatible Transit API. |
+| [S3ObjectLockClient](../entities/S3ObjectLockClient.md) | 460 | — | Path-style S3 client with only the operations required by acceptance. |
+| [ValkeyCasClient](../entities/ValkeyCasClient.md) | 667 | — | Minimal RESP2 client for the bounded persistent CAS acceptance check. |
 
 ## Functions
 

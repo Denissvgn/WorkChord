@@ -1,6 +1,6 @@
 # GitHubStatusService
 
-**Location:** `backend/app/services/github_status_service.py:25`
+**Location:** `backend/app/services/github_status_service.py:45`
 **Kind:** Class
 **Bases:** —
 **Module:** [github_status_service](../modules/github_status_service.md)
@@ -23,6 +23,11 @@ Refresh cached GitHub pull request metadata for external links.
 | `_headers` | `() -> dict[str, str]` | — | Build GitHub request headers. |
 | `_pr_metadata` | `(link: ExternalLink) -> tuple[str, str, int]` | — | Extract GitHub PR identity from external link metadata. |
 | `status_from_payload` | `(payload: dict[str, Any]) -> str` | — | Normalize GitHub PR state into the external link status field. |
+| `observation_from_payload` | `(payload: dict[str, Any]) -> dict[str, Any]` | `@staticmethod` | The head, target and closure facts a pull request payload states. |
+| `is_stale_observation` | `(metadata: dict[str, Any], payload: dict[str, Any]) -> bool` | `@staticmethod` | Whether a payload is older than what the link already records. |
+| `checks_from_runs` | `(runs_payload: Any) -> dict[str, Any]` | `@staticmethod` | Summarize the check runs GitHub reports for one commit. |
+| `observe_checks` | *(async)* `(owner: str, repo: str, head_sha: Any) -> dict[str, Any]` | — | Read the checks of the observed head; a read failure is recorded, not raised. |
+| `_record_observed_closure` | *(async)* `(link: ExternalLink, status: str, observation: dict[str, Any]) -> None` | — | Record a merge or unmerged closure seen by catch-up as a GitHub task event, once. |
 | `_fetch_pull_request` | *(async)* `(owner: str, repo: str, number: int) -> dict[str, Any]` | — | Fetch one pull request payload from GitHub. |
 | `_fetch_pr_resource` | *(async)* `(owner, repo, number, suffix = '')` | — | — |
 | `_fetch_resource` | *(async)* `(url)` | — | — |
@@ -42,14 +47,15 @@ flowchart LR
     n0["GitHubStatusService (backend/app/services/github_status_service.py)"]
     n1["get_github_status_service (backend/app/routers/tasks.py)"]
     n2["refresh_github_external_link (backend/app/routers/tasks.py)"]
-    n3["GitHubStatusService.from_runtime (backend/app/services/github_status_service.py)"]
-    n4["GitHubWebhookService.__init__ (backend/app/services/github_webhook_service.py)"]
-    n5["backend/app/services/review_provenance.py"]
-    n6["backend/tests/test_manual_review_provenance.py"]
-    n7["test_commit_only_review_verifies_the_entire_pinned_range (backend/tests/test_review_provenance.py)"]
-    n8["test_github_candidate_uses_full_head_and_contributions (backend/tests/test_review_provenance.py)"]
-    n9["backend/tests/test_review_provenance_transports.py"]
-    n10["backend/tests/test_scoped_review_evidence.py"]
+    n3["backend/app/services/github_reconciliation_service.py"]
+    n4["GitHubStatusService.from_runtime (backend/app/services/github_status_service.py)"]
+    n5["GitHubWebhookService.__init__ (backend/app/services/github_webhook_service.py)"]
+    n6["backend/app/services/review_provenance.py"]
+    n7["backend/tests/test_github_reconciliation.py"]
+    n8["backend/tests/test_manual_review_provenance.py"]
+    n9["test_commit_only_review_verifies_the_entire_pinned_range (backend/tests/test_review_provenance.py)"]
+    n10["test_github_candidate_uses_full_head_and_contributions (backend/tests/test_review_provenance.py)"]
+    n11["backend/tests/test_review_provenance_transports.py"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -60,24 +66,26 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
     click n0 "../modules/github_status_service.md"
     click n1 "../modules/tasks.md"
     click n2 "../modules/tasks.md"
-    click n3 "../modules/github_status_service.md"
-    click n4 "../modules/github_webhook_service.md"
-    click n5 "../modules/review_provenance.md"
-    click n6 "../modules/test_manual_review_provenance.md"
-    click n7 "../modules/test_review_provenance.md"
-    click n8 "../modules/test_review_provenance.md"
-    click n9 "../modules/test_review_provenance_transports.md"
-    click n10 "../modules/test_scoped_review_evidence.md"
+    click n3 "../modules/github_reconciliation_service.md"
+    click n4 "../modules/github_status_service.md"
+    click n5 "../modules/github_webhook_service.md"
+    click n6 "../modules/review_provenance.md"
+    click n7 "../modules/test_github_reconciliation.md"
+    click n8 "../modules/test_manual_review_provenance.md"
+    click n9 "../modules/test_review_provenance.md"
+    click n10 "../modules/test_review_provenance.md"
+    click n11 "../modules/test_review_provenance_transports.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [github_status_service](../modules/github_status_service.md) | 16 | — |
+| [github_status_service](../modules/github_status_service.md) | 21 | — |
 
 ### References
 
@@ -85,12 +93,15 @@ flowchart LR
 |---|---|---|---:|
 | `get_github_status_service` | type_reference | [tasks](../modules/tasks.md) | — |
 | `refresh_github_external_link` | type_reference | [tasks](../modules/tasks.md) | — |
+| `github_reconciliation_service` | import | [github_reconciliation_service](../modules/github_reconciliation_service.md) | — |
 | `GitHubStatusService.from_runtime` | call | [github_status_service](../modules/github_status_service.md) | 1 |
 | `GitHubStatusService.from_runtime` | type_reference | [github_status_service](../modules/github_status_service.md) | — |
 | `GitHubWebhookService.__init__` | call | [github_webhook_service](../modules/github_webhook_service.md) | 1 |
 | `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |
+| `test_github_reconciliation` | import | [test_github_reconciliation](../modules/test_github_reconciliation.md) | — |
 | `test_manual_review_provenance` | import | [test_manual_review_provenance](../modules/test_manual_review_provenance.md) | — |
 | `test_commit_only_review_verifies_the_entire_pinned_range` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
 | `test_github_candidate_uses_full_head_and_contributions` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
 | `test_review_provenance_transports` | import | [test_review_provenance_transports](../modules/test_review_provenance_transports.md) | — |
-| `test_scoped_review_evidence` | import | [test_scoped_review_evidence](../modules/test_scoped_review_evidence.md) | — |
+
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

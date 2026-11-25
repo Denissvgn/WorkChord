@@ -2,18 +2,18 @@
 
 **Entry point:** `import_new_iteration` (`http`)
 **Source:** [export](../modules/export.md)
-**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_team_setup](../modules/agent_team_setup.md), and 33 more
+**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_team_setup_service](../modules/agent_team_setup_service.md), and 33 more
 
 **Complete modules touched:**
 
 - [agent_routing_policy](../modules/agent_routing_policy.md)
 - [agent_routing_service](../modules/agent_routing_service.md)
-- [agent_team_setup](../modules/agent_team_setup.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [allocation_removal](../modules/allocation_removal.md)
 - [authority](../modules/authority.md)
 - [calendar_rules](../modules/calendar_rules.md)
 - [calendar_service](../modules/calendar_service.md)
+- [capacity_transfers](../modules/capacity_transfers.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
@@ -62,23 +62,23 @@ sequenceDiagram
     participant p9 as lock_iterations
     participant p10 as affected_iteration_ids
     participant p11 as inspect_allocation_history
-    participant p12 as DeliveryDependencyService.reconcile
-    participant p13 as DiscussionService.enqueue
-    participant p14 as _import_task
-    participant p15 as is_unused_allocation
-    participant p16 as reserve_iteration_annuals
-    participant p17 as task_context
-    participant p18 as current_window
-    participant p19 as make_window
-    participant p20 as seal_authority
-    participant p21 as TaskService.record_task_event
-    participant p22 as assignment_context
-    participant p23 as original_ownership
-    participant p24 as _import_task_record
-    participant p25 as authority_stamp
-    participant p26 as _direct_reference
-    participant p27 as AnnualCalendars.for_iteration
-    participant p28 as require_operator
+    participant p12 as transfer_iteration_ids
+    participant p13 as DeliveryDependencyService.reconcile
+    participant p14 as DiscussionService.enqueue
+    participant p15 as _import_task
+    participant p16 as is_unused_allocation
+    participant p17 as reserve_iteration_annuals
+    participant p18 as task_context
+    participant p19 as current_window
+    participant p20 as make_window
+    participant p21 as seal_authority
+    participant p22 as TaskService.record_task_event
+    participant p23 as transfer_member_ids
+    participant p24 as assignment_context
+    participant p25 as original_ownership
+    participant p26 as _import_task_record
+    participant p27 as authority_stamp
+    participant p28 as _direct_reference
     participant p29 as HTTPException (backend/app/routers/export.py:import_new_iteration)
     participant p30 as iter_data.get
     p0->>p1: _validate_import_data
@@ -92,30 +92,30 @@ sequenceDiagram
     p0->>p9: lock_iterations
     p3->>p10: affected_iteration_ids
     p3->>p11: inspect_allocation_history
-    p2->>p12: DeliveryDependencyService.reconcile
-    p2->>p13: DiscussionService.enqueue
-    p4->>p14: _import_task
-    p3->>p15: is_unused_allocation
-    p3->>p16: reserve_iteration_annuals
-    p3->>p17: task_context
-    p3->>p18: current_window
-    p3->>p19: make_window
-    p3->>p20: seal_authority
-    p3->>p21: TaskService.record_task_event
-    p19->>p22: assignment_context
-    p20->>p23: original_ownership
-    p14->>p24: _import_task_record
-    p20->>p25: authority_stamp
-    p11->>p26: _direct_reference
-    p16->>p27: AnnualCalendars.for_iteration
-    p10->>p28: require_operator
+    p3->>p12: transfer_iteration_ids
+    p2->>p13: DeliveryDependencyService.reconcile
+    p2->>p14: DiscussionService.enqueue
+    p4->>p15: _import_task
+    p3->>p16: is_unused_allocation
+    p3->>p17: reserve_iteration_annuals
+    p3->>p18: task_context
+    p3->>p19: current_window
+    p3->>p20: make_window
+    p3->>p21: seal_authority
+    p3->>p22: TaskService.record_task_event
+    p12->>p23: transfer_member_ids
+    p20->>p24: assignment_context
+    p21->>p25: original_ownership
+    p15->>p26: _import_task_record
+    p21->>p27: authority_stamp
+    p11->>p28: _direct_reference
     p0-->>p29: HTTPException (backend/app/routers/export.py:import_new_iteration)(status_code=status.HTTP_400_BAD_REQUEST, detail='Missing iteration data in export file')
     p0-->>p30: iter_data.get('calendar_id')
 ```
 
-> Call sequence diagram shows 30 of 1084 interactions; 1054 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 1113 interactions; 1083 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 327 (326 omitted); unresolved 1 of 557 (556 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 336 (335 omitted); unresolved 1 of 564 (563 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -129,7 +129,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/routers/export.py:_validate_import_task_tree` | 16 | - | unresolved | 3 |
 | `backend/app/routers/export.py:_validate_import_task_tree` | 16 | - | external | 6 |
 | `backend/app/commands.py:command_transaction` | 34 | [backend/app/commands.py](../modules/commands.md) | internal | 2 |
-> Omission summary shows 8 of 226 groups; 218 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 239 groups; 231 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -142,9 +142,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 201; effect analysis evaluated: 131, partial: 8, unavailable: 62. Counts include steps omitted from the displayed trace.
+Source steps: 214; effect analysis evaluated: 141, partial: 9, unavailable: 64. Counts include steps omitted from the displayed trace.
 
-Collector observations for 139 source steps with known totals: observed: 679, emitted: 646, omitted: 33. Unavailable totals are excluded.
+Collector observations for 150 source steps with known totals: observed: 755, emitted: 719, omitted: 36. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

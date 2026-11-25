@@ -15,14 +15,14 @@ _Auto-generated from `frontend/src/components/feedback/WorkRefreshStatus.test.ts
 | `./WorkRefreshStatus` | `WorkRefreshStatus` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
 | `@testing-library/react` | `fireEvent`, `screen` | — | compiler-dependent |
-| `react` | `useState` | — | compiler-dependent |
+| `react` | `lazy`, `Suspense`, `useState` | — | compiler-dependent |
 | `vitest` | `afterEach`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
-| Module calls | `afterEach`, `it` |
+| Module calls | `afterEach`, `it`, `it` |
 
 ## Local dependency map
 

@@ -29,6 +29,7 @@ _Auto-generated from `IterationPlanningReadinessSummary` in `frontend/src/types/
 | `team_agent_count` | `number` | No | — | — |
 | `has_schedule` | `boolean` | Yes | — | — |
 | `risk_count` | `number` | Yes | — | — |
+| `inverted_dependencies` | <pre><code>Array&#60;&#123;&#10;        task&#95;id&#58; number&#59;&#10;        task&#95;title&#58; string&#59;&#10;        task&#95;start&#95;date&#58; string&#59;&#10;        prerequisite&#95;id&#58; number&#59;&#10;        prerequisite&#95;title&#58; string&#59;&#10;        prerequisite&#95;end&#95;date&#58; string&#59;&#10;    &#125;&#62;</code></pre> | No | — | — |
 | `checkpoints` | `PlanCheckpoint[]` | No | — | — |
 | `checkpoints_done` | `number` | No | — | — |
 | `checkpoints_total` | `number` | No | — | — |
@@ -77,7 +78,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_iteration](../modules/types_iteration.md) | 0 | `additional_calendar_ids`, `assigned_hours`, `calendar_name`, `checkpoints`, `checkpoints_done`, `checkpoints_total`, `has_schedule`, `iteration_id`, `missing_calendar_years`, `planned_hours`, `risk_count`, `task_count` |
+| [types_iteration](../modules/types_iteration.md) | 0 | `additional_calendar_ids`, `assigned_hours`, `calendar_name`, `checkpoints`, `checkpoints_done`, `checkpoints_total`, `has_schedule`, `inverted_dependencies`, `iteration_id`, `missing_calendar_years`, `planned_hours`, `risk_count` |
 
 ### References
 

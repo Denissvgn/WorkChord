@@ -1,6 +1,6 @@
 # TeamMemberProfileCreate
 
-**Location:** `backend/app/schemas/team.py:195`
+**Location:** `backend/app/schemas/team.py:196`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_team](../modules/schemas_team.md)

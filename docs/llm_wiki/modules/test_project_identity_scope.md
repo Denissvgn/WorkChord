@@ -10,6 +10,7 @@ Ambiguous legacy identities stop before writes and never expose private records.
 
 | Source | Symbols |
 |--------|---------|
+| `app.database_migration` | `project_identity` |
 | `app.database_migration.project_identity` | `ProjectIdentityError`, `inspect_project_identity` |
 | `app.database_migration.source` | `MigrationDataError`, `preflight_source` |
 | `app.models.identity` | `CommandAudit` |
@@ -19,7 +20,7 @@ Ambiguous legacy identities stop before writes and never expose private records.
 | `datetime` | `UTC`, `datetime` |
 | `json` | `json` |
 | `pytest` | `pytest` |
-| `sqlalchemy` | `event` |
+| `sqlalchemy` | `event`, `select` |
 | `sqlalchemy.engine` | `Engine` |
 | `tests.database_migration.test_source_preflight` | `_drain_evidence` |
 | `tests.migrations.test_project_identity` | `insert_legacy_project`, `legacy_store`, `retained_entry`, `seed_dependents` |
@@ -92,3 +93,7 @@ flowchart LR
 | `test_ambiguous_retained_scope_blocks_upgrade_and_snapshot_before_writes` | `(tmp_path, configure_database, name)` | `@pytest.mark.sqlite`, `@pytest.mark.parametrize('name', ['Same display name', 'Different display name'])` | — |
 | `test_collision_diagnostics_are_bounded_and_do_not_include_notes` | `(tmp_path, configure_database)` | `@pytest.mark.sqlite` | — |
 | `test_incomplete_history_scan_fails_closed_without_mutation` | `(tmp_path, configure_database)` | `@pytest.mark.sqlite` | — |
+| `_audits` | `(db, count, *, predating_at = None)` | — | Retain edits of project 5; the one at ``predating_at`` is older than the project. |
+| `test_history_scan_checks_rows_on_every_page_and_batch_boundary` | `(tmp_path, configure_database, monkeypatch, position)` | `@pytest.mark.sqlite`, `@pytest.mark.parametrize('position', [0, 9, 10, 29])` | — |
+| `test_history_scan_reads_in_pages_rather_than_row_by_row` | `(tmp_path, configure_database)` | `@pytest.mark.sqlite` | — |
+| `test_oversized_history_value_is_refused_without_loading_it` | `(tmp_path, configure_database, monkeypatch)` | `@pytest.mark.sqlite` | — |

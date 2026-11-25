@@ -1,6 +1,6 @@
 # ProjectIdentityError
 
-**Location:** `backend/app/database_migration/project_identity.py:12`
+**Location:** `backend/app/database_migration/project_identity.py:19`
 **Kind:** Class
 **Bases:** `RuntimeError`
 **Module:** [project_identity](../modules/project_identity.md)
@@ -62,7 +62,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `inspect_project_identity` | call | [project_identity](../modules/project_identity.md) | 7 |
+| `inspect_project_identity` | call | [project_identity](../modules/project_identity.md) | 4 |
 | `source` | import | [source](../modules/source.md) | — |
 | `transfer` | import | [transfer](../modules/transfer.md) | — |
 | `upgrade_service` | import | [upgrade_service](../modules/upgrade_service.md) | — |

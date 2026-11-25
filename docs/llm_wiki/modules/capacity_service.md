@@ -26,6 +26,7 @@ An uncovered year in a saved commitment leaves its proportional daily effort unc
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile`, `Vacation` |
 | `app.services.calendar_rules` | `AnnualCalendars`, `YearRules`, `rule_signature`, `task_uses_years` |
 | `app.services.calendar_service` | `CalendarService` |
+| `app.services.capacity_adjustments` | `load_dated_availability` |
 | `app.services.execution_planning_window` | `live_assignments` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_service` | `TaskService` |
@@ -56,9 +57,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (12) |
+| Inbound | `backend` (16) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (14) |
+| Outbound | `backend` (15) |
 
 ### External packages
 
@@ -66,7 +67,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -74,7 +75,7 @@ flowchart LR
 |-------|------|-------|-------------|
 | [CommitmentRate](../entities/CommitmentRate.md) | 37 | — | — |
 | [PeriodCommitments](../entities/PeriodCommitments.md) | 52 | — | Fold baseline rates at interval boundaries without expanding each task into daily rows. |
-| [CapacityService](../entities/CapacityService.md) | 103 | — | — |
+| [CapacityService](../entities/CapacityService.md) | 126 | — | — |
 
 ## Functions
 

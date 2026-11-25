@@ -2,13 +2,14 @@
 
 **Entry point:** `agent_get_team_setup_status` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [agent_team_setup](../modules/agent_team_setup.md), [agent_team_setup_service](../modules/agent_team_setup_service.md), [authority](../modules/authority.md), and 14 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [agent_team_setup](../modules/agent_team_setup.md), [agent_team_setup_service](../modules/agent_team_setup_service.md), and 15 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
 - [agent_team_setup](../modules/agent_team_setup.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [autonomy_canonical](../modules/autonomy_canonical.md)
 - [commands](../modules/commands.md)
@@ -16,7 +17,6 @@
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
 - [identity_service](../modules/identity_service.md)
-- [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [mcp_server](../modules/mcp_server.md)
 - [models_identity](../modules/models_identity.md)
@@ -40,10 +40,10 @@ sequenceDiagram
     participant p5 as _agent_context
     participant p6 as get_settings
     participant p7 as AgentTeamSetupService._select_status_topology
-    participant p8 as AgentTeamSetupService._absent_steps
-    participant p9 as command_transaction
-    participant p10 as AgentTeamSetupService._status_for_topology
-    participant p11 as _authenticate_agent_key
+    participant p8 as command_transaction
+    participant p9 as AgentTeamSetupService._absent_steps
+    participant p10 as _authenticate_agent_key
+    participant p11 as AgentTeamSetupService._status_for_topology
     participant p12 as _require_scope_requirement
     participant p13 as IdentityService.actor_context
     participant p14 as require_scope
@@ -70,20 +70,20 @@ sequenceDiagram
     p1->>p5: _agent_context
     p3->>p6: get_settings
     p4->>p7: AgentTeamSetupService._select_status_topology
-    p4->>p8: AgentTeamSetupService._absent_steps
-    p5->>p9: command_transaction
-    p4->>p10: AgentTeamSetupService._status_for_topology
-    p5->>p11: _authenticate_agent_key
+    p5->>p8: command_transaction
+    p4->>p9: AgentTeamSetupService._absent_steps
+    p5->>p10: _authenticate_agent_key
+    p4->>p11: AgentTeamSetupService._status_for_topology
     p5->>p12: _require_scope_requirement
     p5->>p13: IdentityService.actor_context
     p12->>p14: require_scope
-    p11->>p15: AgentService.authenticate
+    p10->>p15: AgentService.authenticate
     p13->>p16: require_identity_writes
-    p9->>p17: DeliveryDependencyService.reconcile
-    p9->>p18: DiscussionService.enqueue
-    p10->>p19: _member_contract_outdated
-    p10->>p20: AgentTeamSetupService._handoff
-    p10->>p21: _canonical_json
+    p8->>p17: DeliveryDependencyService.reconcile
+    p8->>p18: DiscussionService.enqueue
+    p11->>p19: _member_contract_outdated
+    p11->>p20: AgentTeamSetupService._handoff
+    p11->>p21: _canonical_json
     p14->>p22: actor_has_scope
     p21->>p23: ensure_agent_team_secret_free
     p15->>p24: commit_or_flush
@@ -95,23 +95,23 @@ sequenceDiagram
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 437 interactions; 407 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 468 interactions; 438 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 123 (122 omitted); unresolved 1 of 192 (191 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 138 (137 omitted); unresolved 1 of 203 (202 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
 | `backend/app/config.py:get_settings` | 4 | [backend/app/config.py](../modules/config.md) | internal | 1 |
-| `backend/app/maintenance.py:enforce_mcp_access` | 3 | [backend/app/maintenance.py](../modules/maintenance.md) | internal | 2 |
+| `backend/app/maintenance.py:enforce_mcp_access` | 3 | [backend/app/maintenance.py](../modules/app_maintenance.md) | internal | 2 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | external | 4 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | unresolved | 3 |
 | `backend/app/mcp_server.py:_agent_context` | 15 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 3 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 101 groups; 93 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 106 groups; 98 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -124,9 +124,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 123; effect analysis evaluated: 73, partial: 3, unavailable: 47. Counts include steps omitted from the displayed trace.
+Source steps: 128; effect analysis evaluated: 77, partial: 3, unavailable: 48. Counts include steps omitted from the displayed trace.
 
-Collector observations for 76 source steps with known totals: observed: 347, emitted: 322, omitted: 25. Unavailable totals are excluded.
+Collector observations for 80 source steps with known totals: observed: 370, emitted: 345, omitted: 25. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -174,10 +174,10 @@ flowchart LR
     s6 -. "scope.endswith(':write')" .-> s12
     click s1 "../modules/mcp_server.md"
     click s2 "../modules/mcp_server.md"
-    click s3 "../modules/maintenance.md"
+    click s3 "../modules/app_maintenance.md"
     click s4 "../modules/config.md"
     click s5 "../modules/config.md"
-    click s6 "../modules/maintenance.md"
+    click s6 "../modules/app_maintenance.md"
 ```
 
 ### Step data

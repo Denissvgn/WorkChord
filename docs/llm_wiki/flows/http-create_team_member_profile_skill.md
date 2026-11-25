@@ -57,8 +57,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_team_member_profile_skill | service.add_profile_skill | 135 | `service.add_profile_skill(profile_id, data)` |
-| create_team_member_profile_skill | HTTPException | 137 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| create_team_member_profile_skill | service.add_profile_skill | 154 | `service.add_profile_skill(profile_id, data)` |
+| create_team_member_profile_skill | HTTPException | 156 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 
 ### Boundary effects
 
@@ -68,8 +68,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_team_member_profile_skill` | `service.add_profile_skill` | 135 |
-| external_call | `create_team_member_profile_skill` | `HTTPException` | 137 |
+| unresolved_call | `create_team_member_profile_skill` | `service.add_profile_skill` | 154 |
+| external_call | `create_team_member_profile_skill` | `HTTPException` | 156 |
 
 ## Behavior
 

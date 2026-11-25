@@ -57,8 +57,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_iteration_page | service.id_page | 34 | `service.id_page(limit=limit, after_id=after_id, upper_id=upper_id)` |
-| get_iteration_page | service.to_response | 35 | `service.to_response(item)` |
+| get_iteration_page | service.id_page | 36 | `service.id_page(limit=limit, after_id=after_id, upper_id=upper_id)` |
+| get_iteration_page | service.to_response | 37 | `service.to_response(item)` |
 
 ### Boundary effects
 
@@ -68,8 +68,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_iteration_page` | `service.id_page` | 34 |
-| unresolved_call | `get_iteration_page` | `service.to_response` | 35 |
+| unresolved_call | `get_iteration_page` | `service.id_page` | 36 |
+| unresolved_call | `get_iteration_page` | `service.to_response` | 37 |
 
 ## Behavior
 

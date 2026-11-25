@@ -36,6 +36,7 @@ _Auto-generated from `GanttTask` in `frontend/src/types/gantt.ts`._
 | `is_optional` | `boolean` | Yes | — | — |
 | `is_deferred` | `boolean` | No | — | — |
 | `is_outside_constraints` | `boolean` | Yes | — | — |
+| `has_inverted_dependency` | `boolean` | No | — | — |
 | `tags` | `string[]` | Yes | — | — |
 | `milestone` | <pre><code>&#123;&#10;        id&#58; number&#59;&#10;        project&#95;id&#58; number&#59;&#10;        name&#58; string&#59;&#10;        status&#58; string&#59;&#10;        target&#95;date&#63;&#58; string &#124; null&#59;&#10;    &#125; &#124; null</code></pre> | No | — | — |
 | `assignee` | `{ id: number; name: string; kind?: 'human' \| 'agent' \| 'hybrid' \| null } \| null` | No | — | — |
@@ -103,7 +104,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_gantt](../modules/types_gantt.md) | 0 | `actual_end_date`, `actual_start_date`, `assignee`, `assignees`, `calculated_effort_days`, `children`, `dependencies`, `description`, `effort_days`, `effort_hours`, `end_date`, `id` |
+| [types_gantt](../modules/types_gantt.md) | 0 | `actual_end_date`, `actual_start_date`, `assignee`, `assignees`, `calculated_effort_days`, `children`, `dependencies`, `description`, `effort_days`, `effort_hours`, `end_date`, `has_inverted_dependency` |
 
 ### Structure
 

@@ -1,7 +1,7 @@
 # BacklogSnapshotService_restore
 
 **Entry point:** `backlog_snapshot_service.BacklogSnapshotService.restore`
-**Modules involved:** [authority](../modules/authority.md), [backlog_snapshot_service](../modules/backlog_snapshot_service.md), [commands](../modules/commands.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [models_task](../modules/models_task.md), [snapshot_service](../modules/snapshot_service.md), [task_brief_service](../modules/task_brief_service.md), [task_domain_service](../modules/task_domain_service.md), [task_recovery_service](../modules/task_recovery_service.md), [task_service](../modules/task_service.md)
+**Modules involved:** [authority](../modules/authority.md), [backlog_snapshot_service](../modules/backlog_snapshot_service.md), [commands](../modules/commands.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [models_task](../modules/models_task.md), [snapshot_service](../modules/snapshot_service.md), [task_brief_service](../modules/task_brief_service.md), [task_domain_service](../modules/task_domain_service.md), [task_recovery_service](../modules/task_recovery_service.md), [task_replacement_service](../modules/task_replacement_service.md), [task_service](../modules/task_service.md)
 
 ## Sequence
 
@@ -16,17 +16,18 @@
 8. `snapshot_service.SnapshotService._preflight_profile_lifetimes`
 9. `snapshot_service.SnapshotService`
 10. `authority.internal_authority`
-11. `delivery_dependency_service.DeliveryDependencyService.require_unreferenced`
-12. `delivery_dependency_service.DeliveryDependencyService`
-13. `task_recovery_service.reserve_restored_task_version`
-14. `models_task.Task`
-15. `task_domain_service.require_owner`
-16. `task_brief_service.TaskBriefService.restore_brief`
-17. `task_brief_service.TaskBriefService`
-18. `task_service.TaskService.record_task_event`
-19. `models_task.TaskDependency`
-20. `task_service.TaskService._load_iteration_tree`
-21. `task_service.TaskService.task_to_response`
+11. `task_replacement_service.require_restore_compatible`
+12. `delivery_dependency_service.DeliveryDependencyService.require_unreferenced`
+13. `delivery_dependency_service.DeliveryDependencyService`
+14. `task_recovery_service.reserve_restored_task_version`
+15. `models_task.Task`
+16. `task_domain_service.require_owner`
+17. `task_brief_service.TaskBriefService.restore_brief`
+18. `task_brief_service.TaskBriefService`
+19. `task_service.TaskService.record_task_event`
+20. `models_task.TaskDependency`
+21. `task_service.TaskService._load_iteration_tree`
+22. `task_service.TaskService.task_to_response`
 
 ## Touches
 
@@ -39,6 +40,7 @@
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_domain_service](../modules/task_domain_service.md)
 - [task_recovery_service](../modules/task_recovery_service.md)
+- [task_replacement_service](../modules/task_replacement_service.md)
 - [task_service](../modules/task_service.md)
 
 ## Behavior

@@ -1,6 +1,6 @@
 # ServerAcceptanceCandidate
 
-**Location:** `backend/app/autonomy/server_acceptance.py:126`
+**Location:** `backend/app/autonomy/server_acceptance.py:127`
 **Kind:** Pydantic model
 **Bases:** `StrictContractModel`
 **Module:** [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md)

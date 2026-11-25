@@ -4,7 +4,10 @@
 
 ## Description
 
-The routed decision, its wire defaults, and its digest share one exact byte budget.
+The routed decision, its defaults, and its digest share one exact canonical byte budget.
+
+The budget counts canonical packet bytes of the validated response. MCP framing and
+HTTP headers are outside it, so raw transport sizes are not asserted here.
 
 ## Imports
 
@@ -16,9 +19,11 @@ The routed decision, its wire defaults, and its digest share one exact byte budg
 | `app.schemas` | `agent_routing` |
 | `app.schemas.agent_routing` | `AgentRoutingPreviewResponse` |
 | `app.services` | `agent_routing_service` |
-| `app.services.agent_routing_policy` | `MAX_ROUTING_PACKET_BYTES`, `canonical_routing_json_bytes` |
+| `app.services.agent_routing_policy` | `MAX_ROUTING_CANDIDATES`, `MAX_ROUTING_EXCLUSIONS`, `MAX_ROUTING_PACKET_BYTES`, `canonical_routing_json_bytes` |
 | `app.services.agent_routing_service` | `AgentRoutingService` |
+| `app.services.agent_service` | `hash_api_key` |
 | `app.utils.time` | `utc_now` |
+| `json` | `json` |
 | `pytest` | `pytest` |
 | `tests.test_agent_routing_service` | `_assessment_command`, `_command_context` |
 | `tests.test_agent_team_setup_qualification` | `provision_ready_topology`, `routing_base` |
@@ -43,7 +48,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (12) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -51,11 +56,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 1 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `restore_settings_cache` | `()` | `@pytest.fixture(autouse=True)` | — |
-| `test_preview_bounds_final_rest_and_mcp_decisions` | *(async)* `(db_session, db_session_factory, team_member_factory, task_factory, actor_factory, monkeypatch, record_property, primary)` | `@database_engines`, `@pytest.mark.parametrize('primary', ['rest', 'mcp'])`, `@pytest.mark.usefixtures('deployed_agent_skill_release')` | — |
+| `trimmed_rows` | `(preview)` | — | Rows the trim loop dropped, beyond the omissions the row bounds alone cause. |
+| `test_preview_bounds_final_rest_and_mcp_decisions` | *(async)* `(db_session, db_session_factory, team_member_factory, task_factory, actor_factory, monkeypatch, record_property, primary)` | `@database_engines`, `@pytest.mark.parametrize('primary', ['rest', 'mcp'])`, `@pytest.mark.usefixtures('deployed_agent_skill_release', 'qualified_model_aware_routing_test_context')` | — |
+| `test_preview_trim_attempts_track_rows_dropped` | *(async)* `(db_session, db_session_factory, team_member_factory, task_factory, actor_factory, monkeypatch, record_property)` | `@database_engines`, `@pytest.mark.usefixtures('deployed_agent_skill_release', 'qualified_model_aware_routing_test_context')` | — |

@@ -1,6 +1,6 @@
 # OverviewCountList
 
-**Location:** `frontend/src/features/overview/overviewSignals.ts:77`
+**Location:** `frontend/src/features/overview/overviewSignals.ts:78`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [overviewSignals](../modules/overviewSignals.md)

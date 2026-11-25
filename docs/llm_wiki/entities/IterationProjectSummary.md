@@ -35,11 +35,14 @@ Compact project identity embedded in iteration responses.
 flowchart LR
     n0["IterationProjectSummary (backend/app/schemas/iteration.py)"]
     n1["BaseModel"]
-    n2["IterationService._response_project (backend/app/services/iteration_service.py)"]
+    n2["backend/app/routers/gantt.py"]
+    n3["IterationService._response_project (backend/app/services/iteration_service.py)"]
     n0 --> n1
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/schemas_iteration.md"
-    click n2 "../modules/iteration_service.md"
+    click n2 "../modules/routers_gantt.md"
+    click n3 "../modules/iteration_service.md"
 ```
 
 ### Summary
@@ -58,4 +61,5 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `gantt` | import | [routers_gantt](../modules/routers_gantt.md) | — |
 | `IterationService._response_project` | type_reference | [iteration_service](../modules/iteration_service.md) | — |

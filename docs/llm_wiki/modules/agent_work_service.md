@@ -52,13 +52,14 @@ Work discovery, fencing and recovery read the same live assignment and run state
 | `app.services.agent_routing_service` | `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingService`, `AgentRoutingService`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key`, `AgentService` |
 | `app.services.agent_team_setup_service` | `AgentTeamMembershipBoundary`, `AgentTeamSetupService`, `AgentTeamSetupService`, `AgentTeamSetupConflictError`, `AgentTeamSetupService` |
-| `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
+| `app.services.delivery_dependency_service` | `DeliveryDependencyService`, `DeliveryDependencyService` |
 | `app.services.execution_planning_window` | `LIVE_ASSIGNMENT_STATES`, `LIVE_RUN_STATE`, `assignment_matches`, `require_window_authority`, `window_authority_matches` |
 | `app.services.external_link_service` | `ExternalLinkService` |
+| `app.services.maintenance_window_service` | `require_start_admission` |
 | `app.services.project_service` | `ProjectService` |
 | `app.services.retained_planning_output` | `REQUIRED`, `REQUIRED`, `recovery_attestation_hint`, `REQUIRED`, `recovery_attestation_hint` |
 | `app.services.review_evidence` | `check_supervised_selection`, `check_supervised_selection` |
-| `app.services.review_provenance` | `ReworkReadCache`, `actor_provenance`, `different_publisher_required`, `rework_binding_identity`, `select_reviewer`, `supervised_rework_evidence`, `record_terminal_observation`, `record_terminal_observation`, `observe_review_candidate`, `verify_verdict`, `mark_server_interruption` |
+| `app.services.review_provenance` | `ReworkReadCache`, `actor_provenance`, `different_publisher_required`, `require_independent_profile`, `rework_binding_identity`, `select_reviewer`, `supervised_rework_evidence`, `record_terminal_observation`, `record_terminal_observation`, `observe_review_candidate`, `verify_verdict`, `mark_server_interruption`, `record_server_end_profile` |
 | `app.services.scheduler_service` | `SchedulerService` |
 | `app.services.task_brief_service` | `TaskBriefService`, `TaskBriefService`, `brief_definition_blockers`, `brief_definition_blockers` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
@@ -96,8 +97,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (28) |
-| Outbound | `backend` (35) |
+| Inbound | `backend` (31) |
+| Outbound | `backend` (36) |
 
 ### External packages
 
@@ -105,13 +106,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 60 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 64 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentWorkService](../entities/AgentWorkService.md) | 184 | — | Coordinate PM dispatch and low-freedom worker lifecycle commands. |
+| [AgentWorkService](../entities/AgentWorkService.md) | 207 | — | Coordinate PM dispatch and low-freedom worker lifecycle commands. |
 
 ## Functions
 
@@ -119,3 +120,5 @@ flowchart LR
 |----------|-----------|------------|-------------|
 | `_json_loads` | `(value: Optional[str], fallback: Any) -> Any` | — | — |
 | `parse_task_brief` | `(description: Optional[str]) -> dict[str, str]` | — | Parse level-two Markdown sections from the portable task-brief template. |
+| `encode_assignment_cursor` | `(last_id: int) -> str` | — | Pack the last returned assignment id into an opaque cursor. |
+| `decode_assignment_cursor` | `(cursor: str) -> int` | — | Read a cursor made by this listing; anything else is a validation error. |

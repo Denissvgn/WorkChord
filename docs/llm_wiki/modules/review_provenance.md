@@ -17,6 +17,7 @@ An evidence-backed verdict rechecks the packet against the current submission an
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
+| `app.authority` | `internal_authority` |
 | `app.commands` | `current_command`, `current_command` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRun`, `AgentRunEvent`, `AgentTaskAssignment`, `AgentTeamTopology`, `AgentTeamTopologyMember`, `TaskEvent`, `AgentTaskAssignment` |
 | `app.models.external_link` | `ExternalLink` |
@@ -33,6 +34,7 @@ An evidence-backed verdict rechecks the packet against the current submission an
 | `app.services.github_status_service` | `GitHubStatusService` |
 | `app.services.retained_planning_output` | `retained_attestations` |
 | `app.services.review_evidence` | `resolve` |
+| `app.services.task_replacement_service` | `replacing`, `carried_contributors`, `attributed` |
 | `app.utils.github_links` | `GitHubLinkError`, `parse_github_url` |
 | `app.utils.url_policy` | `normalize_stored_display_url` |
 | `dataclasses` | `dataclass`, `field` |
@@ -62,8 +64,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (13) |
-| Outbound | `backend` (18) |
+| Inbound | `backend` (16) |
+| Outbound | `backend` (20) |
 
 ### External packages
 
@@ -71,14 +73,14 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [ReworkReadCache](../entities/ReworkReadCache.md) | 50 | — | Ephemeral evidence for one queue/context request or one locked begin transaction. |
-| [ReviewHistory](../entities/ReviewHistory.md) | 513 | — | — |
+| [ReviewHistory](../entities/ReviewHistory.md) | 665 | — | — |
 
 ## Functions
 
@@ -94,6 +96,14 @@ flowchart LR
 | `supervised_rework_evidence` | *(async)* `(db, task, assignment, worker, lineage, *, lock = False, cache = None)` | — | Identify a strict shadow handback to the original actor, including previously issued rows. |
 | `different_publisher_required` | *(async)* `(db, project_id, *, lock = False)` | — | — |
 | `historical_profile` | `(assignment)` | — | Only an exact server-owned selection can supply a legacy assignment's profile. |
+| `_begin_profile` | `(run)` | — | The authenticated begin receipt, or its audited reconciliation, names the run's own profile. |
+| `_server_ended` | `(run)` | — | The server, not the worker's terminal command, ended this run. |
+| `record_server_end_profile` | *(async)* `(db, run)` | — | When the server ends a run, record the actor's profile as the terminal command would. |
+| `_run_profile_rows` | `(assignment_id, run, begun)` | — | The begin profile of one run and, when it differs or is unknown, its terminal profile. |
+| `carried_history_truncated` | `(original_task_id, reason)` | — | An unknown row that ends a carried walk early; every independence check treats it as unprovable. |
+| `carried_profile_history` | *(async)* `(db, task_id)` | — | Actors and profiles of the original runs a replacement carries, through every earlier replacement. |
+| `execution_profile_history` | *(async)* `(db, assignments, *, task_id = None)` | — | Name each fulfilled execution's actor and profile from server-owned records only. |
+| `require_independent_profile` | *(async)* `(db, assignments, reviewer, reviewer_profile_id = None, *, task_id = None)` | — | Refuse a reviewer whose actor or profile is known to have executed this task or work it carries. |
 | `actor_provenance` | *(async)* `(db, actor, *, observed_model = None, binding_id = None, lock = False)` | — | Capture the authenticated actor's profile and exact operator-declared model at this instant. |
 | `_has_output` | `(value)` | — | — |
 | `no_output_corroborated` | *(async)* `(db, run, reported_evidence = None)` | — | A sealed worker statement cannot discard artifacts already recorded on the same run. |
@@ -102,7 +112,8 @@ flowchart LR
 | `mark_server_interruption` | *(async)* `(db, run)` | — | — |
 | `_submitted_review_floor` | `(provenance, assignment_id, actor_id)` | — | An absent handback is unrestricted; a contradictory handback admits no verifier. |
 | `_manual_history` | *(async)* `(db, task)` | — | Verify an actual human executor and immutable evidence, independently of the planned owner. |
-| `review_history` | *(async)* `(db, task, assignments, *, strict)` | — | A failed or recovered run can have produced retained work. Include every actual attempt. |
+| `review_history` | *(async)* `(db, task, assignments, *, strict, include_carried = True)` | — | A failed or recovered run can have produced retained work. Include every actual attempt. |
+| `_attempt_history` | *(async)* `(db, task, assignments, *, strict)` | — | — |
 | `_submission_candidate` | *(async)* `(db, task, submitted_run, source)` | — | Use identical repository and revision checks for authenticated worker or human artifact records. |
 | `select_reviewer` | *(async)* `(db, task, assignments, reviewer, *, binding_id = None, reviewer_profile_id = None, review_evidence_id = None)` | — | — |
 | `observe_review_candidate` | *(async)* `(db, assignment_id, actor_id)` | — | Resolve remote PR evidence before taking the task, actor and assignment locks. |

@@ -66,11 +66,11 @@ sequenceDiagram
     participant p21 as TaskTimelineService.page
     participant p22 as AgentWorkService._decode_page_cursor
     participant p23 as window_authority_matches
-    participant p24 as AgentWorkService._start_blockers
-    participant p25 as DeliveryDependencyService.validate_cycles
-    participant p26 as DiscussionService.recipient_authorized
-    participant p27 as AgentWorkService.run_response
-    participant p28 as TaskService.reserve_task_version
+    participant p24 as AgentWorkService._started_blockers
+    participant p25 as AgentWorkService._start_blockers
+    participant p26 as DeliveryDependencyService.validate_cycles
+    participant p27 as DiscussionService.recipient_authorized
+    participant p28 as AgentWorkService.run_response
     participant p29 as print
     participant p30 as <dynamic>
     p0->>p1: execute
@@ -96,18 +96,18 @@ sequenceDiagram
     p17->>p21: TaskTimelineService.page
     p13->>p22: AgentWorkService._decode_page_cursor
     p10->>p23: window_authority_matches
-    p11->>p24: AgentWorkService._start_blockers
-    p7->>p25: DeliveryDependencyService.validate_cycles
-    p9->>p26: DiscussionService.recipient_authorized
-    p11->>p27: AgentWorkService.run_response
-    p7->>p28: TaskService.reserve_task_version
+    p11->>p24: AgentWorkService._started_blockers
+    p11->>p25: AgentWorkService._start_blockers
+    p7->>p26: DeliveryDependencyService.validate_cycles
+    p9->>p27: DiscussionService.recipient_authorized
+    p11->>p28: AgentWorkService.run_response
     p0-->>p29: print(json.dumps(...))
     p1-->>p30: <dynamic>
 ```
 
-> Call sequence diagram shows 30 of 959 interactions; 929 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 883 interactions; 853 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 262 (261 omitted); unresolved 1 of 485 (484 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 239 (238 omitted); unresolved 1 of 428 (427 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -121,7 +121,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/commands.py:command_transaction` | 9 | - | external | 4 |
 | `backend/app/commands.py:command_transaction` | 9 | - | unresolved | 12 |
 | `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 21 | - | unresolved | 23 |
-> Omission summary shows 8 of 198 groups; 190 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 197 groups; 189 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -134,9 +134,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 213; effect analysis evaluated: 152, partial: 7, unavailable: 54. Counts include steps omitted from the displayed trace.
+Source steps: 217; effect analysis evaluated: 155, partial: 7, unavailable: 55. Counts include steps omitted from the displayed trace.
 
-Collector observations for 159 source steps with known totals: observed: 965, emitted: 899, omitted: 66. Unavailable totals are excluded.
+Collector observations for 162 source steps with known totals: observed: 992, emitted: 925, omitted: 67. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

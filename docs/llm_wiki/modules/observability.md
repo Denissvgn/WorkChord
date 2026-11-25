@@ -78,7 +78,7 @@ flowchart LR
     click n1 "../modules/app_database.md"
     click n2 "../modules/database_runtime.md"
     click n3 "../modules/app_main.md"
-    click n4 "../modules/maintenance.md"
+    click n4 "../modules/app_maintenance.md"
     click n5 "../modules/models_outbound_webhook.md"
     click n6 "../modules/observability.md"
     click n7 "../modules/runtime_telemetry.md"
@@ -97,7 +97,7 @@ flowchart LR
 | Outbound | [config](../modules/config.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [database_runtime](../modules/database_runtime.md) |
-| Outbound | [maintenance](../modules/maintenance.md) |
+| Outbound | [app_maintenance](../modules/app_maintenance.md) |
 | Outbound | [models_outbound_webhook](../modules/models_outbound_webhook.md) |
 | Outbound | [runtime_telemetry](../modules/runtime_telemetry.md) |
 | Outbound | [upgrade_service](../modules/upgrade_service.md) |

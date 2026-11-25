@@ -1,6 +1,6 @@
 # TaskTextContext
 
-**Location:** `backend/app/schemas/task.py:350`
+**Location:** `backend/app/schemas/task.py:354`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

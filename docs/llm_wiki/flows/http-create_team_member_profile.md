@@ -52,7 +52,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_team_member_profile | service.create_profile | 75 | `service.create_profile(data)` |
+| create_team_member_profile | service.create_profile | 78 | `service.create_profile(data)` |
 
 ### Boundary effects
 
@@ -62,7 +62,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_team_member_profile` | `service.create_profile` | 75 |
+| unresolved_call | `create_team_member_profile` | `service.create_profile` | 78 |
 
 ## Behavior
 

@@ -14,7 +14,7 @@ Domain commands preserve identity, evidence independence and bounded read contra
 | `app.authority` | `Authority`, `AuthorityError` |
 | `app.commands` | `command_transaction` |
 | `app.main` | `app`, `app`, `app`, `app` |
-| `app.models.agent` | `AgentRun`, `AgentTaskAssignment`, `AgentActor`, `AgentActor`, `AgentRun`, `AgentTaskAssignment` |
+| `app.models.agent` | `AgentRun`, `AgentTaskAssignment`, `AgentActor`, `AgentActor`, `AgentActor`, `AgentRun`, `AgentTaskAssignment` |
 | `app.models.identity` | `Principal`, `PrincipalProfileLink`, `ProjectMembership` |
 | `app.models.task` | `Task` |
 | `app.models.task_brief` | `TaskBriefRevision`, `TaskProgressRecord`, `TaskReviewRecord` |

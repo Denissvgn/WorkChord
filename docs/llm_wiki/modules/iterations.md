@@ -13,7 +13,8 @@ Iteration API router.
 | `app.database` | `get_db` |
 | `app.query_limits` | `MAX_ITERATION_LIST_ITEMS` |
 | `app.schemas.common` | `MessageResponse` |
-| `app.schemas.iteration` | `IterationCreate`, `IterationPlanningReadinessSummary`, `IterationSeriesCreate`, `IterationSeriesResponse`, `IterationUpdate`, `IterationResponse`, `IterationSummary`, `IterationPage` |
+| `app.schemas.iteration` | `IterationCreate`, `IterationDateMovePreview`, `IterationDateMoveRequest`, `IterationPlanningReadinessSummary`, `IterationSeriesCreate`, `IterationSeriesResponse`, `IterationUpdate`, `IterationResponse`, `IterationSummary`, `IterationPage` |
+| `app.services.iteration_date_move` | `IterationDateMoveService` |
 | `app.services.iteration_service` | `IterationService` |
 | `datetime` | `date` |
 | `fastapi` | `APIRouter`, `Depends`, `HTTPException`, `Query`, `status` |
@@ -32,7 +33,8 @@ flowchart LR
     n4["backend/app/routers/iterations.py"]
     n5["backend/app/schemas/common.py"]
     n6["backend/app/schemas/iteration.py"]
-    n7["backend/app/services/iteration_service.py"]
+    n7["backend/app/services/iteration_date_move.py"]
+    n8["backend/app/services/iteration_service.py"]
     n1 --> n0
     n1 --> n2
     n1 --> n4
@@ -42,8 +44,11 @@ flowchart LR
     n4 --> n5
     n4 --> n6
     n4 --> n7
-    n7 --> n2
+    n4 --> n8
     n7 --> n6
+    n7 --> n8
+    n8 --> n2
+    n8 --> n6
     click n0 "../modules/app_database.md"
     click n1 "../modules/app_main.md"
     click n2 "../modules/query_limits.md"
@@ -51,7 +56,8 @@ flowchart LR
     click n4 "../modules/iterations.md"
     click n5 "../modules/schemas_common.md"
     click n6 "../modules/schemas_iteration.md"
-    click n7 "../modules/iteration_service.md"
+    click n7 "../modules/iteration_date_move.md"
+    click n8 "../modules/iteration_service.md"
 ```
 
 ### Internal neighbors
@@ -64,6 +70,7 @@ flowchart LR
 | Outbound | [query_limits](../modules/query_limits.md) |
 | Outbound | [schemas_common](../modules/schemas_common.md) |
 | Outbound | [schemas_iteration](../modules/schemas_iteration.md) |
+| Outbound | [iteration_date_move](../modules/iteration_date_move.md) |
 | Outbound | [iteration_service](../modules/iteration_service.md) |
 
 ### External packages
@@ -83,6 +90,7 @@ flowchart LR
 | `create_iteration_series` | *(async)* `(data: IterationSeriesCreate, service: Annotated[IterationService, Depends(get_iteration_service)])` | `@router.post('/iterations/series', response_model=IterationSeriesResponse, status_code=status.HTTP_201_CREATED)` | Create a back-to-back series of iterations. |
 | `get_iteration` | *(async)* `(iteration_id: int, service: Annotated[IterationService, Depends(get_iteration_service)])` | `@router.get('/iterations/{iteration_id}', response_model=IterationResponse)` | Get iteration by ID. |
 | `update_iteration` | *(async)* `(iteration_id: int, data: IterationUpdate, service: Annotated[IterationService, Depends(get_iteration_service)])` | `@router.put('/iterations/{iteration_id}', response_model=IterationResponse)` | Update an iteration. |
+| `preview_iteration_date_move` | *(async)* `(iteration_id: int, data: IterationDateMoveRequest, db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.post('/iterations/{iteration_id}/date-move/preview', response_model=IterationDateMovePreview)` | Show each person's shortfall on each date of a proposed period without changing anything. |
 | `delete_iteration` | *(async)* `(iteration_id: int, service: Annotated[IterationService, Depends(get_iteration_service)])` | `@router.delete('/iterations/{iteration_id}', response_model=MessageResponse)` | Delete an iteration. |
 | `get_iteration_summary` | *(async)* `(iteration_id: int, service: Annotated[IterationService, Depends(get_iteration_service)])` | `@router.get('/iterations/{iteration_id}/summary', response_model=IterationSummary)` | Get iteration summary with statistics. |
 | `get_iteration_planning_readiness` | *(async)* `(iteration_id: int, service: Annotated[IterationService, Depends(get_iteration_service)])` | `@router.get('/iterations/{iteration_id}/planning-readiness', response_model=IterationPlanningReadinessSummary)` | Get the compact aggregate used by persistent planning navigation. |

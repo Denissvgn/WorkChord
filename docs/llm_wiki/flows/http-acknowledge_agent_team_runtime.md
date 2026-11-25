@@ -133,17 +133,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| acknowledge_agent_team_runtime | HTTPException (backend/app/routers/agent…owledge_agent_team_runtime) | 641 | `HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Missing X-Agent-API-Key header')` |
-| acknowledge_agent_team_runtime | service.acknowledge_runtime | 646 | `service.acknowledge_runtime(api_key, data)` |
-| acknowledge_agent_team_runtime | _handle_agent_error | 648 | `_handle_agent_error(exc, structured=True)` |
-| _handle_agent_error | isinstance | 328 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 330 | `str(exc)` |
+| acknowledge_agent_team_runtime | HTTPException (backend/app/routers/agent…owledge_agent_team_runtime) | 643 | `HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Missing X-Agent-API-Key header')` |
+| acknowledge_agent_team_runtime | service.acknowledge_runtime | 648 | `service.acknowledge_runtime(api_key, data)` |
+| acknowledge_agent_team_runtime | _handle_agent_error | 650 | `_handle_agent_error(exc, structured=True)` |
+| _handle_agent_error | isinstance | 330 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 332 | `str(exc)` |
-| _handle_agent_error | HTTPException (backend/app/routers/agent.py:_handle_agent_error) | 334 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
-| _handle_agent_error | isinstance | 335 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException (backend/app/routers/agent.py:_handle_agent_error) | 336 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 336 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 337 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| _handle_agent_error | str | 334 | `str(exc)` |
+| _handle_agent_error | HTTPException (backend/app/routers/agent.py:_handle_agent_error) | 336 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
+| _handle_agent_error | isinstance | 337 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException (backend/app/routers/agent.py:_handle_agent_error) | 338 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 338 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 339 | `isinstance(exc, AgentTeamSetupConflictError)` |
 
 ### Boundary effects
 
@@ -153,14 +153,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `acknowledge_agent_team_runtime` | `HTTPException` | 641 |
-| unresolved_call | `acknowledge_agent_team_runtime` | `service.acknowledge_runtime` | 646 |
-| external_call | `_handle_agent_error` | `isinstance` | 328 |
-| external_call | `_handle_agent_error` | `HTTPException` | 334 |
-| external_call | `_handle_agent_error` | `isinstance` | 335 |
+| external_call | `acknowledge_agent_team_runtime` | `HTTPException` | 643 |
+| unresolved_call | `acknowledge_agent_team_runtime` | `service.acknowledge_runtime` | 648 |
+| external_call | `_handle_agent_error` | `isinstance` | 330 |
 | external_call | `_handle_agent_error` | `HTTPException` | 336 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 336 |
 | external_call | `_handle_agent_error` | `isinstance` | 337 |
+| external_call | `_handle_agent_error` | `HTTPException` | 338 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 338 |
+| external_call | `_handle_agent_error` | `isinstance` | 339 |
 | step_limit | `acknowledge_agent_team_runtime` | `first 12 steps` | 0 |
 
 ## Behavior

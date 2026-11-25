@@ -2,14 +2,14 @@
 
 **Entry point:** `revoke_owned_session` (`http`)
 **Source:** [routers_identity](../modules/routers_identity.md)
-**Modules touched:** [authority](../modules/authority.md), [config](../modules/config.md), [identity_service](../modules/identity_service.md), [maintenance](../modules/maintenance.md), and 2 more
+**Modules touched:** [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [config](../modules/config.md), [identity_service](../modules/identity_service.md), and 2 more
 
 **Complete modules touched:**
 
+- [app_maintenance](../modules/app_maintenance.md)
 - [authority](../modules/authority.md)
 - [config](../modules/config.md)
 - [identity_service](../modules/identity_service.md)
-- [maintenance](../modules/maintenance.md)
 - [routers_identity](../modules/routers_identity.md)
 - [time](../modules/time.md)
 
@@ -118,7 +118,7 @@ flowchart LR
     click s2 "../modules/identity_service.md"
     click s3 "../modules/config.md"
     click s4 "../modules/config.md"
-    click s5 "../modules/maintenance.md"
+    click s5 "../modules/app_maintenance.md"
     click s6 "../modules/config.md"
     click s7 "../modules/routers_identity.md"
     click s8 "../modules/config.md"

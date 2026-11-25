@@ -49,7 +49,7 @@ flowchart LR
     n8["update_calendar (backend/app/routers/calendars.py)"]
     n9["get_gantt_data (backend/app/routers/gantt.py)"]
     n10["CapacityService.set_calendar (backend/app/services/capacity_service.py)"]
-    n11["IterationService._calendar_for_create (backend/app/services/iteration_service.py)"]
+    n11["IterationDateMoveService._period (backend/app/services/iteration_date_move.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -72,7 +72,7 @@ flowchart LR
     click n8 "../modules/calendars.md"
     click n9 "../modules/routers_gantt.md"
     click n10 "../modules/capacity_service.md"
-    click n11 "../modules/iteration_service.md"
+    click n11 "../modules/iteration_date_move.md"
 ```
 
 ### Summary
@@ -96,6 +96,6 @@ flowchart LR
 | `update_calendar` | type_reference | [calendars](../modules/calendars.md) | — |
 | `get_gantt_data` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
 | `CapacityService.set_calendar` | call | [capacity_service](../modules/capacity_service.md) | 1 |
-| `IterationService._calendar_for_create` | call | [iteration_service](../modules/iteration_service.md) | 1 |
+| `IterationDateMoveService._period` | call | [iteration_date_move](../modules/iteration_date_move.md) | 1 |
 
-> References: showing 12 of 32 logical references; 20 omitted by the 12-row generated summary limit.
+> References: showing 12 of 33 logical references; 21 omitted by the 12-row generated summary limit.

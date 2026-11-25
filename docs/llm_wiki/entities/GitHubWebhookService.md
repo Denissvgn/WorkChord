@@ -46,13 +46,16 @@ flowchart LR
     n1["get_github_webhook_service (backend/app/routers/github.py)"]
     n2["receive_github_webhook (backend/app/routers/github.py)"]
     n3["GitHubWebhookService.from_runtime (backend/app/services/github_webhook_service.py)"]
+    n4["_webhook (backend/tests/test_github_reconciliation.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
+    n4 --> n0
     click n0 "../modules/github_webhook_service.md"
     click n1 "../modules/routers_github.md"
     click n2 "../modules/routers_github.md"
     click n3 "../modules/github_webhook_service.md"
+    click n4 "../modules/test_github_reconciliation.md"
 ```
 
 ### Summary
@@ -69,3 +72,4 @@ flowchart LR
 | `receive_github_webhook` | type_reference | [routers_github](../modules/routers_github.md) | — |
 | `GitHubWebhookService.from_runtime` | call | [github_webhook_service](../modules/github_webhook_service.md) | 1 |
 | `GitHubWebhookService.from_runtime` | type_reference | [github_webhook_service](../modules/github_webhook_service.md) | — |
+| `_webhook` | call | [test_github_reconciliation](../modules/test_github_reconciliation.md) | 1 |

@@ -1,6 +1,6 @@
 # AgentTeamSetupService
 
-**Location:** `backend/app/services/agent_team_setup_service.py:176`
+**Location:** `backend/app/services/agent_team_setup_service.py:183`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_team_setup_service](../modules/agent_team_setup_service.md)
@@ -52,6 +52,8 @@ Uses the bundle service's deployed, integrity-validated catalog for role-package
 | `_execute_action` | *(async)* `(*, manifest: AgentTeamMaster, action: AgentTeamPlanAction, run: AgentTeamApplyRun, confirmed_action_ids: set[str]) -> tuple[AgentTeamActionReceipt, bool, bool]` | — | — |
 | `_profile_revision` | *(async)* `(actor: AgentActor) -> str` | — | — |
 | `_binding_revisions` | *(async)* `(actor: AgentActor) -> dict[str, int]` | — | — |
+| `_unverified_tool_tags` | *(async)* `(actor: AgentActor \| None, member: AgentTeamMemberSpec) -> dict[str, tuple[str, ...]]` | — | Declared tool tags the binding does not carry yet, per binding key. |
+| `_tool_capability_action` | `(gaps: dict[str, tuple[str, ...]]) -> str \| None` | `@staticmethod` | — |
 | `_handoff` | *(async)* `(*, topology: AgentTeamTopology, manifest: AgentTeamMaster, member_record: AgentTeamTopologyMember, member: AgentTeamMemberSpec) -> AgentTeamRuntimeHandoff \| None` | — | — |
 | `_refresh_handoffs` | *(async)* `(topology: AgentTeamTopology, manifest: AgentTeamMaster) -> None` | — | — |
 | `apply` | *(async)* `(actor: AgentActor, request: AgentTeamApplyRequest, *, command: AgentPlanningCommandContext) -> AgentTeamApplyResponse` | — | Apply only exact approved action IDs and persist resumable receipts. |
@@ -114,7 +116,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_team_setup_service](../modules/agent_team_setup_service.md) | 48 | — |
+| [agent_team_setup_service](../modules/agent_team_setup_service.md) | 50 | — |
 
 ### References
 
@@ -133,4 +135,4 @@ flowchart LR
 | `get_agent_team_starting_points` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `get_agent_team_topology` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 
-> References: showing 12 of 50 logical references; 38 omitted by the 12-row generated summary limit.
+> References: showing 12 of 54 logical references; 42 omitted by the 12-row generated summary limit.

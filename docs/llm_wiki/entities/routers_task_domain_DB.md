@@ -86,4 +86,4 @@ flowchart LR
 | `planning_input_context` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `record_task_progress` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 
-> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.
+> References: showing 12 of 29 logical references; 17 omitted by the 12-row generated summary limit.

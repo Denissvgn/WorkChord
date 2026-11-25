@@ -19,19 +19,23 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.models.team_member` | `TeamMemberProfile` |
 | `app.schemas.delivery_metrics` | `DeliveryMetricsResponse` |
 | `app.schemas.execution_usage` | `ExecutionUsageSummary` |
+| `app.schemas.github` | `GitHubReconciliationResponse` |
 | `app.schemas.planning_inputs` | `PlanningInputContext`, `MemberPlanningIntent` |
 | `app.schemas.task` | `TaskCreate`, `TaskResponse` |
 | `app.schemas.task_brief` | `BriefWrite`, `BriefConvert`, `ProgressWrite`, `TaskReviewWrite`, `TaskReviewResponse`, `CurrentTaskReviewResponse` |
 | `app.schemas.task_detail` | `TaskDetailResponse`, `TaskReferencePage`, `HumanWorkResponse` |
 | `app.schemas.task_domain` | `BacklogRestoreRequest`, `TaskActionRequest`, `TaskActionsResponse` |
+| `app.schemas.task_replacement` | `TaskReplacementCreate`, `TaskReplacementResponse` |
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService`, `BacklogSnapshotService` |
 | `app.services.delivery_metrics_service` | `DeliveryMetricsService` |
 | `app.services.execution_usage_service` | `ExecutionUsageService` |
+| `app.services.github_reconciliation_service` | `GitHubReconciliationService`, `GitHubReconciliationService` |
 | `app.services.planning_input_context` | `observe_planning_input`, `observe_planning_input` |
 | `app.services.release_service` | `ReleaseService` |
 | `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.task_detail_service` | `TaskDetailService` |
 | `app.services.task_domain_service` | `TaskDomainService`, `domain_capabilities` |
+| `app.services.task_replacement_service` | `TaskReplacementService`, `TaskReplacementService` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.services.work_metrics` | `METRIC_MATCHES`, `aggregate_metrics` |
 | `decimal` | `Decimal` |
@@ -60,7 +64,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (6) |
-| Outbound | `backend` (24) |
+| Outbound | `backend` (28) |
 
 ### External packages
 
@@ -68,7 +72,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -109,3 +113,7 @@ flowchart LR
 | `task_progress_history` | *(async)* `(task_id: int, db: DB, limit: int = Query(default=10, ge=1, le=20), after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/{task_id}/progress/history')` | — |
 | `backlog_snapshots` | *(async)* `(project_id: int, db: DB)` | `@router.get('/projects/{project_id}/backlog/snapshots')` | — |
 | `restore_backlog` | *(async)* `(project_id: int, snapshot_id: int, data: BacklogRestoreRequest, db: DB)` | `@router.post('/projects/{project_id}/backlog/snapshots/{snapshot_id}/restore', response_model=list[TaskResponse])` | — |
+| `task_replacement` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/replacement', response_model=TaskReplacementResponse)` | Read the clean-replacement disposition this task takes part in, as original or replacement. |
+| `task_github_reconciliation` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/github-reconciliation', response_model=GitHubReconciliationResponse)` | Compare the commits a task submitted with its linked pull requests as last observed. |
+| `task_github_catch_up` | *(async)* `(task_id: int, db: DB)` | `@router.post('/tasks/{task_id}/github-reconciliation/catch-up', response_model=GitHubReconciliationResponse)` | Read this task's own pull requests from GitHub for events a webhook never delivered. |
+| `record_task_replacement` | *(async)* `(task_id: int, data: TaskReplacementCreate, db: DB)` | `@router.post('/tasks/{task_id}/replacement', response_model=TaskReplacementResponse, status_code=201)` | Replace this unaccepted task with a fresh one; only the project's PM or an operator may decide. |

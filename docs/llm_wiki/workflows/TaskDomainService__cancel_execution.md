@@ -9,7 +9,8 @@
 1. `authority.AuthorityError`
 2. `review_provenance.different_publisher_required`
 3. `review_provenance.mark_server_interruption`
-4. `time.utc_now`
+4. `review_provenance.record_server_end_profile`
+5. `time.utc_now`
 
 ## Touches
 

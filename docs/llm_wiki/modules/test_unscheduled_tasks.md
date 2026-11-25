@@ -10,13 +10,17 @@ The scheduler says which planned tasks it left without dates, and readiness says
 
 | Source | Symbols |
 |--------|---------|
-| `app.models.agent` | `AgentActor` |
-| `app.models.task` | `Task` |
+| `app.main` | `app` |
+| `app.models.agent` | `AgentActor`, `AgentActor` |
+| `app.models.iteration` | `Iteration` |
+| `app.models.task` | `Task`, `TaskDependency` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile` |
-| `app.schemas.agent_planning` | `AgentPlanningCommandContext`, `AgentScheduleCommand` |
-| `app.services.agent_planning_service` | `AgentPlanningService` |
+| `app.schemas.agent_planning` | `AgentPlanningCommandContext`, `AgentScheduleCommand`, `AgentPlanningCommandContext` |
+| `app.services.agent_planning_service` | `AgentPlanningService`, `AgentPlanningService` |
 | `app.services.agent_readiness` | `evaluate_agent_readiness` |
 | `app.services.scheduler_service` | `SchedulerService` |
+| `datetime` | `date` |
+| `httpx` | `httpx` |
 | `pytest` | `pytest` |
 | `sqlalchemy` | `select` |
 | `tests.test_delivery_scenarios` | `delivery_store` |
@@ -26,56 +30,71 @@ The scheduler says which planned tasks it left without dates, and readiness says
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/models/agent.py"]
-    n1["backend/app/models/task.py"]
-    n2["backend/app/models/team_member.py"]
-    n3["backend/app/schemas/agent_planning.py"]
-    n4["backend/app/services/agent_planning_service.py"]
-    n5["backend/app/services/agent_readiness.py"]
-    n6["backend/app/services/scheduler_service.py"]
-    n7["backend/tests/test_delivery_scenarios.py"]
-    n8["backend/tests/test_unscheduled_tasks.py"]
-    n0 --> n1
-    n0 --> n2
-    n1 --> n0
-    n1 --> n2
-    n2 --> n0
-    n2 --> n1
-    n4 --> n0
+    n0["backend/app/main.py"]
+    n1["backend/app/models/agent.py"]
+    n2["backend/app/models/iteration.py"]
+    n3["backend/app/models/task.py"]
+    n4["backend/app/models/team_member.py"]
+    n5["backend/app/schemas/agent_planning.py"]
+    n6["backend/app/services/agent_planning_service.py"]
+    n7["backend/app/services/agent_readiness.py"]
+    n8["backend/app/services/scheduler_service.py"]
+    n9["backend/tests/test_delivery_scenarios.py"]
+    n10["backend/tests/test_unscheduled_tasks.py"]
+    n1 --> n3
+    n1 --> n4
+    n2 --> n3
+    n2 --> n4
+    n3 --> n1
+    n3 --> n2
+    n3 --> n4
     n4 --> n1
     n4 --> n2
     n4 --> n3
-    n4 --> n6
-    n5 --> n1
-    n6 --> n0
     n6 --> n1
     n6 --> n2
-    n7 --> n1
-    n7 --> n2
-    n8 --> n0
+    n6 --> n3
+    n6 --> n4
+    n6 --> n5
+    n6 --> n8
+    n7 --> n3
     n8 --> n1
     n8 --> n2
     n8 --> n3
     n8 --> n4
-    n8 --> n5
-    n8 --> n6
-    n8 --> n7
-    click n0 "../modules/models_agent.md"
-    click n1 "../modules/models_task.md"
-    click n2 "../modules/team_member.md"
-    click n3 "../modules/schemas_agent_planning.md"
-    click n4 "../modules/agent_planning_service.md"
-    click n5 "../modules/agent_readiness.md"
-    click n6 "../modules/scheduler_service.md"
-    click n7 "../modules/test_delivery_scenarios.md"
-    click n8 "../modules/test_unscheduled_tasks.md"
+    n9 --> n0
+    n9 --> n3
+    n9 --> n4
+    n10 --> n0
+    n10 --> n1
+    n10 --> n2
+    n10 --> n3
+    n10 --> n4
+    n10 --> n5
+    n10 --> n6
+    n10 --> n7
+    n10 --> n8
+    n10 --> n9
+    click n0 "../modules/app_main.md"
+    click n1 "../modules/models_agent.md"
+    click n2 "../modules/models_iteration.md"
+    click n3 "../modules/models_task.md"
+    click n4 "../modules/team_member.md"
+    click n5 "../modules/schemas_agent_planning.md"
+    click n6 "../modules/agent_planning_service.md"
+    click n7 "../modules/agent_readiness.md"
+    click n8 "../modules/scheduler_service.md"
+    click n9 "../modules/test_delivery_scenarios.md"
+    click n10 "../modules/test_unscheduled_tasks.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Outbound | [app_main](../modules/app_main.md) |
 | Outbound | [models_agent](../modules/models_agent.md) |
+| Outbound | [models_iteration](../modules/models_iteration.md) |
 | Outbound | [models_task](../modules/models_task.md) |
 | Outbound | [team_member](../modules/team_member.md) |
 | Outbound | [schemas_agent_planning](../modules/schemas_agent_planning.md) |
@@ -88,7 +107,7 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| python | 2 | 1 |
+| python | 3 | 1 |
 
 ## Functions
 
@@ -99,3 +118,10 @@ flowchart LR
 | `test_scheduler_reports_unassigned_and_outside_assignee_tasks` | *(async)* `(delivery_store)` | — | — |
 | `test_agent_capacity_row_assignment_and_apply_schedule_an_unassigned_task` | *(async)* `(delivery_store)` | — | — |
 | `test_schedule_omits_undated_deferred_work_on_apply` | *(async)* `(delivery_store)` | — | — |
+| `_ownerless_chain` | *(async)* `(db, scenario)` | — | A task without a capacity owner, an owned dependent, an ownerless dependent and a dependent of that. |
+| `_assert_chain_reported` | `(unscheduled, root, owned, ownerless, tail)` | — | — |
+| `test_schedule_names_ownerless_task_and_every_dependent_it_cleared` | *(async)* `(delivery_store)` | — | — |
+| `test_a_task_that_never_had_dates_is_not_reported_as_cleared` | *(async)* `(delivery_store)` | — | — |
+| `_separate_shared_owner_iterations` | *(async)* `(db, scenario)` | — | The seeded owner sits in two overlapping iterations; move the second so a baseline commit is accepted. |
+| `test_rest_schedule_and_preview_responses_name_cleared_tasks` | *(async)* `(delivery_store, monkeypatch)` | — | — |
+| `test_agent_schedule_preview_names_cleared_tasks` | *(async)* `(delivery_store)` | — | — |

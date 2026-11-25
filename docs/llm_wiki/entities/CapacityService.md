@@ -1,6 +1,6 @@
 # CapacityService
 
-**Location:** `backend/app/services/capacity_service.py:103`
+**Location:** `backend/app/services/capacity_service.py:126`
 **Kind:** Class
 **Bases:** —
 **Module:** [capacity_service](../modules/capacity_service.md)
@@ -45,11 +45,11 @@ flowchart LR
     n5["update_absence (backend/app/routers/capacity.py)"]
     n6["AgentPlanningService._schedule_input_digest (backend/app/services/agent_planning_service.py)"]
     n7["AgentRoutingService._capacity_inputs (backend/app/services/agent_routing_service.py)"]
-    n8["IterationService._calculate_team_capacity (backend/app/services/iteration_service.py)"]
-    n9["IterationService.get_planning_readiness_summary (backend/app/services/iteration_service.py)"]
-    n10["SchedulerService._build_member_schedules (backend/app/services/scheduler_service.py)"]
-    n11["SchedulerService.schedule_iteration (backend/app/services/scheduler_service.py)"]
-    n12["TeamService.add_vacation (backend/app/services/team_service.py)"]
+    n8["CapacityAdjustmentService._change (backend/app/services/capacity_adjustments.py)"]
+    n9["CapacityAdjustmentService._projection (backend/app/services/capacity_adjustments.py)"]
+    n10["CapacityTransferService._row_hours (backend/app/services/capacity_transfers.py)"]
+    n11["IterationDateMoveService._row_hours (backend/app/services/iteration_date_move.py)"]
+    n12["IterationDateMoveService.preview (backend/app/services/iteration_date_move.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -70,11 +70,11 @@ flowchart LR
     click n5 "../modules/routers_capacity.md"
     click n6 "../modules/agent_planning_service.md"
     click n7 "../modules/agent_routing_service.md"
-    click n8 "../modules/iteration_service.md"
-    click n9 "../modules/iteration_service.md"
-    click n10 "../modules/scheduler_service.md"
-    click n11 "../modules/scheduler_service.md"
-    click n12 "../modules/team_service.md"
+    click n8 "../modules/capacity_adjustments.md"
+    click n9 "../modules/capacity_adjustments.md"
+    click n10 "../modules/capacity_transfers.md"
+    click n11 "../modules/iteration_date_move.md"
+    click n12 "../modules/iteration_date_move.md"
 ```
 
 ### Summary
@@ -94,10 +94,10 @@ flowchart LR
 | `update_absence` | call | [routers_capacity](../modules/routers_capacity.md) | 1 |
 | `AgentPlanningService._schedule_input_digest` | call | [agent_planning_service](../modules/agent_planning_service.md) | 1 |
 | `AgentRoutingService._capacity_inputs` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |
-| `IterationService._calculate_team_capacity` | call | [iteration_service](../modules/iteration_service.md) | 1 |
-| `IterationService.get_planning_readiness_summary` | call | [iteration_service](../modules/iteration_service.md) | 1 |
-| `SchedulerService._build_member_schedules` | call | [scheduler_service](../modules/scheduler_service.md) | 1 |
-| `SchedulerService.schedule_iteration` | call | [scheduler_service](../modules/scheduler_service.md) | 2 |
-| `TeamService.add_vacation` | call | [team_service](../modules/team_service.md) | 1 |
+| `CapacityAdjustmentService._change` | call | [capacity_adjustments](../modules/capacity_adjustments.md) | 1 |
+| `CapacityAdjustmentService._projection` | call | [capacity_adjustments](../modules/capacity_adjustments.md) | 1 |
+| `CapacityTransferService._row_hours` | call | [capacity_transfers](../modules/capacity_transfers.md) | 1 |
+| `IterationDateMoveService._row_hours` | call | [iteration_date_move](../modules/iteration_date_move.md) | 1 |
+| `IterationDateMoveService.preview` | call | [iteration_date_move](../modules/iteration_date_move.md) | 1 |
 
-> References: showing 12 of 33 logical references; 21 omitted by the 12-row generated summary limit.
+> References: showing 12 of 38 logical references; 26 omitted by the 12-row generated summary limit.

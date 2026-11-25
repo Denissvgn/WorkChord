@@ -39,6 +39,7 @@ Task representation for Gantt chart.
 | `is_composite` | `bool` | `is_composite` | No | No | `False` | — | — | — |
 | `is_optional` | `bool` | `is_optional` | No | No | `False` | — | — | — |
 | `is_outside_constraints` | `bool` | `is_outside_constraints` | No | No | `False` | — | — | — |
+| `has_inverted_dependency` | `bool` | `has_inverted_dependency` | No | No | `False` | — | — | — |
 | `children` | `list['GanttTask']` | `children` | No | No | `[]` | — | — | — |
 | `dependencies` | `list[int]` | `dependencies` | No | No | `[]` | — | — | — |
 
@@ -68,7 +69,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `actual_end_date`, `actual_start_date`, `assignee`, `assignees`, `calculated_effort_days`, `children`, `dependencies`, `effort_days`, `effort_hours`, `end_date`, `id`, `is_composite` |
+| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `actual_end_date`, `actual_start_date`, `assignee`, `assignees`, `calculated_effort_days`, `children`, `dependencies`, `effort_days`, `effort_hours`, `end_date`, `has_inverted_dependency`, `id` |
 
 ### Structure
 

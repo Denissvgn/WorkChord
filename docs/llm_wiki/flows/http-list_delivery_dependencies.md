@@ -2,7 +2,7 @@
 
 **Entry point:** `list_delivery_dependencies` (`http`)
 **Source:** [delivery_dependencies](../modules/delivery_dependencies.md)
-**Modules touched:** [authority](../modules/authority.md), [config](../modules/config.md), [delivery_dependencies](../modules/delivery_dependencies.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 2 more
+**Modules touched:** [authority](../modules/authority.md), [config](../modules/config.md), [delivery_dependencies](../modules/delivery_dependencies.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 3 more
 
 **Complete modules touched:**
 
@@ -10,6 +10,7 @@
 - [config](../modules/config.md)
 - [delivery_dependencies](../modules/delivery_dependencies.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
+- [github_reconciliation_service](../modules/github_reconciliation_service.md)
 - [routers_task_domain](../modules/routers_task_domain.md)
 - [task_service](../modules/task_service.md)
 
@@ -26,59 +27,62 @@ sequenceDiagram
     participant p3 as DeliveryDependencyService
     participant p4 as require_project
     participant p5 as DeliveryDependencyService._accepted
-    participant p6 as get_settings
-    participant p7 as TaskService._task_subtree_ids
-    participant p8 as TaskService
-    participant p9 as AuthorityError
-    participant p10 as Settings
-    participant p11 as HTTPException
-    participant p12 as self.db.scalar
-    participant p13 as exc.detail
-    participant p14 as select(…).where (backend/app/services/deli…dencyService.projection, 1)
-    participant p15 as select (backend/app/services/deli…pendencyService.projection)
-    participant p16 as str
-    participant p17 as ValueError
-    participant p18 as (…).all (backend/app/services/deli…pendencyService.projection)
-    participant p19 as self.db.scalars (backend/app/services/deli…pendencyService.projection)
-    participant p20 as select(…).where(…).order_by
-    participant p21 as select(…).where (backend/app/services/deli…pendencyService.projection)
-    participant p22 as self.db.info.get
-    participant p23 as select(…).where (backend/app/services/deli…dencyService.projection, 2)
+    participant p6 as DeliveryDependencyService._merge_evidence
+    participant p7 as get_settings
+    participant p8 as DeliveryDependencyService._hold
+    participant p9 as TaskService._task_subtree_ids
+    participant p10 as GitHubReconciliationService._pull_links
+    participant p11 as TaskService
+    participant p12 as GitHubReconciliationService
+    participant p13 as AuthorityError
+    participant p14 as pull_state
+    participant p15 as internal_authority
+    participant p16 as Settings
+    participant p17 as HTTPException
+    participant p18 as self.db.scalar
+    participant p19 as exc.detail
+    participant p20 as select(…).where (backend/app/services/deli…dencyService.projection, 1)
+    participant p21 as select (backend/app/services/deli…pendencyService.projection)
+    participant p22 as str
+    participant p23 as ValueError
+    participant p24 as (…).all (backend/app/services/deli…pendencyService.projection)
+    participant p25 as self.db.scalars (backend/app/services/deli…pendencyService.projection)
+    participant p26 as select(…).where(…).order_by (backend/app/services/deli…pendencyService.projection)
     p0->>p1: DeliveryDependencyService.projection
     p0->>p2: domain_result
     p0->>p3: DeliveryDependencyService
     p1->>p4: require_project
     p1->>p5: DeliveryDependencyService._accepted
-    p4->>p6: get_settings
-    p5->>p7: TaskService._task_subtree_ids
-    p5->>p8: TaskService
-    p4->>p9: AuthorityError
-    p6->>p10: Settings
-    p2-->>p11: HTTPException(409, detail=exc.detail(...))
-    p1-->>p12: self.db.scalar(...)
-    p2-->>p13: exc.detail
-    p1-->>p14: select(…).where (backend/app/services/deli…dencyService.projection, 1)(...)
-    p2-->>p11: HTTPException(404, detail=str(...))
-    p1-->>p15: select (backend/app/services/deli…pendencyService.projection)(Task)
-    p2-->>p16: str(exc)
-    p1-->>p17: ValueError('Task not found or inaccessible')
-    p2-->>p11: HTTPException(422, detail=[...])
-    p2-->>p16: str(exc)
-    p1-->>p18: (…).all (backend/app/services/deli…pendencyService.projection)
-    p2-->>p11: HTTPException(404, detail='Task not found or inaccessible')
-    p1-->>p19: self.db.scalars (backend/app/services/deli…pendencyService.projection)(...)
-    p1-->>p20: select(…).where(…).order_by(DeliveryDependency.id)
-    p1-->>p21: select(…).where (backend/app/services/deli…pendencyService.projection)(...)
-    p1-->>p15: select (backend/app/services/deli…pendencyService.projection)(DeliveryDependency)
-    p1-->>p22: self.db.info.get('authority')
-    p1-->>p12: self.db.scalar(...)
-    p1-->>p23: select(…).where (backend/app/services/deli…dencyService.projection, 2)(...)
-    p1-->>p15: select (backend/app/services/deli…pendencyService.projection)(model)
+    p1->>p6: DeliveryDependencyService._merge_evidence
+    p4->>p7: get_settings
+    p1->>p8: DeliveryDependencyService._hold
+    p5->>p9: TaskService._task_subtree_ids
+    p6->>p10: GitHubReconciliationService._pull_links
+    p5->>p11: TaskService
+    p6->>p12: GitHubReconciliationService
+    p4->>p13: AuthorityError
+    p6->>p14: pull_state
+    p5->>p15: internal_authority
+    p7->>p16: Settings
+    p2-->>p17: HTTPException(409, detail=exc.detail(...))
+    p1-->>p18: self.db.scalar(...)
+    p2-->>p19: exc.detail
+    p1-->>p20: select(…).where (backend/app/services/deli…dencyService.projection, 1)(...)
+    p2-->>p17: HTTPException(404, detail=str(...))
+    p1-->>p21: select (backend/app/services/deli…pendencyService.projection)(Task)
+    p2-->>p22: str(exc)
+    p1-->>p23: ValueError('Task not found or inaccessible')
+    p2-->>p17: HTTPException(422, detail=[...])
+    p2-->>p22: str(exc)
+    p1-->>p24: (…).all (backend/app/services/deli…pendencyService.projection)
+    p2-->>p17: HTTPException(404, detail='Task not found or inaccessible')
+    p1-->>p25: self.db.scalars (backend/app/services/deli…pendencyService.projection)(...)
+    p1-->>p26: select(…).where(…).order_by (backend/app/services/deli…pendencyService.projection)(DeliveryDependency.id)
 ```
 
-> Call sequence diagram shows 30 of 54 interactions; 24 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 87 interactions; 57 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 10 of 15 (5 omitted); unresolved 10 of 27 (17 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 8 of 22 (14 omitted); unresolved 6 of 47 (41 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -86,12 +90,13 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | --- | --- | --- | --- | --- |
 | `backend/app/authority.py:require_project` | 15 | - | unresolved | 2 |
 | `backend/app/authority.py:require_project` | 15 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
-| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.projection` | 10 | - | unresolved | 3 |
+| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.projection` | 10 | - | unresolved | 9 |
+| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.projection` | 10 | - | external | 2 |
 | `backend/app/services/task_service.py:TaskService._task_subtree_ids` | 34 | - | unresolved | 5 |
 | `backend/app/services/task_service.py:TaskService._task_subtree_ids` | 34 | - | external | 1 |
-| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService._accepted` | 33 | - | unresolved | 7 |
-| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService._accepted` | 33 | - | external | 4 |
-| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService._accepted` | 33 | [backend/app/services/delivery_dependency_service.py](../modules/delivery_dependency_service.md) | internal | 1 |
+| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService._accepted` | 33 | - | unresolved | 11 |
+| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService._accepted` | 33 | - | external | 6 |
+> Omission summary shows 8 of 16 groups; 8 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -102,9 +107,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 13; effect analysis evaluated: 8, partial: 0, unavailable: 5. Counts include steps omitted from the displayed trace.
+Source steps: 19; effect analysis evaluated: 13, partial: 0, unavailable: 6. Counts include steps omitted from the displayed trace.
 
-Collector observations for 8 source steps with known totals: observed: 36, emitted: 36, omitted: 0. Unavailable totals are excluded.
+Collector observations for 13 source steps with known totals: observed: 61, emitted: 61, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -120,7 +125,7 @@ Collector observations for 8 source steps with known totals: observed: 36, emitt
 | `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `DeliveryDependencyService.projection` | `available` | `evaluated` | `available` | `8` | `8` | `0` |
+| `DeliveryDependencyService.projection` | `available` | `evaluated` | `available` | `13` | `13` | `0` |
 | `self.db.scalar` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `select(…).where (backend/app/services/deli…dencyService.projection, 1)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 
@@ -151,14 +156,20 @@ flowchart LR
     s10 -. "select(…).where (backend/app/services/deli…dencyService.projection, 1)(...)" .-> s12
     b0["mutation result.append"]
     s10 -. "mutation result.append" .-> b0
-    b1["mutation result.append"]
-    s10 -. "mutation result.append" .-> b1
+    b1["mutation entry.update"]
+    s10 -. "mutation entry.update" .-> b1
+    b2["mutation entry.update"]
+    s10 -. "mutation entry.update" .-> b2
+    b3["mutation result.append"]
+    s10 -. "mutation result.append" .-> b3
     click s1 "../modules/delivery_dependencies.md"
     click s2 "../modules/routers_task_domain.md"
     click s10 "../modules/delivery_dependency_service.md"
     classDef boundary stroke:#b45309,stroke-dasharray: 4 2
     class b0 boundary
     class b1 boundary
+    class b2 boundary
+    class b3 boundary
 ```
 
 ### Step data
@@ -174,7 +185,7 @@ flowchart LR
 | `HTTPException` | - | - | - | - |
 | `str` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
-| `DeliveryDependencyService.projection` | `task_id` | `Task`, `self.db`, `Task`, `ProjectMilestone` | - | `result` |
+| `DeliveryDependencyService.projection` | `task_id` | `Task`, `self.db`, `Task`, `ProjectMilestone` | `entry[...]`, `entry[...]`, `entry[...]` | `result` |
 | `self.db.scalar` | - | - | - | - |
 | `select(…).where (backend/app/services/deli…dencyService.projection, 1)` | - | - | - | - |
 
@@ -182,7 +193,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_delivery_dependencies | domain_result | 25 | `domain_result(...)` |
+| list_delivery_dependencies | domain_result | 26 | `domain_result(...)` |
 | domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
@@ -190,7 +201,7 @@ flowchart LR
 | domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 57 | `str(exc)` |
 | domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| list_delivery_dependencies | DeliveryDependencyService.projection | 25 | `DeliveryDependencyService(db).projection(task_id)` |
+| list_delivery_dependencies | DeliveryDependencyService.projection | 26 | `DeliveryDependencyService(db).projection(task_id)` |
 | DeliveryDependencyService.projection | self.db.scalar | 55 | `self.db.scalar(...)` |
 | DeliveryDependencyService.projection | select(…).where (backend/app/services/deli…dencyService.projection, 1) | 55 | `select(Task).where(...)` |
 
@@ -199,7 +210,9 @@ flowchart LR
 | Kind | Target | Step | Line |
 |---|---|---|---:|
 | mutation | `result.append` | `DeliveryDependencyService.projection` | 70 |
-| mutation | `result.append` | `DeliveryDependencyService.projection` | 73 |
+| mutation | `entry.update` | `DeliveryDependencyService.projection` | 77 |
+| mutation | `entry.update` | `DeliveryDependencyService.projection` | 81 |
+| mutation | `result.append` | `DeliveryDependencyService.projection` | 87 |
 
 ### Static analysis gaps
 

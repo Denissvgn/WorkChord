@@ -67,10 +67,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_team_member | service.create | 195 | `service.create(iteration_id, data)` |
-| create_team_member | HTTPException | 197 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| create_team_member | str | 199 | `str(e)` |
-| create_team_member | service.get_by_id | 201 | `service.get_by_id(member.id)` |
+| create_team_member | service.create | 214 | `service.create(iteration_id, data)` |
+| create_team_member | HTTPException | 216 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| create_team_member | str | 218 | `str(e)` |
+| create_team_member | service.get_by_id | 220 | `service.get_by_id(member.id)` |
 
 ### Boundary effects
 
@@ -80,9 +80,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_team_member` | `service.create` | 195 |
-| external_call | `create_team_member` | `HTTPException` | 197 |
-| unresolved_call | `create_team_member` | `service.get_by_id` | 201 |
+| unresolved_call | `create_team_member` | `service.create` | 214 |
+| external_call | `create_team_member` | `HTTPException` | 216 |
+| unresolved_call | `create_team_member` | `service.get_by_id` | 220 |
 
 ## Behavior
 

@@ -34,6 +34,7 @@ Iterations and series retain the primary calendar and their explicit additional 
 | `app.services.calendar_rules` | `AnnualCalendars` |
 | `app.services.calendar_service` | `CalendarService` |
 | `app.services.capacity_service` | `CapacityService`, `CapacityService` |
+| `app.services.dependency_order` | `inverted_saved_dependencies` |
 | `app.services.plan_checkpoints` | `PLAN_CHECKPOINT_IDS`, `plan_checkpoints` |
 | `app.services.planning_issues` | `LIVE_EXECUTION_ASSIGNMENT_STATES`, `PLANNING_ISSUE_STATUS` |
 | `app.services.snapshot_service` | `SnapshotService` |
@@ -67,8 +68,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (21) |
-| Outbound | `backend` (21) |
+| Inbound | `backend` (23) |
+| Outbound | `backend` (22) |
 
 ### External packages
 
@@ -76,7 +77,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 43 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
