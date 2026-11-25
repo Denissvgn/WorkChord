@@ -153,11 +153,11 @@ A task prerequisite can also name a **target branch** (`target_branch` on
 the prerequisite's code on that branch, not only its acceptance. It stays held
 until the prerequisite is Accepted and a linked pull request is observed merged
 into that branch. Readiness reads the stored GitHub observations and never calls
-GitHub; run the prerequisite's GitHub catch-up to refresh them. The hold is
+GitHub; run the prerequisite's GitHub catch-up to refresh them (a person uses **Run catch-up** on the task page; the PM agent uses `agent_run_github_catch_up`). The hold is
 listed as `delivery_holds` on the agent pipeline and the task context, each with
 its reason, the observed pull requests and the next owner: the reviewer for an
 open pull request awaiting acceptance, the worker for unfinished work, and the
-PM for a merge that is not yet observed. A merge never accepts a task. An
+PM for a merge that is not yet observed or confirmed, a merge on another branch, a closed prerequisite whose acceptance no longer matches its version (reopen it; the reviewer must accept it again) or a canceled one (record a replacement). A merge never accepts a task, and an observed merge keeps the prerequisite's acceptance unless its head moved after acceptance. An
 ordinary dependency (`depends_on`) is unchanged and releases the dependent task
 once its predecessor is Implemented.
 
@@ -169,7 +169,7 @@ Accepted gate. It needs the same edit access as adding the prerequisite, records
 version and re-evaluates readiness at once, so the dependent work is released or
 held by the new branch.
 
-An agent with the same project access uses the MCP tools
+The PM agent, or any agent with the same project access, uses the MCP tools
 `agent_list_delivery_dependencies`, `agent_add_delivery_dependency` and
 `agent_retarget_delivery_dependency` for these commands, and
 `agent_get_github_reconciliation` and `agent_run_github_catch_up` for a task's
