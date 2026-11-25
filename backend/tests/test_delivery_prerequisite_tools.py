@@ -13,6 +13,7 @@ from app.authority import internal_authority
 from app.models.agent import AgentActor, TaskEvent
 from app.models.delivery_dependency import DeliveryDependency
 from app.models.identity import Principal, ProjectMembership
+from app.models.iteration import Iteration
 from app.models.project import Project
 from app.models.task import Task
 from app.models.user_session import UserSession
@@ -333,3 +334,111 @@ async def test_catch_up_records_the_missed_merge_and_releases_the_dependent(team
         merges = (await db.scalars(select(TaskEvent).where(TaskEvent.task_id == prerequisite,
             TaskEvent.event_type.like("%merge%")))).all()
     assert len({event.event_type for event in merges}) == len(merges)
+
+
+@pytest.mark.parametrize("transport", ["rest", "mcp"])
+async def test_catch_up_records_every_linked_pull_requests_own_observation(team, github, transport, monkeypatch):
+    from app.models.external_link import ExternalLink
+
+    factory, prerequisite, _, first_link = team
+    async with factory() as db:
+        with internal_authority(db):
+            for number in (40, 41):
+                await ExternalLinkService(db).create_task_github_link(prerequisite, f"{REPO}/pull/{number}", commit=False)
+        await db.commit()
+    merged_at = "2026-11-24T12:00:00Z"
+    github.pulls = {
+        39: github.payload("1" * 40, "2026-11-24T10:00:00Z", number=39),
+        40: github.payload("2" * 40, merged_at, number=40, state="closed", merged_at=merged_at),
+        41: github.payload("3" * 40, merged_at, number=41, state="closed"),
+    }
+    github.pulls[41]["closed_at"] = merged_at
+    async with factory() as db:
+        with internal_authority(db):
+            before = await db.get(Task, prerequisite)
+            version_before, iteration_id = before.version, before.iteration_id
+            revision_before = (await db.get(Iteration, iteration_id)).revision
+    async with transport_api(transport, factory, monkeypatch) as call:
+        for attempt in range(2):
+            ok, view = await call(PM_KEY, "agent_run_github_catch_up", "POST",
+                                  f"/api/tasks/{prerequisite}/github-reconciliation/catch-up",
+                                  arguments={"task_id": prerequisite})
+            assert ok, view
+            if attempt == 0:
+                async with factory() as db:
+                    with internal_authority(db):
+                        first = await db.get(Task, prerequisite)
+                        revision_after = (await db.get(Iteration, iteration_id)).revision
+                        changed = [json.loads(event.payload)["version"] for event in (await db.scalars(
+                            select(TaskEvent).where(TaskEvent.task_id == prerequisite,
+                                                    TaskEvent.event_type == "task_context_changed"))).all()
+                                   if json.loads(event.payload)["version"] > version_before]
+                        version_after = first.version
+    seen = {pull["url"].rsplit("/", 1)[-1]: (pull["state"], pull["observed_head_sha"]) for pull in view["pull_requests"]}
+    assert seen == {"39": ("open", "1" * 40), "40": ("merged", "2" * 40), "41": ("closed_unmerged", "3" * 40)}
+    async with factory() as db:
+        with internal_authority(db):
+            links = (await db.scalars(select(ExternalLink).where(ExternalLink.entity_id == prerequisite)
+                                      .order_by(ExternalLink.id))).all()
+            events = (await db.scalars(select(TaskEvent).where(
+                TaskEvent.task_id == prerequisite, TaskEvent.event_type.in_(["github_pr_merged", "github_pr_closed"])
+            ))).all()
+    assert [(link.status, link.metadata_json["head_sha"]) for link in links] == [
+        ("open", "1" * 40), ("merged", "2" * 40), ("closed", "3" * 40)]
+    assert sorted(event.event_type for event in events) == ["github_pr_closed", "github_pr_merged"]
+    # The first catch-up reserves the task and its iteration once for all three links.
+    assert version_after == version_before + 1 and changed == [version_after]
+    assert revision_after == revision_before + 1
+
+
+@pytest.mark.parametrize("transport", ["rest", "mcp"])
+@pytest.mark.parametrize("case", ["heads_match", "one_head_moved", "provider_error_and_match"])
+async def test_catch_up_over_several_links_keeps_acceptance_only_for_the_submitted_heads(
+        team, github, transport, case, monkeypatch):
+    from app.models.agent import AgentActor, AgentRun
+
+    factory, prerequisite, dependent, _ = team
+    merged_at = "2026-11-24T12:00:00Z"
+    submitted = {39: "a" * 40, 40: "b" * 40}
+    async with factory() as db:
+        with internal_authority(db):
+            await ExternalLinkService(db).create_task_github_link(prerequisite, f"{REPO}/pull/40", commit=False)
+            actor = AgentActor(name="multi-link-worker", display_name="Worker", api_key_hash="multi-link-hash")
+            db.add(actor)
+            await db.flush()
+            for number, sha in submitted.items():
+                db.add(AgentRun(task_id=prerequisite, actor_id=actor.id, status="succeeded",
+                                commit_url=f"{REPO}/commit/{sha}", pr_url=f"{REPO}/pull/{number}"))
+            task = await db.get(Task, prerequisite)
+            task.accepted_version = task.version  # still accepted after the extra link and runs
+        await db.commit()
+    heads = {39: submitted[39], 40: "f" * 40 if case == "one_head_moved" else submitted[40]}
+    github.pulls = {number: github.payload(head, merged_at, number=number, state="closed", merged_at=merged_at)
+                    for number, head in heads.items()}
+    if case == "provider_error_and_match":
+        github.failing = {40}
+    version_before = await _version(factory, prerequisite)
+    async with transport_api(transport, factory, monkeypatch) as call:
+        ok, (edge,) = await _add(call, PM_KEY, dependent, prerequisite, await _version(factory, dependent), "main", "add")
+        assert ok, edge
+        ok, view = await call(PM_KEY, "agent_run_github_catch_up", "POST",
+                              f"/api/tasks/{prerequisite}/github-reconciliation/catch-up",
+                              arguments={"task_id": prerequisite})
+        assert ok, view
+        ok, (after,) = await _list(call, PM_KEY, dependent)
+        assert ok
+    async with factory() as db:
+        with internal_authority(db):
+            task = await db.get(Task, prerequisite)
+            preserved = (await db.scalars(select(TaskEvent).where(
+                TaskEvent.task_id == prerequisite,
+                TaskEvent.event_type == "acceptance_preserved_after_observation"))).all()
+    assert task.version == version_before + 1
+    if case == "one_head_moved":
+        assert task.accepted_version != task.version and preserved == []
+        assert not after["ready"]
+    else:
+        assert task.accepted_version == task.version and len(preserved) == 1
+        assert [pull["state"] for pull in view["pull_requests"]][0] == "merged"
+    if case == "heads_match":
+        assert after["ready"] and after["hold"] is None, json.dumps(after)
