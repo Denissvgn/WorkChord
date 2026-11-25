@@ -157,6 +157,20 @@ WorkChord's Compose files do not read are not copied.
 Back up the new `server.env` outside the host. The acceptance script refuses
 to run against an existing database without it.
 
+An instance already in this layout keeps its `server.env` across releases. A
+file written before the acceptance evidence store moved from MinIO to the
+Versity S3 Gateway still names `MINIO_*` and `AUTONOMY_MINIO_*` settings. The
+acceptance script replaces them on its next run. Before running Docker Compose
+by hand against such a file, migrate it in place:
+
+~~~bash
+python3 "$WORKCHORD_INSTANCE_HOME/scripts/server/seed_adoption_env.py" \
+  --migrate-env "$WORKCHORD_INSTANCE_HOME/.runtime/autonomy/server.env"
+~~~
+
+The [acceptance runbook](self-hosted-server-acceptance.md#evidence-store)
+describes the new settings and the old evidence volume.
+
 ## 4. Isolated rehearsal on a restored copy
 
 The rehearsal runs the release's migration on a restored copy of the live

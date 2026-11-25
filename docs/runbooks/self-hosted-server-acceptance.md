@@ -30,14 +30,16 @@ The command:
 
 1. generates server-local credentials under ignored `.runtime/autonomy/`;
 2. renders the base and server Compose files;
-3. pulls digest-pinned OpenBao, MinIO, MinIO Client, and Valkey images;
+3. pulls digest-pinned OpenBao, Versity S3 Gateway, AWS CLI, and Valkey images;
 4. builds backend and frontend artifacts with the clean Git revision and
    deterministic artifact digests baked into fixed image files;
 5. creates separate PostgreSQL migrator, runtime, and backup identities;
 6. starts PostgreSQL, migrations, repair, backend, worker, and frontend;
 7. configures an OpenBao Transit Ed25519 key and a short-lived restricted token;
-8. creates a MinIO bucket with versioning, default `COMPLIANCE` retention, and
-   a bucket-scoped acceptance identity;
+8. starts the Versity S3 Gateway evidence store on a persistent volume, creates
+   a bucket with object lock, versioning, and default `COMPLIANCE` retention,
+   and grants a separate acceptance identity only the object actions a bucket
+   policy names;
 9. mounts persistent application, database, evidence, and CAS volumes;
 10. enables Valkey append-only persistence;
 11. runs `workchord-server-acceptance` and verifies the serialized receipt
@@ -109,6 +111,56 @@ atomically only after the pending receipt passes offline verification. Preserve
 while the database volume remains, the launcher refuses to invent replacements
 and explains the recovery boundary.
 
+## Evidence store
+
+The signed evidence lives in the `workchord-server-acceptance` bucket of a
+single-node [Versity S3 Gateway](https://github.com/versity/versitygw)
+(`evidence-store`), which serves the S3 API over a POSIX directory on the
+`workchord_autonomy_evidence` volume. Two one-shot jobs configure it on every
+run, and both are safe to repeat:
+
+- `evidence-store-accounts` creates or updates the acceptance identity with
+  the gateway's plain `user` role, which cannot create, list, configure, or
+  delete buckets;
+- `evidence-store-bootstrap` creates the bucket with object lock (which also
+  enables versioning), sets the default `COMPLIANCE` retention, applies
+  `deploy/autonomy/evidence-store-acceptance-policy.json` with the acceptance
+  identity as its only principal, and checks that versioning, retention, and
+  the refusal of anonymous requests are in place.
+
+The default retention is one day. Set `AUTONOMY_EVIDENCE_RETENTION_DAYS` to a
+larger whole number of days to keep evidence longer; a receipt never outlives
+its locked evidence. While retained, an evidence version cannot be deleted or
+have its retention shortened through the S3 API, even with the root identity.
+
+The evidence-store credentials are not bound to stored data: the gateway takes
+its root identity at startup and the accounts job re-applies the acceptance
+identity. They are therefore not among the durable values the launcher
+protects.
+
+Earlier releases used MinIO, whose images are no longer published, and named
+these settings `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`,
+`AUTONOMY_MINIO_ACCESS_KEY`, `AUTONOMY_MINIO_SECRET_KEY`, and
+`AUTONOMY_MINIO_RETENTION`. The launcher drops those names and generates
+`EVIDENCE_STORE_ROOT_ACCESS_KEY`, `EVIDENCE_STORE_ROOT_SECRET_KEY`,
+`AUTONOMY_EVIDENCE_ACCESS_KEY`, and `AUTONOMY_EVIDENCE_SECRET_KEY` when it
+rewrites `server.env`. To migrate a `server.env` before running Docker Compose
+by hand, for example for the commands below:
+
+```bash
+python3 scripts/server/seed_adoption_env.py \
+  --migrate-env .runtime/autonomy/server.env
+```
+
+It replaces the MinIO entries in place, keeps every other line, never prints a
+value, and leaves a file that needs no migration unchanged. A former
+`AUTONOMY_MINIO_RETENTION` value is not carried over; set
+`AUTONOMY_EVIDENCE_RETENTION_DAYS` instead. Evidence stored by MinIO stays in
+the old `workchord_autonomy_minio` volume, which the new store does not read.
+Remove that volume once its retention has expired and no receipt depends on it.
+
+## Adopting a running instance
+
 To move an already running Compose project and its database into this layout,
 follow [Adopting a running instance](self-hosted-adoption.md). It uses two
 optional inputs of this script: `WORKCHORD_CREDENTIAL_SINK_HOST_DIR` mounts a
@@ -162,17 +214,17 @@ Acceptance performs live checks against the deployed services:
 - OpenBao Transit uses a non-exportable Ed25519 key, signs the candidate and
   final receipt, verifies both through the remote API, and requires the
   bootstrap-produced public-key pin for offline verification;
-- MinIO stores the signed candidate under default `COMPLIANCE` retention, reads
-  back the exact bytes, attempts deletion of that exact retained version, and
-  still returns the same bytes afterward;
+- the evidence store keeps the signed candidate under default `COMPLIANCE`
+  retention, reads back the exact bytes, refuses deletion of that exact
+  retained version, and still returns the same bytes afterward;
 - Valkey has append-only persistence enabled, confirms a local AOF fsync, and
   rejects a `SET NX` from an independent connection while preserving the first
   value.
 
-The administrative OpenBao, MinIO, and Valkey ports are attached only to an
-internal Docker network. OpenBao and MinIO root credentials are present in
-their service daemons and one-shot bootstrap containers, but are withheld from
-the acceptance container. The acceptance container receives only restricted
+The administrative OpenBao, evidence-store, and Valkey ports are attached only
+to an internal Docker network. OpenBao and evidence-store root credentials are
+present in their service daemons and one-shot bootstrap containers, but are
+withheld from the acceptance container. The acceptance container receives only restricted
 credentials. Generated credentials are not committed.
 
 The worker is started from the same revision-bound backend image, but this
@@ -181,8 +233,8 @@ Its acceptance scope is exactly the predicates listed above.
 
 ## Boundary and promotion
 
-OpenBao runs in its automatically initialized, in-memory dev mode, while MinIO
-and Valkey are single-node containers; all three remain on the same Docker
+OpenBao runs in its automatically initialized, in-memory dev mode, while the
+evidence store and Valkey are single-node containers; all three remain on the same Docker
 host. Existing receipts remain verifiable after an OpenBao restart when their
 embedded key matches the separately preserved bootstrap pin. The old signer
 cannot issue new receipts. These are useful analogues for signing,

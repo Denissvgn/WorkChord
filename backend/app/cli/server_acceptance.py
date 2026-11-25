@@ -76,26 +76,26 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--object-store-url",
-        default=os.getenv("AUTONOMY_MINIO_ENDPOINT", "http://minio:9000"),
+        default=os.getenv("AUTONOMY_EVIDENCE_ENDPOINT", "http://evidence-store:7070"),
     )
     parser.add_argument(
         "--object-store-access-key",
-        default=os.getenv("AUTONOMY_MINIO_ACCESS_KEY"),
+        default=os.getenv("AUTONOMY_EVIDENCE_ACCESS_KEY"),
     )
     parser.add_argument(
         "--object-store-secret-key",
-        default=os.getenv("AUTONOMY_MINIO_SECRET_KEY"),
+        default=os.getenv("AUTONOMY_EVIDENCE_SECRET_KEY"),
     )
     parser.add_argument(
         "--object-store-bucket",
         default=os.getenv(
-            "AUTONOMY_MINIO_EVIDENCE_BUCKET",
+            "AUTONOMY_EVIDENCE_BUCKET",
             "workchord-server-acceptance",
         ),
     )
     parser.add_argument(
         "--object-store-region",
-        default=os.getenv("AUTONOMY_MINIO_REGION", "us-east-1"),
+        default=os.getenv("AUTONOMY_EVIDENCE_REGION", "us-east-1"),
     )
     parser.add_argument(
         "--valkey-host",

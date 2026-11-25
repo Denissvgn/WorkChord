@@ -102,7 +102,7 @@ def _candidate() -> ServerAcceptanceCandidate:
             round_trip_verified=True,
         ),
         "object_store": ObjectStoreAcceptance(
-            endpoint="http://minio:9000",
+            endpoint="http://evidence-store:7070",
             bucket="workchord-server-acceptance",
             ready=True,
         ),
@@ -382,7 +382,7 @@ def test_server_acceptance_rejects_production_before_network_access() -> None:
         signer_token="not-recorded",
         signer_key="workchord-server-acceptance",
         trusted_signer_public_key_base64=PUBLIC_KEY_BASE64,
-        object_store_url="http://minio:9000",
+        object_store_url="http://evidence-store:7070",
         object_store_access_key="not-recorded",
         object_store_secret_key="not-recorded",
         object_store_bucket="workchord-server-acceptance",
@@ -497,7 +497,7 @@ def test_server_acceptance_success_path_seals_final_receipt(
             signer_token="not-recorded",
             signer_key="workchord-server-acceptance",
             trusted_signer_public_key_base64=PUBLIC_KEY_BASE64,
-            object_store_url="http://minio:9000",
+            object_store_url="http://evidence-store:7070",
             object_store_access_key="not-recorded",
             object_store_secret_key="not-recorded",
             object_store_bucket="workchord-server-acceptance",
@@ -577,13 +577,13 @@ def test_openbao_transit_requires_nonexportable_key_and_verifies_signature() -> 
     assert seen_paths[-1] == "/v1/transit/verify/workchord-server-acceptance"
 
 
-def test_minio_adapter_proves_locked_exact_version_survives_delete() -> None:
+def test_object_lock_adapter_proves_locked_exact_version_survives_delete() -> None:
     payload = b'{"accepted":true}'
     delete_seen = False
 
     def handler(request: httpx.Request) -> httpx.Response:
         nonlocal delete_seen
-        if request.url.path == "/minio/health/ready":
+        if request.url.path == "/health":
             return httpx.Response(200)
         assert request.headers["authorization"].startswith("AWS4-HMAC-SHA256 ")
         assert request.url.path.endswith("/report.signed.json")
@@ -605,12 +605,12 @@ def test_minio_adapter_proves_locked_exact_version_survives_delete() -> None:
             )
         if request.method == "DELETE":
             delete_seen = True
-            return httpx.Response(204)
+            return httpx.Response(403)
         raise AssertionError(request.method)
 
     http_client = httpx.Client(transport=httpx.MockTransport(handler))
     client = S3ObjectLockClient(
-        endpoint="http://minio:9000",
+        endpoint="http://evidence-store:7070",
         access_key="not-recorded",
         secret_key="not-recorded",
         region="us-east-1",
@@ -631,7 +631,30 @@ def test_minio_adapter_proves_locked_exact_version_survives_delete() -> None:
     assert ready.ready is True
     assert stored.object_sha256 == sha256_hex(payload)
     assert stored.exact_version_delete_blocked is True
+    assert stored.delete_response_status == 403
+    assert stored.implementation == "versitygw-s3-object-lock"
     assert delete_seen is True
+
+
+def test_object_lock_adapter_refuses_a_store_that_is_not_ready() -> None:
+    http_client = httpx.Client(
+        transport=httpx.MockTransport(lambda request: httpx.Response(503))
+    )
+    client = S3ObjectLockClient(
+        endpoint="http://evidence-store:7070",
+        access_key="not-recorded",
+        secret_key="not-recorded",
+        region="us-east-1",
+        timeout_seconds=1,
+        client=http_client,
+    )
+    try:
+        with pytest.raises(ServerAcceptanceError) as raised:
+            client.probe_ready("workchord-server-acceptance")
+    finally:
+        http_client.close()
+
+    assert raised.value.code == "object-store-not-ready"
 
 
 def test_valkey_probe_uses_independent_writer_and_confirms_aof(

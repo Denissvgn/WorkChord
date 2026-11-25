@@ -107,7 +107,7 @@ class TransitSignerAcceptance(StrictContractModel):
 
 
 class ObjectStoreAcceptance(StrictContractModel):
-    implementation: Literal["minio-s3-object-lock"] = "minio-s3-object-lock"
+    implementation: Literal["versitygw-s3-object-lock"] = "versitygw-s3-object-lock"
     endpoint: str = Field(pattern=r"^https?://[^@\s]+$")
     bucket: str = Field(pattern=r"^[a-z0-9][a-z0-9.-]{1,62}$")
     ready: Literal[True] = True
@@ -171,7 +171,7 @@ class ServerAcceptanceCandidate(StrictContractModel):
 
 
 class LockedAcceptanceObject(StrictContractModel):
-    implementation: Literal["minio-s3-object-lock"] = "minio-s3-object-lock"
+    implementation: Literal["versitygw-s3-object-lock"] = "versitygw-s3-object-lock"
     bucket: str = Field(pattern=r"^[a-z0-9][a-z0-9.-]{1,62}$")
     object_key: str = Field(min_length=1, max_length=1024)
     version_id: str = Field(min_length=1, max_length=1024)
@@ -486,7 +486,7 @@ class S3ObjectLockClient:
 
     def probe_ready(self, bucket: str) -> ObjectStoreAcceptance:
         try:
-            response = self._client.get(f"{self.endpoint}/minio/health/ready")
+            response = self._client.get(f"{self.endpoint}/health")
         except httpx.HTTPError as exc:
             raise ServerAcceptanceError("object-store-unavailable", cause=exc) from exc
         if response.status_code != 200:

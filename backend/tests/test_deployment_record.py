@@ -139,7 +139,35 @@ def test_seed_copies_durable_values_generates_new_identities_and_never_overwrite
     assert values['DATABASE_RUNTIME_URL'].startswith('postgresql+psycopg://workchord_runtime:')
     assert values['POSTGRES_BACKUP_URL'].endswith('@postgres:5432/workchord')
     assert stat.S_IMODE(output.stat().st_mode) == 0o600
+    assert values['AUTONOMY_EVIDENCE_ACCESS_KEY'].startswith('wcaccept')
+    assert values['EVIDENCE_STORE_ROOT_ACCESS_KEY'] != values['AUTONOMY_EVIDENCE_ACCESS_KEY']
+    assert not any(name.startswith(('MINIO_', 'AUTONOMY_MINIO_')) for name in values)
     assert seed.main(['--old-env', str(old), '--output', str(output)]) == 1
+
+
+def test_seed_migrates_an_existing_server_env_in_place(tmp_path, capsys):
+    env = tmp_path / 'server.env'
+    env.write_text("POSTGRES_PASSWORD=pg\nMINIO_ROOT_USER=wcold\nMINIO_ROOT_PASSWORD=oldsecret\n"
+        "AUTONOMY_MINIO_ACCESS_KEY=wcacceptold\nAUTONOMY_MINIO_SECRET_KEY=oldaccept\n"
+        "MCP_ALLOWED_HOSTS='[\"localhost:*\"]'\n")
+    env.chmod(0o640)
+    assert seed.main(['--migrate-env', str(env)]) == 0
+    output = capsys.readouterr().out
+    assert 'oldsecret' not in output and 'MINIO_ROOT_USER' in output
+    text = env.read_text()
+    values = seed.read_env(env)
+    assert 'MINIO' not in text
+    assert "MCP_ALLOWED_HOSTS='[\"localhost:*\"]'" in text and values['POSTGRES_PASSWORD'] == 'pg'
+    assert values['AUTONOMY_EVIDENCE_ACCESS_KEY'].startswith('wcaccept')
+    assert len(values['EVIDENCE_STORE_ROOT_SECRET_KEY']) == 48
+    assert stat.S_IMODE(env.stat().st_mode) == 0o600
+    assert seed.main(['--migrate-env', str(env)]) == 0
+    assert 'needs no migration' in capsys.readouterr().out
+    assert seed.read_env(env) == values
+    assert sorted(path.name for path in tmp_path.iterdir()) == ['server.env']
+    with pytest.raises(SystemExit):
+        seed.main(['--migrate-env', str(env), '--output', str(tmp_path / 'other.env')])
+    assert seed.main(['--migrate-env', str(tmp_path / 'missing.env')]) == 1
 
 
 def test_seed_refuses_incomplete_old_files_and_unknown_settings(tmp_path):
