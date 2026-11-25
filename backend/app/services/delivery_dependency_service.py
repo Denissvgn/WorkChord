@@ -107,7 +107,11 @@ class DeliveryDependencyService:
         elif any(pull["state"] in {"open", "draft"} for pull in pulls):
             state = "open_pull_request"
         elif any(pull["state"] == "merged" for pull in pulls):
-            state = "merged_on_other_branch"
+            merged = [pull for pull in pulls if pull["state"] == "merged"]
+            # Only a recorded, different base branch is "another branch"; an unrecorded base or a
+            # missing merge commit on the target is unknown evidence that GitHub catch-up resolves.
+            known_other = [pull for pull in merged if pull["target_branch"] not in (None, branch)]
+            state = "merged_on_other_branch" if len(known_other) == len(merged) else "merge_branch_unknown"
         else:
             state = "closed_unmerged"
         return {"state": state, "verified": bool(verified), "target_branch": branch, "pull_requests": pulls}
@@ -118,8 +122,17 @@ class DeliveryDependencyService:
         label = f"task {target.id}"
         state = merge["state"]
         if not accepted:
-            owner = "reviewer" if target.status == "resolved" else "worker"
-            if state == "merged_on_target":
+            canceled = getattr(target, "canceled_at", None) is not None
+            # A submitted task waits on the independent reviewer. A closed task has no status transitions
+            # and verification needs a submitted task, so one whose acceptance no longer matches its
+            # version can only be reopened, which is the project manager's audited command.
+            owner = "pm" if canceled or target.status == "closed" else "reviewer" if target.status == "resolved" else "worker"
+            if canceled:
+                action = f"{label} was canceled; record a replacement task for it."
+            elif target.status == "closed":
+                action = (f"Reopen {label}; its acceptance no longer matches its current version. It must be resubmitted "
+                    f"and accepted again by the independent reviewer, and its code merged on {branch}.")
+            elif state == "merged_on_target":
                 action = f"Code for {label} is merged on {branch}; the independent reviewer must still accept it."
             elif owner == "reviewer":
                 action = f"Review and accept {label}; its code must also be merged on {branch}."
@@ -131,6 +144,7 @@ class DeliveryDependencyService:
             action = {
                 "open_pull_request": f"Have the accepted pull request for {label} merged into {branch}, then run GitHub catch-up for it.",
                 "merged_on_other_branch": f"The pull request for {label} merged into a branch other than {branch}; merge it into {branch} or change the prerequisite branch.",
+                "merge_branch_unknown": f"The merge of the pull request for {label} into {branch} is not confirmed (base branch or merge commit not recorded); run GitHub catch-up for {label} to read it.",
                 "closed_unmerged": f"The pull request for {label} closed without merging; reopen it or record a replacement task.",
             }.get(state, f"No merge into {branch} is observed for {label}; link its pull request if missing, then run GitHub catch-up.")
         return {"case": case, "reason": reason, "next_owner": owner, "next_action": action}
