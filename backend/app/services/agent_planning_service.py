@@ -4,6 +4,7 @@ The adapter delegates validation and mutation behavior to the existing domain
 services, then stores an exact actor-attributed receipt in the same transaction.
 """
 
+from app.authority import AGENT_TASK_WRITE_SCOPES
 from app.commands import commit_or_flush, atomic_command, current_command, lock_planning, preview_command
 
 import hashlib
@@ -57,6 +58,8 @@ from app.schemas.team import (
 from app.schemas.task import TaskCreate, TaskResponse, TaskUpdate
 from app.services.agent_service import (
     AgentConflictError,
+    AgentPermissionError,
+    actor_has_scope,
     require_scope,
     validate_idempotency_key,
 )
@@ -141,7 +144,7 @@ class AgentPlanningService:
         self,
         *,
         actor: AgentActor,
-        scope: str,
+        scope: str | tuple[str, ...],
         operation: str,
         target_type: str,
         idempotency_target_id: int,
@@ -149,7 +152,11 @@ class AgentPlanningService:
         request_payload: dict[str, Any],
         mutate: Mutation,
     ) -> AgentPlanningReceipt:
-        require_scope(actor, scope)
+        if isinstance(scope, str):
+            require_scope(actor, scope)
+        elif not any(actor_has_scope(actor, item) for item in scope):
+            # The same alternatives the REST task routes accept for an agent credential.
+            raise AgentPermissionError(f"Missing required scope; expected one of: {', '.join(scope)}")
         actor_id = actor.id
         validated_key = validate_idempotency_key(
             command.idempotency_key,
@@ -935,6 +942,65 @@ class AgentPlanningService:
             actor=actor,
             scope="planning:write",
             operation="planning.task.replacement",
+            target_type="task",
+            idempotency_target_id=task_id,
+            command=command,
+            request_payload=payload,
+            mutate=mutate,
+        )
+
+    async def add_delivery_dependency(
+        self,
+        task_id: int,
+        actor: AgentActor,
+        data: Any,
+        *,
+        command: AgentPlanningCommandContext,
+    ) -> AgentPlanningReceipt:
+        """Record a delivery prerequisite through the same command as the REST route."""
+        from app.services.delivery_dependency_service import DeliveryDependencyService
+
+        payload = {"task_id": task_id, "data": data.model_dump(mode="json")}
+
+        async def mutate() -> MutationResult:
+            result = await DeliveryDependencyService(self.db).add(
+                task_id, data.kind, data.target_id, data.expected_version, data.target_branch)
+            return task_id, {"delivery_dependencies": result}
+
+        return await self._execute(
+            actor=actor,
+            scope=AGENT_TASK_WRITE_SCOPES,
+            operation="planning.delivery_dependency.add",
+            target_type="task",
+            idempotency_target_id=task_id,
+            command=command,
+            request_payload=payload,
+            mutate=mutate,
+        )
+
+    async def retarget_delivery_dependency(
+        self,
+        task_id: int,
+        edge_id: int,
+        actor: AgentActor,
+        data: Any,
+        *,
+        command: AgentPlanningCommandContext,
+    ) -> AgentPlanningReceipt:
+        """Change or clear a prerequisite's target branch through the same command as the REST route."""
+        from app.services.delivery_dependency_service import DeliveryDependencyService
+
+        payload = {"task_id": task_id, "edge_id": edge_id, "data": data.model_dump(mode="json")}
+
+        async def mutate() -> MutationResult:
+            result = await DeliveryDependencyService(self.db).retarget(
+                task_id, edge_id, data.expected_version, data.target_branch)
+            return task_id, {"delivery_dependencies": result}
+
+        return await self._execute(
+            actor=actor,
+            scope=AGENT_TASK_WRITE_SCOPES,
+            operation="planning.delivery_dependency.retarget",
             target_type="task",
             idempotency_target_id=task_id,
             command=command,

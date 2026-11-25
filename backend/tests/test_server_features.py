@@ -21,6 +21,7 @@ EVIDENCE = {
     "harness-session-metadata-v1": lambda: __import__("app.models.agent", fromlist=["AgentRun"]).AgentRun.harness_session_id,
     "runtime-observations-v1": lambda: {("GET", "/api/agent/observations"), ("POST", "/api/agent/observations")} <= routes(),
     "person-run-reads-v1": lambda: ("GET", "/api/agent/runs") in routes(),
+    "delivery-prerequisite-retarget-v1": lambda: ("PATCH", "/api/tasks/{task_id}/delivery-dependencies/{edge_id}") in routes(),
 }
 
 

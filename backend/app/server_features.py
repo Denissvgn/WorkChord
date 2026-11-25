@@ -21,4 +21,7 @@ SERVER_FEATURES = (
     "runtime-observations-v1",
     # GET /api/agent/runs without an agent key.
     "person-run-reads-v1",
+    # PATCH /api/tasks/{task_id}/delivery-dependencies/{edge_id} changes or clears
+    # a prerequisite's target branch.
+    "delivery-prerequisite-retarget-v1",
 )
