@@ -41,7 +41,6 @@ import type { IterationPlanningReadinessSummary } from '../types/iteration';
 import { formatDecimal } from '../utils/workNumbers';
 import { formatDate } from '../utils/formatDate';
 
-type Translate = TFunction;
 type Readiness = ReturnType<typeof usePlanningReadiness>;
 
 const STEP_PARAM = 'step';
@@ -63,7 +62,7 @@ const SECTION_CLASS: Record<PlanCheckpointState, string> = {
     blocked: 'is-waiting',
 };
 
-const stateLabel = (section: PlanCheckpointSection, t: Translate) => {
+const stateLabel = (section: PlanCheckpointSection, t: TFunction) => {
     if (section.state === 'done') return t('plan.page.state.done');
     if (section.state === 'warn') return t('plan.page.state.attention');
     if (section.state === 'blocked') {
@@ -77,7 +76,7 @@ const checkpointResult = (
     section: PlanCheckpointSection,
     summary: IterationPlanningReadinessSummary | undefined,
     readiness: Readiness,
-    t: Translate,
+    t: TFunction,
     language: string,
 ): string => {
     const { counts, state } = section;
