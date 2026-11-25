@@ -46,6 +46,28 @@ def pull_state(link: ExternalLink) -> str:
     return {"closed": "closed_unmerged"}.get(link.status, link.status)
 
 
+async def observed_head_keeps_acceptance(db, link: ExternalLink, head_sha: Optional[str]) -> bool:
+    """Whether recording an observed pull request head may carry the task's acceptance.
+
+    Acceptance covers the submitted commit. A head that differs from it, as the
+    reconciliation's ``head_differs_from_submission`` reports, is code no reviewer
+    accepted. Without a submission for the link, a head that moved from the one
+    recorded before is treated the same way. An observation that names no head
+    cannot show which code it covers, so it does not keep acceptance.
+    """
+    if not head_sha:
+        return False
+    service = GitHubReconciliationService(db)
+    links = await service._pull_links(link.entity_id)
+    runs = (await db.scalars(select(AgentRun).where(AgentRun.task_id == link.entity_id).order_by(AgentRun.id)
+                             .limit(MAX_BOUNDED_LIST_ITEMS))).all()
+    submissions = service._submissions(link, runs, [], len(links) == 1)
+    if submissions:
+        return submissions[-1]["commit_sha"] == head_sha
+    recorded = (link.metadata_json or {}).get("head_sha")
+    return not recorded or recorded == head_sha
+
+
 class GitHubReconciliationService:
     """Read and catch up the GitHub reconciliation of one task."""
 

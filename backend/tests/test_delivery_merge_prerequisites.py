@@ -1,13 +1,32 @@
 """A delivery prerequisite can require accepted code merged on a named branch; the hold names who acts next."""
 
-import pytest
+import json
 
+import httpx
+import pytest
+from sqlalchemy import select
+from sqlalchemy.orm.attributes import set_committed_value
+
+from app.authority import Authority, AuthorityError
+from app.commands import command_transaction
+from app.config import get_settings
+from app.models.agent import AgentActor, AgentRun, TaskEvent
 from app.models.identity import Principal
+from app.models.task import Task
+from app.schemas.request_source import RequestSourceCreate, RequestSourceLinkCreateRequest
+from app.schemas.task_brief import BriefWrite, TaskBrief
 from app.services.delivery_dependency_service import DeliveryDependencyService
 from app.services.external_link_service import ExternalLinkService
+from app.services.github_reconciliation_service import GitHubReconciliationService
+from app.services.github_status_service import GitHubStatusService
+from app.services.github_webhook_service import GitHubWebhookService
+from app.services.request_source_service import RequestSourceService
+from app.services.task_brief_service import TaskBriefService
+from app.services.task_context_revision_service import reserve_task_context_revision
 from app.utils.time import utc_now
 from tests.test_delivery_dependencies import pair
 from tests.test_delivery_scenarios import delivery_store  # noqa: F401
+from tests.test_github_reconciliation import github  # noqa: F401
 
 REPO = "https://github.com/example/project"
 MERGE = "c" * 40
@@ -183,3 +202,254 @@ async def test_closed_prerequisite_with_stale_acceptance_is_reopened_by_the_pm(d
         item = await hold(db, second.id)
         assert item["reason"] == "prerequisite_acceptance_required" and item["hold"]["case"] == "not_accepted"
         assert item["hold"]["next_owner"] == "pm" and "Reopen" in item["hold"]["next_action"]
+
+
+SUBMITTED = "a" * 40
+PUSHED_AFTER_ACCEPTANCE = "b" * 40
+
+
+async def accepted_with_pull_request(db, scenario):
+    """An accepted, closed prerequisite whose run submitted a commit for its one pull request."""
+    first, second = await pair(db, scenario)
+    await ExternalLinkService(db).create_task_github_link(first.id, f"{REPO}/pull/39", commit=False)
+    actor = AgentActor(name=f"worker-{first.id}", display_name="Worker", api_key_hash=f"hash-{first.id}")
+    db.add(actor)
+    await db.flush()
+    db.add(AgentRun(task_id=first.id, actor_id=actor.id, status="succeeded",
+                    commit_url=f"{REPO}/commit/{SUBMITTED}", pr_url=f"{REPO}/pull/39"))
+    await db.commit()
+    await accept(db, first)
+    await DeliveryDependencyService(db).add(second.id, "task", first.id, second.version, "main")
+    return first.id, second.id
+
+
+async def record_merge(db, observer, github, task_id, head):
+    github.pull = github.payload(head, "2026-11-24T12:00:00Z", state="closed", merged_at="2026-11-24T12:00:00Z")
+    if observer == "catch_up":
+        await GitHubReconciliationService(db).catch_up(task_id)
+        return
+    settings = get_settings().model_copy(update={"github_webhook_secret": "s"})
+    response = await GitHubWebhookService(db, settings_override=settings).process("pull_request", "merge-1", {
+        "action": "closed", "pull_request": github.pull, "repository": {"full_name": "example/project"},
+        "sender": {"login": "octo"}})
+    assert response.matched and response.ignored_reason is None
+
+
+async def preserved_events(db, task_id):
+    return (await db.scalars(select(TaskEvent).where(
+        TaskEvent.task_id == task_id, TaskEvent.event_type == "acceptance_preserved_after_observation"))).all()
+
+
+@pytest.mark.parametrize("observer", ["catch_up", "webhook"])
+async def test_an_observed_merge_keeps_acceptance_and_releases_the_dependent(delivery_store, github, observer):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, second_id = await accepted_with_pull_request(db, scenario)
+        accepted_version = (await db.get(Task, first_id)).version
+        await record_merge(db, observer, github, first_id, SUBMITTED)
+    async with factory() as db:
+        first = await db.get(Task, first_id)
+        assert first.version > accepted_version and first.accepted_version == first.version
+        (event,) = await preserved_events(db, first_id)
+        payload = json.loads(event.payload)
+        assert (payload["previous_version"], payload["current_version"]) == (accepted_version, first.version)
+        assert payload["action"] == ("github_status_refresh" if observer == "catch_up" else "github_webhook_update")
+        item = await hold(db, second_id)
+        assert item["merge"]["state"] == "merged_on_target" and item["merge"]["verified"]
+        assert item["ready"] and item["hold"] is None
+        assert (await GitHubReconciliationService(db).view(first_id))["accepted"]
+
+
+@pytest.mark.parametrize("observer", ["catch_up", "webhook"])
+async def test_a_head_pushed_after_acceptance_makes_acceptance_stale(delivery_store, github, observer):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, second_id = await accepted_with_pull_request(db, scenario)
+        await record_merge(db, observer, github, first_id, PUSHED_AFTER_ACCEPTANCE)
+    async with factory() as db:
+        first = await db.get(Task, first_id)
+        assert first.accepted_version != first.version and await preserved_events(db, first_id) == []
+        item = await hold(db, second_id)
+        assert item["merge"]["verified"] and not item["ready"] and item["hold"]["case"] == "not_accepted"
+        pull = (await GitHubReconciliationService(db).view(first_id))["pull_requests"][0]
+        assert "head_differs_from_submission" in pull["differences"]
+
+
+@pytest.mark.parametrize("change", ["github_link", "request_source"])
+async def test_other_context_changes_still_make_acceptance_stale(delivery_store, change):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, second_id = await accepted_with_pull_request(db, scenario)
+        if change == "github_link":
+            await ExternalLinkService(db).create_task_github_link(first_id, f"{REPO}/pull/40", commit=False)
+        else:
+            await RequestSourceService(db).create_link(RequestSourceLinkCreateRequest(
+                target_type="task", target_id=first_id,
+                request_source=RequestSourceCreate(title="Customer request", source_type="customer")), commit=False)
+        await db.commit()
+    async with factory() as db:
+        first = await db.get(Task, first_id)
+        assert first.accepted_version != first.version and await preserved_events(db, first_id) == []
+        assert (await hold(db, second_id))["hold"]["case"] == "not_accepted"
+
+
+async def test_a_brief_change_still_makes_acceptance_stale(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, second_id = await accepted_with_pull_request(db, scenario)
+        first = await db.get(Task, first_id)
+        await TaskBriefService(db).write(first_id, BriefWrite(expected_version=first.version,
+                                                               brief=TaskBrief(goal="A different goal")))
+    async with factory() as db:
+        first = await db.get(Task, first_id)
+        assert first.accepted_version != first.version and await preserved_events(db, first_id) == []
+        assert not (await hold(db, second_id))["ready"]
+
+
+@pytest.mark.parametrize("observer", ["catch_up", "webhook"])
+async def test_an_observation_without_a_head_makes_acceptance_stale(delivery_store, github, observer):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, second_id = await accepted_with_pull_request(db, scenario)
+        await record_merge(db, observer, github, first_id, None)
+    async with factory() as db:
+        first = await db.get(Task, first_id)
+        assert first.accepted_version != first.version and await preserved_events(db, first_id) == []
+        assert (await hold(db, second_id))["hold"]["case"] == "not_accepted"
+
+
+async def test_a_recorded_provider_error_keeps_acceptance(delivery_store, github, monkeypatch):
+    async def unavailable(self, owner, repo, number):
+        raise httpx.ConnectError("GitHub unavailable")
+
+    monkeypatch.setattr(GitHubStatusService, "_fetch_pull_request", unavailable)
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, _ = await accepted_with_pull_request(db, scenario)
+        accepted_version = (await db.get(Task, first_id)).version
+        view = await GitHubReconciliationService(db).catch_up(first_id)
+        assert view["pull_requests"][0]["observation_error"] == "GitHub request failed"
+    async with factory() as db:
+        first = await db.get(Task, first_id)
+        assert first.version > accepted_version and first.accepted_version == first.version
+        (event,) = await preserved_events(db, first_id)
+        assert json.loads(event.payload)["details"]["outcome"] == "provider_error"
+
+
+def edit_only_agent(db, project_id):
+    """A PM agent that may edit planning but holds no work:execute scope."""
+    db.info["authority"] = Authority(None, "agent", projects={project_id: "manager"}, actor_role="pm",
+                                     source="mcp", scopes=frozenset({"planning:read", "planning:write"}))
+
+
+async def preserve(db, task_id):
+    return await reserve_task_context_revision(db, task_id, context_kind="external_link",
+                                               action="github_status_refresh", preserve_acceptance=True)
+
+
+async def test_an_edit_only_agent_carries_acceptance_only_through_a_preserving_observation(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, _ = await accepted_with_pull_request(db, scenario)
+        project_id = (await db.get(Task, first_id)).project_id
+    async with factory() as db:
+        edit_only_agent(db, project_id)
+        async with command_transaction(db):
+            version = await preserve(db, first_id)
+    async with factory() as db:
+        first = await db.get(Task, first_id)
+        assert first.version == version and first.accepted_version == version
+        assert len(await preserved_events(db, first_id)) == 1
+
+
+async def test_an_edit_only_agent_cannot_refresh_a_stale_acceptance_by_hand(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, _ = await accepted_with_pull_request(db, scenario)
+        first = await db.get(Task, first_id)
+        first.version += 1
+        await db.commit()
+        project_id = first.project_id
+    async with factory() as db:
+        edit_only_agent(db, project_id)
+        first = await db.get(Task, first_id)
+        first.accepted_version = first.version
+        with pytest.raises(AuthorityError):
+            await db.flush()
+        await db.rollback()
+
+
+@pytest.mark.parametrize("offset", [5, None, -2], ids=["ahead", "cleared", "behind"])
+async def test_a_preserving_observation_grants_no_other_acceptance_value(delivery_store, offset):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, _ = await accepted_with_pull_request(db, scenario)
+        project_id = (await db.get(Task, first_id)).project_id
+    async with factory() as db:
+        edit_only_agent(db, project_id)
+        with pytest.raises(AuthorityError):
+            async with command_transaction(db):
+                version = await preserve(db, first_id)
+                first = await db.get(Task, first_id)
+                first.accepted_version = None if offset is None else version + offset
+                await db.flush()
+    async with factory() as db:
+        first = await db.get(Task, first_id)
+        assert first.accepted_version == first.version and await preserved_events(db, first_id) == []
+
+
+async def test_a_preserving_observation_authorizes_one_flush(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, _ = await accepted_with_pull_request(db, scenario)
+        first = await db.get(Task, first_id)
+        project_id, previous = first.project_id, first.accepted_version
+    async with factory() as db:
+        edit_only_agent(db, project_id)
+        with pytest.raises(AuthorityError):
+            async with command_transaction(db):
+                version = await preserve(db, first_id)
+                await db.flush()
+                first = await db.get(Task, first_id)
+                assert first.accepted_version == version
+                # Replay the same move: the grant was consumed by the first flush.
+                set_committed_value(first, "accepted_version", previous)
+                first.accepted_version = version
+                await db.flush()
+
+
+async def test_undoing_a_preserved_acceptance_leaves_it_stale(delivery_store):
+    """version - 1 is the acceptance before the reservation: no grant is used and acceptance is stale."""
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, _ = await accepted_with_pull_request(db, scenario)
+        project_id = (await db.get(Task, first_id)).project_id
+    async with factory() as db:
+        edit_only_agent(db, project_id)
+        async with command_transaction(db):
+            version = await preserve(db, first_id)
+            first = await db.get(Task, first_id)
+            first.accepted_version = version - 1
+            assert ("observation_acceptance_preservations" in db.info
+                    and db.info["observation_acceptance_preservations"] == {(first_id, version): version - 1})
+    async with factory() as db:
+        first = await db.get(Task, first_id)
+        assert first.version == version and first.accepted_version == version - 1
+
+
+async def test_a_preserving_observation_grants_nothing_from_another_previous_acceptance(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first_id, _ = await accepted_with_pull_request(db, scenario)
+        first = await db.get(Task, first_id)
+        project_id, previous = first.project_id, first.accepted_version
+    async with factory() as db:
+        edit_only_agent(db, project_id)
+        with pytest.raises(AuthorityError):
+            async with command_transaction(db):
+                version = await preserve(db, first_id)
+                first = await db.get(Task, first_id)
+                # The row carries an acceptance other than the one current before the reservation.
+                set_committed_value(first, "accepted_version", previous - 1)
+                first.accepted_version = version
+                await db.flush()
