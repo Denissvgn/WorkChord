@@ -51,7 +51,7 @@ def main():
         if not (sdk / 'platforms/android-34/android.jar').is_file() or not (sdk / 'build-tools/34.0.0').is_dir():
             raise RuntimeError('Install Android SDK platform 34 and build-tools 34.0.0')
         wrapper = project / 'gradle/wrapper/gradle-wrapper.jar'
-        if hashlib.sha256(wrapper.read_bytes()).hexdigest() != 'cb0da6751c2b753a16ac168bb354870ebb1e162e9083f116729cec9c781156b8':
+        if hashlib.sha256(wrapper.read_bytes()).hexdigest() != '621008afc4f5d59357fcf06ffa644dd5aade5e091bdc363742710445f73cdaf8':
             raise RuntimeError('Gradle wrapper checksum mismatch')
         qualification = None
         if args.release_qualification:
@@ -106,7 +106,7 @@ def main():
             if len(apks) != 1 or apks[0].stat().st_size <= 0:
                 raise ValueError('Android requires one nonempty debug APK')
         run.validators.append(validate_results)
-        run.data['toolchain'] = {'jdk': version.strip(), 'gradle': '9.9.1', 'agp': '9.5.1', 'compile_sdk': 37, 'target_sdk': 34}
+        run.data['toolchain'] = {'jdk': version.strip(), 'gradle': '9.9.2', 'agp': '9.5.1', 'compile_sdk': 37, 'target_sdk': 34}
         run.run('gradle', [str(project / 'gradlew'), '--no-daemon', '--max-workers=2',
             '--project-cache-dir', str(Path(workspace.name) / 'gradle-project-cache'),
             'testDebugUnitTest', 'testReleaseUnitTest', 'assembleDebug',
