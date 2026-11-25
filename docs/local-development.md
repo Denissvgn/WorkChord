@@ -209,6 +209,12 @@ llm-wiki sync --rebuild-cache --rebuild-knowledge --jobs 1 --src-dir . --wiki-di
 - Run both commands from a normal checkout (see above). A fresh clone needs its
   own prepared extractor helper: run `llm-wiki prepare-extractors --src-dir .`
   once before the preview.
+- Compare previews only in checkouts at the same absolute path as the one that
+  ran the owning sync. In 6.1.1 the `llm-wiki/sync-analysis-v2` commitment
+  includes the absolute source root, so a clone elsewhere reports a changed
+  knowledge index and manifest (about 15 packed objects) although every
+  source, page and concept matches. `lint --strict` and `ci-check` pass in
+  either location.
 - A full run takes roughly ten minutes. Afterwards, run the same preview again
   and confirm it reports no changes, then run `llm-wiki lint --strict --jobs 1`
   and `llm-wiki ci-check --format json --jobs 1` with the same source and wiki
