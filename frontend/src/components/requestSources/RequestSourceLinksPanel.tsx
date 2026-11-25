@@ -210,7 +210,7 @@ export const RequestSourceLinksPanel = ({
                             value={newTitle}
                             onKeyDown={handleCreateKeyDown}
                             onChange={event => setNewTitle(event.target.value)}
-                            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                         />
                     </label>
                     <label className="block text-sm">
@@ -221,7 +221,7 @@ export const RequestSourceLinksPanel = ({
                             value={newUrl}
                             onKeyDown={handleCreateKeyDown}
                             onChange={event => setNewUrl(event.target.value)}
-                            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                         />
                     </label>
                     <Button type="button" size="sm" className="self-end" onClick={handleCreate} isLoading={createLinkMutation.isPending}
@@ -236,7 +236,7 @@ export const RequestSourceLinksPanel = ({
                     <Select
                         value={sourceType}
                         onChange={event => setSourceType(event.target.value as RequestSourceType)}
-                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                     >
                         {sourceTypeOptions.map(option => (
                             <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
@@ -251,7 +251,7 @@ export const RequestSourceLinksPanel = ({
                             value={sourceName}
                             onKeyDown={handleCreateKeyDown}
                             onChange={event => setSourceName(event.target.value)}
-                            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                         />
                     </label>
                     <label className="block text-sm">
@@ -264,7 +264,7 @@ export const RequestSourceLinksPanel = ({
                             value={priorityHint}
                             onKeyDown={handleCreateKeyDown}
                             onChange={event => setPriorityHint(event.target.value)}
-                            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                         />
                     </label>
                 </div>
@@ -281,7 +281,7 @@ export const RequestSourceLinksPanel = ({
                                 type="text"
                                 value={searchText}
                                 onChange={event => setSearchText(event.target.value)}
-                                                            className="w-full rounded-md border border-border-strong py-2 pl-9 pr-3 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                                                            className="w-full rounded-md border border-border-strong py-2 pl-9 pr-3 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                             />
                         </label>
                     </div>
@@ -289,7 +289,7 @@ export const RequestSourceLinksPanel = ({
                     <Select
                         value={searchType}
                         onChange={event => setSearchType(event.target.value as RequestSourceType | '')}
-                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                     >
                         <option value="">{t('surfaces.requestSourceLinks.anyType')}</option>
                         {sourceTypeOptions.map(option => (
@@ -423,12 +423,12 @@ export const RequestSourceLinksPanel = ({
                                                 href={safeExternalHref(source.source_url)}
                                                 target="_blank"
                                                 rel="noreferrer"
-                                                className="break-words text-sm font-medium text-action hover:text-action"
+                                                className="wrap-break-word text-sm font-medium text-action hover:text-action"
                                             >
                                                 {requestLabel(source)}
                                             </a>
                                         ) : (
-                                            <span className="break-words text-sm font-medium text-content-primary">
+                                            <span className="wrap-break-word text-sm font-medium text-content-primary">
                                                 {requestLabel(source)}
                                             </span>
                                         )}
@@ -442,7 +442,7 @@ export const RequestSourceLinksPanel = ({
                                         )}
                                     </div>
                                     {(source.source_name || source.external_key || source.description) && (
-                                        <p className="mt-1 break-words text-xs text-content-secondary">
+                                        <p className="mt-1 wrap-break-word text-xs text-content-secondary">
                                             {[source.source_name, source.external_key, source.description].filter(Boolean).join(' · ')}
                                         </p>
                                     )}

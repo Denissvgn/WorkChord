@@ -170,7 +170,7 @@ export const TaskRow = ({
                 onClick={onOpen}
                 title={title}
                 className={clsx(
-                    'min-w-0 flex-1 truncate text-left font-medium hover:text-action hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-focus',
+                    'min-w-0 flex-1 truncate text-left font-medium hover:text-action hover:underline focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus',
                     status === 'closed' && 'text-content-secondary line-through',
                 )}
              variant="plain">
@@ -201,7 +201,7 @@ export const TaskRow = ({
                                 emptyLabel={t('common.unassigned')}
                                 onChange={onAssign}
                                 className={clsx(
-                                    'min-w-0 flex-1 cursor-pointer appearance-none truncate rounded border-0 bg-transparent px-1 py-0 text-xs text-content-secondary hover:bg-surface-subtle focus:outline-none focus-visible:ring-2 focus-visible:ring-focus',
+                                    'min-w-0 flex-1 cursor-pointer appearance-none truncate rounded border-0 bg-transparent px-1 py-0 text-xs text-content-secondary hover:bg-surface-subtle focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus',
                                     dispatch ? 'h-4 leading-4' : 'h-8',
                                 )}
                             />
@@ -211,7 +211,7 @@ export const TaskRow = ({
                             </span>
                         )}
                     </span>
-                    {dispatch && <AgentDispatchLine dispatch={dispatch} className="block h-3.5 truncate pl-[1.125rem] text-wc-micro text-content-tertiary" />}
+                    {dispatch && <AgentDispatchLine dispatch={dispatch} className="block h-3.5 truncate pl-4.5 text-wc-micro text-content-tertiary" />}
                 </span>
             )}
 

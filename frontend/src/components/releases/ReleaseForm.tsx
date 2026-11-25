@@ -63,7 +63,7 @@ const flattenTasks = (tasks: Task[], level = 0): FlattenedTask[] => (
     ])
 );
 
-const textInputClassName = 'mt-1 w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus';
+const textInputClassName = 'mt-1 w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus';
 
 const nullableTrimmedText = (value: string) => {
     const trimmed = value.trim();

@@ -30,7 +30,7 @@ export const CapacityTable = ({ members, workloads, onEdit, onTimeOff, onRemove,
                 const agent = member.profile?.profile_kind === 'agent';
                 const Icon = agent ? Bot : User;
                 return <tr key={member.id} className="border-b border-border align-top">
-                    <th scope="row" className="break-words px-2 py-4 font-medium">
+                    <th scope="row" className="wrap-break-word px-2 py-4 font-medium">
                         <span className="flex items-start gap-2">
                             <Icon className="mt-0.5 h-4 w-4 shrink-0 text-content-secondary" aria-label={t(agent ? 'capacity.agent' : 'capacity.person')} />
                             <span>{member.profile?.display_name ?? member.name}</span>

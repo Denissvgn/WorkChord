@@ -1,8 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
-import postcss from 'postcss';
-import tailwindcss from 'tailwindcss';
+import { compile, optimize } from '@tailwindcss/node';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { useLocation } from 'react-router-dom';
@@ -442,7 +440,7 @@ describe('Tasks header and toolbar', () => {
 // page in a positioned box that holds no task rows. A browser confirms the same with real coordinates:
 // scripts/check-task-selection-layout.mjs.
 const LAYOUT_PROPERTIES = [
-    'display', 'position', 'float', 'top', 'bottom', 'transform', 'box-sizing',
+    'display', 'position', 'float', 'top', 'bottom', 'transform', 'translate', 'scale', 'rotate', 'box-sizing',
     'width', 'min-width', 'max-width', 'height', 'min-height', 'max-height',
     'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
     'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
@@ -450,9 +448,25 @@ const LAYOUT_PROPERTIES = [
     'font-size', 'line-height', 'white-space',
     'flex-direction', 'flex-wrap', 'flex-grow', 'flex-shrink', 'flex-basis', 'gap', 'row-gap', 'column-gap', 'grid-template-rows',
 ];
+// jsdom caches computed styles, and a cached copy can lose a longhand set after a shorthand (the preflight's
+// `padding: 0`, then `pr-2` or an inline padding). Adding a node clears that cache, so each element's style is read
+// fresh once per pass and kept until `startStylePass` begins the next one.
+let passStyles = new Map<Element, CSSStyleDeclaration>();
+const startStylePass = () => { passStyles = new Map(); };
+const freshStyle = (element: Element) => {
+    let style = passStyles.get(element);
+    if (!style) {
+        const marker = document.createComment('');
+        document.body.append(marker);
+        marker.remove();
+        style = getComputedStyle(element);
+        passStyles.set(element, style);
+    }
+    return style;
+};
 // jsdom writes a zero length as "0" or "0px" depending on how the rule was read; both mean the same box.
 const layoutOf = (element: Element) => {
-    const style = getComputedStyle(element);
+    const style = freshStyle(element);
     return LAYOUT_PROPERTIES.map(property => `${property}:${style.getPropertyValue(property).replace(/(^|\s)0(px|rem|em)\b/g, '$10')}`);
 };
 const describeElement = (element: Element) => `<${element.tagName.toLowerCase()} class="${element.getAttribute('class') ?? ''}">`;
@@ -461,19 +475,32 @@ const describeElement = (element: Element) => `<${element.tagName.toLowerCase()}
 const overlaysPage = (element: Element, root: Element) => {
     const rows = [...root.querySelectorAll('[data-task-row]')];
     for (let node: Element | null = element; node && node !== root; node = node.parentElement) {
-        const { position, display } = getComputedStyle(node);
+        const { position, display } = freshStyle(node);
         if (display === 'none') return true;
         if ((position === 'absolute' || position === 'fixed') && !rows.some(row => node.contains(row) || row.contains(node))) return true;
     }
     return false;
 };
 
+// jsdom ignores logical properties, and Tailwind writes px-*, my-*, inset-x-* and border-x with them, so the test
+// stylesheet spells them out as the physical sides they mean in a left-to-right page.
+const SIDES = { inline: ['left', 'right'], block: ['top', 'bottom'] } as const;
+const physicalProperties = (stylesheet: string) => stylesheet.replace(
+    /(^|[;{\s])(padding|margin|inset|scroll-padding|scroll-margin|border)-(inline|block)(-start|-end)?(-width|-style|-color)?\s*:\s*([^;}]+)/g,
+    (_match, before: string, property: string, axis: 'inline' | 'block', edge: string | undefined, part: string | undefined, value: string) => {
+        const sides = edge ? [SIDES[axis][edge === '-start' ? 0 : 1]] : SIDES[axis];
+        const name = (side: string) => property === 'inset' ? side : `${property}-${side}${part ?? ''}`;
+        return before + sides.map(side => `${name(side)}: ${value.trim()}`).join('; ');
+    },
+);
+
+// Builds globals.css the way the Vite plugin does, for exactly the classes in `html`, with nesting flattened for jsdom.
 const appStylesFor = async (html: string) => {
-    const configUrl = pathToFileURL(resolve(__dirname, '../../tailwind.config.js')).href;
-    const { default: config } = await import(/* @vite-ignore */ configUrl) as { default: Record<string, unknown> };
-    const globals = readFileSync(resolve(__dirname, '../styles/globals.css'), 'utf8');
-    const utilities = await postcss([tailwindcss({ ...config, content: [{ raw: html, extension: 'html' }] })]).process(globals, { from: undefined });
-    return `${utilities.css}\n${css}`;
+    const stylesDir = resolve(__dirname, '../styles');
+    const compiler = await compile(readFileSync(resolve(stylesDir, 'globals.css'), 'utf8'), { base: stylesDir, onDependency: () => undefined });
+    const parsed = new DOMParser().parseFromString(html, 'text/html');
+    const candidates = new Set([...parsed.querySelectorAll('[class]')].flatMap(element => [...element.classList]));
+    return `${physicalProperties(optimize(compiler.build([...candidates])).code)}\n${css}`;
 };
 
 /** Opens the page, ticks two tasks and opens Assign; `onRest` sees the page root before the first tick. */
@@ -518,9 +545,11 @@ describe('Selecting tasks keeps the list still', () => {
         try {
             const before = new Map<Element, { layout: string[]; overlay: boolean }>();
             const { root, bar } = await selectTwoAndAssign(fullScreen, rest => {
+                startStylePass();
                 for (const element of rest.querySelectorAll('*')) before.set(element, { layout: layoutOf(element), overlay: overlaysPage(element, rest) });
             });
             expect(root.querySelectorAll('[data-task-row]')).toHaveLength(TASKS.length);
+            startStylePass();
 
             // The bar, its Assign editor and everything else selecting adds overlay the page.
             expect(overlaysPage(bar, root)).toBe(true);
@@ -542,8 +571,8 @@ describe('Selecting tasks keeps the list still', () => {
             if (!fullScreen) {
                 const toolbar = screen.getByTestId('page-toolbar').closest('.wc-page-toolbar-frame');
                 if (!toolbar) throw new Error('The toolbar frame is missing');
-                expect(getComputedStyle(toolbar).visibility).toBe('hidden');
-                expect(getComputedStyle(toolbar).display).not.toBe('none');
+                expect(freshStyle(toolbar).visibility).toBe('hidden');
+                expect(freshStyle(toolbar).display).not.toBe('none');
             }
         } finally {
             style.remove();

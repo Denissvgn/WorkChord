@@ -107,7 +107,7 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
             {comments.data && comments.data.pages.every(page => page.items.length === 0) && <p className="text-sm text-content-secondary">{t('teamwork.noComments')}</p>}
             <ol className="space-y-4">{comments.data?.pages.flatMap(page => page.items).map(comment => <li key={comment.id} className="space-y-1">
                 <p className="text-sm text-content-secondary"><strong className="text-content-primary">{comment.author_name}</strong>{comment.author_local && ` · ${t('identity.localNotVerified')}`} · {formatDateTime(comment.updated_at, i18n.language)}</p>
-                <p className="whitespace-pre-wrap break-words text-sm text-content-primary">{comment.deleted ? t('teamwork.commentRemoved') : comment.body}</p>
+                <p className="whitespace-pre-wrap wrap-break-word text-sm text-content-primary">{comment.deleted ? t('teamwork.commentRemoved') : comment.body}</p>
                 <div className="flex flex-wrap gap-2">
                     {!comment.deleted && ownComment(comment) && <>
                         <Button type="button" size="sm" variant="ghost" disabled={dirty || disabled} onClick={() => { setEditing(comment); setBody(comment.body); setMentions(comment.mentions); save.reset(); }}>{t('teamwork.edit')}</Button>
@@ -118,7 +118,7 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
                 {historyId === comment.id && <div className="space-y-2 rounded-md bg-surface-muted p-3">
                     {history.isLoading && <p role="status">{t('common.loading')}</p>}
                     {history.isError && <QueryErrorState error={history.error} fallback={t('teamwork.loadFailed')} onRetry={() => void history.refetch()} />}
-                    {history.data?.pages.flatMap(page => page.items).map(revision => <p key={revision.version} className="whitespace-pre-wrap break-words text-sm">v{revision.version}: {revision.deleted ? t('teamwork.commentRemoved') : revision.body}</p>)}
+                    {history.data?.pages.flatMap(page => page.items).map(revision => <p key={revision.version} className="whitespace-pre-wrap wrap-break-word text-sm">v{revision.version}: {revision.deleted ? t('teamwork.commentRemoved') : revision.body}</p>)}
                     {history.hasNextPage && <Button type="button" size="sm" variant="ghost" onClick={() => void history.fetchNextPage()} disabled={history.isFetchingNextPage}>{t('teamwork.loadMore')}</Button>}
                 </div>}
             </li>)}</ol>
@@ -136,7 +136,7 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
             {mentions.length > 0 && <p className="text-sm text-content-secondary">{t('teamwork.mentionedCount', { count: mentions.length })} <Button type="button" size="sm" variant="ghost" onClick={() => setMentions([])}>{t('teamwork.clear')}</Button></p>}
             {latestEdit && editing && latestEdit.version !== editing.version && <div className="space-y-2 rounded-md border border-feedback-warning-border p-3 text-sm">
                 <p className="font-medium">{t('teamwork.currentComment')} · v{latestEdit.version}</p>
-                <p className="whitespace-pre-wrap break-words">{latestEdit.deleted ? t('teamwork.commentRemoved') : latestEdit.body}</p>
+                <p className="whitespace-pre-wrap wrap-break-word">{latestEdit.deleted ? t('teamwork.commentRemoved') : latestEdit.body}</p>
                 <Button type="button" size="sm" variant="secondary" disabled={pending} onClick={() => { setEditing(latestEdit.deleted ? undefined : latestEdit); setUncertain(false); setWriteId(undefined); persist(false); save.reset(); }}>{t(latestEdit.deleted ? 'teamwork.newInstead' : 'teamwork.reapplyComment')}</Button>
             </div>}
             {uncertain && !pending && <div role="status" className="space-y-2 rounded-md border border-feedback-warning-border p-3 text-sm">

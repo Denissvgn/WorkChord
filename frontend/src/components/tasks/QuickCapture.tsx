@@ -66,7 +66,7 @@ export const QuickCapture = ({ target, onExpand, listRow = false }: {
                 onChange={event => { setTitle(event.target.value); if (capture.isError) capture.reset(); }}
                 placeholder={t(target.kind === 'task' ? 'quickCapture.taskPlaceholder' : 'quickCapture.triagePlaceholder')}
                 aria-describedby={`${id}-hint`}
-                className={clsx('min-w-0 flex-1 bg-transparent text-sm text-content-primary outline-none placeholder:text-content-tertiary', listRow ? 'min-h-8' : 'min-h-9')} />
+                className={clsx('min-w-0 flex-1 bg-transparent text-sm text-content-primary outline-hidden placeholder:text-content-tertiary', listRow ? 'min-h-8' : 'min-h-9')} />
             <span id={`${id}-hint`} className="hidden items-center gap-1 text-xs text-content-tertiary sm:inline-flex">
                 <CornerDownLeft className="h-3 w-3" aria-hidden="true" />{t('quickCapture.enterHint')}
             </span>

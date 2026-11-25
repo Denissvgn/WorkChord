@@ -144,7 +144,7 @@ const TaskTextEditorBody = ({ iterationId, initialText, initialRevision, isLoadi
                                 updateMutation.reset();
                             }}
                             className={clsx(
-                                "flex-1 p-4 font-mono text-sm resize-none focus:outline-none leading-relaxed w-full h-full",
+                                "flex-1 p-4 font-mono text-sm resize-none focus:outline-hidden leading-relaxed w-full h-full",
                                 isFullScreen && "max-w-6xl mx-auto" // Center content in extremely wide screens for readability
                             )}
                             placeholder={t('taskTextEditor.loadingPlaceholder')}

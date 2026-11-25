@@ -204,7 +204,7 @@ export const ConvertTriageDrawer = ({
                         <div>
                             <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.taskForm.project')}</label>
                             {scopedProjectId !== null ? (
-                                <div className="w-full rounded-md border border-border-strong bg-surface-subtle px-3 py-2 text-content-primary shadow-sm text-sm">
+                                <div className="w-full rounded-md border border-border-strong bg-surface-subtle px-3 py-2 text-content-primary shadow-xs text-sm">
                                     {scopedProject?.name ?? `Project #${scopedProjectId}`}
                                 </div>
                             ) : (
@@ -212,7 +212,7 @@ export const ConvertTriageDrawer = ({
                                     aria-label={t('surfaces.taskForm.project')}
                                     value={projectId}
                                     onChange={event => setProjectId(event.target.value)}
-                                    className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus text-sm"
+                                    className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus text-sm"
                                 >
                                     <option value="">{t('surfaces.triagePage.noProject')}</option>
                                     {projects.map(project => (

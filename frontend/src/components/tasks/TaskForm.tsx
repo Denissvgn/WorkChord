@@ -649,12 +649,12 @@ export const TaskForm = ({
                 <label htmlFor={`${formId}-project`} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.project')}</label>
                 {scopedProjectId !== null ? (
                     <input id={`${formId}-project`} readOnly value={scopedProject?.name ?? t('surfaces.taskForm.projectNumber', { id: scopedProjectId })}
-                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm bg-surface-muted text-content-primary" />
+                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-xs bg-surface-muted text-content-primary" />
                 ) : (
                     <Select id={`${formId}-project`}
                         value={formData.project_id ?? ''}
                         onChange={e => handleProjectChange(e.target.value ? parseInt(e.target.value) : null)}
-                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
+                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus bg-surface-card"
                     >
                         <option value="">{t('surfaces.taskForm.noProject')}</option>
                         {projects.map(project => (
@@ -698,7 +698,7 @@ export const TaskForm = ({
                         value={effectiveMilestoneId ?? ''}
                         onChange={e => setFormData({ ...formData, milestone_id: e.target.value ? parseInt(e.target.value) : null })}
                         disabled={!effectiveProjectId}
-                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card disabled:bg-surface-muted disabled:text-content-secondary"
+                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus bg-surface-card disabled:bg-surface-muted disabled:text-content-secondary"
                     >
                         <option value="">{t('surfaces.taskForm.noMilestone')}</option>
                         {projectMilestones.map(milestone => (
@@ -718,7 +718,7 @@ export const TaskForm = ({
                             type="date"
                             value={formData.min_start_date || ''}
                             onChange={e => setFormData({ ...formData, min_start_date: e.target.value || null })}
-                            className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                            className="w-full px-3 py-2 border border-border-strong rounded-md shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                         />
                     </div>
                     <div>
@@ -727,7 +727,7 @@ export const TaskForm = ({
                             type="date"
                             value={formData.max_end_date || ''}
                             onChange={e => setFormData({ ...formData, max_end_date: e.target.value || null })}
-                            className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                            className="w-full px-3 py-2 border border-border-strong rounded-md shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                         />
                     </div>
                 </div>
@@ -758,7 +758,7 @@ export const TaskForm = ({
                                 ...formData,
                                 status: event.target.value as Task['status'],
                             })}
-                            className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
+                            className="w-full px-3 py-2 border border-border-strong rounded-md shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus bg-surface-card"
                         >
                             <option value="planned">{t('statuses.planned')}</option>
                             <option value="active">{t('statuses.active')}</option>
@@ -817,7 +817,7 @@ export const TaskForm = ({
                     <Select id={`${formId}-template`}
                         value={selectedTemplateId}
                         onChange={event => handleTemplateSelect(event.target.value)}
-                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
+                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus bg-surface-card"
                     >
                         <option value="">{t('surfaces.taskForm.noTemplate')}</option>
                         {taskTemplates.map(template => (
@@ -865,7 +865,7 @@ export const TaskForm = ({
                         value={aiContext}
                         onChange={event => setAiContext(event.target.value)}
                         placeholder={t('taskAi.contextPlaceholder')}
-                        className="min-h-[70px] w-full rounded-md border border-feedback-purple-border bg-surface-card px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        className="min-h-[70px] w-full rounded-md border border-feedback-purple-border bg-surface-card px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                     />
                 </div>
                 {aiSuggestion && (
@@ -1044,7 +1044,7 @@ export const TaskForm = ({
                 {writeComparison && <>
                     <p>{t('teamwork.boundedComparison')}</p>
                     <ul>{writeComparison.items.map(item => <li key={`${item.kind ?? 'task'}:${item.id}`}>{item.kind === 'triage' ? t('surfaces.taskForm.sendToTriage') : t('surfaces.taskForm.taskTitle')} · #{item.id} · {item.title} {item.version !== undefined ? ` · v${item.version}` : ''}</li>)}</ul>
-                    {conflictTask && <p className="whitespace-pre-wrap break-words">{conflictTask.description ?? conflictTask.brief?.goal}</p>}
+                    {conflictTask && <p className="whitespace-pre-wrap wrap-break-word">{conflictTask.description ?? conflictTask.brief?.goal}</p>}
                     <Button type="button" size="sm" variant="secondary" disabled={isSubmitting} onClick={resumeComparedWrite}>{t('teamwork.comparedWork')}</Button>
                 </>}
             </div>}
@@ -1059,7 +1059,7 @@ export const TaskForm = ({
                     </p>
                     {conflictTask && <details><summary className="cursor-pointer font-medium">{t('taskEditor.compareCurrent')}</summary>
                         <dl className="mt-2 space-y-2"><dt>{t('surfaces.taskForm.description')}</dt>
-                            <dd className="max-h-40 overflow-auto whitespace-pre-wrap break-words">{conflictTask.description || '—'}</dd>
+                            <dd className="max-h-40 overflow-auto whitespace-pre-wrap wrap-break-word">{conflictTask.description || '—'}</dd>
                             <dt>{t('statusChange.currentStatus')}</dt><dd>{t(`statuses.${conflictTask.status}`)}</dd>
                         </dl></details>}
                     <Button type="button" size="sm" variant="secondary" onClick={compareCurrentTask} disabled={isSubmitting || workDirty || discussionDirty || timeDirty} isLoading={isRefreshing}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>
@@ -1136,7 +1136,7 @@ export const TaskForm = ({
             </div>}
             {currentTask?.legacy_description && <details className="text-sm text-content-secondary">
                 <summary className="cursor-pointer">{t('domain.originalDescription')}</summary>
-                <pre className="mt-2 whitespace-pre-wrap break-words font-sans">{currentTask.legacy_description}</pre>
+                <pre className="mt-2 whitespace-pre-wrap wrap-break-word font-sans">{currentTask.legacy_description}</pre>
             </details>}
             {assistantButton}
             {assistantPanel}

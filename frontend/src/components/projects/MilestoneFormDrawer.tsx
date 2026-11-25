@@ -50,7 +50,7 @@ export const MilestoneFormDrawer = ({
                         id="milestone-name"
                         value={form.name}
                         onChange={event => onChange('name', event.target.value)}
-                        className="mt-1 w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        className="mt-1 w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                         maxLength={255}
                         required
                     />
@@ -61,7 +61,7 @@ export const MilestoneFormDrawer = ({
                         id="milestone-status"
                         value={form.status}
                         onChange={event => onChange('status', event.target.value as ProjectMilestoneStatus)}
-                        className="mt-1 w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        className="mt-1 w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                     >
                         {Object.entries(milestoneStatusLabelKeys).map(([value, labelKey]) => (
                             <option key={value} value={value}>{t(labelKey)}</option>
@@ -75,7 +75,7 @@ export const MilestoneFormDrawer = ({
                         type="date"
                         value={form.target_date}
                         onChange={event => onChange('target_date', event.target.value)}
-                        className="mt-1 w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        className="mt-1 w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                     />
                 </label>
                 <label className="block text-sm font-medium text-content-primary" htmlFor="milestone-completed-at">
@@ -85,7 +85,7 @@ export const MilestoneFormDrawer = ({
                         type="datetime-local"
                         value={form.completed_at}
                         onChange={event => onChange('completed_at', event.target.value)}
-                        className="mt-1 w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        className="mt-1 w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                     />
                 </label>
                 <label className="block text-sm font-medium text-content-primary" htmlFor="milestone-sort-order">
@@ -95,7 +95,7 @@ export const MilestoneFormDrawer = ({
                         type="number"
                         value={form.sort_order}
                         onChange={event => onChange('sort_order', event.target.value)}
-                        className="mt-1 w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        className="mt-1 w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                     />
                 </label>
             </div>

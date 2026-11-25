@@ -132,7 +132,7 @@ export function PipelineTaskEvidence({ task: selectedTask }: { task: Task }) {
                                                 return (
                                                     <div key={idx} className="relative flex flex-col gap-0.5">
                                                         {/* Dot indicator */}
-                                                        <div className="absolute -left-[21px] top-1.5 h-2 w-2 rounded-full border border-surface-card bg-border" />
+                                                        <div className="absolute left-[-21px] top-1.5 h-2 w-2 rounded-full border border-surface-card bg-border" />
 
                                                         <div className="flex items-center gap-2 text-xs font-semibold text-content-primary">
                                                             <span className="uppercase text-wc-micro bg-surface-muted px-1.5 py-0.5 rounded text-content-secondary font-mono">
@@ -232,7 +232,7 @@ export function PipelineTaskEvidence({ task: selectedTask }: { task: Task }) {
                                                         <span className="text-content-secondary select-none shrink-0 font-semibold text-wc-micro mt-0.5">
                                                             {t('agentPipeline.runEvent')}
                                                         </span>
-                                                        <span className="text-content-primary break-words flex-1 font-mono font-medium leading-relaxed font-sans">
+                                                        <span className="text-content-primary wrap-break-word flex-1 font-mono font-medium leading-relaxed font-sans">
                                                             {t('agentPipeline.runEventDetailsWithheld')}
                                                         </span>
                                                     </div>

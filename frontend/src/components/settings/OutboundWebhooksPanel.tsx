@@ -561,8 +561,8 @@ export const OutboundWebhooksPanel = () => {
                             <Webhook className="h-5 w-5" aria-hidden="true" />
                         </div>
                         <div className="min-w-0">
-                            <h2 className="break-words text-lg font-semibold text-content-primary">{t('settingsWebhooks.title')}</h2>
-                            <p className="break-words text-sm text-content-secondary">
+                            <h2 className="wrap-break-word text-lg font-semibold text-content-primary">{t('settingsWebhooks.title')}</h2>
+                            <p className="wrap-break-word text-sm text-content-secondary">
                                 {t('settingsWebhooks.description')}
                             </p>
                         </div>
@@ -661,7 +661,7 @@ export const OutboundWebhooksPanel = () => {
                                     rows={3}
                                     aria-invalid={Boolean(formErrors.headersJson)}
                                     aria-describedby={formErrors.headersJson ? `${headersInputId}-error` : undefined}
-                                    className="w-full rounded-md border border-border-strong px-3 py-2 font-mono text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus aria-[invalid=true]:border-feedback-danger"
+                                    className="w-full rounded-md border border-border-strong px-3 py-2 font-mono text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus aria-invalid:border-feedback-danger"
                                     placeholder='{"X-Route": "workchord"}'
                                     spellCheck={false}
                                 />
@@ -770,10 +770,10 @@ export const OutboundWebhooksPanel = () => {
                                         </div>
                                     </td>
                                     <td className="px-3 py-3">
-                                        <div className="max-w-lg break-words font-medium text-content-primary">{target.name}</div>
+                                        <div className="max-w-lg wrap-break-word font-medium text-content-primary">{target.name}</div>
                                         <div className="mt-1 max-w-lg break-all text-xs text-content-secondary">{target.url}</div>
                                         {target.description && (
-                                            <div className="mt-1 max-w-lg break-words text-xs text-content-secondary [overflow-wrap:anywhere]">{target.description}</div>
+                                            <div className="mt-1 max-w-lg wrap-break-word text-xs text-content-secondary wrap-anywhere">{target.description}</div>
                                         )}
                                     </td>
                                     <td className="px-3 py-3">
@@ -856,7 +856,7 @@ export const OutboundWebhooksPanel = () => {
                             onChange={event => setDeliveryTargetId(event.target.value ? Number(event.target.value) : '')}
                             aria-label={t('settingsWebhooks.target')}
                             disabled={deliveriesLoading}
-                            className="min-w-0 flex-1 rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus sm:flex-none"
+                            className="min-w-0 flex-1 rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus sm:flex-none"
                         >
                             <option value="">{t('settingsWebhooks.allTargets')}</option>
                             {targets.map(target => (
@@ -868,7 +868,7 @@ export const OutboundWebhooksPanel = () => {
                             onChange={event => setDeliveryStatus(event.target.value as OutboundWebhookDeliveryStatus | '')}
                             aria-label={t('settingsWebhooks.status')}
                             disabled={deliveriesLoading}
-                            className="min-w-0 flex-1 rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus sm:flex-none"
+                            className="min-w-0 flex-1 rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus sm:flex-none"
                         >
                             <option value="">{t('settingsWebhooks.allStatuses')}</option>
                             <option value="delivered">{t('settingsWebhooks.statuses.delivered')}</option>
@@ -913,13 +913,13 @@ export const OutboundWebhooksPanel = () => {
                                         </div>
                                     </td>
                                     <td className="px-3 py-3">
-                                        <div className="max-w-xs break-words font-medium text-content-primary">{delivery.target_name || t('settingsWebhooks.deletedTarget')}</div>
+                                        <div className="max-w-xs wrap-break-word font-medium text-content-primary">{delivery.target_name || t('settingsWebhooks.deletedTarget')}</div>
                                         <div className="max-w-xs break-all text-xs text-content-secondary">{delivery.target_url || t('settingsWebhooks.noUrlSnapshot')}</div>
                                     </td>
                                     <td className="px-3 py-3 text-content-primary">{delivery.attempt_count}</td>
                                     <td className="px-3 py-3 text-content-secondary">{formatDateTime(delivery.last_attempt_at)}</td>
                                     <td className="px-3 py-3">
-                                        <div className="max-w-md break-words text-xs text-content-secondary [overflow-wrap:anywhere]">
+                                        <div className="max-w-md wrap-break-word text-xs text-content-secondary wrap-anywhere">
                                             {delivery.last_http_status && (
                                                 <span className="mr-2 rounded bg-surface-subtle px-1.5 py-0.5">
                                                     HTTP {delivery.last_http_status}
@@ -931,11 +931,11 @@ export const OutboundWebhooksPanel = () => {
                                     <td className="px-3 py-3">
                                         <div className="flex justify-end">
                                             {delivery.status === 'delivered' ? (
-                                                <span className="max-w-48 break-words text-right text-xs text-content-secondary">
+                                                <span className="max-w-48 wrap-break-word text-right text-xs text-content-secondary">
                                                     {t('settingsWebhooks.retryAlreadyDelivered')}
                                                 </span>
                                             ) : !delivery.target_id ? (
-                                                <span className="max-w-48 break-words text-right text-xs text-content-secondary">
+                                                <span className="max-w-48 wrap-break-word text-right text-xs text-content-secondary">
                                                     {t('settingsWebhooks.retryTargetUnavailable')}
                                                 </span>
                                             ) : (

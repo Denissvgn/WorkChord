@@ -492,7 +492,7 @@ const ProjectDetailPage = () => {
                 {projectTabs.map(tab => (
                     <Link key={tab} id={`project-tab-${tab}`} role="tab" tabIndex={activeTab === tab ? 0 : -1} aria-selected={activeTab === tab}
                         aria-controls={`project-panel-${tab}`} to={{ search: tabSearch(tab) }}
-                        className={clsx('border-b-2 px-4 py-3 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-action', activeTab === tab ? 'border-action text-action' : 'border-transparent text-content-secondary hover:bg-surface-muted')}
+                        className={clsx('border-b-2 px-4 py-3 text-sm font-medium focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-action', activeTab === tab ? 'border-action text-action' : 'border-transparent text-content-secondary hover:bg-surface-muted')}
                     >{t(`projectTabs.${tab}`)}</Link>
                 ))}
             </div>

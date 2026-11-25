@@ -839,7 +839,7 @@ export const GanttChart = ({
     useEffect(() => () => { onChartActionsChange?.([]); }, [onChartActionsChange]);
 
     return (
-        <div role="region" aria-label={t('surfaces.ganttChart.chartRegion')} className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg bg-surface-card shadow" onKeyDown={handleChartShortcut}>
+        <div role="region" aria-label={t('surfaces.ganttChart.chartRegion')} className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg bg-surface-card shadow-sm" onKeyDown={handleChartShortcut}>
             {unscheduledTaskCount > 0 && (
                 // One summary replaces a warning on every unscheduled row.
                 <div role="status" className="flex shrink-0 flex-wrap items-center gap-3 border-b border-border bg-surface-muted px-4 py-2 text-sm text-content-primary">
@@ -979,7 +979,7 @@ export const GanttChart = ({
                     </p>
                 {/* 1. Header Layer (Sticky Top) */}
                 <div
-                    className="sticky top-0 z-40 bg-surface-subtle border-b shadow-sm"
+                    className="sticky top-0 z-40 bg-surface-subtle border-b shadow-xs"
                     style={{
                         width: `${SIDEBAR_WIDTH + columnVirtualizer.getTotalSize()}px`,
                         height: '60px'
@@ -1016,7 +1016,7 @@ export const GanttChart = ({
                                 aria-valuemax={TASK_COLUMN_MAX}
                                 aria-valuenow={SIDEBAR_WIDTH}
                                 tabIndex={0}
-                                className="absolute right-0 top-0 h-full w-2 cursor-col-resize hover:bg-action-muted focus-visible:bg-action-muted focus-visible:outline-none"
+                                className="absolute right-0 top-0 h-full w-2 cursor-col-resize hover:bg-action-muted focus-visible:bg-action-muted focus-visible:outline-hidden"
                                 onKeyDown={event => {
                                     if (event.key === 'ArrowLeft') { event.preventDefault(); event.stopPropagation(); setTaskColumnWidth(SIDEBAR_WIDTH - 20); }
                                     if (event.key === 'ArrowRight') { event.preventDefault(); event.stopPropagation(); setTaskColumnWidth(SIDEBAR_WIDTH + 20); }
@@ -1075,7 +1075,7 @@ export const GanttChart = ({
                 >
                     {/* Dependency links for the rendered rows only, so virtualization stays cheap. */}
                     {showLinks && (
-                        <svg aria-hidden="true" className="pointer-events-none absolute left-0 top-0 z-[5] text-content-tertiary"
+                        <svg aria-hidden="true" className="pointer-events-none absolute left-0 top-0 z-5 text-content-tertiary"
                             width={SIDEBAR_WIDTH + columnVirtualizer.getTotalSize()} height={rowVirtualizer.getTotalSize()}>
                             <defs>
                                 <marker id={`${chartInstructionsId}-arrow`} viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
@@ -1165,7 +1165,7 @@ export const GanttChart = ({
                                     <div className="absolute inset-y-0 left-0 z-20 flex flex-col justify-center border-r border-border bg-surface-muted px-2 sm:sticky sm:inset-y-auto sm:h-full"
                                         style={{ width: `${SIDEBAR_WIDTH}px` }}>
                                         <Button type="button" aria-expanded={!collapsed} disabled={activeFilterCount > 0}
-                                            className="flex min-w-0 items-center gap-1 rounded text-left text-sm font-semibold text-content-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                                            className="flex min-w-0 items-center gap-1 rounded text-left text-sm font-semibold text-content-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
                                             onClick={() => setToggledGroups(previous => {
                                                 const next = new Set(previous);
                                                 if (next.has(row.key)) next.delete(row.key); else next.add(row.key);
@@ -1230,7 +1230,7 @@ export const GanttChart = ({
                                                 <Button
                                                     type="button"
                                                     onClick={() => toggleExpand(task.id)}
-                                                    className="p-0.5 hover:bg-surface-subtle rounded text-content-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                                                    className="p-0.5 hover:bg-surface-subtle rounded text-content-secondary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
                                                     aria-expanded={isTaskExpanded}
                                                     aria-label={isTaskExpanded
                                                         ? t('gantt.collapseTask', { title: task.title })
@@ -1285,12 +1285,12 @@ export const GanttChart = ({
                                                 // Dashed and unfilled: nobody carries this work, so nothing calculated its dates.
                                                 isProvisional
                                                     ? "border border-dashed border-border-strong bg-surface-muted text-content-secondary"
-                                                    : clsx("shadow-sm", getTaskBaseColorClass(task)),
+                                                    : clsx("shadow-xs", getTaskBaseColorClass(task)),
                                                 // The summary above the chart speaks for unassigned work; a ring on every bar would only add noise.
                                                 task.is_delayed && !isProvisional && "ring-2 ring-feedback-purple ring-offset-1",
                                                 task.is_overdue && "ring-2 ring-feedback-danger ring-offset-1",
                                                 task.isSandboxModified && "ring-2 ring-focus ring-offset-2 border border-action font-semibold",
-                                                highlightedTaskIds.has(task.id) && focusTaskId !== task.id && "outline outline-2 outline-offset-2 outline-action",
+                                                highlightedTaskIds.has(task.id) && focusTaskId !== task.id && "outline-solid outline-2 outline-offset-2 outline-action",
                                                 "cursor-pointer hover:brightness-110 active:brightness-90"
                                             )}
                                             style={{
@@ -1353,7 +1353,7 @@ export const GanttChart = ({
                                     ) : (
                                         <Button
                                             type="button"
-                                            className="absolute left-2 right-2 top-2.5 z-10 flex h-7 w-fit max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-md border border-dashed border-border-strong bg-surface-card px-2 text-xs text-content-secondary transition-colors hover:bg-surface-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                                            className="absolute left-2 right-2 top-2.5 z-10 flex h-7 w-fit max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-md border border-dashed border-border-strong bg-surface-card px-2 text-xs text-content-secondary transition-colors hover:bg-surface-muted focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
                                             onClick={(event) => {
                                                 event.stopPropagation();
                                                 setEditingTask(task);

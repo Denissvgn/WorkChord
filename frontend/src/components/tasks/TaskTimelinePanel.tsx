@@ -303,7 +303,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                 if (linkError) setLinkError(null);
                             }}
                             placeholder={t('surfaces.taskTimeline.pasteGitHubPRIssueOrBranchURL')}
-                            className="min-w-0 flex-1 rounded-md border border-border-strong px-3 py-1.5 text-xs text-content-primary shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                            className="min-w-0 flex-1 rounded-md border border-border-strong px-3 py-1.5 text-xs text-content-primary shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                         />
                         <Button
                             type="button"
@@ -450,7 +450,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                 <div className="min-w-0 flex-1">
                                     <div className="flex items-center justify-between gap-2">
                                         <span className="text-sm font-medium text-content-primary truncate">{title}</span>
-                                        <span className="text-wc-micro text-content-secondary flex-shrink-0">
+                                        <span className="text-wc-micro text-content-secondary shrink-0">
                                             {formatDateTime(item.timestamp)}
                                         </span>
                                     </div>

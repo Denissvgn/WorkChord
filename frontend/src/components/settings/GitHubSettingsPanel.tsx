@@ -313,8 +313,8 @@ export const GitHubSettingsPanel = () => {
                             <Github aria-hidden="true" className="h-5 w-5" />
                         </div>
                         <div className="min-w-0">
-                            <h2 className="break-words text-lg font-semibold text-content-primary">{t('settingsGithubAutomation.title')}</h2>
-                            <p className="break-words text-sm text-content-secondary">
+                            <h2 className="wrap-break-word text-lg font-semibold text-content-primary">{t('settingsGithubAutomation.title')}</h2>
+                            <p className="wrap-break-word text-sm text-content-secondary">
                                 {t('settingsGithubAutomation.description')}
                             </p>
                         </div>
@@ -406,7 +406,7 @@ export const GitHubSettingsPanel = () => {
                                 id={eventSelectId}
                                 value={form.github_event_type}
                                 onChange={event => updateField('github_event_type', event.target.value as GitHubAutomationEventType)}
-                                className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                                className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                             >
                                 {eventOptions.map(option => (
                                     <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
@@ -420,7 +420,7 @@ export const GitHubSettingsPanel = () => {
                                     id={fromStatusSelectId}
                                     value={form.from_status || ''}
                                     onChange={event => updateField('from_status', (event.target.value || null) as TaskStatus | null)}
-                                    className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                                    className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                                 >
                                     <option value="">{t('settingsGithubAutomation.any')}</option>
                                     {statusOptions.map(status => (
@@ -434,7 +434,7 @@ export const GitHubSettingsPanel = () => {
                                     id={targetStatusSelectId}
                                     value={form.target_status}
                                     onChange={event => updateField('target_status', event.target.value as GitHubAutomationTargetStatus)}
-                                    className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                                    className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                                 >
                                     {targetStatusOptions.map(status => (
                                         <option key={status} value={status}>{statusLabel(status)}</option>
@@ -520,14 +520,14 @@ export const GitHubSettingsPanel = () => {
                                             </div>
                                         </td>
                                         <td className="min-w-0 px-3 py-3">
-                                            <div className="max-w-xs break-words font-medium text-content-primary">{display.name}</div>
+                                            <div className="max-w-xs wrap-break-word font-medium text-content-primary">{display.name}</div>
                                             {display.description && (
-                                                <div className="mt-1 max-w-xs break-words text-xs text-content-secondary">{display.description}</div>
+                                                <div className="mt-1 max-w-xs wrap-break-word text-xs text-content-secondary">{display.description}</div>
                                             )}
                                         </td>
                                         <td className="px-3 py-3 text-content-primary">{eventLabel(rule.github_event_type)}</td>
                                         <td className="px-3 py-3">
-                                            <span className="inline-block max-w-xs break-words rounded bg-surface-subtle px-2 py-1 text-xs text-content-primary">
+                                            <span className="inline-block max-w-xs wrap-break-word rounded bg-surface-subtle px-2 py-1 text-xs text-content-primary">
                                                 {statusLabel(rule.from_status)} {t('settingsGithubAutomation.transitionTo')} {statusLabel(rule.target_status)}
                                             </span>
                                         </td>

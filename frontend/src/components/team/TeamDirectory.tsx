@@ -147,7 +147,7 @@ export const TeamDirectory = ({ drawer, onDrawerChange, onEmptyChange, drawerFal
                                 return (
                                     <tr key={row.key} data-testid="team-row" className="border-b border-border align-top last:border-0">
                                         <th scope="row" className="px-3 py-3 font-medium">
-                                            <Button type="button" variant="ghost" size="sm" className="!px-1 text-left"
+                                            <Button type="button" variant="ghost" size="sm" className="px-1! text-left"
                                                 aria-label={t('teamPage.openProfile', { name: row.name })}
                                                 onClick={() => onDrawerChange({ mode: 'edit', key: row.key })}>
                                                 <Icon className="h-4 w-4 shrink-0 text-content-secondary" aria-hidden="true" />

@@ -244,7 +244,7 @@ const TemplateRow = ({ isBusy, readOnly, template, isFirst, isLast, onEdit, onTo
 
     return (
         <article
-            className={`rounded-lg border bg-surface-card p-4 shadow-sm ${template.is_active ? 'border-border' : 'border-border opacity-70'}`}
+            className={`rounded-lg border bg-surface-card p-4 shadow-xs ${template.is_active ? 'border-border' : 'border-border opacity-70'}`}
             aria-labelledby={headingId}
         >
             <div className="flex items-start gap-3">
@@ -735,7 +735,7 @@ export const TemplateLabelSettings = () => {
                                         id={templateTypeId}
                                         value={templateForm.state.template_type}
                                         onChange={event => updateTemplateForm('template_type', event.target.value as TemplateType)}
-                                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                                     >
                                         {templateTypes.map(option => (
                                             <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
@@ -748,7 +748,7 @@ export const TemplateLabelSettings = () => {
                                         id={templateDescriptionId}
                                         value={templateForm.state.description}
                                         onChange={event => updateTemplateForm('description', event.target.value)}
-                                        className="min-h-[72px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                        className="min-h-[72px] w-full rounded-md border border-border-strong px-3 py-2 shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                                     />
                                 </div>
                                 <Input
@@ -762,7 +762,7 @@ export const TemplateLabelSettings = () => {
                                         id={templateDefaultDescriptionId}
                                         value={templateForm.state.default_description}
                                         onChange={event => updateTemplateForm('default_description', event.target.value)}
-                                        className="min-h-[96px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                        className="min-h-[96px] w-full rounded-md border border-border-strong px-3 py-2 shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                                     />
                                 </div>
                                 <div className="grid grid-cols-2 gap-3">
@@ -802,7 +802,7 @@ export const TemplateLabelSettings = () => {
                                         value={templateForm.state.default_checklist}
                                         onChange={event => updateTemplateForm('default_checklist', event.target.value)}
                                         placeholder={t('surfaces.templateLabels.oneItemPerLine')}
-                                        className="min-h-[96px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                        className="min-h-[96px] w-full rounded-md border border-border-strong px-3 py-2 shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                                     />
                                 </div>
                                 <div>
@@ -811,7 +811,7 @@ export const TemplateLabelSettings = () => {
                                         id={templatePayloadId}
                                         value={templateForm.state.default_payload}
                                         onChange={event => updateTemplateForm('default_payload', event.target.value)}
-                                        className="min-h-[112px] w-full rounded-md border border-border-strong px-3 py-2 font-mono text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                        className="min-h-[112px] w-full rounded-md border border-border-strong px-3 py-2 font-mono text-sm shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                                     />
                                 </div>
                                 <div className="grid grid-cols-2 gap-3">
@@ -888,7 +888,7 @@ export const TemplateLabelSettings = () => {
                                 {labelGroups.map((group, groupIndex) => (
                                     <section
                                         key={group.id}
-                                        className={`min-w-0 rounded-lg border bg-surface-card p-4 shadow-sm ${group.is_active ? 'border-border' : 'border-border opacity-70'}`}
+                                        className={`min-w-0 rounded-lg border bg-surface-card p-4 shadow-xs ${group.is_active ? 'border-border' : 'border-border opacity-70'}`}
                                         aria-labelledby={`label-group-${group.id}-heading`}
                                     >
                                         <div className="flex flex-wrap items-start justify-between gap-3">
@@ -936,7 +936,7 @@ export const TemplateLabelSettings = () => {
                                                     >
                                                         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
                                                             <span aria-hidden="true" className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: label.color }} />
-                                                            <span id={`label-${label.id}-name`} className="min-w-0 break-words font-medium text-content-primary">{labelDisplay(label).name}</span>
+                                                            <span id={`label-${label.id}-name`} className="min-w-0 wrap-break-word font-medium text-content-primary">{labelDisplay(label).name}</span>
                                                             <span className="max-w-full break-all font-mono text-xs text-content-secondary">{label.slug}</span>
                                                             {!label.is_active && (
                                                                 <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs font-medium text-content-secondary">{t('surfaces.templateLabels.archived')}</span>
@@ -998,7 +998,7 @@ export const TemplateLabelSettings = () => {
                                         id={groupDescriptionId}
                                         value={groupForm.state.description}
                                         onChange={event => updateGroupForm('description', event.target.value)}
-                                        className="min-h-[72px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                        className="min-h-[72px] w-full rounded-md border border-border-strong px-3 py-2 shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                                     />
                                 </div>
                                 <div className="grid grid-cols-[48px_minmax(0,1fr)] gap-3">
@@ -1067,7 +1067,7 @@ export const TemplateLabelSettings = () => {
                                         aria-label={t('surfaces.templateLabels.group')}
                                         value={labelForm.state.group_id}
                                         onChange={event => updateLabelForm('group_id', event.target.value)}
-                                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                                         required
                                     >
                                         {labelGroups.map(group => (
@@ -1083,7 +1083,7 @@ export const TemplateLabelSettings = () => {
                                         id={labelDescriptionId}
                                         value={labelForm.state.description}
                                         onChange={event => updateLabelForm('description', event.target.value)}
-                                        className="min-h-[72px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                        className="min-h-[72px] w-full rounded-md border border-border-strong px-3 py-2 shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                                     />
                                 </div>
                                 <div className="grid grid-cols-[48px_minmax(0,1fr)] gap-3">

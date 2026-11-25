@@ -54,7 +54,7 @@ export const PlanQuickAddCapacity = ({ iteration, members, primary = true }: { i
                     return <label key={profile.id} className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-3 hover:bg-surface-muted">
                         <input type="checkbox" checked={selected.includes(profile.id)} onChange={event => setSelected(current => event.target.checked ? [...current, profile.id] : current.filter(id => id !== profile.id))} />
                         <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-content-secondary" />
-                        <span className="min-w-0 break-words">{profile.display_name}</span>
+                        <span className="min-w-0 wrap-break-word">{profile.display_name}</span>
                         <span className="ml-auto text-xs text-content-secondary">{t(agent ? 'capacity.agent' : 'capacity.person')}</span>
                     </label>;
                 })}

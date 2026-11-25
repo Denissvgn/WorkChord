@@ -379,7 +379,7 @@ const TriagePage = () => {
             {!hasPlannableIterations && visibleItems.length > 0 && (
                 <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-feedback-warning-border bg-feedback-warning-muted px-4 py-3 text-sm text-feedback-warning-foreground">
                     <div className="flex min-w-0 items-start gap-2">
-                        <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
                         <div>
                             <p className="font-medium">{t('surfaces.triagePage.conversionRequiresAnIteration')}</p>
                             <p className="mt-0.5 text-feedback-warning-foreground">{t('surfaces.triagePage.intakeCanStayInTriageUntilPlanningCreatesARealTargetIteration')}</p>

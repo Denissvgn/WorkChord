@@ -236,7 +236,7 @@ const TeamFormEditor = ({
                             value={formData.profile_id ?? ''}
                             onChange={event => handleProfileChange(event.target.value ? Number(event.target.value) : null)}
                             disabled={isPending || isLoadingProfiles || profilesQuery.isError}
-                            className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                            className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-xs focus:outline-hidden focus:ring-1 focus:ring-focus"
                         >
                             <option value="">{t('teamCapacity.selectProfile')}</option>
                             {profiles.map(profile => (

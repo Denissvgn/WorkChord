@@ -425,7 +425,7 @@ const GanttPage = () => {
             state={(sandboxMode || currentSimulationError || visibleExplanationError || visibleExplanation) ? (
                 <>
             {sandboxMode && (
-                <div className="bg-feedback-warning-muted border border-feedback-warning-border rounded-lg p-4 animate-in fade-in slide-in-from-top-2 shrink-0 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="bg-feedback-warning-muted border border-feedback-warning-border rounded-lg p-4 animate-in fade-in slide-in-from-top-2 shrink-0 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div className="flex items-start gap-3">
                         <div className="p-2 bg-feedback-warning-muted-hover text-feedback-warning-foreground rounded-lg shrink-0">
                             <FlaskConical className="w-5 h-5 animate-pulse text-feedback-warning-foreground" />
@@ -650,7 +650,7 @@ const GanttPage = () => {
                     <Button className="mt-3" variant="secondary" onClick={() => void refetchGantt()}>{t('queryFeedback.retry')}</Button>
                 </div>
             ) : isGanttLoading ? (
-                <div className="flex-1 bg-surface-card rounded-lg shadow overflow-hidden animate-pulse">
+                <div className="flex-1 bg-surface-card rounded-lg shadow-sm overflow-hidden animate-pulse">
                     {/* Toolbar skeleton */}
                     <div className="flex justify-between items-center p-4 border-b border-border">
                         <div className="h-6 w-40 bg-surface-hover rounded" />
@@ -685,7 +685,7 @@ const GanttPage = () => {
                     </div>
                 </div>
             ) : selectedIterationId > 0 && currentIteration && ganttTasks ? (
-                <div className="flex-1 min-h-0 overflow-hidden rounded-lg shadow ring-1 ring-overlay/5">
+                <div className="flex-1 min-h-0 overflow-hidden rounded-lg shadow-sm ring-1 ring-overlay/5">
                     <GanttChart
                         hoursPerDay={currentIteration.nominal_day_hours ?? 8}
                         iterationRevision={ganttTasks?.iteration.revision}

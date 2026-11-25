@@ -53,7 +53,7 @@ export const ConnectedReadersPanel = () => {
                                     return (
                                         <li key={row.public_id} className="flex flex-wrap items-center justify-between gap-3">
                                             <div className="min-w-0">
-                                                <p className="font-medium break-words">{name}</p>
+                                                <p className="font-medium wrap-break-word">{name}</p>
                                                 <p className="text-sm text-content-secondary">
                                                     {t('teamwork.readersConnected', { date: formatDateTime(row.created_at, i18n.language) })}
                                                     {row.expires_at && <> · {t('teamwork.readersExpires', { date: formatDateTime(row.expires_at, i18n.language) })}</>}

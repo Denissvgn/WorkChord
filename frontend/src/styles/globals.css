@@ -1,6 +1,172 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/*
+ * Tailwind is imported without cascade layers, in the order the Tailwind 3 directives emitted it: base styles,
+ * utilities, then this file's own rules and planning-masters.css. In layers, every unlayered rule in
+ * planning-masters.css would beat every utility whatever its specificity, which is not how those styles were written.
+ */
+@import 'tailwindcss/theme.css';
+@import 'tailwindcss/preflight.css';
+@import './preflight-compat.css';
+@import 'tailwindcss/utilities.css';
+@import './utilities-compat.css';
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+ * Utility names for the DESIGN.md tokens. The tokens themselves are the space-separated RGB channels declared
+ * below per theme (and read by planning-masters.css), so this block is `inline` (utilities use the value, which
+ * follows the active theme) and `reference` (nothing is written to :root, where it would shadow those tokens).
+ */
+@theme inline reference {
+  --color-surface-canvas: rgb(var(--color-surface-canvas));
+  --color-surface-card: rgb(var(--color-surface-card));
+  --color-surface-muted: rgb(var(--color-surface-muted));
+  --color-surface-subtle: rgb(var(--color-surface-subtle));
+  --color-surface-hover: rgb(var(--color-surface-hover));
+
+  --color-content-primary: rgb(var(--color-content-primary));
+  --color-content-secondary: rgb(var(--color-content-secondary));
+  --color-content-tertiary: rgb(var(--color-content-tertiary));
+  --color-content-inverse: rgb(var(--color-content-inverse));
+  --color-content-emphasis: rgb(var(--color-content-emphasis));
+
+  --color-border: rgb(var(--color-border-default));
+  --color-border-subtle: rgb(var(--color-border-subtle));
+  --color-border-strong: rgb(var(--color-border-strong));
+
+  --color-action: rgb(var(--color-action-primary));
+  --color-action-hover: rgb(var(--color-action-primary-hover));
+  --color-action-muted: rgb(var(--color-action-muted));
+  --color-action-muted-hover: rgb(var(--color-action-muted-hover));
+  --color-action-muted-foreground: rgb(var(--color-action-muted-foreground));
+  --color-action-foreground: rgb(var(--color-action-foreground));
+
+  --color-focus: rgb(var(--color-focus-ring));
+
+  --color-status-planned: rgb(var(--color-status-planned-solid));
+  --color-status-planned-muted: rgb(var(--color-status-planned-muted));
+  --color-status-planned-foreground: rgb(var(--color-status-planned-foreground));
+  --color-status-planned-border: rgb(var(--color-status-planned-border));
+  --color-status-planned-emphasis: rgb(var(--color-status-planned-on-solid));
+  --color-status-active: rgb(var(--color-status-active-solid));
+  --color-status-active-muted: rgb(var(--color-status-active-muted));
+  --color-status-active-foreground: rgb(var(--color-status-active-foreground));
+  --color-status-active-border: rgb(var(--color-status-active-border));
+  --color-status-active-emphasis: rgb(var(--color-status-active-on-solid));
+  --color-status-resolved: rgb(var(--color-status-resolved-solid));
+  --color-status-resolved-muted: rgb(var(--color-status-resolved-muted));
+  --color-status-resolved-foreground: rgb(var(--color-status-resolved-foreground));
+  --color-status-resolved-border: rgb(var(--color-status-resolved-border));
+  --color-status-resolved-emphasis: rgb(var(--color-status-resolved-on-solid));
+  --color-status-closed: rgb(var(--color-status-closed-solid));
+  --color-status-closed-muted: rgb(var(--color-status-closed-muted));
+  --color-status-closed-foreground: rgb(var(--color-status-closed-foreground));
+  --color-status-closed-border: rgb(var(--color-status-closed-border));
+  --color-status-closed-emphasis: rgb(var(--color-status-closed-on-solid));
+
+  --color-feedback-neutral: rgb(var(--color-feedback-neutral));
+  --color-feedback-neutral-muted: rgb(var(--color-feedback-neutral-muted));
+  --color-feedback-neutral-muted-hover: rgb(var(--color-feedback-neutral-muted-hover));
+  --color-feedback-neutral-foreground: rgb(var(--color-feedback-neutral-foreground));
+  --color-feedback-neutral-border: rgb(var(--color-feedback-neutral-border));
+  --color-feedback-neutral-emphasis: rgb(var(--color-feedback-neutral-on-solid));
+  --color-feedback-info: rgb(var(--color-feedback-info));
+  --color-feedback-info-muted: rgb(var(--color-feedback-info-muted));
+  --color-feedback-info-muted-hover: rgb(var(--color-feedback-info-muted-hover));
+  --color-feedback-info-foreground: rgb(var(--color-feedback-info-foreground));
+  --color-feedback-info-border: rgb(var(--color-feedback-info-border));
+  --color-feedback-info-emphasis: rgb(var(--color-feedback-info-on-solid));
+  --color-feedback-success: rgb(var(--color-feedback-success));
+  --color-feedback-success-muted: rgb(var(--color-feedback-success-muted));
+  --color-feedback-success-muted-hover: rgb(var(--color-feedback-success-muted-hover));
+  --color-feedback-success-foreground: rgb(var(--color-feedback-success-foreground));
+  --color-feedback-success-border: rgb(var(--color-feedback-success-border));
+  --color-feedback-success-emphasis: rgb(var(--color-feedback-success-on-solid));
+  --color-feedback-warning: rgb(var(--color-feedback-warning));
+  --color-feedback-warning-muted: rgb(var(--color-feedback-warning-muted));
+  --color-feedback-warning-muted-hover: rgb(var(--color-feedback-warning-muted-hover));
+  --color-feedback-warning-foreground: rgb(var(--color-feedback-warning-foreground));
+  --color-feedback-warning-border: rgb(var(--color-feedback-warning-border));
+  --color-feedback-warning-emphasis: rgb(var(--color-feedback-warning-on-solid));
+  --color-feedback-danger: rgb(var(--color-feedback-danger));
+  --color-feedback-danger-muted: rgb(var(--color-feedback-danger-muted));
+  --color-feedback-danger-muted-hover: rgb(var(--color-feedback-danger-muted-hover));
+  --color-feedback-danger-foreground: rgb(var(--color-feedback-danger-foreground));
+  --color-feedback-danger-border: rgb(var(--color-feedback-danger-border));
+  --color-feedback-danger-emphasis: rgb(var(--color-feedback-danger-on-solid));
+  --color-feedback-purple: rgb(var(--color-feedback-purple));
+  --color-feedback-purple-muted: rgb(var(--color-feedback-purple-muted));
+  --color-feedback-purple-muted-hover: rgb(var(--color-feedback-purple-muted-hover));
+  --color-feedback-purple-foreground: rgb(var(--color-feedback-purple-foreground));
+  --color-feedback-purple-border: rgb(var(--color-feedback-purple-border));
+  --color-feedback-purple-emphasis: rgb(var(--color-feedback-purple-on-solid));
+  --color-feedback-indigo: rgb(var(--color-feedback-indigo));
+  --color-feedback-indigo-muted: rgb(var(--color-feedback-indigo-muted));
+  --color-feedback-indigo-muted-hover: rgb(var(--color-feedback-indigo-muted-hover));
+  --color-feedback-indigo-foreground: rgb(var(--color-feedback-indigo-foreground));
+  --color-feedback-indigo-border: rgb(var(--color-feedback-indigo-border));
+  --color-feedback-indigo-emphasis: rgb(var(--color-feedback-indigo-on-solid));
+
+  --color-overlay: rgb(var(--color-overlay));
+
+  --color-terminal-canvas: rgb(var(--color-terminal-canvas));
+  --color-terminal-surface: rgb(var(--color-terminal-surface));
+  --color-terminal-border: rgb(var(--color-terminal-border));
+  --color-terminal-primary: rgb(var(--color-terminal-primary));
+  --color-terminal-secondary: rgb(var(--color-terminal-secondary));
+  --color-terminal-muted: rgb(var(--color-terminal-muted));
+
+  --font-sans: var(--font-family-sans);
+  --font-mono: var(--font-family-mono);
+
+  --text-wc-micro: var(--wc-type-micro);
+  --text-wc-micro--line-height: var(--wc-leading-ui);
+  --text-wc-meta: var(--wc-type-meta);
+  --text-wc-meta--line-height: var(--wc-leading-body);
+  --text-wc-label: var(--wc-type-label);
+  --text-wc-label--line-height: var(--wc-leading-ui);
+  --text-wc-base: var(--wc-type-base);
+  --text-wc-base--line-height: var(--wc-leading-body);
+  --text-wc-heading: var(--wc-type-heading);
+  --text-wc-heading--line-height: var(--wc-leading-ui);
+  --text-wc-section: var(--wc-type-section);
+  --text-wc-section--line-height: var(--wc-leading-tight);
+  --text-wc-step: var(--wc-type-step);
+  --text-wc-step--line-height: var(--wc-leading-tight);
+  --text-wc-page: var(--wc-type-page);
+  --text-wc-page--line-height: var(--wc-leading-tight);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  --spacing-xs: var(--space-xs);
+  --spacing-sm: var(--space-sm);
+  --spacing-md: var(--space-md);
+  --spacing-lg: var(--space-lg);
+  --spacing-xl: var(--space-xl);
+  --spacing-2xl: var(--space-2xl);
+  --spacing-3xl: var(--space-3xl);
+
+  /* Tailwind 3 line heights: fixed lengths, so a text-* size keeps its line height when a rule changes the font size. */
+  --text-xs--line-height: 1rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl--line-height: 2.5rem;
+
+  /* max-w-xs … max-w-3xl stay the Tailwind 3 widths: without these, the spacing names above would size them. */
+  --max-width-xs: 20rem;
+  --max-width-sm: 24rem;
+  --max-width-md: 28rem;
+  --max-width-lg: 32rem;
+  --max-width-xl: 36rem;
+  --max-width-2xl: 42rem;
+  --max-width-3xl: 48rem;
+}
 
 :root,
 [data-theme='light'] {

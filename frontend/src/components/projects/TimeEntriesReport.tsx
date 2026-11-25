@@ -70,7 +70,7 @@ const ReportContent = ({ projectId }: { projectId: number }) => {
                 <caption className="sr-only">{t('timeEntries.report')}</caption>
                 <thead><tr className="border-b border-border"><th scope="col" className="p-2">{t('timeEntries.task')}</th><th scope="col" className="p-2"><span className="hidden sm:inline">{t('timeEntries.recorded')}</span><span className="sm:hidden">{t('timeEntries.recordedShort')}</span></th><th scope="col" className="p-2"><span className="hidden sm:inline">{t('timeEntries.estimate')}</span><span className="sm:hidden">{t('timeEntries.estimateShort')}</span></th></tr></thead>
                 <tbody>{report.data?.pages.flatMap(page => page.items).map(row => <tr key={row.task_id} className="border-b border-border">
-                    <th scope="row" className="max-w-64 break-words p-2 font-medium">#{row.task_id} · {row.task_title ?? t('timeEntries.unavailable')}</th>
+                    <th scope="row" className="max-w-64 wrap-break-word p-2 font-medium">#{row.task_id} · {row.task_title ?? t('timeEntries.unavailable')}</th>
                     <td className="p-2 tabular-nums">{value(row.recorded_minutes)}</td><td className="p-2 tabular-nums">{row.estimate_state === 'unavailable' ? t('timeEntries.unavailable') : value(row.estimate_hours, true)}</td>
                 </tr>)}</tbody>
             </table></div>

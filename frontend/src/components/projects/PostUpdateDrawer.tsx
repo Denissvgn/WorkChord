@@ -57,7 +57,7 @@ export const PostUpdateDrawer = ({
                     {error && (
                         <div className="flex items-start justify-between gap-3 rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground">
                             <div className="flex gap-2">
-                                <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
                                 <span>{error}</span>
                             </div>
                             <Button
@@ -117,7 +117,7 @@ export const PostUpdateDrawer = ({
                             value={form.summary}
                             onChange={event => setField('summary', event.target.value)}
                             placeholder={t('surfaces.projectDetail.eGSpecLandedEngKickoffTuesday')}
-                            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                             maxLength={500}
                         />
                     </div>

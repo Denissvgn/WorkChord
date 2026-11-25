@@ -70,7 +70,7 @@ const ToastItem = ({ toast, dismiss }: { toast: ToastRecord; dismiss: (id: numbe
             <Icon aria-hidden="true" className={`mt-0.5 h-5 w-5 shrink-0 ${iconClasses[toast.tone]}`} />
             <div className="min-w-0 flex-1">
                 {toast.title && <p className="font-semibold">{toast.title}</p>}
-                <p className="break-words text-sm text-content-secondary">{toast.message}</p>
+                <p className="wrap-break-word text-sm text-content-secondary">{toast.message}</p>
                 {toast.actionLabel && toast.onAction && (
                     <Button
                         className="mt-2"
@@ -140,7 +140,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
                 aria-label={t('feedback.notifications')}
                 aria-live="polite"
                 aria-relevant="additions text"
-                className="pointer-events-none fixed inset-x-4 bottom-4 z-[200] ml-auto flex max-w-sm flex-col gap-3 sm:left-auto"
+                className="pointer-events-none fixed inset-x-4 bottom-4 z-200 ml-auto flex max-w-sm flex-col gap-3 sm:left-auto"
             >
                 {toasts.map(toast => <ToastItem key={toast.id} toast={toast} dismiss={dismiss} />)}
             </section>

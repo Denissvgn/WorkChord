@@ -23,7 +23,7 @@ export const DeliveryAnalytics = ({ days }: { days: number }) => {
         <h3 className="mb-3 font-semibold">{title}</h3>
         {items.length === 0 ? <p className="text-sm text-content-secondary">{t('deliveryAnalytics.queueEmpty')}</p> : <ul className="divide-y divide-border-subtle">
             {items.map(item => <li key={item.task_id} className="flex items-baseline justify-between gap-4 py-3">
-                <Link className="min-w-0 break-words text-action underline-offset-4 hover:underline" to={scopeLink(`/tasks?task=${item.task_id}`)}>{item.title}</Link>
+                <Link className="min-w-0 wrap-break-word text-action underline-offset-4 hover:underline" to={scopeLink(`/tasks?task=${item.task_id}`)}>{item.title}</Link>
                 <span className="shrink-0 text-sm tabular-nums text-content-secondary">{duration(item.age_seconds)} {t('deliveryAnalytics.elapsedDays')}</span>
             </li>)}
         </ul>}
@@ -45,7 +45,7 @@ export const DeliveryAnalytics = ({ days }: { days: number }) => {
             </dl>
             {data.lead_time.sample_count + data.cycle_time.sample_count + data.review_delay.sample_count === 0 && <p className="text-sm text-content-secondary">{t('deliveryAnalytics.noSamples')}</p>}
             <div className="overflow-x-auto">
-                <table className="w-full min-w-[34rem] text-left text-sm">
+                <table className="w-full min-w-136 text-left text-sm">
                     <caption className="pb-3 text-left text-content-secondary">{t('deliveryAnalytics.durationBasis')}</caption>
                     <thead><tr className="border-b border-border-subtle">{['measure', 'mean', 'median', 'samples', 'unknown', 'censored'].map(label => <th className="px-3 py-2 font-medium" key={label} scope="col">{t(`deliveryAnalytics.${label}`)}</th>)}</tr></thead>
                     <tbody>{([['lead', data.lead_time], ['cycle', data.cycle_time], ['review', data.review_delay]] as const).map(([label, values]) => <tr key={label} className="border-b border-border-subtle">

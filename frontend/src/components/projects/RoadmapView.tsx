@@ -209,7 +209,7 @@ const MilestoneMarker = ({ marker, position }: { marker: RoadmapMarker; position
             <Button
                 data-page-chrome-control="button"
                 type="button"
-                className="roadmap-marker-target relative rounded-sm focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2"
+                className="roadmap-marker-target relative rounded-sm focus:outline-hidden focus:ring-2 focus:ring-focus focus:ring-offset-2"
                 aria-label={`${milestone.name}, ${t(milestoneStatusLabelKeys[milestone.status])}, ${formatDate(milestone.target_date)}`}
                 aria-controls={detailsId}
                 aria-expanded={expanded}
@@ -221,9 +221,9 @@ const MilestoneMarker = ({ marker, position }: { marker: RoadmapMarker; position
                     }
                 }}
              variant="secondary">
-                <span className={clsx('absolute left-1/2 top-1/2 block h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border-2 shadow-sm', markerClassName(milestone.status))} />
+                <span className={clsx('absolute left-1/2 top-1/2 block h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border-2 shadow-xs', markerClassName(milestone.status))} />
             </Button>
-            <span className="pointer-events-none absolute left-4 top-1/2 hidden max-w-[150px] -translate-y-1/2 truncate rounded bg-surface-card/90 px-1.5 py-0.5 text-wc-micro font-medium text-content-primary shadow-sm ring-1 ring-border md:block">
+            <span className="pointer-events-none absolute left-4 top-1/2 hidden max-w-[150px] -translate-y-1/2 truncate rounded bg-surface-card/90 px-1.5 py-0.5 text-wc-micro font-medium text-content-primary shadow-xs ring-1 ring-border md:block">
                 {milestone.name}
             </span>
             <div
@@ -451,7 +451,7 @@ const RoadmapTimeline = ({
                                                         <div className="relative min-h-[88px] px-6">
                                                             <div
                                                                 aria-hidden="true"
-                                                                className={clsx('absolute top-9 h-3 rounded-full shadow-sm', barClassName(row.project.health))}
+                                                                className={clsx('absolute top-9 h-3 rounded-full shadow-xs', barClassName(row.project.health))}
                                                                 style={{ left: `${startPosition}%`, width: `max(18px, ${width}%)` }}
                                                             />
                                                             {row.markers

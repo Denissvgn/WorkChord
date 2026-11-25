@@ -117,7 +117,7 @@ export const InterfaceLanguageSettings = () => {
                     value={selectedLanguage}
                     onChange={event => setLanguageDraft(event.target.value as LanguageCode)}
                     disabled={languageMutation.isPending}
-                    className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                    className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-xs focus:border-action focus:outline-hidden focus:ring-1 focus:ring-focus"
                 >
                     <option value="en">{t('common.language.en')}</option>
                     <option value="ru">{t('common.language.ru')}</option>

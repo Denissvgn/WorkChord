@@ -91,7 +91,7 @@ export const TaskMergeDialog = ({ iterationId, taskIds, onClose, onMerged }: Tas
                     value={parentTitle}
                     onChange={event => setParentTitle(event.target.value)}
                     placeholder={t('taskList.parentTitlePlaceholder')}
-                    className="w-full rounded-md border border-border-strong px-3 py-2 focus:outline-none focus:ring-2 focus:ring-focus"
+                    className="w-full rounded-md border border-border-strong px-3 py-2 focus:outline-hidden focus:ring-2 focus:ring-focus"
                 />
             </div>
             {mutation.isError && (

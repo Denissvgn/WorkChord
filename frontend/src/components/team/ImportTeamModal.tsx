@@ -219,7 +219,7 @@ export const ImportTeamModal = ({
                         <FileText aria-hidden="true" className="h-4 w-4" />
                         {t('teamImport.formatTitle')}
                     </h3>
-                    <pre className="break-words whitespace-pre-wrap rounded border bg-surface-card p-3 font-mono text-xs text-content-secondary">
+                    <pre className="wrap-break-word whitespace-pre-wrap rounded border bg-surface-card p-3 font-mono text-xs text-content-secondary">
                         {t('teamImport.formatExample')}
                     </pre>
                     <p id={textHintId} className="mt-2 text-xs text-content-secondary">
@@ -277,7 +277,7 @@ export const ImportTeamModal = ({
                         onChange={event => handleTextChange(event.target.value)}
                         disabled={isPending}
                         placeholder={t('teamImport.placeholder')}
-                        className="h-48 w-full resize-y rounded-lg border border-border-strong bg-surface-card p-3 font-mono text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-focus disabled:cursor-not-allowed disabled:bg-surface-muted"
+                        className="h-48 w-full resize-y rounded-lg border border-border-strong bg-surface-card p-3 font-mono text-sm text-content-primary focus:outline-hidden focus:ring-2 focus:ring-focus disabled:cursor-not-allowed disabled:bg-surface-muted"
                     />
                 </div>
 
@@ -288,8 +288,8 @@ export const ImportTeamModal = ({
                         className="flex items-start gap-2 rounded-lg bg-feedback-danger-muted p-3 text-feedback-danger-foreground"
                         role="alert"
                     >
-                        <AlertCircle aria-hidden="true" className="mt-0.5 h-4 w-4 flex-shrink-0" />
-                        <span className="min-w-0 break-words text-sm">{error}</span>
+                        <AlertCircle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
+                        <span className="min-w-0 wrap-break-word text-sm">{error}</span>
                     </div>
                 )}
             </div>

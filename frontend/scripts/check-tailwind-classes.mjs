@@ -1,7 +1,7 @@
+import { readFileSync } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import { extname, resolve } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
-import tailwindConfig from '../tailwind.config.js';
+import { pathToFileURL } from 'node:url';
 
 const semanticRoots = new Set([
     'surface', 'content', 'border', 'action', 'focus', 'status', 'feedback', 'overlay', 'terminal',
@@ -25,27 +25,18 @@ const darkVariantClassPattern = new RegExp(`(?<![\\w-])(${variantSource}dark:${v
 const arbitraryColorClassPattern = new RegExp(`(?<![\\w-])(${variantSource}(?:${colorUtilitySource})-\\[(?:#|rgba?\\(|hsla?\\(|oklch\\(|color:)[^\\]\\s]+\\])(?![\\w-])`, 'gi');
 const translucentSemanticTextPattern = new RegExp(`(?<![\\w-])(${variantSource}text-(?:${semanticRootSource})(?:-[a-z0-9_-]+)*\\/[a-z0-9_[\\].%-]+)(?![\\w-])`, 'gi');
 
-const flattenColorNames = (node, prefix = '', result = new Set()) => {
-    if (typeof node === 'string' || typeof node === 'function') {
-        if (prefix) result.add(prefix);
-        return result;
+// The semantic colours are the --color-* names in the @theme blocks of globals.css (Tailwind 4 CSS-first theme).
+export const themeColorNames = (stylesheet) => {
+    const names = new Set();
+    for (const block of stylesheet.matchAll(/@theme\b[^{]*\{([^}]*)\}/g)) {
+        for (const match of block[1].matchAll(/--color-([a-z0-9-]+)\s*:/g)) names.add(match[1]);
     }
-    if (!node || typeof node !== 'object') return result;
-
-    for (const [key, value] of Object.entries(node)) {
-        const nextPrefix = key === 'DEFAULT'
-            ? prefix
-            : prefix
-                ? `${prefix}-${key}`
-                : key;
-        flattenColorNames(value, nextPrefix, result);
-    }
-    return result;
+    return names;
 };
 
-const configuredColors = tailwindConfig.theme?.extend?.colors ?? {};
+const globalsCss = readFileSync(new URL('../src/styles/globals.css', import.meta.url), 'utf8');
 export const semanticColorNames = new Set(
-    [...flattenColorNames(configuredColors)].filter(name => semanticRoots.has(name.split('-')[0])),
+    [...themeColorNames(globalsCss)].filter(name => semanticRoots.has(name.split('-')[0])),
 );
 
 const baseUtility = (className) => className.split(':').at(-1) ?? className;

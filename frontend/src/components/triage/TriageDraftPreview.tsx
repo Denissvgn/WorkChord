@@ -19,7 +19,7 @@ export const TriageDraftPreview = ({ draftPreview, applyDraft, setBrief, descrip
     if (!draftPreview && !draftErrorMessage) return null;
     return (<>
     {draftPreview && (
-        <div className="space-y-3 rounded-lg border border-border bg-surface-muted p-4 text-sm text-content-primary shadow-sm">
+        <div className="space-y-3 rounded-lg border border-border bg-surface-muted p-4 text-sm text-content-primary shadow-xs">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 pb-2">
                 <div className="flex items-center gap-2">
                     <span className="text-xs font-semibold uppercase tracking-wide text-content-primary">{t('surfaces.triagePage.aiDraftPreview')}</span>
@@ -121,7 +121,7 @@ export const TriageDraftPreview = ({ draftPreview, applyDraft, setBrief, descrip
 
     {draftErrorMessage && (
         <div className="flex items-start gap-2 rounded-md border border-feedback-danger-border bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground">
-            <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
             <span>{draftErrorMessage}</span>
         </div>
     )}

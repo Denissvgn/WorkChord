@@ -84,7 +84,7 @@ export const ProjectHeaderFields = ({ project }: { project: Project }) => {
             <dt className="mb-1 text-xs font-medium text-content-secondary">{t(`projectTabs.${field}Label`)}</dt>
             <dd>{editing === field ? <PlanningInputBoundary<Project> kind="project" resourceId={project.id} onCancel={() => setEditing(null)}>
                 {(observed, controls) => <HeaderFieldEditor field={field} observed={observed} controls={controls} onClose={() => setEditing(null)} />}
-            </PlanningInputBoundary> : <Button type="button" className="inline-flex items-center gap-2 rounded px-1 py-1 text-sm text-content-primary hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-action"
+            </PlanningInputBoundary> : <Button type="button" className="inline-flex items-center gap-2 rounded px-1 py-1 text-sm text-content-primary hover:bg-surface-muted focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-action"
                 aria-label={t('projectTabs.editField', { field: t(`projectTabs.${field}Label`), value: values[field] })}
                 onClick={() => setEditing(field)} variant="secondary">{values[field]}<Pencil className="h-3 w-3 text-content-tertiary" aria-hidden="true" /></Button>}</dd>
         </div>)}

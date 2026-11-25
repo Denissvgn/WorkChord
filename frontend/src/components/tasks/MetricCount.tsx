@@ -43,7 +43,7 @@ export const MetricCount = ({ metric, scope, title, children, className, total }
     if (scope === null) return <span className={className}>{children}</span>;
     return <>
         <Button type="button" onClick={() => setOpen(true)} aria-haspopup="dialog"
-            className={`rounded underline decoration-dotted underline-offset-4 hover:text-action focus:outline-none focus-visible:ring-2 focus-visible:ring-focus ${className ?? ''}`} variant="plain">
+            className={`rounded underline decoration-dotted underline-offset-4 hover:text-action focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus ${className ?? ''}`} variant="plain">
             {children}
         </Button>
         <Modal open={open} title={title} closeLabel={t('actions.close')} onClose={() => setOpen(false)} className="max-w-xl">
@@ -56,7 +56,7 @@ export const MetricCount = ({ metric, scope, title, children, className, total }
                 {matches.data.items.length === 0 ? <p className="text-sm">{t('metricList.empty')}</p> : (
                     <ul className="max-h-[60vh] divide-y divide-border overflow-y-auto">
                         {matches.data.items.map(item => <li key={item.id} className="flex flex-col py-2">
-                            <Link to={scopeLink(`/tasks?task=${item.id}`)} className="min-h-9 break-words font-medium text-action hover:underline" onClick={() => setOpen(false)}>
+                            <Link to={scopeLink(`/tasks?task=${item.id}`)} className="min-h-9 wrap-break-word font-medium text-action hover:underline" onClick={() => setOpen(false)}>
                                 #{item.id} · {item.title}
                             </Link>
                             <span className="text-xs text-content-secondary">
