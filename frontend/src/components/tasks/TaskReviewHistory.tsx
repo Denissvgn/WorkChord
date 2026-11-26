@@ -1,15 +1,27 @@
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { taskService } from '../../services/taskService';
-import type { Task } from '../../types/task';
+import type { Task, TaskReviewRecord } from '../../types/task';
 import { formatDateTime } from '../../utils/formatDate';
 import { QueryErrorState } from '../feedback/QueryState';
+
+const PAGE_SIZE = 100;
+/** Every review, oldest first: the server pages oldest first, so keep asking after the last id until a page is short. */
+const allReviews = async (taskId: number): Promise<TaskReviewRecord[]> => {
+    const all: TaskReviewRecord[] = [];
+    for (let afterId = 0; ;) {
+        const page = await taskService.reviews(taskId, { limit: PAGE_SIZE, after_id: afterId });
+        all.push(...page);
+        if (page.length < PAGE_SIZE) return all;
+        afterId = page[page.length - 1].id;
+    }
+};
 
 /** Every recorded review of the task, newest first. An owner override is labelled, never shown as an independent review. */
 export const TaskReviewHistory = ({ task }: { task: Task }) => {
     const { t } = useTranslation();
     // feedback-policy: query loading,error,retry,empty
-    const reviews = useQuery({ queryKey: ['taskReviews', task.id, task.version], queryFn: () => taskService.reviews(task.id, { limit: 100 }) });
+    const reviews = useQuery({ queryKey: ['taskReviews', task.id, task.version], queryFn: () => allReviews(task.id) });
     if (reviews.isError) return <QueryErrorState error={reviews.error} fallback={t('domain.reviewHistoryFailed')} onRetry={() => void reviews.refetch()} />;
     if (reviews.isLoading) return <p role="status" className="text-sm text-content-secondary">{t('common.loading')}</p>;
     const items = [...(reviews.data ?? [])].reverse();

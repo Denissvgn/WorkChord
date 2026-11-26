@@ -210,16 +210,20 @@ required, and choose the action; it also works from the keyboard, and the result
 announced. The project's policy stays on and covers only that task. **Review
 history** shows the acceptance with an **Owner override** label and your reason, so
 it is never read as an independent review, and the task's Activity records it too.
-If you executed the work or wrote its current evidence yourself, the server asks for
-the explicit review override and refuses the action without it; the web interface
-does not send that override.
+If you executed the work yourself, the action is not offered to you: ask another
+owner or operator to accept it, or use the API with `X-Review-Override: true`. If you
+only wrote the task's current evidence, the server refuses the acceptance and the
+page shows its message; the web interface does not send that override.
 
 **Accept as owner** needs a person who is signed in. A trusted-local workspace
 browser with no signed-in person is not an owner or operator, even though it can
 otherwise edit: the page says so instead of offering the action. Sign in as a
-workspace owner or operator, reload the task, and accept it. Other people, and a
-paired read-only observer, see why the action is unavailable and are told to ask an
-owner or operator, or to assign an agent verifier.
+workspace owner or operator, reload the task, and accept it. A person who may review
+but is not an owner or operator is told to ask one of them, or to assign an agent
+verifier. The page can only explain this where the server reports that the project
+needs a verified agent publisher. A person without review permission, and a paired
+read-only observer, instead see the ordinary reason Accept is unavailable; a paired
+observer is also told to sign in as a person with review permission.
 
 Explicit blocks and cancellation are separate from lifecycle status. A block
 comes from **Report blocker**, used by a person or an agent; either way the task

@@ -20,6 +20,7 @@ import { useTaskReviewer } from './useTaskReviewer';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 import { useAdminAccess } from '../../hooks/useAdminAccess';
+import { useIdentity } from '../../features/identity/identityContext';
 import { Select } from '../../components/common/Select';
 
 const DRAFT_TTL_MS = 86400000;
@@ -185,6 +186,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
     const run = (operation: 'progress' | 'command' | 'accept' | 'reject') => { onPending(true); command.mutate(operation); };
     const pending = command.isPending;
     const { actingAsOperator } = useAdminAccess();
+    const pairedObserver = useIdentity()?.identity?.access === 'observe';
     const canReview = actions.data?.actions.find(item => item.action === 'review')?.allowed;
     const canAccept = actions.data?.actions.find(item => item.action === 'accept_review')?.allowed;
     const acceptAction = actions.data?.actions.find(item => item.action === 'accept_review');
@@ -301,7 +303,9 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
                 {acceptMissing.length > 0 && <p id={`${id}-accept-missing`} role="status" className="w-full text-sm text-content-secondary">{acceptMissing.join(' ')}</p>}
             </div>}
         </fieldset>
-        {needsOwnerAcceptance && <TaskOwnerAcceptance task={task} disabled={disabled || pending || criteriaDirty || staleDraft} onPending={onPending}
+        {task.status === 'resolved' && pairedObserver && <p role="status" className="text-sm text-content-secondary">{t('domain.ownerAcceptObserver')}</p>}
+        {needsOwnerAcceptance && <TaskOwnerAcceptance task={task} disabled={disabled || pending || criteriaDirty || staleDraft}
+            disabledReasons={[disabled && t('domain.acceptFinishEditing'), pending && t('domain.acceptSaving'), staleDraft && t('domain.staleProgress'), criteriaDirty && t('domain.acceptSaveProgress')].filter((item): item is string => Boolean(item))} onPending={onPending}
             onUpdated={latest => { if (!isActive()) return; if (key) { try { sessionStorage.removeItem(key); } catch { /* Storage may be unavailable. */ } } onDirty(false); onUpdated(latest); }} />}
         <details className="text-sm text-content-secondary">
             <summary className="cursor-pointer">{t('domain.unavailableActions')}</summary>

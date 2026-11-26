@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { MutationSuccessFeedback } from '../../features/MutationSuccessFeedback';
 import { IdentityContext } from '../../features/identity/identityContext';
@@ -51,11 +51,14 @@ describe('owner acceptance under the different-publisher policy', () => {
         const button = await screen.findByRole('button', { name: 'Accept as owner' });
         expect(button).toBeDisabled();
         expect(button).toHaveAccessibleDescription('Add a reason to accept as owner.');
-        await user.tab();
-        await user.click(screen.getByRole('textbox', { name: /Reason for accepting as owner/ }));
+        const reason = screen.getByRole('textbox', { name: /Reason for accepting as owner/ });
+        // Reach the reason field and the button with the keyboard alone.
+        for (let step = 0; step < 40 && document.activeElement !== reason; step += 1) await user.tab();
+        expect(reason).toHaveFocus();
         await user.keyboard('Verified the release by hand');
         expect(button).toBeEnabled();
-        button.focus();
+        await user.tab();
+        expect(button).toHaveFocus();
         await user.keyboard('{Enter}');
         await waitFor(() => expect(service.ownerAccept).toHaveBeenCalledWith(42, { expected_version: 3, brief_revision: 2, artifact_revision: 1, reason: 'Verified the release by hand' }));
         await waitFor(() => expect(onUpdated).toHaveBeenCalled());
@@ -92,10 +95,28 @@ describe('owner acceptance under the different-publisher policy', () => {
             expect(screen.queryByRole('button', { name: 'Accept as owner' })).not.toBeInTheDocument();
         });
 
-    it('explains a paired observer', async () => {
+    it('tells a paired observer what to do, from the denial the server actually sends', async () => {
+        const denied = { code: 'permission_denied', message: 'Project review permission is required.' };
+        service.actions.mockResolvedValue({ ...policyActions, actions: [
+            { action: 'review', allowed: false, blockers: [denied] }, { action: 'accept_review', allowed: false, blockers: [denied] },
+        ] });
         renderPanel(identity({ access: 'observe' }));
         expect(await screen.findByText(/A paired observer cannot accept work/)).toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Accept as owner' })).not.toBeInTheDocument();
+    });
+
+    it('names unsaved progress as a reason the button is disabled', async () => {
+        sessionStorage.setItem('workchord-draft:person:42:progress', JSON.stringify({ version: 3, savedAt: Date.now(), criteria: [
+            { criterion_id: 'criterion', criterion_revision: 1, state: 'completed', evidence: 'Unsaved evidence' },
+        ] }));
+        renderWithProviders(<IdentityContext.Provider value={{ identity: identity({}), refresh: vi.fn(), signOut: vi.fn() }}>
+            <TaskWorkPanel task={resolved} disabled={false} draftKey="workchord-draft:person:42" onDirty={vi.fn()} onPending={vi.fn()} onUpdated={vi.fn()} onReload={vi.fn()} />
+        </IdentityContext.Provider>);
+        const button = await screen.findByRole('button', { name: 'Accept as owner' });
+        expect(button).toBeDisabled();
+        expect(button).toHaveAccessibleDescription(expect.stringContaining('Save or discard progress changes before accepting.'));
+        expect(button).toHaveAccessibleDescription(expect.stringContaining('Add a reason to accept as owner.'));
+        sessionStorage.clear();
     });
 
     it('is not offered when acceptance is not blocked by the publisher policy', async () => {
@@ -128,5 +149,20 @@ describe('owner acceptance under the different-publisher policy', () => {
         expect(items[0]).toHaveTextContent('Checked by hand');
         expect(items[1]).not.toHaveTextContent(i18n.t('domain.ownerOverrideLabel'));
         expect(items[1]).toHaveTextContent('Needs another pass');
+    });
+
+    it('pages through every review so the newest are shown', async () => {
+        const record = (id: number, over: Partial<TaskReviewRecord> = {}): TaskReviewRecord => ({ id, task_version: 3, brief_revision: 2, artifact_revision: 1, principal_id: 4,
+            verdict: 'reject', kind: 'review', reason: `Reason ${id}`, evidence: '', created_at: '2026-11-25T10:00:00Z', ...over });
+        const first = Array.from({ length: 100 }, (_, index) => record(index + 1));
+        service.reviews.mockImplementation(async (_id: number, params: { after_id?: number }) => (params.after_id ?? 0) === 0 ? first
+            : [record(101, { verdict: 'accept', kind: 'owner_override', reason: 'Newest decision' })]);
+        renderPanel(identity({}), { ...resolved, status: 'closed' });
+        const items = within(await screen.findByRole('region', { name: 'Review history' })).getAllByRole('listitem');
+        expect(service.reviews).toHaveBeenCalledWith(42, { limit: 100, after_id: 0 });
+        expect(service.reviews).toHaveBeenCalledWith(42, { limit: 100, after_id: 100 });
+        expect(items).toHaveLength(101);
+        expect(items[0]).toHaveTextContent('Newest decision');
+        expect(items[0]).toHaveTextContent('Owner override');
     });
 });
