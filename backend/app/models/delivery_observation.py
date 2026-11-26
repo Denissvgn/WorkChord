@@ -76,6 +76,9 @@ def observe_task_event(_mapper, connection, item):
             "task_reopen": "reopened", "backlog_snapshot_restored": "restored", "snapshot_task_restored": "restored"}.get(item.event_type)
     if item.event_type == "task_reopen" and row["status"] == "planned":
         kind = "reopened_planned"
+    elif item.event_type == "task_reopen" and row["status"] == "postponed":
+        # Reopened postponed work stays stopped, so no delivery fact begins.
+        kind = None
     if item.event_type == "status_changed":
         payload = json.loads(item.payload)
         transition = (payload.get("from_status"), payload.get("to_status"))

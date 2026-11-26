@@ -137,6 +137,8 @@ export const englishResources = {
                 "action_commit": "Commit to an iteration",
                 "action_uncommit": "Return to project backlog",
                 "action_review": "Review work",
+                "action_postpone": "Postpone",
+                "action_reactivate": "Reactivate",
                 "findDependency": "Find a task to wait for",
                 "firstPage": "First page",
                 "moreResults": "More results",

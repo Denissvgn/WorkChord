@@ -484,6 +484,12 @@ def authorize_domain_writes(session, _flush_context, _instances):
                 if obj.executed_by_principal_id is not None and obj.executed_by_principal_id == authority.principal_id:
                     if not authority.operator or not authority.review_override or not authority.reason:
                         raise AuthorityError("independent_review_required", "Use another reviewer or an explicit accountable operator override.")
+            command = session.info.get("command")
+            if (history.has_changes() and not rollup and command is not None
+                    and obj.id in command.postponement_transitions):
+                # Postponing and reactivating are planning decisions, authorized as manage
+                # whether the work returns to planned or to resolved.
+                action = "manage"
             if rollup and not authority.allows(project_id, action):
                 action = "execute" if authority.allows(project_id, "execute") else "review"
         if not owned_personal and not authority.allows(project_id, action):

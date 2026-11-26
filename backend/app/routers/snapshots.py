@@ -10,7 +10,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.schemas.snapshot import SnapshotRestoreRequest, SnapshotRestoreResponse
-from app.schemas.task import TaskCreate, TaskStatus
+# Snapshots hold stored statuses, postponed included; restore checks postponed state separately.
+from app.models.task import TaskStatus
+from app.schemas.task import TaskCreate
 from app.schemas.team import TeamMemberCreate, VacationCreate
 from app.security import require_admin_api_key
 from app.services.iteration_service import IterationService
