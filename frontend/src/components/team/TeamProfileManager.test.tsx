@@ -368,7 +368,7 @@ describe('agent without a profile', () => {
                 schema_version: 'agent-team-runtime-handoff-v1', topology_key: 'team', topology_revision: 8, actor_key: 'codex-worker-1', actor_id: 9,
                 role: 'worker', server_url: 'https://workchord.example', required_server_features: [], skill_package: waitingSpec.skill_package,
                 profile_key: 'worker-profile', profile_revision: 'r1', model_binding_revisions: {}, supported_assignment_modes: ['execution'],
-                startup_instructions: [], credential_ref: 'private-sink/codex-worker-1',
+                startup_instructions: [], credential_ref: 'private-sink/codex-worker-1', runtime_instance_id: 'rti-00000000000000000000000000000002',
             },
         });
         const topology: AgentTeamMaster = {

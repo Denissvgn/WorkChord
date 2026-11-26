@@ -92,6 +92,7 @@ const runtimeMemberFixture = (
         topology_revision: 4,
         actor_key: actorKey,
         actor_id: actorId,
+        runtime_instance_id: 'rti-00000000000000000000000000000001',
         role: 'worker',
         server_url: `https://agents.example.test/${actorKey}`,
         required_server_features: ['assignments'],
