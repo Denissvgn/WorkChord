@@ -71,6 +71,29 @@ describe('RoutingCandidateComparison', () => {
         expect(screen.getByText(/\(Local or free model\)/)).toBeVisible();
     });
 
+    it('shows the effort of an eligible candidate and of an excluded one', () => {
+        renderWithProviders(
+            <RoutingCandidateComparison
+                preview={{
+                    ...modelAwareRoutingPreview,
+                    eligible_candidates: modelAwareRoutingPreview.eligible_candidates.map(candidate => ({ ...candidate, effort: 'xhigh' })),
+                    exclusions: modelAwareRoutingPreview.exclusions.map(exclusion => ({
+                        ...exclusion,
+                        effort: 'low',
+                        hard_blocker_codes: ['model_effort_insufficient'],
+                    })),
+                }}
+                roster={modelAwareRoutingRoster}
+                selectedCandidateKey={null}
+                onSelectCandidate={vi.fn()}
+            />,
+        );
+
+        expect(screen.getByText(/Extra high/)).toBeVisible();
+        expect(screen.getByText('Model Effort Insufficient')).toBeVisible();
+        expect(screen.getByText('Low', { selector: 'dd' })).toBeVisible();
+    });
+
     it('selects an eligible candidate from the keyboard', async () => {
         const onSelectCandidate = vi.fn();
         const { user } = renderWithProviders(

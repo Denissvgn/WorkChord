@@ -61,9 +61,12 @@ const defaultBinding = (actor: AgentActorRosterItem): AgentModelBinding | null =
     return usable.find(binding => binding.is_default) ?? usable[0] ?? null;
 };
 
-export const modelName = (binding: AgentModelBinding) => (
-    binding.model_catalog?.configured_model_alias ?? binding.model_catalog_key ?? ''
-);
+export const modelName = (binding: AgentModelBinding) => {
+    const alias = binding.model_catalog?.configured_model_alias ?? binding.model_catalog_key ?? '';
+    const effort = binding.model_catalog?.effort;
+    // Two catalog entries for one runtime model differ only by effort, so a recorded one is part of the name.
+    return alias && effort && effort !== 'unknown' ? `${alias} (${effort})` : alias;
+};
 
 export const actorName = (actor: AgentActorRosterItem) => actor.display_name || actor.name;
 

@@ -1353,3 +1353,75 @@ async def test_catalog_local_first_defaults_false_and_round_trips(
     finally:
         main_app.dependency_overrides.clear()
         await client.aclose()
+
+
+@pytest.mark.sqlite
+@pytest.mark.asyncio
+async def test_catalog_effort_defaults_unknown_round_trips_and_refuses_unknown_values(
+    db_session: AsyncSession,
+) -> None:
+    admin_key = "admin-effort-key"
+    db_session.add(
+        AgentActor(
+            name="effort-admin",
+            display_name="Effort Admin",
+            api_key_hash=hash_api_key(admin_key),
+            scopes='["admin"]',
+            enabled=True,
+            role="pm",
+        )
+    )
+    await db_session.commit()
+
+    client = await _http_client(main_app, db_session)
+    try:
+        created = await client.post(
+            "/api/agent/model-catalog",
+            headers=_headers(admin_key, "effort-default"),
+            json=_catalog_values("effort-default"),
+        )
+        assert created.status_code == 201
+        assert created.json()["result"]["effort"] == "unknown"
+
+        # Two entries for one runtime model differ by their effort setting.
+        high = await client.post(
+            "/api/agent/model-catalog",
+            headers=_headers(admin_key, "effort-high"),
+            json=_catalog_values("effort-high", configured_model_alias="shared-runtime", effort="high"),
+        )
+        low = await client.post(
+            "/api/agent/model-catalog",
+            headers=_headers(admin_key, "effort-low"),
+            json=_catalog_values("effort-low", configured_model_alias="shared-runtime", effort="low"),
+        )
+        assert (high.status_code, low.status_code) == (201, 201)
+        assert {high.json()["result"]["effort"], low.json()["result"]["effort"]} == {"high", "low"}
+
+        updated = await client.patch(
+            f"/api/agent/model-catalog/{created.json()['target_id']}",
+            headers=_headers(admin_key, "effort-set"),
+            json={"expected_revision": 1, "effort": "xhigh"},
+        )
+        assert updated.status_code == 200
+        assert updated.json()["result"]["effort"] == "xhigh"
+        assert updated.json()["result"]["revision"] == 2
+
+        listed = await client.get("/api/agent/model-catalog", headers=_headers(admin_key))
+        assert {entry["key"]: entry["effort"] for entry in listed.json()}["effort-default"] == "xhigh"
+
+        refused = await client.post(
+            "/api/agent/model-catalog",
+            headers=_headers(admin_key, "effort-bad-create"),
+            json=_catalog_values("effort-bad", effort="extreme"),
+        )
+        assert refused.status_code == 422
+        for index, value in enumerate(("extreme", None)):
+            patched = await client.patch(
+                f"/api/agent/model-catalog/{created.json()['target_id']}",
+                headers=_headers(admin_key, f"effort-bad-patch-{index}"),
+                json={"expected_revision": 2, "effort": value},
+            )
+            assert patched.status_code == 422
+    finally:
+        main_app.dependency_overrides.clear()
+        await client.aclose()
