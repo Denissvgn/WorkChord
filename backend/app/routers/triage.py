@@ -18,6 +18,7 @@ from app.schemas.triage import (
     TriageItemResponse,
     TriageItemStatus,
     TriageItemUpdate,
+    TriageSourceLinkOutcome,
     TriageSnoozeRequest,
     TriageTaskDraftRequest,
     TriageTaskDraftResponse,
@@ -29,6 +30,7 @@ from app.services.language_service import (
     resolve_runtime_ui_language,
 )
 from app.services.llm_service import LLMService
+from app.utils.source_link_policy import SourceLinkRefused
 from app.services.triage_service import (
     TriageConflictError,
     TriageDraftNotFoundError,
@@ -62,6 +64,8 @@ async def get_assignee_recommendation_service(
 
 
 async def _bad_request(service, error: ValueError) -> HTTPException:
+    if isinstance(error, SourceLinkRefused):
+        return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error.detail())
     ui_language = await resolve_runtime_ui_language(service.db)
     return HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
@@ -374,6 +378,7 @@ async def convert_triage_item_to_task(
     return TriageConvertToTaskResponse(
         triage_item=TriageItemResponse.model_validate(item),
         task=service.task_service.task_to_response(task),
+        source_link=TriageSourceLinkOutcome.for_link(item.source_url),
     )
 
 
@@ -386,6 +391,7 @@ async def convert_triage_item_to_backlog(triage_item_id: int, data: TriageConver
     try:
         async with command_transaction(service.db):
             item, task = await domain_result(service.convert_to_task(triage_item_id, data))
-            return TriageConvertToTaskResponse(triage_item=TriageItemResponse.model_validate(item), task=service.task_service.task_to_response(task))
+            return TriageConvertToTaskResponse(triage_item=TriageItemResponse.model_validate(item), task=service.task_service.task_to_response(task),
+                source_link=TriageSourceLinkOutcome.for_link(item.source_url))
     except TriageConflictError as exc:
         raise HTTPException(409, detail=str(exc)) from exc

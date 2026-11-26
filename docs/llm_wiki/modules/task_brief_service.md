@@ -16,20 +16,21 @@ Formal review on a project with the different-publisher policy requires the assi
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `AuthorityError`, `require_project` |
+| `app.authority` | `AuthorityError`, `require_owner_override`, `require_project` |
 | `app.autonomy.canonical` | `sha256_hex` |
-| `app.commands` | `atomic_command`, `command_transaction`, `current_command` |
+| `app.commands` | `atomic_command`, `command_transaction`, `current_command`, `current_command`, `PlanningConflict`, `current_command` |
 | `app.models.autonomy` | `AgentWorkPackage` |
 | `app.models.task` | `Task` |
 | `app.models.task_brief` | `TaskBriefRevision`, `TaskProgressRecord`, `TaskReviewRecord` |
-| `app.schemas.task_brief` | `TaskBrief`, `ProgressWrite`, `TaskReviewWrite`, `BriefCriterion` |
+| `app.schemas.task_brief` | `TaskBrief`, `OwnerAcceptanceWrite`, `ProgressWrite`, `TaskReviewWrite`, `BriefCriterion` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.identity_service` | `acting_principal_id` |
-| `app.services.review_provenance` | `different_publisher_required` |
+| `app.services.review_provenance` | `different_publisher_required`, `different_publisher_required` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_replacement_service` | `require_acceptable` |
 | `app.services.task_service` | `TaskService` |
 | `copy` | `copy` |
+| `dataclasses` | `replace` |
 | `re` | `re` |
 | `sqlalchemy` | `func`, `select` |
 | `uuid` | `NAMESPACE_URL`, `uuid5` |
@@ -52,7 +53,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (23) |
+| Inbound | `backend` (24) |
 | Outbound | `backend` (13) |
 
 ### External packages
@@ -61,13 +62,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 33 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskBriefService](../entities/TaskBriefService.md) | 140 | — | — |
+| [TaskBriefService](../entities/TaskBriefService.md) | 141 | — | — |
 
 ## Functions
 

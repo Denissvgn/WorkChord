@@ -1,6 +1,6 @@
 # TaskListOption
 
-**Location:** `frontend/src/components/triage/triageUtils.ts:112`
+**Location:** `frontend/src/components/triage/triageUtils.ts:126`
 **Kind:** Interface
 **Bases:** —
 **Module:** [triageUtils](../modules/triageUtils.md)

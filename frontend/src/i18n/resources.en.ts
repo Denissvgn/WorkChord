@@ -1933,6 +1933,8 @@ export const englishResources = {
                 reasoningTier: 'Reasoning tier',
                 contextTier: 'Context tier',
                 costTier: 'Cost tier',
+                localFirst: 'Local or free model',
+                localFirstHint: 'Preferred over a hosted model of equal adequacy. It never overrides a capability, schedule or adequacy check.',
                 latencyTier: 'Latency tier',
                 revision: 'Revision',
                 lastVerified: 'Last operator verification',

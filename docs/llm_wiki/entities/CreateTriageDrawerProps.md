@@ -17,6 +17,7 @@ _Auto-generated from `CreateTriageDrawerProps` in `frontend/src/components/triag
 | `iterations` | `Iteration[]` | Yes | — | — |
 | `isSubmitting` | `boolean` | Yes | — | — |
 | `error` | `string \| null` | No | — | — |
+| `sourceUrlError` | `string \| null` | No | — | — |
 | `onSubmit` | `(payload: TriageItemCreate) => void` | Yes | — | — |
 | `onClose` | `() => void` | Yes | — | — |
 | `initialTitle` | `string` | No | — | — |
@@ -41,7 +42,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [CreateTriageDrawer](../modules/CreateTriageDrawer.md) | 0 | `error`, `initialTitle`, `isSubmitting`, `iterations`, `onClose`, `onSubmit`, `projects` |
+| [CreateTriageDrawer](../modules/CreateTriageDrawer.md) | 0 | `error`, `initialTitle`, `isSubmitting`, `iterations`, `onClose`, `onSubmit`, `projects`, `sourceUrlError` |
 
 ### References
 

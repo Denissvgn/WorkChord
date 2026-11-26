@@ -144,7 +144,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/pages/ProjectReleaseDetailPage.tsx': '07032a5fd753dcc5',
     'src/pages/ProjectsPage.tsx': '3dc607312f108bd3',
     'src/pages/TasksPage.tsx': '826f718625e7f291',
-    'src/pages/TriagePage.tsx': '3a963b72695a2a31',
+    'src/pages/TriagePage.tsx': 'b626b02c7e45d11b',
 };
 
 const walkAst = (node, visit) => {

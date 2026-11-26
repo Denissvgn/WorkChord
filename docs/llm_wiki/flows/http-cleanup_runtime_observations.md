@@ -159,12 +159,12 @@ flowchart LR
 | require_operator | db.info.get (backend/app/authority.py:require_operator) | 91 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 93 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
 | RuntimeObservationService.cleanup | get_settings | 116 | `get_settings(data not statically known)` |
-| get_settings | Settings | 527 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | RuntimeObservationService.cleanup | utc_now | 117 | `utc_now(data not statically known)` |
 | utc_now | datetime.now | 13 | `datetime.now(UTC)` |
 | RuntimeObservationService.cleanup | timedelta | 117 | `timedelta(days=retention)` |
 | RuntimeObservationService.cleanup | internal_authority | 118 | `internal_authority(self.db)` |
-| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 99 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 113 | `db.info.get('authority_internal', False)` |
 
 ### Boundary effects
 
@@ -177,7 +177,7 @@ flowchart LR
 | unresolved_call | `require_operator` | `db.info.get` | 91 |
 | external_call | `utc_now` | `datetime.now` | 13 |
 | external_call | `RuntimeObservationService.cleanup` | `timedelta` | 117 |
-| unresolved_call | `internal_authority` | `db.info.get` | 99 |
+| unresolved_call | `internal_authority` | `db.info.get` | 113 |
 | step_limit | `cleanup_runtime_observations` | `first 12 steps` | 0 |
 
 ## Behavior

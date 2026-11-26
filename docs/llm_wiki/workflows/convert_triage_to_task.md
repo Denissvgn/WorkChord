@@ -15,6 +15,7 @@
 5. `schemas_triage.TriageConvertToTaskResponse`
 6. `task_service.TaskService.task_to_response`
 7. `task_service.TaskService`
+8. `schemas_triage.TriageSourceLinkOutcome.for_link`
 
 ## Touches
 

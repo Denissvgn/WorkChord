@@ -1,15 +1,16 @@
 """Canonical brief rendering, conservative legacy conversion and evidence commands."""
 
 import re
+from dataclasses import replace
 from uuid import NAMESPACE_URL, uuid5
 
 from sqlalchemy import func, select
 
-from app.authority import AuthorityError, require_project
+from app.authority import AuthorityError, require_owner_override, require_project
 from app.commands import atomic_command
 from app.models.task import Task
 from app.models.task_brief import TaskBriefRevision, TaskProgressRecord, TaskReviewRecord
-from app.schemas.task_brief import TaskBrief, ProgressWrite, TaskReviewWrite
+from app.schemas.task_brief import TaskBrief, OwnerAcceptanceWrite, ProgressWrite, TaskReviewWrite
 
 
 HEADINGS = {
@@ -270,16 +271,24 @@ class TaskBriefService:
         if await different_publisher_required(self.db, task.project_id):
             command = current_command(self.db)
             key = (task.id, task.version, task.brief_revision, task.artifact_revision)
-            if command is None or key not in command.verified_publishers:
+            # An owner override grants acceptance of exactly this task state in this command;
+            # it never satisfies a rejection and never changes the project's policy.
+            owner_override = accepting and command is not None and key in command.owner_acceptance_overrides
+            if command is None or key not in command.verified_publishers and not owner_override:
                 raise AuthorityError("verified_publisher_review_required", "Use an assigned agent verifier for formal review. Work requires attributable agent execution or an authenticated manual executor and current artifact evidence.")
         authority = self.db.info.get("authority")
         principal = getattr(authority, "principal_id", None)
-        override = bool(authority and authority.operator and authority.review_override and authority.reason)
+        self_review_override = override = bool(authority and authority.operator and authority.review_override and authority.reason)
+        command = current_command(self.db)
+        if command is not None and task.id in command.owner_acceptance_tasks:
+            # On an owner override the header waives only self-review independence;
+            # criterion evidence and every other acceptance check still apply.
+            override = False
         if authority and authority.kind == "agent" and authority.actor_role != "verifier":
             raise AuthorityError("independent_review_required", "Execution cannot accept its own work.")
         progress_author = await self.db.scalar(select(TaskProgressRecord.principal_id).where(TaskProgressRecord.original_task_id == task.id,
             TaskProgressRecord.artifact_revision == task.artifact_revision)) if task.artifact_revision else None
-        if principal is not None and principal in {task.executed_by_principal_id, progress_author} and not override:
+        if principal is not None and principal in {task.executed_by_principal_id, progress_author} and not self_review_override:
             raise AuthorityError("independent_review_required", "Another reviewer must review this work.")
         if task.canceled_at or task.is_summary or task.status != "resolved":
             raise ValueError("Review requires resolved, uncanceled leaf work")
@@ -308,13 +317,58 @@ class TaskBriefService:
                     raise ValueError("Every current criterion requires completed progress and evidence")
 
     async def record_review(self, task, *, verdict, reason, evidence=""):
+        from app.commands import current_command
         from app.services.identity_service import acting_principal_id
         principal_id = await acting_principal_id(self.db)
+        command = current_command(self.db)
+        overridden = command is not None and any(key[0] == task.id for key in command.owner_acceptance_overrides)
         record = TaskReviewRecord(task_id=task.id, original_task_id=task.id, task_version=task.version, brief_revision=task.brief_revision,
             artifact_revision=task.artifact_revision, principal_id=principal_id,
-            verdict=verdict, reason=reason, evidence=evidence)
+            verdict=verdict, kind="owner_override" if overridden and verdict == "accept" else "review", reason=reason, evidence=evidence)
         self.db.add(record)
         return record
+
+    async def owner_accept(self, task_id: int, data: OwnerAcceptanceWrite):
+        """Accept one resolved task as an owner override of publisher independence.
+
+        The project's policy stays on. The grant covers this task at the supplied
+        revisions for this command only; every other review check still applies.
+        """
+        authority = require_owner_override(self.db)
+        reason = data.reason.strip()
+        if not reason:
+            raise AuthorityError("override_reason_required", "An owner override needs a reason.", 422)
+        # The command audit records the override's own reason, whatever the request headers said.
+        # The command flushes its writes before the caller's authority is restored.
+        self.db.info["authority"] = replace(authority, reason=reason[:2000])
+        try:
+            return await self._owner_accept(task_id, data, reason)
+        finally:
+            self.db.info["authority"] = authority
+
+    @atomic_command
+    async def _owner_accept(self, task_id, data, reason):
+        from app.commands import PlanningConflict, current_command
+        command = current_command(self.db)
+        command.owner_acceptance_tasks.add(task_id)
+        task = await self._locked(task_id, data.expected_version)
+        if (task.brief_revision, task.artifact_revision) != (data.brief_revision, data.artifact_revision):
+            raise ValueError("Brief or artifact revision is stale")
+        from app.services.review_provenance import different_publisher_required
+        if not await different_publisher_required(self.db, task.project_id):
+            raise PlanningConflict("owner_override_not_required",
+                "This project does not require a different review publisher. Use an ordinary review.")
+        command.owner_acceptance_overrides.add((task.id, task.version, task.brief_revision, task.artifact_revision))
+        task, _, _ = await self.tasks.change_status(task.id, "closed", reason=reason, expected_version=task.version,
+            review_evidence=data.evidence, commit=False)
+        if task is None or task.status != "closed":
+            raise ValueError("Review requires resolved, uncanceled leaf work")
+        await self.tasks.record_task_event(task.id, "owner_acceptance_override",
+            {"version": task.version, "brief_revision": task.brief_revision, "artifact_revision": task.artifact_revision,
+             "reason": reason})
+        # Audit every write under the override's reason, also inside an enclosing request command.
+        await self.db.flush()
+        return task
 
     @atomic_command
     async def review(self, task_id: int, data: TaskReviewWrite):

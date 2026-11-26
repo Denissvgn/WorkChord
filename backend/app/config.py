@@ -136,6 +136,7 @@ class Settings(BaseSettings):
     snapshot_retention_count: int = 10
     snapshot_max_bytes: int = 8 * 1024 * 1024
     allow_private_egress_urls: bool = False
+    public_base_url: str = ""
     trusted_proxy_ips: list[str] = []
     session_cookie_name: str = "workchord_session"
     session_cookie_secure: bool = True

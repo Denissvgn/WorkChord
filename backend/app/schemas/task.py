@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field, field_validator
 
 from app.schemas.external_link import ExternalLinkResponse
 from app.schemas.team import AssigneeRecommendationResponse
-from app.utils.url_policy import URLPolicyError, normalize_stored_display_url
+from app.utils.source_link_policy import SourceLinkRefused, normalize_source_link
 
 MAX_TASK_TEXT_IMPORT_CHARS = 200_000
 
@@ -19,8 +19,8 @@ def _normalize_optional_url(value: Optional[str]) -> Optional[str]:
     if value is None or not str(value).strip():
         return None
     try:
-        return normalize_stored_display_url(value)
-    except URLPolicyError as exc:
+        return normalize_source_link(value)
+    except SourceLinkRefused as exc:
         raise ValueError(str(exc)) from exc
 
 

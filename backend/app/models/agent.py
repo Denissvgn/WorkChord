@@ -15,6 +15,7 @@ from sqlalchemy import (
     UniqueConstraint,
     event,
     exists,
+    false,
     text,
 )
 from sqlalchemy.orm import Mapped, column_property, mapped_column, relationship
@@ -180,6 +181,9 @@ class AgentModelCatalogEntry(Base):
         JSON, default=lambda: ["text"], nullable=False
     )
     cost_tier: Mapped[str] = mapped_column(String(20), nullable=False)
+    local_first: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default=false(), nullable=False
+    )
     latency_tier: Mapped[str] = mapped_column(String(20), nullable=False)
     enabled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     revision: Mapped[int] = mapped_column(Integer, default=1, nullable=False)

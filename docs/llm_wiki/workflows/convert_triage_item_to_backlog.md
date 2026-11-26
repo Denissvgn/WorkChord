@@ -11,6 +11,7 @@
 1. `commands.command_transaction`
 2. `routers_task_domain.domain_result`
 3. `schemas_triage.TriageConvertToTaskResponse`
+4. `schemas_triage.TriageSourceLinkOutcome.for_link`
 
 ## Touches
 
