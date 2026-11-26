@@ -1277,6 +1277,32 @@ async def record_task_replacement(
     return receipt.model_dump(mode="json")
 
 
+async def record_manual_provenance(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: record who executed resolved work delivered outside recorded runs."""
+    from app.schemas.manual_provenance import ManualProvenanceWrite
+
+    receipt = await AgentPlanningService(db).record_manual_provenance(
+        task_id,
+        actor,
+        ManualProvenanceWrite.model_validate(payload),
+        command=_planning_command_context(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
 async def get_github_reconciliation(
     db: AsyncSession,
     actor: AgentActor,

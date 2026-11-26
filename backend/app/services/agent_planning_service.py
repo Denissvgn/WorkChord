@@ -949,6 +949,35 @@ class AgentPlanningService:
             mutate=mutate,
         )
 
+    async def record_manual_provenance(
+        self,
+        task_id: int,
+        actor: AgentActor,
+        data: Any,
+        *,
+        command: AgentPlanningCommandContext,
+    ) -> AgentPlanningReceipt:
+        """Record who executed resolved work delivered outside recorded runs, and its exact candidate."""
+        from app.schemas.manual_provenance import ManualProvenanceResponse
+        from app.services.manual_provenance_service import ManualProvenanceService
+
+        payload = {"task_id": task_id, "data": data.model_dump(mode="json")}
+
+        async def mutate() -> MutationResult:
+            result = await ManualProvenanceService(self.db).record(task_id, data, commit=False)
+            return task_id, ManualProvenanceResponse.model_validate(result).model_dump(mode="json")
+
+        return await self._execute(
+            actor=actor,
+            scope="planning:write",
+            operation="planning.task.manual_provenance",
+            target_type="task",
+            idempotency_target_id=task_id,
+            command=command,
+            request_payload=payload,
+            mutate=mutate,
+        )
+
     async def add_delivery_dependency(
         self,
         task_id: int,

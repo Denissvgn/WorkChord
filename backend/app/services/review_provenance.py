@@ -777,6 +777,32 @@ async def _manual_history(db, task):
     return ReviewHistory([], await _submission_candidate(db, task, submitted, source), manual_execution=proof)
 
 
+async def _recorded_history(db, task):
+    """An owner's or PM's recorded provenance for work that never ran through recorded runs.
+
+    A human executor is reviewed like authenticated manual execution; an agent executor is an
+    ordinary contributor with the profile and publisher captured when the record was made.
+    """
+    from app.services.manual_provenance_service import recorded_provenance, submitted_candidate
+    found = await recorded_provenance(db, task)
+    if found is None:
+        return None
+    event, record = found
+    executor = record["executor"]
+    commits = list(record["commit_urls"])
+    source = {"manual_provenance_event_id": event.id, "submission_sha256": digest(record)}
+    candidate = await _submission_candidate(db, task, submitted_candidate(record), source)
+    if executor.get("kind") == "human" and type(executor.get("principal_id")) is int:
+        proof = {"principal_id": executor["principal_id"], "profile_ids": list(executor.get("profile_ids") or ()),
+                 "provenance_event_id": event.id, "commit_urls": commits}
+        return ReviewHistory([], candidate, manual_execution=proof)
+    if executor.get("kind") == "agent" and type(executor.get("actor_id")) is int:
+        return ReviewHistory([{"run_id": None, "actor_id": executor["actor_id"], "profile_id": executor.get("profile_id"),
+                               "publisher_key": executor.get("publisher_key"), "commit_urls": commits,
+                               "provenance_event_id": event.id}], candidate)
+    return None
+
+
 async def review_history(db, task, assignments, *, strict, include_carried=True):
     """A failed or recovered run can have produced retained work. Include every actual attempt.
 
@@ -795,6 +821,10 @@ async def _attempt_history(db, task, assignments, *, strict):
     runs = (await db.scalars(query)).all()
     if len(runs) > MAX_BOUNDED_LIST_ITEMS:
         raise CollectionLimitExceededError("task execution provenance", MAX_BOUNDED_LIST_ITEMS)
+    if strict and not runs and not any(item.state == "fulfilled" for item in executions.values()):
+        recorded = await _recorded_history(db, task)
+        if recorded is not None:
+            return recorded
     if strict and not runs and not executions:
         return await _manual_history(db, task)
     from app.services.retained_planning_output import retained_attestations
@@ -968,8 +998,12 @@ async def select_reviewer(db, task, assignments, reviewer, *, binding_id=None, r
     blockers = history.publisher_blockers(receipt["publisher_key"])
     if blockers:
         if history.missing_manual_fact:
-            _conflict(blockers[0], "An authenticated human must record manual execution and its current artifact, or an agent must supply attributable execution evidence.",
-                      missing=[{"task_id": task.id, "facts": [history.missing_manual_fact]}])
+            from app.services.manual_provenance_service import remedy
+            _conflict(blockers[0], "An authenticated human must record manual execution and its current artifact, or an agent must supply "
+                      "attributable execution evidence. For work resolved outside recorded runs, a project owner or PM records "
+                      "its executor, commits or pull request and artifact revision as manual provenance.",
+                      missing=[{"task_id": task.id, "facts": [history.missing_manual_fact, "manual_provenance"]}],
+                      remedy=remedy(task.id))
         _conflict(blockers[0], "Review requires a known publisher distinct from every contributing publisher.",
                  missing=[{"run_id": r["run_id"], "facts": r.get("missing", ["publisher_key"])}
                           for r in history.contributors if not r.get("publisher_key")])
@@ -981,6 +1015,28 @@ async def select_reviewer(db, task, assignments, reviewer, *, binding_id=None, r
         from app.services.review_evidence import resolve
         selection["review_evidence"] = await resolve(db, task, review_evidence_id, history, reviewer=receipt)
     return selection
+
+
+def require_verifiable_candidate(task, selection):
+    """Refuse a new verification assignment that is already known never to be able to pass.
+
+    The answer names the missing provenance. Work without recorded runs can get it from a
+    manual provenance record.
+    """
+    if selection is None or selection.get("candidate"):
+        return
+    from app.services.manual_provenance_service import remedy
+    recorded_runs = any(row.get("run_id") for row in selection.get("contributors") or ())
+    fact = "current_human_artifact" if selection.get("manual_execution") else "submitted_candidate"
+    context = {"missing": [{"task_id": task.id, "facts": [fact] if recorded_runs else [fact, "manual_provenance"]}]}
+    message = "This task has no exact submitted candidate, so an independent review could never accept it."
+    if not recorded_runs:
+        context["remedy"] = remedy(task.id)
+        message += (" A project owner or PM can record its executor, commits or pull request and artifact revision"
+                    " as manual provenance first.")
+    else:
+        message += " Its recorded runs must supply a submitted repository candidate."
+    _conflict("verification_candidate_unverifiable", message, **context)
 
 
 async def observe_review_candidate(db, assignment_id, actor_id):

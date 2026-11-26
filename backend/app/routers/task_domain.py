@@ -356,6 +356,20 @@ async def task_github_catch_up(task_id: int, db: DB):
     return await domain_result(GitHubReconciliationService(db).catch_up(task_id))
 
 
+from app.schemas.manual_provenance import ManualProvenanceResponse, ManualProvenanceWrite
+
+
+@router.post("/tasks/{task_id}/manual-provenance", response_model=ManualProvenanceResponse, status_code=201)
+async def record_manual_provenance(task_id: int, data: ManualProvenanceWrite, db: DB):
+    """Record who executed resolved work delivered outside recorded runs, and its exact candidate.
+
+    Only a signed-in owner, operator or project manager, or the project's PM agent, may record it. The task's status,
+    progress and evidence are unchanged; its version advances and the timeline records it.
+    """
+    from app.services.manual_provenance_service import ManualProvenanceService
+    return await domain_result(ManualProvenanceService(db).record(task_id, data))
+
+
 @router.post("/tasks/{task_id}/replacement", response_model=TaskReplacementResponse, status_code=201)
 async def record_task_replacement(task_id: int, data: TaskReplacementCreate, db: DB):
     """Replace this unaccepted task with a fresh one; only the project's PM or an operator may decide."""
