@@ -64,7 +64,9 @@ MCP_ALLOWED_ORIGINS='["https://workchord.example.com"]'
 ```
 
 Keep `MCP_DNS_REBINDING_PROTECTION=true`. A non-loopback bind is refused while
-either MCP allowlist still has its loopback-only default.
+either MCP allowlist still has its loopback-only default. The stock frontend
+proxy forwards the client's `Host` with its port, so the loopback defaults accept
+MCP on any published loopback port without an override.
 
 The secret-free receipt is written to:
 
