@@ -1,6 +1,6 @@
 # HierarchyScopeError
 
-**Location:** `backend/app/commands.py:42`
+**Location:** `backend/app/commands.py:47`
 **Kind:** Class
 **Bases:** `RuntimeError`
 **Module:** [commands](../modules/commands.md)

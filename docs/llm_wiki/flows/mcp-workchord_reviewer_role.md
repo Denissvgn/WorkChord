@@ -224,17 +224,17 @@ flowchart LR
 | _open_db_session | _session_factory | 187 | `_session_factory(data not statically known)` |
 | _open_db_session | hasattr | 188 | `hasattr(session_context, '__aenter__')` |
 | _agent_context | command_transaction | 283 | `command_transaction(db, mode=...)` |
-| command_transaction | current_command | 93 | `current_command(db)` |
+| command_transaction | current_command | 98 | `current_command(db)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
 | environment_read | `os.getenv` | `_current_agent_key` | 206 |
-| mutation | `db.info.pop` | `command_transaction` | 113 |
-| mutation | `db.info.pop` | `command_transaction` | 126 |
-| mutation | `db.info.pop` | `command_transaction` | 127 |
-| mutation | `db.info.pop` | `command_transaction` | 129 |
+| mutation | `db.info.pop` | `command_transaction` | 118 |
+| mutation | `db.info.pop` | `command_transaction` | 131 |
+| mutation | `db.info.pop` | `command_transaction` | 132 |
+| mutation | `db.info.pop` | `command_transaction` | 134 |
 
 ### Static analysis gaps
 
