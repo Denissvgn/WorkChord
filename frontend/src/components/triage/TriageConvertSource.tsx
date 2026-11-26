@@ -5,7 +5,7 @@ import type {
     TriageItem
 } from '../../types/triage';
 import { formatDateTime } from '../../utils/formatDate';
-import { safeExternalHref } from '../../utils/safeUrl';
+import { sourceLinkHref } from '../../utils/safeUrl';
 
 import { InfoBlock } from './TriageDetailPanel';
 import { t } from './triageUtils';
@@ -35,7 +35,7 @@ export const TriageConvertSource = ({ item, projectsById, iterationsById }: { it
         {item.source_url && (
             <div>
                 <a
-                    href={safeExternalHref(item.source_url)}
+                    href={sourceLinkHref(item.source_url)}
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-1.5 text-sm font-medium text-action hover:text-action transition-colors"

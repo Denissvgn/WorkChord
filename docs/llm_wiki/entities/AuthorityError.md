@@ -31,14 +31,14 @@ flowchart LR
     n3["_guard_bulk_project_review_policy (backend/app/authority.py)"]
     n4["authorize_domain_writes (backend/app/authority.py)"]
     n5["require_operator (backend/app/authority.py)"]
-    n6["require_owner_override (backend/app/authority.py)"]
-    n7["require_project (backend/app/authority.py)"]
-    n8["scope_orm_operation (backend/app/authority.py)"]
-    n9["lock_iterations (backend/app/commands.py)"]
-    n10["enforce_http_authority (backend/app/http_authority.py)"]
-    n11["resolve_http_identity (backend/app/http_authority.py)"]
-    n12["authority_error (backend/app/main.py)"]
-    n13["backend/app/mcp_server.py"]
+    n6["require_project (backend/app/authority.py)"]
+    n7["scope_orm_operation (backend/app/authority.py)"]
+    n8["lock_iterations (backend/app/commands.py)"]
+    n9["enforce_http_authority (backend/app/http_authority.py)"]
+    n10["resolve_http_identity (backend/app/http_authority.py)"]
+    n11["authority_error (backend/app/main.py)"]
+    n12["backend/app/mcp_server.py"]
+    n13["bootstrap (backend/app/routers/identity.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -59,12 +59,12 @@ flowchart LR
     click n5 "../modules/authority.md"
     click n6 "../modules/authority.md"
     click n7 "../modules/authority.md"
-    click n8 "../modules/authority.md"
-    click n9 "../modules/commands.md"
+    click n8 "../modules/commands.md"
+    click n9 "../modules/http_authority.md"
     click n10 "../modules/http_authority.md"
-    click n11 "../modules/http_authority.md"
-    click n12 "../modules/app_main.md"
-    click n13 "../modules/mcp_server.md"
+    click n11 "../modules/app_main.md"
+    click n12 "../modules/mcp_server.md"
+    click n13 "../modules/routers_identity.md"
 ```
 
 ### Summary
@@ -87,7 +87,6 @@ flowchart LR
 | `_guard_bulk_project_review_policy` | call | [authority](../modules/authority.md) | 2 |
 | `authorize_domain_writes` | call | [authority](../modules/authority.md) | 13 |
 | `require_operator` | call | [authority](../modules/authority.md) | 1 |
-| `require_owner_override` | call | [authority](../modules/authority.md) | 1 |
 | `require_project` | call | [authority](../modules/authority.md) | 2 |
 | `scope_orm_operation` | call | [authority](../modules/authority.md) | 3 |
 | `lock_iterations` | call | [commands](../modules/commands.md) | 1 |
@@ -95,5 +94,6 @@ flowchart LR
 | `resolve_http_identity` | call | [http_authority](../modules/http_authority.md) | 13 |
 | `authority_error` | type_reference | [app_main](../modules/app_main.md) | — |
 | `mcp_server` | import | [mcp_server](../modules/mcp_server.md) | — |
+| `bootstrap` | call | [routers_identity](../modules/routers_identity.md) | 3 |
 
-> References: showing 12 of 98 logical references; 86 omitted by the 12-row generated summary limit.
+> References: showing 12 of 95 logical references; 83 omitted by the 12-row generated summary limit.

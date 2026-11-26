@@ -26,8 +26,6 @@ _Auto-generated from `CommandState` in `backend/app/commands.py`._
 | `worker_blockers` | `set[tuple[int, int, int, str]]` | `field(default_factory=set)` | — |
 | `failed` | `bool` | `False` | — |
 | `verified_publishers` | `set[tuple[int, int, int, int]]` | `field(default_factory=set)` | — |
-| `owner_acceptance_overrides` | `set[tuple[int, int, int, int]]` | `field(default_factory=set)` | — |
-| `owner_acceptance_tasks` | `set[int]` | `field(default_factory=set)` | — |
 | `evidence_returns` | `set[tuple[int, int]]` | `field(default_factory=set)` | — |
 | `planning_revision` | `int \| None` | `None` | — |
 
@@ -54,7 +52,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [commands](../modules/commands.md) | 0 | `backlog_projects`, `dispatch_queue_revisions`, `evidence_returns`, `failed`, `iterations`, `missing_revision_observations`, `mode`, `owner_acceptance_overrides`, `owner_acceptance_tasks`, `planning_revision`, `snapshots`, `tasks` |
+| [commands](../modules/commands.md) | 0 | `backlog_projects`, `dispatch_queue_revisions`, `evidence_returns`, `failed`, `iterations`, `missing_revision_observations`, `mode`, `planning_revision`, `snapshots`, `tasks`, `verified_publishers`, `versioned_iterations` |
 
 ### References
 

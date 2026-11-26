@@ -1,6 +1,6 @@
 # DeliveryMetricsService
 
-**Location:** `backend/app/services/delivery_metrics_service.py:114`
+**Location:** `backend/app/services/delivery_metrics_service.py:111`
 **Kind:** Class
 **Bases:** —
 **Module:** [delivery_metrics_service](../modules/delivery_metrics_service.md)

@@ -64,6 +64,7 @@ from app.services.agent_service import (
 )
 from app.services.task_service import TaskVersionConflictError
 from app.services.triage_service import TriageConflictError
+from app.utils.source_link_policy import SourceLinkRefused
 
 
 router = APIRouter()
@@ -116,6 +117,8 @@ def _handle_agent_error(exc: Exception) -> NoReturn:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc))
     if isinstance(exc, LookupError):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
+    if isinstance(exc, SourceLinkRefused):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=exc.detail())
     if isinstance(exc, ValueError):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
     raise exc

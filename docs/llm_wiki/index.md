@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1810 | [Open section](#entities) |
-| Modules | 1161 | [Open section](#modules) |
-| Workflows | 233 | [Open section](#workflows) |
+| Entities | 1813 | [Open section](#entities) |
+| Modules | 1160 | [Open section](#modules) |
+| Workflows | 234 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 625 | [Open section](#entry-point-flows) |
+| Entry-point flows | 624 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -695,7 +695,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [OverviewPage_ListedTask](entities/OverviewPage_ListedTask.md)
 - [OverviewTaskList](entities/OverviewTaskList.md)
 - [OverviewTaskThreadSource](entities/OverviewTaskThreadSource.md)
-- [OwnerAcceptanceWrite](entities/OwnerAcceptanceWrite.md)
 - [OwnerLink](entities/OwnerLink.md)
 - [OwnershipSelection](entities/OwnershipSelection.md)
 - [OwnershipTransfer](entities/OwnershipTransfer.md)
@@ -1012,6 +1011,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [SortCriterionSchema](entities/SortCriterionSchema.md)
 - [SortableTaskItemProps](entities/SortableTaskItemProps.md)
 - [SourceCollectorRegistry](entities/SourceCollectorRegistry.md)
+- [SourceLinkAction](entities/SourceLinkAction.md)
+- [SourceLinkDecision](entities/SourceLinkDecision.md)
+- [SourceLinkRefused](entities/SourceLinkRefused.md)
 - [SourceState](entities/SourceState.md)
 - [SqlStateFailure](entities/SqlStateFailure.md)
 - [StatusAmendmentLedger](entities/StatusAmendmentLedger.md)
@@ -1207,6 +1209,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TriageListParams](entities/TriageListParams.md)
 - [TriageRowProps](entities/TriageRowProps.md)
 - [TriageService](entities/TriageService.md)
+- [TriageSourceLinkOutcome](entities/TriageSourceLinkOutcome.md)
 - [TrustedKeyBinding](entities/TrustedKeyBinding.md)
 - [URLPolicyError](entities/URLPolicyError.md)
 - [UTCDateTime](entities/UTCDateTime.md)
@@ -1862,7 +1865,6 @@ Retained history; these declarations are absent from the selected source invento
 - [20261124_0023_task_replacements](modules/20261124_0023_task_replacements.md) - Record audited clean-replacement dispositions between tasks.
 - [20261124_0024_delivery_dependency_target_branch](modules/20261124_0024_delivery_dependency_target_branch.md) - Let a delivery prerequisite require accepted code merged on a named branch.
 - [20261126_0025_catalog_local_first](modules/20261126_0025_catalog_local_first.md) - Let a model catalog entry prefer a free or local model at equal adequacy.
-- [20261126_0026_review_record_kind](modules/20261126_0026_review_record_kind.md) - Tell an owner's override acceptance apart from an ordinary review in review history.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AccountMenu](modules/AccountMenu.md) - `frontend/src/features/identity/AccountMenu.tsx`
 - [AccountMenu.test](modules/AccountMenu.test.md) - `frontend/src/features/identity/AccountMenu.test.tsx`
@@ -2676,6 +2678,7 @@ Retained history; these declarations are absent from the selected source invento
 - [snapshots](modules/snapshots.md) - Snapshots API router.
 - [source](modules/source.md) - Read-only SQLite snapshot creation and source preflight.
 - [source_binding](modules/source_binding.md) - Independently bind local measurements to the source that actually executes.
+- [source_link_policy](modules/source_link_policy.md) - One policy for the source link carried by intakes and tasks.
 - [sql_semantics](modules/sql_semantics.md) - Cross-dialect text matching rules for the supported SQLite/PostgreSQL window.
 - [src_main](modules/src_main.md) - `frontend/src/main.tsx`
 - [status](modules/status.md) - Deterministic DBM task/gate status amendment evaluation.
@@ -2805,6 +2808,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_human_work_queries](modules/test_human_work_queries.md) - Human ownership queries and exact-ID lookup respect project visibility.
 - [test_identity_lifecycle](modules/test_identity_lifecycle.md) - OIDC, native bearer, revocation, ownership and real MCP transport contracts.
 - [test_initial_schema](modules/test_initial_schema.md) - The packaged initial schema and fail-closed development reset boundary.
+- [test_intake_source_link](modules/test_intake_source_link.md) - Source links on intakes and tasks follow one policy.
 - [test_iteration_date_move](modules/test_iteration_date_move.md) - A proposed iteration period is checked against each person's bookings elsewhere and saves nothing.
 - [test_load_seed_postgresql](modules/test_load_seed_postgresql.md) - Real-PostgreSQL small seed and resumability qualification.
 - [test_load_tooling](modules/test_load_tooling.md) - Unit contracts for deterministic, sealed, fail-closed load tooling.
@@ -2822,7 +2826,6 @@ Retained history; these declarations are absent from the selected source invento
 - [test_native_runtimes](modules/test_native_runtimes.md) - Native orchestration preserves isolation, real result requirements and cleanup.
 - [test_observability](modules/test_observability.md) - DBM-OBS-001 readiness, drain, and safe-metrics tests.
 - [test_observer_sessions](modules/test_observer_sessions.md) - Paired observer sessions read like their principal, change nothing, and renew within a cap.
-- [test_owner_override_acceptance](modules/test_owner_override_acceptance.md) - An owner may accept one resolved task while the different-publisher policy stays on.
 - [test_person_assignment_reads](modules/test_person_assignment_reads.md) - People read the assignments of tasks they can see; agent keys keep the full projection.
 - [test_person_run_reads](modules/test_person_run_reads.md) - People read the runs of tasks they can see; run logs stay behind keys.
 - [test_pipeline_active_outside_run](modules/test_pipeline_active_outside_run.md) - Active work with no WorkChord run is shown in its own pipeline stage.
@@ -2855,7 +2858,6 @@ Retained history; these declarations are absent from the selected source invento
 - [test_replacement_carried_provenance](modules/test_replacement_carried_provenance.md) - A replacement's carried contributors stay out of independent review, and their history walk is bounded.
 - [test_review_provenance](modules/test_review_provenance.md) - Exercise independent publisher review through the atomic work commands.
 - [test_review_provenance_transports](modules/test_review_provenance_transports.md) - Exercise strict review, interruption and return through the registered worker and PM protocols.
-- [test_review_record_kind_migration](modules/test_review_record_kind_migration.md) - Review history gains a kind reversibly and never silently loses an owner override.
 - [test_routing_evidence](modules/test_routing_evidence.md) - Keep CI evidence inventories aligned with the checked-in implementation.
 - [test_routing_preview_focus](modules/test_routing_preview_focus.md) - A focused routing preview keeps a named team actor's rows inside the bounded response.
 - [test_routing_preview_size](modules/test_routing_preview_size.md) - The routed decision, its defaults, and its digest share one exact canonical byte budget.
@@ -3122,7 +3124,6 @@ Retained history; these declarations are absent from the selected source invento
 - [SnapshotService_build_snapshot_data](workflows/SnapshotService_build_snapshot_data.md) - entry: `snapshot_service.SnapshotService.build_snapshot_data`
 - [SnapshotService_create_snapshot](workflows/SnapshotService_create_snapshot.md) - entry: `snapshot_service.SnapshotService.create_snapshot`
 - [SnapshotService_restore](workflows/SnapshotService_restore.md) - entry: `snapshot_service.SnapshotService.restore`
-- [TaskBriefService_record_review](workflows/TaskBriefService_record_review.md) - entry: `task_brief_service.TaskBriefService.record_review`
 - [TaskBriefService_require_review](workflows/TaskBriefService_require_review.md) - entry: `task_brief_service.TaskBriefService.require_review`
 - [TaskBulkOperationService_run](workflows/TaskBulkOperationService_run.md) - entry: `task_bulk_operation_service.TaskBulkOperationService.run`
 - [TaskDetailService_detail](workflows/TaskDetailService_detail.md) - entry: `task_detail_service.TaskDetailService.detail`
@@ -3158,6 +3159,7 @@ Retained history; these declarations are absent from the selected source invento
 - [TriageService_create](workflows/TriageService_create.md) - entry: `triage_service.TriageService.create`
 - [TriageService_mark_duplicate](workflows/TriageService_mark_duplicate.md) - entry: `triage_service.TriageService.mark_duplicate`
 - [TriageService_snooze](workflows/TriageService_snooze.md) - entry: `triage_service.TriageService.snooze`
+- [TriageService_update](workflows/TriageService_update.md) - entry: `triage_service.TriageService.update`
 - [affected_iteration_ids](workflows/affected_iteration_ids.md) - entry: `planning_input_context.affected_iteration_ids`
 - [aggregate_metrics](workflows/aggregate_metrics.md) - entry: `work_metrics.aggregate_metrics`
 - [assert_postgresql_contract](workflows/assert_postgresql_contract.md) - entry: `transfer._assert_postgresql_contract`
@@ -3170,6 +3172,7 @@ Retained history; these declarations are absent from the selected source invento
 - [check_supervised_selection](workflows/check_supervised_selection.md) - entry: `review_evidence.check_supervised_selection`
 - [choose_local_profile](workflows/choose_local_profile.md) - entry: `identity.choose_local_profile`
 - [convert_triage_item_to_backlog](workflows/convert_triage_item_to_backlog.md) - entry: `triage.convert_triage_item_to_backlog`
+- [convert_triage_to_backlog](workflows/convert_triage_to_backlog.md) - entry: `mcp_agent_tools.convert_triage_to_backlog`
 - [convert_triage_to_task](workflows/convert_triage_to_task.md) - entry: `mcp_agent_tools.convert_triage_to_task`
 - [create_request_source_link](workflows/create_request_source_link.md) - entry: `mcp_agent_tools.create_request_source_link`
 - [create_session](workflows/create_session.md) - entry: `session_service._create_session`
@@ -3513,7 +3516,6 @@ Retained history; these declarations are absent from the selected source invento
 - [http-move_task](flows/http-move_task.md) - entry: `move_task`
 - [http-native_token](flows/http-native_token.md) - entry: `native_token`
 - [http-new_mutation](flows/http-new_mutation.md) - entry: `new_mutation`
-- [http-owner_accept_task](flows/http-owner_accept_task.md) - entry: `owner_accept_task`
 - [http-patch_agent_task](flows/http-patch_agent_task.md) - entry: `patch_agent_task`
 - [http-patch_planning_task](flows/http-patch_planning_task.md) - entry: `patch_planning_task`
 - [http-personal_inbox](flows/http-personal_inbox.md) - entry: `personal_inbox`

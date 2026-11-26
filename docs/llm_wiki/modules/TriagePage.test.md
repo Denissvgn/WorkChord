@@ -18,6 +18,7 @@ _Auto-generated from `frontend/src/pages/TriagePage.test.tsx`._
 | `../types/iteration` | `Iteration` | Declaration | erased |
 | `../types/project` | `Project` | Declaration | erased |
 | `../types/triage` | `TriageItem` | Declaration | erased |
+| `../utils/safeUrl` | `sourceLinkHref` | — | compiler-dependent |
 | `./TriagePage` | `TriagePage` | — | compiler-dependent |
 | `@testing-library/react` | `screen`, `waitFor`, `within` | — | compiler-dependent |
 | `node:fs` | `readdirSync`, `readFileSync` | — | compiler-dependent |
@@ -48,6 +49,7 @@ flowchart LR
     n7["frontend/src/types/iteration.ts"]
     n8["frontend/src/types/project.ts"]
     n9["frontend/src/types/triage.ts"]
+    n10["frontend/src/utils/safeUrl.ts"]
     n0 --> n7
     n0 --> n9
     n1 --> n7
@@ -64,6 +66,7 @@ flowchart LR
     n3 --> n7
     n3 --> n8
     n3 --> n9
+    n3 --> n10
     n4 --> n1
     n4 --> n2
     n4 --> n9
@@ -77,6 +80,7 @@ flowchart LR
     click n7 "../modules/types_iteration.md"
     click n8 "../modules/types_project.md"
     click n9 "../modules/types_triage.md"
+    click n10 "../modules/safeUrl.md"
 ```
 
 ### Internal neighbors
@@ -92,6 +96,7 @@ flowchart LR
 | Outbound | [types_iteration](../modules/types_iteration.md) |
 | Outbound | [types_project](../modules/types_project.md) |
 | Outbound | [types_triage](../modules/types_triage.md) |
+| Outbound | [safeUrl](../modules/safeUrl.md) |
 
 ### External packages
 

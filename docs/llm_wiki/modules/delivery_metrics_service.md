@@ -62,7 +62,7 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [DeliveryMetricsService](../entities/DeliveryMetricsService.md) | 114 | — | — |
+| [DeliveryMetricsService](../entities/DeliveryMetricsService.md) | 111 | — | — |
 
 ## Functions
 

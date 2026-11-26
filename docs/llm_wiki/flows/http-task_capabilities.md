@@ -120,13 +120,13 @@ flowchart LR
 |---|---|---:|---|
 | task_capabilities | domain_capabilities | 152 | `domain_capabilities(db)` |
 | domain_capabilities | internal_authority | 56 | `internal_authority(db)` |
-| internal_authority | db.info.get | 113 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get | 99 | `db.info.get('authority_internal', False)` |
 | domain_capabilities | db.scalar | 57 | `db.scalar(...)` |
 | domain_capabilities | select(…).where(…).limit | 57 | `select(Task.id).where(Task.domain_backfill_version < 1).limit(1)` |
 | domain_capabilities | select(…).where | 57 | `select(Task.id).where(...)` |
 | domain_capabilities | select | 57 | `select(Task.id)` |
 | domain_capabilities | get_settings | 61 | `get_settings(data not statically known)` |
-| get_settings | Settings | 527 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | domain_capabilities | get_settings | 62 | `get_settings(data not statically known)` |
 
 ### Boundary effects
@@ -137,7 +137,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `internal_authority` | `db.info.get` | 113 |
+| unresolved_call | `internal_authority` | `db.info.get` | 99 |
 | unresolved_call | `domain_capabilities` | `db.scalar` | 57 |
 | unresolved_call | `domain_capabilities` | `select(Task.id).where(Task.domain_backfill_version < 1).limit` | 57 |
 | unresolved_call | `domain_capabilities` | `select(Task.id).where` | 57 |

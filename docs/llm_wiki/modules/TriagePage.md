@@ -19,7 +19,7 @@ _Auto-generated from `frontend/src/pages/TriagePage.tsx`._
 | `../components/triage/TriageList` | `TriageList` | — | compiler-dependent |
 | `../components/triage/TriageToolbar` | `TriageToolbar` | — | compiler-dependent |
 | `../components/triage/triageUtils` | `DuplicateActionDefaults`, `TriageLifecycleAction` | Specifier | compiler-dependent |
-| `../components/triage/triageUtils` | `AGENT_SOURCE_LABEL_KEYS`, `getErrorMessage`, `isDueSnoozed`, `makeLookup`, `toLocalDateTimeInputValue`, `triageFiltersFromSavedView` | — | compiler-dependent |
+| `../components/triage/triageUtils` | `AGENT_SOURCE_LABEL_KEYS`, `getErrorMessage`, `getSourceLinkError`, `isDueSnoozed`, `makeLookup`, `toLocalDateTimeInputValue`, `triageFiltersFromSavedView` | — | compiler-dependent |
 | `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
 | `../features/firstRun/firstRunSteps` | `firstRunPlanHref` | — | compiler-dependent |
 | `../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |

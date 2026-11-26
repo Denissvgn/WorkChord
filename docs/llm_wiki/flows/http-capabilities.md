@@ -83,7 +83,7 @@ flowchart LR
 | capabilities | db.info.get | 29 | `db.info.get('authority')` |
 | capabilities | bool | 30 | `bool(...)` |
 | capabilities | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 527 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 
 ### Boundary effects
 

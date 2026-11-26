@@ -198,7 +198,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| current_task_review | domain_result | 288 | `domain_result(...)` |
+| current_task_review | domain_result | 278 | `domain_result(...)` |
 | domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
@@ -206,7 +206,7 @@ flowchart LR
 | domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 57 | `str(exc)` |
 | domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| current_task_review | TaskDetailService.detail | 288 | `TaskDetailService(db).detail(task_id, limit=1)` |
+| current_task_review | TaskDetailService.detail | 278 | `TaskDetailService(db).detail(task_id, limit=1)` |
 | TaskDetailService.detail | self.db.scalar | 153 | `self.db.scalar(...)` |
 | TaskDetailService.detail | select(…).where(…).options | 153 | `select(Task).where(Task.id == task_id).options(raiseload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...))` |
 

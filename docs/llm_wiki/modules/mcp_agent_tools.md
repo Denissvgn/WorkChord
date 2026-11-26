@@ -39,7 +39,7 @@ the same audited command and read-model paths.
 | `app.schemas.task_replacement` | `TaskReplacementResponse`, `TaskReplacementCreate` |
 | `app.schemas.team` | `MemberCapacity`, `MemberWorkload`, `TeamMemberProfileResponse`, `TeamMemberProfileCreate`, `TeamMemberProfileUpdate`, `TeamMemberCreate`, `TeamMemberResponse`, `TeamMemberUpdate`, `VacationCreate`, `VacationResponse`, `VacationUpdate`, `CapacityAdjustmentCommand`, `CapacityAdjustmentResult`, `CapacityAdjustmentCommand`, `CapacityTransferCommand`, `CapacityTransferResult`, `CapacityTransferCommand`, `CapacityTransferResult`, `CapacityTransferWithdrawal`, `CapacityTransferWithdrawal` |
 | `app.schemas.template` | `TemplateType`, `WorkTemplateResponse` |
-| `app.schemas.triage` | `TriageActionRequest`, `TriageClassificationSuggestionResponse`, `TriageConvertToTaskRequest`, `TriageConvertToTaskResponse`, `TriageDuplicateRequest`, `TriageItemCreate`, `TriageItemResponse`, `TriageItemStatus`, `TriageItemUpdate`, `TriageSnoozeRequest`, `TriageTaskDraftRequest`, `TriageConvertToBacklogRequest` |
+| `app.schemas.triage` | `TriageActionRequest`, `TriageClassificationSuggestionResponse`, `TriageConvertToTaskRequest`, `TriageConvertToTaskResponse`, `TriageDuplicateRequest`, `TriageItemCreate`, `TriageItemResponse`, `TriageItemStatus`, `TriageItemUpdate`, `TriageSnoozeRequest`, `TriageSourceLinkOutcome`, `TriageTaskDraftRequest`, `TriageConvertToBacklogRequest` |
 | `app.services.agent_model_catalog_service` | `AgentModelCatalogService` |
 | `app.services.agent_planning_service` | `AgentPlanningService` |
 | `app.services.agent_profile_catalog_service` | `AgentProfileCatalogService` |
@@ -107,7 +107,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (19) |
+| Inbound | `backend` (20) |
 | Outbound | `backend` (61) |
 
 ### External packages
@@ -116,7 +116,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 80 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 81 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

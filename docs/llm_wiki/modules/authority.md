@@ -56,7 +56,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (95) |
+| Inbound | `backend` (94) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (6) |
 
@@ -66,7 +66,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 102 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 101 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -81,7 +81,6 @@ flowchart LR
 |----------|-----------|------------|-------------|
 | `require_project` | `(db, project_id, action = 'read')` | — | — |
 | `require_operator` | `(db)` | — | — |
-| `require_owner_override` | `(db)` | — | Only a signed-in workspace owner or operator may set aside publisher independence. |
 | `internal_authority` | `(db)` | `@contextmanager` | Allow identity resolution or verified automation inside a trusted server boundary. |
 | `_scope_conditions` | `(authority)` | — | — |
 | `scope_orm_operation` | `(state)` | `@event.listens_for(Session, 'do_orm_execute')` | — |

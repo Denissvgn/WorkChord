@@ -13,14 +13,13 @@
 3. `review_provenance.different_publisher_required`
 4. `commands.current_command`
 5. `authority.AuthorityError`
-6. `commands.current_command`
+6. `authority.AuthorityError`
 7. `authority.AuthorityError`
-8. `authority.AuthorityError`
-9. `delivery_dependency_service.DeliveryDependencyService.ready`
-10. `delivery_dependency_service.DeliveryDependencyService`
-11. `authority.AuthorityError`
-12. `autonomy_canonical.sha256_hex`
-13. `authority.AuthorityError`
+8. `delivery_dependency_service.DeliveryDependencyService.ready`
+9. `delivery_dependency_service.DeliveryDependencyService`
+10. `authority.AuthorityError`
+11. `autonomy_canonical.sha256_hex`
+12. `authority.AuthorityError`
 
 ## Touches
 

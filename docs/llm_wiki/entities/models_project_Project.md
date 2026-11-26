@@ -120,4 +120,4 @@ flowchart LR
 | `task_domain` | import | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `AgentWorkService.create_project_update` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 
-> References: showing 12 of 108 logical references; 96 omitted by the 12-row generated summary limit.
+> References: showing 12 of 107 logical references; 95 omitted by the 12-row generated summary limit.

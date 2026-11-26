@@ -19,7 +19,6 @@ _Auto-generated from `DeliveryMetricsResponse` in `backend/app/schemas/delivery_
 | `scope_basis` | `str` | `scope_basis` | No | No | `'scope_at_observation'` | — | — | — |
 | `accepted_leaf_tasks` | `int` | `accepted_leaf_tasks` | No | No | `0` | — | — | — |
 | `acceptance_events` | `int` | `acceptance_events` | No | No | `0` | — | — | — |
-| `owner_override_acceptance_events` | `int` | `owner_override_acceptance_events` | No | No | `0` | — | — | Acceptances in the window that an owner recorded as an override of publisher independence. They are included in acceptance_events and are not independent reviews. |
 | `rejection_events` | `int` | `rejection_events` | No | No | `0` | — | — | — |
 | `canceled_leaf_tasks` | `int` | `canceled_leaf_tasks` | No | No | `0` | — | — | — |
 | `reopened_events` | `int` | `reopened_events` | No | No | `0` | — | — | — |
@@ -56,7 +55,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [delivery_metrics](../modules/delivery_metrics.md) | 0 | `acceptance_events`, `accepted_leaf_tasks`, `canceled_leaf_tasks`, `contract_version`, `coverage`, `cycle_time`, `lead_time`, `owner_override_acceptance_events`, `queues_truncated`, `recovery_queue`, `rejection_events`, `reopened_events` |
+| [delivery_metrics](../modules/delivery_metrics.md) | 0 | `acceptance_events`, `accepted_leaf_tasks`, `canceled_leaf_tasks`, `contract_version`, `coverage`, `cycle_time`, `lead_time`, `queues_truncated`, `recovery_queue`, `rejection_events`, `reopened_events`, `review_delay` |
 
 ### Structure
 

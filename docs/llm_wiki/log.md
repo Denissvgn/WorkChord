@@ -4165,15 +4165,31 @@ Refreshed against the 1.10.0 code. New and changed subjects: delivery prerequisi
 - Generator version: `6.1.1`
 - Source selection profile: none (default discovery)
 - Source selection fingerprint: none
-- Source snapshot digest: `sha256:919341cf76c26b88315da80644f39c26f7e97ef2d0e57c8d4797ecea07bfe4c6`
-- Pages created: 6
-- Pages updated: 85
-- Pages metadata-only: 1
-- Pages skipped (unchanged): 3711
+- Source snapshot digest: `sha256:bfc90791d8b81dfedc1a24b93db2b7507115639d5d40e678e73aa6faab7b7729`
+- Pages created: 8
+- Pages updated: 314
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3483
 - Pages deprecated: 0
-- Semantic fields preserved: 14
+- Semantic fields preserved: 4
 - Moved entities: none
-- Flow pages initialized: 1 (http=1)
-- Workflow pages created: 1
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 2
 - Dependency pages initialized: 0
 - Surface policy updated: no
+
+## 2026-11-26
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:b3a3f9102f92804bf70dd0b664d831548c0cbf9bb9d5cf4d2b06065f1fcc2379`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3805
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

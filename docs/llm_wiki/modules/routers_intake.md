@@ -16,6 +16,7 @@ Controlled external intake API router.
 | `app.services.session_service` | `get_client_ip` |
 | `app.services.system_settings_service` | `RuntimeSettingsService` |
 | `app.services.web_intake_service` | `WebIntakeConfigurationError`, `WebIntakeRateLimitError`, `WebIntakeService`, `WebIntakeUnauthorizedError` |
+| `app.utils.source_link_policy` | `SourceLinkRefused` |
 | `fastapi` | `APIRouter`, `Body`, `Depends`, `Header`, `HTTPException`, `Request`, `status` |
 | `pydantic` | `ValidationError` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
@@ -35,6 +36,7 @@ flowchart LR
     n6["backend/app/services/session_service.py"]
     n7["backend/app/services/system_settings_service.py"]
     n8["backend/app/services/web_intake_service.py"]
+    n9["backend/app/utils/source_link_policy.py"]
     n1 --> n0
     n1 --> n3
     n2 --> n3
@@ -44,6 +46,8 @@ flowchart LR
     n3 --> n6
     n3 --> n7
     n3 --> n8
+    n3 --> n9
+    n5 --> n9
     n6 --> n0
     n8 --> n4
     n8 --> n5
@@ -56,6 +60,7 @@ flowchart LR
     click n6 "../modules/session_service.md"
     click n7 "../modules/system_settings_service.md"
     click n8 "../modules/web_intake_service.md"
+    click n9 "../modules/source_link_policy.md"
 ```
 
 ### Internal neighbors
@@ -70,6 +75,7 @@ flowchart LR
 | Outbound | [session_service](../modules/session_service.md) |
 | Outbound | [system_settings_service](../modules/system_settings_service.md) |
 | Outbound | [web_intake_service](../modules/web_intake_service.md) |
+| Outbound | [source_link_policy](../modules/source_link_policy.md) |
 
 ### External packages
 

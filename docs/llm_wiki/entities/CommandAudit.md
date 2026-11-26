@@ -104,4 +104,4 @@ flowchart LR
 | `IdentityService.transfer_guest` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `reconcile_window` | call | [planning_window_reconciliation](../modules/planning_window_reconciliation.md) | 1 |
 
-> References: showing 12 of 29 logical references; 17 omitted by the 12-row generated summary limit.
+> References: showing 12 of 28 logical references; 16 omitted by the 12-row generated summary limit.

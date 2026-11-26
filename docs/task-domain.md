@@ -104,4 +104,12 @@ Moving backlog work between projects requires edit permission in both projects. 
 
 The legacy `/api/triage/{triage_item_id}/convert-to-task` endpoint still requires `iteration_id`. Unscheduled conversion uses the explicit `/api/triage/{triage_item_id}/convert-to-backlog` endpoint and requires `project_id`.
 
+### Source links on requests and tasks
+
+Requests (triage items) and tasks share one source link policy. A source link is displayed, never fetched, and may be a public `http(s)` address, a path inside this instance such as `/tasks?project=6`, or an address of this same instance. This instance means a loopback host (`localhost`, `*.localhost`, `127.0.0.0/8`, `::1`, on any port) or the host and port of the optional `PUBLIC_BASE_URL` setting. An address of this instance is stored as its relative path, so it keeps working wherever the instance is opened. Private, link-local and reserved addresses, other schemes, protocol-relative paths and embedded credentials are refused.
+
+- Creating or editing a request through `POST /api/triage`, `PUT /api/triage/{triage_item_id}`, the controlled web intake, the agent planning routes or the MCP tools `workspace_create_triage_item` and `workspace_update_triage_item` returns a refused link as HTTP 400 (MCP: the tool error) with the named code `intake_source_link_not_allowed`. The body carries `field` (`source_url`), a `message` and a `next_step`. The Triage page shows the same text beside the Source URL field.
+- `convert-to-task` and `convert-to-backlog` (and their MCP and agent planning equivalents) never fail on the link. A link to this instance is carried to the task as a relative path; a refused link is left off the task. Either change is reported in the response under `source_link` as `{action: "rewritten" | "dropped", original, task_source_url, message}`; the field is absent when the link was carried over unchanged or there was none. The request keeps its original link.
+- Requests stored before this policy that hold such a link stay readable, editable (an unchanged link is accepted as stored) and convertible.
+
 Operators can inspect paginated backfill diagnostics at `/api/tasks/migration-diagnostics`. The migration preserves IDs and original values, and backfill completion markers allow completed rows to remain unchanged on resumption. SQLite rebuilds are transactional and verify foreign-key integrity before committing. Removing the expanded schema would lose backlog, ownership and review information; rollback requires a complete backup and the matching application image.
