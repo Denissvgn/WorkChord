@@ -129,9 +129,16 @@ export function runtimeSnippet(runtime: AgentRuntime, server: string, filename: 
         '# bearer_token_env_var = "AGENT_API_KEY"',
         ...setup, 'codex',
     ].join('\n');
-    if (runtime === 'claude-code') return [...setup, 'claude'].join('\n');
+    if (runtime === 'claude-code') return [
+        '# Role skills: adapters/claude-code/workchord-agent-roles in the WorkChord repository.',
+        ...setup, 'claude --plugin-dir /path/to/WorkChord/adapters/claude-code/workchord-agent-roles',
+    ].join('\n');
     if (runtime === 'pi') return [...setup, '# Start Pi with the local provider and model chosen above.', 'pi'].join('\n');
     return [
+        ...(runtime === 'antigravity' ? [
+            '# Role skills: copy the folders of adapters/antigravity/workchord-agent-roles/skills',
+            '# into the workspace .agent/skills folder.',
+        ] : []),
         ...setup,
         runtime === 'antigravity' ? '# Run this in the Antigravity agent terminal.' : "# Run this in the runtime's private terminal.",
         '# The installed role skill reads WORKCHORD_BASE_URL and AGENT_API_KEY.',

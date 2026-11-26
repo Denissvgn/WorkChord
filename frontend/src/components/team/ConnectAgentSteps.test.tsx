@@ -534,4 +534,11 @@ describe('Connect agent steps', () => {
             expect(snippet).not.toMatch(/AGENT_API_KEY=['"]?[a-z]/i);
         }
     });
+
+    it('points the Claude Code and Antigravity instructions at the generated adapter', () => {
+        expect(runtimeSnippet('claude-code', current.server_url, 'member.json'))
+            .toContain('--plugin-dir /path/to/WorkChord/adapters/claude-code/workchord-agent-roles');
+        expect(runtimeSnippet('antigravity', current.server_url, 'member.json'))
+            .toContain('adapters/antigravity/workchord-agent-roles/skills');
+    });
 });
