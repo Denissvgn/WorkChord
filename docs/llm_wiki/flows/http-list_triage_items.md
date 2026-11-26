@@ -52,7 +52,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_triage_items | service.list_items | 88 | `service.list_items(active=active, statuses=statuses, q=q, source=source, limit=limit, offset=offset)` |
+| list_triage_items | service.list_items | 92 | `service.list_items(active=active, statuses=statuses, q=q, source=source, limit=limit, offset=offset)` |
 
 ### Boundary effects
 
@@ -62,7 +62,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `list_triage_items` | `service.list_items` | 88 |
+| unresolved_call | `list_triage_items` | `service.list_items` | 92 |
 
 ## Behavior
 

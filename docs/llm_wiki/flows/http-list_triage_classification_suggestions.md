@@ -186,10 +186,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_triage_classification_suggestions | service.list_classification_suggestions | 208 | `service.list_classification_suggestions(triage_item_id, limit=limit)` |
-| list_triage_classification_suggestions | HTTPException | 213 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| list_triage_classification_suggestions | _not_found_detail | 215 | `_not_found_detail(service, triage_item_id)` |
-| _not_found_detail | resolve_runtime_ui_language | 73 | `resolve_runtime_ui_language(service.db)` |
+| list_triage_classification_suggestions | service.list_classification_suggestions | 212 | `service.list_classification_suggestions(triage_item_id, limit=limit)` |
+| list_triage_classification_suggestions | HTTPException | 217 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| list_triage_classification_suggestions | _not_found_detail | 219 | `_not_found_detail(service, triage_item_id)` |
+| _not_found_detail | resolve_runtime_ui_language | 77 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip (backend/app/services/lang…vice.py:normalize_language) | 35 | `str(value or '').strip(data not statically known)` |
@@ -206,8 +206,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `list_triage_classification_suggestions` | `service.list_classification_suggestions` | 208 |
-| external_call | `list_triage_classification_suggestions` | `HTTPException` | 213 |
+| unresolved_call | `list_triage_classification_suggestions` | `service.list_classification_suggestions` | 212 |
+| external_call | `list_triage_classification_suggestions` | `HTTPException` | 217 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | step_limit | `list_triage_classification_suggestions` | `first 12 steps` | 0 |

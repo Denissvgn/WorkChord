@@ -220,7 +220,7 @@ flowchart LR
 |---|---|---:|---|
 | me | resolve_http_identity | 164 | `resolve_http_identity(request, db)` |
 | resolve_http_identity | get_settings | 53 | `get_settings(data not statically known)` |
-| get_settings | Settings | 527 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | resolve_http_identity | IdentityService | 55 | `IdentityService(db)` |
 | resolve_http_identity | request.headers.get | 56 | `request.headers.get('X-Agent-API-Key')` |
 | resolve_http_identity | request.headers.get | 57 | `request.headers.get('X-Admin-API-Key')` |

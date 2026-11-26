@@ -133,6 +133,7 @@ Application settings.
 | `snapshot_retention_count` | `int` | `snapshot_retention_count` | No | No | `10` | — | — | — |
 | `snapshot_max_bytes` | `int` | `snapshot_max_bytes` | No | No | `8 * 1024 * 1024` | — | — | — |
 | `allow_private_egress_urls` | `bool` | `allow_private_egress_urls` | No | No | `False` | — | — | — |
+| `public_base_url` | `str` | `public_base_url` | No | No | `''` | — | — | — |
 | `trusted_proxy_ips` | `list[str]` | `trusted_proxy_ips` | No | No | `[]` | — | — | — |
 | `session_cookie_name` | `str` | `session_cookie_name` | No | No | `'workchord_session'` | — | — | — |
 | `session_cookie_secure` | `bool` | `session_cookie_secure` | No | No | `True` | — | — | — |

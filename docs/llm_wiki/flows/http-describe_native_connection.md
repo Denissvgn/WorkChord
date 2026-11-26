@@ -165,7 +165,7 @@ flowchart LR
 | NativeSessionService.describe | NativeSessionService.approver | 81 | `self.approver(data not statically known)` |
 | NativeSessionService.approver | self.db.info.get | 33 | `self.db.info.get('authority')` |
 | NativeSessionService.approver | get_settings | 35 | `get_settings(data not statically known)` |
-| get_settings | Settings | 527 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | NativeSessionService.approver | AuthorityError | 37 | `AuthorityError('browser_session_required', 'Reload this page, then approve the connection.', 403)` |
 | NativeSessionService.approver | AuthorityError | 39 | `AuthorityError('human_session_required', 'Sign in with a human account to connect a device.', 403)` |
 | NativeSessionService.approver | AuthorityError | 44 | `AuthorityError('human_session_required', 'Sign in with a human account to connect a device.', 403)` |
