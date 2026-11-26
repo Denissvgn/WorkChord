@@ -27,7 +27,7 @@ def sqlite_url(path: Path) -> str:
 
 
 def test_single_head_invariant() -> None:
-    assert head_revision() == "20261126_0025"
+    assert head_revision() == "20261126_0027"
 
 
 @pytest.mark.sqlite

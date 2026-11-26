@@ -94,6 +94,8 @@ class BacklogSnapshotService:
         from app.services.delivery_dependency_service import DeliveryDependencyService
         from app.models.delivery_dependency import DeliveryDependency
         await DeliveryDependencyService(self.db).require_unreferenced(removed)
+        from app.services.task_postponement_service import require_unreferenced as require_unawaited
+        await require_unawaited(self.db, task_ids=removed)
         await self.db.execute(delete(DeliveryDependency).where(DeliveryDependency.task_id.in_(removed)))
         self.db.info.setdefault("delivery_changed_nodes", set()).update(("task", task_id) for task_id in ids)
         outside = await self.db.scalar(select(TaskDependency.id).where(TaskDependency.depends_on_id.in_(removed), TaskDependency.task_id.notin_(removed)).limit(1))

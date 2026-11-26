@@ -12,6 +12,7 @@ from app.authority import Authority, AuthorityError
 from app.commands import PlanningConflict
 from app.main import app
 from app.models.agent import AgentActor, AgentRun, AgentTaskAssignment, TaskEvent
+from app.models.delivery_observation import DeliveryObservation
 from app.models.iteration import Iteration
 from app.models.task import Task
 from app.models.task_brief import TaskProgressRecord
@@ -144,7 +145,11 @@ async def test_requirements_must_be_possible_and_not_already_met(delivery_store)
         canceled = await db.get(Task, scenario.tasks["closed_low"])
         canceled.canceled_at = utc_now()
         (await db.get(Task, scenario.tasks["closed_urgent"])).accepted_at = utc_now()
+        triage = {status: TriageItem(title=f"Intake {status}", project_hint_id=scenario.projects[0], status=status)
+                  for status in ("new", "snoozed", "accepted", "declined", "duplicate", "converted")}
+        db.add_all(triage.values())
         await db.commit()
+        triage = {status: item.id for status, item in triage.items()}
     cases = [
         ({"kind": "predecessor_accepted", "task_id": task_id}, "wait for itself"),
         ({"kind": "predecessor_accepted", "task_id": scenario.tasks["closed_urgent"]}, "already accepted"),
@@ -153,6 +158,8 @@ async def test_requirements_must_be_possible_and_not_already_met(delivery_store)
         ({"kind": "linked_resolved", "triage_item_id": 987654}, "not found"),
         ({"kind": "date", "on_date": (utc_now().date() - timedelta(days=1)).isoformat()}, "after today"),
         ({"kind": "predecessor_accepted", "task_id": 987654}, "not found"),
+        *(({"kind": "linked_resolved", "triage_item_id": triage[status]}, "already resolved")
+          for status in ("accepted", "declined", "duplicate", "converted")),
     ]
     async with _client() as client:
         for requirement, message in cases:
@@ -170,6 +177,10 @@ async def test_requirements_must_be_possible_and_not_already_met(delivery_store)
         task = await db.get(Task, task_id)
         assert task.status == "planned" and task.version == version
         assert await db.scalar(select(func.count()).select_from(TaskPostponement)) == 0
+        # New and snoozed triage items are still open, so they can be waited for.
+        result = await TaskPostponementService(db).postpone(task_id, TaskPostponeRequest(**_postpone(
+            version, *({"kind": "linked_resolved", "triage_item_id": triage[status]} for status in ("new", "snoozed")))))
+        assert [item["triage_item_id"] for item in result["postponement"]["requirements"]] == [triage["new"], triage["snoozed"]]
 
 
 async def _live_execution(db, scenario):
@@ -331,6 +342,8 @@ async def test_only_a_pm_project_manager_or_operator_decides(delivery_store):
         db.info["authority"] = pm
         result = await TaskPostponementService(db).postpone(task_id, TaskPostponeRequest(**_postpone(version)))
         assert result["postponement"]["postponed_by_actor_id"] == scenario.actors[0]
+        log = await db.scalar(select(TaskStatusLog).where(TaskStatusLog.task_id == task_id, TaskStatusLog.to_status == "postponed"))
+        assert log.triggered_by == "agent"
     async with factory() as db:
         # Returning work to resolved is the PM's planning decision, not execution.
         db.info["authority"] = pm
@@ -386,8 +399,12 @@ async def test_cancel_and_reopen_keep_the_open_postponement(delivery_store):
         with pytest.raises(PlanningConflict, match="Reopen canceled work"):
             await TaskPostponementService(db).reactivate(task_id, TaskReactivateRequest(expected_version=version, reason="Resume"))
     async with factory() as db:
+        observed = await db.scalar(select(func.count()).select_from(DeliveryObservation).where(DeliveryObservation.original_task_id == task_id))
         task = await TaskDomainService(db).command(task_id, TaskActionRequest(action="reopen", expected_version=version, reason="Keep it"))
         assert task.canceled_at is None and task.status == "postponed"
+        # Reopened postponed work stays stopped, so it starts no delivery episode.
+        assert await db.scalar(select(func.count()).select_from(DeliveryObservation).where(
+            DeliveryObservation.original_task_id == task_id)) == observed
         result = await TaskPostponementService(db).reactivate(task_id, TaskReactivateRequest(expected_version=task.version, reason="Resume"))
         assert result["task"].status == "resolved" and result["postponement"]["from_status"] == "resolved"
 
@@ -407,6 +424,53 @@ async def test_snapshot_restore_cannot_move_work_into_or_out_of_postponed(delive
     async with factory() as db:
         assert (await db.get(Task, scenario.tasks["planned"])).status == "postponed"
         assert await db.scalar(select(func.count()).select_from(TaskPostponement).where(TaskPostponement.reactivated_at.is_(None))) == 1
+
+
+async def test_work_an_open_postponement_waits_for_cannot_be_deleted(delivery_store):
+    from app.services.iteration_service import IterationService
+    from app.services.task_postponement_service import require_unreferenced
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        triage = TriageItem(title="Vendor answer", project_hint_id=scenario.projects[1])
+        db.add(triage)
+        await db.commit()
+        waiting = await db.get(Task, scenario.tasks["other_project"])
+        waiting_id, waiting_version, triage_id = waiting.id, waiting.version, triage.id
+        target = await db.get(Task, scenario.tasks["planned"])
+        target_id, target_version = target.id, target.version
+        await TaskPostponementService(db).postpone(waiting_id, TaskPostponeRequest(**_postpone(
+            waiting_version, {"kind": "predecessor_accepted", "task_id": target_id},
+            {"kind": "linked_resolved", "triage_item_id": triage_id})))
+    async with factory() as db:
+        with pytest.raises(PlanningConflict) as caught:
+            await TaskService(db).delete(target_id, expected_version=target_version)
+        assert caught.value.code == "reactivation_requirement_referenced"
+        assert f"postponed task {waiting_id}" in str(caught.value)
+    async with factory() as db:
+        # Deleting the iteration would delete the awaited task with it.
+        with pytest.raises(PlanningConflict) as caught:
+            await IterationService(db).delete(scenario.iterations[0])
+        assert caught.value.code == "reactivation_requirement_referenced"
+    async with factory() as db:
+        with pytest.raises(PlanningConflict, match=f"Triage item {triage_id}"):
+            await require_unreferenced(db, triage_item_ids=[triage_id])
+        # Deleting the postponed task together with what it waits for is allowed.
+        await require_unreferenced(db, task_ids=[target_id, waiting_id])
+        assert await db.get(Task, target_id) is not None
+    async with factory() as db:
+        await TaskPostponementService(db).reactivate(waiting_id, TaskReactivateRequest(expected_version=waiting_version + 1, reason="Resume"))
+        # Once the postponement is closed, the named work can go; the history keeps the requirement.
+        assert await TaskService(db).delete(target_id, expected_version=target_version)
+        requirement = await db.scalar(select(TaskReactivationRequirement).where(
+            TaskReactivationRequirement.task_id == waiting_id, TaskReactivationRequirement.kind == "predecessor_accepted"))
+        assert requirement.target_task_id is None
+    async with factory() as db:
+        # A deleted postponed task takes its own postponement and requirements with it.
+        other = await db.get(Task, scenario.tasks["active"])
+        other_id, other_version = other.id, other.version
+        await TaskPostponementService(db).postpone(other_id, TaskPostponeRequest(**_postpone(other_version)))
+        assert await TaskService(db).delete(other_id, expected_version=other_version + 1)
+        assert await db.scalar(select(func.count()).select_from(TaskPostponement).where(TaskPostponement.task_id == other_id)) == 0
 
 
 async def test_never_postponed_task_has_no_postponement_record(delivery_store):

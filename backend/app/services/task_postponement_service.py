@@ -13,13 +13,13 @@ backlog work out of the schedule and from starting. It never stops work that has
 started and records no requirements.
 """
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 
 from app.authority import AuthorityError, internal_authority, require_project
 from app.commands import PlanningConflict, atomic_command
 from app.models.task import Task, TaskStatus
 from app.models.task_postponement import (
-    POSTPONABLE_STATUSES, TaskPostponement, TaskReactivationRequirement,
+    POSTPONABLE_STATUSES, RESOLVED_TRIAGE_STATUSES, TaskPostponement, TaskReactivationRequirement,
 )
 from app.models.triage import TriageItem
 from app.utils.time import utc_now
@@ -98,6 +98,37 @@ async def require_restore_compatible(db, rows, current):
             raise PlanningConflict("restore_conflicts_with_task_postponement",
                                    f"Restoring would move task {row['id']} into or out of postponed. "
                                    "Reactivate or postpone it with its command, or restore a snapshot that keeps its state.")
+
+
+async def require_unreferenced(db, *, task_ids=(), triage_item_ids=()):
+    """Refuse deleting work that an open postponement waits for.
+
+    Deleting the postponed task itself in the same command is allowed: its
+    postponement and requirements go with it.
+    """
+    task_ids, triage_item_ids = list(task_ids), list(triage_item_ids)
+    if not task_ids and not triage_item_ids:
+        return
+    requirement = TaskReactivationRequirement
+    targets = []
+    if task_ids:
+        targets.append(requirement.target_task_id.in_(task_ids))
+    if triage_item_ids:
+        targets.append(requirement.target_triage_item_id.in_(triage_item_ids))
+    query = (select(requirement.task_id, requirement.target_task_id, requirement.target_triage_item_id)
+             .join(TaskPostponement, TaskPostponement.id == requirement.postponement_id)
+             .where(TaskPostponement.reactivated_at.is_(None), or_(*targets))
+             .order_by(requirement.id).limit(1))
+    if task_ids:
+        query = query.where(requirement.task_id.notin_(task_ids))
+    # Postponed work in a scope the caller cannot read still blocks the delete.
+    with internal_authority(db):
+        row = (await db.execute(query)).first()
+    if row is not None:
+        target = f"Task {row.target_task_id}" if row.target_task_id is not None else f"Triage item {row.target_triage_item_id}"
+        raise PlanningConflict("reactivation_requirement_referenced",
+                               f"{target} is named by a reactivation requirement of postponed task {row.task_id}. "
+                               "Reactivate that task before deleting this work.")
 
 
 def _requirement_response(row):
@@ -270,9 +301,11 @@ class TaskPostponementService:
                 if item.kind == "linked_resolved" and target.status in {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}:
                     raise ValueError(f"Task {item.task_id} is already resolved")
             if item.triage_item_id is not None:
-                triage = await self.db.scalar(select(TriageItem.id).where(TriageItem.id == item.triage_item_id))
-                if triage is None:
+                triage_status = await self.db.scalar(select(TriageItem.status).where(TriageItem.id == item.triage_item_id))
+                if triage_status is None:
                     raise ValueError(f"Triage item {item.triage_item_id} is not found or inaccessible")
+                if triage_status in RESOLVED_TRIAGE_STATUSES:
+                    raise ValueError(f"Triage item {item.triage_item_id} is already resolved")
             if item.on_date is not None and item.on_date <= working_today(await self._timezone(task)):
                 raise ValueError("A date requirement must be a day after today in the task's working time zone")
             rows.append(row)

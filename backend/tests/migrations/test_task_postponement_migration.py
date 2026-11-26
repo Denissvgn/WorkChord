@@ -14,7 +14,7 @@ from app.models.task_postponement import TaskPostponement, TaskReactivationRequi
 from app.models.task_status_log import TaskStatusLog
 from app.services.upgrade_service import alembic_config
 
-PREVIOUS, CURRENT = "20261124_0024", "20261126_0025"
+PREVIOUS, CURRENT = "20261126_0026", "20261126_0027"
 AT = datetime(2026, 11, 26, tzinfo=timezone.utc)
 
 

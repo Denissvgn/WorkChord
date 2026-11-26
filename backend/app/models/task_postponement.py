@@ -11,6 +11,8 @@ from app.utils.time import UTCDateTime, utc_now
 POSTPONABLE_STATUSES = ("planned", "active", "resolved")
 REACTIVATION_STATUSES = ("planned", "resolved")
 REQUIREMENT_KINDS = ("predecessor_accepted", "date", "owner_decision", "linked_resolved")
+# A triage item is resolved once it leaves the inbox: every status except new and snoozed.
+RESOLVED_TRIAGE_STATUSES = ("accepted", "declined", "duplicate", "converted")
 
 
 class TaskPostponement(Base):
@@ -54,7 +56,7 @@ class TaskPostponement(Base):
     released: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     reactivated_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
     reactivated_to_status: Mapped[str | None] = mapped_column(String(16))
-    # What returned the task to work: an explicit command today; met requirements can add another.
+    # What returned the task to work: "command" for an explicit reactivate command.
     reactivation_trigger: Mapped[str | None] = mapped_column(String(32))
     reactivation_reason: Mapped[str | None] = mapped_column(Text)
     reactivated_by_principal_id: Mapped[int | None] = mapped_column(ForeignKey("principals.id", ondelete="SET NULL"))
@@ -66,10 +68,10 @@ class TaskReactivationRequirement(Base):
 
     ``predecessor_accepted`` names a task that must be accepted, ``date`` a day in
     the task's working time zone, ``owner_decision`` a decision the owner records,
-    and ``linked_resolved`` a task or triage item that must be resolved. A named
-    task or triage item that is later deleted leaves the requirement with no
-    target, so its history stays readable. ``met_at`` stays null until the
-    requirement is evaluated as met.
+    and ``linked_resolved`` a task or triage item that must be resolved. Work named
+    by an open postponement's requirement cannot be deleted; a target of a closed
+    postponement can, leaving that history row with no target. ``met_at`` stays
+    null until the requirement is evaluated as met.
     """
 
     __tablename__ = "task_reactivation_requirements"

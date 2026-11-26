@@ -370,7 +370,6 @@ class TaskStatusService:
         *,
         reason: str,
         expected_version: Optional[int],
-        actor_type: str = "user",
     ) -> Task:
         """Move one locked leaf into or out of postponed, with the usual audit.
 
@@ -384,6 +383,8 @@ class TaskStatusService:
         if command is None:
             raise RuntimeError("Postponement transitions require a command transaction")
         command.postponement_transitions.add(task.id)
+        authority = self.db.info.get("authority")
+        actor_type = "agent" if getattr(authority, "kind", None) == "agent" else "user"
         updated, _, _ = await self._apply_transition(
             task, new_status, reason=reason, actor_type=actor_type, expected_version=expected_version,
             automatic=False, postponement=True,
