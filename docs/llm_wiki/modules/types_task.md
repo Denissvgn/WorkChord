@@ -17,7 +17,7 @@ _Auto-generated from `frontend/src/types/task.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `BriefCriterion`, `CascadeUpdateInfo`, `CriterionProgress`, `ExternalLink`, `ExternalLinkCreate`, `ExternalLinkProvider`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `GroundedAISuggestionResponse`, `GroundedFact`, `SuggestedSubtask`, `Task`, `TaskAISuggestRequest`, `TaskActionAvailability`, `TaskActions`, `TaskAgentReadiness`, `TaskAgentReadinessCriterion`, `TaskAssignee`, `TaskBatchUpdateItem`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskBatchUpdateResponseItem`, `TaskBrief`, `TaskBulkAction`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskBulkOperationResult`, `TaskBulkOutcome`, `TaskClaimedBy`, `TaskCommand`, `TaskCreate`, `TaskDetail`, `TaskFormalizeResponse`, `TaskImportDestination`, `TaskImproveDescriptionResponse`, `TaskMergeRequest`, `TaskMilestone`, `TaskMoveRequest`, `TaskProgress`, `TaskProject`, `TaskReference`, `TaskReferencePage`, `TaskReviewRecord`, `TaskStatus`, `TaskStatusChangeResponse`, `TaskStatusLog`, `TaskStatusStats`, `TaskTextContext`, `TaskTimelineItem`, `TaskTimelineResponse`, `TaskUpdate`, `TaskVersionConflictDetail`, `TasksImportRequest`, `TasksImportResponse` |
+| Exports | `BriefCriterion`, `CascadeUpdateInfo`, `CriterionProgress`, `ExternalLink`, `ExternalLinkCreate`, `ExternalLinkProvider`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `GroundedAISuggestionResponse`, `GroundedFact`, `SuggestedSubtask`, `Task`, `TaskAISuggestRequest`, `TaskActionAvailability`, `TaskActions`, `TaskAgentReadiness`, `TaskAgentReadinessCriterion`, `TaskAssignee`, `TaskBatchUpdateItem`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskBatchUpdateResponseItem`, `TaskBrief`, `TaskBulkAction`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskBulkOperationResult`, `TaskBulkOutcome`, `TaskClaimedBy`, `TaskCommand`, `TaskCreate`, `TaskDetail`, `TaskFormalizeResponse`, `TaskImportDestination`, `TaskImproveDescriptionResponse`, `TaskMergeRequest`, `TaskMilestone`, `TaskMoveRequest`, `TaskProgress`, `TaskProject`, `TaskReference`, `TaskReferencePage`, `TaskStatus`, `TaskStatusChangeResponse`, `TaskStatusLog`, `TaskStatusStats`, `TaskTextContext`, `TaskTimelineItem`, `TaskTimelineResponse`, `TaskUpdate`, `TaskVersionConflictDetail`, `TasksImportRequest`, `TasksImportResponse` |
 
 ## Local dependency map
 
@@ -39,10 +39,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (112) |
+| Inbound | `frontend` (109) |
 | Outbound | `frontend` (2) |
 
-> All 113 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 110 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -93,10 +93,9 @@ flowchart LR
 | [TaskReference](../entities/types_task_TaskReference.md) | Interface | 466 | — | — |
 | [TaskReferencePage](../entities/types_task_TaskReferencePage.md) | Interface | 473 | — | — |
 | [TaskDetail](../entities/TaskDetail.md) | Interface | 474 | — | — |
-| [TaskReviewRecord](../entities/types_task_TaskReviewRecord.md) | Interface | 480 | — | One recorded review. `owner_override` is an owner's acceptance that set aside publisher independence. |
-| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Interface | 484 | — | — |
-| [TaskActions](../entities/TaskActions.md) | Interface | 485 | — | — |
-| [TaskCommand](../entities/TaskCommand.md) | Interface | 489 | — | — |
+| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Interface | 479 | — | — |
+| [TaskActions](../entities/TaskActions.md) | Interface | 480 | — | — |
+| [TaskCommand](../entities/TaskCommand.md) | Interface | 484 | — | — |
 | [TaskStatus](../entities/types_task_TaskStatus.md) | Type alias | 51 | `'planned' \| 'active' \| 'resolved' \| 'closed'` | — |
 | [ExternalLinkProvider](../entities/types_task_ExternalLinkProvider.md) | Type alias | 52 | `'github' \| 'gitlab' \| 'figma' \| 'sentry' \| 'custom' \| 'agdash' \| string` | — |
 | [TaskImportDestination](../entities/types_task_TaskImportDestination.md) | Type alias | 285 | `'tasks' \| 'triage' \| 'auto'` | — |

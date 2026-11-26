@@ -1,0 +1,217 @@
+---
+name: workchord-worker
+description: Do one assigned WorkChord task from start to review handoff. Use when an implementation, analysis, documentation, test, design, or operations agent must discover or resume its assigned work, validate task context, claim and trace execution, report progress or blockers, submit evidence for review by an independent reviewer, or recover from lifecycle conflicts.
+---
+
+# WorkChord Worker
+
+Operate as an execution worker. Let WorkChord decide what work is current;
+do not plan, assign, rank, reorder, or verify work yourself.
+
+## Your Part Of The Workflow
+
+People, the PM, workers, and reviewers follow one workflow. As a worker you:
+
+1. **Capture:** report out-of-scope findings as linked Triage items; never absorb them.
+2. **Do:** read My Work, start only the task assigned to you, report progress or a
+   blocker, then submit for review with evidence for every acceptance criterion.
+   Submitting makes the task Implemented.
+3. **Review:** an independent reviewer accepts the work or requests changes; take
+   rework only when it is assigned back to you.
+
+Planning, assigning, and accepting belong to the PM and the reviewer. The
+sections below give the detailed contract.
+
+## Establish The Operating Mode
+
+1. If the operator supplied an `agent-team-runtime-handoff-v1` packet, complete
+   the restricted acknowledgement in
+   [identity-and-my-work.md](references/identity-and-my-work.md) before normal
+   authentication. Never print or copy the separately delivered credential.
+2. Read [identity-and-my-work.md](references/identity-and-my-work.md), and
+   find your own agent key in the order given in
+   [Find Your Agent Key](references/api-and-mcp.md#find-your-agent-key). With
+   no key, stop and send the operator the message in
+   [When No Key Is Present](references/api-and-mcp.md#when-no-key-is-present);
+   never ask for a key in chat.
+3. Read actor identity, scopes, server/API contract, work policy, concurrency
+   limit, and feature keys from the live capability response when available.
+4. Use assigned mode only when the server advertises every feature below.
+
+<!-- BEGIN GENERATED: WORKCHORD-ROLE-FEATURES -->
+Assigned mode (`assigned-work v1`) requires every one of these live features; this list is generated from the role package metadata:
+
+- `actor-task-assignments`
+- `agent-capabilities-v1`
+- `agent-discovery-triage-v1`
+- `agent-team-master-v1`
+- `atomic-begin-submit`
+- `atomic-renew-v1`
+- `canonical-task-brief-v1`
+- `complete-task-context`
+- `fenced-claims`
+- `my-work-v1`
+- `review-provenance-v1`
+- `snapshot-pagination-v1`
+- `typed-rework-recovery`
+- `work-etag-v1`
+<!-- END GENERATED: WORKCHORD-ROLE-FEATURES -->
+
+5. Otherwise use supervised mode (`supervised v0`) only with one task ID explicitly handed off by
+   a PM or human. Never select a task from the global ready list in v0.
+6. Stop on an incompatible contract, disabled identity, missing execution
+   scope, ambiguous actor, or any concurrency policy other than
+   `max_parallel_work=1`.
+
+Model-aware execution is additive to assigned mode. Use it only when the live
+capability response advertises `model-aware-routing-v1`, reports effective
+`enforced` mode, and the selected assignment, complete context, and
+atomic-begin metadata expose one explicit model binding. In `off` or `shadow`,
+do not attempt model-aware begin; obey the work decision and request PM/operator
+reconciliation for any inactive queued model-aware assignment. Otherwise
+follow the base assigned-work lifecycle without claiming that the runtime model
+was selected or verified by WorkChord.
+
+Keep credentials in the client secret store. Never put a key, claim identifier,
+fence value, full prompt, or other secret in task prose, events, logs, or
+artifacts.
+
+After authentication, re-read capabilities and confirm the active actor ID and
+`agent-team-master-v1` feature match the acknowledged handoff. Retain the
+handoff topology and package identity for conflict reporting. The `/me/work`
+decision remains authoritative; runtime readiness is not permission to
+self-select work.
+
+## Execute One Work Decision
+
+1. Fetch the authoritative current/next work decision.
+2. Obey its state exactly:
+
+   - `resume`: resume only the returned current assignment and run.
+   - `start_assigned`: begin only the returned next assignment.
+   - `wait`: do not begin early; poll at or after the server-provided time.
+     The blocker codes say what holds the task back; only the PM changes the
+     plan. A calculated start date in the future is not a reason to wait when
+     the decision is `start_assigned`: begin, and the server moves the dates.
+   - `no_work`: report idle state and stop this cycle.
+   - `attention_required`: perform no new work; report the recovery codes and
+     request PM/operator action.
+
+3. Do not infer priority from the global ready list, notifications, labels,
+   profile matches, task IDs, or local state. Treat notifications as refetch
+   hints only.
+4. Keep exactly one current task at most. Multiple current items or a policy
+   above `max_parallel_work=1` are incompatible with this skill version.
+
+## Validate Before Mutation
+
+Read [task-context-and-scope.md](references/task-context-and-scope.md), then
+re-fetch the selected task's complete context and timeline. Confirm the exact
+assignment, task and version, queue revision, dependency states, readiness,
+structured brief, reviewer, expected evidence, and current claim/run summary.
+For model-aware work, also confirm the assessment/policy version, selected
+model-binding ID/revision, configured alias, required capability envelope, and
+routing snapshot match across the assignment and context.
+
+Stop and escalate before beginning when scope, acceptance criteria,
+verification, dependencies, authority, or assignment identity is missing or
+contradictory. Never repair PM-owned scope, priority, dates, dependencies,
+assignee, milestone, agent assignment, queue rank, or reviewer yourself.
+
+A task that reaches you should be fully planned: its assignee is the capacity
+row of your own profile, its dates are calculated, and its assignment names a
+reviewer other than you. When one of these is missing, the work decision still
+governs what you do. Report the gap to the PM once, as described in
+[task-context-and-scope.md](references/task-context-and-scope.md#report-plan-gaps-without-repairing-them),
+so the plan people read matches the work you do.
+
+## Begin Or Resume
+
+Read [claim-run-and-task-state.md](references/claim-run-and-task-state.md).
+
+- Prefer the server's atomic begin action. Supply its assignment ID, queue
+  revision, lease request, safe run metadata (including the harness session
+  identifier when your runtime gives you one), and one deterministic
+  idempotency key. Compare the context task version with the assignment-bound version
+  before calling; the server revalidates that binding inside begin.
+- For model-aware work in effective `enforced` mode, also send the exact
+  assigned binding ID/revision and the runtime's observed resolved model
+  through the advertised begin fields. Never substitute another binding, omit
+  required model evidence, or switch models unilaterally. Effective `off` or
+  `shadow`, a stale binding, mismatch, unavailable assigned runtime, or unknown
+  required field is `attention_required`, not permission to continue.
+- Name the branch `wc-<task-id>-<short-slug>` and record it at begin, as in
+  [Record Where The Code Went](references/claim-run-and-task-state.md#record-where-the-code-went).
+- Replace cached assignment, task version, claim/fence, expiry, and run values
+  with every authoritative response.
+- For normal work, accept only the server-owned `planned -> active` transition.
+- For explicit rework or recovery, accept an already-`active` task and begin a
+  new fenced run; do not perform a cosmetic status transition.
+- In supervised v0, follow the documented claim/start/activate sequence and
+  stop for PM reconciliation after any partial or ambiguous result.
+
+## Work Inside The Lease
+
+- Execute only the accepted scope.
+- Renew with jitter around one-third to one-half of the lease lifetime. Stop all
+  task-bound writes immediately after lease or fence loss.
+- Emit bounded progress/checkpoint events and durable artifact links. Keep raw
+  logs and sensitive data elsewhere.
+- Use the claim-bound discovery action to create linked Triage for genuine
+  out-of-scope work. Do not absorb it into the current assignment.
+- Report a blocker as a claim-fenced `agent.blocker` task event whose
+  `blocker` field states the reason. It marks the task Blocked for people, with
+  your name in the task's Activity, and leaves the task version unchanged. Only
+  the PM or a person removes the block. A blocker on a run event stays attempt
+  evidence and does not mark the task. Do not silently choose replacement work.
+- Distinguish reasoning/context/tool insufficiency from access, dependency,
+  credential, scheduling, and external-service blockers. Report observed facts;
+  do not request or perform a model-tier change yourself.
+
+Use [events-errors-and-recovery.md](references/events-errors-and-recovery.md)
+for event contents, retry rules, failures, cancellations, and inconsistent
+state.
+
+## Submit Or Stop
+
+1. Re-fetch the work decision and complete context.
+2. Confirm that the assignment, task version, live claim/fence, and running run
+   still match.
+3. Prefer atomic submit to record final evidence, finish the run, transition
+   `active -> resolved`, fulfill the assignment, and release the claim. Send
+   the branch, every commit, and the pull request when one exists, and put the
+   task's `WC-<task-id>` key in commit and pull-request text, as in
+   [Record Where The Code Went](references/claim-run-and-task-state.md#record-where-the-code-went).
+   A task that changes no repository states why in `delivery_trace.none`.
+4. On failure or cancellation, use the typed terminal action so the run,
+   release, and PM recovery signal remain consistent.
+5. In supervised v0, use the documented multi-call sequence and surface every
+   partial result for reconciliation.
+6. Never transition `resolved -> closed`, verify your own high-risk work,
+   self-assign, reassign, reorder, or silently continue onto another task.
+7. Preserve the selected binding and reported-model evidence in the run and
+   handoff. Never describe a matching self-report as independent attestation.
+
+## Use The Shared Names
+
+Write events, blocker reports, discovery Triage items, and submitted evidence
+with the names in [workflow-and-names.md](references/workflow-and-names.md), so
+people see the same words in WorkChord. "Submit for review" makes the task
+Implemented; only an independent reviewer makes it Accepted.
+
+## Choose The Transport
+
+Read [api-and-mcp.md](references/api-and-mcp.md) before making calls. Prefer MCP
+when the client already exposes the WorkChord tools; otherwise use REST.
+Do not mix transports during one mutation unless recovery requires an
+authoritative read and preserves the same actor identity.
+
+Apply this control rule throughout:
+
+```text
+read authoritative state
+  -> perform one bounded mutation
+  -> accept returned versions and fences
+  -> re-read affected state
+  -> record evidence or escalation
+```

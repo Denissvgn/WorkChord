@@ -4221,11 +4221,57 @@ Refreshed against the 1.10.0 code. New and changed subjects: delivery prerequisi
 - Generator version: `6.1.1`
 - Source selection profile: none (default discovery)
 - Source selection fingerprint: none
-- Source snapshot digest: `sha256:b0c2b37ca9cc5f61c7fa04edb53bcdac255031c27aefb14e84beaa0dc46c62e2`
-- Pages created: 4
-- Pages updated: 29
+- Source snapshot digest: `sha256:bfe5ed14453cb9fbf9002162ec46e8254f670bd4fe82a15bb913dae0667a2eb7`
+- Pages created: 0
+- Pages updated: 24
 - Pages metadata-only: 0
-- Pages skipped (unchanged): 3782
+- Pages skipped (unchanged): 3787
 - Pages deprecated: 0
-- Semantic fields preserved: 6
+- Semantic fields preserved: 2
 - Moved entities: none
+
+## 2026-11-26
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:49ebd303dbcfe6715550ea9737ce6bd61bfc967edf61c9749572c68aa1a33794`
+- Pages created: 0
+- Pages updated: 6
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3806
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 9
+
+## 2026-11-26
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:7910b6d6cd8ae22f52ac1bb6fa47a840c21a784be3ed9bd19364cc1b49c495d3`
+- Pages created: 24
+- Pages updated: 104
+- Pages metadata-only: 4
+- Pages skipped (unchanged): 3702
+- Pages deprecated: 1
+- Semantic fields preserved: 20
+- Moved entities: none
+- Flow pages initialized: 3 (http=3)
+- Workflow pages created: 4
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Generated surface pages retired: 1

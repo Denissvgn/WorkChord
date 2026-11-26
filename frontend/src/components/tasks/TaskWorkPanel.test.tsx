@@ -150,6 +150,26 @@ it('keeps the initial aggregate map through a failed uncommit and explicit curre
     expect(screen.getByRole('textbox', { name: 'Reason for the action or review'  })).toHaveValue('Keep this reason');
 });
 
+describe('unavailable actions', () => {
+    afterEach(async () => { await i18n.changeLanguage('en'); });
+
+    it.each([
+        ['en', 'Postpone', 'Reactivate'],
+        ['ru', 'Отложить', 'Возобновить'],
+    ])('names postpone and reactivate in %s', async (language, postpone, reactivate) => {
+        await ensureLanguageResources(language);
+        await i18n.changeLanguage(language);
+        service.actions.mockResolvedValue({ task_id: 42, version: 3, actions: [
+            { action: 'postpone', allowed: false, blockers: [{ code: 'permission_denied', message: 'Project manage permission is required.' }] },
+            { action: 'reactivate', allowed: false, blockers: [{ code: 'not_postponed', message: 'Only postponed work can be reactivated.' }] },
+        ], claim_generation: 0, running_run_ids: [], live_assignment_ids: [] });
+        renderPanel();
+        expect(await screen.findByText(postpone)).toBeInTheDocument();
+        expect(screen.getByText(reactivate)).toBeInTheDocument();
+        expect(screen.queryByText(/domain\.action_/)).not.toBeInTheDocument();
+    });
+});
+
 describe('review by a person', () => {
     const resolved: Task = { ...task, status: 'resolved', assignee: { id: 7, name: 'Sam' } };
     beforeEach(() => {

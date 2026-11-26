@@ -2301,8 +2301,30 @@ def build_codex_plugin(skills_dir: Path, output_dir: Path) -> Path:
             "defaultPrompt": "Use the appropriate WorkChord role skill for this work.",
         },
     }
-    role_files: dict[str, dict[str, bytes]] = {}
+    role_files = _verified_role_files(skills_dir, catalog)
     expected_files = {".codex-plugin/plugin.json"}
+    for name, files in role_files.items():
+        expected_files.update(f"skills/{name}/{path}" for path in files)
+
+    def populate(stage: Path) -> None:
+        manifest_dir = stage / ".codex-plugin"
+        manifest_dir.mkdir()
+        (manifest_dir / "plugin.json").write_bytes(_canonical_json(manifest))
+        _write_role_skills(stage / "skills", role_files)
+
+    _replace_built_tree(output_dir, expected_files, populate)
+    return output_dir
+
+
+ADAPTER_NAME = "workchord-agent-roles"
+ADAPTER_RUNTIMES = ("codex", "claude-code", "antigravity")
+
+
+def _verified_role_files(
+    skills_dir: Path, catalog: dict[str, Any]
+) -> dict[str, dict[str, bytes]]:
+    """Read every canonical role folder and prove it still matches the catalog."""
+    role_files: dict[str, dict[str, bytes]] = {}
     for skill in catalog["skills"]:
         name = skill["name"]
         files = _collect_role_files(skills_dir / skill["path"])
@@ -2314,23 +2336,84 @@ def build_codex_plugin(skills_dir: Path, output_dir: Path) -> Path:
             path: (_sha256(content), len(content)) for path, content in files.items()
         }
         if observed_records != expected_records:
-            raise SkillPackError(f"Canonical role changed while building plugin: {name}")
+            raise SkillPackError(f"Canonical role changed while building adapter: {name}")
         role_files[name] = files
+    return role_files
+
+
+def _portable_role_files(files: dict[str, bytes]) -> dict[str, bytes]:
+    """Drop the Codex-only interface metadata from a role for other runtimes."""
+    return {
+        path: content for path, content in files.items() if not path.startswith("agents/")
+    }
+
+
+def _write_role_skills(skills_root: Path, role_files: dict[str, dict[str, bytes]]) -> None:
+    for name, files in sorted(role_files.items()):
+        role_dir = skills_root / name
+        for relative, content in files.items():
+            path = role_dir / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(content)
+
+
+def build_claude_code_plugin(skills_dir: Path, output_dir: Path) -> Path:
+    """Generate a Claude Code plugin adapter from the canonical validated role folders."""
+    catalog = validate_catalog(skills_dir)
+    manifest = {
+        "name": ADAPTER_NAME,
+        "version": catalog["catalog_version"],
+        "license": ARTIFACT_LICENSE,
+        "description": "Installable WorkChord PM, Worker, and Reviewer role skills.",
+        "author": {"name": "WorkChord maintainers"},
+    }
+    role_files = {
+        name: _portable_role_files(files)
+        for name, files in _verified_role_files(skills_dir, catalog).items()
+    }
+    expected_files = {".claude-plugin/plugin.json"}
+    for name, files in role_files.items():
         expected_files.update(f"skills/{name}/{path}" for path in files)
 
     def populate(stage: Path) -> None:
-        manifest_dir = stage / ".codex-plugin"
+        manifest_dir = stage / ".claude-plugin"
         manifest_dir.mkdir()
         (manifest_dir / "plugin.json").write_bytes(_canonical_json(manifest))
-        for name, files in sorted(role_files.items()):
-            role_dir = stage / "skills" / name
-            for relative, content in files.items():
-                path = role_dir / relative
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_bytes(content)
+        _write_role_skills(stage / "skills", role_files)
 
     _replace_built_tree(output_dir, expected_files, populate)
     return output_dir
+
+
+def build_antigravity_skills(skills_dir: Path, output_dir: Path) -> Path:
+    """Generate an Antigravity skills adapter from the canonical validated role folders."""
+    catalog = validate_catalog(skills_dir)
+    role_files = {
+        name: _portable_role_files(files)
+        for name, files in _verified_role_files(skills_dir, catalog).items()
+    }
+    expected_files: set[str] = set()
+    for name, files in role_files.items():
+        expected_files.update(f"skills/{name}/{path}" for path in files)
+
+    def populate(stage: Path) -> None:
+        _write_role_skills(stage / "skills", role_files)
+
+    _replace_built_tree(output_dir, expected_files, populate)
+    return output_dir
+
+
+def build_adapters(skills_dir: Path, output_dir: Path) -> dict[str, Path]:
+    """Generate every runtime adapter under one directory, one folder per runtime."""
+    builders = {
+        "codex": build_codex_plugin,
+        "claude-code": build_claude_code_plugin,
+        "antigravity": build_antigravity_skills,
+    }
+    return {
+        runtime: builders[runtime](skills_dir, output_dir / runtime / ADAPTER_NAME)
+        for runtime in ADAPTER_RUNTIMES
+    }
 
 
 def _inspect_regular_tree(root: Path) -> set[str]:
@@ -3452,6 +3535,21 @@ def _parser() -> argparse.ArgumentParser:
         "build-codex-plugin", help="Generate the Codex adapter from canonical roles"
     )
     codex_parser.add_argument("--output-dir", type=Path, required=True)
+    claude_parser = subparsers.add_parser(
+        "build-claude-code-plugin",
+        help="Generate the Claude Code adapter from canonical roles",
+    )
+    claude_parser.add_argument("--output-dir", type=Path, required=True)
+    antigravity_parser = subparsers.add_parser(
+        "build-antigravity-skills",
+        help="Generate the Antigravity adapter from canonical roles",
+    )
+    antigravity_parser.add_argument("--output-dir", type=Path, required=True)
+    adapters_parser = subparsers.add_parser(
+        "build-adapters",
+        help="Generate the Codex, Claude Code and Antigravity adapters",
+    )
+    adapters_parser.add_argument("--output-dir", type=Path, required=True)
     install_parser = subparsers.add_parser(
         "install", help="Install or upgrade one exact role from a built release"
     )
@@ -3513,6 +3611,16 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "build-codex-plugin":
             path = build_codex_plugin(skills_dir, args.output_dir.resolve())
             print(f"Built Codex plugin adapter in {path}")
+        elif args.command == "build-claude-code-plugin":
+            path = build_claude_code_plugin(skills_dir, args.output_dir.resolve())
+            print(f"Built Claude Code plugin adapter in {path}")
+        elif args.command == "build-antigravity-skills":
+            path = build_antigravity_skills(skills_dir, args.output_dir.resolve())
+            print(f"Built Antigravity skills adapter in {path}")
+        elif args.command == "build-adapters":
+            built = build_adapters(skills_dir, args.output_dir.resolve())
+            for runtime, path in built.items():
+                print(f"Built {runtime} adapter in {path}")
         elif args.command == "install":
             install_skill(
                 args.release_dir.resolve(),

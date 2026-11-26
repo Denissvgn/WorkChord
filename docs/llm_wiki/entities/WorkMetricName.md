@@ -1,6 +1,6 @@
 # WorkMetricName
 
-**Location:** `frontend/src/services/taskService.ts:276`
+**Location:** `frontend/src/services/taskService.ts:274`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [taskService](../modules/taskService.md)

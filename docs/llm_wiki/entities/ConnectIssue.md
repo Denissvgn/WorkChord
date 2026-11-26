@@ -1,6 +1,6 @@
 # ConnectIssue
 
-**Location:** `frontend/src/features/agentTeamSetup/connectAgent.ts:147`
+**Location:** `frontend/src/features/agentTeamSetup/connectAgent.ts:154`
 **Kind:** Interface
 **Bases:** —
 **Module:** [connectAgent](../modules/connectAgent.md)

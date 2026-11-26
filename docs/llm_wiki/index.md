@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1815 | [Open section](#entities) |
-| Modules | 1166 | [Open section](#modules) |
-| Workflows | 235 | [Open section](#workflows) |
+| Entities | 1825 | [Open section](#entities) |
+| Modules | 1169 | [Open section](#modules) |
+| Workflows | 238 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 625 | [Open section](#entry-point-flows) |
+| Entry-point flows | 628 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -751,6 +751,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [PostgresOwnership](entities/PostgresOwnership.md)
 - [PostgresTestDatabase](entities/PostgresTestDatabase.md)
 - [PostgresTestDatabaseManager](entities/PostgresTestDatabaseManager.md)
+- [PostponementRelease](entities/PostponementRelease.md)
 - [PreflightPredicateResult](entities/PreflightPredicateResult.md)
 - [Principal](entities/Principal.md)
 - [PrincipalProfileLink](entities/PrincipalProfileLink.md)
@@ -806,6 +807,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [Queue](entities/Queue.md)
 - [QuickCaptureTarget](entities/QuickCaptureTarget.md)
 - [RateLimitWindow](entities/RateLimitWindow.md)
+- [ReactivationRequirementInput](entities/ReactivationRequirementInput.md)
+- [ReactivationRequirementResponse](entities/ReactivationRequirementResponse.md)
 - [Readiness](entities/Readiness.md)
 - [ReadyTopology](entities/ReadyTopology.md)
 - [ReasonCodeRule](entities/ReasonCodeRule.md)
@@ -848,6 +851,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RequestSourceTargetNotFoundError](entities/RequestSourceTargetNotFoundError.md)
 - [RequestSourceUpdate](entities/RequestSourceUpdate.md)
 - [RequestSourceValidationError](entities/RequestSourceValidationError.md)
+- [RequirementKind](entities/RequirementKind.md)
 - [RescheduleResult](entities/RescheduleResult.md)
 - [ResolvedHandoffFact](entities/ResolvedHandoffFact.md)
 - [ResolvedStatusEvidence](entities/ResolvedStatusEvidence.md)
@@ -1097,8 +1101,15 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskMetricSignals](entities/TaskMetricSignals.md)
 - [TaskMode](entities/TaskMode.md)
 - [TaskOrderRequest](entities/TaskOrderRequest.md)
+- [TaskPostponeRequest](entities/TaskPostponeRequest.md)
+- [TaskPostponement](entities/TaskPostponement.md)
+- [TaskPostponementRecord](entities/TaskPostponementRecord.md)
+- [TaskPostponementResponse](entities/TaskPostponementResponse.md)
+- [TaskPostponementService](entities/TaskPostponementService.md)
 - [TaskProgress](entities/TaskProgress.md)
 - [TaskProgressRecord](entities/TaskProgressRecord.md)
+- [TaskReactivateRequest](entities/TaskReactivateRequest.md)
+- [TaskReactivationRequirement](entities/TaskReactivationRequirement.md)
 - [TaskReorder](entities/TaskReorder.md)
 - [TaskReplacement](entities/TaskReplacement.md)
 - [TaskReplacementCreate](entities/TaskReplacementCreate.md)
@@ -1106,6 +1117,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskReplacementService](entities/TaskReplacementService.md)
 - [TaskResponse](entities/TaskResponse.md)
 - [TaskReviewMode](entities/TaskReviewMode.md)
+- [TaskReviewRecord](entities/TaskReviewRecord.md)
 - [TaskReviewResponse](entities/TaskReviewResponse.md)
 - [TaskReviewWrite](entities/TaskReviewWrite.md)
 - [TaskRoutingAssessmentCreate](entities/TaskRoutingAssessmentCreate.md)
@@ -1367,7 +1379,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [models_saved_view_SavedViewType](entities/models_saved_view_SavedViewType.md)
 - [models_task_Task](entities/models_task_Task.md)
 - [models_task_TaskStatus](entities/models_task_TaskStatus.md)
-- [models_task_brief_TaskReviewRecord](entities/models_task_brief_TaskReviewRecord.md)
 - [models_template_TemplateType](entities/models_template_TemplateType.md)
 - [models_template_WorkTemplate](entities/models_template_WorkTemplate.md)
 - [models_time_entry_TimeEntry](entities/models_time_entry_TimeEntry.md)
@@ -1757,7 +1768,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_task_TaskProject](entities/types_task_TaskProject.md)
 - [types_task_TaskReference](entities/types_task_TaskReference.md)
 - [types_task_TaskReferencePage](entities/types_task_TaskReferencePage.md)
-- [types_task_TaskReviewRecord](entities/types_task_TaskReviewRecord.md)
 - [types_task_TaskStatus](entities/types_task_TaskStatus.md)
 - [types_task_TaskStatusChangeResponse](entities/types_task_TaskStatusChangeResponse.md)
 - [types_task_TaskStatusLog](entities/types_task_TaskStatusLog.md)
@@ -1868,6 +1878,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261124_0024_delivery_dependency_target_branch](modules/20261124_0024_delivery_dependency_target_branch.md) - Let a delivery prerequisite require accepted code merged on a named branch.
 - [20261126_0025_catalog_local_first](modules/20261126_0025_catalog_local_first.md) - Let a model catalog entry prefer a free or local model at equal adequacy.
 - [20261126_0026_review_record_kind](modules/20261126_0026_review_record_kind.md) - Tell an owner's override acceptance apart from an ordinary review in review history.
+- [20261126_0027_task_postponements](modules/20261126_0027_task_postponements.md) - Record postponed tasks and the requirements that must hold before they resume.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AccountMenu](modules/AccountMenu.md) - `frontend/src/features/identity/AccountMenu.tsx`
 - [AccountMenu.test](modules/AccountMenu.test.md) - `frontend/src/features/identity/AccountMenu.test.tsx`
@@ -2152,14 +2163,11 @@ Retained history; these declarations are absent from the selected source invento
 - [TaskList](modules/TaskList.md) - `frontend/src/components/tasks/TaskList.tsx`
 - [TaskList.test](modules/TaskList.test.md) - `frontend/src/components/tasks/TaskList.test.tsx`
 - [TaskMergeDialog](modules/TaskMergeDialog.md) - `frontend/src/components/tasks/TaskMergeDialog.tsx`
-- [TaskOwnerAcceptance](modules/TaskOwnerAcceptance.md) - `frontend/src/components/tasks/TaskOwnerAcceptance.tsx`
-- [TaskOwnerAcceptance.test](modules/TaskOwnerAcceptance.test.md) - `frontend/src/components/tasks/TaskOwnerAcceptance.test.tsx`
 - [TaskReadView](modules/TaskReadView.md) - `frontend/src/components/tasks/TaskReadView.tsx`
 - [TaskReadView.brief.test](modules/TaskReadView.brief.test.md) - `frontend/src/components/tasks/TaskReadView.brief.test.tsx`
 - [TaskReadView.dispatch.test](modules/TaskReadView.dispatch.test.md) - `frontend/src/components/tasks/TaskReadView.dispatch.test.tsx`
 - [TaskReadView.operatorKey.test](modules/TaskReadView.operatorKey.test.md) - `frontend/src/components/tasks/TaskReadView.operatorKey.test.tsx`
 - [TaskReadView.test](modules/TaskReadView.test.md) - `frontend/src/components/tasks/TaskReadView.test.tsx`
-- [TaskReviewHistory](modules/TaskReviewHistory.md) - `frontend/src/components/tasks/TaskReviewHistory.tsx`
 - [TaskReviewer](modules/TaskReviewer.md) - `frontend/src/components/tasks/TaskReviewer.tsx`
 - [TaskRoutingPanel](modules/TaskRoutingPanel.md) - `frontend/src/components/agent/TaskRoutingPanel.tsx`
 - [TaskRoutingPanel.test](modules/TaskRoutingPanel.test.md) - `frontend/src/components/agent/TaskRoutingPanel.test.tsx`
@@ -2475,6 +2483,7 @@ Retained history; these declarations are absent from the selected source invento
 - [models_system_settings](modules/models_system_settings.md) - Runtime system settings model.
 - [models_task](modules/models_task.md) - Task model.
 - [models_task_brief](modules/models_task_brief.md) - Append-only brief, progress and ordinary review history.
+- [models_task_postponement](modules/models_task_postponement.md) - A recorded decision that stopped a task, and what must be true before it resumes.
 - [models_task_replacement](modules/models_task_replacement.md) - An audited disposition that replaces unattributable work with a separate clean task.
 - [models_template](modules/models_template.md) - Reusable work template model.
 - [models_time_entry](modules/models_time_entry.md) - Private explicit work records and retained corrections, independent of task state.
@@ -2640,6 +2649,7 @@ Retained history; these declarations are absent from the selected source invento
 - [schemas_task](modules/schemas_task.md) - Task schemas.
 - [schemas_task_brief](modules/schemas_task_brief.md) - Canonical brief inputs and separate execution evidence/review contracts.
 - [schemas_task_domain](modules/schemas_task_domain.md) - Explicit task commands and typed action availability.
+- [schemas_task_postponement](modules/schemas_task_postponement.md) - Postpone and reactivate commands and the postponement record they return.
 - [schemas_task_replacement](modules/schemas_task_replacement.md) - Clean-replacement disposition commands and their auditable projection.
 - [schemas_team](modules/schemas_team.md) - Team member schemas.
 - [schemas_template](modules/schemas_template.md) - Reusable work template schemas.
@@ -2724,6 +2734,7 @@ Retained history; these declarations are absent from the selected source invento
 - [task_domain_service](modules/task_domain_service.md) - Durable ownership, normalized effort and explicit task-domain commands.
 - [task_hierarchy_service](modules/task_hierarchy_service.md) - Read-only ownership of bounded task graph hydration and integrity checks.
 - [task_import_service](modules/task_import_service.md) - Task text import, export, and triage intake workflows.
+- [task_postponement_service](modules/task_postponement_service.md) - Postpone task work with a recorded reason and requirements, and reactivate it.
 - [task_recovery_service](modules/task_recovery_service.md) - Version allocation shared by scheduled and project-backlog recovery.
 - [task_replacement_service](modules/task_replacement_service.md) - Record and read an audited clean replacement of task work that cannot be attributed.
 - [task_service](modules/task_service.md) - Task service with business logic.
@@ -2898,6 +2909,8 @@ Retained history; these declarations are absent from the selected source invento
 - [test_task_domain_integrity](modules/test_task_domain_integrity.md) - Task context, recovery and project projections stay consistent across commands.
 - [test_task_domain_migrations](modules/test_task_domain_migrations.md) - Initial task-domain constraints, evidence retention and identity fences.
 - [test_task_pagination](modules/test_task_pagination.md) - Keyset coverage, mutation semantics and permission-bounded history reads.
+- [test_task_postponement](modules/test_task_postponement.md) - Postponed work stops natively, releases live execution under its fence, and resumes with its evidence intact.
+- [test_task_postponement_migration](modules/test_task_postponement_migration.md) - Task postponement migrates a populated database unchanged, and never loses postponed work on rollback.
 - [test_task_replacement](modules/test_task_replacement.md) - A clean replacement of unattributable work: audited, counted once, and held when it carries unknown work.
 - [test_task_replacement_migration](modules/test_task_replacement_migration.md) - Clean-replacement dispositions migrate reversibly and an existing disposition is never dropped silently.
 - [test_team_member_agent_connected](modules/test_team_member_agent_connected.md) - Team-member responses say whether an agent is connected, to every reader, without naming it.
@@ -3137,11 +3150,12 @@ Retained history; these declarations are absent from the selected source invento
 - [TaskBulkOperationService_run](workflows/TaskBulkOperationService_run.md) - entry: `task_bulk_operation_service.TaskBulkOperationService.run`
 - [TaskDetailService_detail](workflows/TaskDetailService_detail.md) - entry: `task_detail_service.TaskDetailService.detail`
 - [TaskDetailService_my_work](workflows/TaskDetailService_my_work.md) - entry: `task_detail_service.TaskDetailService.my_work`
-- [TaskDomainService__cancel_execution](workflows/TaskDomainService__cancel_execution.md) - entry: `task_domain_service.TaskDomainService._cancel_execution`
 - [TaskDomainService_allowed_actions](workflows/TaskDomainService_allowed_actions.md) - entry: `task_domain_service.TaskDomainService.allowed_actions`
 - [TaskDomainService_command](workflows/TaskDomainService_command.md) - entry: `task_domain_service.TaskDomainService.command`
 - [TaskImportService_bulk_update_tasks_from_text](workflows/TaskImportService_bulk_update_tasks_from_text.md) - entry: `task_import_service.TaskImportService.bulk_update_tasks_from_text`
 - [TaskImportService_import_tasks](workflows/TaskImportService_import_tasks.md) - entry: `task_import_service.TaskImportService.import_tasks`
+- [TaskPostponementService_postpone](workflows/TaskPostponementService_postpone.md) - entry: `task_postponement_service.TaskPostponementService.postpone`
+- [TaskPostponementService_reactivate](workflows/TaskPostponementService_reactivate.md) - entry: `task_postponement_service.TaskPostponementService.reactivate`
 - [TaskReplacementService__move_dependents](workflows/TaskReplacementService__move_dependents.md) - entry: `task_replacement_service.TaskReplacementService._move_dependents`
 - [TaskReplacementService_record](workflows/TaskReplacementService_record.md) - entry: `task_replacement_service.TaskReplacementService.record`
 - [TaskService__lock_task_scope](workflows/TaskService__lock_task_scope.md) - entry: `task_service.TaskService._lock_task_scope`
@@ -3152,6 +3166,7 @@ Retained history; these declarations are absent from the selected source invento
 - [TaskService_move_task](workflows/TaskService_move_task.md) - entry: `task_service.TaskService.move_task`
 - [TaskService_remove_dependency](workflows/TaskService_remove_dependency.md) - entry: `task_service.TaskService.remove_dependency`
 - [TaskService_task_to_response](workflows/TaskService_task_to_response.md) - entry: `task_service.TaskService.task_to_response`
+- [TaskService_unmerge_task](workflows/TaskService_unmerge_task.md) - entry: `task_service.TaskService.unmerge_task`
 - [TaskService_update](workflows/TaskService_update.md) - entry: `task_service.TaskService.update`
 - [TaskStatusService__apply_transition](workflows/TaskStatusService__apply_transition.md) - entry: `task_status_service.TaskStatusService._apply_transition`
 - [TaskStatusService_change_status](workflows/TaskStatusService_change_status.md) - entry: `task_status_service.TaskStatusService.change_status`
@@ -3225,6 +3240,7 @@ Retained history; these declarations are absent from the selected source invento
 - [record_routing_operational_event](workflows/record_routing_operational_event.md) - entry: `agent_routing_observability.record_routing_operational_event`
 - [recover_principal](workflows/recover_principal.md) - entry: `identity.recover_principal`
 - [refuse_removing_transfer_row](workflows/refuse_removing_transfer_row.md) - entry: `capacity_transfers.refuse_removing_transfer_row`
+- [release_execution](workflows/release_execution.md) - entry: `task_domain_service.release_execution`
 - [repair_sequences](workflows/repair_sequences.md) - entry: `transfer._repair_sequences`
 - [require_agent_read_access](workflows/require_agent_read_access.md) - entry: `agent.require_agent_read_access`
 - [reserve_iteration_annuals](workflows/reserve_iteration_annuals.md) - entry: `calendar_rules.reserve_iteration_annuals`
@@ -3532,6 +3548,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-personal_notification_deliveries](flows/http-personal_notification_deliveries.md) - entry: `personal_notification_deliveries`
 - [http-plan_agent_team_reconciliation](flows/http-plan_agent_team_reconciliation.md) - entry: `plan_agent_team_reconciliation`
 - [http-planning_input_context](flows/http-planning_input_context.md) - entry: `planning_input_context`
+- [http-postpone_task](flows/http-postpone_task.md) - entry: `postpone_task`
 - [http-preview_capacity_adjustment](flows/http-preview_capacity_adjustment.md) - entry: `preview_capacity_adjustment`
 - [http-preview_capacity_transfer](flows/http-preview_capacity_transfer.md) - entry: `preview_capacity_transfer`
 - [http-preview_capacity_transfer_withdrawal](flows/http-preview_capacity_transfer_withdrawal.md) - entry: `preview_capacity_transfer_withdrawal`
@@ -3541,6 +3558,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-preview_schedule](flows/http-preview_schedule.md) - entry: `preview_schedule`
 - [http-preview_task_routing](flows/http-preview_task_routing.md) - entry: `preview_task_routing`
 - [http-project_member](flows/http-project_member.md) - entry: `project_member`
+- [http-reactivate_task](flows/http-reactivate_task.md) - entry: `reactivate_task`
 - [http-read](flows/http-read.md) - entry: `read`
 - [http-read_fault](flows/http-read_fault.md) - entry: `read_fault`
 - [http-read_snapshot](flows/http-read_snapshot.md) - entry: `read_snapshot`
@@ -3603,6 +3621,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-task_mention_options](flows/http-task_mention_options.md) - entry: `task_mention_options`
 - [http-task_migration_diagnostics](flows/http-task_migration_diagnostics.md) - entry: `task_migration_diagnostics`
 - [http-task_owner_options](flows/http-task_owner_options.md) - entry: `task_owner_options`
+- [http-task_postponement](flows/http-task_postponement.md) - entry: `task_postponement`
 - [http-task_progress_history](flows/http-task_progress_history.md) - entry: `task_progress_history`
 - [http-task_replacement](flows/http-task_replacement.md) - entry: `task_replacement`
 - [http-task_review_queue](flows/http-task_review_queue.md) - entry: `task_review_queue`

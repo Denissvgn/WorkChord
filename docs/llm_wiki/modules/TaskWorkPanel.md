@@ -11,7 +11,6 @@ Commit and uncommit commands retain original source and selected-target aggregat
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../components/common/Select` | `Select` | — | compiler-dependent |
-| `../../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
 | `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
 | `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
@@ -25,8 +24,6 @@ Commit and uncommit commands retain original source and selected-target aggregat
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/Input` | `Input` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
-| `./TaskOwnerAcceptance` | `TaskOwnerAcceptance`, `VERIFIED_PUBLISHER_CODE` | — | compiler-dependent |
-| `./TaskReviewHistory` | `TaskReviewHistory` | — | compiler-dependent |
 | `./TaskReviewer` | `TaskReviewer` | — | compiler-dependent |
 | `./useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
 | `./useTaskReviewer` | `useTaskReviewer` | — | compiler-dependent |
@@ -61,8 +58,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (4) |
-| Outbound | `frontend` (19) |
+| Inbound | `frontend` (3) |
+| Outbound | `frontend` (16) |
 
 ### External packages
 
@@ -70,7 +67,7 @@ flowchart LR
 |---|---:|---:|
 | typescript | 3 | 0 |
 
-> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
