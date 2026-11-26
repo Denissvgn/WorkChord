@@ -48413,7 +48413,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 441,
+              "line": 452,
               "step": "__main__",
               "target": "unittest.main"
             }
@@ -115514,5 +115514,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:24f6f77651a520070ed3044603cd2197724309a3cb7b44dc5d871b074cdaecbe"
+  "source_hash": "sha256:bd6e5898753b5aac7281fc38fd4bcfc72d5d73bd8dd885bae2d22da93216c642"
 }
