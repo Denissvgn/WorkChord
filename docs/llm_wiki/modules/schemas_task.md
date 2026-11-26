@@ -16,7 +16,7 @@ Task schemas.
 | `app.schemas.task_brief` | `TaskBrief` |
 | `app.schemas.team` | `AssigneeRecommendationResponse` |
 | `app.schemas.work_metrics` | `TaskMetricSignals` |
-| `app.utils.url_policy` | `URLPolicyError`, `normalize_stored_display_url` |
+| `app.utils.source_link_policy` | `SourceLinkRefused`, `normalize_source_link` |
 | `datetime` | `date`, `datetime` |
 | `enum` | `Enum` |
 | `pydantic` | `BaseModel`, `Field`, `field_validator` |

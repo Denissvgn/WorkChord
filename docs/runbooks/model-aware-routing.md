@@ -159,6 +159,23 @@ will remain effective `off`.
 Enablement applies only to new assignments. Never rewrite historical snapshots
 or reinterpret a shadow preview as an enforced selection.
 
+## Preferring a free or local model
+
+A catalog entry has a `local_first` setting, off by default, which an operator
+sets when creating or updating the entry through the API or the model catalog
+form in Settings. Existing entries upgrade with it off and rank exactly as
+before, so the cost tier keeps its meaning for hosted models.
+
+Routing applies the setting only after every hard gate has passed. Among
+candidates of equal adequacy, a local-first entry ranks ahead of the others
+even when a hosted entry has a lower cost tier; the remaining order is then
+cost, queue depth, schedule delay, latency, actor, and binding. It never lifts
+a candidate over a capability, schedule or data-policy blocker, and it never
+outranks a candidate with better adequacy. The routing preview marks the
+candidate as local-first and states in its rationale that the preference
+applied. Changing the setting revises the catalog entry, so live assignments
+that depend on it follow the usual reconciliation.
+
 ## Supervised rework in shadow mode
 
 After an independent reviewer requests changes, read the original worker's

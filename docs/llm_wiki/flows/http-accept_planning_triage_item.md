@@ -52,14 +52,14 @@ sequenceDiagram
     p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, LookupError)
     p2-->>p10: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(...))
     p2-->>p12: str(exc)
-    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, ValueError)
-    p2-->>p10: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))
-    p2-->>p12: str(exc)
+    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, SourceLinkRefused)
+    p2-->>p10: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=exc.detail(...))
+    p2-->>p13: exc.detail
 ```
 
-> Call sequence diagram shows 30 of 33 interactions; 3 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 36 interactions; 6 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 19 of 22 (3 omitted); unresolved 4 of 4 (0 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 18 of 24 (6 omitted); unresolved 5 of 5 (0 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -67,6 +67,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | --- | --- | --- | --- | --- |
 | `backend/app/services/agent_service.py:actor_scopes` | 5 | - | external | 2 |
 | `backend/app/routers/agent_planning.py:_require_triage_result` | 11 | - | external | 1 |
+| `backend/app/routers/agent_planning.py:_handle_agent_error` | 13 | - | external | 3 |
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -79,7 +80,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 8; effect analysis evaluated: 6, partial: 1, unavailable: 1. Counts include steps omitted from the displayed trace.
 
-Collector observations for 7 source steps with known totals: observed: 38, emitted: 34, omitted: 4. Unavailable totals are excluded.
+Collector observations for 7 source steps with known totals: observed: 40, emitted: 34, omitted: 6. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -155,17 +156,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| accept_planning_triage_item | _run_triage_action | 759 | `_run_triage_action(mcp_agent_tools.accept_triage_item, db=db, actor=actor, triage_item_id=triage_item_id, data=data, command=command)` |
-| _run_triage_action | require_scope | 733 | `require_scope(actor, 'planning:write')` |
+| accept_planning_triage_item | _run_triage_action | 762 | `_run_triage_action(mcp_agent_tools.accept_triage_item, db=db, actor=actor, triage_item_id=triage_item_id, data=data, command=command)` |
+| _run_triage_action | require_scope | 736 | `require_scope(actor, 'planning:write')` |
 | require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
-| _run_triage_action | adapter | 734 | `adapter(db, actor, triage_item_id, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| _run_triage_action | data.model_dump | 738 | `data.model_dump(mode='json', exclude_unset=True)` |
-| _run_triage_action | _require_triage_result | 743 | `_require_triage_result(result, triage_item_id)` |
-| _require_triage_result | LookupError | 638 | `LookupError(...)` |
+| _run_triage_action | adapter | 737 | `adapter(db, actor, triage_item_id, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
+| _run_triage_action | data.model_dump | 741 | `data.model_dump(mode='json', exclude_unset=True)` |
+| _run_triage_action | _require_triage_result | 746 | `_require_triage_result(result, triage_item_id)` |
+| _require_triage_result | LookupError | 641 | `LookupError(...)` |
 
 ### Boundary effects
 
@@ -177,9 +178,9 @@ flowchart LR
 |---|---|---|---:|
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | external_call | `actor_scopes` | `isinstance` | 90 |
-| unresolved_call | `_run_triage_action` | `adapter` | 734 |
-| unresolved_call | `_run_triage_action` | `data.model_dump` | 738 |
-| external_call | `_require_triage_result` | `LookupError` | 638 |
+| unresolved_call | `_run_triage_action` | `adapter` | 737 |
+| unresolved_call | `_run_triage_action` | `data.model_dump` | 741 |
+| external_call | `_require_triage_result` | `LookupError` | 641 |
 | step_limit | `accept_planning_triage_item` | `first 12 steps` | 0 |
 
 ## Behavior

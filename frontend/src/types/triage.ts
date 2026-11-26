@@ -160,4 +160,6 @@ export interface TriageConvertToTaskRequest {
 export interface TriageConvertToTaskResponse {
     triage_item: TriageItem;
     task: Task;
+    /** Present when the source link was rewritten to a relative path or dropped. */
+    source_link?: { action: 'rewritten' | 'dropped'; original?: string | null; task_source_url?: string | null; message: string } | null;
 }

@@ -117,6 +117,7 @@ from app.schemas.triage import (
     TriageItemStatus,
     TriageItemUpdate,
     TriageSnoozeRequest,
+    TriageSourceLinkOutcome,
     TriageTaskDraftRequest,
 )
 from app.services.agent_profile_catalog_service import AgentProfileCatalogService
@@ -2924,6 +2925,7 @@ async def convert_triage_to_task(
         response = TriageConvertToTaskResponse(
             triage_item=TriageItemResponse.model_validate(item),
             task=TaskService(db).task_to_response(task),
+            source_link=TriageSourceLinkOutcome.for_link(item.source_url),
         ).model_dump(mode="json")
         await _stage_triage_command_audit_event(
             db,
@@ -3584,4 +3586,8 @@ async def convert_triage_to_backlog(db, actor, triage_item_id, payload):
     if result is None:
         return None
     item, task = result
-    return {"triage_item": TriageItemResponse.model_validate(item).model_dump(mode="json"), "task": TaskService(db).task_to_response(task).model_dump(mode="json")}
+    return TriageConvertToTaskResponse(
+        triage_item=TriageItemResponse.model_validate(item),
+        task=TaskService(db).task_to_response(task),
+        source_link=TriageSourceLinkOutcome.for_link(item.source_url),
+    ).model_dump(mode="json")

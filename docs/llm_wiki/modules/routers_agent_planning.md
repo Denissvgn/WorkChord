@@ -27,6 +27,7 @@ Agent-authenticated PM setup and schedule-control commands.
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `require_scope` |
 | `app.services.task_service` | `TaskVersionConflictError` |
 | `app.services.triage_service` | `TriageConflictError` |
+| `app.utils.source_link_policy` | `SourceLinkRefused` |
 | `fastapi` | `APIRouter`, `Depends`, `Header`, `HTTPException`, `Query`, `status` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `typing` | `Annotated`, `NoReturn` |
@@ -50,7 +51,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (5) |
-| Outbound | `backend` (17) |
+| Outbound | `backend` (18) |
 
 ### External packages
 
@@ -58,7 +59,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

@@ -12,7 +12,7 @@ _Auto-generated from `frontend/src/components/triage/TriageConvertSource.tsx`._
 |--------|---------|-----------|------------------|
 | `../../types/triage` | `TriageItem` | Declaration | erased |
 | `../../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
-| `../../utils/safeUrl` | `safeExternalHref` | — | compiler-dependent |
+| `../../utils/safeUrl` | `sourceLinkHref` | — | compiler-dependent |
 | `./TriageDetailPanel` | `InfoBlock` | — | compiler-dependent |
 | `./triageUtils` | `t` | — | compiler-dependent |
 | `lucide-react` | `ExternalLink` | — | compiler-dependent |

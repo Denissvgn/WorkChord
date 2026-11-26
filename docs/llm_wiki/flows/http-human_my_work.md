@@ -105,7 +105,7 @@ sequenceDiagram
     p1-->>p30: self.db.info.get (backend/app/services/task…TaskDetailService.my_work)('authority')
 ```
 
-> Call sequence diagram shows 30 of 760 interactions; 730 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 761 interactions; 731 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
 > Captured boundary calls: external 1 of 187 (186 omitted); unresolved 1 of 388 (387 omitted). These counts cover the captured static trace.
 
@@ -134,9 +134,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 186; effect analysis evaluated: 140, partial: 7, unavailable: 39. Counts include steps omitted from the displayed trace.
+Source steps: 187; effect analysis evaluated: 141, partial: 7, unavailable: 39. Counts include steps omitted from the displayed trace.
 
-Collector observations for 147 source steps with known totals: observed: 909, emitted: 852, omitted: 57. Unavailable totals are excluded.
+Collector observations for 148 source steps with known totals: observed: 913, emitted: 856, omitted: 57. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -214,7 +214,7 @@ flowchart LR
 | TaskDetailService.my_work | self.db.info.get (backend/app/services/task…TaskDetailService.my_work) | 108 | `self.db.info.get('authority')` |
 | TaskDetailService.my_work | local_work_profile | 115 | `local_work_profile(self.db, authority.profile_id)` |
 | local_work_profile | internal_authority | 59 | `internal_authority(db)` |
-| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 99 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 113 | `db.info.get('authority_internal', False)` |
 | local_work_profile | db.get (backend/app/services/iden…ice.py:local_work_profile) | 60 | `db.get(TeamMemberProfile, profile_id)` |
 | TaskDetailService.my_work | select(…).where (backend/app/services/task…TaskDetailService.my_work) | 121 | `select(TeamMember.id).where(...)` |
 | TaskDetailService.my_work | select (backend/app/services/task…TaskDetailService.my_work) | 121 | `select(TeamMember.id)` |
@@ -231,7 +231,7 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | unresolved_call | `TaskDetailService.my_work` | `self.db.info.get` | 108 |
-| unresolved_call | `internal_authority` | `db.info.get` | 99 |
+| unresolved_call | `internal_authority` | `db.info.get` | 113 |
 | unresolved_call | `local_work_profile` | `db.get` | 60 |
 | unresolved_call | `TaskDetailService.my_work` | `select(TeamMember.id).where` | 121 |
 | external_call | `TaskDetailService.my_work` | `select` | 121 |
