@@ -17,7 +17,7 @@ const binding = (id: number, alias: string): AgentModelBinding => ({
     run_reference_count: 0, created_at: '', updated_at: '',
     model_catalog: {
         id, key: alias, provider: 'anthropic', configured_model_alias: alias, reasoning_tier: 3, context_tier: 'large',
-        modality_tags: [], cost_tier: 'medium', latency_tier: 'balanced', enabled: true, revision: 1,
+        modality_tags: [], cost_tier: 'medium', latency_tier: 'balanced', local_first: false, enabled: true, revision: 1,
         last_verified_at: null, created_at: '', updated_at: '',
     },
 });

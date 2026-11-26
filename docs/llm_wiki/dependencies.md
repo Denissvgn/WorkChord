@@ -693,9 +693,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [recovery](modules/recovery.md) | 26 | 3 |
 | [test_managed_authority](modules/test_managed_authority.md) | 26 | 16 |
 | [projectService](modules/projectService.md) | 26 | 5 |
+| [mcp_server](modules/mcp_server.md) | 25 | 22 |
 | [agent_routing_service](modules/agent_routing_service.md) | 25 | 23 |
 | [snapshot_service](modules/snapshot_service.md) | 25 | 23 |
-| [mcp_server](modules/mcp_server.md) | 24 | 22 |
 | [schemas_agent_planning](modules/schemas_agent_planning.md) | 24 | 0 |
 | [agent_routing](modules/agent_routing.md) | 24 | 2 |
 | [agent_routing_policy](modules/agent_routing_policy.md) | 24 | 0 |
@@ -1395,6 +1395,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [20261124_0022_capacity_adjustments](modules/20261124_0022_capacity_adjustments.md) | 0 | 0 |
 | [20261124_0023_task_replacements](modules/20261124_0023_task_replacements.md) | 0 | 0 |
 | [20261124_0024_delivery_dependency_target_branch](modules/20261124_0024_delivery_dependency_target_branch.md) | 0 | 0 |
+| [20261126_0025_catalog_local_first](modules/20261126_0025_catalog_local_first.md) | 0 | 0 |
 | [routers___init__](modules/routers___init__.md) | 0 | 23 |
 | [schemas___init__](modules/schemas___init__.md) | 0 | 19 |
 | [exceptions](modules/exceptions.md) | 0 | 1 |
@@ -1480,6 +1481,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_maintenance_window](modules/test_maintenance_window.md) | 0 | 13 |
 | [test_managed_worker_discovery](modules/test_managed_worker_discovery.md) | 0 | 14 |
 | [test_manual_review_provenance](modules/test_manual_review_provenance.md) | 0 | 18 |
+| [test_mcp_proxy_host_header](modules/test_mcp_proxy_host_header.md) | 0 | 1 |
 | [test_mcp_tool_annotations](modules/test_mcp_tool_annotations.md) | 0 | 1 |
 | [test_metric_matches](modules/test_metric_matches.md) | 0 | 4 |
 | [test_mobile_contract](modules/test_mobile_contract.md) | 0 | 0 |

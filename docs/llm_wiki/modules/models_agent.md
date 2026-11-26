@@ -16,7 +16,7 @@ Agent integration and tracing models.
 | `app.models.team_member` | `TeamMemberProfile`, `TeamMember`, `TeamMemberProfile` |
 | `app.utils.time` | `UTCDateTime`, `utc_now` |
 | `datetime` | `datetime` |
-| `sqlalchemy` | `Boolean`, `CheckConstraint`, `Float`, `ForeignKey`, `Index`, `Integer`, `JSON`, `String`, `Text`, `UniqueConstraint`, `event`, `exists`, `text` |
+| `sqlalchemy` | `Boolean`, `CheckConstraint`, `Float`, `ForeignKey`, `Index`, `Integer`, `JSON`, `String`, `Text`, `UniqueConstraint`, `event`, `exists`, `false`, `text` |
 | `sqlalchemy.orm` | `Mapped`, `column_property`, `mapped_column`, `relationship` |
 | `typing` | `TYPE_CHECKING`, `Any`, `Optional` |
 
@@ -56,21 +56,21 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentActor](../entities/models_agent_AgentActor.md) | 32 | `Base` | Automated agent identity authorized to operate on tasks. |
-| [AgentModelCatalogEntry](../entities/models_agent_AgentModelCatalogEntry.md) | 128 | `Base` | Secret-free provider-neutral model capability declaration. |
-| [AgentModelBinding](../entities/models_agent_AgentModelBinding.md) | 203 | `Base` | Versioned runtime capability binding owned by one exact actor. |
-| [AgentTeamTopology](../entities/AgentTeamTopology.md) | 299 | `Base` | Applied portable agent-team manifest and authoritative readiness state. |
-| [AgentTeamTopologyMember](../entities/AgentTeamTopologyMember.md) | 371 | `Base` | Installation-local mapping from a portable actor key to one actor. |
-| [AgentTeamManagedObject](../entities/AgentTeamManagedObject.md) | 514 | `Base` | Topology-local mapping for reusable profiles, catalogs, and bindings. |
-| [AgentTeamApplyRun](../entities/AgentTeamApplyRun.md) | 570 | `Base` | Replay-safe setup command receipt with a resumable action plan. |
-| [AgentTeamActionReceipt](../entities/models_agent_AgentTeamActionReceipt.md) | 666 | `Base` | Durable redacted result for one explicitly approved setup action. |
-| [TaskRoutingAssessment](../entities/models_agent_TaskRoutingAssessment.md) | 723 | `Base` | Append-only routing assessment for one concrete task version. |
-| [ImmutableRoutingAssessmentError](../entities/ImmutableRoutingAssessmentError.md) | 853 | `RuntimeError` | Raised when application code attempts to mutate append-only evidence. |
-| [AgentTaskAssignment](../entities/models_agent_AgentTaskAssignment.md) | 865 | `Base` | Durable delegation of task execution or verification to one actor. |
-| [AgentIdempotencyRecord](../entities/AgentIdempotencyRecord.md) | 971 | `Base` | Replay-safe record for agent and PM mutations. |
-| [TaskEvent](../entities/TaskEvent.md) | 1001 | `Base` | Append-only ledger entry for task mutations and agent checkpoints. |
-| [AgentRun](../entities/models_agent_AgentRun.md) | 1047 | `Base` | Trace record for one automated agent execution. |
-| [AgentRunEvent](../entities/models_agent_AgentRunEvent.md) | 1154 | `Base` | Append-only event emitted during an agent run. |
+| [AgentActor](../entities/models_agent_AgentActor.md) | 33 | `Base` | Automated agent identity authorized to operate on tasks. |
+| [AgentModelCatalogEntry](../entities/models_agent_AgentModelCatalogEntry.md) | 129 | `Base` | Secret-free provider-neutral model capability declaration. |
+| [AgentModelBinding](../entities/models_agent_AgentModelBinding.md) | 207 | `Base` | Versioned runtime capability binding owned by one exact actor. |
+| [AgentTeamTopology](../entities/AgentTeamTopology.md) | 303 | `Base` | Applied portable agent-team manifest and authoritative readiness state. |
+| [AgentTeamTopologyMember](../entities/AgentTeamTopologyMember.md) | 375 | `Base` | Installation-local mapping from a portable actor key to one actor. |
+| [AgentTeamManagedObject](../entities/AgentTeamManagedObject.md) | 518 | `Base` | Topology-local mapping for reusable profiles, catalogs, and bindings. |
+| [AgentTeamApplyRun](../entities/AgentTeamApplyRun.md) | 574 | `Base` | Replay-safe setup command receipt with a resumable action plan. |
+| [AgentTeamActionReceipt](../entities/models_agent_AgentTeamActionReceipt.md) | 670 | `Base` | Durable redacted result for one explicitly approved setup action. |
+| [TaskRoutingAssessment](../entities/models_agent_TaskRoutingAssessment.md) | 727 | `Base` | Append-only routing assessment for one concrete task version. |
+| [ImmutableRoutingAssessmentError](../entities/ImmutableRoutingAssessmentError.md) | 857 | `RuntimeError` | Raised when application code attempts to mutate append-only evidence. |
+| [AgentTaskAssignment](../entities/models_agent_AgentTaskAssignment.md) | 869 | `Base` | Durable delegation of task execution or verification to one actor. |
+| [AgentIdempotencyRecord](../entities/AgentIdempotencyRecord.md) | 975 | `Base` | Replay-safe record for agent and PM mutations. |
+| [TaskEvent](../entities/TaskEvent.md) | 1005 | `Base` | Append-only ledger entry for task mutations and agent checkpoints. |
+| [AgentRun](../entities/models_agent_AgentRun.md) | 1051 | `Base` | Trace record for one automated agent execution. |
+| [AgentRunEvent](../entities/models_agent_AgentRunEvent.md) | 1158 | `Base` | Append-only event emitted during an agent run. |
 
 ## Functions
 

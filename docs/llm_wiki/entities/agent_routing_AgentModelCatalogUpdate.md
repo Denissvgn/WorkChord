@@ -1,6 +1,6 @@
 # AgentModelCatalogUpdate
 
-**Location:** `backend/app/schemas/agent_routing.py:280`
+**Location:** `backend/app/schemas/agent_routing.py:284`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -30,6 +30,7 @@ Optimistic partial update for one catalog entry.
 | `context_tier` | `ModelContextTier \| None` | `context_tier` | No | Yes | `None` | — | — | — |
 | `modality_tags` | `list[str] \| None` | `modality_tags` | No | Yes | `None` | — | — | — |
 | `cost_tier` | `ModelCostTier \| None` | `cost_tier` | No | Yes | `None` | — | — | — |
+| `local_first` | `bool \| None` | `local_first` | No | Yes | `None` | — | — | — |
 | `latency_tier` | `ModelLatencyTier \| None` | `latency_tier` | No | Yes | `None` | — | — | — |
 | `enabled` | `Literal[True] \| None` | `enabled` | No | Yes | `None` | — | — | — |
 | `last_verified_at` | `datetime \| None` | `last_verified_at` | No | Yes | `None` | — | — | — |
@@ -75,7 +76,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing](../modules/agent_routing.md) | 4 | `configured_model_alias`, `context_tier`, `cost_tier`, `enabled`, `expected_revision`, `last_verified_at`, `latency_tier`, `modality_tags`, `provider`, `publisher_key`, `reasoning_tier`, `reconcile_live_assignments` |
+| [agent_routing](../modules/agent_routing.md) | 4 | `configured_model_alias`, `context_tier`, `cost_tier`, `enabled`, `expected_revision`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags`, `provider`, `publisher_key`, `reasoning_tier` |
 
 ### Structure
 

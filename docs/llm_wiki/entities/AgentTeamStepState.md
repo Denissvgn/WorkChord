@@ -1,6 +1,6 @@
 # AgentTeamStepState
 
-**Location:** `frontend/src/types/agent.ts:661`
+**Location:** `frontend/src/types/agent.ts:666`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

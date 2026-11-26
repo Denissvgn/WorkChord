@@ -1298,3 +1298,58 @@ def test_routing_conflicts_keep_structured_detail_across_rest_and_mcp() -> None:
     assert planning_error.value.status_code == 409
     assert planning_error.value.detail == expected
     assert json.loads(_structured_tool_error(conflict)) == expected
+
+
+@pytest.mark.sqlite
+@pytest.mark.asyncio
+async def test_catalog_local_first_defaults_false_and_round_trips(
+    db_session: AsyncSession,
+) -> None:
+    admin_key = "admin-local-first-key"
+    db_session.add(
+        AgentActor(
+            name="local-first-admin",
+            display_name="Local First Admin",
+            api_key_hash=hash_api_key(admin_key),
+            scopes='["admin"]',
+            enabled=True,
+            role="pm",
+        )
+    )
+    await db_session.commit()
+
+    client = await _http_client(main_app, db_session)
+    try:
+        hosted = await client.post(
+            "/api/agent/model-catalog",
+            headers=_headers(admin_key, "hosted-create"),
+            json=_catalog_values("hosted-model"),
+        )
+        assert hosted.status_code == 201
+        assert hosted.json()["result"]["local_first"] is False
+
+        local = await client.post(
+            "/api/agent/model-catalog",
+            headers=_headers(admin_key, "local-create"),
+            json=_catalog_values("local-model", local_first=True),
+        )
+        assert local.status_code == 201
+        assert local.json()["result"]["local_first"] is True
+
+        updated = await client.patch(
+            f"/api/agent/model-catalog/{hosted.json()['target_id']}",
+            headers=_headers(admin_key, "hosted-mark-local"),
+            json={"expected_revision": 1, "local_first": True},
+        )
+        assert updated.status_code == 200
+        assert updated.json()["result"]["local_first"] is True
+
+        null_value = await client.patch(
+            f"/api/agent/model-catalog/{hosted.json()['target_id']}",
+            headers=_headers(admin_key, "hosted-null"),
+            json={"expected_revision": 2, "local_first": None},
+        )
+        assert null_value.status_code == 422
+    finally:
+        main_app.dependency_overrides.clear()
+        await client.aclose()

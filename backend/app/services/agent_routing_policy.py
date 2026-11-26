@@ -1034,8 +1034,13 @@ def routing_candidate_rank_key(
     latency_tier: str,
     actor_id: int,
     binding_id: int,
-) -> tuple[int, int, int, float, int, int, int]:
-    """Freeze v1 ranking after all hard eligibility gates have passed."""
+    local_first: bool = False,
+) -> tuple[int, int, int, int, float, int, int, int]:
+    """Freeze v1 ranking after all hard eligibility gates have passed.
+
+    A local-first entry ranks ahead of a hosted one only between candidates of
+    equal adequacy; it is a tie-break and never replaces a gate or adequacy.
+    """
 
     integer_values = {
         "adequacy_class": adequacy_class,
@@ -1064,6 +1069,7 @@ def routing_candidate_rank_key(
         raise ValueError("Unknown latency tier") from exc
     return (
         adequacy_class,
+        0 if local_first else 1,
         cost_order,
         queue_depth,
         float(schedule_delay_days),
