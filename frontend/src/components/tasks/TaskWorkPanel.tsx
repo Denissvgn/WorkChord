@@ -14,6 +14,8 @@ import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { TaskReviewer } from './TaskReviewer';
+import { TaskReviewHistory } from './TaskReviewHistory';
+import { TaskOwnerAcceptance, VERIFIED_PUBLISHER_CODE } from './TaskOwnerAcceptance';
 import { useTaskReviewer } from './useTaskReviewer';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
@@ -200,6 +202,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         !allCriteriaPass && t('domain.acceptNeedsResults'),
         reviewEvidenceTooLong && t('domain.reviewEvidenceTooLong'),
     ].filter(Boolean);
+    const needsOwnerAcceptance = task.status === 'resolved' && Boolean(acceptAction?.blockers.some(blocker => blocker.code === VERIFIED_PUBLISHER_CODE));
     const manualActions = ['start_manual', 'resolve_manual', 'block', 'unblock', 'cancel', 'reopen', 'commit', 'uncommit']
         .filter(item => !(offerDispatch && item === 'start_manual'))
         .filter(item => !(actingAsOperator && (item === 'start_manual' || item === 'resolve_manual')));
@@ -209,6 +212,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         {task.canceled_at && <p className="text-sm text-content-secondary">{t('domain.canceled')}: {task.canceled_reason}</p>}
         {task.blocked_reason && <p className="text-sm text-feedback-warning-foreground">{t('domain.blocked')}: {task.blocked_reason}</p>}
         <TaskReviewer task={task} />
+        <TaskReviewHistory task={task} />
         {submitBlocked && <div role="alert" className="space-y-2 text-sm text-feedback-warning-foreground">
             <p>{t('domain.submitNeedsCriterion')}</p>
             {onEditBrief && <Button type="button" size="sm" variant="secondary" disabled={disabled} onClick={onEditBrief}>{t('taskView.editBrief')}</Button>}
@@ -297,6 +301,8 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
                 {acceptMissing.length > 0 && <p id={`${id}-accept-missing`} role="status" className="w-full text-sm text-content-secondary">{acceptMissing.join(' ')}</p>}
             </div>}
         </fieldset>
+        {needsOwnerAcceptance && <TaskOwnerAcceptance task={task} disabled={disabled || pending || criteriaDirty || staleDraft} onPending={onPending}
+            onUpdated={latest => { if (!isActive()) return; if (key) { try { sessionStorage.removeItem(key); } catch { /* Storage may be unavailable. */ } } onDirty(false); onUpdated(latest); }} />}
         <details className="text-sm text-content-secondary">
             <summary className="cursor-pointer">{t('domain.unavailableActions')}</summary>
             <ul className="mt-2 space-y-2">{actions.data?.actions.filter(item => !item.allowed).map(item => <li key={item.action}>

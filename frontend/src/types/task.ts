@@ -476,6 +476,11 @@ export interface TaskDetail {
     children: TaskReferencePage; dependencies: TaskReferencePage; execution_context_complete: false;
     reviewer_name?: string | null;
 }
+/** One recorded review. `owner_override` is an owner's acceptance that set aside publisher independence. */
+export interface TaskReviewRecord {
+    id: number; task_version: number; brief_revision: number; artifact_revision: number; principal_id: number | null;
+    verdict: 'accept' | 'reject' | string; kind: 'review' | 'owner_override'; reason: string; evidence: string; created_at: string;
+}
 export interface TaskActionAvailability { action: string; allowed: boolean; blockers: { code: string; message: string }[] }
 export interface TaskActions {
     task_id: number; version: number; actions: TaskActionAvailability[];

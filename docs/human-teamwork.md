@@ -202,6 +202,25 @@ requested reason. Humans can start urgent backlog work manually. Record
 criterion progress and evidence, then resolve the task for review. Another
 authorized reviewer accepts it or requests rework. A resolved task is awaiting
 review; **closed** means accepted work and uses the violet status color.
+When a project requires a different review publisher, a person's review does not
+accept work: **Accept** stays unavailable and says it needs an assigned agent
+verifier. A signed-in workspace owner or operator can still close one resolved task
+with **Accept as owner** under **Work and review**. Give a reason, which is
+required, and choose the action; it also works from the keyboard, and the result is
+announced. The project's policy stays on and covers only that task. **Review
+history** shows the acceptance with an **Owner override** label and your reason, so
+it is never read as an independent review, and the task's Activity records it too.
+If you executed the work or wrote its current evidence yourself, the server asks for
+the explicit review override and refuses the action without it; the web interface
+does not send that override.
+
+**Accept as owner** needs a person who is signed in. A trusted-local workspace
+browser with no signed-in person is not an owner or operator, even though it can
+otherwise edit: the page says so instead of offering the action. Sign in as a
+workspace owner or operator, reload the task, and accept it. Other people, and a
+paired read-only observer, see why the action is unavailable and are told to ask an
+owner or operator, or to assign an agent verifier.
+
 Explicit blocks and cancellation are separate from lifecycle status. A block
 comes from **Report blocker**, used by a person or an agent; either way the task
 shows the reason, appears in the **Blocked** view, and its Activity names who

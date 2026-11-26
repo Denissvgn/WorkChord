@@ -37,6 +37,7 @@ const itemLabels: Record<string, string> = {
     github_pr_closed: 'surfaces.taskTimeline.events.githubPrClosed',
     github_pr_merged: 'surfaces.taskTimeline.events.githubPrMerged',
     github_status_automation_failed: 'surfaces.taskTimeline.events.githubAutomationFailed',
+    owner_acceptance_override: 'surfaces.taskTimeline.events.ownerAcceptanceOverride',
     release_shipped: 'surfaces.taskTimeline.events.releaseShipped',
     'agent.progress': 'surfaces.taskTimeline.events.agentProgress',
     'agent.checkpoint': 'surfaces.taskTimeline.events.agentCheckpoint',
@@ -45,7 +46,7 @@ const itemLabels: Record<string, string> = {
 
 // The first readable sentence an agent event carries, in the order agents are told to write them.
 const eventText = (payload: Record<string, unknown>): string | null => {
-    for (const field of ['summary', 'blocker', 'message', 'completed', 'next_step']) {
+    for (const field of ['summary', 'blocker', 'message', 'completed', 'next_step', 'reason']) {
         const value = payload[field];
         if (typeof value === 'string' && value.trim()) return value;
     }
