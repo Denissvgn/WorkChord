@@ -6,7 +6,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1814 | [Open section](#entities) |
+| Entities | 1818 | [Open section](#entities) |
 | Modules | 1163 | [Open section](#modules) |
 | Workflows | 235 | [Open section](#workflows) |
 | Guides | 0 | No pages |
@@ -1435,8 +1435,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_external_link_ExternalLinkProvider](entities/schemas_external_link_ExternalLinkProvider.md)
 - [schemas_external_link_ExternalLinkUpdate](entities/schemas_external_link_ExternalLinkUpdate.md)
 - [schemas_external_link_GitHubExternalLinkCreate](entities/schemas_external_link_GitHubExternalLinkCreate.md)
+- [schemas_gantt_DateRule](entities/schemas_gantt_DateRule.md)
 - [schemas_gantt_GanttResponse](entities/schemas_gantt_GanttResponse.md)
 - [schemas_gantt_GanttTask](entities/schemas_gantt_GanttTask.md)
+- [schemas_gantt_KeptDatesTask](entities/schemas_gantt_KeptDatesTask.md)
 - [schemas_gantt_SchedulePreviewResponse](entities/schemas_gantt_SchedulePreviewResponse.md)
 - [schemas_gantt_ScheduleResult](entities/schemas_gantt_ScheduleResult.md)
 - [schemas_gantt_SchedulingDecision](entities/schemas_gantt_SchedulingDecision.md)
@@ -1657,11 +1659,13 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_calendar_CalendarImportResponse](entities/types_calendar_CalendarImportResponse.md)
 - [types_calendar_CalendarUpdate](entities/types_calendar_CalendarUpdate.md)
 - [types_calendar_WorkingDaysResponse](entities/types_calendar_WorkingDaysResponse.md)
+- [types_gantt_DateRule](entities/types_gantt_DateRule.md)
 - [types_gantt_ExplainScheduleRequest](entities/types_gantt_ExplainScheduleRequest.md)
 - [types_gantt_ExplainScheduleResponse](entities/types_gantt_ExplainScheduleResponse.md)
 - [types_gantt_GanttResponse](entities/types_gantt_GanttResponse.md)
 - [types_gantt_GanttTask](entities/types_gantt_GanttTask.md)
 - [types_gantt_InvertedDependency](entities/types_gantt_InvertedDependency.md)
+- [types_gantt_KeptDatesTask](entities/types_gantt_KeptDatesTask.md)
 - [types_gantt_ScheduleDecisionExplanation](entities/types_gantt_ScheduleDecisionExplanation.md)
 - [types_gantt_SchedulePreviewResponse](entities/types_gantt_SchedulePreviewResponse.md)
 - [types_gantt_ScheduleResult](entities/types_gantt_ScheduleResult.md)
