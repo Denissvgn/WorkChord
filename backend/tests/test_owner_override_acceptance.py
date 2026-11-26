@@ -12,7 +12,7 @@ from app.models.identity import CommandAudit, ProjectMembership, WorkspaceMember
 from app.models.project import Project
 from app.models.task import Task
 from app.models.task_brief import TaskReviewRecord
-from app.schemas.task_brief import OwnerAcceptanceWrite
+from app.schemas.task_brief import BriefCriterion, OwnerAcceptanceWrite, TaskBrief
 from app.services.task_brief_service import TaskBriefService
 from app.services.task_service import TaskService
 from tests.test_delivery_scenarios import delivery_store  # noqa: F401
@@ -126,6 +126,39 @@ async def test_override_refuses_non_owners_missing_reasons_and_unpoliced_project
         for refused_id in (task_id, unpoliced_id):
             assert (await db.get(Task, refused_id)).status == "resolved"
         assert await db.scalar(select(TaskReviewRecord.id).where(TaskReviewRecord.original_task_id.in_([task_id, unpoliced_id]))) is None
+
+
+async def test_review_override_header_waives_only_self_review_on_an_owner_override(managed_store):
+    factory, scenario, _, principal_ids = managed_store
+    await policy_scope(managed_store)
+    brief = TaskBrief(goal="Ship the change", acceptance_criteria=[BriefCriterion(id="works", text="The change works")])
+    async with factory() as db:
+        task = Task(title="Owner-executed work", status="resolved", project_id=scenario.projects[0],
+                    iteration_id=scenario.iterations[0], effort_days=1, effort_hours=8,
+                    brief=brief.model_dump(mode="json"), brief_revision=1, executed_by_principal_id=principal_ids[0])
+        db.add(task)
+        await db.commit()
+        task_id = task.id
+    path = f"/api/tasks/{task_id}/owner-acceptance"
+    body = await acceptance_body(factory, task_id)
+    async with owner_client(managed_store) as owner:
+        self_review = await owner.post(path, json=body)
+        assert self_review.status_code == 403, self_review.text
+        assert self_review.json()["detail"]["code"] == "independent_review_required"
+        # The header sets aside self-review independence, never the criterion evidence.
+        unevidenced = await owner.post(path, json=body, headers={"X-Review-Override": "true"})
+        assert unevidenced.status_code == 422, unevidenced.text
+        assert "evidence" in unevidenced.text
+    async with factory() as db:
+        assert (await db.get(Task, task_id)).status == "resolved"
+        await db.execute(update(Task).where(Task.id == task_id).values(progress={
+            "criteria": [{"criterion_id": "works", "criterion_revision": 1, "state": "completed", "evidence": "Checked by hand"}],
+            "artifacts": [], "brief_revision": 1, "artifact_revision": 0}))
+        await db.commit()
+    async with owner_client(managed_store) as owner:
+        accepted = await owner.post(path, json=await acceptance_body(factory, task_id), headers={"X-Review-Override": "true"})
+        assert accepted.status_code == 200, accepted.text
+        assert accepted.json()["status"] == "closed"
 
 
 async def test_trusted_local_browser_without_a_signed_in_person_cannot_override(delivery_store):  # noqa: F811

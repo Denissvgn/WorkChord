@@ -278,12 +278,17 @@ class TaskBriefService:
                 raise AuthorityError("verified_publisher_review_required", "Use an assigned agent verifier for formal review. Work requires attributable agent execution or an authenticated manual executor and current artifact evidence.")
         authority = self.db.info.get("authority")
         principal = getattr(authority, "principal_id", None)
-        override = bool(authority and authority.operator and authority.review_override and authority.reason)
+        self_review_override = override = bool(authority and authority.operator and authority.review_override and authority.reason)
+        command = current_command(self.db)
+        if command is not None and task.id in command.owner_acceptance_tasks:
+            # On an owner override the header waives only self-review independence;
+            # criterion evidence and every other acceptance check still apply.
+            override = False
         if authority and authority.kind == "agent" and authority.actor_role != "verifier":
             raise AuthorityError("independent_review_required", "Execution cannot accept its own work.")
         progress_author = await self.db.scalar(select(TaskProgressRecord.principal_id).where(TaskProgressRecord.original_task_id == task.id,
             TaskProgressRecord.artifact_revision == task.artifact_revision)) if task.artifact_revision else None
-        if principal is not None and principal in {task.executed_by_principal_id, progress_author} and not override:
+        if principal is not None and principal in {task.executed_by_principal_id, progress_author} and not self_review_override:
             raise AuthorityError("independent_review_required", "Another reviewer must review this work.")
         if task.canceled_at or task.is_summary or task.status != "resolved":
             raise ValueError("Review requires resolved, uncanceled leaf work")
@@ -334,15 +339,12 @@ class TaskBriefService:
         if not reason:
             raise AuthorityError("override_reason_required", "An owner override needs a reason.", 422)
         # The command audit records the override's own reason, whatever the request headers said.
-        # An enclosing command (a request) flushes later, so the reason stays until it ends.
-        from app.commands import current_command
-        owns_command = current_command(self.db) is None
+        # The command flushes its writes before the caller's authority is restored.
         self.db.info["authority"] = replace(authority, reason=reason[:2000])
         try:
             return await self._owner_accept(task_id, data, reason)
         finally:
-            if owns_command:
-                self.db.info["authority"] = authority
+            self.db.info["authority"] = authority
 
     @atomic_command
     async def _owner_accept(self, task_id, data, reason):
@@ -364,6 +366,8 @@ class TaskBriefService:
         await self.tasks.record_task_event(task.id, "owner_acceptance_override",
             {"version": task.version, "brief_revision": task.brief_revision, "artifact_revision": task.artifact_revision,
              "reason": reason})
+        # Audit every write under the override's reason, also inside an enclosing request command.
+        await self.db.flush()
         return task
 
     @atomic_command

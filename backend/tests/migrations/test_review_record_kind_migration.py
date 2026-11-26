@@ -8,7 +8,7 @@ from sqlalchemy import create_engine, inspect, select
 from app.services.upgrade_service import alembic_config
 from app.utils.time import utc_now
 
-PREVIOUS, CURRENT = "20261124_0024", "20261126_0025"
+PREVIOUS, CURRENT = "20261126_0025", "20261126_0026"
 
 
 @pytest.mark.parametrize(

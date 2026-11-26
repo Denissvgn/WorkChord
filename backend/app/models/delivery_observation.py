@@ -104,8 +104,9 @@ def observe_review(_mapper, connection, review):
     else:
         kind = "rejected"
     _record(connection, row, kind, review.created_at, "review_record", version=review.task_version)
-    if review.verdict == "accept" and review.kind == "owner_override":
-        # The same acceptance, also counted apart as an owner override of publisher independence.
+    if kind == "accepted" and review.kind == "owner_override":
+        # The same confirmed acceptance, also counted apart as an owner override of publisher
+        # independence, so the override count stays a subset of acceptance events.
         _record(connection, row, "owner_override_accepted", review.created_at, "review_record", version=review.task_version)
 
 
