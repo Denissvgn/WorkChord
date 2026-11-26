@@ -72,16 +72,39 @@ Under `require_different_review_publisher`, a verifier needs to know who execute
 
 Send `POST /api/tasks/{task_id}/manual-provenance`, `POST /api/agent/planning/tasks/{task_id}/manual-provenance` with the usual planning command headers, or the MCP tool `agent_record_manual_provenance`, with `{expected_version, artifact_revision, executor, head_commit_url, commit_urls, pr_url, base_commit_url, reason}`:
 
-- `executor` names who executed the work: `{"kind": "human", "principal_id": ...}` or `{"kind": "agent", "actor_id": ..., "model_binding_id": ...}`. A human's linked profile counts as theirs. An agent's profile, model binding and publisher are captured at the moment of the record. Without `model_binding_id`, the actor's default binding is used. An agent whose binding has no publisher, or an actor without a profile, is refused with `manual_provenance_executor_unattributable`.
-- `head_commit_url` is the delivered head as an immutable GitHub commit. `commit_urls` lists every commit the executor contributed; the head is always included. The verifier's candidate check requires every commit in the pull request or range to be one of them.
-- `pr_url` names the pull request that carries the head, or `base_commit_url` names the commit the work started from. One of them is required.
+- `executor` names who executed the work: `{"kind": "human", "principal_id": ...}` or `{"kind": "agent", "actor_id": ..., "model_binding_id": ...}`. A human's linked profile counts as theirs. An agent's profile, model binding and publisher are captured at the moment of the record. Without `model_binding_id`, the actor's enabled default binding is used. A named binding must belong to the actor, but it may since have been disabled, or its catalog entry retired, because the work may predate that; the catalog entry's publisher at the moment of the record is kept. An agent whose binding has no publisher, or an actor without a profile, is refused with `manual_provenance_executor_unattributable`.
+- `head_commit_url` is the delivered head as an immutable GitHub commit. `commit_urls` lists every commit the executor contributed; the head is always included.
+- `pr_url` names the pull request that carries the head, or `base_commit_url` names the commit the work started from. One of them is required. A `pr_url` must already be the task's own evidence: one of its progress artifacts or a GitHub link on the task (`manual_provenance_pr_not_task_evidence`).
 - `artifact_revision` must be the task's current artifact revision, and `reason` says why the work ran outside recorded runs.
 
-Only a signed-in workspace owner or operator, a project manager, or the project's PM agent can record provenance. The operator API key, a trusted-local browser with no signed-in person and a paired observer are refused with `provenance_recorder_required`. The task must be resolved, uncanceled leaf work (`manual_provenance_requires_resolved_work`) with no agent runs, claims, live or fulfilled execution assignments, or authenticated manual execution of the current artifact (`manual_provenance_execution_recorded`); such execution supplies its own provenance. Stale versions and revisions, malformed URLs and a candidate that cannot be verified are refused with 409 or 422.
+Before anything is written, the candidate goes through the same GitHub check a verifier's pass uses. The record is refused with `manual_provenance_candidate_unverifiable` when the review could never pass. `attribution_gap` says why, and `offending_sha` names the commit when there is one:
 
-The record does not change status, progress or evidence, and it does not reopen or accept the task. The task's version advances, the response returns the record, and the task timeline gets a `manual_provenance_recorded` event with the recorder, executor, commits and reason. Every command audit row of the request carries the reason. Review uses the latest record while the task's brief and artifact revisions stay the same; a later artifact or brief change makes the record stale. A human executor is reviewed like authenticated manual execution: the verifier must be a separate automation-enabled verification profile. An agent executor is an ordinary contributor: a verifier with the executor's actor, profile or publisher fails independence (`verification_publisher_not_independent` for the publisher).
+- `commit_attribution`: a commit of the pull request or range is not in `commit_urls`.
+- `coauthor_trailer`: a commit message has a `Co-authored-by:` trailer, so its other contributors stay unverifiable. Commits with co-author trailers cannot be attested this way. This includes commits from tools that add such trailers automatically.
+- `head_mismatch`: the pull request's head is not the declared head commit.
+- `github_unavailable` or `candidate_unverifiable`: GitHub could not confirm the candidate.
 
-A verification assignment whose candidate is already known to be unverifiable is not created. It is refused with `verification_candidate_unverifiable`; `missing` names the absent facts. When the task has no recorded runs, `remedy` points at the manual provenance command. When manual execution is missing, the `verification_publisher_unverifiable` refusal includes the same `remedy`.
+Only a signed-in workspace owner or operator, a project manager, or the project's PM agent can record provenance. The operator API key, a trusted-local browser with no signed-in person, a paired observer, reviewers and other agents are refused with `provenance_recorder_required`. A human executor carries no publisher, so only a signed-in person can attest one; the PM agent is refused with `manual_provenance_human_recorder_required`. A PM agent recorder is itself counted as a contributor, so its default model binding must declare a publisher (`manual_provenance_recorder_unattributable`).
+
+The task must be resolved, uncanceled leaf work (`manual_provenance_requires_resolved_work`). It must have no agent runs, agent execution events, claims, live or fulfilled execution assignments, or authenticated manual execution of the current artifact (`manual_provenance_execution_recorded`); such execution supplies its own provenance. A record never contradicts the task's own executor (`manual_provenance_executor_conflict`): when the task records an executing person, only that person can be named, and a task in manual execution can only name a human. Stale versions and revisions and malformed URLs are refused with 409 or 422.
+
+The record does not change status, progress or evidence, and it does not reopen or accept the task. The task's version advances, the response returns the record, and the task timeline gets a `manual_provenance_recorded` event with the recorder, executor, commits and reason. Every command audit row of the request carries the reason.
+
+Every record keeps counting for review independence, also after a rejection and rework:
+
+- An agent executor is an ordinary contributor, and its recorded commits stay attributed to it. A verifier with the executor's actor, profile or publisher fails independence (`verification_publisher_not_independent` for the publisher).
+- A PM agent recorder is a contributor in the same way, so a verifier on the recorder's publisher fails too.
+- A human executor is reviewed like authenticated manual execution: the verifier must be a separate automation-enabled verification profile.
+
+Only the latest record supplies the review candidate, and only while the task has no runs and its brief and artifact revisions are unchanged.
+
+A verification assignment whose candidate is already known to be unverifiable is not created. It is refused with `verification_candidate_unverifiable`, and `missing` names the absent facts. The refusal names only a remedy that can help:
+
+- Without runs or manual execution, `remedy` points at the manual provenance command.
+- With authenticated manual execution, the refusal asks for exactly one pull request linked to the task, or a resubmitted artifact with a pull request or compare URL.
+- With runs, the runs must supply a submitted candidate.
+
+When manual execution is missing, the `verification_publisher_unverifiable` refusal includes the same `remedy`.
 
 ## Clean replacement of unattributable work
 

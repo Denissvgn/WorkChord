@@ -103,4 +103,6 @@ class ManualProvenanceResponse(BaseModel):
     reason: str
     recorded_by_principal_id: int | None = None
     recorded_by_actor_id: int | None = None
+    recorder_publisher_key: str | None = Field(default=None, description=(
+        "An agent recorder's model publisher. An agent recorder counts as a contributor, so a verifier must differ from it too."))
     recorded_at: datetime | None = None

@@ -12,10 +12,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models.task_brief import TaskBriefRevision, TaskProgressRecord, TaskReviewRecord
 from app.models.task import Task
+from app.schemas.manual_provenance import ManualProvenanceResponse, ManualProvenanceWrite
 from app.schemas.task import TaskCreate, TaskResponse
 from app.schemas.task_brief import BriefWrite, BriefConvert, OwnerAcceptanceWrite, ProgressWrite, TaskReviewWrite, TaskReviewResponse, CurrentTaskReviewResponse
 from app.schemas.task_domain import BacklogRestoreRequest, TaskActionRequest, TaskActionsResponse
 from app.schemas.task_detail import TaskDetailResponse, TaskReferencePage, HumanWorkResponse
+from app.services.manual_provenance_service import ManualProvenanceService
 from app.services.task_service import TaskService, TaskVersionConflictError
 from app.services.task_domain_service import TaskDomainService
 from app.services.task_brief_service import TaskBriefService
@@ -356,9 +358,6 @@ async def task_github_catch_up(task_id: int, db: DB):
     return await domain_result(GitHubReconciliationService(db).catch_up(task_id))
 
 
-from app.schemas.manual_provenance import ManualProvenanceResponse, ManualProvenanceWrite
-
-
 @router.post("/tasks/{task_id}/manual-provenance", response_model=ManualProvenanceResponse, status_code=201)
 async def record_manual_provenance(task_id: int, data: ManualProvenanceWrite, db: DB):
     """Record who executed resolved work delivered outside recorded runs, and its exact candidate.
@@ -366,7 +365,6 @@ async def record_manual_provenance(task_id: int, data: ManualProvenanceWrite, db
     Only a signed-in owner, operator or project manager, or the project's PM agent, may record it. The task's status,
     progress and evidence are unchanged; its version advances and the timeline records it.
     """
-    from app.services.manual_provenance_service import ManualProvenanceService
     return await domain_result(ManualProvenanceService(db).record(task_id, data))
 
 

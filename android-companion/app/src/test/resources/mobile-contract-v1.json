@@ -2374,6 +2374,18 @@
               ],
               "title": "Recorded By Principal Id"
             },
+            "recorder_publisher_key": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "An agent recorder's model publisher. An agent recorder counts as a contributor, so a verifier must differ from it too.",
+              "title": "Recorder Publisher Key"
+            },
             "task_id": {
               "title": "Task Id",
               "type": "integer"

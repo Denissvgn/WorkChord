@@ -967,16 +967,25 @@ class AgentPlanningService:
             result = await ManualProvenanceService(self.db).record(task_id, data, commit=False)
             return task_id, ManualProvenanceResponse.model_validate(result).model_dump(mode="json")
 
-        return await self._execute(
-            actor=actor,
-            scope="planning:write",
-            operation="planning.task.manual_provenance",
-            target_type="task",
-            idempotency_target_id=task_id,
-            command=command,
-            request_payload=payload,
-            mutate=mutate,
-        )
+        # Every audit row of this command, its receipt included, carries the record's own reason.
+        from dataclasses import replace
+        authority = self.db.info.get("authority")
+        if authority is not None:
+            self.db.info["authority"] = replace(authority, reason=data.reason[:2000])
+        try:
+            return await self._execute(
+                actor=actor,
+                scope="planning:write",
+                operation="planning.task.manual_provenance",
+                target_type="task",
+                idempotency_target_id=task_id,
+                command=command,
+                request_payload=payload,
+                mutate=mutate,
+            )
+        finally:
+            if authority is not None:
+                self.db.info["authority"] = authority
 
     async def add_delivery_dependency(
         self,
