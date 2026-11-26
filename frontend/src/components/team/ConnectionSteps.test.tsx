@@ -22,10 +22,13 @@ const identity = (overrides: Partial<AgentTeamRuntimeIdentityStatus> = {}): Agen
     state: 'unknown', expected_instance_id: 'rti-expected', acknowledged_instance_id: null, previous_instance_id: null,
     changed_at: null, refused_instance_id: null, refused_at: null, ...overrides,
 });
-const status = (runtimeIdentity?: AgentTeamRuntimeIdentityStatus): AgentTeamMemberStatus => ({
+const status = (
+    runtimeIdentity?: AgentTeamRuntimeIdentityStatus,
+    acknowledgement: 'missing' | 'current' | 'stale' = 'current',
+): AgentTeamMemberStatus => ({
     actor_key: worker.actor_key, actor_id: 9, actor_name: worker.actor_name, display_name: worker.display_name, role: 'worker',
     desired: true, configured: true, lifecycle_state: 'connected', enabled: true, profile_key: worker.profile_key, profile_revision: null,
-    binding_revisions: {}, skill_package: worker.skill_package, package_acknowledged: true, acknowledgement_state: 'current',
+    binding_revisions: {}, skill_package: worker.skill_package, package_acknowledged: true, acknowledgement_state: acknowledgement,
     runtime_identity: runtimeIdentity,
     credential_delivery_state: 'delivered', connection_state: 'observed', last_seen_at: null, queued_assignments: 0,
     accepted_assignments: 0, running_runs: 0, runtime_ready: true, availability: 'availability_unknown', blocker_codes: [], handoff: null,
@@ -59,10 +62,33 @@ describe('the runtime instance shown with the connection steps', () => {
         expect(facts()).toHaveTextContent(/Changed from rti-first at /);
     });
 
-    it('shows a refused identity with the identity that was turned away', () => {
-        render(status(identity({ state: 'refused', refused_instance_id: 'rti-other', refused_at: '2026-11-26T10:00:00Z' })));
-        expect(facts()).toHaveAttribute('data-runtime-identity', 'refused');
-        expect(facts()).toHaveTextContent(/Refused rti-other at /);
+    it('says that a member that never acknowledged has not acknowledged, rather than that the runtime sent no identity', () => {
+        render(status(identity(), 'missing'));
+        expect(facts()).toHaveAttribute('data-runtime-identity', 'unknown');
+        expect(facts()).toHaveTextContent('Not acknowledged yet');
+        expect(facts()).not.toHaveTextContent('not sent by the runtime');
+    });
+
+    it('shows an acknowledgement under an earlier identity beside the identity the handoff names now', () => {
+        render(status(identity({ state: 'stale', acknowledged_instance_id: 'rti-first', expected_instance_id: 'rti-second' }), 'stale'));
+        expect(facts()).toHaveAttribute('data-runtime-identity', 'stale');
+        expect(facts()).toHaveTextContent('Acknowledged under an earlier identity');
+        expect(facts()).toHaveTextContent('rti-first');
+        expect(facts()).toHaveTextContent('The current handoff names rti-second');
+    });
+
+    it('shows a refused identity beside the state the acknowledgement gives', () => {
+        render(status(identity({
+            state: 'current', acknowledged_instance_id: 'rti-first', refused_instance_id: 'rti-other', refused_at: '2026-11-26T10:00:00Z',
+        })));
+        expect(facts()).toHaveAttribute('data-runtime-identity', 'current');
+        expect(facts()).toHaveTextContent('Acknowledged by this runtime instance');
+        expect(facts()).toHaveTextContent(/Refused a runtime that returned rti-other at /);
+    });
+
+    it('shows no refusal once the genuine runtime has acknowledged again', () => {
+        render(status(identity({ state: 'current', acknowledged_instance_id: 'rti-first' })));
+        expect(facts().querySelector('[data-runtime-refused]')).toBeNull();
     });
 
     it('shows nothing for an agent that does not exist yet', () => {

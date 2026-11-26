@@ -801,7 +801,7 @@ export interface AgentTeamRuntimeHandoff {
 
 /** Which runtime instance acknowledged a member's handoff; unknown for an acknowledgement made before the identity existed. */
 export interface AgentTeamRuntimeIdentityStatus {
-    state: 'unknown' | 'current' | 'changed' | 'refused';
+    state: 'unknown' | 'current' | 'changed' | 'stale';
     expected_instance_id: string | null;
     acknowledged_instance_id: string | null;
     previous_instance_id: string | null;

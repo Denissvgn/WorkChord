@@ -2372,13 +2372,15 @@ export const englishResources = {
                 runtimeIdentity: {
                     title: 'Runtime instance',
                     states: {
+                        notAcknowledged: 'Not acknowledged yet',
                         unknown: 'Identity unknown (not sent by the runtime)',
                         current: 'Acknowledged by this runtime instance',
                         changed: 'Identity changed',
-                        refused: 'A runtime with another identity was refused',
+                        stale: 'Acknowledged under an earlier identity',
                     },
                     changedFrom: 'Changed from {{id}} at {{at}}',
-                    refused: 'Refused {{id}} at {{at}}',
+                    staleExpected: 'The current handoff names {{id}}',
+                    refused: 'Refused a runtime that returned {{id}} at {{at}}',
                 },
                 modelAttestation: 'Model execution evidence',
                 notIndependentlyAttested: 'Configuration and worker self-report; independently verified execution is not supplied',

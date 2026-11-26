@@ -15,7 +15,7 @@ from typing import Any
 
 from sqlalchemy import func, or_, select, text
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.agent_contract import (
@@ -37,6 +37,7 @@ from app.models.agent import (
     AgentTeamTopologyMember,
     AgentTaskAssignment,
     TaskEvent,
+    new_runtime_instance_id,
 )
 from app.models.team_member import TeamMemberProfile
 from app.schemas.agent_skill_bundle import SkillBundleCatalogResponse
@@ -1382,6 +1383,7 @@ class AgentTeamSetupService:
             assert record is not None
             record.credential_delivery_state = "delivered"
             record.credential_delivery_receipt_digest = delivery_digest
+            record.issued_runtime_instance_id = new_runtime_instance_id()
             record.lifecycle_state = "onboarding"
             record.object_revision += 1
             topology = await self._topology(
@@ -1771,6 +1773,7 @@ class AgentTeamSetupService:
         assert record is not None
         record.credential_delivery_state = "delivered"
         record.credential_delivery_receipt_digest = receipt_digest
+        record.issued_runtime_instance_id = new_runtime_instance_id()
         record.lifecycle_state = "onboarding"
         record.object_revision += 1
         await self._stage_event(
@@ -1948,6 +1951,7 @@ class AgentTeamSetupService:
         assert record is not None
         record.credential_delivery_state = "delivered"
         record.credential_delivery_receipt_digest = receipt_digest
+        record.issued_runtime_instance_id = new_runtime_instance_id()
         record.lifecycle_state = "onboarding"
         record.object_revision += 1
         await self._stage_event(
@@ -2315,28 +2319,22 @@ class AgentTeamSetupService:
         )
 
     @staticmethod
-    def _runtime_instance_id(
-        topology_key: str,
-        member_record: AgentTeamTopologyMember,
-        actor: AgentActor,
-    ) -> str:
-        """Issue the identity a member's current runtime must return in its acknowledgement.
+    def _issued_runtime_instance_id(member_record: AgentTeamTopologyMember) -> str:
+        """The identity issued with the member's current delivery.
 
-        It follows the member's actor and its delivered credential, so a
-        replacement actor or a credential recovery issues a new one. It is an
-        opaque label, not a secret.
+        It is random, set when a credential delivery succeeds (a new member, a
+        replacement actor, a recovered credential) and given to every existing
+        member by the migration that added it. It is an opaque label, not a secret.
         """
 
-        seed = ":".join(
-            (
-                "runtime-instance",
-                topology_key,
-                member_record.actor_key,
-                str(actor.id),
-                member_record.credential_delivery_receipt_digest or "",
+        issued = member_record.issued_runtime_instance_id
+        if issued is None:
+            raise AgentTeamSetupConflictError(
+                "agent_team_runtime_instance_not_issued",
+                "No runtime instance identity was issued for this member",
+                actor_key=member_record.actor_key,
             )
-        )
-        return "rti-" + hashlib.sha256(seed.encode("utf-8")).hexdigest()[:32]
+        return issued
 
     @staticmethod
     def _runtime_identity_status(
@@ -2345,18 +2343,27 @@ class AgentTeamSetupService:
         expected_instance_id: str,
         acknowledgement: dict[str, Any],
     ) -> AgentTeamRuntimeIdentityStatus:
-        """Read the acknowledging identity, and any change or refusal of it, from stored state."""
+        """Read the acknowledging identity from the acknowledgement, and any change or refusal from stored state.
+
+        The state follows the acknowledgement alone: ``current`` is an
+        acknowledgement that returned the identity the handoff now carries
+        (``changed`` when it replaced another identity), ``stale`` one that
+        returned an earlier one, and ``unknown`` none or one without an
+        identity. A refusal is not a state: it is shown beside it while it is
+        recorded, and the matching acknowledgement clears it.
+        """
 
         stored = acknowledgement.get("runtime_instance_id")
         acknowledged = stored if isinstance(stored, str) else None
-        if record.rejected_runtime_instance_at is not None:
-            state = "refused"
-        elif acknowledgement and record.runtime_identity_changed_at is not None:
-            state = "changed"
-        elif acknowledgement and acknowledged is not None:
-            state = "current"
-        else:
+        changed = record.runtime_identity_changed_at is not None
+        if not acknowledgement:
             state = "unknown"
+        elif acknowledged is None:
+            state = "changed" if changed else "unknown"
+        elif acknowledged != expected_instance_id:
+            state = "stale"
+        else:
+            state = "changed" if changed else "current"
         return AgentTeamRuntimeIdentityStatus(
             state=state,
             expected_instance_id=expected_instance_id,
@@ -2395,11 +2402,7 @@ class AgentTeamSetupService:
             profile_revision=await self._profile_revision(actor),
             model_binding_revisions=await self._binding_revisions(actor),
             supported_assignment_modes=member.assignment_modes,
-            runtime_instance_id=self._runtime_instance_id(
-                topology.topology_key,
-                member_record,
-                actor,
-            ),
+            runtime_instance_id=self._issued_runtime_instance_id(member_record),
             startup_instructions=(
                 "Load the exact immutable role package and verify its checksum.",
                 "Resolve credential_ref through the runtime secret store.",
@@ -3493,10 +3496,8 @@ class AgentTeamSetupService:
             )
         return response
 
-    async def _increment_ack_attempt(
-        self,
-        member: AgentTeamTopologyMember,
-    ) -> None:
+    @staticmethod
+    def _count_ack_attempt(member: AgentTeamTopologyMember) -> None:
         now = utc_now()
         if (
             member.ack_window_started_at is None
@@ -3512,7 +3513,61 @@ class AgentTeamSetupService:
                 retry_after_seconds=ACK_WINDOW_SECONDS,
             )
         member.ack_attempt_count += 1
+
+    async def _increment_ack_attempt(
+        self,
+        member: AgentTeamTopologyMember,
+    ) -> None:
+        self._count_ack_attempt(member)
         await commit_or_flush(self.db)
+
+    async def _refuse_foreign_runtime_instance(
+        self,
+        actor: AgentActor,
+        supplied_instance_id: str | None,
+    ) -> None:
+        """Turn away an acknowledgement that returns an identity other than the issued one, and record it.
+
+        The request fails, and so does the transaction it runs in, which would
+        roll the record back. It is therefore written in its own short
+        session: the member row is locked, the refusal is counted against the
+        attempt limit and recorded, and that session commits. Nothing of the
+        request's own transaction is committed. This runs before the request
+        has written or locked anything, so the two sessions cannot wait on each
+        other.
+        """
+
+        if supplied_instance_id is None:
+            return
+        issued = await self.db.scalar(
+            select(AgentTeamTopologyMember.issued_runtime_instance_id).where(
+                AgentTeamTopologyMember.actor_id == actor.id
+            )
+        )
+        if issued is None or issued == supplied_instance_id:
+            return
+        bind = self.db.bind
+        engine = bind.engine if isinstance(bind, AsyncConnection) else bind
+        actor_key = None
+        async with AsyncSession(engine, expire_on_commit=False) as refusal:
+            member = await refusal.scalar(
+                select(AgentTeamTopologyMember)
+                .where(AgentTeamTopologyMember.actor_id == actor.id)
+                .with_for_update()
+            )
+            if member is None or member.issued_runtime_instance_id == supplied_instance_id:
+                # The identity was reissued meanwhile and this is the current one.
+                return
+            self._count_ack_attempt(member)
+            member.rejected_runtime_instance_id = supplied_instance_id
+            member.rejected_runtime_instance_at = utc_now()
+            actor_key = member.actor_key
+            await refusal.commit()
+        raise AgentTeamSetupConflictError(
+            "agent_team_ack_runtime_instance_mismatch",
+            "Runtime instance identity does not match the handoff",
+            actor_key=actor_key,
+        )
 
     async def acknowledge_runtime(
         self,
@@ -3536,6 +3591,7 @@ class AgentTeamSetupService:
             principal = await self.db.scalar(select(Principal).where(Principal.agent_actor_id == actor.id))
             if principal is not None and not principal.enabled:
                 raise AgentPermissionError("The onboarding principal is disabled")
+            await self._refuse_foreign_runtime_instance(actor, acknowledgement.runtime_instance_id)
             if principal is None:
                 self.db.add(Principal(kind="agent", display_name=actor.display_name, agent_actor_id=actor.id))
                 await self.db.flush()
@@ -3593,23 +3649,12 @@ class AgentTeamSetupService:
                 "Acknowledgement does not match the exact current handoff",
             )
         supplied_instance_id = acknowledgement.runtime_instance_id
-        if supplied_instance_id is not None and supplied_instance_id != self._runtime_instance_id(
-            topology.topology_key,
-            member,
-            actor,
-        ):
-            # A second runtime that presents another identity is not
-            # acknowledged, and not silent: status shows the refusal. The
-            # request fails, and its transaction would roll the record back,
-            # so it is committed here, deliberately and not by commit_or_flush.
-            actor_key = member.actor_key
-            member.rejected_runtime_instance_id = supplied_instance_id
-            member.rejected_runtime_instance_at = utc_now()
-            await self.db.commit()
+        if supplied_instance_id is not None and supplied_instance_id != self._issued_runtime_instance_id(member):
+            # Reissued after the early check, under the lock taken above: the same refusal, now in the open transaction.
             raise AgentTeamSetupConflictError(
                 "agent_team_ack_runtime_instance_mismatch",
                 "Runtime instance identity does not match the handoff",
-                actor_key=actor_key,
+                actor_key=member.actor_key,
             )
         ack_content = acknowledgement.stored_content()
         ack_digest = _digest(ack_content)
@@ -3618,6 +3663,14 @@ class AgentTeamSetupService:
                 member.runtime_acknowledgement_digest,
                 ack_digest,
             ):
+                if (
+                    supplied_instance_id is not None
+                    and member.rejected_runtime_instance_id is not None
+                ):
+                    # The genuine runtime acknowledges again: the refusal of another one is no longer current.
+                    member.rejected_runtime_instance_id = None
+                    member.rejected_runtime_instance_at = None
+                    await commit_or_flush(self.db)
                 status = await self._status_for_topology(
                     topology,
                     can_mutate=False,

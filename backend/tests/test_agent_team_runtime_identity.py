@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,6 +15,7 @@ from app.agent_contract import (
 )
 from app.models.agent import AgentTeamTopologyMember
 from app.schemas.agent_team_setup import (
+    AgentTeamMaster,
     AgentTeamRuntimeAcknowledgement,
     AgentTeamRuntimeHandoff,
 )
@@ -22,16 +24,45 @@ from app.services.agent_team_setup_service import (
     AgentTeamSetupService,
     _digest,
 )
-from tests.test_agent_team_setup import example_payload, operator
+from tests.test_agent_team_setup import CapturingCredentialSink, example_payload, operator
 from tests.test_delivery_scenarios import delivery_store  # noqa: F401  (fixture)
 from tests.test_agent_team_setup_stored_contract import (
     TOPOLOGY_KEY,
+    apply_every_action,
     member_records,
     store_team,
 )
 
 pytestmark = pytest.mark.usefixtures("deployed_agent_skill_release")
 WORKER = "backend-worker"
+
+
+class SameReceiptSink(CapturingCredentialSink):
+    """A sink whose delivery receipt does not change between deliveries, and that can lose one.
+
+    The receipt of the production sink is a digest of fixed inputs, so a runtime
+    identity must not depend on it.
+    """
+
+    def __init__(self, lose: str | None = None) -> None:
+        super().__init__()
+        self.lose = lose
+
+    async def deliver(self, *, credential_ref: str, actor_key: str, actor_name: str, api_key: str) -> str:
+        if actor_key == self.lose:
+            self.lose = None
+            raise RuntimeError("simulated uncertain sink delivery")
+        await super().deliver(
+            credential_ref=credential_ref, actor_key=actor_key, actor_name=actor_name, api_key=api_key
+        )
+        return "c" * 64
+
+
+def worker_manifest(**changes: str) -> AgentTeamMaster:
+    payload = example_payload()
+    assert payload["workers"][0]["actor_key"] == WORKER
+    payload["workers"][0].update(changes)
+    return AgentTeamMaster.model_validate(payload)
 
 
 def acknowledgement_for(
@@ -145,7 +176,8 @@ async def test_a_mismatched_identity_is_refused_by_name_and_shown(db_session: As
     member = await worker_status(service)
     assert member.runtime_ready is False
     assert member.package_acknowledged is False
-    assert member.runtime_identity.state == "refused"
+    # The refusal is shown beside the state the acknowledgement gives; it is not a state of its own.
+    assert member.runtime_identity.state == "unknown"
     assert member.runtime_identity.refused_instance_id == other
     assert member.runtime_identity.refused_at is not None
 
@@ -156,6 +188,51 @@ async def test_a_mismatched_identity_is_refused_by_name_and_shown(db_session: As
     member = await worker_status(service)
     assert member.runtime_identity.state == "current"
     assert member.runtime_identity.refused_instance_id is None
+    assert member.runtime_identity.refused_at is None
+
+
+async def test_a_refusal_ends_when_the_genuine_runtime_that_had_acknowledged_acknowledges_again(
+    db_session: AsyncSession,
+) -> None:
+    service, sink, handoff = await team(db_session)
+    genuine = acknowledgement_for(handoff, identity=handoff.runtime_instance_id)
+    db_session.info.pop("authority", None)
+    first = await service.acknowledge_runtime(sink.keys[WORKER], genuine)
+
+    other = "rti-" + "9" * 32
+    with pytest.raises(AgentTeamSetupConflictError) as refused:
+        await service.acknowledge_runtime(sink.keys[WORKER], acknowledgement_for(handoff, identity=other))
+    assert refused.value.code == "agent_team_ack_runtime_instance_mismatch"
+    member = await worker_status(service)
+    # The acknowledgement stands, so the state does; the refusal is shown next to it.
+    assert member.runtime_ready is True
+    assert member.runtime_identity.state == "current"
+    assert member.runtime_identity.refused_instance_id == other
+    assert member.runtime_identity.refused_at is not None
+
+    # The same genuine acknowledgement again is a replay, and a replay ends the refusal too.
+    again = await service.acknowledge_runtime(sink.keys[WORKER], genuine)
+    assert again.acknowledgement_digest == first.acknowledgement_digest
+    member = await worker_status(service)
+    assert member.runtime_identity.state == "current"
+    assert member.runtime_identity.refused_instance_id is None
+    assert member.runtime_identity.refused_at is None
+    record = await stored(db_session)
+    assert record.rejected_runtime_instance_id is None and record.rejected_runtime_instance_at is None
+
+
+async def test_a_replay_without_the_identity_does_not_end_a_refusal(db_session: AsyncSession) -> None:
+    service, sink, handoff = await team(db_session)
+    db_session.info.pop("authority", None)
+    await service.acknowledge_runtime(sink.keys[WORKER], acknowledgement_for(handoff))
+    other = "rti-" + "8" * 32
+    with pytest.raises(AgentTeamSetupConflictError):
+        await service.acknowledge_runtime(sink.keys[WORKER], acknowledgement_for(handoff, identity=other))
+    # A runtime that sends no identity has not shown that it holds this one.
+    await service.acknowledge_runtime(sink.keys[WORKER], acknowledgement_for(handoff))
+    member = await worker_status(service)
+    assert member.runtime_identity.state == "unknown"
+    assert member.runtime_identity.refused_instance_id == other
 
 
 async def test_a_legacy_acknowledgement_is_accepted_and_reads_as_identity_unknown(db_session: AsyncSession) -> None:
@@ -225,45 +302,57 @@ async def test_a_required_feature_refuses_an_acknowledgement_without_the_identit
     assert (await worker_status(service)).runtime_identity.state == "current"
 
 
-async def test_a_second_runtime_taking_the_seat_is_a_visible_change(db_session: AsyncSession) -> None:
-    service, sink, handoff = await team(db_session)
+async def test_a_replaced_member_issues_a_new_identity_and_the_takeover_is_a_visible_change(
+    db_session: AsyncSession,
+) -> None:
+    service, sink = await store_team(
+        db_session, example_payload(), key="runtime-identity-replace", sink=SameReceiptSink(), lossy=False
+    )
+    handoff = (await worker_status(service)).handoff
+    assert handoff is not None
     db_session.info.pop("authority", None)
     first = await service.acknowledge_runtime(
         sink.keys[WORKER], acknowledgement_for(handoff, identity=handoff.runtime_instance_id)
     )
-    # A new credential delivery stands for a second runtime: its handoff names a new instance.
-    record = await stored(db_session)
-    record.credential_delivery_receipt_digest = "d" * 64
-    await db_session.commit()
+    receipt_before = (await stored(db_session)).credential_delivery_receipt_digest
 
-    stale = await worker_status(service)
-    assert stale.runtime_ready is False
-    assert stale.acknowledgement_state == "stale"
-    assert stale.handoff is not None
-    replacement = stale.handoff.runtime_instance_id
+    # The member is replaced through the setup action: a new actor and a new credential. The sink's
+    # receipt is the same as before, so nothing but the server's own issuance can tell them apart.
+    applied = await apply_every_action(
+        service,
+        worker_manifest(
+            actor_name="workchord-backend-worker-v2",
+            runtime_ref="runtime://backend-worker-v2",
+            credential_ref="agent-team-secure-sink/backend-worker-v2",
+        ),
+        expected_revision=1,
+        key="runtime-identity-replace-worker",
+    )
+    assert applied.status == "completed"
+    assert next(r for r in applied.receipts if r.actor_key == WORKER).operation == "replace_member"
+    assert (await stored(db_session)).credential_delivery_receipt_digest == receipt_before
+
+    renewed = await worker_status(service)
+    assert renewed.handoff is not None
+    replacement = renewed.handoff.runtime_instance_id
     assert replacement != handoff.runtime_instance_id
+    assert replacement.startswith("rti-") and len(replacement) == 36
+    assert renewed.runtime_ready is False
+    assert renewed.runtime_identity.state == "unknown"
+    assert renewed.runtime_identity.expected_instance_id == replacement
 
-    # The earlier runtime's identity no longer matches the handoff.
+    # The earlier runtime's identity is not the one the new handoff carries: refused, named and shown.
     db_session.info.pop("authority", None)
     with pytest.raises(AgentTeamSetupConflictError) as refused:
         await service.acknowledge_runtime(
-            sink.keys[WORKER],
-            acknowledgement_for(
-                handoff,
-                identity=handoff.runtime_instance_id,
-                expected_previous_acknowledgement_digest=first.acknowledgement_digest,
-            ),
+            sink.keys[WORKER], acknowledgement_for(renewed.handoff, identity=handoff.runtime_instance_id)
         )
     assert refused.value.code == "agent_team_ack_runtime_instance_mismatch"
-    assert (await worker_status(service)).runtime_identity.state == "refused"
+    shown = (await worker_status(service)).runtime_identity
+    assert shown.refused_instance_id == handoff.runtime_instance_id
 
     await service.acknowledge_runtime(
-        sink.keys[WORKER],
-        acknowledgement_for(
-            stale.handoff,
-            identity=replacement,
-            expected_previous_acknowledgement_digest=first.acknowledgement_digest,
-        ),
+        sink.keys[WORKER], acknowledgement_for(renewed.handoff, identity=replacement)
     )
     member = await worker_status(service)
     assert member.runtime_ready is True
@@ -272,6 +361,66 @@ async def test_a_second_runtime_taking_the_seat_is_a_visible_change(db_session: 
     assert member.runtime_identity.previous_instance_id == handoff.runtime_instance_id
     assert member.runtime_identity.changed_at is not None
     assert member.runtime_identity.refused_instance_id is None
+    assert first.acknowledgement_digest != (await stored(db_session)).runtime_acknowledgement_digest
+
+
+async def test_a_recovered_credential_issues_a_new_identity(db_session: AsyncSession) -> None:
+    service, sink = await store_team(
+        db_session, example_payload(), key="runtime-identity-recover", sink=SameReceiptSink(lose=WORKER)
+    )
+    before = await stored(db_session)
+    assert before.credential_delivery_state == "uncertain"
+    issued_before = before.issued_runtime_instance_id
+    handoff_before = (await worker_status(service)).handoff
+    assert handoff_before is not None and handoff_before.runtime_instance_id == issued_before
+
+    applied = await apply_every_action(
+        service,
+        worker_manifest(credential_ref="agent-team-secure-sink/backend-worker-recovery"),
+        expected_revision=1,
+        key="runtime-identity-recover-worker",
+    )
+    assert applied.status == "completed"
+    assert next(r for r in applied.receipts if r.actor_key == WORKER).operation == "replace_member"
+    record = await stored(db_session)
+    assert record.credential_delivery_state == "delivered"
+    assert record.issued_runtime_instance_id != issued_before
+
+    recovered = await worker_status(service)
+    assert recovered.handoff is not None
+    assert recovered.handoff.runtime_instance_id == record.issued_runtime_instance_id
+    assert recovered.runtime_identity.expected_instance_id == record.issued_runtime_instance_id
+    # The identity the runtime saw before the recovery no longer matches.
+    db_session.info.pop("authority", None)
+    with pytest.raises(AgentTeamSetupConflictError) as refused:
+        await service.acknowledge_runtime(
+            sink.keys[WORKER], acknowledgement_for(recovered.handoff, identity=handoff_before.runtime_instance_id)
+        )
+    assert refused.value.code == "agent_team_ack_runtime_instance_mismatch"
+    await service.acknowledge_runtime(
+        sink.keys[WORKER],
+        acknowledgement_for(recovered.handoff, identity=recovered.handoff.runtime_instance_id),
+    )
+    assert (await worker_status(service)).runtime_identity.state == "current"
+
+
+def test_an_acknowledgement_under_an_earlier_identity_is_stale_and_only_a_match_is_current() -> None:
+    expected, earlier = "rti-" + "1" * 32, "rti-" + "2" * 32
+    service_status = AgentTeamSetupService._runtime_identity_status
+
+    def state(record: AgentTeamTopologyMember, acknowledgement: dict) -> str:
+        return service_status(record, expected_instance_id=expected, acknowledgement=acknowledgement).state
+
+    record = AgentTeamTopologyMember()
+    assert state(record, {}) == "unknown"
+    assert state(record, {"role": "worker"}) == "unknown"
+    assert state(record, {"runtime_instance_id": expected}) == "current"
+    assert state(record, {"runtime_instance_id": earlier}) == "stale"
+    record.runtime_identity_changed_at = datetime.now(timezone.utc)
+    assert state(record, {"runtime_instance_id": expected}) == "changed"
+    assert state(record, {"runtime_instance_id": earlier}) == "stale"
+    assert state(record, {"role": "worker"}) == "changed"
+    assert state(record, {}) == "unknown"
 
 
 async def test_a_runtime_without_the_field_taking_the_seat_is_a_visible_change(db_session: AsyncSession) -> None:
@@ -319,9 +468,9 @@ async def test_identity_flow_on_each_database(delivery_store) -> None:
         with pytest.raises(AgentTeamSetupConflictError) as refused:
             await service.acknowledge_runtime(sink.keys[WORKER], acknowledgement_for(handoff, identity=other))
         assert refused.value.code == "agent_team_ack_runtime_instance_mismatch"
-        refused_status = await worker_status(service)
-        assert refused_status.runtime_identity.state == "refused"
-        first = await service.acknowledge_runtime(
+        refused_status = (await worker_status(service)).runtime_identity
+        assert refused_status.state == "unknown" and refused_status.refused_instance_id == other
+        await service.acknowledge_runtime(
             sink.keys[WORKER], acknowledgement_for(handoff, identity=handoff.runtime_instance_id)
         )
         states = {
@@ -329,20 +478,26 @@ async def test_identity_flow_on_each_database(delivery_store) -> None:
             for member in (await service.status(operator(), topology_key=TOPOLOGY_KEY)).members
         }
         assert states[pm.actor_key] == "unknown" and states[WORKER] == "current"
+        assert (await worker_status(service)).runtime_identity.refused_instance_id is None
 
-        # A second runtime takes the seat: the change and the identity it replaced are recorded.
-        record = await stored(db)
-        record.credential_delivery_receipt_digest = "d" * 64
-        await db.commit()
+        # The member is replaced: a second runtime takes the seat, and the change and the identity it
+        # replaced are recorded.
+        applied = await apply_every_action(
+            service,
+            worker_manifest(
+                actor_name="workchord-backend-worker-v2",
+                runtime_ref="runtime://backend-worker-v2",
+                credential_ref="agent-team-secure-sink/backend-worker-v2",
+            ),
+            expected_revision=1,
+            key="runtime-identity-flow-replace",
+        )
+        assert applied.status == "completed"
         renewed = (await worker_status(service)).handoff
         assert renewed is not None and renewed.runtime_instance_id != handoff.runtime_instance_id
         await service.acknowledge_runtime(
             sink.keys[WORKER],
-            acknowledgement_for(
-                renewed,
-                identity=renewed.runtime_instance_id,
-                expected_previous_acknowledgement_digest=first.acknowledgement_digest,
-            ),
+            acknowledgement_for(renewed, identity=renewed.runtime_instance_id),
         )
         changed = (await worker_status(service)).runtime_identity
         assert changed.state == "changed"
@@ -385,7 +540,7 @@ async def test_a_refusal_over_http_names_its_code_and_stays_visible(db_session: 
     assert refused.status_code == 409, refused.text
     assert refused.json()["detail"]["code"] == "agent_team_ack_runtime_instance_mismatch"
     member = await worker_status(service)
-    assert member.runtime_identity.state == "refused"
+    assert member.runtime_identity.state == "unknown"
     assert member.runtime_identity.refused_instance_id == other
 
     accepted = await acknowledge_over_http(

@@ -148,7 +148,12 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         assert after_catalog["delivery_dependencies"]["columns"].pop("target_branch") == {"type": {"family": "text"}, "nullable": True}
         # A later revision records which runtime instance acknowledged each team member's handoff.
         members = after_catalog["agent_team_topology_members"]["columns"]
-        for column in ("acknowledged_runtime_instance_id", "previous_runtime_instance_id", "rejected_runtime_instance_id"):
+        for column in (
+            "issued_runtime_instance_id",
+            "acknowledged_runtime_instance_id",
+            "previous_runtime_instance_id",
+            "rejected_runtime_instance_id",
+        ):
             assert members.pop(column) == {"type": {"family": "text"}, "nullable": True}
         for column in ("runtime_identity_changed_at", "rejected_runtime_instance_at"):
             assert members.pop(column)["nullable"] is True

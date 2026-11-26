@@ -196,11 +196,19 @@ member's place without the difference being recorded. An acknowledgement that
 names another identity is refused with `agent_team_ack_runtime_instance_mismatch`
 and is not stored.
 
-The identity belongs to the member's current actor and delivered credential. A
-replacement actor, or a credential recovery, issues a new one, and the runtime
-acknowledges again with it. The identity is an opaque label, not a secret and not
-a proof: a runtime that holds a copy of the handoff can return it. It tells apart
-the runtimes the server issued handoffs to, and it makes a change visible.
+The server draws the identity at random, and draws a new one each time a
+credential delivery succeeds: when a member is created, when a replacement actor
+is delivered its credential, and when a credential is recovered. It is stored with
+the member and does not depend on the delivery receipt, which a sink may derive
+from fixed inputs. A member that existed before the upgrade is issued its own
+random identity by the migration, so every handoff names one; an acknowledgement
+that predates it carries none and stays valid. The runtime acknowledges again with
+a new identity. The identity is an opaque label, not a secret and not a proof: a
+runtime that holds a copy of the handoff can return it. It tells apart the
+handoffs the server issued, and it makes a change visible.
+
+A refused acknowledgement is recorded in its own short transaction, so the
+record survives the failed request, and it counts against the attempt limit.
 
 The server feature `runtime-instance-identity-v1` states how a runtime that does
 not send the field is handled:
@@ -216,15 +224,20 @@ not send the field is handled:
 
 Member status adds `runtime_identity` for each member:
 
-- `state` is `unknown` (no acknowledgement, or one without an identity), `current`
-  (the runtime acknowledged with the identity issued to it), `changed` (the
-  acknowledging identity differs from the one before it, or the runtime stopped
-  sending one), or `refused` (a runtime returned another identity and was turned
-  away, until the next accepted acknowledgement).
+- `state` follows the stored acknowledgement alone. It is `unknown` (no
+  acknowledgement, or one without an identity), `current` (the acknowledgement
+  returned the identity the handoff now carries), `changed` (the same, after
+  another identity, or none, held the seat; or the runtime stopped sending one) or
+  `stale` (the acknowledgement returned an earlier identity than the handoff now
+  carries).
 - `expected_instance_id` is the identity the handoff now carries;
   `acknowledged_instance_id` is the one in the stored acknowledgement.
 - `previous_instance_id` and `changed_at` say which identity was replaced and
-  when; `refused_instance_id` and `refused_at` say which identity was refused.
+  when.
+- `refused_instance_id` and `refused_at` are set while a refusal is recorded: a
+  runtime returned another identity and was turned away. A refusal is not a state.
+  It is shown beside the state the acknowledgement gives, and an acknowledgement
+  that carries the issued identity, including a repeat of the stored one, clears it.
 
 An acknowledgement that carries an identity other than the one the handoff now
 carries is stale, so a runtime that was replaced stays out of dispatch until the

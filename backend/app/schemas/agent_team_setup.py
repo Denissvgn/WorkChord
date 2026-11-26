@@ -1002,15 +1002,20 @@ class AgentTeamRuntimeHandoff(AgentTeamSetupModel):
 
 
 class AgentTeamRuntimeIdentityStatus(AgentTeamSetupModel):
-    """Which runtime instance acknowledged a member's handoff, and any change of it.
+    """Which runtime instance acknowledged a member's handoff, and any change or refusal of it.
 
     ``unknown`` is a member that has not acknowledged, or acknowledged without
     an identity, as every acknowledgement did before the identity existed.
-    ``changed`` keeps the identity it replaced. ``refused`` is a runtime that
-    returned an identity other than the issued one and was turned away.
+    ``current`` returned the identity the handoff carries now; ``changed`` did
+    so after another identity (``previous_instance_id``) held the seat, and
+    ``stale`` returned an earlier identity than the handoff carries now, as
+    after a recovered credential. A runtime that returned an identity other
+    than the issued one and was turned away is shown by ``refused_*``, beside
+    whichever state the acknowledgement gives, until a matching acknowledgement
+    clears it.
     """
 
-    state: Literal["unknown", "current", "changed", "refused"] = "unknown"
+    state: Literal["unknown", "current", "changed", "stale"] = "unknown"
     expected_instance_id: str | None = Field(default=None, pattern=RUNTIME_INSTANCE_ID_PATTERN)
     acknowledged_instance_id: str | None = Field(default=None, pattern=RUNTIME_INSTANCE_ID_PATTERN)
     previous_instance_id: str | None = Field(default=None, pattern=RUNTIME_INSTANCE_ID_PATTERN)
