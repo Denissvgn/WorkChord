@@ -30,6 +30,7 @@ Secret-free provider-neutral model catalog fields.
 | `context_tier` | `ModelContextTier` | `context_tier` | Yes | No | — | — | — | — |
 | `modality_tags` | `list[str]` | `modality_tags` | No | No | factory: `lambda: ['text']` | — | — | — |
 | `cost_tier` | `ModelCostTier` | `cost_tier` | Yes | No | — | — | — | — |
+| `local_first` | `bool` | `local_first` | No | No | `False` | — | — | Prefer this free or local model over a hosted one of equal adequacy; never overrides a gate. |
 | `latency_tier` | `ModelLatencyTier` | `latency_tier` | Yes | No | — | — | — | — |
 | `enabled` | `bool` | `enabled` | No | No | `True` | — | — | — |
 | `revision` | `PositiveRevision` | `revision` | No | No | `1` | — | — | — |
@@ -66,7 +67,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing](../modules/agent_routing.md) | 4 | `configured_model_alias`, `context_tier`, `cost_tier`, `enabled`, `key`, `last_verified_at`, `latency_tier`, `modality_tags`, `provider`, `publisher_key`, `reasoning_tier`, `revision` |
+| [agent_routing](../modules/agent_routing.md) | 4 | `configured_model_alias`, `context_tier`, `cost_tier`, `enabled`, `key`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags`, `provider`, `publisher_key`, `reasoning_tier` |
 
 ### Structure
 

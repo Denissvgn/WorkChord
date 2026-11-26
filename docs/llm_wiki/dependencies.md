@@ -1395,6 +1395,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [20261124_0022_capacity_adjustments](modules/20261124_0022_capacity_adjustments.md) | 0 | 0 |
 | [20261124_0023_task_replacements](modules/20261124_0023_task_replacements.md) | 0 | 0 |
 | [20261124_0024_delivery_dependency_target_branch](modules/20261124_0024_delivery_dependency_target_branch.md) | 0 | 0 |
+| [20261126_0025_catalog_local_first](modules/20261126_0025_catalog_local_first.md) | 0 | 0 |
 | [routers___init__](modules/routers___init__.md) | 0 | 23 |
 | [schemas___init__](modules/schemas___init__.md) | 0 | 19 |
 | [exceptions](modules/exceptions.md) | 0 | 1 |
