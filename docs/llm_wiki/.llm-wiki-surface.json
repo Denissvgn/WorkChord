@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1825,
+      "entities": 1826,
       "flows": 628,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1169,
+      "modules": 1172,
       "workflows": 238
     },
     "dependency_architecture": 2,
-    "total": 3877
+    "total": 3881
   },
   "dependency_pages": {
     "count": 2,
@@ -50109,6 +50109,7 @@
         "entities/models_saved_view_SavedView.md",
         "entities/models_saved_view_SavedViewScope.md",
         "entities/models_saved_view_SavedViewType.md",
+        "entities/models_task_brief_TaskReviewRecord.md",
         "entities/models_task_Task.md",
         "entities/models_task_TaskStatus.md",
         "entities/models_template_TemplateType.md",
@@ -50824,7 +50825,6 @@
         "entities/TaskReplacementService.md",
         "entities/TaskResponse.md",
         "entities/TaskReviewMode.md",
-        "entities/TaskReviewRecord.md",
         "entities/TaskReviewResponse.md",
         "entities/TaskReviewWrite.md",
         "entities/TaskRoutingAssessmentCreate.md",
@@ -51094,6 +51094,7 @@
         "entities/types_task_TaskProject.md",
         "entities/types_task_TaskReference.md",
         "entities/types_task_TaskReferencePage.md",
+        "entities/types_task_TaskReviewRecord.md",
         "entities/types_task_TasksImportRequest.md",
         "entities/types_task_TasksImportResponse.md",
         "entities/types_task_TaskStatus.md",
@@ -52663,12 +52664,15 @@
         "modules/TaskList.md",
         "modules/TaskList.test.md",
         "modules/TaskMergeDialog.md",
+        "modules/TaskOwnerAcceptance.md",
+        "modules/TaskOwnerAcceptance.test.md",
         "modules/TaskReadView.brief.test.md",
         "modules/TaskReadView.dispatch.test.md",
         "modules/TaskReadView.md",
         "modules/TaskReadView.operatorKey.test.md",
         "modules/TaskReadView.test.md",
         "modules/TaskReviewer.md",
+        "modules/TaskReviewHistory.md",
         "modules/TaskRoutingPanel.md",
         "modules/TaskRoutingPanel.test.md",
         "modules/TaskRow.md",
@@ -63256,6 +63260,27 @@
       "title": "SavedViewType"
     },
     {
+      "canonical_path": "entities/models_task_brief_TaskReviewRecord.md",
+      "id": "models_task_brief_TaskReviewRecord",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/models_task_brief_TaskReviewRecord",
+      "outgoing_internal_links": [
+        "modules/app_database.md",
+        "modules/delivery_observation.md",
+        "modules/models___init__.md",
+        "modules/models_task_brief.md",
+        "modules/routers_task_domain.md",
+        "modules/task_brief_service.md",
+        "modules/task_recovery_service.md",
+        "modules/test_acceptance_attribution.md",
+        "modules/test_owner_override_acceptance.md",
+        "modules/test_task_domain.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/models/task_brief.py",
+      "title": "TaskReviewRecord"
+    },
+    {
       "canonical_path": "entities/models_task_Task.md",
       "id": "models_task_Task",
       "kind": "entities",
@@ -73164,27 +73189,6 @@
       "title": "TaskReviewMode"
     },
     {
-      "canonical_path": "entities/TaskReviewRecord.md",
-      "id": "TaskReviewRecord",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TaskReviewRecord",
-      "outgoing_internal_links": [
-        "modules/app_database.md",
-        "modules/delivery_observation.md",
-        "modules/models___init__.md",
-        "modules/models_task_brief.md",
-        "modules/routers_task_domain.md",
-        "modules/task_brief_service.md",
-        "modules/task_recovery_service.md",
-        "modules/test_acceptance_attribution.md",
-        "modules/test_owner_override_acceptance.md",
-        "modules/test_task_domain.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/models/task_brief.py",
-      "title": "TaskReviewRecord"
-    },
-    {
       "canonical_path": "entities/TaskReviewResponse.md",
       "id": "TaskReviewResponse",
       "kind": "entities",
@@ -77004,6 +77008,21 @@
       "title": "TaskReferencePage"
     },
     {
+      "canonical_path": "entities/types_task_TaskReviewRecord.md",
+      "id": "types_task_TaskReviewRecord",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_task_TaskReviewRecord",
+      "outgoing_internal_links": [
+        "modules/TaskOwnerAcceptance.test.md",
+        "modules/TaskReviewHistory.md",
+        "modules/taskService.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/task.ts",
+      "title": "TaskReviewRecord"
+    },
+    {
       "canonical_path": "entities/types_task_TasksImportRequest.md",
       "id": "types_task_TasksImportRequest",
       "kind": "entities",
@@ -78590,7 +78609,6 @@
         "modules/AdminAccessPanel.test.md",
         "modules/ConnectedReadersPanel.test.md",
         "modules/DeliveryDependencies.test.md",
-        "modules/destinationEmptyStates.test.md",
         "modules/GetStartedFlow.test.md",
         "modules/GetStartedPanel.test.md",
         "modules/GitHubReconciliationPanel.test.md",
@@ -78598,6 +78616,7 @@
         "modules/IdentityProvider.md",
         "modules/identityService.md",
         "modules/sampleProject.test.md",
+        "modules/TaskOwnerAcceptance.test.md",
         "modules/TaskReadView.operatorKey.test.md"
       ],
       "role": "semantic",
@@ -85434,9 +85453,9 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/models_task_brief",
       "outgoing_internal_links": [
+        "entities/models_task_brief_TaskReviewRecord.md",
         "entities/TaskBriefRevision.md",
         "entities/TaskProgressRecord.md",
-        "entities/TaskReviewRecord.md",
         "modules/models_task_brief.md"
       ],
       "role": "semantic",
@@ -85610,6 +85629,7 @@
         "modules/mutationFeedback.md",
         "modules/mutationFeedback.test.md",
         "modules/MutationSuccessFeedback.md",
+        "modules/TaskOwnerAcceptance.test.md",
         "modules/TemplateLabelSettings.test.md",
         "modules/toast.md"
       ],
@@ -92367,6 +92387,47 @@
       "title": "TaskMergeDialog Module"
     },
     {
+      "canonical_path": "modules/TaskOwnerAcceptance.md",
+      "id": "TaskOwnerAcceptance",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskOwnerAcceptance",
+      "outgoing_internal_links": [
+        "modules/apiError.md",
+        "modules/Button.md",
+        "modules/identityContext.md",
+        "modules/Input.md",
+        "modules/mutationFeedback.md",
+        "modules/TaskOwnerAcceptance.md",
+        "modules/taskService.md",
+        "modules/TaskWorkPanel.md",
+        "modules/types_task.md",
+        "modules/useDraftDismissal.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskOwnerAcceptance.tsx",
+      "title": "TaskOwnerAcceptance Module"
+    },
+    {
+      "canonical_path": "modules/TaskOwnerAcceptance.test.md",
+      "id": "TaskOwnerAcceptance.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskOwnerAcceptance.test",
+      "outgoing_internal_links": [
+        "modules/i18n.md",
+        "modules/identityContext.md",
+        "modules/identityService.md",
+        "modules/MutationSuccessFeedback.md",
+        "modules/renderWithProviders.md",
+        "modules/taskEditorContract.md",
+        "modules/TaskOwnerAcceptance.test.md",
+        "modules/TaskWorkPanel.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskOwnerAcceptance.test.tsx",
+      "title": "TaskOwnerAcceptance.test Module"
+    },
+    {
       "canonical_path": "modules/TaskReadView.brief.test.md",
       "id": "TaskReadView.brief.test",
       "kind": "modules",
@@ -92461,6 +92522,23 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskReviewer.tsx",
       "title": "TaskReviewer Module"
+    },
+    {
+      "canonical_path": "modules/TaskReviewHistory.md",
+      "id": "TaskReviewHistory",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskReviewHistory",
+      "outgoing_internal_links": [
+        "modules/formatDate.md",
+        "modules/QueryState.md",
+        "modules/TaskReviewHistory.md",
+        "modules/taskService.md",
+        "modules/TaskWorkPanel.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskReviewHistory.tsx",
+      "title": "TaskReviewHistory Module"
     },
     {
       "canonical_path": "modules/TaskRoutingPanel.md",
@@ -96880,6 +96958,7 @@
         "entities/types_task_TaskProject.md",
         "entities/types_task_TaskReference.md",
         "entities/types_task_TaskReferencePage.md",
+        "entities/types_task_TaskReviewRecord.md",
         "entities/types_task_TasksImportRequest.md",
         "entities/types_task_TasksImportResponse.md",
         "entities/types_task_TaskStatus.md",
@@ -115015,12 +115094,15 @@
         "modules/TaskList.md",
         "modules/TaskList.test.md",
         "modules/TaskMergeDialog.md",
+        "modules/TaskOwnerAcceptance.md",
+        "modules/TaskOwnerAcceptance.test.md",
         "modules/TaskReadView.brief.test.md",
         "modules/TaskReadView.dispatch.test.md",
         "modules/TaskReadView.md",
         "modules/TaskReadView.operatorKey.test.md",
         "modules/TaskReadView.test.md",
         "modules/TaskReviewer.md",
+        "modules/TaskReviewHistory.md",
         "modules/TaskRoutingPanel.md",
         "modules/TaskRoutingPanel.test.md",
         "modules/TaskRow.md",
@@ -116195,12 +116277,15 @@
         "modules/TaskList.md",
         "modules/TaskList.test.md",
         "modules/TaskMergeDialog.md",
+        "modules/TaskOwnerAcceptance.md",
+        "modules/TaskOwnerAcceptance.test.md",
         "modules/TaskReadView.brief.test.md",
         "modules/TaskReadView.dispatch.test.md",
         "modules/TaskReadView.md",
         "modules/TaskReadView.operatorKey.test.md",
         "modules/TaskReadView.test.md",
         "modules/TaskReviewer.md",
+        "modules/TaskReviewHistory.md",
         "modules/TaskRoutingPanel.md",
         "modules/TaskRoutingPanel.test.md",
         "modules/TaskRow.md",
@@ -116562,5 +116647,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:5c8a42c1bfab68439d3248730075b17dc269c8fb0a1e8515cf5766ecdc972973"
+  "source_hash": "sha256:9bd4f69cd05b5babf0fc02a2813d0d1f45a34939d0aa8021b1a7977770baa569"
 }
