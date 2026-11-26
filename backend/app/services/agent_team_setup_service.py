@@ -2319,24 +2319,6 @@ class AgentTeamSetupService:
         )
 
     @staticmethod
-    def _issued_runtime_instance_id(member_record: AgentTeamTopologyMember) -> str:
-        """The identity issued with the member's current delivery.
-
-        It is random, set when a credential delivery succeeds (a new member, a
-        replacement actor, a recovered credential) and given to every existing
-        member by the migration that added it. It is an opaque label, not a secret.
-        """
-
-        issued = member_record.issued_runtime_instance_id
-        if issued is None:
-            raise AgentTeamSetupConflictError(
-                "agent_team_runtime_instance_not_issued",
-                "No runtime instance identity was issued for this member",
-                actor_key=member_record.actor_key,
-            )
-        return issued
-
-    @staticmethod
     def _runtime_identity_status(
         record: AgentTeamTopologyMember,
         *,
@@ -2385,6 +2367,12 @@ class AgentTeamSetupService:
         actor = member_record.actor
         if actor is None:
             return None
+        if member_record.issued_runtime_instance_id is None:
+            # The migration and the model default issue one for every member, so this is a damaged row. It
+            # leaves this member without a handoff (the status names the blocker) instead of failing the read
+            # for the whole team. Issuing one here would write from a read path that may not hold write
+            # authority, and without the member lock.
+            return None
         tool_action = self._tool_capability_action(
             await self._unverified_tool_tags(actor, member)
         )
@@ -2402,7 +2390,7 @@ class AgentTeamSetupService:
             profile_revision=await self._profile_revision(actor),
             model_binding_revisions=await self._binding_revisions(actor),
             supported_assignment_modes=member.assignment_modes,
-            runtime_instance_id=self._issued_runtime_instance_id(member_record),
+            runtime_instance_id=member_record.issued_runtime_instance_id,
             startup_instructions=(
                 "Load the exact immutable role package and verify its checksum.",
                 "Resolve credential_ref through the runtime secret store.",
@@ -3116,6 +3104,8 @@ class AgentTeamSetupService:
                     member_record=record,
                     member=desired,
                 )
+                if handoff is None:
+                    blockers.add("runtime_instance_not_issued")
                 if actor.role != desired.role:
                     blockers.add("actor_role_mismatch")
                 if set(actor_scopes(actor)) != set(
@@ -3155,7 +3145,7 @@ class AgentTeamSetupService:
                     and ack_payload.get("skill_package")
                     == desired.skill_package.model_dump(mode="json")
                 )
-                if ack_payload:
+                if ack_payload and handoff is not None:
                     try:
                         valid_ack = AgentTeamRuntimeAcknowledgement.model_validate(ack_payload)
                     except ValueError:
@@ -3178,11 +3168,12 @@ class AgentTeamSetupService:
                     acknowledgement_state = "current" if acknowledgement_current else "stale"
                     if not acknowledgement_current:
                         blockers.add("runtime_acknowledgement_stale")
-                runtime_identity = self._runtime_identity_status(
-                    record,
-                    expected_instance_id=handoff.runtime_instance_id,
-                    acknowledgement=ack_payload if isinstance(ack_payload, dict) else {},
-                )
+                if handoff is not None:
+                    runtime_identity = self._runtime_identity_status(
+                        record,
+                        expected_instance_id=handoff.runtime_instance_id,
+                        acknowledgement=ack_payload if isinstance(ack_payload, dict) else {},
+                    )
                 if not package_acknowledged:
                     blockers.add("role_package_not_acknowledged")
                 if credential_state not in {"delivered", "not_required"}:
@@ -3539,6 +3530,8 @@ class AgentTeamSetupService:
 
         if supplied_instance_id is None:
             return
+        from app.services.identity_service import bind_verified_system
+
         issued = await self.db.scalar(
             select(AgentTeamTopologyMember.issued_runtime_instance_id).where(
                 AgentTeamTopologyMember.actor_id == actor.id
@@ -3550,6 +3543,12 @@ class AgentTeamSetupService:
         engine = bind.engine if isinstance(bind, AsyncConnection) else bind
         actor_key = None
         async with AsyncSession(engine, expire_on_commit=False) as refusal:
+            # The same verified system authority the request uses, so the write is audited like it.
+            await bind_verified_system(
+                refusal,
+                source="agent_onboarding",
+                reason=f"Refused a runtime instance identity for actor {actor.id}",
+            )
             member = await refusal.scalar(
                 select(AgentTeamTopologyMember)
                 .where(AgentTeamTopologyMember.actor_id == actor.id)
@@ -3576,6 +3575,15 @@ class AgentTeamSetupService:
     ) -> AgentTeamRuntimeAcknowledgementResponse:
         """Accept only the exact restricted onboarding handoff acknowledgement."""
 
+        if acknowledgement.runtime_instance_id is not None and (
+            self.db.new or self.db.dirty or self.db.deleted
+        ):
+            # A refused identity is recorded in its own session (see _refuse_foreign_runtime_instance),
+            # which needs the member row. A request session that had written or locked anything first would
+            # hold that row's database lock while the refusal session waited for it, or on SQLite hold the
+            # only write lock. Every query below flushes pending changes, so this is the last point where
+            # they are visible: fail loudly if a caller changes that order.
+            raise RuntimeError("Acknowledge a runtime before the request writes anything")
         actor_service = AgentService(self.db)
         actor = await actor_service.authenticate_onboarding(api_key)
         if actor is None:
@@ -3649,7 +3657,7 @@ class AgentTeamSetupService:
                 "Acknowledgement does not match the exact current handoff",
             )
         supplied_instance_id = acknowledgement.runtime_instance_id
-        if supplied_instance_id is not None and supplied_instance_id != self._issued_runtime_instance_id(member):
+        if supplied_instance_id is not None and supplied_instance_id != member.issued_runtime_instance_id:
             # Reissued after the early check, under the lock taken above: the same refusal, now in the open transaction.
             raise AgentTeamSetupConflictError(
                 "agent_team_ack_runtime_instance_mismatch",

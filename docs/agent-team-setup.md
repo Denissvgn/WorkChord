@@ -208,7 +208,11 @@ runtime that holds a copy of the handoff can return it. It tells apart the
 handoffs the server issued, and it makes a change visible.
 
 A refused acknowledgement is recorded in its own short transaction, so the
-record survives the failed request, and it counts against the attempt limit.
+record survives the failed request. It is audited like the acknowledgement itself
+and counts against the attempt limit. A member whose issued identity is missing
+(which the migration and member creation prevent) has no handoff, and its status
+names the blocker `runtime_instance_not_issued`; the rest of the team's status is
+still returned.
 
 The server feature `runtime-instance-identity-v1` states how a runtime that does
 not send the field is handled:

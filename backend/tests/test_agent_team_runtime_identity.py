@@ -6,6 +6,7 @@ import json
 from datetime import datetime, timezone
 
 import pytest
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agent_contract import (
@@ -14,6 +15,7 @@ from app.agent_contract import (
     agent_contract_features,
 )
 from app.models.agent import AgentTeamTopologyMember
+from app.models.identity import CommandAudit
 from app.schemas.agent_team_setup import (
     AgentTeamMaster,
     AgentTeamRuntimeAcknowledgement,
@@ -181,6 +183,21 @@ async def test_a_mismatched_identity_is_refused_by_name_and_shown(db_session: As
     assert member.runtime_identity.refused_instance_id == other
     assert member.runtime_identity.refused_at is not None
 
+    # The refusal session writes under the verified onboarding authority, so the write is audited.
+    audits = (
+        await db_session.scalars(
+            select(CommandAudit).where(
+                CommandAudit.action == "agent_team_topology_members:edit",
+                CommandAudit.source == "agent_onboarding",
+            )
+        )
+    ).all()
+    refusal_audits = [a for a in audits if "rejected_runtime_instance_id" in a.details["changed_fields"]]
+    assert len(refusal_audits) == 1
+    assert refusal_audits[0].principal_id is not None
+    assert refusal_audits[0].details["entity_id"] == (await stored(db_session)).id
+    assert "Refused a runtime instance identity" in refusal_audits[0].reason
+
     # The genuine runtime is still accepted, and the refusal is cleared.
     await service.acknowledge_runtime(
         sink.keys[WORKER], acknowledgement_for(handoff, identity=handoff.runtime_instance_id)
@@ -189,6 +206,36 @@ async def test_a_mismatched_identity_is_refused_by_name_and_shown(db_session: As
     assert member.runtime_identity.state == "current"
     assert member.runtime_identity.refused_instance_id is None
     assert member.runtime_identity.refused_at is None
+
+
+async def test_the_refusal_must_run_before_the_request_writes_anything(db_session: AsyncSession) -> None:
+    service, sink, handoff = await team(db_session)
+    db_session.info.pop("authority", None)
+    (await stored(db_session)).handoff_digest = "e" * 64
+    with pytest.raises(RuntimeError, match="before the request writes anything"):
+        await service.acknowledge_runtime(
+            sink.keys[WORKER], acknowledgement_for(handoff, identity="rti-" + "7" * 32)
+        )
+    await db_session.rollback()
+    # A request that sends no identity needs no refusal session, so it is not held to that order.
+    (await stored(db_session)).handoff_digest = "e" * 64
+    await service.acknowledge_runtime(sink.keys[WORKER], acknowledgement_for(handoff))
+
+
+async def test_a_member_without_an_issued_identity_does_not_fail_the_team_status(db_session: AsyncSession) -> None:
+    service, _, handoff = await team(db_session)
+    record = await stored(db_session)
+    record.issued_runtime_instance_id = None
+    await db_session.commit()
+    status = await service.status(operator(), topology_key=TOPOLOGY_KEY)
+    damaged = next(member for member in status.members if member.actor_key == WORKER)
+    assert damaged.handoff is None
+    assert "runtime_instance_not_issued" in damaged.blocker_codes
+    assert damaged.runtime_ready is False
+    assert damaged.runtime_identity.state == "unknown"
+    others = [member for member in status.members if member.actor_key != WORKER]
+    assert others and all(member.handoff is not None for member in others)
+    assert handoff.runtime_instance_id not in damaged.model_dump_json()
 
 
 async def test_a_refusal_ends_when_the_genuine_runtime_that_had_acknowledged_acknowledges_again(
@@ -371,6 +418,7 @@ async def test_a_recovered_credential_issues_a_new_identity(db_session: AsyncSes
     before = await stored(db_session)
     assert before.credential_delivery_state == "uncertain"
     issued_before = before.issued_runtime_instance_id
+    actor_before = before.actor_id
     handoff_before = (await worker_status(service)).handoff
     assert handoff_before is not None and handoff_before.runtime_instance_id == issued_before
 
@@ -384,6 +432,10 @@ async def test_a_recovered_credential_issues_a_new_identity(db_session: AsyncSes
     assert next(r for r in applied.receipts if r.actor_key == WORKER).operation == "replace_member"
     record = await stored(db_session)
     assert record.credential_delivery_state == "delivered"
+    # A recovery delivers a new credential to the same actor (a replacement would create a new one), and
+    # still issues a new identity.
+    assert record.actor_id == actor_before
+    assert record.credential_ref == "agent-team-secure-sink/backend-worker-recovery"
     assert record.issued_runtime_instance_id != issued_before
 
     recovered = await worker_status(service)
