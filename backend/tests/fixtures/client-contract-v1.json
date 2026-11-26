@@ -6648,6 +6648,17 @@
       "TriageConvertToTaskResponse": {
         "description": "Response for triage item conversion.",
         "properties": {
+          "source_link": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TriageSourceLinkOutcome"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Set when the source link was rewritten to a relative path or dropped; absent when it was carried over unchanged or there was none."
+          },
           "task": {
             "$ref": "#/components/schemas/TaskResponse"
           },
@@ -6858,6 +6869,51 @@
           "brief"
         ],
         "title": "TriageItemResponse",
+        "type": "object"
+      },
+      "TriageSourceLinkOutcome": {
+        "description": "What conversion did with the intake's source link when it was not carried over unchanged.",
+        "properties": {
+          "action": {
+            "enum": [
+              "rewritten",
+              "dropped"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "original": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Original"
+          },
+          "task_source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Task Source Url"
+          }
+        },
+        "required": [
+          "action",
+          "message"
+        ],
+        "title": "TriageSourceLinkOutcome",
         "type": "object"
       },
       "UserSession": {

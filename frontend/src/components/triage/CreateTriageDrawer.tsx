@@ -32,13 +32,15 @@ interface CreateTriageDrawerProps {
     iterations: Iteration[];
     isSubmitting: boolean;
     error?: string | null;
+    /** Named refusal of the source link, shown beside that field. */
+    sourceUrlError?: string | null;
     onSubmit: (payload: TriageItemCreate) => void;
     onClose: () => void;
     /** A title carried over from quick capture. */
     initialTitle?: string;
 }
 
-export const CreateTriageDrawer = ({ projects, iterations, isSubmitting, error, onSubmit, onClose, initialTitle = '' }: CreateTriageDrawerProps) => {
+export const CreateTriageDrawer = ({ projects, iterations, isSubmitting, error, sourceUrlError, onSubmit, onClose, initialTitle = '' }: CreateTriageDrawerProps) => {
     const [title, setTitle] = useState(initialTitle);
     const [description, setDescription] = useState('');
     const [source, setSource] = useState('');
@@ -134,7 +136,7 @@ export const CreateTriageDrawer = ({ projects, iterations, isSubmitting, error, 
                     <Input label={t('surfaces.triagePage.priorityHint')} type="number" min="1" max="10" value={priorityHint} onChange={event => setPriorityHint(event.target.value)} />
                 </div>
 
-                <Input label={t('surfaces.triagePage.sourceURL')} type="url" value={sourceUrl} onChange={event => setSourceUrl(event.target.value)} maxLength={500} />
+                <Input label={t('surfaces.triagePage.sourceURL')} type="url" error={sourceUrlError ?? undefined} value={sourceUrl} onChange={event => setSourceUrl(event.target.value)} maxLength={500} />
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <Input label={t('surfaces.triagePage.assigneeHint')} value={assigneeHint} onChange={event => setAssigneeHint(event.target.value)} maxLength={255} />

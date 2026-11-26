@@ -84,6 +84,39 @@ describe('Triage shared page parts', () => {
         await user.click(within(drawer).getByRole('button', { name: 'Create request' }));
         await waitFor(() => expect(api.post).toHaveBeenCalledWith('/triage', expect.objectContaining({ title: 'New customer request', labels: [] })));
     });
+    it('shows the named source link refusal beside the Source URL field', async () => {
+        api.post.mockRejectedValueOnce({ response: { status: 400, data: { detail: {
+            code: 'intake_source_link_not_allowed', field: 'source_url',
+            message: 'Source link is not allowed: Private, local, or reserved IP targets are not allowed.',
+            next_step: 'Use a public http(s) link, or clear the source link.',
+        } } } });
+        const { user, container } = renderWithProviders(<TriagePage />);
+        await screen.findByRole('heading', { name: item.title });
+        await user.click(within(container).getByRole('button', { name: 'New request' }));
+        const drawer = screen.getByRole('dialog', { name: 'New request' });
+        await user.type(within(drawer).getByRole('textbox', { name: 'Title' }), 'Board request');
+        await user.type(within(drawer).getByLabelText('Source URL'), 'http://192.168.1.20/board/7');
+        await user.click(within(drawer).getByRole('button', { name: 'Create request' }));
+        const field = await within(drawer).findByText(/Source link is not allowed.*Use a public http\(s\) link/);
+        expect(field).toHaveAttribute('role', 'alert');
+        expect(within(drawer).getByLabelText('Source URL')).toHaveAttribute('aria-invalid', 'true');
+        expect(within(drawer).getAllByRole('alert')).toHaveLength(1);
+    });
+    it('says what became of the source link after a conversion', async () => {
+        const note = 'The source link pointed at this instance and was carried over as the relative path /tasks?project=6.';
+        api.post.mockResolvedValueOnce({ data: {
+            triage_item: { ...item, status: 'converted', converted_task_id: 9 },
+            task: { id: 9, title: item.title },
+            source_link: { action: 'rewritten', original: 'http://127.0.0.1:8480/tasks?project=6', task_source_url: '/tasks?project=6', message: note },
+        } });
+        const { user } = renderWithProviders(<TriagePage />);
+        await screen.findByRole('heading', { name: item.title });
+        await user.click(screen.getByRole('button', { name: 'Convert' }));
+        const drawer = await screen.findByRole('dialog');
+        await user.type(within(drawer).getByLabelText('Effort (hours)'), '4');
+        await user.click(within(drawer).getByRole('button', { name: 'Convert' }));
+        expect(await screen.findByText(note)).toBeInTheDocument();
+    });
     it.each([
         ['Accept', 'Accept request', '/accept'], ['Decline', 'Decline request', '/decline'],
         ['Snooze', 'Snooze request', '/snooze'], ['Ask for clarification', 'Ask for clarification', '/snooze'],

@@ -10,3 +10,9 @@ export const safeExternalHref = (value?: string | null): string | undefined => {
     }
     return undefined;
 };
+
+/** An intake or task source link: a path inside this instance, or a safe http(s) address. */
+export const sourceLinkHref = (value?: string | null): string | undefined => {
+    if (value && value.startsWith('/') && !value.startsWith('//') && !value.includes('\\')) return value;
+    return safeExternalHref(value);
+};

@@ -298,7 +298,32 @@ class TriageConvertToBacklogRequest(TriageConvertToTaskRequest):
     destination: Literal["project_backlog"] = "project_backlog"
 
 
+class TriageSourceLinkOutcome(BaseModel):
+    """What conversion did with the intake's source link when it was not carried over unchanged."""
+    action: Literal["rewritten", "dropped"]
+    original: Optional[str] = None
+    task_source_url: Optional[str] = None
+    message: str
+
+    @classmethod
+    def for_link(cls, source_url: Optional[str]) -> Optional["TriageSourceLinkOutcome"]:
+        from app.utils.source_link_policy import evaluate_source_link
+        decision = evaluate_source_link(source_url)
+        if decision.action not in {"rewritten", "dropped"}:
+            return None
+        return cls(
+            action=decision.action,
+            original=decision.original,
+            task_source_url=decision.value,
+            message=decision.message() or "",
+        )
+
+
 class TriageConvertToTaskResponse(BaseModel):
     """Response for triage item conversion."""
     triage_item: TriageItemResponse
     task: TaskResponse
+    source_link: Optional[TriageSourceLinkOutcome] = Field(
+        default=None,
+        description="Set when the source link was rewritten to a relative path or dropped; absent when it was carried over unchanged or there was none.",
+    )
