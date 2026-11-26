@@ -13,7 +13,7 @@ from app.database import get_db
 from app.models.task_brief import TaskBriefRevision, TaskProgressRecord, TaskReviewRecord
 from app.models.task import Task
 from app.schemas.task import TaskCreate, TaskResponse
-from app.schemas.task_brief import BriefWrite, BriefConvert, ProgressWrite, TaskReviewWrite, TaskReviewResponse, CurrentTaskReviewResponse
+from app.schemas.task_brief import BriefWrite, BriefConvert, OwnerAcceptanceWrite, ProgressWrite, TaskReviewWrite, TaskReviewResponse, CurrentTaskReviewResponse
 from app.schemas.task_domain import BacklogRestoreRequest, TaskActionRequest, TaskActionsResponse
 from app.schemas.task_detail import TaskDetailResponse, TaskReferencePage, HumanWorkResponse
 from app.services.task_service import TaskService, TaskVersionConflictError
@@ -264,6 +264,16 @@ async def record_task_progress(task_id: int, data: ProgressWrite, db: DB):
 @router.post("/tasks/{task_id}/review", response_model=TaskResponse)
 async def review_task(task_id: int, data: TaskReviewWrite, db: DB):
     task = await domain_result(TaskBriefService(db).review(task_id, data))
+    return TaskService(db).task_to_response(task)
+
+
+@router.post("/tasks/{task_id}/owner-acceptance", response_model=TaskResponse)
+async def owner_accept_task(task_id: int, data: OwnerAcceptanceWrite, db: DB):
+    """Accept resolved work as a signed-in owner while the different-publisher policy stays on.
+
+    The acceptance is recorded as an owner override, never as an independent review.
+    """
+    task = await domain_result(TaskBriefService(db).owner_accept(task_id, data))
     return TaskService(db).task_to_response(task)
 
 

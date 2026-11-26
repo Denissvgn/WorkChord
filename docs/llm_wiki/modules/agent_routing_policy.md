@@ -41,9 +41,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (24) |
+| Inbound | `backend` (25) |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -64,7 +64,7 @@ flowchart LR
 | [RoutingEligibilityDecision](../entities/RoutingEligibilityDecision.md) | Class | 551 | — | Separated authority/compatibility evidence for one candidate. |
 | [RoutingSkillDecision](../entities/RoutingSkillDecision.md) | Class | 624 | — | Deterministic required-skill evidence for one profile. |
 | [RoutingModelEnvelopeDecision](../entities/RoutingModelEnvelopeDecision.md) | Class | 639 | — | Deterministic binding/catalog capability evidence for one candidate. |
-| [RoutingPacketSizeError](../entities/RoutingPacketSizeError.md) | Class | 1141 | `ValueError` | The canonical UTF-8 representation exceeds its routing boundary. |
+| [RoutingPacketSizeError](../entities/RoutingPacketSizeError.md) | Class | 1147 | `ValueError` | The canonical UTF-8 representation exceeds its routing boundary. |
 
 ## Functions
 
@@ -85,7 +85,7 @@ flowchart LR
 | `_normalized_tag_set` | `(values: Iterable[str], *, label: str) -> frozenset[str]` | — | — |
 | `model_adequacy_class` | `(*, minimum_reasoning_tier: int, actual_reasoning_tier: int, minimum_context_tier: str, actual_context_tier: str) -> int` | — | Return deterministic excess capability steps for an adequate model. |
 | `evaluate_model_envelope` | `(required_model: Mapping[str, Any] \| Any, *, binding_present: bool = True, binding_enabled: bool = True, binding_revision_current: bool = True, catalog_present: bool = True, catalog_enabled: bool = True, actual_reasoning_tier: int \| None, actual_context_tier: str \| None, actual_modality_tags: Iterable[str] = (), actual_tool_tags: Iterable[str] = (), actual_data_policy_tags: Iterable[str] = ()) -> RoutingModelEnvelopeDecision` | — | Evaluate one binding/catalog pair against a required model envelope. |
-| `routing_candidate_rank_key` | `(*, adequacy_class: int, cost_tier: str, queue_depth: int, schedule_delay_days: float, latency_tier: str, actor_id: int, binding_id: int) -> tuple[int, int, int, float, int, int, int]` | — | Freeze v1 ranking after all hard eligibility gates have passed. |
+| `routing_candidate_rank_key` | `(*, adequacy_class: int, cost_tier: str, queue_depth: int, schedule_delay_days: float, latency_tier: str, actor_id: int, binding_id: int, local_first: bool = False) -> tuple[int, int, int, int, float, int, int, int]` | — | Freeze v1 ranking after all hard eligibility gates have passed. |
 | `_validate_json_native` | `(value: Any, *, ancestors: set[int] \| None = None, depth: int = 0) -> None` | — | Reject values whose JSON representation would be lossy or unstable. |
 | `canonical_routing_json_bytes` | `(value: Any) -> bytes` | — | Serialize JSON-native normalized routing evidence as stable UTF-8. |
 | `validate_routing_packet_size` | `(value: Any, *, label: str = 'Routing packet', maximum_bytes: int = MAX_ROUTING_PACKET_BYTES) -> Any` | — | Reject a canonical routing packet that exceeds its storage boundary. |

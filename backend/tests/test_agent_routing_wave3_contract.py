@@ -410,3 +410,29 @@ def test_routing_decision_snapshot_is_immutable_and_preserves_trust_lineage() ->
     assert snapshot.trust_lineage.execution_actor_id == snapshot.actor_id
     with pytest.raises(ValidationError, match="frozen"):
         snapshot.actor_id = 99
+
+
+def _rank(**overrides):
+    values = {
+        "adequacy_class": 0,
+        "cost_tier": "medium",
+        "queue_depth": 0,
+        "schedule_delay_days": 0,
+        "latency_tier": "balanced",
+        "actor_id": 1,
+        "binding_id": 1,
+    }
+    values.update(overrides)
+    return routing_candidate_rank_key(**values)
+
+
+def test_local_first_ranks_ahead_of_hosted_only_at_equal_adequacy() -> None:
+    # The preference outranks even a lower-cost hosted model, queue and latency.
+    assert _rank(local_first=True, cost_tier="high", queue_depth=5, latency_tier="slow") < _rank(
+        cost_tier="low", latency_tier="fast", actor_id=1, binding_id=1
+    )
+    # Entries that are not local-first keep the previous order.
+    assert _rank(cost_tier="low") < _rank(cost_tier="high")
+    assert _rank() == _rank(local_first=False)
+    # An adequacy difference always wins over the preference.
+    assert _rank(adequacy_class=0, cost_tier="high") < _rank(adequacy_class=1, local_first=True, cost_tier="low")

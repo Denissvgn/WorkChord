@@ -1957,6 +1957,7 @@ class AgentRoutingService:
                     ),
                     "context_tier": catalog.context_tier if catalog else None,
                     "cost_tier": catalog.cost_tier if catalog else None,
+                    "local_first": bool(catalog.local_first) if catalog else None,
                     "latency_tier": catalog.latency_tier if catalog else None,
                     "available_capacity_days": (
                         member_capacity["available_capacity_days"]
@@ -1998,6 +1999,7 @@ class AgentRoutingService:
                     rank_key = routing_candidate_rank_key(
                         adequacy_class=model.adequacy_class,
                         cost_tier=catalog.cost_tier,
+                        local_first=bool(catalog.local_first),
                         queue_depth=queued,
                         schedule_delay_days=schedule_delay_days,
                         latency_tier=catalog.latency_tier,
@@ -2023,8 +2025,9 @@ class AgentRoutingService:
                                 "confidence": assessment.confidence,
                                 "rationale": (
                                     "Meets all hard routing gates; ordered by "
-                                    "adequacy, cost, queue, schedule, latency, "
-                                    "actor, and binding."
+                                    "adequacy, local-first preference, cost, "
+                                    "queue, schedule, latency, actor, and "
+                                    "binding."
                                 ),
                             },
                         )
@@ -2058,6 +2061,17 @@ class AgentRoutingService:
         ranked_candidates: list[AgentRoutingCandidate] = []
         for rank, (_, values) in enumerate(eligible_rows, start=1):
             values["rank"] = rank
+            if values["local_first"] and any(
+                not other["local_first"]
+                and other["adequacy_class"] == values["adequacy_class"]
+                for _, other in eligible_rows
+            ):
+                values["rationale"] = (
+                    "Meets all hard routing gates; the local-first model is "
+                    "preferred over a hosted model of equal adequacy. "
+                    "Otherwise ordered by adequacy, local-first preference, "
+                    "cost, queue, schedule, latency, actor, and binding."
+                )
             ranked_candidates.append(AgentRoutingCandidate.model_validate(values))
         exclusions = [
             AgentRoutingExclusion.model_validate(values)

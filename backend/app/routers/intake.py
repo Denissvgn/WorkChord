@@ -16,6 +16,7 @@ from app.services.web_intake_service import (
     WebIntakeUnauthorizedError,
 )
 from app.services.system_settings_service import RuntimeSettingsService
+from app.utils.source_link_policy import SourceLinkRefused
 
 router = APIRouter()
 
@@ -65,5 +66,7 @@ async def create_web_intake_item(
             detail=str(e),
             headers={"Retry-After": str(e.retry_after_seconds)},
         )
+    except SourceLinkRefused as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail())
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

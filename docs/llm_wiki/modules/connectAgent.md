@@ -85,9 +85,9 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ConnectIssue](../entities/ConnectIssue.md) | Interface | 154 | — | — |
+| [ConnectIssue](../entities/ConnectIssue.md) | Interface | 147 | — | — |
 | [AgentRuntime](../entities/AgentRuntime.md) | Type alias | 6 | `(typeof AGENT_RUNTIMES)[number]` | — |
-| [ConnectIssueReason](../entities/ConnectIssueReason.md) | Type alias | 152 | <pre><code>&#39;role&#39; &#124; &#39;runtime&#39; &#124; &#39;model&#39; &#124; &#39;sink&#39; &#124; &#39;teamChanged&#39; &#124; &#39;unavailable&#39; &#124; &#39;other&#39;&#10;    &#124; &#39;applyUnconfirmed&#39; &#124; &#39;deliveryUncertain&#39;</code></pre> | — |
+| [ConnectIssueReason](../entities/ConnectIssueReason.md) | Type alias | 145 | <pre><code>&#39;role&#39; &#124; &#39;runtime&#39; &#124; &#39;model&#39; &#124; &#39;sink&#39; &#124; &#39;teamChanged&#39; &#124; &#39;unavailable&#39; &#124; &#39;other&#39;&#10;    &#124; &#39;applyUnconfirmed&#39; &#124; &#39;deliveryUncertain&#39;</code></pre> | — |
 
 ## Functions
 

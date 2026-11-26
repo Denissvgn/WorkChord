@@ -22,6 +22,7 @@ _Auto-generated from `CatalogForm` in `frontend/src/components/team/AgentModelAd
 | `contextTier` | `'small' \| 'medium' \| 'large'` | Yes | — | — |
 | `modalityTags` | `string` | Yes | — | — |
 | `costTier` | `'low' \| 'medium' \| 'high'` | Yes | — | — |
+| `localFirst` | `boolean` | Yes | — | — |
 | `latencyTier` | `'fast' \| 'balanced' \| 'slow'` | Yes | — | — |
 | `lastVerifiedAt` | `string` | Yes | — | — |
 
@@ -38,4 +39,4 @@ _Auto-generated from `CatalogForm` in `frontend/src/components/team/AgentModelAd
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [AgentModelAdministration](../modules/AgentModelAdministration.md) | 0 | `configuredModelAlias`, `contextTier`, `costTier`, `id`, `key`, `lastVerifiedAt`, `latencyTier`, `modalityTags`, `provider`, `reasoningTier`, `revision` |
+| [AgentModelAdministration](../modules/AgentModelAdministration.md) | 0 | `configuredModelAlias`, `contextTier`, `costTier`, `id`, `key`, `lastVerifiedAt`, `latencyTier`, `localFirst`, `modalityTags`, `provider`, `reasoningTier`, `revision` |

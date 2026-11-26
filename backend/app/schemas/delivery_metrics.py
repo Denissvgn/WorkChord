@@ -27,6 +27,9 @@ class DeliveryMetricsResponse(BaseModel):
     scope_basis: str = "scope_at_observation"
     accepted_leaf_tasks: int = 0
     acceptance_events: int = 0
+    owner_override_acceptance_events: int = Field(default=0, description=(
+        "Acceptances in the window that an owner recorded as an override of publisher independence. "
+        "They are included in acceptance_events and are not independent reviews."))
     rejection_events: int = 0
     canceled_leaf_tasks: int = 0
     reopened_events: int = 0

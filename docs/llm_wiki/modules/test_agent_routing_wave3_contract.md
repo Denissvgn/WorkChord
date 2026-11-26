@@ -59,3 +59,5 @@ flowchart LR
 | `test_assessment_state_and_history_are_explicit_and_version_bound` | `() -> None` | `@pytest.mark.contract` | — |
 | `test_preview_contract_accepts_eligible_and_explicit_no_candidate_states` | `() -> None` | `@pytest.mark.contract` | — |
 | `test_routing_decision_snapshot_is_immutable_and_preserves_trust_lineage` | `() -> None` | `@pytest.mark.contract` | — |
+| `_rank` | `(**overrides)` | — | — |
+| `test_local_first_ranks_ahead_of_hosted_only_at_equal_adequacy` | `() -> None` | — | — |

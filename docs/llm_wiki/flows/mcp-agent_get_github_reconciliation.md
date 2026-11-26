@@ -96,9 +96,9 @@ sequenceDiagram
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 342 interactions; 312 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 344 interactions; 314 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 80 (79 omitted); unresolved 1 of 163 (162 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 81 (80 omitted); unresolved 1 of 164 (163 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -127,7 +127,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 100; effect analysis evaluated: 70, partial: 3, unavailable: 27. Counts include steps omitted from the displayed trace.
 
-Collector observations for 73 source steps with known totals: observed: 351, emitted: 334, omitted: 17. Unavailable totals are excluded.
+Collector observations for 73 source steps with known totals: observed: 352, emitted: 334, omitted: 18. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -202,10 +202,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_get_github_reconciliation | _tool_call | 1687 | `_tool_call(AGENT_TASK_READ_SCOPES, ...)` |
-| _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
+| agent_get_github_reconciliation | _tool_call | 1690 | `_tool_call(AGENT_TASK_READ_SCOPES, ...)` |
+| _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 527 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple | 100 | `tuple(required_scope)` |

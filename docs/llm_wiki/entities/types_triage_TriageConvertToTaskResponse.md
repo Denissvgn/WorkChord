@@ -15,6 +15,7 @@ _Auto-generated from `TriageConvertToTaskResponse` in `frontend/src/types/triage
 |------|------|----------|---------|-------------|
 | `triage_item` | `TriageItem` | Yes | — | — |
 | `task` | `Task` | Yes | — | — |
+| `source_link` | `{ action: 'rewritten' \| 'dropped'; original?: string \| null; task_source_url?: string \| null; message: string } \| null` | No | — | — |
 
 ## Methods
 
@@ -39,7 +40,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_triage](../modules/types_triage.md) | 0 | `task`, `triage_item` |
+| [types_triage](../modules/types_triage.md) | 0 | `source_link`, `task`, `triage_item` |
 
 ### References
 

@@ -1,6 +1,6 @@
 # ConnectIssueReason
 
-**Location:** `frontend/src/features/agentTeamSetup/connectAgent.ts:152`
+**Location:** `frontend/src/features/agentTeamSetup/connectAgent.ts:145`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [connectAgent](../modules/connectAgent.md)

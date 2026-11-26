@@ -28,6 +28,7 @@ Triage retains the legacy iteration-required conversion route and adds an explic
 | `app.services.task_brief_service` | `brief_from_draft`, `render_brief`, `brief_from_draft` |
 | `app.services.task_service` | `TaskService` |
 | `app.sql_semantics` | `portable_contains` |
+| `app.utils.source_link_policy` | `evaluate_source_link`, `normalize_source_link` |
 | `app.utils.text_similarity` | `BM25Similarity`, `SimilarityDocument`, `normalize_text` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `datetime` | `datetime` |
@@ -56,7 +57,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (10) |
-| Outbound | `backend` (18) |
+| Outbound | `backend` (19) |
 
 ### External packages
 
@@ -64,12 +65,12 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TriageConflictError](../entities/TriageConflictError.md) | 46 | `Exception` | Raised when a triage action conflicts with current item state. |
-| [TriageDraftNotFoundError](../entities/TriageDraftNotFoundError.md) | 50 | `Exception` | Raised when referenced draft context does not exist. |
-| [TriageService](../entities/TriageService.md) | 54 | — | Service for triage CRUD, inbox filtering, lifecycle actions, and conversion. |
+| [TriageConflictError](../entities/TriageConflictError.md) | 47 | `Exception` | Raised when a triage action conflicts with current item state. |
+| [TriageDraftNotFoundError](../entities/TriageDraftNotFoundError.md) | 51 | `Exception` | Raised when referenced draft context does not exist. |
+| [TriageService](../entities/TriageService.md) | 55 | — | Service for triage CRUD, inbox filtering, lifecycle actions, and conversion. |

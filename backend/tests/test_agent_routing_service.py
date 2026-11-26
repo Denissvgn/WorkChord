@@ -20,7 +20,7 @@ from app.models.agent import (
     AgentTaskAssignment,
     TaskEvent,
 )
-from app.models.team_member import TeamMemberProfileSkill
+from app.models.team_member import TeamMemberProfile, TeamMemberProfileSkill
 from app.schemas.agent import (
     AgentTaskAssignmentCreate,
     AgentReviewVerdict,
@@ -465,6 +465,118 @@ async def test_preview_is_deterministic_and_relevant_mutation_invalidates_it(
     assert no_candidate.recommended_candidate is None
     assert no_candidate.eligible_candidates == []
     assert "no_eligible_candidate" in no_candidate.hard_blocker_codes
+
+
+async def _extra_worker(
+    db_session: AsyncSession,
+    profile_factory,
+    actor_factory,
+    team_member_factory,
+    *,
+    key: str,
+    cost_tier: str,
+    local_first: bool,
+    reasoning_tier: int = 1,
+    profile=None,
+):
+    if profile is None:
+        profile = await profile_factory(assignment_modes=["execution"])
+    worker = await actor_factory(
+        profile=profile,
+        scopes=json.dumps(["work:execute", "assignments:read", "tasks:read"]),
+    )
+    catalog = AgentModelCatalogEntry(
+        key=key,
+        provider="test-provider",
+        configured_model_alias=f"runtime-{key}",
+        reasoning_tier=reasoning_tier,
+        context_tier="small",
+        modality_tags=["text"],
+        cost_tier=cost_tier,
+        local_first=local_first,
+        latency_tier="fast",
+        enabled=True,
+        revision=1,
+    )
+    db_session.add(catalog)
+    await db_session.flush()
+    binding = AgentModelBinding(
+        actor_id=worker.id,
+        model_catalog_id=catalog.id,
+        is_default=True,
+        enabled=True,
+        tool_tags=[],
+        data_policy_tags=[],
+        revision=1,
+    )
+    db_session.add(binding)
+    await db_session.commit()
+    return worker, binding
+
+
+@pytest.mark.asyncio
+async def test_local_first_preference_breaks_ties_but_never_overrides_a_gate(
+    db_session: AsyncSession,
+    profile_factory,
+    actor_factory,
+    team_member_factory,
+    task_factory,
+) -> None:
+    pm, hosted_worker, task, hosted_binding, _ = await _routing_fixture(
+        db_session,
+        profile_factory,
+        actor_factory,
+        team_member_factory,
+        task_factory,
+    )
+    local_worker, local_binding = await _extra_worker(
+        db_session,
+        profile_factory,
+        actor_factory,
+        team_member_factory,
+        key="local-python",
+        cost_tier="high",
+        local_first=True,
+        profile=await db_session.get(TeamMemberProfile, hosted_worker.profile_id),
+    )
+    # A local-first entry on another profile fails the capacity gate.
+    blocked_worker, _ = await _extra_worker(
+        db_session,
+        profile_factory,
+        actor_factory,
+        team_member_factory,
+        key="blocked-local",
+        cost_tier="low",
+        local_first=True,
+    )
+    service = AgentRoutingService(db_session)
+    receipt = await service.create_assessment(
+        task.id,
+        pm,
+        _assessment_command(task_version=task.version),
+        _command_context("assessment-local-first"),
+    )
+    request = AgentRoutingPreviewCreate(
+        purpose="execution",
+        assessment_id=receipt.assessment.id,
+        expected_task_version=task.version,
+    )
+    now = datetime(2026, 7, 22, 12, 0, tzinfo=UTC)
+
+    preview = await service.preview_task_routing(task.id, pm, request, now=now)
+
+    by_actor = {c.actor_id: c for c in preview.eligible_candidates}
+    assert hosted_worker.id in by_actor and local_worker.id in by_actor
+    assert by_actor[hosted_worker.id].adequacy_class == by_actor[local_worker.id].adequacy_class
+    assert preview.recommended_candidate is not None
+    assert preview.recommended_candidate.model_binding_id == local_binding.id
+    assert by_actor[local_worker.id].rank < by_actor[hosted_worker.id].rank
+    assert by_actor[local_worker.id].local_first is True
+    assert "local-first model is preferred" in by_actor[local_worker.id].rationale
+    assert "local-first model is preferred" not in by_actor[hosted_worker.id].rationale
+    # The hard blocker still excludes the local-first entry.
+    assert blocked_worker.id not in by_actor
+    assert any(e.actor_id == blocked_worker.id and e.hard_blocker_codes for e in preview.exclusions)
 
 
 @pytest.mark.asyncio

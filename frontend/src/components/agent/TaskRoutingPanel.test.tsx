@@ -122,6 +122,7 @@ const modelCatalog: AgentModelCatalogEntry = {
     context_tier: 'large',
     modality_tags: ['text'],
     cost_tier: 'medium',
+    local_first: false,
     latency_tier: 'balanced',
     enabled: true,
     revision: 5,

@@ -1,6 +1,6 @@
 # TriageLifecycleAction
 
-**Location:** `frontend/src/components/triage/triageUtils.ts:132`
+**Location:** `frontend/src/components/triage/triageUtils.ts:146`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [triageUtils](../modules/triageUtils.md)

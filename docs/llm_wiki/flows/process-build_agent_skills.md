@@ -18,28 +18,28 @@ sequenceDiagram
     participant p4 as build_release
     participant p5 as validate_archive
     participant p6 as build_codex_plugin
-    participant p7 as build_claude_code_plugin
-    participant p8 as build_antigravity_skills
-    participant p9 as install_skill
-    participant p10 as validate_installed_skill
-    participant p11 as rollback_skill
-    participant p12 as uninstall_skill
-    participant p13 as _parser
-    participant p14 as SkillPackError
-    participant p15 as _canonical_json
-    participant p16 as validate_catalog
-    participant p17 as build_adapters
-    participant p18 as generate_catalog
-    participant p19 as _load_release
-    participant p20 as _verified_role_files
-    participant p21 as _release_skill
-    participant p22 as _replace_generated_contract_block
-    participant p23 as _validated_archive_members
-    participant p24 as render_workflow_vocabulary_markdown
-    participant p25 as _destination_mutation_lock
-    participant p26 as load_workflow_vocabulary
-    participant p27 as _recover_interrupted_transaction
-    participant p28 as _replace_built_tree
+    participant p7 as install_skill
+    participant p8 as validate_installed_skill
+    participant p9 as rollback_skill
+    participant p10 as uninstall_skill
+    participant p11 as _parser
+    participant p12 as SkillPackError
+    participant p13 as _canonical_json
+    participant p14 as validate_catalog
+    participant p15 as generate_catalog
+    participant p16 as _load_release
+    participant p17 as _release_skill
+    participant p18 as _replace_generated_contract_block
+    participant p19 as _validated_archive_members
+    participant p20 as render_workflow_vocabulary_markdown
+    participant p21 as _destination_mutation_lock
+    participant p22 as load_workflow_vocabulary
+    participant p23 as _recover_interrupted_transaction
+    participant p24 as _replace_built_tree
+    participant p25 as _workflow_vocabulary_block
+    participant p26 as _role_features_block
+    participant p27 as render_openai_adapter
+    participant p28 as _extract_validated_archive
     participant p29 as print
     participant p30 as _parser().parse_args
     p0->>p1: sync_generated_skill_sources
@@ -48,49 +48,49 @@ sequenceDiagram
     p0->>p4: build_release
     p0->>p5: validate_archive
     p0->>p6: build_codex_plugin
-    p0->>p7: build_claude_code_plugin
-    p0->>p8: build_antigravity_skills
-    p0->>p9: install_skill
-    p0->>p10: validate_installed_skill
-    p0->>p11: rollback_skill
-    p0->>p12: uninstall_skill
-    p0->>p13: _parser
-    p0->>p14: SkillPackError
-    p0->>p15: _canonical_json
-    p0->>p16: validate_catalog
-    p0->>p17: build_adapters
-    p2->>p18: generate_catalog
-    p9->>p19: _load_release
-    p6->>p20: _verified_role_files
-    p9->>p21: _release_skill
-    p1->>p22: _replace_generated_contract_block
-    p5->>p23: _validated_archive_members
-    p1->>p24: render_workflow_vocabulary_markdown
-    p9->>p25: _destination_mutation_lock
-    p1->>p26: load_workflow_vocabulary
-    p9->>p27: _recover_interrupted_transaction
-    p4->>p28: _replace_built_tree
+    p0->>p7: install_skill
+    p0->>p8: validate_installed_skill
+    p0->>p9: rollback_skill
+    p0->>p10: uninstall_skill
+    p0->>p11: _parser
+    p0->>p12: SkillPackError
+    p0->>p13: _canonical_json
+    p0->>p14: validate_catalog
+    p2->>p15: generate_catalog
+    p7->>p16: _load_release
+    p7->>p17: _release_skill
+    p1->>p18: _replace_generated_contract_block
+    p5->>p19: _validated_archive_members
+    p1->>p20: render_workflow_vocabulary_markdown
+    p7->>p21: _destination_mutation_lock
+    p1->>p22: load_workflow_vocabulary
+    p7->>p23: _recover_interrupted_transaction
+    p4->>p24: _replace_built_tree
+    p1->>p25: _workflow_vocabulary_block
+    p1->>p26: _role_features_block
+    p1->>p27: render_openai_adapter
+    p7->>p28: _extract_validated_archive
     p0-->>p29: print(...)
     p0-->>p30: _parser().parse_args(argv)
 ```
 
-> Call sequence diagram shows 30 of 1314 interactions; 1284 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 1278 interactions; 1248 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 316 (315 omitted); unresolved 1 of 449 (448 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 312 (311 omitted); unresolved 1 of 429 (428 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
 | `scripts/build_agent_skills.py:_parser` | 3 | - | external | 6 |
-| `scripts/build_agent_skills.py:_parser` | 3 | - | unresolved | 36 |
-| `scripts/build_agent_skills.py:main` | 1 | - | unresolved | 17 |
-| `scripts/build_agent_skills.py:sync_generated_skill_sources` | 49 | - | unresolved | 14 |
-| `scripts/build_agent_skills.py:sync_generated_skill_sources` | 49 | [scripts/build_agent_skills.py](../modules/build_agent_skills.md) | internal | 8 |
-| `scripts/build_agent_skills.py:_replace_generated_contract_block` | 52 | [scripts/build_agent_skills.py](../modules/build_agent_skills.md) | internal | 2 |
-| `scripts/build_agent_skills.py:_generated_contract_block` | 53 | [scripts/build_agent_skills.py](../modules/build_agent_skills.md) | internal | 1 |
-| `scripts/build_agent_skills.py:_generated_block` | 54 | - | unresolved | 4 |
-> Omission summary shows 8 of 213 groups; 205 further groups are not expanded here. Counts above include all omitted interactions.
+| `scripts/build_agent_skills.py:_parser` | 3 | - | unresolved | 30 |
+| `scripts/build_agent_skills.py:main` | 1 | - | unresolved | 13 |
+| `scripts/build_agent_skills.py:sync_generated_skill_sources` | 43 | - | unresolved | 14 |
+| `scripts/build_agent_skills.py:sync_generated_skill_sources` | 43 | [scripts/build_agent_skills.py](../modules/build_agent_skills.md) | internal | 5 |
+| `scripts/build_agent_skills.py:_replace_generated_contract_block` | 46 | [scripts/build_agent_skills.py](../modules/build_agent_skills.md) | internal | 2 |
+| `scripts/build_agent_skills.py:_generated_contract_block` | 47 | [scripts/build_agent_skills.py](../modules/build_agent_skills.md) | internal | 1 |
+| `scripts/build_agent_skills.py:_generated_block` | 48 | - | unresolved | 4 |
+> Omission summary shows 8 of 204 groups; 196 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -103,9 +103,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 550; effect analysis evaluated: 318, partial: 11, unavailable: 221. Counts include steps omitted from the displayed trace.
+Source steps: 538; effect analysis evaluated: 306, partial: 11, unavailable: 221. Counts include steps omitted from the displayed trace.
 
-Collector observations for 329 source steps with known totals: observed: 1510, emitted: 1477, omitted: 33. Unavailable totals are excluded.
+Collector observations for 317 source steps with known totals: observed: 1429, emitted: 1402, omitted: 27. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -113,9 +113,9 @@ Collector observations for 329 source steps with known totals: observed: 1510, e
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
-| `main` | `available` | `partial` | `available` | `22` | `15` | `7` |
+| `main` | `available` | `partial` | `available` | `19` | `15` | `4` |
 | `_parser().parse_args` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `_parser` | `available` | `partial` | `available` | `20` | `9` | `11` |
+| `_parser` | `available` | `partial` | `available` | `17` | `9` | `8` |
 | `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `parser.add_subparsers` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
@@ -201,45 +201,45 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | _parser().parse_args | 3581 | `_parser().parse_args(argv)` |
-| main | _parser | 3581 | `_parser(data not statically known)` |
-| _parser | argparse.ArgumentParser | 3507 | `argparse.ArgumentParser(description=__doc__)` |
-| _parser | parser.add_argument | 3508 | `parser.add_argument('--skills-dir', type=Path, default=DEFAULT_SKILLS_DIR, help='Canonical agent-skills directory (default: repository agent-skills)')` |
-| _parser | parser.add_subparsers | 3514 | `parser.add_subparsers(dest='command', required=True)` |
-| _parser | subparsers.add_parser | 3515 | `subparsers.add_parser('sync-generated', help='Synchronize shared contract blocks and role openai.yaml adapters')` |
-| _parser | subparsers.add_parser | 3519 | `subparsers.add_parser('contract-json', help='Print the canonical machine-readable assigned-work v1 contract')` |
-| _parser | subparsers.add_parser | 3523 | `subparsers.add_parser('generate', help='Regenerate catalog.json from role folders')` |
-| _parser | subparsers.add_parser | 3524 | `subparsers.add_parser('freeze-release', help='Append current exact role versions to the immutable release baseline')` |
-| _parser | subparsers.add_parser | 3528 | `subparsers.add_parser('validate', help='Validate role folders and catalog.json')` |
-| _parser | subparsers.add_parser | 3529 | `subparsers.add_parser('build', help='Build reproducible role archives')` |
+| main | _parser().parse_args | 3483 | `_parser().parse_args(argv)` |
+| main | _parser | 3483 | `_parser(data not statically known)` |
+| _parser | argparse.ArgumentParser | 3424 | `argparse.ArgumentParser(description=__doc__)` |
+| _parser | parser.add_argument | 3425 | `parser.add_argument('--skills-dir', type=Path, default=DEFAULT_SKILLS_DIR, help='Canonical agent-skills directory (default: repository agent-skills)')` |
+| _parser | parser.add_subparsers | 3431 | `parser.add_subparsers(dest='command', required=True)` |
+| _parser | subparsers.add_parser | 3432 | `subparsers.add_parser('sync-generated', help='Synchronize shared contract blocks and role openai.yaml adapters')` |
+| _parser | subparsers.add_parser | 3436 | `subparsers.add_parser('contract-json', help='Print the canonical machine-readable assigned-work v1 contract')` |
+| _parser | subparsers.add_parser | 3440 | `subparsers.add_parser('generate', help='Regenerate catalog.json from role folders')` |
+| _parser | subparsers.add_parser | 3441 | `subparsers.add_parser('freeze-release', help='Append current exact role versions to the immutable release baseline')` |
+| _parser | subparsers.add_parser | 3445 | `subparsers.add_parser('validate', help='Validate role folders and catalog.json')` |
+| _parser | subparsers.add_parser | 3446 | `subparsers.add_parser('build', help='Build reproducible role archives')` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| output | `print` | `main` | 3590 |
-| output | `print` | `main` | 3595 |
-| output | `print` | `main` | 3598 |
-| output | `print` | `main` | 3601 |
-| output | `print` | `main` | 3604 |
-| output | `print` | `main` | 3610 |
-| output | `print` | `main` | 3613 |
-| output | `print` | `main` | 3616 |
+| output | `print` | `main` | 3492 |
+| output | `print` | `main` | 3497 |
+| output | `print` | `main` | 3500 |
+| output | `print` | `main` | 3503 |
+| output | `print` | `main` | 3506 |
+| output | `print` | `main` | 3512 |
+| output | `print` | `main` | 3515 |
+| output | `print` | `main` | 3524 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `main` | `_parser().parse_args` | 3581 |
-| external_call | `_parser` | `argparse.ArgumentParser` | 3507 |
-| unresolved_call | `_parser` | `parser.add_argument` | 3508 |
-| unresolved_call | `_parser` | `parser.add_subparsers` | 3514 |
-| unresolved_call | `_parser` | `subparsers.add_parser` | 3515 |
-| unresolved_call | `_parser` | `subparsers.add_parser` | 3519 |
-| unresolved_call | `_parser` | `subparsers.add_parser` | 3523 |
-| unresolved_call | `_parser` | `subparsers.add_parser` | 3524 |
-| unresolved_call | `_parser` | `subparsers.add_parser` | 3528 |
-| unresolved_call | `_parser` | `subparsers.add_parser` | 3529 |
+| unresolved_call | `main` | `_parser().parse_args` | 3483 |
+| external_call | `_parser` | `argparse.ArgumentParser` | 3424 |
+| unresolved_call | `_parser` | `parser.add_argument` | 3425 |
+| unresolved_call | `_parser` | `parser.add_subparsers` | 3431 |
+| unresolved_call | `_parser` | `subparsers.add_parser` | 3432 |
+| unresolved_call | `_parser` | `subparsers.add_parser` | 3436 |
+| unresolved_call | `_parser` | `subparsers.add_parser` | 3440 |
+| unresolved_call | `_parser` | `subparsers.add_parser` | 3441 |
+| unresolved_call | `_parser` | `subparsers.add_parser` | 3445 |
+| unresolved_call | `_parser` | `subparsers.add_parser` | 3446 |
 | step_limit | `main` | `first 12 steps` | 0 |
 | truncated_flow | `main` | `depth limit` | 0 |
 

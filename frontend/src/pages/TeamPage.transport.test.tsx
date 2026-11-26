@@ -111,7 +111,7 @@ describe('Team page roster read through the API client', () => {
         const catalog: AgentModelCatalogEntry = {
             id: 21, key: 'reasoner', provider: 'configured-provider', configured_model_alias: 'Reasoner',
             reasoning_tier: 3, context_tier: 'large', modality_tags: ['text'], cost_tier: 'medium',
-            latency_tier: 'balanced', enabled: true, revision: 1, last_verified_at: null,
+            latency_tier: 'balanced', local_first: false, enabled: true, revision: 1, last_verified_at: null,
             created_at: '', updated_at: '',
         };
         const binding: AgentModelBinding = {

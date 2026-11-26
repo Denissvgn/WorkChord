@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1809,
-      "flows": 624,
+      "entities": 1814,
+      "flows": 625,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1156,
-      "workflows": 232
+      "modules": 1163,
+      "workflows": 235
     },
     "dependency_architecture": 2,
-    "total": 3838
+    "total": 3854
   },
   "dependency_pages": {
     "count": 2,
@@ -63,19 +63,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 734,
+              "line": 737,
               "step": "_run_triage_action",
               "target": "adapter"
             },
             {
               "kind": "unresolved_call",
-              "line": 738,
+              "line": 741,
               "step": "_run_triage_action",
               "target": "data.model_dump"
             },
             {
               "kind": "external_call",
-              "line": 638,
+              "line": 641,
               "step": "_require_triage_result",
               "target": "LookupError"
             },
@@ -96,7 +96,7 @@
             "backend/app/routers/agent_planning.py",
             "backend/app/services/agent_service.py"
           ],
-          "step_count": 34,
+          "step_count": 37,
           "truncated": false
         }
       },
@@ -117,13 +117,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 281,
+              "line": 285,
               "step": "accept_triage_item",
               "target": "service.accept"
             },
             {
               "kind": "external_call",
-              "line": 283,
+              "line": 287,
               "step": "accept_triage_item",
               "target": "HTTPException"
             },
@@ -811,7 +811,7 @@
             "backend/app/commands.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 82,
+          "step_count": 85,
           "truncated": false
         }
       },
@@ -982,55 +982,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 625,
+              "line": 628,
               "step": "apply_schedule",
               "target": "service.apply_schedule"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -1050,7 +1050,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -1274,7 +1274,7 @@
             "backend/app/models/agent.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 751,
+          "step_count": 754,
           "truncated": true
         }
       },
@@ -1560,7 +1560,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 113,
+              "line": 118,
               "step": "command_transaction",
               "step_index": 12,
               "target": "db.info.pop"
@@ -1568,7 +1568,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 126,
+              "line": 131,
               "step": "command_transaction",
               "step_index": 12,
               "target": "db.info.pop"
@@ -1576,7 +1576,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 127,
+              "line": 132,
               "step": "command_transaction",
               "step_index": 12,
               "target": "db.info.pop"
@@ -1584,7 +1584,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 129,
+              "line": 134,
               "step": "command_transaction",
               "step_index": 12,
               "target": "db.info.pop"
@@ -1912,7 +1912,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 113,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -2433,7 +2433,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 113,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -2445,7 +2445,7 @@
             },
             {
               "kind": "external_call",
-              "line": 79,
+              "line": 84,
               "step": "current_command",
               "target": "getattr"
             },
@@ -2631,7 +2631,7 @@
             "backend/app/services/task_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 284,
+          "step_count": 287,
           "truncated": true
         }
       },
@@ -2652,13 +2652,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 164,
+              "line": 168,
               "step": "classify_triage_item",
               "target": "service.classify_item"
             },
             {
               "kind": "external_call",
-              "line": 166,
+              "line": 170,
               "step": "classify_triage_item",
               "target": "HTTPException"
             },
@@ -2775,7 +2775,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 113,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -2980,6 +2980,9 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/schemas/triage.py",
             "backend/app/services/triage_service.py",
+            "backend/app/utils/source_link_policy.py",
+            "backend/app/config.py",
+            "backend/app/utils/url_policy.py",
             "backend/app/services/task_brief_service.py",
             "backend/app/schemas/task_brief.py",
             "backend/app/schemas/task.py",
@@ -2999,7 +3002,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 402,
+          "step_count": 466,
           "truncated": true
         }
       },
@@ -3050,13 +3053,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 211,
+              "line": 212,
               "step": "TaskBriefService.conversion",
               "target": "self.tasks.get_by_id"
             },
             {
               "kind": "external_call",
-              "line": 213,
+              "line": 214,
               "step": "TaskBriefService.conversion",
               "target": "ValueError"
             },
@@ -3115,7 +3118,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 113,
+              "line": 118,
               "step": "command_transaction",
               "step_index": 2,
               "target": "db.info.pop"
@@ -3123,7 +3126,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 126,
+              "line": 131,
               "step": "command_transaction",
               "step_index": 2,
               "target": "db.info.pop"
@@ -3131,7 +3134,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 127,
+              "line": 132,
               "step": "command_transaction",
               "step_index": 2,
               "target": "db.info.pop"
@@ -3139,7 +3142,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 129,
+              "line": 134,
               "step": "command_transaction",
               "step_index": 2,
               "target": "db.info.pop"
@@ -3148,43 +3151,43 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 79,
+              "line": 84,
               "step": "current_command",
               "target": "getattr"
             },
             {
               "kind": "external_call",
-              "line": 80,
+              "line": 85,
               "step": "current_command",
               "target": "isinstance"
             },
             {
               "kind": "unresolved_call",
-              "line": 80,
+              "line": 85,
               "step": "current_command",
               "target": "info.get"
             },
             {
               "kind": "external_call",
-              "line": 96,
+              "line": 101,
               "step": "command_transaction",
               "target": "RuntimeError"
             },
             {
               "kind": "external_call",
-              "line": 108,
+              "line": 113,
               "step": "command_transaction",
               "target": "RuntimeError"
             },
             {
               "kind": "unresolved_call",
-              "line": 109,
+              "line": 114,
               "step": "command_transaction",
               "target": "db.flush"
             },
             {
               "kind": "unresolved_call",
-              "line": 110,
+              "line": 115,
               "step": "command_transaction",
               "target": "db.info.get"
             },
@@ -3220,9 +3223,11 @@
             "backend/app/models/outbound_webhook.py",
             "backend/app/services/identity_service.py",
             "backend/app/routers/task_domain.py",
-            "backend/app/schemas/triage.py"
+            "backend/app/schemas/triage.py",
+            "backend/app/utils/source_link_policy.py",
+            "backend/app/utils/url_policy.py"
           ],
-          "step_count": 248,
+          "step_count": 327,
           "truncated": true
         }
       },
@@ -3243,7 +3248,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 357,
+              "line": 361,
               "step": "convert_triage_item_to_task",
               "target": "service.convert_to_task"
             },
@@ -3290,9 +3295,10 @@
             "backend/app/services/system_settings_service.py",
             "backend/app/utils/url_policy.py",
             "backend/app/config.py",
-            "backend/app/schemas/triage.py"
+            "backend/app/schemas/triage.py",
+            "backend/app/utils/source_link_policy.py"
           ],
-          "step_count": 178,
+          "step_count": 225,
           "truncated": true
         }
       },
@@ -3618,13 +3624,13 @@
             },
             {
               "kind": "external_call",
-              "line": 107,
+              "line": 108,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 108,
+              "line": 109,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -3645,7 +3651,7 @@
             "backend/app/routers/agent_catalog.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 31,
+          "step_count": 34,
           "truncated": false
         }
       },
@@ -3702,13 +3708,13 @@
             },
             {
               "kind": "external_call",
-              "line": 107,
+              "line": 108,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 108,
+              "line": 109,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -3729,7 +3735,7 @@
             "backend/app/routers/agent_catalog.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 31,
+          "step_count": 34,
           "truncated": false
         }
       },
@@ -4220,55 +4226,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 420,
+              "line": 423,
               "step": "create_iteration",
               "target": "service.create_iteration"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -4288,7 +4294,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -4636,55 +4642,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 339,
+              "line": 342,
               "step": "create_planning_task",
               "target": "service.create_task"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -4704,7 +4710,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -4775,12 +4781,15 @@
             "backend/app/services/triage_service.py",
             "backend/app/services/task_brief_service.py",
             "backend/app/models/triage.py",
+            "backend/app/utils/source_link_policy.py",
+            "backend/app/config.py",
+            "backend/app/utils/url_policy.py",
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/commands.py",
             "backend/app/services/task_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 152,
+          "step_count": 198,
           "truncated": true
         }
       },
@@ -4801,55 +4810,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 465,
+              "line": 468,
               "step": "create_profile",
               "target": "service.create_profile"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -4869,7 +4878,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -4890,55 +4899,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 221,
+              "line": 224,
               "step": "create_project",
               "target": "service.create_project"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -4958,7 +4967,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -5048,55 +5057,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 267,
+              "line": 270,
               "step": "create_project_milestone",
               "target": "service.create_milestone"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -5116,7 +5125,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -5859,55 +5868,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 198,
+              "line": 201,
               "step": "create_task_routing_assessment",
               "target": "service.create_assessment"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -5927,7 +5936,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -5948,55 +5957,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 511,
+              "line": 514,
               "step": "create_team_member",
               "target": "service.create_team_member"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -6016,7 +6025,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -6195,9 +6204,27 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 109,
+              "line": 113,
               "step": "create_triage_item",
               "target": "service.create"
+            },
+            {
+              "kind": "external_call",
+              "line": 67,
+              "step": "_bad_request",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 68,
+              "step": "_bad_request",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 68,
+              "step": "_bad_request",
+              "target": "error.detail"
             },
             {
               "kind": "unresolved_call",
@@ -6210,12 +6237,6 @@
               "line": 35,
               "step": "normalize_language",
               "target": "str(value or '').strip"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 154,
-              "step": "RuntimeSettingsService._definition",
-              "target": "SETTING_DEFINITIONS.get"
             },
             {
               "kind": "step_limit",
@@ -6243,7 +6264,7 @@
             "backend/app/utils/url_policy.py",
             "backend/app/config.py"
           ],
-          "step_count": 162,
+          "step_count": 165,
           "truncated": true
         }
       },
@@ -6264,55 +6285,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 558,
+              "line": 561,
               "step": "create_vacation",
               "target": "service.create_vacation"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -6332,7 +6353,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -6353,7 +6374,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 48,
+              "line": 49,
               "step": "create_web_intake_item",
               "target": "WebIntakeRequest.model_validate"
             },
@@ -6417,7 +6438,7 @@
             "backend/app/services/session_service.py",
             "backend/app/config.py"
           ],
-          "step_count": 26,
+          "step_count": 28,
           "truncated": false
         }
       },
@@ -6598,19 +6619,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 734,
+              "line": 737,
               "step": "_run_triage_action",
               "target": "adapter"
             },
             {
               "kind": "unresolved_call",
-              "line": 738,
+              "line": 741,
               "step": "_run_triage_action",
               "target": "data.model_dump"
             },
             {
               "kind": "external_call",
-              "line": 638,
+              "line": 641,
               "step": "_require_triage_result",
               "target": "LookupError"
             },
@@ -6631,7 +6652,7 @@
             "backend/app/routers/agent_planning.py",
             "backend/app/services/agent_service.py"
           ],
-          "step_count": 34,
+          "step_count": 37,
           "truncated": false
         }
       },
@@ -6652,13 +6673,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 297,
+              "line": 301,
               "step": "decline_triage_item",
               "target": "service.decline"
             },
             {
               "kind": "external_call",
-              "line": 299,
+              "line": 303,
               "step": "decline_triage_item",
               "target": "HTTPException"
             },
@@ -7133,55 +7154,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 315,
+              "line": 318,
               "step": "delete_project_milestone",
               "target": "service.delete_milestone"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -7201,7 +7222,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -7617,7 +7638,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 205,
+              "line": 208,
               "step": "DeliveryMetricsService.report",
               "step_index": 10,
               "target": "recovery.append"
@@ -7625,7 +7646,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 208,
+              "line": 211,
               "step": "DeliveryMetricsService.report",
               "step_index": 10,
               "target": "review.sort"
@@ -7633,7 +7654,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 209,
+              "line": 212,
               "step": "DeliveryMetricsService.report",
               "step_index": 10,
               "target": "recovery.sort"
@@ -7698,7 +7719,7 @@
             "backend/app/query_limits.py",
             "backend/app/schemas/delivery_metrics.py"
           ],
-          "step_count": 186,
+          "step_count": 187,
           "truncated": false
         }
       },
@@ -7761,7 +7782,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 113,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -7843,13 +7864,13 @@
             },
             {
               "kind": "external_call",
-              "line": 107,
+              "line": 108,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 108,
+              "line": 109,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -7870,7 +7891,7 @@
             "backend/app/routers/agent_catalog.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 31,
+          "step_count": 34,
           "truncated": false
         }
       },
@@ -7927,13 +7948,13 @@
             },
             {
               "kind": "external_call",
-              "line": 107,
+              "line": 108,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 108,
+              "line": 109,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -7954,7 +7975,7 @@
             "backend/app/routers/agent_catalog.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 31,
+          "step_count": 34,
           "truncated": false
         }
       },
@@ -8126,7 +8147,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 232,
+              "line": 236,
               "step": "draft_triage_task",
               "target": "service.draft_task"
             },
@@ -8174,7 +8195,7 @@
             "backend/app/utils/url_policy.py",
             "backend/app/config.py"
           ],
-          "step_count": 175,
+          "step_count": 178,
           "truncated": true
         }
       },
@@ -8419,7 +8440,7 @@
             "backend/app/schemas/delivery_metrics.py",
             "backend/app/schemas/execution_usage.py"
           ],
-          "step_count": 301,
+          "step_count": 302,
           "truncated": false
         }
       },
@@ -9288,13 +9309,13 @@
             },
             {
               "kind": "external_call",
-              "line": 107,
+              "line": 108,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 108,
+              "line": 109,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -9315,7 +9336,7 @@
             "backend/app/routers/agent_catalog.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 31,
+          "step_count": 34,
           "truncated": false
         }
       },
@@ -9399,7 +9420,7 @@
             "backend/app/routers/agent_catalog.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 33,
+          "step_count": 36,
           "truncated": false
         }
       },
@@ -10292,7 +10313,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 113,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -10962,7 +10983,7 @@
             "backend/app/schemas/iteration.py",
             "backend/app/services/plan_checkpoints.py"
           ],
-          "step_count": 482,
+          "step_count": 485,
           "truncated": false
         }
       },
@@ -12768,7 +12789,7 @@
             "backend/app/services/review_provenance.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 112,
+          "step_count": 115,
           "truncated": true
         }
       },
@@ -12789,55 +12810,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 155,
+              "line": 158,
               "step": "get_task_routing_assessment",
               "target": "service.get_assessment_state"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -12857,7 +12878,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -13665,9 +13686,27 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 184,
+              "line": 188,
               "step": "get_triage_assignee_recommendations",
               "target": "service.recommend_for_triage"
+            },
+            {
+              "kind": "external_call",
+              "line": 67,
+              "step": "_bad_request",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 68,
+              "step": "_bad_request",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 68,
+              "step": "_bad_request",
+              "target": "error.detail"
             },
             {
               "kind": "unresolved_call",
@@ -13680,12 +13719,6 @@
               "line": 35,
               "step": "normalize_language",
               "target": "str(value or '').strip"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 154,
-              "step": "RuntimeSettingsService._definition",
-              "target": "SETTING_DEFINITIONS.get"
             },
             {
               "kind": "step_limit",
@@ -13713,7 +13746,7 @@
             "backend/app/utils/url_policy.py",
             "backend/app/config.py"
           ],
-          "step_count": 166,
+          "step_count": 169,
           "truncated": true
         }
       },
@@ -13734,13 +13767,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 140,
+              "line": 144,
               "step": "get_triage_duplicate_suggestions",
               "target": "service.get_duplicate_suggestions"
             },
             {
               "kind": "external_call",
-              "line": 146,
+              "line": 150,
               "step": "get_triage_duplicate_suggestions",
               "target": "HTTPException"
             },
@@ -13803,13 +13836,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 120,
+              "line": 124,
               "step": "get_triage_item",
               "target": "service.get_by_id"
             },
             {
               "kind": "external_call",
-              "line": 122,
+              "line": 126,
               "step": "get_triage_item",
               "target": "HTTPException"
             },
@@ -14161,7 +14194,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 113,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -14244,7 +14277,7 @@
             "backend/app/services/agent_service.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 761,
+          "step_count": 762,
           "truncated": true
         }
       },
@@ -15043,7 +15076,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 113,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -15380,13 +15413,13 @@
             },
             {
               "kind": "external_call",
-              "line": 107,
+              "line": 108,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 108,
+              "line": 109,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -15407,7 +15440,7 @@
             "backend/app/routers/agent_catalog.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 31,
+          "step_count": 34,
           "truncated": false
         }
       },
@@ -15464,13 +15497,13 @@
             },
             {
               "kind": "external_call",
-              "line": 107,
+              "line": 108,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 108,
+              "line": 109,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -15491,7 +15524,7 @@
             "backend/app/routers/agent_catalog.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 31,
+          "step_count": 34,
           "truncated": false
         }
       },
@@ -17509,55 +17542,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 172,
+              "line": 175,
               "step": "list_task_routing_assessments",
               "target": "service.list_assessments"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -17577,7 +17610,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -17703,13 +17736,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 208,
+              "line": 212,
               "step": "list_triage_classification_suggestions",
               "target": "service.list_classification_suggestions"
             },
             {
               "kind": "external_call",
-              "line": 213,
+              "line": 217,
               "step": "list_triage_classification_suggestions",
               "target": "HTTPException"
             },
@@ -17772,7 +17805,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 88,
+              "line": 92,
               "step": "list_triage_items",
               "target": "service.list_items"
             }
@@ -17975,7 +18008,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 113,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -18195,19 +18228,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 734,
+              "line": 737,
               "step": "_run_triage_action",
               "target": "adapter"
             },
             {
               "kind": "unresolved_call",
-              "line": 738,
+              "line": 741,
               "step": "_run_triage_action",
               "target": "data.model_dump"
             },
             {
               "kind": "external_call",
-              "line": 638,
+              "line": 641,
               "step": "_require_triage_result",
               "target": "LookupError"
             },
@@ -18228,7 +18261,7 @@
             "backend/app/routers/agent_planning.py",
             "backend/app/services/agent_service.py"
           ],
-          "step_count": 34,
+          "step_count": 37,
           "truncated": false
         }
       },
@@ -18249,9 +18282,27 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 334,
+              "line": 338,
               "step": "mark_triage_item_duplicate",
               "target": "service.mark_duplicate"
+            },
+            {
+              "kind": "external_call",
+              "line": 67,
+              "step": "_bad_request",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 68,
+              "step": "_bad_request",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 68,
+              "step": "_bad_request",
+              "target": "error.detail"
             },
             {
               "kind": "unresolved_call",
@@ -18264,12 +18315,6 @@
               "line": 35,
               "step": "normalize_language",
               "target": "str(value or '').strip"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 154,
-              "step": "RuntimeSettingsService._definition",
-              "target": "SETTING_DEFINITIONS.get"
             },
             {
               "kind": "step_limit",
@@ -18297,7 +18342,7 @@
             "backend/app/utils/url_policy.py",
             "backend/app/config.py"
           ],
-          "step_count": 166,
+          "step_count": 169,
           "truncated": true
         }
       },
@@ -18401,7 +18446,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 113,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -18869,7 +18914,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 113,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -18957,6 +19002,89 @@
         }
       },
       "id": "http-new_mutation",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "owner_accept_task",
+        "source_path": "backend/app/routers/task_domain.py",
+        "symbol": "owner_accept_task"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 53,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 53,
+              "step": "domain_result",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 55,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 57,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 59,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 102,
+              "step": "require_owner_override",
+              "target": "db.info.get"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "owner_accept_task",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/task_domain.py",
+            "backend/app/services/task_brief_service.py",
+            "backend/app/authority.py",
+            "backend/app/commands.py",
+            "backend/app/services/snapshot_service.py",
+            "backend/app/services/review_provenance.py",
+            "backend/app/services/task_service.py",
+            "backend/app/services/work_metrics.py",
+            "backend/app/utils/time.py",
+            "backend/app/schemas/task.py",
+            "backend/app/services/agent_readiness.py",
+            "backend/app/services/external_link_service.py",
+            "backend/app/schemas/external_link.py"
+          ],
+          "step_count": 161,
+          "truncated": false
+        }
+      },
+      "id": "http-owner_accept_task",
       "language": "python"
     },
     {
@@ -19056,55 +19184,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 362,
+              "line": 365,
               "step": "patch_planning_task",
               "target": "service.patch_task"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -19124,7 +19252,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -19801,55 +19929,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 603,
+              "line": 606,
               "step": "preview_schedule",
               "target": "service.preview_schedule"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -19869,7 +19997,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -19996,7 +20124,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 113,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -20472,7 +20600,7 @@
             "backend/app/models/identity.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 452,
+          "step_count": 455,
           "truncated": true
         }
       },
@@ -20596,7 +20724,7 @@
             "backend/app/models/identity.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 734,
+          "step_count": 737,
           "truncated": true
         }
       },
@@ -20878,7 +21006,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 113,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -21019,55 +21147,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 402,
+              "line": 405,
               "step": "record_task_replacement",
               "target": "service.record_task_replacement"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -21087,7 +21215,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -21138,7 +21266,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 353,
+              "line": 363,
               "step": "record_task_replacement",
               "target": "TaskReplacementService(db).record"
             }
@@ -21189,7 +21317,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 113,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -21678,19 +21806,19 @@
             },
             {
               "kind": "external_call",
-              "line": 79,
+              "line": 84,
               "step": "current_command",
               "target": "getattr"
             },
             {
               "kind": "external_call",
-              "line": 80,
+              "line": 85,
               "step": "current_command",
               "target": "isinstance"
             },
             {
               "kind": "unresolved_call",
-              "line": 80,
+              "line": 85,
               "step": "current_command",
               "target": "info.get"
             }
@@ -22173,7 +22301,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 313,
+              "line": 323,
               "step": "restore_backlog",
               "target": "BacklogSnapshotService(db).restore"
             }
@@ -22598,7 +22726,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 113,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -22737,31 +22865,31 @@
             },
             {
               "kind": "external_call",
-              "line": 79,
+              "line": 84,
               "step": "current_command",
               "target": "getattr"
             },
             {
               "kind": "external_call",
-              "line": 80,
+              "line": 85,
               "step": "current_command",
               "target": "isinstance"
             },
             {
               "kind": "unresolved_call",
-              "line": 80,
+              "line": 85,
               "step": "current_command",
               "target": "info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 86,
+              "line": 91,
               "step": "commit_or_flush",
               "target": "db.flush"
             },
             {
               "kind": "unresolved_call",
-              "line": 88,
+              "line": 93,
               "step": "commit_or_flush",
               "target": "db.commit"
             },
@@ -23221,19 +23349,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 734,
+              "line": 737,
               "step": "_run_triage_action",
               "target": "adapter"
             },
             {
               "kind": "unresolved_call",
-              "line": 738,
+              "line": 741,
               "step": "_run_triage_action",
               "target": "data.model_dump"
             },
             {
               "kind": "external_call",
-              "line": 638,
+              "line": 641,
               "step": "_require_triage_result",
               "target": "LookupError"
             },
@@ -23254,7 +23382,7 @@
             "backend/app/routers/agent_planning.py",
             "backend/app/services/agent_service.py"
           ],
-          "step_count": 34,
+          "step_count": 37,
           "truncated": false
         }
       },
@@ -23275,9 +23403,27 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 314,
+              "line": 318,
               "step": "snooze_triage_item",
               "target": "service.snooze"
+            },
+            {
+              "kind": "external_call",
+              "line": 67,
+              "step": "_bad_request",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 68,
+              "step": "_bad_request",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 68,
+              "step": "_bad_request",
+              "target": "error.detail"
             },
             {
               "kind": "unresolved_call",
@@ -23290,12 +23436,6 @@
               "line": 35,
               "step": "normalize_language",
               "target": "str(value or '').strip"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 154,
-              "step": "RuntimeSettingsService._definition",
-              "target": "SETTING_DEFINITIONS.get"
             },
             {
               "kind": "step_limit",
@@ -23323,7 +23463,7 @@
             "backend/app/utils/url_policy.py",
             "backend/app/config.py"
           ],
-          "step_count": 166,
+          "step_count": 169,
           "truncated": true
         }
       },
@@ -24017,7 +24157,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 1067,
+          "step_count": 1068,
           "truncated": true
         }
       },
@@ -24038,55 +24178,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 287,
+              "line": 297,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 287,
+              "line": 297,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 287,
+              "line": 297,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 288,
+              "line": 298,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 289,
+              "line": 299,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 289,
+              "line": 299,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 289,
+              "line": 299,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 289,
+              "line": 299,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 289,
+              "line": 299,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -24127,7 +24267,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 113,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -24862,55 +25002,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 287,
+              "line": 297,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 287,
+              "line": 297,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 287,
+              "line": 297,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 288,
+              "line": 298,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 289,
+              "line": 299,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 289,
+              "line": 299,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 289,
+              "line": 299,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 289,
+              "line": 299,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 289,
+              "line": 299,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -25915,13 +26055,13 @@
             },
             {
               "kind": "external_call",
-              "line": 107,
+              "line": 108,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 108,
+              "line": 109,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -25942,7 +26082,7 @@
             "backend/app/routers/agent_catalog.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 31,
+          "step_count": 34,
           "truncated": false
         }
       },
@@ -25999,13 +26139,13 @@
             },
             {
               "kind": "external_call",
-              "line": 107,
+              "line": 108,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 108,
+              "line": 109,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -26026,7 +26166,7 @@
             "backend/app/routers/agent_catalog.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 31,
+          "step_count": 34,
           "truncated": false
         }
       },
@@ -26439,55 +26579,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 442,
+              "line": 445,
               "step": "update_iteration",
               "target": "service.update_iteration"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -26507,7 +26647,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -26878,7 +27018,7 @@
             "backend/app/commands.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 108,
+          "step_count": 111,
           "truncated": false
         }
       },
@@ -26899,55 +27039,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 487,
+              "line": 490,
               "step": "update_profile",
               "target": "service.update_profile"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -26967,7 +27107,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -26988,55 +27128,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 243,
+              "line": 246,
               "step": "update_project",
               "target": "service.update_project"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -27056,7 +27196,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -27149,55 +27289,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 291,
+              "line": 294,
               "step": "update_project_milestone",
               "target": "service.update_milestone"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -27217,7 +27357,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -27657,55 +27797,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 534,
+              "line": 537,
               "step": "update_team_member",
               "target": "service.update_team_member"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -27725,7 +27865,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -27950,13 +28090,31 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 262,
+              "line": 266,
               "step": "update_triage_item",
               "step_index": 1,
               "target": "service.update"
             }
           ],
           "gaps": [
+            {
+              "kind": "external_call",
+              "line": 67,
+              "step": "_bad_request",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 68,
+              "step": "_bad_request",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 68,
+              "step": "_bad_request",
+              "target": "error.detail"
+            },
             {
               "kind": "unresolved_call",
               "line": 35,
@@ -27968,12 +28126,6 @@
               "line": 35,
               "step": "normalize_language",
               "target": "str(value or '').strip"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 154,
-              "step": "RuntimeSettingsService._definition",
-              "target": "SETTING_DEFINITIONS.get"
             },
             {
               "kind": "step_limit",
@@ -28001,7 +28153,7 @@
             "backend/app/utils/url_policy.py",
             "backend/app/config.py"
           ],
-          "step_count": 166,
+          "step_count": 169,
           "truncated": true
         }
       },
@@ -28022,55 +28174,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 581,
+              "line": 584,
               "step": "update_vacation",
               "target": "service.update_vacation"
             },
             {
               "kind": "external_call",
-              "line": 107,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
               "line": 108,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 109,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
             },
             {
               "kind": "external_call",
               "line": 110,
               "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 110,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
+              "target": "isinstance"
             },
             {
               "kind": "external_call",
               "line": 111,
               "step": "_handle_agent_error",
-              "target": "isinstance"
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
             },
             {
               "kind": "external_call",
               "line": 112,
               "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 113,
+              "step": "_handle_agent_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 113,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -28090,7 +28242,7 @@
           "modules_touched": [
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 24,
+          "step_count": 27,
           "truncated": false
         }
       },
@@ -28583,7 +28735,7 @@
             "backend/app/schemas/agent.py",
             "backend/app/schemas/agent_routing.py"
           ],
-          "step_count": 464,
+          "step_count": 466,
           "truncated": true
         }
       },
@@ -28671,7 +28823,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -28759,7 +28911,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 326,
+          "step_count": 328,
           "truncated": true
         }
       },
@@ -28845,7 +28997,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 253,
+          "step_count": 255,
           "truncated": true
         }
       },
@@ -28933,7 +29085,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -29021,7 +29173,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -29109,7 +29261,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -29200,7 +29352,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 362,
+          "step_count": 364,
           "truncated": true
         }
       },
@@ -29284,7 +29436,7 @@
             "backend/app/utils/time.py",
             "backend/app/models/identity.py"
           ],
-          "step_count": 246,
+          "step_count": 248,
           "truncated": true
         }
       },
@@ -29368,7 +29520,7 @@
             "backend/app/utils/time.py",
             "backend/app/models/identity.py"
           ],
-          "step_count": 245,
+          "step_count": 247,
           "truncated": true
         }
       },
@@ -29454,7 +29606,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 249,
+          "step_count": 251,
           "truncated": true
         }
       },
@@ -29541,7 +29693,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 448,
+          "step_count": 450,
           "truncated": true
         }
       },
@@ -29632,7 +29784,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 394,
+          "step_count": 396,
           "truncated": true
         }
       },
@@ -29717,6 +29869,8 @@
             "backend/app/models/identity.py",
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/triage_service.py",
+            "backend/app/utils/source_link_policy.py",
+            "backend/app/utils/url_policy.py",
             "backend/app/schemas/triage.py",
             "backend/app/schemas/task_brief.py",
             "backend/app/schemas/task.py",
@@ -29731,7 +29885,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 513,
+          "step_count": 575,
           "truncated": true
         }
       },
@@ -29817,7 +29971,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 249,
+          "step_count": 251,
           "truncated": true
         }
       },
@@ -29907,7 +30061,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 364,
+          "step_count": 366,
           "truncated": true
         }
       },
@@ -29995,7 +30149,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -30084,7 +30238,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 286,
+          "step_count": 288,
           "truncated": true
         }
       },
@@ -30173,7 +30327,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 286,
+          "step_count": 288,
           "truncated": true
         }
       },
@@ -30261,7 +30415,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -30349,7 +30503,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -30437,7 +30591,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -30524,7 +30678,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 249,
+          "step_count": 251,
           "truncated": true
         }
       },
@@ -30612,7 +30766,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 294,
+          "step_count": 296,
           "truncated": true
         }
       },
@@ -30706,7 +30860,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 501,
+          "step_count": 503,
           "truncated": true
         }
       },
@@ -30794,7 +30948,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -30882,7 +31036,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -30970,7 +31124,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -31058,7 +31212,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 295,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -31147,7 +31301,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 286,
+          "step_count": 288,
           "truncated": true
         }
       },
@@ -31236,7 +31390,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 286,
+          "step_count": 288,
           "truncated": true
         }
       },
@@ -31323,7 +31477,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 249,
+          "step_count": 251,
           "truncated": true
         }
       },
@@ -31410,7 +31564,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 294,
+          "step_count": 296,
           "truncated": true
         }
       },
@@ -31503,7 +31657,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 485,
+          "step_count": 487,
           "truncated": true
         }
       },
@@ -31602,7 +31756,7 @@
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 888,
+          "step_count": 890,
           "truncated": true
         }
       },
@@ -31690,7 +31844,7 @@
             "backend/app/query_limits.py",
             "backend/app/schemas/execution_usage.py"
           ],
-          "step_count": 290,
+          "step_count": 292,
           "truncated": true
         }
       },
@@ -31780,7 +31934,7 @@
             "backend/app/schemas/delivery_metrics.py",
             "backend/app/schemas/execution_usage.py"
           ],
-          "step_count": 538,
+          "step_count": 541,
           "truncated": true
         }
       },
@@ -31869,7 +32023,7 @@
             "backend/app/utils/github_links.py",
             "backend/app/services/github_status_service.py"
           ],
-          "step_count": 343,
+          "step_count": 345,
           "truncated": true
         }
       },
@@ -31966,7 +32120,7 @@
             "backend/app/schemas/iteration.py",
             "backend/app/services/plan_checkpoints.py"
           ],
-          "step_count": 692,
+          "step_count": 694,
           "truncated": true
         }
       },
@@ -32053,7 +32207,7 @@
             "backend/app/services/agent_model_catalog_service.py",
             "backend/app/schemas/agent_routing.py"
           ],
-          "step_count": 298,
+          "step_count": 300,
           "truncated": true
         }
       },
@@ -32139,7 +32293,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_model_catalog_service.py"
           ],
-          "step_count": 279,
+          "step_count": 281,
           "truncated": true
         }
       },
@@ -32235,7 +32389,7 @@
             "backend/app/services/agent_team_setup_service.py",
             "backend/app/services/agent_routing_rollout.py"
           ],
-          "step_count": 588,
+          "step_count": 590,
           "truncated": true
         }
       },
@@ -32331,7 +32485,7 @@
             "backend/app/services/agent_team_setup_service.py",
             "backend/app/services/agent_routing_rollout.py"
           ],
-          "step_count": 677,
+          "step_count": 679,
           "truncated": true
         }
       },
@@ -32429,7 +32583,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 820,
+          "step_count": 822,
           "truncated": true
         }
       },
@@ -32516,7 +32670,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 266,
+          "step_count": 268,
           "truncated": true
         }
       },
@@ -32617,7 +32771,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 915,
+          "step_count": 918,
           "truncated": true
         }
       },
@@ -32704,7 +32858,7 @@
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 361,
+          "step_count": 363,
           "truncated": true
         }
       },
@@ -32796,7 +32950,7 @@
             "backend/app/schemas/external_link.py",
             "backend/app/schemas/task_detail.py"
           ],
-          "step_count": 472,
+          "step_count": 474,
           "truncated": true
         }
       },
@@ -32884,7 +33038,7 @@
             "backend/app/services/review_provenance.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 326,
+          "step_count": 328,
           "truncated": true
         }
       },
@@ -32971,7 +33125,7 @@
             "backend/app/services/agent_routing_service.py",
             "backend/app/schemas/agent_routing.py"
           ],
-          "step_count": 280,
+          "step_count": 282,
           "truncated": true
         }
       },
@@ -33059,7 +33213,7 @@
             "backend/app/schemas/agent_team_setup.py",
             "backend/app/autonomy/canonical.py"
           ],
-          "step_count": 469,
+          "step_count": 471,
           "truncated": true
         }
       },
@@ -33147,7 +33301,7 @@
             "backend/app/schemas/agent_team_setup.py",
             "backend/app/autonomy/canonical.py"
           ],
-          "step_count": 474,
+          "step_count": 476,
           "truncated": true
         }
       },
@@ -33239,7 +33393,7 @@
             "backend/app/schemas/agent.py",
             "backend/app/schemas/agent_routing.py"
           ],
-          "step_count": 501,
+          "step_count": 503,
           "truncated": true
         }
       },
@@ -33326,7 +33480,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 287,
+          "step_count": 289,
           "truncated": true
         }
       },
@@ -33413,7 +33567,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 305,
+          "step_count": 307,
           "truncated": true
         }
       },
@@ -33499,7 +33653,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/github_reconciliation_service.py"
           ],
-          "step_count": 335,
+          "step_count": 337,
           "truncated": true
         }
       },
@@ -33587,7 +33741,7 @@
             "backend/app/query_limits.py",
             "backend/app/schemas/agent_routing.py"
           ],
-          "step_count": 300,
+          "step_count": 302,
           "truncated": true
         }
       },
@@ -33674,7 +33828,7 @@
             "backend/app/services/agent_model_catalog_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 274,
+          "step_count": 276,
           "truncated": true
         }
       },
@@ -33760,7 +33914,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 268,
+          "step_count": 270,
           "truncated": true
         }
       },
@@ -33847,7 +34001,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 276,
+          "step_count": 278,
           "truncated": true
         }
       },
@@ -33935,7 +34089,7 @@
             "backend/app/services/work_metrics.py",
             "backend/app/schemas/task.py"
           ],
-          "step_count": 359,
+          "step_count": 361,
           "truncated": true
         }
       },
@@ -34024,7 +34178,7 @@
             "backend/app/services/execution_planning_window.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 592,
+          "step_count": 594,
           "truncated": true
         }
       },
@@ -34112,7 +34266,7 @@
             "backend/app/schemas/agent_routing.py",
             "backend/app/services/agent_routing_policy.py"
           ],
-          "step_count": 326,
+          "step_count": 328,
           "truncated": true
         }
       },
@@ -34193,7 +34347,7 @@
             "backend/app/services/agent_model_catalog_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 235,
+          "step_count": 237,
           "truncated": true
         }
       },
@@ -34281,7 +34435,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 301,
+          "step_count": 303,
           "truncated": true
         }
       },
@@ -34370,7 +34524,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 312,
+          "step_count": 314,
           "truncated": true
         }
       },
@@ -34462,7 +34616,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 783,
+          "step_count": 785,
           "truncated": true
         }
       },
@@ -34548,7 +34702,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/capacity_adjustments.py"
           ],
-          "step_count": 251,
+          "step_count": 253,
           "truncated": true
         }
       },
@@ -34634,7 +34788,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/capacity_transfers.py"
           ],
-          "step_count": 251,
+          "step_count": 253,
           "truncated": true
         }
       },
@@ -34720,7 +34874,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/capacity_transfers.py"
           ],
-          "step_count": 251,
+          "step_count": 253,
           "truncated": true
         }
       },
@@ -34806,7 +34960,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/iteration_date_move.py"
           ],
-          "step_count": 251,
+          "step_count": 253,
           "truncated": true
         }
       },
@@ -34893,7 +35047,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 250,
+          "step_count": 252,
           "truncated": true
         }
       },
@@ -34994,7 +35148,7 @@
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 1199,
+          "step_count": 1204,
           "truncated": true
         }
       },
@@ -35074,7 +35228,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_profile_catalog_service.py"
           ],
-          "step_count": 208,
+          "step_count": 210,
           "truncated": true
         }
       },
@@ -35158,7 +35312,7 @@
             "backend/app/utils/time.py",
             "backend/app/models/identity.py"
           ],
-          "step_count": 245,
+          "step_count": 247,
           "truncated": true
         }
       },
@@ -35242,7 +35396,7 @@
             "backend/app/utils/time.py",
             "backend/app/models/identity.py"
           ],
-          "step_count": 245,
+          "step_count": 247,
           "truncated": true
         }
       },
@@ -35328,7 +35482,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/execution_usage_service.py"
           ],
-          "step_count": 249,
+          "step_count": 251,
           "truncated": true
         }
       },
@@ -35416,7 +35570,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -35502,7 +35656,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 284,
+          "step_count": 286,
           "truncated": true
         }
       },
@@ -35589,7 +35743,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 291,
+          "step_count": 293,
           "truncated": true
         }
       },
@@ -35676,7 +35830,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 249,
+          "step_count": 251,
           "truncated": true
         }
       },
@@ -35763,7 +35917,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 249,
+          "step_count": 251,
           "truncated": true
         }
       },
@@ -35850,7 +36004,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 249,
+          "step_count": 251,
           "truncated": true
         }
       },
@@ -35938,7 +36092,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -36028,7 +36182,7 @@
             "backend/app/services/agent_team_setup_service.py",
             "backend/app/services/agent_routing_rollout.py"
           ],
-          "step_count": 551,
+          "step_count": 553,
           "truncated": true
         }
       },
@@ -36108,7 +36262,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_profile_catalog_service.py"
           ],
-          "step_count": 208,
+          "step_count": 210,
           "truncated": true
         }
       },
@@ -36197,7 +36351,7 @@
             "backend/app/services/system_settings_service.py",
             "backend/app/services/task_replacement_service.py"
           ],
-          "step_count": 361,
+          "step_count": 363,
           "truncated": true
         }
       },
@@ -36277,7 +36431,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_skill_bundle_service.py"
           ],
-          "step_count": 221,
+          "step_count": 223,
           "truncated": true
         }
       },
@@ -36363,7 +36517,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_skill_bundle_service.py"
           ],
-          "step_count": 261,
+          "step_count": 263,
           "truncated": true
         }
       },
@@ -36443,7 +36597,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_skill_bundle_service.py"
           ],
-          "step_count": 221,
+          "step_count": 223,
           "truncated": true
         }
       },
@@ -36529,7 +36683,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_skill_bundle_service.py"
           ],
-          "step_count": 263,
+          "step_count": 265,
           "truncated": true
         }
       },
@@ -36618,7 +36772,7 @@
             "backend/app/schemas/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 307,
+          "step_count": 309,
           "truncated": true
         }
       },
@@ -36705,7 +36859,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 249,
+          "step_count": 251,
           "truncated": true
         }
       },
@@ -36792,7 +36946,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 249,
+          "step_count": 251,
           "truncated": true
         }
       },
@@ -36878,7 +37032,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_work_service.py"
           ],
-          "step_count": 249,
+          "step_count": 251,
           "truncated": true
         }
       },
@@ -36966,7 +37120,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -37055,7 +37209,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 286,
+          "step_count": 288,
           "truncated": true
         }
       },
@@ -37144,7 +37298,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 286,
+          "step_count": 288,
           "truncated": true
         }
       },
@@ -37232,7 +37386,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -37320,7 +37474,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -37408,7 +37562,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -37496,7 +37650,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -37584,7 +37738,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -37672,7 +37826,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 297,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -37762,7 +37916,7 @@
             "backend/app/services/agent_team_setup_service.py",
             "backend/app/services/agent_routing_rollout.py"
           ],
-          "step_count": 640,
+          "step_count": 642,
           "truncated": true
         }
       },
@@ -37852,7 +38006,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 362,
+          "step_count": 364,
           "truncated": true
         }
       },
@@ -37973,7 +38127,7 @@
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 852,
+          "step_count": 854,
           "truncated": true
         }
       },
@@ -38054,7 +38208,7 @@
             "backend/app/services/iteration_service.py",
             "backend/app/services/calendar_rules.py"
           ],
-          "step_count": 222,
+          "step_count": 224,
           "truncated": true
         }
       },
@@ -38134,7 +38288,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_profile_catalog_service.py"
           ],
-          "step_count": 208,
+          "step_count": 210,
           "truncated": true
         }
       },
@@ -38214,7 +38368,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/project_service.py"
           ],
-          "step_count": 229,
+          "step_count": 231,
           "truncated": true
         }
       },
@@ -38301,7 +38455,7 @@
             "backend/app/services/assignee_recommendation_service.py",
             "backend/app/schemas/team.py"
           ],
-          "step_count": 345,
+          "step_count": 347,
           "truncated": true
         }
       },
@@ -38388,7 +38542,7 @@
             "backend/app/services/assignee_recommendation_service.py",
             "backend/app/schemas/team.py"
           ],
-          "step_count": 350,
+          "step_count": 352,
           "truncated": true
         }
       },
@@ -38470,7 +38624,7 @@
             "backend/app/services/work_metrics.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 509,
+          "step_count": 511,
           "truncated": true
         }
       },
@@ -38586,7 +38740,7 @@
             "backend/app/schemas/system_settings.py",
             "backend/app/utils/url_policy.py"
           ],
-          "step_count": 328,
+          "step_count": 330,
           "truncated": true
         }
       },
@@ -38721,7 +38875,7 @@
             "backend/app/models/identity.py",
             "backend/app/mcp_agent_tools.py"
           ],
-          "step_count": 211,
+          "step_count": 213,
           "truncated": true
         }
       },
@@ -38802,7 +38956,7 @@
             "backend/app/services/agent_routing_service.py",
             "backend/app/schemas/agent_routing.py"
           ],
-          "step_count": 242,
+          "step_count": 244,
           "truncated": true
         }
       },
@@ -38883,7 +39037,7 @@
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 324,
+          "step_count": 326,
           "truncated": true
         }
       },
@@ -38963,7 +39117,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/triage_service.py"
           ],
-          "step_count": 221,
+          "step_count": 223,
           "truncated": true
         }
       },
@@ -39012,7 +39166,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 205,
+              "line": 206,
               "step": "_current_agent_key",
               "step_index": 4,
               "target": "os.getenv"
@@ -39020,7 +39174,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 113,
+              "line": 118,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39028,7 +39182,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 126,
+              "line": 131,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39036,7 +39190,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 127,
+              "line": 132,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39044,7 +39198,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 129,
+              "line": 134,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39053,13 +39207,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 186,
+              "line": 187,
               "step": "_open_db_session",
               "target": "_session_factory"
             },
             {
               "kind": "external_call",
-              "line": 187,
+              "line": 188,
               "step": "_open_db_session",
               "target": "hasattr"
             },
@@ -39119,7 +39273,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 205,
+              "line": 206,
               "step": "_current_agent_key",
               "step_index": 4,
               "target": "os.getenv"
@@ -39127,7 +39281,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 113,
+              "line": 118,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39135,7 +39289,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 126,
+              "line": 131,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39143,7 +39297,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 127,
+              "line": 132,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39151,7 +39305,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 129,
+              "line": 134,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39160,13 +39314,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 186,
+              "line": 187,
               "step": "_open_db_session",
               "target": "_session_factory"
             },
             {
               "kind": "external_call",
-              "line": 187,
+              "line": 188,
               "step": "_open_db_session",
               "target": "hasattr"
             },
@@ -39226,7 +39380,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 205,
+              "line": 206,
               "step": "_current_agent_key",
               "step_index": 4,
               "target": "os.getenv"
@@ -39234,7 +39388,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 113,
+              "line": 118,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39242,7 +39396,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 126,
+              "line": 131,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39250,7 +39404,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 127,
+              "line": 132,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39258,7 +39412,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 129,
+              "line": 134,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39267,13 +39421,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 186,
+              "line": 187,
               "step": "_open_db_session",
               "target": "_session_factory"
             },
             {
               "kind": "external_call",
-              "line": 187,
+              "line": 188,
               "step": "_open_db_session",
               "target": "hasattr"
             },
@@ -39401,7 +39555,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 314,
+          "step_count": 316,
           "truncated": true
         }
       },
@@ -39489,7 +39643,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 293,
+          "step_count": 295,
           "truncated": true
         }
       },
@@ -39583,7 +39737,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 491,
+          "step_count": 493,
           "truncated": true
         }
       },
@@ -39670,6 +39824,8 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/schemas/triage.py",
             "backend/app/services/triage_service.py",
+            "backend/app/utils/source_link_policy.py",
+            "backend/app/utils/url_policy.py",
             "backend/app/schemas/task_brief.py",
             "backend/app/schemas/task.py",
             "backend/app/services/request_source_service.py",
@@ -39683,7 +39839,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 567,
+          "step_count": 629,
           "truncated": true
         }
       },
@@ -39777,7 +39933,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 404,
+          "step_count": 406,
           "truncated": true
         }
       },
@@ -39871,7 +40027,7 @@
             "backend/app/models/request_source.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 415,
+          "step_count": 417,
           "truncated": true
         }
       },
@@ -39966,7 +40122,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 456,
+          "step_count": 458,
           "truncated": true
         }
       },
@@ -40054,10 +40210,12 @@
             "backend/app/schemas/triage.py",
             "backend/app/services/triage_service.py",
             "backend/app/models/triage.py",
+            "backend/app/utils/source_link_policy.py",
+            "backend/app/utils/url_policy.py",
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 360,
+          "step_count": 405,
           "truncated": true
         }
       },
@@ -40146,7 +40304,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 314,
+          "step_count": 316,
           "truncated": true
         }
       },
@@ -40238,7 +40396,7 @@
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 354,
+          "step_count": 356,
           "truncated": true
         }
       },
@@ -40328,7 +40486,7 @@
             "backend/app/schemas/task_brief.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 319,
+          "step_count": 321,
           "truncated": true
         }
       },
@@ -40414,7 +40572,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_profile_catalog_service.py"
           ],
-          "step_count": 247,
+          "step_count": 249,
           "truncated": true
         }
       },
@@ -40500,7 +40658,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_profile_catalog_service.py"
           ],
-          "step_count": 247,
+          "step_count": 249,
           "truncated": true
         }
       },
@@ -40587,7 +40745,7 @@
             "backend/app/services/iteration_service.py",
             "backend/app/services/calendar_rules.py"
           ],
-          "step_count": 260,
+          "step_count": 262,
           "truncated": true
         }
       },
@@ -40685,7 +40843,7 @@
             "backend/app/services/dependency_order.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 503,
+          "step_count": 505,
           "truncated": true
         }
       },
@@ -40781,7 +40939,7 @@
             "backend/app/services/capacity_adjustments.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 681,
+          "step_count": 683,
           "truncated": true
         }
       },
@@ -40867,7 +41025,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/agent_profile_catalog_service.py"
           ],
-          "step_count": 247,
+          "step_count": 249,
           "truncated": true
         }
       },
@@ -40953,7 +41111,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/project_service.py"
           ],
-          "step_count": 267,
+          "step_count": 269,
           "truncated": true
         }
       },
@@ -41039,7 +41197,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/project_service.py"
           ],
-          "step_count": 254,
+          "step_count": 256,
           "truncated": true
         }
       },
@@ -41129,7 +41287,7 @@
             "backend/app/schemas/project.py",
             "backend/app/services/request_source_service.py"
           ],
-          "step_count": 611,
+          "step_count": 613,
           "truncated": true
         }
       },
@@ -41217,7 +41375,7 @@
             "backend/app/services/work_metrics.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 547,
+          "step_count": 549,
           "truncated": true
         }
       },
@@ -41308,7 +41466,7 @@
             "backend/app/services/calendar_service.py",
             "backend/app/services/capacity_adjustments.py"
           ],
-          "step_count": 358,
+          "step_count": 360,
           "truncated": true
         }
       },
@@ -41394,7 +41552,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/team_service.py"
           ],
-          "step_count": 258,
+          "step_count": 260,
           "truncated": true
         }
       },
@@ -41486,7 +41644,7 @@
             "backend/app/services/capacity_adjustments.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 419,
+          "step_count": 421,
           "truncated": true
         }
       },
@@ -41572,7 +41730,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/triage_service.py"
           ],
-          "step_count": 259,
+          "step_count": 261,
           "truncated": true
         }
       },
@@ -41659,7 +41817,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 263,
+          "step_count": 265,
           "truncated": true
         }
       },
@@ -41747,7 +41905,7 @@
             "backend/app/query_limits.py",
             "backend/app/schemas/team.py"
           ],
-          "step_count": 277,
+          "step_count": 279,
           "truncated": true
         }
       },
@@ -41834,7 +41992,7 @@
             "backend/app/services/iteration_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 264,
+          "step_count": 266,
           "truncated": true
         }
       },
@@ -41920,7 +42078,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/label_service.py"
           ],
-          "step_count": 266,
+          "step_count": 268,
           "truncated": true
         }
       },
@@ -42007,7 +42165,7 @@
             "backend/app/services/label_service.py",
             "backend/app/sql_semantics.py"
           ],
-          "step_count": 291,
+          "step_count": 293,
           "truncated": true
         }
       },
@@ -42094,7 +42252,7 @@
             "backend/app/services/project_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 270,
+          "step_count": 272,
           "truncated": true
         }
       },
@@ -42186,7 +42344,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 457,
+          "step_count": 459,
           "truncated": true
         }
       },
@@ -42273,7 +42431,7 @@
             "backend/app/services/project_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 268,
+          "step_count": 270,
           "truncated": true
         }
       },
@@ -42360,7 +42518,7 @@
             "backend/app/services/project_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 277,
+          "step_count": 279,
           "truncated": true
         }
       },
@@ -42448,7 +42606,7 @@
             "backend/app/query_limits.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 563,
+          "step_count": 565,
           "truncated": true
         }
       },
@@ -42535,7 +42693,7 @@
             "backend/app/services/request_source_service.py",
             "backend/app/schemas/request_source.py"
           ],
-          "step_count": 275,
+          "step_count": 277,
           "truncated": true
         }
       },
@@ -42622,7 +42780,7 @@
             "backend/app/services/saved_view_service.py",
             "backend/app/schemas/saved_view.py"
           ],
-          "step_count": 317,
+          "step_count": 319,
           "truncated": true
         }
       },
@@ -42709,7 +42867,7 @@
             "backend/app/services/team_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 264,
+          "step_count": 266,
           "truncated": true
         }
       },
@@ -42796,7 +42954,7 @@
             "backend/app/services/team_service.py",
             "backend/app/schemas/team.py"
           ],
-          "step_count": 272,
+          "step_count": 274,
           "truncated": true
         }
       },
@@ -42883,7 +43041,7 @@
             "backend/app/schemas/template.py",
             "backend/app/services/template_service.py"
           ],
-          "step_count": 263,
+          "step_count": 265,
           "truncated": true
         }
       },
@@ -42971,7 +43129,7 @@
             "backend/app/services/triage_service.py",
             "backend/app/sql_semantics.py"
           ],
-          "step_count": 300,
+          "step_count": 302,
           "truncated": true
         }
       },
@@ -43060,7 +43218,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 314,
+          "step_count": 316,
           "truncated": true
         }
       },
@@ -43147,7 +43305,7 @@
             "backend/app/services/request_source_service.py",
             "backend/app/sql_semantics.py"
           ],
-          "step_count": 284,
+          "step_count": 286,
           "truncated": true
         }
       },
@@ -43236,7 +43394,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 314,
+          "step_count": 316,
           "truncated": true
         }
       },
@@ -43328,7 +43486,7 @@
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 356,
+          "step_count": 358,
           "truncated": true
         }
       },
@@ -43417,7 +43575,7 @@
             "backend/app/models/agent.py",
             "backend/app/schemas/triage.py"
           ],
-          "step_count": 314,
+          "step_count": 316,
           "truncated": true
         }
       },
@@ -43675,7 +43833,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3590,
+              "line": 3492,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43683,7 +43841,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3595,
+              "line": 3497,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43691,7 +43849,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3598,
+              "line": 3500,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43699,7 +43857,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3601,
+              "line": 3503,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43707,7 +43865,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3604,
+              "line": 3506,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43715,7 +43873,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3610,
+              "line": 3512,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43723,7 +43881,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3613,
+              "line": 3515,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43731,7 +43889,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3616,
+              "line": 3524,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43740,61 +43898,61 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 3581,
+              "line": 3483,
               "step": "main",
               "target": "_parser().parse_args"
             },
             {
               "kind": "external_call",
-              "line": 3507,
+              "line": 3424,
               "step": "_parser",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3508,
+              "line": 3425,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 3514,
+              "line": 3431,
               "step": "_parser",
               "target": "parser.add_subparsers"
             },
             {
               "kind": "unresolved_call",
-              "line": 3515,
+              "line": 3432,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3519,
+              "line": 3436,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3523,
+              "line": 3440,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3524,
+              "line": 3441,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3528,
+              "line": 3445,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3529,
+              "line": 3446,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
@@ -43820,7 +43978,7 @@
           "modules_touched": [
             "scripts/build_agent_skills.py"
           ],
-          "step_count": 1315,
+          "step_count": 1279,
           "truncated": true
         }
       },
@@ -45590,7 +45748,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_read",
-              "line": 94,
+              "line": 95,
               "step": "main",
               "step_index": 1,
               "target": "args.output.read_text"
@@ -45598,7 +45756,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 98,
+              "line": 99,
               "step": "main",
               "step_index": 1,
               "target": "args.output.write_text"
@@ -45607,15 +45765,9 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 88,
-              "step": "main",
-              "target": "argparse.ArgumentParser"
-            },
-            {
-              "kind": "unresolved_call",
               "line": 89,
               "step": "main",
-              "target": "parser.add_argument"
+              "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
@@ -45627,29 +45779,35 @@
               "kind": "unresolved_call",
               "line": 91,
               "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 92,
+              "step": "main",
               "target": "parser.parse_args"
             },
             {
               "kind": "external_call",
-              "line": 84,
+              "line": 85,
               "step": "serialized_contract",
               "target": "json.dumps"
             },
             {
               "kind": "unresolved_call",
-              "line": 42,
+              "line": 43,
               "step": "build_contract",
               "target": "app.openapi"
             },
             {
               "kind": "unresolved_call",
-              "line": 43,
+              "line": 44,
               "step": "build_contract",
               "target": "schema['paths'].keys"
             },
             {
               "kind": "external_call",
-              "line": 45,
+              "line": 46,
               "step": "build_contract",
               "target": "ValueError"
             },
@@ -46337,14 +46495,6 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 2807,
-              "step": "main",
-              "step_index": 1,
-              "target": "print"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "output",
               "line": 2810,
               "step": "main",
               "step_index": 1,
@@ -46352,8 +46502,16 @@
             },
             {
               "confidence": "unknown",
+              "kind": "output",
+              "line": 2813,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
               "kind": "environment_read",
-              "line": 215,
+              "line": 216,
               "step": "_load_stdio_agent_key",
               "step_index": 5,
               "target": "os.getenv"
@@ -46361,7 +46519,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 217,
+              "line": 218,
               "step": "_load_stdio_agent_key",
               "step_index": 5,
               "target": "os.getenv"
@@ -46378,19 +46536,19 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 2794,
+              "line": 2797,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 2795,
+              "line": 2798,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 2801,
+              "line": 2804,
               "step": "main",
               "target": "parser.parse_args"
             },
@@ -47215,7 +47373,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 113,
+              "line": 118,
               "step": "command_transaction",
               "step_index": 9,
               "target": "db.info.pop"
@@ -47223,7 +47381,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 126,
+              "line": 131,
               "step": "command_transaction",
               "step_index": 9,
               "target": "db.info.pop"
@@ -47231,7 +47389,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 127,
+              "line": 132,
               "step": "command_transaction",
               "step_index": 9,
               "target": "db.info.pop"
@@ -47239,7 +47397,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 129,
+              "line": 134,
               "step": "command_transaction",
               "step_index": 9,
               "target": "db.info.pop"
@@ -47284,13 +47442,13 @@
             },
             {
               "kind": "external_call",
-              "line": 79,
+              "line": 84,
               "step": "current_command",
               "target": "getattr"
             },
             {
               "kind": "external_call",
-              "line": 80,
+              "line": 85,
               "step": "current_command",
               "target": "isinstance"
             },
@@ -49803,6 +49961,7 @@
         "entities/OverviewPage_ListedTask.md",
         "entities/OverviewTaskList.md",
         "entities/OverviewTaskThreadSource.md",
+        "entities/OwnerAcceptanceWrite.md",
         "entities/OwnerLink.md",
         "entities/OwnershipSelection.md",
         "entities/OwnershipTransfer.md",
@@ -50331,6 +50490,9 @@
         "entities/SortableTemplateRowProps.md",
         "entities/SortCriterionSchema.md",
         "entities/SourceCollectorRegistry.md",
+        "entities/SourceLinkAction.md",
+        "entities/SourceLinkDecision.md",
+        "entities/SourceLinkRefused.md",
         "entities/SourceState.md",
         "entities/SqlStateFailure.md",
         "entities/StatusAmendmentLedger.md",
@@ -50552,6 +50714,7 @@
         "entities/TriageListParams.md",
         "entities/TriageRowProps.md",
         "entities/TriageService.md",
+        "entities/TriageSourceLinkOutcome.md",
         "entities/TrustedKeyBinding.md",
         "entities/types_agent_AgentActor.md",
         "entities/types_agent_AgentActorRosterItem.md",
@@ -51095,6 +51258,7 @@
         "flows/http-move_task.md",
         "flows/http-native_token.md",
         "flows/http-new_mutation.md",
+        "flows/http-owner_accept_task.md",
         "flows/http-patch_agent_task.md",
         "flows/http-patch_planning_task.md",
         "flows/http-personal_inbox.md",
@@ -51486,6 +51650,8 @@
         "modules/20261124_0022_capacity_adjustments.md",
         "modules/20261124_0023_task_replacements.md",
         "modules/20261124_0024_delivery_dependency_target_branch.md",
+        "modules/20261126_0025_catalog_local_first.md",
+        "modules/20261126_0026_review_record_kind.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -52197,6 +52363,7 @@
         "modules/SortableTaskItem.md",
         "modules/source.md",
         "modules/source_binding.md",
+        "modules/source_link_policy.md",
         "modules/sql_semantics.md",
         "modules/src_main.md",
         "modules/status.md",
@@ -52394,6 +52561,7 @@
         "modules/test_human_work_queries.md",
         "modules/test_identity_lifecycle.md",
         "modules/test_initial_schema.md",
+        "modules/test_intake_source_link.md",
         "modules/test_iteration_date_move.md",
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
@@ -52402,6 +52570,7 @@
         "modules/test_managed_authority.md",
         "modules/test_managed_worker_discovery.md",
         "modules/test_manual_review_provenance.md",
+        "modules/test_mcp_proxy_host_header.md",
         "modules/test_mcp_tool_annotations.md",
         "modules/test_metric_matches.md",
         "modules/test_mobile_contract.md",
@@ -52410,6 +52579,7 @@
         "modules/test_native_runtimes.md",
         "modules/test_observability.md",
         "modules/test_observer_sessions.md",
+        "modules/test_owner_override_acceptance.md",
         "modules/test_person_assignment_reads.md",
         "modules/test_person_run_reads.md",
         "modules/test_pipeline_active_outside_run.md",
@@ -52442,6 +52612,7 @@
         "modules/test_replacement_carried_provenance.md",
         "modules/test_review_provenance.md",
         "modules/test_review_provenance_transports.md",
+        "modules/test_review_record_kind_migration.md",
         "modules/test_routing_evidence.md",
         "modules/test_routing_preview_focus.md",
         "modules/test_routing_preview_size.md",
@@ -52688,6 +52859,7 @@
         "workflows/check_supervised_selection.md",
         "workflows/choose_local_profile.md",
         "workflows/convert_triage_item_to_backlog.md",
+        "workflows/convert_triage_to_backlog.md",
         "workflows/convert_triage_to_task.md",
         "workflows/create_request_source_link.md",
         "workflows/create_session.md",
@@ -52810,6 +52982,7 @@
         "workflows/SnapshotService_restore.md",
         "workflows/source_phase.md",
         "workflows/summarize.md",
+        "workflows/TaskBriefService_record_review.md",
         "workflows/TaskBriefService_require_review.md",
         "workflows/TaskBulkOperationService_run.md",
         "workflows/TaskDetailService_detail.md",
@@ -52845,6 +53018,7 @@
         "workflows/TriageService_create.md",
         "workflows/TriageService_mark_duplicate.md",
         "workflows/TriageService_snooze.md",
+        "workflows/TriageService_update.md",
         "workflows/update_task.md",
         "workflows/verify_action_lease.md",
         "workflows/worker_flow.md",
@@ -53177,8 +53351,7 @@
         "modules/routers_agent.md",
         "modules/services_review_evidence.md",
         "modules/test_agent_routing_service.md",
-        "modules/test_agent_routing_wave3_contract.md",
-        "modules/test_agent_routing_wave6_qualification.md"
+        "modules/test_agent_routing_wave3_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_routing.py",
@@ -56245,8 +56418,7 @@
         "modules/authority.md",
         "modules/commands.md",
         "modules/http_authority.md",
-        "modules/mcp_server.md",
-        "modules/routers_identity.md"
+        "modules/mcp_server.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/authority.py",
@@ -61776,7 +61948,8 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/MCPHostValidationMiddleware",
       "outgoing_internal_links": [
-        "modules/mcp_server.md"
+        "modules/mcp_server.md",
+        "modules/test_mcp_proxy_host_header.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/mcp_server.py",
@@ -63783,6 +63956,21 @@
       "role": "semantic",
       "source_path": "frontend/src/features/overview/overviewTaskThread.ts",
       "title": "OverviewTaskThreadSource"
+    },
+    {
+      "canonical_path": "entities/OwnerAcceptanceWrite.md",
+      "id": "OwnerAcceptanceWrite",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/OwnerAcceptanceWrite",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/schemas_task_brief.md",
+        "modules/task_brief_service.md",
+        "modules/test_owner_override_acceptance.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/task_brief.py",
+      "title": "OwnerAcceptanceWrite"
     },
     {
       "canonical_path": "entities/OwnerLink.md",
@@ -69137,9 +69325,9 @@
         "modules/test_agent_runtime_recovery.md",
         "modules/test_agent_work_routing_lineage.md",
         "modules/test_delivery_metrics.md",
+        "modules/test_owner_override_acceptance.md",
         "modules/test_schedule_follows_actual_dates.md",
-        "modules/test_task_domain.md",
-        "modules/test_task_domain_integrity.md"
+        "modules/test_task_domain.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/task_brief.py",
@@ -71055,6 +71243,48 @@
       "title": "SourceCollectorRegistry"
     },
     {
+      "canonical_path": "entities/SourceLinkAction.md",
+      "id": "SourceLinkAction",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/SourceLinkAction",
+      "outgoing_internal_links": [
+        "modules/source_link_policy.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/utils/source_link_policy.py",
+      "title": "SourceLinkAction"
+    },
+    {
+      "canonical_path": "entities/SourceLinkDecision.md",
+      "id": "SourceLinkDecision",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/SourceLinkDecision",
+      "outgoing_internal_links": [
+        "modules/source_link_policy.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/utils/source_link_policy.py",
+      "title": "SourceLinkDecision"
+    },
+    {
+      "canonical_path": "entities/SourceLinkRefused.md",
+      "id": "SourceLinkRefused",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/SourceLinkRefused",
+      "outgoing_internal_links": [
+        "modules/mcp_server.md",
+        "modules/routers_agent_planning.md",
+        "modules/routers_intake.md",
+        "modules/routers_triage.md",
+        "modules/schemas_task.md",
+        "modules/source_link_policy.md",
+        "modules/test_intake_source_link.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/utils/source_link_policy.py",
+      "title": "SourceLinkRefused"
+    },
+    {
       "canonical_path": "entities/SourceState.md",
       "id": "SourceState",
       "kind": "entities",
@@ -72520,8 +72750,7 @@
         "modules/routers_agent.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task.md",
-        "modules/schemas_work_metrics.md",
-        "modules/tasks.md"
+        "modules/schemas_work_metrics.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/task.py",
@@ -72555,6 +72784,7 @@
         "modules/task_brief_service.md",
         "modules/task_recovery_service.md",
         "modules/test_acceptance_attribution.md",
+        "modules/test_owner_override_acceptance.md",
         "modules/test_task_domain.md"
       ],
       "role": "semantic",
@@ -74171,6 +74401,20 @@
       "role": "semantic",
       "source_path": "backend/app/services/triage_service.py",
       "title": "TriageService"
+    },
+    {
+      "canonical_path": "entities/TriageSourceLinkOutcome.md",
+      "id": "TriageSourceLinkOutcome",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TriageSourceLinkOutcome",
+      "outgoing_internal_links": [
+        "modules/mcp_agent_tools.md",
+        "modules/routers_triage.md",
+        "modules/schemas_triage.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/triage.py",
+      "title": "TriageSourceLinkOutcome"
     },
     {
       "canonical_path": "entities/TrustedKeyBinding.md",
@@ -77098,7 +77342,7 @@
         "modules/schemas_external_link.md",
         "modules/schemas_outbound_webhook.md",
         "modules/schemas_request_source.md",
-        "modules/schemas_task.md",
+        "modules/source_link_policy.md",
         "modules/system_settings_service.md",
         "modules/url_policy.md"
       ],
@@ -78314,6 +78558,26 @@
       "role": "semantic",
       "source_path": "backend/app/migrations/versions/20261124_0024_delivery_dependency_target_branch.py",
       "title": "20261124_0024_delivery_dependency_target_branch Module"
+    },
+    {
+      "canonical_path": "modules/20261126_0025_catalog_local_first.md",
+      "id": "20261126_0025_catalog_local_first",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/20261126_0025_catalog_local_first",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/app/migrations/versions/20261126_0025_catalog_local_first.py",
+      "title": "20261126_0025_catalog_local_first Module"
+    },
+    {
+      "canonical_path": "modules/20261126_0026_review_record_kind.md",
+      "id": "20261126_0026_review_record_kind",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/20261126_0026_review_record_kind",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/app/migrations/versions/20261126_0026_review_record_kind.py",
+      "title": "20261126_0026_review_record_kind Module"
     },
     {
       "canonical_path": "modules/acceptance_artifacts.md",
@@ -87820,6 +88084,7 @@
         "modules/schemas_intake.md",
         "modules/schemas_triage.md",
         "modules/session_service.md",
+        "modules/source_link_policy.md",
         "modules/system_settings_service.md",
         "modules/web_intake_service.md"
       ],
@@ -87944,18 +88209,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/routers_triage",
       "outgoing_internal_links": [
-        "modules/app_database.md",
-        "modules/app_main.md",
-        "modules/assignee_recommendation_service.md",
-        "modules/commands.md",
-        "modules/language_service.md",
-        "modules/llm_service.md",
-        "modules/routers___init__.md",
-        "modules/routers_task_domain.md",
-        "modules/routers_triage.md",
-        "modules/schemas_team.md",
-        "modules/schemas_triage.md",
-        "modules/triage_service.md"
+        "modules/routers_triage.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/routers/triage.py",
@@ -88143,7 +88397,8 @@
         "modules/safeUrl.md",
         "modules/TaskTimelinePanel.md",
         "modules/TriageConvertSource.md",
-        "modules/TriageDetailPanel.md"
+        "modules/TriageDetailPanel.md",
+        "modules/TriagePage.test.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/utils/safeUrl.ts",
@@ -89362,6 +89617,7 @@
         "entities/BriefConvert.md",
         "entities/BriefWrite.md",
         "entities/CurrentTaskReviewResponse.md",
+        "entities/OwnerAcceptanceWrite.md",
         "entities/ProgressWrite.md",
         "entities/schemas_task_brief_BriefCriterion.md",
         "entities/schemas_task_brief_CriterionProgress.md",
@@ -89536,6 +89792,7 @@
         "entities/TriageClassificationSuggestionResponse.md",
         "entities/TriageConvertToBacklogRequest.md",
         "entities/TriageItemResponse.md",
+        "entities/TriageSourceLinkOutcome.md",
         "modules/schemas_triage.md"
       ],
       "role": "semantic",
@@ -90464,6 +90721,31 @@
       "role": "semantic",
       "source_path": "scripts/load/source_binding.py",
       "title": "source_binding Module"
+    },
+    {
+      "canonical_path": "modules/source_link_policy.md",
+      "id": "source_link_policy",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/source_link_policy",
+      "outgoing_internal_links": [
+        "entities/SourceLinkAction.md",
+        "entities/SourceLinkDecision.md",
+        "entities/SourceLinkRefused.md",
+        "modules/config.md",
+        "modules/mcp_server.md",
+        "modules/routers_agent_planning.md",
+        "modules/routers_intake.md",
+        "modules/routers_triage.md",
+        "modules/schemas_task.md",
+        "modules/schemas_triage.md",
+        "modules/source_link_policy.md",
+        "modules/test_intake_source_link.md",
+        "modules/triage_service.md",
+        "modules/url_policy.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/utils/source_link_policy.py",
+      "title": "source_link_policy Module"
     },
     {
       "canonical_path": "modules/sql_semantics.md",
@@ -93627,6 +93909,27 @@
       "title": "test_initial_schema Module"
     },
     {
+      "canonical_path": "modules/test_intake_source_link.md",
+      "id": "test_intake_source_link",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_intake_source_link",
+      "outgoing_internal_links": [
+        "modules/app_main.md",
+        "modules/config.md",
+        "modules/identity_service.md",
+        "modules/mcp_agent_tools.md",
+        "modules/mcp_server.md",
+        "modules/models_agent.md",
+        "modules/models_triage.md",
+        "modules/source_link_policy.md",
+        "modules/test_delivery_scenarios.md",
+        "modules/test_intake_source_link.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_intake_source_link.py",
+      "title": "test_intake_source_link Module"
+    },
+    {
       "canonical_path": "modules/test_iteration_date_move.md",
       "id": "test_iteration_date_move",
       "kind": "modules",
@@ -93723,6 +94026,19 @@
       "role": "semantic",
       "source_path": "backend/tests/test_manual_review_provenance.py",
       "title": "test_manual_review_provenance Module"
+    },
+    {
+      "canonical_path": "modules/test_mcp_proxy_host_header.md",
+      "id": "test_mcp_proxy_host_header",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_mcp_proxy_host_header",
+      "outgoing_internal_links": [
+        "modules/mcp_server.md",
+        "modules/test_mcp_proxy_host_header.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_mcp_proxy_host_header.py",
+      "title": "test_mcp_proxy_host_header Module"
     },
     {
       "canonical_path": "modules/test_mcp_tool_annotations.md",
@@ -93837,6 +94153,18 @@
       "role": "semantic",
       "source_path": "backend/tests/test_observer_sessions.py",
       "title": "test_observer_sessions Module"
+    },
+    {
+      "canonical_path": "modules/test_owner_override_acceptance.md",
+      "id": "test_owner_override_acceptance",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_owner_override_acceptance",
+      "outgoing_internal_links": [
+        "modules/test_owner_override_acceptance.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_owner_override_acceptance.py",
+      "title": "test_owner_override_acceptance Module"
     },
     {
       "canonical_path": "modules/test_person_assignment_reads.md",
@@ -94311,6 +94639,20 @@
       "role": "semantic",
       "source_path": "backend/tests/test_review_provenance_transports.py",
       "title": "test_review_provenance_transports Module"
+    },
+    {
+      "canonical_path": "modules/test_review_record_kind_migration.md",
+      "id": "test_review_record_kind_migration",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_review_record_kind_migration",
+      "outgoing_internal_links": [
+        "modules/test_review_record_kind_migration.md",
+        "modules/time.md",
+        "modules/upgrade_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/migrations/test_review_record_kind_migration.py",
+      "title": "test_review_record_kind_migration Module"
     },
     {
       "canonical_path": "modules/test_routing_evidence.md",
@@ -95609,6 +95951,7 @@
         "modules/ConvertTriageDrawer.md",
         "modules/pageChrome.md",
         "modules/renderWithProviders.md",
+        "modules/safeUrl.md",
         "modules/TaskForm.md",
         "modules/TriageActionModal.md",
         "modules/TriagePage.md",
@@ -98010,6 +98353,7 @@
       "mcp_uri": "llm-wiki://workflows/AgentWorkService_requeue_recovery",
       "outgoing_internal_links": [
         "modules/agent_routing_policy.md",
+        "modules/agent_routing_service.md",
         "modules/agent_service.md",
         "modules/agent_work_service.md",
         "modules/commands.md",
@@ -98504,6 +98848,21 @@
       "role": "mixed",
       "source_path": "backend/app/routers/triage.py",
       "title": "convert_triage_item_to_backlog"
+    },
+    {
+      "canonical_path": "workflows/convert_triage_to_backlog.md",
+      "id": "convert_triage_to_backlog",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/convert_triage_to_backlog",
+      "outgoing_internal_links": [
+        "modules/mcp_agent_tools.md",
+        "modules/schemas_triage.md",
+        "modules/task_service.md",
+        "modules/triage_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/mcp_agent_tools.py",
+      "title": "convert_triage_to_backlog"
     },
     {
       "canonical_path": "workflows/convert_triage_to_task.md",
@@ -100468,6 +100827,21 @@
       "title": "summarize"
     },
     {
+      "canonical_path": "workflows/TaskBriefService_record_review.md",
+      "id": "TaskBriefService_record_review",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/TaskBriefService_record_review",
+      "outgoing_internal_links": [
+        "modules/commands.md",
+        "modules/identity_service.md",
+        "modules/models_task_brief.md",
+        "modules/task_brief_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/task_brief_service.py",
+      "title": "TaskBriefService_record_review"
+    },
+    {
       "canonical_path": "workflows/TaskBriefService_require_review.md",
       "id": "TaskBriefService_require_review",
       "kind": "workflows",
@@ -100993,6 +101367,7 @@
         "modules/request_source_service.md",
         "modules/schemas_task.md",
         "modules/schemas_triage.md",
+        "modules/source_link_policy.md",
         "modules/task_brief_service.md",
         "modules/triage_service.md"
       ],
@@ -101009,6 +101384,7 @@
         "modules/commands.md",
         "modules/models_triage.md",
         "modules/outbound_webhook_service.md",
+        "modules/source_link_policy.md",
         "modules/task_brief_service.md",
         "modules/triage_service.md"
       ],
@@ -101045,6 +101421,21 @@
       "role": "mixed",
       "source_path": "backend/app/services/triage_service.py",
       "title": "TriageService_snooze"
+    },
+    {
+      "canonical_path": "workflows/TriageService_update.md",
+      "id": "TriageService_update",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/TriageService_update",
+      "outgoing_internal_links": [
+        "modules/commands.md",
+        "modules/outbound_webhook_service.md",
+        "modules/source_link_policy.md",
+        "modules/triage_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/triage_service.py",
+      "title": "TriageService_update"
     },
     {
       "canonical_path": "workflows/update_task.md",
@@ -101741,6 +102132,7 @@
         "modules/agent_readiness.md",
         "modules/agent_service.md",
         "modules/commands.md",
+        "modules/config.md",
         "modules/delivery_dependency_service.md",
         "modules/discussion_service.md",
         "modules/external_link_service.md",
@@ -101757,11 +102149,13 @@
         "modules/schemas_triage.md",
         "modules/services_work_metrics.md",
         "modules/snapshot_service.md",
+        "modules/source_link_policy.md",
         "modules/task_brief_service.md",
         "modules/task_context_revision_service.md",
         "modules/task_service.md",
         "modules/time.md",
-        "modules/triage_service.md"
+        "modules/triage_service.md",
+        "modules/url_policy.md"
       ],
       "role": "mixed",
       "source_path": "backend/app/routers/agent_planning.py",
@@ -101808,8 +102202,10 @@
         "modules/routers_task_domain.md",
         "modules/routers_triage.md",
         "modules/schemas_triage.md",
+        "modules/source_link_policy.md",
         "modules/task_brief_service.md",
-        "modules/task_service.md"
+        "modules/task_service.md",
+        "modules/url_policy.md"
       ],
       "role": "mixed",
       "source_path": "backend/app/routers/triage.py",
@@ -101825,6 +102221,7 @@
         "modules/language_service.md",
         "modules/routers_triage.md",
         "modules/schemas_triage.md",
+        "modules/source_link_policy.md",
         "modules/system_settings_service.md",
         "modules/url_policy.md"
       ],
@@ -102136,6 +102533,7 @@
       "outgoing_internal_links": [
         "modules/agent_service.md",
         "modules/commands.md",
+        "modules/config.md",
         "modules/mcp_agent_tools.md",
         "modules/models_agent.md",
         "modules/models_triage.md",
@@ -102143,9 +102541,11 @@
         "modules/routers_agent_planning.md",
         "modules/schemas_agent_planning.md",
         "modules/schemas_triage.md",
+        "modules/source_link_policy.md",
         "modules/task_brief_service.md",
         "modules/task_service.md",
-        "modules/triage_service.md"
+        "modules/triage_service.md",
+        "modules/url_policy.md"
       ],
       "role": "mixed",
       "source_path": "backend/app/routers/agent_planning.py",
@@ -105211,6 +105611,30 @@
       "title": "new_mutation"
     },
     {
+      "canonical_path": "flows/http-owner_accept_task.md",
+      "id": "http-owner_accept_task",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-owner_accept_task",
+      "outgoing_internal_links": [
+        "modules/agent_readiness.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/external_link_service.md",
+        "modules/review_provenance.md",
+        "modules/routers_task_domain.md",
+        "modules/schemas_external_link.md",
+        "modules/schemas_task.md",
+        "modules/services_work_metrics.md",
+        "modules/snapshot_service.md",
+        "modules/task_brief_service.md",
+        "modules/task_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/task_domain.py",
+      "title": "owner_accept_task"
+    },
+    {
       "canonical_path": "flows/http-patch_agent_task.md",
       "id": "http-patch_agent_task",
       "kind": "flows",
@@ -107578,11 +108002,13 @@
         "modules/schemas_triage.md",
         "modules/services_work_metrics.md",
         "modules/snapshot_service.md",
+        "modules/source_link_policy.md",
         "modules/task_brief_service.md",
         "modules/task_context_revision_service.md",
         "modules/task_service.md",
         "modules/time.md",
-        "modules/triage_service.md"
+        "modules/triage_service.md",
+        "modules/url_policy.md"
       ],
       "role": "mixed",
       "source_path": "backend/app/mcp_server.py",
@@ -110934,11 +111360,13 @@
         "modules/schemas_triage.md",
         "modules/services_work_metrics.md",
         "modules/snapshot_service.md",
+        "modules/source_link_policy.md",
         "modules/task_brief_service.md",
         "modules/task_context_revision_service.md",
         "modules/task_service.md",
         "modules/time.md",
-        "modules/triage_service.md"
+        "modules/triage_service.md",
+        "modules/url_policy.md"
       ],
       "role": "mixed",
       "source_path": "backend/app/mcp_server.py",
@@ -111073,10 +111501,12 @@
         "modules/outbound_webhook_service.md",
         "modules/schemas_agent_planning.md",
         "modules/schemas_triage.md",
+        "modules/source_link_policy.md",
         "modules/task_brief_service.md",
         "modules/task_service.md",
         "modules/time.md",
-        "modules/triage_service.md"
+        "modules/triage_service.md",
+        "modules/url_policy.md"
       ],
       "role": "mixed",
       "source_path": "backend/app/mcp_server.py",
@@ -112618,6 +113048,7 @@
         "modules/retained_planning_output.md",
         "modules/schemas_agent.md",
         "modules/services_review_evidence.md",
+        "modules/source_link_policy.md",
         "modules/task_service.md",
         "modules/triage_service.md",
         "modules/upgrade_service.md"
@@ -113209,6 +113640,8 @@
         "modules/20261124_0022_capacity_adjustments.md",
         "modules/20261124_0023_task_replacements.md",
         "modules/20261124_0024_delivery_dependency_target_branch.md",
+        "modules/20261126_0025_catalog_local_first.md",
+        "modules/20261126_0026_review_record_kind.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -113920,6 +114353,7 @@
         "modules/SortableTaskItem.md",
         "modules/source.md",
         "modules/source_binding.md",
+        "modules/source_link_policy.md",
         "modules/sql_semantics.md",
         "modules/src_main.md",
         "modules/status.md",
@@ -114117,6 +114551,7 @@
         "modules/test_human_work_queries.md",
         "modules/test_identity_lifecycle.md",
         "modules/test_initial_schema.md",
+        "modules/test_intake_source_link.md",
         "modules/test_iteration_date_move.md",
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
@@ -114125,6 +114560,7 @@
         "modules/test_managed_authority.md",
         "modules/test_managed_worker_discovery.md",
         "modules/test_manual_review_provenance.md",
+        "modules/test_mcp_proxy_host_header.md",
         "modules/test_mcp_tool_annotations.md",
         "modules/test_metric_matches.md",
         "modules/test_mobile_contract.md",
@@ -114133,6 +114569,7 @@
         "modules/test_native_runtimes.md",
         "modules/test_observability.md",
         "modules/test_observer_sessions.md",
+        "modules/test_owner_override_acceptance.md",
         "modules/test_person_assignment_reads.md",
         "modules/test_person_run_reads.md",
         "modules/test_pipeline_active_outside_run.md",
@@ -114165,6 +114602,7 @@
         "modules/test_replacement_carried_provenance.md",
         "modules/test_review_provenance.md",
         "modules/test_review_provenance_transports.md",
+        "modules/test_review_record_kind_migration.md",
         "modules/test_routing_evidence.md",
         "modules/test_routing_preview_focus.md",
         "modules/test_routing_preview_size.md",
@@ -114376,6 +114814,8 @@
         "modules/20261124_0022_capacity_adjustments.md",
         "modules/20261124_0023_task_replacements.md",
         "modules/20261124_0024_delivery_dependency_target_branch.md",
+        "modules/20261126_0025_catalog_local_first.md",
+        "modules/20261126_0026_review_record_kind.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -115087,6 +115527,7 @@
         "modules/SortableTaskItem.md",
         "modules/source.md",
         "modules/source_binding.md",
+        "modules/source_link_policy.md",
         "modules/sql_semantics.md",
         "modules/src_main.md",
         "modules/status.md",
@@ -115284,6 +115725,7 @@
         "modules/test_human_work_queries.md",
         "modules/test_identity_lifecycle.md",
         "modules/test_initial_schema.md",
+        "modules/test_intake_source_link.md",
         "modules/test_iteration_date_move.md",
         "modules/test_load_seed_postgresql.md",
         "modules/test_load_tooling.md",
@@ -115292,6 +115734,7 @@
         "modules/test_managed_authority.md",
         "modules/test_managed_worker_discovery.md",
         "modules/test_manual_review_provenance.md",
+        "modules/test_mcp_proxy_host_header.md",
         "modules/test_mcp_tool_annotations.md",
         "modules/test_metric_matches.md",
         "modules/test_mobile_contract.md",
@@ -115300,6 +115743,7 @@
         "modules/test_native_runtimes.md",
         "modules/test_observability.md",
         "modules/test_observer_sessions.md",
+        "modules/test_owner_override_acceptance.md",
         "modules/test_person_assignment_reads.md",
         "modules/test_person_run_reads.md",
         "modules/test_pipeline_active_outside_run.md",
@@ -115332,6 +115776,7 @@
         "modules/test_replacement_carried_provenance.md",
         "modules/test_review_provenance.md",
         "modules/test_review_provenance_transports.md",
+        "modules/test_review_record_kind_migration.md",
         "modules/test_routing_evidence.md",
         "modules/test_routing_preview_focus.md",
         "modules/test_routing_preview_size.md",
@@ -115514,5 +115959,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:c0b38b70aff24c61878307c1acb2ef90c8d05d090ebf820f29d56fbfe5fbd2a3"
+  "source_hash": "sha256:b7b1d28dcfd7d4d921b31832da1bb101049983c92fc824474a31ea25d7dad2de"
 }

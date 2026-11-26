@@ -88,11 +88,25 @@ export const isDueSnoozed = (item: TriageItem) => {
     return new Date(item.snoozed_until).getTime() <= Date.now();
 };
 
+export const SOURCE_LINK_ERROR_CODE = 'intake_source_link_not_allowed';
+
+/** The named source-link refusal as one sentence (what is wrong plus the next step), or null for any other error. */
+export const getSourceLinkError = (error: unknown): string | null => {
+    const detail = (error as { response?: { data?: { detail?: unknown } } })?.response?.data?.detail;
+    if (!detail || typeof detail !== 'object') return null;
+    const { code, message, next_step: nextStep } = detail as { code?: unknown; message?: unknown; next_step?: unknown };
+    if (code !== SOURCE_LINK_ERROR_CODE || typeof message !== 'string') return null;
+    return typeof nextStep === 'string' && nextStep ? `${message} ${nextStep}` : message;
+};
+
 export const getErrorMessage = (error: unknown, fallback: string) => {
     const response = (error as { response?: { data?: { detail?: unknown } } })?.response;
     const detail = response?.data?.detail;
 
     if (typeof detail === 'string') return detail;
+    if (detail && typeof detail === 'object' && typeof (detail as { message?: unknown }).message === 'string') {
+        return (detail as { message: string }).message;
+    }
     if (Array.isArray(detail)) {
         const messages = detail
             .map(item => {

@@ -41,7 +41,7 @@ import { TriageActionModal } from '../components/triage/TriageActionModal';
 import { TriageDetailPanel } from '../components/triage/TriageDetailPanel';
 import { TriageList } from '../components/triage/TriageList';
 import { TriageToolbar } from '../components/triage/TriageToolbar';
-import { AGENT_SOURCE_LABEL_KEYS, getErrorMessage, isDueSnoozed, makeLookup, toLocalDateTimeInputValue, triageFiltersFromSavedView, type DuplicateActionDefaults, type TriageLifecycleAction } from '../components/triage/triageUtils';
+import { AGENT_SOURCE_LABEL_KEYS, getErrorMessage, getSourceLinkError, isDueSnoozed, makeLookup, toLocalDateTimeInputValue, triageFiltersFromSavedView, type DuplicateActionDefaults, type TriageLifecycleAction } from '../components/triage/triageUtils';
 type ActionMutationInput =
     | { type: 'accept'; itemId: number; payload: TriageActionRequest }
     | { type: 'decline'; itemId: number; payload: TriageActionRequest }
@@ -73,7 +73,7 @@ const TriagePage = () => {
         defaultDuplicate?: DuplicateActionDefaults;
     } | null>(null);
     const [convertItem, setConvertItem] = useState<TriageItem | null>(null);
-    const [conversionResult, setConversionResult] = useState<{ taskId: number; taskTitle: string } | null>(null);
+    const [conversionResult, setConversionResult] = useState<{ taskId: number; taskTitle: string; sourceLinkNote?: string | null } | null>(null);
     const requestedSavedViewId = Number(searchParams.get('view')) || null;
     const appliedSavedViewIdRef = useRef<number | null>(null);
 
@@ -246,7 +246,7 @@ const TriagePage = () => {
         meta: { success: data => t('feedback.triageConverted', { name: (data as TriageConvertToTaskResponse).task.title }) } satisfies MutationFeedbackMeta,
         onSuccess: (response, variables) => {
             setConvertItem(null);
-            setConversionResult({ taskId: response.task.id, taskTitle: response.task.title });
+            setConversionResult({ taskId: response.task.id, taskTitle: response.task.title, sourceLinkNote: response.source_link?.message ?? null });
             setSelectedId(response.triage_item.id);
             invalidateTaskProjectQueries(variables.payload.iteration_id, variables.payload.project_id);
         },
@@ -309,7 +309,8 @@ const TriagePage = () => {
     };
 
     const listErrorMessage = listError ? getErrorMessage(listError, t('surfaces.triagePage.loadFailed')) : null;
-    const createErrorMessage = createMutation.error ? getErrorMessage(createMutation.error, t('surfaces.triagePage.createFailed')) : null;
+    const createSourceLinkError = createMutation.error ? getSourceLinkError(createMutation.error) : null;
+    const createErrorMessage = createMutation.error && !createSourceLinkError ? getErrorMessage(createMutation.error, t('surfaces.triagePage.createFailed')) : null;
     const actionErrorMessage = actionMutation.error ? getErrorMessage(actionMutation.error, t('surfaces.triagePage.updateFailed')) : null;
     const convertErrorMessage = convertMutation.error ? getErrorMessage(convertMutation.error, t('surfaces.triagePage.convertFailed')) : null;
     const supportingQueryError = savedViewError ?? allTriageError ?? iterationsError ?? projectsError;
@@ -340,6 +341,7 @@ const TriagePage = () => {
                     <div className="flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4" />
                         <span>{t('quickActions.taskCreated')}</span>
+                        {conversionResult.sourceLinkNote && <span role="status">{conversionResult.sourceLinkNote}</span>}
                     </div>
                     <div className="flex items-center gap-2">
                         <Link
@@ -424,6 +426,7 @@ const TriagePage = () => {
                     iterations={iterations}
                     isSubmitting={createMutation.isPending}
                     error={createErrorMessage}
+                    sourceUrlError={createSourceLinkError}
                     onSubmit={payload => createMutation.mutate(payload)}
                     onClose={() => setIsCreating(false)}
                     initialTitle={createTitle}
