@@ -245,8 +245,11 @@ async def test_process_restart_expired_fence_requeue_and_failure(delivery_store)
         expected_task_version=receipt["task"]["version"], expected_live_assignment_ids=[receipt["assignment"]["id"]],
         expected_running_run_ids=[receipt["run"]["id"]], expected_claim_generation=receipt["claim_generation"], reason="Recover expired process"), idempotency_key="requeue-expiry")
     assert requeued["ok"], requeued
-    await supervised_refresh(factory, scenario, task_id)
+    issued = requeued["response"]["assignment"]
+    assert issued["routing_snapshot"]["supervised_actor_id"] == scenario.actors[0]
+    # In off mode the requeued recovery is directly executable, with no hand-made replacement.
     recovered, _ = await begin_next(factory, key, "begin-recovery")
+    assert recovered["response"]["assignment"]["id"] == issued["id"]
     old = await peer(factory, key, "submit", body=dict(**fence(receipt), summary="Stale process result", evidence={"inspection": "Old evidence"}), idempotency_key="stale-submit")
     assert not old["ok"] and old["error_type"] in {"AgentConflictError", "TaskVersionConflictError"}, old
     failed = await peer(factory, key, "fail", body=dict(**fence(recovered["response"]), status="failed",

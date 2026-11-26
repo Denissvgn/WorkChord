@@ -187,10 +187,39 @@ identify the same submitted candidate. For the next verification, preview,
 dispatch and verdict require the recorded reviewer profile and a publisher
 independent of every contributor. A changed binding, different worker,
 missing receipt, or request for a model-tier change leaves routing pending.
-After a failed or canceled rework, the PM uses the normal recovery path.
-The resulting recovery queue waits for a fresh applicable routing selection.
+After a failed or canceled rework, the PM uses the normal recovery path,
+described in the next section. A rework that began as a supervised handback
+does not count as earlier model-aware routing for that recovery.
 A previously begun rework cannot be reused to start a second fenced run.
 Enforced mode continues to require a fresh model-aware selection.
+
+## Recovery requeue by mode
+
+A typed recovery requeue always records the pending model lineage, including
+the earlier review floor. Whether its new assignment can begin depends on the
+effective mode for the recovery actor:
+
+| Effective mode | Result |
+| --- | --- |
+| `off` | The recovery is supervised and the actor can begin it at once. |
+| `shadow` | The recovery is supervised when the team's primary PM issues it, no earlier assignment carries model-aware routing, and at most one reviewer profile is recorded and it is not the recovery actor's. Otherwise the requeue is refused and nothing changes. |
+| `enforced` | The recovery waits with `routing_selection_pending` until a model-aware assignment update completes a fresh selection. |
+
+A supervised recovery takes the single recorded reviewer profile when there is
+exactly one and it is not the recovery actor's. If enforcement becomes active
+before the actor begins, the recovery waits for a fresh selection.
+
+A refused requeue returns `recovery_supervision_unavailable` with a
+`condition`:
+
+- `primary_pm_required`: only the team's primary PM can issue it.
+- `model_aware_history`: earlier assignments, listed in
+  `model_aware_assignment_ids`, need a fresh model-aware selection. Recover
+  the task once routing is enforced.
+- `reviewer_profile_ambiguous`: earlier assignments name several reviewer
+  profiles, listed in `reviewer_profile_ids`.
+- `reviewer_profile_not_independent`: the recovery actor's profile is the
+  recorded reviewer profile. Choose another recovery actor.
 
 ## Extending an iteration with assigned work
 
