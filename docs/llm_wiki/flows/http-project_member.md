@@ -165,7 +165,7 @@ flowchart LR
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
 | project_member | AuthorityError | 302 | `AuthorityError('invalid_project_role', 'Choose a project role.', 422)` |
 | project_member | internal_authority | 304 | `internal_authority(db)` |
-| internal_authority | db.info.get | 99 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get | 113 | `db.info.get('authority_internal', False)` |
 | project_member | db.get | 305 | `db.get(Principal, principal_id)` |
 
 ### Boundary effects
@@ -180,7 +180,7 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | unresolved_call | `project_member` | `authority.allows` | 298 |
-| unresolved_call | `internal_authority` | `db.info.get` | 99 |
+| unresolved_call | `internal_authority` | `db.info.get` | 113 |
 | unresolved_call | `project_member` | `db.get` | 305 |
 | step_limit | `project_member` | `first 12 steps` | 0 |
 

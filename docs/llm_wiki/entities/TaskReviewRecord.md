@@ -23,6 +23,7 @@ Immutable authorized acceptance or rejection of a particular task, brief and art
 | `artifact_revision` | `Mapped[int]` | `mapped_column(Integer)` | — |
 | `principal_id` | `Mapped[int \| None]` | `mapped_column(ForeignKey('principals.id', ondelete='RESTRICT'))` | — |
 | `verdict` | `Mapped[str]` | `mapped_column(String(16))` | — |
+| `kind` | `Mapped[str]` | `mapped_column(String(32), default='review', server_default='review', nullable=False)` | — |
 | `reason` | `Mapped[str]` | `mapped_column(Text)` | — |
 | `evidence` | `Mapped[str]` | `mapped_column(Text)` | — |
 | `created_at` | `Mapped[datetime]` | `mapped_column(UTCDateTime(), default=utc_now)` | — |
@@ -44,7 +45,8 @@ flowchart LR
     n5["TaskBriefService.record_review (backend/app/services/task_brief_service.py)"]
     n6["backend/app/services/task_recovery_service.py"]
     n7["backend/tests/test_acceptance_attribution.py"]
-    n8["test_current_review_does_not_depend_on_first_history_page (backend/tests/test_task_domain.py)"]
+    n8["backend/tests/test_owner_override_acceptance.py"]
+    n9["test_current_review_does_not_depend_on_first_history_page (backend/tests/test_task_domain.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -53,6 +55,7 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
     click n0 "../modules/models_task_brief.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -61,14 +64,15 @@ flowchart LR
     click n5 "../modules/task_brief_service.md"
     click n6 "../modules/task_recovery_service.md"
     click n7 "../modules/test_acceptance_attribution.md"
-    click n8 "../modules/test_task_domain.md"
+    click n8 "../modules/test_owner_override_acceptance.md"
+    click n9 "../modules/test_task_domain.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_task_brief](../modules/models_task_brief.md) | 0 | `artifact_revision`, `brief_revision`, `created_at`, `evidence`, `id`, `original_task_id`, `principal_id`, `reason`, `task_id`, `task_version`, `verdict` |
+| [models_task_brief](../modules/models_task_brief.md) | 0 | `artifact_revision`, `brief_revision`, `created_at`, `evidence`, `id`, `kind`, `original_task_id`, `principal_id`, `reason`, `task_id`, `task_version`, `verdict` |
 
 ### Structure
 
@@ -86,4 +90,5 @@ flowchart LR
 | `TaskBriefService.record_review` | call | [task_brief_service](../modules/task_brief_service.md) | 1 |
 | `task_recovery_service` | import | [task_recovery_service](../modules/task_recovery_service.md) | — |
 | `test_acceptance_attribution` | import | [test_acceptance_attribution](../modules/test_acceptance_attribution.md) | — |
+| `test_owner_override_acceptance` | import | [test_owner_override_acceptance](../modules/test_owner_override_acceptance.md) | — |
 | `test_current_review_does_not_depend_on_first_history_page` | call | [test_task_domain](../modules/test_task_domain.md) | 2 |

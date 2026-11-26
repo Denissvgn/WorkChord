@@ -164,7 +164,7 @@ flowchart LR
 | utc_now | datetime.now | 13 | `datetime.now(UTC)` |
 | RuntimeObservationService.cleanup | timedelta | 117 | `timedelta(days=retention)` |
 | RuntimeObservationService.cleanup | internal_authority | 118 | `internal_authority(self.db)` |
-| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 99 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 113 | `db.info.get('authority_internal', False)` |
 
 ### Boundary effects
 
@@ -177,7 +177,7 @@ flowchart LR
 | unresolved_call | `require_operator` | `db.info.get` | 91 |
 | external_call | `utc_now` | `datetime.now` | 13 |
 | external_call | `RuntimeObservationService.cleanup` | `timedelta` | 117 |
-| unresolved_call | `internal_authority` | `db.info.get` | 99 |
+| unresolved_call | `internal_authority` | `db.info.get` | 113 |
 | step_limit | `cleanup_runtime_observations` | `first 12 steps` | 0 |
 
 ## Behavior
