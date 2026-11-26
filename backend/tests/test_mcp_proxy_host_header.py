@@ -87,7 +87,13 @@ def test_host_guard_rejects_host_outside_allowlist() -> None:
 def _docker_available() -> bool:
     if shutil.which("docker") is None:
         return False
-    return subprocess.run(["docker", "info"], capture_output=True).returncode == 0
+    try:
+        return (
+            subprocess.run(["docker", "info"], capture_output=True, timeout=10).returncode
+            == 0
+        )
+    except subprocess.TimeoutExpired:
+        return False
 
 
 needs_docker = pytest.mark.skipif(
@@ -169,13 +175,14 @@ def _forwarded_host(url: str, path: str, host_header: str) -> str:
 
 @needs_docker
 @pytest.mark.allow_network
-def test_proxy_forwards_mcp_host_with_port_and_guard_accepts_it(proxy_url: str) -> None:
+@pytest.mark.parametrize("mcp_path", ["/api/mcp", "/api/mcp/"])
+def test_proxy_forwards_mcp_host_with_port_and_guard_accepts_it(proxy_url: str, mcp_path: str) -> None:
     for client_host in (
         f"localhost:{NON_DEFAULT_PORT}",
         f"127.0.0.1:{NON_DEFAULT_PORT}",
         f"[::1]:{NON_DEFAULT_PORT}",
     ):
-        forwarded = _forwarded_host(proxy_url, "/api/mcp", client_host)
+        forwarded = _forwarded_host(proxy_url, mcp_path, client_host)
         assert forwarded == client_host
         assert _guard_status(forwarded) == 200
 
