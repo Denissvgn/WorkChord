@@ -70,7 +70,7 @@ docker inspect <old backend container> \
 
 ~~~bash
 export WORKCHORD_INSTANCE_HOME="$HOME/.workchord/instances/local-8480"
-export RELEASE_TAG=v1.10.0
+export RELEASE_TAG=1.10.0     # release tags have no "v" prefix
 export OLD_PROJECT=<old compose project name>
 export OLD_SOURCE=<old working directory printed above>
 export OLD_ENV=<environment file the old stack was started with>
@@ -120,6 +120,7 @@ Do not start the window until every item holds:
 ~~~bash
 mkdir -p "$(dirname "$WORKCHORD_INSTANCE_HOME")"
 git clone https://github.com/Denissvgn/WorkChord.git "$WORKCHORD_INSTANCE_HOME"
+git -C "$WORKCHORD_INSTANCE_HOME" rev-parse --verify --quiet "refs/tags/$RELEASE_TAG"   # must print a commit
 git -C "$WORKCHORD_INSTANCE_HOME" checkout "$RELEASE_TAG"
 git -C "$WORKCHORD_INSTANCE_HOME" status --porcelain      # must print nothing
 git -C "$WORKCHORD_INSTANCE_HOME" rev-parse HEAD          # the source revision
