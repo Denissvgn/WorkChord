@@ -39,7 +39,10 @@ compatibility period. Upgrade the server and every agent runtime together:
 4. Send the exact `agent-team-runtime-ack-v1` fields from the current handoff to
    `POST /api/agent/team-setup/onboarding/acknowledge`, using only its restricted
    `X-Agent-API-Key`. Onboarding credentials cannot call ordinary REST or MCP
-   operations until acknowledgement succeeds.
+   operations until acknowledgement succeeds. Return the handoff's
+   `runtime_instance_id` unchanged, and list `runtime-instance-identity-v1` in the
+   acknowledged `server_features`; a different identity is refused. See
+   [Identify the runtime instance](agent-team-setup.md#identify-the-runtime-instance).
 5. Retain the acknowledgement digest. When revisions change, obtain the current
    handoff and explicitly refresh with `expected_previous_acknowledgement_digest`.
    A stale handoff or changed body does not authorize blind replacement.

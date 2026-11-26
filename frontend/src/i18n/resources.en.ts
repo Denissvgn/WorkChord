@@ -2369,6 +2369,17 @@ export const englishResources = {
                 topologyRecordHelp: 'This is the applied server record; runtime evidence is reported separately.',
                 acknowledgement: 'Handoff acknowledgement',
                 acknowledgementStates: { missing: 'Not acknowledged', current: 'Current revisions acknowledged', stale: 'Stale acknowledgement', unknown: 'Not confirmed by this server' },
+                runtimeIdentity: {
+                    title: 'Runtime instance',
+                    states: {
+                        unknown: 'Identity unknown (not sent by the runtime)',
+                        current: 'Acknowledged by this runtime instance',
+                        changed: 'Identity changed',
+                        refused: 'A runtime with another identity was refused',
+                    },
+                    changedFrom: 'Changed from {{id}} at {{at}}',
+                    refused: 'Refused {{id}} at {{at}}',
+                },
                 modelAttestation: 'Model execution evidence',
                 notIndependentlyAttested: 'Configuration and worker self-report; independently verified execution is not supplied',
                 memberConfiguration: 'Member configuration',

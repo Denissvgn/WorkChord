@@ -794,8 +794,20 @@ export interface AgentTeamRuntimeHandoff {
     profile_revision: string;
     model_binding_revisions: Record<string, number>;
     supported_assignment_modes: string[];
+    runtime_instance_id: string;
     startup_instructions: string[];
     credential_ref: string;
+}
+
+/** Which runtime instance acknowledged a member's handoff; unknown for an acknowledgement made before the identity existed. */
+export interface AgentTeamRuntimeIdentityStatus {
+    state: 'unknown' | 'current' | 'changed' | 'refused';
+    expected_instance_id: string | null;
+    acknowledged_instance_id: string | null;
+    previous_instance_id: string | null;
+    changed_at: string | null;
+    refused_instance_id: string | null;
+    refused_at: string | null;
 }
 
 export interface AgentTeamMemberStatus {
@@ -814,6 +826,7 @@ export interface AgentTeamMemberStatus {
     skill_package: AgentTeamSkillPackage;
     package_acknowledged: boolean;
     acknowledgement_state?: 'missing' | 'current' | 'stale';
+    runtime_identity?: AgentTeamRuntimeIdentityStatus;
     model_attestation?: 'not_independently_attested';
     credential_delivery_state: 'pending' | 'delivered' | 'uncertain' | 'not_required';
     connection_state: 'unobserved' | 'observed' | 'stale';

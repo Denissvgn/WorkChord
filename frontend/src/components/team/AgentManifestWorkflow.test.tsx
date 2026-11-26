@@ -513,6 +513,15 @@ describe('AgentManifestWorkflow authority and readiness', () => {
                 profile_key: 'backend',
                 profile_revision: 'profile-rev-4',
                 acknowledgement_state: 'stale',
+                runtime_identity: {
+                    state: 'changed',
+                    expected_instance_id: 'rti-second',
+                    acknowledged_instance_id: 'rti-first',
+                    previous_instance_id: 'rti-zero',
+                    changed_at: '2026-08-04T09:00:00Z',
+                    refused_instance_id: null,
+                    refused_at: null,
+                },
                 binding_revisions: { balanced: 3 },
                 skill_package: {
                     name: 'workchord-worker',
@@ -547,6 +556,7 @@ describe('AgentManifestWorkflow authority and readiness', () => {
                     profile_revision: 'profile-rev-4',
                     model_binding_revisions: { balanced: 3 },
                     supported_assignment_modes: ['execute'],
+                    runtime_instance_id: 'rti-second',
                     startup_instructions: ['Start the worker'],
                     credential_ref: 'vault://workchord/backend-worker',
                 },
@@ -580,6 +590,9 @@ describe('AgentManifestWorkflow authority and readiness', () => {
             }),
         ).closest('summary')).not.toBeNull();
         expect(memberView.getByText(i18n.t('agentTeamSetup.acknowledgementStates.stale'))).toBeVisible();
+        expect(memberView.getByText(i18n.t('agentTeamSetup.runtimeIdentity.states.changed'))).toBeVisible();
+        expect(memberView.getByText('rti-first')).toBeVisible();
+        expect(memberView.getByText(/Changed from rti-zero at /)).toBeVisible();
         expect(memberView.getByText(i18n.t('agentTeamSetup.notIndependentlyAttested'))).toBeVisible();
         expect(member).not.toHaveTextContent('availability_unknown');
         expect(member).not.toHaveTextContent('runtime_ready');

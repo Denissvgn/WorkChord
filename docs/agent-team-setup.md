@@ -170,6 +170,7 @@ Each configured member's status includes a secret-free handoff with:
 - immutable package version and checksum;
 - profile and binding revisions;
 - supported assignment modes and startup instructions;
+- the `runtime_instance_id` the server issued for this member's runtime;
 - the external credential reference.
 
 The operator delivers the handoff and retrieves the corresponding credential
@@ -185,6 +186,50 @@ until the acknowledgement matches the current topology revision, actor,
 package, profile, model bindings, features, and assignment modes. Successful
 acknowledgement activates the actor. Repeated failed acknowledgements are
 rate-limited.
+
+### Identify the runtime instance
+
+The handoff carries a `runtime_instance_id`, and the acknowledgement returns it
+in a field of the same name. The server records it with the acknowledgement,
+so a runtime that did not receive this handoff cannot acknowledge in the
+member's place without the difference being recorded. An acknowledgement that
+names another identity is refused with `agent_team_ack_runtime_instance_mismatch`
+and is not stored.
+
+The identity belongs to the member's current actor and delivered credential. A
+replacement actor, or a credential recovery, issues a new one, and the runtime
+acknowledges again with it. The identity is an opaque label, not a secret and not
+a proof: a runtime that holds a copy of the handoff can return it. It tells apart
+the runtimes the server issued handoffs to, and it makes a change visible.
+
+The server feature `runtime-instance-identity-v1` states how a runtime that does
+not send the field is handled:
+
+- A runtime that lists the feature in its acknowledged `server_features` must send
+  the identity. Without it the acknowledgement is refused with
+  `agent_team_ack_runtime_instance_missing`.
+- A manifest may list the feature in `required_server_features`. A runtime must
+  then list it, and so must send the identity.
+- Otherwise an acknowledgement without the field is accepted exactly as before.
+  Its digest does not change, and the identity reads as unknown. That covers every
+  acknowledgement recorded before the upgrade, which stays valid.
+
+Member status adds `runtime_identity` for each member:
+
+- `state` is `unknown` (no acknowledgement, or one without an identity), `current`
+  (the runtime acknowledged with the identity issued to it), `changed` (the
+  acknowledging identity differs from the one before it, or the runtime stopped
+  sending one), or `refused` (a runtime returned another identity and was turned
+  away, until the next accepted acknowledgement).
+- `expected_instance_id` is the identity the handoff now carries;
+  `acknowledged_instance_id` is the one in the stored acknowledgement.
+- `previous_instance_id` and `changed_at` say which identity was replaced and
+  when; `refused_instance_id` and `refused_at` say which identity was refused.
+
+An acknowledgement that carries an identity other than the one the handoff now
+carries is stale, so a runtime that was replaced stays out of dispatch until the
+new runtime acknowledges. The Connect page and the team setup member cards show
+the same state, and the setup report does not list identities.
 
 ### Declare tool capabilities
 

@@ -22,6 +22,7 @@ from app.agent_contract import (
     AGENT_CONTRACT_FEATURES,
     AGENT_TEAM_MASTER_FEATURE,
     MODEL_AWARE_ROUTING_FEATURE,
+    RUNTIME_INSTANCE_IDENTITY_FEATURE,
 )
 from app.config import get_settings
 from app.models.agent import (
@@ -66,6 +67,7 @@ from app.schemas.agent_team_setup import (
     AgentTeamRuntimeAcknowledgement,
     AgentTeamRuntimeAcknowledgementResponse,
     AgentTeamRuntimeHandoff,
+    AgentTeamRuntimeIdentityStatus,
     AgentTeamDispatchAvailability,
     AgentTeamSetupReport,
     AgentTeamSetupReportCounts,
@@ -2312,6 +2314,59 @@ class AgentTeamSetupService:
             "runtime re-acknowledge the new binding revision."
         )
 
+    @staticmethod
+    def _runtime_instance_id(
+        topology_key: str,
+        member_record: AgentTeamTopologyMember,
+        actor: AgentActor,
+    ) -> str:
+        """Issue the identity a member's current runtime must return in its acknowledgement.
+
+        It follows the member's actor and its delivered credential, so a
+        replacement actor or a credential recovery issues a new one. It is an
+        opaque label, not a secret.
+        """
+
+        seed = ":".join(
+            (
+                "runtime-instance",
+                topology_key,
+                member_record.actor_key,
+                str(actor.id),
+                member_record.credential_delivery_receipt_digest or "",
+            )
+        )
+        return "rti-" + hashlib.sha256(seed.encode("utf-8")).hexdigest()[:32]
+
+    @staticmethod
+    def _runtime_identity_status(
+        record: AgentTeamTopologyMember,
+        *,
+        expected_instance_id: str,
+        acknowledgement: dict[str, Any],
+    ) -> AgentTeamRuntimeIdentityStatus:
+        """Read the acknowledging identity, and any change or refusal of it, from stored state."""
+
+        stored = acknowledgement.get("runtime_instance_id")
+        acknowledged = stored if isinstance(stored, str) else None
+        if record.rejected_runtime_instance_at is not None:
+            state = "refused"
+        elif acknowledgement and record.runtime_identity_changed_at is not None:
+            state = "changed"
+        elif acknowledgement and acknowledged is not None:
+            state = "current"
+        else:
+            state = "unknown"
+        return AgentTeamRuntimeIdentityStatus(
+            state=state,
+            expected_instance_id=expected_instance_id,
+            acknowledged_instance_id=acknowledged,
+            previous_instance_id=record.previous_runtime_instance_id,
+            changed_at=record.runtime_identity_changed_at,
+            refused_instance_id=record.rejected_runtime_instance_id,
+            refused_at=record.rejected_runtime_instance_at,
+        )
+
     async def _handoff(
         self,
         *,
@@ -2340,10 +2395,16 @@ class AgentTeamSetupService:
             profile_revision=await self._profile_revision(actor),
             model_binding_revisions=await self._binding_revisions(actor),
             supported_assignment_modes=member.assignment_modes,
+            runtime_instance_id=self._runtime_instance_id(
+                topology.topology_key,
+                member_record,
+                actor,
+            ),
             startup_instructions=(
                 "Load the exact immutable role package and verify its checksum.",
                 "Resolve credential_ref through the runtime secret store.",
-                "Send one restricted onboarding acknowledgement before normal work.",
+                "Send one restricted onboarding acknowledgement before normal work, "
+                "returning runtime_instance_id unchanged.",
                 "Re-read capabilities and topology status after acknowledgement.",
                 *((tool_action,) if tool_action else ()),
             ),
@@ -3029,6 +3090,7 @@ class AgentTeamSetupService:
             connection_state = "unobserved"
             package_acknowledged = False
             acknowledgement_state = "missing"
+            runtime_identity = AgentTeamRuntimeIdentityStatus()
             handoff = None
             lifecycle = (
                 AgentTeamMemberLifecycle(record.lifecycle_state)
@@ -3104,12 +3166,20 @@ class AgentTeamSetupService:
                         and ack_payload.get("role") == desired.role
                         and ack_payload.get("profile_revision") == profile_revision
                         and ack_payload.get("model_binding_revisions") == binding_revisions
+                        # An acknowledgement without an identity is a legacy one and stays current.
+                        and ack_payload.get("runtime_instance_id", handoff.runtime_instance_id)
+                        == handoff.runtime_instance_id
                         and set(handoff.required_server_features).issubset(valid_ack.server_features)
                         and set(handoff.supported_assignment_modes).issubset(valid_ack.supported_assignment_modes)
                     )
                     acknowledgement_state = "current" if acknowledgement_current else "stale"
                     if not acknowledgement_current:
                         blockers.add("runtime_acknowledgement_stale")
+                runtime_identity = self._runtime_identity_status(
+                    record,
+                    expected_instance_id=handoff.runtime_instance_id,
+                    acknowledgement=ack_payload if isinstance(ack_payload, dict) else {},
+                )
                 if not package_acknowledged:
                     blockers.add("role_package_not_acknowledged")
                 if credential_state not in {"delivered", "not_required"}:
@@ -3174,6 +3244,7 @@ class AgentTeamSetupService:
                     skill_package=desired.skill_package,
                     package_acknowledged=package_acknowledged,
                     acknowledgement_state=acknowledgement_state,
+                    runtime_identity=runtime_identity,
                     credential_delivery_state=credential_state,
                     connection_state=connection_state,
                     last_seen_at=actor.last_seen_at if actor else None,
@@ -3521,7 +3592,26 @@ class AgentTeamSetupService:
                 "agent_team_ack_identity_mismatch",
                 "Acknowledgement does not match the exact current handoff",
             )
-        ack_content = acknowledgement.model_dump(mode="json", exclude={"expected_previous_acknowledgement_digest"})
+        supplied_instance_id = acknowledgement.runtime_instance_id
+        if supplied_instance_id is not None and supplied_instance_id != self._runtime_instance_id(
+            topology.topology_key,
+            member,
+            actor,
+        ):
+            # A second runtime that presents another identity is not
+            # acknowledged, and not silent: status shows the refusal. The
+            # request fails, and its transaction would roll the record back,
+            # so it is committed here, deliberately and not by commit_or_flush.
+            actor_key = member.actor_key
+            member.rejected_runtime_instance_id = supplied_instance_id
+            member.rejected_runtime_instance_at = utc_now()
+            await self.db.commit()
+            raise AgentTeamSetupConflictError(
+                "agent_team_ack_runtime_instance_mismatch",
+                "Runtime instance identity does not match the handoff",
+                actor_key=actor_key,
+            )
+        ack_content = acknowledgement.stored_content()
         ack_digest = _digest(ack_content)
         if member.runtime_acknowledgement_digest is not None:
             if secrets.compare_digest(
@@ -3558,6 +3648,15 @@ class AgentTeamSetupService:
             raise AgentTeamSetupConflictError(
                 "agent_team_ack_package_mismatch",
                 "Runtime package identity does not match the handoff",
+            )
+        if (
+            supplied_instance_id is None
+            and RUNTIME_INSTANCE_IDENTITY_FEATURE in acknowledgement.server_features
+        ):
+            raise AgentTeamSetupConflictError(
+                "agent_team_ack_runtime_instance_missing",
+                "A runtime that lists the runtime instance identity feature must return it",
+                actor_key=member.actor_key,
             )
         if not set(desired.assignment_modes).issubset(
             acknowledgement.supported_assignment_modes
@@ -3596,6 +3695,14 @@ class AgentTeamSetupService:
         member.runtime_acknowledgement_digest = ack_digest
         member.runtime_acknowledgement_payload = _canonical_json(ack_content)
         member.runtime_acknowledged_at = utc_now()
+        previous_instance_id = member.acknowledged_runtime_instance_id
+        if previous_instance_id is not None and previous_instance_id != supplied_instance_id:
+            # A runtime that had an identity now acknowledges under another, or none.
+            member.previous_runtime_instance_id = previous_instance_id
+            member.runtime_identity_changed_at = member.runtime_acknowledged_at
+        member.acknowledged_runtime_instance_id = supplied_instance_id
+        member.rejected_runtime_instance_id = None
+        member.rejected_runtime_instance_at = None
         member.lifecycle_state = "runtime_ready"
         member.object_revision += 1
         actor.enabled = True
@@ -3620,6 +3727,7 @@ class AgentTeamSetupService:
                 "role": member.role,
                 "acknowledgement_digest": ack_digest,
                 "runtime_ready": True,
+                **({"runtime_instance_id": supplied_instance_id} if supplied_instance_id else {}),
             },
         )
         await commit_or_flush(self.db)

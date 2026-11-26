@@ -43,6 +43,7 @@ _BINDING_KEY_RE = re.compile(r"^[a-z0-9](?:[a-z0-9._-]{0,118}[a-z0-9])?$")
 STABLE_KEY_PATTERN = r"^[a-z0-9](?:[a-z0-9._-]{0,98}[a-z0-9])?$"
 ACTION_ID_PATTERN = r"^[a-z0-9](?:[a-z0-9._:-]{0,126}[a-z0-9])?$"
 FEATURE_PATTERN = r"^[a-z0-9](?:[a-z0-9._-]{0,126}[a-z0-9])?$"
+RUNTIME_INSTANCE_ID_PATTERN = r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$"
 SEMVER_PATTERN = r"^\d+\.\d+\.\d+$"
 
 
@@ -908,6 +909,24 @@ class AgentTeamRuntimeAcknowledgement(AgentTeamSetupModel):
         min_length=1,
         max_length=4,
     )
+    # The identity of the runtime instance, copied from the handoff. A runtime
+    # without the runtime-instance-identity-v1 feature leaves it out.
+    runtime_instance_id: str | None = Field(
+        default=None,
+        pattern=RUNTIME_INSTANCE_ID_PATTERN,
+    )
+
+    def stored_content(self) -> dict[str, Any]:
+        """What is digested and stored: no previous-digest pointer, and no empty identity.
+
+        An acknowledgement without an identity keeps the bytes, and so the
+        digest, it had before the identity existed.
+        """
+
+        exclude = {"expected_previous_acknowledgement_digest"}
+        if self.runtime_instance_id is None:
+            exclude.add("runtime_instance_id")
+        return self.model_dump(mode="json", exclude=exclude)
 
     @field_validator("server_features", "supported_assignment_modes")
     @classmethod
@@ -968,6 +987,9 @@ class AgentTeamRuntimeHandoff(AgentTeamSetupModel):
     profile_revision: str
     model_binding_revisions: dict[str, int]
     supported_assignment_modes: tuple[str, ...]
+    # Issued by the server for this member's current actor. The runtime returns
+    # it unchanged in its acknowledgement.
+    runtime_instance_id: str = Field(pattern=RUNTIME_INSTANCE_ID_PATTERN)
     startup_instructions: tuple[str, ...] = Field(min_length=1, max_length=16)
     credential_ref: str = Field(min_length=1, max_length=1_024)
 
@@ -977,6 +999,24 @@ class AgentTeamRuntimeHandoff(AgentTeamSetupModel):
         _validate_reference(self.credential_ref, label="credential_ref")
         ensure_agent_team_secret_free(self.model_dump(mode="json"))
         return self
+
+
+class AgentTeamRuntimeIdentityStatus(AgentTeamSetupModel):
+    """Which runtime instance acknowledged a member's handoff, and any change of it.
+
+    ``unknown`` is a member that has not acknowledged, or acknowledged without
+    an identity, as every acknowledgement did before the identity existed.
+    ``changed`` keeps the identity it replaced. ``refused`` is a runtime that
+    returned an identity other than the issued one and was turned away.
+    """
+
+    state: Literal["unknown", "current", "changed", "refused"] = "unknown"
+    expected_instance_id: str | None = Field(default=None, pattern=RUNTIME_INSTANCE_ID_PATTERN)
+    acknowledged_instance_id: str | None = Field(default=None, pattern=RUNTIME_INSTANCE_ID_PATTERN)
+    previous_instance_id: str | None = Field(default=None, pattern=RUNTIME_INSTANCE_ID_PATTERN)
+    changed_at: datetime | None = None
+    refused_instance_id: str | None = Field(default=None, pattern=RUNTIME_INSTANCE_ID_PATTERN)
+    refused_at: datetime | None = None
 
 
 class AgentTeamMemberStatus(AgentTeamSetupModel):
@@ -995,6 +1035,9 @@ class AgentTeamMemberStatus(AgentTeamSetupModel):
     skill_package: AgentTeamSkillPackage
     package_acknowledged: bool
     acknowledgement_state: Literal["missing", "current", "stale"] = "missing"
+    runtime_identity: AgentTeamRuntimeIdentityStatus = Field(
+        default_factory=AgentTeamRuntimeIdentityStatus
+    )
     model_attestation: Literal["not_independently_attested"] = "not_independently_attested"
     credential_delivery_state: Literal[
         "pending",

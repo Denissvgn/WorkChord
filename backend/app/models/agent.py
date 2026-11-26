@@ -480,6 +480,26 @@ class AgentTeamTopologyMember(Base):
         UTCDateTime(),
         nullable=True,
     )
+    acknowledged_runtime_instance_id: Mapped[Optional[str]] = mapped_column(
+        String(64),
+        nullable=True,
+    )
+    previous_runtime_instance_id: Mapped[Optional[str]] = mapped_column(
+        String(64),
+        nullable=True,
+    )
+    runtime_identity_changed_at: Mapped[Optional[datetime]] = mapped_column(
+        UTCDateTime(),
+        nullable=True,
+    )
+    rejected_runtime_instance_id: Mapped[Optional[str]] = mapped_column(
+        String(64),
+        nullable=True,
+    )
+    rejected_runtime_instance_at: Mapped[Optional[datetime]] = mapped_column(
+        UTCDateTime(),
+        nullable=True,
+    )
     ack_attempt_count: Mapped[int] = mapped_column(
         Integer,
         default=0,

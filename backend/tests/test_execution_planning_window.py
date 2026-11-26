@@ -464,10 +464,10 @@ def advance_server_clock_past(monkeypatch, instant):
     monkeypatch.setattr(server_time, "datetime", ShiftedDatetime)
 
 
-async def reacknowledge(factory, worker, key, *, extra_feature=None):
-    """Refresh the worker runtime so that it adopts the planning-window feature."""
-    from app.agent_contract import EXECUTION_PLANNING_WINDOW_FEATURE
-    from app.models.agent import AgentTeamTopologyMember
+async def reacknowledge(factory, worker, key, *, extra_feature=None, identity=False):
+    """Refresh the worker runtime so that it adopts the planning-window feature, or only its runtime identity."""
+    from app.agent_contract import EXECUTION_PLANNING_WINDOW_FEATURE, RUNTIME_INSTANCE_IDENTITY_FEATURE
+    from app.models.agent import AgentTeamTopology, AgentTeamTopologyMember
     from app.schemas.agent_team_setup import AgentTeamRuntimeAcknowledgement
     from app.services.agent_team_setup_service import AgentTeamSetupService
 
@@ -476,8 +476,17 @@ async def reacknowledge(factory, worker, key, *, extra_feature=None):
             select(AgentTeamTopologyMember).where(AgentTeamTopologyMember.actor_id == worker.id)
         )
         acknowledgement = json.loads(roster.runtime_acknowledgement_payload)
-        assert EXECUTION_PLANNING_WINDOW_FEATURE not in acknowledgement["server_features"]
-        acknowledgement["server_features"].append(EXECUTION_PLANNING_WINDOW_FEATURE)
+        if identity:
+            topology_key = await session.scalar(
+                select(AgentTeamTopology.topology_key).where(AgentTeamTopology.id == roster.topology_id)
+            )
+            acknowledgement["server_features"].append(RUNTIME_INSTANCE_IDENTITY_FEATURE)
+            acknowledgement["runtime_instance_id"] = AgentTeamSetupService._runtime_instance_id(
+                topology_key, roster, worker
+            )
+        else:
+            assert EXECUTION_PLANNING_WINDOW_FEATURE not in acknowledgement["server_features"]
+            acknowledgement["server_features"].append(EXECUTION_PLANNING_WINDOW_FEATURE)
         if extra_feature:
             acknowledgement["server_features"].append(extra_feature)
         prior_digest = roster.runtime_acknowledgement_digest
@@ -533,11 +542,12 @@ async def report_under_window(call, factory, lane, task, current, running, worke
             worker,
             wk,
             extra_feature="unrelated-server-feature-v1" if lane == "reacknowledged_other" else None,
+            identity=lane == "reacknowledged_identity",
         )
     saved, window, status = await observe()
     assert saved.version == current.version and status == "running"
-    if lane in {"checkpoint", "progress", "reacknowledged"}:
-        # The report or feature-only acknowledgement leaves the window and run in force.
+    if lane in {"checkpoint", "progress", "reacknowledged", "reacknowledged_identity"}:
+        # The report, or an acknowledgement that only adds a feature or the runtime identity, leaves the window and run in force.
         assert window == current.execution_planning_window
         renewed = await call(*renew, wk, payload=live, receipt=f"renew-after-{lane}")
         # Renewal re-anchors the original assignment at a newly reserved
@@ -613,6 +623,7 @@ async def report_under_window(call, factory, lane, task, current, running, worke
         "fail",
         "blocker",
         "reacknowledged",
+        "reacknowledged_identity",
         "reacknowledged_other",
     ],
 )
@@ -1547,7 +1558,7 @@ async def test_date_only_reservation(
                 if lane == "authority_changed"
                 else "scope changed",
             )
-        elif lane in {"checkpoint", "progress", "fail", "blocker", "reacknowledged", "reacknowledged_other"}:
+        elif lane in {"checkpoint", "progress", "fail", "blocker", "reacknowledged", "reacknowledged_identity", "reacknowledged_other"}:
             await report_under_window(
                 call, db_session_factory, lane, task, current, running, worker, wk, pk, retained
             )
