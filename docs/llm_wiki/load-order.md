@@ -1125,41 +1125,45 @@ TypeScript binding imports are possible startup constraints: their emission depe
 1115. [browser_worker](modules/browser_worker.md)
 1116. [browser_managed_work](modules/browser_managed_work.md)
 1117. [browser_write_readback](modules/browser_write_readback.md)
-1118. [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md)
-1119. [check_postgresql_documentation](modules/check_postgresql_documentation.md)
-1120. [ci_runtime](modules/ci_runtime.md)
-1121. [installed_wheel_postgresql_qualification](modules/installed_wheel_postgresql_qualification.md)
-1122. [postgres_runtime](modules/postgres_runtime.md)
-1123. [run_android_checks](modules/run_android_checks.md)
-1124. [run_disposable_checks](modules/run_disposable_checks.md)
-1125. [serve_disposable_api](modules/serve_disposable_api.md)
-1126. [serve_disposable_oidc](modules/serve_disposable_oidc.md)
-1127. [test_apt_runtime](modules/test_apt_runtime.md)
-1128. [test_ci_runtime](modules/test_ci_runtime.md)
-1129. [test_native_runtimes](modules/test_native_runtimes.md)
-1130. [test_wiki_lock_root_preflight](modules/test_wiki_lock_root_preflight.md)
-1131. [wiki_lock_root_preflight](modules/wiki_lock_root_preflight.md)
-1132. [generate_agent_team_contract](modules/generate_agent_team_contract.md)
-1133. [generate_agent_team_report_contract](modules/generate_agent_team_report_contract.md)
-1134. [generate_client_contract](modules/generate_client_contract.md)
-1135. [generate_mobile_contract_fixtures](modules/generate_mobile_contract_fixtures.md)
-1136. [load_common](modules/load_common.md)
-1137. [collect](modules/collect.md)
-1138. [result](modules/result.md)
-1139. [compare](modules/compare.md)
-1140. [finalize](modules/finalize.md)
-1141. [qualify](modules/qualify.md)
-1142. [resilience](modules/resilience.md)
-1143. [run](modules/run.md)
-1144. [seal](modules/seal.md)
-1145. [seed](modules/seed.md)
-1146. [source_binding](modules/source_binding.md)
-1147. [local_baseline](modules/local_baseline.md)
-1148. [service_worksets](modules/service_worksets.md)
-1149. [export_acceptance_artifacts](modules/export_acceptance_artifacts.md)
-1150. [isolated_rehearsal](modules/isolated_rehearsal.md)
-1151. [seed_adoption_env](modules/seed_adoption_env.md)
-1152. [write_deployment_record](modules/write_deployment_record.md)
+1118. [check_markdown_links](modules/check_markdown_links.md)
+1119. [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md)
+1120. [check_postgresql_documentation](modules/check_postgresql_documentation.md)
+1121. [ci_runtime](modules/ci_runtime.md)
+1122. [classify_change_scope](modules/classify_change_scope.md)
+1123. [installed_wheel_postgresql_qualification](modules/installed_wheel_postgresql_qualification.md)
+1124. [postgres_runtime](modules/postgres_runtime.md)
+1125. [run_android_checks](modules/run_android_checks.md)
+1126. [run_disposable_checks](modules/run_disposable_checks.md)
+1127. [serve_disposable_api](modules/serve_disposable_api.md)
+1128. [serve_disposable_oidc](modules/serve_disposable_oidc.md)
+1129. [test_apt_runtime](modules/test_apt_runtime.md)
+1130. [test_check_markdown_links](modules/test_check_markdown_links.md)
+1131. [test_ci_runtime](modules/test_ci_runtime.md)
+1132. [test_classify_change_scope](modules/test_classify_change_scope.md)
+1133. [test_native_runtimes](modules/test_native_runtimes.md)
+1134. [test_wiki_lock_root_preflight](modules/test_wiki_lock_root_preflight.md)
+1135. [wiki_lock_root_preflight](modules/wiki_lock_root_preflight.md)
+1136. [generate_agent_team_contract](modules/generate_agent_team_contract.md)
+1137. [generate_agent_team_report_contract](modules/generate_agent_team_report_contract.md)
+1138. [generate_client_contract](modules/generate_client_contract.md)
+1139. [generate_mobile_contract_fixtures](modules/generate_mobile_contract_fixtures.md)
+1140. [load_common](modules/load_common.md)
+1141. [collect](modules/collect.md)
+1142. [result](modules/result.md)
+1143. [compare](modules/compare.md)
+1144. [finalize](modules/finalize.md)
+1145. [qualify](modules/qualify.md)
+1146. [resilience](modules/resilience.md)
+1147. [run](modules/run.md)
+1148. [seal](modules/seal.md)
+1149. [seed](modules/seed.md)
+1150. [source_binding](modules/source_binding.md)
+1151. [local_baseline](modules/local_baseline.md)
+1152. [service_worksets](modules/service_worksets.md)
+1153. [export_acceptance_artifacts](modules/export_acceptance_artifacts.md)
+1154. [isolated_rehearsal](modules/isolated_rehearsal.md)
+1155. [seed_adoption_env](modules/seed_adoption_env.md)
+1156. [write_deployment_record](modules/write_deployment_record.md)
 
 ## Module-level side effects
 
@@ -1551,10 +1555,14 @@ TypeScript binding imports are possible startup constraints: their emission depe
 | [browser_managed_work](modules/browser_managed_work.md) | `on`, `on` |
 | [browser_performance](modules/browser_performance.md) | `on` |
 | [browser_write_readback](modules/browser_write_readback.md) | `on` |
+| [check_markdown_links](modules/check_markdown_links.md) | `LINK_PATTERN = re.compile` |
 | [check_postgresql_documentation](modules/check_postgresql_documentation.md) | `LINK_PATTERN = re.compile`, `SHELL_FENCE_PATTERN = re.compile`, `LIVE_SQLITE_COPY_PATTERN = re.compile` |
+| [classify_change_scope](modules/classify_change_scope.md) | `CLASSIFIED_EVENTS = frozenset` |
 | [serve_disposable_oidc](modules/serve_disposable_oidc.md) | `url = assert_safe_test_database_url`, `issuer = os.environ.get`, `key = rsa.generate_private_key`, `jwk = json.loads`, `jwk['kid'] = 'disposable-key'`, `app = FastAPI` |
 | [test_apt_runtime](modules/test_apt_runtime.md) | `sys.path.insert` |
+| [test_check_markdown_links](modules/test_check_markdown_links.md) | `sys.path.insert` |
 | [test_ci_runtime](modules/test_ci_runtime.md) | `sys.path.insert` |
+| [test_classify_change_scope](modules/test_classify_change_scope.md) | `sys.path.insert` |
 | [test_native_runtimes](modules/test_native_runtimes.md) | `sys.path.insert` |
 | [test_wiki_lock_root_preflight](modules/test_wiki_lock_root_preflight.md) | `sys.path.insert` |
 | [wiki_lock_root_preflight](modules/wiki_lock_root_preflight.md) | `WIKI_DIRECTORY = Path` |

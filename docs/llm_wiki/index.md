@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1806 | [Open section](#entities) |
-| Modules | 1152 | [Open section](#modules) |
+| Entities | 1809 | [Open section](#entities) |
+| Modules | 1156 | [Open section](#modules) |
 | Workflows | 232 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 620 | [Open section](#entry-point-flows) |
+| Entry-point flows | 624 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -250,6 +250,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [BreadcrumbsProps](entities/BreadcrumbsProps.md)
 - [BriefConvert](entities/BriefConvert.md)
 - [BriefWrite](entities/BriefWrite.md)
+- [BrokenLinks](entities/BrokenLinks.md)
 - [BuildIdentity](entities/BuildIdentity.md)
 - [BulkKind](entities/BulkKind.md)
 - [BulkRejected](entities/BulkRejected.md)
@@ -489,6 +490,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [GateStatusAmendment](entities/GateStatusAmendment.md)
 - [GetStartedRequest](entities/GetStartedRequest.md)
 - [GetStartedVisibility](entities/GetStartedVisibility.md)
+- [GitClassification](entities/GitClassification.md)
 - [GitHubAutomationFromStatus](entities/GitHubAutomationFromStatus.md)
 - [GitHubForm](entities/GitHubForm.md)
 - [GitHubLinkError](entities/GitHubLinkError.md)
@@ -703,6 +705,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ParsedTask](entities/ParsedTask.md)
 - [ParsedTeamMember](entities/ParsedTeamMember.md)
 - [PartialWorkScope](entities/PartialWorkScope.md)
+- [PathRules](entities/PathRules.md)
 - [PendingTaskWrite](entities/PendingTaskWrite.md)
 - [PeriodCommitments](entities/PeriodCommitments.md)
 - [PersistedState](entities/PersistedState.md)
@@ -2294,10 +2297,12 @@ Retained history; these declarations are absent from the selected source invento
 - [check-query-feedback](modules/check-query-feedback.md) - `frontend/scripts/check-query-feedback.mjs`
 - [check-tailwind-classes](modules/check-tailwind-classes.md) - `frontend/scripts/check-tailwind-classes.mjs`
 - [check-task-selection-layout](modules/check-task-selection-layout.md) - `frontend/scripts/check-task-selection-layout.mjs`
+- [check_markdown_links](modules/check_markdown_links.md) - Fail when a changed Markdown document links to a repository file that does not exist.
 - [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md) - Validate the tracked model-aware routing closure inventory.
 - [check_postgresql_documentation](modules/check_postgresql_documentation.md) - Fail closed when the PostgreSQL pre-cutover documentation drifts.
 - [ci_runtime](modules/ci_runtime.md) - Bounded native commands with streamed logs and atomic progress receipts.
 - [claimTime](modules/claimTime.md) - /** * "18:42 GMT+3" for a claim that ends today, a short date and time otherwise: the reader's * local time, with its zone named so it reads unambiguously next to UTC times elsewhere. */
+- [classify_change_scope](modules/classify_change_scope.md) - Decide whether a CI run covers documentation-only changes.
 - [cli_closeout](modules/cli_closeout.md) - Command-line interface for PostgreSQL release publication and closeout.
 - [cli_cutover](modules/cli_cutover.md) - Command-line coordinator for signed PostgreSQL cutover evidence.
 - [cli_database_migration](modules/cli_database_migration.md) - Operational SQLite-to-PostgreSQL migration command.
@@ -2767,7 +2772,9 @@ Retained history; these declarations are absent from the selected source invento
 - [test_capacity_adjustments](modules/test_capacity_adjustments.md) - Dated capacity adjustments change capacity on their dates only and leave issued work current.
 - [test_capacity_contract](modules/test_capacity_contract.md) - Executable checks for the approved PostgreSQL capacity contract.
 - [test_capacity_transfers](modules/test_capacity_transfers.md) - A temporary capacity transfer lends availability between rows of one person and returns it after its dates.
+- [test_check_markdown_links](modules/test_check_markdown_links.md) - The documentation job fails on relative links that point nowhere.
 - [test_ci_runtime](modules/test_ci_runtime.md) - Exercise cancellation, deadlines and durable command results with real processes.
+- [test_classify_change_scope](modules/test_classify_change_scope.md) - Documentation-only classification skips CI only for unchecked documentation.
 - [test_client_contract](modules/test_client_contract.md) - Schema-derived compatibility, legacy payloads, and additive client behavior.
 - [test_cutover_evidence](modules/test_cutover_evidence.md) - Fail-closed contracts for rehearsal and production cutover evidence.
 - [test_database_configuration](modules/test_database_configuration.md) - DBM-DEP-001 and DBM-CFG-001 configuration contract tests.
@@ -3811,8 +3818,10 @@ Retained history; these declarations are absent from the selected source invento
 - [process-apt_runtime](flows/process-apt_runtime.md) - entry: `main`
 - [process-build_agent_skills](flows/process-build_agent_skills.md) - entry: `main`
 - [process-build_identity](flows/process-build_identity.md) - entry: `main`
+- [process-check_markdown_links](flows/process-check_markdown_links.md) - entry: `main`
 - [process-check_model_aware_routing_closeout](flows/process-check_model_aware_routing_closeout.md) - entry: `main`
 - [process-check_postgresql_documentation](flows/process-check_postgresql_documentation.md) - entry: `main`
+- [process-classify_change_scope](flows/process-classify_change_scope.md) - entry: `main`
 - [process-closeout](flows/process-closeout.md) - entry: `main`
 - [process-collect](flows/process-collect.md) - entry: `main`
 - [process-compare](flows/process-compare.md) - entry: `main`
@@ -3845,7 +3854,9 @@ Retained history; these declarations are absent from the selected source invento
 - [process-server_acceptance](flows/process-server_acceptance.md) - entry: `main`
 - [process-service_worksets](flows/process-service_worksets.md) - entry: `main`
 - [process-setup_agent_team](flows/process-setup_agent_team.md) - entry: `main`
+- [process-test_check_markdown_links](flows/process-test_check_markdown_links.md) - entry: `__main__`
 - [process-test_ci_runtime](flows/process-test_ci_runtime.md) - entry: `__main__`
+- [process-test_classify_change_scope](flows/process-test_classify_change_scope.md) - entry: `__main__`
 - [process-test_native_runtimes](flows/process-test_native_runtimes.md) - entry: `__main__`
 - [process-test_wiki_lock_root_preflight](flows/process-test_wiki_lock_root_preflight.md) - entry: `__main__`
 - [process-upgrade](flows/process-upgrade.md) - entry: `main`

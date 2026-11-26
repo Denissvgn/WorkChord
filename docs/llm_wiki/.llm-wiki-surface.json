@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1806,
-      "flows": 620,
+      "entities": 1809,
+      "flows": 624,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1152,
+      "modules": 1156,
       "workflows": 232
     },
     "dependency_architecture": 2,
-    "total": 3827
+    "total": 3838
   },
   "dependency_pages": {
     "count": 2,
@@ -43931,6 +43931,114 @@
       "category": "process",
       "detector": "builtin",
       "entry_point": {
+        "label": "check_markdown_links",
+        "source_path": "scripts/ci/check_markdown_links.py",
+        "symbol": "main"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 49,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 51,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 55,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 57,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "filesystem_read",
+              "line": 32,
+              "step": "broken_links",
+              "step_index": 7,
+              "target": "source.read_text"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 40,
+              "step": "broken_links",
+              "step_index": 7,
+              "target": "problems.append"
+            }
+          ],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 45,
+              "step": "main",
+              "target": "Path.cwd"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 27,
+              "step": "broken_links",
+              "target": "relative.endswith"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 27,
+              "step": "broken_links",
+              "target": "relative.startswith"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 30,
+              "step": "broken_links",
+              "target": "source.is_file"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "main",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/ci/check_markdown_links.py"
+          ],
+          "step_count": 24,
+          "truncated": false
+        }
+      },
+      "id": "process-check_markdown_links",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
         "label": "check_model_aware_routing_closeout",
         "source_path": "scripts/ci/check_model_aware_routing_closeout.py",
         "symbol": "main"
@@ -44136,6 +44244,108 @@
         }
       },
       "id": "process-check_postgresql_documentation",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "classify_change_scope",
+        "source_path": "scripts/ci/classify_change_scope.py",
+        "symbol": "main"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 98,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 99,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 100,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 102,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "process",
+              "line": 75,
+              "step": "changed_paths",
+              "step_index": 3,
+              "target": "subprocess.run"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 82,
+              "step": "changed_paths",
+              "step_index": 3,
+              "target": "print"
+            }
+          ],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 84,
+              "step": "changed_paths",
+              "target": "result.stdout.splitlines"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 84,
+              "step": "changed_paths",
+              "target": "line.strip"
+            },
+            {
+              "kind": "external_call",
+              "line": 68,
+              "step": "docs_only",
+              "target": "all"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "main",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/ci/classify_change_scope.py"
+          ],
+          "step_count": 22,
+          "truncated": false
+        }
+      },
+      "id": "process-classify_change_scope",
       "language": "python"
     },
     {
@@ -48088,6 +48298,41 @@
       "category": "process",
       "detector": "builtin",
       "entry_point": {
+        "label": "test_check_markdown_links",
+        "source_path": "scripts/ci/tests/test_check_markdown_links.py",
+        "symbol": "__main__"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 51,
+              "step": "__main__",
+              "target": "unittest.main"
+            }
+          ],
+          "generated": true,
+          "step_count": 2,
+          "transfer_count": 1,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/ci/tests/test_check_markdown_links.py"
+          ],
+          "step_count": 2,
+          "truncated": false
+        }
+      },
+      "id": "process-test_check_markdown_links",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
         "label": "test_ci_runtime",
         "source_path": "scripts/ci/tests/test_ci_runtime.py",
         "symbol": "__main__"
@@ -48123,6 +48368,41 @@
       "category": "process",
       "detector": "builtin",
       "entry_point": {
+        "label": "test_classify_change_scope",
+        "source_path": "scripts/ci/tests/test_classify_change_scope.py",
+        "symbol": "__main__"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 104,
+              "step": "__main__",
+              "target": "unittest.main"
+            }
+          ],
+          "generated": true,
+          "step_count": 2,
+          "transfer_count": 1,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/ci/tests/test_classify_change_scope.py"
+          ],
+          "step_count": 2,
+          "truncated": false
+        }
+      },
+      "id": "process-test_classify_change_scope",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
         "label": "test_native_runtimes",
         "source_path": "scripts/ci/tests/test_native_runtimes.py",
         "symbol": "__main__"
@@ -48133,7 +48413,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 423,
+              "line": 441,
               "step": "__main__",
               "target": "unittest.main"
             }
@@ -48996,6 +49276,7 @@
         "entities/BreadcrumbsProps.md",
         "entities/BriefConvert.md",
         "entities/BriefWrite.md",
+        "entities/BrokenLinks.md",
         "entities/BuildIdentity.md",
         "entities/BulkKind.md",
         "entities/BulkRejected.md",
@@ -49252,6 +49533,7 @@
         "entities/GateStatusAmendment.md",
         "entities/GetStartedRequest.md",
         "entities/GetStartedVisibility.md",
+        "entities/GitClassification.md",
         "entities/GitHubAutomationFromStatus.md",
         "entities/GitHubForm.md",
         "entities/GitHubLinkError.md",
@@ -49531,6 +49813,7 @@
         "entities/ParsedTask.md",
         "entities/ParsedTeamMember.md",
         "entities/PartialWorkScope.md",
+        "entities/PathRules.md",
         "entities/PendingTaskWrite.md",
         "entities/PeriodCommitments.md",
         "entities/PersistedState.md",
@@ -51118,8 +51401,10 @@
         "flows/process-apt_runtime.md",
         "flows/process-build_agent_skills.md",
         "flows/process-build_identity.md",
+        "flows/process-check_markdown_links.md",
         "flows/process-check_model_aware_routing_closeout.md",
         "flows/process-check_postgresql_documentation.md",
+        "flows/process-classify_change_scope.md",
         "flows/process-closeout.md",
         "flows/process-collect.md",
         "flows/process-compare.md",
@@ -51152,7 +51437,9 @@
         "flows/process-server_acceptance.md",
         "flows/process-service_worksets.md",
         "flows/process-setup_agent_team.md",
+        "flows/process-test_check_markdown_links.md",
         "flows/process-test_ci_runtime.md",
+        "flows/process-test_classify_change_scope.md",
         "flows/process-test_native_runtimes.md",
         "flows/process-test_wiki_lock_root_preflight.md",
         "flows/process-upgrade.md",
@@ -51332,11 +51619,13 @@
         "modules/check-query-feedback.md",
         "modules/check-tailwind-classes.md",
         "modules/check-task-selection-layout.md",
+        "modules/check_markdown_links.md",
         "modules/check_model_aware_routing_closeout.md",
         "modules/check_postgresql_documentation.md",
         "modules/Checkbox.md",
         "modules/ci_runtime.md",
         "modules/claimTime.md",
+        "modules/classify_change_scope.md",
         "modules/cli_closeout.md",
         "modules/cli_cutover.md",
         "modules/cli_database_migration.md",
@@ -52075,7 +52364,9 @@
         "modules/test_capacity_adjustments.md",
         "modules/test_capacity_contract.md",
         "modules/test_capacity_transfers.md",
+        "modules/test_check_markdown_links.md",
         "modules/test_ci_runtime.md",
+        "modules/test_classify_change_scope.md",
         "modules/test_client_contract.md",
         "modules/test_cutover_evidence.md",
         "modules/test_database_configuration.md",
@@ -56348,6 +56639,18 @@
       "title": "BriefWrite"
     },
     {
+      "canonical_path": "entities/BrokenLinks.md",
+      "id": "BrokenLinks",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/BrokenLinks",
+      "outgoing_internal_links": [
+        "modules/test_check_markdown_links.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_check_markdown_links.py",
+      "title": "BrokenLinks"
+    },
+    {
       "canonical_path": "entities/BuildIdentity.md",
       "id": "BuildIdentity",
       "kind": "entities",
@@ -59698,6 +60001,18 @@
       "role": "semantic",
       "source_path": "frontend/src/features/firstRun/getStartedVisibility.ts",
       "title": "GetStartedVisibility"
+    },
+    {
+      "canonical_path": "entities/GitClassification.md",
+      "id": "GitClassification",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/GitClassification",
+      "outgoing_internal_links": [
+        "modules/test_classify_change_scope.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_classify_change_scope.py",
+      "title": "GitClassification"
     },
     {
       "canonical_path": "entities/GitHubAutomationFromStatus.md",
@@ -63595,6 +63910,18 @@
       "role": "semantic",
       "source_path": "frontend/src/features/scope/workScope.ts",
       "title": "PartialWorkScope"
+    },
+    {
+      "canonical_path": "entities/PathRules.md",
+      "id": "PathRules",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/PathRules",
+      "outgoing_internal_links": [
+        "modules/test_classify_change_scope.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_classify_change_scope.py",
+      "title": "PathRules"
     },
     {
       "canonical_path": "entities/PendingTaskWrite.md",
@@ -80235,6 +80562,16 @@
       "title": "check-task-selection-layout Module"
     },
     {
+      "canonical_path": "modules/check_markdown_links.md",
+      "id": "check_markdown_links",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/check_markdown_links",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "scripts/ci/check_markdown_links.py",
+      "title": "check_markdown_links Module"
+    },
+    {
       "canonical_path": "modules/check_model_aware_routing_closeout.md",
       "id": "check_model_aware_routing_closeout",
       "kind": "modules",
@@ -80302,6 +80639,16 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/KanbanBoard/claimTime.ts",
       "title": "claimTime Module"
+    },
+    {
+      "canonical_path": "modules/classify_change_scope.md",
+      "id": "classify_change_scope",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/classify_change_scope",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "scripts/ci/classify_change_scope.py",
+      "title": "classify_change_scope Module"
     },
     {
       "canonical_path": "modules/cli_closeout.md",
@@ -92877,6 +93224,18 @@
       "title": "test_capacity_transfers Module"
     },
     {
+      "canonical_path": "modules/test_check_markdown_links.md",
+      "id": "test_check_markdown_links",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_check_markdown_links",
+      "outgoing_internal_links": [
+        "entities/BrokenLinks.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_check_markdown_links.py",
+      "title": "test_check_markdown_links Module"
+    },
+    {
       "canonical_path": "modules/test_ci_runtime.md",
       "id": "test_ci_runtime",
       "kind": "modules",
@@ -92887,6 +93246,19 @@
       "role": "semantic",
       "source_path": "scripts/ci/tests/test_ci_runtime.py",
       "title": "test_ci_runtime Module"
+    },
+    {
+      "canonical_path": "modules/test_classify_change_scope.md",
+      "id": "test_classify_change_scope",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_classify_change_scope",
+      "outgoing_internal_links": [
+        "entities/GitClassification.md",
+        "entities/PathRules.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_classify_change_scope.py",
+      "title": "test_classify_change_scope Module"
     },
     {
       "canonical_path": "modules/test_client_contract.md",
@@ -111882,6 +112254,18 @@
       "title": "build_identity"
     },
     {
+      "canonical_path": "flows/process-check_markdown_links.md",
+      "id": "process-check_markdown_links",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-check_markdown_links",
+      "outgoing_internal_links": [
+        "modules/check_markdown_links.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/ci/check_markdown_links.py",
+      "title": "check_markdown_links"
+    },
+    {
       "canonical_path": "flows/process-check_model_aware_routing_closeout.md",
       "id": "process-check_model_aware_routing_closeout",
       "kind": "flows",
@@ -111907,6 +112291,18 @@
       "role": "mixed",
       "source_path": "scripts/ci/check_postgresql_documentation.py",
       "title": "check_postgresql_documentation"
+    },
+    {
+      "canonical_path": "flows/process-classify_change_scope.md",
+      "id": "process-classify_change_scope",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-classify_change_scope",
+      "outgoing_internal_links": [
+        "modules/classify_change_scope.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/ci/classify_change_scope.py",
+      "title": "classify_change_scope"
     },
     {
       "canonical_path": "flows/process-closeout.md",
@@ -112509,6 +112905,18 @@
       "title": "setup_agent_team"
     },
     {
+      "canonical_path": "flows/process-test_check_markdown_links.md",
+      "id": "process-test_check_markdown_links",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-test_check_markdown_links",
+      "outgoing_internal_links": [
+        "modules/test_check_markdown_links.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/ci/tests/test_check_markdown_links.py",
+      "title": "test_check_markdown_links"
+    },
+    {
       "canonical_path": "flows/process-test_ci_runtime.md",
       "id": "process-test_ci_runtime",
       "kind": "flows",
@@ -112519,6 +112927,18 @@
       "role": "mixed",
       "source_path": "scripts/ci/tests/test_ci_runtime.py",
       "title": "test_ci_runtime"
+    },
+    {
+      "canonical_path": "flows/process-test_classify_change_scope.md",
+      "id": "process-test_classify_change_scope",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-test_classify_change_scope",
+      "outgoing_internal_links": [
+        "modules/test_classify_change_scope.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/ci/tests/test_classify_change_scope.py",
+      "title": "test_classify_change_scope"
     },
     {
       "canonical_path": "flows/process-test_native_runtimes.md",
@@ -112922,11 +113342,13 @@
         "modules/check-query-feedback.md",
         "modules/check-tailwind-classes.md",
         "modules/check-task-selection-layout.md",
+        "modules/check_markdown_links.md",
         "modules/check_model_aware_routing_closeout.md",
         "modules/check_postgresql_documentation.md",
         "modules/Checkbox.md",
         "modules/ci_runtime.md",
         "modules/claimTime.md",
+        "modules/classify_change_scope.md",
         "modules/cli_closeout.md",
         "modules/cli_cutover.md",
         "modules/cli_database_migration.md",
@@ -113665,7 +114087,9 @@
         "modules/test_capacity_adjustments.md",
         "modules/test_capacity_contract.md",
         "modules/test_capacity_transfers.md",
+        "modules/test_check_markdown_links.md",
         "modules/test_ci_runtime.md",
+        "modules/test_classify_change_scope.md",
         "modules/test_client_contract.md",
         "modules/test_cutover_evidence.md",
         "modules/test_database_configuration.md",
@@ -114085,11 +114509,13 @@
         "modules/check-query-feedback.md",
         "modules/check-tailwind-classes.md",
         "modules/check-task-selection-layout.md",
+        "modules/check_markdown_links.md",
         "modules/check_model_aware_routing_closeout.md",
         "modules/check_postgresql_documentation.md",
         "modules/Checkbox.md",
         "modules/ci_runtime.md",
         "modules/claimTime.md",
+        "modules/classify_change_scope.md",
         "modules/cli_closeout.md",
         "modules/cli_cutover.md",
         "modules/cli_database_migration.md",
@@ -114828,7 +115254,9 @@
         "modules/test_capacity_adjustments.md",
         "modules/test_capacity_contract.md",
         "modules/test_capacity_transfers.md",
+        "modules/test_check_markdown_links.md",
         "modules/test_ci_runtime.md",
+        "modules/test_classify_change_scope.md",
         "modules/test_client_contract.md",
         "modules/test_cutover_evidence.md",
         "modules/test_database_configuration.md",
@@ -115086,5 +115514,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:a22c92f390ba9c24547fa99fcda69eb34fb58c534af2b7e244470e46ca8ad106"
+  "source_hash": "sha256:24f6f77651a520070ed3044603cd2197724309a3cb7b44dc5d871b074cdaecbe"
 }

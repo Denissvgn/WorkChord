@@ -1765,9 +1765,11 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [browser_performance](modules/browser_performance.md) | 0 | 0 |
 | [browser_planning_inputs](modules/browser_planning_inputs.md) | 0 | 0 |
 | [browser_write_readback](modules/browser_write_readback.md) | 0 | 0 |
+| [check_markdown_links](modules/check_markdown_links.md) | 0 | 0 |
 | [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md) | 0 | 3 |
 | [check_postgresql_documentation](modules/check_postgresql_documentation.md) | 0 | 0 |
 | [ci_runtime](modules/ci_runtime.md) | 0 | 0 |
+| [classify_change_scope](modules/classify_change_scope.md) | 0 | 0 |
 | [installed_wheel_postgresql_qualification](modules/installed_wheel_postgresql_qualification.md) | 0 | 19 |
 | [postgres_runtime](modules/postgres_runtime.md) | 0 | 0 |
 | [run_android_checks](modules/run_android_checks.md) | 0 | 0 |
@@ -1775,7 +1777,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [serve_disposable_api](modules/serve_disposable_api.md) | 0 | 9 |
 | [serve_disposable_oidc](modules/serve_disposable_oidc.md) | 0 | 1 |
 | [test_apt_runtime](modules/test_apt_runtime.md) | 0 | 0 |
+| [test_check_markdown_links](modules/test_check_markdown_links.md) | 0 | 0 |
 | [test_ci_runtime](modules/test_ci_runtime.md) | 0 | 0 |
+| [test_classify_change_scope](modules/test_classify_change_scope.md) | 0 | 0 |
 | [test_native_runtimes](modules/test_native_runtimes.md) | 0 | 0 |
 | [test_wiki_lock_root_preflight](modules/test_wiki_lock_root_preflight.md) | 0 | 0 |
 | [wiki_lock_root_preflight](modules/wiki_lock_root_preflight.md) | 0 | 0 |
@@ -1800,8 +1804,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 
 ### python
 
-- **Used:** `aiosmtplib`, `alembic`, `android-qualification`, `apt-runtime`, `ci-runtime`, `cryptography`, `fastapi`, `generate-client-contract`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pydantic`, `pydantic-settings`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `wiki-lock-root-preflight`, `workchord-backend`
-- ⚠️ **Undeclared:** `alembic`, `android-qualification`, `apt-runtime`, `ci-runtime`, `cryptography`, `fastapi`, `generate-client-contract`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `wiki-lock-root-preflight`, `workchord-backend`
+- **Used:** `aiosmtplib`, `alembic`, `android-qualification`, `apt-runtime`, `check-markdown-links`, `check-postgresql-documentation`, `ci-runtime`, `classify-change-scope`, `cryptography`, `fastapi`, `generate-client-contract`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pydantic`, `pydantic-settings`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `wiki-lock-root-preflight`, `workchord-backend`
+- ⚠️ **Undeclared:** `alembic`, `android-qualification`, `apt-runtime`, `check-markdown-links`, `check-postgresql-documentation`, `ci-runtime`, `classify-change-scope`, `cryptography`, `fastapi`, `generate-client-contract`, `httpx`, `jsonschema`, `mcp`, `postgres-runtime`, `psycopg`, `pyjwt`, `pytest`, `pytest-asyncio`, `pyyaml`, `run-android-checks`, `run-disposable-checks`, `scripts`, `sqlalchemy`, `starlette`, `uvicorn`, `wiki-lock-root-preflight`, `workchord-backend`
 - **Unused (declared, not imported):** `aiosqlite`, `email-validator`, `python-dotenv`, `python-multipart`, `uvicorn`
 
 ### typescript
