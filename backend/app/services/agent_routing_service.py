@@ -1957,7 +1957,7 @@ class AgentRoutingService:
                     ),
                     "context_tier": catalog.context_tier if catalog else None,
                     "cost_tier": catalog.cost_tier if catalog else None,
-                    "local_first": bool(catalog.local_first) if catalog else False,
+                    "local_first": bool(catalog.local_first) if catalog else None,
                     "latency_tier": catalog.latency_tier if catalog else None,
                     "available_capacity_days": (
                         member_capacity["available_capacity_days"]
@@ -2025,8 +2025,9 @@ class AgentRoutingService:
                                 "confidence": assessment.confidence,
                                 "rationale": (
                                     "Meets all hard routing gates; ordered by "
-                                    "adequacy, cost, queue, schedule, latency, "
-                                    "actor, and binding."
+                                    "adequacy, local-first preference, cost, "
+                                    "queue, schedule, latency, actor, and "
+                                    "binding."
                                 ),
                             },
                         )
@@ -2068,8 +2069,8 @@ class AgentRoutingService:
                 values["rationale"] = (
                     "Meets all hard routing gates; the local-first model is "
                     "preferred over a hosted model of equal adequacy. "
-                    "Otherwise ordered by adequacy, cost, queue, schedule, "
-                    "latency, actor, and binding."
+                    "Otherwise ordered by adequacy, local-first preference, "
+                    "cost, queue, schedule, latency, actor, and binding."
                 )
             ranked_candidates.append(AgentRoutingCandidate.model_validate(values))
         exclusions = [

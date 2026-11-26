@@ -791,8 +791,8 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
                                     </label>
                                 </div>
                                 <div>
-                                    <Checkbox checked={catalogForm.localFirst} onChange={localFirst => setCatalogForm({ ...catalogForm, localFirst })} label={t('modelAdministration.localFirst')} />
-                                    <p className="mt-1 text-xs text-content-secondary">{t('modelAdministration.localFirstHint')}</p>
+                                    <Checkbox aria-describedby="catalog-local-first-hint" checked={catalogForm.localFirst} onChange={localFirst => setCatalogForm({ ...catalogForm, localFirst })} label={t('modelAdministration.localFirst')} />
+                                    <p id="catalog-local-first-hint" className="mt-1 text-xs text-content-secondary">{t('modelAdministration.localFirstHint')}</p>
                                 </div>
                                 <Input label={t('modelAdministration.modalities')} value={catalogForm.modalityTags} onChange={event => setCatalogForm({ ...catalogForm, modalityTags: event.target.value })} required />
                                 <Input label={t('modelAdministration.lastVerified')} type="datetime-local" value={catalogForm.lastVerifiedAt} onChange={event => setCatalogForm({ ...catalogForm, lastVerifiedAt: event.target.value })} />

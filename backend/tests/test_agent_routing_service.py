@@ -572,8 +572,8 @@ async def test_local_first_preference_breaks_ties_but_never_overrides_a_gate(
     assert preview.recommended_candidate.model_binding_id == local_binding.id
     assert by_actor[local_worker.id].rank < by_actor[hosted_worker.id].rank
     assert by_actor[local_worker.id].local_first is True
-    assert "local-first" in by_actor[local_worker.id].rationale
-    assert "local-first" not in by_actor[hosted_worker.id].rationale
+    assert "local-first model is preferred" in by_actor[local_worker.id].rationale
+    assert "local-first model is preferred" not in by_actor[hosted_worker.id].rationale
     # The hard blocker still excludes the local-first entry.
     assert blocked_worker.id not in by_actor
     assert any(e.actor_id == blocked_worker.id and e.hard_blocker_codes for e in preview.exclusions)
