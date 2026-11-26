@@ -98353,6 +98353,7 @@
       "mcp_uri": "llm-wiki://workflows/AgentWorkService_requeue_recovery",
       "outgoing_internal_links": [
         "modules/agent_routing_policy.md",
+        "modules/agent_routing_service.md",
         "modules/agent_service.md",
         "modules/agent_work_service.md",
         "modules/commands.md",
@@ -115958,5 +115959,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:ef1b2731bb9812a6ec009c984dde030ecb653fa05ac4e43881400670f5c18175"
+  "source_hash": "sha256:b7b1d28dcfd7d4d921b31832da1bb101049983c92fc824474a31ea25d7dad2de"
 }

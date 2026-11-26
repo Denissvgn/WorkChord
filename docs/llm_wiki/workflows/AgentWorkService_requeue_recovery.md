@@ -1,7 +1,7 @@
 # AgentWorkService_requeue_recovery
 
 **Entry point:** `agent_work_service.AgentWorkService.requeue_recovery`
-**Modules involved:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [execution_planning_window](../modules/execution_planning_window.md), [models_agent](../modules/models_agent.md), [review_provenance](../modules/review_provenance.md), [schemas_agent](../modules/schemas_agent.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
+**Modules involved:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), [agent_work_service](../modules/agent_work_service.md), [commands](../modules/commands.md), [execution_planning_window](../modules/execution_planning_window.md), [models_agent](../modules/models_agent.md), [review_provenance](../modules/review_provenance.md), [schemas_agent](../modules/schemas_agent.md), [task_service](../modules/task_service.md), [time](../modules/time.md)
 
 > Cancel stale ownership and create one ordered recovery assignment.
 
@@ -28,19 +28,21 @@
 18. `agent_service.AgentConflictError`
 19. `agent_service.AgentConflictError`
 20. `agent_service.AgentConflictError`
-21. `review_provenance.different_publisher_required`
-22. `review_provenance.mark_server_interruption`
-23. `review_provenance.record_server_end_profile`
-24. `commands.current_command`
-25. `agent_service.AgentConflictError`
-26. `models_agent.AgentTaskAssignment`
-27. `schemas_agent.AgentRecoveryRequeueResponse`
-28. `agent_routing_policy.canonical_routing_json_bytes`
-29. `commands.commit_or_flush`
+21. `agent_routing_service.AgentRoutingConflictError`
+22. `review_provenance.different_publisher_required`
+23. `review_provenance.mark_server_interruption`
+24. `review_provenance.record_server_end_profile`
+25. `commands.current_command`
+26. `agent_service.AgentConflictError`
+27. `models_agent.AgentTaskAssignment`
+28. `schemas_agent.AgentRecoveryRequeueResponse`
+29. `agent_routing_policy.canonical_routing_json_bytes`
+30. `commands.commit_or_flush`
 
 ## Touches
 
 - [agent_routing_policy](../modules/agent_routing_policy.md)
+- [agent_routing_service](../modules/agent_routing_service.md)
 - [agent_service](../modules/agent_service.md)
 - [agent_work_service](../modules/agent_work_service.md)
 - [commands](../modules/commands.md)
