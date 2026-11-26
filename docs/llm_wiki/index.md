@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1809 | [Open section](#entities) |
-| Modules | 1156 | [Open section](#modules) |
+| Modules | 1158 | [Open section](#modules) |
 | Workflows | 232 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 624 | [Open section](#entry-point-flows) |
@@ -1860,6 +1860,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261124_0022_capacity_adjustments](modules/20261124_0022_capacity_adjustments.md) - Record dated availability adjustments on iteration capacity rows.
 - [20261124_0023_task_replacements](modules/20261124_0023_task_replacements.md) - Record audited clean-replacement dispositions between tasks.
 - [20261124_0024_delivery_dependency_target_branch](modules/20261124_0024_delivery_dependency_target_branch.md) - Let a delivery prerequisite require accepted code merged on a named branch.
+- [20261126_0025_catalog_local_first](modules/20261126_0025_catalog_local_first.md) - Let a model catalog entry prefer a free or local model at equal adequacy.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AccountMenu](modules/AccountMenu.md) - `frontend/src/features/identity/AccountMenu.tsx`
 - [AccountMenu.test](modules/AccountMenu.test.md) - `frontend/src/features/identity/AccountMenu.test.tsx`
@@ -2810,6 +2811,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_managed_authority](modules/test_managed_authority.md) - Real principal, transport, scoped-read and command-denial contracts.
 - [test_managed_worker_discovery](modules/test_managed_worker_discovery.md) - Managed discovery attribution, scope and transaction boundaries for assigned workers.
 - [test_manual_review_provenance](modules/test_manual_review_provenance.md) - Authenticated human delivery still requires an assigned agent decision in a strict project.
+- [test_mcp_proxy_host_header](modules/test_mcp_proxy_host_header.md) - The stock frontend proxy must forward MCP requests with the client's Host port.
 - [test_mcp_tool_annotations](modules/test_mcp_tool_annotations.md) - Every MCP tool tells clients whether it reads, writes, or removes.
 - [test_metric_matches](modules/test_metric_matches.md) - A work-metric count and the list it opens are chosen by the same predicate.
 - [test_mobile_contract](modules/test_mobile_contract.md) - Android's golden examples are derived from current canonical backend schemas.

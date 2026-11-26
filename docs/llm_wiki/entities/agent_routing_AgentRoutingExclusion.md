@@ -1,6 +1,6 @@
 # AgentRoutingExclusion
 
-**Location:** `backend/app/schemas/agent_routing.py:1030`
+**Location:** `backend/app/schemas/agent_routing.py:1037`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -45,6 +45,7 @@ Bounded reason evidence for one ineligible actor/binding pair.
 | `reasoning_tier` | `ReasoningTier \| None` | `reasoning_tier` | No | Yes | `None` | — | — | — |
 | `context_tier` | `ModelContextTier \| None` | `context_tier` | No | Yes | `None` | — | — | — |
 | `cost_tier` | `ModelCostTier \| None` | `cost_tier` | No | Yes | `None` | — | — | — |
+| `local_first` | `bool \| None` | `local_first` | No | Yes | `None` | — | — | — |
 | `latency_tier` | `ModelLatencyTier \| None` | `latency_tier` | No | Yes | `None` | — | — | — |
 | `missing_modality_tags` | `list[str]` | `missing_modality_tags` | No | No | factory: `list` | — | — | — |
 | `missing_tool_tags` | `list[str]` | `missing_tool_tags` | No | No | factory: `list` | — | — | — |

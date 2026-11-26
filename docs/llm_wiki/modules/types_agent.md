@@ -56,49 +56,49 @@ flowchart LR
 | [AgentActorRosterProfileSkill](../entities/types_agent_AgentActorRosterProfileSkill.md) | Interface | 167 | — | — |
 | [AgentActorRosterProfile](../entities/types_agent_AgentActorRosterProfile.md) | Interface | 178 | — | — |
 | [AgentModelCatalogEntry](../entities/types_agent_AgentModelCatalogEntry.md) | Interface | 189 | — | — |
-| [AgentModelCatalogCreate](../entities/types_agent_AgentModelCatalogCreate.md) | Interface | 206 | — | — |
-| [AgentModelCatalogUpdate](../entities/types_agent_AgentModelCatalogUpdate.md) | Interface | 220 | — | — |
-| [AgentModelCatalogDisable](../entities/types_agent_AgentModelCatalogDisable.md) | Interface | 234 | — | — |
-| [AgentModelBinding](../entities/types_agent_AgentModelBinding.md) | Interface | 239 | — | — |
-| [AgentModelBindingCreate](../entities/types_agent_AgentModelBindingCreate.md) | Interface | 258 | — | — |
-| [AgentModelBindingUpdate](../entities/types_agent_AgentModelBindingUpdate.md) | Interface | 268 | — | — |
-| [AgentModelBindingDisable](../entities/types_agent_AgentModelBindingDisable.md) | Interface | 277 | — | — |
-| [AgentModelMutationReceipt](../entities/types_agent_AgentModelMutationReceipt.md) | Interface | 282 | — | — |
-| [AgentActorRosterItem](../entities/types_agent_AgentActorRosterItem.md) | Interface | 300 | `AgentActor` | — |
-| [TaskDifficultyAxes](../entities/types_agent_TaskDifficultyAxes.md) | Interface | 310 | — | — |
-| [RequiredModelEnvelope](../entities/types_agent_RequiredModelEnvelope.md) | Interface | 318 | — | — |
-| [TaskRoutingAssessmentCommand](../entities/types_agent_TaskRoutingAssessmentCommand.md) | Interface | 326 | — | — |
-| [TaskRoutingAssessment](../entities/types_agent_TaskRoutingAssessment.md) | Interface | 338 | — | — |
-| [TaskRoutingAssessmentState](../entities/types_agent_TaskRoutingAssessmentState.md) | Interface | 358 | — | — |
-| [TaskRoutingAssessmentHistory](../entities/TaskRoutingAssessmentHistory.md) | Interface | 365 | — | — |
-| [TaskRoutingAssessmentMutationReceipt](../entities/types_agent_TaskRoutingAssessmentMutationReceipt.md) | Interface | 373 | — | — |
-| [AgentRoutingPreviewCreate](../entities/types_agent_AgentRoutingPreviewCreate.md) | Interface | 387 | — | — |
-| [AgentRoutingCandidate](../entities/types_agent_AgentRoutingCandidate.md) | Interface | 394 | — | — |
-| [AgentRoutingExclusion](../entities/types_agent_AgentRoutingExclusion.md) | Interface | 435 | — | — |
-| [AgentRoutingPreviewResponse](../entities/types_agent_AgentRoutingPreviewResponse.md) | Interface | 474 | — | — |
-| [ModelAwareAgentTaskAssignmentCreate](../entities/types_agent_ModelAwareAgentTaskAssignmentCreate.md) | Interface | 501 | — | — |
-| [ModelAwareAgentTaskAssignmentUpdate](../entities/types_agent_ModelAwareAgentTaskAssignmentUpdate.md) | Interface | 519 | — | — |
-| [AgentTaskAssignment](../entities/types_agent_AgentTaskAssignment.md) | Interface | 534 | — | — |
-| [AgentAssignmentReadItem](../entities/types_agent_AgentAssignmentReadItem.md) | Interface | 558 | — | An assignment as a person reads it, without routing evidence or the assigner's reason. |
-| [AgentAssignmentListParams](../entities/AgentAssignmentListParams.md) | Interface | 579 | — | — |
-| [AgentModelBindingListParams](../entities/AgentModelBindingListParams.md) | Interface | 587 | — | — |
-| [AgentRunEvent](../entities/types_agent_AgentRunEvent.md) | Interface | 592 | — | — |
-| [AgentRun](../entities/types_agent_AgentRun.md) | Interface | 605 | — | — |
-| [AgentPipeline](../entities/AgentPipeline.md) | Interface | 633 | — | — |
-| [TaskTimelineItem](../entities/types_agent_TaskTimelineItem.md) | Interface | 644 | — | — |
-| [TaskTimelineResponse](../entities/types_agent_TaskTimelineResponse.md) | Interface | 655 | — | — |
-| [AgentTeamSkillPackage](../entities/types_agent_AgentTeamSkillPackage.md) | Interface | 671 | — | — |
-| [AgentTeamMemberSpec](../entities/types_agent_AgentTeamMemberSpec.md) | Interface | 677 | — | — |
-| [AgentTeamMaster](../entities/types_agent_AgentTeamMaster.md) | Interface | 693 | — | — |
-| [AgentTeamValidation](../entities/AgentTeamValidation.md) | Interface | 709 | — | — |
-| [AgentTeamPlanAction](../entities/types_agent_AgentTeamPlanAction.md) | Interface | 726 | — | — |
-| [AgentTeamPlan](../entities/AgentTeamPlan.md) | Interface | 743 | — | — |
-| [AgentTeamActionReceipt](../entities/types_agent_AgentTeamActionReceipt.md) | Interface | 753 | — | — |
-| [AgentTeamApplyResponse](../entities/types_agent_AgentTeamApplyResponse.md) | Interface | 767 | — | — |
-| [AgentTeamRuntimeHandoff](../entities/types_agent_AgentTeamRuntimeHandoff.md) | Interface | 782 | — | — |
-| [AgentTeamMemberStatus](../entities/types_agent_AgentTeamMemberStatus.md) | Interface | 801 | — | — |
-| [AgentTeamSetupStep](../entities/types_agent_AgentTeamSetupStep.md) | Interface | 833 | — | — |
-| [AgentTeamStatus](../entities/AgentTeamStatus.md) | Interface | 840 | — | — |
+| [AgentModelCatalogCreate](../entities/types_agent_AgentModelCatalogCreate.md) | Interface | 207 | — | — |
+| [AgentModelCatalogUpdate](../entities/types_agent_AgentModelCatalogUpdate.md) | Interface | 222 | — | — |
+| [AgentModelCatalogDisable](../entities/types_agent_AgentModelCatalogDisable.md) | Interface | 237 | — | — |
+| [AgentModelBinding](../entities/types_agent_AgentModelBinding.md) | Interface | 242 | — | — |
+| [AgentModelBindingCreate](../entities/types_agent_AgentModelBindingCreate.md) | Interface | 261 | — | — |
+| [AgentModelBindingUpdate](../entities/types_agent_AgentModelBindingUpdate.md) | Interface | 271 | — | — |
+| [AgentModelBindingDisable](../entities/types_agent_AgentModelBindingDisable.md) | Interface | 280 | — | — |
+| [AgentModelMutationReceipt](../entities/types_agent_AgentModelMutationReceipt.md) | Interface | 285 | — | — |
+| [AgentActorRosterItem](../entities/types_agent_AgentActorRosterItem.md) | Interface | 303 | `AgentActor` | — |
+| [TaskDifficultyAxes](../entities/types_agent_TaskDifficultyAxes.md) | Interface | 313 | — | — |
+| [RequiredModelEnvelope](../entities/types_agent_RequiredModelEnvelope.md) | Interface | 321 | — | — |
+| [TaskRoutingAssessmentCommand](../entities/types_agent_TaskRoutingAssessmentCommand.md) | Interface | 329 | — | — |
+| [TaskRoutingAssessment](../entities/types_agent_TaskRoutingAssessment.md) | Interface | 341 | — | — |
+| [TaskRoutingAssessmentState](../entities/types_agent_TaskRoutingAssessmentState.md) | Interface | 361 | — | — |
+| [TaskRoutingAssessmentHistory](../entities/TaskRoutingAssessmentHistory.md) | Interface | 368 | — | — |
+| [TaskRoutingAssessmentMutationReceipt](../entities/types_agent_TaskRoutingAssessmentMutationReceipt.md) | Interface | 376 | — | — |
+| [AgentRoutingPreviewCreate](../entities/types_agent_AgentRoutingPreviewCreate.md) | Interface | 390 | — | — |
+| [AgentRoutingCandidate](../entities/types_agent_AgentRoutingCandidate.md) | Interface | 397 | — | — |
+| [AgentRoutingExclusion](../entities/types_agent_AgentRoutingExclusion.md) | Interface | 439 | — | — |
+| [AgentRoutingPreviewResponse](../entities/types_agent_AgentRoutingPreviewResponse.md) | Interface | 479 | — | — |
+| [ModelAwareAgentTaskAssignmentCreate](../entities/types_agent_ModelAwareAgentTaskAssignmentCreate.md) | Interface | 506 | — | — |
+| [ModelAwareAgentTaskAssignmentUpdate](../entities/types_agent_ModelAwareAgentTaskAssignmentUpdate.md) | Interface | 524 | — | — |
+| [AgentTaskAssignment](../entities/types_agent_AgentTaskAssignment.md) | Interface | 539 | — | — |
+| [AgentAssignmentReadItem](../entities/types_agent_AgentAssignmentReadItem.md) | Interface | 563 | — | An assignment as a person reads it, without routing evidence or the assigner's reason. |
+| [AgentAssignmentListParams](../entities/AgentAssignmentListParams.md) | Interface | 584 | — | — |
+| [AgentModelBindingListParams](../entities/AgentModelBindingListParams.md) | Interface | 592 | — | — |
+| [AgentRunEvent](../entities/types_agent_AgentRunEvent.md) | Interface | 597 | — | — |
+| [AgentRun](../entities/types_agent_AgentRun.md) | Interface | 610 | — | — |
+| [AgentPipeline](../entities/AgentPipeline.md) | Interface | 638 | — | — |
+| [TaskTimelineItem](../entities/types_agent_TaskTimelineItem.md) | Interface | 649 | — | — |
+| [TaskTimelineResponse](../entities/types_agent_TaskTimelineResponse.md) | Interface | 660 | — | — |
+| [AgentTeamSkillPackage](../entities/types_agent_AgentTeamSkillPackage.md) | Interface | 676 | — | — |
+| [AgentTeamMemberSpec](../entities/types_agent_AgentTeamMemberSpec.md) | Interface | 682 | — | — |
+| [AgentTeamMaster](../entities/types_agent_AgentTeamMaster.md) | Interface | 698 | — | — |
+| [AgentTeamValidation](../entities/AgentTeamValidation.md) | Interface | 714 | — | — |
+| [AgentTeamPlanAction](../entities/types_agent_AgentTeamPlanAction.md) | Interface | 731 | — | — |
+| [AgentTeamPlan](../entities/AgentTeamPlan.md) | Interface | 748 | — | — |
+| [AgentTeamActionReceipt](../entities/types_agent_AgentTeamActionReceipt.md) | Interface | 758 | — | — |
+| [AgentTeamApplyResponse](../entities/types_agent_AgentTeamApplyResponse.md) | Interface | 772 | — | — |
+| [AgentTeamRuntimeHandoff](../entities/types_agent_AgentTeamRuntimeHandoff.md) | Interface | 787 | — | — |
+| [AgentTeamMemberStatus](../entities/types_agent_AgentTeamMemberStatus.md) | Interface | 806 | — | — |
+| [AgentTeamSetupStep](../entities/types_agent_AgentTeamSetupStep.md) | Interface | 838 | — | — |
+| [AgentTeamStatus](../entities/AgentTeamStatus.md) | Interface | 845 | — | — |
 | [JsonPrimitive](../entities/JsonPrimitive.md) | Type alias | 3 | `string \| number \| boolean \| null` | — |
 | [JsonValue](../entities/JsonValue.md) | Type alias | 4 | `JsonPrimitive \| JsonValue[] \| { [key: string]: JsonValue }` | — |
 | [JsonObject](../entities/JsonObject.md) | Type alias | 5 | `{ [key: string]: JsonValue }` | — |
@@ -122,7 +122,7 @@ flowchart LR
 | [ModelAwareRoutingMode](../entities/ModelAwareRoutingMode.md) | Type alias | 116 | `'off' \| 'shadow' \| 'enforced'` | — |
 | [ModelAwareRoutingTopologyStatus](../entities/ModelAwareRoutingTopologyStatus.md) | Type alias | 118 | <pre><code>&#124; &#39;unavailable&#39;&#10;    &#124; &#39;not&#95;ready&#39;&#10;    &#124; &#39;ready&#39;</code></pre> | — |
 | [ModelAwareRoutingTopologySource](../entities/ModelAwareRoutingTopologySource.md) | Type alias | 123 | <pre><code>&#124; &#39;unavailable&#39;&#10;    &#124; &#39;agent&#45;team&#45;master&#45;v1&#39;</code></pre> | — |
-| [AgentTeamRole](../entities/AgentTeamRole.md) | Type alias | 660 | `'pm' \| 'worker' \| 'verifier'` | — |
-| [AgentTeamStepState](../entities/AgentTeamStepState.md) | Type alias | 661 | `'done' \| 'warn' \| 'blocked' \| 'todo'` | — |
-| [AgentTeamLifecycle](../entities/AgentTeamLifecycle.md) | Type alias | 662 | <pre><code>&#124; &#39;desired&#39;&#10;    &#124; &#39;configured&#39;&#10;    &#124; &#39;credential&#95;delivered&#39;&#10;    &#124; &#39;onboarding&#39;&#10;    &#124; &#39;connected&#39;&#10;    &#124; &#39;runtime&#95;ready&#39;&#10;    &#124; &#39;disabled&#39;</code></pre> | — |
-| [AgentTeamReconciliationClass](../entities/types_agent_AgentTeamReconciliationClass.md) | Type alias | 717 | <pre><code>&#124; &#39;create&#39;&#10;    &#124; &#39;safe&#95;update&#39;&#10;    &#124; &#39;no&#95;change&#39;&#10;    &#124; &#39;blocked&#95;conflict&#39;&#10;    &#124; &#39;requires&#95;replacement&#39;&#10;    &#124; &#39;propose&#95;disable&#39;&#10;    &#124; &#39;unmanaged&#39;</code></pre> | — |
+| [AgentTeamRole](../entities/AgentTeamRole.md) | Type alias | 665 | `'pm' \| 'worker' \| 'verifier'` | — |
+| [AgentTeamStepState](../entities/AgentTeamStepState.md) | Type alias | 666 | `'done' \| 'warn' \| 'blocked' \| 'todo'` | — |
+| [AgentTeamLifecycle](../entities/AgentTeamLifecycle.md) | Type alias | 667 | <pre><code>&#124; &#39;desired&#39;&#10;    &#124; &#39;configured&#39;&#10;    &#124; &#39;credential&#95;delivered&#39;&#10;    &#124; &#39;onboarding&#39;&#10;    &#124; &#39;connected&#39;&#10;    &#124; &#39;runtime&#95;ready&#39;&#10;    &#124; &#39;disabled&#39;</code></pre> | — |
+| [AgentTeamReconciliationClass](../entities/types_agent_AgentTeamReconciliationClass.md) | Type alias | 722 | <pre><code>&#124; &#39;create&#39;&#10;    &#124; &#39;safe&#95;update&#39;&#10;    &#124; &#39;no&#95;change&#39;&#10;    &#124; &#39;blocked&#95;conflict&#39;&#10;    &#124; &#39;requires&#95;replacement&#39;&#10;    &#124; &#39;propose&#95;disable&#39;&#10;    &#124; &#39;unmanaged&#39;</code></pre> | — |

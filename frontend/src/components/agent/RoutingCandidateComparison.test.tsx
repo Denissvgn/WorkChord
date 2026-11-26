@@ -55,6 +55,22 @@ describe('RoutingCandidateComparison', () => {
         }
     });
 
+    it('marks a local-first candidate beside its cost tier', () => {
+        renderWithProviders(
+            <RoutingCandidateComparison
+                preview={{
+                    ...modelAwareRoutingPreview,
+                    eligible_candidates: modelAwareRoutingPreview.eligible_candidates.map(candidate => ({ ...candidate, local_first: true })),
+                }}
+                roster={modelAwareRoutingRoster}
+                selectedCandidateKey={null}
+                onSelectCandidate={vi.fn()}
+            />,
+        );
+
+        expect(screen.getByText(/\(Local or free model\)/)).toBeVisible();
+    });
+
     it('selects an eligible candidate from the keyboard', async () => {
         const onSelectCandidate = vi.fn();
         const { user } = renderWithProviders(

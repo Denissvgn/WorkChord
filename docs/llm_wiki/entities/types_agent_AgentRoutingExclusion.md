@@ -1,6 +1,6 @@
 # AgentRoutingExclusion
 
-**Location:** `frontend/src/types/agent.ts:435`
+**Location:** `frontend/src/types/agent.ts:439`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -35,6 +35,7 @@ _Auto-generated from `AgentRoutingExclusion` in `frontend/src/types/agent.ts`._
 | `reasoning_tier` | `ModelReasoningTier \| null` | Yes | — | — |
 | `context_tier` | `ModelContextTier \| null` | Yes | — | — |
 | `cost_tier` | `ModelCostTier \| null` | Yes | — | — |
+| `local_first` | `boolean \| null` | Yes | — | — |
 | `latency_tier` | `ModelLatencyTier \| null` | Yes | — | — |
 | `missing_modality_tags` | `string[]` | Yes | — | — |
 | `missing_tool_tags` | `string[]` | Yes | — | — |
