@@ -65,6 +65,7 @@ const catalogFixture = (
     context_tier: 'medium',
     modality_tags: ['text'],
     cost_tier: 'medium',
+    local_first: false,
     latency_tier: 'balanced',
     enabled: true,
     revision: 3,
@@ -200,6 +201,23 @@ describe('AgentModelAdministration', () => {
         await user.type(within(dialog).getByLabelText('Change rationale'), 'Update binding');
         await user.click(within(dialog).getByRole('button', { name: 'Save' }));
         await waitFor(() => expect(agentServiceMock.updateModelBinding).toHaveBeenCalledWith(21, expect.objectContaining({ tool_tags: ['shell'], expected_revision: 4 }), expect.objectContaining({ rationale: 'Update binding' })));
+    });
+
+    it('marks a catalog entry as a local or free model and saves the preference', async () => {
+        const { user } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        await screen.findByRole('heading', { name: 'Model catalog' });
+
+        await user.click(screen.getByRole('button', { name: /Edit model catalog entry Balanced Code/i }));
+        const drawer = screen.getByRole('dialog', { name: /Edit catalog entry/i });
+        const checkbox = within(drawer).getByRole('checkbox', { name: 'Local or free model' });
+        expect(checkbox).not.toBeChecked();
+        expect(within(drawer).getByText(/never overrides a capability, schedule or adequacy check/i)).toBeVisible();
+        await user.click(checkbox);
+        await user.click(within(drawer).getByRole('button', { name: 'Save' }));
+        const dialog = screen.getByRole('dialog', { name: 'Audited change controls' });
+        await user.type(within(dialog).getByLabelText('Change rationale'), 'Prefer the local model');
+        await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(agentServiceMock.updateModelCatalogEntry).toHaveBeenCalledWith(11, expect.objectContaining({ local_first: true, expected_revision: 3 }), expect.objectContaining({ rationale: 'Prefer the local model' })));
     });
 
     it('loads catalog and bindings and creates a binding with only the saved admin key', async () => {

@@ -48,6 +48,7 @@ interface CatalogForm {
     contextTier: 'small' | 'medium' | 'large';
     modalityTags: string;
     costTier: 'low' | 'medium' | 'high';
+    localFirst: boolean;
     latencyTier: 'fast' | 'balanced' | 'slow';
     lastVerifiedAt: string;
 }
@@ -77,6 +78,7 @@ const EMPTY_CATALOG_FORM: CatalogForm = {
     contextTier: 'medium',
     modalityTags: 'text',
     costTier: 'medium',
+    localFirst: false,
     latencyTier: 'balanced',
     lastVerifiedAt: '',
 };
@@ -396,6 +398,7 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
             context_tier: catalogForm.contextTier,
             modality_tags: parseRoutingTags(catalogForm.modalityTags),
             cost_tier: catalogForm.costTier,
+            local_first: catalogForm.localFirst,
             latency_tier: catalogForm.latencyTier,
             enabled: true,
             revision: 1,
@@ -412,6 +415,7 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
                     context_tier: createData.context_tier,
                     modality_tags: createData.modality_tags,
                     cost_tier: createData.cost_tier,
+                    local_first: createData.local_first,
                     latency_tier: createData.latency_tier,
                     last_verified_at: createData.last_verified_at,
                     reconcile_live_assignments: reconcileRef.current,
@@ -466,6 +470,7 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
             contextTier: entry.context_tier,
             modalityTags: entry.modality_tags.join(', '),
             costTier: entry.cost_tier,
+            localFirst: entry.local_first,
             latencyTier: entry.latency_tier,
             lastVerifiedAt: toLocalDateTime(entry.last_verified_at),
         });
@@ -784,6 +789,10 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
                                             <option value="slow">{t('modelAdministration.slow')}</option>
                                         </Select>
                                     </label>
+                                </div>
+                                <div>
+                                    <Checkbox checked={catalogForm.localFirst} onChange={localFirst => setCatalogForm({ ...catalogForm, localFirst })} label={t('modelAdministration.localFirst')} />
+                                    <p className="mt-1 text-xs text-content-secondary">{t('modelAdministration.localFirstHint')}</p>
                                 </div>
                                 <Input label={t('modelAdministration.modalities')} value={catalogForm.modalityTags} onChange={event => setCatalogForm({ ...catalogForm, modalityTags: event.target.value })} required />
                                 <Input label={t('modelAdministration.lastVerified')} type="datetime-local" value={catalogForm.lastVerifiedAt} onChange={event => setCatalogForm({ ...catalogForm, lastVerifiedAt: event.target.value })} />
