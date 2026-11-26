@@ -57,41 +57,52 @@ def digest(value):
     ).hexdigest()
 
 
+# Revisions, assignment scope and actual work state are included. The
+# secret claim is independently checked by the normal worker command.
+TASK_CONTEXT_FIELDS = (
+    "id",
+    "iteration_id",
+    "project_id",
+    "parent_id",
+    "assignee_id",
+    "owner_profile_id",
+    "status",
+    "execution_mode",
+    "brief_revision",
+    "artifact_revision",
+    "brief",
+    "progress",
+    "description",
+    "title",
+    "priority",
+    "source",
+    "source_url",
+    "milestone_id",
+    "external_key",
+    "effort_hours",
+    "start_date",
+    "end_date",
+    "min_start_date",
+    "max_end_date",
+    "claimed_by",
+    "claim_generation",
+    "blocked_reason",
+    "canceled_at",
+    "is_deferred",
+)
+
+
 def task_context(task):
-    # Revisions, assignment scope and actual work state are included. The
-    # secret claim is independently checked by the normal worker command.
-    fields = (
-        "id",
-        "iteration_id",
-        "project_id",
-        "parent_id",
-        "assignee_id",
-        "owner_profile_id",
-        "status",
-        "execution_mode",
-        "brief_revision",
-        "artifact_revision",
-        "brief",
-        "progress",
-        "description",
-        "title",
-        "priority",
-        "source",
-        "source_url",
-        "milestone_id",
-        "external_key",
-        "effort_hours",
-        "start_date",
-        "end_date",
-        "min_start_date",
-        "max_end_date",
-        "claimed_by",
-        "claim_generation",
-        "blocked_reason",
-        "canceled_at",
-        "is_deferred",
-    )
-    return digest({name: getattr(task, name) for name in fields})
+    return digest({name: getattr(task, name) for name in TASK_CONTEXT_FIELDS})
+
+
+def execution_context(task):
+    """The sealed task context without planning-only fields, plus labels and the optional flag.
+
+    A planning-only edit must leave this digest unchanged.
+    """
+    names = [name for name in TASK_CONTEXT_FIELDS if name not in PLANNING_ONLY_FIELDS]
+    return digest({name: getattr(task, name) for name in (*names, "tags", "is_optional")})
 
 
 def assignment_context(assignment):
@@ -661,9 +672,10 @@ async def seal_authority(db, task, window, assignments, *, prior=None, lock=Fals
 async def fence_planning_only_edit(db, basis, issued, *, edited_task_id, fields):
     """Seal a window for each task whose version a planning-only edit reserved.
 
-    ``basis`` lists ``(task, version_before, window_before)`` captured before
-    the edit, and ``issued`` maps task IDs to their locked live assignments.
-    A task's window is sealed only when its version moved by exactly one, each
+    ``basis`` lists ``(task, version_before, window_before, execution_context_before)``
+    captured before the edit, and ``issued`` maps task IDs to their locked live
+    assignments. A task's window is sealed only when its execution context is
+    unchanged apart from planning-only fields, its version moved by exactly one, each
     assignment it keeps was bound to the prior version (or to a still-current
     window), its original authenticated receipt still verifies, and the
     ownership, team, policy and model bindings stamp. Anything else leaves the
@@ -674,9 +686,9 @@ async def fence_planning_only_edit(db, basis, issued, *, edited_task_id, fields)
         return []
     evidence = {"fields": sorted(fields), "edited_task_id": edited_task_id}
     fenced = []
-    for task, previous_version, prior in basis:
+    for task, previous_version, prior, context_before in basis:
         rows = issued.get(task.id)
-        if not rows:
+        if not rows or execution_context(task) != context_before:
             continue
         if prior and task.version == previous_version == prior["through"]:
             # An earlier step of this command already reserved the version and

@@ -1,6 +1,7 @@
 """A planning-only task edit keeps sealed issued work valid; an execution-input edit still stales it."""
 
 import json
+from datetime import timedelta
 from types import SimpleNamespace
 
 import httpx
@@ -10,12 +11,13 @@ from sqlalchemy import select
 from app.config import get_settings
 from app.main import app
 from app.models.agent import AgentModelCatalogEntry, AgentRun, AgentTaskAssignment, TaskEvent
-from app.models.identity import ProjectMembership, WorkspaceMembership
+from app.models.identity import Principal, ProjectMembership, WorkspaceMembership
 from app.models.iteration import Iteration
 from app.models.project import Project, ProjectMilestone
 from app.models.task import Task
 from app.services.agent_work_service import AgentWorkService
 from app.services.execution_planning_window import (
+    ITERATION_END_EXTENSION,
     PLANNING_ONLY_EDIT,
     PLANNING_ONLY_FIELDS,
     current_window,
@@ -113,6 +115,7 @@ async def team_scope(db, task_factory, team_member_factory, *, summary=False):
     await db.commit()
     return SimpleNamespace(
         system=system,
+        pm=pm,
         task=task,
         parent=parent,
         prerequisite=prerequisite,
@@ -170,7 +173,9 @@ async def snapshot(factory, task_id, assignment_id, run_id=None):
 
 @databases
 @pytest.mark.parametrize("transport", ["rest", "mcp"])
-@pytest.mark.parametrize("case", ["running", "consecutive", "queued", "summary", "verification", "rework"])
+@pytest.mark.parametrize(
+    "case", ["running", "consecutive", "after_extension", "queued", "summary", "verification", "rework"]
+)
 @pytest.mark.usefixtures("deployed_agent_skill_release")
 async def test_milestone_change_keeps_issued_work(
     db_session, db_session_factory, task_factory, team_member_factory, monkeypatch, transport, case
@@ -253,6 +258,30 @@ async def test_milestone_change_keeps_issued_work(
         # that a scheduler date rebind would leave alone.
         assert before.model_aware == (case == "rework")
 
+        steps = 1
+        if case == "after_extension":
+            async with db_session_factory() as read:
+                iteration = await read.get(Iteration, task.iteration_id)
+                revision, end = iteration.revision, iteration.end_date
+            extended = await http.patch(
+                f"/api/agent/planning/iterations/{task.iteration_id}",
+                headers={
+                    "X-Agent-API-Key": pk,
+                    "Idempotency-Key": "extend-notes",
+                    "X-Correlation-ID": "extend-notes",
+                    "X-Agent-Rationale": "Apply the approved planning change",
+                },
+                json={
+                    "expected_revisions": {str(task.iteration_id): revision},
+                    "end_date": (end + timedelta(days=7)).isoformat(),
+                },
+            )
+            assert extended.status_code == 200, extended.text
+            extension = await snapshot(db_session_factory, task.id, live_id, run_id)
+            assert extension.window["kind"] == ITERATION_END_EXTENSION
+            assert [event["window_kind"] for event in extension.events] == [ITERATION_END_EXTENSION]
+            steps = 2
+
         edited = s.parent if case == "summary" else task
         async with db_session_factory() as read:
             edited_version = (await read.get(Task, edited.id)).version
@@ -260,7 +289,6 @@ async def test_milestone_change_keeps_issued_work(
             http, pk, edited.id, edited_version, "set-milestone", milestone_id=s.milestones[0]
         )
         assert patched["result"]["milestone_id"] == s.milestones[0]
-        steps = 1
         if case == "consecutive":
             await planning_patch(
                 http, pk, task.id, edited_version + 1, "move-milestone", milestone_id=s.milestones[1]
@@ -289,7 +317,7 @@ async def test_milestone_change_keeps_issued_work(
         if case == "summary":
             assert after.milestone_id is None
         else:
-            assert after.milestone_id == s.milestones[steps - 1]
+            assert after.milestone_id == s.milestones[1 if case == "consecutive" else 0]
         recovery = await call(*RECOVERY, pk)
         assert all(item["task"]["id"] != task.id for item in recovery["items"]), recovery
 
@@ -342,7 +370,10 @@ async def test_milestone_change_keeps_issued_work(
 
 
 @databases
-@pytest.mark.parametrize("change", ["title", "description", "assignee", "depends_on", "milestone_and_title"])
+@pytest.mark.parametrize(
+    "change",
+    ["title", "description", "assignee", "depends_on", "tags", "priority", "max_end_date", "milestone_and_title"],
+)
 @pytest.mark.usefixtures("deployed_agent_skill_release")
 async def test_execution_input_change_still_stales_running_work(
     db_session, db_session_factory, task_factory, team_member_factory, monkeypatch, change
@@ -384,6 +415,9 @@ async def test_execution_input_change_still_stales_running_work(
             "description": {"description": "Write the operator notes for the new installer as well."},
             "assignee": {"assignee_id": s.other_capacity},
             "depends_on": {"depends_on": [s.prerequisite.id]},
+            "tags": {"tags": ["agent", "cap:backend-python", "operator-docs"]},
+            "priority": {"priority": 3},
+            "max_end_date": {"max_end_date": "2026-07-30"},
             "milestone_and_title": {"milestone_id": s.milestones[0], "title": "Write the revised operator notes"},
         }[change]
         await planning_patch(http, pk, task.id, before.version, "execution-change", **changes)
@@ -467,3 +501,179 @@ async def test_one_command_reseals_or_ends_the_fence(
             receipt="renew-stale",
             error="scope changed",
         )
+
+
+def all_work_items(decision):
+    return [item for item in [decision.get("next"), *decision.get("blocked_assigned", [])] if item]
+
+
+async def dispatch_and_begin(call, s, *, begin=True):
+    assigned = await call(
+        *DISPATCH,
+        s.pk,
+        payload={
+            "actor_id": s.worker.id,
+            "task_id": s.task.id,
+            "expected_task_version": s.task.version,
+            "reviewer_profile_id": s.reviewer.profile_id,
+        },
+        receipt="assign-notes",
+    )
+    if not begin:
+        return assigned, None
+    queue = await call(*WORK, s.wk)
+    running = await call(
+        *BEGIN,
+        s.wk,
+        payload={
+            "assignment_id": assigned["id"],
+            "queue_revision": queue["queue_revision"],
+            "model": s.member.default_model_binding_key,
+        },
+        receipt="begin-notes",
+    )
+    return assigned, running
+
+
+@databases
+@pytest.mark.usefixtures("deployed_agent_skill_release")
+async def test_milestone_change_without_original_receipt_still_stales(
+    db_session, db_session_factory, task_factory, team_member_factory, monkeypatch
+):
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "managed")
+    monkeypatch.setenv("MODEL_AWARE_ROUTING_MODE", "shadow")
+    get_settings.cache_clear()
+    s = await team_scope(db_session, task_factory, team_member_factory)
+    # Queued work written without the PM's authenticated dispatch receipt.
+    unproven = AgentTaskAssignment(
+        task_id=s.task.id,
+        actor_id=s.worker.id,
+        assigned_by_actor_id=s.pm.id,
+        team_member_id=s.task.assignee_id,
+        reviewer_profile_id=s.reviewer.profile_id,
+        task_version=s.task.version,
+        state="queued",
+        purpose="execution",
+        queue_class="normal",
+    )
+    db_session.add(unproven)
+    await db_session.commit()
+    async with (
+        recovery_api("rest", db_session_factory, monkeypatch) as call,
+        httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://localhost:8001") as http,
+    ):
+        before = await snapshot(db_session_factory, s.task.id, unproven.id)
+        await planning_patch(http, s.pk, s.task.id, before.version, "set-milestone", milestone_id=s.milestones[0])
+        after = await snapshot(db_session_factory, s.task.id, unproven.id)
+        assert after.version == before.version + 1 and after.window is None and after.events == []
+        items = [item for item in all_work_items(await call(*WORK, s.wk)) if item["assignment"]["id"] == unproven.id]
+        assert items and all("assignment_task_version_stale" in item["blocker_codes"] for item in items), items
+
+
+@databases
+@pytest.mark.usefixtures("deployed_agent_skill_release")
+async def test_batch_that_changes_a_fenced_task_prerequisite_ends_the_fence(
+    db_session, db_session_factory, task_factory, team_member_factory, monkeypatch
+):
+    """Moving a running task off one milestone and new work into its prerequisite milestone in one batch."""
+    from app.authority import Authority
+    from app.commands import command_transaction
+    from app.models.delivery_dependency import DeliveryDependency
+    from app.routers.tasks import apply_batch_update_items
+    from app.schemas.task import TaskBatchUpdateItem, TaskUpdate
+    from app.services.delivery_dependency_service import DeliveryDependencyService
+    from app.services.task_service import TaskService
+    from app.utils.time import utc_now
+
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "managed")
+    monkeypatch.setenv("MODEL_AWARE_ROUTING_MODE", "shadow")
+    get_settings.cache_clear()
+    s = await team_scope(db_session, task_factory, team_member_factory)
+    milestone_id = s.milestones[0]
+    # Seed the satisfied prerequisite directly, outside any request authority.
+    async with db_session_factory() as seed:
+        (await seed.get(ProjectMilestone, milestone_id)).status = "completed"
+        owner = Principal(kind="human", display_name="Release owner")
+        seed.add(owner)
+        await seed.flush()
+        delivered = Task(
+            title="Publish the installer notes",
+            project_id=s.task.project_id,
+            iteration_id=s.task.iteration_id,
+            milestone_id=milestone_id,
+            status="closed",
+            accepted_at=utc_now(),
+            accepted_by_principal_id=owner.id,
+        )
+        seed.add(delivered)
+        await seed.flush()
+        delivered.accepted_version = delivered.version
+        seed.add(DeliveryDependency(task_id=s.task.id, prerequisite_milestone_id=milestone_id))
+        await seed.commit()
+    async with recovery_api("rest", db_session_factory, monkeypatch) as call:
+        assigned, running = await dispatch_and_begin(call, s)
+        before = await snapshot(db_session_factory, s.task.id, assigned["id"], running["run"]["id"])
+        async with db_session_factory() as session, command_transaction(session):
+            session.info["authority"] = Authority(s.system, "system", workspace_role="operator")
+            iteration = await session.get(Iteration, s.task.iteration_id)
+            await apply_batch_update_items(
+                TaskService(session),
+                iteration.id,
+                iteration.end_date,
+                [
+                    TaskBatchUpdateItem(task_id=s.task.id, update=TaskUpdate(milestone_id=s.milestones[1])),
+                    TaskBatchUpdateItem(task_id=s.prerequisite.id, update=TaskUpdate(milestone_id=milestone_id)),
+                ],
+            )
+            await DeliveryDependencyService(session).reconcile()
+        after = await snapshot(db_session_factory, s.task.id, assigned["id"], running["run"]["id"])
+        # The milestone edit alone would be fenced, but the prerequisite it
+        # depends on changed in the same command, so the work is not kept.
+        assert after.version == before.version + 1 and after.window is None
+        assert (await call(*WORK, s.wk))["state"] != "resume"
+        await call(
+            *RENEW,
+            s.wk,
+            payload={**fence(running), "expected_task_version": after.version},
+            receipt="renew-after-prerequisite-change",
+            error="scope changed",
+        )
+
+
+@databases
+@pytest.mark.parametrize("then", ["nothing", "delivery_edge"])
+@pytest.mark.usefixtures("deployed_agent_skill_release")
+async def test_later_change_in_the_same_command_ends_the_fence(
+    db_session, db_session_factory, task_factory, team_member_factory, monkeypatch, then
+):
+    """A change that does not go through a task update still ends a fence sealed earlier in the command."""
+    from app.authority import Authority
+    from app.commands import command_transaction
+    from app.schemas.task import TaskUpdate
+    from app.services.delivery_dependency_service import DeliveryDependencyService
+    from app.services.task_service import TaskService
+
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "managed")
+    monkeypatch.setenv("MODEL_AWARE_ROUTING_MODE", "shadow")
+    get_settings.cache_clear()
+    s = await team_scope(db_session, task_factory, team_member_factory)
+    async with recovery_api("rest", db_session_factory, monkeypatch) as call:
+        assigned, _ = await dispatch_and_begin(call, s, begin=False)
+        before = await snapshot(db_session_factory, s.task.id, assigned["id"])
+        async with db_session_factory() as session, command_transaction(session):
+            session.info["authority"] = Authority(s.system, "system", workspace_role="operator")
+            edited = await TaskService(session).update(
+                s.task.id, TaskUpdate(milestone_id=s.milestones[0]), commit=False
+            )
+            assert current_window(edited)["kind"] == PLANNING_ONLY_EDIT
+            if then == "delivery_edge":
+                # Inside one command a caller supplies the version it observed before the command.
+                await DeliveryDependencyService(session).add(s.task.id, "task", s.prerequisite.id, before.version)
+        after = await snapshot(db_session_factory, s.task.id, assigned["id"])
+        assert after.version == before.version + 1 and after.assignment == before.assignment
+        if then == "nothing":
+            assert after.window["kind"] == PLANNING_ONLY_EDIT
+            return
+        assert after.window is None
+        items = [item for item in all_work_items(await call(*WORK, s.wk)) if item["assignment"]["id"] == assigned["id"]]
+        assert items and all("assignment_task_version_stale" in item["blocker_codes"] for item in items), items

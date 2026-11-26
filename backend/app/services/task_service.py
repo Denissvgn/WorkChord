@@ -470,6 +470,15 @@ class TaskService:
             if task_id in command.tasks:
                 if expected_version is not None and expected_version not in {command.tasks[task_id], task.version}:
                     raise TaskVersionConflictError(expected_version, self._metadata_from_task(task))
+                window = task.execution_planning_window
+                if (
+                    isinstance(window, dict)
+                    and window.get("through") == task.version
+                    and not self.db.info.get("planning_only_reservation")
+                ):
+                    # The version is reserved once per command, so a window sealed
+                    # earlier in this command must not outlive any later change.
+                    task.execution_planning_window = None
                 return task.version
         if expected_version is None:
             from app.runtime_telemetry import metrics
@@ -776,9 +785,9 @@ class TaskService:
             raise ValueError("Summary work fields are derived from leaves; edit the relevant leaf tasks")
 
         self.ensure_expected_version(task, data.expected_version)
-        from app.services.execution_planning_window import current_window
-        # The window in force before any field changes, for a planning-only edit.
-        planning_basis = (task.version, current_window(task))
+        from app.services.execution_planning_window import current_window, execution_context
+        # The window and execution context before any field changes, for a planning-only edit.
+        planning_basis = (task.version, current_window(task), execution_context(task))
 
         update_data = data.model_dump(exclude_unset=True)
         expected_version = update_data.pop("expected_version", None)
@@ -966,24 +975,29 @@ class TaskService:
             # Lock issued work before reserving versions, as an iteration
             # extension does, so the fence observes a stable assignment set.
             issued = await live_assignments(self.db, [task.id, *(child.id for child in children)], lock=True)
-            fence_basis = [(child, child.version, current_window(child)) for child in children if child.id in issued]
+            fence_basis = [
+                (child, child.version, current_window(child), execution_context(child))
+                for child in children
+                if child.id in issued
+            ]
             if task.id in issued:
                 fence_basis.append((task, *planning_basis))
-        for child in children:
-            await self.reserve_task_version(child, child.version)
+        # A repeated reservation inside one command keeps a sealed window only
+        # for a planning-only edit; see reserve_task_version.
+        self.db.info["planning_only_reservation"] = planning_only
+        try:
+            for child in children:
+                await self.reserve_task_version(child, child.version)
+            if changed_fields:
+                from app.services.task_brief_service import clear_acceptance, clear_execution_evidence
+                if {"title", "description", "depends_on", "project_id"}.intersection(changed_fields):
+                    clear_execution_evidence(task)
+                else:
+                    clear_acceptance(task)
+                await self.reserve_task_version(task, expected_version)
+        finally:
+            self.db.info.pop("planning_only_reservation", None)
         if changed_fields:
-            from app.services.task_brief_service import clear_acceptance, clear_execution_evidence
-            if {"title", "description", "depends_on", "project_id"}.intersection(changed_fields):
-                clear_execution_evidence(task)
-            else:
-                clear_acceptance(task)
-            await self.reserve_task_version(task, expected_version)
-            if not planning_only:
-                # A command reserves each version once, so a window sealed by an
-                # earlier step of this command must not outlive an execution-input change.
-                for item in (task, *children):
-                    if current_window(item) is not None:
-                        item.execution_planning_window = None
             await self.record_task_event(
                 task_id,
                 "task_updated",
