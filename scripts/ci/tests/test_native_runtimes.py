@@ -128,6 +128,17 @@ class WorkflowContracts(unittest.TestCase):
                 self.assertNotEqual(evaluate({**full, 'changes': {'result': status, 'outputs': {}}}), 0)
         self.assertNotEqual(evaluate({}), 0)
 
+    def test_only_pull_request_runs_are_cancelled_by_newer_runs(self):
+        # A newer push to main must not cancel a full run of an earlier push;
+        # otherwise a documentation-only push could leave code unverified on main.
+        for name in ('ci.yml', 'client-baseline.yml'):
+            workflow = yaml.safe_load((REPO / '.github/workflows' / name).read_text())
+            self.assertEqual(
+                workflow['concurrency']['cancel-in-progress'],
+                "${{ github.event_name == 'pull_request' }}",
+                name,
+            )
+
     def test_runners_reserve_time_before_toolchain_setup(self):
         ci = yaml.safe_load((REPO / '.github/workflows/ci.yml').read_text())['jobs']
         client = yaml.safe_load((REPO / '.github/workflows/client-baseline.yml').read_text())['jobs']
