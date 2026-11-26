@@ -20,7 +20,7 @@ from app.models.agent import (
     AgentActor, AgentModelBinding, AgentModelCatalogEntry, AgentRun, AgentTaskAssignment, TaskEvent,
 )
 from app.models.external_link import ExternalLink
-from app.models.identity import Principal, PrincipalProfileLink
+from app.models.identity import Principal, PrincipalProfileLink, ProjectMembership
 from app.models.task import Task
 from app.models.team_member import TeamMemberProfile
 from app.utils.github_links import GitHubLinkError, parse_github_url
@@ -210,19 +210,34 @@ class ManualProvenanceService:
         head = parse_github_url(candidate["commit_url"])
         attributed = {parse_github_url(url).sha: {"recorded"} for url in links["commit_urls"]}
         context = {}
+        pr = parse_github_url(candidate["pr_url"]) if candidate["pr_url"] else None
+        base = None if pr else parse_github_url(candidate["base_commit_url"])
+        github = await GitHubStatusService.from_runtime(self.db)
+        # Only the GitHub client's fetch and the parsing of GitHub's payloads are inside this block.
         try:
-            github = await GitHubStatusService.from_runtime(self.db)
-            if candidate["pr_url"]:
-                blocker = await github.verify_review_head(parse_github_url(candidate["pr_url"]), head.sha, attributed,
-                                                          expected_repository=head.repo_full_name, failure_context=context)
+            if pr is not None:
+                blocker = await github.verify_review_head(pr, head.sha, attributed, expected_repository=head.repo_full_name,
+                                                          failure_context=context)
             else:
-                blocker = await github.verify_review_range(parse_github_url(candidate["base_commit_url"]), head, attributed,
-                                                           failure_context=context)
-        except (httpx.HTTPError, json.JSONDecodeError) as exc:
-            # Only the GitHub client's own transport and decoding failures are an outage.
+                blocker = await github.verify_review_range(base, head, attributed, failure_context=context)
+        except httpx.HTTPStatusError as exc:
+            if exc.response.status_code == 404:
+                raise ProvenanceConflict("manual_provenance_candidate_unverifiable",
+                    "GitHub does not show the declared pull request or commits. Check the URL and repository access.",
+                    attribution_gap="candidate_unverifiable") from exc
             raise ProvenanceConflict("manual_provenance_candidate_unverifiable",
-                "GitHub could not confirm the declared candidate. Check the URLs and the GitHub connection, then retry.",
+                "GitHub could not confirm the declared candidate. Check the GitHub connection, then retry.",
                 attribution_gap="github_unavailable") from exc
+        except (httpx.HTTPError, json.JSONDecodeError) as exc:
+            # The GitHub client's own transport and decoding failures are an outage.
+            raise ProvenanceConflict("manual_provenance_candidate_unverifiable",
+                "GitHub could not confirm the declared candidate. Check the GitHub connection, then retry.",
+                attribution_gap="github_unavailable") from exc
+        except (ValueError, KeyError, TypeError, AttributeError) as exc:
+            # A payload GitHub returned that is not the expected shape, as the verdict-time check treats it.
+            raise ProvenanceConflict("manual_provenance_candidate_unverifiable",
+                "GitHub returned a response that does not describe the declared candidate.",
+                attribution_gap="candidate_unverifiable") from exc
         if blocker is None:
             return
         if blocker == "verification_contributors_unverifiable":
@@ -263,7 +278,7 @@ class ManualProvenanceService:
         self._require_consistent_executor(task, data.executor)
         if links["pr_url"] is not None:
             await self._require_task_evidence(task, links["pr_url"])
-        executor = await self._executor(data.executor)
+        executor = await self._executor(data.executor, task)
         record = {"schema": SCHEMA, "brief_revision": task.brief_revision, "artifact_revision": task.artifact_revision,
                   "executor": executor, **links, "reason": data.reason}
         if authority.kind == "agent":
@@ -351,7 +366,25 @@ class ManualProvenanceService:
                 "because a verifier must be independent of the recorder too.")
         return {"kind": "agent", **receipt, "publisher_keys": sorted(set(publishers) | {receipt["publisher_key"]})}
 
-    async def _executor(self, data):
+    async def _require_project_actor(self, actor, task):
+        """The agent executor must belong to the task's project.
+
+        An agent belongs to a project through its principal's project membership, or through an
+        assignment it holds on a task of that project.
+        """
+        if task.project_id is None:
+            return
+        member = await self.db.scalar(select(ProjectMembership.principal_id).join(
+            Principal, Principal.id == ProjectMembership.principal_id).where(
+            Principal.agent_actor_id == actor.id, ProjectMembership.project_id == task.project_id).limit(1))
+        assigned = member is not None or await self.db.scalar(select(AgentTaskAssignment.id).join(
+            Task, Task.id == AgentTaskAssignment.task_id).where(
+            AgentTaskAssignment.actor_id == actor.id, Task.project_id == task.project_id).limit(1)) is not None
+        if not assigned:
+            raise PlanningConflict("manual_provenance_executor_outside_project",
+                "The agent executor is not a member of this task's project and holds no assignment in it.")
+
+    async def _executor(self, data, task):
         if data.kind == "human":
             # Identity rows are server-owned; the recorder's read scope does not decide who the executor is.
             with internal_authority(self.db):
@@ -365,6 +398,8 @@ class ManualProvenanceService:
             actor = await self.db.scalar(select(AgentActor).where(AgentActor.id == data.actor_id))
             if actor is None:
                 raise PlanningConflict("manual_provenance_executor_unknown", "The executor must be a known agent actor.")
+            # Checked before any binding detail is read, so a recorder cannot read back another project's actor.
+            await self._require_project_actor(actor, task)
             receipt = await self._binding_receipt(actor, data.model_binding_id)
         missing = [key for key in ("profile_id", "binding_id", "publisher_key") if not receipt[key]]
         if missing:

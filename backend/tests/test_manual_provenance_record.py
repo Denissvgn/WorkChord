@@ -154,7 +154,7 @@ async def test_recorded_provenance_allows_an_independent_review_of_work_merged_o
         ProjectMembership(principal_id=owner.id, project_id=project.id, role="manager"),
         UserSession(principal_id=owner.id, session_token_hash=digest(human_session), csrf_token="fixture-csrf",
             ip_address="192.0.2.1", user_agent="test", authenticated_at=utc_now(), expires_at=utc_now() + timedelta(hours=1))])
-    for actor, role in ((base.pm, "manager"), (reviewer, "reviewer")):
+    for actor, role in ((base.pm, "manager"), (reviewer, "reviewer"), (executor_actor, "executor")):
         identity = await IdentityService(db).actor_context(actor)
         db.add_all([WorkspaceMembership(principal_id=identity.principal_id, role="member"),
                     ProjectMembership(principal_id=identity.principal_id, project_id=project.id, role=role)])
@@ -381,8 +381,11 @@ async def task_state(factory, task_id):
         return {"version": task.version, "artifact_revision": task.artifact_revision}
 
 
-async def agent_executor(factory, *, publisher="executor-model-maker", enabled=True, key="executor-model"):
-    """An agent actor with a profile and one binding whose catalog entry declares the publisher."""
+async def agent_executor(factory, *, publisher="executor-model-maker", enabled=True, key="executor-model", project_id=None):
+    """An agent actor with a profile and one binding whose catalog entry declares the publisher.
+
+    With a project, the actor's principal is an executor member of it.
+    """
     async with factory() as db:
         profile = TeamMemberProfile(seed_key=f"{key}-profile", display_name="Executor profile", automation_enabled=True,
                                     profile_kind="agent", assignment_modes=["execution"])
@@ -396,6 +399,11 @@ async def agent_executor(factory, *, publisher="executor-model-maker", enabled=T
         await db.flush()
         binding = AgentModelBinding(actor_id=actor.id, model_catalog_id=entry.id, is_default=enabled, enabled=enabled)
         db.add(binding)
+        if project_id is not None:
+            principal = Principal(kind="agent", display_name=actor.display_name, agent_actor_id=actor.id)
+            db.add(principal)
+            await db.flush()
+            db.add(ProjectMembership(principal_id=principal.id, project_id=project_id, role="executor"))
         await db.commit()
         return actor.id, profile.id, binding.id
 
@@ -446,6 +454,11 @@ async def test_record_refuses_unresolved_stale_executed_and_unattributable_work(
         actor = AgentActor(name="profileless-executor", display_name="Profileless executor",
                            api_key_hash="profileless-executor-hash", scopes='["work:execute"]', role="worker")
         db.add(actor)
+        await db.flush()
+        principal = Principal(kind="agent", display_name=actor.display_name, agent_actor_id=actor.id)
+        db.add(principal)
+        await db.flush()
+        db.add(ProjectMembership(principal_id=principal.id, project_id=project_id, role="executor"))
         await db.commit()
         actor_id = actor.id
     task = await task_state(factory, task_id)
@@ -508,7 +521,7 @@ async def test_a_record_cannot_contradict_the_recorded_executor(delivery_store, 
     factory, scenario, _ = delivery_store
     mock_github(monkeypatch, plain_commits(FIRST, HEAD))
     project_id, recorder_id, executor_id, task_id = await provenance_scope(factory, scenario)
-    agent_id, _, _ = await agent_executor(factory)
+    agent_id, _, _ = await agent_executor(factory, project_id=project_id)
     manager = Authority(recorder_id, "human", workspace_role="member", projects={project_id: "manager"})
     async with factory() as db:
         # In scheduled mode any status change stamps its caller; that stamp is not evidence of execution.
@@ -568,7 +581,7 @@ async def test_recorded_contribution_survives_rework_and_accepts_a_retired_bindi
     mock_github(monkeypatch, plain_commits(FIRST, HEAD))
     project_id, recorder_id, _, task_id = await provenance_scope(factory, scenario)
     # The work predates the retirement of the binding; its catalog publisher is still known.
-    agent_id, profile_id, binding_id = await agent_executor(factory, enabled=False)
+    agent_id, profile_id, binding_id = await agent_executor(factory, enabled=False, project_id=project_id)
     async with factory() as db:
         db.info["authority"] = Authority(recorder_id, "human", workspace_role="owner")
         recorded = await ManualProvenanceService(db).record(task_id, write(
@@ -639,7 +652,7 @@ async def test_an_agent_recorder_counts_under_every_enabled_binding(delivery_sto
     factory, scenario, _ = delivery_store
     mock_github(monkeypatch, plain_commits(FIRST, HEAD))
     project_id, _, _, task_id = await provenance_scope(factory, scenario)
-    executor_id, _, _ = await agent_executor(factory)
+    executor_id, _, _ = await agent_executor(factory, project_id=project_id)
     recorder_id, recorder_profile, _ = await agent_executor(factory, publisher="planning-maker-a", key="planning-model")
     async with factory() as db:
         second = AgentModelCatalogEntry(key="planning-other", provider="fixture", publisher_key="planning-maker-b",
@@ -661,3 +674,50 @@ async def test_an_agent_recorder_counts_under_every_enabled_binding(delivery_sto
                  for row in history.contributors if row.get("provenance_role") == "recorder"}
     assert recorders == {(recorder_id, recorder_profile, "planning-maker-a"), (recorder_id, recorder_profile, "planning-maker-b")}
     assert history.publisher_blockers("planning-maker-b") == ["verification_publisher_not_independent"]
+
+
+@pytest.mark.parametrize(("answer", "wording"), [
+    (httpx.Response(200, json=["not", "an", "object"]), "does not describe"),
+    (httpx.Response(200, json={"head": "not-an-object", "commits": 2}), "does not describe"),
+    (httpx.Response(404, json={"message": "Not Found"}), "repository access"),
+], ids=["non-object", "malformed-object", "not-found"])
+async def test_record_reports_unreadable_or_missing_github_answers_as_unverifiable(delivery_store, monkeypatch,  # noqa: F811
+                                                                                  answer, wording):
+    factory, scenario, _ = delivery_store
+
+    async def github(cls, session):
+        return GitHubStatusService(session, transport=httpx.MockTransport(lambda request: answer))
+    monkeypatch.setattr(GitHubStatusService, "from_runtime", classmethod(github))
+    project_id, recorder_id, executor_id, task_id = await provenance_scope(factory, scenario)
+    task = await task_state(factory, task_id)
+    async with factory() as db:
+        db.info["authority"] = Authority(recorder_id, "human", workspace_role="owner")
+        with pytest.raises(PlanningConflict) as refused:
+            await ManualProvenanceService(db).record(task_id, write(task, executor_id))
+    detail = refused.value.detail()
+    assert (detail["code"], detail["attribution_gap"]) == ("manual_provenance_candidate_unverifiable", "candidate_unverifiable")
+    assert wording in detail["message"]
+    assert await task_state(factory, task_id) == task
+
+
+async def test_record_refuses_an_executor_from_another_project(delivery_store, monkeypatch):  # noqa: F811
+    factory, scenario, _ = delivery_store
+    mock_github(monkeypatch, plain_commits(FIRST, HEAD))
+    project_id, recorder_id, _, task_id = await provenance_scope(factory, scenario)
+    outsider, _, _ = await agent_executor(factory, key="outside-model", project_id=scenario.projects[1])
+    task = await task_state(factory, task_id)
+    async with factory() as db:
+        db.info["authority"] = Authority(recorder_id, "human", workspace_role="member", projects={project_id: "manager"})
+        with pytest.raises(PlanningConflict) as refused:
+            await ManualProvenanceService(db).record(task_id, write(task, None, executor={"kind": "agent", "actor_id": outsider}))
+    assert refused.value.code == "manual_provenance_executor_outside_project"
+    assert "publisher" not in refused.value.detail()
+    # An assignment on a task of the project makes the actor part of it.
+    async with factory() as db:
+        db.add(AgentTaskAssignment(task_id=scenario.tasks["planned"], task_version=1, actor_id=outsider, state="cancelled"))
+        await db.commit()
+    async with factory() as db:
+        db.info["authority"] = Authority(recorder_id, "human", workspace_role="member", projects={project_id: "manager"})
+        recorded = await ManualProvenanceService(db).record(task_id, write(task, None,
+                                                                         executor={"kind": "agent", "actor_id": outsider}))
+    assert recorded["executor"]["actor_id"] == outsider
