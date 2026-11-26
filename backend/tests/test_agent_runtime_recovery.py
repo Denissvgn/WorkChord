@@ -23,12 +23,12 @@ from app.utils.time import utc_now
 from tests.test_delivery_scenarios import delivery_store
 
 
-async def peer(factory, key, action, *, body=None, idempotency_key=None, **extra):
+async def peer(factory, key, action, *, body=None, idempotency_key=None, routing_mode="off", **extra):
     database_url = factory.kw["bind"].url.render_as_string(hide_password=False)
     process = await asyncio.create_subprocess_exec(
         sys.executable, "-m", "tests.support.runtime_peer",
         stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE, env={**os.environ, "WORKCHORD_AUTH_MODE": "trusted_local", "MODEL_AWARE_ROUTING_MODE": "off"},
+        stderr=asyncio.subprocess.PIPE, env={**os.environ, "WORKCHORD_AUTH_MODE": "trusted_local", "MODEL_AWARE_ROUTING_MODE": routing_mode},
     )
     packet = dict(database_url=database_url, key=key, action=action, body=body,
                   idempotency_key=idempotency_key, **extra)
@@ -71,14 +71,14 @@ async def seed_work(factory, scenario):
         return task.id, assignment.id
 
 
-async def begin_next(factory, key, logical_key):
-    decision = await peer(factory, key, "work")
+async def begin_next(factory, key, logical_key, routing_mode="off"):
+    decision = await peer(factory, key, "work", routing_mode=routing_mode)
     assert decision["ok"], decision
     work = decision["response"]
     assert work["state"] == "start_assigned", {"state": work["state"], "blocked": work["blocked_assigned"]}
     item = work["next"]
     body = dict(assignment_id=item["assignment"]["id"], queue_revision=work["queue_revision"], lease_seconds=60)
-    begun = await peer(factory, key, "begin", body=body, idempotency_key=logical_key)
+    begun = await peer(factory, key, "begin", body=body, idempotency_key=logical_key, routing_mode=routing_mode)
     assert begun["ok"], begun
     return begun, body
 
@@ -227,33 +227,38 @@ async def test_process_restart_ambiguous_replay_and_independent_rework(delivery_
         assert len(runs) == 2 and all(run.status == "succeeded" for run in runs)
 
 
-async def test_process_restart_expired_fence_requeue_and_failure(delivery_store):
+@pytest.mark.parametrize("routing_mode", ["off", "enforced"])
+async def test_process_restart_expired_fence_requeue_and_failure(delivery_store, routing_mode):
+    # These actors have no ready team topology, so a configured enforced mode is effectively off.
     factory, scenario, _ = delivery_store
     task_id, _ = await seed_work(factory, scenario)
     key = scenario.actor_keys[0]
-    begun, _ = await begin_next(factory, key, "begin-expiry")
+    begun, _ = await begin_next(factory, key, "begin-expiry", routing_mode)
     receipt = begun["response"]
     async with factory() as db:
         task = await db.get(Task, task_id)
         task.claim_expires_at = utc_now() - timedelta(seconds=1)
         await db.commit()
-    expired = await peer(factory, key, "renew", body=fence(receipt), idempotency_key="renew-expired")
+    expired = await peer(factory, key, "renew", body=fence(receipt), idempotency_key="renew-expired", routing_mode=routing_mode)
     assert not expired["ok"], expired
-    decision = await peer(factory, key, "work")
+    decision = await peer(factory, key, "work", routing_mode=routing_mode)
     assert decision["ok"] and decision["response"]["state"] == "attention_required"
     requeued = await peer(factory, "disposable-protocol-pm-key", "requeue", task_id=task_id, body=dict(actor_id=scenario.actors[0],
         expected_task_version=receipt["task"]["version"], expected_live_assignment_ids=[receipt["assignment"]["id"]],
-        expected_running_run_ids=[receipt["run"]["id"]], expected_claim_generation=receipt["claim_generation"], reason="Recover expired process"), idempotency_key="requeue-expiry")
+        expected_running_run_ids=[receipt["run"]["id"]], expected_claim_generation=receipt["claim_generation"], reason="Recover expired process"),
+        idempotency_key="requeue-expiry", routing_mode=routing_mode)
     assert requeued["ok"], requeued
     issued = requeued["response"]["assignment"]
     assert issued["routing_snapshot"]["supervised_actor_id"] == scenario.actors[0]
-    # In off mode the requeued recovery is directly executable, with no hand-made replacement.
-    recovered, _ = await begin_next(factory, key, "begin-recovery")
+    # With routing effectively off the requeued recovery is directly executable, with no hand-made replacement.
+    recovered, _ = await begin_next(factory, key, "begin-recovery", routing_mode)
     assert recovered["response"]["assignment"]["id"] == issued["id"]
-    old = await peer(factory, key, "submit", body=dict(**fence(receipt), summary="Stale process result", evidence={"inspection": "Old evidence"}), idempotency_key="stale-submit")
+    old = await peer(factory, key, "submit", body=dict(**fence(receipt), summary="Stale process result", evidence={"inspection": "Old evidence"}),
+                     idempotency_key="stale-submit", routing_mode=routing_mode)
     assert not old["ok"] and old["error_type"] in {"AgentConflictError", "TaskVersionConflictError"}, old
     failed = await peer(factory, key, "fail", body=dict(**fence(recovered["response"]), status="failed",
-        error="Controlled external interruption", evidence={"interruption": "Simulated process failure"}), idempotency_key="fail-recovery")
+        error="Controlled external interruption", evidence={"interruption": "Simulated process failure"}),
+        idempotency_key="fail-recovery", routing_mode=routing_mode)
     assert failed["ok"] and failed["response"]["recovery_required"], failed
 
 

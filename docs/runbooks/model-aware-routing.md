@@ -197,12 +197,13 @@ Enforced mode continues to require a fresh model-aware selection.
 
 A typed recovery requeue always records the pending model lineage, including
 the earlier review floor. Whether its new assignment can begin depends on the
-effective mode for the recovery actor:
+effective mode for the recovery actor. A configured `shadow` or `enforced`
+mode counts as `off` while the actor has no ready team topology:
 
 | Effective mode | Result |
 | --- | --- |
 | `off` | The recovery is supervised and the actor can begin it at once. |
-| `shadow` | The recovery is supervised when the team's primary PM issues it, no earlier assignment carries model-aware routing, and at most one reviewer profile is recorded and it is not the recovery actor's. Otherwise the requeue is refused and nothing changes. |
+| `shadow` | The recovery is supervised when the team's primary PM issues it, no earlier assignment carries model-aware routing (a rework that began as a supervised handback does not count), and at most one reviewer profile is recorded and it is not the recovery actor's. Otherwise the requeue is refused and nothing changes. |
 | `enforced` | The recovery waits with `routing_selection_pending` until a model-aware assignment update completes a fresh selection. |
 
 A supervised recovery takes the single recorded reviewer profile when there is
@@ -215,11 +216,20 @@ A refused requeue returns `recovery_supervision_unavailable` with a
 - `primary_pm_required`: only the team's primary PM can issue it.
 - `model_aware_history`: earlier assignments, listed in
   `model_aware_assignment_ids`, need a fresh model-aware selection. Recover
-  the task once routing is enforced.
+  the task once routing is enforced, or use the supervised path below.
 - `reviewer_profile_ambiguous`: earlier assignments name several reviewer
-  profiles, listed in `reviewer_profile_ids`.
+  profiles, listed in `reviewer_profile_ids`. Use the supervised path below
+  and name the reviewer profile.
 - `reviewer_profile_not_independent`: the recovery actor's profile is the
   recorded reviewer profile. Choose another recovery actor.
+
+For `model_aware_history` and `reviewer_profile_ambiguous` in shadow mode, the
+PM can instead make the decision explicitly. Cancel any queued stale execution
+assignment with an assignment update. Then create a supervised assignment with
+`purpose` `execution` and `queue_class` `recovery`, the chosen actor and an
+explicit `reviewer_profile_id` through assignment create, which shadow mode
+permits. Supervised assignment create does not carry the model-aware lineage,
+so record the reason for the choice in its rationale.
 
 ## Extending an iteration with assigned work
 

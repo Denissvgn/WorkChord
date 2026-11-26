@@ -655,7 +655,7 @@ class AgentWorkService:
         if not reworks:
             return set()
         rows = await self.db.execute(select(AgentRun.assignment_id, AgentRun.actor_id, AgentRun.execution_provenance).where(
-            AgentRun.task_id == task_id, AgentRun.assignment_id.in_(reworks)))
+            AgentRun.task_id == task_id, AgentRun.assignment_id.in_(list(reworks))))
         return {assignment_id for assignment_id, actor_id, provenance in rows
                 if actor_id == reworks[assignment_id] and isinstance(provenance, dict)
                 and isinstance(provenance.get("supervised_rework"), dict)
@@ -664,6 +664,7 @@ class AgentWorkService:
     @classmethod
     def _shadow_recovery_refusal(cls, principal, boundary, target, task_assignments, reviewer_ids, supervised_reworks):
         """Name the first condition that keeps a shadow recovery from being supervised."""
+        # Unlike off, shadow refuses these cases: a shadow supervised recovery can later authenticate strict handback evidence.
         if boundary is None or boundary.primary_actor_id != principal.id:
             return {"condition": "primary_pm_required",
                     "message": "Only the team's primary PM can issue a supervised recovery while routing is in shadow mode"}
