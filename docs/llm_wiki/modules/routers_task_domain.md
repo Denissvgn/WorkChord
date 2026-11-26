@@ -22,7 +22,7 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.schemas.github` | `GitHubReconciliationResponse` |
 | `app.schemas.planning_inputs` | `PlanningInputContext`, `MemberPlanningIntent` |
 | `app.schemas.task` | `TaskCreate`, `TaskResponse` |
-| `app.schemas.task_brief` | `BriefWrite`, `BriefConvert`, `ProgressWrite`, `TaskReviewWrite`, `TaskReviewResponse`, `CurrentTaskReviewResponse` |
+| `app.schemas.task_brief` | `BriefWrite`, `BriefConvert`, `OwnerAcceptanceWrite`, `ProgressWrite`, `TaskReviewWrite`, `TaskReviewResponse`, `CurrentTaskReviewResponse` |
 | `app.schemas.task_detail` | `TaskDetailResponse`, `TaskReferencePage`, `HumanWorkResponse` |
 | `app.schemas.task_domain` | `BacklogRestoreRequest`, `TaskActionRequest`, `TaskActionsResponse` |
 | `app.schemas.task_replacement` | `TaskReplacementCreate`, `TaskReplacementResponse` |
@@ -106,6 +106,7 @@ flowchart LR
 | `convert_task_brief` | *(async)* `(task_id: int, data: BriefConvert, db: DB)` | `@router.post('/tasks/{task_id}/brief/convert')` | — |
 | `record_task_progress` | *(async)* `(task_id: int, data: ProgressWrite, db: DB)` | `@router.post('/tasks/{task_id}/progress', response_model=TaskResponse)` | — |
 | `review_task` | *(async)* `(task_id: int, data: TaskReviewWrite, db: DB)` | `@router.post('/tasks/{task_id}/review', response_model=TaskResponse)` | — |
+| `owner_accept_task` | *(async)* `(task_id: int, data: OwnerAcceptanceWrite, db: DB)` | `@router.post('/tasks/{task_id}/owner-acceptance', response_model=TaskResponse)` | Accept resolved work as a signed-in owner while the different-publisher policy stays on. |
 | `task_reviews` | *(async)* `(task_id: int, db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/{task_id}/reviews', response_model=list[TaskReviewResponse])` | — |
 | `current_task_review` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/reviews/current', response_model=CurrentTaskReviewResponse)` | — |
 | `brief_history_page` | *(async)* `(db, task_id, model, after_id, limit)` | — | — |

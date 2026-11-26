@@ -170,7 +170,7 @@ flowchart LR
 | NativeSessionService.approver | AuthorityError | 39 | `AuthorityError('human_session_required', 'Sign in with a human account to connect a device.', 403)` |
 | NativeSessionService.approver | AuthorityError | 44 | `AuthorityError('human_session_required', 'Sign in with a human account to connect a device.', 403)` |
 | NativeSessionService.describe | internal_authority | 82 | `internal_authority(self.db)` |
-| internal_authority | db.info.get | 99 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get | 113 | `db.info.get('authority_internal', False)` |
 | NativeSessionService.describe | NativeSessionService.connection | 83 | `self.connection(request_id)` |
 
 ### Boundary effects
@@ -182,7 +182,7 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | unresolved_call | `NativeSessionService.approver` | `self.db.info.get` | 33 |
-| unresolved_call | `internal_authority` | `db.info.get` | 99 |
+| unresolved_call | `internal_authority` | `db.info.get` | 113 |
 | step_limit | `describe_native_connection` | `first 12 steps` | 0 |
 
 ## Behavior

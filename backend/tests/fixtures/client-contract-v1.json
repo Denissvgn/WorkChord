@@ -1060,6 +1060,12 @@
           "lead_time": {
             "$ref": "#/components/schemas/DurationSamples"
           },
+          "owner_override_acceptance_events": {
+            "default": 0,
+            "description": "Acceptances in the window that an owner recorded as an override of publisher independence. They are included in acceptance_events and are not independent reviews.",
+            "title": "Owner Override Acceptance Events",
+            "type": "integer"
+          },
           "queues_truncated": {
             "default": false,
             "title": "Queues Truncated",
@@ -2524,6 +2530,48 @@
           "renewable_until"
         ],
         "title": "NativeTokenResponse",
+        "type": "object"
+      },
+      "OwnerAcceptanceWrite": {
+        "additionalProperties": false,
+        "description": "An owner's acceptance of one resolved task without a verified review publisher.",
+        "properties": {
+          "artifact_revision": {
+            "minimum": 0.0,
+            "title": "Artifact Revision",
+            "type": "integer"
+          },
+          "brief_revision": {
+            "minimum": 0.0,
+            "title": "Brief Revision",
+            "type": "integer"
+          },
+          "evidence": {
+            "default": "",
+            "maxLength": 8000,
+            "title": "Evidence",
+            "type": "string"
+          },
+          "expected_version": {
+            "minimum": 1.0,
+            "title": "Expected Version",
+            "type": "integer"
+          },
+          "reason": {
+            "description": "Why the owner accepts this work without an independent publisher review.",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expected_version",
+          "brief_revision",
+          "artifact_revision",
+          "reason"
+        ],
+        "title": "OwnerAcceptanceWrite",
         "type": "object"
       },
       "PlanCheckpoint": {
@@ -4873,6 +4921,16 @@
           "id": {
             "title": "Id",
             "type": "integer"
+          },
+          "kind": {
+            "default": "review",
+            "description": "owner_override marks an owner's acceptance that set aside publisher independence; it is not an independent review.",
+            "enum": [
+              "review",
+              "owner_override"
+            ],
+            "title": "Kind",
+            "type": "string"
           },
           "principal_id": {
             "anyOf": [
@@ -10541,6 +10599,59 @@
         "summary": "Move Task",
         "tags": [
           "Tasks"
+        ]
+      }
+    },
+    "/api/tasks/{task_id}/owner-acceptance": {
+      "post": {
+        "description": "Accept resolved work as a signed-in owner while the different-publisher policy stays on.\n\nThe acceptance is recorded as an owner override, never as an independent review.",
+        "operationId": "owner_accept_task_api_tasks__task_id__owner_acceptance_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "title": "Task Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OwnerAcceptanceWrite"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Owner Accept Task",
+        "tags": [
+          "Task domain"
         ]
       }
     },
