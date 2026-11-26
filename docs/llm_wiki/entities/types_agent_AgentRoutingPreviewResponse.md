@@ -1,6 +1,6 @@
 # AgentRoutingPreviewResponse
 
-**Location:** `frontend/src/types/agent.ts:474`
+**Location:** `frontend/src/types/agent.ts:479`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

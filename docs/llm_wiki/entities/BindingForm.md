@@ -1,6 +1,6 @@
 # BindingForm
 
-**Location:** `frontend/src/components/team/AgentModelAdministration.tsx:55`
+**Location:** `frontend/src/components/team/AgentModelAdministration.tsx:56`
 **Kind:** Interface
 **Bases:** —
 **Module:** [AgentModelAdministration](../modules/AgentModelAdministration.md)

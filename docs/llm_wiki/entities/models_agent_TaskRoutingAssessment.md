@@ -1,6 +1,6 @@
 # TaskRoutingAssessment
 
-**Location:** `backend/app/models/agent.py:723`
+**Location:** `backend/app/models/agent.py:727`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)

@@ -1,6 +1,6 @@
 # AgentRoutingCandidate
 
-**Location:** `frontend/src/types/agent.ts:394`
+**Location:** `frontend/src/types/agent.ts:397`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -37,6 +37,7 @@ _Auto-generated from `AgentRoutingCandidate` in `frontend/src/types/agent.ts`._
 | `tool_tags` | `string[]` | Yes | — | — |
 | `data_policy_tags` | `string[]` | Yes | — | — |
 | `cost_tier` | `ModelCostTier` | Yes | — | — |
+| `local_first` | `boolean` | Yes | — | — |
 | `latency_tier` | `ModelLatencyTier` | Yes | — | — |
 | `available_capacity_days` | `number` | Yes | — | — |
 | `committed_effort_days` | `number` | Yes | — | — |

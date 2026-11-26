@@ -25,11 +25,11 @@
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1157,
+      "modules": 1158,
       "workflows": 232
     },
     "dependency_architecture": 2,
-    "total": 3839
+    "total": 3840
   },
   "dependency_pages": {
     "count": 2,
@@ -34994,7 +34994,7 @@
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 1199,
+          "step_count": 1202,
           "truncated": true
         }
       },
@@ -51486,6 +51486,7 @@
         "modules/20261124_0022_capacity_adjustments.md",
         "modules/20261124_0023_task_replacements.md",
         "modules/20261124_0024_delivery_dependency_target_branch.md",
+        "modules/20261126_0025_catalog_local_first.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -53178,8 +53179,7 @@
         "modules/routers_agent.md",
         "modules/services_review_evidence.md",
         "modules/test_agent_routing_service.md",
-        "modules/test_agent_routing_wave3_contract.md",
-        "modules/test_agent_routing_wave6_qualification.md"
+        "modules/test_agent_routing_wave3_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_routing.py",
@@ -78316,6 +78316,16 @@
       "role": "semantic",
       "source_path": "backend/app/migrations/versions/20261124_0024_delivery_dependency_target_branch.py",
       "title": "20261124_0024_delivery_dependency_target_branch Module"
+    },
+    {
+      "canonical_path": "modules/20261126_0025_catalog_local_first.md",
+      "id": "20261126_0025_catalog_local_first",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/20261126_0025_catalog_local_first",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/app/migrations/versions/20261126_0025_catalog_local_first.py",
+      "title": "20261126_0025_catalog_local_first Module"
     },
     {
       "canonical_path": "modules/acceptance_artifacts.md",
@@ -113224,6 +113234,7 @@
         "modules/20261124_0022_capacity_adjustments.md",
         "modules/20261124_0023_task_replacements.md",
         "modules/20261124_0024_delivery_dependency_target_branch.md",
+        "modules/20261126_0025_catalog_local_first.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -114392,6 +114403,7 @@
         "modules/20261124_0022_capacity_adjustments.md",
         "modules/20261124_0023_task_replacements.md",
         "modules/20261124_0024_delivery_dependency_target_branch.md",
+        "modules/20261126_0025_catalog_local_first.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -115531,5 +115543,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:12c1601017a27009cdf5889396e5ff6aeb6e4853490edbc782e709c1a713bf36"
+  "source_hash": "sha256:ebf6b08a71139077cf0140dae35f39c86ab6de01fef09a8ed0b5d0b3c8c924e1"
 }

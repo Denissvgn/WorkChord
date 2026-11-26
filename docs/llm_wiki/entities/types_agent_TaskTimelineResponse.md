@@ -1,6 +1,6 @@
 # TaskTimelineResponse
 
-**Location:** `frontend/src/types/agent.ts:655`
+**Location:** `frontend/src/types/agent.ts:660`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

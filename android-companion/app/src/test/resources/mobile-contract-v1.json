@@ -301,6 +301,12 @@
             "latency_tier": {
               "$ref": "#/components/schemas/LatencyTier"
             },
+            "local_first": {
+              "default": false,
+              "description": "Prefer this free or local model over a hosted one of equal adequacy; never overrides a gate.",
+              "title": "Local First",
+              "type": "boolean"
+            },
             "modality_tags": {
               "items": {
                 "type": "string"
@@ -423,6 +429,12 @@
             },
             "latency_tier": {
               "$ref": "#/components/schemas/LatencyTier"
+            },
+            "local_first": {
+              "default": false,
+              "description": "Prefer this free or local model over a hosted one of equal adequacy; never overrides a gate.",
+              "title": "Local First",
+              "type": "boolean"
             },
             "modality_tags": {
               "items": {
@@ -557,6 +569,17 @@
                   "type": "null"
                 }
               ]
+            },
+            "local_first": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Local First"
             },
             "modality_tags": {
               "anyOf": [

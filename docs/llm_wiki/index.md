@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1809 | [Open section](#entities) |
-| Modules | 1157 | [Open section](#modules) |
+| Modules | 1158 | [Open section](#modules) |
 | Workflows | 232 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 624 | [Open section](#entry-point-flows) |
@@ -1860,6 +1860,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261124_0022_capacity_adjustments](modules/20261124_0022_capacity_adjustments.md) - Record dated availability adjustments on iteration capacity rows.
 - [20261124_0023_task_replacements](modules/20261124_0023_task_replacements.md) - Record audited clean-replacement dispositions between tasks.
 - [20261124_0024_delivery_dependency_target_branch](modules/20261124_0024_delivery_dependency_target_branch.md) - Let a delivery prerequisite require accepted code merged on a named branch.
+- [20261126_0025_catalog_local_first](modules/20261126_0025_catalog_local_first.md) - Let a model catalog entry prefer a free or local model at equal adequacy.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AccountMenu](modules/AccountMenu.md) - `frontend/src/features/identity/AccountMenu.tsx`
 - [AccountMenu.test](modules/AccountMenu.test.md) - `frontend/src/features/identity/AccountMenu.test.tsx`

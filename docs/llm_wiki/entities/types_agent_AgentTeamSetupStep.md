@@ -1,6 +1,6 @@
 # AgentTeamSetupStep
 
-**Location:** `frontend/src/types/agent.ts:833`
+**Location:** `frontend/src/types/agent.ts:838`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

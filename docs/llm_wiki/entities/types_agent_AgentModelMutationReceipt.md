@@ -1,6 +1,6 @@
 # AgentModelMutationReceipt
 
-**Location:** `frontend/src/types/agent.ts:282`
+**Location:** `frontend/src/types/agent.ts:285`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
