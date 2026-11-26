@@ -224,3 +224,28 @@ llm-wiki sync --rebuild-cache --rebuild-knowledge --jobs 1 --src-dir . --wiki-di
   and confirm it reports no changes, then run `llm-wiki lint --strict --jobs 1`
   and `llm-wiki ci-check --format json --jobs 1` with the same source and wiki
   arguments, and confirm the ownership records are unchanged.
+
+### Team policy
+
+`.llm-wiki/team.json` is the shared wiki policy for everyone who changes the
+code, people and agents alike. With it present, `lint` and `ci-check` reject a
+wiki directory that differs from the configured one, and the final checks
+include:
+
+```bash
+.venv/bin/llm-wiki team check --src-dir . --wiki-dir docs/llm_wiki --jobs 1
+```
+
+- Keep the wiki current in every pull request that changes a class, function,
+  module or cross-module flow, rather than in one large refresh before a
+  release. Small syncs stay fast because the caches stay warm.
+- Run wiki writes one at a time from a single normal checkout at a fixed path
+  with the canonical `origin`, for the cache reasons above.
+- When two pull requests both changed generated pages, merge one, update the
+  other from `main`, and run `llm-wiki team resolve-conflicts --wiki-dir
+  docs/llm_wiki` (add `--write` to apply). It resolves generated pages only;
+  workflow pages and written descriptions are resolved by hand.
+- Canonical page naming is off for now: older retained "Retired source
+  member" pages lack the removal record that the naming rule requires. Turn
+  `conventions.canonical_naming` on once those pages can be validated or
+  released.

@@ -5,7 +5,7 @@
     "required_skills": []
   },
   "conventions": {
-    "canonical_naming": true,
+    "canonical_naming": false,
     "require_log": true,
     "required_dirs": [
       "entities",
