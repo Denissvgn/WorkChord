@@ -209,7 +209,7 @@ flowchart LR
 | require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
 | get_iteration_plan_readiness (backend/app/routers/agent_planning.py) | get_iteration_plan_readiness (backend/app/mcp_agent_tools.py) | 139 | `mcp_agent_tools.get_iteration_plan_readiness(db, iteration_id)` |
 | get_iteration_plan_readiness (backend/app/mcp_agent_tools.py) | IterationService.get_planning_readiness_summary | 654 | `IterationService(db).get_planning_readiness_summary(iteration_id)` |
-| IterationService.get_planning_readiness_summary | IterationService.get_by_id | 538 | `self.get_by_id(iteration_id)` |
+| IterationService.get_planning_readiness_summary | IterationService.get_by_id | 540 | `self.get_by_id(iteration_id)` |
 | IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 338 | `self.db.execute(...)` |
 | IterationService.get_by_id | select(…).options(…).where (backend/app/services/iter…terationService.get_by_id) | 339 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
 

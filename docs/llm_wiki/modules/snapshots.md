@@ -12,9 +12,10 @@ Snapshots API router.
 |--------|---------|
 | `app.commands` | `commit_or_flush` |
 | `app.database` | `get_db` |
+| `app.models.task` | `TaskStatus` |
 | `app.routers.export` | `_optional_int`, `_process_import`, `_validate_import_task_tree` |
 | `app.schemas.snapshot` | `SnapshotRestoreRequest`, `SnapshotRestoreResponse` |
-| `app.schemas.task` | `TaskCreate`, `TaskStatus` |
+| `app.schemas.task` | `TaskCreate` |
 | `app.schemas.team` | `TeamMemberCreate`, `VacationCreate` |
 | `app.security` | `require_admin_api_key` |
 | `app.services.hierarchy_repair_service` | `HierarchyRepairService`, `HierarchyRepairService` |
@@ -47,7 +48,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (3) |
-| Outbound | `backend` (12) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -55,14 +56,14 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [HierarchyRepairRequest](../entities/HierarchyRepairRequest.md) | 241 | `BaseModel` | — |
-| [LegacySnapshotImportRequest](../entities/LegacySnapshotImportRequest.md) | 269 | `BaseModel` | — |
+| [HierarchyRepairRequest](../entities/HierarchyRepairRequest.md) | 243 | `BaseModel` | — |
+| [LegacySnapshotImportRequest](../entities/LegacySnapshotImportRequest.md) | 271 | `BaseModel` | — |
 
 ## Functions
 

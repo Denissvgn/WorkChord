@@ -4213,3 +4213,24 @@ Refreshed against the 1.10.0 code. New and changed subjects: delivery prerequisi
 - Workflow pages created: 1
 - Dependency pages initialized: 0
 - Surface policy updated: no
+
+## 2026-11-26
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:78385bcdcb88c10210c6d107a853de8a3a4bba951dd2725cb6fa1e853b96d14a`
+- Pages created: 24
+- Pages updated: 104
+- Pages metadata-only: 4
+- Pages skipped (unchanged): 3702
+- Pages deprecated: 1
+- Semantic fields preserved: 20
+- Moved entities: none
+- Flow pages initialized: 3 (http=3)
+- Workflow pages created: 4
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Generated surface pages retired: 1
