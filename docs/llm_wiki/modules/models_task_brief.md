@@ -56,7 +56,7 @@ flowchart LR
 |-------|------|-------|-------------|
 | [TaskBriefRevision](../entities/TaskBriefRevision.md) | 16 | `Base` | — |
 | [TaskProgressRecord](../entities/TaskProgressRecord.md) | 30 | `Base` | — |
-| [TaskReviewRecord](../entities/TaskReviewRecord.md) | 44 | `Base` | — |
+| [TaskReviewRecord](../entities/models_task_brief_TaskReviewRecord.md) | 44 | `Base` | — |
 
 ## Functions
 

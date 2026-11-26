@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1814 | [Open section](#entities) |
-| Modules | 1163 | [Open section](#modules) |
+| Entities | 1815 | [Open section](#entities) |
+| Modules | 1166 | [Open section](#modules) |
 | Workflows | 235 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 625 | [Open section](#entry-point-flows) |
@@ -1106,7 +1106,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskReplacementService](entities/TaskReplacementService.md)
 - [TaskResponse](entities/TaskResponse.md)
 - [TaskReviewMode](entities/TaskReviewMode.md)
-- [TaskReviewRecord](entities/TaskReviewRecord.md)
 - [TaskReviewResponse](entities/TaskReviewResponse.md)
 - [TaskReviewWrite](entities/TaskReviewWrite.md)
 - [TaskRoutingAssessmentCreate](entities/TaskRoutingAssessmentCreate.md)
@@ -1368,6 +1367,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [models_saved_view_SavedViewType](entities/models_saved_view_SavedViewType.md)
 - [models_task_Task](entities/models_task_Task.md)
 - [models_task_TaskStatus](entities/models_task_TaskStatus.md)
+- [models_task_brief_TaskReviewRecord](entities/models_task_brief_TaskReviewRecord.md)
 - [models_template_TemplateType](entities/models_template_TemplateType.md)
 - [models_template_WorkTemplate](entities/models_template_WorkTemplate.md)
 - [models_time_entry_TimeEntry](entities/models_time_entry_TimeEntry.md)
@@ -1757,6 +1757,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_task_TaskProject](entities/types_task_TaskProject.md)
 - [types_task_TaskReference](entities/types_task_TaskReference.md)
 - [types_task_TaskReferencePage](entities/types_task_TaskReferencePage.md)
+- [types_task_TaskReviewRecord](entities/types_task_TaskReviewRecord.md)
 - [types_task_TaskStatus](entities/types_task_TaskStatus.md)
 - [types_task_TaskStatusChangeResponse](entities/types_task_TaskStatusChangeResponse.md)
 - [types_task_TaskStatusLog](entities/types_task_TaskStatusLog.md)
@@ -2151,11 +2152,14 @@ Retained history; these declarations are absent from the selected source invento
 - [TaskList](modules/TaskList.md) - `frontend/src/components/tasks/TaskList.tsx`
 - [TaskList.test](modules/TaskList.test.md) - `frontend/src/components/tasks/TaskList.test.tsx`
 - [TaskMergeDialog](modules/TaskMergeDialog.md) - `frontend/src/components/tasks/TaskMergeDialog.tsx`
+- [TaskOwnerAcceptance](modules/TaskOwnerAcceptance.md) - `frontend/src/components/tasks/TaskOwnerAcceptance.tsx`
+- [TaskOwnerAcceptance.test](modules/TaskOwnerAcceptance.test.md) - `frontend/src/components/tasks/TaskOwnerAcceptance.test.tsx`
 - [TaskReadView](modules/TaskReadView.md) - `frontend/src/components/tasks/TaskReadView.tsx`
 - [TaskReadView.brief.test](modules/TaskReadView.brief.test.md) - `frontend/src/components/tasks/TaskReadView.brief.test.tsx`
 - [TaskReadView.dispatch.test](modules/TaskReadView.dispatch.test.md) - `frontend/src/components/tasks/TaskReadView.dispatch.test.tsx`
 - [TaskReadView.operatorKey.test](modules/TaskReadView.operatorKey.test.md) - `frontend/src/components/tasks/TaskReadView.operatorKey.test.tsx`
 - [TaskReadView.test](modules/TaskReadView.test.md) - `frontend/src/components/tasks/TaskReadView.test.tsx`
+- [TaskReviewHistory](modules/TaskReviewHistory.md) - `frontend/src/components/tasks/TaskReviewHistory.tsx`
 - [TaskReviewer](modules/TaskReviewer.md) - `frontend/src/components/tasks/TaskReviewer.tsx`
 - [TaskRoutingPanel](modules/TaskRoutingPanel.md) - `frontend/src/components/agent/TaskRoutingPanel.tsx`
 - [TaskRoutingPanel.test](modules/TaskRoutingPanel.test.md) - `frontend/src/components/agent/TaskRoutingPanel.test.tsx`
