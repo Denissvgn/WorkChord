@@ -28,6 +28,20 @@ The interface uses these names on tasks:
 
 Cancellation retains lifecycle history and invalidates agent execution ownership. Canceling an active claim requires the current claim generation, running run IDs and live assignment IDs returned by the actions endpoint. Reopening invalidates current acceptance. Agent execution continues through the assigned-work protocol with its current claim fence; manual execution is for humans.
 
+## Planning-only edits and issued work
+
+Every change to a task raises its version, and editing a summary task also raises the versions of its subtasks. An agent assignment is bound to the task version it was issued for. Normally a new version makes a queued or accepted assignment stale (`assignment_task_version_stale`), and the work comes back through recovery.
+
+A few fields only organize the plan and never change what the assignee or reviewer must do. These are the planning-only fields:
+
+| Field | Meaning |
+| --- | --- |
+| `milestone_id` | The project milestone the task counts toward. |
+
+If an edit changes only planning-only fields, a queued or accepted assignment on the task stays valid. So do assignments on the subtasks of an edited summary task. The run, the claim, routing (model-aware assignments included) and the recorded progress and evidence are all kept. The task still gets a new version, so editors must reload before writing again. The kept assignment still needs its original authenticated dispatch or begin receipt. Ownership, team, review policy and model bindings must also be unchanged. If any of these checks fails, the assignment goes stale as usual. Each kept assignment adds a `task.execution_planning_window` event to its task's timeline, with `window_kind: "planning_only_edit"`, the changed `fields`, the edited task and the assignment IDs.
+
+Every other field is an execution input. These include the title, description and brief, assignee, waits-for dependencies, project, dates and date limits, effort, priority, labels, the deferred and optional flags, and source fields. An edit that changes any execution input still makes issued work stale, even if it also changes a milestone. To restart that work, use a recovery requeue.
+
 ## Deferred and optional work
 
 `is_deferred` and `is_optional` are scheduling policy fields inherited through a task's complete ancestry. Deferred leaves are excluded from active required work and ordinary queue/execution eligibility. Optional leaves remain distinguishable from required commitments. Structural parents do not add delivered work; canceled and deferred work do not increase required completion or acceptance denominators. Deferral retains identity, content and history. Use the current actions projection to determine which commands are available after policy or ownership changes.

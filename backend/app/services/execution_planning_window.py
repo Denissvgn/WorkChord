@@ -1,4 +1,8 @@
-"""Preserve a proved assignment context across an iteration end-date extension."""
+"""Preserve a proved assignment context across a planning change that leaves execution inputs alone.
+
+Two changes qualify: an explicit iteration end-date extension, and a task edit
+confined to ``PLANNING_ONLY_FIELDS``.
+"""
 
 from __future__ import annotations
 
@@ -27,6 +31,24 @@ from app.models.team_member import TeamMember
 
 LIVE_ASSIGNMENT_STATES = ("queued", "accepted")
 LIVE_RUN_STATE = "running"
+
+ITERATION_END_EXTENSION = "iteration_end_extension"
+PLANNING_ONLY_EDIT = "planning_only_edit"
+WINDOW_KINDS = (ITERATION_END_EXTENSION, PLANNING_ONLY_EDIT)
+
+# The only task fields whose change never alters what an issued executor or
+# reviewer must do. A task edit confined to these fields still reserves a new
+# task version, but a sealed queued or accepted assignment stays valid across
+# it. Every other field (brief, title, description, assignee, dependencies,
+# project, dates, effort, priority, labels, policy flags, source) remains an
+# execution input and stales the assignment. Keep this set conservative and in
+# step with docs/task-domain.md.
+PLANNING_ONLY_FIELDS = frozenset({"milestone_id"})
+
+
+def is_planning_only_change(changed_fields) -> bool:
+    """True when a non-empty set of changed task fields lies inside ``PLANNING_ONLY_FIELDS``."""
+    return bool(changed_fields) and set(changed_fields) <= PLANNING_ONLY_FIELDS
 
 
 def digest(value):
@@ -97,7 +119,7 @@ def current_window(task):
     window = getattr(task, "execution_planning_window", None)
     if (
         isinstance(window, dict)
-        and window.get("kind") == "iteration_end_extension"
+        and window.get("kind") in WINDOW_KINDS
         and window.get("through") == task.version
         and type(window.get("from")) is int
         and 0 < window["from"] < task.version
@@ -403,7 +425,7 @@ async def require_window_authority(db, task, assignment):
         )
 
 
-def make_window(task, old_version, assignments, *, prior=None, evidence):
+def make_window(task, old_version, assignments, *, prior=None, evidence, kind=ITERATION_END_EXTENSION):
     eligible = {
         str(row.id): assignment_context(row)
         for row in assignments
@@ -418,7 +440,7 @@ def make_window(task, old_version, assignments, *, prior=None, evidence):
     if not eligible or task.version != old_version + 1:
         return None
     return {
-        "kind": "iteration_end_extension",
+        "kind": kind,
         "from": prior["from"] if prior else old_version,
         "through": task.version,
         "task_context": task_context(task),
@@ -634,6 +656,39 @@ async def seal_authority(db, task, window, assignments, *, prior=None, lock=Fals
     window["assignments"] = {key: value for key, value in window["assignments"].items() if key in stamps}
     window["authority"] = stamps
     return window if stamps else None
+
+
+async def fence_planning_only_edit(db, basis, issued, *, edited_task_id, fields):
+    """Seal a window for each task whose version a planning-only edit reserved.
+
+    ``basis`` lists ``(task, version_before, window_before)`` captured before
+    the edit, and ``issued`` maps task IDs to their locked live assignments.
+    A task's window is sealed only when its version moved by exactly one, each
+    assignment it keeps was bound to the prior version (or to a still-current
+    window), its original authenticated receipt still verifies, and the
+    ownership, team, policy and model bindings stamp. Anything else leaves the
+    task without a window, so its assignment stales as before and recovery
+    requeue remains the way forward. Returns ``[(task, window)]``.
+    """
+    if not is_planning_only_change(fields):
+        return []
+    evidence = {"fields": sorted(fields), "edited_task_id": edited_task_id}
+    fenced = []
+    for task, previous_version, prior in basis:
+        rows = issued.get(task.id)
+        if not rows:
+            continue
+        if prior and task.version == previous_version == prior["through"]:
+            # An earlier step of this command already reserved the version and
+            # sealed the window in force; reseal it over the changed context.
+            previous_version = task.version - 1
+        window = make_window(task, previous_version, rows, prior=prior, evidence=evidence, kind=PLANNING_ONLY_EDIT)
+        if window:
+            window = await seal_authority(db, task, window, rows, prior=prior, lock=True)
+        if window:
+            task.execution_planning_window = window
+            fenced.append((task, window))
+    return fenced
 
 
 async def extension_input(db, values, iterations):
