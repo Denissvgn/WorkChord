@@ -82,11 +82,14 @@ Before anything is written, the candidate goes through the same GitHub check a v
 - `commit_attribution`: a commit of the pull request or range is not in `commit_urls`.
 - `coauthor_trailer`: a commit message has a `Co-authored-by:` trailer, so its other contributors stay unverifiable. Commits with co-author trailers cannot be attested this way. This includes commits from tools that add such trailers automatically.
 - `head_mismatch`: the pull request's head is not the declared head commit.
-- `github_unavailable` or `candidate_unverifiable`: GitHub could not confirm the candidate.
+- `github_unavailable`: GitHub could not be reached, or its response could not be read. Retry later.
+- `candidate_unverifiable`: GitHub does not show the declared commits as one verifiable candidate.
 
-Only a signed-in workspace owner or operator, a project manager, or the project's PM agent can record provenance. The operator API key, a trusted-local browser with no signed-in person, a paired observer, reviewers and other agents are refused with `provenance_recorder_required`. A human executor carries no publisher, so only a signed-in person can attest one; the PM agent is refused with `manual_provenance_human_recorder_required`. A PM agent recorder is itself counted as a contributor, so its default model binding must declare a publisher (`manual_provenance_recorder_unattributable`).
+Only a signed-in workspace owner or operator, a project manager, or the project's PM agent can record provenance. The operator API key, a trusted-local browser with no signed-in person, a paired observer, reviewers and other agents are refused with `provenance_recorder_required`. A human executor carries no publisher, so only a signed-in person can attest one; the PM agent is refused with `manual_provenance_human_recorder_required`. A PM agent recorder is itself counted as a contributor under the publisher of every enabled model binding it has, so each of those bindings must declare a publisher (`manual_provenance_recorder_unattributable`).
 
-The task must be resolved, uncanceled leaf work (`manual_provenance_requires_resolved_work`). It must have no agent runs, agent execution events, claims, live or fulfilled execution assignments, or authenticated manual execution of the current artifact (`manual_provenance_execution_recorded`); such execution supplies its own provenance. A record never contradicts the task's own executor (`manual_provenance_executor_conflict`): when the task records an executing person, only that person can be named, and a task in manual execution can only name a human. Stale versions and revisions and malformed URLs are refused with 409 or 422.
+The task must be resolved, uncanceled leaf work (`manual_provenance_requires_resolved_work`). It must have no agent runs, agent execution events, claims, live or fulfilled execution assignments, or authenticated manual execution of the current artifact (`manual_provenance_execution_recorded`); such execution supplies its own provenance. A record never contradicts authenticated manual execution (`manual_provenance_executor_conflict`). For a task in manual execution, only the person executing it can be named, or any human if no person is recorded. In scheduled mode, every status change records its caller, for example a manager resolving the task through the status route. That person is not evidence of execution, so any executor can be named. A task holds at most 50 records (`manual_provenance_record_limit`). Stale versions and revisions and malformed URLs are refused with 409 or 422.
+
+A record cannot be withdrawn or overridden by a later one. Its executor, and its agent recorder, stay contributors of the task. If a record names the wrong executor, record a clean replacement of the task (see below) and deliver the work there.
 
 The record does not change status, progress or evidence, and it does not reopen or accept the task. The task's version advances, the response returns the record, and the task timeline gets a `manual_provenance_recorded` event with the recorder, executor, commits and reason. Every command audit row of the request carries the reason.
 
@@ -100,7 +103,7 @@ Only the latest record supplies the review candidate, and only while the task ha
 
 A verification assignment whose candidate is already known to be unverifiable is not created. It is refused with `verification_candidate_unverifiable`, and `missing` names the absent facts. The refusal names only a remedy that can help:
 
-- Without runs or manual execution, `remedy` points at the manual provenance command.
+- Without runs or authenticated manual execution, `remedy` points at the manual provenance command. This includes a task whose only human-executor record went stale after a brief or artifact change.
 - With authenticated manual execution, the refusal asks for exactly one pull request linked to the task, or a resubmitted artifact with a pull request or compare URL.
 - With runs, the runs must supply a submitted candidate.
 

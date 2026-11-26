@@ -812,6 +812,10 @@ async def _recorded_contributions(db, task):
         recorder = record.get("recorder")
         if isinstance(recorder, dict):
             rows.append(_recorded_row(recorder, event.id, "recorder", []))
+            # A recorder counts under every publisher it could run as, not only its default binding.
+            for publisher in recorder.get("publisher_keys") or ():
+                if publisher != recorder.get("publisher_key"):
+                    rows.append(_recorded_row({**recorder, "publisher_key": publisher}, event.id, "recorder", []))
     return rows, human, current
 
 
@@ -1057,8 +1061,10 @@ def require_verifiable_candidate(task, selection):
     from app.services.manual_provenance_service import remedy
     message = "This task has no exact submitted candidate, so an independent review could never accept it."
     recorded_runs = any(row.get("run_id") for row in selection.get("contributors") or ())
-    if selection.get("manual_execution"):
+    manual = selection.get("manual_execution") or {}
+    if manual.get("progress_record_id") is not None:
         # Authenticated manual execution already supplies provenance, so a provenance record would be refused.
+        # Manual execution taken from a stale provenance record falls through: a fresh record helps.
         _conflict("verification_candidate_unverifiable", message + " Link exactly one pull request to the task, or have"
                   " the executor resubmit the artifact with a pull request or a GitHub compare URL.",
                   missing=[{"task_id": task.id, "facts": ["current_human_artifact"]}])

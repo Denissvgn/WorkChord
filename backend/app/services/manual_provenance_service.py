@@ -11,7 +11,7 @@ import json
 from dataclasses import replace
 
 import httpx
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import selectinload
 
 from app.authority import AuthorityError, internal_authority
@@ -218,7 +218,8 @@ class ManualProvenanceService:
             else:
                 blocker = await github.verify_review_range(parse_github_url(candidate["base_commit_url"]), head, attributed,
                                                            failure_context=context)
-        except (httpx.HTTPError, ValueError, KeyError, TypeError, AttributeError) as exc:
+        except (httpx.HTTPError, json.JSONDecodeError) as exc:
+            # Only the GitHub client's own transport and decoding failures are an outage.
             raise ProvenanceConflict("manual_provenance_candidate_unverifiable",
                 "GitHub could not confirm the declared candidate. Check the URLs and the GitHub connection, then retry.",
                 attribution_gap="github_unavailable") from exc
@@ -251,6 +252,13 @@ class ManualProvenanceService:
                 "Record manual provenance on resolved, uncanceled leaf work. The record never reopens or accepts a task.")
         if task.artifact_revision != data.artifact_revision:
             raise ValueError("Artifact revision is stale")
+        existing = await self.db.scalar(select(func.count(TaskEvent.id)).where(
+            TaskEvent.task_id == task.id, TaskEvent.event_type == EVENT_TYPE))
+        if existing >= MAX_RECORDS:
+            # Review reads every record; more than the bound would make the task unreviewable.
+            raise PlanningConflict("manual_provenance_record_limit",
+                f"This task already has {MAX_RECORDS} provenance records, the most review can read. "
+                "Record a clean replacement instead.")
         await self._require_no_recorded_execution(task)
         self._require_consistent_executor(task, data.executor)
         if links["pr_url"] is not None:
@@ -288,13 +296,20 @@ class ManualProvenanceService:
 
     @staticmethod
     def _require_consistent_executor(task, executor):
-        """A record never contradicts the server's own record of who executed the task."""
+        """A record never contradicts authenticated manual execution of the task.
+
+        Only manual execution makes the stamped principal evidence of who executed the work. In
+        scheduled mode any status change stamps its caller, for example a manager resolving the
+        task through the status route, so the stamp says nothing about execution.
+        """
+        if task.execution_mode != "manual":
+            return
         if task.executed_by_principal_id is not None:
             if executor.kind != "human" or executor.principal_id != task.executed_by_principal_id:
                 raise PlanningConflict("manual_provenance_executor_conflict",
-                    f"The task records principal {task.executed_by_principal_id} as its executor; "
+                    f"The task is in manual execution by principal {task.executed_by_principal_id}; "
                     "a provenance record can only name that person.")
-        elif task.execution_mode == "manual" and executor.kind != "human":
+        elif executor.kind != "human":
             raise PlanningConflict("manual_provenance_executor_conflict",
                 "The task is in manual execution, so a provenance record can only name a human executor.")
 
@@ -318,14 +333,23 @@ class ManualProvenanceService:
     async def _agent_recorder(self, actor_id):
         """An agent recorder is accountable like a contributor: its actor, profile and publisher are kept."""
         from app.services.review_provenance import actor_provenance
-        actor = await self.db.scalar(select(AgentActor).where(AgentActor.id == actor_id))
-        receipt = await actor_provenance(self.db, actor, lock=True) if actor is not None else {}
+        # Actor, binding and catalog rows are server-owned; the caller's read scope does not decide them.
+        with internal_authority(self.db):
+            actor = await self.db.scalar(select(AgentActor).where(AgentActor.id == actor_id))
+            receipt = await actor_provenance(self.db, actor, lock=True) if actor is not None else {}
+            # The recorder may run under any of its enabled bindings, so each one's publisher counts.
+            publishers = list(await self.db.scalars(select(AgentModelCatalogEntry.publisher_key)
+                .join(AgentModelBinding, AgentModelBinding.model_catalog_id == AgentModelCatalogEntry.id)
+                .where(AgentModelBinding.actor_id == actor_id, AgentModelBinding.enabled.is_(True),
+                       AgentModelCatalogEntry.enabled.is_(True)))) if actor is not None else []
         missing = [key for key in ("profile_id", "binding_id", "publisher_key") if not receipt.get(key)]
+        if not missing and not all(publishers):
+            missing.append("publisher_key of every enabled binding")
         if missing:
             raise PlanningConflict("manual_provenance_recorder_unattributable",
-                f"The recording agent lacks {', '.join(missing)}. Its default model binding must declare a publisher, "
+                f"The recording agent lacks {', '.join(missing)}. Its enabled model bindings must declare a publisher, "
                 "because a verifier must be independent of the recorder too.")
-        return {"kind": "agent", **receipt}
+        return {"kind": "agent", **receipt, "publisher_keys": sorted(set(publishers) | {receipt["publisher_key"]})}
 
     async def _executor(self, data):
         if data.kind == "human":
@@ -337,10 +361,11 @@ class ManualProvenanceService:
                 profile_id = await self.db.scalar(select(PrincipalProfileLink.profile_id).where(
                     PrincipalProfileLink.principal_id == principal.id))
             return {"kind": "human", "principal_id": principal.id, "profile_ids": [profile_id] if profile_id else []}
-        actor = await self.db.scalar(select(AgentActor).where(AgentActor.id == data.actor_id))
-        if actor is None:
-            raise PlanningConflict("manual_provenance_executor_unknown", "The executor must be a known agent actor.")
-        receipt = await self._binding_receipt(actor, data.model_binding_id)
+        with internal_authority(self.db):
+            actor = await self.db.scalar(select(AgentActor).where(AgentActor.id == data.actor_id))
+            if actor is None:
+                raise PlanningConflict("manual_provenance_executor_unknown", "The executor must be a known agent actor.")
+            receipt = await self._binding_receipt(actor, data.model_binding_id)
         missing = [key for key in ("profile_id", "binding_id", "publisher_key") if not receipt[key]]
         if missing:
             raise PlanningConflict("manual_provenance_executor_unattributable",

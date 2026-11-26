@@ -120,6 +120,7 @@ class AgentProtocol:
     ("pm", "mcp", "agent", "distinct"),
     ("pm", "rest", "agent", "distinct"),
     ("human", "rest", "agent", "executor_is_reviewer"),
+    ("human", "rest", "agent", "status_route"),
     ("pm", "rest", "agent", "recorder_is_reviewer"),
     ("pm", "rest", "agent", "recorder_unknown"),
     ("pm", "rest", "human", "distinct"),
@@ -161,13 +162,15 @@ async def test_recorded_provenance_allows_an_independent_review_of_work_merged_o
     async def catalog(key):
         return await db.scalar(select(AgentModelCatalogEntry).where(AgentModelCatalogEntry.key == key))
     (await catalog(verifier.default_model_binding_key)).publisher_key = "independent-model-maker"
-    executor_publisher = "independent-model-maker" if publishers == "executor_is_reviewer" else "executor-model-maker"
+    executor_publisher = ("independent-model-maker" if publishers in {"executor_is_reviewer", "status_route"}
+                          else "executor-model-maker")
     (await catalog(member.default_model_binding_key)).publisher_key = executor_publisher
     (await catalog(controller.default_model_binding_key)).publisher_key = {
         "recorder_is_reviewer": "independent-model-maker", "recorder_unknown": None}.get(publishers, "planning-model-maker")
-    # Resolved by hand after a local implementation: no runs and no manual execution history.
-    progress = {"criteria": [], "artifacts": [PR_URL], "brief_revision": task.brief_revision, "artifact_revision": 1}
-    task.status, task.resolved_at, task.artifact_revision, task.progress = "resolved", utc_now(), 1, progress
+    if publishers != "status_route":
+        # Resolved by hand after a local implementation: no runs and no manual execution history.
+        progress = {"criteria": [], "artifacts": [PR_URL], "brief_revision": task.brief_revision, "artifact_revision": 1}
+        task.status, task.resolved_at, task.artifact_revision, task.progress = "resolved", utc_now(), 1, progress
     await db.commit()
     mock_github(monkeypatch, plain_commits(FIRST, HEAD))
     pm_key, reviewer_key = team.sink.keys[controller.actor_key], team.sink.keys[verifier.actor_key]
@@ -176,6 +179,24 @@ async def test_recorded_provenance_allows_an_independent_review_of_work_merged_o
     async with AgentProtocol(transport, db_session_factory, monkeypatch) as agent, httpx.AsyncClient(
             transport=httpx.ASGITransport(app=app), base_url="http://localhost",
             headers={"Authorization": "Bearer " + human_session, "X-Correlation-ID": "record-provenance"}) as human:
+        if publishers == "status_route":
+            # The manager moves the task through the ordinary status route, which stamps them as the
+            # executing principal in scheduled mode, and attaches the merged pull request as evidence.
+            other = {"X-Correlation-ID": "resolve-by-status"}
+            version = (await human.get(f"/api/tasks/{task.id}")).json()["version"]
+            started = await human.put(f"/api/tasks/{task.id}/status", headers=other,
+                                      json={"status": "active", "expected_version": version})
+            assert started.status_code == 200, started.text
+            progress = await human.post(f"/api/tasks/{task.id}/progress", headers=other, json={
+                "expected_version": started.json()["task"]["version"], "criteria": [], "artifacts": [PR_URL]})
+            assert progress.status_code == 200, progress.text
+            resolved = await human.put(f"/api/tasks/{task.id}/status", headers=other,
+                                       json={"status": "resolved", "expected_version": progress.json()["version"]})
+            assert resolved.status_code == 200, resolved.text
+            async with db_session_factory() as stored:
+                stamped = await stored.get(Task, task.id)
+                assert (stamped.status, stamped.execution_mode, stamped.executed_by_principal_id) == (
+                    "resolved", "scheduled", owner.id)
         current = (await human.get(f"/api/tasks/{task.id}")).json()
         selection_request = {"task_id": task.id, "expected_task_version": current["version"], "actor_id": reviewer.id,
                              "purpose": "verification"}
@@ -218,7 +239,7 @@ async def test_recorded_provenance_allows_an_independent_review_of_work_merged_o
         assert after["artifact_revision"] == current["artifact_revision"]
 
         selection_request["expected_task_version"] = after["version"]
-        if publishers in {"executor_is_reviewer", "recorder_is_reviewer"}:
+        if publishers in {"executor_is_reviewer", "recorder_is_reviewer", "status_route"}:
             # Neither the executor's nor the recording PM's publisher may review the work.
             await agent("agent_create_assignment", "/api/agent/assignments", pm_key, payload=selection_request,
                         receipt="same-publisher-review", error="verification_publisher_not_independent")
@@ -316,9 +337,15 @@ def test_a_candidate_less_refusal_names_only_a_remedy_that_can_help():
     assert unrecorded.value.context["missing"] == [{"task_id": 41, "facts": ["submitted_candidate", "manual_provenance"]}]
     assert unrecorded.value.context["remedy"]["rest"] == "POST /api/tasks/41/manual-provenance"
     assert unrecorded.value.context["remedy"]["mcp"] == "agent_record_manual_provenance"
+    # Manual execution taken from a stale provenance record: a fresh record helps.
+    with pytest.raises(AgentRoutingConflictError) as stale_record:
+        require_verifiable_candidate(task, {"candidate": None, "contributors": [],
+                                            "manual_execution": {"principal_id": 3, "provenance_event_id": 9}})
+    assert stale_record.value.context["remedy"]["rest"] == "POST /api/tasks/41/manual-provenance"
     # Authenticated manual execution already supplies provenance, so the record command would refuse.
     with pytest.raises(AgentRoutingConflictError) as manual:
-        require_verifiable_candidate(task, {"candidate": None, "contributors": [], "manual_execution": {"principal_id": 3}})
+        require_verifiable_candidate(task, {"candidate": None, "contributors": [],
+                                            "manual_execution": {"principal_id": 3, "progress_record_id": 4}})
     assert manual.value.context == {"missing": [{"task_id": 41, "facts": ["current_human_artifact"]}]}
     assert "pull request" in manual.value.message and "compare URL" in manual.value.message
     with pytest.raises(AgentRoutingConflictError) as executed:
@@ -484,7 +511,16 @@ async def test_a_record_cannot_contradict_the_recorded_executor(delivery_store, 
     agent_id, _, _ = await agent_executor(factory)
     manager = Authority(recorder_id, "human", workspace_role="member", projects={project_id: "manager"})
     async with factory() as db:
-        await db.execute(update(Task).where(Task.id == task_id).values(execution_mode="manual"))
+        # In scheduled mode any status change stamps its caller; that stamp is not evidence of execution.
+        await db.execute(update(Task).where(Task.id == task_id).values(executed_by_principal_id=recorder_id))
+        await db.commit()
+    async with factory() as db:
+        db.info["authority"] = manager
+        scheduled = await ManualProvenanceService(db).record(task_id, write(await task_state(factory, task_id), executor_id,
+                                                                            executor={"kind": "agent", "actor_id": agent_id}))
+        assert scheduled["executor"]["actor_id"] == agent_id
+    async with factory() as db:
+        await db.execute(update(Task).where(Task.id == task_id).values(execution_mode="manual", executed_by_principal_id=None))
         await db.commit()
     async with factory() as db:
         db.info["authority"] = manager
@@ -558,3 +594,70 @@ async def test_recorded_contribution_survives_rework_and_accepts_a_retired_bindi
     assert {row["actor_id"] for row in history.contributors if row["run_id"]} == {rework_actor}
     assert history.publisher_blockers("executor-model-maker") == ["verification_publisher_not_independent"]
     assert history.publisher_blockers("third-model-maker") == []
+
+
+async def test_a_stale_human_record_points_at_a_fresh_record(delivery_store, monkeypatch):  # noqa: F811
+    factory, scenario, _ = delivery_store
+    mock_github(monkeypatch, plain_commits(FIRST, HEAD))
+    project_id, recorder_id, executor_id, task_id = await provenance_scope(factory, scenario)
+    async with factory() as db:
+        db.info["authority"] = Authority(recorder_id, "human", workspace_role="owner")
+        recorded = await ManualProvenanceService(db).record(task_id, write(await task_state(factory, task_id), executor_id))
+    async with factory() as db:
+        await db.execute(update(Task).where(Task.id == task_id).values(artifact_revision=Task.artifact_revision + 1))
+        await db.commit()
+    async with factory() as db:
+        task = await db.get(Task, task_id)
+        history = await review_history(db, task, [], strict=True)
+    assert history.candidate is None and history.manual_execution["provenance_event_id"] == recorded["event_id"]
+    with pytest.raises(AgentRoutingConflictError) as refused:
+        require_verifiable_candidate(task, {"candidate": history.candidate, "contributors": history.contributors,
+                                            "manual_execution": history.manual_execution})
+    assert refused.value.code == "verification_candidate_unverifiable"
+    assert refused.value.context["missing"] == [{"task_id": task_id, "facts": ["submitted_candidate", "manual_provenance"]}]
+    assert refused.value.context["remedy"]["mcp"] == "agent_record_manual_provenance"
+
+
+async def test_record_refuses_once_review_could_no_longer_read_every_record(delivery_store, monkeypatch):  # noqa: F811
+    factory, scenario, _ = delivery_store
+    mock_github(monkeypatch, plain_commits(FIRST, HEAD))
+    project_id, recorder_id, executor_id, task_id = await provenance_scope(factory, scenario)
+    async with factory() as db:
+        db.add_all([TaskEvent(task_id=task_id, actor_type="user", event_type="manual_provenance_recorded", payload="{}")
+                    for _ in range(50)])
+        await db.commit()
+    task = await task_state(factory, task_id)
+    async with factory() as db:
+        db.info["authority"] = Authority(recorder_id, "human", workspace_role="owner")
+        with pytest.raises(PlanningConflict) as refused:
+            await ManualProvenanceService(db).record(task_id, write(task, executor_id))
+    assert refused.value.code == "manual_provenance_record_limit"
+    assert await task_state(factory, task_id) == task
+
+
+async def test_an_agent_recorder_counts_under_every_enabled_binding(delivery_store, monkeypatch):  # noqa: F811
+    factory, scenario, _ = delivery_store
+    mock_github(monkeypatch, plain_commits(FIRST, HEAD))
+    project_id, _, _, task_id = await provenance_scope(factory, scenario)
+    executor_id, _, _ = await agent_executor(factory)
+    recorder_id, recorder_profile, _ = await agent_executor(factory, publisher="planning-maker-a", key="planning-model")
+    async with factory() as db:
+        second = AgentModelCatalogEntry(key="planning-other", provider="fixture", publisher_key="planning-maker-b",
+                                        configured_model_alias="planning-other-runtime", reasoning_tier=2,
+                                        context_tier="medium", cost_tier="low", latency_tier="fast")
+        db.add(second)
+        await db.flush()
+        db.add(AgentModelBinding(actor_id=recorder_id, model_catalog_id=second.id, is_default=False, enabled=True))
+        await db.commit()
+    pm = Authority(None, "agent", actor_id=recorder_id, actor_role="pm", projects={project_id: "manager"},
+                   scopes=frozenset({"planning:read", "planning:write"}))
+    async with factory() as db:
+        db.info["authority"] = pm
+        await ManualProvenanceService(db).record(task_id, write(await task_state(factory, task_id), None,
+                                                                executor={"kind": "agent", "actor_id": executor_id}))
+    async with factory() as db:
+        history = await review_history(db, await db.get(Task, task_id), [], strict=True)
+    recorders = {(row["actor_id"], row["profile_id"], row["publisher_key"])
+                 for row in history.contributors if row.get("provenance_role") == "recorder"}
+    assert recorders == {(recorder_id, recorder_profile, "planning-maker-a"), (recorder_id, recorder_profile, "planning-maker-b")}
+    assert history.publisher_blockers("planning-maker-b") == ["verification_publisher_not_independent"]
