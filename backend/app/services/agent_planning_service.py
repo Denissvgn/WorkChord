@@ -1345,8 +1345,8 @@ class AgentPlanningService:
             unscheduled=[
                 item.model_dump(mode="json") for item in schedule.unscheduled
             ],
-            not_placed=[
-                item.model_dump(mode="json") for item in schedule.not_placed
+            kept_dates=[
+                item.model_dump(mode="json") for item in schedule.kept_dates
             ],
             input_digest=input_digest,
             task_states=AgentPlanningService._schedule_task_states(tasks),

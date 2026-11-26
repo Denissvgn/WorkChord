@@ -126,10 +126,10 @@ async def test_undated_predecessor_leaves_dependents_unplaced_with_their_dates_a
         task.start_date = task.end_date = date(2026, 1, 5)
     await db_session.commit()
     result = await SchedulerService(db_session).schedule_iteration(iteration.id)
-    not_placed = {item.task_id: item for item in result.not_placed}
+    kept = {item.task_id: item for item in result.kept_dates}
     for index in [1, 2]:
         assert tasks[index].start_date == tasks[index].end_date == date(2026, 1, 5)
-        item = not_placed[tasks[index].id]
+        item = kept[tasks[index].id]
         assert item.start_date == item.end_date == date(2026, 1, 5)
         assert item.reason == "predecessor_unscheduled"
         assert tasks[index - 1].title in item.message

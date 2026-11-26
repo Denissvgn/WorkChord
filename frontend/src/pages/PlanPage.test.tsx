@@ -788,6 +788,25 @@ describe('schedule and review inside Plan', () => {
         expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
     });
 
+    it('lists the tasks the schedule could not place with the dates they keep and the rule their dates break', async () => {
+        const { preview } = scheduleWorkspace();
+        services.gantt.previewSchedule.mockResolvedValue({ ...preview, schedule_result: {
+            ...preview.schedule_result, kept_dates: [
+                { task_id: 11, task_title: 'Prepare release', reason: 'no_assignee', message: 'No assignee.', start_date: '2026-08-03', end_date: '2026-08-10' },
+                { task_id: 12, task_title: 'Late import', reason: 'no_estimate', message: 'No estimate.', start_date: '2026-09-20', end_date: '2026-09-21', date_rule: 'outside_iteration' },
+            ],
+        } });
+        const { user } = renderPlan();
+        await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
+        const section = await screen.findByRole('region', { name: 'Tasks that keep their saved dates' });
+        expect(within(section).getByRole('link', { name: 'Prepare release' })).toHaveAttribute('href', '/tasks?task=11&fromPlanStep=schedule&project=1&iteration=1');
+        expect(within(section).getByText('No assignee. Assign it to a capacity row in this iteration (a person or an agent profile), then schedule again.')).toBeVisible();
+        expect(within(section).getByText('The saved dates fall outside the iteration.')).toBeVisible();
+        const dated = within(section).getAllByRole('listitem');
+        expect(dated).toHaveLength(2);
+        expect(dated[0]).toHaveTextContent(/2026.* to .*2026/);
+    });
+
     it('says every task has dates after Apply schedule when the saved result lists no unscheduled tasks', async () => {
         const { result } = scheduleWorkspace();
         const saved = { success: result.success, decisions: [], workload_balanced: true, workload_issues: [] };
