@@ -520,11 +520,15 @@ async def test_authenticated_shadow_handback(db_session, db_session_factory, tas
                 payload={"actor_id": worker.id, "expected_task_version": stopped["task"]["version"],
                          "expected_claim_generation": resumed["claim_generation"], "expected_live_assignment_ids": [],
                          "expected_running_run_ids": [], "reason": "Preserve rework before choosing a new route"}, receipt="recover-stopped")
+            # The stopped rework began as a supervised handback, so its recovery stays supervised in shadow.
             waiting = await call(*work, worker_key)
-            assert waiting["state"] == "wait" and waiting["blocked_assigned"][0]["assignment"]["id"] == recovery["assignment"]["id"]
-            assert recovery["assignment"]["id"] != rework["id"] and "routing_selection_pending" in waiting["blocked_assigned"][0]["blocker_codes"]
-            await call(*begin, worker_key, payload={"assignment_id": recovery["assignment"]["id"], "queue_revision": waiting["queue_revision"],
-                       "model": member.default_model_binding_key}, receipt="recovery-needs-selection", error="routing_selection_pending")
+            assert waiting["state"] == "start_assigned" and waiting["next"]["assignment"]["id"] == recovery["assignment"]["id"]
+            assert recovery["assignment"]["id"] != rework["id"] and waiting["next"]["blocker_codes"] == []
+            assert recovery["assignment"]["routing_snapshot"]["supervised_actor_id"] == worker.id
+            assert recovery["assignment"]["reviewer_profile_id"] == reviewer.profile_id
+            restarted = await call(*begin, worker_key, payload={"assignment_id": recovery["assignment"]["id"],
+                "queue_revision": waiting["queue_revision"], "model": member.default_model_binding_key}, receipt="recovery-supervised")
+            assert restarted["run"]["status"] == "running" and restarted["assignment"]["id"] == recovery["assignment"]["id"]
             assert await stored_history(db_session_factory, rework["id"], review["id"], assigned["id"]) == previous_history
             return
         revised = await call(*submit, worker_key, payload={**fence(resumed), "observed_model": member.default_model_binding_key,
