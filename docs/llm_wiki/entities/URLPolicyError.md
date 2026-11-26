@@ -28,10 +28,10 @@ flowchart LR
     n3["backend/app/schemas/external_link.py"]
     n4["backend/app/schemas/outbound_webhook.py"]
     n5["backend/app/schemas/request_source.py"]
-    n6["backend/app/schemas/task.py"]
-    n7["backend/app/services/email_settings_service.py"]
-    n8["backend/app/services/outbound_webhook_service.py"]
-    n9["backend/app/services/system_settings_service.py"]
+    n6["backend/app/services/email_settings_service.py"]
+    n7["backend/app/services/outbound_webhook_service.py"]
+    n8["backend/app/services/system_settings_service.py"]
+    n9["backend/app/utils/source_link_policy.py"]
     n10["normalize_external_http_url (backend/app/utils/url_policy.py)"]
     n11["validate_public_host (backend/app/utils/url_policy.py)"]
     n0 --> n1
@@ -50,10 +50,10 @@ flowchart LR
     click n3 "../modules/schemas_external_link.md"
     click n4 "../modules/schemas_outbound_webhook.md"
     click n5 "../modules/schemas_request_source.md"
-    click n6 "../modules/schemas_task.md"
-    click n7 "../modules/email_settings_service.md"
-    click n8 "../modules/outbound_webhook_service.md"
-    click n9 "../modules/system_settings_service.md"
+    click n6 "../modules/email_settings_service.md"
+    click n7 "../modules/outbound_webhook_service.md"
+    click n8 "../modules/system_settings_service.md"
+    click n9 "../modules/source_link_policy.md"
     click n10 "../modules/url_policy.md"
     click n11 "../modules/url_policy.md"
 ```
@@ -78,9 +78,9 @@ flowchart LR
 | `external_link` | import | [schemas_external_link](../modules/schemas_external_link.md) | — |
 | `outbound_webhook` | import | [schemas_outbound_webhook](../modules/schemas_outbound_webhook.md) | — |
 | `request_source` | import | [schemas_request_source](../modules/schemas_request_source.md) | — |
-| `task` | import | [schemas_task](../modules/schemas_task.md) | — |
 | `email_settings_service` | import | [email_settings_service](../modules/email_settings_service.md) | — |
 | `outbound_webhook_service` | import | [outbound_webhook_service](../modules/outbound_webhook_service.md) | — |
 | `system_settings_service` | import | [system_settings_service](../modules/system_settings_service.md) | — |
+| `source_link_policy` | import | [source_link_policy](../modules/source_link_policy.md) | — |
 | `normalize_external_http_url` | call | [url_policy](../modules/url_policy.md) | 4 |
 | `validate_public_host` | call | [url_policy](../modules/url_policy.md) | 6 |

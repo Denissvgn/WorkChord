@@ -18,15 +18,16 @@ sequenceDiagram
     participant p4 as request.headers.get (backend/app/routers/intake.py:create_web_intake_item)
     participant p5 as HTTPException
     participant p6 as str
-    participant p7 as ip_address
-    participant p8 as any
-    participant p9 as ip_network
-    participant p10 as get_settings
-    participant p11 as request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)
-    participant p12 as forwarded_for.split(…)[…].strip
-    participant p13 as forwarded_for.split
-    participant p14 as real_ip.strip
-    participant p15 as Settings
+    participant p7 as e.detail
+    participant p8 as ip_address
+    participant p9 as any
+    participant p10 as ip_network
+    participant p11 as get_settings
+    participant p12 as request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)
+    participant p13 as forwarded_for.split(…)[…].strip
+    participant p14 as forwarded_for.split
+    participant p15 as real_ip.strip
+    participant p16 as Settings
     p0-->>p1: WebIntakeRequest.model_validate(raw_data)
     p0->>p2: get_client_ip
     p0-->>p3: service.create_triage_item(data, authorization_header=authorization, client_ip=client_ip, user_agent=request.headers.get(...))
@@ -40,23 +41,25 @@ sequenceDiagram
     p0-->>p5: HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=str(...), headers={...})
     p0-->>p6: str(e)
     p0-->>p6: str(e.retry_after_seconds)
+    p0-->>p5: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail(...))
+    p0-->>p7: e.detail
     p0-->>p5: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))
     p0-->>p6: str(e)
-    p2-->>p7: ip_address(direct_ip)
-    p2-->>p8: any(...)
-    p2-->>p9: ip_network(network, strict=False)
-    p2->>p10: get_settings
-    p2-->>p11: request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)('X-Forwarded-For')
-    p2-->>p12: forwarded_for.split(…)[…].strip
-    p2-->>p13: forwarded_for.split(',')
-    p2-->>p11: request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)('X-Real-IP')
-    p2-->>p14: real_ip.strip
-    p10->>p15: Settings
+    p2-->>p8: ip_address(direct_ip)
+    p2-->>p9: any(...)
+    p2-->>p10: ip_network(network, strict=False)
+    p2->>p11: get_settings
+    p2-->>p12: request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)('X-Forwarded-For')
+    p2-->>p13: forwarded_for.split(…)[…].strip
+    p2-->>p14: forwarded_for.split(',')
+    p2-->>p12: request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)('X-Real-IP')
+    p2-->>p15: real_ip.strip
+    p11->>p16: Settings
 ```
 
-> Call sequence diagram shows 25 of 25 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 27 of 27 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 14 of 14 (0 omitted); unresolved 8 of 8 (0 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 15 of 15 (0 omitted); unresolved 9 of 9 (0 omitted). These counts cover the captured static trace.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -69,7 +72,7 @@ sequenceDiagram
 
 Source steps: 4; effect analysis evaluated: 2, partial: 1, unavailable: 1. Counts include steps omitted from the displayed trace.
 
-Collector observations for 3 source steps with known totals: observed: 19, emitted: 18, omitted: 1. Unavailable totals are excluded.
+Collector observations for 3 source steps with known totals: observed: 21, emitted: 18, omitted: 3. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -77,7 +80,7 @@ Collector observations for 3 source steps with known totals: observed: 19, emitt
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
-| `create_web_intake_item` | `available` | `partial` | `available` | `14` | `13` | `1` |
+| `create_web_intake_item` | `available` | `partial` | `available` | `16` | `13` | `3` |
 | `WebIntakeRequest.model_validate` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `get_client_ip` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
 | `ip_address` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
@@ -142,13 +145,13 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_web_intake_item | WebIntakeRequest.model_validate | 48 | `WebIntakeRequest.model_validate(raw_data)` |
-| create_web_intake_item | get_client_ip | 49 | `get_client_ip(request)` |
+| create_web_intake_item | WebIntakeRequest.model_validate | 49 | `WebIntakeRequest.model_validate(raw_data)` |
+| create_web_intake_item | get_client_ip | 50 | `get_client_ip(request)` |
 | get_client_ip | ip_address | 52 | `ip_address(direct_ip)` |
 | get_client_ip | any | 53 | `any(...)` |
 | get_client_ip | ip_network | 54 | `ip_network(network, strict=False)` |
 | get_client_ip | get_settings | 55 | `get_settings(data not statically known)` |
-| get_settings | Settings | 527 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | get_client_ip | request.headers.get (backend/app/services/sess…n_service.py:get_client_ip) | 60 | `request.headers.get('X-Forwarded-For')` |
 | get_client_ip | forwarded_for.split(…)[…].strip | 62 | `forwarded_for.split(',')[0].strip(data not statically known)` |
 | get_client_ip | forwarded_for.split | 62 | `forwarded_for.split(',')` |
@@ -162,7 +165,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_web_intake_item` | `WebIntakeRequest.model_validate` | 48 |
+| unresolved_call | `create_web_intake_item` | `WebIntakeRequest.model_validate` | 49 |
 | external_call | `get_client_ip` | `ip_address` | 52 |
 | external_call | `get_client_ip` | `any` | 53 |
 | external_call | `get_client_ip` | `ip_network` | 54 |

@@ -54,18 +54,19 @@ sequenceDiagram
     p2-->>p10: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, LookupError)
     p2-->>p11: HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)(status_code=status.HTTP_404_NOT_FOUND, detail=str(...))
     p2-->>p12: str (backend/app/routers/agent…ing.py:_handle_agent_error)(exc)
-    p2-->>p10: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, ValueError)
+    p2-->>p10: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, SourceLinkRefused)
 ```
 
-> Call sequence diagram shows 30 of 32 interactions; 2 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 35 interactions; 5 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 22 of 24 (2 omitted); unresolved 6 of 6 (0 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 22 of 26 (4 omitted); unresolved 6 of 7 (1 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
-| `backend/app/routers/agent_planning.py:_handle_agent_error` | 12 | - | external | 2 |
+| `backend/app/routers/agent_planning.py:_handle_agent_error` | 12 | - | external | 4 |
+| `backend/app/routers/agent_planning.py:_handle_agent_error` | 12 | - | unresolved | 1 |
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -78,7 +79,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 3; effect analysis evaluated: 2, partial: 1, unavailable: 0. Counts include steps omitted from the displayed trace.
 
-Collector observations for 3 source steps with known totals: observed: 21, emitted: 17, omitted: 4. Unavailable totals are excluded.
+Collector observations for 3 source steps with known totals: observed: 23, emitted: 17, omitted: 6. Unavailable totals are excluded.
 
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
 
@@ -95,7 +96,7 @@ Collector observations for 3 source steps with known totals: observed: 21, emitt
 | `isinstance (backend/app/routers/agent…log.py:_handle_model_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `HTTPException (backend/app/routers/agent…log.py:_handle_model_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `str (backend/app/routers/agent…log.py:_handle_model_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `_handle_agent_error` | `available` | `partial` | `available` | `13` | `9` | `4` |
+| `_handle_agent_error` | `available` | `partial` | `available` | `15` | `9` | `6` |
 
 ```mermaid
 flowchart LR

@@ -149,7 +149,7 @@ flowchart LR
 |---|---|---:|---|
 | revoke_owned_session | require_identity_writes | 410 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 527 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
 | revoke_owned_session | _local_observers | 414 | `_local_observers(authority)` |

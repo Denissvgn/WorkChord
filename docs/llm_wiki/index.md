@@ -6,9 +6,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1809 | [Open section](#entities) |
-| Modules | 1158 | [Open section](#modules) |
-| Workflows | 232 | [Open section](#workflows) |
+| Entities | 1813 | [Open section](#entities) |
+| Modules | 1160 | [Open section](#modules) |
+| Workflows | 234 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 624 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
@@ -1011,6 +1011,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [SortCriterionSchema](entities/SortCriterionSchema.md)
 - [SortableTaskItemProps](entities/SortableTaskItemProps.md)
 - [SourceCollectorRegistry](entities/SourceCollectorRegistry.md)
+- [SourceLinkAction](entities/SourceLinkAction.md)
+- [SourceLinkDecision](entities/SourceLinkDecision.md)
+- [SourceLinkRefused](entities/SourceLinkRefused.md)
 - [SourceState](entities/SourceState.md)
 - [SqlStateFailure](entities/SqlStateFailure.md)
 - [StatusAmendmentLedger](entities/StatusAmendmentLedger.md)
@@ -1206,6 +1209,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TriageListParams](entities/TriageListParams.md)
 - [TriageRowProps](entities/TriageRowProps.md)
 - [TriageService](entities/TriageService.md)
+- [TriageSourceLinkOutcome](entities/TriageSourceLinkOutcome.md)
 - [TrustedKeyBinding](entities/TrustedKeyBinding.md)
 - [URLPolicyError](entities/URLPolicyError.md)
 - [UTCDateTime](entities/UTCDateTime.md)
@@ -2674,6 +2678,7 @@ Retained history; these declarations are absent from the selected source invento
 - [snapshots](modules/snapshots.md) - Snapshots API router.
 - [source](modules/source.md) - Read-only SQLite snapshot creation and source preflight.
 - [source_binding](modules/source_binding.md) - Independently bind local measurements to the source that actually executes.
+- [source_link_policy](modules/source_link_policy.md) - One policy for the source link carried by intakes and tasks.
 - [sql_semantics](modules/sql_semantics.md) - Cross-dialect text matching rules for the supported SQLite/PostgreSQL window.
 - [src_main](modules/src_main.md) - `frontend/src/main.tsx`
 - [status](modules/status.md) - Deterministic DBM task/gate status amendment evaluation.
@@ -2803,6 +2808,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_human_work_queries](modules/test_human_work_queries.md) - Human ownership queries and exact-ID lookup respect project visibility.
 - [test_identity_lifecycle](modules/test_identity_lifecycle.md) - OIDC, native bearer, revocation, ownership and real MCP transport contracts.
 - [test_initial_schema](modules/test_initial_schema.md) - The packaged initial schema and fail-closed development reset boundary.
+- [test_intake_source_link](modules/test_intake_source_link.md) - Source links on intakes and tasks follow one policy.
 - [test_iteration_date_move](modules/test_iteration_date_move.md) - A proposed iteration period is checked against each person's bookings elsewhere and saves nothing.
 - [test_load_seed_postgresql](modules/test_load_seed_postgresql.md) - Real-PostgreSQL small seed and resumability qualification.
 - [test_load_tooling](modules/test_load_tooling.md) - Unit contracts for deterministic, sealed, fail-closed load tooling.
@@ -3153,6 +3159,7 @@ Retained history; these declarations are absent from the selected source invento
 - [TriageService_create](workflows/TriageService_create.md) - entry: `triage_service.TriageService.create`
 - [TriageService_mark_duplicate](workflows/TriageService_mark_duplicate.md) - entry: `triage_service.TriageService.mark_duplicate`
 - [TriageService_snooze](workflows/TriageService_snooze.md) - entry: `triage_service.TriageService.snooze`
+- [TriageService_update](workflows/TriageService_update.md) - entry: `triage_service.TriageService.update`
 - [affected_iteration_ids](workflows/affected_iteration_ids.md) - entry: `planning_input_context.affected_iteration_ids`
 - [aggregate_metrics](workflows/aggregate_metrics.md) - entry: `work_metrics.aggregate_metrics`
 - [assert_postgresql_contract](workflows/assert_postgresql_contract.md) - entry: `transfer._assert_postgresql_contract`
@@ -3165,6 +3172,7 @@ Retained history; these declarations are absent from the selected source invento
 - [check_supervised_selection](workflows/check_supervised_selection.md) - entry: `review_evidence.check_supervised_selection`
 - [choose_local_profile](workflows/choose_local_profile.md) - entry: `identity.choose_local_profile`
 - [convert_triage_item_to_backlog](workflows/convert_triage_item_to_backlog.md) - entry: `triage.convert_triage_item_to_backlog`
+- [convert_triage_to_backlog](workflows/convert_triage_to_backlog.md) - entry: `mcp_agent_tools.convert_triage_to_backlog`
 - [convert_triage_to_task](workflows/convert_triage_to_task.md) - entry: `mcp_agent_tools.convert_triage_to_task`
 - [create_request_source_link](workflows/create_request_source_link.md) - entry: `mcp_agent_tools.create_request_source_link`
 - [create_session](workflows/create_session.md) - entry: `session_service._create_session`
