@@ -168,8 +168,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_snapshots | IterationService | 192 | `IterationService(db)` |
-| list_snapshots | IterationService.get_by_id | 193 | `iteration_service.get_by_id(iteration_id)` |
+| list_snapshots | IterationService | 190 | `IterationService(db)` |
+| list_snapshots | IterationService.get_by_id | 191 | `iteration_service.get_by_id(iteration_id)` |
 | IterationService.get_by_id | self.db.execute | 338 | `self.db.execute(...)` |
 | IterationService.get_by_id | select(…).options(…).where | 339 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
 | IterationService.get_by_id | select(…).options | 339 | `select(Iteration).options(selectinload(...), selectinload(...))` |
@@ -177,8 +177,8 @@ flowchart LR
 | IterationService.get_by_id | selectinload | 341 | `selectinload(Iteration.calendar)` |
 | IterationService.get_by_id | selectinload | 342 | `selectinload(Iteration.project)` |
 | IterationService.get_by_id | result.scalar_one_or_none | 346 | `result.scalar_one_or_none(data not statically known)` |
-| list_snapshots | HTTPException | 196 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| list_snapshots | SnapshotService | 201 | `SnapshotService(db)` |
+| list_snapshots | HTTPException | 194 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| list_snapshots | SnapshotService | 199 | `SnapshotService(db)` |
 
 ### Boundary effects
 
@@ -195,7 +195,7 @@ flowchart LR
 | external_call | `IterationService.get_by_id` | `selectinload` | 341 |
 | external_call | `IterationService.get_by_id` | `selectinload` | 342 |
 | unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 346 |
-| external_call | `list_snapshots` | `HTTPException` | 196 |
+| external_call | `list_snapshots` | `HTTPException` | 194 |
 | step_limit | `list_snapshots` | `first 12 steps` | 0 |
 
 ## Behavior

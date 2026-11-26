@@ -1,6 +1,6 @@
 # LegacySnapshotImportRequest
 
-**Location:** `backend/app/routers/snapshots.py:271`
+**Location:** `backend/app/routers/snapshots.py:269`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [snapshots](../modules/snapshots.md)

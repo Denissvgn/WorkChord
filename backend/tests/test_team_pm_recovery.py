@@ -16,6 +16,7 @@ from app.models.identity import ProjectMembership, WorkspaceMembership
 from app.models.iteration import Iteration
 from app.models.project import Project
 from app.models.task import Task
+from app.services.agent_routing_policy import ROUTING_LINEAGE_AUTHORITY
 from app.services.identity_service import IdentityService, initialize_control_plane
 from tests.test_agent_team_setup_qualification import provision_ready_topology, routing_base
 from tests.test_team_pm_dispatch import db_session_factory
@@ -68,17 +69,26 @@ async def recovery_api(transport, factory, monkeypatch):
             yield call
 
 
-@pytest.mark.usefixtures("deployed_agent_skill_release")
-@pytest.mark.parametrize("transport", ["rest", "mcp"])
-@pytest.mark.parametrize("auth_mode", ["trusted_local", "managed"])
-@pytest.mark.parametrize("db_session_factory", [
+DATABASES = pytest.mark.parametrize("db_session_factory", [
     pytest.param("sqlite", marks=pytest.mark.sqlite),
     pytest.param("postgresql", marks=[pytest.mark.postgresql, pytest.mark.allow_network]),
 ], indirect=True)
+
+
+def routing_mode(monkeypatch, mode):
+    monkeypatch.setenv("MODEL_AWARE_ROUTING_MODE", mode)
+    get_settings.cache_clear()
+
+
+@pytest.mark.usefixtures("deployed_agent_skill_release")
+@pytest.mark.parametrize("mode", ["off", "shadow"])
+@pytest.mark.parametrize("transport", ["rest", "mcp"])
+@pytest.mark.parametrize("auth_mode", ["trusted_local", "managed"])
+@DATABASES
 async def test_controller_recovers_once_and_worker_begins(
-    db_session, db_session_factory, team_member_factory, task_factory, transport, auth_mode, monkeypatch,
+    db_session, db_session_factory, team_member_factory, task_factory, transport, auth_mode, mode, monkeypatch,
 ):
-    monkeypatch.setenv("MODEL_AWARE_ROUTING_MODE", "shadow")
+    monkeypatch.setenv("MODEL_AWARE_ROUTING_MODE", mode)
     monkeypatch.setenv("WORKCHORD_AUTH_MODE", auth_mode)
     get_settings.cache_clear()
     if auth_mode == "managed":
@@ -146,15 +156,16 @@ async def test_controller_recovers_once_and_worker_begins(
         assignment = queued["assignment"]
         assert assignment["routing_snapshot"]["source_assignment_ids"] == [old.id]
         assert assignment["actor_id"] == worker.id and assignment["queue_class"] == "recovery"
+        assert assignment["routing_snapshot"]["supervised_actor_id"] == worker.id
+        assert assignment["routing_snapshot"]["selection_pending"] is True
         assert queued["cancelled_assignment_ids"] == queued["cancelled_run_ids"] == []
         decision = await call(*work, worker_secret)
         assert decision["state"] == "start_assigned" and decision["next"]["assignment"]["id"] == assignment["id"]
+        assert decision["next"]["blocker_codes"] == [] and decision["blocked_assigned"] == []
         start = dict(assignment_id=assignment["id"], queue_revision=decision["queue_revision"])
-        monkeypatch.setenv("MODEL_AWARE_ROUTING_MODE", "enforced")
-        get_settings.cache_clear()
+        routing_mode(monkeypatch, "enforced")
         await call(*begin, worker_secret, payload=start, receipt="enforced-start", error="routing_selection_pending")
-        monkeypatch.setenv("MODEL_AWARE_ROUTING_MODE", "shadow")
-        get_settings.cache_clear()
+        routing_mode(monkeypatch, mode)
         receipt = await call(*begin, worker_secret, payload=start, receipt="begin-recovery")
         assert receipt["run"]["status"] == "running" and receipt["claim_generation"] == item["claim_generation"] + 1
         event = dict(event_type="agent.blocker", payload={"blocker": "Waiting for the deployment window"},
@@ -217,13 +228,30 @@ async def test_recovery_retains_ownership_outside_the_controller_team(
         assert await db.scalar(select(TaskEvent.id).where(TaskEvent.event_type == "agent.recovery_requeued")) is None
 
 
-@pytest.mark.sqlite
+async def recovery_events(factory):
+    async with factory() as db:
+        return (await db.scalars(select(TaskEvent).where(TaskEvent.event_type == "agent.recovery_requeued"))).all()
+
+
+async def refused_requeue(factory, monkeypatch, task_id, key, payload, receipt):
+    monkeypatch.setattr(database, "async_session_maker", factory)
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://localhost:8001") as client:
+        response = await client.post(f"/api/agent/recovery/{task_id}/requeue", json=payload, headers={
+            "X-Agent-API-Key": key, "Idempotency-Key": receipt, "X-Correlation-ID": receipt,
+            "X-Agent-Rationale": "Resume interrupted work with the selected worker"})
+    assert response.status_code == 409, response.text
+    detail = response.json()["detail"]
+    assert detail["code"] == "recovery_supervision_unavailable" and detail["effective_mode"] == "shadow"
+    return detail
+
+
 @pytest.mark.usefixtures("deployed_agent_skill_release")
+@pytest.mark.parametrize("mode", ["off", "shadow", "enforced"])
+@DATABASES
 async def test_recovery_moves_stale_team_ownership_without_lowering_model_review(
-    db_session, db_session_factory, team_member_factory, task_factory, monkeypatch,
+    db_session, db_session_factory, team_member_factory, task_factory, monkeypatch, mode,
 ):
-    monkeypatch.setenv("MODEL_AWARE_ROUTING_MODE", "shadow")
-    get_settings.cache_clear()
+    routing_mode(monkeypatch, mode)
     team = await provision_ready_topology(db_session)
     owner_key, target_key = (member.actor_key for member in team.manifest.workers)
     owner, target = team.actors[owner_key], team.actors[target_key]
@@ -243,23 +271,163 @@ async def test_recovery_moves_stale_team_ownership_without_lowering_model_review
     await db_session.commit()
     payload = dict(actor_id=target.id, reason="Reassign interrupted work", expected_task_version=task.version,
                    expected_live_assignment_ids=[old.id], expected_running_run_ids=[], expected_claim_generation=task.claim_generation)
+    pm_key, target_secret = team.sink.keys[team.manifest.controller.actor_key], team.sink.keys[target_key]
+    if mode == "shadow":
+        # Shadow cannot complete a fresh model-aware selection, so it refuses before anything changes.
+        detail = await refused_requeue(db_session_factory, monkeypatch, task.id, pm_key, payload, "recover-model-work")
+        assert detail["condition"] == "model_aware_history" and detail["model_aware_assignment_ids"] == [old.id]
+        assert "enforced routing" in detail["message"]
+        async with db_session_factory() as db:
+            assert (await db.get(AgentTaskAssignment, old.id)).state == "accepted"
+            assert len((await db.scalars(select(AgentTaskAssignment))).all()) == 1
+            assert (await db.get(Task, task.id)).version == task.version
+            for actor in (owner, target):
+                assert (await db.get(AgentActor, actor.id)).queue_revision == actor.queue_revision
+        assert await recovery_events(db_session_factory) == []
+        return
     async with recovery_api("rest", db_session_factory, monkeypatch) as call:
         result = await call("agent_requeue_recovery", f"/api/agent/recovery/{task.id}/requeue",
-                            team.sink.keys[team.manifest.controller.actor_key], task_id=task.id, payload=payload,
-                            receipt="recover-model-work")
+                            pm_key, task_id=task.id, payload=payload, receipt="recover-model-work")
         assert result["cancelled_assignment_ids"] == [old.id]
         assignment = result["assignment"]
         lineage = assignment["routing_snapshot"]
         assert lineage["prior_decisions"][0]["source_assignment_id"] == old.id
         assert lineage["review_floor"]["review_mode"] == "independent"
         assert lineage["review_floor"]["reviewer_profile_ids"] == [reviewer.profile_id]
-        decision = await call("agent_get_my_work", "/api/agent/me/work", team.sink.keys[target_key])
-        assert "routing_selection_pending" in decision["blocked_assigned"][0]["blocker_codes"]
-        await call("agent_begin_my_work", "/api/agent/me/work/begin", team.sink.keys[target_key],
-                   payload=dict(assignment_id=assignment["id"], queue_revision=decision["queue_revision"]),
-                   receipt="begin-governed-work", error="routing_selection_pending")
+        decision = await call("agent_get_my_work", "/api/agent/me/work", target_secret)
+        start = dict(assignment_id=assignment["id"], queue_revision=decision["queue_revision"])
+        if mode == "enforced":
+            assert "supervised_actor_id" not in lineage and assignment["reviewer_profile_id"] is None
+            assert "routing_selection_pending" in decision["blocked_assigned"][0]["blocker_codes"]
+            await call("agent_begin_my_work", "/api/agent/me/work/begin", target_secret,
+                       payload=start, receipt="begin-governed-work", error="routing_selection_pending")
+        else:
+            assert lineage["supervised_actor_id"] == target.id
+            assert assignment["reviewer_profile_id"] == reviewer.profile_id
+            assert decision["state"] == "start_assigned" and decision["next"]["blocker_codes"] == []
+            begun = await call("agent_begin_my_work", "/api/agent/me/work/begin", target_secret,
+                               payload=start, receipt="begin-supervised-work")
+            assert begun["run"]["status"] == "running" and begun["assignment"]["state"] == "accepted"
     async with db_session_factory() as db:
         assert (await db.get(AgentTaskAssignment, old.id)).state == "cancelled"
-        assert (await db.get(AgentTaskAssignment, assignment["id"])).state == "queued"
-        for actor in (owner, target):
-            assert (await db.get(AgentActor, actor.id)).queue_revision == actor.queue_revision + 1
+        assert (await db.get(AgentTaskAssignment, assignment["id"])).state == (
+            "queued" if mode == "enforced" else "accepted")
+        assert (await db.get(AgentActor, owner.id)).queue_revision == owner.queue_revision + 1
+        assert (await db.get(AgentActor, target.id)).queue_revision == target.queue_revision + (
+            1 if mode == "enforced" else 2)
+    event, = await recovery_events(db_session_factory)
+    assert json.loads(event.payload)["routing_selection_pending"] is (mode == "enforced")
+
+
+@pytest.mark.usefixtures("deployed_agent_skill_release")
+@pytest.mark.parametrize("mode", ["off", "shadow"])
+@pytest.mark.parametrize("history", ["several_reviewer_profiles", "target_is_reviewer", "pm_outside_team",
+                                     "unsupervised_rework"])
+@DATABASES
+async def test_recovery_outside_enforcement_is_executable_or_names_its_condition(
+    db_session, db_session_factory, team_member_factory, task_factory, actor_factory, monkeypatch, mode, history,
+):
+    from app.services.agent_service import hash_api_key
+    from tests.test_supervised_shadow_rework import topology_with_two_reviewers
+
+    routing_mode(monkeypatch, mode)
+    team = await topology_with_two_reviewers(db_session)
+    worker_key = team.manifest.workers[0].actor_key
+    worker = team.actors[worker_key]
+    reviewer, alternate = (team.actors[member.actor_key] for member in team.manifest.verifiers[:2])
+    pm = team.actors[team.manifest.controller.actor_key]
+    pm_key = team.sink.keys[team.manifest.controller.actor_key]
+    if history == "pm_outside_team":
+        pm_key = "outside-team-recovery-pm-key"
+        pm = await actor_factory(role="pm", api_key_hash=hash_api_key(pm_key), scopes=json.dumps([
+            "recovery:write", "recovery:read", "assignments:read", "tasks:read"]))
+    base = await routing_base(db_session, topology=team, actor_key=worker_key,
+                              team_member_factory=team_member_factory, task_factory=task_factory,
+                              title="Recover reviewed work")
+    task = base.task
+    task.status, task.effort_hours = "active", 8
+    reviewer_profile_id = worker.profile_id if history == "target_is_reviewer" else reviewer.profile_id
+    old = AgentTaskAssignment(task_id=task.id, actor_id=worker.id, task_version=task.version,
+                              state="accepted", purpose="execution", reviewer_profile_id=reviewer_profile_id)
+    db_session.add(old)
+    if history == "several_reviewer_profiles":
+        db_session.add(AgentTaskAssignment(task_id=task.id, actor_id=worker.id, task_version=task.version,
+                                           state="cancelled", purpose="execution", reviewer_profile_id=alternate.profile_id))
+    rework = None
+    if history == "unsupervised_rework":
+        # A rework that never began as a supervised handback still waits on a model-aware selection.
+        rework = AgentTaskAssignment(task_id=task.id, actor_id=worker.id, task_version=task.version, state="cancelled",
+                                     purpose="execution", queue_class="rework", routing_snapshot=json.dumps({
+                                         "schema_version": "routing-lineage-snapshot-v1",
+                                         "authority": ROUTING_LINEAGE_AUTHORITY, "selection_pending": True}))
+        db_session.add(rework)
+    await db_session.commit()
+    payload = dict(actor_id=worker.id, reason="Resume reviewed work", expected_task_version=task.version,
+                   expected_live_assignment_ids=[old.id], expected_running_run_ids=[], expected_claim_generation=task.claim_generation)
+    worker_secret = team.sink.keys[worker_key]
+    requeue = "agent_requeue_recovery", f"/api/agent/recovery/{task.id}/requeue"
+    if mode == "shadow":
+        condition = {"several_reviewer_profiles": "reviewer_profile_ambiguous",
+                     "target_is_reviewer": "reviewer_profile_not_independent",
+                     "pm_outside_team": "primary_pm_required",
+                     "unsupervised_rework": "model_aware_history"}[history]
+        detail = await refused_requeue(db_session_factory, monkeypatch, task.id, pm_key, payload, "refused-recovery")
+        assert detail["condition"] == condition and detail["actor_id"] == worker.id
+        if history == "several_reviewer_profiles":
+            assert detail["reviewer_profile_ids"] == sorted([reviewer.profile_id, alternate.profile_id])
+        if history == "unsupervised_rework":
+            assert detail["model_aware_assignment_ids"] == [rework.id]
+        async with recovery_api("mcp", db_session_factory, monkeypatch) as call:
+            await call(*requeue, pm_key, task_id=task.id, payload=payload, receipt="refused-recovery-mcp", error=condition)
+        async with db_session_factory() as db:
+            assert (await db.get(AgentTaskAssignment, old.id)).state == "accepted"
+            assert (await db.get(Task, task.id)).version == task.version
+            assert (await db.get(AgentActor, worker.id)).queue_revision == worker.queue_revision
+        assert await recovery_events(db_session_factory) == []
+        return
+    if history == "pm_outside_team":
+        # Off mode does not widen who may move a team's queue.
+        monkeypatch.setattr(database, "async_session_maker", db_session_factory)
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://localhost:8001") as client:
+            denied = await client.post(f"/api/agent/recovery/{task.id}/requeue", json=payload, headers={
+                "X-Agent-API-Key": pm_key, "Idempotency-Key": "outside-recovery", "X-Correlation-ID": "outside-recovery",
+                "X-Agent-Rationale": "Resume interrupted work with the selected worker"})
+        assert denied.status_code == 403 and denied.json()["detail"]["code"] == "permission_denied", denied.text
+        async with db_session_factory() as db:
+            assert (await db.get(AgentTaskAssignment, old.id)).state == "accepted"
+        assert await recovery_events(db_session_factory) == []
+        return
+    async with recovery_api("rest", db_session_factory, monkeypatch) as call:
+        queued = await call(*requeue, pm_key, task_id=task.id, payload=payload, receipt="supervised-recovery")
+        assignment = queued["assignment"]
+        assert queued["cancelled_assignment_ids"] == [old.id]
+        assert assignment["routing_snapshot"]["supervised_actor_id"] == worker.id
+        # Only a single independent reviewer profile carries over; the full floor stays in the lineage.
+        assert assignment["reviewer_profile_id"] == (reviewer.profile_id if history == "unsupervised_rework" else None)
+        assert set(assignment["routing_snapshot"]["review_floor"]["reviewer_profile_ids"]) == {
+            reviewer_profile_id, *([alternate.profile_id] if history == "several_reviewer_profiles" else [])}
+        decision = await call("agent_get_my_work", "/api/agent/me/work", worker_secret)
+        assert decision["state"] == "start_assigned" and decision["next"]["assignment"]["id"] == assignment["id"]
+        assert decision["next"]["blocker_codes"] == []
+        start = dict(assignment_id=assignment["id"], queue_revision=decision["queue_revision"])
+        receipt = await call("agent_begin_my_work", "/api/agent/me/work/begin", worker_secret,
+                             payload=start, receipt="begin-supervised-recovery")
+        assert receipt["run"]["status"] == "running" and receipt["claim_generation"] == task.claim_generation + 1
+        event = dict(event_type="agent.blocker", payload={"blocker": "Waiting for review notes"},
+                     claim_id=receipt["claim_id"], claim_generation=receipt["claim_generation"])
+        blocker = "agent_append_task_event", f"/api/agent/tasks/{task.id}/events"
+        await call(*blocker, worker_secret, task_id=task.id, payload={**event, "claim_id": "expired-claim-token"},
+                   receipt="stale-blocker", error="fence")
+        await call(*blocker, worker_secret, task_id=task.id, payload=event, receipt="fenced-blocker")
+        # The begun recovery is healthy ownership that a repeated requeue cannot cancel.
+        async with db_session_factory() as db:
+            current_version = (await db.get(Task, task.id)).version
+        await call(*requeue, pm_key, task_id=task.id, receipt="requeue-healthy-work", payload={
+            **payload, "expected_task_version": current_version,
+            "expected_live_assignment_ids": [assignment["id"]], "expected_running_run_ids": [receipt["run"]["id"]],
+            "expected_claim_generation": receipt["claim_generation"]}, error="healthy accepted assignment")
+    async with db_session_factory() as db:
+        assert (await db.get(AgentTaskAssignment, assignment["id"])).state == "accepted"
+        assert (await db.scalars(select(AgentRun))).one().id == receipt["run"]["id"]
+    event_row, = await recovery_events(db_session_factory)
+    assert event_row.actor_id == pm.id and json.loads(event_row.payload)["routing_selection_pending"] is False

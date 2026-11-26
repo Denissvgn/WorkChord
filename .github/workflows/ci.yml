@@ -243,8 +243,9 @@ jobs:
         run: |
           .venv/bin/python scripts/build_agent_skills.py validate
           .venv/bin/python scripts/build_agent_skills.py build --output-dir /tmp/workchord-agent-skills
-          .venv/bin/python scripts/build_agent_skills.py build-codex-plugin --output-dir /tmp/workchord-codex-plugin
-          diff -ru adapters/codex/workchord-agent-roles /tmp/workchord-codex-plugin
+          rm -rf /tmp/workchord-adapters
+          .venv/bin/python scripts/build_agent_skills.py build-adapters --output-dir /tmp/workchord-adapters
+          diff -ru adapters /tmp/workchord-adapters
       - name: Validate the local Compose profile
         timeout-minutes: 2
         env:

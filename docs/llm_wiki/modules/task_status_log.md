@@ -31,10 +31,8 @@ flowchart LR
     n5["backend/app/services/task_status_service.py"]
     n6["backend/app/services/task_timeline_service.py"]
     n7["backend/app/utils/time.py"]
-    n8["backend/tests/migrations/test_task_postponement_migration.py"]
-    n9["backend/tests/test_effective_deferral.py"]
-    n10["backend/tests/test_task_pagination.py"]
-    n11["backend/tests/test_task_postponement.py"]
+    n8["backend/tests/test_effective_deferral.py"]
+    n9["backend/tests/test_task_pagination.py"]
     n1 --> n2
     n1 --> n3
     n2 --> n0
@@ -54,17 +52,10 @@ flowchart LR
     n6 --> n7
     n8 --> n2
     n8 --> n3
+    n8 --> n4
     n9 --> n2
     n9 --> n3
-    n9 --> n4
-    n10 --> n2
-    n10 --> n3
-    n10 --> n6
-    n11 --> n2
-    n11 --> n3
-    n11 --> n4
-    n11 --> n5
-    n11 --> n7
+    n9 --> n6
     click n0 "../modules/app_database.md"
     click n1 "../modules/models___init__.md"
     click n2 "../modules/models_task.md"
@@ -73,10 +64,8 @@ flowchart LR
     click n5 "../modules/task_status_service.md"
     click n6 "../modules/task_timeline_service.md"
     click n7 "../modules/time.md"
-    click n8 "../modules/test_task_postponement_migration.md"
-    click n9 "../modules/test_effective_deferral.md"
-    click n10 "../modules/test_task_pagination.md"
-    click n11 "../modules/test_task_postponement.md"
+    click n8 "../modules/test_effective_deferral.md"
+    click n9 "../modules/test_task_pagination.md"
 ```
 
 ### Internal neighbors
@@ -88,10 +77,8 @@ flowchart LR
 | Inbound | [task_domain_service](../modules/task_domain_service.md) |
 | Inbound | [task_status_service](../modules/task_status_service.md) |
 | Inbound | [task_timeline_service](../modules/task_timeline_service.md) |
-| Inbound | [test_task_postponement_migration](../modules/test_task_postponement_migration.md) |
 | Inbound | [test_effective_deferral](../modules/test_effective_deferral.md) |
 | Inbound | [test_task_pagination](../modules/test_task_pagination.md) |
-| Inbound | [test_task_postponement](../modules/test_task_postponement.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [models_task](../modules/models_task.md) |
 | Outbound | [time](../modules/time.md) |

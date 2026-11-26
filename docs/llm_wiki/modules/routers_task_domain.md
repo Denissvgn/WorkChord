@@ -25,7 +25,6 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.schemas.task_brief` | `BriefWrite`, `BriefConvert`, `OwnerAcceptanceWrite`, `ProgressWrite`, `TaskReviewWrite`, `TaskReviewResponse`, `CurrentTaskReviewResponse` |
 | `app.schemas.task_detail` | `TaskDetailResponse`, `TaskReferencePage`, `HumanWorkResponse` |
 | `app.schemas.task_domain` | `BacklogRestoreRequest`, `TaskActionRequest`, `TaskActionsResponse` |
-| `app.schemas.task_postponement` | `TaskPostponeRequest`, `TaskPostponementResponse`, `TaskReactivateRequest` |
 | `app.schemas.task_replacement` | `TaskReplacementCreate`, `TaskReplacementResponse` |
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService`, `BacklogSnapshotService` |
 | `app.services.delivery_metrics_service` | `DeliveryMetricsService` |
@@ -36,7 +35,6 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.task_detail_service` | `TaskDetailService` |
 | `app.services.task_domain_service` | `TaskDomainService`, `domain_capabilities` |
-| `app.services.task_postponement_service` | `TaskPostponementService`, `TaskPostponementService`, `TaskPostponementService` |
 | `app.services.task_replacement_service` | `TaskReplacementService`, `TaskReplacementService` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.services.work_metrics` | `METRIC_MATCHES`, `aggregate_metrics` |
@@ -66,7 +64,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (6) |
-| Outbound | `backend` (30) |
+| Outbound | `backend` (28) |
 
 ### External packages
 
@@ -74,7 +72,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 36 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -120,6 +118,3 @@ flowchart LR
 | `task_github_reconciliation` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/github-reconciliation', response_model=GitHubReconciliationResponse)` | Compare the commits a task submitted with its linked pull requests as last observed. |
 | `task_github_catch_up` | *(async)* `(task_id: int, db: DB)` | `@router.post('/tasks/{task_id}/github-reconciliation/catch-up', response_model=GitHubReconciliationResponse)` | Read this task's own pull requests from GitHub for events a webhook never delivered. |
 | `record_task_replacement` | *(async)* `(task_id: int, data: TaskReplacementCreate, db: DB)` | `@router.post('/tasks/{task_id}/replacement', response_model=TaskReplacementResponse, status_code=201)` | Replace this unaccepted task with a fresh one; only the project's PM or an operator may decide. |
-| `task_postponement` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/postponement', response_model=TaskPostponementResponse)` | Read the task's open postponement, or its most recent one, with its reactivation requirements. |
-| `postpone_task` | *(async)* `(task_id: int, data: TaskPostponeRequest, db: DB)` | `@router.post('/tasks/{task_id}/postpone', response_model=TaskPostponementResponse)` | Stop planned, active or resolved work without canceling it, with a reason and reactivation requirements. |
-| `reactivate_task` | *(async)* `(task_id: int, data: TaskReactivateRequest, db: DB)` | `@router.post('/tasks/{task_id}/reactivate', response_model=TaskPostponementResponse)` | Return postponed work to planned, or to resolved if it was postponed after resolution. |

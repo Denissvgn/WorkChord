@@ -43,6 +43,7 @@ A prior supervised worker resumes the exact strict handback on its original publ
 flowchart LR
     n0["backend"]
     n1["backend/tests/test_supervised_shadow_rework.py"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/test_supervised_shadow_rework.md"
 ```
@@ -53,6 +54,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
+| Inbound | `backend` (1) |
 | Outbound | `backend` (19) |
 
 ### External packages

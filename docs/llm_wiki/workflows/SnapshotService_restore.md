@@ -1,7 +1,7 @@
 # SnapshotService_restore
 
 **Entry point:** `snapshot_service.SnapshotService.restore`
-**Modules involved:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [capacity_adjustments](../modules/capacity_adjustments.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [models_task](../modules/models_task.md), [recovery](../modules/recovery.md), [snapshot_service](../modules/snapshot_service.md), [snapshots](../modules/snapshots.md), [task_brief_service](../modules/task_brief_service.md), [task_domain_service](../modules/task_domain_service.md), [task_postponement_service](../modules/task_postponement_service.md), [task_recovery_service](../modules/task_recovery_service.md), [task_replacement_service](../modules/task_replacement_service.md), [task_service](../modules/task_service.md), [team_member](../modules/team_member.md), [team_service](../modules/team_service.md)
+**Modules involved:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [capacity_adjustments](../modules/capacity_adjustments.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [models_task](../modules/models_task.md), [recovery](../modules/recovery.md), [snapshot_service](../modules/snapshot_service.md), [snapshots](../modules/snapshots.md), [task_brief_service](../modules/task_brief_service.md), [task_domain_service](../modules/task_domain_service.md), [task_recovery_service](../modules/task_recovery_service.md), [task_replacement_service](../modules/task_replacement_service.md), [task_service](../modules/task_service.md), [team_member](../modules/team_member.md), [team_service](../modules/team_service.md)
 
 > Restore supported IDs in place, retain history and invalidate current execution acceptance.
 
@@ -24,19 +24,17 @@
 14. `capacity_adjustments.restore_adjustments`
 15. `team_member.Vacation`
 16. `task_replacement_service.require_restore_compatible`
-17. `task_postponement_service.require_restore_compatible`
-18. `delivery_dependency_service.DeliveryDependencyService.require_unreferenced`
-19. `delivery_dependency_service.DeliveryDependencyService`
-20. `task_postponement_service.require_unreferenced`
-21. `task_recovery_service.reserve_restored_task_version`
-22. `models_task.Task`
-23. `task_domain_service.require_owner`
-24. `task_brief_service.TaskBriefService.restore_brief`
-25. `task_brief_service.TaskBriefService`
-26. `recovery.TaskScheduleBaseline`
+17. `delivery_dependency_service.DeliveryDependencyService.require_unreferenced`
+18. `delivery_dependency_service.DeliveryDependencyService`
+19. `task_recovery_service.reserve_restored_task_version`
+20. `models_task.Task`
+21. `task_domain_service.require_owner`
+22. `task_brief_service.TaskBriefService.restore_brief`
+23. `task_brief_service.TaskBriefService`
+24. `recovery.TaskScheduleBaseline`
+25. `task_service.TaskService.record_task_event`
+26. `models_task.TaskDependency`
 27. `task_service.TaskService.record_task_event`
-28. `models_task.TaskDependency`
-29. `task_service.TaskService.record_task_event`
 
 ## Touches
 
@@ -52,7 +50,6 @@
 - [snapshots](../modules/snapshots.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_domain_service](../modules/task_domain_service.md)
-- [task_postponement_service](../modules/task_postponement_service.md)
 - [task_recovery_service](../modules/task_recovery_service.md)
 - [task_replacement_service](../modules/task_replacement_service.md)
 - [task_service](../modules/task_service.md)

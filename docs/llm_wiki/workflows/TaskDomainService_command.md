@@ -12,8 +12,7 @@
 4. `time.utc_now`
 5. `task_brief_service.clear_acceptance`
 6. `task_brief_service.clear_acceptance`
-7. `task_brief_service.clear_acceptance`
-8. `task_status_log.TaskStatusLog`
+7. `task_status_log.TaskStatusLog`
 
 ## Touches
 

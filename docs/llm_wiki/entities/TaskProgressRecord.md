@@ -44,7 +44,6 @@ flowchart LR
     n7["backend/tests/test_manual_review_provenance.py"]
     n8["backend/tests/test_task_domain.py"]
     n9["backend/tests/test_task_domain_integrity.py"]
-    n10["backend/tests/test_task_postponement.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -54,7 +53,6 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
-    n10 --> n0
     click n0 "../modules/models_task_brief.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -65,7 +63,6 @@ flowchart LR
     click n7 "../modules/test_manual_review_provenance.md"
     click n8 "../modules/test_task_domain.md"
     click n9 "../modules/test_task_domain_integrity.md"
-    click n10 "../modules/test_task_postponement.md"
 ```
 
 ### Summary
@@ -92,4 +89,3 @@ flowchart LR
 | `test_manual_review_provenance` | import | [test_manual_review_provenance](../modules/test_manual_review_provenance.md) | — |
 | `test_task_domain` | import | [test_task_domain](../modules/test_task_domain.md) | — |
 | `test_task_domain_integrity` | import | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | — |
-| `test_task_postponement` | import | [test_task_postponement](../modules/test_task_postponement.md) | — |

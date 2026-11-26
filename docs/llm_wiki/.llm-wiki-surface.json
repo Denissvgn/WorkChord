@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1825,
-      "flows": 628,
+      "entities": 1814,
+      "flows": 625,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1169,
-      "workflows": 238
+      "modules": 1163,
+      "workflows": 235
     },
     "dependency_architecture": 2,
-    "total": 3877
+    "total": 3854
   },
   "dependency_pages": {
     "count": 2,
@@ -1392,7 +1392,7 @@
             "backend/app/services/task_status_service.py",
             "backend/app/utils/time.py"
           ],
-          "step_count": 75,
+          "step_count": 74,
           "truncated": false
         }
       },
@@ -1560,7 +1560,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 120,
+              "line": 118,
               "step": "command_transaction",
               "step_index": 12,
               "target": "db.info.pop"
@@ -1568,7 +1568,15 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 133,
+              "line": 131,
+              "step": "command_transaction",
+              "step_index": 12,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 132,
               "step": "command_transaction",
               "step_index": 12,
               "target": "db.info.pop"
@@ -1577,14 +1585,6 @@
               "confidence": "unknown",
               "kind": "mutation",
               "line": 134,
-              "step": "command_transaction",
-              "step_index": 12,
-              "target": "db.info.pop"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "mutation",
-              "line": 136,
               "step": "command_transaction",
               "step_index": 12,
               "target": "db.info.pop"
@@ -2445,7 +2445,7 @@
             },
             {
               "kind": "external_call",
-              "line": 86,
+              "line": 84,
               "step": "current_command",
               "target": "getattr"
             },
@@ -3118,7 +3118,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 120,
+              "line": 118,
               "step": "command_transaction",
               "step_index": 2,
               "target": "db.info.pop"
@@ -3126,7 +3126,15 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 133,
+              "line": 131,
+              "step": "command_transaction",
+              "step_index": 2,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 132,
               "step": "command_transaction",
               "step_index": 2,
               "target": "db.info.pop"
@@ -3138,56 +3146,48 @@
               "step": "command_transaction",
               "step_index": 2,
               "target": "db.info.pop"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "mutation",
-              "line": 136,
-              "step": "command_transaction",
-              "step_index": 2,
-              "target": "db.info.pop"
             }
           ],
           "gaps": [
             {
               "kind": "external_call",
-              "line": 86,
+              "line": 84,
               "step": "current_command",
               "target": "getattr"
             },
             {
               "kind": "external_call",
-              "line": 87,
+              "line": 85,
               "step": "current_command",
               "target": "isinstance"
             },
             {
               "kind": "unresolved_call",
-              "line": 87,
+              "line": 85,
               "step": "current_command",
               "target": "info.get"
             },
             {
               "kind": "external_call",
-              "line": 103,
+              "line": 101,
               "step": "command_transaction",
               "target": "RuntimeError"
             },
             {
               "kind": "external_call",
-              "line": 115,
+              "line": 113,
               "step": "command_transaction",
               "target": "RuntimeError"
             },
             {
               "kind": "unresolved_call",
-              "line": 116,
+              "line": 114,
               "step": "command_transaction",
               "target": "db.flush"
             },
             {
               "kind": "unresolved_call",
-              "line": 117,
+              "line": 115,
               "step": "command_transaction",
               "target": "db.info.get"
             },
@@ -14264,7 +14264,6 @@
             "backend/app/services/task_brief_service.py",
             "backend/app/services/review_provenance.py",
             "backend/app/autonomy/canonical.py",
-            "backend/app/services/task_postponement_service.py",
             "backend/app/services/agent_work_service.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/retained_planning_output.py",
@@ -14278,7 +14277,7 @@
             "backend/app/services/agent_service.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 774,
+          "step_count": 762,
           "truncated": true
         }
       },
@@ -14463,7 +14462,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 280,
+              "line": 278,
               "step": "import_legacy_snapshots",
               "target": "SnapshotService(db).import_legacy"
             }
@@ -17371,7 +17370,7 @@
             },
             {
               "kind": "external_call",
-              "line": 196,
+              "line": 194,
               "step": "list_snapshots",
               "target": "HTTPException"
             },
@@ -19574,72 +19573,6 @@
       "category": "http",
       "detector": "builtin",
       "entry_point": {
-        "label": "postpone_task",
-        "source_path": "backend/app/routers/task_domain.py",
-        "symbol": "postpone_task"
-      },
-      "evidence": {
-        "data_flow": {
-          "boundary_effects": [],
-          "gaps": [
-            {
-              "kind": "external_call",
-              "line": 53,
-              "step": "domain_result",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 53,
-              "step": "domain_result",
-              "target": "exc.detail"
-            },
-            {
-              "kind": "external_call",
-              "line": 55,
-              "step": "domain_result",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 57,
-              "step": "domain_result",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 59,
-              "step": "domain_result",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 384,
-              "step": "postpone_task",
-              "target": "TaskPostponementService(db).postpone"
-            }
-          ],
-          "generated": true,
-          "step_count": 11,
-          "transfer_count": 10,
-          "truncated": false
-        },
-        "flow": {
-          "modules_touched": [
-            "backend/app/routers/task_domain.py",
-            "backend/app/services/task_postponement_service.py"
-          ],
-          "step_count": 11,
-          "truncated": false
-        }
-      },
-      "id": "http-postpone_task",
-      "language": "python"
-    },
-    {
-      "category": "http",
-      "detector": "builtin",
-      "entry_point": {
         "label": "preview_capacity_adjustment",
         "source_path": "backend/app/routers/team.py",
         "symbol": "preview_capacity_adjustment"
@@ -20227,72 +20160,6 @@
         }
       },
       "id": "http-project_member",
-      "language": "python"
-    },
-    {
-      "category": "http",
-      "detector": "builtin",
-      "entry_point": {
-        "label": "reactivate_task",
-        "source_path": "backend/app/routers/task_domain.py",
-        "symbol": "reactivate_task"
-      },
-      "evidence": {
-        "data_flow": {
-          "boundary_effects": [],
-          "gaps": [
-            {
-              "kind": "external_call",
-              "line": 53,
-              "step": "domain_result",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 53,
-              "step": "domain_result",
-              "target": "exc.detail"
-            },
-            {
-              "kind": "external_call",
-              "line": 55,
-              "step": "domain_result",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 57,
-              "step": "domain_result",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 59,
-              "step": "domain_result",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 391,
-              "step": "reactivate_task",
-              "target": "TaskPostponementService(db).reactivate"
-            }
-          ],
-          "generated": true,
-          "step_count": 11,
-          "transfer_count": 10,
-          "truncated": false
-        },
-        "flow": {
-          "modules_touched": [
-            "backend/app/routers/task_domain.py",
-            "backend/app/services/task_postponement_service.py"
-          ],
-          "step_count": 11,
-          "truncated": false
-        }
-      },
-      "id": "http-reactivate_task",
       "language": "python"
     },
     {
@@ -21191,7 +21058,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 1675,
+              "line": 1671,
               "step": "TaskService.task_to_response",
               "step_index": 12,
               "target": "signals.pop"
@@ -21939,19 +21806,19 @@
             },
             {
               "kind": "external_call",
-              "line": 86,
+              "line": 84,
               "step": "current_command",
               "target": "getattr"
             },
             {
               "kind": "external_call",
-              "line": 87,
+              "line": 85,
               "step": "current_command",
               "target": "isinstance"
             },
             {
               "kind": "unresolved_call",
-              "line": 87,
+              "line": 85,
               "step": "current_command",
               "target": "info.get"
             }
@@ -22079,7 +21946,7 @@
             "backend/app/services/task_status_service.py",
             "backend/app/utils/time.py"
           ],
-          "step_count": 76,
+          "step_count": 75,
           "truncated": false
         }
       },
@@ -22470,7 +22337,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 221,
+              "line": 219,
               "step": "restore_snapshot",
               "target": "HTTPException"
             },
@@ -22518,7 +22385,7 @@
             },
             {
               "kind": "external_call",
-              "line": 230,
+              "line": 228,
               "step": "restore_snapshot",
               "target": "HTTPException"
             },
@@ -22764,7 +22631,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 1675,
+              "line": 1671,
               "step": "TaskService.task_to_response",
               "step_index": 12,
               "target": "signals.pop"
@@ -22998,31 +22865,31 @@
             },
             {
               "kind": "external_call",
-              "line": 86,
+              "line": 84,
               "step": "current_command",
               "target": "getattr"
             },
             {
               "kind": "external_call",
-              "line": 87,
+              "line": 85,
               "step": "current_command",
               "target": "isinstance"
             },
             {
               "kind": "unresolved_call",
-              "line": 87,
+              "line": 85,
               "step": "current_command",
               "target": "info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 93,
+              "line": 91,
               "step": "commit_or_flush",
               "target": "db.flush"
             },
             {
               "kind": "unresolved_call",
-              "line": 95,
+              "line": 93,
               "step": "commit_or_flush",
               "target": "db.commit"
             },
@@ -24142,7 +24009,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 264,
+              "line": 215,
               "step": "TaskDomainService.allowed_actions",
               "step_index": 10,
               "target": "actions.append"
@@ -24150,7 +24017,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 267,
+              "line": 218,
               "step": "TaskDomainService.allowed_actions",
               "step_index": 10,
               "target": "progress_blockers.append"
@@ -24158,7 +24025,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 269,
+              "line": 220,
               "step": "TaskDomainService.allowed_actions",
               "step_index": 10,
               "target": "progress_blockers.append"
@@ -24166,7 +24033,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 271,
+              "line": 222,
               "step": "TaskDomainService.allowed_actions",
               "step_index": 10,
               "target": "progress_blockers.append"
@@ -24174,7 +24041,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 272,
+              "line": 223,
               "step": "TaskDomainService.allowed_actions",
               "step_index": 10,
               "target": "actions.append"
@@ -24182,15 +24049,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 276,
-              "step": "TaskDomainService.allowed_actions",
-              "step_index": 10,
-              "target": "actions.extend"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "mutation",
-              "line": 284,
+              "line": 231,
               "step": "TaskDomainService.allowed_actions",
               "step_index": 10,
               "target": "start_codes.append"
@@ -24198,10 +24057,18 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 286,
+              "line": 233,
               "step": "TaskDomainService.allowed_actions",
               "step_index": 10,
               "target": "start_codes.append"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 242,
+              "step": "TaskDomainService.allowed_actions",
+              "step_index": 10,
+              "target": "review_codes.append"
             }
           ],
           "gaps": [
@@ -24237,7 +24104,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 227,
+              "line": 178,
               "step": "TaskDomainService._policy_task",
               "target": "self.tasks.get_by_id"
             },
@@ -24274,7 +24141,6 @@
             "backend/app/services/task_brief_service.py",
             "backend/app/services/review_provenance.py",
             "backend/app/autonomy/canonical.py",
-            "backend/app/services/task_postponement_service.py",
             "backend/app/services/agent_work_service.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/retained_planning_output.py",
@@ -24291,7 +24157,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 1080,
+          "step_count": 1068,
           "truncated": true
         }
       },
@@ -24463,7 +24329,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 1675,
+              "line": 1671,
               "step": "TaskService.task_to_response",
               "step_index": 12,
               "target": "signals.pop"
@@ -25120,86 +24986,6 @@
         }
       },
       "id": "http-task_owner_options",
-      "language": "python"
-    },
-    {
-      "category": "http",
-      "detector": "builtin",
-      "entry_point": {
-        "label": "task_postponement",
-        "source_path": "backend/app/routers/task_domain.py",
-        "symbol": "task_postponement"
-      },
-      "evidence": {
-        "data_flow": {
-          "boundary_effects": [],
-          "gaps": [
-            {
-              "kind": "external_call",
-              "line": 53,
-              "step": "domain_result",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 53,
-              "step": "domain_result",
-              "target": "exc.detail"
-            },
-            {
-              "kind": "external_call",
-              "line": 55,
-              "step": "domain_result",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 57,
-              "step": "domain_result",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 59,
-              "step": "domain_result",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 151,
-              "step": "TaskPostponementService.get",
-              "target": "self.db.scalar"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 151,
-              "step": "TaskPostponementService.get",
-              "target": "select(Task).where"
-            },
-            {
-              "kind": "step_limit",
-              "line": 0,
-              "step": "task_postponement",
-              "target": "first 12 steps"
-            }
-          ],
-          "generated": true,
-          "step_count": 12,
-          "transfer_count": 11,
-          "truncated": false
-        },
-        "flow": {
-          "modules_touched": [
-            "backend/app/routers/task_domain.py",
-            "backend/app/services/task_postponement_service.py",
-            "backend/app/authority.py",
-            "backend/app/config.py"
-          ],
-          "step_count": 50,
-          "truncated": false
-        }
-      },
-      "id": "http-task_postponement",
       "language": "python"
     },
     {
@@ -28795,7 +28581,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 1675,
+              "line": 1671,
               "step": "TaskService.task_to_response",
               "step_index": 12,
               "target": "signals.pop"
@@ -32974,7 +32760,6 @@
             "backend/app/services/task_replacement_service.py",
             "backend/app/services/review_provenance.py",
             "backend/app/autonomy/canonical.py",
-            "backend/app/services/task_postponement_service.py",
             "backend/app/services/agent_work_service.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/retained_planning_output.py",
@@ -32986,7 +32771,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 930,
+          "step_count": 918,
           "truncated": true
         }
       },
@@ -39389,7 +39174,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 120,
+              "line": 118,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39397,7 +39182,15 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 133,
+              "line": 131,
+              "step": "command_transaction",
+              "step_index": 11,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 132,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39406,14 +39199,6 @@
               "confidence": "unknown",
               "kind": "mutation",
               "line": 134,
-              "step": "command_transaction",
-              "step_index": 11,
-              "target": "db.info.pop"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "mutation",
-              "line": 136,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39496,7 +39281,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 120,
+              "line": 118,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39504,7 +39289,15 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 133,
+              "line": 131,
+              "step": "command_transaction",
+              "step_index": 11,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 132,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39513,14 +39306,6 @@
               "confidence": "unknown",
               "kind": "mutation",
               "line": 134,
-              "step": "command_transaction",
-              "step_index": 11,
-              "target": "db.info.pop"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "mutation",
-              "line": 136,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39603,7 +39388,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 120,
+              "line": 118,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39611,7 +39396,15 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 133,
+              "line": 131,
+              "step": "command_transaction",
+              "step_index": 11,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 132,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -39620,14 +39413,6 @@
               "confidence": "unknown",
               "kind": "mutation",
               "line": 134,
-              "step": "command_transaction",
-              "step_index": 11,
-              "target": "db.info.pop"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "mutation",
-              "line": 136,
               "step": "command_transaction",
               "step_index": 11,
               "target": "db.info.pop"
@@ -44048,7 +43833,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3492,
+              "line": 3590,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -44056,7 +43841,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3497,
+              "line": 3595,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -44064,7 +43849,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3500,
+              "line": 3598,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -44072,7 +43857,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3503,
+              "line": 3601,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -44080,7 +43865,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3506,
+              "line": 3604,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -44088,7 +43873,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3512,
+              "line": 3610,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -44096,7 +43881,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3515,
+              "line": 3613,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -44104,7 +43889,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3524,
+              "line": 3616,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -44113,61 +43898,61 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 3483,
+              "line": 3581,
               "step": "main",
               "target": "_parser().parse_args"
             },
             {
               "kind": "external_call",
-              "line": 3424,
+              "line": 3507,
               "step": "_parser",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3425,
+              "line": 3508,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 3431,
+              "line": 3514,
               "step": "_parser",
               "target": "parser.add_subparsers"
             },
             {
               "kind": "unresolved_call",
-              "line": 3432,
+              "line": 3515,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3436,
+              "line": 3519,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3440,
+              "line": 3523,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3441,
+              "line": 3524,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3445,
+              "line": 3528,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3446,
+              "line": 3529,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
@@ -44193,7 +43978,7 @@
           "modules_touched": [
             "scripts/build_agent_skills.py"
           ],
-          "step_count": 1279,
+          "step_count": 1315,
           "truncated": true
         }
       },
@@ -47588,7 +47373,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 120,
+              "line": 118,
               "step": "command_transaction",
               "step_index": 9,
               "target": "db.info.pop"
@@ -47596,7 +47381,15 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 133,
+              "line": 131,
+              "step": "command_transaction",
+              "step_index": 9,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 132,
               "step": "command_transaction",
               "step_index": 9,
               "target": "db.info.pop"
@@ -47605,14 +47398,6 @@
               "confidence": "unknown",
               "kind": "mutation",
               "line": 134,
-              "step": "command_transaction",
-              "step_index": 9,
-              "target": "db.info.pop"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "mutation",
-              "line": 136,
               "step": "command_transaction",
               "step_index": 9,
               "target": "db.info.pop"
@@ -47657,13 +47442,13 @@
             },
             {
               "kind": "external_call",
-              "line": 86,
+              "line": 84,
               "step": "current_command",
               "target": "getattr"
             },
             {
               "kind": "external_call",
-              "line": 87,
+              "line": 85,
               "step": "current_command",
               "target": "isinstance"
             },
@@ -50238,7 +50023,6 @@
         "entities/PostgreSQLContractManifest.md",
         "entities/PostgresTestDatabase.md",
         "entities/PostgresTestDatabaseManager.md",
-        "entities/PostponementRelease.md",
         "entities/PreflightPredicateResult.md",
         "entities/Principal.md",
         "entities/PrincipalProfileLink.md",
@@ -50294,8 +50078,6 @@
         "entities/Queue.md",
         "entities/QuickCaptureTarget.md",
         "entities/RateLimitWindow.md",
-        "entities/ReactivationRequirementInput.md",
-        "entities/ReactivationRequirementResponse.md",
         "entities/Readiness.md",
         "entities/ReadyTopology.md",
         "entities/ReasonCodeRule.md",
@@ -50345,7 +50127,6 @@
         "entities/RequestSourceTargetNotFoundError.md",
         "entities/RequestSourceUpdate.md",
         "entities/RequestSourceValidationError.md",
-        "entities/RequirementKind.md",
         "entities/RescheduleResult.md",
         "entities/ResolvedHandoffFact.md",
         "entities/ResolvedStatusEvidence.md",
@@ -50808,15 +50589,8 @@
         "entities/TaskMetricSignals.md",
         "entities/TaskMode.md",
         "entities/TaskOrderRequest.md",
-        "entities/TaskPostponement.md",
-        "entities/TaskPostponementRecord.md",
-        "entities/TaskPostponementResponse.md",
-        "entities/TaskPostponementService.md",
-        "entities/TaskPostponeRequest.md",
         "entities/TaskProgress.md",
         "entities/TaskProgressRecord.md",
-        "entities/TaskReactivateRequest.md",
-        "entities/TaskReactivationRequirement.md",
         "entities/TaskReorder.md",
         "entities/TaskReplacement.md",
         "entities/TaskReplacementCreate.md",
@@ -51491,7 +51265,6 @@
         "flows/http-personal_notification_deliveries.md",
         "flows/http-plan_agent_team_reconciliation.md",
         "flows/http-planning_input_context.md",
-        "flows/http-postpone_task.md",
         "flows/http-preview_capacity_adjustment.md",
         "flows/http-preview_capacity_transfer.md",
         "flows/http-preview_capacity_transfer_withdrawal.md",
@@ -51501,7 +51274,6 @@
         "flows/http-preview_schedule.md",
         "flows/http-preview_task_routing.md",
         "flows/http-project_member.md",
-        "flows/http-reactivate_task.md",
         "flows/http-read.md",
         "flows/http-read_fault.md",
         "flows/http-read_snapshot.md",
@@ -51564,7 +51336,6 @@
         "flows/http-task_mention_options.md",
         "flows/http-task_migration_diagnostics.md",
         "flows/http-task_owner_options.md",
-        "flows/http-task_postponement.md",
         "flows/http-task_progress_history.md",
         "flows/http-task_replacement.md",
         "flows/http-task_review_queue.md",
@@ -51881,7 +51652,6 @@
         "modules/20261124_0024_delivery_dependency_target_branch.md",
         "modules/20261126_0025_catalog_local_first.md",
         "modules/20261126_0026_review_record_kind.md",
-        "modules/20261126_0027_task_postponements.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -52272,7 +52042,6 @@
         "modules/models_system_settings.md",
         "modules/models_task.md",
         "modules/models_task_brief.md",
-        "modules/models_task_postponement.md",
         "modules/models_task_replacement.md",
         "modules/models_template.md",
         "modules/models_time_entry.md",
@@ -52530,7 +52299,6 @@
         "modules/schemas_task.md",
         "modules/schemas_task_brief.md",
         "modules/schemas_task_domain.md",
-        "modules/schemas_task_postponement.md",
         "modules/schemas_task_replacement.md",
         "modules/schemas_team.md",
         "modules/schemas_template.md",
@@ -52622,7 +52390,6 @@
         "modules/task_domain_service.md",
         "modules/task_hierarchy_service.md",
         "modules/task_import_service.md",
-        "modules/task_postponement_service.md",
         "modules/task_recovery_service.md",
         "modules/task_replacement_service.md",
         "modules/task_service.md",
@@ -52878,8 +52645,6 @@
         "modules/test_task_domain_integrity.md",
         "modules/test_task_domain_migrations.md",
         "modules/test_task_pagination.md",
-        "modules/test_task_postponement.md",
-        "modules/test_task_postponement_migration.md",
         "modules/test_task_replacement.md",
         "modules/test_task_replacement_migration.md",
         "modules/test_team_member_agent_connected.md",
@@ -53191,7 +52956,6 @@
         "workflows/record_routing_operational_event.md",
         "workflows/recover_principal.md",
         "workflows/refuse_removing_transfer_row.md",
-        "workflows/release_execution.md",
         "workflows/ReleaseService_create_for_project.md",
         "workflows/repair_sequences.md",
         "workflows/RequestSourceService_create_link.md",
@@ -53223,12 +52987,11 @@
         "workflows/TaskBulkOperationService_run.md",
         "workflows/TaskDetailService_detail.md",
         "workflows/TaskDetailService_my_work.md",
+        "workflows/TaskDomainService__cancel_execution.md",
         "workflows/TaskDomainService_allowed_actions.md",
         "workflows/TaskDomainService_command.md",
         "workflows/TaskImportService_bulk_update_tasks_from_text.md",
         "workflows/TaskImportService_import_tasks.md",
-        "workflows/TaskPostponementService_postpone.md",
-        "workflows/TaskPostponementService_reactivate.md",
         "workflows/TaskReplacementService__move_dependents.md",
         "workflows/TaskReplacementService_record.md",
         "workflows/TaskService__lock_task_scope.md",
@@ -53239,7 +53002,6 @@
         "workflows/TaskService_move_task.md",
         "workflows/TaskService_remove_dependency.md",
         "workflows/TaskService_task_to_response.md",
-        "workflows/TaskService_unmerge_task.md",
         "workflows/TaskService_update.md",
         "workflows/TaskStatusService__apply_transition.md",
         "workflows/TaskStatusService_change_status.md",
@@ -58782,7 +58544,6 @@
         "modules/models___init__.md",
         "modules/test_analytics_scopes.md",
         "modules/test_delivery_metrics.md",
-        "modules/test_task_postponement.md",
         "modules/test_task_replacement.md"
       ],
       "role": "semantic",
@@ -63297,7 +63058,6 @@
         "modules/models_task.md",
         "modules/project_service.md",
         "modules/scheduler_service.md",
-        "modules/snapshots.md",
         "modules/task_bulk_operation_service.md"
       ],
       "role": "semantic",
@@ -65028,18 +64788,6 @@
       "title": "PostgresTestDatabaseManager"
     },
     {
-      "canonical_path": "entities/PostponementRelease.md",
-      "id": "PostponementRelease",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/PostponementRelease",
-      "outgoing_internal_links": [
-        "modules/schemas_task_postponement.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/task_postponement.py",
-      "title": "PostponementRelease"
-    },
-    {
       "canonical_path": "entities/PreflightPredicateResult.md",
       "id": "PreflightPredicateResult",
       "kind": "entities",
@@ -65213,8 +64961,7 @@
         "modules/task_brief_service.md",
         "modules/test_delivery_metrics.md",
         "modules/test_task_domain.md",
-        "modules/test_task_domain_integrity.md",
-        "modules/test_task_postponement.md"
+        "modules/test_task_domain_integrity.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/task_brief.py",
@@ -65806,30 +65553,6 @@
       "role": "semantic",
       "source_path": "backend/app/services/web_intake_service.py",
       "title": "_RateLimitWindow"
-    },
-    {
-      "canonical_path": "entities/ReactivationRequirementInput.md",
-      "id": "ReactivationRequirementInput",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/ReactivationRequirementInput",
-      "outgoing_internal_links": [
-        "modules/schemas_task_postponement.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/task_postponement.py",
-      "title": "ReactivationRequirementInput"
-    },
-    {
-      "canonical_path": "entities/ReactivationRequirementResponse.md",
-      "id": "ReactivationRequirementResponse",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/ReactivationRequirementResponse",
-      "outgoing_internal_links": [
-        "modules/schemas_task_postponement.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/task_postponement.py",
-      "title": "ReactivationRequirementResponse"
     },
     {
       "canonical_path": "entities/Readiness.md",
@@ -66477,18 +66200,6 @@
       "role": "semantic",
       "source_path": "backend/app/services/request_source_service.py",
       "title": "RequestSourceValidationError"
-    },
-    {
-      "canonical_path": "entities/RequirementKind.md",
-      "id": "RequirementKind",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/RequirementKind",
-      "outgoing_internal_links": [
-        "modules/schemas_task_postponement.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/task_postponement.py",
-      "title": "RequirementKind"
     },
     {
       "canonical_path": "entities/RescheduleResult.md",
@@ -69632,8 +69343,7 @@
         "modules/schemas_task_brief.md",
         "modules/test_delivery_metrics.md",
         "modules/test_task_domain.md",
-        "modules/test_task_domain_integrity.md",
-        "modules/test_task_postponement.md"
+        "modules/test_task_domain_integrity.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/task_brief.py",
@@ -69976,7 +69686,8 @@
       "outgoing_internal_links": [
         "modules/schemas___init__.md",
         "modules/schemas_agent.md",
-        "modules/schemas_task.md"
+        "modules/schemas_task.md",
+        "modules/snapshots.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/task.py",
@@ -72060,9 +71771,7 @@
         "modules/task_status_service.md",
         "modules/task_timeline_service.md",
         "modules/test_effective_deferral.md",
-        "modules/test_task_pagination.md",
-        "modules/test_task_postponement.md",
-        "modules/test_task_postponement_migration.md"
+        "modules/test_task_pagination.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/task_status_log.py",
@@ -72918,76 +72627,6 @@
       "title": "TaskOrderRequest"
     },
     {
-      "canonical_path": "entities/TaskPostponement.md",
-      "id": "TaskPostponement",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TaskPostponement",
-      "outgoing_internal_links": [
-        "modules/app_database.md",
-        "modules/models___init__.md",
-        "modules/models_task_postponement.md",
-        "modules/task_postponement_service.md",
-        "modules/test_task_postponement.md",
-        "modules/test_task_postponement_migration.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/models/task_postponement.py",
-      "title": "TaskPostponement"
-    },
-    {
-      "canonical_path": "entities/TaskPostponementRecord.md",
-      "id": "TaskPostponementRecord",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TaskPostponementRecord",
-      "outgoing_internal_links": [
-        "modules/schemas_task_postponement.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/task_postponement.py",
-      "title": "TaskPostponementRecord"
-    },
-    {
-      "canonical_path": "entities/TaskPostponementResponse.md",
-      "id": "TaskPostponementResponse",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TaskPostponementResponse",
-      "outgoing_internal_links": [
-        "modules/routers_task_domain.md",
-        "modules/schemas_task_postponement.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/task_postponement.py",
-      "title": "TaskPostponementResponse"
-    },
-    {
-      "canonical_path": "entities/TaskPostponementService.md",
-      "id": "TaskPostponementService",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TaskPostponementService",
-      "outgoing_internal_links": [
-        "modules/routers_task_domain.md",
-        "modules/task_postponement_service.md",
-        "modules/test_task_postponement.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/services/task_postponement_service.py",
-      "title": "TaskPostponementService"
-    },
-    {
-      "canonical_path": "entities/TaskPostponeRequest.md",
-      "id": "TaskPostponeRequest",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TaskPostponeRequest",
-      "outgoing_internal_links": [
-        "modules/routers_task_domain.md",
-        "modules/schemas_task_postponement.md",
-        "modules/test_task_postponement.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/task_postponement.py",
-      "title": "TaskPostponeRequest"
-    },
-    {
       "canonical_path": "entities/TaskProgress.md",
       "id": "TaskProgress",
       "kind": "entities",
@@ -73014,43 +72653,11 @@
         "modules/task_recovery_service.md",
         "modules/test_manual_review_provenance.md",
         "modules/test_task_domain.md",
-        "modules/test_task_domain_integrity.md",
-        "modules/test_task_postponement.md"
+        "modules/test_task_domain_integrity.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/task_brief.py",
       "title": "TaskProgressRecord"
-    },
-    {
-      "canonical_path": "entities/TaskReactivateRequest.md",
-      "id": "TaskReactivateRequest",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TaskReactivateRequest",
-      "outgoing_internal_links": [
-        "modules/routers_task_domain.md",
-        "modules/schemas_task_postponement.md",
-        "modules/test_task_postponement.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/task_postponement.py",
-      "title": "TaskReactivateRequest"
-    },
-    {
-      "canonical_path": "entities/TaskReactivationRequirement.md",
-      "id": "TaskReactivationRequirement",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TaskReactivationRequirement",
-      "outgoing_internal_links": [
-        "modules/app_database.md",
-        "modules/models___init__.md",
-        "modules/models_task_postponement.md",
-        "modules/task_postponement_service.md",
-        "modules/test_task_postponement.md",
-        "modules/test_task_postponement_migration.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/models/task_postponement.py",
-      "title": "TaskReactivationRequirement"
     },
     {
       "canonical_path": "entities/TaskReorder.md",
@@ -73210,8 +72817,7 @@
         "modules/test_acceptance_attribution.md",
         "modules/test_delivery_metrics.md",
         "modules/test_task_domain.md",
-        "modules/test_task_domain_integrity.md",
-        "modules/test_task_postponement.md"
+        "modules/test_task_domain_integrity.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/task_brief.py",
@@ -73477,8 +73083,7 @@
       "outgoing_internal_links": [
         "modules/hierarchy_repair_service.md",
         "modules/task_service.md",
-        "modules/task_status_service.md",
-        "modules/test_task_postponement.md"
+        "modules/task_status_service.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/task_status_service.py",
@@ -73596,7 +73201,6 @@
       "outgoing_internal_links": [
         "modules/task_domain_service.md",
         "modules/task_hierarchy_service.md",
-        "modules/task_postponement_service.md",
         "modules/task_service.md",
         "modules/task_status_service.md"
       ],
@@ -78974,16 +78578,6 @@
       "role": "semantic",
       "source_path": "backend/app/migrations/versions/20261126_0026_review_record_kind.py",
       "title": "20261126_0026_review_record_kind Module"
-    },
-    {
-      "canonical_path": "modules/20261126_0027_task_postponements.md",
-      "id": "20261126_0027_task_postponements",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/20261126_0027_task_postponements",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "backend/app/migrations/versions/20261126_0027_task_postponements.py",
-      "title": "20261126_0027_task_postponements Module"
     },
     {
       "canonical_path": "modules/acceptance_artifacts.md",
@@ -85444,26 +85038,6 @@
       "title": "task_brief Module"
     },
     {
-      "canonical_path": "modules/models_task_postponement.md",
-      "id": "models_task_postponement",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/models_task_postponement",
-      "outgoing_internal_links": [
-        "entities/TaskPostponement.md",
-        "entities/TaskReactivationRequirement.md",
-        "modules/app_database.md",
-        "modules/models___init__.md",
-        "modules/models_task_postponement.md",
-        "modules/task_postponement_service.md",
-        "modules/test_task_postponement.md",
-        "modules/test_task_postponement_migration.md",
-        "modules/time.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/models/task_postponement.py",
-      "title": "task_postponement Module"
-    },
-    {
       "canonical_path": "modules/models_task_replacement.md",
       "id": "models_task_replacement",
       "kind": "modules",
@@ -90075,29 +89649,6 @@
       "title": "task_domain Module"
     },
     {
-      "canonical_path": "modules/schemas_task_postponement.md",
-      "id": "schemas_task_postponement",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/schemas_task_postponement",
-      "outgoing_internal_links": [
-        "entities/PostponementRelease.md",
-        "entities/ReactivationRequirementInput.md",
-        "entities/ReactivationRequirementResponse.md",
-        "entities/RequirementKind.md",
-        "entities/TaskPostponementRecord.md",
-        "entities/TaskPostponementResponse.md",
-        "entities/TaskPostponeRequest.md",
-        "entities/TaskReactivateRequest.md",
-        "modules/routers_task_domain.md",
-        "modules/schemas_task.md",
-        "modules/schemas_task_postponement.md",
-        "modules/test_task_postponement.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/task_postponement.py",
-      "title": "task_postponement Module"
-    },
-    {
       "canonical_path": "modules/schemas_task_replacement.md",
       "id": "schemas_task_replacement",
       "kind": "modules",
@@ -91654,7 +91205,6 @@
         "modules/query_limits.md",
         "modules/task_domain_service.md",
         "modules/task_hierarchy_service.md",
-        "modules/task_postponement_service.md",
         "modules/task_service.md",
         "modules/task_status_service.md",
         "modules/team_member.md",
@@ -91686,19 +91236,6 @@
       "role": "semantic",
       "source_path": "backend/app/services/task_import_service.py",
       "title": "task_import_service Module"
-    },
-    {
-      "canonical_path": "modules/task_postponement_service.md",
-      "id": "task_postponement_service",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/task_postponement_service",
-      "outgoing_internal_links": [
-        "entities/TaskPostponementService.md",
-        "modules/task_postponement_service.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/services/task_postponement_service.py",
-      "title": "task_postponement_service Module"
     },
     {
       "canonical_path": "modules/task_recovery_service.md",
@@ -91762,8 +91299,6 @@
         "modules/task_timeline_service.md",
         "modules/test_effective_deferral.md",
         "modules/test_task_pagination.md",
-        "modules/test_task_postponement.md",
-        "modules/test_task_postponement_migration.md",
         "modules/time.md"
       ],
       "role": "semantic",
@@ -95621,36 +95156,6 @@
       "title": "test_task_pagination Module"
     },
     {
-      "canonical_path": "modules/test_task_postponement.md",
-      "id": "test_task_postponement",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/test_task_postponement",
-      "outgoing_internal_links": [
-        "modules/test_task_postponement.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/tests/test_task_postponement.py",
-      "title": "test_task_postponement Module"
-    },
-    {
-      "canonical_path": "modules/test_task_postponement_migration.md",
-      "id": "test_task_postponement_migration",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/test_task_postponement_migration",
-      "outgoing_internal_links": [
-        "modules/models_agent.md",
-        "modules/models_project.md",
-        "modules/models_task.md",
-        "modules/models_task_postponement.md",
-        "modules/task_status_log.md",
-        "modules/test_task_postponement_migration.md",
-        "modules/upgrade_service.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/tests/migrations/test_task_postponement_migration.py",
-      "title": "test_task_postponement_migration Module"
-    },
-    {
       "canonical_path": "modules/test_task_replacement.md",
       "id": "test_task_replacement",
       "kind": "modules",
@@ -98848,6 +98353,7 @@
       "mcp_uri": "llm-wiki://workflows/AgentWorkService_requeue_recovery",
       "outgoing_internal_links": [
         "modules/agent_routing_policy.md",
+        "modules/agent_routing_service.md",
         "modules/agent_service.md",
         "modules/agent_work_service.md",
         "modules/commands.md",
@@ -99078,7 +98584,6 @@
         "modules/snapshot_service.md",
         "modules/task_brief_service.md",
         "modules/task_domain_service.md",
-        "modules/task_postponement_service.md",
         "modules/task_recovery_service.md",
         "modules/task_replacement_service.md",
         "modules/task_service.md"
@@ -100885,21 +100390,6 @@
       "title": "refuse_removing_transfer_row"
     },
     {
-      "canonical_path": "workflows/release_execution.md",
-      "id": "release_execution",
-      "kind": "workflows",
-      "mcp_uri": "llm-wiki://workflows/release_execution",
-      "outgoing_internal_links": [
-        "modules/authority.md",
-        "modules/review_provenance.md",
-        "modules/task_domain_service.md",
-        "modules/time.md"
-      ],
-      "role": "mixed",
-      "source_path": "backend/app/services/task_domain_service.py",
-      "title": "release_execution"
-    },
-    {
       "canonical_path": "workflows/ReleaseService_create_for_project.md",
       "id": "ReleaseService_create_for_project",
       "kind": "workflows",
@@ -101289,7 +100779,6 @@
         "modules/snapshots.md",
         "modules/task_brief_service.md",
         "modules/task_domain_service.md",
-        "modules/task_postponement_service.md",
         "modules/task_recovery_service.md",
         "modules/task_replacement_service.md",
         "modules/task_service.md",
@@ -101419,6 +100908,21 @@
       "title": "TaskDetailService_my_work"
     },
     {
+      "canonical_path": "workflows/TaskDomainService__cancel_execution.md",
+      "id": "TaskDomainService__cancel_execution",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/TaskDomainService__cancel_execution",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/review_provenance.md",
+        "modules/task_domain_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/task_domain_service.py",
+      "title": "TaskDomainService__cancel_execution"
+    },
+    {
       "canonical_path": "workflows/TaskDomainService_allowed_actions.md",
       "id": "TaskDomainService_allowed_actions",
       "kind": "workflows",
@@ -101429,7 +100933,6 @@
         "modules/schemas_task_domain.md",
         "modules/task_brief_service.md",
         "modules/task_domain_service.md",
-        "modules/task_postponement_service.md",
         "modules/task_replacement_service.md",
         "modules/time.md"
       ],
@@ -101489,39 +100992,6 @@
       "role": "mixed",
       "source_path": "backend/app/services/task_import_service.py",
       "title": "TaskImportService_import_tasks"
-    },
-    {
-      "canonical_path": "workflows/TaskPostponementService_postpone.md",
-      "id": "TaskPostponementService_postpone",
-      "kind": "workflows",
-      "mcp_uri": "llm-wiki://workflows/TaskPostponementService_postpone",
-      "outgoing_internal_links": [
-        "modules/commands.md",
-        "modules/identity_service.md",
-        "modules/models_task_postponement.md",
-        "modules/snapshot_service.md",
-        "modules/task_domain_service.md",
-        "modules/task_postponement_service.md",
-        "modules/time.md"
-      ],
-      "role": "mixed",
-      "source_path": "backend/app/services/task_postponement_service.py",
-      "title": "TaskPostponementService_postpone"
-    },
-    {
-      "canonical_path": "workflows/TaskPostponementService_reactivate.md",
-      "id": "TaskPostponementService_reactivate",
-      "kind": "workflows",
-      "mcp_uri": "llm-wiki://workflows/TaskPostponementService_reactivate",
-      "outgoing_internal_links": [
-        "modules/commands.md",
-        "modules/identity_service.md",
-        "modules/task_postponement_service.md",
-        "modules/time.md"
-      ],
-      "role": "mixed",
-      "source_path": "backend/app/services/task_postponement_service.py",
-      "title": "TaskPostponementService_reactivate"
     },
     {
       "canonical_path": "workflows/TaskReplacementService__move_dependents.md",
@@ -101619,7 +101089,6 @@
         "modules/external_link_service.md",
         "modules/outbound_webhook_service.md",
         "modules/snapshot_service.md",
-        "modules/task_postponement_service.md",
         "modules/task_service.md"
       ],
       "role": "mixed",
@@ -101690,21 +101159,6 @@
       "role": "mixed",
       "source_path": "backend/app/services/task_service.py",
       "title": "TaskService_task_to_response"
-    },
-    {
-      "canonical_path": "workflows/TaskService_unmerge_task.md",
-      "id": "TaskService_unmerge_task",
-      "kind": "workflows",
-      "mcp_uri": "llm-wiki://workflows/TaskService_unmerge_task",
-      "outgoing_internal_links": [
-        "modules/authority.md",
-        "modules/snapshot_service.md",
-        "modules/task_postponement_service.md",
-        "modules/task_service.md"
-      ],
-      "role": "mixed",
-      "source_path": "backend/app/services/task_service.py",
-      "title": "TaskService_unmerge_task"
     },
     {
       "canonical_path": "workflows/TaskService_update.md",
@@ -105098,7 +104552,6 @@
         "modules/task_detail.md",
         "modules/task_detail_service.md",
         "modules/task_domain_service.md",
-        "modules/task_postponement_service.md",
         "modules/task_replacement_service.md",
         "modules/task_service.md",
         "modules/time.md"
@@ -106262,19 +105715,6 @@
       "title": "planning_input_context"
     },
     {
-      "canonical_path": "flows/http-postpone_task.md",
-      "id": "http-postpone_task",
-      "kind": "flows",
-      "mcp_uri": "llm-wiki://flows/http-postpone_task",
-      "outgoing_internal_links": [
-        "modules/routers_task_domain.md",
-        "modules/task_postponement_service.md"
-      ],
-      "role": "mixed",
-      "source_path": "backend/app/routers/task_domain.py",
-      "title": "postpone_task"
-    },
-    {
       "canonical_path": "flows/http-preview_capacity_adjustment.md",
       "id": "http-preview_capacity_adjustment",
       "kind": "flows",
@@ -106411,19 +105851,6 @@
       "role": "mixed",
       "source_path": "backend/app/routers/identity.py",
       "title": "project_member"
-    },
-    {
-      "canonical_path": "flows/http-reactivate_task.md",
-      "id": "http-reactivate_task",
-      "kind": "flows",
-      "mcp_uri": "llm-wiki://flows/http-reactivate_task",
-      "outgoing_internal_links": [
-        "modules/routers_task_domain.md",
-        "modules/task_postponement_service.md"
-      ],
-      "role": "mixed",
-      "source_path": "backend/app/routers/task_domain.py",
-      "title": "reactivate_task"
     },
     {
       "canonical_path": "flows/http-read.md",
@@ -107234,7 +106661,6 @@
         "modules/snapshot_service.md",
         "modules/task_brief_service.md",
         "modules/task_domain_service.md",
-        "modules/task_postponement_service.md",
         "modules/task_replacement_service.md",
         "modules/task_service.md",
         "modules/time.md"
@@ -107414,21 +106840,6 @@
       "role": "mixed",
       "source_path": "backend/app/routers/task_domain.py",
       "title": "task_owner_options"
-    },
-    {
-      "canonical_path": "flows/http-task_postponement.md",
-      "id": "http-task_postponement",
-      "kind": "flows",
-      "mcp_uri": "llm-wiki://flows/http-task_postponement",
-      "outgoing_internal_links": [
-        "modules/authority.md",
-        "modules/config.md",
-        "modules/routers_task_domain.md",
-        "modules/task_postponement_service.md"
-      ],
-      "role": "mixed",
-      "source_path": "backend/app/routers/task_domain.py",
-      "title": "task_postponement"
     },
     {
       "canonical_path": "flows/http-task_progress_history.md",
@@ -109593,7 +109004,6 @@
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
         "modules/task_domain_service.md",
-        "modules/task_postponement_service.md",
         "modules/task_replacement_service.md",
         "modules/task_service.md",
         "modules/time.md"
@@ -114232,7 +113642,6 @@
         "modules/20261124_0024_delivery_dependency_target_branch.md",
         "modules/20261126_0025_catalog_local_first.md",
         "modules/20261126_0026_review_record_kind.md",
-        "modules/20261126_0027_task_postponements.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -114623,7 +114032,6 @@
         "modules/models_system_settings.md",
         "modules/models_task.md",
         "modules/models_task_brief.md",
-        "modules/models_task_postponement.md",
         "modules/models_task_replacement.md",
         "modules/models_template.md",
         "modules/models_time_entry.md",
@@ -114881,7 +114289,6 @@
         "modules/schemas_task.md",
         "modules/schemas_task_brief.md",
         "modules/schemas_task_domain.md",
-        "modules/schemas_task_postponement.md",
         "modules/schemas_task_replacement.md",
         "modules/schemas_team.md",
         "modules/schemas_template.md",
@@ -114973,7 +114380,6 @@
         "modules/task_domain_service.md",
         "modules/task_hierarchy_service.md",
         "modules/task_import_service.md",
-        "modules/task_postponement_service.md",
         "modules/task_recovery_service.md",
         "modules/task_replacement_service.md",
         "modules/task_service.md",
@@ -115229,8 +114635,6 @@
         "modules/test_task_domain_integrity.md",
         "modules/test_task_domain_migrations.md",
         "modules/test_task_pagination.md",
-        "modules/test_task_postponement.md",
-        "modules/test_task_postponement_migration.md",
         "modules/test_task_replacement.md",
         "modules/test_task_replacement_migration.md",
         "modules/test_team_member_agent_connected.md",
@@ -115412,7 +114816,6 @@
         "modules/20261124_0024_delivery_dependency_target_branch.md",
         "modules/20261126_0025_catalog_local_first.md",
         "modules/20261126_0026_review_record_kind.md",
-        "modules/20261126_0027_task_postponements.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -115803,7 +115206,6 @@
         "modules/models_system_settings.md",
         "modules/models_task.md",
         "modules/models_task_brief.md",
-        "modules/models_task_postponement.md",
         "modules/models_task_replacement.md",
         "modules/models_template.md",
         "modules/models_time_entry.md",
@@ -116061,7 +115463,6 @@
         "modules/schemas_task.md",
         "modules/schemas_task_brief.md",
         "modules/schemas_task_domain.md",
-        "modules/schemas_task_postponement.md",
         "modules/schemas_task_replacement.md",
         "modules/schemas_team.md",
         "modules/schemas_template.md",
@@ -116153,7 +115554,6 @@
         "modules/task_domain_service.md",
         "modules/task_hierarchy_service.md",
         "modules/task_import_service.md",
-        "modules/task_postponement_service.md",
         "modules/task_recovery_service.md",
         "modules/task_replacement_service.md",
         "modules/task_service.md",
@@ -116409,8 +115809,6 @@
         "modules/test_task_domain_integrity.md",
         "modules/test_task_domain_migrations.md",
         "modules/test_task_pagination.md",
-        "modules/test_task_postponement.md",
-        "modules/test_task_postponement_migration.md",
         "modules/test_task_replacement.md",
         "modules/test_task_replacement_migration.md",
         "modules/test_team_member_agent_connected.md",
@@ -116561,5 +115959,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:015dbcf5527aa9e3d19ebddb2201ce5b18728504d9d47424e2c94a8662d27c29"
+  "source_hash": "sha256:dfb74b422f66f6fdb8b709249bf651830dc051f4641f7eee4133c948d52965bb"
 }

@@ -19,7 +19,7 @@ For scheduled work, the forecast follows what happened: a start moves the task t
 | Source | Symbols |
 |--------|---------|
 | `app.authority` | `AuthorityError`, `require_project`, `internal_authority` |
-| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `PlanningConflict`, `current_command`, `current_command` |
+| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `PlanningConflict`, `current_command` |
 | `app.models.calendar` | `Calendar` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project` |
@@ -63,7 +63,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (3) |
+| Inbound | `backend` (2) |
 | Outbound | `backend` (19) |
 
 ### External packages
@@ -72,7 +72,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

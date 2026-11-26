@@ -80,9 +80,9 @@ sequenceDiagram
     p1-->>p26: len (backend/app/services/hier…erarchyRepairService.audit)(rows)
 ```
 
-> Call sequence diagram shows 30 of 74 interactions; 44 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 73 interactions; 43 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 8 of 37 (29 omitted); unresolved 10 of 24 (14 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 8 of 36 (28 omitted); unresolved 10 of 24 (14 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -91,11 +91,11 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/authority.py:require_operator` | 3 | - | unresolved | 1 |
 | `backend/app/services/work_metrics.py:scoped_metric_tasks` | 7 | - | external | 3 |
 | `backend/app/services/work_metrics.py:scoped_metric_tasks` | 7 | - | unresolved | 6 |
-| `backend/app/services/task_status_service.py:TaskStatusService.derive_parent_status` | 26 | - | external | 6 |
-| `backend/app/services/work_metrics.py:working_today` | 36 | - | unresolved | 2 |
-| `backend/app/utils/time.py:as_utc` | 39 | - | unresolved | 2 |
-| `backend/app/utils/time.py:utc_now` | 42 | - | external | 1 |
-| `backend/app/services/work_metrics.py:working_today` | 36 | - | external | 1 |
+| `backend/app/services/task_status_service.py:TaskStatusService.derive_parent_status` | 26 | - | external | 5 |
+| `backend/app/services/work_metrics.py:working_today` | 35 | - | unresolved | 2 |
+| `backend/app/utils/time.py:as_utc` | 38 | - | unresolved | 2 |
+| `backend/app/utils/time.py:utc_now` | 41 | - | external | 1 |
+| `backend/app/services/work_metrics.py:working_today` | 35 | - | external | 1 |
 > Omission summary shows 8 of 13 groups; 5 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
@@ -107,12 +107,11 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 14; effect analysis evaluated: 10, partial: 1, unavailable: 3. Counts include steps omitted from the displayed trace.
+Source steps: 14; effect analysis evaluated: 11, partial: 0, unavailable: 3. Counts include steps omitted from the displayed trace.
 
-Collector observations for 11 source steps with known totals: observed: 64, emitted: 62, omitted: 2. Unavailable totals are excluded.
+Collector observations for 11 source steps with known totals: observed: 60, emitted: 60, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
-- Effect collector omitted observations before flow assembly; displayed effects are partial.
 - Effect collector totals unavailable; observed counts cover captured records only.
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
@@ -199,7 +198,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| audit_hierarchy | HierarchyRepairService.audit | 256 | `HierarchyRepairService(db).audit(iteration_id)` |
+| audit_hierarchy | HierarchyRepairService.audit | 254 | `HierarchyRepairService(db).audit(iteration_id)` |
 | HierarchyRepairService.audit | require_operator | 19 | `require_operator(self.db)` |
 | require_operator | db.info.get | 91 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 93 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |

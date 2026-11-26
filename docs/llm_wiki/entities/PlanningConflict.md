@@ -1,6 +1,6 @@
 # PlanningConflict
 
-**Location:** `backend/app/commands.py:54`
+**Location:** `backend/app/commands.py:52`
 **Kind:** Class
 **Bases:** `RuntimeError`
 **Module:** [commands](../modules/commands.md)
@@ -104,4 +104,4 @@ flowchart LR
 | `CapacityAdjustmentService._refuse_reducing_issued_work` | call | [capacity_adjustments](../modules/capacity_adjustments.md) | 1 |
 | `CapacityService.invalidate_profile` | call | [capacity_service](../modules/capacity_service.md) | 2 |
 
-> References: showing 12 of 79 logical references; 67 omitted by the 12-row generated summary limit.
+> References: showing 12 of 73 logical references; 61 omitted by the 12-row generated summary limit.

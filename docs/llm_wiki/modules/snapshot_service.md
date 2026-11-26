@@ -40,7 +40,6 @@ Snapshot restoration compares the database’s physical allocation foreign keys 
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.task_domain_service` | `require_owner` |
-| `app.services.task_postponement_service` | `require_restore_compatible`, `require_unreferenced` |
 | `app.services.task_recovery_service` | `reserve_restored_task_version` |
 | `app.services.task_replacement_service` | `require_restore_compatible` |
 | `app.services.task_service` | `TaskService`, `TaskService` |
@@ -73,8 +72,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (27) |
-| Outbound | `backend` (24) |
+| Inbound | `backend` (25) |
+| Outbound | `backend` (23) |
 
 ### External packages
 
@@ -82,7 +81,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 43 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 41 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

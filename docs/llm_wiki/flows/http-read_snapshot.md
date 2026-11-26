@@ -160,7 +160,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| read_snapshot | SnapshotService.get_snapshot | 285 | `SnapshotService(db).get_snapshot(iteration_id, filename)` |
+| read_snapshot | SnapshotService.get_snapshot | 283 | `SnapshotService(db).get_snapshot(iteration_id, filename)` |
 | SnapshotService.get_snapshot | SNAPSHOT_FILENAME_PATTERN.fullmatch | 304 | `SNAPSHOT_FILENAME_PATTERN.fullmatch(filename)` |
 | SnapshotService.get_snapshot | SnapshotPathError | 305 | `SnapshotPathError('Invalid snapshot filename')` |
 | SnapshotService.get_snapshot | self.db.scalar | 306 | `self.db.scalar(...)` |

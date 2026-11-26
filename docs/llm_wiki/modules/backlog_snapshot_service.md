@@ -22,7 +22,6 @@ Project backlog snapshots share the complete person lifetime capture and preflig
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.task_domain_service` | `require_owner` |
-| `app.services.task_postponement_service` | `require_restore_compatible`, `require_unreferenced` |
 | `app.services.task_recovery_service` | `reserve_restored_task_version` |
 | `app.services.task_replacement_service` | `require_restore_compatible` |
 | `app.services.task_service` | `TaskService` |
@@ -51,7 +50,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (12) |
-| Outbound | `backend` (15) |
+| Outbound | `backend` (14) |
 
 ### External packages
 
@@ -59,7 +58,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -101,4 +101,4 @@ flowchart LR
 | `maintenance` | import | [models_maintenance](../modules/models_maintenance.md) | — |
 | `native_connection` | import | [native_connection](../modules/native_connection.md) | — |
 
-> References: showing 12 of 32 logical references; 20 omitted by the 12-row generated summary limit.
+> References: showing 12 of 31 logical references; 19 omitted by the 12-row generated summary limit.

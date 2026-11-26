@@ -1,6 +1,6 @@
 # HierarchyRepairRequest
 
-**Location:** `backend/app/routers/snapshots.py:243`
+**Location:** `backend/app/routers/snapshots.py:241`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [snapshots](../modules/snapshots.md)

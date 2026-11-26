@@ -38,9 +38,11 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `_record_routing_stale_conflict` | *(async)* `(*, task: Task, principal: AgentActor, data: Any, conflict: Any, assignment_id: int \| None = None, correlation_id: str \| None = None) -> None` | — | Durably record a failed selection attempt without mutating work state. |
 | `_selection_pending` | `(assignment: AgentTaskAssignment) -> bool` | `@classmethod` | — |
 | `_supervised_recovery` | `(assignment: AgentTaskAssignment) -> bool` | `@classmethod` | — |
+| `_supervised_rework_ids` | *(async)* `(task_id, task_assignments) -> set[int]` | — | Rework assignments whose own run began as an authenticated supervised handback. |
+| `_shadow_recovery_refusal` | `(principal, boundary, target, task_assignments, reviewer_ids, supervised_reworks)` | `@classmethod` | Name the first condition that keeps a shadow recovery from being supervised. |
 | `_show_rework` | `(assignment_view, actor_id, evidence)` | `@staticmethod` | Project the effective handback without rewriting the issued assignment. |
 | `_execution_assignment_view` | `(assignment, run, **binding_options)` | `@classmethod` | — |
-| `_shadow_handoff` | *(async)* `(task, assignment, worker, mode, cache, *, lock = False)` | — | — |
+| `_shadow_handoff` | *(async)* `(task, assignment, worker, mode, cache, *, lock = False)` | — | Decide whether pending lineage may begin as supervised legacy work. |
 | `_is_model_aware_assignment` | `(assignment: AgentTaskAssignment) -> bool` | `@classmethod` | — |
 | `_failure_category` | `(evidence: Any) -> str` | `@staticmethod` | Recognize only explicit governed model-failure evidence. |
 | `_routing_lineage_snapshot` | `(*, task: Task, source_assignments: Iterable[AgentTaskAssignment], transition: str, provisional_actor_id: int, reason: str, evidence: Any = None) -> dict[str, Any]` | `@classmethod` | Build bounded pending-selection evidence without copying opaque payloads. |
@@ -156,7 +158,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_work_service](../modules/agent_work_service.md) | 89 | — |
+| [agent_work_service](../modules/agent_work_service.md) | 91 | — |
 
 ### References
 

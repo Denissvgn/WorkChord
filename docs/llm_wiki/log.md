@@ -4221,16 +4221,36 @@ Refreshed against the 1.10.0 code. New and changed subjects: delivery prerequisi
 - Generator version: `6.1.1`
 - Source selection profile: none (default discovery)
 - Source selection fingerprint: none
-- Source snapshot digest: `sha256:78385bcdcb88c10210c6d107a853de8a3a4bba951dd2725cb6fa1e853b96d14a`
-- Pages created: 24
-- Pages updated: 104
-- Pages metadata-only: 4
-- Pages skipped (unchanged): 3702
-- Pages deprecated: 1
-- Semantic fields preserved: 20
+- Source snapshot digest: `sha256:bfe5ed14453cb9fbf9002162ec46e8254f670bd4fe82a15bb913dae0667a2eb7`
+- Pages created: 0
+- Pages updated: 24
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3787
+- Pages deprecated: 0
+- Semantic fields preserved: 2
 - Moved entities: none
-- Flow pages initialized: 3 (http=3)
-- Workflow pages created: 4
+
+## 2026-11-26
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:49ebd303dbcfe6715550ea9737ce6bd61bfc967edf61c9749572c68aa1a33794`
+- Pages created: 0
+- Pages updated: 6
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3806
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 0
 - Dependency pages initialized: 0
 - Surface policy updated: no
-- Generated surface pages retired: 1
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 9
