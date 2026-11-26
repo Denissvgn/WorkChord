@@ -106,7 +106,7 @@ def main():
             if len(apks) != 1 or apks[0].stat().st_size <= 0:
                 raise ValueError('Android requires one nonempty debug APK')
         run.validators.append(validate_results)
-        run.data['toolchain'] = {'jdk': version.strip(), 'gradle': '9.9.2', 'agp': '9.5.1', 'compile_sdk': 37, 'target_sdk': 34}
+        run.data['toolchain'] = {'jdk': version.strip(), 'gradle': '9.9.2', 'agp': '9.5.2', 'compile_sdk': 37, 'target_sdk': 34}
         run.run('gradle', [str(project / 'gradlew'), '--no-daemon', '--max-workers=2',
             '--project-cache-dir', str(Path(workspace.name) / 'gradle-project-cache'),
             'testDebugUnitTest', 'testReleaseUnitTest', 'assembleDebug',

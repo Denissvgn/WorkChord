@@ -48,7 +48,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="WorkChord API",
     description="API для планирования работ команды разработки",
-    version="1.9.0",
+    version="1.10.0",
     lifespan=lifespan,
     dependencies=[Depends(enforce_http_authority)],
 )
