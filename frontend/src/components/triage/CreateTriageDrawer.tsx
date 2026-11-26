@@ -136,7 +136,7 @@ export const CreateTriageDrawer = ({ projects, iterations, isSubmitting, error, 
                     <Input label={t('surfaces.triagePage.priorityHint')} type="number" min="1" max="10" value={priorityHint} onChange={event => setPriorityHint(event.target.value)} />
                 </div>
 
-                <Input label={t('surfaces.triagePage.sourceURL')} type="url" error={sourceUrlError ?? undefined} value={sourceUrl} onChange={event => setSourceUrl(event.target.value)} maxLength={500} />
+                <Input label={t('surfaces.triagePage.sourceURL')} type="text" inputMode="url" error={sourceUrlError ?? undefined} value={sourceUrl} onChange={event => setSourceUrl(event.target.value)} maxLength={500} />
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <Input label={t('surfaces.triagePage.assigneeHint')} value={assigneeHint} onChange={event => setAssigneeHint(event.target.value)} maxLength={255} />

@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { expectPageChrome } from '../test/pageChrome';
 import { renderWithProviders } from '../test/renderWithProviders';
 import TriagePage from './TriagePage';
+import { sourceLinkHref } from '../utils/safeUrl';
 import { TaskForm } from '../components/tasks/TaskForm';
 import { TriageActionModal } from '../components/triage/TriageActionModal';
 import { ConvertTriageDrawer } from '../components/triage/ConvertTriageDrawer';
@@ -101,6 +102,18 @@ describe('Triage shared page parts', () => {
         expect(field).toHaveAttribute('role', 'alert');
         expect(within(drawer).getByLabelText('Source URL')).toHaveAttribute('aria-invalid', 'true');
         expect(within(drawer).getAllByRole('alert')).toHaveLength(1);
+    });
+    it('lets a relative source link be submitted and only links safe paths', async () => {
+        const { user, container } = renderWithProviders(<TriagePage />);
+        await screen.findByRole('heading', { name: item.title });
+        await user.click(within(container).getByRole('button', { name: 'New request' }));
+        const drawer = screen.getByRole('dialog', { name: 'New request' });
+        await user.type(within(drawer).getByRole('textbox', { name: 'Title' }), 'Local page');
+        await user.type(within(drawer).getByLabelText('Source URL'), '/tasks?project=6');
+        await user.click(within(drawer).getByRole('button', { name: 'Create request' }));
+        await waitFor(() => expect(api.post).toHaveBeenCalledWith('/triage', expect.objectContaining({ source_url: '/tasks?project=6' })));
+        expect(sourceLinkHref('/tasks?project=6')).toBe('/tasks?project=6');
+        for (const bad of ['/\t/evil.com', '//evil.com', '/a\\b', '/a b']) expect(sourceLinkHref(bad)).toBeUndefined();
     });
     it('says what became of the source link after a conversion', async () => {
         const note = 'The source link pointed at this instance and was carried over as the relative path /tasks?project=6.';

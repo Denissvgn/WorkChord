@@ -121,6 +121,8 @@ def evaluate_source_link(raw: Optional[str]) -> SourceLinkDecision:
             relative = (parsed.path or "/") + (f"?{parsed.query}" if parsed.query else "")
             if parsed.fragment:
                 relative += f"#{parsed.fragment}"
+            if not _is_instance_path(relative):
+                return SourceLinkDecision("dropped", raw, None, "the address of this instance has a path that cannot be kept as a relative link")
             return SourceLinkDecision("rewritten", raw, relative)
     try:
         return SourceLinkDecision("kept", raw, normalize_stored_display_url(value))

@@ -148,3 +148,35 @@ async def test_legacy_intake_stays_editable_and_a_public_link_is_unchanged(deliv
         converted = await client.post(f"/api/triage/{public_id}/convert-to-backlog", json={"project_id": scenario.projects[0]})
         assert converted.status_code == 200
         assert converted.json()["task"]["source_url"] == "https://example.com/issues/1" and converted.json()["source_link"] is None
+
+
+UNSAFE_REWRITES = ["http://localhost//evil.com/x", "http://localhost/\\evil.com", "http://localhost/a b"]
+
+
+@pytest.mark.parametrize("raw", UNSAFE_REWRITES)
+def test_same_instance_link_with_unsafe_path_is_dropped(raw):
+    decision = evaluate_source_link(raw)
+    assert decision.action == "dropped" and decision.value is None and decision.reason
+    with pytest.raises(SourceLinkRefused):
+        normalize_source_link(raw)
+
+
+@pytest.mark.parametrize("raw", [LOOPBACK, "http://localhost:3000", "/tasks?project=6", "https://example.com/a", "http://[::1]/triage#top"])
+def test_policy_is_idempotent(raw):
+    once = evaluate_source_link(raw).value
+    assert evaluate_source_link(once).value == once
+
+
+@pytest.mark.parametrize("link", UNSAFE_REWRITES)
+@pytest.mark.parametrize("route", ["convert-to-task", "convert-to-backlog"])
+async def test_legacy_unsafe_value_converts_instead_of_failing(delivery_store, link, route):  # noqa: F811
+    factory, scenario, _ = delivery_store
+    item_id = await _legacy_intake(factory, scenario, link)
+    body = {"project_id": scenario.projects[0]}
+    if route == "convert-to-task":
+        body["iteration_id"] = scenario.iterations[0]
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        converted = await client.post(f"/api/triage/{item_id}/{route}", json=body)
+        assert converted.status_code == 200, converted.text
+        assert converted.json()["task"]["source_url"] is None
+        assert converted.json()["source_link"]["action"] == "dropped"

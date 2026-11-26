@@ -340,7 +340,6 @@ The application REST API exposes the planning operations below, but a normal age
 ### Intake and tasks
 
 - Use `/api/triage` plus item duplicate-suggestion, classify, recommendation, draft, update, accept, decline, snooze, mark-duplicate, and convert routes for full intake control.
-- Intake and task source links share one policy: a refused link on create or edit returns the named error `intake_source_link_not_allowed` (`field`, `message`, `next_step`); conversion to a task or the backlog rewrites a link to this instance as a relative path or drops a refused one, and reports it in the response `source_link`.
 - Use `/api/iterations/{iteration_id}/tasks`, `/api/tasks/{task_id}`, dependency, reorder, move, bulk, timeline, and status routes for authorized planning operations.
 - Supply the original observed `expected_version` for task updates, dependency changes, and status changes. Missing revisions are rejected when strict mutation policy is enabled.
 

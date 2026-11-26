@@ -325,5 +325,5 @@ class TriageConvertToTaskResponse(BaseModel):
     task: TaskResponse
     source_link: Optional[TriageSourceLinkOutcome] = Field(
         default=None,
-        description="Set when the source link was rewritten to a relative path or dropped; absent when it was carried over unchanged or there was none.",
+        description="Set when the source link was rewritten to a relative path or dropped; absent when there was no link or it was kept as a normal link.",
     )
