@@ -90,13 +90,14 @@ describe('team directory model', () => {
         expect(agentStatus([], 'loaded', NOW)).toEqual({ model: null, connection: 'not_connected' });
     });
 
-    it('names two catalog entries for one runtime model by their recorded effort', () => {
+    it('names two catalog entries for one runtime model by their recorded effort, in the label the caller gives', () => {
         const withEffort = (effort: ModelEffort) => {
             const base = binding(5, 'shared-runtime');
             return { ...base, model_catalog: { ...base.model_catalog!, effort } };
         };
-        expect(modelName(withEffort('high'))).toBe('shared-runtime (high)');
-        expect(modelName(withEffort('low'))).toBe('shared-runtime (low)');
-        expect(modelName(withEffort('unknown'))).toBe('shared-runtime');
+        const label = (effort: ModelEffort) => ({ high: 'Высокое', xhigh: 'Очень высокое' } as Record<string, string>)[effort] ?? effort;
+        expect(modelName(withEffort('high'), label)).toBe('shared-runtime (Высокое)');
+        expect(modelName(withEffort('xhigh'), label)).toBe('shared-runtime (Очень высокое)');
+        expect(modelName(withEffort('unknown'), label)).toBe('shared-runtime');
     });
 });

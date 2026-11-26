@@ -68,6 +68,7 @@ ROUTING_DECISION_LINEAGE_FIELDS = (
     "configured_model_alias",
     "selected_reasoning_tier",
     "selected_context_tier",
+    "selected_effort",
     "review_mode",
     "reviewer_profile_id",
     "routing_preview_id",

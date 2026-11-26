@@ -19,6 +19,14 @@ _CATALOG_ROW = text(
 )
 
 
+def _check_names(db) -> set[str]:
+    return {
+        check["name"]
+        for check in inspect(db).get_check_constraints("agent_model_catalog_entries")
+        if check["name"]
+    }
+
+
 @pytest.mark.parametrize(
     "dialect",
     [
@@ -46,6 +54,8 @@ def test_effort_upgrade_marks_existing_entries_unknown_and_refuses_losing_a_sett
             previous = ScriptDirectory.from_config(config).get_revision(CURRENT).down_revision
             command.upgrade(config, previous)
             # Two entries for one runtime model, one disabled, one bound to an actor.
+            checks_before = _check_names(db)
+            assert "ck_agent_model_catalog_cost_tier" in checks_before
             db.execute(_CATALOG_ROW, {"key": "shared-model-a", "alias": "shared-runtime", "enabled": True})
             db.execute(_CATALOG_ROW, {"key": "shared-model-b", "alias": "shared-runtime", "enabled": False})
             actor = db.execute(
@@ -58,6 +68,8 @@ def test_effort_upgrade_marks_existing_entries_unknown_and_refuses_losing_a_sett
             db.commit()
 
             command.upgrade(config, CURRENT)
+            # Rebuilding the table must keep every named constraint it had.
+            assert checks_before | {"ck_agent_model_catalog_effort"} <= _check_names(db)
             rows = db.execute(
                 text("SELECT key, effort, revision FROM agent_model_catalog_entries ORDER BY key")
             ).all()
@@ -82,6 +94,8 @@ def test_effort_upgrade_marks_existing_entries_unknown_and_refuses_losing_a_sett
             db.execute(text("UPDATE agent_model_catalog_entries SET effort = 'unknown'"))
             db.commit()
             command.downgrade(config, previous)
+            assert checks_before <= _check_names(db)
+            assert "ck_agent_model_catalog_effort" not in _check_names(db)
             assert "effort" not in {
                 column["name"] for column in inspect(db).get_columns("agent_model_catalog_entries")
             }

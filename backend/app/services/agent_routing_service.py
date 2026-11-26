@@ -2826,6 +2826,7 @@ class AgentRoutingService:
             configured_model_alias=selected.configured_model_alias,
             selected_reasoning_tier=selected.reasoning_tier,
             selected_context_tier=selected.context_tier,
+            selected_effort=selected.effort,
             resolved_model=None,
             review_mode=assessment.review_mode,
             reviewer_profile_id=effective_reviewer_profile_id,

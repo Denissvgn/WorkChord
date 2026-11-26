@@ -1,4 +1,4 @@
-import type { AgentActorRosterItem, AgentModelBinding } from '../../types/agent';
+import type { AgentActorRosterItem, AgentModelBinding, ModelEffort } from '../../types/agent';
 import type { TeamMemberProfile, TeamMemberProfileSkill } from '../../types/team';
 
 export type DirectoryKind = 'person' | 'agent';
@@ -61,11 +61,14 @@ const defaultBinding = (actor: AgentActorRosterItem): AgentModelBinding | null =
     return usable.find(binding => binding.is_default) ?? usable[0] ?? null;
 };
 
-export const modelName = (binding: AgentModelBinding) => {
+/**
+ * Two catalog entries for one runtime model differ only by effort, so a recorded effort is part of the
+ * name, in the label the caller translates.
+ */
+export const modelName = (binding: AgentModelBinding, effortLabel: (effort: ModelEffort) => string) => {
     const alias = binding.model_catalog?.configured_model_alias ?? binding.model_catalog_key ?? '';
     const effort = binding.model_catalog?.effort;
-    // Two catalog entries for one runtime model differ only by effort, so a recorded one is part of the name.
-    return alias && effort && effort !== 'unknown' ? `${alias} (${effort})` : alias;
+    return alias && effort && effort !== 'unknown' ? `${alias} (${effortLabel(effort)})` : alias;
 };
 
 export const actorName = (actor: AgentActorRosterItem) => actor.display_name || actor.name;

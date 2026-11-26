@@ -1425,6 +1425,11 @@ class RoutingDecisionSnapshot(RoutingContractModel):
     configured_model_alias: str = Field(..., min_length=1, max_length=255)
     selected_reasoning_tier: ReasoningTier
     selected_context_tier: ModelContextTier
+    selected_effort: ModelEffortSetting | None = Field(
+        default=None,
+        description="Effort setting of the selected catalog entry; absent on selections recorded before effort was tracked.",
+        exclude_if=lambda value: value is None,
+    )
     resolved_model: str | None = Field(default=None, min_length=1, max_length=255)
     review_mode: TaskReviewMode
     reviewer_profile_id: int | None = Field(default=None, strict=True, ge=1)

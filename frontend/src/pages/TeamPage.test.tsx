@@ -96,6 +96,22 @@ describe('Team page', () => {
         expect(idle.getByText('No model')).toBeVisible();
     });
 
+    it('names a model by its recorded effort in the translated label, in the row and the drawer', async () => {
+        setAdminApiKey('operator-key');
+        const xhighBinding: AgentModelBinding = {
+            ...binding, model_catalog: { ...binding.model_catalog!, effort: 'xhigh' },
+        };
+        services.agent.getActorRoster.mockResolvedValue([actor({ eligible_model_bindings: [xhighBinding] })]);
+        const { user } = renderTeam();
+
+        await screen.findByRole('button', { name: 'Open Builder' });
+        await waitFor(() => expect(within(rowFor('Builder')).getByText('claude-sonnet-5-5 (Extra high)')).toBeVisible());
+        await user.click(screen.getByRole('button', { name: 'Open Builder' }));
+        const drawer = within(await screen.findByRole('dialog', { name: 'Builder' }));
+        expect(drawer.getAllByText('claude-sonnet-5-5 (Extra high)').length).toBeGreaterThan(0);
+        expect(screen.queryByText(/\(xhigh\)/)).not.toBeInTheDocument();
+    });
+
     it('keeps every agent of a shared profile on its row and shows each one in the drawer', async () => {
         setAdminApiKey('operator-key');
         const opusBinding: AgentModelBinding = {
