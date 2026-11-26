@@ -328,18 +328,24 @@ class DeliveryDependencyService:
         for source, targets in graph.items():
             for target in targets:
                 reverse[target].add(source)
-        # The graph is acyclic, so a changed node reached from the reverse edges
-        # of another changed node depends on that change and is affected too.
         visited = set(nodes)
         queue = deque(nodes)
         affected = set()
+        # The graph is acyclic, so a changed task reached from the reverse edges
+        # of another changed node depends on that change. Its own change already
+        # reserved its version and decided its evidence, so only a planning-only
+        # fence sealed earlier in this command is ended.
+        changed_dependents = set()
         while queue:
             for source in reverse[queue.popleft()]:
-                if source[0] == "task":
-                    affected.add(source[1])
-                if source not in visited:
+                if source in nodes:
+                    if source[0] == "task":
+                        changed_dependents.add(source[1])
+                elif source not in visited:
                     visited.add(source)
                     queue.append(source)
+                    if source[0] == "task":
+                        affected.add(source[1])
         self.db.info["delivery_reconciling"] = True
         try:
             with internal_authority(self.db):
@@ -348,6 +354,9 @@ class DeliveryDependencyService:
                     clear_execution_evidence(task)
                     # A changed prerequisite ends any planning-only fence on the dependent.
                     task.execution_planning_window = None
+                if changed_dependents:
+                    for task in (await self.db.scalars(select(Task).where(Task.id.in_(changed_dependents)))).all():
+                        task.execution_planning_window = None
                 await self.db.flush()
         finally:
             self.db.info.pop("delivery_reconciling", None)

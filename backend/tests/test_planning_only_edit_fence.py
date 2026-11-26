@@ -677,3 +677,50 @@ async def test_later_change_in_the_same_command_ends_the_fence(
         assert after.window is None
         items = [item for item in all_work_items(await call(*WORK, s.wk)) if item["assignment"]["id"] == assigned["id"]]
         assert items and all("assignment_task_version_stale" in item["blocker_codes"] for item in items), items
+
+
+@databases
+@pytest.mark.parametrize("order", ["upstream_first", "dependent_first"])
+@pytest.mark.usefixtures("deployed_agent_skill_release")
+async def test_one_command_that_accepts_a_dependency_chain_keeps_acceptance(
+    db_session, db_session_factory, task_factory, team_member_factory, monkeypatch, order
+):
+    """Closing a task and the task it waits for in one command keeps both acceptances."""
+    from app.authority import Authority
+    from app.commands import command_transaction
+    from app.models.delivery_dependency import DeliveryDependency
+    from app.models.task import TaskDependency
+    from app.services.task_service import TaskService
+
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "managed")
+    monkeypatch.setenv("MODEL_AWARE_ROUTING_MODE", "shadow")
+    get_settings.cache_clear()
+    s = await team_scope(db_session, task_factory, team_member_factory)
+    async with db_session_factory() as seed:
+        dependent = await seed.get(Task, s.task.id)
+        upstream = await seed.get(Task, s.prerequisite.id)
+        unrelated = Task(
+            title="Unrelated follow-up", project_id=dependent.project_id, iteration_id=dependent.iteration_id, status="planned"
+        )
+        seed.add(unrelated)
+        await seed.flush()
+        seed.add(TaskDependency(task_id=dependent.id, depends_on_id=upstream.id))
+        # Any delivery prerequisite in the workspace makes the command reconcile delivery.
+        seed.add(DeliveryDependency(task_id=unrelated.id, prerequisite_milestone_id=s.milestones[1]))
+        (await seed.get(Project, dependent.project_id)).require_different_review_publisher = False
+        dependent.status = upstream.status = "resolved"
+        await seed.commit()
+    ids = [s.prerequisite.id, s.task.id] if order == "upstream_first" else [s.task.id, s.prerequisite.id]
+    async with db_session_factory() as session, command_transaction(session):
+        session.info["authority"] = Authority(
+            s.system, "system", workspace_role="operator", review_override=True, reason="Accept the reviewed notes"
+        )
+        service = TaskService(session)
+        for task_id in ids:
+            closed, _, _ = await service.change_status(task_id, "closed", commit=False)
+            assert closed is not None
+    async with db_session_factory() as read:
+        for task_id in ids:
+            task = await read.get(Task, task_id)
+            assert task.status == "closed" and task.accepted_at is not None, task_id
+            assert task.accepted_version == task.version, task_id
