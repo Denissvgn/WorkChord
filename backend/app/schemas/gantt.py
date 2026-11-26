@@ -85,6 +85,14 @@ UnscheduledReason = Literal[
 ]
 
 
+DateRule = Literal[
+    "dates_incomplete",
+    "dates_inverted",
+    "outside_iteration",
+    "before_min_start_date",
+]
+
+
 class UnscheduledTask(BaseModel):
     """A planned task the scheduler left without dates, and what would change that."""
     task_id: int
@@ -93,7 +101,21 @@ class UnscheduledTask(BaseModel):
     message: str
     # The task held dates before this run and the run removed them.
     dates_cleared: bool = False
+    # The rule the removed dates broke; None when the task had no dates or the dates were not judged.
+    date_rule: DateRule | None = Field(default=None, exclude_if=lambda rule: rule is None)
     # Causes of its own that keep it undated once the main reason is resolved.
+    also: list[UnscheduledReason] = []
+
+
+class NotPlacedTask(BaseModel):
+    """A planned task the scheduler could not place; it keeps the valid dates it had."""
+    task_id: int
+    task_title: str
+    reason: UnscheduledReason
+    message: str
+    start_date: date
+    end_date: date
+    # Causes of its own that stop the scheduler from placing it once the main reason is resolved.
     also: list[UnscheduledReason] = []
 
 
@@ -124,6 +146,8 @@ class ScheduleResult(BaseModel):
     workload_issues: list[WorkloadIssue] = []
     # Planned leaf tasks still without dates after this run, each with its cause.
     unscheduled: list[UnscheduledTask] = []
+    # Planned leaf tasks the run could not place that keep their existing valid dates.
+    not_placed: list[NotPlacedTask] = Field(default_factory=list, exclude_if=lambda rows: not rows)
 
 
 class GanttResponse(BaseModel):

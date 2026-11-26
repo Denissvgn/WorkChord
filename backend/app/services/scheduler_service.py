@@ -22,7 +22,7 @@ from app.services.calendar_rules import AnnualCalendars
 from app.services.task_service import TaskService
 from app.services.team_service import TeamService
 from app.services.scheduling_rules_service import SchedulingRulesService
-from app.schemas.gantt import SchedulingDecision, ScheduleResult, UnscheduledTask, WorkloadIssue
+from app.schemas.gantt import NotPlacedTask, SchedulingDecision, ScheduleResult, UnscheduledTask, WorkloadIssue
 
 
 class MissingCalendarYear(PlanningConflict):
@@ -364,6 +364,14 @@ class SchedulerService:
         "deferred": "Deferred work is left out of scheduling. Undefer it to schedule it.",
         "blocked": "Blocked work is left out of scheduling. Clear the block to schedule it.",
         "not_placed": "The scheduler could not place this task. Check its constraint dates and dependencies.",
+    }
+
+    # The rule that made saved dates unusable, as the report names it.
+    DATE_RULE_MESSAGES = {
+        "dates_incomplete": "only one of the start and end dates was set",
+        "dates_inverted": "the end date is before the start date",
+        "outside_iteration": "they fall outside the iteration",
+        "before_min_start_date": "they start before the task's earliest start date",
     }
 
     @atomic_command
@@ -762,12 +770,23 @@ class SchedulerService:
             decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title,
                 decision_type="unavailable", reason=message))
 
-        if follow_date is not None:
-            # Following actual dates never removes a date; only a deliberate Schedule does.
-            for task in all_tasks:
-                if task.id in planned_leaf_ids and task.start_date is None and task.end_date is None:
-                    task.start_date, task.end_date = before_dates[task.id]
-                    task.calculated_effort_days = before_effort[task.id]
+        # A task the run could not place keeps the dates it already had, as long as they are valid
+        # for the iteration; dates that break a rule are removed and the rule is named in the report.
+        kept_ids: set[int] = set()
+        invalid_date_rules: dict[int, str] = {}
+        for task in all_tasks:
+            if task.id not in planned_leaf_ids or task.start_date is not None or task.end_date is not None:
+                continue
+            saved = before_dates[task.id]
+            if saved == (None, None):
+                continue
+            rule = None if follow_date is not None else self._date_rule_violation(task, saved, iteration)
+            if rule is not None:
+                invalid_date_rules[task.id] = rule
+                continue
+            task.start_date, task.end_date = saved
+            task.calculated_effort_days = before_effort[task.id]
+            kept_ids.add(task.id)
 
         # Update composite (parent) task dates based on their children
         for parent in composite_tasks:
@@ -792,7 +811,8 @@ class SchedulerService:
             authority = self.db.info.get("authority")
             timezone = await self.db.scalar(select(Project.timezone).where(Project.id == iteration.project_id)) if iteration.project_id else iteration.calendar.timezone
             for task in all_leaf_tasks:
-                if task.start_date is None or task.end_date is None:
+                # Dates kept for work the run could not place were not committed by it.
+                if task.start_date is None or task.end_date is None or task.id in kept_ids:
                     continue
                 if task.baseline_revision and not rebaseline_reason:
                     continue
@@ -820,8 +840,10 @@ class SchedulerService:
 
         # Check workload balance
         workload_issues = self._check_workload_balance(member_schedules)
-        unscheduled = self._unscheduled_tasks(all_tasks, member_schedules, unscheduled_reasons, predecessor_messages,
-                                              before_dates)
+        unscheduled, not_placed = self._unscheduled_tasks(
+            all_tasks, member_schedules, unscheduled_reasons, predecessor_messages, before_dates,
+            kept_ids=kept_ids, invalid_date_rules=invalid_date_rules,
+            iteration_dates=(iteration.start_date, iteration.end_date))
         # Causes found only now (no assignee, assignee outside the iteration) also explain themselves as decisions.
         for item in unscheduled:
             if item.reason in {"no_assignee", "assignee_not_in_iteration", "not_placed"}:
@@ -837,6 +859,7 @@ class SchedulerService:
             workload_balanced=len(workload_issues) == 0,
             workload_issues=workload_issues,
             unscheduled=unscheduled,
+            not_placed=not_placed,
         )
 
     async def follow_actual_dates(self, task: Task, today: date, *, started: bool = False) -> list[int]:
@@ -898,6 +921,27 @@ class SchedulerService:
             await self.db.flush()
         return moved
 
+    @staticmethod
+    def _date_rule_violation(task: Task, saved: tuple[date | None, date | None], iteration: Iteration) -> str | None:
+        """The first rule the saved dates break for this iteration, or None when they are valid."""
+        start, end = saved
+        if start is None or end is None:
+            return "dates_incomplete"
+        if end < start:
+            return "dates_inverted"
+        if start < iteration.start_date or end > iteration.end_date:
+            return "outside_iteration"
+        if task.min_start_date is not None and start < task.min_start_date:
+            return "before_min_start_date"
+        return None
+
+    def _date_rule_message(self, rule: str, task: Task, iteration_dates: tuple[date, date] | None = None) -> str:
+        if rule == "outside_iteration" and iteration_dates is not None:
+            return f"{self.DATE_RULE_MESSAGES[rule]} ({iteration_dates[0]} to {iteration_dates[1]})"
+        if rule == "before_min_start_date" and task.min_start_date is not None:
+            return f"{self.DATE_RULE_MESSAGES[rule]} ({task.min_start_date})"
+        return self.DATE_RULE_MESSAGES[rule]
+
     def _unscheduled_tasks(
         self,
         all_tasks: Sequence[Task],
@@ -905,15 +949,26 @@ class SchedulerService:
         known_reasons: dict[int, str],
         messages: dict[int, str] | None = None,
         before_dates: dict[int, tuple[date | None, date | None]] | None = None,
-    ) -> list[UnscheduledTask]:
-        """Planned leaf tasks still without dates, each with the first cause that applies."""
+        *,
+        kept_ids: set[int] | None = None,
+        invalid_date_rules: dict[int, str] | None = None,
+        iteration_dates: tuple[date, date] | None = None,
+    ) -> tuple[list[UnscheduledTask], list[NotPlacedTask]]:
+        """Planned leaf tasks the run could not place, each with the first cause that applies.
+
+        A task without dates goes to the first list; a task that keeps the dates it had goes to the second.
+        """
         from app.models.task import TaskStatus
 
         unscheduled: list[UnscheduledTask] = []
+        not_placed: list[NotPlacedTask] = []
+        kept_ids = kept_ids or set()
+        invalid_date_rules = invalid_date_rules or {}
         for task in all_tasks:
             if task.children or task.is_summary or task.canceled_at or task.status != TaskStatus.PLANNED.value:
                 continue
-            if task.start_date is not None and task.end_date is not None:
+            kept = task.id in kept_ids
+            if not kept and task.start_date is not None and task.end_date is not None:
                 continue
             if self._effective_flags(task)["effective_is_deferred"]:
                 continue
@@ -935,10 +990,20 @@ class SchedulerService:
             also = [own_cause] if own_cause and reason == "predecessor_unscheduled" else []
             if also:
                 message = f"{message} It also needs a fix of its own: {self.UNSCHEDULED_MESSAGES[own_cause]}"
+            if kept:
+                message = f"{message} Its saved dates {task.start_date} to {task.end_date} were kept."
+                not_placed.append(NotPlacedTask(task_id=task.id, task_title=task.title, reason=reason, message=message,
+                    start_date=task.start_date, end_date=task.end_date, also=also))
+                continue
+            rule = invalid_date_rules.get(task.id)
+            if rule is not None:
+                saved = (before_dates or {}).get(task.id, (None, None))
+                message = (f"{message} Its saved dates ({saved[0] or 'no start'} to {saved[1] or 'no end'}) were removed (rule {rule}): "
+                           f"{self._date_rule_message(rule, task, iteration_dates)}.")
             had_dates = any(value is not None for value in (before_dates or {}).get(task.id, (None, None)))
             unscheduled.append(UnscheduledTask(task_id=task.id, task_title=task.title, reason=reason,
-                message=message, dates_cleared=had_dates, also=also))
-        return unscheduled
+                message=message, dates_cleared=had_dates, date_rule=rule, also=also))
+        return unscheduled, not_placed
 
     async def _build_member_schedules(
         self,

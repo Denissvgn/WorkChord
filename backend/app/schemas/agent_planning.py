@@ -88,5 +88,7 @@ class AgentScheduleResult(BaseModel):
     workload_issues: list[dict[str, Any]] = Field(default_factory=list)
     # Planned leaf tasks the scheduler left without dates: task_id, task_title, reason code, message.
     unscheduled: list[dict[str, Any]] = Field(default_factory=list)
+    # Planned leaf tasks the scheduler could not place that keep their valid dates.
+    not_placed: list[dict[str, Any]] = Field(default_factory=list, exclude_if=lambda rows: not rows)
     input_digest: str = Field(..., min_length=64, max_length=64)
     task_states: list[AgentScheduleTaskState] = Field(default_factory=list)
