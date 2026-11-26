@@ -241,7 +241,7 @@ class TaskBriefService:
         authority = self.db.info.get("authority")
         if authority and authority.kind == "agent" and not fenced_submission:
             raise AuthorityError("agent_protocol_required", "Submit criterion evidence through assigned work with its current claim fence.")
-        if task.canceled_at or task.status == "closed" or task.is_summary:
+        if task.canceled_at or task.status in {"closed", "postponed"} or task.is_summary:
             raise ValueError("Progress requires open leaf work")
         criteria = {item["id"]: item for item in (task.brief or {}).get("acceptance_criteria", [])}
         for item in data.criteria:

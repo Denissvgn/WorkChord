@@ -25,6 +25,8 @@ class CommandState:
     failed: bool = False
     verified_publishers: set[tuple[int, int, int, int]] = field(default_factory=set)
     evidence_returns: set[tuple[int, int]] = field(default_factory=set)
+    # Tasks whose status this command moves into or out of postponed under manage authority.
+    postponement_transitions: set[int] = field(default_factory=set)
     planning_revision: int | None = None
 
 

@@ -1852,6 +1852,7 @@ class TaskService:
         TaskStatus.ACTIVE.value: [TaskStatus.RESOLVED.value],
         TaskStatus.RESOLVED.value: [TaskStatus.ACTIVE.value, TaskStatus.CLOSED.value],
         TaskStatus.CLOSED.value: [],
+        TaskStatus.POSTPONED.value: [],
     }
 
     @property

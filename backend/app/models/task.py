@@ -35,11 +35,15 @@ class TaskStatus(str, Enum):
     - ACTIVE: Work has started
     - RESOLVED: Work completed, pending validation
     - CLOSED: Fully completed and validated
+    - POSTPONED: Stopped by a recorded decision until its reactivation
+      requirements are met; entered from planned, active or resolved only
+      through the postpone command, and left only by reactivation.
     """
     PLANNED = "planned"
     ACTIVE = "active"
     RESOLVED = "resolved"
     CLOSED = "closed"
+    POSTPONED = "postponed"
 
 
 class Task(Base):

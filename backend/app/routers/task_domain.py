@@ -351,3 +351,31 @@ async def record_task_replacement(task_id: int, data: TaskReplacementCreate, db:
     """Replace this unaccepted task with a fresh one; only the project's PM or an operator may decide."""
     from app.services.task_replacement_service import TaskReplacementService
     return await domain_result(TaskReplacementService(db).record(task_id, data))
+
+
+from app.schemas.task_postponement import TaskPostponeRequest, TaskPostponementResponse, TaskReactivateRequest
+
+
+@router.get("/tasks/{task_id}/postponement", response_model=TaskPostponementResponse)
+async def task_postponement(task_id: int, db: DB):
+    """Read the task's open postponement, or its most recent one, with its reactivation requirements."""
+    from app.services.task_postponement_service import TaskPostponementService
+    return await domain_result(TaskPostponementService(db).get(task_id))
+
+
+@router.post("/tasks/{task_id}/postpone", response_model=TaskPostponementResponse)
+async def postpone_task(task_id: int, data: TaskPostponeRequest, db: DB):
+    """Stop planned, active or resolved work without canceling it, with a reason and reactivation requirements.
+
+    Only the project's PM, a project manager or an operator may decide. Live
+    execution is released under the ownership fence the actions endpoint returns.
+    """
+    from app.services.task_postponement_service import TaskPostponementService
+    return await domain_result(TaskPostponementService(db).postpone(task_id, data))
+
+
+@router.post("/tasks/{task_id}/reactivate", response_model=TaskPostponementResponse)
+async def reactivate_task(task_id: int, data: TaskReactivateRequest, db: DB):
+    """Return postponed work to planned, or to resolved if it was postponed after resolution."""
+    from app.services.task_postponement_service import TaskPostponementService
+    return await domain_result(TaskPostponementService(db).reactivate(task_id, data))

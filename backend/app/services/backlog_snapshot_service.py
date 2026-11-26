@@ -89,6 +89,8 @@ class BacklogSnapshotService:
         removed = set(current) - ids
         from app.services.task_replacement_service import require_restore_compatible
         await require_restore_compatible(self.db, [row for row, _ in rows], list(current.values()))
+        from app.services.task_postponement_service import require_restore_compatible as require_postponement_compatible
+        await require_postponement_compatible(self.db, [row for row, _ in rows], list(current.values()))
         from app.services.delivery_dependency_service import DeliveryDependencyService
         from app.models.delivery_dependency import DeliveryDependency
         await DeliveryDependencyService(self.db).require_unreferenced(removed)

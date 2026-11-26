@@ -74,7 +74,7 @@ def observe_task_event(_mapper, connection, item):
         return
     kind = {"task_cancel": "canceled", "execution_canceled": "canceled", "task_replaced": "replaced",
             "task_reopen": "reopened", "backlog_snapshot_restored": "restored", "snapshot_task_restored": "restored"}.get(item.event_type)
-    if item.event_type == "task_reopen" and row["status"] == "planned":
+    if item.event_type == "task_reopen" and row["status"] in {"planned", "postponed"}:
         kind = "reopened_planned"
     if item.event_type == "status_changed":
         payload = json.loads(item.payload)

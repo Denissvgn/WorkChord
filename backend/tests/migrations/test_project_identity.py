@@ -95,6 +95,8 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
             assert after_rows.pop(table) == []
         assert after_rows.pop("team_member_capacity_adjustments") == []
         assert after_rows.pop("task_replacements") == []
+        for table in ("task_postponements", "task_reactivation_requirements"):
+            assert after_rows.pop(table) == []
         for table, columns in LATER_COLUMNS.items():
             for row in after_rows[table]:
                 for column, value in columns.items():
@@ -146,6 +148,12 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         assert after_catalog.pop("task_replacements")["checks"] == ["ck_task_replacements_distinct"]
         # A later revision lets a delivery prerequisite name the branch its code must merge on.
         assert after_catalog["delivery_dependencies"]["columns"].pop("target_branch") == {"type": {"family": "text"}, "nullable": True}
+        # A later revision records postponed tasks and their reactivation requirements.
+        assert after_catalog.pop("task_postponements")["checks"] == [
+            "ck_task_postponements_from_status", "ck_task_postponements_reactivation"]
+        assert after_catalog.pop("task_reactivation_requirements")["checks"] == [
+            "ck_task_reactivation_requirements_date", "ck_task_reactivation_requirements_decision",
+            "ck_task_reactivation_requirements_kind", "ck_task_reactivation_requirements_target"]
         assert after_catalog == before_catalog
         with engine.begin() as db:
             assert "AUTOINCREMENT" in db.scalar(text("SELECT sql FROM sqlite_master WHERE name='projects'"))
