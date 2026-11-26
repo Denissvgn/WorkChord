@@ -540,5 +540,6 @@ describe('Connect agent steps', () => {
             .toContain('--plugin-dir /path/to/WorkChord/adapters/claude-code/workchord-agent-roles');
         expect(runtimeSnippet('antigravity', current.server_url, 'member.json'))
             .toContain('adapters/antigravity/workchord-agent-roles/skills');
+        expect(runtimeSnippet('antigravity', current.server_url, 'member.json')).toContain('<workspace>/.agents/skills');
     });
 });

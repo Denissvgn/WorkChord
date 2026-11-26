@@ -2301,33 +2301,16 @@ def build_codex_plugin(skills_dir: Path, output_dir: Path) -> Path:
             "defaultPrompt": "Use the appropriate WorkChord role skill for this work.",
         },
     }
-    role_files: dict[str, dict[str, bytes]] = {}
+    role_files = _verified_role_files(skills_dir, catalog)
     expected_files = {".codex-plugin/plugin.json"}
-    for skill in catalog["skills"]:
-        name = skill["name"]
-        files = _collect_role_files(skills_dir / skill["path"])
-        expected_records = {
-            record["path"]: (record["sha256"], record["size"])
-            for record in skill["files"]
-        }
-        observed_records = {
-            path: (_sha256(content), len(content)) for path, content in files.items()
-        }
-        if observed_records != expected_records:
-            raise SkillPackError(f"Canonical role changed while building plugin: {name}")
-        role_files[name] = files
+    for name, files in role_files.items():
         expected_files.update(f"skills/{name}/{path}" for path in files)
 
     def populate(stage: Path) -> None:
         manifest_dir = stage / ".codex-plugin"
         manifest_dir.mkdir()
         (manifest_dir / "plugin.json").write_bytes(_canonical_json(manifest))
-        for name, files in sorted(role_files.items()):
-            role_dir = stage / "skills" / name
-            for relative, content in files.items():
-                path = role_dir / relative
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_bytes(content)
+        _write_role_skills(stage / "skills", role_files)
 
     _replace_built_tree(output_dir, expected_files, populate)
     return output_dir

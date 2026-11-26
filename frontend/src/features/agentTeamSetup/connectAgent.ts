@@ -137,7 +137,7 @@ export function runtimeSnippet(runtime: AgentRuntime, server: string, filename: 
     return [
         ...(runtime === 'antigravity' ? [
             '# Role skills: copy the folders of adapters/antigravity/workchord-agent-roles/skills',
-            '# into the workspace .agent/skills folder.',
+            '# into <workspace>/.agents/skills (or ~/.gemini/config/skills for every workspace).',
         ] : []),
         ...setup,
         runtime === 'antigravity' ? '# Run this in the Antigravity agent terminal.' : "# Run this in the runtime's private terminal.",
