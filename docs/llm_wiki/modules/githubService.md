@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/services/githubService.ts`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `../types/github` | `GitHubStatusAutomationRule`, `GitHubStatusAutomationRuleCreate`, `GitHubStatusAutomationRuleUpdate` | Declaration | erased |
+| `../types/github` | `DeliveryPrerequisite`, `GitHubReconciliation`, `GitHubStatusAutomationRule`, `GitHubStatusAutomationRuleCreate`, `GitHubStatusAutomationRuleUpdate` | Declaration | erased |
 | `./api` | `api` | — | compiler-dependent |
 
 ## Module Signals
@@ -28,17 +28,26 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 ```mermaid
 flowchart LR
     n0["frontend/src/components/settings/GitHubSettingsPanel.tsx"]
-    n1["frontend/src/services/api.ts"]
-    n2["frontend/src/services/githubService.ts"]
-    n3["frontend/src/types/github.ts"]
-    n0 --> n2
-    n0 --> n3
-    n2 --> n1
-    n2 --> n3
+    n1["frontend/src/components/tasks/DeliveryDependencies.tsx"]
+    n2["frontend/src/components/tasks/GitHubReconciliationPanel.tsx"]
+    n3["frontend/src/services/api.ts"]
+    n4["frontend/src/services/githubService.ts"]
+    n5["frontend/src/types/github.ts"]
+    n0 --> n4
+    n0 --> n5
+    n1 --> n3
+    n1 --> n4
+    n1 --> n5
+    n2 --> n4
+    n2 --> n5
+    n4 --> n3
+    n4 --> n5
     click n0 "../modules/GitHubSettingsPanel.md"
-    click n1 "../modules/api.md"
-    click n2 "../modules/githubService.md"
-    click n3 "../modules/types_github.md"
+    click n1 "../modules/DeliveryDependencies.md"
+    click n2 "../modules/GitHubReconciliationPanel.md"
+    click n3 "../modules/api.md"
+    click n4 "../modules/githubService.md"
+    click n5 "../modules/types_github.md"
 ```
 
 ### Internal neighbors
@@ -46,5 +55,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [GitHubSettingsPanel](../modules/GitHubSettingsPanel.md) |
+| Inbound | [DeliveryDependencies](../modules/DeliveryDependencies.md) |
+| Inbound | [GitHubReconciliationPanel](../modules/GitHubReconciliationPanel.md) |
 | Outbound | [api](../modules/api.md) |
 | Outbound | [types_github](../modules/types_github.md) |

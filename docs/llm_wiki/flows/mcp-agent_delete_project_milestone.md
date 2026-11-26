@@ -47,9 +47,9 @@ sequenceDiagram
     participant p12 as IdentityService.actor_context
     participant p13 as require_scope
     participant p14 as AgentService.authenticate
-    participant p15 as AgentPlanningService._replay
-    participant p16 as require_identity_writes
-    participant p17 as DeliveryDependencyService.reconcile
+    participant p15 as require_identity_writes
+    participant p16 as DeliveryDependencyService.reconcile
+    participant p17 as AgentPlanningService._replay
     participant p18 as DiscussionService.enqueue
     participant p19 as actor_has_scope
     participant p20 as commit_or_flush
@@ -77,16 +77,16 @@ sequenceDiagram
     p5->>p12: IdentityService.actor_context
     p11->>p13: require_scope
     p10->>p14: AgentService.authenticate
-    p8->>p15: AgentPlanningService._replay
-    p12->>p16: require_identity_writes
-    p9->>p17: DeliveryDependencyService.reconcile
+    p12->>p15: require_identity_writes
+    p9->>p16: DeliveryDependencyService.reconcile
+    p8->>p17: AgentPlanningService._replay
     p9->>p18: DiscussionService.enqueue
     p13->>p19: actor_has_scope
     p14->>p20: commit_or_flush
-    p17->>p21: DeliveryDependencyService.validate_cycles
+    p16->>p21: DeliveryDependencyService.validate_cycles
     p18->>p22: DiscussionService.recipient_authorized
-    p17->>p23: TaskService.reserve_task_version
-    p17->>p24: clear_execution_evidence
+    p16->>p23: TaskService.reserve_task_version
+    p16->>p24: clear_execution_evidence
     p2->>p25: AgentPlanningService
     p1->>p26: _structured_tool_error
     p5->>p27: _current_agent_key
@@ -95,9 +95,9 @@ sequenceDiagram
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 289 interactions; 259 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 294 interactions; 264 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 79 (78 omitted); unresolved 1 of 118 (117 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 81 (80 omitted); unresolved 1 of 119 (118 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -124,9 +124,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 93; effect analysis evaluated: 61, partial: 2, unavailable: 30. Counts include steps omitted from the displayed trace.
+Source steps: 95; effect analysis evaluated: 62, partial: 2, unavailable: 31. Counts include steps omitted from the displayed trace.
 
-Collector observations for 63 source steps with known totals: observed: 324, emitted: 312, omitted: 12. Unavailable totals are excluded.
+Collector observations for 64 source steps with known totals: observed: 327, emitted: 315, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -204,7 +204,7 @@ flowchart LR
 | agent_delete_project_milestone | _tool_call | 1414 | `_tool_call('planning:write', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
+| get_settings | Settings | 527 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple | 100 | `tuple(required_scope)` |

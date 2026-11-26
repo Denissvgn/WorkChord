@@ -136,11 +136,11 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | choose_local_profile | get_settings | 203 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
+| get_settings | Settings | 527 | `Settings(data not statically known)` |
 | choose_local_profile | AuthorityError | 204 | `AuthorityError('local_profile_unavailable', 'Signed-in accounts are linked to a work profile by an operator.', 409)` |
 | choose_local_profile | local_work_profile | 205 | `local_work_profile(db, data.profile_id)` |
 | local_work_profile | internal_authority | 59 | `internal_authority(db)` |
-| internal_authority | db.info.get | 92 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get | 99 | `db.info.get('authority_internal', False)` |
 | local_work_profile | db.get | 60 | `db.get(TeamMemberProfile, profile_id)` |
 | choose_local_profile | AuthorityError | 207 | `AuthorityError('profile_not_found', 'Choose an existing person profile.', 404)` |
 | choose_local_profile | commit_or_flush | 209 | `commit_or_flush(db)` |
@@ -155,7 +155,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `internal_authority` | `db.info.get` | 92 |
+| unresolved_call | `internal_authority` | `db.info.get` | 99 |
 | unresolved_call | `local_work_profile` | `db.get` | 60 |
 | external_call | `current_command` | `getattr` | 79 |
 | step_limit | `choose_local_profile` | `first 12 steps` | 0 |

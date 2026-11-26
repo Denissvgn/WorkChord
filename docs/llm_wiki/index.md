@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1796 | [Open section](#entities) |
-| Modules | 1145 | [Open section](#modules) |
-| Workflows | 230 | [Open section](#workflows) |
+| Entities | 1809 | [Open section](#entities) |
+| Modules | 1156 | [Open section](#modules) |
+| Workflows | 232 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 614 | [Open section](#entry-point-flows) |
+| Entry-point flows | 624 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -245,10 +245,12 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [BootstrapActionManifest](entities/BootstrapActionManifest.md)
 - [BootstrapActionSlot](entities/BootstrapActionSlot.md)
 - [BootstrapOwner](entities/BootstrapOwner.md)
+- [BranchDraft](entities/BranchDraft.md)
 - [BreadcrumbItem](entities/BreadcrumbItem.md)
 - [BreadcrumbsProps](entities/BreadcrumbsProps.md)
 - [BriefConvert](entities/BriefConvert.md)
 - [BriefWrite](entities/BriefWrite.md)
+- [BrokenLinks](entities/BrokenLinks.md)
 - [BuildIdentity](entities/BuildIdentity.md)
 - [BulkKind](entities/BulkKind.md)
 - [BulkRejected](entities/BulkRejected.md)
@@ -365,12 +367,15 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [DeliveryDatabase](entities/DeliveryDatabase.md)
 - [DeliveryDependency](entities/DeliveryDependency.md)
 - [DeliveryDependencyInput](entities/DeliveryDependencyInput.md)
+- [DeliveryDependencyRetarget](entities/DeliveryDependencyRetarget.md)
 - [DeliveryDependencyService](entities/DeliveryDependencyService.md)
 - [DeliveryFields](entities/DeliveryFields.md)
 - [DeliveryMetrics](entities/DeliveryMetrics.md)
 - [DeliveryMetricsResponse](entities/DeliveryMetricsResponse.md)
 - [DeliveryMetricsService](entities/DeliveryMetricsService.md)
 - [DeliveryObservation](entities/DeliveryObservation.md)
+- [DeliveryPrerequisite](entities/DeliveryPrerequisite.md)
+- [DeliveryPrerequisiteHold](entities/DeliveryPrerequisiteHold.md)
 - [DeliveryRisk](entities/DeliveryRisk.md)
 - [DeliveryScenario](entities/DeliveryScenario.md)
 - [Dependency](entities/Dependency.md)
@@ -449,6 +454,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [FakeTrustResolver](entities/FakeTrustResolver.md)
 - [FeedbackAction](entities/FeedbackAction.md)
 - [FeedbackKind](entities/FeedbackKind.md)
+- [FetchedPullRequest](entities/FetchedPullRequest.md)
 - [Field](entities/Field.md)
 - [FilesystemAgentTeamCredentialSink](entities/FilesystemAgentTeamCredentialSink.md)
 - [FilterBarFilter](entities/FilterBarFilter.md)
@@ -484,13 +490,13 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [GateStatusAmendment](entities/GateStatusAmendment.md)
 - [GetStartedRequest](entities/GetStartedRequest.md)
 - [GetStartedVisibility](entities/GetStartedVisibility.md)
+- [GitClassification](entities/GitClassification.md)
 - [GitHubAutomationFromStatus](entities/GitHubAutomationFromStatus.md)
 - [GitHubForm](entities/GitHubForm.md)
 - [GitHubLinkError](entities/GitHubLinkError.md)
 - [GitHubPullChecks](entities/GitHubPullChecks.md)
-- [GitHubPullReconciliation](entities/GitHubPullReconciliation.md)
 - [GitHubPullReview](entities/GitHubPullReview.md)
-- [GitHubPullSubmission](entities/GitHubPullSubmission.md)
+- [GitHubReconciliation](entities/GitHubReconciliation.md)
 - [GitHubReconciliationResponse](entities/GitHubReconciliationResponse.md)
 - [GitHubReconciliationService](entities/GitHubReconciliationService.md)
 - [GitHubReplacementRole](entities/GitHubReplacementRole.md)
@@ -699,6 +705,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ParsedTask](entities/ParsedTask.md)
 - [ParsedTeamMember](entities/ParsedTeamMember.md)
 - [PartialWorkScope](entities/PartialWorkScope.md)
+- [PathRules](entities/PathRules.md)
 - [PendingTaskWrite](entities/PendingTaskWrite.md)
 - [PeriodCommitments](entities/PeriodCommitments.md)
 - [PersistedState](entities/PersistedState.md)
@@ -710,7 +717,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [PlanBlockersSection_Props](entities/PlanBlockersSection_Props.md)
 - [PlanCheckpointSection](entities/PlanCheckpointSection.md)
 - [PlanCheckpointState](entities/PlanCheckpointState.md)
-- [PlanPage_Translate](entities/PlanPage_Translate.md)
 - [PlanReadiness](entities/PlanReadiness.md)
 - [PlanScheduleSection_ListedTask](entities/PlanScheduleSection_ListedTask.md)
 - [PlanShareResponse](entities/PlanShareResponse.md)
@@ -1130,6 +1136,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskVersionConflictDetail](entities/TaskVersionConflictDetail.md)
 - [TaskVersionConflictError](entities/TaskVersionConflictError.md)
 - [TaskViewPart](entities/TaskViewPart.md)
+- [TaskViewSession](entities/TaskViewSession.md)
+- [TaskViewSessionUpdate](entities/TaskViewSessionUpdate.md)
 - [TeamFormProps](entities/TeamFormProps.md)
 - [TeamImportRequest](entities/TeamImportRequest.md)
 - [TeamImportResponse](entities/TeamImportResponse.md)
@@ -1298,7 +1306,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [agent_team_setup_AgentTeamRuntimeHandoff](entities/agent_team_setup_AgentTeamRuntimeHandoff.md)
 - [agent_team_setup_AgentTeamSetupStep](entities/agent_team_setup_AgentTeamSetupStep.md)
 - [agent_team_setup_AgentTeamSkillPackage](entities/agent_team_setup_AgentTeamSkillPackage.md)
-- [atRiskReasons_Translate](entities/atRiskReasons_Translate.md)
 - [deliveryMetrics_DeliveryQueueItem](entities/deliveryMetrics_DeliveryQueueItem.md)
 - [deliveryMetrics_DurationSamples](entities/deliveryMetrics_DurationSamples.md)
 - [delivery_metrics_DeliveryQueueItem](entities/delivery_metrics_DeliveryQueueItem.md)
@@ -1369,7 +1376,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [outboundWebhook_OutboundWebhookTarget](entities/outboundWebhook_OutboundWebhookTarget.md)
 - [outboundWebhook_OutboundWebhookTargetCreate](entities/outboundWebhook_OutboundWebhookTargetCreate.md)
 - [outboundWebhook_OutboundWebhookTargetUpdate](entities/outboundWebhook_OutboundWebhookTargetUpdate.md)
-- [planEvidence_Translate](entities/planEvidence_Translate.md)
 - [planShareService_PlanShare](entities/planShareService_PlanShare.md)
 - [planningInputService_MemberPlanningIntent](entities/planningInputService_MemberPlanningIntent.md)
 - [planning_inputs_MemberPlanningIntent](entities/planning_inputs_MemberPlanningIntent.md)
@@ -1435,6 +1441,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_github_GitHubAutomationEventType](entities/schemas_github_GitHubAutomationEventType.md)
 - [schemas_github_GitHubAutomationOutcome](entities/schemas_github_GitHubAutomationOutcome.md)
 - [schemas_github_GitHubAutomationTargetStatus](entities/schemas_github_GitHubAutomationTargetStatus.md)
+- [schemas_github_GitHubPullReconciliation](entities/schemas_github_GitHubPullReconciliation.md)
+- [schemas_github_GitHubPullSubmission](entities/schemas_github_GitHubPullSubmission.md)
 - [schemas_github_GitHubStatusAutomationResult](entities/schemas_github_GitHubStatusAutomationResult.md)
 - [schemas_github_GitHubStatusAutomationRuleCreate](entities/schemas_github_GitHubStatusAutomationRuleCreate.md)
 - [schemas_github_GitHubStatusAutomationRuleUpdate](entities/schemas_github_GitHubStatusAutomationRuleUpdate.md)
@@ -1660,6 +1668,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_github_GitHubAutomationEventType](entities/types_github_GitHubAutomationEventType.md)
 - [types_github_GitHubAutomationOutcome](entities/types_github_GitHubAutomationOutcome.md)
 - [types_github_GitHubAutomationTargetStatus](entities/types_github_GitHubAutomationTargetStatus.md)
+- [types_github_GitHubPullReconciliation](entities/types_github_GitHubPullReconciliation.md)
+- [types_github_GitHubPullSubmission](entities/types_github_GitHubPullSubmission.md)
 - [types_github_GitHubStatusAutomationResult](entities/types_github_GitHubStatusAutomationResult.md)
 - [types_github_GitHubStatusAutomationRule](entities/types_github_GitHubStatusAutomationRule.md)
 - [types_github_GitHubStatusAutomationRuleCreate](entities/types_github_GitHubStatusAutomationRuleCreate.md)
@@ -1806,6 +1816,7 @@ Retained history; these declarations are absent from the selected source invento
 - [OverviewDataSource](entities/OverviewDataSource.md)
 - [OverviewDeliverySnapshotProps](entities/OverviewDeliverySnapshotProps.md)
 - [OverviewFocusPanelProps](entities/OverviewFocusPanelProps.md)
+- [PlanPage_Translate](entities/PlanPage_Translate.md)
 - [PlanningJob](entities/PlanningJob.md)
 - [RefreshStatus](entities/RefreshStatus.md)
 - [SavedViewsControlProps](entities/SavedViewsControlProps.md)
@@ -1819,6 +1830,8 @@ Retained history; these declarations are absent from the selected source invento
 - [TeamPageAction](entities/TeamPageAction.md)
 - [Translate](entities/Translate.md)
 - [WorkspaceAttention](entities/WorkspaceAttention.md)
+- [atRiskReasons_Translate](entities/atRiskReasons_Translate.md)
+- [planEvidence_Translate](entities/planEvidence_Translate.md)
 
 ## Modules
 
@@ -1917,6 +1930,7 @@ Retained history; these declarations are absent from the selected source invento
 - [DeliveryAnalytics](modules/DeliveryAnalytics.md) - `frontend/src/components/analytics/DeliveryAnalytics.tsx`
 - [DeliveryAnalytics.test](modules/DeliveryAnalytics.test.md) - `frontend/src/components/analytics/DeliveryAnalytics.test.tsx`
 - [DeliveryDependencies](modules/DeliveryDependencies.md) - `frontend/src/components/tasks/DeliveryDependencies.tsx`
+- [DeliveryDependencies.test](modules/DeliveryDependencies.test.md) - `frontend/src/components/tasks/DeliveryDependencies.test.tsx`
 - [DisabledReason](modules/DisabledReason.md) - `frontend/src/components/common/DisabledReason.tsx`
 - [DocumentMetadata](modules/DocumentMetadata.md) - `frontend/src/components/layout/DocumentMetadata.tsx`
 - [DraftDismissalDialog](modules/DraftDismissalDialog.md) - `frontend/src/components/tasks/DraftDismissalDialog.tsx`
@@ -1938,6 +1952,8 @@ Retained history; these declarations are absent from the selected source invento
 - [GetStartedFlow.test](modules/GetStartedFlow.test.md) - `frontend/src/features/firstRun/GetStartedFlow.test.tsx`
 - [GetStartedPanel](modules/GetStartedPanel.md) - `frontend/src/features/firstRun/GetStartedPanel.tsx`
 - [GetStartedPanel.test](modules/GetStartedPanel.test.md) - `frontend/src/features/firstRun/GetStartedPanel.test.tsx`
+- [GitHubReconciliationPanel](modules/GitHubReconciliationPanel.md) - `frontend/src/components/tasks/GitHubReconciliationPanel.tsx`
+- [GitHubReconciliationPanel.test](modules/GitHubReconciliationPanel.test.md) - `frontend/src/components/tasks/GitHubReconciliationPanel.test.tsx`
 - [GitHubSettingsPanel](modules/GitHubSettingsPanel.md) - `frontend/src/components/settings/GitHubSettingsPanel.tsx`
 - [GitHubSettingsPanel.test](modules/GitHubSettingsPanel.test.md) - `frontend/src/components/settings/GitHubSettingsPanel.test.tsx`
 - [GuardedTaskDrawer](modules/GuardedTaskDrawer.md) - `frontend/src/components/tasks/GuardedTaskDrawer.tsx`
@@ -2281,10 +2297,12 @@ Retained history; these declarations are absent from the selected source invento
 - [check-query-feedback](modules/check-query-feedback.md) - `frontend/scripts/check-query-feedback.mjs`
 - [check-tailwind-classes](modules/check-tailwind-classes.md) - `frontend/scripts/check-tailwind-classes.mjs`
 - [check-task-selection-layout](modules/check-task-selection-layout.md) - `frontend/scripts/check-task-selection-layout.mjs`
+- [check_markdown_links](modules/check_markdown_links.md) - Fail when a changed Markdown document links to a repository file that does not exist.
 - [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md) - Validate the tracked model-aware routing closure inventory.
 - [check_postgresql_documentation](modules/check_postgresql_documentation.md) - Fail closed when the PostgreSQL pre-cutover documentation drifts.
 - [ci_runtime](modules/ci_runtime.md) - Bounded native commands with streamed logs and atomic progress receipts.
 - [claimTime](modules/claimTime.md) - /** * "18:42 GMT+3" for a claim that ends today, a short date and time otherwise: the reader's * local time, with its zone named so it reads unambiguously next to UTC times elsewhere. */
+- [classify_change_scope](modules/classify_change_scope.md) - Decide whether a CI run covers documentation-only changes.
 - [cli_closeout](modules/cli_closeout.md) - Command-line interface for PostgreSQL release publication and closeout.
 - [cli_cutover](modules/cli_cutover.md) - Command-line coordinator for signed PostgreSQL cutover evidence.
 - [cli_database_migration](modules/cli_database_migration.md) - Operational SQLite-to-PostgreSQL migration command.
@@ -2313,7 +2331,6 @@ Retained history; these declarations are absent from the selected source invento
 - [deliveryMetrics](modules/deliveryMetrics.md) - `frontend/src/types/deliveryMetrics.ts`
 - [deliveryMetricsService](modules/deliveryMetricsService.md) - `frontend/src/services/deliveryMetricsService.ts`
 - [delivery_dependencies](modules/delivery_dependencies.md) - Versioned delivery prerequisite commands.
-- [delivery_dependency](modules/delivery_dependency.md) - Delivery prerequisites are separate from iteration-local scheduling edges.
 - [delivery_dependency_service](modules/delivery_dependency_service.md) - Authorized delivery readiness, global cycles and downstream evidence invalidation.
 - [delivery_metrics](modules/delivery_metrics.md) - Delivery duration samples and queues with explicit observation coverage.
 - [delivery_metrics_service](modules/delivery_metrics_service.md) - Event-based scoped delivery metrics; status dates never supply missing instants.
@@ -2428,6 +2445,7 @@ Retained history; these declarations are absent from the selected source invento
 - [models_calendar](modules/models_calendar.md) - Calendar model.
 - [models_capacity](modules/models_capacity.md) - Durable person availability and a serialization point for shared planning.
 - [models_database_migration](modules/models_database_migration.md) - Target-owned state for controlled SQLite-to-PostgreSQL transfers.
+- [models_delivery_dependency](modules/models_delivery_dependency.md) - Delivery prerequisites are separate from iteration-local scheduling edges.
 - [models_discussion](modules/models_discussion.md) - Attributable discussion, personal subscriptions and durable inbox receipts.
 - [models_execution_usage](modules/models_execution_usage.md) - Append-only per-attempt usage report revisions and pricing evidence.
 - [models_external_link](modules/models_external_link.md) - External link model for delivery traceability.
@@ -2501,7 +2519,6 @@ Retained history; these declarations are absent from the selected source invento
 - [planning_inputs](modules/planning_inputs.md) - Validated working zones and optional aggregate revisions for shared inputs.
 - [planning_issues](modules/planning_issues.md) - One rule for the planning gaps people and the PM see: "needs an assignee" and "missing effort".
 - [planning_window_reconciliation](modules/planning_window_reconciliation.md) - Reconcile existing ownership only from an authenticated date-only command and its preimage.
-- [postcss.config](modules/postcss.config.md) - `frontend/postcss.config.js`
 - [postgres_runtime](modules/postgres_runtime.md) - Own an isolated PostgreSQL cluster on a native runner.
 - [postgresql___init__](modules/postgresql___init__.md) - Installed PostgreSQL autonomous-program contract bundle.
 - [postgresql_migrations_env](modules/postgresql_migrations_env.md) - Minimal Alembic environment used to prove the PostgreSQL test harness.
@@ -2587,6 +2604,7 @@ Retained history; these declarations are absent from the selected source invento
 - [schemas_autonomy](modules/schemas_autonomy.md) - Bounded schemas for autonomous work-package and verifier lifecycles.
 - [schemas_calendar](modules/schemas_calendar.md) - Calendar schemas.
 - [schemas_common](modules/schemas_common.md) - Common schemas and error handling.
+- [schemas_delivery_dependency](modules/schemas_delivery_dependency.md) - Request bodies shared by the delivery prerequisite REST routes and MCP tools.
 - [schemas_email_settings](modules/schemas_email_settings.md) - Email settings schemas.
 - [schemas_execution_usage](modules/schemas_execution_usage.md) - Worker-reported usage, immutable pricing snapshots and explicit coverage.
 - [schemas_external_link](modules/schemas_external_link.md) - External link schemas.
@@ -2666,7 +2684,6 @@ Retained history; these declarations are absent from the selected source invento
 - [systemSettings](modules/systemSettings.md) - `frontend/src/types/systemSettings.ts`
 - [systemSettingsService](modules/systemSettingsService.md) - `frontend/src/services/systemSettingsService.ts`
 - [system_settings_service](modules/system_settings_service.md) - DB-backed runtime system settings resolution.
-- [tailwind.config](modules/tailwind.config.md) - `frontend/tailwind.config.js`
 - [taskDependencyVersions.test](modules/taskDependencyVersions.test.md) - `frontend/src/services/taskDependencyVersions.test.ts`
 - [taskDetail](modules/taskDetail.md) - `frontend/src/test/fixtures/taskDetail.ts`
 - [taskDraftStorage](modules/taskDraftStorage.md) - `frontend/src/components/tasks/taskDraftStorage.ts`
@@ -2685,6 +2702,7 @@ Retained history; these declarations are absent from the selected source invento
 - [taskTransitions.test](modules/taskTransitions.test.md) - `frontend/src/features/taskTransitions.test.ts`
 - [taskViewParams](modules/taskViewParams.md) - `frontend/src/features/savedViews/taskViewParams.ts`
 - [taskViewParams.test](modules/taskViewParams.test.md) - `frontend/src/features/savedViews/taskViewParams.test.ts`
+- [taskViewSession](modules/taskViewSession.md) - `frontend/src/components/tasks/taskViewSession.ts`
 - [taskViewState](modules/taskViewState.md) - `frontend/src/features/savedViews/taskViewState.ts`
 - [task_brief_service](modules/task_brief_service.md) - Canonical brief rendering, conservative legacy conversion and evidence commands.
 - [task_bulk_operation_service](modules/task_bulk_operation_service.md) - Selected-task bulk operation orchestration.
@@ -2754,7 +2772,9 @@ Retained history; these declarations are absent from the selected source invento
 - [test_capacity_adjustments](modules/test_capacity_adjustments.md) - Dated capacity adjustments change capacity on their dates only and leave issued work current.
 - [test_capacity_contract](modules/test_capacity_contract.md) - Executable checks for the approved PostgreSQL capacity contract.
 - [test_capacity_transfers](modules/test_capacity_transfers.md) - A temporary capacity transfer lends availability between rows of one person and returns it after its dates.
+- [test_check_markdown_links](modules/test_check_markdown_links.md) - The documentation job fails on relative links that point nowhere.
 - [test_ci_runtime](modules/test_ci_runtime.md) - Exercise cancellation, deadlines and durable command results with real processes.
+- [test_classify_change_scope](modules/test_classify_change_scope.md) - Documentation-only classification skips CI only for unchecked documentation.
 - [test_client_contract](modules/test_client_contract.md) - Schema-derived compatibility, legacy payloads, and additive client behavior.
 - [test_cutover_evidence](modules/test_cutover_evidence.md) - Fail-closed contracts for rehearsal and production cutover evidence.
 - [test_database_configuration](modules/test_database_configuration.md) - DBM-DEP-001 and DBM-CFG-001 configuration contract tests.
@@ -2762,6 +2782,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_delivery_dependencies](modules/test_delivery_dependencies.md) - Cross-project readiness, cycle prevention and retained acceptance history.
 - [test_delivery_merge_prerequisites](modules/test_delivery_merge_prerequisites.md) - A delivery prerequisite can require accepted code merged on a named branch; the hold names who acts next.
 - [test_delivery_metrics](modules/test_delivery_metrics.md) - Recorded workflow instants, durable scope and missing history stay distinct.
+- [test_delivery_prerequisite_tools](modules/test_delivery_prerequisite_tools.md) - Agents read GitHub reconciliation, run catch-up and retarget delivery prerequisites with the REST authority.
 - [test_delivery_scenarios](modules/test_delivery_scenarios.md) - Delivery contracts and strict reproductions of unresolved behavior.
 - [test_delivery_target_branch_migration](modules/test_delivery_target_branch_migration.md) - A delivery prerequisite's target branch migrates reversibly and is never dropped silently.
 - [test_dependency_date_cascade](modules/test_dependency_date_cascade.md) - A late start moves each planned dependent once, however many paths reach it.
@@ -2775,6 +2796,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_execution_usage](modules/test_execution_usage.md) - Usage provenance, corrections, immutable pricing and permission isolation.
 - [test_execution_working_dates](modules/test_execution_working_dates.md) - Agent start decisions use the same declared working day as human work.
 - [test_gantt_iteration_project](modules/test_gantt_iteration_project.md) - The Gantt projection names the project that owns its iteration, over REST and MCP.
+- [test_github_closure_concurrency](modules/test_github_closure_concurrency.md) - A GitHub merge or closure observed by racing catch-ups and webhooks is recorded once on PostgreSQL.
 - [test_github_reconciliation](modules/test_github_reconciliation.md) - A task's submitted commit is reconciled with its linked pull request as GitHub shows it now.
 - [test_harness_session_metadata](modules/test_harness_session_metadata.md) - A worker may declare the harness session that ran it; the shape is checked, the value is not verified.
 - [test_human_work_queries](modules/test_human_work_queries.md) - Human ownership queries and exact-ID lookup respect project visibility.
@@ -2823,6 +2845,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_project_review_policy](modules/test_project_review_policy.md) - Project editors can round-trip the current policy. Changes need an operator.
 - [test_project_working_timezone](modules/test_project_working_timezone.md) - Declared project working zones survive transport and drive local work dates.
 - [test_query_boundaries](modules/test_query_boundaries.md) - DBM-PERF-001 bounded graph and aggregate-summary tests.
+- [test_readiness_detail](modules/test_readiness_detail.md) - Managed readiness stays status-only unless the readiness-detail token matches.
 - [test_rehearsal_ownership](modules/test_rehearsal_ownership.md) - Isolation cannot adopt operator paths, names, architectures or unrelated resources.
 - [test_replacement_carried_provenance](modules/test_replacement_carried_provenance.md) - A replacement's carried contributors stay out of independent review, and their history walk is bounded.
 - [test_review_provenance](modules/test_review_provenance.md) - Exercise independent publisher review through the atomic work commands.
@@ -2933,6 +2956,7 @@ Retained history; these declarations are absent from the selected source invento
 - [usePlanningObservation](modules/usePlanningObservation.md) - `frontend/src/features/usePlanningObservation.ts`
 - [usePlanningReadiness](modules/usePlanningReadiness.md) - `frontend/src/features/planningMasters/usePlanningReadiness.ts`
 - [usePlanningReadiness.test](modules/usePlanningReadiness.test.md) - `frontend/src/features/planningMasters/usePlanningReadiness.test.tsx`
+- [useProjectEditAccess](modules/useProjectEditAccess.md) - `frontend/src/features/identity/useProjectEditAccess.ts`
 - [useSavedViewManager](modules/useSavedViewManager.md) - `frontend/src/components/tasks/useSavedViewManager.tsx`
 - [useScopeLink](modules/useScopeLink.md) - `frontend/src/features/scope/useScopeLink.ts`
 - [useScopeLink.test](modules/useScopeLink.test.md) - `frontend/src/features/scope/useScopeLink.test.tsx`
@@ -3032,6 +3056,7 @@ Retained history; these declarations are absent from the selected source invento
 - [DeliveryDependencyService_add](workflows/DeliveryDependencyService_add.md) - entry: `delivery_dependency_service.DeliveryDependencyService.add`
 - [DeliveryDependencyService_reconcile](workflows/DeliveryDependencyService_reconcile.md) - entry: `delivery_dependency_service.DeliveryDependencyService.reconcile`
 - [DeliveryDependencyService_remove](workflows/DeliveryDependencyService_remove.md) - entry: `delivery_dependency_service.DeliveryDependencyService.remove`
+- [DeliveryDependencyService_retarget](workflows/DeliveryDependencyService_retarget.md) - entry: `delivery_dependency_service.DeliveryDependencyService.retarget`
 - [DeliveryMetricsService_report](workflows/DeliveryMetricsService_report.md) - entry: `delivery_metrics_service.DeliveryMetricsService.report`
 - [DiscussionService_deliver](workflows/DiscussionService_deliver.md) - entry: `discussion_service.DiscussionService.deliver`
 - [DiscussionService_retry](workflows/DiscussionService_retry.md) - entry: `discussion_service.DiscussionService.retry`
@@ -3044,6 +3069,7 @@ Retained history; these declarations are absent from the selected source invento
 - [ExternalLinkService_update](workflows/ExternalLinkService_update.md) - entry: `external_link_service.ExternalLinkService.update`
 - [GitHubStatusAutomationService_apply_rules](workflows/GitHubStatusAutomationService_apply_rules.md) - entry: `github_status_automation_service.GitHubStatusAutomationService.apply_rules`
 - [GitHubStatusService___init__](workflows/GitHubStatusService___init__.md) - entry: `github_status_service.GitHubStatusService.__init__`
+- [GitHubStatusService_record_fetched_pull_requests](workflows/GitHubStatusService_record_fetched_pull_requests.md) - entry: `github_status_service.GitHubStatusService.record_fetched_pull_requests`
 - [GitHubWebhookService___init__](workflows/GitHubWebhookService___init__.md) - entry: `github_webhook_service.GitHubWebhookService.__init__`
 - [GitHubWebhookService_process](workflows/GitHubWebhookService_process.md) - entry: `github_webhook_service.GitHubWebhookService.process`
 - [HierarchyRepairService_audit](workflows/HierarchyRepairService_audit.md) - entry: `hierarchy_repair_service.HierarchyRepairService.audit`
@@ -3524,6 +3550,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-reset_scheduling_rules](flows/http-reset_scheduling_rules.md) - entry: `reset_scheduling_rules`
 - [http-restore_backlog](flows/http-restore_backlog.md) - entry: `restore_backlog`
 - [http-restore_snapshot](flows/http-restore_snapshot.md) - entry: `restore_snapshot`
+- [http-retarget_delivery_dependency](flows/http-retarget_delivery_dependency.md) - entry: `retarget_delivery_dependency`
 - [http-retry_outbound_webhook_delivery](flows/http-retry_outbound_webhook_delivery.md) - entry: `retry_outbound_webhook_delivery`
 - [http-retry_personal_notification](flows/http-retry_personal_notification.md) - entry: `retry_personal_notification`
 - [http-review_task](flows/http-review_task.md) - entry: `review_task`
@@ -3613,6 +3640,7 @@ Retained history; these declarations are absent from the selected source invento
 **mcp**
 
 - [mcp-agent_actor_roster_resource](flows/mcp-agent_actor_roster_resource.md) - entry: `agent_actor_roster_resource`
+- [mcp-agent_add_delivery_dependency](flows/mcp-agent_add_delivery_dependency.md) - entry: `agent_add_delivery_dependency`
 - [mcp-agent_append_run_event](flows/mcp-agent_append_run_event.md) - entry: `agent_append_run_event`
 - [mcp-agent_append_task_event](flows/mcp-agent_append_task_event.md) - entry: `agent_append_task_event`
 - [mcp-agent_apply_capacity_adjustment](flows/mcp-agent_apply_capacity_adjustment.md) - entry: `agent_apply_capacity_adjustment`
@@ -3648,6 +3676,7 @@ Retained history; these declarations are absent from the selected source invento
 - [mcp-agent_get_complete_task_context](flows/mcp-agent_get_complete_task_context.md) - entry: `agent_get_complete_task_context`
 - [mcp-agent_get_execution_usage](flows/mcp-agent_get_execution_usage.md) - entry: `agent_get_execution_usage`
 - [mcp-agent_get_execution_usage_summary](flows/mcp-agent_get_execution_usage_summary.md) - entry: `agent_get_execution_usage_summary`
+- [mcp-agent_get_github_reconciliation](flows/mcp-agent_get_github_reconciliation.md) - entry: `agent_get_github_reconciliation`
 - [mcp-agent_get_iteration_plan_readiness](flows/mcp-agent_get_iteration_plan_readiness.md) - entry: `agent_get_iteration_plan_readiness`
 - [mcp-agent_get_model_binding](flows/mcp-agent_get_model_binding.md) - entry: `agent_get_model_binding`
 - [mcp-agent_get_model_catalog_entry](flows/mcp-agent_get_model_catalog_entry.md) - entry: `agent_get_model_catalog_entry`
@@ -3665,6 +3694,7 @@ Retained history; these declarations are absent from the selected source invento
 - [mcp-agent_list_actor_roster](flows/mcp-agent_list_actor_roster.md) - entry: `agent_list_actor_roster`
 - [mcp-agent_list_assignments](flows/mcp-agent_list_assignments.md) - entry: `agent_list_assignments`
 - [mcp-agent_list_assignments_page](flows/mcp-agent_list_assignments_page.md) - entry: `agent_list_assignments_page`
+- [mcp-agent_list_delivery_dependencies](flows/mcp-agent_list_delivery_dependencies.md) - entry: `agent_list_delivery_dependencies`
 - [mcp-agent_list_model_bindings](flows/mcp-agent_list_model_bindings.md) - entry: `agent_list_model_bindings`
 - [mcp-agent_list_model_catalog](flows/mcp-agent_list_model_catalog.md) - entry: `agent_list_model_catalog`
 - [mcp-agent_list_my_claims](flows/mcp-agent_list_my_claims.md) - entry: `agent_list_my_claims`
@@ -3692,8 +3722,10 @@ Retained history; these declarations are absent from the selected source invento
 - [mcp-agent_renew_my_work](flows/mcp-agent_renew_my_work.md) - entry: `agent_renew_my_work`
 - [mcp-agent_report_discovery](flows/mcp-agent_report_discovery.md) - entry: `agent_report_discovery`
 - [mcp-agent_requeue_recovery](flows/mcp-agent_requeue_recovery.md) - entry: `agent_requeue_recovery`
+- [mcp-agent_retarget_delivery_dependency](flows/mcp-agent_retarget_delivery_dependency.md) - entry: `agent_retarget_delivery_dependency`
 - [mcp-agent_reviews_resource](flows/mcp-agent_reviews_resource.md) - entry: `agent_reviews_resource`
 - [mcp-agent_routes_resource](flows/mcp-agent_routes_resource.md) - entry: `agent_routes_resource`
+- [mcp-agent_run_github_catch_up](flows/mcp-agent_run_github_catch_up.md) - entry: `agent_run_github_catch_up`
 - [mcp-agent_skill_catalog_resource](flows/mcp-agent_skill_catalog_resource.md) - entry: `agent_skill_catalog_resource`
 - [mcp-agent_skill_entrypoint_resource](flows/mcp-agent_skill_entrypoint_resource.md) - entry: `agent_skill_entrypoint_resource`
 - [mcp-agent_skill_manifest_resource](flows/mcp-agent_skill_manifest_resource.md) - entry: `agent_skill_manifest_resource`
@@ -3786,8 +3818,10 @@ Retained history; these declarations are absent from the selected source invento
 - [process-apt_runtime](flows/process-apt_runtime.md) - entry: `main`
 - [process-build_agent_skills](flows/process-build_agent_skills.md) - entry: `main`
 - [process-build_identity](flows/process-build_identity.md) - entry: `main`
+- [process-check_markdown_links](flows/process-check_markdown_links.md) - entry: `main`
 - [process-check_model_aware_routing_closeout](flows/process-check_model_aware_routing_closeout.md) - entry: `main`
 - [process-check_postgresql_documentation](flows/process-check_postgresql_documentation.md) - entry: `main`
+- [process-classify_change_scope](flows/process-classify_change_scope.md) - entry: `main`
 - [process-closeout](flows/process-closeout.md) - entry: `main`
 - [process-collect](flows/process-collect.md) - entry: `main`
 - [process-compare](flows/process-compare.md) - entry: `main`
@@ -3820,7 +3854,9 @@ Retained history; these declarations are absent from the selected source invento
 - [process-server_acceptance](flows/process-server_acceptance.md) - entry: `main`
 - [process-service_worksets](flows/process-service_worksets.md) - entry: `main`
 - [process-setup_agent_team](flows/process-setup_agent_team.md) - entry: `main`
+- [process-test_check_markdown_links](flows/process-test_check_markdown_links.md) - entry: `__main__`
 - [process-test_ci_runtime](flows/process-test_ci_runtime.md) - entry: `__main__`
+- [process-test_classify_change_scope](flows/process-test_classify_change_scope.md) - entry: `__main__`
 - [process-test_native_runtimes](flows/process-test_native_runtimes.md) - entry: `__main__`
 - [process-test_wiki_lock_root_preflight](flows/process-test_wiki_lock_root_preflight.md) - entry: `__main__`
 - [process-upgrade](flows/process-upgrade.md) - entry: `main`

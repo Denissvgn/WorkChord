@@ -143,7 +143,7 @@ flowchart LR
     click n4 "../modules/http_authority.md"
     click n5 "../modules/models___init__.md"
     click n6 "../modules/models_agent.md"
-    click n7 "../modules/delivery_dependency.md"
+    click n7 "../modules/models_delivery_dependency.md"
     click n8 "../modules/delivery_observation.md"
     click n9 "../modules/models_discussion.md"
     click n10 "../modules/models_iteration.md"
@@ -173,7 +173,7 @@ flowchart LR
 | `http_authority` | import | [http_authority](../modules/http_authority.md) | — |
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `agent` | import | [models_agent](../modules/models_agent.md) | — |
-| `delivery_dependency` | import | [delivery_dependency](../modules/delivery_dependency.md) | — |
+| `delivery_dependency` | import | [models_delivery_dependency](../modules/models_delivery_dependency.md) | — |
 | `delivery_observation` | import | [delivery_observation](../modules/delivery_observation.md) | — |
 | `discussion` | import | [models_discussion](../modules/models_discussion.md) | — |
 | `iteration` | import | [models_iteration](../modules/models_iteration.md) | — |
@@ -181,4 +181,4 @@ flowchart LR
 | `recovery` | import | [recovery](../modules/recovery.md) | — |
 | `release` | import | [models_release](../modules/models_release.md) | — |
 
-> References: showing 12 of 345 logical references; 333 omitted by the 12-row generated summary limit.
+> References: showing 12 of 348 logical references; 336 omitted by the 12-row generated summary limit.

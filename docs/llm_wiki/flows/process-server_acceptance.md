@@ -85,9 +85,9 @@ sequenceDiagram
     p0-->>p30: args.trusted_signer_public_key_file.read_text(encoding='utf-8')
 ```
 
-> Call sequence diagram shows 30 of 640 interactions; 610 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 645 interactions; 615 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 232 (231 omitted); unresolved 1 of 218 (217 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 235 (234 omitted); unresolved 1 of 220 (219 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -114,7 +114,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 191; effect analysis evaluated: 103, partial: 2, unavailable: 86. Counts include steps omitted from the displayed trace.
 
-Collector observations for 105 source steps with known totals: observed: 513, emitted: 501, omitted: 12. Unavailable totals are excluded.
+Collector observations for 105 source steps with known totals: observed: 515, emitted: 503, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -122,17 +122,17 @@ Collector observations for 105 source steps with known totals: observed: 513, em
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
-| `main` | `available` | `evaluated` | `available` | `16` | `16` | `0` |
+| `main` | `available` | `evaluated` | `available` | `17` | `17` | `0` |
 | `parse_args` | `available` | `partial` | `available` | `22` | `15` | `7` |
 | `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `os.getenv` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `os.getenv (backend/app/cli/server_acceptance.py:parse_args)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `os.getenv` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `os.getenv (backend/app/cli/server_acceptance.py:parse_args)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `os.getenv` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `os.getenv (backend/app/cli/server_acceptance.py:parse_args)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `os.getenv` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `os.getenv (backend/app/cli/server_acceptance.py:parse_args)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 
 ```mermaid
@@ -141,24 +141,24 @@ flowchart LR
     s2["2. parse_args"]
     s3["3. argparse.ArgumentParser"]
     s4["4. parser.add_argument"]
-    s5["5. os.getenv"]
+    s5["5. os.getenv (backend/app/cli/server_acceptance.py:parse_args)"]
     s6["6. parser.add_argument"]
-    s7["7. os.getenv"]
+    s7["7. os.getenv (backend/app/cli/server_acceptance.py:parse_args)"]
     s8["8. parser.add_argument"]
-    s9["9. os.getenv"]
+    s9["9. os.getenv (backend/app/cli/server_acceptance.py:parse_args)"]
     s10["10. parser.add_argument"]
-    s11["11. os.getenv"]
+    s11["11. os.getenv (backend/app/cli/server_acceptance.py:parse_args)"]
     s12["12. parser.add_argument"]
     s1 -->|"parse_args(argv)"| s2
     s2 -. "argparse.ArgumentParser(…)" .-> s3
     s2 -. "parser.add_argument('--deployment-environment', default=os.getenv(...))" .-> s4
-    s2 -. "os.getenv('DEPLOYMENT_ENVIRONMENT', 'development')" .-> s5
+    s2 -. "os.getenv (backend/app/cli/server_acceptance.py:parse_args)('DEPLOYMENT_ENVIRONMENT', 'development')" .-> s5
     s2 -. "parser.add_argument('--backend-url', default=os.getenv(...))" .-> s6
-    s2 -. "os.getenv('AUTONOMY_BACKEND_URL', 'http://backend:8001')" .-> s7
+    s2 -. "os.getenv (backend/app/cli/server_acceptance.py:parse_args)('AUTONOMY_BACKEND_URL', 'http://backend:8001')" .-> s7
     s2 -. "parser.add_argument('--gateway-url', default=os.getenv(...))" .-> s8
-    s2 -. "os.getenv('AUTONOMY_GATEWAY_URL', 'http://frontend')" .-> s9
+    s2 -. "os.getenv (backend/app/cli/server_acceptance.py:parse_args)('AUTONOMY_GATEWAY_URL', 'http://frontend')" .-> s9
     s2 -. "parser.add_argument('--signer-url', default=os.getenv(...))" .-> s10
-    s2 -. "os.getenv('AUTONOMY_SIGNER_URL', 'http://openbao:8200')" .-> s11
+    s2 -. "os.getenv (backend/app/cli/server_acceptance.py:parse_args)('AUTONOMY_SIGNER_URL', 'http://openbao:8200')" .-> s11
     s2 -. "parser.add_argument('--signer-token-file', type=Path, default=Path(...))" .-> s12
     b0["output print"]
     s1 -. "output print" .-> b0
@@ -173,7 +173,7 @@ flowchart LR
     b5["output print"]
     s1 -. "output print" .-> b5
     b6["environment_read os.getenv"]
-    s2 -. "environment_read os.getenv" .-> b6
+    s1 -. "environment_read os.getenv" .-> b6
     b7["environment_read os.getenv"]
     s2 -. "environment_read os.getenv" .-> b7
     click s1 "../modules/cli_server_acceptance.md"
@@ -197,13 +197,13 @@ flowchart LR
 | `parse_args` | `argv: list[str] \| None` | `Path`, `Path`, `Path`, `Path`, `Path` | - | `parser.parse_args(...)` |
 | `argparse.ArgumentParser` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
-| `os.getenv` | - | - | - | - |
+| `os.getenv (backend/app/cli/server_acceptance.py:parse_args)` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
-| `os.getenv` | - | - | - | - |
+| `os.getenv (backend/app/cli/server_acceptance.py:parse_args)` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
-| `os.getenv` | - | - | - | - |
+| `os.getenv (backend/app/cli/server_acceptance.py:parse_args)` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
-| `os.getenv` | - | - | - | - |
+| `os.getenv (backend/app/cli/server_acceptance.py:parse_args)` | - | - | - | - |
 | `parser.add_argument` | - | - | - | - |
 
 ### Call data
@@ -213,13 +213,13 @@ flowchart LR
 | main | parse_args | 173 | `parse_args(argv)` |
 | parse_args | argparse.ArgumentParser | 24 | `argparse.ArgumentParser(description='Verify one exact self-hosted WorkChord checkout against its container-backed PostgreSQL, signer, locked evidence, and CAS services. A pass is never production autonomy evidence.')` |
 | parse_args | parser.add_argument | 31 | `parser.add_argument('--deployment-environment', default=os.getenv(...))` |
-| parse_args | os.getenv | 33 | `os.getenv('DEPLOYMENT_ENVIRONMENT', 'development')` |
+| parse_args | os.getenv (backend/app/cli/server_acceptance.py:parse_args) | 33 | `os.getenv('DEPLOYMENT_ENVIRONMENT', 'development')` |
 | parse_args | parser.add_argument | 35 | `parser.add_argument('--backend-url', default=os.getenv(...))` |
-| parse_args | os.getenv | 37 | `os.getenv('AUTONOMY_BACKEND_URL', 'http://backend:8001')` |
+| parse_args | os.getenv (backend/app/cli/server_acceptance.py:parse_args) | 37 | `os.getenv('AUTONOMY_BACKEND_URL', 'http://backend:8001')` |
 | parse_args | parser.add_argument | 39 | `parser.add_argument('--gateway-url', default=os.getenv(...))` |
-| parse_args | os.getenv | 41 | `os.getenv('AUTONOMY_GATEWAY_URL', 'http://frontend')` |
+| parse_args | os.getenv (backend/app/cli/server_acceptance.py:parse_args) | 41 | `os.getenv('AUTONOMY_GATEWAY_URL', 'http://frontend')` |
 | parse_args | parser.add_argument | 43 | `parser.add_argument('--signer-url', default=os.getenv(...))` |
-| parse_args | os.getenv | 45 | `os.getenv('AUTONOMY_SIGNER_URL', 'http://openbao:8200')` |
+| parse_args | os.getenv (backend/app/cli/server_acceptance.py:parse_args) | 45 | `os.getenv('AUTONOMY_SIGNER_URL', 'http://openbao:8200')` |
 | parse_args | parser.add_argument | 47 | `parser.add_argument('--signer-token-file', type=Path, default=Path(...))` |
 
 ### Boundary effects
@@ -232,8 +232,8 @@ flowchart LR
 | filesystem_read | `args.verify_receipt.read_text` | `main` | 190 |
 | output | `print` | `main` | 198 |
 | output | `print` | `main` | 209 |
+| environment_read | `os.getenv` | `main` | 270 |
 | environment_read | `os.getenv` | `parse_args` | 33 |
-| environment_read | `os.getenv` | `parse_args` | 37 |
 
 ### Static analysis gaps
 
@@ -242,6 +242,7 @@ flowchart LR
 | external_call | `parse_args` | `argparse.ArgumentParser` | 24 |
 | unresolved_call | `parse_args` | `parser.add_argument` | 31 |
 | unresolved_call | `parse_args` | `parser.add_argument` | 35 |
+| external_call | `parse_args` | `os.getenv` | 37 |
 | unresolved_call | `parse_args` | `parser.add_argument` | 39 |
 | external_call | `parse_args` | `os.getenv` | 41 |
 | unresolved_call | `parse_args` | `parser.add_argument` | 43 |

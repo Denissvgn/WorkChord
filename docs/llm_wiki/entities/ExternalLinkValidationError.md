@@ -28,7 +28,7 @@ flowchart LR
     n3["ExternalLinkService.parse_github_url (backend/app/services/external_link_service.py)"]
     n4["ExternalLinkService.update (backend/app/services/external_link_service.py)"]
     n5["GitHubStatusService._pr_metadata (backend/app/services/github_status_service.py)"]
-    n6["GitHubStatusService.refresh_pull_request_status (backend/app/services/github_status_service.py)"]
+    n6["GitHubStatusService.apply_fetched_pull_request (backend/app/services/github_status_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -63,4 +63,4 @@ flowchart LR
 | `ExternalLinkService.parse_github_url` | call | [external_link_service](../modules/external_link_service.md) | 1 |
 | `ExternalLinkService.update` | call | [external_link_service](../modules/external_link_service.md) | 1 |
 | `GitHubStatusService._pr_metadata` | call | [github_status_service](../modules/github_status_service.md) | 2 |
-| `GitHubStatusService.refresh_pull_request_status` | call | [github_status_service](../modules/github_status_service.md) | 1 |
+| `GitHubStatusService.apply_fetched_pull_request` | call | [github_status_service](../modules/github_status_service.md) | 2 |

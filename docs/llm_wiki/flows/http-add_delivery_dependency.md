@@ -112,7 +112,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| add_delivery_dependency | domain_result | 31 | `domain_result(...)` |
+| add_delivery_dependency | domain_result | 24 | `domain_result(...)` |
 | domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
@@ -120,8 +120,8 @@ flowchart LR
 | domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 57 | `str(exc)` |
 | domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| add_delivery_dependency | DeliveryDependencyService(…).add | 31 | `DeliveryDependencyService(db).add(task_id, data.kind, data.target_id, data.expected_version, data.target_branch)` |
-| add_delivery_dependency | DeliveryDependencyService | 31 | `DeliveryDependencyService(db)` |
+| add_delivery_dependency | DeliveryDependencyService(…).add | 24 | `DeliveryDependencyService(db).add(task_id, data.kind, data.target_id, data.expected_version, data.target_branch)` |
+| add_delivery_dependency | DeliveryDependencyService | 24 | `DeliveryDependencyService(db)` |
 
 ### Boundary effects
 
@@ -136,7 +136,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
-| unresolved_call | `add_delivery_dependency` | `DeliveryDependencyService(db).add` | 31 |
+| unresolved_call | `add_delivery_dependency` | `DeliveryDependencyService(db).add` | 24 |
 
 ## Behavior
 

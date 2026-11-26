@@ -101,9 +101,9 @@ sequenceDiagram
     p0-->>p30: data.model_dump (backend/app/routers/agent…nning_triage_item_to_task)(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 396 interactions; 366 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 401 interactions; 371 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 103 (102 omitted); unresolved 1 of 170 (169 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 104 (103 omitted); unresolved 1 of 172 (171 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -130,9 +130,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 124; effect analysis evaluated: 79, partial: 4, unavailable: 41. Counts include steps omitted from the displayed trace.
+Source steps: 126; effect analysis evaluated: 80, partial: 4, unavailable: 42. Counts include steps omitted from the displayed trace.
 
-Collector observations for 83 source steps with known totals: observed: 527, emitted: 515, omitted: 12. Unavailable totals are excluded.
+Collector observations for 84 source steps with known totals: observed: 532, emitted: 520, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -216,7 +216,7 @@ flowchart LR
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
 | convert_planning_triage_item_to_task | convert_triage_to_task | 860 | `mcp_agent_tools.convert_triage_to_task(db, actor, triage_item_id, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| convert_triage_to_task | _triage_command_context | 2767 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| convert_triage_to_task | _triage_command_context | 2865 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 | _triage_command_context | validate_idempotency_key | 221 | `validate_idempotency_key(idempotency_key, required=True)` |
 | validate_idempotency_key | ValueError (backend/app/services/agen…:validate_idempotency_key) | 123 | `ValueError('Idempotency-Key is required')` |
 | validate_idempotency_key | value.strip | 127 | `value.strip(data not statically known)` |

@@ -19,7 +19,7 @@ _Auto-generated from `LockedAcceptanceObject` in `backend/app/autonomy/server_ac
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `implementation` | `Literal['minio-s3-object-lock']` | `implementation` | No | No | `'minio-s3-object-lock'` | — | — | — |
+| `implementation` | `Literal['versitygw-s3-object-lock']` | `implementation` | No | No | `'versitygw-s3-object-lock'` | — | — | — |
 | `bucket` | `str` | `bucket` | Yes | No | — | pattern='^[a-z0-9][a-z0-9.-]{1,62}$' | — | — |
 | `object_key` | `str` | `object_key` | Yes | No | — | max_length=1024; min_length=1 | — | — |
 | `version_id` | `str` | `version_id` | Yes | No | — | max_length=1024; min_length=1 | — | — |

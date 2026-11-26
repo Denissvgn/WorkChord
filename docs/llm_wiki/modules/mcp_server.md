@@ -16,7 +16,7 @@ A planning command rejected by the domain returns its scoped conflict code and p
 |--------|---------|
 | `app` | `mcp_agent_tools` |
 | `app.agent_key_file` | `AgentKeyFileError`, `read_agent_key_file` |
-| `app.authority` | `AuthorityError` |
+| `app.authority` | `AGENT_TASK_READ_SCOPES`, `AGENT_TASK_WRITE_SCOPES`, `AuthorityError` |
 | `app.commands` | `command_transaction`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AggregateVersionConflict`, `HierarchyScopeError` |
 | `app.config` | `get_settings` |
 | `app.database` | `async_session_maker`, `close_database`, `init_db` |
@@ -72,7 +72,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (22) |
+| Inbound | `backend` (24) |
 | Outbound | `backend` (22) |
 
 ### External packages
@@ -81,7 +81,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 44 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 46 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

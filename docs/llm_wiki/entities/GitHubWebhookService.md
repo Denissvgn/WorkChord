@@ -32,6 +32,8 @@ Verify and process GitHub webhook deliveries.
 | `_matching_link` | *(async)* `(repo_full_name: str, number: int) -> Optional[ExternalLink]` | — | — |
 | `_event_exists` | *(async)* `(delivery_id: Optional[str]) -> bool` | — | — |
 | `_event_payload` | `(*, action: str, delivery_id: Optional[str], repo_full_name: str, number: int, url: str, title: str, status: str, sender: Optional[str], link_id: int, pr: dict[str, Any], ui_language: LanguageCode) -> dict[str, Any]` | — | — |
+| `_lock_link_for_update` | *(async)* `(link: ExternalLink, *, action: str, delivery_id: Optional[str], head_sha: Optional[str] = None) -> Optional[ExternalLink]` | — | Reserve the task context, then re-read the link under its lock. |
+| `_closure_already_recorded` | *(async)* `(link: ExternalLink, event_type: str, status: str, pr: dict[str, Any]) -> bool` | — | Whether a catch-up already recorded the merge or closure this delivery reports. |
 | `_update_link_from_pr` | *(async)* `(link: ExternalLink, *, action: str, delivery_id: Optional[str], repo_full_name: str, pr: dict[str, Any], sender: Optional[str]) -> str` | — | — |
 | `_existing_triage_item` | *(async)* `(external_key: str) -> Optional[TriageItem]` | — | — |
 | `_create_or_get_triage_item` | *(async)* `(*, external_key: str, repo_full_name: str, number: int, title: str, url: str, action: str, status: str, sender: Optional[str]) -> TriageItem` | — | — |
@@ -46,23 +48,29 @@ flowchart LR
     n1["get_github_webhook_service (backend/app/routers/github.py)"]
     n2["receive_github_webhook (backend/app/routers/github.py)"]
     n3["GitHubWebhookService.from_runtime (backend/app/services/github_webhook_service.py)"]
-    n4["_webhook (backend/tests/test_github_reconciliation.py)"]
+    n4["_webhook (backend/tests/database/test_github_closure_concurrency.py)"]
+    n5["record_merge (backend/tests/test_delivery_merge_prerequisites.py)"]
+    n6["_webhook (backend/tests/test_github_reconciliation.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
+    n6 --> n0
     click n0 "../modules/github_webhook_service.md"
     click n1 "../modules/routers_github.md"
     click n2 "../modules/routers_github.md"
     click n3 "../modules/github_webhook_service.md"
-    click n4 "../modules/test_github_reconciliation.md"
+    click n4 "../modules/test_github_closure_concurrency.md"
+    click n5 "../modules/test_delivery_merge_prerequisites.md"
+    click n6 "../modules/test_github_reconciliation.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [github_webhook_service](../modules/github_webhook_service.md) | 19 | — |
+| [github_webhook_service](../modules/github_webhook_service.md) | 21 | — |
 
 ### References
 
@@ -72,4 +80,6 @@ flowchart LR
 | `receive_github_webhook` | type_reference | [routers_github](../modules/routers_github.md) | — |
 | `GitHubWebhookService.from_runtime` | call | [github_webhook_service](../modules/github_webhook_service.md) | 1 |
 | `GitHubWebhookService.from_runtime` | type_reference | [github_webhook_service](../modules/github_webhook_service.md) | — |
+| `_webhook` | call | [test_github_closure_concurrency](../modules/test_github_closure_concurrency.md) | 1 |
+| `record_merge` | call | [test_delivery_merge_prerequisites](../modules/test_delivery_merge_prerequisites.md) | 1 |
 | `_webhook` | call | [test_github_reconciliation](../modules/test_github_reconciliation.md) | 1 |

@@ -13,11 +13,24 @@
 
 | Job | Display Name | Runs On | Needs | Steps |
 |---|---|---|---|---:|
-| `packaging` | `Packaging and contracts` | `ubuntu-24.04` | — | 15 |
-| `backend` | `Backend (${{ matrix.scope }})` | `ubuntu-24.04` | — | 8 |
-| `frontend` | `Frontend checks` | `ubuntu-24.04` | — | 6 |
-| `clients` | `Browser and Android checks` | — | — | 0 |
-| `build` | `Source and build checks` | `ubuntu-24.04` | `packaging`, `backend`, `frontend`, `clients` | 1 |
+| `changes` | `Change scope` | `ubuntu-24.04` | — | 2 |
+| `docs` | `Documentation checks` | `ubuntu-24.04` | `changes` | 3 |
+| `packaging` | `Packaging and contracts` | `ubuntu-24.04` | `changes` | 15 |
+| `backend` | `Backend (${{ matrix.scope }})` | `ubuntu-24.04` | `changes` | 8 |
+| `frontend` | `Frontend checks` | `ubuntu-24.04` | `changes` | 6 |
+| `clients` | `Browser and Android checks` | — | `changes` | 0 |
+| `build` | `Source and build checks` | `ubuntu-24.04` | `changes`, `docs`, `packaging`, `backend`, `frontend`, `clients` | 1 |
+
+### changes
+
+- `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1` - uses `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1`
+- `Classify the changed files` - runs `cd scripts/ci python3 classify_change_scope.py \| tee -a "$GITHUB_OUTPUT"`
+
+### docs
+
+- `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1` - uses `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1`
+- `Validate PostgreSQL operator documentation` - runs `python3 scripts/ci/check_postgresql_documentation.py`
+- `Check links in the changed Markdown files` - runs `python3 scripts/ci/check_markdown_links.py`
 
 ### packaging
 
@@ -62,7 +75,7 @@
 
 ### build
 
-- `Require every check to finish successfully` - runs `python3 - <<'PYTHON' import json import os results = json.loads(os.environ["CHECK_RESULTS"]) expected = {"packaging", "backend", "frontend", "clients"} if set(results) != expected: raise SystemExit("Required check inventory differs") failed = {name: value["result"] for name, value in results.items() if value["result"] != "success"} if failed: raise SystemExit(f"Required checks did not succeed: {failed}") print("All required checks completed successfully") PYTHON`
+- `Require every check to finish successfully` - runs `python3 - <<'PYTHON' import json import os results = json.loads(os.environ["CHECK_RESULTS"]) inventory = {"changes", "docs", "packaging", "backend", "frontend", "clients"} if set(results) != inventory: raise SystemExit("Required check inventory differs") if results["changes"]["result"] != "success": raise SystemExit("The change scope could not be determined") docs_only = results["changes"]["outputs"].get("docs_only") == "true" required = {"docs"} if docs_only else {"packaging", "backend", "frontend", "clients"} skipped = inventory - {"changes"} - required failed = {name: results[name]["result"] for name in required if results[name]["result"] != "success"} if failed: raise SystemExit(f"Required checks did not succeed: {failed}") ran = {name: results[name]["result"] for name in skipped if results[name]["result"] != "skipped"} if ran: raise SystemExit(f"Checks outside this change scope did not skip: {ran}") scope = "documentation-only" if docs_only else "full" print(f"All required checks for a {scope} change completed successfully") PYTHON`
 
 ## Notes
 

@@ -47,16 +47,19 @@ flowchart LR
     n3["backend/app/routers/request_sources.py"]
     n4["backend/app/schemas/__init__.py"]
     n5["RequestSourceService.create_link (backend/app/services/request_source_service.py)"]
+    n6["test_other_context_changes_still_make_acceptance_stale (backend/tests/test_delivery_merge_prerequisites.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
+    n6 --> n0
     click n0 "../modules/schemas_request_source.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/request_sources.md"
     click n4 "../modules/schemas___init__.md"
     click n5 "../modules/request_source_service.md"
+    click n6 "../modules/test_delivery_merge_prerequisites.md"
 ```
 
 ### Summary
@@ -79,3 +82,4 @@ flowchart LR
 | `request_sources` | import | [request_sources](../modules/request_sources.md) | — |
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `RequestSourceService.create_link` | type_reference | [request_source_service](../modules/request_source_service.md) | — |
+| `test_other_context_changes_still_make_acceptance_stale` | call | [test_delivery_merge_prerequisites](../modules/test_delivery_merge_prerequisites.md) | 1 |

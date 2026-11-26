@@ -16,10 +16,11 @@
 | `database-security` | `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296` |  | `{'migration': {'condition': 'service_completed_successfully'}}` |
 | `openbao` | `openbao/openbao:2.6.1@sha256:5b2486ab0fb90bbc788cc345b0a08616dfb375873ee8be5df3a2fd4d378a67e0` |  |  |
 | `openbao-bootstrap` | `openbao/openbao:2.6.1@sha256:5b2486ab0fb90bbc788cc345b0a08616dfb375873ee8be5df3a2fd4d378a67e0` |  | `{'openbao': {'condition': 'service_healthy'}}` |
-| `minio` | `minio/minio:RELEASE.2025-09-07T16-13-09Z@sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e` |  |  |
-| `minio-bootstrap` | `minio/mc:RELEASE.2025-08-13T08-35-41Z@sha256:a7fe349ef4bd8521fb8497f55c6042871b2ae640607cf99d9bede5e9bdf11727` |  | `{'minio': {'condition': 'service_started'}}` |
+| `evidence-store` | `versity/versitygw:v1.11.0@sha256:8319a530d08d537426e2f855bae5280709795dc73a3f0c347973ef915d6343c5` |  |  |
+| `evidence-store-accounts` | `versity/versitygw:v1.11.0@sha256:8319a530d08d537426e2f855bae5280709795dc73a3f0c347973ef915d6343c5` |  | `{'evidence-store': {'condition': 'service_healthy'}}` |
+| `evidence-store-bootstrap` | `amazon/aws-cli:2.42.3@sha256:271de464e935f765aa2afb6ec69881e9f4a9afd3e978214a2b5f5ddcbbc161b5` |  | `{'evidence-store-accounts': {'condition': 'service_completed_successfully'}}` |
 | `valkey` | `valkey/valkey:8.1.9-alpine@sha256:a038175878d66b9d274fbf8be73c0305e93798b83917647f167e18cef3c71eec` |  |  |
-| `autonomy-acceptance` | build: `.` |  | `{'backend': {'condition': 'service_healthy'}, 'delivery-worker': {'condition': 'service_started'}, 'openbao-bootstrap': {'condition': 'service_completed_successfully'}, 'minio-bootstrap': {'condition': 'service_completed_successfully'}, 'valkey': {'condition': 'service_healthy'}}` |
+| `autonomy-acceptance` | build: `.` |  | `{'backend': {'condition': 'service_healthy'}, 'delivery-worker': {'condition': 'service_started'}, 'openbao-bootstrap': {'condition': 'service_completed_successfully'}, 'evidence-store-bootstrap': {'condition': 'service_completed_successfully'}, 'valkey': {'condition': 'service_healthy'}}` |
 
 ### postgres
 
@@ -45,7 +46,7 @@
 - **Build context:** `.`
 - **Image:** `${WORKCHORD_IMAGE_PREFIX:-workchord}-backend:${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}`
 - **Volumes:** `workchord_server_data:/app/data`
-- **Environment:** `{'DATABASE_URL': '${DATABASE_RUNTIME_URL:?Set DATABASE_RUNTIME_URL}', 'DATABASE_SESSION_ROLE': '', 'DEPLOYMENT_ENVIRONMENT': 'development', 'SESSION_COOKIE_SECURE': '${WORKCHORD_SESSION_COOKIE_SECURE:-true}', 'MCP_DNS_REBINDING_PROTECTION': 'true', 'MCP_ALLOWED_HOSTS': '${MCP_ALLOWED_HOSTS:-["localhost:*","127.0.0.1:*","[::1]:*"]}', 'MCP_ALLOWED_ORIGINS': '${MCP_ALLOWED_ORIGINS:-["http://localhost:*","http://127.0.0.1:*"]}', 'MCP_UNSAFE_ALLOW_PUBLIC_BINDING': 'false'}`
+- **Environment:** `{'DATABASE_URL': '${DATABASE_RUNTIME_URL:?Set DATABASE_RUNTIME_URL}', 'DATABASE_SESSION_ROLE': '', 'DEPLOYMENT_ENVIRONMENT': 'development', 'SESSION_COOKIE_SECURE': '${WORKCHORD_SESSION_COOKIE_SECURE:-true}', 'MCP_DNS_REBINDING_PROTECTION': 'true', 'MCP_ALLOWED_HOSTS': '${MCP_ALLOWED_HOSTS:-["localhost:*","127.0.0.1:*","[::1]:*"]}', 'MCP_ALLOWED_ORIGINS': '${MCP_ALLOWED_ORIGINS:-["http://localhost:*","http://127.0.0.1:*"]}', 'MCP_UNSAFE_ALLOW_PUBLIC_BINDING': 'false', 'READINESS_DETAIL_TOKEN': '${WORKCHORD_READINESS_DETAIL_TOKEN:?Set WORKCHORD_READINESS_DETAIL_TOKEN}'}`
 
 ### delivery-worker
 
@@ -87,19 +88,26 @@
 - **Environment:** `{'BAO_ADDR': 'http://openbao:8200', 'OPENBAO_DEV_ROOT_TOKEN': '${OPENBAO_DEV_ROOT_TOKEN:?Set OPENBAO_DEV_ROOT_TOKEN}', 'AUTONOMY_SIGNER_KEY': 'workchord-server-acceptance', 'AUTONOMY_SIGNER_TOKEN_FILE': '/run/workchord-autonomy/openbao-token', 'AUTONOMY_TRUSTED_SIGNER_PUBLIC_KEY_FILE': '/run/workchord-autonomy/openbao-signer-public-key.b64', 'AUTONOMY_TRUSTED_SIGNER_PUBLIC_KEY_OUTPUT': '/var/lib/workchord/acceptance/trusted-signer-public-key.b64'}`
 - **Depends on:** `{'openbao': {'condition': 'service_healthy'}}`
 
-### minio
+### evidence-store
 
-- **Image:** `minio/minio:RELEASE.2025-09-07T16-13-09Z@sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e`
-- **Volumes:** `workchord_autonomy_minio:/data`
-- **Environment:** `{'MINIO_ROOT_USER': '${MINIO_ROOT_USER:?Set MINIO_ROOT_USER}', 'MINIO_ROOT_PASSWORD': '${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD}'}`
-- **Command:** `['server', '/data', '--console-address', ':9001']`
+- **Image:** `versity/versitygw:v1.11.0@sha256:8319a530d08d537426e2f855bae5280709795dc73a3f0c347973ef915d6343c5`
+- **Volumes:** `workchord_autonomy_evidence:/data`
+- **Environment:** `{'ROOT_ACCESS_KEY': '${EVIDENCE_STORE_ROOT_ACCESS_KEY:?Set EVIDENCE_STORE_ROOT_ACCESS_KEY}', 'ROOT_SECRET_KEY': '${EVIDENCE_STORE_ROOT_SECRET_KEY:?Set EVIDENCE_STORE_ROOT_SECRET_KEY}'}`
+- **Command:** `['mkdir -p /data/buckets /data/versions /data/iam && exec versitygw --port :7070 --health /health --iam-dir /data/iam --quiet posix --versioning-dir /data/versions --fsync /data/buckets']`
 
-### minio-bootstrap
+### evidence-store-accounts
 
-- **Image:** `minio/mc:RELEASE.2025-08-13T08-35-41Z@sha256:a7fe349ef4bd8521fb8497f55c6042871b2ae640607cf99d9bede5e9bdf11727`
-- **Volumes:** `./deploy/autonomy/minio-bootstrap.sh:/opt/workchord/minio-bootstrap.sh:ro`, `./deploy/autonomy/minio-acceptance-policy.json:/opt/workchord/minio-acceptance-policy.json:ro`
-- **Environment:** `{'MINIO_ROOT_USER': '${MINIO_ROOT_USER:?Set MINIO_ROOT_USER}', 'MINIO_ROOT_PASSWORD': '${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD}', 'AUTONOMY_MINIO_ACCESS_KEY': '${AUTONOMY_MINIO_ACCESS_KEY:?Set AUTONOMY_MINIO_ACCESS_KEY}', 'AUTONOMY_MINIO_SECRET_KEY': '${AUTONOMY_MINIO_SECRET_KEY:?Set AUTONOMY_MINIO_SECRET_KEY}', 'AUTONOMY_MINIO_ENDPOINT': 'http://minio:9000', 'AUTONOMY_MINIO_EVIDENCE_BUCKET': 'workchord-server-acceptance', 'AUTONOMY_MINIO_RETENTION': '${AUTONOMY_MINIO_RETENTION:-1d}'}`
-- **Depends on:** `{'minio': {'condition': 'service_started'}}`
+- **Image:** `versity/versitygw:v1.11.0@sha256:8319a530d08d537426e2f855bae5280709795dc73a3f0c347973ef915d6343c5`
+- **Volumes:** `./deploy/autonomy/evidence-store-accounts.sh:/opt/workchord/evidence-store-accounts.sh:ro`
+- **Environment:** `{'EVIDENCE_STORE_ROOT_ACCESS_KEY': '${EVIDENCE_STORE_ROOT_ACCESS_KEY:?Set EVIDENCE_STORE_ROOT_ACCESS_KEY}', 'EVIDENCE_STORE_ROOT_SECRET_KEY': '${EVIDENCE_STORE_ROOT_SECRET_KEY:?Set EVIDENCE_STORE_ROOT_SECRET_KEY}', 'AUTONOMY_EVIDENCE_ACCESS_KEY': '${AUTONOMY_EVIDENCE_ACCESS_KEY:?Set AUTONOMY_EVIDENCE_ACCESS_KEY}', 'AUTONOMY_EVIDENCE_SECRET_KEY': '${AUTONOMY_EVIDENCE_SECRET_KEY:?Set AUTONOMY_EVIDENCE_SECRET_KEY}', 'AUTONOMY_EVIDENCE_ENDPOINT': 'http://evidence-store:7070'}`
+- **Depends on:** `{'evidence-store': {'condition': 'service_healthy'}}`
+
+### evidence-store-bootstrap
+
+- **Image:** `amazon/aws-cli:2.42.3@sha256:271de464e935f765aa2afb6ec69881e9f4a9afd3e978214a2b5f5ddcbbc161b5`
+- **Volumes:** `./deploy/autonomy/evidence-store-bootstrap.sh:/opt/workchord/evidence-store-bootstrap.sh:ro`, `./deploy/autonomy/evidence-store-acceptance-policy.json:/opt/workchord/evidence-store-acceptance-policy.json:ro`
+- **Environment:** `{'EVIDENCE_STORE_ROOT_ACCESS_KEY': '${EVIDENCE_STORE_ROOT_ACCESS_KEY:?Set EVIDENCE_STORE_ROOT_ACCESS_KEY}', 'EVIDENCE_STORE_ROOT_SECRET_KEY': '${EVIDENCE_STORE_ROOT_SECRET_KEY:?Set EVIDENCE_STORE_ROOT_SECRET_KEY}', 'AUTONOMY_EVIDENCE_ACCESS_KEY': '${AUTONOMY_EVIDENCE_ACCESS_KEY:?Set AUTONOMY_EVIDENCE_ACCESS_KEY}', 'AUTONOMY_EVIDENCE_ENDPOINT': 'http://evidence-store:7070', 'AUTONOMY_EVIDENCE_BUCKET': 'workchord-server-acceptance', 'AUTONOMY_EVIDENCE_REGION': 'us-east-1', 'AUTONOMY_EVIDENCE_RETENTION_DAYS': '${AUTONOMY_EVIDENCE_RETENTION_DAYS:-1}', 'AWS_CONFIG_FILE': '/dev/null', 'AWS_SHARED_CREDENTIALS_FILE': '/dev/null', 'AWS_EC2_METADATA_DISABLED': 'true', 'AWS_PAGER': ''}`
+- **Depends on:** `{'evidence-store-accounts': {'condition': 'service_completed_successfully'}}`
 
 ### valkey
 
@@ -112,8 +120,8 @@
 - **Build context:** `.`
 - **Image:** `${WORKCHORD_IMAGE_PREFIX:-workchord}-backend:${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}`
 - **Volumes:** `workchord_autonomy_runtime:/run/workchord-autonomy:ro`, `${WORKCHORD_ACCEPTANCE_REPORT_DIR:?Set WORKCHORD_ACCEPTANCE_REPORT_DIR}:/var/lib/workchord/acceptance`
-- **Environment:** `{'DEPLOYMENT_ENVIRONMENT': 'development', 'AUTONOMY_BACKEND_URL': 'http://backend:8001', 'AUTONOMY_GATEWAY_URL': 'http://frontend', 'AUTONOMY_SIGNER_URL': 'http://openbao:8200', 'AUTONOMY_SIGNER_TOKEN_FILE': '/run/workchord-autonomy/openbao-token', 'AUTONOMY_SIGNER_KEY': 'workchord-server-acceptance', 'AUTONOMY_TRUSTED_SIGNER_PUBLIC_KEY_FILE': '/run/workchord-autonomy/openbao-signer-public-key.b64', 'AUTONOMY_MINIO_ENDPOINT': 'http://minio:9000', 'AUTONOMY_MINIO_ACCESS_KEY': '${AUTONOMY_MINIO_ACCESS_KEY:?Set AUTONOMY_MINIO_ACCESS_KEY}', 'AUTONOMY_MINIO_SECRET_KEY': '${AUTONOMY_MINIO_SECRET_KEY:?Set AUTONOMY_MINIO_SECRET_KEY}', 'AUTONOMY_MINIO_EVIDENCE_BUCKET': 'workchord-server-acceptance', 'AUTONOMY_MINIO_REGION': 'us-east-1', 'AUTONOMY_VALKEY_HOST': 'valkey', 'AUTONOMY_VALKEY_PORT': '6379', 'AUTONOMY_ACCEPTANCE_TIMEOUT_SECONDS': '${AUTONOMY_ACCEPTANCE_TIMEOUT_SECONDS:-10}'}`
-- **Depends on:** `{'backend': {'condition': 'service_healthy'}, 'delivery-worker': {'condition': 'service_started'}, 'openbao-bootstrap': {'condition': 'service_completed_successfully'}, 'minio-bootstrap': {'condition': 'service_completed_successfully'}, 'valkey': {'condition': 'service_healthy'}}`
+- **Environment:** `{'DEPLOYMENT_ENVIRONMENT': 'development', 'AUTONOMY_BACKEND_URL': 'http://backend:8001', 'AUTONOMY_READINESS_DETAIL_TOKEN': '${WORKCHORD_READINESS_DETAIL_TOKEN:?Set WORKCHORD_READINESS_DETAIL_TOKEN}', 'AUTONOMY_GATEWAY_URL': 'http://frontend', 'AUTONOMY_SIGNER_URL': 'http://openbao:8200', 'AUTONOMY_SIGNER_TOKEN_FILE': '/run/workchord-autonomy/openbao-token', 'AUTONOMY_SIGNER_KEY': 'workchord-server-acceptance', 'AUTONOMY_TRUSTED_SIGNER_PUBLIC_KEY_FILE': '/run/workchord-autonomy/openbao-signer-public-key.b64', 'AUTONOMY_EVIDENCE_ENDPOINT': 'http://evidence-store:7070', 'AUTONOMY_EVIDENCE_ACCESS_KEY': '${AUTONOMY_EVIDENCE_ACCESS_KEY:?Set AUTONOMY_EVIDENCE_ACCESS_KEY}', 'AUTONOMY_EVIDENCE_SECRET_KEY': '${AUTONOMY_EVIDENCE_SECRET_KEY:?Set AUTONOMY_EVIDENCE_SECRET_KEY}', 'AUTONOMY_EVIDENCE_BUCKET': 'workchord-server-acceptance', 'AUTONOMY_EVIDENCE_REGION': 'us-east-1', 'AUTONOMY_VALKEY_HOST': 'valkey', 'AUTONOMY_VALKEY_PORT': '6379', 'AUTONOMY_ACCEPTANCE_TIMEOUT_SECONDS': '${AUTONOMY_ACCEPTANCE_TIMEOUT_SECONDS:-10}'}`
+- **Depends on:** `{'backend': {'condition': 'service_healthy'}, 'delivery-worker': {'condition': 'service_started'}, 'openbao-bootstrap': {'condition': 'service_completed_successfully'}, 'evidence-store-bootstrap': {'condition': 'service_completed_successfully'}, 'valkey': {'condition': 'service_healthy'}}`
 - **Command:** `['workchord-server-acceptance', '--output', '/var/lib/workchord/acceptance/pending.json']`
 
 ## Networks
@@ -122,7 +130,7 @@
 
 ## Named Volumes
 
-- `workchord_autonomy_minio`
+- `workchord_autonomy_evidence`
 - `workchord_autonomy_runtime`
 - `workchord_autonomy_valkey`
 - `workchord_server_data`

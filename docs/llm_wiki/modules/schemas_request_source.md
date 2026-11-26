@@ -28,6 +28,7 @@ flowchart LR
     n4["backend/app/schemas/request_source.py"]
     n5["backend/app/services/request_source_service.py"]
     n6["backend/app/utils/url_policy.py"]
+    n7["backend/tests/test_delivery_merge_prerequisites.py"]
     n0 --> n3
     n0 --> n4
     n0 --> n5
@@ -38,6 +39,8 @@ flowchart LR
     n3 --> n6
     n4 --> n6
     n5 --> n4
+    n7 --> n4
+    n7 --> n5
     click n0 "../modules/mcp_agent_tools.md"
     click n1 "../modules/request_sources.md"
     click n2 "../modules/schemas___init__.md"
@@ -45,6 +48,7 @@ flowchart LR
     click n4 "../modules/schemas_request_source.md"
     click n5 "../modules/request_source_service.md"
     click n6 "../modules/url_policy.md"
+    click n7 "../modules/test_delivery_merge_prerequisites.md"
 ```
 
 ### Internal neighbors
@@ -56,6 +60,7 @@ flowchart LR
 | Inbound | [schemas___init__](../modules/schemas___init__.md) |
 | Inbound | [schemas_agent](../modules/schemas_agent.md) |
 | Inbound | [request_source_service](../modules/request_source_service.md) |
+| Inbound | [test_delivery_merge_prerequisites](../modules/test_delivery_merge_prerequisites.md) |
 | Outbound | [url_policy](../modules/url_policy.md) |
 
 ### External packages

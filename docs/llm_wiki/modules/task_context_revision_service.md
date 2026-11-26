@@ -38,6 +38,7 @@ flowchart LR
     n8["backend/app/services/snapshot_service.py"]
     n9["backend/app/services/task_context_revision_service.py"]
     n10["backend/app/services/task_service.py"]
+    n11["backend/tests/test_delivery_merge_prerequisites.py"]
     n0 --> n3
     n0 --> n8
     n0 --> n10
@@ -79,6 +80,14 @@ flowchart LR
     n10 --> n3
     n10 --> n4
     n10 --> n8
+    n11 --> n0
+    n11 --> n2
+    n11 --> n3
+    n11 --> n4
+    n11 --> n5
+    n11 --> n6
+    n11 --> n7
+    n11 --> n9
     click n0 "../modules/commands.md"
     click n1 "../modules/mcp_agent_tools.md"
     click n2 "../modules/models_agent.md"
@@ -90,6 +99,7 @@ flowchart LR
     click n8 "../modules/snapshot_service.md"
     click n9 "../modules/task_context_revision_service.md"
     click n10 "../modules/task_service.md"
+    click n11 "../modules/test_delivery_merge_prerequisites.md"
 ```
 
 ### Internal neighbors
@@ -101,6 +111,7 @@ flowchart LR
 | Inbound | [github_status_service](../modules/github_status_service.md) |
 | Inbound | [github_webhook_service](../modules/github_webhook_service.md) |
 | Inbound | [request_source_service](../modules/request_source_service.md) |
+| Inbound | [test_delivery_merge_prerequisites](../modules/test_delivery_merge_prerequisites.md) |
 | Outbound | [commands](../modules/commands.md) |
 | Outbound | [models_agent](../modules/models_agent.md) |
 | Outbound | [models_task](../modules/models_task.md) |
@@ -124,4 +135,5 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `lock_task_context` | *(async)* `(db: AsyncSession, task_id: int) -> bool` | — | Lock the iteration before task context, including SQLite's writer reservation. |
-| `reserve_task_context_revision` | *(async)* `(db: AsyncSession, task_id: int, *, context_kind: str, action: str, details: dict[str, Any] \| None = None) -> int \| None` | — | Reserve the shared task version and append context evidence under its command owner. |
+| `reserve_task_context_revision` | *(async)* `(db: AsyncSession, task_id: int, *, context_kind: str, action: str, details: dict[str, Any] \| None = None, preserve_acceptance: bool = False) -> int \| None` | — | Reserve the shared task version and append context evidence under its command owner. |
+| `_acceptance_current` | `(task: Task) -> bool` | — | — |

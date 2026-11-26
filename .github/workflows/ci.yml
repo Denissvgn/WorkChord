@@ -12,11 +12,55 @@ permissions:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  changes:
+    name: Change scope
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      docs_only: ${{ steps.scope.outputs.docs_only }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          persist-credentials: false
+      - name: Classify the changed files
+        id: scope
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          cd scripts/ci
+          python3 classify_change_scope.py | tee -a "$GITHUB_OUTPUT"
+
+  docs:
+    name: Documentation checks
+    needs: changes
+    if: needs.changes.outputs.docs_only == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          persist-credentials: false
+      - name: Validate PostgreSQL operator documentation
+        run: python3 scripts/ci/check_postgresql_documentation.py
+      - name: Check links in the changed Markdown files
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python3 scripts/ci/check_markdown_links.py
+
   packaging:
     name: Packaging and contracts
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -156,7 +200,7 @@ jobs:
         run: |
           PYTHONPYCACHEPREFIX=/tmp/workchord-pycache .venv/bin/python -m compileall -q backend/app scripts
           (cd backend && PYTHONPYCACHEPREFIX=/tmp/workchord-pycache ../.venv/bin/alembic -c app/migrations/alembic.ini heads)
-          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -c "from app.main import app; assert app.title == 'WorkChord API'; assert app.version == '1.9.0'"
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend .venv/bin/python -c "from app.main import app; assert app.title == 'WorkChord API'; assert app.version == '1.10.0'"
           .venv/bin/python scripts/generate_client_contract.py --check
           .venv/bin/python scripts/generate_mobile_contract_fixtures.py --check
           .venv/bin/python scripts/generate_agent_team_contract.py --output /tmp/agent-team-master-v1.schema.json
@@ -235,6 +279,8 @@ jobs:
 
   backend:
     name: Backend (${{ matrix.scope }})
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: ${{ matrix.job_minutes }}
     strategy:
@@ -304,6 +350,8 @@ jobs:
 
   frontend:
     name: Frontend checks
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -343,12 +391,14 @@ jobs:
 
   clients:
     name: Browser and Android checks
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
     uses: ./.github/workflows/client-baseline.yml
 
   build:
     name: Source and build checks
     if: always()
-    needs: [packaging, backend, frontend, clients]
+    needs: [changes, docs, packaging, backend, frontend, clients]
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     steps:
@@ -360,11 +410,20 @@ jobs:
           import json
           import os
           results = json.loads(os.environ["CHECK_RESULTS"])
-          expected = {"packaging", "backend", "frontend", "clients"}
-          if set(results) != expected:
+          inventory = {"changes", "docs", "packaging", "backend", "frontend", "clients"}
+          if set(results) != inventory:
               raise SystemExit("Required check inventory differs")
-          failed = {name: value["result"] for name, value in results.items() if value["result"] != "success"}
+          if results["changes"]["result"] != "success":
+              raise SystemExit("The change scope could not be determined")
+          docs_only = results["changes"]["outputs"].get("docs_only") == "true"
+          required = {"docs"} if docs_only else {"packaging", "backend", "frontend", "clients"}
+          skipped = inventory - {"changes"} - required
+          failed = {name: results[name]["result"] for name in required if results[name]["result"] != "success"}
           if failed:
               raise SystemExit(f"Required checks did not succeed: {failed}")
-          print("All required checks completed successfully")
+          ran = {name: results[name]["result"] for name in skipped if results[name]["result"] != "skipped"}
+          if ran:
+              raise SystemExit(f"Checks outside this change scope did not skip: {ran}")
+          scope = "documentation-only" if docs_only else "full"
+          print(f"All required checks for a {scope} change completed successfully")
           PYTHON
