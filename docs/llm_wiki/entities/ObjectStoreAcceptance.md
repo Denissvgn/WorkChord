@@ -13,7 +13,7 @@ _Auto-generated from `ObjectStoreAcceptance` in `backend/app/autonomy/server_acc
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `implementation` | `Literal['minio-s3-object-lock']` | `implementation` | No | No | `'minio-s3-object-lock'` | — | — | — |
+| `implementation` | `Literal['versitygw-s3-object-lock']` | `implementation` | No | No | `'versitygw-s3-object-lock'` | — | — | — |
 | `endpoint` | `str` | `endpoint` | Yes | No | — | pattern='^https?://[^@\\s]+$' | — | — |
 | `bucket` | `str` | `bucket` | Yes | No | — | pattern='^[a-z0-9][a-z0-9.-]{1,62}$' | — | — |
 | `ready` | `Literal[True]` | `ready` | No | No | `True` | — | — | — |

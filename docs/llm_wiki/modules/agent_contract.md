@@ -27,8 +27,9 @@ flowchart LR
     n5["backend/tests/test_agent_model_catalog_api.py"]
     n6["backend/tests/test_agent_routing_rollout.py"]
     n7["backend/tests/test_agent_skill_routing_guidance.py"]
-    n8["backend/tests/test_execution_planning_window.py"]
-    n9["scripts/ci/check_model_aware_routing_closeout.py"]
+    n8["backend/tests/test_delivery_prerequisite_tools.py"]
+    n9["backend/tests/test_execution_planning_window.py"]
+    n10["scripts/ci/check_model_aware_routing_closeout.py"]
     n1 --> n0
     n1 --> n3
     n2 --> n0
@@ -46,9 +47,10 @@ flowchart LR
     n7 --> n1
     n7 --> n2
     n8 --> n0
-    n8 --> n3
-    n8 --> n4
     n9 --> n0
+    n9 --> n3
+    n9 --> n4
+    n10 --> n0
     click n0 "../modules/agent_contract.md"
     click n1 "../modules/mcp_agent_tools.md"
     click n2 "../modules/routers_agent.md"
@@ -57,8 +59,9 @@ flowchart LR
     click n5 "../modules/test_agent_model_catalog_api.md"
     click n6 "../modules/test_agent_routing_rollout.md"
     click n7 "../modules/test_agent_skill_routing_guidance.md"
-    click n8 "../modules/test_execution_planning_window.md"
-    click n9 "../modules/check_model_aware_routing_closeout.md"
+    click n8 "../modules/test_delivery_prerequisite_tools.md"
+    click n9 "../modules/test_execution_planning_window.md"
+    click n10 "../modules/check_model_aware_routing_closeout.md"
 ```
 
 ### Internal neighbors
@@ -72,6 +75,7 @@ flowchart LR
 | Inbound | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) |
 | Inbound | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) |
 | Inbound | [test_agent_skill_routing_guidance](../modules/test_agent_skill_routing_guidance.md) |
+| Inbound | [test_delivery_prerequisite_tools](../modules/test_delivery_prerequisite_tools.md) |
 | Inbound | [test_execution_planning_window](../modules/test_execution_planning_window.md) |
 | Inbound | [check_model_aware_routing_closeout](../modules/check_model_aware_routing_closeout.md) |
 

@@ -138,12 +138,12 @@ flowchart LR
 |---|---|---:|---|
 | backlog_snapshots | BacklogSnapshotService.list | 307 | `BacklogSnapshotService(db).list(project_id)` |
 | BacklogSnapshotService.list | require_project | 53 | `require_project(self.db, project_id)` |
-| require_project | db.info.get | 74 | `db.info.get('authority')` |
-| require_project | get_settings | 76 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
-| require_project | AuthorityError | 78 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
-| require_project | authority.allows | 79 | `authority.allows(project_id, action)` |
-| require_project | AuthorityError | 80 | `AuthorityError(data not statically known)` |
+| require_project | db.info.get | 81 | `db.info.get('authority')` |
+| require_project | get_settings | 83 | `get_settings(data not statically known)` |
+| get_settings | Settings | 527 | `Settings(data not statically known)` |
+| require_project | AuthorityError | 85 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
+| require_project | authority.allows | 86 | `authority.allows(project_id, action)` |
+| require_project | AuthorityError | 87 | `AuthorityError(data not statically known)` |
 | BacklogSnapshotService.list | (…).all | 54 | `(await self.db.scalars(select(ApplicationSnapshot).where(ApplicationSnapshot.project_id == project_id).order_by(ApplicationSnapshot.id.desc()).limit(get_settings().snapshot_retention_count))).all(data not statically known)` |
 | BacklogSnapshotService.list | self.db.scalars | 54 | `self.db.scalars(...)` |
 | BacklogSnapshotService.list | select(…).where(…).order_by(…).limit | 54 | `select(ApplicationSnapshot).where(ApplicationSnapshot.project_id == project_id).order_by(ApplicationSnapshot.id.desc()).limit(...)` |
@@ -156,8 +156,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_project` | `db.info.get` | 74 |
-| unresolved_call | `require_project` | `authority.allows` | 79 |
+| unresolved_call | `require_project` | `db.info.get` | 81 |
+| unresolved_call | `require_project` | `authority.allows` | 86 |
 | unresolved_call | `BacklogSnapshotService.list` | `(await self.db.scalars(select(ApplicationSnapshot).where(ApplicationSnapshot.project_id == project_id).order_by(ApplicationSnapshot.id.desc()).limit(get_settings().snapshot_retention_count))).all` | 54 |
 | unresolved_call | `BacklogSnapshotService.list` | `self.db.scalars` | 54 |
 | unresolved_call | `BacklogSnapshotService.list` | `select(ApplicationSnapshot).where(ApplicationSnapshot.project_id == project_id).order_by(ApplicationSnapshot.id.desc()).limit` | 54 |

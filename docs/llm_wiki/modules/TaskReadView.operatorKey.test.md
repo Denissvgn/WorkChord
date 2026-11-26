@@ -25,7 +25,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskReadView.operatorKey.tes
 | Signal | Values |
 |--------|--------|
 | Constants | `service`, `task`, `identity`, `actions` |
-| Module calls | `service = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `describe` |
+| Module calls | `service = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `describe` |
 
 ## Local dependency map
 

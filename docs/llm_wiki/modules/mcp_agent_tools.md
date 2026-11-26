@@ -23,7 +23,9 @@ the same audited command and read-model paths.
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext`, `AgentScheduleCommand` |
 | `app.schemas.agent_routing` | `AgentModelBindingCreate`, `AgentModelBindingDisable`, `AgentModelBindingUpdate`, `AgentModelCatalogCreate`, `AgentModelCatalogDisable`, `AgentModelCatalogUpdate`, `AgentRoutingPreviewCreate`, `TaskRoutingAssessmentCommand` |
 | `app.schemas.agent_skill_bundle` | `SkillBundleCatalogResponse`, `SkillBundleManifestResponse` |
+| `app.schemas.delivery_dependency` | `DeliveryDependencyInput`, `DeliveryDependencyRetarget` |
 | `app.schemas.execution_usage` | `ExecutionUsageWrite` |
+| `app.schemas.github` | `GitHubReconciliationResponse`, `GitHubReconciliationResponse` |
 | `app.schemas.iteration` | `IterationCreate`, `IterationPlanningReadinessSummary`, `IterationSummary`, `IterationUpdate`, `IterationDateMovePreview`, `IterationDateMoveRequest` |
 | `app.schemas.label` | `LabelGroupResponse`, `LabelResponse` |
 | `app.schemas.project` | `ProjectCreate`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneResponse`, `ProjectMilestoneUpdate`, `ProjectResponse`, `ProjectUpdate`, `ProjectUpdateEntryResponse` |
@@ -51,8 +53,10 @@ the same audited command and read-model paths.
 | `app.services.calendar_rules` | `AnnualCalendars` |
 | `app.services.capacity_adjustments` | `CapacityAdjustmentService` |
 | `app.services.capacity_transfers` | `CapacityTransferService`, `CapacityTransferService` |
+| `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.execution_usage_service` | `ExecutionUsageService` |
 | `app.services.external_link_service` | `ExternalLinkConflictError`, `ExternalLinkService` |
+| `app.services.github_reconciliation_service` | `GitHubReconciliationService`, `GitHubReconciliationService` |
 | `app.services.iteration_date_move` | `IterationDateMoveService` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.label_service` | `LabelService` |
@@ -104,7 +108,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (19) |
-| Outbound | `backend` (57) |
+| Outbound | `backend` (61) |
 
 ### External packages
 
@@ -112,7 +116,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 76 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 80 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -177,6 +181,11 @@ flowchart LR
 | `withdraw_capacity_transfer` | *(async)* `(db: AsyncSession, actor: AgentActor, group_token: str, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: return the lent capacity of every row of one transfer together. |
 | `get_task_replacement` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any]` | — | MCP handler: read the clean-replacement disposition a task takes part in. |
 | `record_task_replacement` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: replace an unaccepted task with a fresh one under a recorded owner decision. |
+| `get_github_reconciliation` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any]` | — | MCP handler: GET /api/tasks/{task_id}/github-reconciliation. |
+| `run_github_catch_up` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any]` | — | MCP handler: POST /api/tasks/{task_id}/github-reconciliation/catch-up. |
+| `list_delivery_dependencies` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> list[dict[str, Any]]` | — | MCP handler: GET /api/tasks/{task_id}/delivery-dependencies. |
+| `add_delivery_dependency` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: POST /api/tasks/{task_id}/delivery-dependencies as an audited planning command. |
+| `retarget_delivery_dependency` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int, edge_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: PATCH /api/tasks/{task_id}/delivery-dependencies/{edge_id} as an audited planning command. |
 | `create_planning_vacation` | *(async)* `(db: AsyncSession, actor: AgentActor, member_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: add one validated vacation period. |
 | `update_planning_vacation` | *(async)* `(db: AsyncSession, actor: AgentActor, vacation_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: update one validated vacation period. |
 | `preview_planning_schedule` | *(async)* `(db: AsyncSession, actor: AgentActor, iteration_id: int, *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: preview schedule changes in a rolled-back savepoint. |

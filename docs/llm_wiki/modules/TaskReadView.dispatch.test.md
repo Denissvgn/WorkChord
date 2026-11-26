@@ -21,7 +21,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskReadView.dispatch.test.t
 | Signal | Values |
 |--------|--------|
 | Constants | `services`, `task` |
-| Module calls | `services = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `beforeEach`, `describe` |
+| Module calls | `services = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `beforeEach`, `describe` |
 
 ## Local dependency map
 

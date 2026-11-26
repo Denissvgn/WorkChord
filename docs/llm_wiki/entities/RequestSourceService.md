@@ -102,4 +102,4 @@ flowchart LR
 | `ProjectService.get_summary` | call | [project_service](../modules/project_service.md) | 1 |
 | `TriageService.convert_to_task` | call | [triage_service](../modules/triage_service.md) | 1 |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

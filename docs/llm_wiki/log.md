@@ -4030,3 +4030,57 @@ Kept the retirement of wiki pages for deleted frontend sources (PR #84) as the d
 - Workflow pages created: 0
 - Dependency pages initialized: 0
 - Surface policy updated: no
+
+## 2026-11-25
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:212e5599f3c3faed9e835fbeeb3208be8b5bf96c5edf188781ac94b9860cae20`
+- Pages created: 27
+- Pages updated: 368
+- Pages metadata-only: 27
+- Pages skipped (unchanged): 3368
+- Pages deprecated: 2
+- Semantic fields preserved: 45
+- Moved entities: `DeliveryDependencyInput` (backend/app/routers/delivery_dependencies.py → backend/app/schemas/delivery_dependency.py)
+- Flow pages initialized: 6 (http=1, mcp=5)
+- Workflow pages created: 2
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 3
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 9
+
+## [2026-11-25] semantic | 1.10.0 refresh
+
+Refreshed against the 1.10.0 code. New and changed subjects: delivery prerequisite holds (including `merge_branch_unknown`) and the retarget route and tools, GitHub closure recording once per merge or closure under a link row lock, MCP reconciliation, catch-up and delivery-prerequisite tools, acceptance preserved across GitHub observations only while the observed head matches the submission, batched catch-up under one task revision, the Versity evidence store and the readiness-detail token replacing MinIO in the self-hosted acceptance profile, the Tailwind 4 frontend configuration (the `postcss.config` and `tailwind.config` modules are retired), the task-page reconciliation panel and its session state, and the PM skill release. Behavior sections were written for the retarget, record-fetched-pull-requests workflows and the new delivery and reconciliation flows; frontend and type descriptions were written for the new pages. The backend pull request schemas were renamed by the tool with a `schemas_github_` prefix (the frontend `types_github_` pages are new) and `delivery_dependency` became `models_delivery_dependency`. A documentation-only change now runs only a documentation check in CI (`scripts/ci` change classification and Markdown link checks, new modules and flows in this refresh).
+
+## 2026-11-26
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:85834509ceba87f9ace0c9edfb3aa07213a0bf39763976397e1d8360c2d5fe97`
+- Pages created: 11
+- Pages updated: 10
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3775
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+- Flow pages initialized: 4 (process=4)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 9

@@ -101,4 +101,4 @@ flowchart LR
 | `IdentityService.actor_context` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `IdentityService.context` | type_reference | [identity_service](../modules/identity_service.md) | — |
 
-> References: showing 12 of 55 logical references; 43 omitted by the 12-row generated summary limit.
+> References: showing 12 of 57 logical references; 45 omitted by the 12-row generated summary limit.

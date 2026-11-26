@@ -107,9 +107,9 @@ sequenceDiagram
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 561 interactions; 531 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 566 interactions; 536 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 139 (138 omitted); unresolved 1 of 245 (244 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 140 (139 omitted); unresolved 1 of 247 (246 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -136,9 +136,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 178; effect analysis evaluated: 114, partial: 5, unavailable: 59. Counts include steps omitted from the displayed trace.
+Source steps: 180; effect analysis evaluated: 115, partial: 5, unavailable: 60. Counts include steps omitted from the displayed trace.
 
-Collector observations for 119 source steps with known totals: observed: 669, emitted: 649, omitted: 20. Unavailable totals are excluded.
+Collector observations for 120 source steps with known totals: observed: 674, emitted: 654, omitted: 20. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -213,10 +213,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_convert_triage_to_task | _tool_call | 2194 | `_tool_call('planning:write', ...)` |
+| workspace_convert_triage_to_task | _tool_call | 2264 | `_tool_call('planning:write', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
+| get_settings | Settings | 527 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple | 100 | `tuple(required_scope)` |

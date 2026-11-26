@@ -196,8 +196,8 @@ flowchart LR
 | domain_result | str | 57 | `str(exc)` |
 | domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | task_github_reconciliation | GitHubReconciliationService.view | 333 | `GitHubReconciliationService(db).view(task_id)` |
-| GitHubReconciliationService.view | GitHubReconciliationService._task | 79 | `self._task(task_id, 'read')` |
-| GitHubReconciliationService._task | self.db.scalar | 57 | `self.db.scalar(...)` |
+| GitHubReconciliationService.view | GitHubReconciliationService._task | 104 | `self._task(task_id, 'read')` |
+| GitHubReconciliationService._task | self.db.scalar | 79 | `self.db.scalar(...)` |
 
 ### Boundary effects
 
@@ -212,7 +212,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
-| unresolved_call | `GitHubReconciliationService._task` | `self.db.scalar` | 57 |
+| unresolved_call | `GitHubReconciliationService._task` | `self.db.scalar` | 79 |
 | step_limit | `task_github_reconciliation` | `first 12 steps` | 0 |
 | truncated_flow | `task_github_reconciliation` | `depth limit` | 0 |
 

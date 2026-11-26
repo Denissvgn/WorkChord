@@ -1,6 +1,6 @@
 # Authority
 
-**Location:** `backend/app/authority.py:24`
+**Location:** `backend/app/authority.py:31`
 **Kind:** Class
 **Bases:** —
 **Module:** [authority](../modules/authority.md)
@@ -50,14 +50,14 @@ flowchart LR
     n2["backend/app/routers/identity.py"]
     n3["bind_verified_system (backend/app/services/identity_service.py)"]
     n4["IdentityService.context (backend/app/services/identity_service.py)"]
-    n5["test_local_person_acceptance_records_the_acceptor_and_reads_accepted (backend/tests/test_acceptance_attribution.py)"]
-    n6["test_operator_acceptance_records_the_operator_only_with_an_accountable_override (backend/tests/test_acceptance_attribution.py)"]
-    n7["test_signed_in_acceptance_records_the_signed_in_person (backend/tests/test_acceptance_attribution.py)"]
-    n8["test_operator_rest_restore_reconciles_exact_allocation_membership (backend/tests/test_allocation_recovery.py)"]
-    n9["test_scoped_manager_can_restore_another_eligible_person_without_profile_access (backend/tests/test_allocation_recovery.py)"]
-    n10["test_workspace_reports_keep_authorization_and_recorded_backlog_scope (backend/tests/test_analytics_scopes.py)"]
-    n11["test_hidden_person_protects_shared_master_without_leaking_their_identity (backend/tests/test_annual_calendar_coverage.py)"]
-    n12["test_private_cross_year_commitment_warns_the_draft_and_holds_only_baseline_commit (backend/tests/test_annual_calendar_coverage.py)"]
+    n5["_seed (backend/tests/database/test_github_closure_concurrency.py)"]
+    n6["_session (backend/tests/database/test_github_closure_concurrency.py)"]
+    n7["test_local_person_acceptance_records_the_acceptor_and_reads_accepted (backend/tests/test_acceptance_attribution.py)"]
+    n8["test_operator_acceptance_records_the_operator_only_with_an_accountable_override (backend/tests/test_acceptance_attribution.py)"]
+    n9["test_signed_in_acceptance_records_the_signed_in_person (backend/tests/test_acceptance_attribution.py)"]
+    n10["test_operator_rest_restore_reconciles_exact_allocation_membership (backend/tests/test_allocation_recovery.py)"]
+    n11["test_scoped_manager_can_restore_another_eligible_person_without_profile_access (backend/tests/test_allocation_recovery.py)"]
+    n12["test_workspace_reports_keep_authorization_and_recorded_backlog_scope (backend/tests/test_analytics_scopes.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -75,14 +75,14 @@ flowchart LR
     click n2 "../modules/routers_identity.md"
     click n3 "../modules/identity_service.md"
     click n4 "../modules/identity_service.md"
-    click n5 "../modules/test_acceptance_attribution.md"
-    click n6 "../modules/test_acceptance_attribution.md"
+    click n5 "../modules/test_github_closure_concurrency.md"
+    click n6 "../modules/test_github_closure_concurrency.md"
     click n7 "../modules/test_acceptance_attribution.md"
-    click n8 "../modules/test_allocation_recovery.md"
-    click n9 "../modules/test_allocation_recovery.md"
-    click n10 "../modules/test_analytics_scopes.md"
-    click n11 "../modules/test_annual_calendar_coverage.md"
-    click n12 "../modules/test_annual_calendar_coverage.md"
+    click n8 "../modules/test_acceptance_attribution.md"
+    click n9 "../modules/test_acceptance_attribution.md"
+    click n10 "../modules/test_allocation_recovery.md"
+    click n11 "../modules/test_allocation_recovery.md"
+    click n12 "../modules/test_analytics_scopes.md"
 ```
 
 ### Summary
@@ -99,13 +99,13 @@ flowchart LR
 | `identity` | import | [routers_identity](../modules/routers_identity.md) | — |
 | `bind_verified_system` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `IdentityService.context` | call | [identity_service](../modules/identity_service.md) | 1 |
+| `_seed` | call | [test_github_closure_concurrency](../modules/test_github_closure_concurrency.md) | 1 |
+| `_session` | call | [test_github_closure_concurrency](../modules/test_github_closure_concurrency.md) | 1 |
 | `test_local_person_acceptance_records_the_acceptor_and_reads_accepted` | call | [test_acceptance_attribution](../modules/test_acceptance_attribution.md) | 1 |
 | `test_operator_acceptance_records_the_operator_only_with_an_accountable_override` | call | [test_acceptance_attribution](../modules/test_acceptance_attribution.md) | 1 |
 | `test_signed_in_acceptance_records_the_signed_in_person` | call | [test_acceptance_attribution](../modules/test_acceptance_attribution.md) | 1 |
 | `test_operator_rest_restore_reconciles_exact_allocation_membership` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
 | `test_scoped_manager_can_restore_another_eligible_person_without_profile_access` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
 | `test_workspace_reports_keep_authorization_and_recorded_backlog_scope` | call | [test_analytics_scopes](../modules/test_analytics_scopes.md) | 1 |
-| `test_hidden_person_protects_shared_master_without_leaking_their_identity` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
-| `test_private_cross_year_commitment_warns_the_draft_and_holds_only_baseline_commit` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
 
-> References: showing 12 of 55 logical references; 43 omitted by the 12-row generated summary limit.
+> References: showing 12 of 58 logical references; 46 omitted by the 12-row generated summary limit.

@@ -56,7 +56,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (89) |
+| Inbound | `backend` (94) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (6) |
 
@@ -66,14 +66,14 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 96 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 101 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AuthorityError](../entities/AuthorityError.md) | 14 | `RuntimeError` | — |
-| [Authority](../entities/Authority.md) | 24 | — | — |
+| [AuthorityError](../entities/AuthorityError.md) | 21 | `RuntimeError` | — |
+| [Authority](../entities/Authority.md) | 31 | — | — |
 
 ## Functions
 

@@ -1,6 +1,6 @@
 # OwnerLink
 
-**Location:** `frontend/src/features/planningMasters/planEvidence.ts:21`
+**Location:** `frontend/src/features/planningMasters/planEvidence.ts:20`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [planEvidence](../modules/planEvidence.md)

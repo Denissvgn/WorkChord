@@ -1,6 +1,6 @@
 # S3ObjectLockClient
 
-**Location:** `backend/app/autonomy/server_acceptance.py:460`
+**Location:** `backend/app/autonomy/server_acceptance.py:461`
 **Kind:** Class
 **Bases:** —
 **Module:** [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md)
@@ -30,12 +30,15 @@ Path-style S3 client with only the operations required by acceptance.
 flowchart LR
     n0["S3ObjectLockClient (backend/app/autonomy/server_acceptance.py)"]
     n1["run_server_acceptance (backend/app/autonomy/server_acceptance.py)"]
-    n2["test_minio_adapter_proves_locked_exact_version_survives_delete (backend/tests/autonomy/test_server_acceptance.py)"]
+    n2["test_object_lock_adapter_proves_locked_exact_version_survives_delete (backend/tests/autonomy/test_server_acceptance.py)"]
+    n3["test_object_lock_adapter_refuses_a_store_that_is_not_ready (backend/tests/autonomy/test_server_acceptance.py)"]
     n1 --> n0
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/autonomy_server_acceptance.md"
     click n1 "../modules/autonomy_server_acceptance.md"
     click n2 "../modules/test_server_acceptance.md"
+    click n3 "../modules/test_server_acceptance.md"
 ```
 
 ### Summary
@@ -49,4 +52,5 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `run_server_acceptance` | call | [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md) | 1 |
-| `test_minio_adapter_proves_locked_exact_version_survives_delete` | call | [test_server_acceptance](../modules/test_server_acceptance.md) | 1 |
+| `test_object_lock_adapter_proves_locked_exact_version_survives_delete` | call | [test_server_acceptance](../modules/test_server_acceptance.md) | 1 |
+| `test_object_lock_adapter_refuses_a_store_that_is_not_ready` | call | [test_server_acceptance](../modules/test_server_acceptance.md) | 1 |

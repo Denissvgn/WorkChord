@@ -30,7 +30,7 @@ _Auto-generated from `frontend/src/components/tasks/assigneeDisplay.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `services`, `base`, `options`, `listOptions` |
-| Module calls | `services = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `beforeEach`, `describe` |
+| Module calls | `services = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `beforeEach`, `describe` |
 
 ## Local dependency map
 

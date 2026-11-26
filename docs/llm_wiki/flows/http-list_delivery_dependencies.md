@@ -80,9 +80,9 @@ sequenceDiagram
     p1-->>p26: select(…).where(…).order_by (backend/app/services/deli…pendencyService.projection)(DeliveryDependency.id)
 ```
 
-> Call sequence diagram shows 30 of 87 interactions; 57 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 90 interactions; 60 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 8 of 22 (14 omitted); unresolved 6 of 47 (41 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 8 of 25 (17 omitted); unresolved 6 of 47 (41 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -96,7 +96,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_service.py:TaskService._task_subtree_ids` | 34 | - | external | 1 |
 | `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService._accepted` | 33 | - | unresolved | 11 |
 | `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService._accepted` | 33 | - | external | 6 |
-> Omission summary shows 8 of 16 groups; 8 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 17 groups; 9 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -193,7 +193,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_delivery_dependencies | domain_result | 26 | `domain_result(...)` |
+| list_delivery_dependencies | domain_result | 19 | `domain_result(...)` |
 | domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
@@ -201,7 +201,7 @@ flowchart LR
 | domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 57 | `str(exc)` |
 | domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| list_delivery_dependencies | DeliveryDependencyService.projection | 26 | `DeliveryDependencyService(db).projection(task_id)` |
+| list_delivery_dependencies | DeliveryDependencyService.projection | 19 | `DeliveryDependencyService(db).projection(task_id)` |
 | DeliveryDependencyService.projection | self.db.scalar | 55 | `self.db.scalar(...)` |
 | DeliveryDependencyService.projection | select(…).where (backend/app/services/deli…dencyService.projection, 1) | 55 | `select(Task).where(...)` |
 

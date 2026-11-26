@@ -21,7 +21,7 @@ _Auto-generated from `frontend/src/components/tasks/AssigneePicker.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `api`, `iteration`, `profile`, `person`, `added` |
-| Module calls | `api = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `beforeEach`, `describe` |
+| Module calls | `api = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `beforeEach`, `describe` |
 
 ## Local dependency map
 

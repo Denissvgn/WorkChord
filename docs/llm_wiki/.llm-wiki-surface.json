@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1796,
-      "flows": 614,
+      "entities": 1809,
+      "flows": 624,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1145,
-      "workflows": 230
+      "modules": 1156,
+      "workflows": 232
     },
     "dependency_architecture": 2,
-    "total": 3802
+    "total": 3838
   },
   "dependency_pages": {
     "count": 2,
@@ -375,7 +375,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 31,
+              "line": 24,
               "step": "add_delivery_dependency",
               "target": "DeliveryDependencyService(db).add"
             }
@@ -758,13 +758,19 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 196,
+              "line": 203,
               "step": "AgentPlanningService._execute",
               "step_index": 3,
               "target": "self.db.add"
             }
           ],
           "gaps": [
+            {
+              "kind": "external_call",
+              "line": 155,
+              "step": "AgentPlanningService._execute",
+              "target": "isinstance"
+            },
             {
               "kind": "external_call",
               "line": 87,
@@ -779,15 +785,9 @@
             },
             {
               "kind": "external_call",
-              "line": 123,
-              "step": "validate_idempotency_key",
-              "target": "ValueError"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 127,
-              "step": "validate_idempotency_key",
-              "target": "value.strip"
+              "line": 157,
+              "step": "AgentPlanningService._execute",
+              "target": "any"
             },
             {
               "kind": "step_limit",
@@ -811,7 +811,7 @@
             "backend/app/commands.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 77,
+          "step_count": 82,
           "truncated": false
         }
       },
@@ -1206,7 +1206,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 84,
+              "line": 91,
               "step": "require_operator",
               "target": "db.info.get"
             },
@@ -1336,7 +1336,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 84,
+              "line": 91,
               "step": "require_operator",
               "target": "db.info.get"
             },
@@ -1492,13 +1492,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 74,
+              "line": 81,
               "step": "require_project",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 79,
+              "line": 86,
               "step": "require_project",
               "target": "authority.allows"
             },
@@ -1912,7 +1912,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 99,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -1987,7 +1987,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 278,
+              "line": 292,
               "step": "build_identity",
               "target": "load_backend_build_identity().model_dump"
             },
@@ -2433,7 +2433,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 99,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -2757,7 +2757,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 84,
+              "line": 91,
               "step": "require_operator",
               "target": "db.info.get"
             },
@@ -2775,7 +2775,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 99,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -2999,7 +2999,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 397,
+          "step_count": 402,
           "truncated": true
         }
       },
@@ -7761,7 +7761,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 99,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -10292,7 +10292,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 99,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -14161,7 +14161,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 99,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -14244,7 +14244,7 @@
             "backend/app/services/agent_service.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 758,
+          "step_count": 761,
           "truncated": true
         }
       },
@@ -15037,13 +15037,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 84,
+              "line": 91,
               "step": "require_operator",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 99,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -15927,7 +15927,7 @@
             "backend/app/services/task_service.py",
             "backend/app/services/github_reconciliation_service.py"
           ],
-          "step_count": 88,
+          "step_count": 91,
           "truncated": false
         }
       },
@@ -16530,7 +16530,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 84,
+              "line": 91,
               "step": "require_operator",
               "target": "db.info.get"
             },
@@ -17975,7 +17975,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 99,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -18401,7 +18401,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 99,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -18869,7 +18869,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 99,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -19996,7 +19996,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 99,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -20315,7 +20315,7 @@
             "backend/app/database.py",
             "backend/app/maintenance.py"
           ],
-          "step_count": 206,
+          "step_count": 211,
           "truncated": true
         }
       },
@@ -20408,7 +20408,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 84,
+              "line": 91,
               "step": "require_operator",
               "target": "db.info.get"
             },
@@ -20536,7 +20536,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 84,
+              "line": 91,
               "step": "require_operator",
               "target": "db.info.get"
             },
@@ -20878,7 +20878,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 99,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -21138,7 +21138,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 347,
+              "line": 353,
               "step": "record_task_replacement",
               "target": "TaskReplacementService(db).record"
             }
@@ -21183,13 +21183,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 84,
+              "line": 91,
               "step": "require_operator",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 99,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -21408,7 +21408,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 36,
+              "line": 35,
               "step": "remove_delivery_dependency",
               "target": "DeliveryDependencyService(db).remove"
             }
@@ -21768,7 +21768,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 84,
+              "line": 91,
               "step": "require_operator",
               "target": "db.info.get"
             },
@@ -22290,6 +22290,73 @@
       "category": "http",
       "detector": "builtin",
       "entry_point": {
+        "label": "retarget_delivery_dependency",
+        "source_path": "backend/app/routers/delivery_dependencies.py",
+        "symbol": "retarget_delivery_dependency"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 53,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 53,
+              "step": "domain_result",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 55,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 57,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 59,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 30,
+              "step": "retarget_delivery_dependency",
+              "target": "DeliveryDependencyService(db).retarget"
+            }
+          ],
+          "generated": true,
+          "step_count": 11,
+          "transfer_count": 10,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/delivery_dependencies.py",
+            "backend/app/routers/task_domain.py",
+            "backend/app/services/delivery_dependency_service.py"
+          ],
+          "step_count": 11,
+          "truncated": false
+        }
+      },
+      "id": "http-retarget_delivery_dependency",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
         "label": "retry_outbound_webhook_delivery",
         "source_path": "backend/app/routers/outbound_webhooks.py",
         "symbol": "retry_outbound_webhook_delivery"
@@ -22531,7 +22598,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 99,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -23950,7 +24017,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 1064,
+          "step_count": 1067,
           "truncated": true
         }
       },
@@ -24060,7 +24127,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 99,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -24424,7 +24491,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 57,
+              "line": 79,
               "step": "GitHubReconciliationService._task",
               "target": "self.db.scalar"
             },
@@ -24458,7 +24525,7 @@
             "backend/app/services/task_replacement_service.py",
             "backend/app/utils/github_links.py"
           ],
-          "step_count": 164,
+          "step_count": 165,
           "truncated": true
         }
       },
@@ -24509,7 +24576,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 57,
+              "line": 79,
               "step": "GitHubReconciliationService._task",
               "target": "self.db.scalar"
             },
@@ -24638,7 +24705,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 84,
+              "line": 91,
               "step": "require_operator",
               "target": "db.info.get"
             },
@@ -24722,13 +24789,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 74,
+              "line": 81,
               "step": "require_project",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 79,
+              "line": 86,
               "step": "require_project",
               "target": "authority.allows"
             },
@@ -25009,7 +25076,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 74,
+              "line": 81,
               "step": "require_project",
               "target": "db.info.get"
             },
@@ -28316,7 +28383,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 84,
+              "line": 91,
               "step": "require_operator",
               "target": "db.info.get"
             },
@@ -28521,6 +28588,94 @@
         }
       },
       "id": "mcp-agent_actor_roster_resource",
+      "language": "python"
+    },
+    {
+      "category": "mcp",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "agent_add_delivery_dependency",
+        "source_path": "backend/app/mcp_server.py",
+        "symbol": "agent_add_delivery_dependency"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 100,
+              "step": "scope_requirement_is_mutating",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "external_call",
+              "line": 102,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 103,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "agent_add_delivery_dependency",
+              "target": "first 12 steps"
+            },
+            {
+              "kind": "truncated_flow",
+              "line": 0,
+              "step": "agent_add_delivery_dependency",
+              "target": "depth limit"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": true
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/mcp_server.py",
+            "backend/app/maintenance.py",
+            "backend/app/config.py",
+            "backend/app/commands.py",
+            "backend/app/services/delivery_dependency_service.py",
+            "backend/app/authority.py",
+            "backend/app/services/task_service.py",
+            "backend/app/services/task_brief_service.py",
+            "backend/app/services/discussion_service.py",
+            "backend/app/models/outbound_webhook.py",
+            "backend/app/services/identity_service.py",
+            "backend/app/services/agent_service.py",
+            "backend/app/utils/time.py",
+            "backend/app/models/identity.py",
+            "backend/app/mcp_agent_tools.py",
+            "backend/app/services/agent_planning_service.py",
+            "backend/app/schemas/agent_planning.py",
+            "backend/app/models/agent.py"
+          ],
+          "step_count": 297,
+          "truncated": true
+        }
+      },
+      "id": "mcp-agent_add_delivery_dependency",
       "language": "python"
     },
     {
@@ -28778,7 +28933,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -28866,7 +29021,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -28954,7 +29109,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -29576,7 +29731,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 508,
+          "step_count": 513,
           "truncated": true
         }
       },
@@ -29840,7 +29995,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -30106,7 +30261,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -30194,7 +30349,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -30282,7 +30437,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -30639,7 +30794,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -30727,7 +30882,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -30815,7 +30970,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -30903,7 +31058,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 290,
+          "step_count": 295,
           "truncated": true
         }
       },
@@ -31636,6 +31791,95 @@
       "category": "mcp",
       "detector": "builtin",
       "entry_point": {
+        "label": "agent_get_github_reconciliation",
+        "source_path": "backend/app/mcp_server.py",
+        "symbol": "agent_get_github_reconciliation"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 100,
+              "step": "scope_requirement_is_mutating",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "external_call",
+              "line": 102,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 103,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "agent_get_github_reconciliation",
+              "target": "first 12 steps"
+            },
+            {
+              "kind": "truncated_flow",
+              "line": 0,
+              "step": "agent_get_github_reconciliation",
+              "target": "depth limit"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": true
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/mcp_server.py",
+            "backend/app/maintenance.py",
+            "backend/app/config.py",
+            "backend/app/commands.py",
+            "backend/app/services/delivery_dependency_service.py",
+            "backend/app/authority.py",
+            "backend/app/services/task_service.py",
+            "backend/app/services/task_brief_service.py",
+            "backend/app/services/discussion_service.py",
+            "backend/app/models/outbound_webhook.py",
+            "backend/app/services/identity_service.py",
+            "backend/app/services/agent_service.py",
+            "backend/app/utils/time.py",
+            "backend/app/models/identity.py",
+            "backend/app/mcp_agent_tools.py",
+            "backend/app/services/github_reconciliation_service.py",
+            "backend/app/services/task_replacement_service.py",
+            "backend/app/utils/github_links.py",
+            "backend/app/services/github_status_service.py"
+          ],
+          "step_count": 343,
+          "truncated": true
+        }
+      },
+      "id": "mcp-agent_get_github_reconciliation",
+      "language": "python"
+    },
+    {
+      "category": "mcp",
+      "detector": "builtin",
+      "entry_point": {
         "label": "agent_get_iteration_plan_readiness",
         "source_path": "backend/app/mcp_server.py",
         "symbol": "agent_get_iteration_plan_readiness"
@@ -32185,7 +32429,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 817,
+          "step_count": 820,
           "truncated": true
         }
       },
@@ -32373,7 +32617,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 912,
+          "step_count": 915,
           "truncated": true
         }
       },
@@ -33180,6 +33424,92 @@
       "category": "mcp",
       "detector": "builtin",
       "entry_point": {
+        "label": "agent_list_delivery_dependencies",
+        "source_path": "backend/app/mcp_server.py",
+        "symbol": "agent_list_delivery_dependencies"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 100,
+              "step": "scope_requirement_is_mutating",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "external_call",
+              "line": 102,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 103,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "agent_list_delivery_dependencies",
+              "target": "first 12 steps"
+            },
+            {
+              "kind": "truncated_flow",
+              "line": 0,
+              "step": "agent_list_delivery_dependencies",
+              "target": "depth limit"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": true
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/mcp_server.py",
+            "backend/app/maintenance.py",
+            "backend/app/config.py",
+            "backend/app/commands.py",
+            "backend/app/services/delivery_dependency_service.py",
+            "backend/app/authority.py",
+            "backend/app/services/task_service.py",
+            "backend/app/services/task_brief_service.py",
+            "backend/app/services/discussion_service.py",
+            "backend/app/models/outbound_webhook.py",
+            "backend/app/services/identity_service.py",
+            "backend/app/services/agent_service.py",
+            "backend/app/utils/time.py",
+            "backend/app/models/identity.py",
+            "backend/app/mcp_agent_tools.py",
+            "backend/app/services/github_reconciliation_service.py"
+          ],
+          "step_count": 335,
+          "truncated": true
+        }
+      },
+      "id": "mcp-agent_list_delivery_dependencies",
+      "language": "python"
+    },
+    {
+      "category": "mcp",
+      "detector": "builtin",
+      "entry_point": {
         "label": "agent_list_model_bindings",
         "source_path": "backend/app/mcp_server.py",
         "symbol": "agent_list_model_bindings"
@@ -33951,7 +34281,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 296,
+          "step_count": 301,
           "truncated": true
         }
       },
@@ -34132,7 +34462,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 780,
+          "step_count": 783,
           "truncated": true
         }
       },
@@ -35086,7 +35416,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -35531,6 +35861,94 @@
       "category": "mcp",
       "detector": "builtin",
       "entry_point": {
+        "label": "agent_retarget_delivery_dependency",
+        "source_path": "backend/app/mcp_server.py",
+        "symbol": "agent_retarget_delivery_dependency"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 100,
+              "step": "scope_requirement_is_mutating",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "external_call",
+              "line": 102,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 103,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "agent_retarget_delivery_dependency",
+              "target": "first 12 steps"
+            },
+            {
+              "kind": "truncated_flow",
+              "line": 0,
+              "step": "agent_retarget_delivery_dependency",
+              "target": "depth limit"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": true
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/mcp_server.py",
+            "backend/app/maintenance.py",
+            "backend/app/config.py",
+            "backend/app/commands.py",
+            "backend/app/services/delivery_dependency_service.py",
+            "backend/app/authority.py",
+            "backend/app/services/task_service.py",
+            "backend/app/services/task_brief_service.py",
+            "backend/app/services/discussion_service.py",
+            "backend/app/models/outbound_webhook.py",
+            "backend/app/services/identity_service.py",
+            "backend/app/services/agent_service.py",
+            "backend/app/utils/time.py",
+            "backend/app/models/identity.py",
+            "backend/app/mcp_agent_tools.py",
+            "backend/app/services/agent_planning_service.py",
+            "backend/app/schemas/agent_planning.py",
+            "backend/app/models/agent.py"
+          ],
+          "step_count": 297,
+          "truncated": true
+        }
+      },
+      "id": "mcp-agent_retarget_delivery_dependency",
+      "language": "python"
+    },
+    {
+      "category": "mcp",
+      "detector": "builtin",
+      "entry_point": {
         "label": "agent_reviews_resource",
         "source_path": "backend/app/mcp_server.py",
         "symbol": "agent_reviews_resource"
@@ -35695,6 +36113,95 @@
         }
       },
       "id": "mcp-agent_routes_resource",
+      "language": "python"
+    },
+    {
+      "category": "mcp",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "agent_run_github_catch_up",
+        "source_path": "backend/app/mcp_server.py",
+        "symbol": "agent_run_github_catch_up"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 100,
+              "step": "scope_requirement_is_mutating",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "external_call",
+              "line": 102,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 103,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "agent_run_github_catch_up",
+              "target": "first 12 steps"
+            },
+            {
+              "kind": "truncated_flow",
+              "line": 0,
+              "step": "agent_run_github_catch_up",
+              "target": "depth limit"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": true
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/mcp_server.py",
+            "backend/app/maintenance.py",
+            "backend/app/config.py",
+            "backend/app/commands.py",
+            "backend/app/services/delivery_dependency_service.py",
+            "backend/app/authority.py",
+            "backend/app/services/task_service.py",
+            "backend/app/services/task_brief_service.py",
+            "backend/app/services/discussion_service.py",
+            "backend/app/models/outbound_webhook.py",
+            "backend/app/services/identity_service.py",
+            "backend/app/services/agent_service.py",
+            "backend/app/utils/time.py",
+            "backend/app/models/identity.py",
+            "backend/app/mcp_agent_tools.py",
+            "backend/app/services/github_reconciliation_service.py",
+            "backend/app/services/github_status_service.py",
+            "backend/app/services/system_settings_service.py",
+            "backend/app/services/task_replacement_service.py"
+          ],
+          "step_count": 361,
+          "truncated": true
+        }
+      },
+      "id": "mcp-agent_run_github_catch_up",
       "language": "python"
     },
     {
@@ -36459,7 +36966,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -36725,7 +37232,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -36813,7 +37320,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -36901,7 +37408,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -36989,7 +37496,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -37077,7 +37584,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -37165,7 +37672,7 @@
             "backend/app/schemas/agent_planning.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 292,
+          "step_count": 297,
           "truncated": true
         }
       },
@@ -38982,7 +39489,7 @@
             "backend/app/services/agent_planning_service.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 288,
+          "step_count": 293,
           "truncated": true
         }
       },
@@ -39176,7 +39683,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 562,
+          "step_count": 567,
           "truncated": true
         }
       },
@@ -39270,7 +39777,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 399,
+          "step_count": 404,
           "truncated": true
         }
       },
@@ -39364,7 +39871,7 @@
             "backend/app/models/request_source.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 410,
+          "step_count": 415,
           "truncated": true
         }
       },
@@ -39459,7 +39966,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 451,
+          "step_count": 456,
           "truncated": true
         }
       },
@@ -39731,7 +40238,7 @@
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 349,
+          "step_count": 354,
           "truncated": true
         }
       },
@@ -42821,7 +43328,7 @@
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 351,
+          "step_count": 356,
           "truncated": true
         }
       },
@@ -43424,6 +43931,114 @@
       "category": "process",
       "detector": "builtin",
       "entry_point": {
+        "label": "check_markdown_links",
+        "source_path": "scripts/ci/check_markdown_links.py",
+        "symbol": "main"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 49,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 51,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 55,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 57,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "filesystem_read",
+              "line": 32,
+              "step": "broken_links",
+              "step_index": 7,
+              "target": "source.read_text"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 40,
+              "step": "broken_links",
+              "step_index": 7,
+              "target": "problems.append"
+            }
+          ],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 45,
+              "step": "main",
+              "target": "Path.cwd"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 27,
+              "step": "broken_links",
+              "target": "relative.endswith"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 27,
+              "step": "broken_links",
+              "target": "relative.startswith"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 30,
+              "step": "broken_links",
+              "target": "source.is_file"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "main",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/ci/check_markdown_links.py"
+          ],
+          "step_count": 24,
+          "truncated": false
+        }
+      },
+      "id": "process-check_markdown_links",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
         "label": "check_model_aware_routing_closeout",
         "source_path": "scripts/ci/check_model_aware_routing_closeout.py",
         "symbol": "main"
@@ -43629,6 +44244,108 @@
         }
       },
       "id": "process-check_postgresql_documentation",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "classify_change_scope",
+        "source_path": "scripts/ci/classify_change_scope.py",
+        "symbol": "main"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 98,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 99,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 100,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 102,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "process",
+              "line": 75,
+              "step": "changed_paths",
+              "step_index": 3,
+              "target": "subprocess.run"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 82,
+              "step": "changed_paths",
+              "step_index": 3,
+              "target": "print"
+            }
+          ],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 84,
+              "step": "changed_paths",
+              "target": "result.stdout.splitlines"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 84,
+              "step": "changed_paths",
+              "target": "line.strip"
+            },
+            {
+              "kind": "external_call",
+              "line": 68,
+              "step": "docs_only",
+              "target": "all"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "main",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/ci/classify_change_scope.py"
+          ],
+          "step_count": 22,
+          "truncated": false
+        }
+      },
+      "id": "process-classify_change_scope",
       "language": "python"
     },
     {
@@ -45620,7 +46337,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 2737,
+              "line": 2807,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -45628,7 +46345,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 2740,
+              "line": 2810,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -45661,19 +46378,19 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 2724,
+              "line": 2794,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 2725,
+              "line": 2795,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 2731,
+              "line": 2801,
               "step": "main",
               "target": "parser.parse_args"
             },
@@ -46861,7 +47578,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 106,
+              "line": 149,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -46869,96 +47586,102 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 108,
+              "line": 152,
               "step": "main",
               "step_index": 1,
               "target": "print"
             },
             {
               "confidence": "unknown",
-              "kind": "mutation",
-              "line": 56,
-              "step": "build",
-              "step_index": 11,
-              "target": "values.update"
+              "kind": "output",
+              "line": 154,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
             },
             {
               "confidence": "unknown",
-              "kind": "mutation",
-              "line": 57,
-              "step": "build",
-              "step_index": 11,
-              "target": "values.update"
+              "kind": "output",
+              "line": 164,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
             },
             {
               "confidence": "unknown",
-              "kind": "mutation",
-              "line": 64,
-              "step": "build",
-              "step_index": 11,
-              "target": "values.update"
+              "kind": "output",
+              "line": 166,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
             }
           ],
           "gaps": [
             {
               "kind": "external_call",
-              "line": 91,
+              "line": 131,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 92,
+              "line": 132,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 93,
+              "line": 133,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 94,
+              "line": 134,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 95,
+              "line": 136,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 96,
+              "line": 137,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 97,
+              "line": 138,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 99,
+              "line": 139,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 100,
+              "line": 141,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 142,
               "step": "main",
               "target": "parser.parse_args"
             },
             {
               "kind": "unresolved_call",
-              "line": 51,
-              "step": "build",
-              "target": "old.get"
+              "line": 145,
+              "step": "main",
+              "target": "parser.error"
             },
             {
               "kind": "step_limit",
@@ -46976,7 +47699,7 @@
           "modules_touched": [
             "scripts/server/seed_adoption_env.py"
           ],
-          "step_count": 58,
+          "step_count": 93,
           "truncated": false
         }
       },
@@ -47231,15 +47954,15 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 33,
-              "step": "parse_args",
-              "step_index": 2,
+              "line": 270,
+              "step": "main",
+              "step_index": 1,
               "target": "os.getenv"
             },
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 37,
+              "line": 33,
               "step": "parse_args",
               "step_index": 2,
               "target": "os.getenv"
@@ -47263,6 +47986,12 @@
               "line": 35,
               "step": "parse_args",
               "target": "parser.add_argument"
+            },
+            {
+              "kind": "external_call",
+              "line": 37,
+              "step": "parse_args",
+              "target": "os.getenv"
             },
             {
               "kind": "unresolved_call",
@@ -47315,7 +48044,7 @@
             "backend/app/autonomy/canonical.py",
             "backend/app/autonomy/contracts/postgresql/loader.py"
           ],
-          "step_count": 641,
+          "step_count": 646,
           "truncated": false
         }
       },
@@ -47569,6 +48298,41 @@
       "category": "process",
       "detector": "builtin",
       "entry_point": {
+        "label": "test_check_markdown_links",
+        "source_path": "scripts/ci/tests/test_check_markdown_links.py",
+        "symbol": "__main__"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 51,
+              "step": "__main__",
+              "target": "unittest.main"
+            }
+          ],
+          "generated": true,
+          "step_count": 2,
+          "transfer_count": 1,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/ci/tests/test_check_markdown_links.py"
+          ],
+          "step_count": 2,
+          "truncated": false
+        }
+      },
+      "id": "process-test_check_markdown_links",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
         "label": "test_ci_runtime",
         "source_path": "scripts/ci/tests/test_ci_runtime.py",
         "symbol": "__main__"
@@ -47604,6 +48368,41 @@
       "category": "process",
       "detector": "builtin",
       "entry_point": {
+        "label": "test_classify_change_scope",
+        "source_path": "scripts/ci/tests/test_classify_change_scope.py",
+        "symbol": "__main__"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 104,
+              "step": "__main__",
+              "target": "unittest.main"
+            }
+          ],
+          "generated": true,
+          "step_count": 2,
+          "transfer_count": 1,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/ci/tests/test_classify_change_scope.py"
+          ],
+          "step_count": 2,
+          "truncated": false
+        }
+      },
+      "id": "process-test_classify_change_scope",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
         "label": "test_native_runtimes",
         "source_path": "scripts/ci/tests/test_native_runtimes.py",
         "symbol": "__main__"
@@ -47614,7 +48413,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 423,
+              "line": 441,
               "step": "__main__",
               "target": "unittest.main"
             }
@@ -48472,10 +49271,12 @@
         "entities/BootstrapActionManifest.md",
         "entities/BootstrapActionSlot.md",
         "entities/BootstrapOwner.md",
+        "entities/BranchDraft.md",
         "entities/BreadcrumbItem.md",
         "entities/BreadcrumbsProps.md",
         "entities/BriefConvert.md",
         "entities/BriefWrite.md",
+        "entities/BrokenLinks.md",
         "entities/BuildIdentity.md",
         "entities/BulkKind.md",
         "entities/BulkRejected.md",
@@ -48597,6 +49398,7 @@
         "entities/DeliveryDatabase.md",
         "entities/DeliveryDependency.md",
         "entities/DeliveryDependencyInput.md",
+        "entities/DeliveryDependencyRetarget.md",
         "entities/DeliveryDependencyService.md",
         "entities/DeliveryFields.md",
         "entities/DeliveryMetrics.md",
@@ -48605,6 +49407,8 @@
         "entities/DeliveryMetricsResponse.md",
         "entities/DeliveryMetricsService.md",
         "entities/DeliveryObservation.md",
+        "entities/DeliveryPrerequisite.md",
+        "entities/DeliveryPrerequisiteHold.md",
         "entities/DeliveryRisk.md",
         "entities/DeliveryScenario.md",
         "entities/Dependency.md",
@@ -48693,6 +49497,7 @@
         "entities/FakeTrustResolver.md",
         "entities/FeedbackAction.md",
         "entities/FeedbackKind.md",
+        "entities/FetchedPullRequest.md",
         "entities/Field.md",
         "entities/FilesystemAgentTeamCredentialSink.md",
         "entities/FilterBarFilter.md",
@@ -48728,13 +49533,13 @@
         "entities/GateStatusAmendment.md",
         "entities/GetStartedRequest.md",
         "entities/GetStartedVisibility.md",
+        "entities/GitClassification.md",
         "entities/GitHubAutomationFromStatus.md",
         "entities/GitHubForm.md",
         "entities/GitHubLinkError.md",
         "entities/GitHubPullChecks.md",
-        "entities/GitHubPullReconciliation.md",
         "entities/GitHubPullReview.md",
-        "entities/GitHubPullSubmission.md",
+        "entities/GitHubReconciliation.md",
         "entities/GitHubReconciliationResponse.md",
         "entities/GitHubReconciliationService.md",
         "entities/GitHubReplacementRole.md",
@@ -49008,6 +49813,7 @@
         "entities/ParsedTask.md",
         "entities/ParsedTeamMember.md",
         "entities/PartialWorkScope.md",
+        "entities/PathRules.md",
         "entities/PendingTaskWrite.md",
         "entities/PeriodCommitments.md",
         "entities/PersistedState.md",
@@ -49317,6 +50123,8 @@
         "entities/schemas_github_GitHubAutomationEventType.md",
         "entities/schemas_github_GitHubAutomationOutcome.md",
         "entities/schemas_github_GitHubAutomationTargetStatus.md",
+        "entities/schemas_github_GitHubPullReconciliation.md",
+        "entities/schemas_github_GitHubPullSubmission.md",
         "entities/schemas_github_GitHubStatusAutomationResult.md",
         "entities/schemas_github_GitHubStatusAutomationRuleCreate.md",
         "entities/schemas_github_GitHubStatusAutomationRuleUpdate.md",
@@ -49663,6 +50471,8 @@
         "entities/TaskVersionConflictDetail.md",
         "entities/TaskVersionConflictError.md",
         "entities/TaskViewPart.md",
+        "entities/TaskViewSession.md",
+        "entities/TaskViewSessionUpdate.md",
         "entities/team_member_TeamMember.md",
         "entities/team_member_TeamMemberProfile.md",
         "entities/team_member_TeamMemberProfileSkill.md",
@@ -49811,6 +50621,8 @@
         "entities/types_github_GitHubAutomationEventType.md",
         "entities/types_github_GitHubAutomationOutcome.md",
         "entities/types_github_GitHubAutomationTargetStatus.md",
+        "entities/types_github_GitHubPullReconciliation.md",
+        "entities/types_github_GitHubPullSubmission.md",
         "entities/types_github_GitHubStatusAutomationResult.md",
         "entities/types_github_GitHubStatusAutomationRule.md",
         "entities/types_github_GitHubStatusAutomationRuleCreate.md",
@@ -50327,6 +51139,7 @@
         "flows/http-reset_scheduling_rules.md",
         "flows/http-restore_backlog.md",
         "flows/http-restore_snapshot.md",
+        "flows/http-retarget_delivery_dependency.md",
         "flows/http-retry_outbound_webhook_delivery.md",
         "flows/http-retry_personal_notification.md",
         "flows/http-review_task.md",
@@ -50413,6 +51226,7 @@
         "flows/http-workspace_member.md",
         "flows/http-write_task_brief.md",
         "flows/mcp-agent_actor_roster_resource.md",
+        "flows/mcp-agent_add_delivery_dependency.md",
         "flows/mcp-agent_append_run_event.md",
         "flows/mcp-agent_append_task_event.md",
         "flows/mcp-agent_apply_capacity_adjustment.md",
@@ -50448,6 +51262,7 @@
         "flows/mcp-agent_get_complete_task_context.md",
         "flows/mcp-agent_get_execution_usage.md",
         "flows/mcp-agent_get_execution_usage_summary.md",
+        "flows/mcp-agent_get_github_reconciliation.md",
         "flows/mcp-agent_get_iteration_plan_readiness.md",
         "flows/mcp-agent_get_model_binding.md",
         "flows/mcp-agent_get_model_catalog_entry.md",
@@ -50465,6 +51280,7 @@
         "flows/mcp-agent_list_actor_roster.md",
         "flows/mcp-agent_list_assignments.md",
         "flows/mcp-agent_list_assignments_page.md",
+        "flows/mcp-agent_list_delivery_dependencies.md",
         "flows/mcp-agent_list_model_bindings.md",
         "flows/mcp-agent_list_model_catalog.md",
         "flows/mcp-agent_list_my_claims.md",
@@ -50492,8 +51308,10 @@
         "flows/mcp-agent_renew_my_work.md",
         "flows/mcp-agent_report_discovery.md",
         "flows/mcp-agent_requeue_recovery.md",
+        "flows/mcp-agent_retarget_delivery_dependency.md",
         "flows/mcp-agent_reviews_resource.md",
         "flows/mcp-agent_routes_resource.md",
+        "flows/mcp-agent_run_github_catch_up.md",
         "flows/mcp-agent_skill_catalog_resource.md",
         "flows/mcp-agent_skill_entrypoint_resource.md",
         "flows/mcp-agent_skill_manifest_resource.md",
@@ -50583,8 +51401,10 @@
         "flows/process-apt_runtime.md",
         "flows/process-build_agent_skills.md",
         "flows/process-build_identity.md",
+        "flows/process-check_markdown_links.md",
         "flows/process-check_model_aware_routing_closeout.md",
         "flows/process-check_postgresql_documentation.md",
+        "flows/process-classify_change_scope.md",
         "flows/process-closeout.md",
         "flows/process-collect.md",
         "flows/process-compare.md",
@@ -50617,7 +51437,9 @@
         "flows/process-server_acceptance.md",
         "flows/process-service_worksets.md",
         "flows/process-setup_agent_team.md",
+        "flows/process-test_check_markdown_links.md",
         "flows/process-test_ci_runtime.md",
+        "flows/process-test_classify_change_scope.md",
         "flows/process-test_native_runtimes.md",
         "flows/process-test_wiki_lock_root_preflight.md",
         "flows/process-upgrade.md",
@@ -50797,11 +51619,13 @@
         "modules/check-query-feedback.md",
         "modules/check-tailwind-classes.md",
         "modules/check-task-selection-layout.md",
+        "modules/check_markdown_links.md",
         "modules/check_model_aware_routing_closeout.md",
         "modules/check_postgresql_documentation.md",
         "modules/Checkbox.md",
         "modules/ci_runtime.md",
         "modules/claimTime.md",
+        "modules/classify_change_scope.md",
         "modules/cli_closeout.md",
         "modules/cli_cutover.md",
         "modules/cli_database_migration.md",
@@ -50844,7 +51668,6 @@
         "modules/dateLocale.md",
         "modules/delivery.md",
         "modules/delivery_dependencies.md",
-        "modules/delivery_dependency.md",
         "modules/delivery_dependency_service.md",
         "modules/delivery_metrics.md",
         "modules/delivery_metrics_service.md",
@@ -50852,6 +51675,7 @@
         "modules/DeliveryAnalytics.md",
         "modules/DeliveryAnalytics.test.md",
         "modules/DeliveryDependencies.md",
+        "modules/DeliveryDependencies.test.md",
         "modules/deliveryMetrics.md",
         "modules/deliveryMetricsService.md",
         "modules/dependency_order.md",
@@ -50928,6 +51752,8 @@
         "modules/github_status_automation_service.md",
         "modules/github_status_service.md",
         "modules/github_webhook_service.md",
+        "modules/GitHubReconciliationPanel.md",
+        "modules/GitHubReconciliationPanel.test.md",
         "modules/githubService.md",
         "modules/GitHubSettingsPanel.md",
         "modules/GitHubSettingsPanel.test.md",
@@ -51031,6 +51857,7 @@
         "modules/models_calendar.md",
         "modules/models_capacity.md",
         "modules/models_database_migration.md",
+        "modules/models_delivery_dependency.md",
         "modules/models_discussion.md",
         "modules/models_execution_usage.md",
         "modules/models_external_link.md",
@@ -51157,7 +51984,6 @@
         "modules/planWork.md",
         "modules/planWork.test.md",
         "modules/PlanWorkSection.md",
-        "modules/postcss.config.md",
         "modules/postgres_runtime.md",
         "modules/postgresql___init__.md",
         "modules/postgresql_migrations_env.md",
@@ -51282,6 +52108,7 @@
         "modules/schemas_autonomy.md",
         "modules/schemas_calendar.md",
         "modules/schemas_common.md",
+        "modules/schemas_delivery_dependency.md",
         "modules/schemas_email_settings.md",
         "modules/schemas_execution_usage.md",
         "modules/schemas_external_link.md",
@@ -51388,7 +52215,6 @@
         "modules/SystemLanguageProvider.md",
         "modules/systemSettings.md",
         "modules/systemSettingsService.md",
-        "modules/tailwind.config.md",
         "modules/task_brief_service.md",
         "modules/task_bulk_operation_service.md",
         "modules/task_context_revision_service.md",
@@ -51468,6 +52294,7 @@
         "modules/TaskViewOptions.md",
         "modules/taskViewParams.md",
         "modules/taskViewParams.test.md",
+        "modules/taskViewSession.md",
         "modules/taskViewState.md",
         "modules/TaskWorkflowHelpContent.md",
         "modules/TaskWorkPanel.md",
@@ -51537,7 +52364,9 @@
         "modules/test_capacity_adjustments.md",
         "modules/test_capacity_contract.md",
         "modules/test_capacity_transfers.md",
+        "modules/test_check_markdown_links.md",
         "modules/test_ci_runtime.md",
+        "modules/test_classify_change_scope.md",
         "modules/test_client_contract.md",
         "modules/test_cutover_evidence.md",
         "modules/test_database_configuration.md",
@@ -51545,6 +52374,7 @@
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_merge_prerequisites.md",
         "modules/test_delivery_metrics.md",
+        "modules/test_delivery_prerequisite_tools.md",
         "modules/test_delivery_scenarios.md",
         "modules/test_delivery_target_branch_migration.md",
         "modules/test_dependency_date_cascade.md",
@@ -51558,6 +52388,7 @@
         "modules/test_execution_usage.md",
         "modules/test_execution_working_dates.md",
         "modules/test_gantt_iteration_project.md",
+        "modules/test_github_closure_concurrency.md",
         "modules/test_github_reconciliation.md",
         "modules/test_harness_session_metadata.md",
         "modules/test_human_work_queries.md",
@@ -51606,6 +52437,7 @@
         "modules/test_project_review_policy.md",
         "modules/test_project_working_timezone.md",
         "modules/test_query_boundaries.md",
+        "modules/test_readiness_detail.md",
         "modules/test_rehearsal_ownership.md",
         "modules/test_replacement_carried_provenance.md",
         "modules/test_review_provenance.md",
@@ -51737,6 +52569,7 @@
         "modules/usePlanningReadiness.md",
         "modules/usePlanningReadiness.test.md",
         "modules/usePlanScheduleWorkloads.md",
+        "modules/useProjectEditAccess.md",
         "modules/user_session.md",
         "modules/UserSessionBadge.md",
         "modules/UserSessionBadge.test.md",
@@ -51862,6 +52695,7 @@
         "workflows/DeliveryDependencyService_add.md",
         "workflows/DeliveryDependencyService_reconcile.md",
         "workflows/DeliveryDependencyService_remove.md",
+        "workflows/DeliveryDependencyService_retarget.md",
         "workflows/DeliveryMetricsService_report.md",
         "workflows/DiscussionService_deliver.md",
         "workflows/DiscussionService_retry.md",
@@ -51883,6 +52717,7 @@
         "workflows/get_task_timeline_page.md",
         "workflows/GitHubStatusAutomationService_apply_rules.md",
         "workflows/GitHubStatusService___init__.md",
+        "workflows/GitHubStatusService_record_fetched_pull_requests.md",
         "workflows/GitHubWebhookService___init__.md",
         "workflows/GitHubWebhookService_process.md",
         "workflows/HierarchyRepairService_audit.md",
@@ -53209,6 +54044,7 @@
       "mcp_uri": "llm-wiki://entities/AgentPermissionError",
       "outgoing_internal_links": [
         "modules/agent_model_catalog_service.md",
+        "modules/agent_planning_service.md",
         "modules/agent_routing_service.md",
         "modules/agent_service.md",
         "modules/agent_team_setup_service.md",
@@ -55217,6 +56053,7 @@
         "modules/faults.md",
         "modules/support___init__.md",
         "modules/test_database_harness.md",
+        "modules/test_github_closure_concurrency.md",
         "modules/test_postgresql_concurrency.md"
       ],
       "role": "semantic",
@@ -55232,7 +56069,7 @@
         "modules/atRiskReasons.md"
       ],
       "role": "semantic",
-      "source_path": "frontend/src/features/planningMasters/atRiskReasons.ts",
+      "source_path": null,
       "title": "Translate"
     },
     {
@@ -55392,7 +56229,7 @@
         "modules/test_acceptance_attribution.md",
         "modules/test_allocation_recovery.md",
         "modules/test_analytics_scopes.md",
-        "modules/test_annual_calendar_coverage.md"
+        "modules/test_github_closure_concurrency.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/authority.py",
@@ -55601,7 +56438,6 @@
         "modules/app_database.md",
         "modules/authority.md",
         "modules/catalog.md",
-        "modules/delivery_dependency.md",
         "modules/delivery_observation.md",
         "modules/migrations_env.md",
         "modules/models_agent.md",
@@ -55609,6 +56445,7 @@
         "modules/models_calendar.md",
         "modules/models_capacity.md",
         "modules/models_database_migration.md",
+        "modules/models_delivery_dependency.md",
         "modules/models_discussion.md",
         "modules/models_execution_usage.md"
       ],
@@ -55735,6 +56572,18 @@
       "title": "BootstrapOwner"
     },
     {
+      "canonical_path": "entities/BranchDraft.md",
+      "id": "BranchDraft",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/BranchDraft",
+      "outgoing_internal_links": [
+        "modules/DeliveryDependencies.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/DeliveryDependencies.tsx",
+      "title": "BranchDraft"
+    },
+    {
       "canonical_path": "entities/BreadcrumbItem.md",
       "id": "BreadcrumbItem",
       "kind": "entities",
@@ -55782,11 +56631,24 @@
         "modules/routers_task_domain.md",
         "modules/schemas_task_brief.md",
         "modules/test_agent_runtime_recovery.md",
+        "modules/test_delivery_merge_prerequisites.md",
         "modules/test_task_domain.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/task_brief.py",
       "title": "BriefWrite"
+    },
+    {
+      "canonical_path": "entities/BrokenLinks.md",
+      "id": "BrokenLinks",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/BrokenLinks",
+      "outgoing_internal_links": [
+        "modules/test_check_markdown_links.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_check_markdown_links.py",
+      "title": "BrokenLinks"
     },
     {
       "canonical_path": "entities/BuildIdentity.md",
@@ -57350,17 +58212,17 @@
         "modules/agent_service.md",
         "modules/app_database.md",
         "modules/backlog_snapshot_service.md",
-        "modules/delivery_dependency.md",
         "modules/delivery_dependency_service.md",
         "modules/models___init__.md",
+        "modules/models_delivery_dependency.md",
         "modules/project_service.md",
         "modules/snapshot_service.md",
         "modules/task_replacement_service.md",
         "modules/task_service.md",
         "modules/test_delivery_dependencies.md",
+        "modules/test_delivery_prerequisite_tools.md",
         "modules/test_delivery_target_branch_migration.md",
-        "modules/test_postgresql_transfer.md",
-        "modules/test_task_replacement.md"
+        "modules/test_postgresql_transfer.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/delivery_dependency.py",
@@ -57372,11 +58234,28 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/DeliveryDependencyInput",
       "outgoing_internal_links": [
-        "modules/delivery_dependencies.md"
+        "modules/delivery_dependencies.md",
+        "modules/mcp_agent_tools.md",
+        "modules/schemas_delivery_dependency.md"
       ],
       "role": "semantic",
-      "source_path": "backend/app/routers/delivery_dependencies.py",
+      "source_path": "backend/app/schemas/delivery_dependency.py",
       "title": "DeliveryDependencyInput"
+    },
+    {
+      "canonical_path": "entities/DeliveryDependencyRetarget.md",
+      "id": "DeliveryDependencyRetarget",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/DeliveryDependencyRetarget",
+      "outgoing_internal_links": [
+        "modules/delivery_dependencies.md",
+        "modules/mcp_agent_tools.md",
+        "modules/schemas_delivery_dependency.md",
+        "modules/test_delivery_prerequisite_tools.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/delivery_dependency.py",
+      "title": "DeliveryDependencyRetarget"
     },
     {
       "canonical_path": "entities/DeliveryDependencyService.md",
@@ -57384,14 +58263,14 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/DeliveryDependencyService",
       "outgoing_internal_links": [
+        "modules/agent_planning_service.md",
         "modules/agent_service.md",
         "modules/agent_work_service.md",
         "modules/backlog_snapshot_service.md",
         "modules/commands.md",
         "modules/delivery_dependencies.md",
         "modules/delivery_dependency_service.md",
-        "modules/project_service.md",
-        "modules/scheduler_service.md",
+        "modules/mcp_agent_tools.md",
         "modules/tasks.md"
       ],
       "role": "semantic",
@@ -57498,6 +58377,33 @@
       "role": "semantic",
       "source_path": "backend/app/models/delivery_observation.py",
       "title": "DeliveryObservation"
+    },
+    {
+      "canonical_path": "entities/DeliveryPrerequisite.md",
+      "id": "DeliveryPrerequisite",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/DeliveryPrerequisite",
+      "outgoing_internal_links": [
+        "modules/DeliveryDependencies.md",
+        "modules/DeliveryDependencies.test.md",
+        "modules/githubService.md",
+        "modules/types_github.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/github.ts",
+      "title": "DeliveryPrerequisite"
+    },
+    {
+      "canonical_path": "entities/DeliveryPrerequisiteHold.md",
+      "id": "DeliveryPrerequisiteHold",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/DeliveryPrerequisiteHold",
+      "outgoing_internal_links": [
+        "modules/types_github.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/github.ts",
+      "title": "DeliveryPrerequisiteHold"
     },
     {
       "canonical_path": "entities/DeliveryRisk.md",
@@ -58643,6 +59549,18 @@
       "title": "FeedbackKind"
     },
     {
+      "canonical_path": "entities/FetchedPullRequest.md",
+      "id": "FetchedPullRequest",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/FetchedPullRequest",
+      "outgoing_internal_links": [
+        "modules/github_status_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/github_status_service.py",
+      "title": "FetchedPullRequest"
+    },
+    {
       "canonical_path": "entities/Field.md",
       "id": "Field",
       "kind": "entities",
@@ -59085,6 +60003,18 @@
       "title": "GetStartedVisibility"
     },
     {
+      "canonical_path": "entities/GitClassification.md",
+      "id": "GitClassification",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/GitClassification",
+      "outgoing_internal_links": [
+        "modules/test_classify_change_scope.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_classify_change_scope.py",
+      "title": "GitClassification"
+    },
+    {
       "canonical_path": "entities/GitHubAutomationFromStatus.md",
       "id": "GitHubAutomationFromStatus",
       "kind": "entities",
@@ -59139,18 +60069,6 @@
       "title": "GitHubPullChecks"
     },
     {
-      "canonical_path": "entities/GitHubPullReconciliation.md",
-      "id": "GitHubPullReconciliation",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/GitHubPullReconciliation",
-      "outgoing_internal_links": [
-        "modules/schemas_github.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/github.py",
-      "title": "GitHubPullReconciliation"
-    },
-    {
       "canonical_path": "entities/GitHubPullReview.md",
       "id": "GitHubPullReview",
       "kind": "entities",
@@ -59163,16 +60081,19 @@
       "title": "GitHubPullReview"
     },
     {
-      "canonical_path": "entities/GitHubPullSubmission.md",
-      "id": "GitHubPullSubmission",
+      "canonical_path": "entities/GitHubReconciliation.md",
+      "id": "GitHubReconciliation",
       "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/GitHubPullSubmission",
+      "mcp_uri": "llm-wiki://entities/GitHubReconciliation",
       "outgoing_internal_links": [
-        "modules/schemas_github.md"
+        "modules/GitHubReconciliationPanel.md",
+        "modules/GitHubReconciliationPanel.test.md",
+        "modules/githubService.md",
+        "modules/types_github.md"
       ],
       "role": "semantic",
-      "source_path": "backend/app/schemas/github.py",
-      "title": "GitHubPullSubmission"
+      "source_path": "frontend/src/types/github.ts",
+      "title": "GitHubReconciliation"
     },
     {
       "canonical_path": "entities/GitHubReconciliationResponse.md",
@@ -59180,6 +60101,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/GitHubReconciliationResponse",
       "outgoing_internal_links": [
+        "modules/mcp_agent_tools.md",
         "modules/routers_task_domain.md",
         "modules/schemas_github.md"
       ],
@@ -59195,7 +60117,9 @@
       "outgoing_internal_links": [
         "modules/delivery_dependency_service.md",
         "modules/github_reconciliation_service.md",
+        "modules/mcp_agent_tools.md",
         "modules/routers_task_domain.md",
+        "modules/test_delivery_merge_prerequisites.md",
         "modules/test_github_reconciliation.md"
       ],
       "role": "semantic",
@@ -59294,10 +60218,11 @@
         "modules/github_webhook_service.md",
         "modules/review_provenance.md",
         "modules/tasks.md",
+        "modules/test_delivery_merge_prerequisites.md",
+        "modules/test_github_closure_concurrency.md",
         "modules/test_github_reconciliation.md",
         "modules/test_manual_review_provenance.md",
-        "modules/test_review_provenance.md",
-        "modules/test_review_provenance_transports.md"
+        "modules/test_review_provenance.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/github_status_service.py",
@@ -59376,6 +60301,8 @@
       "outgoing_internal_links": [
         "modules/github_webhook_service.md",
         "modules/routers_github.md",
+        "modules/test_delivery_merge_prerequisites.md",
+        "modules/test_github_closure_concurrency.md",
         "modules/test_github_reconciliation.md"
       ],
       "role": "semantic",
@@ -60808,12 +61735,12 @@
         "modules/test_annual_calendar_work_control.md",
         "modules/test_capacity_adjustments.md",
         "modules/test_capacity_transfers.md",
+        "modules/test_delivery_prerequisite_tools.md",
         "modules/test_execution_planning_window.md",
         "modules/test_execution_reconciliation.md",
         "modules/test_identity_lifecycle.md",
         "modules/test_iteration_date_move.md",
-        "modules/test_planning_window_digest_validation.md",
-        "modules/test_pm_forecast_calendar.md"
+        "modules/test_planning_window_digest_validation.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/mcp_server.py",
@@ -61735,10 +62662,10 @@
       "mcp_uri": "llm-wiki://entities/models_project_ProjectMilestone",
       "outgoing_internal_links": [
         "modules/app_database.md",
-        "modules/delivery_dependency.md",
         "modules/delivery_dependency_service.md",
         "modules/iteration_service.md",
         "modules/models___init__.md",
+        "modules/models_delivery_dependency.md",
         "modules/models_project.md",
         "modules/models_task.md",
         "modules/project_service.md"
@@ -61925,11 +62852,11 @@
         "modules/app_database.md",
         "modules/authority.md",
         "modules/commands.md",
-        "modules/delivery_dependency.md",
         "modules/delivery_observation.md",
         "modules/http_authority.md",
         "modules/models___init__.md",
         "modules/models_agent.md",
+        "modules/models_delivery_dependency.md",
         "modules/models_discussion.md",
         "modules/models_iteration.md",
         "modules/models_project.md",
@@ -62985,6 +63912,18 @@
       "title": "PartialWorkScope"
     },
     {
+      "canonical_path": "entities/PathRules.md",
+      "id": "PathRules",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/PathRules",
+      "outgoing_internal_links": [
+        "modules/test_classify_change_scope.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_classify_change_scope.py",
+      "title": "PathRules"
+    },
+    {
       "canonical_path": "entities/PendingTaskWrite.md",
       "id": "PendingTaskWrite",
       "kind": "entities",
@@ -63135,7 +64074,7 @@
         "modules/planEvidence.md"
       ],
       "role": "semantic",
-      "source_path": "frontend/src/features/planningMasters/planEvidence.ts",
+      "source_path": null,
       "title": "Translate"
     },
     {
@@ -63434,7 +64373,7 @@
         "modules/PlanPage.md"
       ],
       "role": "semantic",
-      "source_path": "frontend/src/pages/PlanPage.tsx",
+      "source_path": null,
       "title": "Translate"
     },
     {
@@ -64930,7 +65869,8 @@
         "modules/request_source_service.md",
         "modules/request_sources.md",
         "modules/schemas___init__.md",
-        "modules/schemas_request_source.md"
+        "modules/schemas_request_source.md",
+        "modules/test_delivery_merge_prerequisites.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/request_source.py",
@@ -67146,6 +68086,30 @@
       "title": "GitHubAutomationTargetStatus"
     },
     {
+      "canonical_path": "entities/schemas_github_GitHubPullReconciliation.md",
+      "id": "schemas_github_GitHubPullReconciliation",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/schemas_github_GitHubPullReconciliation",
+      "outgoing_internal_links": [
+        "modules/schemas_github.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/github.py",
+      "title": "GitHubPullReconciliation"
+    },
+    {
+      "canonical_path": "entities/schemas_github_GitHubPullSubmission.md",
+      "id": "schemas_github_GitHubPullSubmission",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/schemas_github_GitHubPullSubmission",
+      "outgoing_internal_links": [
+        "modules/schemas_github.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/github.py",
+      "title": "GitHubPullSubmission"
+    },
+    {
       "canonical_path": "entities/schemas_github_GitHubStatusAutomationResult.md",
       "id": "schemas_github_GitHubStatusAutomationResult",
       "kind": "entities",
@@ -67909,7 +68873,8 @@
       "outgoing_internal_links": [
         "modules/request_source_service.md",
         "modules/schemas___init__.md",
-        "modules/schemas_request_source.md"
+        "modules/schemas_request_source.md",
+        "modules/test_delivery_merge_prerequisites.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/request_source.py",
@@ -68210,7 +69175,7 @@
         "modules/task_brief_service.md",
         "modules/test_agent_runtime_recovery.md",
         "modules/test_agent_work_routing_lineage.md",
-        "modules/test_delivery_metrics.md"
+        "modules/test_delivery_merge_prerequisites.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/task_brief.py",
@@ -70858,11 +71823,11 @@
         "modules/agent_work_service.md",
         "modules/app_database.md",
         "modules/backlog_snapshot_service.md",
-        "modules/delivery_dependency.md",
         "modules/delivery_dependency_service.md",
         "modules/dependency_order.md",
         "modules/export.md",
         "modules/models___init__.md",
+        "modules/models_delivery_dependency.md",
         "modules/models_task.md",
         "modules/project_service.md"
       ],
@@ -72069,6 +73034,36 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskReadView.tsx",
       "title": "TaskViewPart"
+    },
+    {
+      "canonical_path": "entities/TaskViewSession.md",
+      "id": "TaskViewSession",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TaskViewSession",
+      "outgoing_internal_links": [
+        "modules/DeliveryDependencies.md",
+        "modules/GitHubReconciliationPanel.md",
+        "modules/TaskReadView.md",
+        "modules/taskViewSession.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/taskViewSession.ts",
+      "title": "TaskViewSession"
+    },
+    {
+      "canonical_path": "entities/TaskViewSessionUpdate.md",
+      "id": "TaskViewSessionUpdate",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TaskViewSessionUpdate",
+      "outgoing_internal_links": [
+        "modules/DeliveryDependencies.md",
+        "modules/GitHubReconciliationPanel.md",
+        "modules/TaskReadView.md",
+        "modules/taskViewSession.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/taskViewSession.ts",
+      "title": "TaskViewSessionUpdate"
     },
     {
       "canonical_path": "entities/team_member_TeamMember.md",
@@ -74147,6 +75142,32 @@
       "role": "semantic",
       "source_path": "frontend/src/types/github.ts",
       "title": "GitHubAutomationTargetStatus"
+    },
+    {
+      "canonical_path": "entities/types_github_GitHubPullReconciliation.md",
+      "id": "types_github_GitHubPullReconciliation",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_github_GitHubPullReconciliation",
+      "outgoing_internal_links": [
+        "modules/GitHubReconciliationPanel.md",
+        "modules/GitHubReconciliationPanel.test.md",
+        "modules/types_github.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/github.ts",
+      "title": "GitHubPullReconciliation"
+    },
+    {
+      "canonical_path": "entities/types_github_GitHubPullSubmission.md",
+      "id": "types_github_GitHubPullSubmission",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_github_GitHubPullSubmission",
+      "outgoing_internal_links": [
+        "modules/types_github.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/github.ts",
+      "title": "GitHubPullSubmission"
     },
     {
       "canonical_path": "entities/types_github_GitHubStatusAutomationResult.md",
@@ -76928,15 +77949,15 @@
         "modules/AdminAccessGate.test.md",
         "modules/AdminAccessPanel.test.md",
         "modules/ConnectedReadersPanel.test.md",
+        "modules/DeliveryDependencies.test.md",
         "modules/destinationEmptyStates.test.md",
         "modules/GetStartedFlow.test.md",
         "modules/GetStartedPanel.test.md",
+        "modules/GitHubReconciliationPanel.test.md",
         "modules/identityContext.md",
         "modules/IdentityProvider.md",
         "modules/identityService.md",
         "modules/sampleProject.test.md",
-        "modules/SettingsPage.labels.test.md",
-        "modules/SettingsPage.readOnlyPanels.test.md",
         "modules/TaskReadView.operatorKey.test.md"
       ],
       "role": "semantic",
@@ -77549,6 +78570,7 @@
         "modules/test_agent_model_catalog_api.md",
         "modules/test_agent_routing_rollout.md",
         "modules/test_agent_skill_routing_guidance.md",
+        "modules/test_delivery_prerequisite_tools.md",
         "modules/test_execution_planning_window.md"
       ],
       "role": "semantic",
@@ -78823,7 +79845,6 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/atRiskReasons",
       "outgoing_internal_links": [
-        "entities/atRiskReasons_Translate.md",
         "entities/RiskFields.md",
         "modules/atRiskReasons.md",
         "modules/AtRiskTaskReasons.md",
@@ -79525,10 +80546,7 @@
       "id": "check-tailwind-classes",
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/check-tailwind-classes",
-      "outgoing_internal_links": [
-        "modules/check-tailwind-classes.md",
-        "modules/tailwind.config.md"
-      ],
+      "outgoing_internal_links": [],
       "role": "semantic",
       "source_path": "frontend/scripts/check-tailwind-classes.mjs",
       "title": "check-tailwind-classes Module"
@@ -79542,6 +80560,16 @@
       "role": "semantic",
       "source_path": "frontend/scripts/check-task-selection-layout.mjs",
       "title": "check-task-selection-layout Module"
+    },
+    {
+      "canonical_path": "modules/check_markdown_links.md",
+      "id": "check_markdown_links",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/check_markdown_links",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "scripts/ci/check_markdown_links.py",
+      "title": "check_markdown_links Module"
     },
     {
       "canonical_path": "modules/check_model_aware_routing_closeout.md",
@@ -79611,6 +80639,16 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/KanbanBoard/claimTime.ts",
       "title": "claimTime Module"
+    },
+    {
+      "canonical_path": "modules/classify_change_scope.md",
+      "id": "classify_change_scope",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/classify_change_scope",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "scripts/ci/classify_change_scope.py",
+      "title": "classify_change_scope Module"
     },
     {
       "canonical_path": "modules/cli_closeout.md",
@@ -80135,6 +81173,7 @@
         "modules/installed_wheel_postgresql_qualification.md",
         "modules/migrations_env.md",
         "modules/test_database_configuration.md",
+        "modules/test_github_closure_concurrency.md",
         "modules/test_postgresql_concurrency.md",
         "modules/test_postgresql_migrations.md",
         "modules/upgrade_service.md"
@@ -80294,29 +81333,16 @@
       "mcp_uri": "llm-wiki://modules/delivery_dependencies",
       "outgoing_internal_links": [
         "entities/DeliveryDatabase.md",
-        "entities/DeliveryDependencyInput.md",
         "modules/app_database.md",
         "modules/app_main.md",
         "modules/delivery_dependencies.md",
         "modules/delivery_dependency_service.md",
-        "modules/routers_task_domain.md"
+        "modules/routers_task_domain.md",
+        "modules/schemas_delivery_dependency.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/routers/delivery_dependencies.py",
       "title": "delivery_dependencies Module"
-    },
-    {
-      "canonical_path": "modules/delivery_dependency.md",
-      "id": "delivery_dependency",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/delivery_dependency",
-      "outgoing_internal_links": [
-        "entities/DeliveryDependency.md",
-        "modules/delivery_dependency.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/models/delivery_dependency.py",
-      "title": "delivery_dependency Module"
     },
     {
       "canonical_path": "modules/delivery_dependency_service.md",
@@ -80418,23 +81444,32 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/DeliveryDependencies",
       "outgoing_internal_links": [
+        "entities/BranchDraft.md",
         "entities/Dependency.md",
-        "modules/api.md",
-        "modules/apiError.md",
-        "modules/Button.md",
-        "modules/DeliveryDependencies.md",
-        "modules/mutationFeedback.md",
-        "modules/projectService.md",
-        "modules/QueryState.md",
-        "modules/Select.md",
-        "modules/TaskForm.md",
-        "modules/TaskReadView.md",
-        "modules/taskService.md",
-        "modules/types_task.md"
+        "modules/DeliveryDependencies.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/DeliveryDependencies.tsx",
       "title": "DeliveryDependencies Module"
+    },
+    {
+      "canonical_path": "modules/DeliveryDependencies.test.md",
+      "id": "DeliveryDependencies.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/DeliveryDependencies.test",
+      "outgoing_internal_links": [
+        "modules/DeliveryDependencies.md",
+        "modules/DeliveryDependencies.test.md",
+        "modules/identityContext.md",
+        "modules/identityService.md",
+        "modules/renderWithProviders.md",
+        "modules/taskViewSession.md",
+        "modules/types_github.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/DeliveryDependencies.test.tsx",
+      "title": "DeliveryDependencies.test Module"
     },
     {
       "canonical_path": "modules/deliveryMetrics.md",
@@ -81587,18 +82622,7 @@
       "mcp_uri": "llm-wiki://modules/github_reconciliation_service",
       "outgoing_internal_links": [
         "entities/GitHubReconciliationService.md",
-        "modules/authority.md",
-        "modules/delivery_dependency_service.md",
-        "modules/github_links.md",
-        "modules/github_reconciliation_service.md",
-        "modules/github_status_service.md",
-        "modules/models_agent.md",
-        "modules/models_external_link.md",
-        "modules/models_task.md",
-        "modules/query_limits.md",
-        "modules/routers_task_domain.md",
-        "modules/task_replacement_service.md",
-        "modules/test_github_reconciliation.md"
+        "modules/github_reconciliation_service.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/github_reconciliation_service.py",
@@ -81634,6 +82658,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/github_status_service",
       "outgoing_internal_links": [
+        "entities/FetchedPullRequest.md",
         "entities/GitHubStatusService.md",
         "modules/github_status_service.md"
       ],
@@ -81658,12 +82683,45 @@
       "title": "github_webhook_service Module"
     },
     {
+      "canonical_path": "modules/GitHubReconciliationPanel.md",
+      "id": "GitHubReconciliationPanel",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/GitHubReconciliationPanel",
+      "outgoing_internal_links": [
+        "modules/GitHubReconciliationPanel.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/GitHubReconciliationPanel.tsx",
+      "title": "GitHubReconciliationPanel Module"
+    },
+    {
+      "canonical_path": "modules/GitHubReconciliationPanel.test.md",
+      "id": "GitHubReconciliationPanel.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/GitHubReconciliationPanel.test",
+      "outgoing_internal_links": [
+        "modules/GitHubReconciliationPanel.md",
+        "modules/GitHubReconciliationPanel.test.md",
+        "modules/identityContext.md",
+        "modules/identityService.md",
+        "modules/renderWithProviders.md",
+        "modules/taskViewSession.md",
+        "modules/types_github.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/GitHubReconciliationPanel.test.tsx",
+      "title": "GitHubReconciliationPanel.test Module"
+    },
+    {
       "canonical_path": "modules/githubService.md",
       "id": "githubService",
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/githubService",
       "outgoing_internal_links": [
         "modules/api.md",
+        "modules/DeliveryDependencies.md",
+        "modules/GitHubReconciliationPanel.md",
         "modules/githubService.md",
         "modules/GitHubSettingsPanel.md",
         "modules/types_github.md"
@@ -83360,6 +84418,19 @@
       "title": "database_migration Module"
     },
     {
+      "canonical_path": "modules/models_delivery_dependency.md",
+      "id": "models_delivery_dependency",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/models_delivery_dependency",
+      "outgoing_internal_links": [
+        "entities/DeliveryDependency.md",
+        "modules/models_delivery_dependency.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/models/delivery_dependency.py",
+      "title": "delivery_dependency Module"
+    },
+    {
       "canonical_path": "modules/models_discussion.md",
       "id": "models_discussion",
       "kind": "modules",
@@ -84817,7 +85888,6 @@
       "outgoing_internal_links": [
         "entities/EvidenceItem.md",
         "entities/OwnerLink.md",
-        "entities/planEvidence_Translate.md",
         "modules/formatDate.md",
         "modules/planEvidence.md",
         "modules/planningMasters_masters.md",
@@ -85243,7 +86313,6 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/PlanPage",
       "outgoing_internal_links": [
-        "entities/PlanPage_Translate.md",
         "entities/Readiness.md",
         "modules/PlanPage.md"
       ],
@@ -85553,16 +86622,6 @@
       "role": "semantic",
       "source_path": "frontend/src/components/planning/PlanWorkSection.tsx",
       "title": "PlanWorkSection Module"
-    },
-    {
-      "canonical_path": "modules/postcss.config.md",
-      "id": "postcss.config",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/postcss.config",
-      "outgoing_internal_links": [],
-      "role": "semantic",
-      "source_path": "frontend/postcss.config.js",
-      "title": "postcss.config Module"
     },
     {
       "canonical_path": "modules/postgres_runtime.md",
@@ -87705,6 +88764,23 @@
       "title": "common Module"
     },
     {
+      "canonical_path": "modules/schemas_delivery_dependency.md",
+      "id": "schemas_delivery_dependency",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/schemas_delivery_dependency",
+      "outgoing_internal_links": [
+        "entities/DeliveryDependencyInput.md",
+        "entities/DeliveryDependencyRetarget.md",
+        "modules/delivery_dependencies.md",
+        "modules/mcp_agent_tools.md",
+        "modules/schemas_delivery_dependency.md",
+        "modules/test_delivery_prerequisite_tools.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/delivery_dependency.py",
+      "title": "delivery_dependency Module"
+    },
+    {
       "canonical_path": "modules/schemas_email_settings.md",
       "id": "schemas_email_settings",
       "kind": "modules",
@@ -87817,9 +88893,7 @@
       "outgoing_internal_links": [
         "entities/GitHubAutomationFromStatus.md",
         "entities/GitHubPullChecks.md",
-        "entities/GitHubPullReconciliation.md",
         "entities/GitHubPullReview.md",
-        "entities/GitHubPullSubmission.md",
         "entities/GitHubReconciliationResponse.md",
         "entities/GitHubReplacementRole.md",
         "entities/GitHubStatusAutomationRuleBase.md",
@@ -87830,11 +88904,14 @@
         "entities/schemas_github_GitHubAutomationEventType.md",
         "entities/schemas_github_GitHubAutomationOutcome.md",
         "entities/schemas_github_GitHubAutomationTargetStatus.md",
+        "entities/schemas_github_GitHubPullReconciliation.md",
+        "entities/schemas_github_GitHubPullSubmission.md",
         "entities/schemas_github_GitHubStatusAutomationResult.md",
         "entities/schemas_github_GitHubStatusAutomationRuleCreate.md",
         "entities/schemas_github_GitHubStatusAutomationRuleUpdate.md",
         "modules/github_status_automation_service.md",
         "modules/github_webhook_service.md",
+        "modules/mcp_agent_tools.md",
         "modules/routers_github.md",
         "modules/routers_task_domain.md",
         "modules/schemas___init__.md",
@@ -88085,6 +89162,7 @@
         "modules/schemas___init__.md",
         "modules/schemas_agent.md",
         "modules/schemas_request_source.md",
+        "modules/test_delivery_merge_prerequisites.md",
         "modules/url_policy.md"
       ],
       "role": "semantic",
@@ -88803,6 +89881,7 @@
       "outgoing_internal_links": [
         "modules/routers_identity.md",
         "modules/server_features.md",
+        "modules/test_delivery_prerequisite_tools.md",
         "modules/test_server_features.md"
       ],
       "role": "semantic",
@@ -89578,6 +90657,7 @@
         "modules/support___init__.md",
         "modules/support_database.md",
         "modules/test_database_harness.md",
+        "modules/test_github_closure_concurrency.md",
         "modules/test_postgresql_concurrency.md",
         "modules/test_postgresql_migrations.md",
         "modules/test_project_identity.md",
@@ -89724,19 +90804,6 @@
       "title": "systemSettingsService Module"
     },
     {
-      "canonical_path": "modules/tailwind.config.md",
-      "id": "tailwind.config",
-      "kind": "modules",
-      "mcp_uri": "llm-wiki://modules/tailwind.config",
-      "outgoing_internal_links": [
-        "modules/check-tailwind-classes.md",
-        "modules/tailwind.config.md"
-      ],
-      "role": "semantic",
-      "source_path": "frontend/tailwind.config.js",
-      "title": "tailwind.config Module"
-    },
-    {
       "canonical_path": "modules/task_brief_service.md",
       "id": "task_brief_service",
       "kind": "modules",
@@ -89788,7 +90855,8 @@
         "modules/request_source_service.md",
         "modules/snapshot_service.md",
         "modules/task_context_revision_service.md",
-        "modules/task_service.md"
+        "modules/task_service.md",
+        "modules/test_delivery_merge_prerequisites.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/task_context_revision_service.py",
@@ -91049,6 +92117,26 @@
       "title": "taskViewParams.test Module"
     },
     {
+      "canonical_path": "modules/taskViewSession.md",
+      "id": "taskViewSession",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/taskViewSession",
+      "outgoing_internal_links": [
+        "entities/TaskViewSession.md",
+        "entities/TaskViewSessionUpdate.md",
+        "modules/DeliveryDependencies.md",
+        "modules/DeliveryDependencies.test.md",
+        "modules/GitHubReconciliationPanel.md",
+        "modules/GitHubReconciliationPanel.test.md",
+        "modules/TaskEditorDrawer.md",
+        "modules/TaskReadView.md",
+        "modules/taskViewSession.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/taskViewSession.ts",
+      "title": "taskViewSession Module"
+    },
+    {
       "canonical_path": "modules/taskViewState.md",
       "id": "taskViewState",
       "kind": "modules",
@@ -92136,6 +93224,18 @@
       "title": "test_capacity_transfers Module"
     },
     {
+      "canonical_path": "modules/test_check_markdown_links.md",
+      "id": "test_check_markdown_links",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_check_markdown_links",
+      "outgoing_internal_links": [
+        "entities/BrokenLinks.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_check_markdown_links.py",
+      "title": "test_check_markdown_links Module"
+    },
+    {
       "canonical_path": "modules/test_ci_runtime.md",
       "id": "test_ci_runtime",
       "kind": "modules",
@@ -92146,6 +93246,19 @@
       "role": "semantic",
       "source_path": "scripts/ci/tests/test_ci_runtime.py",
       "title": "test_ci_runtime Module"
+    },
+    {
+      "canonical_path": "modules/test_classify_change_scope.md",
+      "id": "test_classify_change_scope",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_classify_change_scope",
+      "outgoing_internal_links": [
+        "entities/GitClassification.md",
+        "entities/PathRules.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_classify_change_scope.py",
+      "title": "test_classify_change_scope Module"
     },
     {
       "canonical_path": "modules/test_client_contract.md",
@@ -92230,14 +93343,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/test_delivery_merge_prerequisites",
       "outgoing_internal_links": [
-        "modules/agent_service.md",
-        "modules/delivery_dependency_service.md",
-        "modules/external_link_service.md",
-        "modules/models_identity.md",
-        "modules/test_delivery_dependencies.md",
-        "modules/test_delivery_merge_prerequisites.md",
-        "modules/test_delivery_scenarios.md",
-        "modules/time.md"
+        "modules/test_delivery_merge_prerequisites.md"
       ],
       "role": "semantic",
       "source_path": "backend/tests/test_delivery_merge_prerequisites.py",
@@ -92254,6 +93360,18 @@
       "role": "semantic",
       "source_path": "backend/tests/test_delivery_metrics.py",
       "title": "test_delivery_metrics Module"
+    },
+    {
+      "canonical_path": "modules/test_delivery_prerequisite_tools.md",
+      "id": "test_delivery_prerequisite_tools",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_delivery_prerequisite_tools",
+      "outgoing_internal_links": [
+        "modules/test_delivery_prerequisite_tools.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_delivery_prerequisite_tools.py",
+      "title": "test_delivery_prerequisite_tools Module"
     },
     {
       "canonical_path": "modules/test_delivery_scenarios.md",
@@ -92274,7 +93392,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/test_delivery_target_branch_migration",
       "outgoing_internal_links": [
-        "modules/delivery_dependency.md",
+        "modules/models_delivery_dependency.md",
         "modules/models_project.md",
         "modules/models_task.md",
         "modules/test_delivery_target_branch_migration.md",
@@ -92423,23 +93541,24 @@
       "title": "test_gantt_iteration_project Module"
     },
     {
+      "canonical_path": "modules/test_github_closure_concurrency.md",
+      "id": "test_github_closure_concurrency",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_github_closure_concurrency",
+      "outgoing_internal_links": [
+        "modules/test_github_closure_concurrency.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/database/test_github_closure_concurrency.py",
+      "title": "test_github_closure_concurrency Module"
+    },
+    {
       "canonical_path": "modules/test_github_reconciliation.md",
       "id": "test_github_reconciliation",
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/test_github_reconciliation",
       "outgoing_internal_links": [
         "entities/FakeGitHub.md",
-        "modules/authority.md",
-        "modules/config.md",
-        "modules/external_link_service.md",
-        "modules/github_reconciliation_service.md",
-        "modules/github_status_service.md",
-        "modules/github_webhook_service.md",
-        "modules/models_agent.md",
-        "modules/models_external_link.md",
-        "modules/models_iteration.md",
-        "modules/models_project.md",
-        "modules/models_task_replacement.md",
         "modules/test_github_reconciliation.md"
       ],
       "role": "semantic",
@@ -93135,6 +94254,19 @@
       "title": "test_query_boundaries Module"
     },
     {
+      "canonical_path": "modules/test_readiness_detail.md",
+      "id": "test_readiness_detail",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_readiness_detail",
+      "outgoing_internal_links": [
+        "modules/app_main.md",
+        "modules/test_readiness_detail.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_readiness_detail.py",
+      "title": "test_readiness_detail Module"
+    },
+    {
       "canonical_path": "modules/test_rehearsal_ownership.md",
       "id": "test_rehearsal_ownership",
       "kind": "modules",
@@ -93255,8 +94387,10 @@
         "modules/agent_service.md",
         "modules/app_main.md",
         "modules/app_maintenance.md",
+        "modules/authority.md",
         "modules/config.md",
         "modules/email_settings_service.md",
+        "modules/mcp_server.md",
         "modules/models_agent.md",
         "modules/notification_service.md",
         "modules/session_service.md",
@@ -94725,13 +95859,22 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/types_github",
       "outgoing_internal_links": [
+        "entities/DeliveryPrerequisite.md",
+        "entities/DeliveryPrerequisiteHold.md",
+        "entities/GitHubReconciliation.md",
         "entities/types_github_GitHubAutomationEventType.md",
         "entities/types_github_GitHubAutomationOutcome.md",
         "entities/types_github_GitHubAutomationTargetStatus.md",
+        "entities/types_github_GitHubPullReconciliation.md",
+        "entities/types_github_GitHubPullSubmission.md",
         "entities/types_github_GitHubStatusAutomationResult.md",
         "entities/types_github_GitHubStatusAutomationRule.md",
         "entities/types_github_GitHubStatusAutomationRuleCreate.md",
         "entities/types_github_GitHubStatusAutomationRuleUpdate.md",
+        "modules/DeliveryDependencies.md",
+        "modules/DeliveryDependencies.test.md",
+        "modules/GitHubReconciliationPanel.md",
+        "modules/GitHubReconciliationPanel.test.md",
         "modules/githubService.md",
         "modules/GitHubSettingsPanel.md",
         "modules/GitHubSettingsPanel.test.md",
@@ -95430,6 +96573,21 @@
       "role": "semantic",
       "source_path": "frontend/src/features/planningMasters/usePlanScheduleWorkloads.ts",
       "title": "usePlanScheduleWorkloads Module"
+    },
+    {
+      "canonical_path": "modules/useProjectEditAccess.md",
+      "id": "useProjectEditAccess",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/useProjectEditAccess",
+      "outgoing_internal_links": [
+        "modules/DeliveryDependencies.md",
+        "modules/GitHubReconciliationPanel.md",
+        "modules/identityContext.md",
+        "modules/useProjectEditAccess.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/identity/useProjectEditAccess.ts",
+      "title": "useProjectEditAccess Module"
     },
     {
       "canonical_path": "modules/user_session.md",
@@ -97416,8 +98574,8 @@
       "outgoing_internal_links": [
         "modules/authority.md",
         "modules/commands.md",
-        "modules/delivery_dependency.md",
         "modules/delivery_dependency_service.md",
+        "modules/models_delivery_dependency.md",
         "modules/task_brief_service.md",
         "modules/task_service.md"
       ],
@@ -97456,6 +98614,21 @@
       "role": "mixed",
       "source_path": "backend/app/services/delivery_dependency_service.py",
       "title": "DeliveryDependencyService_remove"
+    },
+    {
+      "canonical_path": "workflows/DeliveryDependencyService_retarget.md",
+      "id": "DeliveryDependencyService_retarget",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/DeliveryDependencyService_retarget",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/delivery_dependency_service.md",
+        "modules/task_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/delivery_dependency_service.py",
+      "title": "DeliveryDependencyService_retarget"
     },
     {
       "canonical_path": "workflows/DeliveryMetricsService_report.md",
@@ -97791,6 +98964,21 @@
       "role": "mixed",
       "source_path": "backend/app/services/github_status_service.py",
       "title": "GitHubStatusService___init__"
+    },
+    {
+      "canonical_path": "workflows/GitHubStatusService_record_fetched_pull_requests.md",
+      "id": "GitHubStatusService_record_fetched_pull_requests",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/GitHubStatusService_record_fetched_pull_requests",
+      "outgoing_internal_links": [
+        "modules/commands.md",
+        "modules/github_reconciliation_service.md",
+        "modules/github_status_service.md",
+        "modules/task_context_revision_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/github_status_service.py",
+      "title": "GitHubStatusService_record_fetched_pull_requests"
     },
     {
       "canonical_path": "workflows/GitHubWebhookService___init__.md",
@@ -104699,6 +105887,20 @@
       "title": "restore_snapshot"
     },
     {
+      "canonical_path": "flows/http-retarget_delivery_dependency.md",
+      "id": "http-retarget_delivery_dependency",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-retarget_delivery_dependency",
+      "outgoing_internal_links": [
+        "modules/delivery_dependencies.md",
+        "modules/delivery_dependency_service.md",
+        "modules/routers_task_domain.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/delivery_dependencies.py",
+      "title": "retarget_delivery_dependency"
+    },
+    {
       "canonical_path": "flows/http-retry_outbound_webhook_delivery.md",
       "id": "http-retry_outbound_webhook_delivery",
       "kind": "flows",
@@ -106000,6 +107202,35 @@
       "title": "agent_actor_roster_resource"
     },
     {
+      "canonical_path": "flows/mcp-agent_add_delivery_dependency.md",
+      "id": "mcp-agent_add_delivery_dependency",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/mcp-agent_add_delivery_dependency",
+      "outgoing_internal_links": [
+        "modules/agent_planning_service.md",
+        "modules/agent_service.md",
+        "modules/app_maintenance.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/delivery_dependency_service.md",
+        "modules/discussion_service.md",
+        "modules/identity_service.md",
+        "modules/mcp_agent_tools.md",
+        "modules/mcp_server.md",
+        "modules/models_agent.md",
+        "modules/models_identity.md",
+        "modules/models_outbound_webhook.md",
+        "modules/schemas_agent_planning.md",
+        "modules/task_brief_service.md",
+        "modules/task_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/mcp_server.py",
+      "title": "agent_add_delivery_dependency"
+    },
+    {
       "canonical_path": "flows/mcp-agent_append_run_event.md",
       "id": "mcp-agent_append_run_event",
       "kind": "flows",
@@ -107050,6 +108281,36 @@
       "title": "agent_get_execution_usage_summary"
     },
     {
+      "canonical_path": "flows/mcp-agent_get_github_reconciliation.md",
+      "id": "mcp-agent_get_github_reconciliation",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/mcp-agent_get_github_reconciliation",
+      "outgoing_internal_links": [
+        "modules/agent_service.md",
+        "modules/app_maintenance.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/delivery_dependency_service.md",
+        "modules/discussion_service.md",
+        "modules/github_links.md",
+        "modules/github_reconciliation_service.md",
+        "modules/github_status_service.md",
+        "modules/identity_service.md",
+        "modules/mcp_agent_tools.md",
+        "modules/mcp_server.md",
+        "modules/models_identity.md",
+        "modules/models_outbound_webhook.md",
+        "modules/task_brief_service.md",
+        "modules/task_replacement_service.md",
+        "modules/task_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/mcp_server.py",
+      "title": "agent_get_github_reconciliation"
+    },
+    {
       "canonical_path": "flows/mcp-agent_get_iteration_plan_readiness.md",
       "id": "mcp-agent_get_iteration_plan_readiness",
       "kind": "flows",
@@ -107589,6 +108850,33 @@
       "role": "mixed",
       "source_path": "backend/app/mcp_server.py",
       "title": "agent_list_assignments_page"
+    },
+    {
+      "canonical_path": "flows/mcp-agent_list_delivery_dependencies.md",
+      "id": "mcp-agent_list_delivery_dependencies",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/mcp-agent_list_delivery_dependencies",
+      "outgoing_internal_links": [
+        "modules/agent_service.md",
+        "modules/app_maintenance.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/delivery_dependency_service.md",
+        "modules/discussion_service.md",
+        "modules/github_reconciliation_service.md",
+        "modules/identity_service.md",
+        "modules/mcp_agent_tools.md",
+        "modules/mcp_server.md",
+        "modules/models_identity.md",
+        "modules/models_outbound_webhook.md",
+        "modules/task_brief_service.md",
+        "modules/task_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/mcp_server.py",
+      "title": "agent_list_delivery_dependencies"
     },
     {
       "canonical_path": "flows/mcp-agent_list_model_bindings.md",
@@ -108367,6 +109655,35 @@
       "title": "agent_requeue_recovery"
     },
     {
+      "canonical_path": "flows/mcp-agent_retarget_delivery_dependency.md",
+      "id": "mcp-agent_retarget_delivery_dependency",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/mcp-agent_retarget_delivery_dependency",
+      "outgoing_internal_links": [
+        "modules/agent_planning_service.md",
+        "modules/agent_service.md",
+        "modules/app_maintenance.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/delivery_dependency_service.md",
+        "modules/discussion_service.md",
+        "modules/identity_service.md",
+        "modules/mcp_agent_tools.md",
+        "modules/mcp_server.md",
+        "modules/models_agent.md",
+        "modules/models_identity.md",
+        "modules/models_outbound_webhook.md",
+        "modules/schemas_agent_planning.md",
+        "modules/task_brief_service.md",
+        "modules/task_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/mcp_server.py",
+      "title": "agent_retarget_delivery_dependency"
+    },
+    {
       "canonical_path": "flows/mcp-agent_reviews_resource.md",
       "id": "mcp-agent_reviews_resource",
       "kind": "flows",
@@ -108429,6 +109746,36 @@
       "role": "mixed",
       "source_path": "backend/app/mcp_server.py",
       "title": "agent_routes_resource"
+    },
+    {
+      "canonical_path": "flows/mcp-agent_run_github_catch_up.md",
+      "id": "mcp-agent_run_github_catch_up",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/mcp-agent_run_github_catch_up",
+      "outgoing_internal_links": [
+        "modules/agent_service.md",
+        "modules/app_maintenance.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/delivery_dependency_service.md",
+        "modules/discussion_service.md",
+        "modules/github_reconciliation_service.md",
+        "modules/github_status_service.md",
+        "modules/identity_service.md",
+        "modules/mcp_agent_tools.md",
+        "modules/mcp_server.md",
+        "modules/models_identity.md",
+        "modules/models_outbound_webhook.md",
+        "modules/system_settings_service.md",
+        "modules/task_brief_service.md",
+        "modules/task_replacement_service.md",
+        "modules/task_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/mcp_server.py",
+      "title": "agent_run_github_catch_up"
     },
     {
       "canonical_path": "flows/mcp-agent_skill_catalog_resource.md",
@@ -110907,6 +112254,18 @@
       "title": "build_identity"
     },
     {
+      "canonical_path": "flows/process-check_markdown_links.md",
+      "id": "process-check_markdown_links",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-check_markdown_links",
+      "outgoing_internal_links": [
+        "modules/check_markdown_links.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/ci/check_markdown_links.py",
+      "title": "check_markdown_links"
+    },
+    {
       "canonical_path": "flows/process-check_model_aware_routing_closeout.md",
       "id": "process-check_model_aware_routing_closeout",
       "kind": "flows",
@@ -110932,6 +112291,18 @@
       "role": "mixed",
       "source_path": "scripts/ci/check_postgresql_documentation.py",
       "title": "check_postgresql_documentation"
+    },
+    {
+      "canonical_path": "flows/process-classify_change_scope.md",
+      "id": "process-classify_change_scope",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-classify_change_scope",
+      "outgoing_internal_links": [
+        "modules/classify_change_scope.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/ci/classify_change_scope.py",
+      "title": "classify_change_scope"
     },
     {
       "canonical_path": "flows/process-closeout.md",
@@ -111534,6 +112905,18 @@
       "title": "setup_agent_team"
     },
     {
+      "canonical_path": "flows/process-test_check_markdown_links.md",
+      "id": "process-test_check_markdown_links",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-test_check_markdown_links",
+      "outgoing_internal_links": [
+        "modules/test_check_markdown_links.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/ci/tests/test_check_markdown_links.py",
+      "title": "test_check_markdown_links"
+    },
+    {
       "canonical_path": "flows/process-test_ci_runtime.md",
       "id": "process-test_ci_runtime",
       "kind": "flows",
@@ -111544,6 +112927,18 @@
       "role": "mixed",
       "source_path": "scripts/ci/tests/test_ci_runtime.py",
       "title": "test_ci_runtime"
+    },
+    {
+      "canonical_path": "flows/process-test_classify_change_scope.md",
+      "id": "process-test_classify_change_scope",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-test_classify_change_scope",
+      "outgoing_internal_links": [
+        "modules/test_classify_change_scope.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/ci/tests/test_classify_change_scope.py",
+      "title": "test_classify_change_scope"
     },
     {
       "canonical_path": "flows/process-test_native_runtimes.md",
@@ -111947,11 +113342,13 @@
         "modules/check-query-feedback.md",
         "modules/check-tailwind-classes.md",
         "modules/check-task-selection-layout.md",
+        "modules/check_markdown_links.md",
         "modules/check_model_aware_routing_closeout.md",
         "modules/check_postgresql_documentation.md",
         "modules/Checkbox.md",
         "modules/ci_runtime.md",
         "modules/claimTime.md",
+        "modules/classify_change_scope.md",
         "modules/cli_closeout.md",
         "modules/cli_cutover.md",
         "modules/cli_database_migration.md",
@@ -111994,7 +113391,6 @@
         "modules/dateLocale.md",
         "modules/delivery.md",
         "modules/delivery_dependencies.md",
-        "modules/delivery_dependency.md",
         "modules/delivery_dependency_service.md",
         "modules/delivery_metrics.md",
         "modules/delivery_metrics_service.md",
@@ -112002,6 +113398,7 @@
         "modules/DeliveryAnalytics.md",
         "modules/DeliveryAnalytics.test.md",
         "modules/DeliveryDependencies.md",
+        "modules/DeliveryDependencies.test.md",
         "modules/deliveryMetrics.md",
         "modules/deliveryMetricsService.md",
         "modules/dependency_order.md",
@@ -112078,6 +113475,8 @@
         "modules/github_status_automation_service.md",
         "modules/github_status_service.md",
         "modules/github_webhook_service.md",
+        "modules/GitHubReconciliationPanel.md",
+        "modules/GitHubReconciliationPanel.test.md",
         "modules/githubService.md",
         "modules/GitHubSettingsPanel.md",
         "modules/GitHubSettingsPanel.test.md",
@@ -112181,6 +113580,7 @@
         "modules/models_calendar.md",
         "modules/models_capacity.md",
         "modules/models_database_migration.md",
+        "modules/models_delivery_dependency.md",
         "modules/models_discussion.md",
         "modules/models_execution_usage.md",
         "modules/models_external_link.md",
@@ -112307,7 +113707,6 @@
         "modules/planWork.md",
         "modules/planWork.test.md",
         "modules/PlanWorkSection.md",
-        "modules/postcss.config.md",
         "modules/postgres_runtime.md",
         "modules/postgresql___init__.md",
         "modules/postgresql_migrations_env.md",
@@ -112432,6 +113831,7 @@
         "modules/schemas_autonomy.md",
         "modules/schemas_calendar.md",
         "modules/schemas_common.md",
+        "modules/schemas_delivery_dependency.md",
         "modules/schemas_email_settings.md",
         "modules/schemas_execution_usage.md",
         "modules/schemas_external_link.md",
@@ -112538,7 +113938,6 @@
         "modules/SystemLanguageProvider.md",
         "modules/systemSettings.md",
         "modules/systemSettingsService.md",
-        "modules/tailwind.config.md",
         "modules/task_brief_service.md",
         "modules/task_bulk_operation_service.md",
         "modules/task_context_revision_service.md",
@@ -112618,6 +114017,7 @@
         "modules/TaskViewOptions.md",
         "modules/taskViewParams.md",
         "modules/taskViewParams.test.md",
+        "modules/taskViewSession.md",
         "modules/taskViewState.md",
         "modules/TaskWorkflowHelpContent.md",
         "modules/TaskWorkPanel.md",
@@ -112687,7 +114087,9 @@
         "modules/test_capacity_adjustments.md",
         "modules/test_capacity_contract.md",
         "modules/test_capacity_transfers.md",
+        "modules/test_check_markdown_links.md",
         "modules/test_ci_runtime.md",
+        "modules/test_classify_change_scope.md",
         "modules/test_client_contract.md",
         "modules/test_cutover_evidence.md",
         "modules/test_database_configuration.md",
@@ -112695,6 +114097,7 @@
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_merge_prerequisites.md",
         "modules/test_delivery_metrics.md",
+        "modules/test_delivery_prerequisite_tools.md",
         "modules/test_delivery_scenarios.md",
         "modules/test_delivery_target_branch_migration.md",
         "modules/test_dependency_date_cascade.md",
@@ -112708,6 +114111,7 @@
         "modules/test_execution_usage.md",
         "modules/test_execution_working_dates.md",
         "modules/test_gantt_iteration_project.md",
+        "modules/test_github_closure_concurrency.md",
         "modules/test_github_reconciliation.md",
         "modules/test_harness_session_metadata.md",
         "modules/test_human_work_queries.md",
@@ -112756,6 +114160,7 @@
         "modules/test_project_review_policy.md",
         "modules/test_project_working_timezone.md",
         "modules/test_query_boundaries.md",
+        "modules/test_readiness_detail.md",
         "modules/test_rehearsal_ownership.md",
         "modules/test_replacement_carried_provenance.md",
         "modules/test_review_provenance.md",
@@ -112887,6 +114292,7 @@
         "modules/usePlanningReadiness.md",
         "modules/usePlanningReadiness.test.md",
         "modules/usePlanScheduleWorkloads.md",
+        "modules/useProjectEditAccess.md",
         "modules/user_session.md",
         "modules/UserSessionBadge.md",
         "modules/UserSessionBadge.test.md",
@@ -113103,11 +114509,13 @@
         "modules/check-query-feedback.md",
         "modules/check-tailwind-classes.md",
         "modules/check-task-selection-layout.md",
+        "modules/check_markdown_links.md",
         "modules/check_model_aware_routing_closeout.md",
         "modules/check_postgresql_documentation.md",
         "modules/Checkbox.md",
         "modules/ci_runtime.md",
         "modules/claimTime.md",
+        "modules/classify_change_scope.md",
         "modules/cli_closeout.md",
         "modules/cli_cutover.md",
         "modules/cli_database_migration.md",
@@ -113150,7 +114558,6 @@
         "modules/dateLocale.md",
         "modules/delivery.md",
         "modules/delivery_dependencies.md",
-        "modules/delivery_dependency.md",
         "modules/delivery_dependency_service.md",
         "modules/delivery_metrics.md",
         "modules/delivery_metrics_service.md",
@@ -113158,6 +114565,7 @@
         "modules/DeliveryAnalytics.md",
         "modules/DeliveryAnalytics.test.md",
         "modules/DeliveryDependencies.md",
+        "modules/DeliveryDependencies.test.md",
         "modules/deliveryMetrics.md",
         "modules/deliveryMetricsService.md",
         "modules/dependency_order.md",
@@ -113234,6 +114642,8 @@
         "modules/github_status_automation_service.md",
         "modules/github_status_service.md",
         "modules/github_webhook_service.md",
+        "modules/GitHubReconciliationPanel.md",
+        "modules/GitHubReconciliationPanel.test.md",
         "modules/githubService.md",
         "modules/GitHubSettingsPanel.md",
         "modules/GitHubSettingsPanel.test.md",
@@ -113337,6 +114747,7 @@
         "modules/models_calendar.md",
         "modules/models_capacity.md",
         "modules/models_database_migration.md",
+        "modules/models_delivery_dependency.md",
         "modules/models_discussion.md",
         "modules/models_execution_usage.md",
         "modules/models_external_link.md",
@@ -113463,7 +114874,6 @@
         "modules/planWork.md",
         "modules/planWork.test.md",
         "modules/PlanWorkSection.md",
-        "modules/postcss.config.md",
         "modules/postgres_runtime.md",
         "modules/postgresql___init__.md",
         "modules/postgresql_migrations_env.md",
@@ -113588,6 +114998,7 @@
         "modules/schemas_autonomy.md",
         "modules/schemas_calendar.md",
         "modules/schemas_common.md",
+        "modules/schemas_delivery_dependency.md",
         "modules/schemas_email_settings.md",
         "modules/schemas_execution_usage.md",
         "modules/schemas_external_link.md",
@@ -113694,7 +115105,6 @@
         "modules/SystemLanguageProvider.md",
         "modules/systemSettings.md",
         "modules/systemSettingsService.md",
-        "modules/tailwind.config.md",
         "modules/task_brief_service.md",
         "modules/task_bulk_operation_service.md",
         "modules/task_context_revision_service.md",
@@ -113774,6 +115184,7 @@
         "modules/TaskViewOptions.md",
         "modules/taskViewParams.md",
         "modules/taskViewParams.test.md",
+        "modules/taskViewSession.md",
         "modules/taskViewState.md",
         "modules/TaskWorkflowHelpContent.md",
         "modules/TaskWorkPanel.md",
@@ -113843,7 +115254,9 @@
         "modules/test_capacity_adjustments.md",
         "modules/test_capacity_contract.md",
         "modules/test_capacity_transfers.md",
+        "modules/test_check_markdown_links.md",
         "modules/test_ci_runtime.md",
+        "modules/test_classify_change_scope.md",
         "modules/test_client_contract.md",
         "modules/test_cutover_evidence.md",
         "modules/test_database_configuration.md",
@@ -113851,6 +115264,7 @@
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_merge_prerequisites.md",
         "modules/test_delivery_metrics.md",
+        "modules/test_delivery_prerequisite_tools.md",
         "modules/test_delivery_scenarios.md",
         "modules/test_delivery_target_branch_migration.md",
         "modules/test_dependency_date_cascade.md",
@@ -113864,6 +115278,7 @@
         "modules/test_execution_usage.md",
         "modules/test_execution_working_dates.md",
         "modules/test_gantt_iteration_project.md",
+        "modules/test_github_closure_concurrency.md",
         "modules/test_github_reconciliation.md",
         "modules/test_harness_session_metadata.md",
         "modules/test_human_work_queries.md",
@@ -113912,6 +115327,7 @@
         "modules/test_project_review_policy.md",
         "modules/test_project_working_timezone.md",
         "modules/test_query_boundaries.md",
+        "modules/test_readiness_detail.md",
         "modules/test_rehearsal_ownership.md",
         "modules/test_replacement_carried_provenance.md",
         "modules/test_review_provenance.md",
@@ -114043,6 +115459,7 @@
         "modules/usePlanningReadiness.md",
         "modules/usePlanningReadiness.test.md",
         "modules/usePlanScheduleWorkloads.md",
+        "modules/useProjectEditAccess.md",
         "modules/user_session.md",
         "modules/UserSessionBadge.md",
         "modules/UserSessionBadge.test.md",
@@ -114097,5 +115514,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:a60ba0396e81f56a7e9c60c44b80a2d78dae1e78740719aac59f70dc520d4e48"
+  "source_hash": "sha256:24f6f77651a520070ed3044603cd2197724309a3cb7b44dc5d871b074cdaecbe"
 }

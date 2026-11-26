@@ -1,6 +1,6 @@
 # AuthorityError
 
-**Location:** `backend/app/authority.py:14`
+**Location:** `backend/app/authority.py:21`
 **Kind:** Class
 **Bases:** `RuntimeError`
 **Module:** [authority](../modules/authority.md)
@@ -96,4 +96,4 @@ flowchart LR
 | `mcp_server` | import | [mcp_server](../modules/mcp_server.md) | — |
 | `bootstrap` | call | [routers_identity](../modules/routers_identity.md) | 3 |
 
-> References: showing 12 of 94 logical references; 82 omitted by the 12-row generated summary limit.
+> References: showing 12 of 95 logical references; 83 omitted by the 12-row generated summary limit.

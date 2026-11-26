@@ -16,22 +16,19 @@ _Auto-generated from `frontend/src/pages/TasksPage.toolbar.test.tsx`._
 | `../types/savedView` | `SavedView` | Declaration | erased |
 | `../types/task` | `Task` | Declaration | erased |
 | `./TasksPage` | `TasksPage` | — | compiler-dependent |
+| `@tailwindcss/node` | `compile`, `optimize` | — | compiler-dependent |
 | `@testing-library/react` | `cleanup`, `fireEvent`, `screen`, `waitFor`, `within` | — | compiler-dependent |
 | `node:fs` | `readFileSync` | — | compiler-dependent |
 | `node:path` | `resolve` | — | compiler-dependent |
-| `node:url` | `pathToFileURL` | — | compiler-dependent |
-| `postcss` | `postcss` | — | compiler-dependent |
 | `react-router-dom` | `useLocation` | — | compiler-dependent |
-| `tailwindcss` | `tailwindcss` | — | compiler-dependent |
 | `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
-| Unresolved `dynamic-import` | — (line 473; deferred) | — | unclassified |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
-| Constants | `workScopeMock`, `iterationServiceMock`, `taskServiceMock`, `savedViewServiceMock`, `css`, `ana`, `TASKS`, `anaPlannedView`, `LAYOUT_PROPERTIES` |
-| Module calls | `workScopeMock = hoisted`, `iterationServiceMock = hoisted`, `taskServiceMock = hoisted`, `savedViewServiceMock = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `css = readFileSync`, `describe`, `describe` |
+| Constants | `workScopeMock`, `iterationServiceMock`, `taskServiceMock`, `savedViewServiceMock`, `css`, `ana`, `TASKS`, `anaPlannedView`, `LAYOUT_PROPERTIES`, `SIDES` |
+| Module calls | `workScopeMock = hoisted`, `iterationServiceMock = hoisted`, `taskServiceMock = hoisted`, `savedViewServiceMock = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `css = readFileSync`, `describe`, `passStyles = Map`, `describe` |
 
 ## Local dependency map
 
@@ -80,4 +77,4 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 5 | 0 |
+| typescript | 4 | 0 |
