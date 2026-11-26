@@ -43833,7 +43833,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3492,
+              "line": 3590,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43841,7 +43841,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3497,
+              "line": 3595,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43849,7 +43849,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3500,
+              "line": 3598,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43857,7 +43857,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3503,
+              "line": 3601,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43865,7 +43865,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3506,
+              "line": 3604,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43873,7 +43873,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3512,
+              "line": 3610,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43881,7 +43881,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3515,
+              "line": 3613,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43889,7 +43889,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3524,
+              "line": 3616,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -43898,61 +43898,61 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 3483,
+              "line": 3581,
               "step": "main",
               "target": "_parser().parse_args"
             },
             {
               "kind": "external_call",
-              "line": 3424,
+              "line": 3507,
               "step": "_parser",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3425,
+              "line": 3508,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 3431,
+              "line": 3514,
               "step": "_parser",
               "target": "parser.add_subparsers"
             },
             {
               "kind": "unresolved_call",
-              "line": 3432,
+              "line": 3515,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3436,
+              "line": 3519,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3440,
+              "line": 3523,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3441,
+              "line": 3524,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3445,
+              "line": 3528,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3446,
+              "line": 3529,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
@@ -43978,7 +43978,7 @@
           "modules_touched": [
             "scripts/build_agent_skills.py"
           ],
-          "step_count": 1279,
+          "step_count": 1315,
           "truncated": true
         }
       },
@@ -115959,5 +115959,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:b7b1d28dcfd7d4d921b31832da1bb101049983c92fc824474a31ea25d7dad2de"
+  "source_hash": "sha256:dfb74b422f66f6fdb8b709249bf651830dc051f4641f7eee4133c948d52965bb"
 }
