@@ -21,6 +21,7 @@ _Auto-generated from `AgentModelCatalogEntry` in `frontend/src/types/agent.ts`._
 | `context_tier` | `ModelContextTier` | Yes | — | — |
 | `modality_tags` | `string[]` | Yes | — | — |
 | `cost_tier` | `ModelCostTier` | Yes | — | — |
+| `local_first` | `boolean` | Yes | — | — |
 | `latency_tier` | `ModelLatencyTier` | Yes | — | — |
 | `enabled` | `boolean` | Yes | — | — |
 | `revision` | `number` | Yes | — | — |
@@ -69,7 +70,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_agent](../modules/types_agent.md) | 0 | `configured_model_alias`, `context_tier`, `cost_tier`, `created_at`, `enabled`, `id`, `key`, `last_verified_at`, `latency_tier`, `modality_tags`, `provider`, `reasoning_tier` |
+| [types_agent](../modules/types_agent.md) | 0 | `configured_model_alias`, `context_tier`, `cost_tier`, `created_at`, `enabled`, `id`, `key`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags`, `provider` |
 
 ### References
 

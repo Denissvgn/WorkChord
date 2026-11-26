@@ -167,11 +167,11 @@ flowchart LR
 | require_operator | AuthorityError | 93 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
 | link_profile | require_identity_writes | 324 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 527 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
 | link_profile | internal_authority | 326 | `internal_authority(db)` |
-| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 99 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 113 | `db.info.get('authority_internal', False)` |
 | link_profile | db.get | 327 | `db.get(Principal, principal_id)` |
 
 ### Boundary effects
@@ -186,7 +186,7 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | unresolved_call | `require_operator` | `db.info.get` | 91 |
-| unresolved_call | `internal_authority` | `db.info.get` | 99 |
+| unresolved_call | `internal_authority` | `db.info.get` | 113 |
 | unresolved_call | `link_profile` | `db.get` | 327 |
 | step_limit | `link_profile` | `first 12 steps` | 0 |
 

@@ -72,7 +72,9 @@ def database_rows(engine):
 # Columns later revisions add, with the value every retained row receives.
 LATER_COLUMNS = {
     "projects": {"require_different_review_publisher": 0},
+    "agent_model_catalog_entries": {"local_first": 0},
     "tasks": {"execution_planning_window": None},
+    "task_review_records": {"kind": "review"},
 }
 
 
@@ -131,6 +133,7 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         assert runs["columns"].pop("execution_provenance") == {"type": {"family": "json"}, "nullable": True}
         assert after_catalog["agent_task_assignments"]["columns"].pop("review_selection") == {"type": {"family": "json"}, "nullable": True}
         assert after_catalog["agent_model_catalog_entries"]["columns"].pop("publisher_key") == {"type": {"family": "text"}, "nullable": True}
+        assert after_catalog["agent_model_catalog_entries"]["columns"].pop("local_first") == {"type": {"family": "boolean"}, "nullable": False}
         assert after_catalog["projects"]["columns"].pop("require_different_review_publisher") == {"type": {"family": "boolean"}, "nullable": False}
         assert after_catalog["tasks"]["columns"].pop("execution_planning_window") == {"type": {"family": "json"}, "nullable": True}
         # A later revision records which annual calendars an iteration or profile spans.
@@ -148,6 +151,8 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         assert after_catalog.pop("task_replacements")["checks"] == ["ck_task_replacements_distinct"]
         # A later revision lets a delivery prerequisite name the branch its code must merge on.
         assert after_catalog["delivery_dependencies"]["columns"].pop("target_branch") == {"type": {"family": "text"}, "nullable": True}
+        # A later revision tells an owner's override acceptance apart from an ordinary review.
+        assert after_catalog["task_review_records"]["columns"].pop("kind") == {"type": {"family": "text"}, "nullable": False}
         # A later revision records postponed tasks and their reactivation requirements.
         assert after_catalog.pop("task_postponements")["checks"] == [
             "ck_task_postponements_from_status", "ck_task_postponements_reactivation"]

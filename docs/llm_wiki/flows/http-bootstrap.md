@@ -163,11 +163,11 @@ flowchart LR
 |---|---|---:|---|
 | bootstrap | require_identity_writes | 241 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 527 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
 | bootstrap | internal_authority | 242 | `internal_authority(db)` |
-| internal_authority | db.info.get | 99 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get | 113 | `db.info.get('authority_internal', False)` |
 | bootstrap | db.get | 243 | `db.get(Principal, data.principal_id)` |
 | bootstrap | AuthorityError | 245 | `AuthorityError('principal_not_found', "Sign in once to establish the owner's verified principal.", 404)` |
 | bootstrap | db.get | 246 | `db.get(WorkspaceAuthorityState, 1)` |
@@ -184,7 +184,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `internal_authority` | `db.info.get` | 99 |
+| unresolved_call | `internal_authority` | `db.info.get` | 113 |
 | unresolved_call | `bootstrap` | `db.get` | 243 |
 | unresolved_call | `bootstrap` | `db.get` | 246 |
 | step_limit | `bootstrap` | `first 12 steps` | 0 |

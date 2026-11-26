@@ -214,34 +214,34 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workchord_reviewer_role | _skill_bundle_prompt | 2706 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended verifier skill version, then read workchord://skill-bundles/workchord-reviewer/{version}/SKILL.md. Follow that skill, read your review queue, and record a verdict only for the exact review assignment it returns.')` |
-| _skill_bundle_prompt | _agent_context | 370 | `_agent_context(_skill_bundle_scope_requirement(...))` |
-| _agent_context | _current_agent_key | 278 | `_current_agent_key(data not statically known)` |
-| _current_agent_key | _http_agent_key.get | 205 | `_http_agent_key.get(data not statically known)` |
-| _current_agent_key | os.getenv | 205 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
-| _agent_context | MCPAuthError | 280 | `MCPAuthError(...)` |
-| _agent_context | _open_db_session | 281 | `_open_db_session(data not statically known)` |
-| _open_db_session | _session_factory | 186 | `_session_factory(data not statically known)` |
-| _open_db_session | hasattr | 187 | `hasattr(session_context, '__aenter__')` |
-| _agent_context | command_transaction | 282 | `command_transaction(db, mode=...)` |
-| command_transaction | current_command | 93 | `current_command(db)` |
+| workchord_reviewer_role | _skill_bundle_prompt | 2709 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended verifier skill version, then read workchord://skill-bundles/workchord-reviewer/{version}/SKILL.md. Follow that skill, read your review queue, and record a verdict only for the exact review assignment it returns.')` |
+| _skill_bundle_prompt | _agent_context | 373 | `_agent_context(_skill_bundle_scope_requirement(...))` |
+| _agent_context | _current_agent_key | 279 | `_current_agent_key(data not statically known)` |
+| _current_agent_key | _http_agent_key.get | 206 | `_http_agent_key.get(data not statically known)` |
+| _current_agent_key | os.getenv | 206 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
+| _agent_context | MCPAuthError | 281 | `MCPAuthError(...)` |
+| _agent_context | _open_db_session | 282 | `_open_db_session(data not statically known)` |
+| _open_db_session | _session_factory | 187 | `_session_factory(data not statically known)` |
+| _open_db_session | hasattr | 188 | `hasattr(session_context, '__aenter__')` |
+| _agent_context | command_transaction | 283 | `command_transaction(db, mode=...)` |
+| command_transaction | current_command | 98 | `current_command(db)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| environment_read | `os.getenv` | `_current_agent_key` | 205 |
-| mutation | `db.info.pop` | `command_transaction` | 113 |
-| mutation | `db.info.pop` | `command_transaction` | 126 |
-| mutation | `db.info.pop` | `command_transaction` | 127 |
-| mutation | `db.info.pop` | `command_transaction` | 129 |
+| environment_read | `os.getenv` | `_current_agent_key` | 206 |
+| mutation | `db.info.pop` | `command_transaction` | 118 |
+| mutation | `db.info.pop` | `command_transaction` | 131 |
+| mutation | `db.info.pop` | `command_transaction` | 132 |
+| mutation | `db.info.pop` | `command_transaction` | 134 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `_open_db_session` | `_session_factory` | 186 |
-| external_call | `_open_db_session` | `hasattr` | 187 |
+| unresolved_call | `_open_db_session` | `_session_factory` | 187 |
+| external_call | `_open_db_session` | `hasattr` | 188 |
 | step_limit | `workchord_reviewer_role` | `first 12 steps` | 0 |
 | truncated_flow | `workchord_reviewer_role` | `depth limit` | 0 |
 

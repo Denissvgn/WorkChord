@@ -87,6 +87,23 @@ class TaskReviewWrite(BaseModel):
     evidence: str = Field(default="", max_length=8000)
 
 
+class OwnerAcceptanceWrite(BaseModel):
+    """An owner's acceptance of one resolved task without a verified review publisher."""
+    model_config = ConfigDict(extra="forbid")
+    expected_version: int = Field(ge=1)
+    brief_revision: int = Field(ge=0)
+    artifact_revision: int = Field(ge=0)
+    reason: str = Field(min_length=1, max_length=2000, description="Why the owner accepts this work without an independent publisher review.")
+    evidence: str = Field(default="", max_length=8000)
+
+    @field_validator("reason")
+    @classmethod
+    def reason_has_content(cls, value):
+        if not value.strip():
+            raise ValueError("An owner override needs a reason")
+        return value
+
+
 class TaskReviewResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
@@ -95,6 +112,8 @@ class TaskReviewResponse(BaseModel):
     artifact_revision: int
     principal_id: int | None
     verdict: str
+    kind: Literal["review", "owner_override"] = Field(default="review",
+        description="owner_override marks an owner's acceptance that set aside publisher independence; it is not an independent review.")
     reason: str
     evidence: str
     created_at: datetime

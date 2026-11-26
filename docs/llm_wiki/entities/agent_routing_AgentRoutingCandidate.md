@@ -1,6 +1,6 @@
 # AgentRoutingCandidate
 
-**Location:** `backend/app/schemas/agent_routing.py:951`
+**Location:** `backend/app/schemas/agent_routing.py:957`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -45,6 +45,7 @@ One eligible actor plus exact model-binding candidate.
 | `tool_tags` | `list[str]` | `tool_tags` | No | No | factory: `list` | — | — | — |
 | `data_policy_tags` | `list[str]` | `data_policy_tags` | No | No | factory: `list` | — | — | — |
 | `cost_tier` | `ModelCostTier` | `cost_tier` | Yes | No | — | — | — | — |
+| `local_first` | `bool` | `local_first` | No | No | `False` | — | — | — |
 | `latency_tier` | `ModelLatencyTier` | `latency_tier` | Yes | No | — | — | — | — |
 | `available_capacity_days` | `float` | `available_capacity_days` | Yes | No | — | ge=0 | — | — |
 | `committed_effort_days` | `float` | `committed_effort_days` | Yes | No | — | ge=0 | — | — |

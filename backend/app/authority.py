@@ -93,6 +93,20 @@ def require_operator(db):
         raise AuthorityError("operator_required", "Workspace operator permission is required.")
 
 
+def require_owner_override(db):
+    """Only a signed-in workspace owner or operator may set aside publisher independence.
+
+    An operator API key, an agent, a trusted-local browser and a paired observer are
+    not attributable to one accountable person, so none of them qualifies.
+    """
+    authority = db.info.get("authority")
+    if (authority is None or authority.kind != "human" or authority.principal_id is None
+            or authority.read_only or authority.workspace_role not in {"owner", "operator"}):
+        raise AuthorityError("owner_acceptance_required",
+            "Only a signed-in workspace owner or operator can accept work as an owner override.")
+    return authority
+
+
 @contextmanager
 def internal_authority(db):
     """Allow identity resolution or verified automation inside a trusted server boundary."""
@@ -511,9 +525,14 @@ def append_command_audit(session, _flush_context):
     live_scopes = set()
     for offset in range(0, len(scopes), 500):
         live_scopes.update(session.connection().execute(select(Project.id).where(Project.id.in_(scopes[offset:offset + 500]))).scalars())
+    command = session.info.get("command")
+    owner_overrides = sorted(command.owner_acceptance_tasks) if command is not None else []
     for obj, table, project_id, action, fields in pending:
         details = {"entity_id": getattr(obj, "id", None), "changed_fields": fields,
                    "review_override": authority.review_override}
+        if owner_overrides:
+            # Every write of this command belongs to an owner's override of publisher independence.
+            details["owner_acceptance_override_task_ids"] = owner_overrides
         live_project_id = project_id
         if project_id is not None and project_id not in live_scopes:
             live_project_id = None

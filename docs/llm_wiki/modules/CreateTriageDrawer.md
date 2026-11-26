@@ -77,4 +77,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `CreateTriageDrawer` | `({ projects, iterations, isSubmitting, error, onSubmit, onClose, initialTitle = '' }: CreateTriageDrawerProps)` | — | — |
+| `CreateTriageDrawer` | `({ projects, iterations, isSubmitting, error, sourceUrlError, onSubmit, onClose, initialTitle = '' }: CreateTriageDrawerProps)` | — | — |

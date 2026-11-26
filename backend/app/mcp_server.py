@@ -39,6 +39,7 @@ from app.services.agent_team_setup_service import AgentTeamSetupConflictError
 from app.services.task_service import TaskVersionConflictError
 from app.mutation_versions import MissingMutationRevision
 from app.services.triage_service import TriageConflictError
+from app.utils.source_link_policy import SourceLinkRefused
 
 
 MCP_AGENT_API_KEY_ENV = "MCP_AGENT_API_KEY"
@@ -303,6 +304,8 @@ def _structured_tool_error(exc: Exception) -> str:
         payload = {"code": "agent_state_conflict", "message": str(exc)}
     elif isinstance(exc, TriageConflictError):
         payload = {"code": "triage_state_conflict", "message": str(exc)}
+    elif isinstance(exc, SourceLinkRefused):
+        payload = exc.detail()
     elif isinstance(exc, AgentPermissionError):
         payload = {"code": "agent_permission_denied", "message": str(exc)}
     elif isinstance(exc, MCPAuthError):

@@ -1,6 +1,6 @@
 # AgentModelCatalogEntry
 
-**Location:** `backend/app/models/agent.py:128`
+**Location:** `backend/app/models/agent.py:129`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)
@@ -22,6 +22,7 @@ Secret-free provider-neutral model capability declaration.
 | `context_tier` | `Mapped[str]` | `mapped_column(String(20), nullable=False)` | — |
 | `modality_tags` | `Mapped[list[Any]]` | `mapped_column(JSON, default=lambda: ['text'], nullable=False)` | — |
 | `cost_tier` | `Mapped[str]` | `mapped_column(String(20), nullable=False)` | — |
+| `local_first` | `Mapped[bool]` | `mapped_column(Boolean, default=False, server_default=false(), nullable=False)` | — |
 | `latency_tier` | `Mapped[str]` | `mapped_column(String(20), nullable=False)` | — |
 | `enabled` | `Mapped[bool]` | `mapped_column(Boolean, default=True, nullable=False)` | — |
 | `revision` | `Mapped[int]` | `mapped_column(Integer, default=1, nullable=False)` | — |
@@ -86,7 +87,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_agent](../modules/models_agent.md) | 0 | `bindings`, `configured_model_alias`, `context_tier`, `cost_tier`, `created_at`, `enabled`, `id`, `key`, `last_verified_at`, `latency_tier`, `modality_tags`, `provider` |
+| [models_agent](../modules/models_agent.md) | 0 | `bindings`, `configured_model_alias`, `context_tier`, `cost_tier`, `created_at`, `enabled`, `id`, `key`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags` |
 
 ### Structure
 
@@ -111,4 +112,4 @@ flowchart LR
 | `test_binding_and_preset_routes_preserve_credential_permissions` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 2 |
 | `test_binding_disable_requires_explicit_reconciliation_and_marks_queue_stale` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 1 |
 
-> References: showing 12 of 48 logical references; 36 omitted by the 12-row generated summary limit.
+> References: showing 12 of 49 logical references; 37 omitted by the 12-row generated summary limit.

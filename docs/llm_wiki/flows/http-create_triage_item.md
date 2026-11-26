@@ -42,14 +42,13 @@ sequenceDiagram
     participant p20 as RuntimeSettingsService._fernet
     participant p21 as RuntimeSettingsEncryptionError
     participant p22 as normalize_provider_api_url
-    participant p23 as HTTPException
+    participant p23 as isinstance (backend/app/routers/triage.py:_bad_request)
     participant p24 as service.create
-    participant p25 as str (backend/app/routers/triage.py:_bad_request)
-    participant p26 as message.lower
-    participant p27 as re.fullmatch
-    participant p28 as match.groups
-    participant p29 as getattr (backend/app/services/lang…solve_runtime_ui_language)
-    participant p30 as label.strip().lower().replace
+    participant p25 as HTTPException
+    participant p26 as error.detail
+    participant p27 as str (backend/app/routers/triage.py:_bad_request)
+    participant p28 as message.lower
+    participant p29 as re.fullmatch
     p0->>p1: _bad_request
     p1->>p2: resolve_runtime_ui_language
     p1->>p3: backend_error_message
@@ -72,32 +71,32 @@ sequenceDiagram
     p12->>p20: RuntimeSettingsService._fernet
     p12->>p21: RuntimeSettingsEncryptionError
     p13->>p22: normalize_provider_api_url
-    p1-->>p23: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=backend_error_message(...))
+    p1-->>p23: isinstance (backend/app/routers/triage.py:_bad_request)(error, SourceLinkRefused)
     p0-->>p24: service.create(data)
-    p1-->>p25: str (backend/app/routers/triage.py:_bad_request)(error)
-    p3-->>p26: message.lower
-    p3-->>p27: re.fullmatch('(.+) with id ([^ ]+) not found', message)
-    p3-->>p28: match.groups
-    p2-->>p29: getattr (backend/app/services/lang…solve_runtime_ui_language)(settings, 'app_ui_language', None)
-    p3-->>p30: label.strip().lower().replace(' ', '_')
+    p1-->>p25: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error.detail(...))
+    p1-->>p26: error.detail
+    p1-->>p25: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=backend_error_message(...))
+    p1-->>p27: str (backend/app/routers/triage.py:_bad_request)(error)
+    p3-->>p28: message.lower
+    p3-->>p29: re.fullmatch('(.+) with id ([^ ]+) not found', message)
 ```
 
-> Call sequence diagram shows 30 of 161 interactions; 131 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 164 interactions; 134 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 4 of 46 (42 omitted); unresolved 4 of 70 (66 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 5 of 48 (43 omitted); unresolved 3 of 71 (68 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
-| `backend/app/services/language_service.py:normalize_language` | 5 | - | unresolved | 2 |
-| `backend/app/services/language_service.py:normalize_language` | 5 | - | external | 1 |
-| `backend/app/services/system_settings_service.py:RuntimeSettingsService._definition` | 11 | - | unresolved | 1 |
-| `backend/app/services/system_settings_service.py:RuntimeSettingsService._row` | 14 | - | unresolved | 3 |
-| `backend/app/services/system_settings_service.py:RuntimeSettingsService._row` | 14 | - | external | 1 |
-| `backend/app/services/system_settings_service.py:RuntimeSettingsService._decrypt_secret` | 19 | - | unresolved | 3 |
-| `backend/app/services/system_settings_service.py:RuntimeSettingsService._coerce` | 25 | - | external | 8 |
-| `backend/app/services/system_settings_service.py:RuntimeSettingsService._coerce` | 25 | [backend/app/services/system_settings_service.py](../modules/system_settings_service.md) | internal | 14 |
+| `backend/app/services/language_service.py:normalize_language` | 8 | - | unresolved | 2 |
+| `backend/app/services/language_service.py:normalize_language` | 8 | - | external | 1 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._definition` | 14 | - | unresolved | 1 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._row` | 17 | - | unresolved | 3 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._row` | 17 | - | external | 1 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._decrypt_secret` | 22 | - | unresolved | 3 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._coerce` | 28 | - | external | 8 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._coerce` | 28 | [backend/app/services/system_settings_service.py](../modules/system_settings_service.md) | internal | 14 |
 > Omission summary shows 8 of 26 groups; 18 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
@@ -113,7 +112,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 46; effect analysis evaluated: 27, partial: 1, unavailable: 18. Counts include steps omitted from the displayed trace.
 
-Collector observations for 28 source steps with known totals: observed: 145, emitted: 119, omitted: 26. Unavailable totals are excluded.
+Collector observations for 28 source steps with known totals: observed: 148, emitted: 122, omitted: 26. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -123,49 +122,47 @@ Collector observations for 28 source steps with known totals: observed: 145, emi
 |---|---|---|---|---:|---:|---:|
 | `create_triage_item` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
 | `service.create` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `_bad_request` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `_bad_request` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
+| `isinstance (backend/app/routers/triage.py:_bad_request)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `error.detail` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `resolve_runtime_ui_language` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
 | `normalize_language` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
 | `str(…).strip().lower` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `str(…).strip (backend/app/services/lang…ice.py:normalize_language)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `str (backend/app/services/lang…ice.py:normalize_language)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `RuntimeSettingsService.get_app_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
-| `RuntimeSettingsService.resolve` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
-| `RuntimeSettingsService._definition` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
-| `SETTING_DEFINITIONS.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 
 ```mermaid
 flowchart LR
     s1["1. create_triage_item"]
     s2["2. service.create"]
     s3["3. _bad_request"]
-    s4["4. resolve_runtime_ui_language"]
-    s5["5. normalize_language"]
-    s6["6. str(…).strip().lower"]
-    s7["7. str(…).strip (backend/app/services/lang…ice.py:normalize_language)"]
-    s8["8. str (backend/app/services/lang…ice.py:normalize_language)"]
-    s9["9. RuntimeSettingsService.get_app_settings"]
-    s10["10. RuntimeSettingsService.resolve"]
-    s11["11. RuntimeSettingsService._definition"]
-    s12["12. SETTING_DEFINITIONS.get"]
+    s4["4. isinstance (backend/app/routers/triage.py:_bad_request)"]
+    s5["5. HTTPException"]
+    s6["6. error.detail"]
+    s7["7. resolve_runtime_ui_language"]
+    s8["8. normalize_language"]
+    s9["9. str(…).strip().lower"]
+    s10["10. str(…).strip (backend/app/services/lang…ice.py:normalize_language)"]
+    s11["11. str (backend/app/services/lang…ice.py:normalize_language)"]
+    s12["12. RuntimeSettingsService.get_app_settings"]
     s1 -. "service.create(data)" .-> s2
     s1 -->|"_bad_request(service, e)"| s3
-    s3 -->|"resolve_runtime_ui_language(service.db)"| s4
-    s4 -->|"normalize_language(default)"| s5
-    s5 -. "str(…).strip().lower(data not statically known)" .-> s6
-    s5 -. "str(…).strip (backend/app/services/lang…ice.py:normalize_language)(data not statically known)" .-> s7
-    s5 -. "str (backend/app/services/lang…ice.py:normalize_language)(...)" .-> s8
-    s4 -->|"RuntimeSettingsService.get_app_settings(data not statically known)"| s9
-    s9 -->|"RuntimeSettingsService.resolve('app.ui_language')"| s10
-    s10 -->|"RuntimeSettingsService._definition(key)"| s11
-    s11 -. "SETTING_DEFINITIONS.get(key)" .-> s12
+    s3 -. "isinstance (backend/app/routers/triage.py:_bad_request)(error, SourceLinkRefused)" .-> s4
+    s3 -. "HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error.detail(...))" .-> s5
+    s3 -. "error.detail(data not statically known)" .-> s6
+    s3 -->|"resolve_runtime_ui_language(service.db)"| s7
+    s7 -->|"normalize_language(default)"| s8
+    s8 -. "str(…).strip().lower(data not statically known)" .-> s9
+    s8 -. "str(…).strip (backend/app/services/lang…ice.py:normalize_language)(data not statically known)" .-> s10
+    s8 -. "str (backend/app/services/lang…ice.py:normalize_language)(...)" .-> s11
+    s7 -->|"RuntimeSettingsService.get_app_settings(data not statically known)"| s12
     click s1 "../modules/routers_triage.md"
     click s3 "../modules/routers_triage.md"
-    click s4 "../modules/language_service.md"
-    click s5 "../modules/language_service.md"
-    click s9 "../modules/system_settings_service.md"
-    click s10 "../modules/system_settings_service.md"
-    click s11 "../modules/system_settings_service.md"
+    click s7 "../modules/language_service.md"
+    click s8 "../modules/language_service.md"
+    click s12 "../modules/system_settings_service.md"
 ```
 
 ### Step data
@@ -174,32 +171,32 @@ flowchart LR
 |---|---|---|---|---|
 | `create_triage_item` | `data: TriageItemCreate`, `service: Annotated[TriageService, Depends(get_triage_service)]` | - | - | `...` |
 | `service.create` | - | - | - | - |
-| `_bad_request` | `service`, `error: ValueError` | `status` | - | `HTTPException(...)` |
+| `_bad_request` | `service`, `error: ValueError` | `SourceLinkRefused`, `status`, `status` | - | `HTTPException(...)`, `HTTPException(...)` |
+| `isinstance (backend/app/routers/triage.py:_bad_request)` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
+| `error.detail` | - | - | - | - |
 | `resolve_runtime_ui_language` | `db: Any`, `default: LanguageCode \| None` | - | - | `normalize_language(...)`, `normalize_language(...)`, `fallback` |
 | `normalize_language` | `value: Any`, `default: LanguageCode` | - | - | `normalized`, `default` |
 | `str(…).strip().lower` | - | - | - | - |
 | `str(…).strip (backend/app/services/lang…ice.py:normalize_language)` | - | - | - | - |
 | `str (backend/app/services/lang…ice.py:normalize_language)` | - | - | - | - |
 | `RuntimeSettingsService.get_app_settings` | - | - | - | `SimpleNamespace(...)` |
-| `RuntimeSettingsService.resolve` | `key: str` | - | - | `(...)`, `(...)`, `(...)` |
-| `RuntimeSettingsService._definition` | `key: str` | - | - | `definition` |
-| `SETTING_DEFINITIONS.get` | - | - | - | - |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_triage_item | service.create | 109 | `service.create(data)` |
-| create_triage_item | _bad_request | 111 | `_bad_request(service, e)` |
-| _bad_request | resolve_runtime_ui_language | 65 | `resolve_runtime_ui_language(service.db)` |
+| create_triage_item | service.create | 113 | `service.create(data)` |
+| create_triage_item | _bad_request | 115 | `_bad_request(service, e)` |
+| _bad_request | isinstance (backend/app/routers/triage.py:_bad_request) | 67 | `isinstance(error, SourceLinkRefused)` |
+| _bad_request | HTTPException | 68 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error.detail(...))` |
+| _bad_request | error.detail | 68 | `error.detail(data not statically known)` |
+| _bad_request | resolve_runtime_ui_language | 69 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip (backend/app/services/lang…ice.py:normalize_language) | 35 | `str(value or '').strip(data not statically known)` |
 | normalize_language | str (backend/app/services/lang…ice.py:normalize_language) | 35 | `str(...)` |
 | resolve_runtime_ui_language | RuntimeSettingsService.get_app_settings | 411 | `RuntimeSettingsService(db).get_app_settings(data not statically known)` |
-| RuntimeSettingsService.get_app_settings | RuntimeSettingsService.resolve | 337 | `self.resolve('app.ui_language')` |
-| RuntimeSettingsService.resolve | RuntimeSettingsService._definition | 284 | `self._definition(key)` |
-| RuntimeSettingsService._definition | SETTING_DEFINITIONS.get | 154 | `SETTING_DEFINITIONS.get(key)` |
 
 ### Boundary effects
 
@@ -209,10 +206,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_triage_item` | `service.create` | 109 |
+| unresolved_call | `create_triage_item` | `service.create` | 113 |
+| external_call | `_bad_request` | `isinstance` | 67 |
+| external_call | `_bad_request` | `HTTPException` | 68 |
+| unresolved_call | `_bad_request` | `error.detail` | 68 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
-| unresolved_call | `RuntimeSettingsService._definition` | `SETTING_DEFINITIONS.get` | 154 |
 | step_limit | `create_triage_item` | `first 12 steps` | 0 |
 | truncated_flow | `create_triage_item` | `depth limit` | 0 |
 

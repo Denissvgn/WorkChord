@@ -276,16 +276,17 @@ def test_public_proxy_routes_well_known_discovery_documents_to_backend() -> None
         REPOSITORY_ROOT / "deploy/nginx.production.conf.template"
     ).read_text()
 
-    for gateway, upstream in (
-        (local_gateway, "http://backend:8001"),
-        (production_gateway, "http://workchord_backend"),
+    for gateway, upstream, expected_proxies in (
+        # Local gateway: /health, the MCP mount, /api, the agent-connect prefix and the agent-skills document.
+        (local_gateway, "http://backend:8001", 5),
+        # Production gateway: /health, /api, the agent-connect prefix and the agent-skills document.
+        (production_gateway, "http://workchord_backend", 4),
     ):
         assert "location ^~ /.well-known/workchord/ {" in gateway
         assert "location = /.well-known/workchord-agent-skills.json {" in gateway
         # The frontend image serves its own build identity; it must not be proxied.
         assert "workchord-build.json" not in gateway
-        # /health, /api, the agent-connect prefix and the agent-skills document.
-        assert gateway.count(f"proxy_pass {upstream};") == 4
+        assert gateway.count(f"proxy_pass {upstream};") == expected_proxies
 
 
 def test_security_and_recovery_scripts_are_fail_closed() -> None:

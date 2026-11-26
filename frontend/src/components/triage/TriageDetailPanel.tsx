@@ -16,7 +16,7 @@ import type {
 } from '../../types/triage';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { formatDateTime } from '../../utils/formatDate';
-import { safeExternalHref } from '../../utils/safeUrl';
+import { sourceLinkHref } from '../../utils/safeUrl';
 import { Button } from '../common/Button';
 import { RequestSourceLinksPanel } from '../requestSources/RequestSourceLinksPanel';
 import { OverflowMenu } from '../ui';
@@ -166,7 +166,7 @@ export const TriageDetailPanel = ({
 
                 {item.source_url && (
                     <a
-                        href={safeExternalHref(item.source_url)}
+                        href={sourceLinkHref(item.source_url)}
                         target="_blank"
                         rel="noreferrer"
                         className="inline-flex items-center gap-1 text-sm font-medium text-action hover:text-action"
