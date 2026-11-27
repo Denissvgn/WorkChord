@@ -34,9 +34,10 @@ The phases below give the detailed contract for each step. Use the names in
    `tool_capability_next_action` to the operator; never treat a declaration as
    a capability. Each member's `runtime_identity.state` shows whether its
    acknowledgement returned the runtime instance the current handoff names
-   (`current`), an earlier one (`stale`), a changed one (`changed`) or none
-   (`unknown`); report anything but `current` to the operator, who issues a
-   fresh handoff.
+   (`current`), the current identity after a replacement (`changed`), an
+   earlier one (`stale`) or none (`unknown`). `current` and `changed` need no
+   action; report `stale`, `unknown`, or a recorded `refused_instance_id` to
+   the operator, who issues a fresh handoff.
 4. Confirm the actor identity, scopes, role, profile binding, work policy, server/API compatibility, and selected project or iteration.
 5. Stop before mutation when identity, planning scope, required permission, or server feature support is ambiguous.
 6. Read [system-map-and-authority.md](references/system-map-and-authority.md) before establishing a workspace or changing cross-object plans.

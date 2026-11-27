@@ -9,22 +9,22 @@
         {
           "format": "tar.gz",
           "path": "workchord-pm-1.21.7.tar.gz",
-          "sha256": "dd9d5acf1b63b476900ab9317ea5612d559a5212888cab7dbc9da1fb42e6ddeb",
+          "sha256": "4af7d0d9c901f9203837fa0f2a9447120798d22d5419be73f6f8a771c00e272f",
           "size": 245798
         },
         {
           "format": "zip",
           "path": "workchord-pm-1.21.7.zip",
-          "sha256": "500daa90b07782f5ef1699229122131beac72f59957dbd0c836359035e8adf48",
-          "size": 232561
+          "sha256": "3a6bd6cd6278abdbfccea70ad134f749874117f74bec3d057411e204712454c3",
+          "size": 233793
         }
       ],
       "entrypoint": "SKILL.md",
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "8f4a76718d2fc362d5c013757f27de929dd05ff01ec8c6dc70bb04fea35c56f4",
-          "size": 20268
+          "sha256": "8f5c7f4ad05218fff980343eea28810db8e3436bbc0ddf1b763bf1a6bee5996c",
+          "size": 20371
         },
         {
           "path": "agents/openai.yaml",
@@ -33,13 +33,13 @@
         },
         {
           "path": "references/api-and-mcp.md",
-          "sha256": "3ff574bf7582648534bbbb7b5e0c8cc615a95af38890d0bf355cffd12e8ecf68",
-          "size": 53214
+          "sha256": "0da6a103699b40f9362e4252a5e77a85f884b521a277b9a826100d05f54e1ba2",
+          "size": 53508
         },
         {
           "path": "references/assignment-scheduling-and-delivery-control.md",
-          "sha256": "1517224f4bbe6ed559b0862a1164f214b081091bd518e068c05a96589a182c29",
-          "size": 32285
+          "sha256": "02054b341b25d5cd54fb50eaac1d1c08542a3ba84172c166b59252a732db98fa",
+          "size": 32543
         },
         {
           "path": "references/intake-planning-and-task-briefs.md",
@@ -48,8 +48,8 @@
         },
         {
           "path": "references/plan-mapping-and-roadmap.md",
-          "sha256": "ae1886073fecc7ae8eb329419dec051fd0cff8e64f5831b1621e571ea7173002",
-          "size": 26175
+          "sha256": "a2833b55e4f896ac41f57e9e7c068894ad2ea0af83c3b5247699da5167b04da3",
+          "size": 26418
         },
         {
           "path": "references/system-map-and-authority.md",
@@ -63,8 +63,8 @@
         },
         {
           "path": "references/verification-rework-and-recovery.md",
-          "sha256": "a04fc8b14d537c09022469210b7d1cd45449009d0856356564df9c8cbc546f69",
-          "size": 36811
+          "sha256": "0148d07fea494da2adbb893e44561ab9843f39d528a460f2d8f24f298d3cf0c5",
+          "size": 37145
         },
         {
           "path": "references/workflow-and-names.md",
@@ -122,14 +122,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-reviewer-1.8.6.tar.gz",
-          "sha256": "94b4bc306c78e6f3d280a01c56fd04e28510cd703097d9770253642b73264b03",
+          "sha256": "d8aa074f14d8af92e4134b74e07363ef6bf2e5bd078336c6517257da628fb551",
           "size": 61463
         },
         {
           "format": "zip",
           "path": "workchord-reviewer-1.8.6.zip",
-          "sha256": "d2b908bbacfb4b7a2ea0b4ce4157e36ffada8475286a554c7e2a5443c2b539d0",
-          "size": 51914
+          "sha256": "650bd891db77ffe31a9fe5e4ce476eb31150bff6173b97ac9e47a9ed6729d38d",
+          "size": 52099
         }
       ],
       "entrypoint": "SKILL.md",
@@ -151,8 +151,8 @@
         },
         {
           "path": "references/review-packet-and-verdict.md",
-          "sha256": "dfdb3facfedf5aa846e94881937e1b95ad5d492bd87649f4a9dac7af370d3f96",
-          "size": 13218
+          "sha256": "7d255984a870f2f8d49287d30aa7ad831dcae86b81d81e3b461db709655a561c",
+          "size": 13403
         },
         {
           "path": "references/workflow-and-names.md",
@@ -280,5 +280,5 @@
       "version": "1.20.4"
     }
   ],
-  "source_revision": "sha256:9497f270770a02b9ec126854381cbde583c14b01bb4679db2c27891f1375bc0b"
+  "source_revision": "sha256:449259021ac5240dde68fc7cd78ebbbf835e6c61ef369ae096f70b759b67db86"
 }
