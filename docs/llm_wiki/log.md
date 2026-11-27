@@ -4396,3 +4396,19 @@ Refreshed against the 1.10.0 code. New and changed subjects: delivery prerequisi
 - Dependency pages initialized: 0
 - Surface policy updated: no
 - Generated surface pages retired: 1
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:c460c8891ecd51e53bd4e77aa44c02f78ba9d204d89a2c72f86792bd5aee8943`
+- Pages created: 4
+- Pages updated: 123
+- Pages metadata-only: 2
+- Pages skipped (unchanged): 3755
+- Pages deprecated: 0
+- Semantic fields preserved: 21
+- Moved entities: none

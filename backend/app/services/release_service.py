@@ -109,7 +109,7 @@ class ReleaseService:
         values = await aggregate_metrics(self.db, project_id=release.project_id, task_ids=selected)
         for key, value in values.items():
             setattr(release, key, value)
-        release.target_overflow_tasks = sum(1 for task in tasks if task.id in selected and not task.is_summary and not task.is_deferred and task.end_date and release.target_date and task.end_date > release.target_date)
+        release.target_overflow_tasks = sum(1 for task in tasks if task.id in selected and not task.is_summary and not task.is_deferred and task.status != "postponed" and task.end_date and release.target_date and task.end_date > release.target_date)
         return release
 
     async def get_by_id(self, release_id: int) -> Optional[Release]:

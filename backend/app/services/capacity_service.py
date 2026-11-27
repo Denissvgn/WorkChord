@@ -355,7 +355,8 @@ class CapacityService:
                     ProfileAbsence.profile_id == profile_id, ProfileAbsence.deleted.is_(False)))).all())
             included = await included_work_ids(self.db, {member.iteration_id for member in members})
             tasks = list((await self.db.execute(select(Task.id, Task.assignee_id, Task.baseline_start_date, Task.baseline_end_date, Task.effort_hours).where(Task.assignee_id.in_([m.id for m in members]),
-                Task.id.in_(included), Task.status != "closed"))).all())
+                # Postponed work keeps its baseline as history but commits no capacity.
+                Task.id.in_(included), Task.status.notin_(("closed", "postponed"))))).all())
             from app.services.capacity_adjustments import load_dated_availability
             dated = await load_dated_availability(self.db, [m.id for m in members])
             commitments = PeriodCommitments(tasks, members, member_coverages, start, end, dated)

@@ -100,4 +100,4 @@ flowchart LR
 | `IterationDateMoveService._row_hours` | call | [iteration_date_move](../modules/iteration_date_move.md) | 1 |
 | `IterationDateMoveService.preview` | call | [iteration_date_move](../modules/iteration_date_move.md) | 1 |
 
-> References: showing 12 of 38 logical references; 26 omitted by the 12-row generated summary limit.
+> References: showing 12 of 39 logical references; 27 omitted by the 12-row generated summary limit.

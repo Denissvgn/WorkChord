@@ -79,6 +79,7 @@ UnscheduledReason = Literal[
     "no_capacity",
     "prerequisites_pending",
     "predecessor_unscheduled",
+    "predecessor_postponed",
     "deferred",
     "blocked",
     "not_placed",
@@ -93,6 +94,16 @@ DateRule = Literal[
 ]
 
 
+class WaitingOnTask(BaseModel):
+    """A postponed task a planned task waits on."""
+    task_id: int
+    task_title: str
+
+
+def _no_waits(tasks: list[WaitingOnTask]) -> bool:
+    return not tasks
+
+
 class UnscheduledTask(BaseModel):
     """A planned task the scheduler left without dates, and what would change that."""
     task_id: int
@@ -105,6 +116,8 @@ class UnscheduledTask(BaseModel):
     date_rule: DateRule | None = Field(default=None, exclude_if=lambda rule: rule is None)
     # Causes of its own that keep it undated once the main reason is resolved.
     also: list[UnscheduledReason] = []
+    # The postponed work it waits on (reason predecessor_postponed); omitted otherwise.
+    waiting_on: list[WaitingOnTask] = Field(default_factory=list, exclude_if=_no_waits)
 
 
 class KeptDatesTask(BaseModel):
@@ -119,6 +132,8 @@ class KeptDatesTask(BaseModel):
     date_rule: DateRule | None = Field(default=None, exclude_if=lambda rule: rule is None)
     # Causes of its own that stop the scheduler from placing it once the main reason is resolved.
     also: list[UnscheduledReason] = []
+    # The postponed work it waits on (reason predecessor_postponed); omitted otherwise.
+    waiting_on: list[WaitingOnTask] = Field(default_factory=list, exclude_if=_no_waits)
 
 
 class WorkloadIssue(BaseModel):
