@@ -232,8 +232,10 @@ a later asynchronous/bounded export workflow.
 - `repair`: explicit post-copy repair mode; pool capacity at most two.
 - `web`: schema assertion and HTTP/MCP serving only; no DDL, seeds, repairs, or
   embedded delivery loop. Pool capacity at most twenty.
-- `delivery_worker`: durable delivery claiming/sending only; pool capacity at
-  most ten. Provider waits occur after the read transaction is released.
+- `delivery_worker`: durable delivery claiming/sending, plus the periodic
+  postponed-work reactivation check (short transactions, run every 15 minutes
+  alongside the delivery loop, not under `--once`); pool capacity at most ten.
+  Provider waits occur after the read transaction is released.
 
 Compose starts migration to successful completion before web and worker roles.
 Production web configuration fails validation if the embedded-worker flag is
