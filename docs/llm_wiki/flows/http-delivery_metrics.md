@@ -189,15 +189,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| delivery_metrics | domain_result | 76 | `domain_result(...)` |
-| domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 55 | `str(exc)` |
-| domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
+| delivery_metrics | domain_result | 78 | `domain_result(...)` |
+| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
 | domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| delivery_metrics | DeliveryMetricsService.report | 76 | `DeliveryMetricsService(db).report(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)` |
+| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 59 | `str(exc)` |
+| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| delivery_metrics | DeliveryMetricsService.report | 78 | `DeliveryMetricsService(db).report(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)` |
 | DeliveryMetricsService.report | validate_report_scope | 157 | `validate_report_scope(project_id, iteration_id, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)` |
 | validate_report_scope | ValueError (backend/app/services/deli….py:validate_report_scope) | 25 | `ValueError('Workspace backlog requires all projects')` |
 
@@ -213,11 +213,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 53 |
-| unresolved_call | `domain_result` | `exc.detail` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
+| unresolved_call | `domain_result` | `exc.detail` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
+| external_call | `domain_result` | `HTTPException` | 61 |
 | external_call | `validate_report_scope` | `ValueError` | 25 |
 | step_limit | `delivery_metrics` | `first 12 steps` | 0 |
 

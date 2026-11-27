@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1830 | [Open section](#entities) |
-| Modules | 1172 | [Open section](#modules) |
-| Workflows | 238 | [Open section](#workflows) |
+| Entities | 1837 | [Open section](#entities) |
+| Modules | 1175 | [Open section](#modules) |
+| Workflows | 241 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 628 | [Open section](#entry-point-flows) |
+| Entry-point flows | 631 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -83,6 +83,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AgentProfileSkillCatalogItem](entities/AgentProfileSkillCatalogItem.md)
 - [AgentProjectUpdateCreate](entities/AgentProjectUpdateCreate.md)
 - [AgentProjectUpdateResponse](entities/AgentProjectUpdateResponse.md)
+- [AgentProtocol](entities/AgentProtocol.md)
 - [AgentRecoveryItem](entities/AgentRecoveryItem.md)
 - [AgentRecoveryListResponse](entities/AgentRecoveryListResponse.md)
 - [AgentRecoveryRequeue](entities/AgentRecoveryRequeue.md)
@@ -612,6 +613,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [MaintenanceWindowService](entities/MaintenanceWindowService.md)
 - [ManagementSection](entities/ManagementSection.md)
 - [ManifestError](entities/ManifestError.md)
+- [ManualProvenanceExecutor](entities/ManualProvenanceExecutor.md)
+- [ManualProvenanceExecutorRecord](entities/ManualProvenanceExecutorRecord.md)
+- [ManualProvenanceResponse](entities/ManualProvenanceResponse.md)
+- [ManualProvenanceService](entities/ManualProvenanceService.md)
+- [ManualProvenanceWrite](entities/ManualProvenanceWrite.md)
 - [ManualPublicationHandoff](entities/ManualPublicationHandoff.md)
 - [MappedModelFactory](entities/MappedModelFactory.md)
 - [MasterProgressProps](entities/MasterProgressProps.md)
@@ -787,6 +793,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ProjectUpdateFormStore](entities/ProjectUpdateFormStore.md)
 - [ProjectsPage_SortKey](entities/ProjectsPage_SortKey.md)
 - [ProposedDates](entities/ProposedDates.md)
+- [ProvenanceConflict](entities/ProvenanceConflict.md)
 - [ProviderActionRequest](entities/ProviderActionRequest.md)
 - [ProviderAuditObservation](entities/ProviderAuditObservation.md)
 - [ProviderMutationAdapter](entities/ProviderMutationAdapter.md)
@@ -2460,6 +2467,8 @@ Retained history; these declarations are absent from the selected source invento
 - [maintenance_windows](modules/maintenance_windows.md) - Operator commands for a coordinated control-plane maintenance window.
 - [manifestLocations](modules/manifestLocations.md) - /** * Where things are in the manifest editor: the line of each JSON path, so a * problem can say "line 12" and the editor can jump there. */
 - [manifestLocations.test](modules/manifestLocations.test.md) - `frontend/src/features/agentTeamSetup/manifestLocations.test.ts`
+- [manual_provenance](modules/manual_provenance.md) - Attributable execution provenance for resolved work that never ran through recorded runs.
+- [manual_provenance_service](modules/manual_provenance_service.md) - Record who executed resolved work that was delivered outside recorded runs.
 - [mcp_agent_tools](modules/mcp_agent_tools.md) - Framework-neutral MCP tool handlers for agent task access.
 - [mcp_server](modules/mcp_server.md) - MCP server facade for external LLM-agent integrations.
 - [migrations_env](modules/migrations_env.md) - Alembic environment configuration.
@@ -2841,6 +2850,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_maintenance_window](modules/test_maintenance_window.md) - A coordinated maintenance window protects only the live claims whose owners acknowledged it.
 - [test_managed_authority](modules/test_managed_authority.md) - Real principal, transport, scoped-read and command-denial contracts.
 - [test_managed_worker_discovery](modules/test_managed_worker_discovery.md) - Managed discovery attribution, scope and transaction boundaries for assigned workers.
+- [test_manual_provenance_record](modules/test_manual_provenance_record.md) - Recorded provenance lets work resolved outside recorded runs receive an ordinary independent review.
 - [test_manual_review_provenance](modules/test_manual_review_provenance.md) - Authenticated human delivery still requires an assigned agent decision in a strict project.
 - [test_mcp_proxy_host_header](modules/test_mcp_proxy_host_header.md) - The stock frontend proxy must forward MCP requests with the client's Host port.
 - [test_mcp_tool_annotations](modules/test_mcp_tool_annotations.md) - Every MCP tool tells clients whether it reads, writes, or removes.
@@ -3127,6 +3137,8 @@ Retained history; these declarations are absent from the selected source invento
 - [IterationService_to_response](workflows/IterationService_to_response.md) - entry: `iteration_service.IterationService.to_response`
 - [LabelService_create_label](workflows/LabelService_create_label.md) - entry: `label_service.LabelService.create_label`
 - [MaintenanceWindowService_announce](workflows/MaintenanceWindowService_announce.md) - entry: `maintenance_window_service.MaintenanceWindowService.announce`
+- [ManualProvenanceService__agent_recorder](workflows/ManualProvenanceService__agent_recorder.md) - entry: `manual_provenance_service.ManualProvenanceService._agent_recorder`
+- [ManualProvenanceService__verify_candidate](workflows/ManualProvenanceService__verify_candidate.md) - entry: `manual_provenance_service.ManualProvenanceService._verify_candidate`
 - [NativeSessionService_approve](workflows/NativeSessionService_approve.md) - entry: `native_session_service.NativeSessionService.approve`
 - [NativeSessionService_connection](workflows/NativeSessionService_connection.md) - entry: `native_session_service.NativeSessionService.connection`
 - [NativeSessionService_deny](workflows/NativeSessionService_deny.md) - entry: `native_session_service.NativeSessionService.deny`
@@ -3261,6 +3273,7 @@ Retained history; these declarations are absent from the selected source invento
 - [rotate_session](workflows/rotate_session.md) - entry: `session_service.rotate_session`
 - [run_post_migration_repairs](workflows/run_post_migration_repairs.md) - entry: `upgrade_service.run_post_migration_repairs`
 - [run_server_acceptance](workflows/run_server_acceptance.md) - entry: `server_acceptance.run_server_acceptance`
+- [select_reviewer](workflows/select_reviewer.md) - entry: `review_provenance.select_reviewer`
 - [sequence_facts](workflows/sequence_facts.md) - entry: `transfer._sequence_facts`
 - [service_worksets_flow](workflows/service_worksets_flow.md) - entry: `service_worksets.run`
 - [source_phase](workflows/source_phase.md) - entry: `installed_wheel_postgresql_qualification._source_phase`
@@ -3577,6 +3590,8 @@ Retained history; these declarations are absent from the selected source invento
 - [http-record_execution_usage](flows/http-record_execution_usage.md) - entry: `record_execution_usage`
 - [http-record_maintenance_notice](flows/http-record_maintenance_notice.md) - entry: `record_maintenance_notice`
 - [http-record_maintenance_notice_receipt](flows/http-record_maintenance_notice_receipt.md) - entry: `record_maintenance_notice_receipt`
+- [http-record_manual_provenance-agent_planning](flows/http-record_manual_provenance-agent_planning.md) - entry: `record_manual_provenance`
+- [http-record_manual_provenance-task_domain](flows/http-record_manual_provenance-task_domain.md) - entry: `record_manual_provenance`
 - [http-record_runtime_observation](flows/http-record_runtime_observation.md) - entry: `record_runtime_observation`
 - [http-record_task_progress](flows/http-record_task_progress.md) - entry: `record_task_progress`
 - [http-record_task_replacement-agent_planning](flows/http-record_task_replacement-agent_planning.md) - entry: `record_task_replacement`
@@ -3763,6 +3778,7 @@ Retained history; these declarations are absent from the selected source invento
 - [mcp-agent_reconcile_planning_window](flows/mcp-agent_reconcile_planning_window.md) - entry: `agent_reconcile_planning_window`
 - [mcp-agent_reconcile_run_provenance](flows/mcp-agent_reconcile_run_provenance.md) - entry: `agent_reconcile_run_provenance`
 - [mcp-agent_record_execution_usage](flows/mcp-agent_record_execution_usage.md) - entry: `agent_record_execution_usage`
+- [mcp-agent_record_manual_provenance](flows/mcp-agent_record_manual_provenance.md) - entry: `agent_record_manual_provenance`
 - [mcp-agent_record_task_replacement](flows/mcp-agent_record_task_replacement.md) - entry: `agent_record_task_replacement`
 - [mcp-agent_release_task](flows/mcp-agent_release_task.md) - entry: `agent_release_task`
 - [mcp-agent_renew_claim](flows/mcp-agent_renew_claim.md) - entry: `agent_renew_claim`

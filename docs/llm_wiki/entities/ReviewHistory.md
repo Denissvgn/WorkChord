@@ -36,11 +36,14 @@ flowchart LR
     n0["ReviewHistory (backend/app/services/review_provenance.py)"]
     n1["_attempt_history (backend/app/services/review_provenance.py)"]
     n2["_manual_history (backend/app/services/review_provenance.py)"]
+    n3["_run_history (backend/app/services/review_provenance.py)"]
     n1 --> n0
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/review_provenance.md"
     click n1 "../modules/review_provenance.md"
     click n2 "../modules/review_provenance.md"
+    click n3 "../modules/review_provenance.md"
 ```
 
 ### Summary
@@ -53,5 +56,6 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `_attempt_history` | call | [review_provenance](../modules/review_provenance.md) | 4 |
+| `_attempt_history` | call | [review_provenance](../modules/review_provenance.md) | 1 |
 | `_manual_history` | call | [review_provenance](../modules/review_provenance.md) | 13 |
+| `_run_history` | call | [review_provenance](../modules/review_provenance.md) | 4 |

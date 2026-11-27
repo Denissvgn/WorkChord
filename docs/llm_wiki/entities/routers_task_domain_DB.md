@@ -1,6 +1,6 @@
 # DB
 
-**Location:** `backend/app/routers/task_domain.py:25`
+**Location:** `backend/app/routers/task_domain.py:27`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [routers_task_domain](../modules/routers_task_domain.md)
@@ -86,4 +86,4 @@ flowchart LR
 | `owner_accept_task` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `planning_input_context` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 
-> References: showing 12 of 33 logical references; 21 omitted by the 12-row generated summary limit.
+> References: showing 12 of 34 logical references; 22 omitted by the 12-row generated summary limit.

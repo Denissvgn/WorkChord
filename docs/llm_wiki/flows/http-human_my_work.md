@@ -211,7 +211,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| human_my_work | TaskDetailService.my_work | 159 | `TaskDetailService(db).my_work(limit=limit, after_id=after_id, project_id=project_id, iteration_id=iteration_id, backlog_only=backlog_only)` |
+| human_my_work | TaskDetailService.my_work | 161 | `TaskDetailService(db).my_work(limit=limit, after_id=after_id, project_id=project_id, iteration_id=iteration_id, backlog_only=backlog_only)` |
 | TaskDetailService.my_work | self.db.info.get (backend/app/services/task…TaskDetailService.my_work) | 108 | `self.db.info.get('authority')` |
 | TaskDetailService.my_work | local_work_profile | 115 | `local_work_profile(self.db, authority.profile_id)` |
 | local_work_profile | internal_authority | 59 | `internal_authority(db)` |
