@@ -160,6 +160,18 @@ The safe sequence is:
    not send a caller-built routing snapshot.
 5. Re-read assignment and run evidence after dispatch and begin.
 
+A routing assessment's `required_model` may also carry `minimum_effort`
+(`low|medium|high|xhigh|max`; omit it when the task has no effort requirement)
+and `qualification_keys`. A candidate whose catalog effort is lower than the
+minimum, or `unknown`, is excluded with `model_effort_insufficient`. Qualification
+keys are built-in skill keys or keys the operator declared (read them with
+`GET /api/agent/routing-qualification-keys`); only candidates whose catalog entry
+holds every listed key stay eligible, the others are excluded with
+`model_qualification_missing` and the preview lists the missing keys. A key
+outside the built-in and declared set is refused with `Unknown routing skill key`.
+Do not express qualification with tool tags such as `qualified.<class>`. A catalog
+entry's keys apply at its effort setting, and changing the effort clears them.
+
 The base `assignment-create`, `assignment-update`, and `begin` rows remain the
 legacy assigned-work-v1 shapes. Their model-aware rows describe the stronger
 conditional payloads on the same routes/tools. Never send the stronger payload
@@ -279,6 +291,11 @@ weak ETag with `If-None-Match`/`304`. `GET /api/agent/me/reviews` and
 | External links | `workspace_list_external_links`, `workspace_create_task_github_link`, `workspace_create_release_github_link`, `workspace_delete_external_link`; a GitHub link is a pull request, issue, branch, commit (full SHA), or release tag URL; mutations require idempotency key, rationale, and correlation ID |
 | Request sources | `workspace_search_request_sources`, `workspace_list_request_source_links`, `workspace_create_request_source_link`, `workspace_unlink_request_source`; mutations require idempotency key, rationale, and correlation ID |
 | Task replacement | `agent_get_task_replacement` (`GET /api/agent/planning/tasks/{task_id}/replacement`), `agent_record_task_replacement` (`POST /api/agent/planning/tasks/{task_id}/replacement`); the record is a durable mutation with idempotency key, rationale, and correlation ID. See [verification-rework-and-recovery.md](verification-rework-and-recovery.md#replace-unattributable-work) |
+| Task supersession | `POST /api/tasks/{original_id}/supersession` with `{successor_task_id, expected_original_version, expected_successor_version, reason}` (no MCP tool). Only a project owner or manager, an operator or the project's PM agent decides. See [verification-rework-and-recovery.md](verification-rework-and-recovery.md#supersede-work-another-task-already-delivered) |
+| Postponement | `agent_postpone_task` (`{expected_version, reason, requirements: [{kind: predecessor_accepted\|date\|owner_decision\|linked_resolved, ...}], expected_claim_generation?, expected_running_run_ids?, expected_live_assignment_ids?}`), `agent_reactivate_task` (`{expected_version, reason}`) and `agent_get_task_postponement` (read; each requirement with `met`). Only the project's PM agent or an operator postpones or reactivates; workers and reviewers are refused. Take the claim, run and assignment fence from `agent_get_task_actions`. Advertised by the `agent-task-postponement-v1` contract feature. See [assignment-scheduling-and-delivery-control.md](assignment-scheduling-and-delivery-control.md#stop-work-by-postponing-it) |
+| Manual execution provenance | `agent_record_manual_provenance` (`POST /api/agent/planning/tasks/{task_id}/manual-provenance`, `planning:write`, planning command headers): `{expected_version, artifact_revision, executor: {kind: agent, actor_id, model_binding_id?}, head_commit_url, commit_urls, pr_url \| base_commit_url, reason}`. See [verification-rework-and-recovery.md](verification-rework-and-recovery.md#record-who-executed-work-delivered-outside-recorded-runs) |
+| Plan import dry run | `agent_preview_iteration_import` (`{import_data, iteration_id?}`; REST `POST /api/agent/planning/iterations/{id}/import/dry-run` or `POST /api/agent/planning/iterations/import/dry-run` with multipart `file`). Needs `planning:write`; writes nothing. See [plan-mapping-and-roadmap.md](plan-mapping-and-roadmap.md#when-an-operator-imports-the-plan) |
+| Structured routing | `agent_get_task_routing_check` (`{task_id, assignee_id?}`, read: the outcome of a proposed reassignment) and `agent_convert_task_routing` (`{task_id, payload}`: preview, then apply, a brief whose routing is still text). See [plan-mapping-and-roadmap.md](plan-mapping-and-roadmap.md#choose-the-assignee-of-each-task) |
 | GitHub reconciliation and catch-up | `agent_get_github_reconciliation` (`GET /api/tasks/{task_id}/github-reconciliation`) reads; `agent_run_github_catch_up` (`POST /api/tasks/{task_id}/github-reconciliation/catch-up`) reads the task's pull requests from GitHub (at most 25 linked pull requests, `MAX_CATCH_UP_LINKS`) and returns the view. Both take the task ID, need tasks or planning read (reconciliation) or write (catch-up) scope, or admin; catch-up also needs edit access to the task, and are advertised by the `github-reconciliation-v1` contract feature. The PM agent runs catch-up on the prerequisite task; a person can run the same from the task page (**Run catch-up**). See [verification-rework-and-recovery.md](verification-rework-and-recovery.md#read-the-github-reconciliation) |
 | Delivery prerequisites | `agent_list_delivery_dependencies` (read), `agent_add_delivery_dependency` and `agent_retarget_delivery_dependency` (`PATCH /api/tasks/{task_id}/delivery-dependencies/{edge_id}` with `{expected_version, target_branch}`, `null` clears the branch). Same scopes; advertised by the `delivery-prerequisite-branches-v1` contract feature. Add and retarget are audited planning commands with idempotency key, rationale, and correlation ID. The PM agent sets the target branch through these tools; a person can do the same on the task page. See [plan-mapping-and-roadmap.md](plan-mapping-and-roadmap.md#map-a-prerequisite-that-needs-merged-code) |
 | Routing advice | `recommendations_for_task`, `recommendations_for_triage` |
@@ -314,7 +331,7 @@ Field rules:
 - `profile_kind` is `human`, `agent`, or `hybrid`. `assignment_modes` holds `ownership`, `execution`, `verification`, or `design_handoff`.
 - No planning command accepts `start_date` or `end_date` for a task. Dates come from schedule preview and apply.
 
-The iteration import routes (`POST /api/iterations/import` and `POST /api/iterations/{id}/import`) require the admin key. They are an operator surface; [plan-mapping-and-roadmap.md](plan-mapping-and-roadmap.md#when-an-operator-imports-the-plan) says what a document for them must contain.
+The iteration import routes (`POST /api/iterations/import` and `POST /api/iterations/{id}/import`) require the admin key and are an operator surface; never call them with an agent key. You review the exact effect first with `agent_preview_iteration_import` (planning scope, writes nothing) and hand the operator the unchanged file with the returned `review_digest`. [plan-mapping-and-roadmap.md](plan-mapping-and-roadmap.md#when-an-operator-imports-the-plan) gives the steps and says what a document for them must contain.
 
 ## Use the Application Planning API Carefully
 
@@ -341,6 +358,8 @@ The application REST API exposes the planning operations below, but a normal age
 
 - Use `/api/triage` plus item duplicate-suggestion, classify, recommendation, draft, update, accept, decline, snooze, mark-duplicate, and convert routes for full intake control.
 - Use `/api/iterations/{iteration_id}/tasks`, `/api/tasks/{task_id}`, dependency, reorder, move, bulk, timeline, and status routes for authorized planning operations.
+- Intake and task source links share one policy. A refused link on create or edit returns the named error `intake_source_link_not_allowed` (`field`, `message`, `next_step`); converting an intake to a task or the backlog rewrites a link to this instance as a relative path or drops a refused one and reports it in the response `source_link`.
+- Task responses carry `displayed_state`, `successor_task_id` and `successor_kind`. Counts report `canceled_tasks` and `superseded_tasks` apart, `status_counts` has `canceled` and `superseded`, and `workspace_list_project_tasks` and `GET /api/tasks/lookup` accept `status` / `task_status` of `postponed`, `canceled` or `superseded`. Postponed work is not in the ready queue.
 - Supply the original observed `expected_version` for task updates, dependency changes, and status changes. Missing revisions are rejected when strict mutation policy is enabled.
 
 ### Schedule, verification, and reporting
@@ -480,6 +499,8 @@ still matches and whose `not_before` time has arrived.
 | `409 stale_cursor` | Discard the cursor and restart that read at its first page. |
 | `409` duplicate conversion/idempotency replay | Confirm the existing result matches the intended action before treating it as success. |
 | `429/5xx` or timeout | Retry only supported idempotent operations with the same key and bounded backoff; otherwise read state first. |
+
+A refusal that carries `next_step` (`kind`, `authority`, `message`, `commands` with the REST route and MCP tool, and `ui_action`) names the one legal way forward: follow it instead of retrying, and hand the step to its named `authority` when that is not you. [verification-rework-and-recovery.md](verification-rework-and-recovery.md#follow-a-verification-refusals-next-step) lists the verification refusals.
 
 Preserve structured conflict codes and current-state metadata. Do not collapse them into a generic “failed” event.
 

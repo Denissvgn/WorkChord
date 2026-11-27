@@ -11,6 +11,7 @@ changes, and hand rework to an explicit owner.
 - [Check model evidence](#check-model-evidence)
 - [Accept](#accept)
 - [Request changes](#request-changes)
+- [Stay present and follow a refusal's next step](#stay-present-and-follow-a-refusals-next-step)
 - [Stop rules](#stop-rules)
 
 ## Confirm The Review Is Yours
@@ -201,11 +202,17 @@ Report out-of-scope findings and plan gaps to the PM in your final message so
 they can be captured in Triage or fixed in the plan; do not fold them into the
 failed criteria.
 
+## Stay Present And Follow A Refusal's Next Step
+
+A verifier is ready for a verification assignment only while it is present: poll your review queue within `maximum_runtime_staleness_seconds` of the last poll, and keep your own handoff acknowledged and your binding current. Only the verifier, and a caller that is itself not ready, need to be ready for a verification assignment; other team members' readiness does not block your review.
+
+A refusal that carries `next_step` (`kind`, `authority`, `message`, `commands`, `ui_action`) names the one legal way forward. Follow it instead of retrying, and hand it to the authority it names when that is not you. For a verdict refused with `verification_publisher_unverifiable` or `verification_candidate_unverifiable`, ask the PM to refresh the review assignment and submit again with your own observed model, which must match the selected binding. When a project requires a different publisher and no verified agent verifier can review, a signed-in workspace owner or operator may accept as owner with a reason; that is recorded as an owner override, not as your review, and you never use it. If the task becomes postponed, your review assignment is cancelled: stop, submit nothing, and wait for the PM to dispatch it again after the task resumes.
+
 ## Stop Rules
 
 Stop without a verdict and report to the PM when:
 
-- the task is not Implemented, a run is active, or the assignment is stale;
+- the task is not Implemented (for example it is postponed), a run is active, or the assignment is stale;
 - you cannot establish independence from the work, as an actor or as a profile;
 - model trust is `mismatch` or `unreported`;
 - evidence conflicts and you cannot resolve it by checking;

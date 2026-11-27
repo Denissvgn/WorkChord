@@ -5,5 +5,5 @@
   "description": "Installable WorkChord PM, Worker, and Reviewer role skills.",
   "license": "MIT",
   "name": "workchord-agent-roles",
-  "version": "1.23.6"
+  "version": "1.23.7"
 }

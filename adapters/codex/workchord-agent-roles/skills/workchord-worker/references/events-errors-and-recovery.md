@@ -115,6 +115,8 @@ When renewal fails, expiry passes, or fencing is rejected:
    without disclosing claim/fence secrets.
 5. Resume only if the server returns a fresh consistent `resume` tuple.
 
+A claim can also end because the PM postponed the task (`task_postponed` and `execution_released` on the timeline). The assignment is cancelled, the run ends and the claim generation advances, so the same steps apply. Report the last confirmed state, then wait: postponed work is not offered again until its requirements are met and the PM dispatches it.
+
 Never claim a different task as a way to recover from lost ownership.
 
 ## Surface Inconsistent State

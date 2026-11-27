@@ -152,6 +152,8 @@ tasks as real dependency links, not only as prose.
 The reviewer and the conditions requiring PM or human input.
 ```
 
+Record the first model rung, the escalation ladder and the reviewer in `brief.routing`, not only in this section's text; the server renders the brief's Routing section from it. See [Choose the assignee of each task](plan-mapping-and-roadmap.md#choose-the-assignee-of-each-task).
+
 Let the server assign criterion `id` and `revision`; keep them when you patch
 an existing criterion so recorded evidence stays bound to it. Changing a
 criterion's meaning creates a new revision, and evidence for the old revision

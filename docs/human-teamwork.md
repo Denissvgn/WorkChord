@@ -225,6 +225,28 @@ needs a verified agent publisher. A person without review permission, and a pair
 read-only observer, instead see the ordinary reason Accept is unavailable; a paired
 observer is also told to sign in as a person with review permission.
 
+Work that was resolved outside recorded runs has no executor on record, so no
+verifier can be selected for it. The PM agent records who executed it with
+`agent_record_manual_provenance` once the pull request is linked to the task and
+every commit of it is listed; a human executor can only be recorded by a
+signed-in person, so the PM asks the owner. When a refusal names a next step, the
+PM agent or the page follows it instead of asking anyone to switch the review
+policy off.
+
+**Postpone** stops planned, active or resolved work without canceling it. Give a
+reason and one or more requirements (a task is accepted or resolved, a triage item
+is resolved, a date arrives, or the owner decides); the form lists what the
+postponement releases before you confirm. A PM agent does the same with
+`agent_postpone_task`, `agent_reactivate_task` and `agent_get_task_postponement`.
+Postponed work is not scheduled, holds no capacity, is not offered to agents or
+verifiers, and returns to Planned (or Resolved) by itself when every requirement is
+met, or when someone chooses **Reactivate**. Only the workspace owner records an
+owner-decision requirement. Cancel work only when it will never be done. When
+another task already delivered the work and is closed or accepted, use
+**Supersede** instead of reopening anything: the original is withdrawn with its
+history, and its dependents and release membership move to the successor.
+Canceled and superseded work is shown as ended in Tasks, Board and Analytics.
+
 Explicit blocks and cancellation are separate from lifecycle status. A block
 comes from **Report blocker**, used by a person or an agent; either way the task
 shows the reason, appears in the **Blocked** view, and its Activity names who
@@ -252,3 +274,14 @@ Agents that do or check work are members of the team. Open **Team → Connect**,
 or choose **Connect an agent** from the command menu, to connect one. The
 [agent team setup](agent-team-setup.md) guide describes the five questions, the
 runtime steps, and the advanced manifest path.
+Each handoff names a runtime instance (`runtime_instance_id`). The agent returns it
+unchanged in its acknowledgement, and team status shows whether the identity is
+current, stale, changed or unknown for each member. After a credential is
+recovered or a member is replaced, give the runtime the new handoff and have it
+acknowledge again; do not copy a handoff to another runtime.
+
+Before an operator imports an iteration plan file, the PM agent can run a dry run
+(`agent_preview_iteration_import`) that shows every created, changed and removed
+row and returns a `review_digest`. The operator imports the unchanged file with
+that digest, and the import applies exactly the reviewed changes or is refused.
+

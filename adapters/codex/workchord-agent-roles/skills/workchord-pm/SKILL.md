@@ -32,7 +32,11 @@ The phases below give the detailed contract for each step. Use the names in
    are excluded from routing (preview shows `model_tool_missing`) until the
    operator adds the tags to the binding and the runtime re-acknowledges. Report
    `tool_capability_next_action` to the operator; never treat a declaration as
-   a capability.
+   a capability. Each member's `runtime_identity.state` shows whether its
+   acknowledgement returned the runtime instance the current handoff names
+   (`current`), an earlier one (`stale`), a changed one (`changed`) or none
+   (`unknown`); report anything but `current` to the operator, who issues a
+   fresh handoff.
 4. Confirm the actor identity, scopes, role, profile binding, work policy, server/API compatibility, and selected project or iteration.
 5. Stop before mutation when identity, planning scope, required permission, or server feature support is ambiguous.
 6. Read [system-map-and-authority.md](references/system-map-and-authority.md) before establishing a workspace or changing cross-object plans.
@@ -88,15 +92,15 @@ Keep uncertain requests in Triage. Check duplicates and sources; classify, clari
 
 ### Phase 6: Route, Assign, Order, and Schedule
 
-Keep capacity ownership separate from exact runtime routing. Compare capability matches, weaknesses, workload, and vacations; then, when `model-aware-routing-v1` is live in effective `shadow` or `enforced` mode, hard-filter exact actor/model bindings against the current assessment before optimizing cost or latency. In `shadow`, preserve the preview only as comparison evidence and use supervised compatibility dispatch. Create a model-bound assignment only in effective `enforced` mode and only from a fresh version-bound routing preview. Dispatch a task to the agent whose profile holds the task's assignee row, and name the reviewer profile on the same assignment. Set queue rank, not-before time, and reviewer; schedule and re-read Gantt, workload, dependencies, readiness, assignment, and routing evidence. Follow [assignment-scheduling-and-delivery-control.md](references/assignment-scheduling-and-delivery-control.md).
+Keep capacity ownership separate from exact runtime routing. Compare capability matches, weaknesses, workload, and vacations; then, when `model-aware-routing-v1` is live in effective `shadow` or `enforced` mode, hard-filter exact actor/model bindings against the current assessment before optimizing cost or latency. In `shadow`, preserve the preview only as comparison evidence and use supervised compatibility dispatch. Create a model-bound assignment only in effective `enforced` mode and only from a fresh version-bound routing preview. Dispatch a task to the agent whose profile holds the task's assignee row, and name the reviewer profile on the same assignment. Record the first model rung, the escalation ladder and the reviewer as `brief.routing`, and check `routing_check` whenever you reassign a task (see [Choose the Assignee of Each Task](references/plan-mapping-and-roadmap.md#choose-the-assignee-of-each-task)). Set queue rank, not-before time, and reviewer; schedule and re-read Gantt, workload, dependencies, readiness, assignment, and routing evidence. Follow [assignment-scheduling-and-delivery-control.md](references/assignment-scheduling-and-delivery-control.md).
 
 ### Phase 7: Supervise Delivery
 
-Inspect assignment, task status, claim expiry, run state, recent progress, artifacts, blockers, and recovery signals. Do not silently edit worker-owned execution. Recover abandoned or inconsistent work explicitly. Follow [assignment-scheduling-and-delivery-control.md](references/assignment-scheduling-and-delivery-control.md) and [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
+Inspect assignment, task status, claim expiry, run state, recent progress, artifacts, blockers, and recovery signals. Do not silently edit worker-owned execution. Recover abandoned or inconsistent work explicitly. When work must stop but may resume, postpone it with `agent_postpone_task` instead of cancelling it; cancel only work that will never be done. Follow [assignment-scheduling-and-delivery-control.md](references/assignment-scheduling-and-delivery-control.md) and [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
 
 ### Phase 8: Verify, Rework, Close, and Report
 
-Create a verification assignment for an independent reviewer (the `verifier` role, guided by the `workchord-reviewer` skill). The reviewer checks every acceptance criterion and accepts the work or requests changes with an explicit rework owner. Read the verdict, confirm the next owner, and append project health, progress, risks, decisions, and next steps. Count a task as done only when it links to its commits or pull request, or states why none exists, and link each shipped release to its merge pull request or tag; follow [Close work with its delivery trace](references/verification-rework-and-recovery.md#close-work-with-its-delivery-trace). Keep project status and milestone status in step with the work, so Projects, Roadmap view stays true. Follow [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
+Create a verification assignment for an independent reviewer (the `verifier` role, guided by the `workchord-reviewer` skill). The reviewer checks every acceptance criterion and accepts the work or requests changes with an explicit rework owner. Read the verdict, confirm the next owner, and append project health, progress, risks, decisions, and next steps. Count a task as done only when it links to its commits or pull request, or states why none exists, and link each shipped release to its merge pull request or tag; follow [Close work with its delivery trace](references/verification-rework-and-recovery.md#close-work-with-its-delivery-trace). Keep project status and milestone status in step with the work, so Projects, Roadmap view stays true. When another task already delivered the work, record a supersession instead of reopening anything; when a refusal names a `next_step`, follow it instead of retrying or asking anyone to switch a policy off. Follow [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
 
 ## Finish the Plan Before You Report It
 

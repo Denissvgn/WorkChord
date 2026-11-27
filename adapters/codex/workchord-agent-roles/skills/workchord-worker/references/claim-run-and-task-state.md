@@ -58,6 +58,17 @@ preserves the task version. The authorized PM or person clears the blocker.
 Never treat one as proof of the others. Refresh the full tuple after every
 mutation.
 
+A task can also be `postponed`: the PM agent or an operator stopped it, with a
+reason and the requirements that must be met before it resumes. Postponing
+cancels the live assignments of every purpose, ends the running runs, and
+releases the claim with a new claim generation. Treat it like a lost fence:
+stop task-bound writes, refetch your work, and do not claim or begin the task
+again. The task returns to `planned` (or `resolved`) by itself when its
+requirements are met, and its assignment is issued again by the PM. Do not
+reactivate it, and do not record an owner decision; a worker cannot.
+Changing only a task's milestone does not stale an issued assignment, so keep
+working.
+
 ## Use Atomic V1 Actions
 
 ### Begin
