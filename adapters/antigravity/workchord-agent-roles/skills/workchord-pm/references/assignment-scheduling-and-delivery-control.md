@@ -10,6 +10,7 @@ Use this reference to route definition-ready work, create an ordered dispatch, s
 - [Order assigned work](#order-assigned-work)
 - [Schedule and re-read](#schedule-and-re-read)
 - [Supervise delivery](#supervise-delivery)
+- [Stop work by postponing it](#stop-work-by-postponing-it)
 - [Coordinate a maintenance window](#coordinate-a-maintenance-window)
 - [Complete phase contracts](#complete-phase-contracts)
 
@@ -62,7 +63,7 @@ fields.
    queue, schedule, and one-current-task compliance. A profile, model, or cost
    match cannot bypass any hard gate.
 5. Rank only eligible candidates. Within the best adequacy and availability
-   class, select the lowest-cost adequate binding; then apply the advertised
+   class, prefer a local-first entry, then the lowest-cost adequate binding; then apply the advertised
    queue, schedule, latency, and stable actor-ID tie-breakers. Cost or latency
    never compensates for missing permission, skill, tier, tool, policy,
    independence, or capacity.
@@ -227,7 +228,13 @@ Read the preview's `unscheduled` list before you apply. Each entry names a task 
 | `predecessor_unscheduled` | Correct the predecessor first; this task follows it. |
 | `not_placed` | Check the task's constraint dates and dependencies. |
 
-Each `unscheduled` entry also carries two fields besides its reason. `dates_cleared: true` means the task held dates before this run and the run removed them, so its bar left the Gantt; correct the input its reason names and calculate again, and never write the dates back by hand. `also` lists further reason codes that keep the task undated after its main reason is fixed. For example, `predecessor_unscheduled` with `also: ["no_assignee"]` means fix the predecessor and the task's own assignee. Clear every listed reason before you expect the task to be placed.
+Each `unscheduled` entry also carries two fields besides its reason. `dates_cleared: true` means the task held dates before this run and the run removed them, so its bar left the Gantt; correct the input its reason names and calculate again, and never restore them with a hand edit of its dates. `also` lists further reason codes that keep the task undated after its main reason is fixed. For example, `predecessor_unscheduled` with `also: ["no_assignee"]` means fix the predecessor and the task's own assignee. Clear every listed reason before you expect the task to be placed.
+
+A task the calculation cannot place keeps the dates it already had. The preview and the result list it in `kept_dates` with the same reason codes as `unscheduled`, plus the `start_date` and `end_date` it kept; correct the input its reason names and calculate again. When the kept dates break a rule, the entry carries `date_rule` (`dates_inverted`, `outside_iteration` or `before_min_start_date`); fix the dates by that rule. A task with only one of its two dates has none to keep: it is in `unscheduled` with `dates_cleared: true` and `date_rule: dates_incomplete`. Kept dates are not committed as a baseline and do not occupy the assignee's row.
+
+The preview and apply results may carry `idle_days`. For each assignee it lists the working days still idle before that assignee's last task. Each gap names the task that starts after it and a `reason`: `waits_for_prerequisite` (with `waiting_on`), `earliest_start` (with `earliest_start`), `fixed_dates` or `uninterrupted_slot`. Days covered by a task that keeps its saved dates are not counted as idle. Ready lower-ranked work already fills such days when it fits completely, without moving any placed task. Do not change priorities to fill these days; to shorten them, look at the named prerequisite, the earliest start date, or the assignment.
+
+Postponed work is never scheduled and holds no capacity: its old dates free its assignee's days. A planned task that depends on postponed work, directly or through a summary, is not placed and is reported with the reason `predecessor_postponed` and a `waiting_on` list of the postponed tasks; its own causes are listed in `also`. Reactivate the postponed work, or change the dependency, to place it.
 
 Plan readiness (`plan-readiness`) and the Gantt response list `inverted_dependencies`: each pair is a saved dependency whose saved dates start the dependent on or before its prerequisite's last day. Saved dates stay as they are until a schedule is applied, so the Schedule checkpoint stays `todo` with reason `saved_dependencies_inverted`. Preview the schedule, check that the preview shows the dependent after its prerequisite, then apply it. If the dependent is in the preview's `unscheduled` list (for example, because it is blocked), the preview cannot fix its order: correct that reason first, then preview again.
 
@@ -254,7 +261,8 @@ A queued assignment is bound to the task version it was created for. The server 
 
 - A change of dates alone, from a schedule apply or from the automatic moves above, keeps a queued assignment valid when the server advertises `schedule-follows-actuals-v1`.
 - A model-aware assignment is the exception: its routing evidence is bound to the exact task version. After its task's dates move, request a fresh routing preview and update the assignment.
-- Any other change to the task, such as its brief, effort, assignee, or dependencies, makes the queued assignment stale. Cancel it and create a new one with the current task version; updating it does not rebind it.
+- Changing only a task's milestone keeps its issued work: the task gets a new version, but a queued, accepted or running assignment stays valid and no recovery requeue is needed. The timeline shows a `task.execution_planning_window` event with `window_kind: "planning_only_edit"`.
+- Any other change to the task, such as its brief, title, description, effort, priority, labels, assignee, dependencies or a hand edit of its dates, makes the queued assignment stale. Cancel it and create a new one with the current task version; updating it does not rebind it.
 - On an older server every date change also stales the assignment. Dispatch a task only after its schedule is applied, and re-create its assignment after each later apply that moves it.
 
 Choose schedule mitigation in this order unless an accountable owner records a
@@ -284,10 +292,22 @@ For executing work:
 5. Read the worker's blocker or discovery evidence before modifying the plan. A `plan_gaps` list in a worker's checkpoint event, or a plan note in a reviewer's result, names planning you left unfinished: a missing assignee, missing dates, a missing reviewer, or a missing milestone. Fix the plan in the same control-loop pass; the worker continues meanwhile.
 6. Let healthy work continue. Avoid noisy PM events that obscure worker checkpoints.
 7. Page the complete verifier or recovery collection with its opaque cursor before choosing an intervention; restart on snapshot drift.
-8. Use explicit cancel, reassign, recovery, or rework actions when supported. Under supervised v0, stop additional dispatch and ask the human recovery owner to reconcile the separate claim, run, and task states.
+8. Use explicit reassign, recovery, or rework actions when supported. To stop work that may resume, postpone the task (see [Stop Work by Postponing It](#stop-work-by-postponing-it)); cancel an assignment only to replace it, and cancel a task only when its work will never be done. Under supervised v0, stop additional dispatch and ask the human recovery owner to reconcile the separate claim, run, and task states.
 9. Re-read pipeline and affected task after intervention.
+10. After each merge, re-read the task and confirm it closed; if not, find the missing verdict or acceptance or the open prerequisite (see [Move Tasks Through Their Statuses](verification-rework-and-recovery.md#move-tasks-through-their-statuses)).
 
 Never edit worker-produced artifacts, finish the worker run, or transition active work merely to make the board look consistent. Treat push notifications as hints and refetch authoritative state before acting.
+
+## Stop Work by Postponing It
+
+Cancelling a task is terminal. To stop planned, active or resolved leaf work that may resume, postpone it instead:
+
+1. Read `agent_get_task_actions` and take the claim generation, the running run IDs and the live assignment IDs from it.
+2. Call `agent_postpone_task` with the current `expected_version`, a `reason`, `requirements` (each `predecessor_accepted`, `date`, `owner_decision` or `linked_resolved` with its target) and, when anything is live, `expected_claim_generation`, `expected_running_run_ids` and `expected_live_assignment_ids`. A changed ownership tuple is refused with `execution_ownership_changed`; read again and decide. A requirement that can never hold or already holds is refused.
+3. The server cancels the live assignments of every purpose, ends the running runs with their recorded profile, releases the claim, and records `task_postponed` and `execution_released` on the timeline. It keeps the brief, progress, evidence and dates.
+4. Postponed work leaves the ready queue, the pipeline's needs-definition list, scheduling, capacity, readiness and verifier selection, and a new assignment for it is refused (`task_postponed`). Read it with `agent_get_task_postponement` or list it with `workspace_list_project_tasks` and `status: "postponed"`.
+
+Work resumes by itself, to `planned` (or to `resolved` when it was postponed after resolution), when every requirement is met, and the `task_reactivated` timeline event (webhook `task.reactivated`) reports it. Only the workspace owner records an `owner_decision` requirement; an agent never does. To resume sooner, call `agent_reactivate_task` with the current `expected_version` and a `reason`. Only the project's PM agent, a project manager or an operator postpones or reactivates; a worker or reviewer is refused with `postpone_decider_required`. Each tool also takes `idempotency_key`, `rationale` and `correlation_id`.
 
 ## Coordinate a Maintenance Window
 
@@ -360,7 +380,7 @@ An operator may announce a coordinated maintenance window for a release. While a
 
 - Use the bounded assignment/recovery command whose receipt and server-generated timeline event record the PM decision or escalation.
 - Re-plan PM-owned fields only after recording the reason and coordinating with the current owner.
-- Use audited cancel, reassign, recovery, or rework commands when supported.
+- Use audited reassign, recovery, or rework commands when supported, and postpone work that must stop but may resume. Cancel a task only when its work will never be done.
 
 **Exit and postcondition checks**
 

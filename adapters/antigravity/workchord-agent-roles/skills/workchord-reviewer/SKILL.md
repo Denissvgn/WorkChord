@@ -26,7 +26,13 @@ in everything people read.
 
 1. If the operator supplied an `agent-team-runtime-handoff-v1` packet, confirm
    the acknowledged actor and package before normal authentication. Never print
-   or copy the separately delivered credential.
+   or copy the separately delivered credential. The handoff carries
+   `runtime_instance_id`: return it unchanged in the acknowledgement and list
+   `runtime-instance-identity-v1` in `server_features` when the server
+   advertises it. A different value is refused with
+   `agent_team_ack_runtime_instance_mismatch`. After a credential recovery or a
+   replacement, read the new handoff and refresh the acknowledgement with its
+   identity; never copy a handoff to another runtime.
 2. Find your own agent key in the order given in
    [Find Your Agent Key](references/api-and-mcp.md#find-your-agent-key). With
    no key, stop and send the operator the message in

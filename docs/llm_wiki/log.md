@@ -4674,3 +4674,19 @@ Refreshed against the 1.10.0 code. New and changed subjects: delivery prerequisi
 - Pages deprecated: 0
 - Semantic fields preserved: 12
 - Moved entities: none
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:9cd61915219144a086c2a9f25f878aa3ad870c5f49d82cc7097dfdea1e0bc839`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 4067
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none

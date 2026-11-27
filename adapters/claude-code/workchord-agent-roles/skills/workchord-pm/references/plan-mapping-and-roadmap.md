@@ -84,7 +84,11 @@ Set `assignee_id` to the row of the profile whose agent you intend to dispatch. 
 - When the plan names nobody, ask a person who should take the tasks. Group the leaves by capability label, read the assignee recommendations and each row's workload, propose a row per group, and assign only after the person answers. The question and its record are described in [Prepare the team for the plan](team-capacity-and-calendar.md#prepare-the-team-for-the-plan).
 - Assign a person's task to that person's row, without the `agent` label.
 
-Choose the reviewer in the same pass. The reviewer's profile must differ from the assignee's profile; enforced model-aware routing refuses the review otherwise with `verification_profile_not_independent`. Record the choice under "Handoff and escalation" in the brief and pass it as `reviewer_profile_id` when you create the execution assignment.
+Choose the reviewer in the same pass. The reviewer's profile must differ from the assignee's profile; enforced model-aware routing refuses the review otherwise with `verification_profile_not_independent`.
+
+Record the first rung, the escalation ladder and the reviewer as `brief.routing`, not only as prose. `first_rung`, `escalation[]` and `reviewer` each name a model catalog entry by `catalog_key` (optionally with `harness`); the reviewer may also carry `profile_id` and `instructions`. The server renders the Routing section of the brief from it. Pass `reviewer.profile_id` as `reviewer_profile_id` when you create the execution assignment. A routing-only change keeps the brief revision and the recorded evidence but clears acceptance.
+
+When you reassign a task, read `routing_check` in the answer. A first rung the assignee's agent does not run (`first_rung_not_assignee_model`) or a reviewer profile that is the assignee's own (`reviewer_profile_is_assignee_profile`) is a conflict whatever the project policy; a reviewer that shares the publisher of the assignee, of the first rung or of a recorded contributor, or that no verification profile runs, is a conflict only under `require_different_review_publisher`. A conflict is refused with `routing_inconsistent` (or saved with a warning when the project's `routing_conflict_mode` is `warn`). Send `routing_resolution: "apply_suggestion"` with the reassignment, single or bulk (`payload.routing_resolution`), to save the consistent routing the server suggests, or adjust the routing yourself. Use `agent_get_task_routing_check` with a proposed `assignee_id` to see the outcome first. For a brief that still names its routing in text, run `agent_convert_task_routing` with the current `expected_version` (required for the preview too) and `apply: false`, settle any `unresolved` sentence by passing `routing`, then send `apply: true`.
 
 ## Load in This Order
 
@@ -192,11 +196,17 @@ Each of these makes a plan look loaded while people can read neither who does th
 - **Keeping phases, models, agents, or reviewers in labels.** People cannot group, date, or assign by them, and Projects, Roadmap view stays empty.
 - **Deleting an iteration and loading it again to change dates.** Task IDs, history, and assignments are lost. Change inputs and schedule.
 - **Leaving the project without dates, status, or owner** because the tasks are in. Projects, Roadmap view reads the project, not its tasks.
-- **Using the admin key or an application route** because the agent contract felt slow for a large plan. Load through the audited planning commands, or hand the import to an operator as described below.
+- **Using the admin key or an application route** because the agent contract felt slow for a large plan. Load through the audited planning commands, or hand the import to an operator with a reviewed dry run as described below.
 
 ## When an Operator Imports the Plan
 
-The iteration import route takes one plan document and requires the admin key. It is an operator surface: never call it with an agent key, and never ask for the admin key. When an operator will import a document you prepare, the document must already describe a complete plan:
+The iteration import routes take one plan document and require the admin key. They are an operator surface: never call them with an agent key, and never ask for the admin key. You still review the exact effect before an operator imports a plan, with a dry run under your planning scope:
+
+1. Call `agent_preview_iteration_import` with `import_data` (the file's JSON object) and `iteration_id` (omit it for a file that creates a new iteration). Over REST, use `POST /api/agent/planning/iterations/{id}/import/dry-run` or `POST /api/agent/planning/iterations/import/dry-run` with the file as multipart `file`. It needs `planning:write`, planning access to every project the file names and read access to every existing profile it refers to, and it writes nothing. A file may have at most 100 tasks, 5 levels of subtasks, 200 dependency references, 50 team members and 100 vacations, and the preview must finish within 5 seconds; split larger plans.
+2. Review `changes`: created, changed and removed tasks, dependencies, links, dates, team members and profiles. New rows are named `new-task-N`, `new-member-N` and `new-profile-N`.
+3. Hand the operator the unchanged file and the returned `review_digest`. The operator sends both to the import route (multipart fields `file` and `review_digest`). The write applies exactly the reviewed change set or is refused with `import_review_file_changed`, `import_review_target_changed` or `import_review_changes_differ`. After a refusal, run the preview again and review the new changes; never edit the digest or the file to make it pass.
+
+When an operator will import a document you prepare, the document must already describe a complete plan:
 
 - `team_members` holds one entry per capacity row, and each `name` equals the display name of an existing profile. The import matches rows to profiles by name; an unmatched name creates a new human profile.
 - Every leaf task has `assignee_name` equal to one of those names, `effort_hours`, a typed `brief`, `external_key`, `dependency_external_keys`, `tags`, and `milestone_id` of a milestone that already exists in the project.

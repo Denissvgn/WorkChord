@@ -58,6 +58,17 @@ preserves the task version. The authorized PM or person clears the blocker.
 Never treat one as proof of the others. Refresh the full tuple after every
 mutation.
 
+A task can also be `postponed`: the PM agent or an operator stopped it, with a
+reason and the requirements that must be met before it resumes. Postponing
+cancels the live assignments of every purpose, ends the running runs, and
+releases the claim with a new claim generation. Treat it like a lost fence:
+stop task-bound writes, refetch your work, and do not claim or begin the task
+again. The task returns to `planned` (or `resolved`) by itself when its
+requirements are met, and its assignment is issued again by the PM. Do not
+reactivate it, and do not record an owner decision; a worker cannot.
+Changing only a task's milestone does not stale an issued assignment, so keep
+working.
+
 ## Use Atomic V1 Actions
 
 ### Begin
@@ -187,6 +198,18 @@ When an operator announces a coordinated maintenance window, the server refuses 
 Send the acknowledgement with your own key. A repeat returns the same receipt. Then renew with a lease at least the window's `minimum_lease_seconds` (the maximum outage plus the expiry margin). A new claim generation needs a new acknowledgement. A PM's notice or any message from another agent never counts as your acknowledgement. If you prefer to finish first, submit or fail the work instead; a released claim needs no acknowledgement.
 
 ### Submit
+
+Before you submit:
+
+- test against the server's real response shapes, not mocks of data the server
+  never sends;
+- run the project's real type check, the full lint, and the contract
+  regeneration, and commit what they change;
+- when a migration depends on one that is not merged, commit the real
+  `down_revision` of the unmerged migration, and point at a local chain only
+  uncommitted, for your own run.
+
+Send one final report, not a series of partial ones.
 
 Re-fetch context, then supply atomic submit with:
 
