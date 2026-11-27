@@ -2,7 +2,7 @@
 
 **Entry point:** `workspace_get_release` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 14 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 15 more
 
 **Complete modules touched:**
 
@@ -22,6 +22,7 @@
 - [release_service](../modules/release_service.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -49,18 +50,18 @@ sequenceDiagram
     participant p14 as aggregate_metrics
     participant p15 as AgentService.authenticate
     participant p16 as require_identity_writes
-    participant p17 as DeliveryDependencyService.reconcile
-    participant p18 as DiscussionService.enqueue
-    participant p19 as actor_has_scope
-    participant p20 as scoped_metric_tasks
-    participant p21 as commit_or_flush
-    participant p22 as DeliveryDependencyService.validate_cycles
-    participant p23 as DiscussionService.recipient_authorized
-    participant p24 as TaskService.reserve_task_version
-    participant p25 as clear_execution_evidence
-    participant p26 as working_today
-    participant p27 as ReleaseService
-    participant p28 as _response
+    participant p17 as process_reactivation_checks
+    participant p18 as DeliveryDependencyService.reconcile
+    participant p19 as DiscussionService.enqueue
+    participant p20 as actor_has_scope
+    participant p21 as scoped_metric_tasks
+    participant p22 as ReactivationService.evaluate_waiting
+    participant p23 as commit_or_flush
+    participant p24 as DeliveryDependencyService.validate_cycles
+    participant p25 as DiscussionService.recipient_authorized
+    participant p26 as TaskService.reserve_task_version
+    participant p27 as clear_execution_evidence
+    participant p28 as working_today
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -79,25 +80,25 @@ sequenceDiagram
     p11->>p14: aggregate_metrics
     p8->>p15: AgentService.authenticate
     p10->>p16: require_identity_writes
-    p7->>p17: DeliveryDependencyService.reconcile
-    p7->>p18: DiscussionService.enqueue
-    p13->>p19: actor_has_scope
-    p12->>p20: scoped_metric_tasks
-    p15->>p21: commit_or_flush
-    p17->>p22: DeliveryDependencyService.validate_cycles
-    p18->>p23: DiscussionService.recipient_authorized
-    p17->>p24: TaskService.reserve_task_version
-    p17->>p25: clear_execution_evidence
-    p14->>p26: working_today
-    p2->>p27: ReleaseService
-    p2->>p28: _response
+    p7->>p17: process_reactivation_checks
+    p7->>p18: DeliveryDependencyService.reconcile
+    p7->>p19: DiscussionService.enqueue
+    p13->>p20: actor_has_scope
+    p12->>p21: scoped_metric_tasks
+    p17->>p22: ReactivationService.evaluate_waiting
+    p15->>p23: commit_or_flush
+    p18->>p24: DeliveryDependencyService.validate_cycles
+    p19->>p25: DiscussionService.recipient_authorized
+    p18->>p26: TaskService.reserve_task_version
+    p18->>p27: clear_execution_evidence
+    p14->>p28: working_today
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 558 interactions; 528 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 585 interactions; 555 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 189 (188 omitted); unresolved 1 of 276 (275 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 195 (194 omitted); unresolved 1 of 292 (291 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -111,7 +112,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 92 groups; 84 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 100 groups; 92 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -124,9 +125,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 94; effect analysis evaluated: 64, partial: 3, unavailable: 27. Counts include steps omitted from the displayed trace.
+Source steps: 99; effect analysis evaluated: 68, partial: 3, unavailable: 28. Counts include steps omitted from the displayed trace.
 
-Collector observations for 67 source steps with known totals: observed: 293, emitted: 277, omitted: 16. Unavailable totals are excluded.
+Collector observations for 71 source steps with known totals: observed: 320, emitted: 304, omitted: 16. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

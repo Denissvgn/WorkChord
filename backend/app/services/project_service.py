@@ -1221,6 +1221,7 @@ class ProjectService:
             TaskStatus.ACTIVE.value: 0,
             TaskStatus.RESOLVED.value: 0,
             TaskStatus.CLOSED.value: 0,
+            TaskStatus.POSTPONED.value: 0,
         }
 
     def _build_milestone_task_group(

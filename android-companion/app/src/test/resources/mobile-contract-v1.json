@@ -3507,6 +3507,11 @@
               "title": "Overdue Tasks",
               "type": "integer"
             },
+            "postponed_tasks": {
+              "default": 0,
+              "title": "Postponed Tasks",
+              "type": "integer"
+            },
             "project_id": {
               "title": "Project Id",
               "type": "integer"

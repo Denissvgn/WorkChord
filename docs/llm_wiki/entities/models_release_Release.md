@@ -108,4 +108,4 @@ flowchart LR
 | `ReleaseService.update` | type_reference | [release_service](../modules/release_service.md) | — |
 | `task_replacement_service` | import | [task_replacement_service](../modules/task_replacement_service.md) | — |
 
-> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
+> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.

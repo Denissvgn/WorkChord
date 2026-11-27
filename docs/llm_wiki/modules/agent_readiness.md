@@ -16,7 +16,7 @@ Readiness uses the same inherited work flags as human lifecycle policy. Complete
 | `app.schemas.task` | `TaskAgentReadiness`, `TaskAgentReadinessCriterion` |
 | `app.services.agent_routing_policy` | `CAPABILITY_LABEL_SKILL_KEYS` |
 | `app.services.task_brief_service` | `brief_definition_blockers` |
-| `app.services.work_metrics` | `effective_work_flags` |
+| `app.services.work_metrics` | `effective_work_flags`, `postponed_work_under` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `datetime` | `datetime` |
 | `re` | `re` |
@@ -37,7 +37,8 @@ flowchart LR
     n6["backend/app/services/task_service.py"]
     n7["backend/app/services/work_metrics.py"]
     n8["backend/app/utils/time.py"]
-    n9["backend/tests/test_unscheduled_tasks.py"]
+    n9["backend/tests/test_postponed_out_of_scheduling.py"]
+    n10["backend/tests/test_unscheduled_tasks.py"]
     n0 --> n8
     n2 --> n0
     n2 --> n1
@@ -61,6 +62,10 @@ flowchart LR
     n7 --> n8
     n9 --> n0
     n9 --> n2
+    n9 --> n4
+    n9 --> n7
+    n10 --> n0
+    n10 --> n2
     click n0 "../modules/models_task.md"
     click n1 "../modules/schemas_task.md"
     click n2 "../modules/agent_readiness.md"
@@ -70,7 +75,8 @@ flowchart LR
     click n6 "../modules/task_service.md"
     click n7 "../modules/services_work_metrics.md"
     click n8 "../modules/time.md"
-    click n9 "../modules/test_unscheduled_tasks.md"
+    click n9 "../modules/test_postponed_out_of_scheduling.md"
+    click n10 "../modules/test_unscheduled_tasks.md"
 ```
 
 ### Internal neighbors
@@ -79,6 +85,7 @@ flowchart LR
 |---|---|
 | Inbound | [agent_service](../modules/agent_service.md) |
 | Inbound | [task_service](../modules/task_service.md) |
+| Inbound | [test_postponed_out_of_scheduling](../modules/test_postponed_out_of_scheduling.md) |
 | Inbound | [test_unscheduled_tasks](../modules/test_unscheduled_tasks.md) |
 | Outbound | [models_task](../modules/models_task.md) |
 | Outbound | [schemas_task](../modules/schemas_task.md) |

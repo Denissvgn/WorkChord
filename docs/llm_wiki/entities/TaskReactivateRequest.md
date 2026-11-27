@@ -48,6 +48,7 @@ flowchart LR
     n6["test_reactivation_returns_work_with_brief_progress_evidence_and_provenance_intact (backend/tests/test_task_postponement.py)"]
     n7["test_summary_rolls_up_postponed_leaves (backend/tests/test_task_postponement.py)"]
     n8["test_work_an_open_postponement_waits_for_cannot_be_deleted (backend/tests/test_task_postponement.py)"]
+    n9["test_reactivating_to_resolved_with_the_command_wakes_work_waiting_for_it (backend/tests/test_task_reactivation.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -56,6 +57,7 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
     click n0 "../modules/schemas_task_postponement.md"
     click n2 "../modules/routers_task_domain.md"
     click n3 "../modules/test_task_postponement.md"
@@ -64,6 +66,7 @@ flowchart LR
     click n6 "../modules/test_task_postponement.md"
     click n7 "../modules/test_task_postponement.md"
     click n8 "../modules/test_task_postponement.md"
+    click n9 "../modules/test_task_reactivation.md"
 ```
 
 ### Summary
@@ -89,3 +92,4 @@ flowchart LR
 | `test_reactivation_returns_work_with_brief_progress_evidence_and_provenance_intact` | call | [test_task_postponement](../modules/test_task_postponement.md) | 1 |
 | `test_summary_rolls_up_postponed_leaves` | call | [test_task_postponement](../modules/test_task_postponement.md) | 1 |
 | `test_work_an_open_postponement_waits_for_cannot_be_deleted` | call | [test_task_postponement](../modules/test_task_postponement.md) | 1 |
+| `test_reactivating_to_resolved_with_the_command_wakes_work_waiting_for_it` | call | [test_task_reactivation](../modules/test_task_reactivation.md) | 1 |

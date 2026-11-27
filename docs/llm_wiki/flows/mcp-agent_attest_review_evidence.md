@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_attest_review_evidence` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 10 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 11 more
 
 **Complete modules touched:**
 
@@ -18,6 +18,7 @@
 - [models_identity](../modules/models_identity.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -40,23 +41,23 @@ sequenceDiagram
     participant p9 as require_scope
     participant p10 as AgentService.authenticate
     participant p11 as require_identity_writes
-    participant p12 as DeliveryDependencyService.reconcile
-    participant p13 as DiscussionService.enqueue
-    participant p14 as actor_has_scope
-    participant p15 as commit_or_flush
-    participant p16 as DeliveryDependencyService.validate_cycles
-    participant p17 as DiscussionService.recipient_authorized
-    participant p18 as TaskService.reserve_task_version
-    participant p19 as clear_execution_evidence
-    participant p20 as _structured_tool_error
-    participant p21 as _current_agent_key
-    participant p22 as scope_requirement_is_mutating
-    participant p23 as MCPAuthError
-    participant p24 as MaintenanceModeError
-    participant p25 as _open_db_session
-    participant p26 as IdentityService
-    participant p27 as Settings
-    participant p28 as current_command
+    participant p12 as process_reactivation_checks
+    participant p13 as DeliveryDependencyService.reconcile
+    participant p14 as DiscussionService.enqueue
+    participant p15 as actor_has_scope
+    participant p16 as ReactivationService.evaluate_waiting
+    participant p17 as commit_or_flush
+    participant p18 as DeliveryDependencyService.validate_cycles
+    participant p19 as DiscussionService.recipient_authorized
+    participant p20 as TaskService.reserve_task_version
+    participant p21 as clear_execution_evidence
+    participant p22 as _structured_tool_error
+    participant p23 as _current_agent_key
+    participant p24 as scope_requirement_is_mutating
+    participant p25 as MCPAuthError
+    participant p26 as MaintenanceModeError
+    participant p27 as _open_db_session
+    participant p28 as IdentityService
     participant p29 as ToolError
     participant p30 as record_review_evidence
     p0->>p1: _tool_call
@@ -70,44 +71,44 @@ sequenceDiagram
     p7->>p9: require_scope
     p6->>p10: AgentService.authenticate
     p8->>p11: require_identity_writes
-    p5->>p12: DeliveryDependencyService.reconcile
-    p5->>p13: DiscussionService.enqueue
-    p9->>p14: actor_has_scope
-    p10->>p15: commit_or_flush
-    p12->>p16: DeliveryDependencyService.validate_cycles
-    p13->>p17: DiscussionService.recipient_authorized
-    p12->>p18: TaskService.reserve_task_version
-    p12->>p19: clear_execution_evidence
-    p1->>p20: _structured_tool_error
-    p3->>p21: _current_agent_key
-    p2->>p22: scope_requirement_is_mutating
-    p3->>p23: MCPAuthError
-    p2->>p24: MaintenanceModeError
-    p3->>p25: _open_db_session
-    p3->>p26: IdentityService
-    p4->>p27: Settings
-    p5->>p28: current_command
+    p5->>p12: process_reactivation_checks
+    p5->>p13: DeliveryDependencyService.reconcile
+    p5->>p14: DiscussionService.enqueue
+    p9->>p15: actor_has_scope
+    p12->>p16: ReactivationService.evaluate_waiting
+    p10->>p17: commit_or_flush
+    p13->>p18: DeliveryDependencyService.validate_cycles
+    p14->>p19: DiscussionService.recipient_authorized
+    p13->>p20: TaskService.reserve_task_version
+    p13->>p21: clear_execution_evidence
+    p1->>p22: _structured_tool_error
+    p3->>p23: _current_agent_key
+    p2->>p24: scope_requirement_is_mutating
+    p3->>p25: MCPAuthError
+    p2->>p26: MaintenanceModeError
+    p3->>p27: _open_db_session
+    p3->>p28: IdentityService
     p1-->>p29: ToolError(_structured_tool_error(...))
     p0-->>p30: record_review_evidence(db, actor, task_id, payload, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)
 ```
 
-> Call sequence diagram shows 30 of 256 interactions; 226 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 281 interactions; 251 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 71 (70 omitted); unresolved 1 of 112 (111 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 76 (75 omitted); unresolved 1 of 127 (126 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
+| `backend/app/config.py:get_settings` | 4 | [backend/app/config.py](../modules/config.md) | internal | 1 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | external | 4 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | unresolved | 3 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | external | 1 |
-| `backend/app/commands.py:current_command` | 24 | - | external | 2 |
-| `backend/app/commands.py:current_command` | 24 | - | unresolved | 1 |
-> Omission summary shows 8 of 67 groups; 59 further groups are not expanded here. Counts above include all omitted interactions.
+| `backend/app/commands.py:command_transaction` | 23 | [backend/app/commands.py](../modules/commands.md) | internal | 2 |
+> Omission summary shows 8 of 74 groups; 66 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -120,9 +121,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 74; effect analysis evaluated: 48, partial: 2, unavailable: 24. Counts include steps omitted from the displayed trace.
+Source steps: 79; effect analysis evaluated: 52, partial: 2, unavailable: 25. Counts include steps omitted from the displayed trace.
 
-Collector observations for 50 source steps with known totals: observed: 221, emitted: 208, omitted: 13. Unavailable totals are excluded.
+Collector observations for 54 source steps with known totals: observed: 245, emitted: 232, omitted: 13. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

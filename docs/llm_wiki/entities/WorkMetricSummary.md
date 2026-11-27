@@ -17,6 +17,7 @@ _Auto-generated from `WorkMetricSummary` in `backend/app/schemas/work_metrics.py
 | `required_tasks` | `int` | `required_tasks` | No | No | `0` | — | — | — |
 | `optional_tasks` | `int` | `optional_tasks` | No | No | `0` | — | — | — |
 | `deferred_tasks` | `int` | `deferred_tasks` | No | No | `0` | — | — | — |
+| `postponed_tasks` | `int` | `postponed_tasks` | No | No | `0` | — | — | — |
 | `structural_tasks` | `int` | `structural_tasks` | No | No | `0` | — | — | — |
 | `implemented_tasks` | `int` | `implemented_tasks` | No | No | `0` | — | — | — |
 | `accepted_tasks` | `int` | `accepted_tasks` | No | No | `0` | — | — | — |
@@ -78,7 +79,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_work_metrics](../modules/schemas_work_metrics.md) | 0 | `acceptance_unknown_tasks`, `accepted_percent`, `accepted_tasks`, `deferred_tasks`, `implemented_tasks`, `iteration_overflow_tasks`, `late_start_tasks`, `metric_contract_version`, `optional_tasks`, `project_target_overflow_tasks`, `required_accepted_tasks`, `required_implemented_tasks` |
+| [schemas_work_metrics](../modules/schemas_work_metrics.md) | 0 | `acceptance_unknown_tasks`, `accepted_percent`, `accepted_tasks`, `deferred_tasks`, `implemented_tasks`, `iteration_overflow_tasks`, `late_start_tasks`, `metric_contract_version`, `optional_tasks`, `postponed_tasks`, `project_target_overflow_tasks`, `required_accepted_tasks` |
 
 ### Structure
 

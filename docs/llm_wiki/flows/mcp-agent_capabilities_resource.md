@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_capabilities_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 20 more
+**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 21 more
 
 **Complete modules touched:**
 
@@ -27,6 +27,7 @@
 - [schemas_agent](../modules/schemas_agent.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_domain_service](../modules/task_domain_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -61,11 +62,11 @@ sequenceDiagram
     participant p21 as require_scope
     participant p22 as AgentService.authenticate
     participant p23 as require_identity_writes
-    participant p24 as DeliveryDependencyService.reconcile
+    participant p24 as process_reactivation_checks
     participant p25 as IdentityService.context
-    participant p26 as DiscussionService.enqueue
-    participant p27 as _member_contract_outdated
-    participant p28 as AgentTeamSetupService._handoff
+    participant p26 as DeliveryDependencyService.reconcile
+    participant p27 as DiscussionService.enqueue
+    participant p28 as _member_contract_outdated
     participant p29 as json.dumps (backend/app/mcp_server.py:_json_resource)
     participant p30 as (…).status
     p0->>p1: _json_resource
@@ -91,18 +92,18 @@ sequenceDiagram
     p18->>p21: require_scope
     p17->>p22: AgentService.authenticate
     p19->>p23: require_identity_writes
-    p16->>p24: DeliveryDependencyService.reconcile
+    p16->>p24: process_reactivation_checks
     p19->>p25: IdentityService.context
-    p16->>p26: DiscussionService.enqueue
-    p20->>p27: _member_contract_outdated
-    p20->>p28: AgentTeamSetupService._handoff
+    p16->>p26: DeliveryDependencyService.reconcile
+    p16->>p27: DiscussionService.enqueue
+    p20->>p28: _member_contract_outdated
     p1-->>p29: json.dumps (backend/app/mcp_server.py:_json_resource)(value, ensure_ascii=False, default=str)
     p2-->>p30: (…).status
 ```
 
-> Call sequence diagram shows 30 of 464 interactions; 434 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 474 interactions; 444 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 140 (139 omitted); unresolved 1 of 190 (189 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 143 (142 omitted); unresolved 1 of 194 (193 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -116,7 +117,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 112 groups; 104 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 115 groups; 107 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -129,9 +130,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 135; effect analysis evaluated: 81, partial: 4, unavailable: 50. Counts include steps omitted from the displayed trace.
+Source steps: 138; effect analysis evaluated: 83, partial: 4, unavailable: 51. Counts include steps omitted from the displayed trace.
 
-Collector observations for 85 source steps with known totals: observed: 424, emitted: 383, omitted: 41. Unavailable totals are excluded.
+Collector observations for 87 source steps with known totals: observed: 439, emitted: 398, omitted: 41. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

@@ -2,7 +2,7 @@
 
 **Entry point:** `convert_task_brief` (`http`)
 **Source:** [routers_task_domain](../modules/routers_task_domain.md)
-**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 9 more
+**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 10 more
 
 **Complete modules touched:**
 
@@ -18,6 +18,7 @@
 - [routers_task_domain](../modules/routers_task_domain.md)
 - [snapshot_service](../modules/snapshot_service.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 
 ## Call sequence
@@ -35,27 +36,27 @@ sequenceDiagram
     participant p5 as TaskBriefService._locked
     participant p6 as TaskBriefService.apply_brief
     participant p7 as require_project
-    participant p8 as DeliveryDependencyService.reconcile
-    participant p9 as DiscussionService.enqueue
-    participant p10 as DeliveryDependencyService.validate_cycles
-    participant p11 as DiscussionService.recipient_authorized
-    participant p12 as TaskService.reserve_task_version
-    participant p13 as clear_execution_evidence
-    participant p14 as DeliveryDependencyService.graph
-    participant p15 as lock_iterations
-    participant p16 as IdentityService.context
-    participant p17 as import_legacy_brief
-    participant p18 as current_command
-    participant p19 as CommandState
-    participant p20 as SnapshotService
-    participant p21 as DeliveryDependencyService
-    participant p22 as DiscussionService
-    participant p23 as render_brief
-    participant p24 as clear_acceptance
-    participant p25 as TaskBriefRevision
-    participant p26 as get_settings
-    participant p27 as internal_authority
-    participant p28 as AuthorityError
+    participant p8 as process_reactivation_checks
+    participant p9 as DeliveryDependencyService.reconcile
+    participant p10 as DiscussionService.enqueue
+    participant p11 as ReactivationService.evaluate_waiting
+    participant p12 as DeliveryDependencyService.validate_cycles
+    participant p13 as DiscussionService.recipient_authorized
+    participant p14 as TaskService.reserve_task_version
+    participant p15 as clear_execution_evidence
+    participant p16 as DeliveryDependencyService.graph
+    participant p17 as lock_iterations
+    participant p18 as IdentityService.context
+    participant p19 as ReactivationService._evaluate_isolated
+    participant p20 as import_legacy_brief
+    participant p21 as current_command
+    participant p22 as CommandState
+    participant p23 as SnapshotService
+    participant p24 as DeliveryDependencyService
+    participant p25 as DiscussionService
+    participant p26 as render_brief
+    participant p27 as clear_acceptance
+    participant p28 as TaskBriefRevision
     participant p29 as HTTPException
     participant p30 as self.tasks.get_by_id (backend/app/services/task…skBriefService.conversion)
     p0->>p1: TaskBriefService.conversion
@@ -65,34 +66,34 @@ sequenceDiagram
     p1->>p5: TaskBriefService._locked
     p1->>p6: TaskBriefService.apply_brief
     p6->>p7: require_project
-    p4->>p8: DeliveryDependencyService.reconcile
-    p4->>p9: DiscussionService.enqueue
-    p8->>p10: DeliveryDependencyService.validate_cycles
-    p9->>p11: DiscussionService.recipient_authorized
-    p8->>p12: TaskService.reserve_task_version
-    p8->>p13: clear_execution_evidence
-    p10->>p14: DeliveryDependencyService.graph
-    p12->>p15: lock_iterations
-    p11->>p16: IdentityService.context
-    p1->>p17: import_legacy_brief
-    p4->>p18: current_command
-    p4->>p19: CommandState
-    p5->>p20: SnapshotService
-    p4->>p21: DeliveryDependencyService
-    p4->>p22: DiscussionService
-    p6->>p23: render_brief
-    p6->>p24: clear_acceptance
-    p6->>p25: TaskBriefRevision
-    p7->>p26: get_settings
-    p9->>p27: internal_authority
-    p7->>p28: AuthorityError
+    p4->>p8: process_reactivation_checks
+    p4->>p9: DeliveryDependencyService.reconcile
+    p4->>p10: DiscussionService.enqueue
+    p8->>p11: ReactivationService.evaluate_waiting
+    p9->>p12: DeliveryDependencyService.validate_cycles
+    p10->>p13: DiscussionService.recipient_authorized
+    p9->>p14: TaskService.reserve_task_version
+    p9->>p15: clear_execution_evidence
+    p12->>p16: DeliveryDependencyService.graph
+    p14->>p17: lock_iterations
+    p13->>p18: IdentityService.context
+    p11->>p19: ReactivationService._evaluate_isolated
+    p1->>p20: import_legacy_brief
+    p4->>p21: current_command
+    p4->>p22: CommandState
+    p5->>p23: SnapshotService
+    p4->>p24: DeliveryDependencyService
+    p4->>p25: DiscussionService
+    p6->>p26: render_brief
+    p6->>p27: clear_acceptance
+    p6->>p28: TaskBriefRevision
     p2-->>p29: HTTPException(409, detail=exc.detail(...))
     p1-->>p30: self.tasks.get_by_id (backend/app/services/task…skBriefService.conversion)(task_id)
 ```
 
-> Call sequence diagram shows 30 of 318 interactions; 288 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 351 interactions; 321 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 83 (82 omitted); unresolved 1 of 175 (174 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 88 (87 omitted); unresolved 1 of 193 (192 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -106,7 +107,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_brief_service.py:import_legacy_brief` | 14 | - | unresolved | 23 |
 | `backend/app/commands.py:current_command` | 49 | - | external | 2 |
 | `backend/app/commands.py:current_command` | 49 | - | unresolved | 1 |
-> Omission summary shows 8 of 57 groups; 49 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 68 groups; 60 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -119,9 +120,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 61; effect analysis evaluated: 38, partial: 1, unavailable: 22. Counts include steps omitted from the displayed trace.
+Source steps: 71; effect analysis evaluated: 47, partial: 1, unavailable: 23. Counts include steps omitted from the displayed trace.
 
-Collector observations for 39 source steps with known totals: observed: 220, emitted: 219, omitted: 1. Unavailable totals are excluded.
+Collector observations for 48 source steps with known totals: observed: 272, emitted: 271, omitted: 1. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

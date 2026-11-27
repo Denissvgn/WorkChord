@@ -14,6 +14,7 @@ Dedicated durable outbound-delivery worker process.
 | `app.config` | `get_settings` |
 | `app.database` | `close_database`, `init_db` |
 | `app.services.outbound_webhook_service` | `outbound_delivery_worker_loop`, `run_due_outbound_delivery_jobs` |
+| `app.services.task_reactivation_service` | `postponement_check_loop` |
 | `argparse` | `argparse` |
 | `asyncio` | `asyncio` |
 | `signal` | `signal` |
@@ -29,19 +30,25 @@ flowchart LR
     n1["backend/app/config.py"]
     n2["backend/app/database.py"]
     n3["backend/app/services/outbound_webhook_service.py"]
-    n4["backend/tests/test_process_roles.py"]
+    n4["backend/app/services/task_reactivation_service.py"]
+    n5["backend/tests/test_process_roles.py"]
     n0 --> n1
     n0 --> n2
     n0 --> n3
+    n0 --> n4
     n2 --> n1
     n3 --> n2
-    n4 --> n0
     n4 --> n1
+    n4 --> n2
+    n4 --> n3
+    n5 --> n0
+    n5 --> n1
     click n0 "../modules/worker.md"
     click n1 "../modules/config.md"
     click n2 "../modules/app_database.md"
     click n3 "../modules/outbound_webhook_service.md"
-    click n4 "../modules/test_process_roles.md"
+    click n4 "../modules/task_reactivation_service.md"
+    click n5 "../modules/test_process_roles.md"
 ```
 
 ### Internal neighbors
@@ -52,6 +59,7 @@ flowchart LR
 | Outbound | [config](../modules/config.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [outbound_webhook_service](../modules/outbound_webhook_service.md) |
+| Outbound | [task_reactivation_service](../modules/task_reactivation_service.md) |
 
 ## Functions
 

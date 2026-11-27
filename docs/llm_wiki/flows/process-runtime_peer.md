@@ -2,7 +2,7 @@
 
 **Entry point:** `__main__` (`process`)
 **Source:** [runtime_peer](../modules/runtime_peer.md)
-**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 23 more
+**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 24 more
 
 **Complete modules touched:**
 
@@ -29,6 +29,7 @@
 - [schemas_agent](../modules/schemas_agent.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [task_timeline_service](../modules/task_timeline_service.md)
 - [time](../modules/time.md)
@@ -49,28 +50,28 @@ sequenceDiagram
     participant p4 as AgentWorkService.get_work
     participant p5 as AgentWorkService.get_task_context
     participant p6 as AgentWorkService._require_any_scope
-    participant p7 as DeliveryDependencyService.reconcile
-    participant p8 as commit_or_flush
-    participant p9 as DiscussionService.enqueue
-    participant p10 as AgentWorkService._current_recovery_codes
-    participant p11 as AgentWorkService._work_item
-    participant p12 as AgentWorkService._definition_blockers
-    participant p13 as AgentWorkService._paginate_work_collections
-    participant p14 as AgentWorkService._read_actor_queue_revision
-    participant p15 as AgentWorkService.actor_response
-    participant p16 as AgentWorkService._execution_assignment_view
-    participant p17 as AgentService.get_task_timeline
-    participant p18 as AgentWorkService._validate_assignment_actor
-    participant p19 as actor_has_scope
-    participant p20 as AgentWorkService.assignment_response
-    participant p21 as TaskTimelineService.page
-    participant p22 as AgentWorkService._decode_page_cursor
-    participant p23 as window_authority_matches
-    participant p24 as AgentWorkService._started_blockers
-    participant p25 as AgentWorkService._start_blockers
-    participant p26 as DeliveryDependencyService.validate_cycles
-    participant p27 as DiscussionService.recipient_authorized
-    participant p28 as AgentWorkService.run_response
+    participant p7 as process_reactivation_checks
+    participant p8 as DeliveryDependencyService.reconcile
+    participant p9 as commit_or_flush
+    participant p10 as DiscussionService.enqueue
+    participant p11 as AgentWorkService._current_recovery_codes
+    participant p12 as AgentWorkService._work_item
+    participant p13 as AgentWorkService._definition_blockers
+    participant p14 as AgentWorkService._paginate_work_collections
+    participant p15 as AgentWorkService._read_actor_queue_revision
+    participant p16 as AgentWorkService.actor_response
+    participant p17 as AgentWorkService._execution_assignment_view
+    participant p18 as AgentService.get_task_timeline
+    participant p19 as AgentWorkService._validate_assignment_actor
+    participant p20 as actor_has_scope
+    participant p21 as AgentWorkService.assignment_response
+    participant p22 as ReactivationService.evaluate_waiting
+    participant p23 as TaskTimelineService.page
+    participant p24 as AgentWorkService._decode_page_cursor
+    participant p25 as window_authority_matches
+    participant p26 as AgentWorkService._started_blockers
+    participant p27 as AgentWorkService._start_blockers
+    participant p28 as DeliveryDependencyService.validate_cycles
     participant p29 as print
     participant p30 as <dynamic>
     p0->>p1: execute
@@ -79,35 +80,35 @@ sequenceDiagram
     p1->>p4: AgentWorkService.get_work
     p1->>p5: AgentWorkService.get_task_context
     p4->>p6: AgentWorkService._require_any_scope
-    p2->>p7: DeliveryDependencyService.reconcile
-    p3->>p8: commit_or_flush
-    p2->>p9: DiscussionService.enqueue
-    p4->>p10: AgentWorkService._current_recovery_codes
-    p4->>p11: AgentWorkService._work_item
-    p5->>p12: AgentWorkService._definition_blockers
-    p4->>p13: AgentWorkService._paginate_work_collections
-    p4->>p14: AgentWorkService._read_actor_queue_revision
-    p4->>p15: AgentWorkService.actor_response
-    p5->>p16: AgentWorkService._execution_assignment_view
-    p5->>p17: AgentService.get_task_timeline
-    p10->>p18: AgentWorkService._validate_assignment_actor
-    p6->>p19: actor_has_scope
-    p11->>p20: AgentWorkService.assignment_response
-    p17->>p21: TaskTimelineService.page
-    p13->>p22: AgentWorkService._decode_page_cursor
-    p10->>p23: window_authority_matches
-    p11->>p24: AgentWorkService._started_blockers
-    p11->>p25: AgentWorkService._start_blockers
-    p7->>p26: DeliveryDependencyService.validate_cycles
-    p9->>p27: DiscussionService.recipient_authorized
-    p11->>p28: AgentWorkService.run_response
+    p2->>p7: process_reactivation_checks
+    p2->>p8: DeliveryDependencyService.reconcile
+    p3->>p9: commit_or_flush
+    p2->>p10: DiscussionService.enqueue
+    p4->>p11: AgentWorkService._current_recovery_codes
+    p4->>p12: AgentWorkService._work_item
+    p5->>p13: AgentWorkService._definition_blockers
+    p4->>p14: AgentWorkService._paginate_work_collections
+    p4->>p15: AgentWorkService._read_actor_queue_revision
+    p4->>p16: AgentWorkService.actor_response
+    p5->>p17: AgentWorkService._execution_assignment_view
+    p5->>p18: AgentService.get_task_timeline
+    p11->>p19: AgentWorkService._validate_assignment_actor
+    p6->>p20: actor_has_scope
+    p12->>p21: AgentWorkService.assignment_response
+    p7->>p22: ReactivationService.evaluate_waiting
+    p18->>p23: TaskTimelineService.page
+    p14->>p24: AgentWorkService._decode_page_cursor
+    p11->>p25: window_authority_matches
+    p12->>p26: AgentWorkService._started_blockers
+    p12->>p27: AgentWorkService._start_blockers
+    p8->>p28: DeliveryDependencyService.validate_cycles
     p0-->>p29: print(json.dumps(...))
     p1-->>p30: <dynamic>
 ```
 
-> Call sequence diagram shows 30 of 893 interactions; 863 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 927 interactions; 897 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 242 (241 omitted); unresolved 1 of 435 (434 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 247 (246 omitted); unresolved 1 of 454 (453 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -119,9 +120,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/commands.py:current_command` | 10 | - | external | 2 |
 | `backend/app/commands.py:current_command` | 10 | - | unresolved | 1 |
 | `backend/app/commands.py:command_transaction` | 9 | - | external | 4 |
-| `backend/app/commands.py:command_transaction` | 9 | - | unresolved | 12 |
-| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 21 | - | unresolved | 28 |
-> Omission summary shows 8 of 197 groups; 189 further groups are not expanded here. Counts above include all omitted interactions.
+| `backend/app/commands.py:command_transaction` | 9 | - | unresolved | 13 |
+| `backend/app/services/task_reactivation_service.py:process_reactivation_checks` | 19 | [backend/app/services/task_reactivation_service.py](../modules/task_reactivation_service.md) | internal | 1 |
+> Omission summary shows 8 of 208 groups; 200 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -134,9 +135,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 217; effect analysis evaluated: 155, partial: 7, unavailable: 55. Counts include steps omitted from the displayed trace.
+Source steps: 227; effect analysis evaluated: 164, partial: 7, unavailable: 56. Counts include steps omitted from the displayed trace.
 
-Collector observations for 162 source steps with known totals: observed: 1005, emitted: 938, omitted: 67. Unavailable totals are excluded.
+Collector observations for 171 source steps with known totals: observed: 1061, emitted: 990, omitted: 71. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -238,10 +239,10 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.info.pop` | `command_transaction` | 120 |
-| mutation | `db.info.pop` | `command_transaction` | 133 |
-| mutation | `db.info.pop` | `command_transaction` | 134 |
-| mutation | `db.info.pop` | `command_transaction` | 136 |
+| mutation | `db.info.pop` | `command_transaction` | 124 |
+| mutation | `db.info.pop` | `command_transaction` | 137 |
+| mutation | `db.info.pop` | `command_transaction` | 138 |
+| mutation | `db.info.pop` | `command_transaction` | 140 |
 
 ### Static analysis gaps
 

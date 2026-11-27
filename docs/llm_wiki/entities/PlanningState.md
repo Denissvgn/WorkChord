@@ -35,8 +35,9 @@ flowchart LR
     n7["backend/tests/test_iteration_date_move.py"]
     n8["backend/tests/test_profile_capacity.py"]
     n9["backend/tests/test_task_discussion.py"]
-    n10["backend/tests/test_team_pm_recovery.py"]
-    n11["backend/tests/test_unused_allocation.py"]
+    n10["backend/tests/test_task_reactivation.py"]
+    n11["backend/tests/test_team_pm_recovery.py"]
+    n12["backend/tests/test_unused_allocation.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -48,6 +49,7 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/models_capacity.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/commands.md"
@@ -58,8 +60,9 @@ flowchart LR
     click n7 "../modules/test_iteration_date_move.md"
     click n8 "../modules/test_profile_capacity.md"
     click n9 "../modules/test_task_discussion.md"
-    click n10 "../modules/test_team_pm_recovery.md"
-    click n11 "../modules/test_unused_allocation.md"
+    click n10 "../modules/test_task_reactivation.md"
+    click n11 "../modules/test_team_pm_recovery.md"
+    click n12 "../modules/test_unused_allocation.md"
 ```
 
 ### Summary
@@ -86,5 +89,6 @@ flowchart LR
 | `test_iteration_date_move` | import | [test_iteration_date_move](../modules/test_iteration_date_move.md) | — |
 | `test_profile_capacity` | import | [test_profile_capacity](../modules/test_profile_capacity.md) | — |
 | `test_task_discussion` | import | [test_task_discussion](../modules/test_task_discussion.md) | — |
+| `test_task_reactivation` | import | [test_task_reactivation](../modules/test_task_reactivation.md) | — |
 | `test_team_pm_recovery` | import | [test_team_pm_recovery](../modules/test_team_pm_recovery.md) | — |
 | `test_unused_allocation` | import | [test_unused_allocation](../modules/test_unused_allocation.md) | — |
