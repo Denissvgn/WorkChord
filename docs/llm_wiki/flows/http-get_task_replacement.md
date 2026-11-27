@@ -113,9 +113,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 35; effect analysis evaluated: 28, partial: 1, unavailable: 6. Counts include steps omitted from the displayed trace.
+Source steps: 35; effect analysis evaluated: 27, partial: 2, unavailable: 6. Counts include steps omitted from the displayed trace.
 
-Collector observations for 29 source steps with known totals: observed: 134, emitted: 128, omitted: 6. Unavailable totals are excluded.
+Collector observations for 29 source steps with known totals: observed: 135, emitted: 128, omitted: 7. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -199,9 +199,9 @@ flowchart LR
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
 | get_task_replacement (backend/app/mcp_agent_tools.py) | TaskReplacementService.get | 1265 | `TaskReplacementService(db).get(task_id)` |
-| TaskReplacementService.get | self.db.scalar (backend/app/services/task…askReplacementService.get) | 184 | `self.db.scalar(...)` |
-| TaskReplacementService.get | select(…).where (backend/app/services/task…askReplacementService.get) | 184 | `select(Task).where(...)` |
-| TaskReplacementService.get | select (backend/app/services/task…askReplacementService.get) | 184 | `select(Task)` |
+| TaskReplacementService.get | self.db.scalar (backend/app/services/task…askReplacementService.get) | 239 | `self.db.scalar(...)` |
+| TaskReplacementService.get | select(…).where (backend/app/services/task…askReplacementService.get) | 239 | `select(Task).where(...)` |
+| TaskReplacementService.get | select (backend/app/services/task…askReplacementService.get) | 239 | `select(Task)` |
 
 ### Boundary effects
 
@@ -213,9 +213,9 @@ flowchart LR
 |---|---|---|---:|
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | external_call | `actor_scopes` | `isinstance` | 90 |
-| unresolved_call | `TaskReplacementService.get` | `self.db.scalar` | 184 |
-| unresolved_call | `TaskReplacementService.get` | `select(Task).where` | 184 |
-| external_call | `TaskReplacementService.get` | `select` | 184 |
+| unresolved_call | `TaskReplacementService.get` | `self.db.scalar` | 239 |
+| unresolved_call | `TaskReplacementService.get` | `select(Task).where` | 239 |
+| external_call | `TaskReplacementService.get` | `select` | 239 |
 | step_limit | `get_task_replacement` | `first 12 steps` | 0 |
 | truncated_flow | `get_task_replacement` | `depth limit` | 0 |
 

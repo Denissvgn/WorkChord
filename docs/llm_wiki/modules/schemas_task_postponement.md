@@ -84,7 +84,7 @@ flowchart LR
 | [ReactivationRequirementResponse](../entities/ReactivationRequirementResponse.md) | Pydantic model | 115 | `BaseModel` | — |
 | [PostponementRelease](../entities/PostponementRelease.md) | Pydantic model | 127 | `BaseModel` | Execution ownership the postponement ended through the fenced release. |
 | [TaskPostponementRecord](../entities/schemas_task_postponement_TaskPostponementRecord.md) | Pydantic model | 136 | `BaseModel` | — |
-| [TaskPostponementResponse](../entities/schemas_task_postponement_TaskPostponementResponse.md) | Pydantic model | 157 | `BaseModel` | — |
+| [TaskPostponementResponse](../entities/schemas_task_postponement_TaskPostponementResponse.md) | Pydantic model | 158 | `BaseModel` | — |
 
 ## Functions
 

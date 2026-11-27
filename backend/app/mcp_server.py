@@ -1656,7 +1656,7 @@ def create_mcp_server() -> FastMCP:
 
     @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_task_replacement(task_id: int) -> dict[str, Any]:
-        """Read the clean-replacement disposition a task takes part in, as original or replacement."""
+        """Read the replacement or supersession disposition a task takes part in, as original, replacement or successor."""
         return await _tool_call(
             "planning:read",
             lambda db, actor: mcp_agent_tools.get_task_replacement(db, actor, task_id),

@@ -26,7 +26,7 @@ _Auto-generated from `TaskPostponementRecord` in `backend/app/schemas/task_postp
 | `requirements` | `list[ReactivationRequirementResponse]` | `requirements` | Yes | No | — | — | — | — |
 | `reactivated_at` | `datetime \| None` | `reactivated_at` | No | Yes | `None` | — | — | — |
 | `reactivated_to_status` | `Literal['planned', 'resolved'] \| None` | `reactivated_to_status` | No | Yes | `None` | — | — | — |
-| `reactivation_trigger` | `str \| None` | `reactivation_trigger` | No | Yes | `None` | — | — | 'command' for an explicit reactivation, 'requirements_met' when the last requirement was met. |
+| `reactivation_trigger` | `str \| None` | `reactivation_trigger` | No | Yes | `None` | — | — | 'command' for an explicit reactivation, 'requirements_met' when the last requirement was met, 'supersession' when the postponed task was superseded by delivered work. |
 | `reactivation_reason` | `str \| None` | `reactivation_reason` | No | Yes | `None` | — | — | — |
 | `reactivated_by_principal_id` | `int \| None` | `reactivated_by_principal_id` | No | Yes | `None` | — | — | — |
 | `reactivated_by_actor_id` | `int \| None` | `reactivated_by_actor_id` | No | Yes | `None` | — | — | — |

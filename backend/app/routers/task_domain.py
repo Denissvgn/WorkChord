@@ -330,7 +330,7 @@ from app.schemas.task_replacement import TaskReplacementCreate, TaskReplacementR
 
 @router.get("/tasks/{task_id}/replacement", response_model=TaskReplacementResponse)
 async def task_replacement(task_id: int, db: DB):
-    """Read the clean-replacement disposition this task takes part in, as original or replacement."""
+    """Read the replacement or supersession disposition this task takes part in, as original, replacement or successor."""
     from app.services.task_replacement_service import TaskReplacementService
     return await domain_result(TaskReplacementService(db).get(task_id))
 
@@ -373,6 +373,21 @@ async def record_task_replacement(task_id: int, data: TaskReplacementCreate, db:
     """Replace this unaccepted task with a fresh one; only the project's PM or an operator may decide."""
     from app.services.task_replacement_service import TaskReplacementService
     return await domain_result(TaskReplacementService(db).record(task_id, data))
+
+
+from app.schemas.task_replacement import TaskSupersessionCreate
+
+
+@router.post("/tasks/{task_id}/supersession", response_model=TaskReplacementResponse, status_code=201)
+async def record_task_supersession(task_id: int, data: TaskSupersessionCreate, db: DB):
+    """Record that a closed or accepted task already delivered this task's work; neither task is reopened.
+
+    Only a project owner or manager, an operator, or the project's PM agent may decide. Dependents, delivery
+    prerequisites, release membership and open reactivation requirements move from this task to the successor,
+    and the deliverable counts once.
+    """
+    from app.services.task_replacement_service import TaskReplacementService
+    return await domain_result(TaskReplacementService(db).supersede(task_id, data))
 
 
 from app.schemas.task_postponement import OwnerDecisionRequest, TaskPostponeRequest, TaskPostponementResponse, TaskReactivateRequest

@@ -105,4 +105,4 @@ flowchart LR
 | `test_operator_acceptance_records_the_operator_only_with_an_accountable_override` | call | [test_acceptance_attribution](../modules/test_acceptance_attribution.md) | 1 |
 | `test_signed_in_acceptance_records_the_signed_in_person` | call | [test_acceptance_attribution](../modules/test_acceptance_attribution.md) | 1 |
 
-> References: showing 12 of 85 logical references; 73 omitted by the 12-row generated summary limit.
+> References: showing 12 of 86 logical references; 74 omitted by the 12-row generated summary limit.

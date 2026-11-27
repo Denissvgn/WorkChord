@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1861 | [Open section](#entities) |
-| Modules | 1194 | [Open section](#modules) |
-| Workflows | 245 | [Open section](#workflows) |
+| Entities | 1862 | [Open section](#entities) |
+| Modules | 1197 | [Open section](#modules) |
+| Workflows | 247 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 637 | [Open section](#entry-point-flows) |
+| Entry-point flows | 638 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -1156,6 +1156,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskStatusLogResponse](entities/TaskStatusLogResponse.md)
 - [TaskStatusService](entities/TaskStatusService.md)
 - [TaskSubscription](entities/TaskSubscription.md)
+- [TaskSupersessionCreate](entities/TaskSupersessionCreate.md)
 - [TaskTextEditorBodyProps](entities/TaskTextEditorBodyProps.md)
 - [TaskTextEditorModalProps](entities/TaskTextEditorModalProps.md)
 - [TaskTimelineDates](entities/TaskTimelineDates.md)
@@ -1917,6 +1918,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261126_0027_task_postponements](modules/20261126_0027_task_postponements.md) - Record postponed tasks and the requirements that must hold before they resume.
 - [20261126_0028_team_runtime_identity](modules/20261126_0028_team_runtime_identity.md) - Record which runtime instance acknowledged each team member's handoff.
 - [20261126_0029_catalog_effort](modules/20261126_0029_catalog_effort.md) - Record the reasoning-effort setting of each model catalog entry.
+- [20261127_0030_task_supersession](modules/20261127_0030_task_supersession.md) - Record a supersession: an original whose deliverable was already closed or accepted as another task.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AccountMenu](modules/AccountMenu.md) - `frontend/src/features/identity/AccountMenu.tsx`
 - [AccountMenu.test](modules/AccountMenu.test.md) - `frontend/src/features/identity/AccountMenu.test.tsx`
@@ -2534,7 +2536,7 @@ Retained history; these declarations are absent from the selected source invento
 - [models_task](modules/models_task.md) - Task model.
 - [models_task_brief](modules/models_task_brief.md) - Append-only brief, progress and ordinary review history.
 - [models_task_postponement](modules/models_task_postponement.md) - A recorded decision that stopped a task, and what must be true before it resumes.
-- [models_task_replacement](modules/models_task_replacement.md) - An audited disposition that replaces unattributable work with a separate clean task.
+- [models_task_replacement](modules/models_task_replacement.md) - An audited disposition that names the one task delivering another task's work instead.
 - [models_template](modules/models_template.md) - Reusable work template model.
 - [models_time_entry](modules/models_time_entry.md) - Private explicit work records and retained corrections, independent of task state.
 - [models_triage](modules/models_triage.md) - Triage item model.
@@ -2787,7 +2789,7 @@ Retained history; these declarations are absent from the selected source invento
 - [task_postponement_service](modules/task_postponement_service.md) - Postpone task work with a recorded reason and requirements, and reactivate it.
 - [task_reactivation_service](modules/task_reactivation_service.md) - Return postponed work to its lifecycle once every recorded requirement holds.
 - [task_recovery_service](modules/task_recovery_service.md) - Version allocation shared by scheduled and project-backlog recovery.
-- [task_replacement_service](modules/task_replacement_service.md) - Record and read an audited clean replacement of task work that cannot be attributed.
+- [task_replacement_service](modules/task_replacement_service.md) - Record and read an audited disposition that names the task delivering another task's work.
 - [task_service](modules/task_service.md) - Task service with business logic.
 - [task_status_log](modules/task_status_log.md) - Task status log model for audit trail.
 - [task_status_service](modules/task_status_service.md) - Task status transitions, roll-up reconciliation, and status reporting.
@@ -2973,6 +2975,8 @@ Retained history; these declarations are absent from the selected source invento
 - [test_task_reactivation](modules/test_task_reactivation.md) - Postponed work returns to its lifecycle by itself once every recorded requirement holds.
 - [test_task_replacement](modules/test_task_replacement.md) - A clean replacement of unattributable work: audited, counted once, and held when it carries unknown work.
 - [test_task_replacement_migration](modules/test_task_replacement_migration.md) - Clean-replacement dispositions migrate reversibly and an existing disposition is never dropped silently.
+- [test_task_supersession](modules/test_task_supersession.md) - An original superseded by work already closed or accepted: nothing reopens, and the deliverable counts once.
+- [test_task_supersession_migration](modules/test_task_supersession_migration.md) - Supersession dispositions migrate reversibly; existing replacements keep their basis and none is dropped silently.
 - [test_team_member_agent_connected](modules/test_team_member_agent_connected.md) - Team-member responses say whether an agent is connected, to every reader, without naming it.
 - [test_team_pm_dispatch](modules/test_team_pm_dispatch.md) - Authenticated PM queue commands across the REST and MCP transports.
 - [test_team_pm_recovery](modules/test_team_pm_recovery.md) - Authenticated recovery and claim-fenced blocker reporting.
@@ -3221,8 +3225,10 @@ Retained history; these declarations are absent from the selected source invento
 - [TaskImportService_import_tasks](workflows/TaskImportService_import_tasks.md) - entry: `task_import_service.TaskImportService.import_tasks`
 - [TaskPostponementService_postpone](workflows/TaskPostponementService_postpone.md) - entry: `task_postponement_service.TaskPostponementService.postpone`
 - [TaskPostponementService_resume](workflows/TaskPostponementService_resume.md) - entry: `task_postponement_service.TaskPostponementService.resume`
+- [TaskReplacementService__close_postponement](workflows/TaskReplacementService__close_postponement.md) - entry: `task_replacement_service.TaskReplacementService._close_postponement`
 - [TaskReplacementService__move_dependents](workflows/TaskReplacementService__move_dependents.md) - entry: `task_replacement_service.TaskReplacementService._move_dependents`
 - [TaskReplacementService_record](workflows/TaskReplacementService_record.md) - entry: `task_replacement_service.TaskReplacementService.record`
+- [TaskReplacementService_supersede](workflows/TaskReplacementService_supersede.md) - entry: `task_replacement_service.TaskReplacementService.supersede`
 - [TaskService__lock_task_scope](workflows/TaskService__lock_task_scope.md) - entry: `task_service.TaskService._lock_task_scope`
 - [TaskService_add_dependency](workflows/TaskService_add_dependency.md) - entry: `task_service.TaskService.add_dependency`
 - [TaskService_create](workflows/TaskService_create.md) - entry: `task_service.TaskService.create`
@@ -3645,6 +3651,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-record_task_progress](flows/http-record_task_progress.md) - entry: `record_task_progress`
 - [http-record_task_replacement-agent_planning](flows/http-record_task_replacement-agent_planning.md) - entry: `record_task_replacement`
 - [http-record_task_replacement-task_domain](flows/http-record_task_replacement-task_domain.md) - entry: `record_task_replacement`
+- [http-record_task_supersession](flows/http-record_task_supersession.md) - entry: `record_task_supersession`
 - [http-recover_principal](flows/http-recover_principal.md) - entry: `recover_principal`
 - [http-refresh_github_external_link](flows/http-refresh_github_external_link.md) - entry: `refresh_github_external_link`
 - [http-release_task_claim](flows/http-release_task_claim.md) - entry: `release_task_claim`

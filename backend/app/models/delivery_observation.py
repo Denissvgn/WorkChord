@@ -72,7 +72,9 @@ def observe_task_event(_mapper, connection, item):
     row = _task_row(connection, item.task_id)
     if row is None:
         return
+    # A superseded original is withdrawn like a replaced one: its successor carries the delivery fact.
     kind = {"task_cancel": "canceled", "execution_canceled": "canceled", "task_replaced": "replaced",
+            "task_superseded": "replaced",
             "task_reopen": "reopened", "backlog_snapshot_restored": "restored", "snapshot_task_restored": "restored"}.get(item.event_type)
     if item.event_type == "task_reopen" and row["status"] == "planned":
         kind = "reopened_planned"
