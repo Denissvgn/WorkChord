@@ -184,7 +184,10 @@ While the import runs, the dry run holds the workspace-wide planning reservation
 - `import_iteration_tree_too_large`: the iteration would hold more than 2,500 tasks after the import.
 - `import_dry_run_busy`: another dry run is running on the same server process. Try again shortly.
 
-A dry run that does not finish within 5 seconds is stopped, rolled back and refused with HTTP 409 and `import_dry_run_too_slow`.
+A dry run that does not finish within 5 seconds is stopped, rolled back and refused with HTTP 409 and `import_dry_run_too_slow`. The caps keep typical files within this budget but do not guarantee it.
+
+- **Large target:** a large target iteration lowers the practical file size. For example, a 100-task chained file into an iteration of about 900 tasks exceeds the budget; review such a plan in smaller files.
+- **Waiting counts:** time spent waiting for the planning reservation behind another command counts toward the budget. If the reservation was busy, try again.
 
 The dry run runs the import itself in a transaction that is always rolled back, as the operator would run it, and returns:
 

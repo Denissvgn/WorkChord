@@ -50,8 +50,10 @@ EXTERNAL_LINK_FIELDS = ("provider", "external_key", "url", "title")
 # are checked before the reservation; they keep ordinary plans well inside the time
 # budget and the response reviewable. Whatever still runs long is cut off by the budget.
 # A larger plan is reviewed in parts, or applied by the operator without a review.
-# Measured worst shape within these caps (100 tasks as 20 chains five levels deep, each
-# depending on two earlier tasks): about 2.7 s on SQLite and 4.1 s on PostgreSQL per request.
+# The caps keep typical files well inside the budget (100 tasks as 20 chains five levels
+# deep measured about 2.7 s on SQLite and 4.1 s on PostgreSQL per request). They do not
+# guarantee it: every cap at once, or a large target iteration, can still overrun, and the
+# budget below is the hard bound.
 MAX_DRY_RUN_IMPORT_TASKS = 100
 MAX_DRY_RUN_IMPORT_MEMBERS = 50
 MAX_DRY_RUN_IMPORT_DEPTH = 5
@@ -476,7 +478,8 @@ async def _operator_authority(db, caller: Authority | None) -> Authority:
 
 def _too_slow() -> PlanningConflict:
     return PlanningConflict("import_dry_run_too_slow",
-        f"The dry run exceeded its {DRY_RUN_BUDGET_SECONDS:g}-second budget and was rolled back. Review the plan in smaller files.")
+        f"The dry run exceeded its {DRY_RUN_BUDGET_SECONDS:g}-second budget and was rolled back. "
+        "Review the plan in smaller files, or try again if the planning reservation was busy with another command.")
 
 
 async def _run_within_budget(db, operator, iteration_id, data, revisions):
