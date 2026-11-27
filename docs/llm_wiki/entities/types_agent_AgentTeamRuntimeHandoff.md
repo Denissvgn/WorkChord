@@ -1,6 +1,6 @@
 # AgentTeamRuntimeHandoff
 
-**Location:** `frontend/src/types/agent.ts:787`
+**Location:** `frontend/src/types/agent.ts:796`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -27,6 +27,7 @@ _Auto-generated from `AgentTeamRuntimeHandoff` in `frontend/src/types/agent.ts`.
 | `profile_revision` | `string` | Yes | — | — |
 | `model_binding_revisions` | `Record<string, number>` | Yes | — | — |
 | `supported_assignment_modes` | `string[]` | Yes | — | — |
+| `runtime_instance_id` | `string` | Yes | — | — |
 | `startup_instructions` | `string[]` | Yes | — | — |
 | `credential_ref` | `string` | Yes | — | — |
 
@@ -43,4 +44,4 @@ _Auto-generated from `AgentTeamRuntimeHandoff` in `frontend/src/types/agent.ts`.
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_agent](../modules/types_agent.md) | 0 | `actor_id`, `actor_key`, `credential_ref`, `model_binding_revisions`, `previous_acknowledgement_digest`, `profile_key`, `profile_revision`, `required_server_features`, `role`, `schema_version`, `server_url`, `skill_package` |
+| [types_agent](../modules/types_agent.md) | 0 | `actor_id`, `actor_key`, `credential_ref`, `model_binding_revisions`, `previous_acknowledgement_digest`, `profile_key`, `profile_revision`, `required_server_features`, `role`, `runtime_instance_id`, `schema_version`, `server_url` |

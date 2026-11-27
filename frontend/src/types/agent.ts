@@ -13,6 +13,8 @@ export type AgentModelTrustState = 'matched' | 'mismatch' | 'unreported' | 'unve
 export type AgentModelMatchBasis = 'configured_alias' | 'catalog_key';
 
 export type ModelReasoningTier = 1 | 2 | 3;
+export type ModelEffort = 'unknown' | 'low' | 'medium' | 'high' | 'xhigh' | 'max';
+export type RequiredModelEffort = Exclude<ModelEffort, 'unknown'>;
 export type ModelContextTier = 'small' | 'medium' | 'large';
 export type ModelCostTier = 'low' | 'medium' | 'high';
 export type ModelLatencyTier = 'fast' | 'balanced' | 'slow';
@@ -69,6 +71,7 @@ export type RoutingBlockerCode =
     | 'model_catalog_disabled'
     | 'model_reasoning_tier_insufficient'
     | 'model_context_tier_insufficient'
+    | 'model_effort_insufficient'
     | 'model_modality_missing'
     | 'model_tool_missing'
     | 'model_data_policy_missing'
@@ -192,6 +195,7 @@ export interface AgentModelCatalogEntry {
     provider: string;
     configured_model_alias: string;
     reasoning_tier: ModelReasoningTier;
+    effort: ModelEffort;
     context_tier: ModelContextTier;
     modality_tags: string[];
     cost_tier: ModelCostTier;
@@ -209,6 +213,7 @@ export interface AgentModelCatalogCreate {
     provider: string;
     configured_model_alias: string;
     reasoning_tier: ModelReasoningTier;
+    effort?: ModelEffort;
     context_tier: ModelContextTier;
     modality_tags?: string[];
     cost_tier: ModelCostTier;
@@ -224,6 +229,7 @@ export interface AgentModelCatalogUpdate {
     provider?: string;
     configured_model_alias?: string;
     reasoning_tier?: ModelReasoningTier;
+    effort?: ModelEffort;
     context_tier?: ModelContextTier;
     modality_tags?: string[];
     cost_tier?: ModelCostTier;
@@ -321,6 +327,7 @@ export interface TaskDifficultyAxes {
 export interface RequiredModelEnvelope {
     minimum_reasoning_tier: ModelReasoningTier;
     minimum_context_tier: ModelContextTier;
+    minimum_effort?: RequiredModelEffort | null;
     modality_tags: string[];
     tool_tags: string[];
     data_policy_tags: string[];
@@ -414,6 +421,7 @@ export interface AgentRoutingCandidate {
     missing_skill_keys: string[];
     blocking_weakness_keys: string[];
     reasoning_tier: ModelReasoningTier;
+    effort: ModelEffort;
     context_tier: ModelContextTier;
     modality_tags: string[];
     tool_tags: string[];
@@ -457,6 +465,7 @@ export interface AgentRoutingExclusion {
     insufficient_skill_keys: string[];
     blocking_weakness_keys: string[];
     reasoning_tier: ModelReasoningTier | null;
+    effort: ModelEffort | null;
     context_tier: ModelContextTier | null;
     cost_tier: ModelCostTier | null;
     local_first: boolean | null;
@@ -799,8 +808,20 @@ export interface AgentTeamRuntimeHandoff {
     profile_revision: string;
     model_binding_revisions: Record<string, number>;
     supported_assignment_modes: string[];
+    runtime_instance_id: string;
     startup_instructions: string[];
     credential_ref: string;
+}
+
+/** Which runtime instance acknowledged a member's handoff; unknown for an acknowledgement made before the identity existed. */
+export interface AgentTeamRuntimeIdentityStatus {
+    state: 'unknown' | 'current' | 'changed' | 'stale';
+    expected_instance_id: string | null;
+    acknowledged_instance_id: string | null;
+    previous_instance_id: string | null;
+    changed_at: string | null;
+    refused_instance_id: string | null;
+    refused_at: string | null;
 }
 
 export interface AgentTeamMemberStatus {
@@ -819,6 +840,7 @@ export interface AgentTeamMemberStatus {
     skill_package: AgentTeamSkillPackage;
     package_acknowledged: boolean;
     acknowledgement_state?: 'missing' | 'current' | 'stale';
+    runtime_identity?: AgentTeamRuntimeIdentityStatus;
     model_attestation?: 'not_independently_attested';
     credential_delivery_state: 'pending' | 'delivered' | 'uncertain' | 'not_required';
     connection_state: 'unobserved' | 'observed' | 'stale';

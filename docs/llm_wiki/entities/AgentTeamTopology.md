@@ -1,6 +1,6 @@
 # AgentTeamTopology
 
-**Location:** `backend/app/models/agent.py:303`
+**Location:** `backend/app/models/agent.py:316`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)
@@ -45,11 +45,11 @@ flowchart LR
     n5["AgentTeamSetupService._apply_disable (backend/app/services/agent_team_setup_service.py)"]
     n6["AgentTeamSetupService._apply_identity_replacement (backend/app/services/agent_team_setup_service.py)"]
     n7["AgentTeamSetupService._apply_replace_recovery (backend/app/services/agent_team_setup_service.py)"]
-    n8["AgentTeamSetupService._ensure_topology_for_apply (backend/app/services/agent_team_setup_service.py)"]
-    n9["AgentTeamSetupService._handoff (backend/app/services/agent_team_setup_service.py)"]
-    n10["AgentTeamSetupService._increment_ack_attempt (backend/app/services/agent_team_setup_service.py)"]
-    n11["AgentTeamSetupService._member_record (backend/app/services/agent_team_setup_service.py)"]
-    n12["AgentTeamSetupService._reconcile_bindings (backend/app/services/agent_team_setup_service.py)"]
+    n8["AgentTeamSetupService._count_ack_attempt (backend/app/services/agent_team_setup_service.py)"]
+    n9["AgentTeamSetupService._ensure_topology_for_apply (backend/app/services/agent_team_setup_service.py)"]
+    n10["AgentTeamSetupService._handoff (backend/app/services/agent_team_setup_service.py)"]
+    n11["AgentTeamSetupService._increment_ack_attempt (backend/app/services/agent_team_setup_service.py)"]
+    n12["AgentTeamSetupService._member_record (backend/app/services/agent_team_setup_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -99,11 +99,11 @@ flowchart LR
 | `AgentTeamSetupService._apply_disable` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._apply_identity_replacement` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._apply_replace_recovery` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
+| `AgentTeamSetupService._count_ack_attempt` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._ensure_topology_for_apply` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 | `AgentTeamSetupService._ensure_topology_for_apply` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._handoff` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._increment_ack_attempt` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._member_record` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
-| `AgentTeamSetupService._reconcile_bindings` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 
-> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.
+> References: showing 12 of 29 logical references; 17 omitted by the 12-row generated summary limit.

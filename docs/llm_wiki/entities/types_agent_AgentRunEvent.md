@@ -1,6 +1,6 @@
 # AgentRunEvent
 
-**Location:** `frontend/src/types/agent.ts:597`
+**Location:** `frontend/src/types/agent.ts:606`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

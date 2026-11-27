@@ -1,6 +1,6 @@
 # TaskRoutingPanelProps
 
-**Location:** `frontend/src/components/agent/TaskRoutingPanel.tsx:56`
+**Location:** `frontend/src/components/agent/TaskRoutingPanel.tsx:57`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskRoutingPanel](../modules/TaskRoutingPanel.md)

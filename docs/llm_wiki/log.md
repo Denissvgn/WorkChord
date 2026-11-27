@@ -4343,3 +4343,35 @@ Refreshed against the 1.10.0 code. New and changed subjects: delivery prerequisi
 - Pages deprecated: 0
 - Semantic fields preserved: 6
 - Moved entities: none
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:936959899c44f581ca60ed627ffef075807ace1df94950c745630f072782e737`
+- Pages created: 8
+- Pages updated: 117
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3742
+- Pages deprecated: 0
+- Semantic fields preserved: 9
+- Moved entities: none
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:a100b5ace772fec031c90ed0de741a1dd24910bb25794ef8693f2dbabb5ae0ec`
+- Pages created: 5
+- Pages updated: 166
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3701
+- Pages deprecated: 0
+- Semantic fields preserved: 7
+- Moved entities: none
