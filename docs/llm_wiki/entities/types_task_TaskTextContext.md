@@ -1,6 +1,6 @@
 # TaskTextContext
 
-**Location:** `frontend/src/types/task.ts:303`
+**Location:** `frontend/src/types/task.ts:307`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

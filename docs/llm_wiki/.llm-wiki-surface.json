@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1936,
+      "entities": 1947,
       "flows": 652,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1225,
+      "modules": 1232,
       "workflows": 254
     },
     "dependency_architecture": 2,
-    "total": 4084
+    "total": 4102
   },
   "dependency_pages": {
     "count": 2,
@@ -52275,6 +52275,7 @@
         "entities/InputProps.md",
         "entities/InteractiveCalendarProps.md",
         "entities/InUseDetail.md",
+        "entities/Issue.md",
         "entities/IterationDateMovePreview.md",
         "entities/IterationDateMoveRequest.md",
         "entities/IterationDateMoveService.md",
@@ -52716,17 +52717,18 @@
         "entities/RoutingCalibrationContractTerms.md",
         "entities/RoutingCandidateComparisonProps.md",
         "entities/RoutingCandidateSummary.md",
-        "entities/RoutingCheck.md",
+        "entities/RoutingChangeItem.md",
+        "entities/RoutingChoice.md",
         "entities/RoutingConflictMode.md",
         "entities/RoutingConsistencyConflict.md",
         "entities/RoutingContractModel.md",
         "entities/RoutingConvert.md",
         "entities/RoutingConvertResponse.md",
+        "entities/RoutingDecision.md",
         "entities/RoutingDecisionSnapshot.md",
         "entities/RoutingDigest.md",
         "entities/RoutingEligibilityDecision.md",
         "entities/RoutingExclusionSummary.md",
-        "entities/RoutingIssue.md",
         "entities/RoutingKey.md",
         "entities/RoutingModelEnvelopeDecision.md",
         "entities/RoutingOperationalEvent.md",
@@ -52740,8 +52742,6 @@
         "entities/RoutingQualificationKeyService.md",
         "entities/RoutingQualificationKeyState.md",
         "entities/RoutingResolution.md",
-        "entities/RoutingReviewer.md",
-        "entities/RoutingRung.md",
         "entities/RoutingSelectionValidation.md",
         "entities/RoutingSkillDecision.md",
         "entities/RoutingTermsRefusedError.md",
@@ -53120,6 +53120,11 @@
         "entities/TargetFormState.md",
         "entities/task_detail_TaskReference.md",
         "entities/task_detail_TaskReferencePage.md",
+        "entities/task_routing_RoutingCheck.md",
+        "entities/task_routing_RoutingIssue.md",
+        "entities/task_routing_RoutingReviewer.md",
+        "entities/task_routing_RoutingRung.md",
+        "entities/task_routing_TaskRouting.md",
         "entities/task_status_log_TaskStatusLog.md",
         "entities/TaskAction.md",
         "entities/TaskActionBlocker.md",
@@ -53199,13 +53204,14 @@
         "entities/TaskReviewMode.md",
         "entities/TaskReviewResponse.md",
         "entities/TaskReviewWrite.md",
-        "entities/TaskRouting.md",
         "entities/TaskRoutingAssessmentCreate.md",
         "entities/TaskRoutingAssessmentFields.md",
         "entities/TaskRoutingAssessmentHistory.md",
         "entities/TaskRoutingAssessmentListResponse.md",
         "entities/TaskRoutingAssessmentResponse.md",
+        "entities/TaskRoutingConflictMode.md",
         "entities/TaskRoutingPanelProps.md",
+        "entities/TaskRoutingResolution.md",
         "entities/TaskRowAssigneeOption.md",
         "entities/TaskRowProps.md",
         "entities/TaskScheduleBaseline.md",
@@ -53462,6 +53468,10 @@
         "entities/types_task_ManualProvenanceWrite.md",
         "entities/types_task_ReactivationRequirementInput.md",
         "entities/types_task_RefusalNextStep.md",
+        "entities/types_task_RoutingCheck.md",
+        "entities/types_task_RoutingIssue.md",
+        "entities/types_task_RoutingReviewer.md",
+        "entities/types_task_RoutingRung.md",
         "entities/types_task_SuggestedSubtask.md",
         "entities/types_task_Task.md",
         "entities/types_task_TaskActionAvailability.md",
@@ -53490,6 +53500,7 @@
         "entities/types_task_TaskReference.md",
         "entities/types_task_TaskReferencePage.md",
         "entities/types_task_TaskReviewRecord.md",
+        "entities/types_task_TaskRouting.md",
         "entities/types_task_TasksImportRequest.md",
         "entities/types_task_TasksImportResponse.md",
         "entities/types_task_TaskStatus.md",
@@ -54375,6 +54386,7 @@
         "modules/AnnualCalendarFields.md",
         "modules/api.md",
         "modules/apiError.md",
+        "modules/apiError.routing.test.md",
         "modules/App.legacyRoutes.test.md",
         "modules/App.md",
         "modules/app_database.md",
@@ -54904,6 +54916,8 @@
         "modules/routing_qualification_key_service.md",
         "modules/RoutingCandidateComparison.md",
         "modules/RoutingCandidateComparison.test.md",
+        "modules/routingCheck.md",
+        "modules/RoutingCheckNotice.md",
         "modules/run.md",
         "modules/run_android_checks.md",
         "modules/run_disposable_checks.md",
@@ -55083,6 +55097,7 @@
         "modules/TaskBriefEditor.test.md",
         "modules/TaskBulkOperationsPanel.md",
         "modules/TaskBulkOperationsPanel.test.md",
+        "modules/TaskBulkReassign.test.md",
         "modules/TaskContextSummary.md",
         "modules/TaskCreateSections.md",
         "modules/TaskDependencySelector.md",
@@ -55120,12 +55135,15 @@
         "modules/TaskReadView.md",
         "modules/TaskReadView.operatorKey.test.md",
         "modules/TaskReadView.test.md",
+        "modules/TaskReassign.md",
+        "modules/TaskReassign.test.md",
         "modules/TaskRecordProvenance.md",
         "modules/TaskRefusalNextSteps.test.md",
         "modules/TaskReviewer.md",
         "modules/TaskReviewHistory.md",
         "modules/TaskRoutingPanel.md",
         "modules/TaskRoutingPanel.test.md",
+        "modules/TaskRoutingSummary.md",
         "modules/TaskRow.md",
         "modules/TaskRow.test.md",
         "modules/taskRowParts.md",
@@ -63999,6 +64017,18 @@
       "title": "InUseDetail"
     },
     {
+      "canonical_path": "entities/Issue.md",
+      "id": "Issue",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/Issue",
+      "outgoing_internal_links": [
+        "modules/RoutingCheckNotice.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/RoutingCheckNotice.tsx",
+      "title": "Issue"
+    },
+    {
       "canonical_path": "entities/IterationDateMovePreview.md",
       "id": "IterationDateMovePreview",
       "kind": "entities",
@@ -70093,19 +70123,31 @@
       "title": "RoutingCandidateSummary"
     },
     {
-      "canonical_path": "entities/RoutingCheck.md",
-      "id": "RoutingCheck",
+      "canonical_path": "entities/RoutingChangeItem.md",
+      "id": "RoutingChangeItem",
       "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/RoutingCheck",
+      "mcp_uri": "llm-wiki://entities/RoutingChangeItem",
       "outgoing_internal_links": [
-        "modules/routers_task_domain.md",
-        "modules/schemas_task.md",
-        "modules/task_routing.md",
-        "modules/task_routing_service.md"
+        "modules/PlanBlockersSection.md",
+        "modules/routingCheck.md",
+        "modules/RoutingCheckNotice.md",
+        "modules/TaskBulkOperationsPanel.md"
       ],
       "role": "semantic",
-      "source_path": "backend/app/schemas/task_routing.py",
-      "title": "RoutingCheck"
+      "source_path": "frontend/src/utils/routingCheck.ts",
+      "title": "RoutingChangeItem"
+    },
+    {
+      "canonical_path": "entities/RoutingChoice.md",
+      "id": "RoutingChoice",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RoutingChoice",
+      "outgoing_internal_links": [
+        "modules/TaskBulkOperationsPanel.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskBulkOperationsPanel.tsx",
+      "title": "RoutingChoice"
     },
     {
       "canonical_path": "entities/RoutingConflictMode.md",
@@ -70174,6 +70216,18 @@
       "title": "RoutingConvertResponse"
     },
     {
+      "canonical_path": "entities/RoutingDecision.md",
+      "id": "RoutingDecision",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RoutingDecision",
+      "outgoing_internal_links": [
+        "modules/TaskBulkOperationsPanel.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskBulkOperationsPanel.tsx",
+      "title": "RoutingDecision"
+    },
+    {
       "canonical_path": "entities/RoutingDecisionSnapshot.md",
       "id": "RoutingDecisionSnapshot",
       "kind": "entities",
@@ -70224,19 +70278,6 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_routing.py",
       "title": "RoutingExclusionSummary"
-    },
-    {
-      "canonical_path": "entities/RoutingIssue.md",
-      "id": "RoutingIssue",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/RoutingIssue",
-      "outgoing_internal_links": [
-        "modules/task_routing.md",
-        "modules/task_routing_service.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/task_routing.py",
-      "title": "RoutingIssue"
     },
     {
       "canonical_path": "entities/RoutingKey.md",
@@ -70419,32 +70460,6 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/task_routing.py",
       "title": "RoutingResolution"
-    },
-    {
-      "canonical_path": "entities/RoutingReviewer.md",
-      "id": "RoutingReviewer",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/RoutingReviewer",
-      "outgoing_internal_links": [
-        "modules/task_routing.md",
-        "modules/task_routing_service.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/task_routing.py",
-      "title": "RoutingReviewer"
-    },
-    {
-      "canonical_path": "entities/RoutingRung.md",
-      "id": "RoutingRung",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/RoutingRung",
-      "outgoing_internal_links": [
-        "modules/task_routing.md",
-        "modules/task_routing_service.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/task_routing.py",
-      "title": "RoutingRung"
     },
     {
       "canonical_path": "entities/RoutingSelectionValidation.md",
@@ -75714,6 +75729,75 @@
       "title": "TaskReferencePage"
     },
     {
+      "canonical_path": "entities/task_routing_RoutingCheck.md",
+      "id": "task_routing_RoutingCheck",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/task_routing_RoutingCheck",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/schemas_task.md",
+        "modules/task_routing.md",
+        "modules/task_routing_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/task_routing.py",
+      "title": "RoutingCheck"
+    },
+    {
+      "canonical_path": "entities/task_routing_RoutingIssue.md",
+      "id": "task_routing_RoutingIssue",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/task_routing_RoutingIssue",
+      "outgoing_internal_links": [
+        "modules/task_routing.md",
+        "modules/task_routing_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/task_routing.py",
+      "title": "RoutingIssue"
+    },
+    {
+      "canonical_path": "entities/task_routing_RoutingReviewer.md",
+      "id": "task_routing_RoutingReviewer",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/task_routing_RoutingReviewer",
+      "outgoing_internal_links": [
+        "modules/task_routing.md",
+        "modules/task_routing_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/task_routing.py",
+      "title": "RoutingReviewer"
+    },
+    {
+      "canonical_path": "entities/task_routing_RoutingRung.md",
+      "id": "task_routing_RoutingRung",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/task_routing_RoutingRung",
+      "outgoing_internal_links": [
+        "modules/task_routing.md",
+        "modules/task_routing_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/task_routing.py",
+      "title": "RoutingRung"
+    },
+    {
+      "canonical_path": "entities/task_routing_TaskRouting.md",
+      "id": "task_routing_TaskRouting",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/task_routing_TaskRouting",
+      "outgoing_internal_links": [
+        "modules/schemas_task_brief.md",
+        "modules/task_brief_service.md",
+        "modules/task_routing.md",
+        "modules/task_routing_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/task_routing.py",
+      "title": "TaskRouting"
+    },
+    {
       "canonical_path": "entities/task_status_log_TaskStatusLog.md",
       "id": "task_status_log_TaskStatusLog",
       "kind": "entities",
@@ -76883,21 +76967,6 @@
       "title": "TaskReviewWrite"
     },
     {
-      "canonical_path": "entities/TaskRouting.md",
-      "id": "TaskRouting",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TaskRouting",
-      "outgoing_internal_links": [
-        "modules/schemas_task_brief.md",
-        "modules/task_brief_service.md",
-        "modules/task_routing.md",
-        "modules/task_routing_service.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/task_routing.py",
-      "title": "TaskRouting"
-    },
-    {
       "canonical_path": "entities/TaskRoutingAssessmentCreate.md",
       "id": "TaskRoutingAssessmentCreate",
       "kind": "entities",
@@ -76972,6 +77041,18 @@
       "title": "TaskRoutingAssessmentResponse"
     },
     {
+      "canonical_path": "entities/TaskRoutingConflictMode.md",
+      "id": "TaskRoutingConflictMode",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TaskRoutingConflictMode",
+      "outgoing_internal_links": [
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/task.ts",
+      "title": "TaskRoutingConflictMode"
+    },
+    {
       "canonical_path": "entities/TaskRoutingPanelProps.md",
       "id": "TaskRoutingPanelProps",
       "kind": "entities",
@@ -76982,6 +77063,19 @@
       "role": "semantic",
       "source_path": "frontend/src/components/agent/TaskRoutingPanel.tsx",
       "title": "TaskRoutingPanelProps"
+    },
+    {
+      "canonical_path": "entities/TaskRoutingResolution.md",
+      "id": "TaskRoutingResolution",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TaskRoutingResolution",
+      "outgoing_internal_links": [
+        "modules/TaskReassign.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/task.ts",
+      "title": "TaskRoutingResolution"
     },
     {
       "canonical_path": "entities/TaskRowAssigneeOption.md",
@@ -80603,6 +80697,64 @@
       "title": "RefusalNextStep"
     },
     {
+      "canonical_path": "entities/types_task_RoutingCheck.md",
+      "id": "types_task_RoutingCheck",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_task_RoutingCheck",
+      "outgoing_internal_links": [
+        "modules/routingCheck.md",
+        "modules/RoutingCheckNotice.md",
+        "modules/TaskBulkReassign.test.md",
+        "modules/TaskForm.md",
+        "modules/TaskReassign.md",
+        "modules/TaskReassign.test.md",
+        "modules/taskService.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/task.ts",
+      "title": "RoutingCheck"
+    },
+    {
+      "canonical_path": "entities/types_task_RoutingIssue.md",
+      "id": "types_task_RoutingIssue",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_task_RoutingIssue",
+      "outgoing_internal_links": [
+        "modules/routingCheck.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/task.ts",
+      "title": "RoutingIssue"
+    },
+    {
+      "canonical_path": "entities/types_task_RoutingReviewer.md",
+      "id": "types_task_RoutingReviewer",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_task_RoutingReviewer",
+      "outgoing_internal_links": [
+        "modules/routingCheck.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/task.ts",
+      "title": "RoutingReviewer"
+    },
+    {
+      "canonical_path": "entities/types_task_RoutingRung.md",
+      "id": "types_task_RoutingRung",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_task_RoutingRung",
+      "outgoing_internal_links": [
+        "modules/routingCheck.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/task.ts",
+      "title": "RoutingRung"
+    },
+    {
       "canonical_path": "entities/types_task_SuggestedSubtask.md",
       "id": "types_task_SuggestedSubtask",
       "kind": "entities",
@@ -80795,6 +80947,7 @@
       "outgoing_internal_links": [
         "modules/PlanBlockersSection.md",
         "modules/PlanPage.test.md",
+        "modules/TaskBulkReassign.test.md",
         "modules/taskService.md",
         "modules/types_task.md"
       ],
@@ -80809,6 +80962,7 @@
       "mcp_uri": "llm-wiki://entities/types_task_TaskBulkOperationResponse",
       "outgoing_internal_links": [
         "modules/PlanBlockersSection.md",
+        "modules/TaskBulkOperationsPanel.md",
         "modules/taskService.md",
         "modules/types_task.md"
       ],
@@ -80822,6 +80976,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/types_task_TaskBulkOperationResult",
       "outgoing_internal_links": [
+        "modules/routingCheck.md",
         "modules/types_task.md"
       ],
       "role": "semantic",
@@ -80991,6 +81146,21 @@
       "role": "semantic",
       "source_path": "frontend/src/types/task.ts",
       "title": "TaskReviewRecord"
+    },
+    {
+      "canonical_path": "entities/types_task_TaskRouting.md",
+      "id": "types_task_TaskRouting",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_task_TaskRouting",
+      "outgoing_internal_links": [
+        "modules/routingCheck.md",
+        "modules/TaskReassign.md",
+        "modules/TaskRoutingSummary.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/task.ts",
+      "title": "TaskRouting"
     },
     {
       "canonical_path": "entities/types_task_TasksImportRequest.md",
@@ -84224,6 +84394,20 @@
       "title": "apiError Module"
     },
     {
+      "canonical_path": "modules/apiError.routing.test.md",
+      "id": "apiError.routing.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/apiError.routing.test",
+      "outgoing_internal_links": [
+        "modules/apiError.md",
+        "modules/apiError.routing.test.md",
+        "modules/i18n.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/utils/apiError.routing.test.ts",
+      "title": "apiError.routing.test Module"
+    },
+    {
       "canonical_path": "modules/App.legacyRoutes.test.md",
       "id": "App.legacyRoutes.test",
       "kind": "modules",
@@ -84565,6 +84749,7 @@
         "entities/AssigneeSelectProps.md",
         "modules/AssigneeSelect.md",
         "modules/Select.md",
+        "modules/TaskReassign.md",
         "modules/TaskRow.md"
       ],
       "role": "semantic",
@@ -89785,6 +89970,7 @@
         "modules/mutationFeedback.md",
         "modules/mutationFeedback.test.md",
         "modules/MutationSuccessFeedback.md",
+        "modules/TaskBulkReassign.test.md",
         "modules/TaskOwnerAcceptance.test.md",
         "modules/TaskPostponement.test.md",
         "modules/TemplateLabelSettings.test.md",
@@ -92931,6 +93117,46 @@
       "role": "semantic",
       "source_path": "frontend/src/components/agent/RoutingCandidateComparison.test.tsx",
       "title": "RoutingCandidateComparison.test Module"
+    },
+    {
+      "canonical_path": "modules/routingCheck.md",
+      "id": "routingCheck",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/routingCheck",
+      "outgoing_internal_links": [
+        "entities/RoutingChangeItem.md",
+        "modules/apiError.md",
+        "modules/PlanBlockersSection.md",
+        "modules/routingCheck.md",
+        "modules/RoutingCheckNotice.md",
+        "modules/TaskBulkOperationsPanel.md",
+        "modules/TaskForm.md",
+        "modules/TaskReassign.md",
+        "modules/TaskRoutingSummary.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/utils/routingCheck.ts",
+      "title": "routingCheck Module"
+    },
+    {
+      "canonical_path": "modules/RoutingCheckNotice.md",
+      "id": "RoutingCheckNotice",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/RoutingCheckNotice",
+      "outgoing_internal_links": [
+        "entities/Issue.md",
+        "modules/PlanBlockersSection.md",
+        "modules/routingCheck.md",
+        "modules/RoutingCheckNotice.md",
+        "modules/TaskBulkOperationsPanel.md",
+        "modules/TaskForm.md",
+        "modules/TaskReassign.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/RoutingCheckNotice.tsx",
+      "title": "RoutingCheckNotice Module"
     },
     {
       "canonical_path": "modules/run.md",
@@ -96127,15 +96353,15 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/task_routing",
       "outgoing_internal_links": [
-        "entities/RoutingCheck.md",
         "entities/RoutingConflictMode.md",
         "entities/RoutingConvert.md",
         "entities/RoutingConvertResponse.md",
-        "entities/RoutingIssue.md",
         "entities/RoutingResolution.md",
-        "entities/RoutingReviewer.md",
-        "entities/RoutingRung.md",
-        "entities/TaskRouting.md",
+        "entities/task_routing_RoutingCheck.md",
+        "entities/task_routing_RoutingIssue.md",
+        "entities/task_routing_RoutingReviewer.md",
+        "entities/task_routing_RoutingRung.md",
+        "entities/task_routing_TaskRouting.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task.md",
@@ -96324,6 +96550,8 @@
         "entities/BulkKind.md",
         "entities/BulkRejected.md",
         "entities/BulkSelectedTask.md",
+        "entities/RoutingChoice.md",
+        "entities/RoutingDecision.md",
         "entities/TaskBulkOperationsPanelProps.md",
         "modules/TaskBulkOperationsPanel.md"
       ],
@@ -96344,6 +96572,23 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskBulkOperationsPanel.test.tsx",
       "title": "TaskBulkOperationsPanel.test Module"
+    },
+    {
+      "canonical_path": "modules/TaskBulkReassign.test.md",
+      "id": "TaskBulkReassign.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskBulkReassign.test",
+      "outgoing_internal_links": [
+        "modules/i18n.md",
+        "modules/MutationSuccessFeedback.md",
+        "modules/renderWithProviders.md",
+        "modules/TaskBulkOperationsPanel.md",
+        "modules/TaskBulkReassign.test.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskBulkReassign.test.tsx",
+      "title": "TaskBulkReassign.test Module"
     },
     {
       "canonical_path": "modules/TaskContextSummary.md",
@@ -96975,6 +97220,36 @@
       "title": "TaskReadView.test Module"
     },
     {
+      "canonical_path": "modules/TaskReassign.md",
+      "id": "TaskReassign",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskReassign",
+      "outgoing_internal_links": [
+        "modules/TaskReassign.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskReassign.tsx",
+      "title": "TaskReassign Module"
+    },
+    {
+      "canonical_path": "modules/TaskReassign.test.md",
+      "id": "TaskReassign.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskReassign.test",
+      "outgoing_internal_links": [
+        "modules/i18n.md",
+        "modules/renderWithProviders.md",
+        "modules/taskEditorContract.md",
+        "modules/TaskReadView.md",
+        "modules/TaskReassign.md",
+        "modules/TaskReassign.test.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskReassign.test.tsx",
+      "title": "TaskReassign.test Module"
+    },
+    {
       "canonical_path": "modules/TaskRecordProvenance.md",
       "id": "TaskRecordProvenance",
       "kind": "modules",
@@ -97070,6 +97345,21 @@
       "role": "semantic",
       "source_path": "frontend/src/components/agent/TaskRoutingPanel.test.tsx",
       "title": "TaskRoutingPanel.test Module"
+    },
+    {
+      "canonical_path": "modules/TaskRoutingSummary.md",
+      "id": "TaskRoutingSummary",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskRoutingSummary",
+      "outgoing_internal_links": [
+        "modules/routingCheck.md",
+        "modules/TaskReadView.md",
+        "modules/TaskRoutingSummary.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskRoutingSummary.tsx",
+      "title": "TaskRoutingSummary Module"
     },
     {
       "canonical_path": "modules/TaskRow.md",
@@ -101741,6 +102031,8 @@
         "entities/TaskImproveDescriptionResponse.md",
         "entities/TaskMergeRequest.md",
         "entities/TaskProgress.md",
+        "entities/TaskRoutingConflictMode.md",
+        "entities/TaskRoutingResolution.md",
         "entities/TaskTerminalState.md",
         "entities/TaskVersionConflictDetail.md",
         "entities/types_task_BriefCriterion.md",
@@ -101757,6 +102049,10 @@
         "entities/types_task_ManualProvenanceWrite.md",
         "entities/types_task_ReactivationRequirementInput.md",
         "entities/types_task_RefusalNextStep.md",
+        "entities/types_task_RoutingCheck.md",
+        "entities/types_task_RoutingIssue.md",
+        "entities/types_task_RoutingReviewer.md",
+        "entities/types_task_RoutingRung.md",
         "entities/types_task_SuggestedSubtask.md",
         "entities/types_task_Task.md",
         "entities/types_task_TaskActionAvailability.md",
@@ -101785,6 +102081,7 @@
         "entities/types_task_TaskReference.md",
         "entities/types_task_TaskReferencePage.md",
         "entities/types_task_TaskReviewRecord.md",
+        "entities/types_task_TaskRouting.md",
         "entities/types_task_TasksImportRequest.md",
         "entities/types_task_TasksImportResponse.md",
         "entities/types_task_TaskStatus.md",
@@ -120180,6 +120477,7 @@
         "modules/AnnualCalendarFields.md",
         "modules/api.md",
         "modules/apiError.md",
+        "modules/apiError.routing.test.md",
         "modules/App.legacyRoutes.test.md",
         "modules/App.md",
         "modules/app_database.md",
@@ -120709,6 +121007,8 @@
         "modules/routing_qualification_key_service.md",
         "modules/RoutingCandidateComparison.md",
         "modules/RoutingCandidateComparison.test.md",
+        "modules/routingCheck.md",
+        "modules/RoutingCheckNotice.md",
         "modules/run.md",
         "modules/run_android_checks.md",
         "modules/run_disposable_checks.md",
@@ -120888,6 +121188,7 @@
         "modules/TaskBriefEditor.test.md",
         "modules/TaskBulkOperationsPanel.md",
         "modules/TaskBulkOperationsPanel.test.md",
+        "modules/TaskBulkReassign.test.md",
         "modules/TaskContextSummary.md",
         "modules/TaskCreateSections.md",
         "modules/TaskDependencySelector.md",
@@ -120925,12 +121226,15 @@
         "modules/TaskReadView.md",
         "modules/TaskReadView.operatorKey.test.md",
         "modules/TaskReadView.test.md",
+        "modules/TaskReassign.md",
+        "modules/TaskReassign.test.md",
         "modules/TaskRecordProvenance.md",
         "modules/TaskRefusalNextSteps.test.md",
         "modules/TaskReviewer.md",
         "modules/TaskReviewHistory.md",
         "modules/TaskRoutingPanel.md",
         "modules/TaskRoutingPanel.test.md",
+        "modules/TaskRoutingSummary.md",
         "modules/TaskRow.md",
         "modules/TaskRow.test.md",
         "modules/taskRowParts.md",
@@ -121416,6 +121720,7 @@
         "modules/AnnualCalendarFields.md",
         "modules/api.md",
         "modules/apiError.md",
+        "modules/apiError.routing.test.md",
         "modules/App.legacyRoutes.test.md",
         "modules/App.md",
         "modules/app_database.md",
@@ -121945,6 +122250,8 @@
         "modules/routing_qualification_key_service.md",
         "modules/RoutingCandidateComparison.md",
         "modules/RoutingCandidateComparison.test.md",
+        "modules/routingCheck.md",
+        "modules/RoutingCheckNotice.md",
         "modules/run.md",
         "modules/run_android_checks.md",
         "modules/run_disposable_checks.md",
@@ -122124,6 +122431,7 @@
         "modules/TaskBriefEditor.test.md",
         "modules/TaskBulkOperationsPanel.md",
         "modules/TaskBulkOperationsPanel.test.md",
+        "modules/TaskBulkReassign.test.md",
         "modules/TaskContextSummary.md",
         "modules/TaskCreateSections.md",
         "modules/TaskDependencySelector.md",
@@ -122161,12 +122469,15 @@
         "modules/TaskReadView.md",
         "modules/TaskReadView.operatorKey.test.md",
         "modules/TaskReadView.test.md",
+        "modules/TaskReassign.md",
+        "modules/TaskReassign.test.md",
         "modules/TaskRecordProvenance.md",
         "modules/TaskRefusalNextSteps.test.md",
         "modules/TaskReviewer.md",
         "modules/TaskReviewHistory.md",
         "modules/TaskRoutingPanel.md",
         "modules/TaskRoutingPanel.test.md",
+        "modules/TaskRoutingSummary.md",
         "modules/TaskRow.md",
         "modules/TaskRow.test.md",
         "modules/taskRowParts.md",
@@ -122548,5 +122859,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:2b7f207f44947b6e2eb137d41bf3013a08a1b772fab6d444a36b456ebe92a84f"
+  "source_hash": "sha256:b3e3b5cd62c99e9321954d2b67a52de17ff21b5d9e1df0676e02aeed4c8526c6"
 }

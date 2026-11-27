@@ -78,10 +78,10 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [RoutingConflictMode](../entities/RoutingConflictMode.md) | Type alias | 12 | `Literal['refuse', 'warn']` | — |
 | [RoutingResolution](../entities/RoutingResolution.md) | Type alias | 13 | `Literal['check', 'apply_suggestion']` | — |
-| [RoutingRung](../entities/RoutingRung.md) | Pydantic model | 16 | `BaseModel` | One model catalog entry that may execute the task. |
-| [RoutingReviewer](../entities/RoutingReviewer.md) | Pydantic model | 35 | `RoutingRung` | The model that reviews the task's result, and optionally the reviewer profile to dispatch. |
-| [TaskRouting](../entities/TaskRouting.md) | Pydantic model | 42 | `BaseModel` | First rung, escalation ladder and reviewer of one task. |
-| [RoutingIssue](../entities/RoutingIssue.md) | Pydantic model | 71 | `BaseModel` | One inconsistency between a task's routing, its assignee and the project policy. |
-| [RoutingCheck](../entities/RoutingCheck.md) | Pydantic model | 82 | `BaseModel` | Routing consistency of one task for one assignee, with a consistent replacement. |
+| [RoutingRung](../entities/task_routing_RoutingRung.md) | Pydantic model | 16 | `BaseModel` | One model catalog entry that may execute the task. |
+| [RoutingReviewer](../entities/task_routing_RoutingReviewer.md) | Pydantic model | 35 | `RoutingRung` | The model that reviews the task's result, and optionally the reviewer profile to dispatch. |
+| [TaskRouting](../entities/task_routing_TaskRouting.md) | Pydantic model | 42 | `BaseModel` | First rung, escalation ladder and reviewer of one task. |
+| [RoutingIssue](../entities/task_routing_RoutingIssue.md) | Pydantic model | 71 | `BaseModel` | One inconsistency between a task's routing, its assignee and the project policy. |
+| [RoutingCheck](../entities/task_routing_RoutingCheck.md) | Pydantic model | 82 | `BaseModel` | Routing consistency of one task for one assignee, with a consistent replacement. |
 | [RoutingConvert](../entities/RoutingConvert.md) | Pydantic model | 102 | `BaseModel` | Preview or apply the conversion of free-text routing into structure. |
 | [RoutingConvertResponse](../entities/RoutingConvertResponse.md) | Pydantic model | 112 | `BaseModel` | Result of a routing conversion preview or apply. |

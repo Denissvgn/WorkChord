@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1936 | [Open section](#entities) |
-| Modules | 1225 | [Open section](#modules) |
+| Entities | 1947 | [Open section](#entities) |
+| Modules | 1232 | [Open section](#modules) |
 | Workflows | 254 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 652 | [Open section](#entry-point-flows) |
@@ -568,6 +568,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [InitiativeResponse](entities/InitiativeResponse.md)
 - [InputProps](entities/InputProps.md)
 - [InteractiveCalendarProps](entities/InteractiveCalendarProps.md)
+- [Issue](entities/Issue.md)
 - [IterationDateMovePreview](entities/IterationDateMovePreview.md)
 - [IterationDateMoveRequest](entities/IterationDateMoveRequest.md)
 - [IterationDateMoveService](entities/IterationDateMoveService.md)
@@ -925,17 +926,18 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RoutingCalibrationContractTerms](entities/RoutingCalibrationContractTerms.md)
 - [RoutingCandidateComparisonProps](entities/RoutingCandidateComparisonProps.md)
 - [RoutingCandidateSummary](entities/RoutingCandidateSummary.md)
-- [RoutingCheck](entities/RoutingCheck.md)
+- [RoutingChangeItem](entities/RoutingChangeItem.md)
+- [RoutingChoice](entities/RoutingChoice.md)
 - [RoutingConflictMode](entities/RoutingConflictMode.md)
 - [RoutingConsistencyConflict](entities/RoutingConsistencyConflict.md)
 - [RoutingContractModel](entities/RoutingContractModel.md)
 - [RoutingConvert](entities/RoutingConvert.md)
 - [RoutingConvertResponse](entities/RoutingConvertResponse.md)
+- [RoutingDecision](entities/RoutingDecision.md)
 - [RoutingDecisionSnapshot](entities/RoutingDecisionSnapshot.md)
 - [RoutingDigest](entities/RoutingDigest.md)
 - [RoutingEligibilityDecision](entities/RoutingEligibilityDecision.md)
 - [RoutingExclusionSummary](entities/RoutingExclusionSummary.md)
-- [RoutingIssue](entities/RoutingIssue.md)
 - [RoutingKey](entities/RoutingKey.md)
 - [RoutingModelEnvelopeDecision](entities/RoutingModelEnvelopeDecision.md)
 - [RoutingOperationalEvent](entities/RoutingOperationalEvent.md)
@@ -949,8 +951,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RoutingQualificationKeyService](entities/RoutingQualificationKeyService.md)
 - [RoutingQualificationKeyState](entities/RoutingQualificationKeyState.md)
 - [RoutingResolution](entities/RoutingResolution.md)
-- [RoutingReviewer](entities/RoutingReviewer.md)
-- [RoutingRung](entities/RoutingRung.md)
 - [RoutingSelectionValidation](entities/RoutingSelectionValidation.md)
 - [RoutingSkillDecision](entities/RoutingSkillDecision.md)
 - [RoutingTermsRefusedError](entities/RoutingTermsRefusedError.md)
@@ -1184,13 +1184,14 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskReviewMode](entities/TaskReviewMode.md)
 - [TaskReviewResponse](entities/TaskReviewResponse.md)
 - [TaskReviewWrite](entities/TaskReviewWrite.md)
-- [TaskRouting](entities/TaskRouting.md)
 - [TaskRoutingAssessmentCreate](entities/TaskRoutingAssessmentCreate.md)
 - [TaskRoutingAssessmentFields](entities/TaskRoutingAssessmentFields.md)
 - [TaskRoutingAssessmentHistory](entities/TaskRoutingAssessmentHistory.md)
 - [TaskRoutingAssessmentListResponse](entities/TaskRoutingAssessmentListResponse.md)
 - [TaskRoutingAssessmentResponse](entities/TaskRoutingAssessmentResponse.md)
+- [TaskRoutingConflictMode](entities/TaskRoutingConflictMode.md)
 - [TaskRoutingPanelProps](entities/TaskRoutingPanelProps.md)
+- [TaskRoutingResolution](entities/TaskRoutingResolution.md)
 - [TaskRowAssigneeOption](entities/TaskRowAssigneeOption.md)
 - [TaskRowProps](entities/TaskRowProps.md)
 - [TaskScheduleBaseline](entities/TaskScheduleBaseline.md)
@@ -1696,6 +1697,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [taskService_MetricMatchPage](entities/taskService_MetricMatchPage.md)
 - [task_detail_TaskReference](entities/task_detail_TaskReference.md)
 - [task_detail_TaskReferencePage](entities/task_detail_TaskReferencePage.md)
+- [task_routing_RoutingCheck](entities/task_routing_RoutingCheck.md)
+- [task_routing_RoutingIssue](entities/task_routing_RoutingIssue.md)
+- [task_routing_RoutingReviewer](entities/task_routing_RoutingReviewer.md)
+- [task_routing_RoutingRung](entities/task_routing_RoutingRung.md)
+- [task_routing_TaskRouting](entities/task_routing_TaskRouting.md)
 - [task_status_log_TaskStatusLog](entities/task_status_log_TaskStatusLog.md)
 - [team_member_TeamMember](entities/team_member_TeamMember.md)
 - [team_member_TeamMemberProfile](entities/team_member_TeamMemberProfile.md)
@@ -1851,6 +1857,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_task_ManualProvenanceWrite](entities/types_task_ManualProvenanceWrite.md)
 - [types_task_ReactivationRequirementInput](entities/types_task_ReactivationRequirementInput.md)
 - [types_task_RefusalNextStep](entities/types_task_RefusalNextStep.md)
+- [types_task_RoutingCheck](entities/types_task_RoutingCheck.md)
+- [types_task_RoutingIssue](entities/types_task_RoutingIssue.md)
+- [types_task_RoutingReviewer](entities/types_task_RoutingReviewer.md)
+- [types_task_RoutingRung](entities/types_task_RoutingRung.md)
 - [types_task_SuggestedSubtask](entities/types_task_SuggestedSubtask.md)
 - [types_task_Task](entities/types_task_Task.md)
 - [types_task_TaskAISuggestRequest](entities/types_task_TaskAISuggestRequest.md)
@@ -1879,6 +1889,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_task_TaskReference](entities/types_task_TaskReference.md)
 - [types_task_TaskReferencePage](entities/types_task_TaskReferencePage.md)
 - [types_task_TaskReviewRecord](entities/types_task_TaskReviewRecord.md)
+- [types_task_TaskRouting](entities/types_task_TaskRouting.md)
 - [types_task_TaskStatus](entities/types_task_TaskStatus.md)
 - [types_task_TaskStatusChangeResponse](entities/types_task_TaskStatusChangeResponse.md)
 - [types_task_TaskStatusLog](entities/types_task_TaskStatusLog.md)
@@ -2224,6 +2235,7 @@ Retained history; these declarations are absent from the selected source invento
 - [RouteErrorBoundary](modules/RouteErrorBoundary.md) - `frontend/src/components/layout/RouteErrorBoundary.tsx`
 - [RoutingCandidateComparison](modules/RoutingCandidateComparison.md) - `frontend/src/components/agent/RoutingCandidateComparison.tsx`
 - [RoutingCandidateComparison.test](modules/RoutingCandidateComparison.test.md) - `frontend/src/components/agent/RoutingCandidateComparison.test.tsx`
+- [RoutingCheckNotice](modules/RoutingCheckNotice.md) - `frontend/src/components/tasks/RoutingCheckNotice.tsx`
 - [RuntimeConfigSettings](modules/RuntimeConfigSettings.md) - `frontend/src/components/settings/RuntimeConfigSettings.tsx`
 - [RuntimeConfigSettings.test](modules/RuntimeConfigSettings.test.md) - `frontend/src/components/settings/RuntimeConfigSettings.test.tsx`
 - [RuntimeIdentity](modules/RuntimeIdentity.md) - `frontend/src/components/team/RuntimeIdentity.tsx`
@@ -2267,6 +2279,7 @@ Retained history; these declarations are absent from the selected source invento
 - [TaskBriefEditor.test](modules/TaskBriefEditor.test.md) - `frontend/src/components/tasks/TaskBriefEditor.test.tsx`
 - [TaskBulkOperationsPanel](modules/TaskBulkOperationsPanel.md) - `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx`
 - [TaskBulkOperationsPanel.test](modules/TaskBulkOperationsPanel.test.md) - `frontend/src/components/tasks/TaskBulkOperationsPanel.test.tsx`
+- [TaskBulkReassign.test](modules/TaskBulkReassign.test.md) - `frontend/src/components/tasks/TaskBulkReassign.test.tsx`
 - [TaskContextSummary](modules/TaskContextSummary.md) - `frontend/src/components/tasks/TaskContextSummary.tsx`
 - [TaskCreateSections](modules/TaskCreateSections.md) - `frontend/src/components/tasks/TaskCreateSections.tsx`
 - [TaskDependencySelector](modules/TaskDependencySelector.md) - `frontend/src/components/tasks/TaskDependencySelector.tsx`
@@ -2295,12 +2308,15 @@ Retained history; these declarations are absent from the selected source invento
 - [TaskReadView.dispatch.test](modules/TaskReadView.dispatch.test.md) - `frontend/src/components/tasks/TaskReadView.dispatch.test.tsx`
 - [TaskReadView.operatorKey.test](modules/TaskReadView.operatorKey.test.md) - `frontend/src/components/tasks/TaskReadView.operatorKey.test.tsx`
 - [TaskReadView.test](modules/TaskReadView.test.md) - `frontend/src/components/tasks/TaskReadView.test.tsx`
+- [TaskReassign](modules/TaskReassign.md) - `frontend/src/components/tasks/TaskReassign.tsx`
+- [TaskReassign.test](modules/TaskReassign.test.md) - `frontend/src/components/tasks/TaskReassign.test.tsx`
 - [TaskRecordProvenance](modules/TaskRecordProvenance.md) - `frontend/src/components/tasks/TaskRecordProvenance.tsx`
 - [TaskRefusalNextSteps.test](modules/TaskRefusalNextSteps.test.md) - `frontend/src/components/tasks/TaskRefusalNextSteps.test.tsx`
 - [TaskReviewHistory](modules/TaskReviewHistory.md) - `frontend/src/components/tasks/TaskReviewHistory.tsx`
 - [TaskReviewer](modules/TaskReviewer.md) - `frontend/src/components/tasks/TaskReviewer.tsx`
 - [TaskRoutingPanel](modules/TaskRoutingPanel.md) - `frontend/src/components/agent/TaskRoutingPanel.tsx`
 - [TaskRoutingPanel.test](modules/TaskRoutingPanel.test.md) - `frontend/src/components/agent/TaskRoutingPanel.test.tsx`
+- [TaskRoutingSummary](modules/TaskRoutingSummary.md) - `frontend/src/components/tasks/TaskRoutingSummary.tsx`
 - [TaskRow](modules/TaskRow.md) - `frontend/src/components/tasks/TaskRow.tsx`
 - [TaskRow.test](modules/TaskRow.test.md) - `frontend/src/components/tasks/TaskRow.test.tsx`
 - [TaskSelectionBar](modules/TaskSelectionBar.md) - `frontend/src/components/tasks/TaskSelectionBar.tsx`
@@ -2408,6 +2424,7 @@ Retained history; these declarations are absent from the selected source invento
 - [android_web_peer](modules/android_web_peer.md) - `scripts/ci/android_web_peer.mjs`
 - [api](modules/api.md) - `frontend/src/services/api.ts`
 - [apiError](modules/apiError.md) - `frontend/src/utils/apiError.ts`
+- [apiError.routing.test](modules/apiError.routing.test.md) - `frontend/src/utils/apiError.routing.test.ts`
 - [app_database](modules/app_database.md) - `backend/app/database.py`
 - [app_main](modules/app_main.md) - `backend/app/main.py`
 - [app_maintenance](modules/app_maintenance.md) - Fail-closed maintenance/validation authority shared by REST, MCP, and workers.
@@ -2728,6 +2745,7 @@ Retained history; these declarations are absent from the selected source invento
 - [routers_task_domain](modules/routers_task_domain.md) - Compatible domain commands, canonical briefs and bounded task reads.
 - [routers_team](modules/routers_team.md) - Team API router.
 - [routers_triage](modules/routers_triage.md) - Triage API router.
+- [routingCheck](modules/routingCheck.md) - `frontend/src/utils/routingCheck.ts`
 - [routing_calibration_contract_service](modules/routing_calibration_contract_service.md) - The deployment's calibration contracts for performance-informed routing.
 - [routing_qualification_key_service](modules/routing_qualification_key_service.md) - The deployment's governed registry of qualification keys.
 - [run](modules/run.md) - Run deterministic, production-shaped REST and MCP load through public APIs.
