@@ -5,7 +5,7 @@ from app.schemas.planning_inputs import PlanningInputRevisions, WorkingZone
 from app.schemas.work_metrics import WorkMetricSummary
 from datetime import date, datetime
 from enum import Enum
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -116,6 +116,8 @@ class ProjectCreate(BaseModel):
     """Schema for creating a project."""
     timezone: WorkingZone = "UTC"
     require_different_review_publisher: bool = False
+    routing_conflict_mode: Literal["refuse", "warn"] = Field(default="refuse",
+        description="Whether task routing that conflicts with the review policy is refused or saved with a warning.")
 
     name: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = None
@@ -133,6 +135,7 @@ class ProjectUpdate(PlanningInputRevisions):
     """Schema for updating a project."""
     timezone: WorkingZone | None = None
     require_different_review_publisher: bool | None = None
+    routing_conflict_mode: Literal["refuse", "warn"] | None = None
 
     name: Optional[str] = Field(default=None, min_length=1, max_length=255)
     description: Optional[str] = None
@@ -279,6 +282,7 @@ class ProjectResponse(BaseModel):
     """Schema for project response."""
     timezone: str = "UTC"
     require_different_review_publisher: bool = False
+    routing_conflict_mode: str = "refuse"
 
     id: int
     name: str

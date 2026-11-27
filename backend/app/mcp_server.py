@@ -1127,6 +1127,16 @@ def create_mcp_server() -> FastMCP:
         return await _tool_call("tasks:write", lambda db, actor: mcp_agent_tools.write_task_brief(db, actor, task_id, payload))
 
     @mcp.tool(annotations=READ_ONLY_TOOL)
+    async def agent_get_task_routing_check(task_id: int, assignee_id: Optional[int] = None) -> dict[str, Any]:
+        """Check a brief's routing against an assignee and the review policy; offers a consistent routing."""
+        return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.check_task_routing(db, actor, task_id, assignee_id))
+
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_convert_task_routing(task_id: int, payload: dict[str, Any]) -> dict[str, Any]:
+        """Preview or apply moving a brief's free-text first rung, escalation and reviewer into structured routing."""
+        return await _tool_call("tasks:write", lambda db, actor: mcp_agent_tools.convert_task_routing(db, actor, task_id, payload))
+
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_task_context(task_id: int) -> dict[str, Any] | None:
         """Get task details plus merged timeline context."""
         return await _tool_call(

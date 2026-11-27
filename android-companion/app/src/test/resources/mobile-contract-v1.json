@@ -3214,6 +3214,16 @@
               "title": "Require Different Review Publisher",
               "type": "boolean"
             },
+            "routing_conflict_mode": {
+              "default": "refuse",
+              "description": "Whether task routing that conflicts with the review policy is refused or saved with a warning.",
+              "enum": [
+                "refuse",
+                "warn"
+              ],
+              "title": "Routing Conflict Mode",
+              "type": "string"
+            },
             "sort_order": {
               "default": 0,
               "title": "Sort Order",
@@ -3668,6 +3678,11 @@
               "title": "Require Different Review Publisher",
               "type": "boolean"
             },
+            "routing_conflict_mode": {
+              "default": "refuse",
+              "title": "Routing Conflict Mode",
+              "type": "string"
+            },
             "sort_order": {
               "default": 0,
               "title": "Sort Order",
@@ -3876,6 +3891,198 @@
           ],
           "title": "ReasoningTier",
           "type": "integer"
+        },
+        "RoutingCheck": {
+          "description": "Routing consistency of one task for one assignee, with a consistent replacement.",
+          "properties": {
+            "applied": {
+              "default": false,
+              "description": "The suggestion was saved with this change.",
+              "title": "Applied",
+              "type": "boolean"
+            },
+            "assignee_catalog_keys": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Assignee Catalog Keys",
+              "type": "array"
+            },
+            "assignee_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Assignee Id"
+            },
+            "assignee_profile_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Assignee Profile Id"
+            },
+            "assignee_publishers": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Assignee Publishers",
+              "type": "array"
+            },
+            "conflict_mode": {
+              "default": "refuse",
+              "enum": [
+                "refuse",
+                "warn"
+              ],
+              "title": "Conflict Mode",
+              "type": "string"
+            },
+            "consistent": {
+              "default": true,
+              "title": "Consistent",
+              "type": "boolean"
+            },
+            "different_publisher_required": {
+              "default": false,
+              "title": "Different Publisher Required",
+              "type": "boolean"
+            },
+            "issues": {
+              "items": {
+                "$ref": "#/components/schemas/RoutingIssue"
+              },
+              "title": "Issues",
+              "type": "array"
+            },
+            "routing": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TaskRouting"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The routing that was checked."
+            },
+            "structured": {
+              "default": false,
+              "description": "The routing is stored as structure in the brief.",
+              "title": "Structured",
+              "type": "boolean"
+            },
+            "suggested_reviewer": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/RoutingReviewer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "suggestion": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TaskRouting"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "A routing consistent with the assignee and policy, when it differs."
+            },
+            "task_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Task Id"
+            },
+            "text_routing": {
+              "default": false,
+              "description": "The brief names routing only in free text; convert it to check it.",
+              "title": "Text Routing",
+              "type": "boolean"
+            }
+          },
+          "title": "RoutingCheck",
+          "type": "object"
+        },
+        "RoutingIssue": {
+          "description": "One inconsistency between a task's routing, its assignee and the project policy.",
+          "properties": {
+            "catalog_key": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Catalog Key"
+            },
+            "code": {
+              "title": "Code",
+              "type": "string"
+            },
+            "field": {
+              "enum": [
+                "first_rung",
+                "escalation",
+                "reviewer",
+                "assignee",
+                "routing"
+              ],
+              "title": "Field",
+              "type": "string"
+            },
+            "message": {
+              "title": "Message",
+              "type": "string"
+            },
+            "publisher_key": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Publisher Key"
+            },
+            "severity": {
+              "enum": [
+                "conflict",
+                "warning"
+              ],
+              "title": "Severity",
+              "type": "string"
+            }
+          },
+          "required": [
+            "code",
+            "severity",
+            "field",
+            "message"
+          ],
+          "title": "RoutingIssue",
+          "type": "object"
         },
         "RoutingQualificationKeyDeclare": {
           "additionalProperties": false,
@@ -4283,6 +4490,154 @@
           "title": "RoutingQualificationKeyUsage",
           "type": "object"
         },
+        "RoutingReviewer": {
+          "additionalProperties": false,
+          "description": "The model that reviews the task's result, and optionally the reviewer profile to dispatch.",
+          "properties": {
+            "catalog_key": {
+              "description": "Key of a model catalog entry.",
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Catalog Key",
+              "type": "string"
+            },
+            "configured_model_alias": {
+              "anyOf": [
+                {
+                  "maxLength": 255,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filled by the server from the catalog entry.",
+              "title": "Configured Model Alias"
+            },
+            "effort": {
+              "anyOf": [
+                {
+                  "maxLength": 20,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filled by the server from the catalog entry.",
+              "title": "Effort"
+            },
+            "harness": {
+              "default": "",
+              "description": "Where the model runs, for people, such as an agent client name.",
+              "maxLength": 120,
+              "title": "Harness",
+              "type": "string"
+            },
+            "instructions": {
+              "default": "",
+              "description": "What the review checks, for example each criterion against its evidence.",
+              "maxLength": 2000,
+              "title": "Instructions",
+              "type": "string"
+            },
+            "profile_id": {
+              "anyOf": [
+                {
+                  "minimum": 1.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Reviewer profile passed as reviewer_profile_id at dispatch.",
+              "title": "Profile Id"
+            },
+            "publisher_key": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filled by the server from the catalog entry.",
+              "title": "Publisher Key"
+            }
+          },
+          "required": [
+            "catalog_key"
+          ],
+          "title": "RoutingReviewer",
+          "type": "object"
+        },
+        "RoutingRung": {
+          "additionalProperties": false,
+          "description": "One model catalog entry that may execute the task.",
+          "properties": {
+            "catalog_key": {
+              "description": "Key of a model catalog entry.",
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Catalog Key",
+              "type": "string"
+            },
+            "configured_model_alias": {
+              "anyOf": [
+                {
+                  "maxLength": 255,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filled by the server from the catalog entry.",
+              "title": "Configured Model Alias"
+            },
+            "effort": {
+              "anyOf": [
+                {
+                  "maxLength": 20,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filled by the server from the catalog entry.",
+              "title": "Effort"
+            },
+            "harness": {
+              "default": "",
+              "description": "Where the model runs, for people, such as an agent client name.",
+              "maxLength": 120,
+              "title": "Harness",
+              "type": "string"
+            },
+            "publisher_key": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filled by the server from the catalog entry.",
+              "title": "Publisher Key"
+            }
+          },
+          "required": [
+            "catalog_key"
+          ],
+          "title": "RoutingRung",
+          "type": "object"
+        },
         "TaskActionAvailability": {
           "properties": {
             "action": {
@@ -4606,6 +4961,17 @@
               "maxLength": 8000,
               "title": "Goal",
               "type": "string"
+            },
+            "routing": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TaskRouting"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "First rung, escalation and reviewer as catalog entries; the brief text renders a Routing section from it."
             },
             "schema_version": {
               "const": 1,
@@ -5940,6 +6306,17 @@
               ],
               "title": "Resolved At"
             },
+            "routing_check": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/RoutingCheck"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Present on a write that changed the assignee or routing: whether the routing is consistent, its issues and a consistent replacement with a suggested reviewer."
+            },
             "sort_order": {
               "default": 0,
               "title": "Sort Order",
@@ -6159,6 +6536,78 @@
             "reason"
           ],
           "title": "TaskReviewWrite",
+          "type": "object"
+        },
+        "TaskRouting": {
+          "additionalProperties": false,
+          "description": "First rung, escalation ladder and reviewer of one task.",
+          "properties": {
+            "after_last_rung": {
+              "default": "",
+              "description": "What happens when the ladder is exhausted.",
+              "maxLength": 2000,
+              "title": "After Last Rung",
+              "type": "string"
+            },
+            "escalate_after_failed_runs": {
+              "default": 2,
+              "maximum": 10.0,
+              "minimum": 1.0,
+              "title": "Escalate After Failed Runs",
+              "type": "integer"
+            },
+            "escalation": {
+              "items": {
+                "$ref": "#/components/schemas/RoutingRung"
+              },
+              "maxItems": 8,
+              "title": "Escalation",
+              "type": "array"
+            },
+            "first_rung": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/RoutingRung"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "notes": {
+              "default": "",
+              "description": "Further routing rules, rendered after the ladder.",
+              "maxLength": 4000,
+              "title": "Notes",
+              "type": "string"
+            },
+            "reviewer": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/RoutingReviewer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "schema_version": {
+              "const": 1,
+              "default": 1,
+              "title": "Schema Version",
+              "type": "integer"
+            },
+            "source_text": {
+              "description": "Original sentences a conversion replaced with this structure; kept for audit and never rendered.",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 20,
+              "title": "Source Text",
+              "type": "array"
+            }
+          },
+          "title": "TaskRouting",
           "type": "object"
         },
         "TaskStatus": {
@@ -6574,6 +7023,16 @@
                 }
               ],
               "title": "Project Id"
+            },
+            "routing_resolution": {
+              "default": "check",
+              "description": "How an assignee or routing change treats the brief's structured routing: check it against the assignee and the project's review policy (refused or warned as the project is configured), or save the suggested consistent routing.",
+              "enum": [
+                "check",
+                "apply_suggestion"
+              ],
+              "title": "Routing Resolution",
+              "type": "string"
             },
             "sort_order": {
               "anyOf": [
@@ -13470,6 +13929,7 @@
         "context": "Coordinate with the team",
         "exclusions": "Publishing",
         "goal": "Deliver a reviewed outline",
+        "routing": null,
         "schema_version": 1,
         "scope": "Write the outline",
         "verification": "Read the saved artifact"
@@ -13537,6 +13997,7 @@
       "project_id": 9,
       "request_count": 0,
       "resolved_at": null,
+      "routing_check": null,
       "sort_order": 0,
       "source": null,
       "source_url": null,
@@ -13586,6 +14047,7 @@
             "context": "Coordinate with the team",
             "exclusions": "Publishing",
             "goal": "Deliver a reviewed outline",
+            "routing": null,
             "schema_version": 1,
             "scope": "Write the outline",
             "verification": "Read the saved artifact"
@@ -13653,6 +14115,7 @@
           "project_id": 9,
           "request_count": 0,
           "resolved_at": null,
+          "routing_check": null,
           "sort_order": 0,
           "source": null,
           "source_url": null,
@@ -13761,6 +14224,7 @@
           "context": "Coordinate with the team",
           "exclusions": "Publishing",
           "goal": "Deliver a reviewed outline",
+          "routing": null,
           "schema_version": 1,
           "scope": "Write the outline",
           "verification": "Read the saved artifact"
@@ -13828,6 +14292,7 @@
         "project_id": 9,
         "request_count": 0,
         "resolved_at": null,
+        "routing_check": null,
         "sort_order": 0,
         "source": null,
         "source_url": null,
@@ -13903,6 +14368,7 @@
       "project_id": 9,
       "request_count": 0,
       "resolved_at": null,
+      "routing_check": null,
       "sort_order": 0,
       "source": null,
       "source_url": null,
@@ -13978,6 +14444,7 @@
             "context": "Coordinate with the team",
             "exclusions": "Publishing",
             "goal": "Deliver a reviewed outline",
+            "routing": null,
             "schema_version": 1,
             "scope": "Write the outline",
             "verification": "Read the saved artifact"
@@ -14045,6 +14512,7 @@
           "project_id": 9,
           "request_count": 0,
           "resolved_at": null,
+          "routing_check": null,
           "sort_order": 0,
           "source": null,
           "source_url": null,
@@ -14102,6 +14570,7 @@
       "project_id": 9,
       "request_count": 0,
       "resolved_at": null,
+      "routing_check": null,
       "sort_order": 0,
       "source": null,
       "source_url": null,
@@ -14172,6 +14641,7 @@
           "context": "Coordinate with the team",
           "exclusions": "Publishing",
           "goal": "Deliver a reviewed outline",
+          "routing": null,
           "schema_version": 1,
           "scope": "Write the outline",
           "verification": "Read the saved artifact"
@@ -14239,6 +14709,7 @@
         "project_id": 9,
         "request_count": 0,
         "resolved_at": null,
+        "routing_check": null,
         "sort_order": 0,
         "source": null,
         "source_url": null,

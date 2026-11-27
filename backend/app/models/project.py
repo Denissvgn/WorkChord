@@ -103,12 +103,17 @@ class Initiative(Base):
 class Project(Base):
     """Outcome-oriented planning container above tasks and iterations."""
     __tablename__ = "projects"
-    __table_args__ = {"sqlite_autoincrement": True}
+    __table_args__ = (
+        CheckConstraint("routing_conflict_mode IN ('refuse', 'warn')", name="ck_projects_routing_conflict_mode"),
+        {"sqlite_autoincrement": True},
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     timezone: Mapped[str] = mapped_column(String(64), default="UTC", server_default="UTC", nullable=False)
     require_different_review_publisher: Mapped[bool] = mapped_column(Boolean, default=False, server_default=false(), nullable=False)
+    # Whether a task routing that conflicts with the review policy is refused or saved with a warning.
+    routing_conflict_mode: Mapped[str] = mapped_column(String(16), server_default="refuse", nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(
         String(50), default=ProjectStatus.PLANNED.value, nullable=False, index=True

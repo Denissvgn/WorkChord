@@ -3605,6 +3605,20 @@ async def write_task_brief(db, actor, task_id, payload):
     return TaskService(db).task_to_response(task).model_dump(mode="json")
 
 
+async def check_task_routing(db, actor, task_id, assignee_id=None):
+    """Check a brief's structured routing against the current or a proposed assignee."""
+    from app.services.task_brief_service import TaskBriefService
+    return (await TaskBriefService(db).routing_check(task_id, assignee_id)).model_dump(mode="json")
+
+
+async def convert_task_routing(db, actor, task_id, payload):
+    """Preview or apply moving a brief's free-text routing into structured routing."""
+    from app.schemas.task_routing import RoutingConvert
+    from app.services.task_brief_service import TaskBriefService
+    result = await TaskBriefService(db).routing_conversion(task_id, RoutingConvert.model_validate(payload))
+    return result.model_dump(mode="json")
+
+
 async def convert_triage_to_backlog(db, actor, triage_item_id, payload):
     """Use an explicit project backlog destination while preserving legacy conversion."""
     from app.schemas.triage import TriageConvertToBacklogRequest

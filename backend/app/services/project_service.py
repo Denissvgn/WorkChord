@@ -466,13 +466,14 @@ class ProjectService:
             data.owner_profile_id,
         )
         await self._require_initiative_exists(data.initiative_id)
-        if data.require_different_review_publisher:
+        if data.require_different_review_publisher or data.routing_conflict_mode != "refuse":
             from app.authority import require_operator
             require_operator(self.db)
         project = Project(
             name=data.name,
             timezone=data.timezone,
             require_different_review_publisher=data.require_different_review_publisher,
+            routing_conflict_mode=data.routing_conflict_mode,
             description=data.description,
             status=self._enum_value(data.status),
             health=self._enum_value(data.health),
@@ -534,6 +535,12 @@ class ProjectService:
             from app.authority import require_operator
             require_operator(self.db)
             update_data["require_different_review_publisher"] = policy
+        mode = update_data.pop("routing_conflict_mode", None)
+        if mode is not None and mode != project.routing_conflict_mode:
+            # Relaxing or restoring the routing refusal is a policy change like the publisher policy.
+            from app.authority import require_operator
+            require_operator(self.db)
+            update_data["routing_conflict_mode"] = mode
         await self._normalize_owner_update_data(update_data)
         if "initiative_id" in update_data:
             await self._require_initiative_exists(update_data["initiative_id"])

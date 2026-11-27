@@ -791,6 +791,7 @@ class TaskService:
 
         update_data = data.model_dump(exclude_unset=True)
         expected_version = update_data.pop("expected_version", None)
+        routing_resolution = update_data.pop("routing_resolution", "check")
 
         # Dependency writes participate in the same scheduling aggregate as
         # serialized preview/apply. Acquire the aggregate root before any
@@ -915,8 +916,11 @@ class TaskService:
             raise ValueError("A canonical brief cannot be cleared; edit its fields instead")
         if task.brief is not None and "description" in update_data and update_data["description"] != render_brief(brief_input or task.brief):
             raise ValueError("This task has a canonical brief; reload and edit its structured fields")
+        previous_routing = (task.brief or {}).get("routing")
+        brief_revision_before = task.brief_revision
         if brief_input is not None:
-            if await TaskBriefService(self.db).apply_brief(task, data.brief):
+            # The routing is checked below, once the assignee of this change is in place.
+            if await TaskBriefService(self.db).apply_brief(task, data.brief, enforce=False):
                 changed_fields["brief_revision"] = {"old": task.brief_revision - 1, "new": task.brief_revision}
             update_data.pop("description", None)
 
@@ -929,6 +933,13 @@ class TaskService:
             if old_value != value:
                 changed_fields[field] = {"old": old_value, "new": value}
                 setattr(task, field, value)
+
+        from app.services.task_routing_service import enforce_routing
+        routing_changed = (task.brief or {}).get("routing") != previous_routing
+        await enforce_routing(self.db, task, resolution=routing_resolution,
+                              changed="assignee_id" in changed_fields or routing_changed)
+        if task.brief_revision != brief_revision_before:
+            changed_fields["brief_revision"] = {"old": brief_revision_before, "new": task.brief_revision}
 
         # Handle dependency updates
         if depends_on_ids is not None:
@@ -1847,6 +1858,7 @@ class TaskService:
             updated_at=task.updated_at,
             children=children,
             dependencies=dependencies,
+            routing_check=task.__dict__.get("_routing_check"),
         )
 
     async def _get_next_root_sort_order(self, iteration_id: int) -> int:

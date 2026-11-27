@@ -30,16 +30,66 @@ LABELS = {
 }
 
 
+def _render_rung(rung: dict) -> str:
+    text = rung["catalog_key"]
+    if rung.get("effort") and rung["effort"] != "unknown":
+        text += f" at {rung['effort']} effort"
+    if rung.get("harness"):
+        text += f" in {rung['harness']}"
+    return text
+
+
+def render_routing(routing: dict | None) -> str:
+    """Render the structured routing as the brief's Routing section body."""
+    if not routing:
+        return ""
+    lines = []
+    if routing.get("first_rung"):
+        lines.append(f"First rung: {_render_rung(routing['first_rung'])}.")
+    after = (routing.get("after_last_rung") or "").strip().rstrip(".")
+    runs = routing.get("escalate_after_failed_runs", 2)
+    ladder = " -> ".join(_render_rung(rung) for rung in routing.get("escalation") or [])
+    if ladder:
+        lines.append(f"Escalation after {runs} failed acceptance runs: {ladder}" + (f"; then {after}." if after else "."))
+    elif after:
+        lines.append(f"Escalation: none; after {runs} failed acceptance runs {after}.")
+    reviewer = routing.get("reviewer")
+    if reviewer:
+        line = f"Reviewer: {_render_rung(reviewer)}"
+        if reviewer.get("publisher_key"):
+            line += f", publisher {reviewer['publisher_key']}"
+        if reviewer.get("profile_id"):
+            line += f", reviewer profile {reviewer['profile_id']}"
+        lines.append(line + ".")
+        instructions = (reviewer.get("instructions") or "").strip()
+        lines.append(f"Independent review by {reviewer['catalog_key']}" + (f": {instructions}" if instructions else "."))
+    if (routing.get("notes") or "").strip():
+        lines.append(routing["notes"].strip())
+    return "\n".join(lines)
+
+
+def brief_payload(brief: TaskBrief) -> dict:
+    """The stored JSON form; a brief without routing keeps the shape it had before routing existed."""
+    payload = brief.model_dump(mode="json")
+    if payload.get("routing") is None:
+        payload.pop("routing", None)
+    return payload
+
+
 def render_brief(brief: TaskBrief | dict) -> str:
     """Derive Markdown from canonical fields without projecting progress as acceptance."""
     data = brief.model_dump() if isinstance(brief, TaskBrief) else brief
     sections = []
-    for field in ("goal", "context", "scope", "exclusions", "acceptance_criteria", "verification", "artifact_expectations"):
+    for field in ("goal", "context", "scope", "exclusions", "acceptance_criteria", "verification", "routing", "artifact_expectations"):
         if field == "acceptance_criteria":
             criteria = data.get(field, [])
             if criteria:
                 lines = [f"- [ ] {item['text']}" + (f"\n  Verification: {item['verification']}" if item.get("verification") else "") for item in criteria]
                 sections.append("## Acceptance criteria\n" + "\n".join(lines))
+        elif field == "routing":
+            body = render_routing(data.get("routing"))
+            if body:
+                sections.append(f"## Routing\n{body}")
         elif data.get(field):
             sections.append(f"## {LABELS[field]}\n{data[field]}")
     return "\n\n".join(sections)
@@ -147,12 +197,26 @@ class TaskBriefService:
         from app.services.task_service import TaskService
         return TaskService(self.db)
 
-    async def apply_brief(self, task: Task, brief: TaskBrief, *, provenance="structured") -> bool:
-        """Apply one canonical representation under the task command's existing fence."""
+    async def apply_brief(self, task: Task, brief: TaskBrief, *, provenance="structured", enforce=True, resolve_routing=True) -> bool:
+        """Apply one canonical representation under the task command's existing fence.
+
+        A changed routing is filled from the model catalog and, unless the caller checks it
+        after its own changes (enforce=False), checked against the task's assignee.
+        """
         require_project(self.db, task.project_id, "edit")
         previous = task.brief or {}
         old = {item["id"]: item for item in previous.get("acceptance_criteria", [])}
-        payload = brief.model_dump(mode="json")
+        if "routing" not in brief.model_fields_set and previous.get("routing") is not None:
+            # A writer that does not send routing keeps it; an explicit null clears it.
+            from app.schemas.task_routing import TaskRouting
+            brief = brief.model_copy(update={"routing": TaskRouting.model_validate(previous["routing"])})
+        routing_changed = brief.routing is not None and brief.routing.model_dump(mode="json") != previous.get("routing")
+        if routing_changed and resolve_routing:
+            from app.services.task_routing_service import resolve_routing as fill_routing
+            brief = brief.model_copy(update={"routing": await fill_routing(self.db, brief.routing)})
+            routing_changed = brief.routing.model_dump(mode="json") != previous.get("routing")
+        routing_changed = routing_changed or (brief.routing is None and previous.get("routing") is not None)
+        payload = brief_payload(brief)
         for criterion in payload["acceptance_criteria"]:
             prior = old.get(criterion["id"])
             if prior:
@@ -181,6 +245,9 @@ class TaskBriefService:
         self.db.add(TaskBriefRevision(task_id=task.id, original_task_id=task.id, revision=task.brief_revision, task_version=task.version,
             principal_id=getattr(self.db.info.get("authority"), "principal_id", None), payload=payload, provenance=provenance))
         await self.tasks.record_task_event(task.id, "brief_changed", {"brief_revision": task.brief_revision, "version": task.version, "provenance": provenance})
+        if routing_changed and enforce:
+            from app.services.task_routing_service import enforce_routing
+            await enforce_routing(self.db, task, changed=True)
         return True
 
     async def restore_brief(self, task, snapshot):
@@ -196,7 +263,9 @@ class TaskBriefService:
         current_criteria = {criterion["id"]: criterion["revision"] for criterion in (task.brief or {}).get("acceptance_criteria", [])}
         for criterion in payload.get("acceptance_criteria", []):
             criterion["revision"] = current_criteria.get(criterion["id"], 1)
-        await self.apply_brief(task, TaskBrief.model_validate(payload), provenance="restored")
+        # A restored image restores its routing exactly, including having none.
+        payload.setdefault("routing", None)
+        await self.apply_brief(task, TaskBrief.model_validate(payload), provenance="restored", enforce=False, resolve_routing=False)
         task.description = render_brief(task.brief)
         if "legacy_description" in snapshot:
             task.legacy_description = snapshot["legacy_description"]
@@ -224,6 +293,34 @@ class TaskBriefService:
                 await self.apply_brief(task, brief, provenance="legacy_converted")
                 task.brief_migration_notes = notes
         return {"brief": brief.model_dump(mode="json"), "notes": notes, "already_converted": False}
+
+    async def routing_check(self, task_id, assignee_id=None, *, use_current_assignee=True):
+        """Check the task's routing for its current or a proposed assignee without changing anything."""
+        from app.services.task_routing_service import check_routing
+        task = await self.tasks.get_by_id(task_id)
+        if task is None:
+            raise LookupError("Task not found or inaccessible")
+        if assignee_id is not None:
+            await self.tasks.require_iteration_assignee(assignee_id, task.iteration_id)
+        return await check_routing(self.db, task_id=task.id, project_id=task.project_id,
+                                   assignee_id=task.assignee_id if use_current_assignee and assignee_id is None else assignee_id,
+                                   routing=(task.brief or {}).get("routing"), brief_text=task.description)
+
+    async def routing_conversion(self, task_id, data):
+        """Preview or apply moving routing that a brief carries as text into its structured routing."""
+        from app.services.task_routing_service import convert_text_routing
+        task = await self.tasks.get_by_id(task_id)
+        if task is None:
+            raise LookupError("Task not found or inaccessible")
+        self.tasks.ensure_expected_version(task, data.expected_version)
+        if not data.apply:
+            return await convert_text_routing(self.db, task, override=data.routing)
+        from app.commands import command_transaction
+        async with command_transaction(self.db):
+            task = await self._locked(task_id, data.expected_version)
+            result = await convert_text_routing(self.db, task, override=data.routing, apply=True)
+            await self.db.flush()
+        return result
 
     async def _locked(self, task_id, version):
         await self.tasks._lock_task_scope(task_id)

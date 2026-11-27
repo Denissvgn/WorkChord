@@ -15,6 +15,7 @@ from app.models.task import Task
 from app.schemas.manual_provenance import ManualProvenanceResponse, ManualProvenanceWrite
 from app.schemas.task import TaskCreate, TaskResponse
 from app.schemas.task_brief import BriefWrite, BriefConvert, OwnerAcceptanceWrite, ProgressWrite, TaskReviewWrite, TaskReviewResponse, CurrentTaskReviewResponse
+from app.schemas.task_routing import RoutingCheck, RoutingConvert, RoutingConvertResponse
 from app.schemas.task_domain import BacklogRestoreRequest, TaskActionRequest, TaskActionsResponse
 from app.schemas.task_detail import TaskDetailResponse, TaskReferencePage, HumanWorkResponse
 from app.services.manual_provenance_service import ManualProvenanceService
@@ -255,6 +256,19 @@ async def write_task_brief(task_id: int, data: BriefWrite, db: DB):
 @router.post("/tasks/{task_id}/brief/convert")
 async def convert_task_brief(task_id: int, data: BriefConvert, db: DB):
     return await domain_result(TaskBriefService(db).conversion(task_id, data))
+
+
+@router.get("/tasks/{task_id}/routing/check", response_model=RoutingCheck)
+async def check_task_routing(task_id: int, db: DB, assignee_id: int | None = Query(default=None, ge=1,
+        description="A proposed assignee row; the current assignee when omitted.")):
+    """Check the brief's structured routing against an assignee and the project's review policy."""
+    return await domain_result(TaskBriefService(db).routing_check(task_id, assignee_id))
+
+
+@router.post("/tasks/{task_id}/routing/convert", response_model=RoutingConvertResponse)
+async def convert_task_routing(task_id: int, data: RoutingConvert, db: DB):
+    """Preview or apply moving routing named in the brief's text into its structured routing."""
+    return await domain_result(TaskBriefService(db).routing_conversion(task_id, data))
 
 
 @router.post("/tasks/{task_id}/progress", response_model=TaskResponse)

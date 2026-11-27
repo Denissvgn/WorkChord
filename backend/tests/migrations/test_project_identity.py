@@ -71,7 +71,7 @@ def database_rows(engine):
 
 # Columns later revisions add, with the value every retained row receives.
 LATER_COLUMNS = {
-    "projects": {"require_different_review_publisher": 0},
+    "projects": {"require_different_review_publisher": 0, "routing_conflict_mode": "refuse"},
     "agent_model_catalog_entries": {"local_first": 0, "effort": "unknown", "qualification_keys": "[]"},
     "tasks": {"execution_planning_window": None},
     "task_review_records": {"kind": "review"},
@@ -144,6 +144,9 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         assert "ck_routing_qualification_key_revisions_action" in after_catalog.pop(
             "routing_qualification_key_revisions")["checks"]
         assert after_catalog["projects"]["columns"].pop("require_different_review_publisher") == {"type": {"family": "boolean"}, "nullable": False}
+        # A later revision lets a project refuse or only warn about inconsistent task routing.
+        assert after_catalog["projects"]["columns"].pop("routing_conflict_mode") == {"type": {"family": "text"}, "nullable": False}
+        after_catalog["projects"]["checks"].remove("ck_projects_routing_conflict_mode")
         assert after_catalog["tasks"]["columns"].pop("execution_planning_window") == {"type": {"family": "json"}, "nullable": True}
         # A later revision records which annual calendars an iteration or profile spans.
         for table in ("iteration_annual_calendars", "profile_annual_calendars"):

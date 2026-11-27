@@ -6,6 +6,8 @@ from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from app.schemas.task_routing import TaskRouting
+
 
 class BriefCriterion(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -32,6 +34,8 @@ class TaskBrief(BaseModel):
     acceptance_criteria: list[BriefCriterion] = Field(default_factory=list, max_length=100)
     verification: str = Field(default="", max_length=12000)
     artifact_expectations: str = Field(default="", max_length=12000)
+    routing: TaskRouting | None = Field(default=None,
+        description="First rung, escalation and reviewer as catalog entries; the brief text renders a Routing section from it.")
 
     @model_validator(mode="after")
     def unique_criteria(self):
