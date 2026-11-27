@@ -70,7 +70,7 @@ docker inspect <old backend container> \
 
 ~~~bash
 export WORKCHORD_INSTANCE_HOME="$HOME/.workchord/instances/local-8480"
-export RELEASE_TAG=1.10.0     # release tags have no "v" prefix
+export RELEASE_TAG=1.11.0     # release tags have no "v" prefix
 export OLD_PROJECT=<old compose project name>
 export OLD_SOURCE=<old working directory printed above>
 export OLD_ENV=<environment file the old stack was started with>
