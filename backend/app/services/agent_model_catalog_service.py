@@ -74,7 +74,9 @@ class AgentModelConflictError(AgentConflictError):
 
 @dataclass(frozen=True)
 class _MutationResult:
-    target_type: Literal["model_catalog", "model_binding", "routing_qualification_key"]
+    target_type: Literal[
+        "model_catalog", "model_binding", "routing_qualification_key", "routing_calibration_contract"
+    ]
     target_id: int
     authoritative_revision: int
     result: dict[str, Any]

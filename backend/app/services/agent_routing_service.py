@@ -2237,6 +2237,18 @@ class AgentRoutingService:
             response_values["acceptance_blocker_codes"] = (
                 [] if history.candidate else [RoutingBlockerCode.VERIFICATION_CANDIDATE_UNVERIFIABLE.value]
             )
+        # The preview reports whether a calibration contract is approved, and
+        # nothing else from it: candidates and their ranks above never read
+        # performance history. The fields enter the digest only when a
+        # contract is approved, so a deployment without one keeps its digests.
+        from app.services.routing_calibration_contract_service import (
+            approved_calibration_contract_count,
+        )
+
+        approved_contracts = await approved_calibration_contract_count(self.db)
+        if approved_contracts:
+            response_values["calibration_contract"] = "approved"
+            response_values["approved_calibration_contracts"] = approved_contracts
         if review_evidence is not None:
             owner = review_evidence["reviewer"]
             response_values["eligibility_basis"]="task_policy_configuration_and_review_evidence"

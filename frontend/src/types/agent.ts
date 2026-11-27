@@ -301,7 +301,7 @@ export interface AgentModelMutationReceipt<
     operation: string;
     /** Null when the operator's admin key made the change. */
     actor_id: number | null;
-    target_type: 'model_catalog' | 'model_binding' | 'routing_qualification_key';
+    target_type: 'model_catalog' | 'model_binding' | 'routing_qualification_key' | 'routing_calibration_contract';
     target_id: number;
     idempotency_key: string;
     rationale: string;
@@ -559,6 +559,8 @@ export interface AgentRoutingPreviewResponse {
     runtime_availability?: 'unknown';
     eligibility_basis?: 'task_policy_and_configuration';
     model_attestation?: 'not_independently_attested';
+    calibration_contract?: 'none_approved' | 'approved';
+    approved_calibration_contracts?: number;
     preview_id: string;
     preview_digest: string;
     input_digest: string;

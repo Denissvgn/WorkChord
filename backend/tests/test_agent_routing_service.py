@@ -24,6 +24,7 @@ from app.models.agent import (
 from app.authority import Authority
 from app.models.iteration import Iteration
 from app.models.project import Project
+from app.models.routing_calibration import RoutingCalibrationContract
 from app.models.routing_qualification import RoutingQualificationKey
 from app.models.team_member import TeamMember, TeamMemberProfile, TeamMemberProfileSkill
 from app.schemas.agent import (
@@ -41,6 +42,10 @@ from app.schemas.agent_routing import (
 from app.services.agent_routing_service import (
     AgentRoutingConflictError,
     AgentRoutingService,
+)
+from app.schemas.routing_calibration import (
+    CALIBRATION_CONTRACT_SCHEMA_VERSION,
+    RoutingCalibrationContractTerms,
 )
 from app.schemas.routing_qualification import (
     RoutingQualificationKeyDeclare,
@@ -603,6 +608,130 @@ async def test_local_first_preference_breaks_ties_but_never_overrides_a_gate(
     # The hard blocker still excludes the local-first entry.
     assert blocked_worker.id not in by_actor
     assert any(e.actor_id == blocked_worker.id and e.hard_blocker_codes for e in preview.exclusions)
+
+
+@pytest.mark.asyncio
+async def test_preview_states_an_approved_calibration_contract_and_ranks_exactly_as_before(
+    db_session: AsyncSession,
+    profile_factory,
+    actor_factory,
+    team_member_factory,
+    task_factory,
+) -> None:
+    pm, hosted_worker, task, hosted_binding, _ = await _routing_fixture(
+        db_session,
+        profile_factory,
+        actor_factory,
+        team_member_factory,
+        task_factory,
+    )
+    local_worker, local_binding = await _extra_worker(
+        db_session,
+        profile_factory,
+        actor_factory,
+        team_member_factory,
+        key="local-python",
+        cost_tier="high",
+        local_first=True,
+        profile=await db_session.get(TeamMemberProfile, hosted_worker.profile_id),
+    )
+    await _extra_worker(
+        db_session,
+        profile_factory,
+        actor_factory,
+        team_member_factory,
+        key="blocked-local",
+        cost_tier="low",
+        local_first=True,
+    )
+    service = AgentRoutingService(db_session)
+    receipt = await service.create_assessment(
+        task.id,
+        pm,
+        _assessment_command(task_version=task.version),
+        _command_context("assessment-calibration"),
+    )
+    request = AgentRoutingPreviewCreate(
+        purpose="execution",
+        assessment_id=receipt.assessment.id,
+        expected_task_version=task.version,
+    )
+    now = datetime(2026, 7, 22, 12, 0, tzinfo=UTC)
+
+    def ranking(preview):
+        return (
+            preview.input_digest,
+            preview.recommended_candidate,
+            preview.eligible_candidates,
+            preview.exclusions,
+            preview.hard_blocker_codes,
+        )
+
+    baseline = await service.preview_task_routing(task.id, pm, request, now=now)
+    assert baseline.calibration_contract == "none_approved"
+    assert "approved_calibration_contracts" not in baseline.model_dump(mode="json")
+    assert baseline.recommended_candidate is not None
+    assert baseline.recommended_candidate.model_binding_id == local_binding.id
+    assert baseline.exclusions
+
+    # A submitted contract that nobody has approved changes nothing, digest included.
+    terms = RoutingCalibrationContractTerms.model_validate({
+        "qualification_keys": ["backend-python"],
+        "sample_bounds": {"minimum_samples": 10, "maximum_samples": 100, "maximum_age_days": 90},
+        "decay": {"method": "window", "days": 90},
+        "bias_review": {
+            "reviewer": "Routing review board",
+            "reviewed_at": "2026-07-01T09:00:00Z",
+            "findings": "No skew across teams in the sample.",
+        },
+        "approver": "Head of delivery",
+    })
+    contract = RoutingCalibrationContract(
+        key="default",
+        schema_version=CALIBRATION_CONTRACT_SCHEMA_VERSION,
+        state="submitted",
+        revision=1,
+        terms=terms.stored(),
+        terms_digest=terms.digest(),
+        submitted_by_actor_type="agent",
+        submitted_by_actor_id=pm.id,
+    )
+    db_session.add(contract)
+    await db_session.commit()
+    assert await service.preview_task_routing(task.id, pm, request, now=now) == baseline
+
+    contract.state = "approved"
+    contract.revision = 2
+    contract.approved_by_actor_type = "operator"
+    contract.approved_at = now
+    contract.approval_reason = "Reviewed."
+    await db_session.commit()
+    approved = await service.preview_task_routing(task.id, pm, request, now=now)
+    assert approved.calibration_contract == "approved"
+    assert approved.approved_calibration_contracts == 1
+    # Routing does not consume history: candidates, ranks and exclusions are unchanged.
+    assert ranking(approved) == ranking(baseline)
+    assert approved.preview_digest != baseline.preview_digest
+
+    # The selection recomputes the same preview, so its digest is accepted.
+    await service.validate_assignment_selection(
+        task=task,
+        selected_actor=local_worker,
+        data=ModelAwareAgentTaskAssignmentCreate(
+            task_id=task.id,
+            actor_id=local_worker.id,
+            expected_task_version=task.version,
+            purpose="execution",
+            assessment_id=receipt.assessment.id,
+            model_binding_id=local_binding.id,
+            model_binding_revision=local_binding.revision,
+            routing_preview_id=approved.preview_id,
+            routing_preview_digest=approved.preview_digest,
+        ),
+        assignment_created_by_actor=pm,
+        now=now,
+    )
+    assert hosted_binding.id in {candidate.model_binding_id for candidate in approved.eligible_candidates}
 
 
 @pytest.mark.asyncio

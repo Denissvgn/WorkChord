@@ -37,6 +37,8 @@ CLIENT_PATHS = (
     "/api/agent/model-bindings/{binding_id}/disable", "/api/agent/profile-presets",
     "/api/agent/routing-qualification-keys", "/api/agent/routing-qualification-keys/{key}",
     "/api/agent/routing-qualification-keys/{key}/retire",
+    "/api/agent/routing-calibration-contracts", "/api/agent/routing-calibration-contracts/{key}",
+    "/api/agent/routing-calibration-contracts/{key}/approve",
 )
 DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "backend/tests/fixtures/client-contract-v1.json"
 
