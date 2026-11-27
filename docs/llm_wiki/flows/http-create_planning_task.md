@@ -130,17 +130,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_planning_task | service.create_task | 343 | `service.create_task(iteration_id, actor, data, command=command)` |
-| create_planning_task | _handle_agent_error | 350 | `_handle_agent_error(exc)` |
-| _handle_agent_error | isinstance | 109 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | HTTPException | 110 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
-| _handle_agent_error | str | 110 | `str(exc)` |
-| _handle_agent_error | isinstance | 111 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 112 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 112 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 113 | `isinstance(exc, TaskVersionConflictError)` |
-| _handle_agent_error | HTTPException | 114 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 114 | `exc.detail(data not statically known)` |
+| create_planning_task | service.create_task | 375 | `service.create_task(iteration_id, actor, data, command=command)` |
+| create_planning_task | _handle_agent_error | 382 | `_handle_agent_error(exc)` |
+| _handle_agent_error | isinstance | 110 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | HTTPException | 111 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
+| _handle_agent_error | str | 111 | `str(exc)` |
+| _handle_agent_error | isinstance | 112 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException | 113 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 113 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 114 | `isinstance(exc, TaskVersionConflictError)` |
+| _handle_agent_error | HTTPException | 115 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 115 | `exc.detail(data not statically known)` |
 
 ### Boundary effects
 
@@ -150,15 +150,15 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_planning_task` | `service.create_task` | 343 |
-| external_call | `_handle_agent_error` | `isinstance` | 109 |
-| external_call | `_handle_agent_error` | `HTTPException` | 110 |
-| external_call | `_handle_agent_error` | `isinstance` | 111 |
-| external_call | `_handle_agent_error` | `HTTPException` | 112 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 112 |
-| external_call | `_handle_agent_error` | `isinstance` | 113 |
-| external_call | `_handle_agent_error` | `HTTPException` | 114 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 114 |
+| unresolved_call | `create_planning_task` | `service.create_task` | 375 |
+| external_call | `_handle_agent_error` | `isinstance` | 110 |
+| external_call | `_handle_agent_error` | `HTTPException` | 111 |
+| external_call | `_handle_agent_error` | `isinstance` | 112 |
+| external_call | `_handle_agent_error` | `HTTPException` | 113 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 113 |
+| external_call | `_handle_agent_error` | `isinstance` | 114 |
+| external_call | `_handle_agent_error` | `HTTPException` | 115 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 115 |
 | step_limit | `create_planning_task` | `first 12 steps` | 0 |
 
 ## Behavior

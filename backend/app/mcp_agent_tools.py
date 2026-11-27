@@ -1127,6 +1127,21 @@ async def preview_iteration_date_move(
     return IterationDateMovePreview.model_validate(result).model_dump(mode="json")
 
 
+async def preview_iteration_import(
+    db: AsyncSession,
+    actor: AgentActor,
+    iteration_id: int | None,
+    import_data: Any,
+) -> dict[str, Any]:
+    """MCP handler: the exact changes a JSON plan import would make, without writing them."""
+    from app.services.agent_service import require_scope
+    from app.services.import_review_service import dry_run_import, validate_import_payload
+
+    require_scope(actor, "planning:write")
+    validate_import_payload(import_data)
+    return await dry_run_import(db, iteration_id, import_data)
+
+
 async def apply_capacity_adjustment(
     db: AsyncSession,
     actor: AgentActor,

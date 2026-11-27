@@ -201,13 +201,13 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_iteration_plan_readiness (backend/app/routers/agent_planning.py) | require_scope | 139 | `require_scope(actor, 'planning:read')` |
+| get_iteration_plan_readiness (backend/app/routers/agent_planning.py) | require_scope | 140 | `require_scope(actor, 'planning:read')` |
 | require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
-| get_iteration_plan_readiness (backend/app/routers/agent_planning.py) | get_iteration_plan_readiness (backend/app/mcp_agent_tools.py) | 140 | `mcp_agent_tools.get_iteration_plan_readiness(db, iteration_id)` |
+| get_iteration_plan_readiness (backend/app/routers/agent_planning.py) | get_iteration_plan_readiness (backend/app/mcp_agent_tools.py) | 141 | `mcp_agent_tools.get_iteration_plan_readiness(db, iteration_id)` |
 | get_iteration_plan_readiness (backend/app/mcp_agent_tools.py) | IterationService.get_planning_readiness_summary | 654 | `IterationService(db).get_planning_readiness_summary(iteration_id)` |
 | IterationService.get_planning_readiness_summary | IterationService.get_by_id | 540 | `self.get_by_id(iteration_id)` |
 | IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 338 | `self.db.execute(...)` |

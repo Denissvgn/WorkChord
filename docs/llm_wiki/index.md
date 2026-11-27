@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1854 | [Open section](#entities) |
-| Modules | 1191 | [Open section](#modules) |
-| Workflows | 244 | [Open section](#workflows) |
+| Entities | 1861 | [Open section](#entities) |
+| Modules | 1194 | [Open section](#modules) |
+| Workflows | 245 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 635 | [Open section](#entry-point-flows) |
+| Entry-point flows | 637 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -534,6 +534,13 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ImmutableContractArchive](entities/ImmutableContractArchive.md)
 - [ImmutableInputBinding](entities/ImmutableInputBinding.md)
 - [ImmutableRoutingAssessmentError](entities/ImmutableRoutingAssessmentError.md)
+- [ImportChangeRows](entities/ImportChangeRows.md)
+- [ImportChanges](entities/ImportChanges.md)
+- [ImportDependencyRows](entities/ImportDependencyRows.md)
+- [ImportDryRunResponse](entities/ImportDryRunResponse.md)
+- [ImportFileInvalid](entities/ImportFileInvalid.md)
+- [ImportProfileRows](entities/ImportProfileRows.md)
+- [ImportReviewRefused](entities/ImportReviewRefused.md)
 - [ImportTasksBodyProps](entities/ImportTasksBodyProps.md)
 - [ImportTasksModalProps](entities/ImportTasksModalProps.md)
 - [ImportTeamModalProps](entities/ImportTeamModalProps.md)
@@ -2462,6 +2469,8 @@ Retained history; these declarations are absent from the selected source invento
 - [identity_service](modules/identity_service.md) - Trusted OIDC sign-in and durable principal/session lifecycle.
 - [import_parser](modules/import_parser.md) - Parser utilities for importing tasks and team members from text files.
 - [import_planning_service](modules/import_planning_service.md) - Coherent, read-only planning observations for bounded JSON imports.
+- [import_review](modules/import_review.md) - Response of a plan-import dry run.
+- [import_review_service](modules/import_review_service.md) - Review a JSON plan import before it is applied, and apply only what was reviewed.
 - [index](modules/index.md) - `frontend/src/components/ui/index.ts`
 - [installed_wheel_postgresql_qualification](modules/installed_wheel_postgresql_qualification.md) - Qualify the installed backend wheel across the SQLite/PostgreSQL boundary.
 - [isolated_rehearsal](modules/isolated_rehearsal.md) - Own isolated Compose resources without reusing operator credentials or data.
@@ -2893,6 +2902,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_person_run_reads](modules/test_person_run_reads.md) - People read the runs of tasks they can see; run logs stay behind keys.
 - [test_pipeline_active_outside_run](modules/test_pipeline_active_outside_run.md) - Active work with no WorkChord run is shown in its own pipeline stage.
 - [test_plan_checkpoints](modules/test_plan_checkpoints.md) - People and the PM read the same six plan checkpoints from the server.
+- [test_plan_import_dry_run](modules/test_plan_import_dry_run.md) - A plan import is reviewed under planning scope and applied exactly as reviewed.
 - [test_plan_shares](modules/test_plan_shares.md) - Plan-share ownership and immutable snapshot behavior.
 - [test_planning_input_context](modules/test_planning_input_context.md) - Initial shared-input observations are complete, bounded and side-effect free.
 - [test_planning_issues](modules/test_planning_issues.md) - The "needs an assignee" and "missing effort" rule shared by counts and filters.
@@ -3257,6 +3267,7 @@ Retained history; these declarations are absent from the selected source invento
 - [create_request_source_link](workflows/create_request_source_link.md) - entry: `mcp_agent_tools.create_request_source_link`
 - [create_session](workflows/create_session.md) - entry: `session_service._create_session`
 - [create_task_github_link](workflows/create_task_github_link.md) - entry: `mcp_agent_tools.create_task_github_link`
+- [dry_run_iteration_import](workflows/dry_run_iteration_import.md) - entry: `agent_planning.dry_run_iteration_import`
 - [enforce_http_authority](workflows/enforce_http_authority.md) - entry: `http_authority.enforce_http_authority`
 - [evaluate_agent_readiness](workflows/evaluate_agent_readiness.md) - entry: `agent_readiness.evaluate_agent_readiness`
 - [export_iteration](workflows/export_iteration.md) - entry: `export.export_iteration`
@@ -3266,7 +3277,6 @@ Retained history; these declarations are absent from the selected source invento
 - [get_gantt_data](workflows/get_gantt_data.md) - entry: `gantt.get_gantt_data`
 - [get_or_create_session](workflows/get_or_create_session.md) - entry: `session_service.get_or_create_session`
 - [get_task_timeline_page](workflows/get_task_timeline_page.md) - entry: `tasks.get_task_timeline_page`
-- [import_new_iteration](workflows/import_new_iteration.md) - entry: `export.import_new_iteration`
 - [initialize_gate](workflows/initialize_gate.md) - entry: `transfer._initialize_gate`
 - [issuer_identity](workflows/issuer_identity.md) - entry: `review_evidence._issuer_identity`
 - [link_profile](workflows/link_profile.md) - entry: `identity.link_profile`
@@ -3318,6 +3328,7 @@ Retained history; these declarations are absent from the selected source invento
 - [verify_action_lease](workflows/verify_action_lease.md) - entry: `leases.verify_action_lease`
 - [worker_flow](workflows/worker_flow.md) - entry: `worker._run`
 - [workspace_member](workflows/workspace_member.md) - entry: `identity.workspace_member`
+- [write_new_iteration_import](workflows/write_new_iteration_import.md) - entry: `export.write_new_iteration_import`
 
 <a id="entry-point-flows"></a>
 <a id="user-flows"></a>
@@ -3442,6 +3453,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-discover_agent_skill_bundles](flows/http-discover_agent_skill_bundles.md) - entry: `discover_agent_skill_bundles`
 - [http-download_agent_skill_bundle](flows/http-download_agent_skill_bundle.md) - entry: `download_agent_skill_bundle`
 - [http-draft_triage_task](flows/http-draft_triage_task.md) - entry: `draft_triage_task`
+- [http-dry_run_iteration_import](flows/http-dry_run_iteration_import.md) - entry: `dry_run_iteration_import`
 - [http-duplicate_saved_view](flows/http-duplicate_saved_view.md) - entry: `duplicate_saved_view`
 - [http-exchange_native_connection](flows/http-exchange_native_connection.md) - entry: `exchange_native_connection`
 - [http-execution_usage_summary](flows/http-execution_usage_summary.md) - entry: `execution_usage_summary`
@@ -3811,6 +3823,7 @@ Retained history; these declarations are absent from the selected source invento
 - [mcp-agent_preview_capacity_transfer](flows/mcp-agent_preview_capacity_transfer.md) - entry: `agent_preview_capacity_transfer`
 - [mcp-agent_preview_capacity_transfer_withdrawal](flows/mcp-agent_preview_capacity_transfer_withdrawal.md) - entry: `agent_preview_capacity_transfer_withdrawal`
 - [mcp-agent_preview_iteration_date_move](flows/mcp-agent_preview_iteration_date_move.md) - entry: `agent_preview_iteration_date_move`
+- [mcp-agent_preview_iteration_import](flows/mcp-agent_preview_iteration_import.md) - entry: `agent_preview_iteration_import`
 - [mcp-agent_preview_schedule](flows/mcp-agent_preview_schedule.md) - entry: `agent_preview_schedule`
 - [mcp-agent_preview_task_routing](flows/mcp-agent_preview_task_routing.md) - entry: `agent_preview_task_routing`
 - [mcp-agent_profile_presets_resource](flows/mcp-agent_profile_presets_resource.md) - entry: `agent_profile_presets_resource`

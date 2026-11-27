@@ -1889,6 +1889,24 @@ def create_mcp_server() -> FastMCP:
         )
 
     @mcp.tool(annotations=READ_ONLY_TOOL)
+    async def agent_preview_iteration_import(
+        import_data: dict[str, Any],
+        iteration_id: int | None = None,
+    ) -> dict[str, Any]:
+        """Show the exact tasks, dependencies, links, dates and team members a JSON plan import would create, change or remove, without writing anything.
+
+        import_data is the import file's JSON object. Pass iteration_id to import into that
+        iteration; omit it when the file creates a new iteration. The operator applies the
+        reviewed result by sending the same file and the returned review_digest to the import
+        route; the write is refused if the file or the target changed since this preview.
+        """
+        return await _tool_call(
+            "planning:write",
+            lambda db, actor: mcp_agent_tools.preview_iteration_import(db, actor, iteration_id, import_data),
+            preview=True,
+        )
+
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_preview_schedule(
         iteration_id: int,
         idempotency_key: str,
