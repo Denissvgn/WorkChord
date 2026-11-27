@@ -617,6 +617,15 @@ class AgentRoutingService:
                     data.expected_task_version,
                     self.task_service._metadata_from_task(task),
                 )
+            if data.required_model.qualification_keys:
+                from app.services.routing_qualification_key_service import (
+                    require_known_qualification_keys,
+                )
+
+                await require_known_qualification_keys(
+                    self.db,
+                    data.required_model.qualification_keys,
+                )
             if data.confidence < MIN_ROUTING_ASSESSMENT_CONFIDENCE:
                 raise ValueError(
                     "confidence must be at least "
@@ -1451,6 +1460,9 @@ class AgentRoutingService:
                                         binding.model_catalog.reasoning_tier
                                     ),
                                     "effort": binding.model_catalog.effort,
+                                    "qualification_keys": sorted(
+                                        binding.model_catalog.qualification_keys or []
+                                    ),
                                     "context_tier": binding.model_catalog.context_tier,
                                     "modality_tags": sorted(
                                         binding.model_catalog.modality_tags or []
@@ -1586,6 +1598,10 @@ class AgentRoutingService:
                 confidence=assessment.confidence,
                 minimum_confidence=MIN_ROUTING_ASSESSMENT_CONFIDENCE,
             )
+        # A candidate's catalog entry must hold every required qualification key.
+        required_qualification_keys = tuple(sorted(
+            (assessment.required_model or {}).get("qualification_keys") or ()
+        ))
 
         (
             iteration,
@@ -1910,6 +1926,11 @@ class AgentRoutingService:
                     actual_tool_tags=binding.tool_tags or (),
                     actual_data_policy_tags=binding.data_policy_tags or (),
                     actual_effort=catalog.effort if catalog is not None else None,
+                    actual_qualification_keys=(
+                        catalog.qualification_keys or ()
+                        if catalog is not None
+                        else ()
+                    ),
                 )
                 publisher_blockers = history.publisher_blockers(catalog.publisher_key if catalog else None) if strict_review else []
                 blockers = sorted(set((*actor_blockers, *model.hard_blocker_codes, *publisher_blockers)))
@@ -2021,6 +2042,9 @@ class AgentRoutingService:
                                 "data_policy_tags": sorted(
                                     binding.data_policy_tags or []
                                 ),
+                                "qualification_keys": list(
+                                    required_qualification_keys
+                                ),
                                 "eligible": True,
                                 "hard_blocker_codes": [],
                                 "adequacy_class": model.adequacy_class,
@@ -2053,6 +2077,9 @@ class AgentRoutingService:
                             "missing_data_policy_tags": list(
                                 model.missing_data_policy_tags
                             ),
+                            "missing_qualification_keys": list(
+                                model.missing_qualification_keys
+                            ),
                             "rationale": (
                                 "Excluded by one or more deterministic hard "
                                 "routing gates."
@@ -2081,6 +2108,12 @@ class AgentRoutingService:
                     f" The task requires effort {required_effort} or higher; "
                     f"this model runs at {values['effort']}, and effort above "
                     "the requirement counts toward adequacy."
+                )
+            if required_qualification_keys:
+                values["rationale"] += (
+                    " The task requires qualification keys "
+                    f"{', '.join(required_qualification_keys)}; this catalog "
+                    "entry holds them at its effort setting."
                 )
             ranked_candidates.append(AgentRoutingCandidate.model_validate(values))
         exclusions = [

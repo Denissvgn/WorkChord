@@ -52,6 +52,9 @@ interface CatalogForm {
     costTier: 'low' | 'medium' | 'high';
     localFirst: boolean;
     latencyTier: 'fast' | 'balanced' | 'slow';
+    qualificationKeys: string;
+    /** The keys as loaded, so an effort change sends them only when they were edited. */
+    originalQualificationKeys: string;
     lastVerifiedAt: string;
 }
 
@@ -85,6 +88,8 @@ const EMPTY_CATALOG_FORM: CatalogForm = {
     costTier: 'medium',
     localFirst: false,
     latencyTier: 'balanced',
+    qualificationKeys: '',
+    originalQualificationKeys: '',
     lastVerifiedAt: '',
 };
 
@@ -406,6 +411,7 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
             cost_tier: catalogForm.costTier,
             local_first: catalogForm.localFirst,
             latency_tier: catalogForm.latencyTier,
+            qualification_keys: parseRoutingTags(catalogForm.qualificationKeys),
             enabled: true,
             revision: 1,
             last_verified_at: toIsoDateTime(catalogForm.lastVerifiedAt),
@@ -424,6 +430,10 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
                     cost_tier: createData.cost_tier,
                     local_first: createData.local_first,
                     latency_tier: createData.latency_tier,
+                    // Unedited keys are left out, so a new effort clears them on the server.
+                    ...(catalogForm.qualificationKeys !== catalogForm.originalQualificationKeys
+                        ? { qualification_keys: createData.qualification_keys }
+                        : {}),
                     last_verified_at: createData.last_verified_at,
                     reconcile_live_assignments: reconcileRef.current,
                 },
@@ -480,6 +490,8 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
             costTier: entry.cost_tier,
             localFirst: entry.local_first,
             latencyTier: entry.latency_tier,
+            qualificationKeys: (entry.qualification_keys ?? []).join(', '),
+            originalQualificationKeys: (entry.qualification_keys ?? []).join(', '),
             lastVerifiedAt: toLocalDateTime(entry.last_verified_at),
         });
         setCatalogDrawerOpen(true);
@@ -810,6 +822,10 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
                                     <p id="catalog-local-first-hint" className="mt-1 text-xs text-content-secondary">{t('modelAdministration.localFirstHint')}</p>
                                 </div>
                                 <Input label={t('modelAdministration.modalities')} value={catalogForm.modalityTags} onChange={event => setCatalogForm({ ...catalogForm, modalityTags: event.target.value })} required />
+                                <div>
+                                    <Input label={t('modelAdministration.qualificationKeys')} aria-describedby="catalog-qualification-keys-hint" value={catalogForm.qualificationKeys} onChange={event => setCatalogForm({ ...catalogForm, qualificationKeys: event.target.value })} placeholder="qualified.schema-review" />
+                                    <p id="catalog-qualification-keys-hint" className="mt-1 text-xs text-content-secondary">{t('modelAdministration.qualificationKeysHint')}</p>
+                                </div>
                                 <Input label={t('modelAdministration.lastVerified')} type="datetime-local" value={catalogForm.lastVerifiedAt} onChange={event => setCatalogForm({ ...catalogForm, lastVerifiedAt: event.target.value })} />
                                 <div className="flex flex-wrap justify-end gap-2">
                                     <Button type="button" variant="ghost" onClick={closeCatalogDrawer}>

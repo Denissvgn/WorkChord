@@ -641,6 +641,7 @@ class AgentModelCatalogService:
         target_id: int,
         authoritative_revision: int,
         invalidated_assignment_ids: list[int],
+        cleared_qualification_keys: list[str] | None = None,
     ) -> TaskEvent:
         if target_type == "model_binding":
             binding = await self._binding(target_id)
@@ -652,7 +653,8 @@ class AgentModelCatalogService:
             snapshot = {}
         catalog_snapshot = {"id": catalog.id, "revision": catalog.revision, "enabled": catalog.enabled,
                             "key": catalog.key, "configured_model_alias": catalog.configured_model_alias,
-                            "publisher_key": catalog.publisher_key}
+                            "publisher_key": catalog.publisher_key, "effort": catalog.effort,
+                            "qualification_keys": sorted(catalog.qualification_keys or [])}
         if target_type == "model_binding":
             snapshot["model_catalog"] = catalog_snapshot
         else:
@@ -670,6 +672,12 @@ class AgentModelCatalogService:
                     "configuration": snapshot,
                     "invalidated_assignment_ids": invalidated_assignment_ids,
                     "rationale": command.rationale,
+                    # Keys an effort change invalidated; present only when it did.
+                    **(
+                        {"cleared_qualification_keys": cleared_qualification_keys}
+                        if cleared_qualification_keys
+                        else {}
+                    ),
                 },
                 sort_keys=True,
                 separators=(",", ":"),
@@ -679,6 +687,17 @@ class AgentModelCatalogService:
         )
         self.db.add(event)
         return event
+
+    async def _require_known_qualification_keys(self, keys: list[str]) -> None:
+        """Refuse a key outside the built-in and declared vocabulary."""
+
+        if not keys:
+            return
+        from app.services.routing_qualification_key_service import (
+            require_known_qualification_keys,
+        )
+
+        await require_known_qualification_keys(self.db, keys)
 
     @staticmethod
     def _raise_revision_conflict(
@@ -725,6 +744,7 @@ class AgentModelCatalogService:
         request_payload = self._audited_request(data, command)
 
         async def mutate() -> _MutationResult:
+            await self._require_known_qualification_keys(data.qualification_keys)
             existing = await self._catalog_entry(catalog_key=data.key)
             if existing is not None:
                 raise AgentModelConflictError(
@@ -819,6 +839,19 @@ class AgentModelCatalogService:
                     "agent_model_no_change",
                     "Catalog update does not change authoritative state",
                 )
+            if "qualification_keys" in updates:
+                await self._require_known_qualification_keys(updates["qualification_keys"])
+            # Qualification is evidence about the entry at its effort setting,
+            # so a new effort clears the keys unless this update restates them.
+            cleared_qualification_keys: list[str] = []
+            if (
+                "effort" in updates
+                and updates["effort"] != entry.effort
+                and "qualification_keys" not in updates
+                and entry.qualification_keys
+            ):
+                cleared_qualification_keys = sorted(entry.qualification_keys)
+                updates["qualification_keys"] = []
             for key, value in updates.items():
                 setattr(entry, key, value)
             entry.revision += 1
@@ -846,6 +879,7 @@ class AgentModelCatalogService:
                 invalidated_assignment_ids=[
                     assignment.id for assignment in assignments
                 ],
+                cleared_qualification_keys=cleared_qualification_keys,
             )
             await self.db.flush()
             entry = await self._catalog_entry(catalog_id=entry.id)

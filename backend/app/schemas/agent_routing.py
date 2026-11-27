@@ -125,6 +125,22 @@ def _normalize_routing_keys(
     return sorted(normalized)
 
 
+def _normalize_qualification_keys(value: Any, *, label: str) -> Any:
+    """Normalize qualification key names; whether each is known is checked later.
+
+    Built-in keys are fixed, but declared keys live in the deployment's
+    registry, so the service refuses a key outside both before it writes.
+    """
+
+    if not isinstance(value, list):
+        return value
+    return _normalize_routing_keys(
+        value,
+        label=label,
+        maximum_entries=MAX_ROUTING_TAGS,
+    )
+
+
 def _normalize_required_skill_levels(value: Any) -> Any:
     if not isinstance(value, Mapping):
         return value
@@ -248,9 +264,18 @@ class AgentModelCatalogFields(RoutingContractModel):
         description="Prefer this free or local model over a hosted one of equal adequacy; never overrides a gate.",
     )
     latency_tier: ModelLatencyTier
+    qualification_keys: list[str] = Field(
+        default_factory=list,
+        description="Built-in or declared qualification keys this entry holds at its effort setting.",
+    )
     enabled: bool = True
     revision: PositiveRevision = 1
     last_verified_at: datetime | None = None
+
+    @field_validator("qualification_keys", mode="before")
+    @classmethod
+    def validate_qualification_keys(cls, value: Any) -> Any:
+        return _normalize_qualification_keys(value, label="qualification_keys")
 
     @field_validator("key", mode="before")
     @classmethod
@@ -305,9 +330,18 @@ class AgentModelCatalogUpdate(RoutingContractModel):
     cost_tier: ModelCostTier | None = None
     local_first: bool | None = None
     latency_tier: ModelLatencyTier | None = None
+    qualification_keys: list[str] | None = Field(
+        default=None,
+        description="Replaces the entry's qualification keys. An effort change without this field clears them.",
+    )
     enabled: Literal[True] | None = None
     last_verified_at: datetime | None = None
     reconcile_live_assignments: bool = False
+
+    @field_validator("qualification_keys", mode="before")
+    @classmethod
+    def validate_qualification_keys(cls, value: Any) -> Any:
+        return _normalize_qualification_keys(value, label="qualification_keys")
 
     @field_validator("reasoning_tier", mode="before")
     @classmethod
@@ -353,6 +387,7 @@ class AgentModelCatalogUpdate(RoutingContractModel):
             "cost_tier",
             "local_first",
             "latency_tier",
+            "qualification_keys",
             "enabled",
         }
         invalid = sorted(
@@ -510,7 +545,7 @@ class AgentModelMutationReceipt(RoutingContractModel):
 
     operation: str = Field(..., min_length=1, max_length=100)
     actor_id: int | None = Field(..., ge=1)
-    target_type: Literal["model_catalog", "model_binding"]
+    target_type: Literal["model_catalog", "model_binding", "routing_qualification_key"]
     target_id: int = Field(..., ge=1)
     idempotency_key: str = Field(..., min_length=1, max_length=255)
     rationale: str = Field(..., min_length=1, max_length=2_000)
@@ -554,6 +589,16 @@ class RequiredModelEnvelope(RoutingContractModel):
     tool_tags: list[str] = Field(default_factory=list)
     allow_source_only_review: bool = Field(default=False, strict=True, exclude_if=lambda value: not value)
     data_policy_tags: list[str] = Field(default_factory=list)
+    qualification_keys: list[str] = Field(
+        default_factory=list,
+        description="Built-in or declared qualification keys the candidate's catalog entry must hold; omitted when none are required.",
+        exclude_if=lambda value: not value,
+    )
+
+    @field_validator("qualification_keys", mode="before")
+    @classmethod
+    def validate_qualification_keys(cls, value: Any) -> Any:
+        return _normalize_qualification_keys(value, label="qualification_keys")
 
     @field_validator("minimum_reasoning_tier", mode="before")
     @classmethod
@@ -1011,6 +1056,11 @@ class AgentRoutingCandidate(RoutingContractModel):
     modality_tags: list[str] = Field(default_factory=list)
     tool_tags: list[str] = Field(default_factory=list)
     data_policy_tags: list[str] = Field(default_factory=list)
+    qualification_keys: list[str] = Field(
+        default_factory=list,
+        description="Required qualification keys this candidate's catalog entry holds.",
+        exclude_if=lambda value: not value,
+    )
     cost_tier: ModelCostTier
     local_first: bool = False
     latency_tier: ModelLatencyTier
@@ -1041,6 +1091,11 @@ class AgentRoutingCandidate(RoutingContractModel):
     @classmethod
     def validate_capability_tags(cls, value: list[str], info: Any) -> list[str]:
         return _normalize_tags(value, label=info.field_name)
+
+    @field_validator("qualification_keys", mode="before")
+    @classmethod
+    def validate_qualification_keys(cls, value: Any) -> Any:
+        return _normalize_qualification_keys(value, label="qualification_keys")
 
     @field_validator(
         "profile_revision",
@@ -1098,6 +1153,11 @@ class AgentRoutingExclusion(RoutingContractModel):
     missing_modality_tags: list[str] = Field(default_factory=list)
     missing_tool_tags: list[str] = Field(default_factory=list)
     missing_data_policy_tags: list[str] = Field(default_factory=list)
+    missing_qualification_keys: list[str] = Field(
+        default_factory=list,
+        description="Required qualification keys this candidate's catalog entry does not hold.",
+        exclude_if=lambda value: not value,
+    )
     available_capacity_days: float | None = None
     committed_effort_days: float | None = Field(default=None, ge=0)
     workload_ratio: float | None = Field(default=None, ge=0)
@@ -1159,6 +1219,14 @@ class AgentRoutingExclusion(RoutingContractModel):
     @classmethod
     def validate_missing_tags(cls, value: list[str], info: Any) -> list[str]:
         return _normalize_tags(value, label=info.field_name)
+
+    @field_validator("missing_qualification_keys", mode="before")
+    @classmethod
+    def validate_missing_qualification_keys(cls, value: Any) -> Any:
+        return _normalize_qualification_keys(
+            value,
+            label="missing_qualification_keys",
+        )
 
     @field_validator(
         "profile_revision",

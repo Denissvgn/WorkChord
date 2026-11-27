@@ -58,7 +58,7 @@ const sectionTitle = () => document.getElementById('settings-destination-title')
 const GROUPS = [
     { name: 'My preferences', sections: ['Theme', 'Keyboard shortcuts'] },
     { name: 'Workspace', sections: ['Language', 'Work calendar', 'Scheduling', 'Templates and labels', 'Email notifications'] },
-    { name: 'Connections', sections: ['GitHub', 'Webhooks', 'Web intake', 'AI provider'] },
+    { name: 'Connections', sections: ['GitHub', 'Webhooks', 'Web intake', 'AI provider', 'Qualification keys'] },
     { name: 'Access and system', sections: ['Access', 'Runtime', 'About'] },
 ];
 

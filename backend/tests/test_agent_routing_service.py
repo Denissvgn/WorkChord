@@ -19,6 +19,7 @@ from app.models.agent import (
     AgentRun,
     AgentTaskAssignment,
     TaskEvent,
+    TaskRoutingAssessment,
 )
 from app.models.team_member import TeamMember, TeamMemberProfile, TeamMemberProfileSkill
 from app.schemas.agent import (
@@ -37,7 +38,13 @@ from app.services.agent_routing_service import (
     AgentRoutingConflictError,
     AgentRoutingService,
 )
-from app.services.agent_routing_policy import ROUTING_POLICY_VERSION
+from app.schemas.routing_qualification import (
+    RoutingQualificationKeyDeclare,
+    RoutingQualificationKeyRetire,
+)
+from app.services.agent_model_catalog_service import AgentModelConflictError
+from app.services.agent_routing_policy import ROUTING_POLICY_VERSION, UnknownRoutingKeyError
+from app.services.routing_qualification_key_service import RoutingQualificationKeyService
 from app.services.agent_routing_rollout import (
     AgentRoutingRolloutService,
     AgentRoutingTopologyReadiness,
@@ -74,7 +81,10 @@ None
 
 
 def _assessment_command(
-    *, task_version: int, minimum_effort: str | None = None
+    *,
+    task_version: int,
+    minimum_effort: str | None = None,
+    qualification_keys: list[str] | None = None,
 ) -> TaskRoutingAssessmentCommand:
     required_model = {
         "minimum_reasoning_tier": 1,
@@ -85,6 +95,8 @@ def _assessment_command(
     }
     if minimum_effort is not None:
         required_model["minimum_effort"] = minimum_effort
+    if qualification_keys is not None:
+        required_model["qualification_keys"] = qualification_keys
     return TaskRoutingAssessmentCommand(
         expected_task_version=task_version,
         band="routine",
@@ -484,6 +496,7 @@ async def _extra_worker(
     reasoning_tier: int = 1,
     effort: str = "unknown",
     alias: str | None = None,
+    qualification_keys: list[str] | None = None,
     profile=None,
 ):
     if profile is None:
@@ -498,6 +511,7 @@ async def _extra_worker(
         configured_model_alias=alias or f"runtime-{key}",
         reasoning_tier=reasoning_tier,
         effort=effort,
+        qualification_keys=qualification_keys or [],
         context_tier="small",
         modality_tags=["text"],
         cost_tier=cost_tier,
@@ -667,6 +681,116 @@ async def test_required_effort_gates_and_orders_entries_of_one_runtime_model(
     assert required.recommended_candidate.actor_id == workers["medium"][0].id
     assert eligible[workers["xhigh"][0].id].adequacy_class == eligible[workers["medium"][0].id].adequacy_class + 2
     assert "requires effort medium or higher" in eligible[workers["medium"][0].id].rationale
+
+
+@pytest.mark.asyncio
+async def test_declared_qualification_key_is_a_requirement_the_candidate_must_hold(
+    db_session: AsyncSession,
+    profile_factory,
+    actor_factory,
+    team_member_factory,
+    task_factory,
+) -> None:
+    pm, unqualified_worker, task, _, _ = await _routing_fixture(
+        db_session, profile_factory, actor_factory, team_member_factory, task_factory
+    )
+    operator = await actor_factory(role="pm", scopes=json.dumps(["admin"]))
+    registry = RoutingQualificationKeyService(db_session)
+    await registry.declare(
+        operator,
+        RoutingQualificationKeyDeclare(key="qualified.schema-review", label="Schema review"),
+        command=_command_context("declare-schema-review"),
+    )
+    shared_profile = await db_session.get(TeamMemberProfile, unqualified_worker.profile_id)
+    qualified_worker, _ = await _extra_worker(
+        db_session,
+        profile_factory,
+        actor_factory,
+        team_member_factory,
+        key="schema-reviewer-high",
+        cost_tier="high",
+        local_first=False,
+        effort="high",
+        qualification_keys=["qualified.schema-review"],
+        profile=shared_profile,
+    )
+    service = AgentRoutingService(db_session)
+    # A refused command rolls the session back, so keep plain identities.
+    task_id, task_version = task.id, task.version
+    unqualified_id, qualified_id = unqualified_worker.id, qualified_worker.id
+
+    # An undeclared key is refused with the error routing always gave.
+    with pytest.raises(UnknownRoutingKeyError, match="Unknown routing skill key: qualified.undeclared"):
+        await service.create_assessment(
+            task_id,
+            pm,
+            _assessment_command(task_version=task_version, qualification_keys=["qualified.undeclared"]),
+            _command_context("assessment-undeclared-key"),
+        )
+    await db_session.refresh(pm)
+
+    receipt = await service.create_assessment(
+        task_id,
+        pm,
+        _assessment_command(task_version=task_version, qualification_keys=["qualified.schema-review"]),
+        _command_context("assessment-declared-key"),
+    )
+    assert receipt.assessment.required_model.qualification_keys == ["qualified.schema-review"]
+    preview = await service.preview_task_routing(
+        task_id,
+        pm,
+        AgentRoutingPreviewCreate(
+            purpose="execution",
+            assessment_id=receipt.assessment.id,
+            expected_task_version=task_version,
+        ),
+        now=datetime(2026, 7, 22, 12, 0, tzinfo=UTC),
+    )
+    # Only the entry holding the key is eligible, although it costs more.
+    assert [c.actor_id for c in preview.eligible_candidates] == [qualified_id]
+    candidate = preview.recommended_candidate
+    assert candidate.qualification_keys == ["qualified.schema-review"]
+    assert "requires qualification keys qualified.schema-review" in candidate.rationale
+    excluded = {e.actor_id: e for e in preview.exclusions}[unqualified_id]
+    assert "model_qualification_missing" in excluded.hard_blocker_codes
+    assert excluded.missing_qualification_keys == ["qualified.schema-review"]
+    assert excluded.model_dump(mode="json")["missing_qualification_keys"] == ["qualified.schema-review"]
+
+    # Retiring the key while an entry holds it and a task requires it is refused, naming both.
+    detail = await registry.get_key(operator, "qualified.schema-review")
+    assert [entry.key for entry in detail.usage.catalog_entries] == ["schema-reviewer-high"]
+    assert detail.usage.task_ids == [task_id]
+    with pytest.raises(AgentModelConflictError) as refused:
+        await registry.retire(
+            "qualified.schema-review",
+            operator,
+            RoutingQualificationKeyRetire(expected_revision=1),
+            command=_command_context("retire-in-use"),
+        )
+    assert refused.value.code == "routing_qualification_key_in_use"
+    assert refused.value.context["task_ids"] == [task_id]
+    assert refused.value.context["catalog_entries"][0]["key"] == "schema-reviewer-high"
+
+
+@pytest.mark.asyncio
+async def test_assessments_without_qualification_keys_keep_their_stored_shape(
+    db_session: AsyncSession,
+    profile_factory,
+    actor_factory,
+    team_member_factory,
+    task_factory,
+) -> None:
+    pm, _, task, _, _ = await _routing_fixture(
+        db_session, profile_factory, actor_factory, team_member_factory, task_factory
+    )
+    receipt = await AgentRoutingService(db_session).create_assessment(
+        task.id,
+        pm,
+        _assessment_command(task_version=task.version),
+        _command_context("assessment-no-qualification"),
+    )
+    stored = await db_session.get(TaskRoutingAssessment, receipt.assessment.id)
+    assert "qualification_keys" not in stored.required_model
 
 
 @pytest.mark.asyncio
