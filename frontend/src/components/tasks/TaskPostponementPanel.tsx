@@ -70,7 +70,7 @@ export const TaskPostponementPanel = ({ task, canReactivate, disabled, disabledR
     const reactivate = useMutation({
         meta: { success: t('feedback.reactivated', { name: task.title }) } satisfies MutationFeedbackMeta,
         mutationFn: () => taskService.reactivate(task.id, { expected_version: task.version, reason: reason.trim() }),
-        onSuccess: response => { setReason(''); queryClient.setQueryData(postponementKey(task.id), response.postponement); onUpdated(response.task); },
+        onSuccess: response => { setReason(''); queryClient.setQueryData(postponementKey(task.id), null); onUpdated(response.task); },
         onSettled: () => { if (isActive()) onPending(false); },
         // feedback-policy: mutation pending,inline
     });
