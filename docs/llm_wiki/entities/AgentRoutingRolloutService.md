@@ -81,4 +81,4 @@ flowchart LR
 | `AgentWorkService._verification_rollout` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 | `AgentWorkService._verification_rollout` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 
-> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.
+> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.

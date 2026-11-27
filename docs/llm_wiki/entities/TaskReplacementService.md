@@ -45,11 +45,11 @@ flowchart LR
     n5["backend/app/services/agent_planning_service.py"]
     n6["_replaced_pair (backend/tests/test_task_replacement.py)"]
     n7["test_a_chained_replacement_inherits_the_earlier_carried_work (backend/tests/test_task_replacement.py)"]
-    n8["test_clean_replacement_is_accepted_once_and_carried_work_stays_held (backend/tests/test_task_replacement.py)"]
-    n9["test_held_replacement_is_refused_acceptance_without_the_strict_policy (backend/tests/test_task_replacement.py)"]
-    n10["test_only_a_project_manager_or_pm_actor_decides (backend/tests/test_task_replacement.py)"]
-    n11["test_replacement_refuses_ineligible_pairs (backend/tests/test_task_replacement.py)"]
-    n12["_with_service (backend/tests/test_task_supersession.py)"]
+    n8["test_an_owner_override_cannot_accept_a_held_replacement_so_no_next_step_offers_it (backend/tests/test_task_replacement.py)"]
+    n9["test_clean_replacement_is_accepted_once_and_carried_work_stays_held (backend/tests/test_task_replacement.py)"]
+    n10["test_held_replacement_is_refused_acceptance_without_the_strict_policy (backend/tests/test_task_replacement.py)"]
+    n11["test_only_a_project_manager_or_pm_actor_decides (backend/tests/test_task_replacement.py)"]
+    n12["test_replacement_refuses_ineligible_pairs (backend/tests/test_task_replacement.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -74,7 +74,7 @@ flowchart LR
     click n9 "../modules/test_task_replacement.md"
     click n10 "../modules/test_task_replacement.md"
     click n11 "../modules/test_task_replacement.md"
-    click n12 "../modules/test_task_supersession.md"
+    click n12 "../modules/test_task_replacement.md"
 ```
 
 ### Summary
@@ -94,10 +94,10 @@ flowchart LR
 | `agent_planning_service` | import | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `_replaced_pair` | call | [test_task_replacement](../modules/test_task_replacement.md) | 1 |
 | `test_a_chained_replacement_inherits_the_earlier_carried_work` | call | [test_task_replacement](../modules/test_task_replacement.md) | 1 |
+| `test_an_owner_override_cannot_accept_a_held_replacement_so_no_next_step_offers_it` | call | [test_task_replacement](../modules/test_task_replacement.md) | 1 |
 | `test_clean_replacement_is_accepted_once_and_carried_work_stays_held` | call | [test_task_replacement](../modules/test_task_replacement.md) | 2 |
 | `test_held_replacement_is_refused_acceptance_without_the_strict_policy` | call | [test_task_replacement](../modules/test_task_replacement.md) | 2 |
 | `test_only_a_project_manager_or_pm_actor_decides` | call | [test_task_replacement](../modules/test_task_replacement.md) | 1 |
 | `test_replacement_refuses_ineligible_pairs` | call | [test_task_replacement](../modules/test_task_replacement.md) | 1 |
-| `_with_service` | call | [test_task_supersession](../modules/test_task_supersession.md) | 1 |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

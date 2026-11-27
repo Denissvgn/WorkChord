@@ -26,6 +26,7 @@ Stored contracts are read with the stored-contract loaders, so a team stored und
 | `app.models.agent` | `AgentActor`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRun`, `AgentTeamActionReceipt`, `AgentTeamApplyRun`, `AgentTeamManagedObject`, `AgentTeamTopology`, `AgentTeamTopologyMember`, `AgentTaskAssignment`, `TaskEvent`, `new_runtime_instance_id` |
 | `app.models.identity` | `Principal` |
 | `app.models.team_member` | `TeamMemberProfile` |
+| `app.refusal_next_steps` | `with_next_step` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.agent_skill_bundle` | `SkillBundleCatalogResponse` |
 | `app.schemas.agent_team_setup` | `AGENT_TEAM_PLAN_SCHEMA_VERSION`, `AGENT_TEAM_ROLE_RULE_FIELDS`, `MAX_AGENT_TEAM_ACTIONS`, `ROLE_SCOPE_PRESETS`, `AgentTeamActionReceipt`, `AgentTeamActionStatus`, `AgentTeamApplyRequest`, `AgentTeamApplyResponse`, `AgentTeamCurrentMember`, `AgentTeamCurrentSnapshot`, `AgentTeamManifestRequest`, `AgentTeamMaster`, `AgentTeamMemberLifecycle`, `AgentTeamMemberSpec`, `AgentTeamMemberStatus`, `AgentTeamPlanAction`, `AgentTeamPlanRequest`, `AgentTeamReconciliationClass`, `AgentTeamReconciliationPlan`, `AgentTeamRuntimeAcknowledgement`, `AgentTeamRuntimeAcknowledgementResponse`, `AgentTeamRuntimeHandoff`, `AgentTeamRuntimeIdentityStatus`, `AgentTeamDispatchAvailability`, `AgentTeamSetupReport`, `AgentTeamSetupReportCounts`, `AgentTeamSetupReportEvidence`, `AgentTeamSetupStep`, `AgentTeamSkillPackage`, `AgentTeamStatusResponse`, `AgentTeamTopologyMemberRead`, `AgentTeamTopologyResponse`, `AgentTeamValidateResponse`, `ensure_agent_team_secret_free`, `load_stored_agent_team_master`, `load_stored_agent_team_member`, `parse_agent_team_master`, `reconcile_agent_team_master` |
@@ -65,8 +66,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (21) |
-| Outbound | `backend` (17) |
+| Inbound | `backend` (22) |
+| Outbound | `backend` (18) |
 
 ### External packages
 
@@ -74,16 +75,16 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [AgentTeamSetupConflictError](../entities/AgentTeamSetupConflictError.md) | 110 | `AgentConflictError` | Stable conflict envelope shared by setup REST and MCP reads. |
-| [AgentTeamCallerUnboundError](../entities/AgentTeamCallerUnboundError.md) | 126 | `AgentPermissionError` | A PM asked for team status but is not bound to any live topology. |
-| [AgentTeamMembershipBoundary](../entities/AgentTeamMembershipBoundary.md) | 131 | — | Current topology/revision and active member set for exact-actor routing. |
-| [AgentTeamSetupService](../entities/AgentTeamSetupService.md) | 229 | — | Reconcile one portable topology without making the UI a control plane. |
+| [AgentTeamCallerUnboundError](../entities/AgentTeamCallerUnboundError.md) | 128 | `AgentPermissionError` | A PM asked for team status but is not bound to any live topology. |
+| [AgentTeamMembershipBoundary](../entities/AgentTeamMembershipBoundary.md) | 133 | — | Current topology/revision and active member set for exact-actor routing. |
+| [AgentTeamSetupService](../entities/AgentTeamSetupService.md) | 231 | — | Reconcile one portable topology without making the UI a control plane. |
 
 ## Functions
 

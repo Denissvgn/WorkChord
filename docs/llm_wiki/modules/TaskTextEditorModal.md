@@ -55,6 +55,7 @@ flowchart LR
     n4 --> n5
     n4 --> n6
     n5 --> n6
+    n7 --> n6
     click n0 "../modules/Button.md"
     click n1 "../modules/Modal.md"
     click n2 "../modules/TaskTextEditorModal.test.md"

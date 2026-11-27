@@ -31,6 +31,7 @@ Routing previews are bounded using the complete validated response, including it
 | `app.models.task` | `Task`, `TaskStatus` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile` |
 | `app.query_limits` | `CollectionLimitExceededError` |
+| `app.refusal_next_steps` | `with_next_step`, `next_step_for` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.agent_routing` | `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse`, `RoutingDecisionSnapshot`, `TaskRoutingAssessmentCommand`, `TaskRoutingAssessmentCreate`, `TaskRoutingAssessmentListResponse`, `TaskRoutingAssessmentMutationReceipt`, `TaskRoutingAssessmentResponse`, `TaskRoutingAssessmentState` |
 | `app.services.agent_routing_observability` | `RoutingOperationalEvent`, `record_routing_operational_event`, `routing_exclusion_projection` |
@@ -79,8 +80,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (29) |
-| Outbound | `backend` (24) |
+| Inbound | `backend` (30) |
+| Outbound | `backend` (25) |
 
 ### External packages
 
@@ -88,15 +89,15 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 51 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 53 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [AgentRoutingConflictError](../entities/AgentRoutingConflictError.md) | 121 | `AgentConflictError` | Stable routing conflict shared by REST, MCP, and assignment commands. |
-| [RoutingSelectionValidation](../entities/RoutingSelectionValidation.md) | 141 | — | Authoritative result consumed inside the assignment transaction. |
-| [AgentRoutingService](../entities/AgentRoutingService.md) | 283 | — | Create immutable assessments and deterministic exact-actor previews. |
+| [RoutingSelectionValidation](../entities/RoutingSelectionValidation.md) | 143 | — | Authoritative result consumed inside the assignment transaction. |
+| [AgentRoutingService](../entities/AgentRoutingService.md) | 285 | — | Create immutable assessments and deterministic exact-actor previews. |
 
 ## Functions
 

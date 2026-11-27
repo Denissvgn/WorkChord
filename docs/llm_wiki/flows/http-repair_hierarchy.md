@@ -203,8 +203,8 @@ flowchart LR
 | repair_hierarchy | HierarchyRepairService | 264 | `HierarchyRepairService(db)` |
 | repair_hierarchy | HierarchyRepairService.audit | 266 | `service.audit(iteration_id, after_id=data.after_id, limit=data.limit)` |
 | HierarchyRepairService.audit | require_operator | 19 | `require_operator(self.db)` |
-| require_operator | db.info.get | 91 | `db.info.get('authority')` |
-| require_operator | AuthorityError | 93 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
+| require_operator | db.info.get | 92 | `db.info.get('authority')` |
+| require_operator | AuthorityError | 94 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
 | HierarchyRepairService.audit | ValueError (backend/app/services/hier…erarchyRepairService.audit) | 21 | `ValueError('Repair limit must be between 1 and 500')` |
 | HierarchyRepairService.audit | scoped_metric_tasks | 22 | `scoped_metric_tasks(self.db, iteration_id=iteration_id)` |
 | scoped_metric_tasks | select | 187 | `select(Task)` |
@@ -226,7 +226,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_operator` | `db.info.get` | 91 |
+| unresolved_call | `require_operator` | `db.info.get` | 92 |
 | external_call | `HierarchyRepairService.audit` | `ValueError` | 21 |
 | external_call | `scoped_metric_tasks` | `select` | 187 |
 | unresolved_call | `scoped_metric_tasks` | `statement.where` | 189 |

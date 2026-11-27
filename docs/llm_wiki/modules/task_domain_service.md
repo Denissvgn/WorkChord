@@ -28,9 +28,11 @@ Progress availability follows open-leaf execution permission and excludes direct
 | `app.models.task` | `Task`, `TaskDependency` |
 | `app.models.task_status_log` | `TaskStatusLog` |
 | `app.models.team_member` | `TeamMemberProfile` |
+| `app.refusal_next_steps` | `next_step_for` |
 | `app.schemas.task_domain` | `TaskActionsResponse`, `TaskActionRequest` |
 | `app.services.agent_work_service` | `AgentWorkService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
+| `app.services.manual_provenance_service` | `provenance_blockers` |
 | `app.services.review_provenance` | `different_publisher_required`, `mark_server_interruption`, `record_server_end_profile` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_brief_service` | `clear_acceptance`, `TaskBriefService`, `TaskBriefService` |
@@ -63,7 +65,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (23) |
-| Outbound | `backend` (22) |
+| Outbound | `backend` (24) |
 
 ### External packages
 
@@ -71,7 +73,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 42 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 44 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

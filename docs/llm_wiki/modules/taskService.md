@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/services/taskService.ts`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `../types/task` | `Task`, `TaskCreate`, `ExternalLink`, `ExternalLinkCreate`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `GroundedAISuggestionResponse`, `TaskFormalizeResponse`, `TaskAISuggestRequest`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskImportDestination`, `TaskImproveDescriptionResponse`, `TaskMoveRequest`, `TaskUpdate`, `TaskMergeRequest`, `TaskStatus`, `TaskStatusChangeResponse`, `TaskStatusLog`, `TaskTimelineResponse`, `TasksImportRequest`, `TasksImportResponse`, `TaskTextContext`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskActions`, `TaskCommand`, `TaskDetail`, `TaskBrief`, `CriterionProgress`, `TaskReferencePage`, `TaskReviewRecord`, `TaskPostponementResponse`, `ReactivationRequirementInput` | Declaration | erased |
+| `../types/task` | `Task`, `TaskCreate`, `ExternalLink`, `ExternalLinkCreate`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `GroundedAISuggestionResponse`, `TaskFormalizeResponse`, `TaskAISuggestRequest`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskImportDestination`, `TaskImproveDescriptionResponse`, `TaskMoveRequest`, `TaskUpdate`, `TaskMergeRequest`, `TaskStatus`, `TaskStatusChangeResponse`, `TaskStatusLog`, `TaskTimelineResponse`, `TasksImportRequest`, `TasksImportResponse`, `TaskTextContext`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskActions`, `TaskCommand`, `TaskDetail`, `TaskBrief`, `CriterionProgress`, `TaskReferencePage`, `TaskReviewRecord`, `ManualProvenanceWrite`, `TaskPostponementResponse`, `ReactivationRequirementInput` | Declaration | erased |
 | `../types/team` | `AssigneeRecommendation` | Declaration | erased |
 | `./api` | `api` | — | compiler-dependent |
 
@@ -41,15 +41,15 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (45) |
+| Inbound | `frontend` (46) |
 | Outbound | `frontend` (3) |
 
-> All 48 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 49 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [MetricMatchPage](../entities/taskService_MetricMatchPage.md) | Interface | 283 | — | — |
-| [WorkMetricName](../entities/WorkMetricName.md) | Type alias | 280 | <pre><code>&#39;total&#39; &#124; &#39;planned&#39; &#124; &#39;active&#39; &#124; &#39;resolved&#39; &#124; &#39;closed&#39; &#124; &#39;implemented&#39; &#124; &#39;accepted&#39; &#124; &#39;blocked&#39;&#10;    &#124; &#39;overdue&#39; &#124; &#39;late&#95;start&#39; &#124; &#39;iteration&#95;overflow&#39; &#124; &#39;acceptance&#95;unknown&#39; &#124; &#39;unknown&#95;estimate&#39;</code></pre> | — |
-| [MetricScope](../entities/MetricScope.md) | Type alias | 282 | `{ project_id: number } \| { iteration_id: number } \| { release_id: number }` | — |
+| [MetricMatchPage](../entities/taskService_MetricMatchPage.md) | Interface | 284 | — | — |
+| [WorkMetricName](../entities/WorkMetricName.md) | Type alias | 281 | <pre><code>&#39;total&#39; &#124; &#39;planned&#39; &#124; &#39;active&#39; &#124; &#39;resolved&#39; &#124; &#39;closed&#39; &#124; &#39;implemented&#39; &#124; &#39;accepted&#39; &#124; &#39;blocked&#39;&#10;    &#124; &#39;overdue&#39; &#124; &#39;late&#95;start&#39; &#124; &#39;iteration&#95;overflow&#39; &#124; &#39;acceptance&#95;unknown&#39; &#124; &#39;unknown&#95;estimate&#39;</code></pre> | — |
+| [MetricScope](../entities/MetricScope.md) | Type alias | 283 | `{ project_id: number } \| { iteration_id: number } \| { release_id: number }` | — |

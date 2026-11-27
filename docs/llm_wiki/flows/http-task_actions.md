@@ -2,7 +2,7 @@
 
 **Entry point:** `task_actions` (`http`)
 **Source:** [routers_task_domain](../modules/routers_task_domain.md)
-**Modules touched:** [agent_planning_service](../modules/agent_planning_service.md), [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), and 26 more
+**Modules touched:** [agent_planning_service](../modules/agent_planning_service.md), [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), and 29 more
 
 **Complete modules touched:**
 
@@ -22,7 +22,9 @@
 - [execution_reconciliation](../modules/execution_reconciliation.md)
 - [github_links](../modules/github_links.md)
 - [github_reconciliation_service](../modules/github_reconciliation_service.md)
+- [manual_provenance_service](../modules/manual_provenance_service.md)
 - [planning_window_reconciliation](../modules/planning_window_reconciliation.md)
+- [refusal_next_steps](../modules/refusal_next_steps.md)
 - [retained_planning_output](../modules/retained_planning_output.md)
 - [review_provenance](../modules/review_provenance.md)
 - [routers_task_domain](../modules/routers_task_domain.md)
@@ -35,6 +37,7 @@
 - [task_replacement_service](../modules/task_replacement_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
+- [url_policy](../modules/url_policy.md)
 
 ## Call sequence
 
@@ -55,23 +58,23 @@ sequenceDiagram
     participant p9 as TaskBriefService.require_review
     participant p10 as postponement_actions
     participant p11 as AgentWorkService._start_blockers
-    participant p12 as window_authority_matches
-    participant p13 as DeliveryDependencyService.projection
-    participant p14 as require_acceptable
-    participant p15 as different_publisher_required
-    participant p16 as recovery_attestation_hint
-    participant p17 as AgentWorkService._resolve_rollout
-    participant p18 as AgentWorkService._shadow_handoff
-    participant p19 as AgentWorkService._selection_pending
-    participant p20 as AgentWorkService._is_model_aware_assignment
-    participant p21 as AgentWorkService._validate_assignment_actor
-    participant p22 as sha256_hex
-    participant p23 as AgentWorkService._working_today
-    participant p24 as DeliveryDependencyService.holds
-    participant p25 as assignment_matches
-    participant p26 as AgentWorkService._supervised_recovery
-    participant p27 as AgentTeamSetupService.routing_readiness
-    participant p28 as supervised_rework_evidence
+    participant p12 as provenance_blockers
+    participant p13 as next_step_for
+    participant p14 as window_authority_matches
+    participant p15 as require_provenance_recorder
+    participant p16 as DeliveryDependencyService.projection
+    participant p17 as require_acceptable
+    participant p18 as different_publisher_required
+    participant p19 as recovery_attestation_hint
+    participant p20 as ManualProvenanceService._require_no_recorded_execution
+    participant p21 as AgentWorkService._resolve_rollout
+    participant p22 as AgentWorkService._shadow_handoff
+    participant p23 as AgentWorkService._selection_pending
+    participant p24 as AgentWorkService._is_model_aware_assignment
+    participant p25 as AgentWorkService._validate_assignment_actor
+    participant p26 as sha256_hex
+    participant p27 as AgentWorkService._working_today
+    participant p28 as DeliveryDependencyService.holds
     participant p29 as HTTPException
     participant p30 as exc.detail
     p0->>p1: TaskDomainService.allowed_actions
@@ -85,30 +88,30 @@ sequenceDiagram
     p1->>p9: TaskBriefService.require_review
     p1->>p10: postponement_actions
     p1->>p11: AgentWorkService._start_blockers
-    p11->>p12: window_authority_matches
-    p5->>p13: DeliveryDependencyService.projection
-    p9->>p14: require_acceptable
-    p9->>p15: different_publisher_required
-    p11->>p16: recovery_attestation_hint
-    p11->>p17: AgentWorkService._resolve_rollout
-    p11->>p18: AgentWorkService._shadow_handoff
-    p11->>p19: AgentWorkService._selection_pending
-    p11->>p20: AgentWorkService._is_model_aware_assignment
-    p11->>p21: AgentWorkService._validate_assignment_actor
-    p9->>p22: sha256_hex
-    p11->>p23: AgentWorkService._working_today
-    p11->>p24: DeliveryDependencyService.holds
-    p12->>p25: assignment_matches
-    p18->>p26: AgentWorkService._supervised_recovery
-    p17->>p27: AgentTeamSetupService.routing_readiness
-    p18->>p28: supervised_rework_evidence
+    p1->>p12: provenance_blockers
+    p1->>p13: next_step_for
+    p11->>p14: window_authority_matches
+    p12->>p15: require_provenance_recorder
+    p5->>p16: DeliveryDependencyService.projection
+    p9->>p17: require_acceptable
+    p9->>p18: different_publisher_required
+    p11->>p19: recovery_attestation_hint
+    p12->>p20: ManualProvenanceService._require_no_recorded_execution
+    p11->>p21: AgentWorkService._resolve_rollout
+    p11->>p22: AgentWorkService._shadow_handoff
+    p11->>p23: AgentWorkService._selection_pending
+    p11->>p24: AgentWorkService._is_model_aware_assignment
+    p11->>p25: AgentWorkService._validate_assignment_actor
+    p9->>p26: sha256_hex
+    p11->>p27: AgentWorkService._working_today
+    p11->>p28: DeliveryDependencyService.holds
     p2-->>p29: HTTPException(409, detail=exc.detail(...))
     p2-->>p30: exc.detail
 ```
 
-> Call sequence diagram shows 30 of 1100 interactions; 1070 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 1238 interactions; 1208 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 288 (287 omitted); unresolved 1 of 584 (583 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 320 (319 omitted); unresolved 1 of 651 (650 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -121,8 +124,8 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_domain_service.py:TaskDomainService.allowed_actions` | 10 | [backend/app/services/task_domain_service.py](../modules/task_domain_service.md) | internal | 1 |
 | `backend/app/services/task_domain_service.py:TaskDomainService.ownership` | 15 | - | unresolved | 11 |
 | `backend/app/services/task_domain_service.py:TaskDomainService.ownership` | 15 | - | external | 4 |
-| `backend/app/services/task_domain_service.py:TaskDomainService.allowed_actions` | 10 | - | unresolved | 27 |
-> Omission summary shows 8 of 205 groups; 197 further groups are not expanded here. Counts above include all omitted interactions.
+| `backend/app/services/task_domain_service.py:TaskDomainService.allowed_actions` | 10 | - | unresolved | 30 |
+> Omission summary shows 8 of 232 groups; 224 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -135,9 +138,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 229; effect analysis evaluated: 179, partial: 9, unavailable: 41. Counts include steps omitted from the displayed trace.
+Source steps: 268; effect analysis evaluated: 200, partial: 10, unavailable: 58. Counts include steps omitted from the displayed trace.
 
-Collector observations for 188 source steps with known totals: observed: 1123, emitted: 1064, omitted: 59. Unavailable totals are excluded.
+Collector observations for 210 source steps with known totals: observed: 1298, emitted: 1233, omitted: 65. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -154,7 +157,7 @@ Collector observations for 188 source steps with known totals: observed: 1123, e
 | `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `str (backend/app/routers/task_domain.py:domain_result)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `TaskDomainService.allowed_actions` | `available` | `partial` | `available` | `21` | `19` | `2` |
+| `TaskDomainService.allowed_actions` | `available` | `partial` | `available` | `24` | `21` | `3` |
 | `TaskDomainService._policy_task` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `self.tasks.get_by_id (backend/app/services/task…omainService._policy_task)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 
@@ -227,7 +230,7 @@ flowchart LR
 | `HTTPException` | - | - | - | - |
 | `str (backend/app/routers/task_domain.py:domain_result)` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
-| `TaskDomainService.allowed_actions` | `task_id` | `self.db`, `self.db`, `AuthorityError`, `AuthorityError` | `reopen[...]`, `cancel[...]`, `accept_action[...]`, `availability[...]`, `availability[...]` | `TaskActionsResponse(...)` |
+| `TaskDomainService.allowed_actions` | `task_id` | `self.db`, `self.db`, `AuthorityError`, `AuthorityError`, `self.db` | `reopen[...]`, `cancel[...]`, `accept_action[...]`, `availability[...]`, `availability[...]`, `blocker[...]` | `TaskActionsResponse(...)` |
 | `TaskDomainService._policy_task` | `task_id` | - | - | `...` |
 | `self.tasks.get_by_id (backend/app/services/task…omainService._policy_task)` | - | - | - | - |
 

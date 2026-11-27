@@ -1,6 +1,6 @@
 # ReviewHistory
 
-**Location:** `backend/app/services/review_provenance.py:665`
+**Location:** `backend/app/services/review_provenance.py:677`
 **Kind:** Class
 **Bases:** —
 **Module:** [review_provenance](../modules/review_provenance.md)
