@@ -920,8 +920,7 @@ class TaskService:
         brief_revision_before = task.brief_revision
         if brief_input is not None:
             # The routing is checked below, once the assignee of this change is in place.
-            if await TaskBriefService(self.db).apply_brief(task, data.brief, enforce=False):
-                changed_fields["brief_revision"] = {"old": task.brief_revision - 1, "new": task.brief_revision}
+            await TaskBriefService(self.db).apply_brief(task, data.brief, enforce=False)
             update_data.pop("description", None)
 
         # Convert tags list to JSON string
@@ -935,11 +934,16 @@ class TaskService:
                 setattr(task, field, value)
 
         from app.services.task_routing_service import enforce_routing
-        routing_changed = (task.brief or {}).get("routing") != previous_routing
+        assignee_changed = "assignee_id" in changed_fields
+        removed_routing = previous_routing is not None and (task.brief or {}).get("routing") is None
         await enforce_routing(self.db, task, resolution=routing_resolution,
-                              changed="assignee_id" in changed_fields or routing_changed)
+                              changed=assignee_changed or (task.brief or {}).get("routing") != previous_routing,
+                              removed_routing=removed_routing and assignee_changed)
         if task.brief_revision != brief_revision_before:
             changed_fields["brief_revision"] = {"old": brief_revision_before, "new": task.brief_revision}
+        if (task.brief or {}).get("routing") != previous_routing:
+            # A routing-only change keeps the brief revision, so it is recorded as its own change.
+            changed_fields["routing"] = {"old": previous_routing, "new": (task.brief or {}).get("routing")}
 
         # Handle dependency updates
         if depends_on_ids is not None:
@@ -1858,7 +1862,7 @@ class TaskService:
             updated_at=task.updated_at,
             children=children,
             dependencies=dependencies,
-            routing_check=task.__dict__.get("_routing_check"),
+            routing_check=command.routing_checks.get(task.id) if command is not None else None,
         )
 
     async def _get_next_root_sort_order(self, iteration_id: int) -> int:

@@ -88,8 +88,9 @@ class AutonomyWorkPackageService:
                 if task is None:
                     raise ValueError("Execution task not found or inaccessible")
                 if task.brief is not None:
+                    from app.services.task_brief_service import evidence_brief
                     task_binding = {"task_context_version": task.version, "task_brief_revision": task.brief_revision,
-                        "task_artifact_revision": task.artifact_revision, "task_brief_digest": sha256_hex(task.brief)}
+                        "task_artifact_revision": task.artifact_revision, "task_brief_digest": sha256_hex(evidence_brief(task.brief))}
         package = AgentWorkPackage(
             **task_binding,
             package_key=data.package_key,

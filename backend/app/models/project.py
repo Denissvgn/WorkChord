@@ -3,7 +3,7 @@ from datetime import date, datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import Boolean, CheckConstraint, Date, ForeignKey, Index, Integer, JSON, String, Text, false
+from sqlalchemy import Boolean, CheckConstraint, Date, ForeignKey, Index, Integer, JSON, String, Text, event, false
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -295,3 +295,10 @@ class ProjectMilestone(Base):
 
     project: Mapped["Project"] = relationship("Project", back_populates="milestones")
     tasks: Mapped[list["Task"]] = relationship("Task", back_populates="milestone")
+
+
+@event.listens_for(Project, "init")
+def _default_routing_conflict_mode(target, args, kwargs):
+    # A Python-side default only for ORM construction: a column default would also be sent by
+    # Core inserts that older schema revisions, which lack the column, still run.
+    kwargs.setdefault("routing_conflict_mode", "refuse")

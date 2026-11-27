@@ -62,10 +62,23 @@ def render_routing(routing: dict | None) -> str:
             line += f", reviewer profile {reviewer['profile_id']}"
         lines.append(line + ".")
         instructions = (reviewer.get("instructions") or "").strip()
+        if instructions and instructions[-1] not in ".!?":
+            instructions += "."
         lines.append(f"Independent review by {reviewer['catalog_key']}" + (f": {instructions}" if instructions else "."))
     if (routing.get("notes") or "").strip():
         lines.append(routing["notes"].strip())
     return "\n".join(lines)
+
+
+def evidence_brief(brief: dict | None) -> dict | None:
+    """The part of a stored brief that criterion evidence and work-package verification bind to.
+
+    Routing says who executes and reviews, not what is accepted, so it is left out; a brief
+    without routing is unchanged, which keeps digests recorded before routing existed valid.
+    """
+    if brief is None:
+        return None
+    return {key: value for key, value in brief.items() if key != "routing"}
 
 
 def brief_payload(brief: TaskBrief) -> dict:
@@ -228,6 +241,21 @@ class TaskBriefService:
                 raise ValueError("A new criterion starts at revision 1")
         if payload == task.brief:
             return False
+        if task.brief is not None and evidence_brief(payload) == evidence_brief(task.brief):
+            # Only the routing changed. It names who executes and reviews, not what is accepted, so the
+            # brief revision, criterion progress, acceptance and every record bound to them stay valid.
+            # The task version moves, the description is rendered again and the timeline keeps both routings.
+            previous_routing = task.brief.get("routing")
+            await self.tasks.reserve_task_version(task, task.version)
+            task.brief = payload
+            task.description = render_brief(payload)
+            await self.tasks.record_task_event(task.id, "brief_routing_changed", {
+                "version": task.version, "brief_revision": task.brief_revision, "provenance": provenance,
+                "previous_routing": previous_routing, "routing": payload.get("routing")})
+            if routing_changed and enforce:
+                from app.services.task_routing_service import enforce_routing
+                await enforce_routing(self.db, task, changed=True)
+            return True
         if task.brief is None:
             task.legacy_description = task.description
             if task.description:
@@ -302,7 +330,7 @@ class TaskBriefService:
             raise LookupError("Task not found or inaccessible")
         if assignee_id is not None:
             await self.tasks.require_iteration_assignee(assignee_id, task.iteration_id)
-        return await check_routing(self.db, task_id=task.id, project_id=task.project_id,
+        return await check_routing(self.db, task=task, project_id=task.project_id,
                                    assignee_id=task.assignee_id if use_current_assignee and assignee_id is None else assignee_id,
                                    routing=(task.brief or {}).get("routing"), brief_text=task.description)
 
@@ -401,7 +429,7 @@ class TaskBriefService:
             raise AuthorityError("package_verification_required", "The authoritative work package must pass its verification protocol.")
         if task.brief and package is not None:
             from app.autonomy.canonical import sha256_hex
-            if (package.task_context_version, package.task_brief_revision, package.task_artifact_revision, package.task_brief_digest) != (task.version, task.brief_revision, task.artifact_revision, sha256_hex(task.brief)):
+            if (package.task_context_version, package.task_brief_revision, package.task_artifact_revision, package.task_brief_digest) != (task.version, task.brief_revision, task.artifact_revision, sha256_hex(evidence_brief(task.brief))):
                 raise AuthorityError("package_context_stale", "Work-package verification is bound to another task, brief or artifact revision.")
         if task.brief and not override:
             progress = task.progress or {}

@@ -27,7 +27,7 @@ from app.services.language_service import (
     resolve_runtime_ui_language,
     task_requires_schedule_message,
 )
-from app.services.task_routing_service import RoutingConsistencyConflict, check_routing
+from app.services.task_routing_service import RoutingConsistencyConflict, check_routing, routing_check_for
 from app.services.task_service import TaskService
 
 
@@ -189,7 +189,7 @@ class TaskBulkOperationService:
             warnings=warnings,
             task=self.task_service.task_to_response(updated_task, iteration_end_date),
             assignee_recommendation=recommendation,
-            routing_check=updated_task.__dict__.get("_routing_check"),
+            routing_check=routing_check_for(self.db, task.id),
         )
 
     async def _delete_task(self, task: Task, dry_run: bool, ui_language) -> TaskBulkOperationResult:
@@ -286,26 +286,34 @@ class TaskBulkOperationService:
             resolution = payload.get("routing_resolution", "check")
             if resolution not in ("check", "apply_suggestion"):
                 raise ValueError("routing_resolution must be check or apply_suggestion")
-            if update_data["assignee_id"] != task.assignee_id:
+            if update_data["assignee_id"] != task.assignee_id or resolution == "apply_suggestion":
+                # Applying the suggestion also repairs the routing of a task whose assignee stays.
                 self.routing_checks[task.id] = await self._preview_routing(task, update_data["assignee_id"], resolution)
             update_data["routing_resolution"] = resolution
         update = TaskUpdate(**update_data)
         await self._validate_update(task, update)
         changes = self._changes_for_update(task, update)
+        check = self.routing_checks.get(task.id)
+        if check is not None and check.applied:
+            changes["routing"] = {"old": (task.brief or {}).get("routing"), "new": check.routing.model_dump(mode="json")}
         return update, changes, recommendation, warnings
 
     async def _preview_routing(self, task: Task, assignee_id: Optional[int], resolution: str):
-        """The routing check the reassignment will meet, and what applying the suggestion would leave."""
+        """The routing check the reassignment will meet, and the routing applying the suggestion would leave.
+
+        When the suggestion would be saved, the answer checks that routing and marks it applied; the
+        task itself is not changed by a preview.
+        """
         brief = task.brief or {}
-        check = await check_routing(self.db, task_id=task.id, project_id=task.project_id, assignee_id=assignee_id,
+        check = await check_routing(self.db, task=task, project_id=task.project_id, assignee_id=assignee_id,
                                     routing=brief.get("routing"), brief_text=task.description)
         if resolution == "apply_suggestion" and check.suggestion is not None:
             suggestion = check.suggestion
-            check = await check_routing(self.db, task_id=task.id, project_id=task.project_id, assignee_id=assignee_id,
+            notes = [issue for issue in check.issues if issue.code.startswith("suggested_")]
+            check = await check_routing(self.db, task=task, project_id=task.project_id, assignee_id=assignee_id,
                                         routing=suggestion, brief_text=task.description)
-            # The routing is replaced by the suggestion when the change is applied.
-            check.suggestion = suggestion
-            check.suggested_reviewer = suggestion.reviewer
+            check.issues.extend(notes)
+            check.applied = True
         return check
 
     async def _validate_update(self, task: Task, update: TaskUpdate) -> None:
