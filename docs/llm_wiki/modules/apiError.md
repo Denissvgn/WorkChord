@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/utils/apiError.ts`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../i18n/i18n` | `i18n` | — | compiler-dependent |
 | `../types/task` | `RefusalNextStep` | Declaration | erased |
 
 ## Module Signals
@@ -38,20 +39,20 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (74) |
-| Outbound | `frontend` (1) |
+| Inbound | `frontend` (77) |
+| Outbound | `frontend` (2) |
 
-> All 75 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 79 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ApiFieldError](../entities/ApiFieldError.md) | Interface | 5 | — | — |
-| [NormalizedApiError](../entities/NormalizedApiError.md) | Interface | 10 | — | — |
-| [ApiErrorShape](../entities/ApiErrorShape.md) | Interface | 19 | — | — |
-| [ApiErrorKind](../entities/ApiErrorKind.md) | Type alias | 3 | `'response' \| 'network' \| 'unknown'` | — |
-| [UnknownRecord](../entities/UnknownRecord.md) | Type alias | 28 | `Record<string, unknown>` | — |
+| [ApiFieldError](../entities/ApiFieldError.md) | Interface | 6 | — | — |
+| [NormalizedApiError](../entities/NormalizedApiError.md) | Interface | 11 | — | — |
+| [ApiErrorShape](../entities/ApiErrorShape.md) | Interface | 20 | — | — |
+| [ApiErrorKind](../entities/ApiErrorKind.md) | Type alias | 4 | `'response' \| 'network' \| 'unknown'` | — |
+| [UnknownRecord](../entities/UnknownRecord.md) | Type alias | 29 | `Record<string, unknown>` | — |
 
 ## Functions
 

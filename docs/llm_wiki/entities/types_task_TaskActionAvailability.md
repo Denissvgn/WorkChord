@@ -1,6 +1,6 @@
 # TaskActionAvailability
 
-**Location:** `frontend/src/types/task.ts:517`
+**Location:** `frontend/src/types/task.ts:579`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

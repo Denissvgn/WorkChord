@@ -20,6 +20,8 @@ import { pillToneClassName, STATUS_TONE } from '../ui/tone';
 import { emptyTaskBrief } from './taskEditorContract';
 import { TaskBriefEditor } from './TaskBriefEditor';
 import { TaskWorkPanel } from './TaskWorkPanel';
+import { TaskRoutingSummary } from './TaskRoutingSummary';
+import { TaskReassign } from './TaskReassign';
 import { useAdminAccess } from '../../hooks/useAdminAccess';
 import { clearAdminApiKey } from '../../utils/adminAccess';
 import { DeliveryDependencies } from './DeliveryDependencies';
@@ -89,6 +91,8 @@ export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: 
     const [briefDraft, setBriefDraft] = useState<TaskBrief | null>(null);
     const [reasonDraft, setReasonDraft] = useState<string | null>(null);
     const [sectionDirty, setSectionDirty] = useState(false);
+    // A saved reassignment replaces the control (it is keyed by version), so the new one takes focus back.
+    const [refocusVersion, setRefocusVersion] = useState<number | null>(null);
     const [ownSession, ownUpdate] = useTaskViewSession(draftKey);
     const session = heldSession ?? ownSession;
     const updateSession = onHeldSession ?? ownUpdate;
@@ -284,6 +288,14 @@ export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: 
                             </div>
                         </>
                     )}
+                    <section aria-label={t('taskReassign.title')} className="flex flex-col gap-3 border-t border-border-subtle pt-4">
+                        <h3 className="text-xs font-semibold uppercase tracking-wide text-content-secondary">{t('taskReassign.title')}</h3>
+                        <TaskRoutingSummary routing={task.brief?.routing} />
+                        {task.iteration_id !== null && (
+                            <TaskReassign key={`${task.id}:${task.version}`} task={task} disabled={locked} focusOnMount={refocusVersion === task.version}
+                                onSaved={updated => setRefocusVersion(updated.version)} onTaskUpdated={onTaskUpdated} onPending={onPending} />
+                        )}
+                    </section>
                     <div className="flex flex-col gap-3 border-t border-border-subtle pt-4">
                         <div className="flex items-baseline justify-between">
                             <h3 className="text-xs font-semibold uppercase tracking-wide text-content-secondary">{t('taskView.planning')}</h3>

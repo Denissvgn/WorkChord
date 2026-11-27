@@ -1,6 +1,6 @@
 # GroundedFact
 
-**Location:** `frontend/src/types/task.ts:247`
+**Location:** `frontend/src/types/task.ts:251`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

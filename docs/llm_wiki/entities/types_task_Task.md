@@ -91,6 +91,7 @@ _Auto-generated from `Task` in `frontend/src/types/task.ts`._
 | `updated_at` | `string \| null` | No | — | — |
 | `children` | `Task[]` | Yes | — | — |
 | `dependencies` | `number[]` | Yes | — | — |
+| `routing_check` | `RoutingCheck \| null` | No | — | — |
 
 ## Methods
 
@@ -164,4 +165,4 @@ flowchart LR
 | `assigneeDisplay.test` | import | [assigneeDisplay.test](../modules/assigneeDisplay.test.md) | — |
 | `AssigneePicker.test` | import | [AssigneePicker.test](../modules/AssigneePicker.test.md) | — |
 
-> References: showing 12 of 117 logical references; 105 omitted by the 12-row generated summary limit.
+> References: showing 12 of 119 logical references; 107 omitted by the 12-row generated summary limit.

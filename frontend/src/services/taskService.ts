@@ -26,6 +26,7 @@ import type {
     TaskBatchUpdateRequest,
     TaskBatchUpdateResponse,
 } from '../types/task';
+import type { RoutingCheck } from '../types/task';
 import type { TaskActions, TaskCommand, TaskDetail, TaskBrief, CriterionProgress, TaskReferencePage, TaskReviewRecord, ManualProvenanceWrite, TaskPostponementResponse, ReactivationRequirementInput } from '../types/task';
 import type { AssigneeRecommendation } from '../types/team';
 
@@ -41,6 +42,7 @@ export const taskService = {
         }
         return page;
     },
+    routingCheck: async (taskId: number, assigneeId?: number | null) => (await api.get<RoutingCheck>(`/tasks/${taskId}/routing/check`, { params: assigneeId ? { assignee_id: assigneeId } : {} })).data,
     actions: async (taskId: number) => (await api.get<TaskActions>(`/tasks/${taskId}/actions`)).data,
     postpone: async (taskId: number, data: { expected_version: number; reason: string; requirements: ReactivationRequirementInput[];
         expected_claim_generation?: number; expected_running_run_ids?: number[]; expected_live_assignment_ids?: number[] }) => (await api.post<TaskPostponementResponse>(`/tasks/${taskId}/postpone`, data)).data,

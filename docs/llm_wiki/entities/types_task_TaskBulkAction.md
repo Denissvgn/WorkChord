@@ -1,6 +1,6 @@
 # TaskBulkAction
 
-**Location:** `frontend/src/types/task.ts:324`
+**Location:** `frontend/src/types/task.ts:328`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

@@ -1,3 +1,4 @@
+import i18n from '../i18n/i18n';
 import type { RefusalNextStep } from '../types/task';
 
 export type ApiErrorKind = 'response' | 'network' | 'unknown';
@@ -132,12 +133,23 @@ const responsePayload = (
     return null;
 };
 
+
+const routingInconsistentMessage = (details: unknown) => {
+    const check = isRecord(details) && isRecord(details.routing_check) ? details.routing_check : null;
+    const issues = Array.isArray(check?.issues) ? check.issues.filter(isRecord) : [];
+    const conflicts = issues.filter(issue => issue.severity === 'conflict' && typeof issue.code === 'string')
+        .map(issue => i18n.t(`taskReassign.issues.${issue.code}`, { defaultValue: typeof issue.message === 'string' ? issue.message : String(issue.code) }));
+    return i18n.t('taskReassign.routingInconsistent', { conflicts: conflicts.join(' ') }).trim();
+};
+
 export const normalizeApiError = (error: unknown, fallback: string): NormalizedApiError => {
     const apiError = asApiError(error);
     const status = normalizedStatus(apiError.response?.status);
     const payload = responsePayload(apiError.response?.data);
 
     if (payload) {
+        // The server's refusal of a reviewer conflict is English; say it in the app's language and say where to resolve it.
+        if (payload.code === 'routing_inconsistent') return { kind: 'response', status, ...payload, message: routingInconsistentMessage(payload.details) };
         return { kind: 'response', status, ...payload };
     }
 

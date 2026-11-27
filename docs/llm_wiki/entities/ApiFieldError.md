@@ -1,6 +1,6 @@
 # ApiFieldError
 
-**Location:** `frontend/src/utils/apiError.ts:5`
+**Location:** `frontend/src/utils/apiError.ts:6`
 **Kind:** Interface
 **Bases:** —
 **Module:** [apiError](../modules/apiError.md)

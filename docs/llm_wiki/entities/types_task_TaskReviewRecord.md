@@ -1,6 +1,6 @@
 # TaskReviewRecord
 
-**Location:** `frontend/src/types/task.ts:507`
+**Location:** `frontend/src/types/task.ts:569`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
