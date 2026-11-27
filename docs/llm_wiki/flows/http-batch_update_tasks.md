@@ -2,7 +2,7 @@
 
 **Entry point:** `batch_update_tasks` (`http`)
 **Source:** [tasks](../modules/tasks.md)
-**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 9 more
+**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 11 more
 
 **Complete modules touched:**
 
@@ -17,8 +17,10 @@
 - [mutation_versions](../modules/mutation_versions.md)
 - [schemas_task](../modules/schemas_task.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [tasks](../modules/tasks.md)
+- [time](../modules/time.md)
 
 ## Call sequence
 
@@ -37,25 +39,25 @@ sequenceDiagram
     participant p7 as DeliveryDependencyService
     participant p8 as _raise_task_version_conflict
     participant p9 as TaskBatchUpdateResponse
-    participant p10 as DiscussionService.enqueue
-    participant p11 as DeliveryDependencyService.validate_cycles
-    participant p12 as DiscussionService.recipient_authorized
-    participant p13 as TaskService.reserve_task_version
-    participant p14 as clear_execution_evidence
-    participant p15 as DeliveryDependencyService.graph
-    participant p16 as IdentityService.context
-    participant p17 as lock_planning
-    participant p18 as require_mutation_revision
-    participant p19 as current_command
-    participant p20 as CommandState
-    participant p21 as TaskUpdate
-    participant p22 as DiscussionService
-    participant p23 as TaskBatchUpdateResponseItem
-    participant p24 as internal_authority
-    participant p25 as PlanningConflict
-    participant p26 as OutboundWebhookEvent
-    participant p27 as OutboundWebhookDelivery
-    participant p28 as TaskService
+    participant p10 as process_reactivation_checks
+    participant p11 as DiscussionService.enqueue
+    participant p12 as ReactivationService.evaluate_waiting
+    participant p13 as DeliveryDependencyService.validate_cycles
+    participant p14 as DiscussionService.recipient_authorized
+    participant p15 as TaskService.reserve_task_version
+    participant p16 as clear_execution_evidence
+    participant p17 as DeliveryDependencyService.graph
+    participant p18 as IdentityService.context
+    participant p19 as ReactivationService._evaluate_isolated
+    participant p20 as ReactivationService._due
+    participant p21 as lock_planning
+    participant p22 as ReactivationService._save_state
+    participant p23 as ReactivationService._evaluate
+    participant p24 as ReactivationService._restore_state
+    participant p25 as require_mutation_revision
+    participant p26 as current_command
+    participant p27 as CommandState
+    participant p28 as TaskUpdate
     participant p29 as HTTPException (backend/app/routers/tasks.py:batch_update_tasks)
     participant p30 as scheduler_service.schedule_iteration
     p0->>p1: command_transaction
@@ -67,32 +69,32 @@ sequenceDiagram
     p0->>p7: DeliveryDependencyService
     p0->>p8: _raise_task_version_conflict
     p0->>p9: TaskBatchUpdateResponse
-    p1->>p10: DiscussionService.enqueue
-    p6->>p11: DeliveryDependencyService.validate_cycles
-    p10->>p12: DiscussionService.recipient_authorized
-    p6->>p13: TaskService.reserve_task_version
-    p6->>p14: clear_execution_evidence
-    p11->>p15: DeliveryDependencyService.graph
-    p12->>p16: IdentityService.context
-    p5->>p17: lock_planning
-    p5->>p18: require_mutation_revision
-    p1->>p19: current_command
-    p1->>p20: CommandState
-    p2->>p21: TaskUpdate
-    p1->>p22: DiscussionService
-    p2->>p23: TaskBatchUpdateResponseItem
-    p10->>p24: internal_authority
-    p6->>p25: PlanningConflict
-    p10->>p26: OutboundWebhookEvent
-    p10->>p27: OutboundWebhookDelivery
-    p6->>p28: TaskService
+    p1->>p10: process_reactivation_checks
+    p1->>p11: DiscussionService.enqueue
+    p10->>p12: ReactivationService.evaluate_waiting
+    p6->>p13: DeliveryDependencyService.validate_cycles
+    p11->>p14: DiscussionService.recipient_authorized
+    p6->>p15: TaskService.reserve_task_version
+    p6->>p16: clear_execution_evidence
+    p13->>p17: DeliveryDependencyService.graph
+    p14->>p18: IdentityService.context
+    p12->>p19: ReactivationService._evaluate_isolated
+    p19->>p20: ReactivationService._due
+    p19->>p21: lock_planning
+    p19->>p22: ReactivationService._save_state
+    p19->>p23: ReactivationService._evaluate
+    p19->>p24: ReactivationService._restore_state
+    p5->>p25: require_mutation_revision
+    p1->>p26: current_command
+    p1->>p27: CommandState
+    p2->>p28: TaskUpdate
     p0-->>p29: HTTPException (backend/app/routers/tasks.py:batch_update_tasks)(status_code=status.HTTP_404_NOT_FOUND, detail=...)
     p0-->>p30: scheduler_service.schedule_iteration(iteration_id, expected_planning_revision=data.expected_planning_revision)
 ```
 
-> Call sequence diagram shows 30 of 288 interactions; 258 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 363 interactions; 333 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 73 (72 omitted); unresolved 1 of 155 (154 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 90 (89 omitted); unresolved 1 of 192 (191 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -103,10 +105,10 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/commands.py:current_command` | 13 | - | external | 2 |
 | `backend/app/commands.py:current_command` | 13 | - | unresolved | 1 |
 | `backend/app/commands.py:command_transaction` | 12 | - | external | 4 |
-| `backend/app/commands.py:command_transaction` | 12 | - | unresolved | 12 |
-| `backend/app/commands.py:command_transaction` | 12 | [backend/app/services/delivery_dependency_service.py](../modules/delivery_dependency_service.md) | internal | 2 |
-| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 24 | - | unresolved | 28 |
-> Omission summary shows 8 of 54 groups; 46 further groups are not expanded here. Counts above include all omitted interactions.
+| `backend/app/commands.py:command_transaction` | 12 | - | unresolved | 13 |
+| `backend/app/services/task_reactivation_service.py:process_reactivation_checks` | 22 | [backend/app/services/task_reactivation_service.py](../modules/task_reactivation_service.md) | internal | 1 |
+| `backend/app/services/task_reactivation_service.py:process_reactivation_checks` | 22 | - | external | 3 |
+> Omission summary shows 8 of 83 groups; 75 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -119,9 +121,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 61; effect analysis evaluated: 36, partial: 0, unavailable: 25. Counts include steps omitted from the displayed trace.
+Source steps: 82; effect analysis evaluated: 56, partial: 0, unavailable: 26. Counts include steps omitted from the displayed trace.
 
-Collector observations for 36 source steps with known totals: observed: 188, emitted: 188, omitted: 0. Unavailable totals are excluded.
+Collector observations for 56 source steps with known totals: observed: 275, emitted: 275, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -222,10 +224,10 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.info.pop` | `command_transaction` | 120 |
-| mutation | `db.info.pop` | `command_transaction` | 133 |
-| mutation | `db.info.pop` | `command_transaction` | 134 |
-| mutation | `db.info.pop` | `command_transaction` | 136 |
+| mutation | `db.info.pop` | `command_transaction` | 124 |
+| mutation | `db.info.pop` | `command_transaction` | 137 |
+| mutation | `db.info.pop` | `command_transaction` | 138 |
+| mutation | `db.info.pop` | `command_transaction` | 140 |
 
 ### Static analysis gaps
 

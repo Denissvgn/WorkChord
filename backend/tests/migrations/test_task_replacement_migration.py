@@ -4,12 +4,11 @@ from datetime import datetime, timezone
 
 import pytest
 from alembic import command
-from sqlalchemy import create_engine, inspect, select
+from sqlalchemy import MetaData, Table, create_engine, inspect, select
 from sqlalchemy.exc import IntegrityError
 
 from app.models.project import Project
 from app.models.task import Task
-from app.models.task_replacement import TaskReplacement
 from app.services.upgrade_service import alembic_config
 
 PREVIOUS, CURRENT = "20261124_0022", "20261124_0023"
@@ -35,7 +34,7 @@ def test_replacement_migration_keeps_tasks_and_refuses_losing_dispositions(
         configure_database(f"sqlite+aiosqlite:///{path}")
         url = f"sqlite:///{path}"
     engine = create_engine(url)
-    replacements, tasks = TaskReplacement.__table__, Task.__table__
+    tasks = Task.__table__
     try:
         with engine.connect() as db:
             config = alembic_config(connection=db)
@@ -48,6 +47,8 @@ def test_replacement_migration_keeps_tasks_and_refuses_losing_dispositions(
             db.commit()
             for attempt in range(2):
                 command.upgrade(config, CURRENT)
+                # Later revisions add columns to the model, so read the table as this revision made it.
+                replacements = Table("task_replacements", MetaData(), autoload_with=db)
                 assert db.execute(select(replacements)).all() == []
                 assert db.execute(select(tasks.c.version).order_by(tasks.c.id)).scalars().all() == [3, 3]
                 checks = {check["name"] for check in inspect(db).get_check_constraints("task_replacements")}

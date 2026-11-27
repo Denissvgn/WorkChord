@@ -258,6 +258,7 @@ async def _check_model(db, task, reviewer, expected_assessment, method, tests):
         actual_modality_tags=catalog.modality_tags or (),
         actual_tool_tags=binding.tool_tags or (),
         actual_data_policy_tags=binding.data_policy_tags or (),
+        actual_effort=catalog.effort,
     )
     if eligibility.hard_blocker_codes:
         _conflict(

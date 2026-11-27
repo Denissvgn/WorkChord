@@ -56,22 +56,22 @@ sequenceDiagram
     participant p10 as DeliveryDependencyService.ready
     participant p11 as action_projection
     participant p12 as replaced_by
-    participant p13 as TaskBriefService.require_review
-    participant p14 as postponement_actions
-    participant p15 as AgentWorkService._start_blockers
-    participant p16 as window_authority_matches
-    participant p17 as DeliveryDependencyService.projection
-    participant p18 as require_acceptable
-    participant p19 as different_publisher_required
-    participant p20 as recovery_attestation_hint
-    participant p21 as AgentWorkService._resolve_rollout
-    participant p22 as AgentWorkService._shadow_handoff
-    participant p23 as AgentWorkService._selection_pending
-    participant p24 as AgentWorkService._is_model_aware_assignment
-    participant p25 as AgentWorkService._validate_assignment_actor
-    participant p26 as sha256_hex
-    participant p27 as AgentWorkService._working_today
-    participant p28 as DeliveryDependencyService.holds
+    participant p13 as replacing
+    participant p14 as TaskBriefService.require_review
+    participant p15 as postponement_actions
+    participant p16 as AgentWorkService._start_blockers
+    participant p17 as window_authority_matches
+    participant p18 as DeliveryDependencyService.projection
+    participant p19 as require_acceptable
+    participant p20 as different_publisher_required
+    participant p21 as recovery_attestation_hint
+    participant p22 as AgentWorkService._resolve_rollout
+    participant p23 as AgentWorkService._shadow_handoff
+    participant p24 as AgentWorkService._selection_pending
+    participant p25 as AgentWorkService._is_model_aware_assignment
+    participant p26 as AgentWorkService._validate_assignment_actor
+    participant p27 as sha256_hex
+    participant p28 as AgentWorkService._working_today
     participant p29 as HTTPException
     participant p30 as self.db.info.get (backend/app/services/task…TaskDetailService.my_work)
     p0->>p1: TaskDetailService.my_work
@@ -86,27 +86,27 @@ sequenceDiagram
     p7->>p10: DeliveryDependencyService.ready
     p7->>p11: action_projection
     p7->>p12: replaced_by
-    p7->>p13: TaskBriefService.require_review
-    p7->>p14: postponement_actions
-    p7->>p15: AgentWorkService._start_blockers
-    p15->>p16: window_authority_matches
-    p10->>p17: DeliveryDependencyService.projection
-    p13->>p18: require_acceptable
-    p13->>p19: different_publisher_required
-    p15->>p20: recovery_attestation_hint
-    p15->>p21: AgentWorkService._resolve_rollout
-    p15->>p22: AgentWorkService._shadow_handoff
-    p15->>p23: AgentWorkService._selection_pending
-    p15->>p24: AgentWorkService._is_model_aware_assignment
-    p15->>p25: AgentWorkService._validate_assignment_actor
-    p13->>p26: sha256_hex
-    p15->>p27: AgentWorkService._working_today
-    p15->>p28: DeliveryDependencyService.holds
+    p7->>p13: replacing
+    p7->>p14: TaskBriefService.require_review
+    p7->>p15: postponement_actions
+    p7->>p16: AgentWorkService._start_blockers
+    p16->>p17: window_authority_matches
+    p10->>p18: DeliveryDependencyService.projection
+    p14->>p19: require_acceptable
+    p14->>p20: different_publisher_required
+    p16->>p21: recovery_attestation_hint
+    p16->>p22: AgentWorkService._resolve_rollout
+    p16->>p23: AgentWorkService._shadow_handoff
+    p16->>p24: AgentWorkService._selection_pending
+    p16->>p25: AgentWorkService._is_model_aware_assignment
+    p16->>p26: AgentWorkService._validate_assignment_actor
+    p14->>p27: sha256_hex
+    p16->>p28: AgentWorkService._working_today
     p0-->>p29: HTTPException(422, detail=[...])
     p1-->>p30: self.db.info.get (backend/app/services/task…TaskDetailService.my_work)('authority')
 ```
 
-> Call sequence diagram shows 30 of 773 interactions; 743 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 775 interactions; 745 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
 > Captured boundary calls: external 1 of 187 (186 omitted); unresolved 1 of 398 (397 omitted). These counts cover the captured static trace.
 
@@ -122,7 +122,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_detail_service.py:TaskDetailService.my_work` | 2 | [backend/app/services/task_detail_service.py](../modules/task_detail_service.md) | internal | 2 |
 | `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | unresolved | 9 |
 | `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | external | 2 |
-> Omission summary shows 8 of 160 groups; 152 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 163 groups; 155 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -135,9 +135,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 189; effect analysis evaluated: 143, partial: 7, unavailable: 39. Counts include steps omitted from the displayed trace.
+Source steps: 191; effect analysis evaluated: 145, partial: 7, unavailable: 39. Counts include steps omitted from the displayed trace.
 
-Collector observations for 150 source steps with known totals: observed: 941, emitted: 882, omitted: 59. Unavailable totals are excluded.
+Collector observations for 152 source steps with known totals: observed: 960, emitted: 899, omitted: 61. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

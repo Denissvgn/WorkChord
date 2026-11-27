@@ -17,6 +17,7 @@ import type {
     AgentModelBindingCreate,
     AgentModelCatalogCreate,
     AgentModelCatalogEntry,
+    ModelEffort,
 } from '../../types/agent';
 import { normalizeApiError } from '../../utils/apiError';
 import {
@@ -45,6 +46,7 @@ interface CatalogForm {
     provider: string;
     configuredModelAlias: string;
     reasoningTier: 1 | 2 | 3;
+    effort: ModelEffort;
     contextTier: 'small' | 'medium' | 'large';
     modalityTags: string;
     costTier: 'low' | 'medium' | 'high';
@@ -68,6 +70,8 @@ interface ConflictResolution {
     currentRevision: number;
 }
 
+const MODEL_EFFORT_LEVELS: ModelEffort[] = ['unknown', 'low', 'medium', 'high', 'xhigh', 'max'];
+
 const EMPTY_CATALOG_FORM: CatalogForm = {
     id: null,
     revision: null,
@@ -75,6 +79,7 @@ const EMPTY_CATALOG_FORM: CatalogForm = {
     provider: '',
     configuredModelAlias: '',
     reasoningTier: 2,
+    effort: 'unknown',
     contextTier: 'medium',
     modalityTags: 'text',
     costTier: 'medium',
@@ -395,6 +400,7 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
             provider: catalogForm.provider.trim(),
             configured_model_alias: catalogForm.configuredModelAlias.trim(),
             reasoning_tier: catalogForm.reasoningTier,
+            effort: catalogForm.effort,
             context_tier: catalogForm.contextTier,
             modality_tags: parseRoutingTags(catalogForm.modalityTags),
             cost_tier: catalogForm.costTier,
@@ -412,6 +418,7 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
                     provider: createData.provider,
                     configured_model_alias: createData.configured_model_alias,
                     reasoning_tier: createData.reasoning_tier,
+                    effort: createData.effort,
                     context_tier: createData.context_tier,
                     modality_tags: createData.modality_tags,
                     cost_tier: createData.cost_tier,
@@ -467,6 +474,7 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
             provider: entry.provider,
             configuredModelAlias: entry.configured_model_alias,
             reasoningTier: entry.reasoning_tier,
+            effort: entry.effort,
             contextTier: entry.context_tier,
             modalityTags: entry.modality_tags.join(', '),
             costTier: entry.cost_tier,
@@ -766,6 +774,13 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
                                         </Select>
                                     </label>
                                     <label className="field">
+                                        <span className="field-lbl">{t('modelAdministration.effort')}</span>
+                                        <Select className="input" aria-describedby="catalog-effort-hint" value={catalogForm.effort} onChange={event => setCatalogForm({ ...catalogForm, effort: event.target.value as ModelEffort })}>
+                                            {MODEL_EFFORT_LEVELS.map(level => <option key={level} value={level}>{t(`modelAdministration.effort_${level}`)}</option>)}
+                                        </Select>
+                                        <span id="catalog-effort-hint" className="mt-1 block text-xs text-content-secondary">{t('modelAdministration.effortHint')}</span>
+                                    </label>
+                                    <label className="field">
                                         <span className="field-lbl">{t('modelAdministration.contextTier')}</span>
                                         <Select className="input" value={catalogForm.contextTier} onChange={event => setCatalogForm({ ...catalogForm, contextTier: event.target.value as CatalogForm['contextTier'] })}>
                                             <option value="small">{t('modelAdministration.small')}</option>
@@ -862,7 +877,7 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
                                     </span>
                                     <Select className="input" value={bindingForm.modelCatalogId ?? ''} onChange={event => setBindingForm({ ...bindingForm, modelCatalogId: Number(event.target.value) || null })} disabled={Boolean(bindingForm.id)} required>
                                         <option value="">{t('modelAdministration.selectCatalogEntry')}</option>
-                                        {catalog.filter(entry => entry.enabled).map(entry => <option key={entry.id} value={entry.id}>{entry.configured_model_alias} ({entry.key})</option>)}
+                                        {catalog.filter(entry => entry.enabled).map(entry => <option key={entry.id} value={entry.id}>{entry.configured_model_alias} ({entry.key}{entry.effort !== 'unknown' ? ` · ${t(`modelAdministration.effort_${entry.effort}`)}` : ''})</option>)}
                                     </Select>
                                 </label>
                                 <Input label={t('modelAdministration.tools')} value={bindingForm.toolTags} onChange={event => setBindingForm({ ...bindingForm, toolTags: event.target.value })} placeholder="code-edit, shell" />

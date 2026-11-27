@@ -1,6 +1,6 @@
 # ReactivationRequirementResponse
 
-**Location:** `backend/app/schemas/task_postponement.py:97`
+**Location:** `backend/app/schemas/task_postponement.py:115`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task_postponement](../modules/schemas_task_postponement.md)
@@ -20,6 +20,7 @@ _Auto-generated from `ReactivationRequirementResponse` in `backend/app/schemas/t
 | `triage_item_id` | `int \| None` | `triage_item_id` | No | Yes | `None` | — | — | The triage item this requirement names; null if it was deleted. |
 | `on_date` | `date \| None` | `on_date` | No | Yes | `None` | — | — | — |
 | `description` | `str \| None` | `description` | No | Yes | `None` | — | — | — |
+| `met` | `bool` | `met` | Yes | No | — | — | — | Whether the requirement is met. A met requirement stays met. |
 | `met_at` | `datetime \| None` | `met_at` | No | Yes | `None` | — | — | When the requirement was evaluated as met; null while unmet. |
 
 ## Methods
@@ -41,7 +42,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task_postponement](../modules/schemas_task_postponement.md) | 0 | `description`, `id`, `kind`, `met_at`, `on_date`, `position`, `task_id`, `triage_item_id` |
+| [schemas_task_postponement](../modules/schemas_task_postponement.md) | 0 | `description`, `id`, `kind`, `met`, `met_at`, `on_date`, `position`, `task_id`, `triage_item_id` |
 
 ### Structure
 

@@ -2,7 +2,7 @@
 
 **Entry point:** `complete_task_context_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 26 more
+**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 27 more
 
 **Complete modules touched:**
 
@@ -32,6 +32,7 @@
 - [schemas_agent](../modules/schemas_agent.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [task_timeline_service](../modules/task_timeline_service.md)
 - [time](../modules/time.md)
@@ -106,9 +107,9 @@ sequenceDiagram
     p2-->>p30: context.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 860 interactions; 830 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 871 interactions; 841 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 232 (231 omitted); unresolved 1 of 408 (407 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 235 (234 omitted); unresolved 1 of 413 (412 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -122,7 +123,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 181 groups; 173 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 185 groups; 177 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -135,9 +136,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 221; effect analysis evaluated: 164, partial: 8, unavailable: 49. Counts include steps omitted from the displayed trace.
+Source steps: 224; effect analysis evaluated: 166, partial: 8, unavailable: 50. Counts include steps omitted from the displayed trace.
 
-Collector observations for 172 source steps with known totals: observed: 1033, emitted: 963, omitted: 70. Unavailable totals are excluded.
+Collector observations for 174 source steps with known totals: observed: 1050, emitted: 978, omitted: 72. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -213,7 +214,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| complete_task_context_resource | _json_resource | 2609 | `_json_resource((...), ...)` |
+| complete_task_context_resource | _json_resource | 2684 | `_json_resource((...), ...)` |
 | _json_resource | _tool_call | 367 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

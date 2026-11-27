@@ -35,6 +35,8 @@ flowchart LR
     n8["backend/app/schemas/__init__.py"]
     n9["TriageService.accept (backend/app/services/triage_service.py)"]
     n10["TriageService.decline (backend/app/services/triage_service.py)"]
+    n11["test_a_linked_triage_item_resolved_returns_resolved_work_to_resolved (backend/tests/test_task_reactivation.py)"]
+    n12["test_all_four_kinds_reactivate_only_when_the_last_is_met (backend/tests/test_task_reactivation.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -45,6 +47,8 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
+    n12 --> n0
     click n0 "../modules/schemas_triage.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/mcp_agent_tools.md"
@@ -55,6 +59,8 @@ flowchart LR
     click n8 "../modules/schemas___init__.md"
     click n9 "../modules/triage_service.md"
     click n10 "../modules/triage_service.md"
+    click n11 "../modules/test_task_reactivation.md"
+    click n12 "../modules/test_task_reactivation.md"
 ```
 
 ### Summary
@@ -82,3 +88,5 @@ flowchart LR
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `TriageService.accept` | type_reference | [triage_service](../modules/triage_service.md) | — |
 | `TriageService.decline` | type_reference | [triage_service](../modules/triage_service.md) | — |
+| `test_a_linked_triage_item_resolved_returns_resolved_work_to_resolved` | call | [test_task_reactivation](../modules/test_task_reactivation.md) | 3 |
+| `test_all_four_kinds_reactivate_only_when_the_last_is_met` | call | [test_task_reactivation](../modules/test_task_reactivation.md) | 1 |

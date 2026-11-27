@@ -1,6 +1,6 @@
 # SchedulePreviewResponse
 
-**Location:** `frontend/src/types/gantt.ts:122`
+**Location:** `frontend/src/types/gantt.ts:131`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

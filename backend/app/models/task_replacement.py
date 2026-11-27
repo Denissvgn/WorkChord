@@ -1,4 +1,4 @@
-"""An audited disposition that replaces unattributable work with a separate clean task."""
+"""An audited disposition that names the one task delivering another task's work instead."""
 
 from datetime import datetime
 
@@ -12,13 +12,20 @@ from app.utils.time import UTCDateTime, utc_now
 class TaskReplacement(Base):
     """Link an original task to the one task that delivers its work instead.
 
-    The original keeps its attempts, artifacts and unknown attribution. Only the
-    replacement can be accepted, and only on its own attributable contributions.
+    A ``replacement`` disposition names a fresh task that does unattributable work
+    again from a clean base: only the replacement can be accepted, and only on its
+    own attributable contributions. A ``supersession`` names work that was already
+    closed or accepted when the disposition was recorded; it has no base commit and
+    need not cite an owner decision. Either way the original keeps its attempts,
+    artifacts and history and is never accepted independently.
     """
 
     __tablename__ = "task_replacements"
     __table_args__ = (
         CheckConstraint("original_task_id <> replacement_task_id", name="ck_task_replacements_distinct"),
+        CheckConstraint("disposition IN ('replacement', 'supersession')", name="ck_task_replacements_disposition"),
+        CheckConstraint("disposition = 'supersession' OR (base_commit_url IS NOT NULL AND owner_decision IS NOT NULL)",
+                        name="ck_task_replacements_replacement_basis"),
         UniqueConstraint("original_task_id", name="uq_task_replacements_original_task_id"),
         UniqueConstraint("replacement_task_id", name="uq_task_replacements_replacement_task_id"),
         Index("ix_task_replacements_project_id", "project_id"),
@@ -29,9 +36,12 @@ class TaskReplacement(Base):
     project_id: Mapped[int] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE"), nullable=False)
     original_task_id: Mapped[int] = mapped_column(ForeignKey("tasks.id", ondelete="RESTRICT"), nullable=False)
     replacement_task_id: Mapped[int] = mapped_column(ForeignKey("tasks.id", ondelete="RESTRICT"), nullable=False)
+    disposition: Mapped[str] = mapped_column(String(16), nullable=False, default="replacement",
+                                             server_default="replacement")
     reason: Mapped[str] = mapped_column(Text, nullable=False)
-    owner_decision: Mapped[str] = mapped_column(Text, nullable=False)
-    base_commit_url: Mapped[str] = mapped_column(String(1000), nullable=False)
+    # Required for a replacement; a supersession may omit both.
+    owner_decision: Mapped[str | None] = mapped_column(Text)
+    base_commit_url: Mapped[str | None] = mapped_column(String(1000))
     # Original runs whose commits the replacement carries; each stays a contributor.
     carried_run_ids: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     moved_dependencies: Mapped[list] = mapped_column(JSON, nullable=False, default=list)

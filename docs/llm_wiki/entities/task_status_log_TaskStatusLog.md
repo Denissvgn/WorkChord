@@ -45,6 +45,7 @@ flowchart LR
     n8["backend/tests/test_effective_deferral.py"]
     n9["test_mixed_timeline_sources_have_stable_ties_and_actor_provenance (backend/tests/test_task_pagination.py)"]
     n10["backend/tests/test_task_postponement.py"]
+    n11["backend/tests/test_task_reactivation.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -55,6 +56,7 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
     click n0 "../modules/task_status_log.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -66,6 +68,7 @@ flowchart LR
     click n8 "../modules/test_effective_deferral.md"
     click n9 "../modules/test_task_pagination.md"
     click n10 "../modules/test_task_postponement.md"
+    click n11 "../modules/test_task_reactivation.md"
 ```
 
 ### Summary
@@ -93,3 +96,4 @@ flowchart LR
 | `test_effective_deferral` | import | [test_effective_deferral](../modules/test_effective_deferral.md) | — |
 | `test_mixed_timeline_sources_have_stable_ties_and_actor_provenance` | call | [test_task_pagination](../modules/test_task_pagination.md) | 1 |
 | `test_task_postponement` | import | [test_task_postponement](../modules/test_task_postponement.md) | — |
+| `test_task_reactivation` | import | [test_task_reactivation](../modules/test_task_reactivation.md) | — |

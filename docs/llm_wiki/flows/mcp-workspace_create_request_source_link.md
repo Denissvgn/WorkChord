@@ -2,7 +2,7 @@
 
 **Entry point:** `workspace_create_request_source_link` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [backlog_snapshot_service](../modules/backlog_snapshot_service.md), and 20 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [backlog_snapshot_service](../modules/backlog_snapshot_service.md), and 21 more
 
 **Complete modules touched:**
 
@@ -28,6 +28,7 @@
 - [snapshot_service](../modules/snapshot_service.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_context_revision_service](../modules/task_context_revision_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -66,7 +67,7 @@ sequenceDiagram
     participant p25 as lock_task_context
     participant p26 as AgentService.authenticate
     participant p27 as require_identity_writes
-    participant p28 as DeliveryDependencyService.reconcile
+    participant p28 as process_reactivation_checks
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -96,14 +97,14 @@ sequenceDiagram
     p15->>p25: lock_task_context
     p16->>p26: AgentService.authenticate
     p20->>p27: require_identity_writes
-    p14->>p28: DeliveryDependencyService.reconcile
+    p14->>p28: process_reactivation_checks
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 426 interactions; 396 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 451 interactions; 421 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 109 (108 omitted); unresolved 1 of 166 (165 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 114 (113 omitted); unresolved 1 of 181 (180 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -117,7 +118,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 145 groups; 137 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 151 groups; 143 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -130,9 +131,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 152; effect analysis evaluated: 91, partial: 6, unavailable: 55. Counts include steps omitted from the displayed trace.
+Source steps: 157; effect analysis evaluated: 95, partial: 6, unavailable: 56. Counts include steps omitted from the displayed trace.
 
-Collector observations for 97 source steps with known totals: observed: 546, emitted: 529, omitted: 17. Unavailable totals are excluded.
+Collector observations for 101 source steps with known totals: observed: 570, emitted: 553, omitted: 17. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -207,7 +208,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_create_request_source_link | _tool_call | 2450 | `_tool_call('planning:write', ...)` |
+| workspace_create_request_source_link | _tool_call | 2525 | `_tool_call('planning:write', ...)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |

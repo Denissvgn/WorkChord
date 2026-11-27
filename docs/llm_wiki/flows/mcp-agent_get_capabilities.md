@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_get_capabilities` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 20 more
+**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 21 more
 
 **Complete modules touched:**
 
@@ -27,6 +27,7 @@
 - [schemas_agent](../modules/schemas_agent.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_domain_service](../modules/task_domain_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -59,13 +60,13 @@ sequenceDiagram
     participant p19 as require_scope
     participant p20 as AgentService.authenticate
     participant p21 as require_identity_writes
-    participant p22 as AgentTeamSetupService._status_for_topology
-    participant p23 as DeliveryDependencyService.reconcile
-    participant p24 as DiscussionService.enqueue
-    participant p25 as actor_has_scope
-    participant p26 as commit_or_flush
-    participant p27 as DeliveryDependencyService.validate_cycles
-    participant p28 as DiscussionService.recipient_authorized
+    participant p22 as process_reactivation_checks
+    participant p23 as AgentTeamSetupService._status_for_topology
+    participant p24 as DeliveryDependencyService.reconcile
+    participant p25 as DiscussionService.enqueue
+    participant p26 as actor_has_scope
+    participant p27 as ReactivationService.evaluate_waiting
+    participant p28 as commit_or_flush
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -89,20 +90,20 @@ sequenceDiagram
     p16->>p19: require_scope
     p14->>p20: AgentService.authenticate
     p18->>p21: require_identity_writes
-    p10->>p22: AgentTeamSetupService._status_for_topology
-    p13->>p23: DeliveryDependencyService.reconcile
-    p13->>p24: DiscussionService.enqueue
-    p19->>p25: actor_has_scope
-    p20->>p26: commit_or_flush
-    p23->>p27: DeliveryDependencyService.validate_cycles
-    p24->>p28: DiscussionService.recipient_authorized
+    p13->>p22: process_reactivation_checks
+    p10->>p23: AgentTeamSetupService._status_for_topology
+    p13->>p24: DeliveryDependencyService.reconcile
+    p13->>p25: DiscussionService.enqueue
+    p19->>p26: actor_has_scope
+    p22->>p27: ReactivationService.evaluate_waiting
+    p20->>p28: commit_or_flush
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 504 interactions; 474 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 529 interactions; 499 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 143 (142 omitted); unresolved 1 of 216 (215 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 148 (147 omitted); unresolved 1 of 231 (230 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -116,7 +117,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 126 groups; 118 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 133 groups; 125 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -129,9 +130,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 146; effect analysis evaluated: 89, partial: 4, unavailable: 53. Counts include steps omitted from the displayed trace.
+Source steps: 151; effect analysis evaluated: 93, partial: 4, unavailable: 54. Counts include steps omitted from the displayed trace.
 
-Collector observations for 93 source steps with known totals: observed: 458, emitted: 417, omitted: 41. Unavailable totals are excluded.
+Collector observations for 97 source steps with known totals: observed: 482, emitted: 441, omitted: 41. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

@@ -47,19 +47,34 @@ flowchart LR
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
     n3["TaskPostponementService.postpone (backend/app/services/task_postponement_service.py)"]
-    n4["backend/tests/migrations/test_task_postponement_migration.py"]
-    n5["backend/tests/test_task_postponement.py"]
+    n4["backend/app/services/task_reactivation_service.py"]
+    n5["backend/app/services/task_replacement_service.py"]
+    n6["backend/tests/migrations/test_task_postponement_migration.py"]
+    n7["backend/tests/test_task_postponement.py"]
+    n8["backend/tests/test_task_reactivation.py"]
+    n9["_postponed (backend/tests/test_task_supersession.py)"]
+    n10["test_a_postponed_original_has_its_postponement_closed (backend/tests/test_task_supersession.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
+    n6 --> n0
+    n7 --> n0
+    n8 --> n0
+    n9 --> n0
+    n10 --> n0
     click n0 "../modules/models_task_postponement.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/task_postponement_service.md"
-    click n4 "../modules/test_task_postponement_migration.md"
-    click n5 "../modules/test_task_postponement.md"
+    click n4 "../modules/task_reactivation_service.md"
+    click n5 "../modules/task_replacement_service.md"
+    click n6 "../modules/test_task_postponement_migration.md"
+    click n7 "../modules/test_task_postponement.md"
+    click n8 "../modules/test_task_reactivation.md"
+    click n9 "../modules/test_task_supersession.md"
+    click n10 "../modules/test_task_supersession.md"
 ```
 
 ### Summary
@@ -80,5 +95,10 @@ flowchart LR
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `TaskPostponementService.postpone` | call | [task_postponement_service](../modules/task_postponement_service.md) | 1 |
+| `task_reactivation_service` | import | [task_reactivation_service](../modules/task_reactivation_service.md) | — |
+| `task_replacement_service` | import | [task_replacement_service](../modules/task_replacement_service.md) | — |
 | `test_task_postponement_migration` | import | [test_task_postponement_migration](../modules/test_task_postponement_migration.md) | — |
 | `test_task_postponement` | import | [test_task_postponement](../modules/test_task_postponement.md) | — |
+| `test_task_reactivation` | import | [test_task_reactivation](../modules/test_task_reactivation.md) | — |
+| `_postponed` | call | [test_task_supersession](../modules/test_task_supersession.md) | 1 |
+| `test_a_postponed_original_has_its_postponement_closed` | call | [test_task_supersession](../modules/test_task_supersession.md) | 1 |

@@ -21,15 +21,15 @@ clears it.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `state` | `Literal['unknown', 'current', 'changed', 'stale']` | `'unknown'` | — |
-| `expected_instance_id` | `str \| None` | `None` | — |
-| `acknowledged_instance_id` | `str \| None` | `None` | — |
-| `previous_instance_id` | `str \| None` | `None` | — |
-| `changed_at` | `datetime \| None` | `None` | — |
-| `refused_instance_id` | `str \| None` | `None` | — |
-| `refused_at` | `datetime \| None` | `None` | — |
+| Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
+|------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `state` | `Literal['unknown', 'current', 'changed', 'stale']` | `state` | No | No | `'unknown'` | — | — | — |
+| `expected_instance_id` | `str \| None` | `expected_instance_id` | No | Yes | `None` | pattern=unknown (RUNTIME_INSTANCE_ID_PATTERN) | — | — |
+| `acknowledged_instance_id` | `str \| None` | `acknowledged_instance_id` | No | Yes | `None` | pattern=unknown (RUNTIME_INSTANCE_ID_PATTERN) | — | — |
+| `previous_instance_id` | `str \| None` | `previous_instance_id` | No | Yes | `None` | pattern=unknown (RUNTIME_INSTANCE_ID_PATTERN) | — | — |
+| `changed_at` | `datetime \| None` | `changed_at` | No | Yes | `None` | — | — | — |
+| `refused_instance_id` | `str \| None` | `refused_instance_id` | No | Yes | `None` | pattern=unknown (RUNTIME_INSTANCE_ID_PATTERN) | — | — |
+| `refused_at` | `datetime \| None` | `refused_at` | No | Yes | `None` | — | — | — |
 
 ## Methods
 

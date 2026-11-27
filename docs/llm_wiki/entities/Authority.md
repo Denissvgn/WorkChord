@@ -50,14 +50,13 @@ flowchart LR
     n2["backend/app/routers/identity.py"]
     n3["bind_verified_system (backend/app/services/identity_service.py)"]
     n4["IdentityService.context (backend/app/services/identity_service.py)"]
-    n5["_seed (backend/tests/database/test_github_closure_concurrency.py)"]
-    n6["_session (backend/tests/database/test_github_closure_concurrency.py)"]
-    n7["test_local_person_acceptance_records_the_acceptor_and_reads_accepted (backend/tests/test_acceptance_attribution.py)"]
-    n8["test_operator_acceptance_records_the_operator_only_with_an_accountable_override (backend/tests/test_acceptance_attribution.py)"]
-    n9["test_signed_in_acceptance_records_the_signed_in_person (backend/tests/test_acceptance_attribution.py)"]
-    n10["test_operator_rest_restore_reconciles_exact_allocation_membership (backend/tests/test_allocation_recovery.py)"]
-    n11["test_scoped_manager_can_restore_another_eligible_person_without_profile_access (backend/tests/test_allocation_recovery.py)"]
-    n12["test_workspace_reports_keep_authorization_and_recorded_backlog_scope (backend/tests/test_analytics_scopes.py)"]
+    n5["_operator_authority (backend/app/services/import_review_service.py)"]
+    n6["_operator_simulation (backend/app/services/import_review_service.py)"]
+    n7["_seed (backend/tests/database/test_github_closure_concurrency.py)"]
+    n8["_session (backend/tests/database/test_github_closure_concurrency.py)"]
+    n9["test_local_person_acceptance_records_the_acceptor_and_reads_accepted (backend/tests/test_acceptance_attribution.py)"]
+    n10["test_operator_acceptance_records_the_operator_only_with_an_accountable_override (backend/tests/test_acceptance_attribution.py)"]
+    n11["test_signed_in_acceptance_records_the_signed_in_person (backend/tests/test_acceptance_attribution.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -69,20 +68,18 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
-    n12 --> n0
     click n0 "../modules/authority.md"
     click n1 "../modules/http_authority.md"
     click n2 "../modules/routers_identity.md"
     click n3 "../modules/identity_service.md"
     click n4 "../modules/identity_service.md"
-    click n5 "../modules/test_github_closure_concurrency.md"
-    click n6 "../modules/test_github_closure_concurrency.md"
-    click n7 "../modules/test_acceptance_attribution.md"
-    click n8 "../modules/test_acceptance_attribution.md"
+    click n5 "../modules/import_review_service.md"
+    click n6 "../modules/import_review_service.md"
+    click n7 "../modules/test_github_closure_concurrency.md"
+    click n8 "../modules/test_github_closure_concurrency.md"
     click n9 "../modules/test_acceptance_attribution.md"
-    click n10 "../modules/test_allocation_recovery.md"
-    click n11 "../modules/test_allocation_recovery.md"
-    click n12 "../modules/test_analytics_scopes.md"
+    click n10 "../modules/test_acceptance_attribution.md"
+    click n11 "../modules/test_acceptance_attribution.md"
 ```
 
 ### Summary
@@ -99,13 +96,13 @@ flowchart LR
 | `identity` | import | [routers_identity](../modules/routers_identity.md) | — |
 | `bind_verified_system` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `IdentityService.context` | call | [identity_service](../modules/identity_service.md) | 1 |
+| `_operator_authority` | call | [import_review_service](../modules/import_review_service.md) | 1 |
+| `_operator_authority` | type_reference | [import_review_service](../modules/import_review_service.md) | — |
+| `_operator_simulation` | type_reference | [import_review_service](../modules/import_review_service.md) | — |
 | `_seed` | call | [test_github_closure_concurrency](../modules/test_github_closure_concurrency.md) | 1 |
 | `_session` | call | [test_github_closure_concurrency](../modules/test_github_closure_concurrency.md) | 1 |
 | `test_local_person_acceptance_records_the_acceptor_and_reads_accepted` | call | [test_acceptance_attribution](../modules/test_acceptance_attribution.md) | 1 |
 | `test_operator_acceptance_records_the_operator_only_with_an_accountable_override` | call | [test_acceptance_attribution](../modules/test_acceptance_attribution.md) | 1 |
 | `test_signed_in_acceptance_records_the_signed_in_person` | call | [test_acceptance_attribution](../modules/test_acceptance_attribution.md) | 1 |
-| `test_operator_rest_restore_reconciles_exact_allocation_membership` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
-| `test_scoped_manager_can_restore_another_eligible_person_without_profile_access` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
-| `test_workspace_reports_keep_authorization_and_recorded_backlog_scope` | call | [test_analytics_scopes](../modules/test_analytics_scopes.md) | 1 |
 
-> References: showing 12 of 78 logical references; 66 omitted by the 12-row generated summary limit.
+> References: showing 12 of 86 logical references; 74 omitted by the 12-row generated summary limit.

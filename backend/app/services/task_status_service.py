@@ -359,6 +359,10 @@ class TaskStatusService:
             },
             commit=False,
         )
+        if not postponement and new_status in {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}:
+            # Postponed work may wait for this task; the command evaluates it once the change is complete.
+            from app.services.task_reactivation_service import request_reactivation_check
+            request_reactivation_check(self.db, task_id=task.id)
         # Delivery is intentionally asynchronous. Keep the legacy response field
         # honest: persistence of an intent is not the same as a sent email.
         return task, cascade_updates, False
@@ -370,8 +374,11 @@ class TaskStatusService:
         *,
         reason: str,
         expected_version: Optional[int],
+        automatic: bool = False,
     ) -> Task:
         """Move one locked leaf into or out of postponed, with the usual audit.
+
+        An ``automatic`` move is the server's own decision, audited as the system.
 
         The caller has checked manage authority, the lifecycle and the
         postponement record; this writes the status, version, status log, event
@@ -384,7 +391,7 @@ class TaskStatusService:
             raise RuntimeError("Postponement transitions require a command transaction")
         command.postponement_transitions.add(task.id)
         authority = self.db.info.get("authority")
-        actor_type = "agent" if getattr(authority, "kind", None) == "agent" else "user"
+        actor_type = "system" if automatic else "agent" if getattr(authority, "kind", None) == "agent" else "user"
         updated, _, _ = await self._apply_transition(
             task, new_status, reason=reason, actor_type=actor_type, expected_version=expected_version,
             automatic=False, postponement=True,

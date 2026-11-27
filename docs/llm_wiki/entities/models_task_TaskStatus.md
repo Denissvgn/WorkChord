@@ -111,4 +111,4 @@ flowchart LR
 | `scheduler_service` | import | [scheduler_service](../modules/scheduler_service.md) | — |
 | `TaskBulkOperationService._build_update` | call | [task_bulk_operation_service](../modules/task_bulk_operation_service.md) | 1 |
 
-> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.
+> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.

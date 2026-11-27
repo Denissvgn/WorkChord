@@ -77,4 +77,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Row](../entities/Row.md) | Type alias | 32 | `{ id: number; name?: string; title?: string; [key: string]: unknown }` | — |
+| [Row](../entities/sampleProject.test_Row.md) | Type alias | 32 | `{ id: number; name?: string; title?: string; [key: string]: unknown }` | — |

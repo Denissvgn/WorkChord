@@ -136,7 +136,8 @@ class TaskDetailService:
         reviewers = await self.reviewer_names([item.id for item in page.items if item.status == "resolved"])
         for item in page.items:
             item.reviewer_name = reviewers.get(item.id)
-            if (await self._policy_flags(item.id))['effective_is_deferred']:
+            # Deferred work is backlog and postponed work is stopped: neither is queued work.
+            if item.status == "postponed" or (await self._policy_flags(item.id))['effective_is_deferred']:
                 continue
             actions = await TaskDomainService(self.db).allowed_actions(item.id)
             blocked = item.status == "closed" or bool(item.blocked_reason) or any(
@@ -181,5 +182,10 @@ class TaskDetailService:
             from app.commands import PlanningConflict
             raise PlanningConflict('task_context_changed', 'This task changed during the initial read. Reload before opening a draft.')
         reviewer_name = (await self.reviewer_names([task.id])).get(task.id) if task.status == "resolved" else None
+        postponement = None
+        if task.status == "postponed":
+            from app.services.task_postponement_service import open_postponement, postponement_record
+            open_row = await open_postponement(self.db, task.id)
+            postponement = await postponement_record(self.db, open_row) if open_row is not None else None
         return TaskDetailResponse(task=response, ancestors=list(reversed(ancestors)), ancestors_complete=parent_id is None, children=children, dependencies=dependencies,
-                                  reviewer_name=reviewer_name)
+                                  reviewer_name=reviewer_name, postponement=postponement)
