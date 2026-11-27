@@ -224,7 +224,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| reconcile_task_planning_window | reconcile_window | 138 | `reconcile_window(db, actor, task_id, planning_receipt_id, apply=apply, planning_actor_id=planning_actor_id, planning_command_key=planning_command_key, expected_evidence_digest=expected_evidence_digest, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| reconcile_task_planning_window | reconcile_window | 146 | `reconcile_window(db, actor, task_id, planning_receipt_id, apply=apply, planning_actor_id=planning_actor_id, planning_command_key=planning_command_key, expected_evidence_digest=expected_evidence_digest, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 | reconcile_window | isinstance (backend/app/services/plan…ation.py:reconcile_window) | 318 | `isinstance(expected_evidence_digest, str)` |
 | reconcile_window | _EVIDENCE_DIGEST.fullmatch | 319 | `_EVIDENCE_DIGEST.fullmatch(expected_evidence_digest)` |
 | reconcile_window | ValueError (backend/app/services/plan…ation.py:reconcile_window) | 321 | `ValueError(INVALID_EVIDENCE_DIGEST_MESSAGE)` |

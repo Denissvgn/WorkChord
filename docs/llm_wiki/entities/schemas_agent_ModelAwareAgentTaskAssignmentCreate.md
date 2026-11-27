@@ -66,11 +66,11 @@ flowchart LR
     n6["backend/tests/test_agent_model_catalog_api.py"]
     n7["test_model_aware_assignment_and_begin_enforce_observed_model (backend/tests/test_agent_routing_service.py)"]
     n8["test_preview_is_deterministic_and_relevant_mutation_invalidates_it (backend/tests/test_agent_routing_service.py)"]
-    n9["_dispatch (backend/tests/test_agent_routing_wave6_qualification.py)"]
-    n10["backend/tests/test_agent_skill_routing_guidance.py"]
-    n11["test_model_aware_commands_own_selection_and_observed_model_fields (backend/tests/test_agent_work_routing_lineage.py)"]
-    n12["test_focus_returns_named_worker_blockers_and_selection_on_rest_and_mcp (backend/tests/test_routing_preview_focus.py)"]
-    n13["test_team_pm_preview_excludes_other_teams_rows_on_rest_and_mcp (backend/tests/test_routing_preview_team_scope.py)"]
+    n9["test_preview_states_an_approved_calibration_contract_and_ranks_exactly_as_before (backend/tests/test_agent_routing_service.py)"]
+    n10["_dispatch (backend/tests/test_agent_routing_wave6_qualification.py)"]
+    n11["backend/tests/test_agent_skill_routing_guidance.py"]
+    n12["test_model_aware_commands_own_selection_and_observed_model_fields (backend/tests/test_agent_work_routing_lineage.py)"]
+    n13["test_focus_returns_named_worker_blockers_and_selection_on_rest_and_mcp (backend/tests/test_routing_preview_focus.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -92,11 +92,11 @@ flowchart LR
     click n6 "../modules/test_agent_model_catalog_api.md"
     click n7 "../modules/test_agent_routing_service.md"
     click n8 "../modules/test_agent_routing_service.md"
-    click n9 "../modules/test_agent_routing_wave6_qualification.md"
-    click n10 "../modules/test_agent_skill_routing_guidance.md"
-    click n11 "../modules/test_agent_work_routing_lineage.md"
-    click n12 "../modules/test_routing_preview_focus.md"
-    click n13 "../modules/test_routing_preview_team_scope.md"
+    click n9 "../modules/test_agent_routing_service.md"
+    click n10 "../modules/test_agent_routing_wave6_qualification.md"
+    click n11 "../modules/test_agent_skill_routing_guidance.md"
+    click n12 "../modules/test_agent_work_routing_lineage.md"
+    click n13 "../modules/test_routing_preview_focus.md"
 ```
 
 ### Summary
@@ -122,10 +122,10 @@ flowchart LR
 | `test_agent_model_catalog_api` | import | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | — |
 | `test_model_aware_assignment_and_begin_enforce_observed_model` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
 | `test_preview_is_deterministic_and_relevant_mutation_invalidates_it` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 2 |
+| `test_preview_states_an_approved_calibration_contract_and_ranks_exactly_as_before` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
 | `_dispatch` | call | [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md) | 1 |
 | `test_agent_skill_routing_guidance` | import | [test_agent_skill_routing_guidance](../modules/test_agent_skill_routing_guidance.md) | — |
 | `test_model_aware_commands_own_selection_and_observed_model_fields` | call | [test_agent_work_routing_lineage](../modules/test_agent_work_routing_lineage.md) | 1 |
 | `test_focus_returns_named_worker_blockers_and_selection_on_rest_and_mcp` | call | [test_routing_preview_focus](../modules/test_routing_preview_focus.md) | 1 |
-| `test_team_pm_preview_excludes_other_teams_rows_on_rest_and_mcp` | call | [test_routing_preview_team_scope](../modules/test_routing_preview_team_scope.md) | 1 |
 
-> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
+> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.

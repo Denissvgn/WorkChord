@@ -41,7 +41,7 @@ sequenceDiagram
     p2-->>p3: isinstance(exc, SourceLinkRefused)
     p2-->>p4: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=exc.detail(...))
     p2-->>p6: exc.detail
-    p2-->>p3: isinstance(exc, UnknownRoutingKeyError)
+    p2-->>p3: isinstance(exc, RoutingTermsRefusedError)
     p2-->>p4: HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(...))
     p2-->>p5: str(exc)
     p2-->>p3: isinstance(exc, ValueError)

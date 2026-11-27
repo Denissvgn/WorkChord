@@ -15,11 +15,13 @@ End-to-end service coverage for authoritative Wave 3 routing.
 | `app.models.agent` | `AgentActor`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRun`, `AgentTaskAssignment`, `TaskEvent`, `TaskRoutingAssessment` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project` |
+| `app.models.routing_calibration` | `RoutingCalibrationContract` |
 | `app.models.routing_qualification` | `RoutingQualificationKey` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile`, `TeamMemberProfileSkill` |
 | `app.schemas.agent` | `AgentTaskAssignmentCreate`, `AgentReviewVerdict`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareAgentWorkBegin` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.agent_routing` | `AgentRoutingPreviewCreate`, `TaskRoutingAssessmentCommand` |
+| `app.schemas.routing_calibration` | `CALIBRATION_CONTRACT_SCHEMA_VERSION`, `RoutingCalibrationContractTerms` |
 | `app.schemas.routing_qualification` | `RoutingQualificationKeyDeclare`, `RoutingQualificationKeyRetire` |
 | `app.services.agent_model_catalog_service` | `AgentModelConflictError` |
 | `app.services.agent_routing_policy` | `ROUTING_POLICY_VERSION`, `UnknownRoutingKeyError` |
@@ -55,7 +57,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (11) |
-| Outbound | `backend` (17) |
+| Outbound | `backend` (19) |
 
 ### External packages
 
@@ -63,7 +65,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 1 |
 
-> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -80,6 +82,7 @@ flowchart LR
 | `test_preview_is_deterministic_and_relevant_mutation_invalidates_it` | *(async)* `(db_session: AsyncSession, profile_factory, actor_factory, team_member_factory, task_factory) -> None` | `@pytest.mark.asyncio` | — |
 | `_extra_worker` | *(async)* `(db_session: AsyncSession, profile_factory, actor_factory, team_member_factory, *, key: str, cost_tier: str, local_first: bool, reasoning_tier: int = 1, effort: str = 'unknown', alias: str \| None = None, qualification_keys: list[str] \| None = None, profile = None)` | — | — |
 | `test_local_first_preference_breaks_ties_but_never_overrides_a_gate` | *(async)* `(db_session: AsyncSession, profile_factory, actor_factory, team_member_factory, task_factory) -> None` | `@pytest.mark.asyncio` | — |
+| `test_preview_states_an_approved_calibration_contract_and_ranks_exactly_as_before` | *(async)* `(db_session: AsyncSession, profile_factory, actor_factory, team_member_factory, task_factory) -> None` | `@pytest.mark.asyncio` | — |
 | `test_required_effort_gates_and_orders_entries_of_one_runtime_model` | *(async)* `(db_session: AsyncSession, profile_factory, actor_factory, team_member_factory, task_factory) -> None` | `@pytest.mark.asyncio` | — |
 | `test_declared_qualification_key_is_a_requirement_the_candidate_must_hold` | *(async)* `(db_session: AsyncSession, profile_factory, actor_factory, team_member_factory, task_factory) -> None` | `@pytest.mark.asyncio` | — |
 | `test_a_project_scoped_agent_can_require_a_declared_key` | *(async)* `(db_session: AsyncSession, profile_factory, actor_factory, team_member_factory, task_factory) -> None` | `@pytest.mark.asyncio` | — |

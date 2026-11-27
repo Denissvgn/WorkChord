@@ -26,7 +26,7 @@ Agent-authenticated PM setup and schedule-control commands.
 | `app.schemas.team` | `TeamMemberCreate`, `TeamMemberProfileCreate`, `TeamMemberProfileUpdate`, `TeamMemberUpdate`, `VacationCreate`, `VacationUpdate` |
 | `app.schemas.triage` | `TriageActionRequest`, `TriageClassificationSuggestionResponse`, `TriageConvertToTaskRequest`, `TriageConvertToTaskResponse`, `TriageDuplicateRequest`, `TriageItemCreate`, `TriageItemResponse`, `TriageItemUpdate`, `TriageSnoozeRequest` |
 | `app.services.agent_planning_service` | `AgentPlanningService` |
-| `app.services.agent_routing_policy` | `UnknownRoutingKeyError` |
+| `app.services.agent_routing_policy` | `RoutingTermsRefusedError` |
 | `app.services.agent_routing_service` | `AgentRoutingConflictError`, `AgentRoutingService` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `require_scope` |
 | `app.services.import_review_service` | `ImportFileInvalid` |

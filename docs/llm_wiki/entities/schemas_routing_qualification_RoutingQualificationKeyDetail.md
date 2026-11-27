@@ -1,6 +1,6 @@
 # RoutingQualificationKeyDetail
 
-**Location:** `backend/app/schemas/routing_qualification.py:153`
+**Location:** `backend/app/schemas/routing_qualification.py:167`
 **Kind:** Pydantic model
 **Bases:** `RoutingQualificationKeyResponse`
 **Module:** [schemas_routing_qualification](../modules/schemas_routing_qualification.md)

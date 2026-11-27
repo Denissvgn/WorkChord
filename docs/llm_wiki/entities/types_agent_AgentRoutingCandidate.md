@@ -1,6 +1,6 @@
 # AgentRoutingCandidate
 
-**Location:** `frontend/src/types/agent.ts:470`
+**Location:** `frontend/src/types/agent.ts:472`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

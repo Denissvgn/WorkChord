@@ -107,4 +107,4 @@ flowchart LR
 | `get_task_routing_assessment` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 | `list_task_routing_assessments` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 
-> References: showing 12 of 51 logical references; 39 omitted by the 12-row generated summary limit.
+> References: showing 12 of 52 logical references; 40 omitted by the 12-row generated summary limit.

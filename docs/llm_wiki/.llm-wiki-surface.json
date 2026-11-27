@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1902,
-      "flows": 643,
+      "entities": 1923,
+      "flows": 648,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1214,
-      "workflows": 251
+      "modules": 1220,
+      "workflows": 252
     },
     "dependency_architecture": 2,
-    "total": 4027
+    "total": 4060
   },
   "dependency_pages": {
     "count": 2,
@@ -1091,6 +1091,90 @@
         }
       },
       "id": "http-approve_native_connection",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "approve_routing_calibration_contract",
+        "source_path": "backend/app/routers/agent_catalog.py",
+        "symbol": "approve_routing_calibration_contract"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 739,
+              "step": "approve_routing_calibration_contract",
+              "target": "service.approve"
+            },
+            {
+              "kind": "external_call",
+              "line": 158,
+              "step": "_handle_model_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 159,
+              "step": "_handle_model_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 161,
+              "step": "_handle_model_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 163,
+              "step": "_handle_model_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 164,
+              "step": "_handle_model_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 112,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "approve_routing_calibration_contract",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/agent_catalog.py",
+            "backend/app/routers/agent_planning.py"
+          ],
+          "step_count": 37,
+          "truncated": false
+        }
+      },
+      "id": "http-approve_routing_calibration_contract",
       "language": "python"
     },
     {
@@ -3614,37 +3698,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 426,
+              "line": 434,
               "step": "create_agent_model_binding",
               "target": "service.create_binding"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 158,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 151,
+              "line": 159,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 153,
+              "line": 161,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 163,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 164,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -3698,37 +3782,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 296,
+              "line": 304,
               "step": "create_agent_model_catalog_entry",
               "target": "service.create_catalog"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 158,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 151,
+              "line": 159,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 153,
+              "line": 161,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 163,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 164,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -6635,37 +6719,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 559,
+              "line": 567,
               "step": "declare_routing_qualification_key",
               "target": "service.declare"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 158,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 151,
+              "line": 159,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 153,
+              "line": 161,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 163,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 164,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -7940,37 +8024,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 481,
+              "line": 489,
               "step": "disable_agent_model_binding",
               "target": "service.disable_binding"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 158,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 151,
+              "line": 159,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 153,
+              "line": 161,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 163,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 164,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -8024,37 +8108,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 351,
+              "line": 359,
               "step": "disable_agent_model_catalog_entry",
               "target": "service.disable_catalog"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 158,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 151,
+              "line": 159,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 153,
+              "line": 161,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 163,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 164,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -9463,37 +9547,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 401,
+              "line": 409,
               "step": "get_agent_model_binding",
               "target": "service.get_binding"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 158,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 151,
+              "line": 159,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 153,
+              "line": 161,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 163,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 164,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -9547,49 +9631,49 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 271,
+              "line": 279,
               "step": "get_agent_model_catalog_entry",
               "target": "service.get_catalog"
             },
             {
               "kind": "unresolved_call",
-              "line": 271,
+              "line": 279,
               "step": "get_agent_model_catalog_entry",
               "target": "catalog_key.strip().lower"
             },
             {
               "kind": "unresolved_call",
-              "line": 271,
+              "line": 279,
               "step": "get_agent_model_catalog_entry",
               "target": "catalog_key.strip"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 158,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 151,
+              "line": 159,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 153,
+              "line": 161,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 163,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 164,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -9667,7 +9751,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 167,
+              "line": 175,
               "step": "_require_catalog_read",
               "target": "any"
             },
@@ -9685,7 +9769,7 @@
             },
             {
               "kind": "external_call",
-              "line": 171,
+              "line": 179,
               "step": "_require_catalog_read",
               "target": "HTTPException"
             }
@@ -9722,7 +9806,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 167,
+              "line": 175,
               "step": "_require_catalog_read",
               "target": "any"
             },
@@ -9740,7 +9824,7 @@
             },
             {
               "kind": "external_call",
-              "line": 171,
+              "line": 179,
               "step": "_require_catalog_read",
               "target": "HTTPException"
             }
@@ -12160,7 +12244,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 167,
+              "line": 175,
               "step": "_require_catalog_read",
               "target": "any"
             },
@@ -12178,7 +12262,7 @@
             },
             {
               "kind": "external_call",
-              "line": 171,
+              "line": 179,
               "step": "_require_catalog_read",
               "target": "HTTPException"
             }
@@ -12538,6 +12622,90 @@
       "category": "http",
       "detector": "builtin",
       "entry_point": {
+        "label": "get_routing_calibration_contract",
+        "source_path": "backend/app/routers/agent_catalog.py",
+        "symbol": "get_routing_calibration_contract"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 664,
+              "step": "get_routing_calibration_contract",
+              "target": "service.get_contract"
+            },
+            {
+              "kind": "external_call",
+              "line": 158,
+              "step": "_handle_model_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 159,
+              "step": "_handle_model_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 161,
+              "step": "_handle_model_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 163,
+              "step": "_handle_model_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 164,
+              "step": "_handle_model_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 112,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "get_routing_calibration_contract",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/agent_catalog.py",
+            "backend/app/routers/agent_planning.py"
+          ],
+          "step_count": 37,
+          "truncated": false
+        }
+      },
+      "id": "http-get_routing_calibration_contract",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
         "label": "get_routing_qualification_key",
         "source_path": "backend/app/routers/agent_catalog.py",
         "symbol": "get_routing_qualification_key"
@@ -12548,37 +12716,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 534,
+              "line": 542,
               "step": "get_routing_qualification_key",
               "target": "service.get_key"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 158,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 151,
+              "line": 159,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 153,
+              "line": 161,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 163,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 164,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -15649,37 +15817,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 377,
+              "line": 385,
               "step": "list_agent_model_bindings",
               "target": "service.list_bindings"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 158,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 151,
+              "line": 159,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 153,
+              "line": 161,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 163,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 164,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -15733,37 +15901,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 248,
+              "line": 256,
               "step": "list_agent_model_catalog",
               "target": "service.list_catalog"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 158,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 151,
+              "line": 159,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 153,
+              "line": 161,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 163,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 164,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -17409,6 +17577,90 @@
       "category": "http",
       "detector": "builtin",
       "entry_point": {
+        "label": "list_routing_calibration_contracts",
+        "source_path": "backend/app/routers/agent_catalog.py",
+        "symbol": "list_routing_calibration_contracts"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 644,
+              "step": "list_routing_calibration_contracts",
+              "target": "service.list_contracts"
+            },
+            {
+              "kind": "external_call",
+              "line": 158,
+              "step": "_handle_model_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 159,
+              "step": "_handle_model_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 161,
+              "step": "_handle_model_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 163,
+              "step": "_handle_model_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 164,
+              "step": "_handle_model_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 112,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "list_routing_calibration_contracts",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/agent_catalog.py",
+            "backend/app/routers/agent_planning.py"
+          ],
+          "step_count": 37,
+          "truncated": false
+        }
+      },
+      "id": "http-list_routing_calibration_contracts",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
         "label": "list_routing_qualification_keys",
         "source_path": "backend/app/routers/agent_catalog.py",
         "symbol": "list_routing_qualification_keys"
@@ -17419,37 +17671,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 514,
+              "line": 522,
               "step": "list_routing_qualification_keys",
               "target": "service.list_registry"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 158,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 151,
+              "line": 159,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 153,
+              "line": 161,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 163,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 164,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -23304,37 +23556,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 609,
+              "line": 617,
               "step": "retire_routing_qualification_key",
               "target": "service.retire"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 158,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 151,
+              "line": 159,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 153,
+              "line": 161,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 163,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 164,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -23603,6 +23855,90 @@
       "category": "http",
       "detector": "builtin",
       "entry_point": {
+        "label": "revise_routing_calibration_contract",
+        "source_path": "backend/app/routers/agent_catalog.py",
+        "symbol": "revise_routing_calibration_contract"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 714,
+              "step": "revise_routing_calibration_contract",
+              "target": "service.revise"
+            },
+            {
+              "kind": "external_call",
+              "line": 158,
+              "step": "_handle_model_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 159,
+              "step": "_handle_model_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 161,
+              "step": "_handle_model_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 163,
+              "step": "_handle_model_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 164,
+              "step": "_handle_model_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 112,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "revise_routing_calibration_contract",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/agent_catalog.py",
+            "backend/app/routers/agent_planning.py"
+          ],
+          "step_count": 37,
+          "truncated": false
+        }
+      },
+      "id": "http-revise_routing_calibration_contract",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
         "label": "revise_routing_qualification_key",
         "source_path": "backend/app/routers/agent_catalog.py",
         "symbol": "revise_routing_qualification_key"
@@ -23613,37 +23949,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 584,
+              "line": 592,
               "step": "revise_routing_qualification_key",
               "target": "service.revise"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 158,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 151,
+              "line": 159,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 153,
+              "line": 161,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 163,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 164,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -24775,6 +25111,90 @@
         }
       },
       "id": "http-submit_my_agent_work",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "submit_routing_calibration_contract",
+        "source_path": "backend/app/routers/agent_catalog.py",
+        "symbol": "submit_routing_calibration_contract"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 689,
+              "step": "submit_routing_calibration_contract",
+              "target": "service.submit"
+            },
+            {
+              "kind": "external_call",
+              "line": 158,
+              "step": "_handle_model_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 159,
+              "step": "_handle_model_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 161,
+              "step": "_handle_model_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 163,
+              "step": "_handle_model_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 164,
+              "step": "_handle_model_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 112,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "submit_routing_calibration_contract",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/agent_catalog.py",
+            "backend/app/routers/agent_planning.py"
+          ],
+          "step_count": 37,
+          "truncated": false
+        }
+      },
+      "id": "http-submit_routing_calibration_contract",
       "language": "python"
     },
     {
@@ -27084,37 +27504,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 451,
+              "line": 459,
               "step": "update_agent_model_binding",
               "target": "service.update_binding"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 158,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 151,
+              "line": 159,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 153,
+              "line": 161,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 163,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 164,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -27168,37 +27588,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 321,
+              "line": 329,
               "step": "update_agent_model_catalog_entry",
               "target": "service.update_catalog"
             },
             {
               "kind": "external_call",
-              "line": 150,
+              "line": 158,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 151,
+              "line": 159,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 153,
+              "line": 161,
               "step": "_handle_model_error",
               "target": "exc.detail"
             },
             {
               "kind": "external_call",
-              "line": 155,
+              "line": 163,
               "step": "_handle_model_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 156,
+              "line": 164,
               "step": "_handle_model_error",
               "target": "HTTPException"
             },
@@ -36567,11 +36987,12 @@
             "backend/app/services/manual_provenance_service.py",
             "backend/app/services/task_replacement_service.py",
             "backend/app/services/review_evidence.py",
+            "backend/app/services/routing_calibration_contract_service.py",
             "backend/app/services/agent_routing_observability.py",
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 1273,
+          "step_count": 1280,
           "truncated": true
         }
       },
@@ -47449,7 +47870,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_read",
-              "line": 97,
+              "line": 99,
               "step": "main",
               "step_index": 1,
               "target": "args.output.read_text"
@@ -47457,7 +47878,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 101,
+              "line": 103,
               "step": "main",
               "step_index": 1,
               "target": "args.output.write_text"
@@ -47466,49 +47887,49 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 91,
+              "line": 93,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 92,
-              "step": "main",
-              "target": "parser.add_argument"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 93,
-              "step": "main",
-              "target": "parser.add_argument"
-            },
-            {
-              "kind": "unresolved_call",
               "line": 94,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 95,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 96,
               "step": "main",
               "target": "parser.parse_args"
             },
             {
               "kind": "external_call",
-              "line": 87,
+              "line": 89,
               "step": "serialized_contract",
               "target": "json.dumps"
             },
             {
               "kind": "unresolved_call",
-              "line": 45,
+              "line": 47,
               "step": "build_contract",
               "target": "app.openapi"
             },
             {
               "kind": "unresolved_call",
-              "line": 46,
+              "line": 48,
               "step": "build_contract",
               "target": "schema['paths'].keys"
             },
             {
               "kind": "external_call",
-              "line": 48,
+              "line": 50,
               "step": "build_contract",
               "target": "ValueError"
             },
@@ -51157,6 +51578,14 @@
         "entities/CalendarResponse.md",
         "entities/CalendarSelection.md",
         "entities/CalendarService.md",
+        "entities/CalibrationBiasReview.md",
+        "entities/CalibrationContractAction.md",
+        "entities/CalibrationContractActor.md",
+        "entities/CalibrationContractState.md",
+        "entities/CalibrationDecay.md",
+        "entities/CalibrationDecayMethod.md",
+        "entities/CalibrationModel.md",
+        "entities/CalibrationSampleBounds.md",
         "entities/CallableTrustResolver.md",
         "entities/Capacity.md",
         "entities/CapacityAdjustmentCommand.md",
@@ -51797,6 +52226,7 @@
         "entities/QualificationEvidence.md",
         "entities/QualificationInputError.md",
         "entities/QualificationKeyAction.md",
+        "entities/QualificationKeyCalibrationReference.md",
         "entities/QualificationKeyCatalogReference.md",
         "entities/QualificationKeyState.md",
         "entities/Quantity.md",
@@ -51894,6 +52324,17 @@
         "entities/routers_task_domain_DB.md",
         "entities/routers_task_domain_MetricMatchPage.md",
         "entities/RouteStatus.md",
+        "entities/RoutingCalibrationContract.md",
+        "entities/RoutingCalibrationContractApprove.md",
+        "entities/RoutingCalibrationContractDetail.md",
+        "entities/RoutingCalibrationContractListResponse.md",
+        "entities/RoutingCalibrationContractResponse.md",
+        "entities/RoutingCalibrationContractRevise.md",
+        "entities/RoutingCalibrationContractRevision.md",
+        "entities/RoutingCalibrationContractRevisionResponse.md",
+        "entities/RoutingCalibrationContractService.md",
+        "entities/RoutingCalibrationContractSubmit.md",
+        "entities/RoutingCalibrationContractTerms.md",
         "entities/RoutingCandidateComparisonProps.md",
         "entities/RoutingCandidateSummary.md",
         "entities/RoutingContractModel.md",
@@ -51915,6 +52356,7 @@
         "entities/RoutingQualificationKeyState.md",
         "entities/RoutingSelectionValidation.md",
         "entities/RoutingSkillDecision.md",
+        "entities/RoutingTermsRefusedError.md",
         "entities/RoutingTrustLineage.md",
         "entities/RowContext.md",
         "entities/RowHours.md",
@@ -52793,6 +53235,7 @@
         "flows/http-apply_capacity_transfer.md",
         "flows/http-apply_schedule.md",
         "flows/http-approve_native_connection.md",
+        "flows/http-approve_routing_calibration_contract.md",
         "flows/http-attest_my_retained_output.md",
         "flows/http-attest_review_evidence.md",
         "flows/http-audit_hierarchy.md",
@@ -52954,6 +53397,7 @@
         "flows/http-get_project_summary.md",
         "flows/http-get_project_tasks.md",
         "flows/http-get_release.md",
+        "flows/http-get_routing_calibration_contract.md",
         "flows/http-get_routing_qualification_key.md",
         "flows/http-get_saved_view.md",
         "flows/http-get_scheduling_rules.md",
@@ -53025,6 +53469,7 @@
         "flows/http-list_ready_tasks.md",
         "flows/http-list_request_source_links.md",
         "flows/http-list_roadmap_milestones.md",
+        "flows/http-list_routing_calibration_contracts.md",
         "flows/http-list_routing_qualification_keys.md",
         "flows/http-list_runtime_observations.md",
         "flows/http-list_saved_view_dashboard_cards.md",
@@ -53110,6 +53555,7 @@
         "flows/http-retry_outbound_webhook_delivery.md",
         "flows/http-retry_personal_notification.md",
         "flows/http-review_task.md",
+        "flows/http-revise_routing_calibration_contract.md",
         "flows/http-revise_routing_qualification_key.md",
         "flows/http-revoke_owned_session.md",
         "flows/http-revoke_plan_share.md",
@@ -53127,6 +53573,7 @@
         "flows/http-start_native_connection.md",
         "flows/http-submit_my_agent_review_verdict.md",
         "flows/http-submit_my_agent_work.md",
+        "flows/http-submit_routing_calibration_contract.md",
         "flows/http-suggest_existing_task.md",
         "flows/http-suggest_task_draft.md",
         "flows/http-task_actions.md",
@@ -53467,6 +53914,7 @@
         "modules/20261126_0029_catalog_effort.md",
         "modules/20261127_0030_task_supersession.md",
         "modules/20261127_0031_routing_qualification_keys.md",
+        "modules/20261127_0032_routing_calibration_contracts.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -53857,6 +54305,7 @@
         "modules/models_project.md",
         "modules/models_release.md",
         "modules/models_request_source.md",
+        "modules/models_routing_calibration.md",
         "modules/models_routing_qualification.md",
         "modules/models_runtime_observation.md",
         "modules/models_saved_view.md",
@@ -54057,6 +54506,7 @@
         "modules/routers_task_domain.md",
         "modules/routers_team.md",
         "modules/routers_triage.md",
+        "modules/routing_calibration_contract_service.md",
         "modules/routing_qualification_key_service.md",
         "modules/RoutingCandidateComparison.md",
         "modules/RoutingCandidateComparison.test.md",
@@ -54119,6 +54569,7 @@
         "modules/schemas_release.md",
         "modules/schemas_request_source.md",
         "modules/schemas_review_evidence.md",
+        "modules/schemas_routing_calibration.md",
         "modules/schemas_routing_qualification.md",
         "modules/schemas_runtime_observation.md",
         "modules/schemas_saved_view.md",
@@ -54462,6 +54913,8 @@
         "modules/test_review_provenance.md",
         "modules/test_review_provenance_transports.md",
         "modules/test_review_record_kind_migration.md",
+        "modules/test_routing_calibration_contracts.md",
+        "modules/test_routing_calibration_contracts_migration.md",
         "modules/test_routing_evidence.md",
         "modules/test_routing_preview_focus.md",
         "modules/test_routing_preview_size.md",
@@ -54839,6 +55292,7 @@
         "workflows/retained_witness.md",
         "workflows/revoke_owned_session.md",
         "workflows/rotate_session.md",
+        "workflows/RoutingCalibrationContractService__validated_terms.md",
         "workflows/run_post_migration_repairs.md",
         "workflows/run_server_acceptance.md",
         "workflows/RuntimeObservationService_cleanup.md",
@@ -55183,7 +55637,6 @@
       "mcp_uri": "llm-wiki://entities/agent_routing_AgentModelMutationReceipt",
       "outgoing_internal_links": [
         "modules/agent_catalog.md",
-        "modules/agent_model_catalog_service.md",
         "modules/agent_routing.md"
       ],
       "role": "semantic",
@@ -58932,6 +59385,102 @@
       "role": "semantic",
       "source_path": "backend/app/services/calendar_service.py",
       "title": "CalendarService"
+    },
+    {
+      "canonical_path": "entities/CalibrationBiasReview.md",
+      "id": "CalibrationBiasReview",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/CalibrationBiasReview",
+      "outgoing_internal_links": [
+        "modules/schemas_routing_calibration.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "CalibrationBiasReview"
+    },
+    {
+      "canonical_path": "entities/CalibrationContractAction.md",
+      "id": "CalibrationContractAction",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/CalibrationContractAction",
+      "outgoing_internal_links": [
+        "modules/schemas_routing_calibration.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "CalibrationContractAction"
+    },
+    {
+      "canonical_path": "entities/CalibrationContractActor.md",
+      "id": "CalibrationContractActor",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/CalibrationContractActor",
+      "outgoing_internal_links": [
+        "modules/schemas_routing_calibration.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "CalibrationContractActor"
+    },
+    {
+      "canonical_path": "entities/CalibrationContractState.md",
+      "id": "CalibrationContractState",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/CalibrationContractState",
+      "outgoing_internal_links": [
+        "modules/schemas_routing_calibration.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "CalibrationContractState"
+    },
+    {
+      "canonical_path": "entities/CalibrationDecay.md",
+      "id": "CalibrationDecay",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/CalibrationDecay",
+      "outgoing_internal_links": [
+        "modules/schemas_routing_calibration.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "CalibrationDecay"
+    },
+    {
+      "canonical_path": "entities/CalibrationDecayMethod.md",
+      "id": "CalibrationDecayMethod",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/CalibrationDecayMethod",
+      "outgoing_internal_links": [
+        "modules/schemas_routing_calibration.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "CalibrationDecayMethod"
+    },
+    {
+      "canonical_path": "entities/CalibrationModel.md",
+      "id": "CalibrationModel",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/CalibrationModel",
+      "outgoing_internal_links": [
+        "modules/schemas_routing_calibration.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "_CalibrationModel"
+    },
+    {
+      "canonical_path": "entities/CalibrationSampleBounds.md",
+      "id": "CalibrationSampleBounds",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/CalibrationSampleBounds",
+      "outgoing_internal_links": [
+        "modules/schemas_routing_calibration.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "CalibrationSampleBounds"
     },
     {
       "canonical_path": "entities/CallableTrustResolver.md",
@@ -65365,6 +65914,7 @@
       "mcp_uri": "llm-wiki://entities/MutationResult",
       "outgoing_internal_links": [
         "modules/agent_model_catalog_service.md",
+        "modules/routing_calibration_contract_service.md",
         "modules/routing_qualification_key_service.md"
       ],
       "role": "semantic",
@@ -66885,6 +67435,7 @@
       "mcp_uri": "llm-wiki://entities/PositiveRevision",
       "outgoing_internal_links": [
         "modules/agent_routing.md",
+        "modules/schemas_routing_calibration.md",
         "modules/schemas_routing_qualification.md"
       ],
       "role": "semantic",
@@ -67655,6 +68206,19 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/routing_qualification.py",
       "title": "QualificationKeyAction"
+    },
+    {
+      "canonical_path": "entities/QualificationKeyCalibrationReference.md",
+      "id": "QualificationKeyCalibrationReference",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/QualificationKeyCalibrationReference",
+      "outgoing_internal_links": [
+        "modules/routing_qualification_key_service.md",
+        "modules/schemas_routing_qualification.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_qualification.py",
+      "title": "QualificationKeyCalibrationReference"
     },
     {
       "canonical_path": "entities/QualificationKeyCatalogReference.md",
@@ -68911,6 +69475,164 @@
       "title": "RouteStatus"
     },
     {
+      "canonical_path": "entities/RoutingCalibrationContract.md",
+      "id": "RoutingCalibrationContract",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RoutingCalibrationContract",
+      "outgoing_internal_links": [
+        "modules/app_database.md",
+        "modules/models___init__.md",
+        "modules/models_routing_calibration.md",
+        "modules/routing_calibration_contract_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/models/routing_calibration.py",
+      "title": "RoutingCalibrationContract"
+    },
+    {
+      "canonical_path": "entities/RoutingCalibrationContractApprove.md",
+      "id": "RoutingCalibrationContractApprove",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RoutingCalibrationContractApprove",
+      "outgoing_internal_links": [
+        "modules/agent_catalog.md",
+        "modules/routing_calibration_contract_service.md",
+        "modules/schemas_routing_calibration.md",
+        "modules/test_routing_calibration_contracts.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "RoutingCalibrationContractApprove"
+    },
+    {
+      "canonical_path": "entities/RoutingCalibrationContractDetail.md",
+      "id": "RoutingCalibrationContractDetail",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RoutingCalibrationContractDetail",
+      "outgoing_internal_links": [
+        "modules/agent_catalog.md",
+        "modules/routing_calibration_contract_service.md",
+        "modules/schemas_routing_calibration.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "RoutingCalibrationContractDetail"
+    },
+    {
+      "canonical_path": "entities/RoutingCalibrationContractListResponse.md",
+      "id": "RoutingCalibrationContractListResponse",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RoutingCalibrationContractListResponse",
+      "outgoing_internal_links": [
+        "modules/agent_catalog.md",
+        "modules/routing_calibration_contract_service.md",
+        "modules/schemas_routing_calibration.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "RoutingCalibrationContractListResponse"
+    },
+    {
+      "canonical_path": "entities/RoutingCalibrationContractResponse.md",
+      "id": "RoutingCalibrationContractResponse",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RoutingCalibrationContractResponse",
+      "outgoing_internal_links": [
+        "modules/routing_calibration_contract_service.md",
+        "modules/schemas_routing_calibration.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "RoutingCalibrationContractResponse"
+    },
+    {
+      "canonical_path": "entities/RoutingCalibrationContractRevise.md",
+      "id": "RoutingCalibrationContractRevise",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RoutingCalibrationContractRevise",
+      "outgoing_internal_links": [
+        "modules/agent_catalog.md",
+        "modules/routing_calibration_contract_service.md",
+        "modules/schemas_routing_calibration.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "RoutingCalibrationContractRevise"
+    },
+    {
+      "canonical_path": "entities/RoutingCalibrationContractRevision.md",
+      "id": "RoutingCalibrationContractRevision",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RoutingCalibrationContractRevision",
+      "outgoing_internal_links": [
+        "modules/app_database.md",
+        "modules/models___init__.md",
+        "modules/models_routing_calibration.md",
+        "modules/routing_calibration_contract_service.md",
+        "modules/test_routing_calibration_contracts.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/models/routing_calibration.py",
+      "title": "RoutingCalibrationContractRevision"
+    },
+    {
+      "canonical_path": "entities/RoutingCalibrationContractRevisionResponse.md",
+      "id": "RoutingCalibrationContractRevisionResponse",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RoutingCalibrationContractRevisionResponse",
+      "outgoing_internal_links": [
+        "modules/routing_calibration_contract_service.md",
+        "modules/schemas_routing_calibration.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "RoutingCalibrationContractRevisionResponse"
+    },
+    {
+      "canonical_path": "entities/RoutingCalibrationContractService.md",
+      "id": "RoutingCalibrationContractService",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RoutingCalibrationContractService",
+      "outgoing_internal_links": [
+        "modules/agent_catalog.md",
+        "modules/routing_calibration_contract_service.md",
+        "modules/test_routing_calibration_contracts.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/routing_calibration_contract_service.py",
+      "title": "RoutingCalibrationContractService"
+    },
+    {
+      "canonical_path": "entities/RoutingCalibrationContractSubmit.md",
+      "id": "RoutingCalibrationContractSubmit",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RoutingCalibrationContractSubmit",
+      "outgoing_internal_links": [
+        "modules/agent_catalog.md",
+        "modules/routing_calibration_contract_service.md",
+        "modules/schemas_routing_calibration.md",
+        "modules/test_routing_calibration_contracts.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "RoutingCalibrationContractSubmit"
+    },
+    {
+      "canonical_path": "entities/RoutingCalibrationContractTerms.md",
+      "id": "RoutingCalibrationContractTerms",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RoutingCalibrationContractTerms",
+      "outgoing_internal_links": [
+        "modules/routing_calibration_contract_service.md",
+        "modules/schemas_routing_calibration.md",
+        "modules/test_agent_routing_service.md",
+        "modules/test_routing_calibration_contracts.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "RoutingCalibrationContractTerms"
+    },
+    {
       "canonical_path": "entities/RoutingCandidateComparisonProps.md",
       "id": "RoutingCandidateComparisonProps",
       "kind": "entities",
@@ -68967,7 +69689,8 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/RoutingDigest",
       "outgoing_internal_links": [
-        "modules/agent_routing.md"
+        "modules/agent_routing.md",
+        "modules/schemas_routing_calibration.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_routing.py",
@@ -69004,6 +69727,7 @@
       "mcp_uri": "llm-wiki://entities/RoutingKey",
       "outgoing_internal_links": [
         "modules/agent_routing.md",
+        "modules/schemas_routing_calibration.md",
         "modules/schemas_routing_qualification.md"
       ],
       "role": "semantic",
@@ -69117,6 +69841,7 @@
         "modules/routing_qualification_key_service.md",
         "modules/schemas_routing_qualification.md",
         "modules/test_agent_routing_service.md",
+        "modules/test_routing_calibration_contracts.md",
         "modules/test_routing_qualification_keys.md"
       ],
       "role": "semantic",
@@ -69145,6 +69870,7 @@
         "modules/agent_catalog.md",
         "modules/routing_qualification_key_service.md",
         "modules/test_agent_routing_service.md",
+        "modules/test_routing_calibration_contracts.md",
         "modules/test_routing_qualification_keys.md"
       ],
       "role": "semantic",
@@ -69186,6 +69912,20 @@
       "role": "semantic",
       "source_path": "backend/app/services/agent_routing_policy.py",
       "title": "RoutingSkillDecision"
+    },
+    {
+      "canonical_path": "entities/RoutingTermsRefusedError.md",
+      "id": "RoutingTermsRefusedError",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RoutingTermsRefusedError",
+      "outgoing_internal_links": [
+        "modules/agent_routing_policy.md",
+        "modules/routers_agent_planning.md",
+        "modules/routing_calibration_contract_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/agent_routing_policy.py",
+      "title": "RoutingTermsRefusedError"
     },
     {
       "canonical_path": "entities/RoutingTrustLineage.md",
@@ -70337,8 +71077,7 @@
         "modules/test_agent_routing_wave6_qualification.md",
         "modules/test_agent_skill_routing_guidance.md",
         "modules/test_agent_work_routing_lineage.md",
-        "modules/test_routing_preview_focus.md",
-        "modules/test_routing_preview_team_scope.md"
+        "modules/test_routing_preview_focus.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent.py",
@@ -80361,7 +81100,6 @@
       "mcp_uri": "llm-wiki://entities/UnknownRoutingKeyError",
       "outgoing_internal_links": [
         "modules/agent_routing_policy.md",
-        "modules/routers_agent_planning.md",
         "modules/test_agent_routing_service.md",
         "modules/test_routing_qualification_keys.md"
       ],
@@ -81272,7 +82010,7 @@
         "modules/test_maintenance_window.md",
         "modules/test_managed_authority.md",
         "modules/test_pipeline_active_outside_run.md",
-        "modules/test_routing_qualification_keys.md"
+        "modules/test_routing_calibration_contracts.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/identity.py",
@@ -81724,6 +82462,16 @@
       "title": "20261127_0031_routing_qualification_keys Module"
     },
     {
+      "canonical_path": "modules/20261127_0032_routing_calibration_contracts.md",
+      "id": "20261127_0032_routing_calibration_contracts",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/20261127_0032_routing_calibration_contracts",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/app/migrations/versions/20261127_0032_routing_calibration_contracts.py",
+      "title": "20261127_0032_routing_calibration_contracts Module"
+    },
+    {
       "canonical_path": "modules/acceptance_artifacts.md",
       "id": "acceptance_artifacts",
       "kind": "modules",
@@ -82170,6 +82918,7 @@
         "entities/RoutingPacketSizeError.md",
         "entities/RoutingProfileEvidence.md",
         "entities/RoutingSkillDecision.md",
+        "entities/RoutingTermsRefusedError.md",
         "entities/UnknownRoutingKeyError.md",
         "modules/agent_routing_policy.md"
       ],
@@ -88165,6 +88914,27 @@
       "title": "request_source Module"
     },
     {
+      "canonical_path": "modules/models_routing_calibration.md",
+      "id": "models_routing_calibration",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/models_routing_calibration",
+      "outgoing_internal_links": [
+        "entities/RoutingCalibrationContract.md",
+        "entities/RoutingCalibrationContractRevision.md",
+        "modules/app_database.md",
+        "modules/models___init__.md",
+        "modules/models_routing_calibration.md",
+        "modules/routing_calibration_contract_service.md",
+        "modules/routing_qualification_key_service.md",
+        "modules/test_agent_routing_service.md",
+        "modules/test_routing_calibration_contracts.md",
+        "modules/time.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/models/routing_calibration.py",
+      "title": "routing_calibration Module"
+    },
+    {
       "canonical_path": "modules/models_routing_qualification.md",
       "id": "models_routing_qualification",
       "kind": "modules",
@@ -88177,6 +88947,7 @@
         "modules/models_routing_qualification.md",
         "modules/routing_qualification_key_service.md",
         "modules/test_agent_routing_service.md",
+        "modules/test_routing_calibration_contracts.md",
         "modules/test_routing_qualification_keys.md",
         "modules/time.md"
       ],
@@ -91526,6 +92297,19 @@
       "title": "triage Module"
     },
     {
+      "canonical_path": "modules/routing_calibration_contract_service.md",
+      "id": "routing_calibration_contract_service",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/routing_calibration_contract_service",
+      "outgoing_internal_links": [
+        "entities/RoutingCalibrationContractService.md",
+        "modules/routing_calibration_contract_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/routing_calibration_contract_service.py",
+      "title": "routing_calibration_contract_service Module"
+    },
+    {
       "canonical_path": "modules/routing_qualification_key_service.md",
       "id": "routing_qualification_key_service",
       "kind": "modules",
@@ -92793,12 +93577,46 @@
       "title": "review_evidence Module"
     },
     {
+      "canonical_path": "modules/schemas_routing_calibration.md",
+      "id": "schemas_routing_calibration",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/schemas_routing_calibration",
+      "outgoing_internal_links": [
+        "entities/CalibrationBiasReview.md",
+        "entities/CalibrationContractAction.md",
+        "entities/CalibrationContractActor.md",
+        "entities/CalibrationContractState.md",
+        "entities/CalibrationDecay.md",
+        "entities/CalibrationDecayMethod.md",
+        "entities/CalibrationModel.md",
+        "entities/CalibrationSampleBounds.md",
+        "entities/RoutingCalibrationContractApprove.md",
+        "entities/RoutingCalibrationContractDetail.md",
+        "entities/RoutingCalibrationContractListResponse.md",
+        "entities/RoutingCalibrationContractResponse.md",
+        "entities/RoutingCalibrationContractRevise.md",
+        "entities/RoutingCalibrationContractRevisionResponse.md",
+        "entities/RoutingCalibrationContractSubmit.md",
+        "entities/RoutingCalibrationContractTerms.md",
+        "modules/agent_catalog.md",
+        "modules/agent_routing.md",
+        "modules/routing_calibration_contract_service.md",
+        "modules/schemas_routing_calibration.md",
+        "modules/test_agent_routing_service.md",
+        "modules/test_routing_calibration_contracts.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/routing_calibration.py",
+      "title": "routing_calibration Module"
+    },
+    {
       "canonical_path": "modules/schemas_routing_qualification.md",
       "id": "schemas_routing_qualification",
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/schemas_routing_qualification",
       "outgoing_internal_links": [
         "entities/QualificationKeyAction.md",
+        "entities/QualificationKeyCalibrationReference.md",
         "entities/QualificationKeyCatalogReference.md",
         "entities/QualificationKeyState.md",
         "entities/RegistryModel.md",
@@ -92815,6 +93633,7 @@
         "modules/routing_qualification_key_service.md",
         "modules/schemas_routing_qualification.md",
         "modules/test_agent_routing_service.md",
+        "modules/test_routing_calibration_contracts.md",
         "modules/test_routing_qualification_keys.md"
       ],
       "role": "semantic",
@@ -98377,6 +99196,31 @@
       "title": "test_review_record_kind_migration Module"
     },
     {
+      "canonical_path": "modules/test_routing_calibration_contracts.md",
+      "id": "test_routing_calibration_contracts",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_routing_calibration_contracts",
+      "outgoing_internal_links": [
+        "modules/test_routing_calibration_contracts.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_routing_calibration_contracts.py",
+      "title": "test_routing_calibration_contracts Module"
+    },
+    {
+      "canonical_path": "modules/test_routing_calibration_contracts_migration.md",
+      "id": "test_routing_calibration_contracts_migration",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_routing_calibration_contracts_migration",
+      "outgoing_internal_links": [
+        "modules/test_routing_calibration_contracts_migration.md",
+        "modules/upgrade_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/migrations/test_routing_calibration_contracts_migration.py",
+      "title": "test_routing_calibration_contracts_migration Module"
+    },
+    {
       "canonical_path": "modules/test_routing_evidence.md",
       "id": "test_routing_evidence",
       "kind": "modules",
@@ -101677,6 +102521,7 @@
         "modules/agent_team_setup_service.md",
         "modules/query_limits.md",
         "modules/review_provenance.md",
+        "modules/routing_calibration_contract_service.md",
         "modules/routing_qualification_key_service.md",
         "modules/services_review_evidence.md",
         "modules/task_service.md",
@@ -104662,6 +105507,21 @@
       "title": "rotate_session"
     },
     {
+      "canonical_path": "workflows/RoutingCalibrationContractService__validated_terms.md",
+      "id": "RoutingCalibrationContractService__validated_terms",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/RoutingCalibrationContractService__validated_terms",
+      "outgoing_internal_links": [
+        "modules/agent_routing_policy.md",
+        "modules/routing_calibration_contract_service.md",
+        "modules/routing_qualification_key_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/routing_calibration_contract_service.py",
+      "title": "RoutingCalibrationContractService__validated_terms"
+    },
+    {
       "canonical_path": "workflows/run_post_migration_repairs.md",
       "id": "run_post_migration_repairs",
       "kind": "workflows",
@@ -105902,6 +106762,19 @@
       "role": "mixed",
       "source_path": "backend/app/routers/identity.py",
       "title": "approve_native_connection"
+    },
+    {
+      "canonical_path": "flows/http-approve_routing_calibration_contract.md",
+      "id": "http-approve_routing_calibration_contract",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-approve_routing_calibration_contract",
+      "outgoing_internal_links": [
+        "modules/agent_catalog.md",
+        "modules/routers_agent_planning.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/agent_catalog.py",
+      "title": "approve_routing_calibration_contract"
     },
     {
       "canonical_path": "flows/http-attest_my_retained_output.md",
@@ -108370,6 +109243,19 @@
       "title": "get_release"
     },
     {
+      "canonical_path": "flows/http-get_routing_calibration_contract.md",
+      "id": "http-get_routing_calibration_contract",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-get_routing_calibration_contract",
+      "outgoing_internal_links": [
+        "modules/agent_catalog.md",
+        "modules/routers_agent_planning.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/agent_catalog.py",
+      "title": "get_routing_calibration_contract"
+    },
+    {
       "canonical_path": "flows/http-get_routing_qualification_key.md",
       "id": "http-get_routing_qualification_key",
       "kind": "flows",
@@ -109447,6 +110333,19 @@
       "role": "mixed",
       "source_path": "backend/app/routers/projects.py",
       "title": "list_roadmap_milestones"
+    },
+    {
+      "canonical_path": "flows/http-list_routing_calibration_contracts.md",
+      "id": "http-list_routing_calibration_contracts",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-list_routing_calibration_contracts",
+      "outgoing_internal_links": [
+        "modules/agent_catalog.md",
+        "modules/routers_agent_planning.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/agent_catalog.py",
+      "title": "list_routing_calibration_contracts"
     },
     {
       "canonical_path": "flows/http-list_routing_qualification_keys.md",
@@ -110742,6 +111641,19 @@
       "title": "review_task"
     },
     {
+      "canonical_path": "flows/http-revise_routing_calibration_contract.md",
+      "id": "http-revise_routing_calibration_contract",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-revise_routing_calibration_contract",
+      "outgoing_internal_links": [
+        "modules/agent_catalog.md",
+        "modules/routers_agent_planning.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/agent_catalog.py",
+      "title": "revise_routing_calibration_contract"
+    },
+    {
       "canonical_path": "flows/http-revise_routing_qualification_key.md",
       "id": "http-revise_routing_qualification_key",
       "kind": "flows",
@@ -110981,6 +111893,19 @@
       "role": "mixed",
       "source_path": "backend/app/routers/agent.py",
       "title": "submit_my_agent_work"
+    },
+    {
+      "canonical_path": "flows/http-submit_routing_calibration_contract.md",
+      "id": "http-submit_routing_calibration_contract",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-submit_routing_calibration_contract",
+      "outgoing_internal_links": [
+        "modules/agent_catalog.md",
+        "modules/routers_agent_planning.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/agent_catalog.py",
+      "title": "submit_routing_calibration_contract"
     },
     {
       "canonical_path": "flows/http-suggest_existing_task.md",
@@ -114379,6 +115304,7 @@
         "modules/query_limits.md",
         "modules/refusal_next_steps.md",
         "modules/review_provenance.md",
+        "modules/routing_calibration_contract_service.md",
         "modules/routing_qualification_key_service.md",
         "modules/services_review_evidence.md",
         "modules/task_brief_service.md",
@@ -118393,6 +119319,7 @@
         "modules/20261126_0029_catalog_effort.md",
         "modules/20261127_0030_task_supersession.md",
         "modules/20261127_0031_routing_qualification_keys.md",
+        "modules/20261127_0032_routing_calibration_contracts.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -118783,6 +119710,7 @@
         "modules/models_project.md",
         "modules/models_release.md",
         "modules/models_request_source.md",
+        "modules/models_routing_calibration.md",
         "modules/models_routing_qualification.md",
         "modules/models_runtime_observation.md",
         "modules/models_saved_view.md",
@@ -118983,6 +119911,7 @@
         "modules/routers_task_domain.md",
         "modules/routers_team.md",
         "modules/routers_triage.md",
+        "modules/routing_calibration_contract_service.md",
         "modules/routing_qualification_key_service.md",
         "modules/RoutingCandidateComparison.md",
         "modules/RoutingCandidateComparison.test.md",
@@ -119045,6 +119974,7 @@
         "modules/schemas_release.md",
         "modules/schemas_request_source.md",
         "modules/schemas_review_evidence.md",
+        "modules/schemas_routing_calibration.md",
         "modules/schemas_routing_qualification.md",
         "modules/schemas_runtime_observation.md",
         "modules/schemas_saved_view.md",
@@ -119388,6 +120318,8 @@
         "modules/test_review_provenance.md",
         "modules/test_review_provenance_transports.md",
         "modules/test_review_record_kind_migration.md",
+        "modules/test_routing_calibration_contracts.md",
+        "modules/test_routing_calibration_contracts_migration.md",
         "modules/test_routing_evidence.md",
         "modules/test_routing_preview_focus.md",
         "modules/test_routing_preview_size.md",
@@ -119618,6 +120550,7 @@
         "modules/20261126_0029_catalog_effort.md",
         "modules/20261127_0030_task_supersession.md",
         "modules/20261127_0031_routing_qualification_keys.md",
+        "modules/20261127_0032_routing_calibration_contracts.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -120008,6 +120941,7 @@
         "modules/models_project.md",
         "modules/models_release.md",
         "modules/models_request_source.md",
+        "modules/models_routing_calibration.md",
         "modules/models_routing_qualification.md",
         "modules/models_runtime_observation.md",
         "modules/models_saved_view.md",
@@ -120208,6 +121142,7 @@
         "modules/routers_task_domain.md",
         "modules/routers_team.md",
         "modules/routers_triage.md",
+        "modules/routing_calibration_contract_service.md",
         "modules/routing_qualification_key_service.md",
         "modules/RoutingCandidateComparison.md",
         "modules/RoutingCandidateComparison.test.md",
@@ -120270,6 +121205,7 @@
         "modules/schemas_release.md",
         "modules/schemas_request_source.md",
         "modules/schemas_review_evidence.md",
+        "modules/schemas_routing_calibration.md",
         "modules/schemas_routing_qualification.md",
         "modules/schemas_runtime_observation.md",
         "modules/schemas_saved_view.md",
@@ -120613,6 +121549,8 @@
         "modules/test_review_provenance.md",
         "modules/test_review_provenance_transports.md",
         "modules/test_review_record_kind_migration.md",
+        "modules/test_routing_calibration_contracts.md",
+        "modules/test_routing_calibration_contracts_migration.md",
         "modules/test_routing_evidence.md",
         "modules/test_routing_preview_focus.md",
         "modules/test_routing_preview_size.md",
@@ -120807,5 +121745,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:80cd9610e077e1bb1eb0ff67f786654492b61852ea22461cb3f3922cbc8a0ce4"
+  "source_hash": "sha256:5796779d8c7155e93fe53ac41a9a3b77bb119216debd56d91bb7cae71cac1c6f"
 }

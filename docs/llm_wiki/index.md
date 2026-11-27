@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1902 | [Open section](#entities) |
-| Modules | 1214 | [Open section](#modules) |
-| Workflows | 251 | [Open section](#workflows) |
+| Entities | 1923 | [Open section](#entities) |
+| Modules | 1220 | [Open section](#modules) |
+| Workflows | 252 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 643 | [Open section](#entry-point-flows) |
+| Entry-point flows | 648 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -267,6 +267,14 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [CalendarResponse](entities/CalendarResponse.md)
 - [CalendarSelection](entities/CalendarSelection.md)
 - [CalendarService](entities/CalendarService.md)
+- [CalibrationBiasReview](entities/CalibrationBiasReview.md)
+- [CalibrationContractAction](entities/CalibrationContractAction.md)
+- [CalibrationContractActor](entities/CalibrationContractActor.md)
+- [CalibrationContractState](entities/CalibrationContractState.md)
+- [CalibrationDecay](entities/CalibrationDecay.md)
+- [CalibrationDecayMethod](entities/CalibrationDecayMethod.md)
+- [CalibrationModel](entities/CalibrationModel.md)
+- [CalibrationSampleBounds](entities/CalibrationSampleBounds.md)
 - [CallableTrustResolver](entities/CallableTrustResolver.md)
 - [Capacity](entities/Capacity.md)
 - [CapacityAdjustmentCommand](entities/CapacityAdjustmentCommand.md)
@@ -814,6 +822,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [QualificationEvidence](entities/QualificationEvidence.md)
 - [QualificationInputError](entities/QualificationInputError.md)
 - [QualificationKeyAction](entities/QualificationKeyAction.md)
+- [QualificationKeyCalibrationReference](entities/QualificationKeyCalibrationReference.md)
 - [QualificationKeyCatalogReference](entities/QualificationKeyCatalogReference.md)
 - [QualificationKeyState](entities/QualificationKeyState.md)
 - [Quantity](entities/Quantity.md)
@@ -900,6 +909,17 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RouteMetadata](entities/RouteMetadata.md)
 - [RouteModuleKey](entities/RouteModuleKey.md)
 - [RouteStatus](entities/RouteStatus.md)
+- [RoutingCalibrationContract](entities/RoutingCalibrationContract.md)
+- [RoutingCalibrationContractApprove](entities/RoutingCalibrationContractApprove.md)
+- [RoutingCalibrationContractDetail](entities/RoutingCalibrationContractDetail.md)
+- [RoutingCalibrationContractListResponse](entities/RoutingCalibrationContractListResponse.md)
+- [RoutingCalibrationContractResponse](entities/RoutingCalibrationContractResponse.md)
+- [RoutingCalibrationContractRevise](entities/RoutingCalibrationContractRevise.md)
+- [RoutingCalibrationContractRevision](entities/RoutingCalibrationContractRevision.md)
+- [RoutingCalibrationContractRevisionResponse](entities/RoutingCalibrationContractRevisionResponse.md)
+- [RoutingCalibrationContractService](entities/RoutingCalibrationContractService.md)
+- [RoutingCalibrationContractSubmit](entities/RoutingCalibrationContractSubmit.md)
+- [RoutingCalibrationContractTerms](entities/RoutingCalibrationContractTerms.md)
 - [RoutingCandidateComparisonProps](entities/RoutingCandidateComparisonProps.md)
 - [RoutingCandidateSummary](entities/RoutingCandidateSummary.md)
 - [RoutingContractModel](entities/RoutingContractModel.md)
@@ -921,6 +941,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RoutingQualificationKeyState](entities/RoutingQualificationKeyState.md)
 - [RoutingSelectionValidation](entities/RoutingSelectionValidation.md)
 - [RoutingSkillDecision](entities/RoutingSkillDecision.md)
+- [RoutingTermsRefusedError](entities/RoutingTermsRefusedError.md)
 - [RoutingTrustLineage](entities/RoutingTrustLineage.md)
 - [RowContext](entities/RowContext.md)
 - [RowHours](entities/RowHours.md)
@@ -1960,6 +1981,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261126_0029_catalog_effort](modules/20261126_0029_catalog_effort.md) - Record the reasoning-effort setting of each model catalog entry.
 - [20261127_0030_task_supersession](modules/20261127_0030_task_supersession.md) - Record a supersession: an original whose deliverable was already closed or accepted as another task.
 - [20261127_0031_routing_qualification_keys](modules/20261127_0031_routing_qualification_keys.md) - Keep a deployment's declared qualification keys and let catalog entries hold them.
+- [20261127_0032_routing_calibration_contracts](modules/20261127_0032_routing_calibration_contracts.md) - Keep the deployment's calibration contracts and their append-only revisions.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AccountMenu](modules/AccountMenu.md) - `frontend/src/features/identity/AccountMenu.tsx`
 - [AccountMenu.test](modules/AccountMenu.test.md) - `frontend/src/features/identity/AccountMenu.test.tsx`
@@ -2576,6 +2598,7 @@ Retained history; these declarations are absent from the selected source invento
 - [models_project](modules/models_project.md) - Project model.
 - [models_release](modules/models_release.md) - Release model for shipped-work tracking.
 - [models_request_source](modules/models_request_source.md) - Request source models for customer and intake traceability.
+- [models_routing_calibration](modules/models_routing_calibration.md) - Calibration contracts that state when performance history may inform routing.
 - [models_routing_qualification](modules/models_routing_qualification.md) - A deployment's declared qualification keys and their append-only revisions.
 - [models_runtime_observation](modules/models_runtime_observation.md) - Advisory observations of agent runtime sessions, reported by independent observers.
 - [models_saved_view](modules/models_saved_view.md) - Saved view model for reusable list and dashboard filters.
@@ -2691,6 +2714,7 @@ Retained history; these declarations are absent from the selected source invento
 - [routers_task_domain](modules/routers_task_domain.md) - Compatible domain commands, canonical briefs and bounded task reads.
 - [routers_team](modules/routers_team.md) - Team API router.
 - [routers_triage](modules/routers_triage.md) - Triage API router.
+- [routing_calibration_contract_service](modules/routing_calibration_contract_service.md) - The deployment's calibration contracts for performance-informed routing.
 - [routing_qualification_key_service](modules/routing_qualification_key_service.md) - The deployment's governed registry of qualification keys.
 - [run](modules/run.md) - Run deterministic, production-shaped REST and MCP load through public APIs.
 - [run_android_checks](modules/run_android_checks.md) - Build Android with native JDK 17, the licensed SDK and the checksum-pinned Gradle wrapper.
@@ -2742,6 +2766,7 @@ Retained history; these declarations are absent from the selected source invento
 - [schemas_release](modules/schemas_release.md) - Release schemas.
 - [schemas_request_source](modules/schemas_request_source.md) - Request source schemas.
 - [schemas_review_evidence](modules/schemas_review_evidence.md) - Bounded, non-executable evidence prepared for one review of an immutable candidate.
+- [schemas_routing_calibration](modules/schemas_routing_calibration.md) - Contracts for the calibration terms under which performance history may inform routing.
 - [schemas_routing_qualification](modules/schemas_routing_qualification.md) - Contracts for the deployment's governed qualification key registry.
 - [schemas_runtime_observation](modules/schemas_runtime_observation.md) - Advisory runtime observation contracts.
 - [schemas_saved_view](modules/schemas_saved_view.md) - Saved view schemas and filter payload validation primitives.
@@ -2989,6 +3014,8 @@ Retained history; these declarations are absent from the selected source invento
 - [test_review_provenance](modules/test_review_provenance.md) - Exercise independent publisher review through the atomic work commands.
 - [test_review_provenance_transports](modules/test_review_provenance_transports.md) - Exercise strict review, interruption and return through the registered worker and PM protocols.
 - [test_review_record_kind_migration](modules/test_review_record_kind_migration.md) - Review history gains a kind reversibly and never silently loses an owner override.
+- [test_routing_calibration_contracts](modules/test_routing_calibration_contracts.md) - Calibration contracts: submitted, approved and read under deployment-operator authority.
+- [test_routing_calibration_contracts_migration](modules/test_routing_calibration_contracts_migration.md) - The calibration contract upgrade adds governed tables and never drops a submitted contract.
 - [test_routing_evidence](modules/test_routing_evidence.md) - Keep CI evidence inventories aligned with the checked-in implementation.
 - [test_routing_preview_focus](modules/test_routing_preview_focus.md) - A focused routing preview keeps a named team actor's rows inside the bounded response.
 - [test_routing_preview_size](modules/test_routing_preview_size.md) - The routed decision, its defaults, and its digest share one exact canonical byte budget.
@@ -3266,6 +3293,7 @@ Retained history; these declarations are absent from the selected source invento
 - [ReleaseService_create_for_project](workflows/ReleaseService_create_for_project.md) - entry: `release_service.ReleaseService.create_for_project`
 - [RequestSourceService_create_link](workflows/RequestSourceService_create_link.md) - entry: `request_source_service.RequestSourceService.create_link`
 - [RequestSourceService_unlink](workflows/RequestSourceService_unlink.md) - entry: `request_source_service.RequestSourceService.unlink`
+- [RoutingCalibrationContractService__validated_terms](workflows/RoutingCalibrationContractService__validated_terms.md) - entry: `routing_calibration_contract_service.RoutingCalibrationContractService._validated_terms`
 - [RuntimeObservationService_cleanup](workflows/RuntimeObservationService_cleanup.md) - entry: `runtime_observation_service.RuntimeObservationService.cleanup`
 - [RuntimeObservationService_record](workflows/RuntimeObservationService_record.md) - entry: `runtime_observation_service.RuntimeObservationService.record`
 - [SchedulerService___init__](workflows/SchedulerService___init__.md) - entry: `scheduler_service.SchedulerService.__init__`
@@ -3419,6 +3447,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-apply_capacity_transfer](flows/http-apply_capacity_transfer.md) - entry: `apply_capacity_transfer`
 - [http-apply_schedule](flows/http-apply_schedule.md) - entry: `apply_schedule`
 - [http-approve_native_connection](flows/http-approve_native_connection.md) - entry: `approve_native_connection`
+- [http-approve_routing_calibration_contract](flows/http-approve_routing_calibration_contract.md) - entry: `approve_routing_calibration_contract`
 - [http-attest_my_retained_output](flows/http-attest_my_retained_output.md) - entry: `attest_my_retained_output`
 - [http-attest_review_evidence](flows/http-attest_review_evidence.md) - entry: `attest_review_evidence`
 - [http-audit_hierarchy](flows/http-audit_hierarchy.md) - entry: `audit_hierarchy`
@@ -3580,6 +3609,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-get_project_summary](flows/http-get_project_summary.md) - entry: `get_project_summary`
 - [http-get_project_tasks](flows/http-get_project_tasks.md) - entry: `get_project_tasks`
 - [http-get_release](flows/http-get_release.md) - entry: `get_release`
+- [http-get_routing_calibration_contract](flows/http-get_routing_calibration_contract.md) - entry: `get_routing_calibration_contract`
 - [http-get_routing_qualification_key](flows/http-get_routing_qualification_key.md) - entry: `get_routing_qualification_key`
 - [http-get_saved_view](flows/http-get_saved_view.md) - entry: `get_saved_view`
 - [http-get_scheduling_rules](flows/http-get_scheduling_rules.md) - entry: `get_scheduling_rules`
@@ -3651,6 +3681,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-list_ready_tasks](flows/http-list_ready_tasks.md) - entry: `list_ready_tasks`
 - [http-list_request_source_links](flows/http-list_request_source_links.md) - entry: `list_request_source_links`
 - [http-list_roadmap_milestones](flows/http-list_roadmap_milestones.md) - entry: `list_roadmap_milestones`
+- [http-list_routing_calibration_contracts](flows/http-list_routing_calibration_contracts.md) - entry: `list_routing_calibration_contracts`
 - [http-list_routing_qualification_keys](flows/http-list_routing_qualification_keys.md) - entry: `list_routing_qualification_keys`
 - [http-list_runtime_observations](flows/http-list_runtime_observations.md) - entry: `list_runtime_observations`
 - [http-list_saved_view_dashboard_cards](flows/http-list_saved_view_dashboard_cards.md) - entry: `list_saved_view_dashboard_cards`
@@ -3736,6 +3767,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-retry_outbound_webhook_delivery](flows/http-retry_outbound_webhook_delivery.md) - entry: `retry_outbound_webhook_delivery`
 - [http-retry_personal_notification](flows/http-retry_personal_notification.md) - entry: `retry_personal_notification`
 - [http-review_task](flows/http-review_task.md) - entry: `review_task`
+- [http-revise_routing_calibration_contract](flows/http-revise_routing_calibration_contract.md) - entry: `revise_routing_calibration_contract`
 - [http-revise_routing_qualification_key](flows/http-revise_routing_qualification_key.md) - entry: `revise_routing_qualification_key`
 - [http-revoke_owned_session](flows/http-revoke_owned_session.md) - entry: `revoke_owned_session`
 - [http-revoke_plan_share](flows/http-revoke_plan_share.md) - entry: `revoke_plan_share`
@@ -3753,6 +3785,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-start_native_connection](flows/http-start_native_connection.md) - entry: `start_native_connection`
 - [http-submit_my_agent_review_verdict](flows/http-submit_my_agent_review_verdict.md) - entry: `submit_my_agent_review_verdict`
 - [http-submit_my_agent_work](flows/http-submit_my_agent_work.md) - entry: `submit_my_agent_work`
+- [http-submit_routing_calibration_contract](flows/http-submit_routing_calibration_contract.md) - entry: `submit_routing_calibration_contract`
 - [http-suggest_existing_task](flows/http-suggest_existing_task.md) - entry: `suggest_existing_task`
 - [http-suggest_task_draft](flows/http-suggest_task_draft.md) - entry: `suggest_task_draft`
 - [http-task_actions](flows/http-task_actions.md) - entry: `task_actions`

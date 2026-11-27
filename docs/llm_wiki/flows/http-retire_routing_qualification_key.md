@@ -146,15 +146,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| retire_routing_qualification_key | service.retire | 609 | `service.retire(key, actor, data, command=command)` |
-| retire_routing_qualification_key | _handle_model_error | 611 | `_handle_model_error(exc)` |
-| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 150 | `isinstance(exc, AgentModelConflictError)` |
-| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 151 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_model_error | exc.detail (backend/app/routers/agent…log.py:_handle_model_error) | 153 | `exc.detail(data not statically known)` |
-| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 155 | `isinstance(exc, LookupError)` |
-| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 156 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={...})` |
-| _handle_model_error | str (backend/app/routers/agent…log.py:_handle_model_error) | 160 | `str(exc)` |
-| _handle_model_error | _handle_agent_error | 163 | `_handle_agent_error(exc)` |
+| retire_routing_qualification_key | service.retire | 617 | `service.retire(key, actor, data, command=command)` |
+| retire_routing_qualification_key | _handle_model_error | 619 | `_handle_model_error(exc)` |
+| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 158 | `isinstance(exc, AgentModelConflictError)` |
+| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 159 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_model_error | exc.detail (backend/app/routers/agent…log.py:_handle_model_error) | 161 | `exc.detail(data not statically known)` |
+| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 163 | `isinstance(exc, LookupError)` |
+| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 164 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={...})` |
+| _handle_model_error | str (backend/app/routers/agent…log.py:_handle_model_error) | 168 | `str(exc)` |
+| _handle_model_error | _handle_agent_error | 171 | `_handle_agent_error(exc)` |
 | _handle_agent_error | isinstance (backend/app/routers/agent…ing.py:_handle_agent_error) | 111 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error) | 112 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
 
@@ -166,12 +166,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `retire_routing_qualification_key` | `service.retire` | 609 |
-| external_call | `_handle_model_error` | `isinstance` | 150 |
-| external_call | `_handle_model_error` | `HTTPException` | 151 |
-| unresolved_call | `_handle_model_error` | `exc.detail` | 153 |
-| external_call | `_handle_model_error` | `isinstance` | 155 |
-| external_call | `_handle_model_error` | `HTTPException` | 156 |
+| unresolved_call | `retire_routing_qualification_key` | `service.retire` | 617 |
+| external_call | `_handle_model_error` | `isinstance` | 158 |
+| external_call | `_handle_model_error` | `HTTPException` | 159 |
+| unresolved_call | `_handle_model_error` | `exc.detail` | 161 |
+| external_call | `_handle_model_error` | `isinstance` | 163 |
+| external_call | `_handle_model_error` | `HTTPException` | 164 |
 | external_call | `_handle_agent_error` | `isinstance` | 111 |
 | external_call | `_handle_agent_error` | `HTTPException` | 112 |
 | step_limit | `retire_routing_qualification_key` | `first 12 steps` | 0 |

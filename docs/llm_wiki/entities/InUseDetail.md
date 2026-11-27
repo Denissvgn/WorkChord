@@ -18,6 +18,8 @@ _Auto-generated from `InUseDetail` in `frontend/src/components/settings/Qualific
 | `task_ids` | `number[]` | No | — | — |
 | `catalog_entries_omitted` | `number` | No | — | — |
 | `task_ids_omitted` | `number` | No | — | — |
+| `calibration_contracts` | `{ key: string }[]` | No | — | — |
+| `calibration_contracts_omitted` | `number` | No | — | — |
 
 ## Methods
 
@@ -32,4 +34,4 @@ _Auto-generated from `InUseDetail` in `frontend/src/components/settings/Qualific
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [QualificationKeysPanel](../modules/QualificationKeysPanel.md) | 0 | `catalog_entries`, `catalog_entries_omitted`, `code`, `task_ids`, `task_ids_omitted` |
+| [QualificationKeysPanel](../modules/QualificationKeysPanel.md) | 0 | `calibration_contracts`, `calibration_contracts_omitted`, `catalog_entries`, `catalog_entries_omitted`, `code`, `task_ids`, `task_ids_omitted` |

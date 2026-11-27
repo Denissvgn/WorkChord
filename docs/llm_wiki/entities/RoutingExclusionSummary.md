@@ -1,6 +1,6 @@
 # RoutingExclusionSummary
 
-**Location:** `backend/app/schemas/agent_routing.py:1378`
+**Location:** `backend/app/schemas/agent_routing.py:1399`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)

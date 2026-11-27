@@ -1,6 +1,6 @@
 # RoutingQualificationKeyDetail
 
-**Location:** `frontend/src/types/agent.ts:350`
+**Location:** `frontend/src/types/agent.ts:352`
 **Kind:** Interface
 **Bases:** `RoutingQualificationKey`
 **Module:** [types_agent](../modules/types_agent.md)

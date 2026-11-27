@@ -1,6 +1,6 @@
 # RoutingQualificationKeyService
 
-**Location:** `backend/app/services/routing_qualification_key_service.py:133`
+**Location:** `backend/app/services/routing_qualification_key_service.py:135`
 **Kind:** Class
 **Bases:** —
 **Module:** [routing_qualification_key_service](../modules/routing_qualification_key_service.md)
@@ -26,9 +26,9 @@ authority mode lets an agent change deployment settings.
 | `_key` | *(async)* `(key: str, *, for_update: bool = False) -> RoutingQualificationKey \| None` | — | — |
 | `list_registry` | *(async)* `(actor: AgentActor, *, include_retired: bool = False) -> RoutingQualificationKeyRegistryResponse` | — | List the built-in keys and the declared keys, active ones by default. |
 | `get_key` | *(async)* `(actor: AgentActor, key: str) -> RoutingQualificationKeyDetail` | — | Read one declared key with its revisions and what currently names it. |
-| `usage` | *(async)* `(key: str) -> RoutingQualificationKeyUsage` | — | Catalog entries holding the key and open tasks requiring it, as visible to the caller. |
-| `_references` | *(async)* `(key: str) -> tuple[list[AgentModelCatalogEntry], list[int]]` | — | — |
-| `_bounded_usage` | `(entries: list[AgentModelCatalogEntry], task_ids: list[int], *, total_entries: int \| None = None, total_tasks: int \| None = None) -> RoutingQualificationKeyUsage` | `@staticmethod` | — |
+| `usage` | *(async)* `(key: str) -> RoutingQualificationKeyUsage` | — | Catalog entries holding the key, calibration contracts naming it and open tasks requiring it. |
+| `_references` | *(async)* `(key: str) -> tuple[list[AgentModelCatalogEntry], list[int], list[RoutingCalibrationContract]]` | — | — |
+| `_bounded_usage` | `(entries: list[AgentModelCatalogEntry], task_ids: list[int], contracts: list[RoutingCalibrationContract], *, total_entries: int \| None = None, total_tasks: int \| None = None) -> RoutingQualificationKeyUsage` | `@staticmethod` | — |
 | `_retire_usage` | *(async)* `(key: str) -> RoutingQualificationKeyUsage` | — | Usage that decides a retire: every reference counts, but only visible tasks are named. |
 | `_record` | `(row: RoutingQualificationKey, *, action: str, principal: AgentActor, command: AgentPlanningCommandContext, operation: str) -> TaskEvent` | — | — |
 | `_result` | *(async)* `(row: RoutingQualificationKey, event: TaskEvent) -> _MutationResult` | — | — |
@@ -53,8 +53,9 @@ flowchart LR
     n6["revise_routing_qualification_key (backend/app/routers/agent_catalog.py)"]
     n7["test_a_project_scoped_agent_can_require_a_declared_key (backend/tests/test_agent_routing_service.py)"]
     n8["test_declared_qualification_key_is_a_requirement_the_candidate_must_hold (backend/tests/test_agent_routing_service.py)"]
-    n9["test_retire_and_validation_serialize_across_postgresql_sessions (backend/tests/test_routing_qualification_keys.py)"]
-    n10["test_usage_and_share_locked_validation_work_on_postgresql (backend/tests/test_routing_qualification_keys.py)"]
+    n9["test_contracts_are_submitted_approved_and_read_on_postgresql (backend/tests/test_routing_calibration_contracts.py)"]
+    n10["test_retire_and_validation_serialize_across_postgresql_sessions (backend/tests/test_routing_qualification_keys.py)"]
+    n11["test_usage_and_share_locked_validation_work_on_postgresql (backend/tests/test_routing_qualification_keys.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -65,6 +66,7 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
     click n0 "../modules/routing_qualification_key_service.md"
     click n1 "../modules/agent_catalog.md"
     click n2 "../modules/agent_catalog.md"
@@ -74,8 +76,9 @@ flowchart LR
     click n6 "../modules/agent_catalog.md"
     click n7 "../modules/test_agent_routing_service.md"
     click n8 "../modules/test_agent_routing_service.md"
-    click n9 "../modules/test_routing_qualification_keys.md"
+    click n9 "../modules/test_routing_calibration_contracts.md"
     click n10 "../modules/test_routing_qualification_keys.md"
+    click n11 "../modules/test_routing_qualification_keys.md"
 ```
 
 ### Summary
@@ -97,5 +100,6 @@ flowchart LR
 | `revise_routing_qualification_key` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
 | `test_a_project_scoped_agent_can_require_a_declared_key` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 2 |
 | `test_declared_qualification_key_is_a_requirement_the_candidate_must_hold` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
+| `test_contracts_are_submitted_approved_and_read_on_postgresql` | call | [test_routing_calibration_contracts](../modules/test_routing_calibration_contracts.md) | 1 |
 | `test_retire_and_validation_serialize_across_postgresql_sessions` | call | [test_routing_qualification_keys](../modules/test_routing_qualification_keys.md) | 2 |
 | `test_usage_and_share_locked_validation_work_on_postgresql` | call | [test_routing_qualification_keys](../modules/test_routing_qualification_keys.md) | 1 |

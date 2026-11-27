@@ -30,7 +30,8 @@ flowchart LR
     n2["backend/app/schemas/routing_qualification.py"]
     n3["backend/app/services/routing_qualification_key_service.py"]
     n4["backend/tests/test_agent_routing_service.py"]
-    n5["backend/tests/test_routing_qualification_keys.py"]
+    n5["backend/tests/test_routing_calibration_contracts.py"]
+    n6["backend/tests/test_routing_qualification_keys.py"]
     n0 --> n1
     n0 --> n2
     n0 --> n3
@@ -40,15 +41,18 @@ flowchart LR
     n4 --> n1
     n4 --> n2
     n4 --> n3
-    n5 --> n1
     n5 --> n2
     n5 --> n3
+    n6 --> n1
+    n6 --> n2
+    n6 --> n3
     click n0 "../modules/agent_catalog.md"
     click n1 "../modules/agent_routing.md"
     click n2 "../modules/schemas_routing_qualification.md"
     click n3 "../modules/routing_qualification_key_service.md"
     click n4 "../modules/test_agent_routing_service.md"
-    click n5 "../modules/test_routing_qualification_keys.md"
+    click n5 "../modules/test_routing_calibration_contracts.md"
+    click n6 "../modules/test_routing_qualification_keys.md"
 ```
 
 ### Internal neighbors
@@ -58,6 +62,7 @@ flowchart LR
 | Inbound | [agent_catalog](../modules/agent_catalog.md) |
 | Inbound | [routing_qualification_key_service](../modules/routing_qualification_key_service.md) |
 | Inbound | [test_agent_routing_service](../modules/test_agent_routing_service.md) |
+| Inbound | [test_routing_calibration_contracts](../modules/test_routing_calibration_contracts.md) |
 | Inbound | [test_routing_qualification_keys](../modules/test_routing_qualification_keys.md) |
 | Outbound | [agent_routing](../modules/agent_routing.md) |
 
@@ -80,9 +85,10 @@ flowchart LR
 | [RoutingQualificationKeyResponse](../entities/RoutingQualificationKeyResponse.md) | Pydantic model | 95 | `_RegistryModel` | The current state of one declared key. |
 | [RoutingQualificationKeyRevisionResponse](../entities/RoutingQualificationKeyRevisionResponse.md) | Pydantic model | 109 | `_RegistryModel` | One append-only change to a declared key, with its reason. |
 | [QualificationKeyCatalogReference](../entities/QualificationKeyCatalogReference.md) | Pydantic model | 124 | `_RegistryModel` | A catalog entry that holds the key. |
-| [RoutingQualificationKeyUsage](../entities/schemas_routing_qualification_RoutingQualificationKeyUsage.md) | Pydantic model | 132 | `_RegistryModel` | Catalog entries and tasks whose current routing assessment name the key. |
-| [RoutingQualificationKeyDetail](../entities/schemas_routing_qualification_RoutingQualificationKeyDetail.md) | Pydantic model | 153 | `RoutingQualificationKeyResponse` | One key with its revision history and current usage. |
-| [RoutingQualificationKeyRegistryResponse](../entities/RoutingQualificationKeyRegistryResponse.md) | Pydantic model | 160 | `_RegistryModel` | The built-in keys routing always accepts, and the deployment's declared keys. |
+| [QualificationKeyCalibrationReference](../entities/QualificationKeyCalibrationReference.md) | Pydantic model | 132 | `_RegistryModel` | A calibration contract whose current terms name the key. |
+| [RoutingQualificationKeyUsage](../entities/schemas_routing_qualification_RoutingQualificationKeyUsage.md) | Pydantic model | 139 | `_RegistryModel` | Catalog entries, calibration contracts and tasks whose current routing assessment name the key. |
+| [RoutingQualificationKeyDetail](../entities/schemas_routing_qualification_RoutingQualificationKeyDetail.md) | Pydantic model | 167 | `RoutingQualificationKeyResponse` | One key with its revision history and current usage. |
+| [RoutingQualificationKeyRegistryResponse](../entities/RoutingQualificationKeyRegistryResponse.md) | Pydantic model | 174 | `_RegistryModel` | The built-in keys routing always accepts, and the deployment's declared keys. |
 
 ## Functions
 

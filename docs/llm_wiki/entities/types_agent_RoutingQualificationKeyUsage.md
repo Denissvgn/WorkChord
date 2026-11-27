@@ -17,6 +17,8 @@ _Auto-generated from `RoutingQualificationKeyUsage` in `frontend/src/types/agent
 | `task_ids` | `number[]` | Yes | — | — |
 | `catalog_entries_omitted` | `number` | Yes | — | — |
 | `task_ids_omitted` | `number` | Yes | — | — |
+| `calibration_contracts` | `{ key: string; state: 'submitted' \| 'approved' }[]` | No | — | — |
+| `calibration_contracts_omitted` | `number` | No | — | — |
 
 ## Methods
 
@@ -31,4 +33,4 @@ _Auto-generated from `RoutingQualificationKeyUsage` in `frontend/src/types/agent
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_agent](../modules/types_agent.md) | 0 | `catalog_entries`, `catalog_entries_omitted`, `task_ids`, `task_ids_omitted` |
+| [types_agent](../modules/types_agent.md) | 0 | `calibration_contracts`, `calibration_contracts_omitted`, `catalog_entries`, `catalog_entries_omitted`, `task_ids`, `task_ids_omitted` |

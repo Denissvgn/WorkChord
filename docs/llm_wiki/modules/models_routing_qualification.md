@@ -28,7 +28,8 @@ flowchart LR
     n3["backend/app/services/routing_qualification_key_service.py"]
     n4["backend/app/utils/time.py"]
     n5["backend/tests/test_agent_routing_service.py"]
-    n6["backend/tests/test_routing_qualification_keys.py"]
+    n6["backend/tests/test_routing_calibration_contracts.py"]
+    n7["backend/tests/test_routing_qualification_keys.py"]
     n1 --> n2
     n2 --> n0
     n2 --> n4
@@ -39,13 +40,17 @@ flowchart LR
     n6 --> n0
     n6 --> n2
     n6 --> n3
+    n7 --> n0
+    n7 --> n2
+    n7 --> n3
     click n0 "../modules/app_database.md"
     click n1 "../modules/models___init__.md"
     click n2 "../modules/models_routing_qualification.md"
     click n3 "../modules/routing_qualification_key_service.md"
     click n4 "../modules/time.md"
     click n5 "../modules/test_agent_routing_service.md"
-    click n6 "../modules/test_routing_qualification_keys.md"
+    click n6 "../modules/test_routing_calibration_contracts.md"
+    click n7 "../modules/test_routing_qualification_keys.md"
 ```
 
 ### Internal neighbors
@@ -55,6 +60,7 @@ flowchart LR
 | Inbound | [models___init__](../modules/models___init__.md) |
 | Inbound | [routing_qualification_key_service](../modules/routing_qualification_key_service.md) |
 | Inbound | [test_agent_routing_service](../modules/test_agent_routing_service.md) |
+| Inbound | [test_routing_calibration_contracts](../modules/test_routing_calibration_contracts.md) |
 | Inbound | [test_routing_qualification_keys](../modules/test_routing_qualification_keys.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [time](../modules/time.md) |

@@ -1,6 +1,6 @@
 # AgentRoutingPreviewCreate
 
-**Location:** `backend/app/schemas/agent_routing.py:996`
+**Location:** `backend/app/schemas/agent_routing.py:998`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -52,7 +52,7 @@ flowchart LR
     n10["test_local_first_preference_breaks_ties_but_never_overrides_a_gate (backend/tests/test_agent_routing_service.py)"]
     n11["test_model_aware_assignment_and_begin_enforce_observed_model (backend/tests/test_agent_routing_service.py)"]
     n12["test_preview_is_deterministic_and_relevant_mutation_invalidates_it (backend/tests/test_agent_routing_service.py)"]
-    n13["test_verification_independence_requires_authoritative_profile_history (backend/tests/test_agent_routing_service.py)"]
+    n13["test_preview_states_an_approved_calibration_contract_and_ranks_exactly_as_before (backend/tests/test_agent_routing_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -109,6 +109,6 @@ flowchart LR
 | `test_local_first_preference_breaks_ties_but_never_overrides_a_gate` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
 | `test_model_aware_assignment_and_begin_enforce_observed_model` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
 | `test_preview_is_deterministic_and_relevant_mutation_invalidates_it` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
-| `test_verification_independence_requires_authoritative_profile_history` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
+| `test_preview_states_an_approved_calibration_contract_and_ranks_exactly_as_before` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
 
-> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.
+> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.

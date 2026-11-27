@@ -41,9 +41,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (28) |
+| Inbound | `backend` (29) |
 
-> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -60,13 +60,14 @@ flowchart LR
 | [AssessmentReasonCode](../entities/agent_routing_policy_AssessmentReasonCode.md) | Enum | 176 | `StrEnum` | Governed reasons that may raise the derived band or review floor. |
 | [AssignmentIntent](../entities/AssignmentIntent.md) | Enum | 193 | `StrEnum` | Normalized assignment intents derived from purpose and queue class. |
 | [RoutingBlockerCode](../entities/agent_routing_policy_RoutingBlockerCode.md) | Enum | 202 | `StrEnum` | Stable hard blockers shared by preview and assignment enforcement. |
-| [UnknownRoutingKeyError](../entities/UnknownRoutingKeyError.md) | Class | 492 | `ValueError` | A key is neither a built-in routing skill key nor a declared qualification key. |
-| [ReasonCodeRule](../entities/ReasonCodeRule.md) | Class | 528 | — | Minimum band/review requirements attached to one governed reason. |
-| [RoutingProfileEvidence](../entities/RoutingProfileEvidence.md) | Class | 601 | — | Secret-free profile evidence used by compatibility decisions. |
-| [RoutingEligibilityDecision](../entities/RoutingEligibilityDecision.md) | Class | 613 | — | Separated authority/compatibility evidence for one candidate. |
-| [RoutingSkillDecision](../entities/RoutingSkillDecision.md) | Class | 686 | — | Deterministic required-skill evidence for one profile. |
-| [RoutingModelEnvelopeDecision](../entities/RoutingModelEnvelopeDecision.md) | Class | 701 | — | Deterministic binding/catalog capability evidence for one candidate. |
-| [RoutingPacketSizeError](../entities/RoutingPacketSizeError.md) | Class | 1292 | `ValueError` | The canonical UTF-8 representation exceeds its routing boundary. |
+| [RoutingTermsRefusedError](../entities/RoutingTermsRefusedError.md) | Class | 492 | `ValueError` | Routing terms that pass request validation but name something the server refuses. |
+| [UnknownRoutingKeyError](../entities/UnknownRoutingKeyError.md) | Class | 499 | `RoutingTermsRefusedError` | A key is neither a built-in routing skill key nor a declared qualification key. |
+| [ReasonCodeRule](../entities/ReasonCodeRule.md) | Class | 535 | — | Minimum band/review requirements attached to one governed reason. |
+| [RoutingProfileEvidence](../entities/RoutingProfileEvidence.md) | Class | 608 | — | Secret-free profile evidence used by compatibility decisions. |
+| [RoutingEligibilityDecision](../entities/RoutingEligibilityDecision.md) | Class | 620 | — | Separated authority/compatibility evidence for one candidate. |
+| [RoutingSkillDecision](../entities/RoutingSkillDecision.md) | Class | 693 | — | Deterministic required-skill evidence for one profile. |
+| [RoutingModelEnvelopeDecision](../entities/RoutingModelEnvelopeDecision.md) | Class | 708 | — | Deterministic binding/catalog capability evidence for one candidate. |
+| [RoutingPacketSizeError](../entities/RoutingPacketSizeError.md) | Class | 1299 | `ValueError` | The canonical UTF-8 representation exceeds its routing boundary. |
 
 ## Functions
 
