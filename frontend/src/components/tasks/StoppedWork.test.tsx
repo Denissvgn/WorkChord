@@ -10,6 +10,7 @@ import type { Task } from '../../types/task';
 import { defaultFilters } from '../../utils/taskFilterDefaults';
 import { filterTaskBySearch, filterTaskWithChildren } from '../../utils/taskFilters';
 import { TaskFiltersBar, type TaskFilters } from './TaskFiltersBar';
+import { StatusChangeControl } from './StatusChangeControl';
 import { TaskRow } from './TaskRow';
 import { taskStateChip } from './taskStateChip';
 import { TaskSupersedeForm } from './TaskSupersedeForm';
@@ -86,6 +87,17 @@ describe('task row states', () => {
         await setLanguage('ru');
         row({ state: 'canceled' });
         expect(screen.getByText('Отменено', { selector: '[data-task-state]' })).toBeVisible();
+    });
+});
+
+describe('status control for withdrawn work', () => {
+    it('offers no status change for canceled or superseded work, whatever status it kept', () => {
+        const live = renderWithProviders(<StatusChangeControl task={{ ...base, status: 'active' } as Task} iterationId={1} />);
+        expect(screen.getByRole('button', { name: /Resolved/ })).toBeInTheDocument();
+        live.unmount();
+        renderWithProviders(<StatusChangeControl task={{ ...base, status: 'active', displayed_state: 'canceled' } as Task} iterationId={1} />);
+        expect(screen.getByText('Canceled', { selector: 'span' })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /Resolved/ })).not.toBeInTheDocument();
     });
 });
 
@@ -199,6 +211,20 @@ describe('Supersede on the task page', () => {
         // The form closes and focus returns to the control that opened it.
         await waitFor(() => expect(screen.queryByRole('textbox', { name: 'Search closed tasks in this project' })).not.toBeInTheDocument());
         expect(await screen.findByText('Superseded “Ship the importer”.')).toBeInTheDocument();
+    });
+
+    it('asks only for closed tasks that are not parents, tells the person when more match, and searches once typing pauses', async () => {
+        service.lookup.mockResolvedValue({ items: [{ id: 77, title: 'Importer shipped earlier', version: 6, status: 'closed', displayed_state: 'closed' }], has_more: true, next_after_id: 77, limit: 20 });
+        const { user } = renderPanel();
+        await user.click(await screen.findByRole('button', { name: 'Supersede this task' }));
+        expect(await screen.findByText('More closed tasks match. Refine the search to find the right one.')).toBeInTheDocument();
+        expect(service.lookup).toHaveBeenCalledWith(expect.objectContaining({ project_id: 2, task_status: 'closed', leaf_only: true, limit: 20 }));
+        const calls = service.lookup.mock.calls.length;
+        await user.type(screen.getByRole('textbox', { name: 'Search closed tasks in this project' }), 'importer');
+        // Eight keystrokes are not eight requests.
+        expect(service.lookup.mock.calls.length).toBe(calls);
+        await waitFor(() => expect(service.lookup).toHaveBeenLastCalledWith(expect.objectContaining({ q: 'importer' })));
+        expect(service.lookup.mock.calls.length).toBe(calls + 1);
     });
 
     it('shows the server refusal and keeps the form so the person can correct it', async () => {

@@ -55,5 +55,7 @@ class HumanWorkReference(TaskReference):
 class HumanWorkResponse(BaseModel):
     state: str
     queues: dict[str, list[HumanWorkReference]]
+    # The person's postponed, canceled and superseded work: shown as such, never as actionable work in a queue.
+    stopped: list[HumanWorkReference] = Field(default_factory=list)
     has_more: bool
     next_after_id: int | None

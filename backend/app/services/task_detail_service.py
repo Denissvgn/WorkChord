@@ -1,7 +1,7 @@
 """Small UI reads, independent of the complete authoritative execution graph."""
 
 from sqlalchemy import and_, literal, or_, select
-from sqlalchemy.orm import selectinload, raiseload
+from sqlalchemy.orm import aliased, selectinload, raiseload
 
 from app.authority import require_project
 from app.models.task import Task, TaskDependency
@@ -68,8 +68,11 @@ class TaskDetailService:
         items = [TaskReference.model_validate(row) for row in rows[:limit]]
         return TaskReferencePage(items=items, has_more=more, next_after_id=items[-1].id if more else None, limit=limit)
 
-    async def lookup(self, *, project_id=None, iteration_id=None, query=None, backlog_only=False, limit=50, after_id=0, status=None, parent_id=None, roots_only=False):
+    async def lookup(self, *, project_id=None, iteration_id=None, query=None, backlog_only=False, limit=50, after_id=0, status=None, parent_id=None, roots_only=False, leaf_only=False):
         statement = self.references()
+        if leaf_only:
+            child = aliased(Task)
+            statement = statement.where(Task.is_summary.is_(False), ~select(child.id).where(child.parent_id == Task.id).exists())
         if project_id is not None:
             require_project(self.db, project_id)
             statement = statement.where(Task.project_id == project_id)
@@ -110,7 +113,8 @@ class TaskDetailService:
         from app.services.task_domain_service import TaskDomainService
         authority = self.db.info.get("authority")
         queues = {key: [] for key in ("active", "queued", "blocked", "awaiting_review")}
-        unlinked = {"state": "profile_unlinked", "queues": queues, "has_more": False, "next_after_id": None}
+        stopped = []
+        unlinked = {"state": "profile_unlinked", "queues": queues, "stopped": stopped, "has_more": False, "next_after_id": None}
         if authority is None or authority.profile_id is None or authority.kind not in {"human", "local"}:
             return unlinked
         if authority.kind == "local":
@@ -118,13 +122,13 @@ class TaskDetailService:
             if await local_work_profile(self.db, authority.profile_id) is None:
                 return unlinked
         if not authority.operator and not authority.local and not authority.projects and not authority.workspace_role:
-            return {"state": "membership_required", "queues": queues, "has_more": False, "next_after_id": None}
+            return {"state": "membership_required", "queues": queues, "stopped": stopped, "has_more": False, "next_after_id": None}
         from app.models.team_member import TeamMember
         # The person's work: tasks they own, and tasks assigned to a capacity row of their profile.
         capacity_rows = select(TeamMember.id).where(TeamMember.profile_id == authority.profile_id)
         statement = self.references().where(or_(Task.owner_profile_id == authority.profile_id, Task.assignee_id.in_(capacity_rows)),
             or_(Task.status != "closed", Task.accepted_at.is_(None), Task.accepted_by_principal_id.is_(None), Task.accepted_version.is_(None), Task.accepted_version != Task.version),
-            Task.canceled_at.is_(None), Task.is_summary.is_(False))
+            Task.is_summary.is_(False))
         if backlog_only and iteration_id is not None:
             raise ValueError("Select backlog or an iteration, not both")
         if project_id is not None:
@@ -139,8 +143,12 @@ class TaskDetailService:
         reviewers = await self.reviewer_names([item.id for item in page.items if item.status == "resolved"])
         for item in page.items:
             item.reviewer_name = reviewers.get(item.id)
-            # Deferred work is backlog and postponed work is stopped: neither is queued work.
-            if item.status == "postponed" or (await self._policy_flags(item.id))['effective_is_deferred']:
+            # Postponed, canceled and superseded work is stopped: listed apart, never a queue entry.
+            if item.status == "postponed" or item.canceled_at is not None:
+                stopped.append({**item.model_dump(mode="json"), "actions": []})
+                continue
+            # Deferred work is backlog: not queued work.
+            if (await self._policy_flags(item.id))['effective_is_deferred']:
                 continue
             actions = await TaskDomainService(self.db).allowed_actions(item.id)
             blocked = item.status == "closed" or bool(item.blocked_reason) or any(
@@ -150,7 +158,7 @@ class TaskDetailService:
             blocked = blocked or not await DeliveryDependencyService(self.db).ready(item.id)
             category = "blocked" if blocked else "awaiting_review" if item.status == "resolved" else "active" if item.status == "active" else "queued"
             queues[category].append({**item.model_dump(mode="json"), "actions": actions.model_dump(mode="json")["actions"]})
-        return {"state": "ready", "queues": queues, "has_more": page.has_more, "next_after_id": page.next_after_id}
+        return {"state": "ready", "queues": queues, "stopped": stopped, "has_more": page.has_more, "next_after_id": page.next_after_id}
 
     async def detail(self, task_id, *, limit=50, children_after_id=0, dependencies_after_id=0):
         from app.services.task_service import TaskService

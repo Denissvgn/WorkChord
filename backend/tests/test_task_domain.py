@@ -437,3 +437,42 @@ async def test_human_queue_excludes_inherited_deferred_work_across_pagination(de
             values.extend(task for queue in work['queues'].values() for task in queue)
         assert scenario.tasks['nested'] not in {task['id'] for task in values}
         assert scenario.tasks['planned'] in {task['id'] for task in values}
+
+
+async def test_my_work_lists_stopped_work_apart_from_its_queues(delivery_store):
+    from app.services.task_detail_service import TaskDetailService
+    from app.utils.time import utc_now
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        authority, _ = await human_context(db, scenario.projects[0])
+        planned = await db.get(Task, scenario.tasks['planned'])
+        paused = await db.get(Task, scenario.tasks['nested'])
+        dropped = await db.get(Task, scenario.tasks['parent'])
+        for task in (planned, paused, dropped):
+            task.owner_profile_id = scenario.profile
+        paused.status = "postponed"
+        dropped.canceled_at = utc_now()
+        dropped.canceled_reason = "No longer needed"
+        await db.commit()
+        db.info['authority'] = Authority(authority.principal_id, 'human', profile_id=scenario.profile,
+            projects={scenario.projects[0]: 'manager'})
+        work = await TaskDetailService(db).my_work(limit=50)
+        queued = {task['id'] for queue in work['queues'].values() for task in queue}
+        stopped = {task['id']: task for task in work['stopped']}
+        assert planned.id in queued
+        assert paused.id not in queued and dropped.id not in queued
+        assert set(stopped) == {paused.id, dropped.id}
+        assert stopped[paused.id]['displayed_state'] == 'postponed'
+        assert stopped[dropped.id]['displayed_state'] == 'canceled'
+        assert stopped[dropped.id]['actions'] == []
+
+
+async def test_lookup_can_leave_out_parents(delivery_store):
+    from app.services.task_detail_service import TaskDetailService
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        db.info['authority'] = Authority(None, 'human', workspace_role='operator')
+        everything = {item.id for item in (await TaskDetailService(db).lookup(project_id=scenario.projects[0], limit=100)).items}
+        leaves = {item.id for item in (await TaskDetailService(db).lookup(project_id=scenario.projects[0], limit=100, leaf_only=True)).items}
+        assert scenario.tasks['parent'] in everything and scenario.tasks['parent'] not in leaves
+        assert scenario.tasks['nested'] in leaves

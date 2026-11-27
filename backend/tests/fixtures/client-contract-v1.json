@@ -1759,6 +1759,13 @@
           "state": {
             "title": "State",
             "type": "string"
+          },
+          "stopped": {
+            "items": {
+              "$ref": "#/components/schemas/HumanWorkReference"
+            },
+            "title": "Stopped",
+            "type": "array"
           }
         },
         "required": [
@@ -10395,6 +10402,18 @@
             "schema": {
               "default": false,
               "title": "Roots Only",
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Only tasks that are not a parent or summary of other tasks.",
+            "in": "query",
+            "name": "leaf_only",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Only tasks that are not a parent or summary of other tasks.",
+              "title": "Leaf Only",
               "type": "boolean"
             }
           }

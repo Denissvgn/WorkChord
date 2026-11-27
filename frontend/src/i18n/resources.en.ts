@@ -599,6 +599,8 @@ export const englishResources = {
                 stateFilter: 'State',
                 allStates: 'All states',
                 noneInState: 'Nothing in this queue is {{state}}.',
+                noneInStateLoaded: 'None of the work loaded so far is {{state}}. Load more to check the rest.',
+                supersedeMoreMatches: 'More closed tasks match. Refine the search to find the right one.',
                 endedLane: 'Canceled and superseded',
                 postponedLaneHelp: 'Paused work. It returns to a column when it is reactivated and is not counted as active work.',
                 endedLaneHelp: 'Ended work. It is outside the board columns and outside the totals.',

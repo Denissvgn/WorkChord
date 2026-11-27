@@ -68,13 +68,15 @@ const BriefField = ({ label, value }: { label: string; value: string }) => (
  * Read-first task view: Brief, Work & review, Activity. Nothing is an input
  * until a section is edited; the part is kept in the URL beside ?task=<id>.
  */
-export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: onHeldSession, onTaskUpdated, onEditAll, onDirty, onPending, onReload }: {
+export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: onHeldSession, onTaskUpdated, onOpenTask, onEditAll, onDirty, onPending, onReload }: {
     /** Panel state held by the drawer across version remounts; the view keeps its own when none is given. */
     session?: TaskViewSession;
     onSession?: TaskViewSessionUpdate;
     task: Task;
     draftKey: string | null;
     onTaskUpdated: (task: Task) => void;
+    /** Opens another task from a link in this view, such as a superseded task's successor; the drawer closes and navigates. */
+    onOpenTask?: (taskId: number) => void;
     onEditAll: () => void;
     onDirty: (dirty: boolean) => void;
     onPending: (pending: boolean) => void;
@@ -193,7 +195,10 @@ export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: 
                         {t(`statuses.${stateOf(task)}`)}
                     </span>
                     {stateOf(task) === 'superseded' && task.successor_task_id && (
-                        <Button type="button" variant="ghost" size="sm" onClick={() => { const next = new URLSearchParams(params); next.set('task', String(task.successor_task_id)); next.delete(TASK_PART_PARAM); setParams(next); }}>
+                        <Button type="button" variant="ghost" size="sm" onClick={() => {
+                            if (onOpenTask) { onOpenTask(task.successor_task_id as number); return; }
+                            const next = new URLSearchParams(params); next.set('task', String(task.successor_task_id)); next.delete(TASK_PART_PARAM); setParams(next);
+                        }}>
                             {t('stoppedWork.supersededBy', { id: task.successor_task_id })}
                         </Button>
                     )}

@@ -8,7 +8,7 @@ import { QueryErrorState } from '../feedback/QueryState';
 import { taskService } from '../../services/taskService';
 import type { Task, TaskStatus, CascadeUpdateInfo } from '../../types/task';
 import { pillToneClassName, STATE_TONE } from '../ui/tone';
-import { stateOf } from '../../utils/taskState';
+import { isStoppedState, stateOf } from '../../utils/taskState';
 import { formatDate } from '../../utils/formatDate';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 import { canTransition, TASK_TRANSITIONS } from '../../features/taskTransitions';
@@ -64,7 +64,7 @@ export const StatusChangeControl = ({ task, iterationId, onStatusChanged, onPend
     });
 
     useEffect(() => { onPendingChange?.(mutation.isPending); }, [mutation.isPending, onPendingChange]);
-    const availableTransitions = currentTask.is_composite ? [] : TASK_TRANSITIONS[currentTask.status] || [];
+    const availableTransitions = currentTask.is_composite || isStoppedState(stateOf(currentTask)) ? [] : TASK_TRANSITIONS[currentTask.status] || [];
     const statusLabel = (status: TaskStatus) => t(`statuses.${status}`);
 
     const handleStatusChange = (newStatus: TaskStatus) => {

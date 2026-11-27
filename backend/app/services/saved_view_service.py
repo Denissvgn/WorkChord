@@ -50,7 +50,7 @@ TASK_FILTER_DEFAULTS: dict[str, Any] = {
     "labelSlugs": [],
     "labelGroupKeys": [],
 }
-TASK_STATUS_VALUES = {"planned", "active", "resolved", "closed"}
+TASK_STATUS_VALUES = {"planned", "active", "resolved", "closed", "postponed", "canceled", "superseded"}
 TASK_PLANNING_ISSUE_VALUES = {"unassigned", "missing-effort", "any"}
 TASK_SORT_VALUES = {"priority", "sort_order", "status", "title"}
 
@@ -279,7 +279,7 @@ class SavedViewService:
                 elif isinstance(status, str) and status in TASK_STATUS_VALUES:
                     normalized["status"] = status
                 else:
-                    raise ValueError("status must be one of planned, active, resolved, closed, or null")
+                    raise ValueError("status must be one of planned, active, resolved, closed, postponed, canceled, superseded, or null")
             if "hasDependency" in filters:
                 normalized["hasDependency"] = self._normalize_nullable_bool(filters["hasDependency"], "hasDependency")
             if "isOverdue" in filters:

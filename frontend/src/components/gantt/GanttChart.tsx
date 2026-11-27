@@ -20,7 +20,7 @@ import { FilterBar, OverflowMenu, PageToolbar } from '../ui';
 import type { OverflowMenuItem } from '../ui/OverflowMenu';
 import { GanttBarInputs } from './GanttBarInputs';
 import { useScopeLink } from '../../features/scope/useScopeLink';
-import { isStoppedState, STOPPED_STATES } from '../../utils/taskState';
+import { isEndedState, isStoppedState, STOPPED_STATES } from '../../utils/taskState';
 
 interface GanttChartProps {
     iterationId: number;
@@ -96,7 +96,7 @@ const readStoredGroupBy = (): GanttGroupBy | null => {
 
 // The scheduler never dates work without an assignee, so such dates are not a calculated schedule.
 const isProvisionalTask = (task: GanttTask) => !task.children?.length
-    && task.status === 'planned' && !task.assignee && !task.is_deferred;
+    && task.status === 'planned' && !task.assignee && !task.is_deferred && !isStoppedTask(task);
 
 const countProvisionalLeaves = (task: GanttTask): number => task.children?.length
     ? task.children.reduce((total, child) => total + countProvisionalLeaves(child), 0)
@@ -387,6 +387,8 @@ export const GanttChart = ({
 
     // Flattening tasks
     const taskMatchesFilter = useCallback((task: GanttTask, assigneeId: number | null, hideUnassignedTasks: boolean): boolean => {
+        // Canceled and superseded work has ended: it is list-only, and appears here only when the state filter asks for it.
+        if (isEndedState(ganttState(task)) && ganttState(task) !== statusFilter) return false;
         let matches = true;
         if (assigneeId) matches = task.assignee?.id === assigneeId;
         if (hideUnassignedTasks && !task.assignee) matches = false;
@@ -413,7 +415,7 @@ export const GanttChart = ({
         const visit = (task: GanttTask) => {
             if (task.children?.length) task.children.forEach(visit);
             // Same rule as the plan: only planned work can block the schedule.
-            else if (!task.assignee && task.status === 'planned' && !task.is_deferred) count += 1;
+            else if (!task.assignee && task.status === 'planned' && !task.is_deferred && !isStoppedTask(task)) count += 1;
         };
         tasks.forEach(visit);
         return count;

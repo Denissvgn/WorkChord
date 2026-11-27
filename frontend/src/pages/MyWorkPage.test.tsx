@@ -423,37 +423,54 @@ it.each(['active', 'inbox'])('hides Notifications for a local person on the %s U
     expect(api.get.mock.calls.some(([path]) => path.startsWith('/notifications'))).toBe(false);
 });
 
-it('shows postponed, canceled and superseded work as their own states and filters by each', async () => {
+it('lists stopped work only through the State filter, from the server\'s separate list', async () => {
     await ensureLanguageResources('en');
     await i18n.changeLanguage('en');
+    // As the server sends it: stopped work is not in a queue; it comes in `stopped`, and canceled work keeps the status it had.
     api.get.mockImplementation(async (path: string) => {
-        if (path === '/tasks/my-work') return { data: { state: 'ready', has_more: false, next_after_id: null, queues: { active: [
-            { id: 1, title: 'Live work', status: 'active', iteration_id: null },
-            { id: 2, title: 'Paused work', status: 'postponed', displayed_state: 'postponed', iteration_id: null },
-            // Canceled work keeps the status it had; it must read as canceled, not active.
-            { id: 3, title: 'Dropped work', status: 'active', displayed_state: 'canceled', iteration_id: null },
-            { id: 4, title: 'Replaced work', status: 'planned', displayed_state: 'superseded', iteration_id: null },
-        ], queued: [], blocked: [], awaiting_review: [] } } };
+        if (path === '/tasks/my-work') return { data: { state: 'ready', has_more: false, next_after_id: null,
+            queues: { active: [{ id: 1, title: 'Live work', status: 'active', displayed_state: 'active', iteration_id: null }], queued: [], blocked: [], awaiting_review: [] },
+            stopped: [
+                { id: 2, title: 'Paused work', status: 'postponed', displayed_state: 'postponed', iteration_id: null },
+                { id: 3, title: 'Dropped work', status: 'active', displayed_state: 'canceled', iteration_id: null },
+                { id: 4, title: 'Replaced work', status: 'planned', displayed_state: 'superseded', iteration_id: null },
+            ] } };
         if (path === '/tasks/review-queue' || path.startsWith('/notifications')) return { data: { items: [], has_more: false } };
         return { data: [] };
     });
     renderWithProviders(<SignedInWork />, { initialEntries: ['/my-work?queue=active'] });
-    const rowOf = async (title: string) => (await screen.findByRole('button', { name: new RegExp(`· ${title}$`) })).closest('[data-task-row]') as HTMLElement;
-    expect(within(await rowOf('Paused work')).getByText('Postponed', { selector: '[data-task-state]' })).toBeVisible();
-    expect(within(await rowOf('Dropped work')).getByText('Canceled', { selector: '[data-task-state]' })).toBeVisible();
-    expect(within(await rowOf('Replaced work')).getByText('Superseded', { selector: '[data-task-state]' })).toBeVisible();
-    expect((await rowOf('Live work')).querySelector('[data-task-state]')).toBeNull();
+    const rowOf = (title: string) => screen.getByRole('button', { name: new RegExp(`· ${title}$`) }).closest('[data-task-row]') as HTMLElement;
+    await screen.findByRole('button', { name: /· Live work$/ });
+    // Stopped work is not queued work: it is absent until a state asks for it.
+    expect(screen.queryByRole('button', { name: /· Dropped work$/ })).not.toBeInTheDocument();
+    expect(rowOf('Live work').querySelector('[data-task-state]')).toBeNull();
 
     const filter = screen.getByRole('combobox', { name: 'State' });
     expect(within(filter).getAllByRole('option').map(option => option.textContent)).toEqual(
         ['All states', 'Planned', 'Active', 'Resolved', 'Closed', 'Postponed', 'Canceled', 'Superseded']);
-    // Choosing a state narrows the queue by what each task is shown as, not the status it kept.
+    fireEvent.change(filter, { target: { value: 'canceled' } });
+    expect(within(rowOf('Dropped work')).getByText('Canceled', { selector: '[data-task-state]' })).toBeVisible();
+    expect(screen.queryByRole('button', { name: /· Live work$/ })).not.toBeInTheDocument();
+    fireEvent.change(filter, { target: { value: 'postponed' } });
+    expect(within(rowOf('Paused work')).getByText('Postponed', { selector: '[data-task-state]' })).toBeVisible();
+    fireEvent.change(filter, { target: { value: 'superseded' } });
+    expect(within(rowOf('Replaced work')).getByText('Superseded', { selector: '[data-task-state]' })).toBeVisible();
     fireEvent.change(filter, { target: { value: 'active' } });
     expect(screen.getByRole('button', { name: /· Live work$/ })).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /· Dropped work$/ })).not.toBeInTheDocument();
-    fireEvent.change(filter, { target: { value: 'canceled' } });
-    expect(screen.getByRole('button', { name: /· Dropped work$/ })).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /· Live work$/ })).not.toBeInTheDocument();
     fireEvent.change(filter, { target: { value: 'closed' } });
     expect(screen.getByText('Nothing in this queue is Closed.')).toBeInTheDocument();
+});
+
+it('does not claim nothing matches while more work can still load', async () => {
+    await ensureLanguageResources('en');
+    await i18n.changeLanguage('en');
+    api.get.mockImplementation(async (path: string) => {
+        if (path === '/tasks/my-work') return { data: { state: 'ready', has_more: true, next_after_id: 1, queues: { active: [{ id: 1, title: 'Live work', status: 'active', iteration_id: null }], queued: [], blocked: [], awaiting_review: [] }, stopped: [] } };
+        if (path === '/tasks/review-queue' || path.startsWith('/notifications')) return { data: { items: [], has_more: false } };
+        return { data: [] };
+    });
+    renderWithProviders(<SignedInWork />, { initialEntries: ['/my-work?queue=active'] });
+    await screen.findByRole('button', { name: /· Live work$/ });
+    fireEvent.change(screen.getByRole('combobox', { name: 'State' }), { target: { value: 'canceled' } });
+    expect(screen.getByText('None of the work loaded so far is Canceled. Load more to check the rest.')).toBeInTheDocument();
 });

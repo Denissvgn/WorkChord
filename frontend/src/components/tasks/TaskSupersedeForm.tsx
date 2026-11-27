@@ -25,6 +25,9 @@ export const TaskSupersedeForm = ({ task, disabled, disabledReasons = [], onPend
     const isActive = useActiveMount();
     const [open, setOpen] = useState(false);
     const [text, setText] = useState('');
+    // The search runs once typing pauses, so each keystroke is not a request.
+    const [query, setQuery] = useState('');
+    useEffect(() => { const timer = window.setTimeout(() => setQuery(text), 300); return () => window.clearTimeout(timer); }, [text]);
     const [successorId, setSuccessorId] = useState<number | null>(null);
     const [reason, setReason] = useState('');
     const searchRef = useRef<HTMLInputElement>(null);
@@ -37,8 +40,8 @@ export const TaskSupersedeForm = ({ task, disabled, disabledReasons = [], onPend
     }, [open]);
     // feedback-policy: query loading,error,retry,empty - the search shows loading, retry and empty feedback.
     const found = useQuery({
-        queryKey: ['supersede-successor-search', task.project_id, text], enabled: open && task.project_id != null,
-        queryFn: () => taskService.lookup({ project_id: task.project_id ?? undefined, task_status: 'closed', q: text.trim() || undefined, limit: 20 }),
+        queryKey: ['supersede-successor-search', task.project_id, query], enabled: open && task.project_id != null,
+        queryFn: () => taskService.lookup({ project_id: task.project_id ?? undefined, task_status: 'closed', leaf_only: true, q: query.trim() || undefined, limit: 20 }),
     });
     const candidates = found.data?.items.filter(item => item.id !== task.id && stateOf(item) === 'closed') ?? [];
     const successor = candidates.find(item => item.id === successorId) ?? null;
@@ -66,6 +69,7 @@ export const TaskSupersedeForm = ({ task, disabled, disabledReasons = [], onPend
                     onChange={event => { setText(event.target.value); setSuccessorId(null); }} />
                 {found.isLoading && <p role="status" className="text-sm text-content-secondary">{t('common.loading')}</p>}
                 {found.isSuccess && candidates.length === 0 && <p role="status" className="text-sm text-content-secondary">{t('stoppedWork.supersedeNoCandidates')}</p>}
+                {found.isSuccess && found.data.has_more && <p role="status" className="text-sm text-content-secondary">{t('stoppedWork.supersedeMoreMatches')}</p>}
                 {found.isError && <QueryErrorState error={found.error} fallback={t('stoppedWork.supersedeSearchFailed')} onRetry={() => void found.refetch()} />}
                 <label className="field-lbl" htmlFor={`${id}-successor`}>{t('stoppedWork.supersedeSuccessor')}</label>
                 <Select id={`${id}-successor`} className="input w-full" value={successorId ?? ''} disabled={supersede.isPending}

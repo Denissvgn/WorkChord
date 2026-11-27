@@ -25,6 +25,12 @@ export const KanbanStoppedLane = ({ kind, tasks, defaultOpen = false, onOpen, on
     const { t } = useTranslation();
     const id = useId();
     const [open, setOpen] = useState(defaultOpen);
+    // A filter chosen after the board loaded opens the lane it asks for; closing it by hand still works.
+    const [askedOpen, setAskedOpen] = useState(defaultOpen);
+    if (askedOpen !== defaultOpen) {
+        setAskedOpen(defaultOpen);
+        if (defaultOpen) setOpen(true);
+    }
     if (tasks.length === 0) return null;
     const title = kind === 'postponed' ? t('statuses.postponed') : t('stoppedWork.endedLane');
     return (

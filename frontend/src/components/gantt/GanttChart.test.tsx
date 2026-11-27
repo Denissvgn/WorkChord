@@ -143,27 +143,40 @@ describe('GanttChart clarity states', () => {
         expect(screen.getByText(i18n.t('common.unassigned'))).toBeInTheDocument();
     });
 
-    it.each([
-        ['postponed', 'postponed', 'Postponed'],
-        ['canceled', 'active', 'Canceled'],
-        ['superseded', 'planned', 'Superseded'],
-    ] as const)('lists %s work with its state and never draws it as scheduled work', (state, stored, label) => {
+    it('lists postponed work with its state and never draws it as scheduled work', () => {
         // The server still sends dates for stopped work; the chart does not draw them.
-        const stopped = { ...taskFixture, id: 300, title: `Stopped ${state}`, status: stored, displayed_state: state } as unknown as GanttTask;
+        const stopped = { ...taskFixture, id: 300, title: 'Stopped postponed', status: 'postponed', displayed_state: 'postponed' } as unknown as GanttTask;
         renderChart(false, [stopped, { ...taskFixture, id: 301, title: 'Live work' }]);
 
         expect(screen.getByRole('button', { name: scheduledTaskName({ ...taskFixture, title: 'Live work' }) })).toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: new RegExp(`^Open scheduled task.*Stopped ${state}`) })).not.toBeInTheDocument();
-        const entry = screen.getByRole('button', { name: i18n.t('gantt.openUnscheduledTask', { title: stopped.title }) });
+        expect(screen.queryByRole('button', { name: /^Open scheduled task.*Stopped postponed/ })).not.toBeInTheDocument();
         // The state is written out beside the row, not only coloured.
-        expect(entry).toHaveTextContent(`${label}, not scheduled`);
+        expect(screen.getByRole('button', { name: i18n.t('gantt.openUnscheduledTask', { title: stopped.title }) })).toHaveTextContent('Postponed, not scheduled');
     });
 
-    it('does not count stopped work as unscheduled work waiting for a plan', () => {
-        const stopped = { ...taskFixture, id: 300, title: 'Paused', status: 'postponed', displayed_state: 'postponed' } as unknown as GanttTask;
-        renderChart(false, [stopped]);
-        // The summary above the chart is a status line; stopped work does not raise it.
+    it('keeps canceled and superseded work off the chart unless the state filter asks for it', () => {
+        const canceled = { ...taskFixture, id: 300, title: 'Dropped idea', status: 'active', displayed_state: 'canceled' } as unknown as GanttTask;
+        const superseded = { ...taskFixture, id: 302, title: 'Replaced work', status: 'planned', displayed_state: 'superseded' } as unknown as GanttTask;
+        const view = renderChart(false, [canceled, superseded, { ...taskFixture, id: 301, title: 'Live work' }]);
+        expect(screen.queryByText('Dropped idea')).not.toBeInTheDocument();
+        expect(screen.queryByText('Replaced work')).not.toBeInTheDocument();
+        expect(screen.getByText('Live work')).toBeInTheDocument();
+        fireEvent.change(screen.getByRole('combobox', { name: i18n.t('surfaces.ganttChart.statusFilter') }), { target: { value: 'canceled' } });
+        expect(screen.getByText('Dropped idea')).toBeInTheDocument();
+        expect(screen.queryByText('Replaced work')).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: i18n.t('gantt.openUnscheduledTask', { title: 'Dropped idea' }) })).toHaveTextContent('Canceled, not scheduled');
+        view.unmount();
+    });
+
+    it('does not count stopped work as unscheduled or as unassigned work waiting for a plan', () => {
+        const stopped = [
+            { ...taskFixture, id: 300, title: 'Paused', status: 'postponed', displayed_state: 'postponed' },
+            { ...taskFixture, id: 303, title: 'Dropped', status: 'planned', displayed_state: 'canceled' },
+        ] as unknown as GanttTask[];
+        renderChart(false, stopped);
+        // No summary above the chart, so no "Assign N tasks" prompt for work that will not be scheduled.
         expect(screen.queryByRole('status')).not.toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: /Assign \d+ task/ })).not.toBeInTheDocument();
     });
 
     it('distinguishes an empty iteration from an empty filtered result', async () => {

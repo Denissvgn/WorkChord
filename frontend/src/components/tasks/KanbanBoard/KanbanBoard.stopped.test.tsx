@@ -99,6 +99,14 @@ describe('Board lanes for stopped work', () => {
         expect(await screen.findByRole('button', { name: /^Postponed\s*1$/ })).toHaveAttribute('aria-expanded', 'true');
     });
 
+    it('opens the lane when a filter chosen after the board loaded asks for it', async () => {
+        const view = renderWithProviders(<KanbanBoard iterationId={1} filters={defaultFilters} />);
+        const toggle = await screen.findByRole('button', { name: /^Postponed\s*1$/ });
+        expect(toggle).toHaveAttribute('aria-expanded', 'false');
+        view.rerender(<KanbanBoard iterationId={1} filters={{ ...defaultFilters, status: 'postponed' }} />);
+        expect(await screen.findByRole('button', { name: /^Postponed\s*1$/ })).toHaveAttribute('aria-expanded', 'true');
+    });
+
     it('names the lanes in Russian', async () => {
         await ensureLanguageResources('ru');
         await i18n.changeLanguage('ru');
