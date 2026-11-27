@@ -17,6 +17,7 @@ _Auto-generated from `frontend/src/pages/SettingsPage.labels.test.tsx`._
 | `../features/identity/identityService` | `WorkspaceIdentity` | Specifier | compiler-dependent |
 | `../features/identity/identityService` | `identityService` | — | compiler-dependent |
 | `../i18n/i18n` | `i18n`, `ensureLanguageResources` | — | compiler-dependent |
+| `../services/agentService` | `agentService` | — | compiler-dependent |
 | `../test/renderWithProviders` | `createTestQueryClient`, `renderWithProviders` | — | compiler-dependent |
 | `../types/github` | `GitHubStatusAutomationRule` | Declaration | erased |
 | `../types/label` | `LabelGroup` | Declaration | erased |
@@ -58,7 +59,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `frontend` (13) |
+| Outbound | `frontend` (14) |
 
 ### External packages
 
@@ -66,4 +67,4 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

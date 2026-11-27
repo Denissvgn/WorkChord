@@ -1,6 +1,6 @@
 # AgentModelCatalogUpdate
 
-**Location:** `backend/app/schemas/agent_routing.py:290`
+**Location:** `backend/app/schemas/agent_routing.py:315`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -13,6 +13,7 @@ Optimistic partial update for one catalog entry.
 
 | Method | Scope | Fields | Mode | Options |
 |--------|-------|--------|------|---------|
+| `validate_qualification_keys` | field | qualification_keys | before | — |
 | `require_integer_reasoning_tier` | field | reasoning_tier | before | — |
 | `strip_optional_text` | field | provider, configured_model_alias | after | — |
 | `validate_modality_tags` | field | modality_tags | after | — |
@@ -33,6 +34,7 @@ Optimistic partial update for one catalog entry.
 | `cost_tier` | `ModelCostTier \| None` | `cost_tier` | No | Yes | `None` | — | — | — |
 | `local_first` | `bool \| None` | `local_first` | No | Yes | `None` | — | — | — |
 | `latency_tier` | `ModelLatencyTier \| None` | `latency_tier` | No | Yes | `None` | — | — | — |
+| `qualification_keys` | `list[str] \| None` | `qualification_keys` | No | Yes | `None` | — | — | Replaces the entry's qualification keys. An effort change without this field clears them. |
 | `enabled` | `Literal[True] \| None` | `enabled` | No | Yes | `None` | — | — | — |
 | `last_verified_at` | `datetime \| None` | `last_verified_at` | No | Yes | `None` | — | — | — |
 | `reconcile_live_assignments` | `bool` | `reconcile_live_assignments` | No | No | `False` | — | — | — |
@@ -41,6 +43,7 @@ Optimistic partial update for one catalog entry.
 
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
+| `validate_qualification_keys` | `(value: Any) -> Any` | `@field_validator('qualification_keys', mode='before')`, `@classmethod` | — |
 | `require_integer_reasoning_tier` | `(value: Any) -> Any` | `@field_validator('reasoning_tier', mode='before')`, `@classmethod` | — |
 | `strip_optional_text` | `(value: str \| None) -> str \| None` | `@field_validator('provider', 'configured_model_alias')`, `@classmethod` | — |
 | `validate_modality_tags` | `(value: list[str] \| None) -> list[str] \| None` | `@field_validator('modality_tags')`, `@classmethod` | — |
@@ -80,7 +83,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing](../modules/agent_routing.md) | 4 | `configured_model_alias`, `context_tier`, `cost_tier`, `effort`, `enabled`, `expected_revision`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags`, `provider`, `publisher_key` |
+| [agent_routing](../modules/agent_routing.md) | 5 | `configured_model_alias`, `context_tier`, `cost_tier`, `effort`, `enabled`, `expected_revision`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags`, `provider`, `publisher_key` |
 
 ### Structure
 

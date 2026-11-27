@@ -1,6 +1,6 @@
 # SettingsGroupId
 
-**Location:** `frontend/src/pages/SettingsPage.tsx:53`
+**Location:** `frontend/src/pages/SettingsPage.tsx:55`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SettingsPage](../modules/SettingsPage.md)

@@ -1,6 +1,6 @@
 # TaskRoutingAssessmentMutationReceipt
 
-**Location:** `backend/app/schemas/agent_routing.py:903`
+**Location:** `backend/app/schemas/agent_routing.py:948`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)

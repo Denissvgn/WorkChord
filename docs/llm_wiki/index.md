@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1863 | [Open section](#entities) |
-| Modules | 1198 | [Open section](#modules) |
+| Entities | 1890 | [Open section](#entities) |
+| Modules | 1206 | [Open section](#modules) |
 | Workflows | 247 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 638 | [Open section](#entry-point-flows) |
+| Entry-point flows | 643 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -388,6 +388,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [DestinationHelp](entities/DestinationHelp.md)
 - [DestinationId](entities/DestinationId.md)
 - [DetachedSignatureEnvelope](entities/DetachedSignatureEnvelope.md)
+- [Dialog](entities/Dialog.md)
 - [DialogLayerOptions](entities/DialogLayerOptions.md)
 - [DifficultyAxis](entities/DifficultyAxis.md)
 - [DifficultyBand](entities/DifficultyBand.md)
@@ -546,6 +547,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ImportTeamModalProps](entities/ImportTeamModalProps.md)
 - [ImproveDescriptionRequest](entities/ImproveDescriptionRequest.md)
 - [ImproveDescriptionResponse](entities/ImproveDescriptionResponse.md)
+- [InUseDetail](entities/InUseDetail.md)
 - [InboxItem](entities/InboxItem.md)
 - [InboxNotification](entities/InboxNotification.md)
 - [IncrementalScheduler](entities/IncrementalScheduler.md)
@@ -811,7 +813,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [PublicTrustAnchor](entities/PublicTrustAnchor.md)
 - [PublicTrustResolver](entities/PublicTrustResolver.md)
 - [Qualification](entities/Qualification.md)
+- [QualificationEvidence](entities/QualificationEvidence.md)
 - [QualificationInputError](entities/QualificationInputError.md)
+- [QualificationKeyAction](entities/QualificationKeyAction.md)
+- [QualificationKeyCatalogReference](entities/QualificationKeyCatalogReference.md)
+- [QualificationKeyState](entities/QualificationKeyState.md)
 - [Quantity](entities/Quantity.md)
 - [QueryEmptyStateProps](entities/QueryEmptyStateProps.md)
 - [QueryErrorStateProps](entities/QueryErrorStateProps.md)
@@ -834,6 +840,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ReconciliationClass](entities/ReconciliationClass.md)
 - [Recorder](entities/Recorder.md)
 - [RedactionClass](entities/RedactionClass.md)
+- [RegistryModel](entities/RegistryModel.md)
 - [ReleaseCreate](entities/ReleaseCreate.md)
 - [ReleaseFormProps](entities/ReleaseFormProps.md)
 - [ReleaseFormState](entities/ReleaseFormState.md)
@@ -907,6 +914,13 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RoutingOperationalEvent](entities/RoutingOperationalEvent.md)
 - [RoutingPacketSizeError](entities/RoutingPacketSizeError.md)
 - [RoutingProfileEvidence](entities/RoutingProfileEvidence.md)
+- [RoutingQualificationKeyRegistry](entities/RoutingQualificationKeyRegistry.md)
+- [RoutingQualificationKeyRegistryResponse](entities/RoutingQualificationKeyRegistryResponse.md)
+- [RoutingQualificationKeyResponse](entities/RoutingQualificationKeyResponse.md)
+- [RoutingQualificationKeyRetire](entities/RoutingQualificationKeyRetire.md)
+- [RoutingQualificationKeyRevisionResponse](entities/RoutingQualificationKeyRevisionResponse.md)
+- [RoutingQualificationKeyService](entities/RoutingQualificationKeyService.md)
+- [RoutingQualificationKeyState](entities/RoutingQualificationKeyState.md)
 - [RoutingSelectionValidation](entities/RoutingSelectionValidation.md)
 - [RoutingSkillDecision](entities/RoutingSkillDecision.md)
 - [RoutingTrustLineage](entities/RoutingTrustLineage.md)
@@ -1245,6 +1259,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [URLPolicyError](entities/URLPolicyError.md)
 - [UTCDateTime](entities/UTCDateTime.md)
 - [UnknownRecord](entities/UnknownRecord.md)
+- [UnknownRoutingKeyError](entities/UnknownRoutingKeyError.md)
 - [UnsafeDatabaseTarget](entities/UnsafeDatabaseTarget.md)
 - [UnsavedLeaveGuardProps](entities/UnsavedLeaveGuardProps.md)
 - [UnsupportedAgentTeamMasterVersion](entities/UnsupportedAgentTeamMasterVersion.md)
@@ -1395,6 +1410,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [models_request_source_RequestSource](entities/models_request_source_RequestSource.md)
 - [models_request_source_RequestSourceLink](entities/models_request_source_RequestSourceLink.md)
 - [models_request_source_RequestSourceType](entities/models_request_source_RequestSourceType.md)
+- [models_routing_qualification_RoutingQualificationKey](entities/models_routing_qualification_RoutingQualificationKey.md)
+- [models_routing_qualification_RoutingQualificationKeyRevision](entities/models_routing_qualification_RoutingQualificationKeyRevision.md)
 - [models_saved_view_SavedView](entities/models_saved_view_SavedView.md)
 - [models_saved_view_SavedViewScope](entities/models_saved_view_SavedViewScope.md)
 - [models_saved_view_SavedViewType](entities/models_saved_view_SavedViewType.md)
@@ -1540,6 +1557,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_request_source_RequestSourceLinkCreate](entities/schemas_request_source_RequestSourceLinkCreate.md)
 - [schemas_request_source_RequestSourceTargetType](entities/schemas_request_source_RequestSourceTargetType.md)
 - [schemas_request_source_RequestSourceType](entities/schemas_request_source_RequestSourceType.md)
+- [schemas_routing_qualification_RoutingQualificationKeyDeclare](entities/schemas_routing_qualification_RoutingQualificationKeyDeclare.md)
+- [schemas_routing_qualification_RoutingQualificationKeyDetail](entities/schemas_routing_qualification_RoutingQualificationKeyDetail.md)
+- [schemas_routing_qualification_RoutingQualificationKeyRevise](entities/schemas_routing_qualification_RoutingQualificationKeyRevise.md)
+- [schemas_routing_qualification_RoutingQualificationKeyUsage](entities/schemas_routing_qualification_RoutingQualificationKeyUsage.md)
 - [schemas_saved_view_SavedViewCreate](entities/schemas_saved_view_SavedViewCreate.md)
 - [schemas_saved_view_SavedViewScope](entities/schemas_saved_view_SavedViewScope.md)
 - [schemas_saved_view_SavedViewType](entities/schemas_saved_view_SavedViewType.md)
@@ -1686,6 +1707,12 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_agent_ModelEffort](entities/types_agent_ModelEffort.md)
 - [types_agent_RequiredModelEnvelope](entities/types_agent_RequiredModelEnvelope.md)
 - [types_agent_RoutingBlockerCode](entities/types_agent_RoutingBlockerCode.md)
+- [types_agent_RoutingQualificationKey](entities/types_agent_RoutingQualificationKey.md)
+- [types_agent_RoutingQualificationKeyDeclare](entities/types_agent_RoutingQualificationKeyDeclare.md)
+- [types_agent_RoutingQualificationKeyDetail](entities/types_agent_RoutingQualificationKeyDetail.md)
+- [types_agent_RoutingQualificationKeyRevise](entities/types_agent_RoutingQualificationKeyRevise.md)
+- [types_agent_RoutingQualificationKeyRevision](entities/types_agent_RoutingQualificationKeyRevision.md)
+- [types_agent_RoutingQualificationKeyUsage](entities/types_agent_RoutingQualificationKeyUsage.md)
 - [types_agent_TaskDifficultyAxes](entities/types_agent_TaskDifficultyAxes.md)
 - [types_agent_TaskRoutingAssessment](entities/types_agent_TaskRoutingAssessment.md)
 - [types_agent_TaskRoutingAssessmentCommand](entities/types_agent_TaskRoutingAssessmentCommand.md)
@@ -1920,6 +1947,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261126_0028_team_runtime_identity](modules/20261126_0028_team_runtime_identity.md) - Record which runtime instance acknowledged each team member's handoff.
 - [20261126_0029_catalog_effort](modules/20261126_0029_catalog_effort.md) - Record the reasoning-effort setting of each model catalog entry.
 - [20261127_0030_task_supersession](modules/20261127_0030_task_supersession.md) - Record a supersession: an original whose deliverable was already closed or accepted as another task.
+- [20261127_0031_routing_qualification_keys](modules/20261127_0031_routing_qualification_keys.md) - Keep a deployment's declared qualification keys and let catalog entries hold them.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AccountMenu](modules/AccountMenu.md) - `frontend/src/features/identity/AccountMenu.tsx`
 - [AccountMenu.test](modules/AccountMenu.test.md) - `frontend/src/features/identity/AccountMenu.test.tsx`
@@ -2133,6 +2161,8 @@ Retained history; these declarations are absent from the selected source invento
 - [ProjectUpdatesTab](modules/ProjectUpdatesTab.md) - `frontend/src/components/projects/ProjectUpdatesTab.tsx`
 - [ProjectsPage](modules/ProjectsPage.md) - `frontend/src/pages/ProjectsPage.tsx`
 - [ProjectsPage.test](modules/ProjectsPage.test.md) - `frontend/src/pages/ProjectsPage.test.tsx`
+- [QualificationKeysPanel](modules/QualificationKeysPanel.md) - `frontend/src/components/settings/QualificationKeysPanel.tsx`
+- [QualificationKeysPanel.test](modules/QualificationKeysPanel.test.md) - `frontend/src/components/settings/QualificationKeysPanel.test.tsx`
 - [QueryState](modules/QueryState.md) - `frontend/src/components/feedback/QueryState.tsx`
 - [QuickCapture](modules/QuickCapture.md) - `frontend/src/components/tasks/QuickCapture.tsx`
 - [QuickCapture.test](modules/QuickCapture.test.md) - `frontend/src/components/tasks/QuickCapture.test.tsx`
@@ -2531,6 +2561,7 @@ Retained history; these declarations are absent from the selected source invento
 - [models_project](modules/models_project.md) - Project model.
 - [models_release](modules/models_release.md) - Release model for shipped-work tracking.
 - [models_request_source](modules/models_request_source.md) - Request source models for customer and intake traceability.
+- [models_routing_qualification](modules/models_routing_qualification.md) - A deployment's declared qualification keys and their append-only revisions.
 - [models_runtime_observation](modules/models_runtime_observation.md) - Advisory observations of agent runtime sessions, reported by independent observers.
 - [models_saved_view](modules/models_saved_view.md) - Saved view model for reusable list and dashboard filters.
 - [models_system_settings](modules/models_system_settings.md) - Runtime system settings model.
@@ -2644,6 +2675,7 @@ Retained history; these declarations are absent from the selected source invento
 - [routers_task_domain](modules/routers_task_domain.md) - Compatible domain commands, canonical briefs and bounded task reads.
 - [routers_team](modules/routers_team.md) - Team API router.
 - [routers_triage](modules/routers_triage.md) - Triage API router.
+- [routing_qualification_key_service](modules/routing_qualification_key_service.md) - The deployment's governed registry of qualification keys.
 - [run](modules/run.md) - Run deterministic, production-shaped REST and MCP load through public APIs.
 - [run_android_checks](modules/run_android_checks.md) - Build Android with native JDK 17, the licensed SDK and the checksum-pinned Gradle wrapper.
 - [run_disposable_checks](modules/run_disposable_checks.md) - Run database, frontend and browser checks using isolated native processes.
@@ -2694,6 +2726,7 @@ Retained history; these declarations are absent from the selected source invento
 - [schemas_release](modules/schemas_release.md) - Release schemas.
 - [schemas_request_source](modules/schemas_request_source.md) - Request source schemas.
 - [schemas_review_evidence](modules/schemas_review_evidence.md) - Bounded, non-executable evidence prepared for one review of an immutable candidate.
+- [schemas_routing_qualification](modules/schemas_routing_qualification.md) - Contracts for the deployment's governed qualification key registry.
 - [schemas_runtime_observation](modules/schemas_runtime_observation.md) - Advisory runtime observation contracts.
 - [schemas_saved_view](modules/schemas_saved_view.md) - Saved view schemas and filter payload validation primitives.
 - [schemas_scheduling_rules](modules/schemas_scheduling_rules.md) - Scheduling rules schemas for API.
@@ -2942,6 +2975,8 @@ Retained history; these declarations are absent from the selected source invento
 - [test_routing_preview_focus](modules/test_routing_preview_focus.md) - A focused routing preview keeps a named team actor's rows inside the bounded response.
 - [test_routing_preview_size](modules/test_routing_preview_size.md) - The routed decision, its defaults, and its digest share one exact canonical byte budget.
 - [test_routing_preview_team_scope](modules/test_routing_preview_team_scope.md) - A team-bound PM's routing preview carries only its own team's operational rows.
+- [test_routing_qualification_keys](modules/test_routing_qualification_keys.md) - The deployment's governed qualification key registry and the keys catalog entries hold.
+- [test_routing_qualification_keys_migration](modules/test_routing_qualification_keys_migration.md) - The qualification key upgrade keeps a populated catalog and never drops declared keys silently.
 - [test_run_detail_execution_provenance](modules/test_run_detail_execution_provenance.md) - Run detail returns the stored execution provenance through REST and MCP alike.
 - [test_runtime_boundaries](modules/test_runtime_boundaries.md) - DBM-PERF-002 and DBM-MAINT-001 runtime-boundary tests.
 - [test_runtime_identity_migration](modules/test_runtime_identity_migration.md) - The runtime instance columns migrate reversibly and are never dropped silently.
@@ -3435,6 +3470,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-create_web_intake_item](flows/http-create_web_intake_item.md) - entry: `create_web_intake_item`
 - [http-current_task_review](flows/http-current_task_review.md) - entry: `current_task_review`
 - [http-dataset](flows/http-dataset.md) - entry: `dataset`
+- [http-declare_routing_qualification_key](flows/http-declare_routing_qualification_key.md) - entry: `declare_routing_qualification_key`
 - [http-decline_planning_triage_item](flows/http-decline_planning_triage_item.md) - entry: `decline_planning_triage_item`
 - [http-decline_triage_item](flows/http-decline_triage_item.md) - entry: `decline_triage_item`
 - [http-delete_calendar](flows/http-delete_calendar.md) - entry: `delete_calendar`
@@ -3520,6 +3556,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-get_project_summary](flows/http-get_project_summary.md) - entry: `get_project_summary`
 - [http-get_project_tasks](flows/http-get_project_tasks.md) - entry: `get_project_tasks`
 - [http-get_release](flows/http-get_release.md) - entry: `get_release`
+- [http-get_routing_qualification_key](flows/http-get_routing_qualification_key.md) - entry: `get_routing_qualification_key`
 - [http-get_saved_view](flows/http-get_saved_view.md) - entry: `get_saved_view`
 - [http-get_scheduling_rules](flows/http-get_scheduling_rules.md) - entry: `get_scheduling_rules`
 - [http-get_subtasks](flows/http-get_subtasks.md) - entry: `get_subtasks`
@@ -3590,6 +3627,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-list_ready_tasks](flows/http-list_ready_tasks.md) - entry: `list_ready_tasks`
 - [http-list_request_source_links](flows/http-list_request_source_links.md) - entry: `list_request_source_links`
 - [http-list_roadmap_milestones](flows/http-list_roadmap_milestones.md) - entry: `list_roadmap_milestones`
+- [http-list_routing_qualification_keys](flows/http-list_routing_qualification_keys.md) - entry: `list_routing_qualification_keys`
 - [http-list_runtime_observations](flows/http-list_runtime_observations.md) - entry: `list_runtime_observations`
 - [http-list_saved_view_dashboard_cards](flows/http-list_saved_view_dashboard_cards.md) - entry: `list_saved_view_dashboard_cards`
 - [http-list_saved_views](flows/http-list_saved_views.md) - entry: `list_saved_views`
@@ -3670,9 +3708,11 @@ Retained history; these declarations are absent from the selected source invento
 - [http-restore_backlog](flows/http-restore_backlog.md) - entry: `restore_backlog`
 - [http-restore_snapshot](flows/http-restore_snapshot.md) - entry: `restore_snapshot`
 - [http-retarget_delivery_dependency](flows/http-retarget_delivery_dependency.md) - entry: `retarget_delivery_dependency`
+- [http-retire_routing_qualification_key](flows/http-retire_routing_qualification_key.md) - entry: `retire_routing_qualification_key`
 - [http-retry_outbound_webhook_delivery](flows/http-retry_outbound_webhook_delivery.md) - entry: `retry_outbound_webhook_delivery`
 - [http-retry_personal_notification](flows/http-retry_personal_notification.md) - entry: `retry_personal_notification`
 - [http-review_task](flows/http-review_task.md) - entry: `review_task`
+- [http-revise_routing_qualification_key](flows/http-revise_routing_qualification_key.md) - entry: `revise_routing_qualification_key`
 - [http-revoke_owned_session](flows/http-revoke_owned_session.md) - entry: `revoke_owned_session`
 - [http-revoke_plan_share](flows/http-revoke_plan_share.md) - entry: `revoke_plan_share`
 - [http-revoke_session](flows/http-revoke_session.md) - entry: `revoke_session`

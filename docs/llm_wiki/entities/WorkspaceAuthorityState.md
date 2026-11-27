@@ -39,7 +39,7 @@ flowchart LR
     n10["_store (backend/tests/test_maintenance_window.py)"]
     n11["managed_store (backend/tests/test_managed_authority.py)"]
     n12["seed (backend/tests/test_pipeline_active_outside_run.py)"]
-    n13["backend/tests/test_scoped_review_evidence.py"]
+    n13["test_the_operator_admin_key_governs_the_registry_and_no_credential_is_refused (backend/tests/test_routing_qualification_keys.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -66,7 +66,7 @@ flowchart LR
     click n10 "../modules/test_maintenance_window.md"
     click n11 "../modules/test_managed_authority.md"
     click n12 "../modules/test_pipeline_active_outside_run.md"
-    click n13 "../modules/test_scoped_review_evidence.md"
+    click n13 "../modules/test_routing_qualification_keys.md"
 ```
 
 ### Summary
@@ -96,6 +96,6 @@ flowchart LR
 | `_store` | call | [test_maintenance_window](../modules/test_maintenance_window.md) | 1 |
 | `managed_store` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
 | `seed` | call | [test_pipeline_active_outside_run](../modules/test_pipeline_active_outside_run.md) | 1 |
-| `test_scoped_review_evidence` | import | [test_scoped_review_evidence](../modules/test_scoped_review_evidence.md) | — |
+| `test_the_operator_admin_key_governs_the_registry_and_no_credential_is_refused` | call | [test_routing_qualification_keys](../modules/test_routing_qualification_keys.md) | 1 |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
