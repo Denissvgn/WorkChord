@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_preview_task_routing` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_routing](../modules/agent_routing.md), [agent_routing_observability](../modules/agent_routing_observability.md), [agent_routing_policy](../modules/agent_routing_policy.md), and 28 more
+**Modules touched:** [agent_routing](../modules/agent_routing.md), [agent_routing_observability](../modules/agent_routing_observability.md), [agent_routing_policy](../modules/agent_routing_policy.md), and 29 more
 
 **Complete modules touched:**
 
@@ -34,6 +34,7 @@
 - [review_provenance](../modules/review_provenance.md)
 - [services_review_evidence](../modules/services_review_evidence.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_replacement_service](../modules/task_replacement_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
@@ -67,13 +68,13 @@ sequenceDiagram
     participant p19 as TaskService.record_task_event
     participant p20 as require_identity_writes
     participant p21 as emit_outbound_webhook_event
-    participant p22 as DeliveryDependencyService.reconcile
-    participant p23 as DiscussionService.enqueue
-    participant p24 as AgentRoutingService._preview_context
-    participant p25 as AgentRoutingService._capacity_inputs
-    participant p26 as different_publisher_required
-    participant p27 as AgentRoutingService._routing_input_evidence
-    participant p28 as review_history
+    participant p22 as process_reactivation_checks
+    participant p23 as DeliveryDependencyService.reconcile
+    participant p24 as DiscussionService.enqueue
+    participant p25 as AgentRoutingService._preview_context
+    participant p26 as AgentRoutingService._capacity_inputs
+    participant p27 as different_publisher_required
+    participant p28 as AgentRoutingService._routing_input_evidence
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -97,20 +98,20 @@ sequenceDiagram
     p14->>p19: TaskService.record_task_event
     p13->>p20: require_identity_writes
     p14->>p21: emit_outbound_webhook_event
-    p9->>p22: DeliveryDependencyService.reconcile
-    p9->>p23: DiscussionService.enqueue
-    p12->>p24: AgentRoutingService._preview_context
-    p12->>p25: AgentRoutingService._capacity_inputs
-    p12->>p26: different_publisher_required
-    p12->>p27: AgentRoutingService._routing_input_evidence
-    p12->>p28: review_history
+    p9->>p22: process_reactivation_checks
+    p9->>p23: DeliveryDependencyService.reconcile
+    p9->>p24: DiscussionService.enqueue
+    p12->>p25: AgentRoutingService._preview_context
+    p12->>p26: AgentRoutingService._capacity_inputs
+    p12->>p27: different_publisher_required
+    p12->>p28: AgentRoutingService._routing_input_evidence
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 1179 interactions; 1149 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 1205 interactions; 1175 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 416 (415 omitted); unresolved 1 of 476 (475 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 421 (420 omitted); unresolved 1 of 492 (491 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -124,7 +125,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 268 groups; 260 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 274 groups; 266 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -137,9 +138,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 288; effect analysis evaluated: 198, partial: 16, unavailable: 74. Counts include steps omitted from the displayed trace.
+Source steps: 293; effect analysis evaluated: 202, partial: 16, unavailable: 75. Counts include steps omitted from the displayed trace.
 
-Collector observations for 214 source steps with known totals: observed: 1374, emitted: 1230, omitted: 144. Unavailable totals are excluded.
+Collector observations for 218 source steps with known totals: observed: 1407, emitted: 1254, omitted: 153. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

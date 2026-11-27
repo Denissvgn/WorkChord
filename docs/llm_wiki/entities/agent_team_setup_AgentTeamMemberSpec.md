@@ -1,7 +1,7 @@
 # AgentTeamMemberSpec
 
-**Location:** `backend/app/schemas/agent_team_setup.py:194`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:195`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 

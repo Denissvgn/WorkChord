@@ -59,6 +59,8 @@ flowchart LR
     n9["test_snapshot_restore_cannot_move_work_into_or_out_of_postponed (backend/tests/test_task_postponement.py)"]
     n10["test_summary_rolls_up_postponed_leaves (backend/tests/test_task_postponement.py)"]
     n11["test_work_an_open_postponement_waits_for_cannot_be_deleted (backend/tests/test_task_postponement.py)"]
+    n12["_postpone_task (backend/tests/test_task_reactivation.py)"]
+    n13["test_a_closed_summary_counts_as_an_accepted_predecessor (backend/tests/test_task_reactivation.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -70,6 +72,8 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
+    n13 --> n0
     click n0 "../modules/schemas_task_postponement.md"
     click n2 "../modules/routers_task_domain.md"
     click n3 "../modules/test_task_postponement.md"
@@ -81,6 +85,8 @@ flowchart LR
     click n9 "../modules/test_task_postponement.md"
     click n10 "../modules/test_task_postponement.md"
     click n11 "../modules/test_task_postponement.md"
+    click n12 "../modules/test_task_reactivation.md"
+    click n13 "../modules/test_task_reactivation.md"
 ```
 
 ### Summary
@@ -109,3 +115,5 @@ flowchart LR
 | `test_snapshot_restore_cannot_move_work_into_or_out_of_postponed` | call | [test_task_postponement](../modules/test_task_postponement.md) | 1 |
 | `test_summary_rolls_up_postponed_leaves` | call | [test_task_postponement](../modules/test_task_postponement.md) | 1 |
 | `test_work_an_open_postponement_waits_for_cannot_be_deleted` | call | [test_task_postponement](../modules/test_task_postponement.md) | 2 |
+| `_postpone_task` | call | [test_task_reactivation](../modules/test_task_reactivation.md) | 1 |
+| `test_a_closed_summary_counts_as_an_accepted_predecessor` | call | [test_task_reactivation](../modules/test_task_reactivation.md) | 1 |

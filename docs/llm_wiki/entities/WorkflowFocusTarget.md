@@ -1,6 +1,6 @@
 # WorkflowFocusTarget
 
-**Location:** `frontend/src/components/team/AgentManifestWorkflow.tsx:134`
+**Location:** `frontend/src/components/team/AgentManifestWorkflow.tsx:135`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md)

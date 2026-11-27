@@ -30,6 +30,7 @@ Human ownership queues apply complete inherited deferral policy to every bounded
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.identity_service` | `local_work_profile` |
 | `app.services.task_domain_service` | `TaskDomainService` |
+| `app.services.task_postponement_service` | `open_postponement`, `postponement_record` |
 | `app.services.task_service` | `TaskService` |
 | `app.sql_semantics` | `portable_contains` |
 | `sqlalchemy` | `and_`, `literal`, `or_`, `select` |
@@ -57,7 +58,7 @@ flowchart LR
 |---|---|
 | Inbound | `backend` (6) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (15) |
+| Outbound | `backend` (16) |
 
 ### External packages
 
@@ -65,7 +66,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

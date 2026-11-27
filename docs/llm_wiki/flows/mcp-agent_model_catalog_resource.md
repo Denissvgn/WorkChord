@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_model_catalog_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), and 13 more
+**Modules touched:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), and 14 more
 
 **Complete modules touched:**
 
@@ -21,6 +21,7 @@
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
 - [query_limits](../modules/query_limits.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -48,18 +49,18 @@ sequenceDiagram
     participant p14 as require_scope
     participant p15 as AgentService.authenticate
     participant p16 as require_identity_writes
-    participant p17 as DeliveryDependencyService.reconcile
+    participant p17 as process_reactivation_checks
     participant p18 as IdentityService.context
-    participant p19 as DiscussionService.enqueue
-    participant p20 as AgentModelCatalogService
-    participant p21 as _structured_tool_error
-    participant p22 as CollectionLimitExceededError
-    participant p23 as AgentModelCatalogService._catalog_response
-    participant p24 as _current_agent_key
-    participant p25 as scope_requirement_is_mutating
-    participant p26 as MCPAuthError
-    participant p27 as actor_has_scope
-    participant p28 as MaintenanceModeError
+    participant p19 as DeliveryDependencyService.reconcile
+    participant p20 as DiscussionService.enqueue
+    participant p21 as AgentModelCatalogService
+    participant p22 as _structured_tool_error
+    participant p23 as CollectionLimitExceededError
+    participant p24 as AgentModelCatalogService._catalog_response
+    participant p25 as _current_agent_key
+    participant p26 as scope_requirement_is_mutating
+    participant p27 as MCPAuthError
+    participant p28 as actor_has_scope
     participant p29 as json.dumps (backend/app/mcp_server.py:_json_resource)
     participant p30 as value.model_dump
     p0->>p1: _json_resource
@@ -78,25 +79,25 @@ sequenceDiagram
     p12->>p14: require_scope
     p11->>p15: AgentService.authenticate
     p13->>p16: require_identity_writes
-    p10->>p17: DeliveryDependencyService.reconcile
+    p10->>p17: process_reactivation_checks
     p13->>p18: IdentityService.context
-    p10->>p19: DiscussionService.enqueue
-    p2->>p20: AgentModelCatalogService
-    p3->>p21: _structured_tool_error
-    p5->>p22: CollectionLimitExceededError
-    p5->>p23: AgentModelCatalogService._catalog_response
-    p8->>p24: _current_agent_key
-    p6->>p25: scope_requirement_is_mutating
-    p8->>p26: MCPAuthError
-    p7->>p27: actor_has_scope
-    p6->>p28: MaintenanceModeError
+    p10->>p19: DeliveryDependencyService.reconcile
+    p10->>p20: DiscussionService.enqueue
+    p2->>p21: AgentModelCatalogService
+    p3->>p22: _structured_tool_error
+    p5->>p23: CollectionLimitExceededError
+    p5->>p24: AgentModelCatalogService._catalog_response
+    p8->>p25: _current_agent_key
+    p6->>p26: scope_requirement_is_mutating
+    p8->>p27: MCPAuthError
+    p7->>p28: actor_has_scope
     p1-->>p29: json.dumps (backend/app/mcp_server.py:_json_resource)(value, ensure_ascii=False, default=str)
     p4-->>p30: value.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 243 interactions; 213 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 253 interactions; 223 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 74 (73 omitted); unresolved 1 of 96 (95 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 77 (76 omitted); unresolved 1 of 100 (99 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -105,12 +106,12 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/config.py:get_settings` | 5 | [backend/app/config.py](../modules/config.md) | internal | 1 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 7 | - | external | 4 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 7 | - | unresolved | 3 |
+| `backend/app/maintenance.py:enforce_mcp_access` | 4 | [backend/app/maintenance.py](../modules/app_maintenance.md) | internal | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_agent_context` | 16 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-| `backend/app/mcp_server.py:_open_db_session` | 21 | - | external | 1 |
-> Omission summary shows 8 of 63 groups; 55 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 67 groups; 59 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -123,9 +124,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 74; effect analysis evaluated: 48, partial: 2, unavailable: 24. Counts include steps omitted from the displayed trace.
+Source steps: 77; effect analysis evaluated: 50, partial: 2, unavailable: 25. Counts include steps omitted from the displayed trace.
 
-Collector observations for 50 source steps with known totals: observed: 222, emitted: 209, omitted: 13. Unavailable totals are excluded.
+Collector observations for 52 source steps with known totals: observed: 237, emitted: 224, omitted: 13. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

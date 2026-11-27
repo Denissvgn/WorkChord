@@ -1,6 +1,6 @@
 # AgentTeamMemberStatus
 
-**Location:** `frontend/src/types/agent.ts:806`
+**Location:** `frontend/src/types/agent.ts:827`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -28,6 +28,7 @@ _Auto-generated from `AgentTeamMemberStatus` in `frontend/src/types/agent.ts`._
 | `skill_package` | `AgentTeamSkillPackage` | Yes | — | — |
 | `package_acknowledged` | `boolean` | Yes | — | — |
 | `acknowledgement_state` | `'missing' \| 'current' \| 'stale'` | No | — | — |
+| `runtime_identity` | `AgentTeamRuntimeIdentityStatus` | No | — | — |
 | `model_attestation` | `'not_independently_attested'` | No | — | — |
 | `credential_delivery_state` | `'pending' \| 'delivered' \| 'uncertain' \| 'not_required'` | Yes | — | — |
 | `connection_state` | `'unobserved' \| 'observed' \| 'stale'` | Yes | — | — |
@@ -54,18 +55,21 @@ _Auto-generated from `AgentTeamMemberStatus` in `frontend/src/types/agent.ts`._
 flowchart LR
     n0["AgentTeamMemberStatus (frontend/src/types/agent.ts)"]
     n1["frontend/src/components/team/ConnectAgentSteps.test.tsx"]
-    n2["ConnectionSteps (frontend/src/components/team/ConnectionSteps.tsx)"]
-    n3["frontend/src/components/team/TeamProfileManager.test.tsx"]
-    n4["isConnected (frontend/src/features/agentTeamSetup/connectAgent.ts)"]
+    n2["frontend/src/components/team/ConnectionSteps.test.tsx"]
+    n3["ConnectionSteps (frontend/src/components/team/ConnectionSteps.tsx)"]
+    n4["frontend/src/components/team/TeamProfileManager.test.tsx"]
+    n5["isConnected (frontend/src/features/agentTeamSetup/connectAgent.ts)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/types_agent.md"
     click n1 "../modules/ConnectAgentSteps.test.md"
-    click n2 "../modules/ConnectionSteps.md"
-    click n3 "../modules/TeamProfileManager.test.md"
-    click n4 "../modules/connectAgent.md"
+    click n2 "../modules/ConnectionSteps.test.md"
+    click n3 "../modules/ConnectionSteps.md"
+    click n4 "../modules/TeamProfileManager.test.md"
+    click n5 "../modules/connectAgent.md"
 ```
 
 ### Summary
@@ -79,6 +83,7 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `ConnectAgentSteps.test` | import | [ConnectAgentSteps.test](../modules/ConnectAgentSteps.test.md) | — |
+| `ConnectionSteps.test` | import | [ConnectionSteps.test](../modules/ConnectionSteps.test.md) | — |
 | `ConnectionSteps` | type_reference | [ConnectionSteps](../modules/ConnectionSteps.md) | — |
 | `TeamProfileManager.test` | import | [TeamProfileManager.test](../modules/TeamProfileManager.test.md) | — |
 | `isConnected` | type_reference | [connectAgent](../modules/connectAgent.md) | — |

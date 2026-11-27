@@ -483,9 +483,7 @@ async def reconcile_execution_request(
         )
     archived = None
     if archived_acknowledgement is not None:
-        archived = AgentTeamRuntimeAcknowledgement.model_validate(archived_acknowledgement).model_dump(
-            mode="json", exclude={"expected_previous_acknowledgement_digest"}
-        )
+        archived = AgentTeamRuntimeAcknowledgement.model_validate(archived_acknowledgement).stored_content()
     return await reconcile_execution(
         db,
         run_id,

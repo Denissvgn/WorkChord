@@ -44,17 +44,17 @@ sequenceDiagram
     participant p15 as AgentTeamSetupService._status_for_topology
     participant p16 as _member_contract_outdated
     participant p17 as AgentTeamSetupService._handoff
-    participant p18 as _canonical_json
-    participant p19 as ensure_agent_team_secret_free
-    participant p20 as AgentRoutingRolloutMode
-    participant p21 as internal_authority
-    participant p22 as AgentRoutingRolloutStatus
-    participant p23 as AgentTeamSetupService._topology
-    participant p24 as AgentRoutingTopologyReadiness
-    participant p25 as Settings
-    participant p26 as AgentTeamMembershipBoundary
-    participant p27 as load_stored_agent_team_master
-    participant p28 as AgentTeamSetupConflictError
+    participant p18 as AgentTeamSetupService._runtime_identity_status
+    participant p19 as _canonical_json
+    participant p20 as ensure_agent_team_secret_free
+    participant p21 as AgentRoutingRolloutMode
+    participant p22 as internal_authority
+    participant p23 as AgentRoutingRolloutStatus
+    participant p24 as AgentTeamSetupService._topology
+    participant p25 as AgentRoutingTopologyReadiness
+    participant p26 as Settings
+    participant p27 as AgentTeamMembershipBoundary
+    participant p28 as load_stored_agent_team_master
     participant p29 as getattr
     participant p30 as (…).status
     p0->>p1: AgentRoutingRolloutService.status
@@ -74,24 +74,24 @@ sequenceDiagram
     p11->>p15: AgentTeamSetupService._status_for_topology
     p15->>p16: _member_contract_outdated
     p15->>p17: AgentTeamSetupService._handoff
-    p15->>p18: _canonical_json
-    p18->>p19: ensure_agent_team_secret_free
-    p1->>p20: AgentRoutingRolloutMode
-    p3->>p21: internal_authority
-    p1->>p22: AgentRoutingRolloutStatus
-    p2->>p23: AgentTeamSetupService._topology
-    p12->>p24: AgentRoutingTopologyReadiness
-    p8->>p25: Settings
-    p11->>p26: AgentTeamMembershipBoundary
-    p15->>p27: load_stored_agent_team_master
-    p15->>p28: AgentTeamSetupConflictError
+    p15->>p18: AgentTeamSetupService._runtime_identity_status
+    p15->>p19: _canonical_json
+    p19->>p20: ensure_agent_team_secret_free
+    p1->>p21: AgentRoutingRolloutMode
+    p3->>p22: internal_authority
+    p1->>p23: AgentRoutingRolloutStatus
+    p2->>p24: AgentTeamSetupService._topology
+    p12->>p25: AgentRoutingTopologyReadiness
+    p8->>p26: Settings
+    p11->>p27: AgentTeamMembershipBoundary
+    p15->>p28: load_stored_agent_team_master
     p0-->>p29: getattr(service, 'db', None)
     p0-->>p30: (…).status
 ```
 
-> Call sequence diagram shows 30 of 254 interactions; 224 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 262 interactions; 232 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 78 (77 omitted); unresolved 1 of 111 (110 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 80 (79 omitted); unresolved 1 of 114 (113 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -104,8 +104,8 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService._topology` | 15 | - | unresolved | 16 |
 | `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService._topology` | 15 | - | external | 5 |
 | `backend/app/schemas/agent_team_setup.py:load_stored_agent_team_master` | 38 | - | unresolved | 1 |
-| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService._status_for_topology` | 37 | [backend/app/utils/time.py](../modules/time.md) | internal | 3 |
-> Omission summary shows 8 of 45 groups; 37 further groups are not expanded here. Counts above include all omitted interactions.
+| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService._status_for_topology` | 37 | [backend/app/services/agent_team_setup_service.py](../modules/agent_team_setup_service.md) | internal | 6 |
+> Omission summary shows 8 of 48 groups; 40 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -118,9 +118,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 66; effect analysis evaluated: 38, partial: 2, unavailable: 26. Counts include steps omitted from the displayed trace.
+Source steps: 69; effect analysis evaluated: 39, partial: 2, unavailable: 28. Counts include steps omitted from the displayed trace.
 
-Collector observations for 40 source steps with known totals: observed: 226, emitted: 200, omitted: 26. Unavailable totals are excluded.
+Collector observations for 41 source steps with known totals: observed: 233, emitted: 205, omitted: 28. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -212,10 +212,10 @@ flowchart LR
 | AgentRoutingRolloutService.status | AgentRoutingRolloutStatus | 273 | `AgentRoutingRolloutStatus(configured_mode=configured, effective_mode=configured, feature_advertised=True, blocker_codes=(...), topology_readiness=readiness)` |
 | get_agent_capabilities | AgentRoutingRolloutService | 415 | `AgentRoutingRolloutService(data not statically known)` |
 | get_agent_capabilities | AgentTeamSetupService.routing_readiness | 417 | `AgentTeamSetupService(service.db).routing_readiness(actor)` |
-| AgentTeamSetupService.routing_readiness | AgentTeamSetupService.membership_boundary | 3713 | `self.membership_boundary(actor.id)` |
-| AgentTeamSetupService.membership_boundary | self.db.execute (backend/app/services/agen…rvice.membership_boundary) | 3643 | `self.db.execute(...)` |
-| AgentTeamSetupService.membership_boundary | select(…).join(…).where | 3644 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where(..., ...)` |
-| AgentTeamSetupService.membership_boundary | select(…).join | 3644 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, ...)` |
+| AgentTeamSetupService.routing_readiness | AgentTeamSetupService.membership_boundary | 3882 | `self.membership_boundary(actor.id)` |
+| AgentTeamSetupService.membership_boundary | self.db.execute (backend/app/services/agen…rvice.membership_boundary) | 3812 | `self.db.execute(...)` |
+| AgentTeamSetupService.membership_boundary | select(…).join(…).where | 3813 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where(..., ...)` |
+| AgentTeamSetupService.membership_boundary | select(…).join | 3813 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, ...)` |
 
 ### Boundary effects
 
@@ -228,9 +228,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `AgentTeamSetupService.membership_boundary` | `self.db.execute` | 3643 |
-| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where` | 3644 |
-| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join` | 3644 |
+| unresolved_call | `AgentTeamSetupService.membership_boundary` | `self.db.execute` | 3812 |
+| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where` | 3813 |
+| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join` | 3813 |
 | step_limit | `get_agent_capabilities` | `first 12 steps` | 0 |
 | truncated_flow | `get_agent_capabilities` | `depth limit` | 0 |
 

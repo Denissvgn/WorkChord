@@ -1,6 +1,6 @@
 # AgentModelCatalogUpdate
 
-**Location:** `backend/app/schemas/agent_routing.py:284`
+**Location:** `backend/app/schemas/agent_routing.py:290`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -27,6 +27,7 @@ Optimistic partial update for one catalog entry.
 | `publisher_key` | `RoutingKey \| None` | `publisher_key` | No | Yes | `None` | — | — | — |
 | `configured_model_alias` | `str \| None` | `configured_model_alias` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `reasoning_tier` | `ReasoningTier \| None` | `reasoning_tier` | No | Yes | `None` | — | — | — |
+| `effort` | `ModelEffortSetting \| None` | `effort` | No | Yes | `None` | — | — | — |
 | `context_tier` | `ModelContextTier \| None` | `context_tier` | No | Yes | `None` | — | — | — |
 | `modality_tags` | `list[str] \| None` | `modality_tags` | No | Yes | `None` | — | — | — |
 | `cost_tier` | `ModelCostTier \| None` | `cost_tier` | No | Yes | `None` | — | — | — |
@@ -57,12 +58,14 @@ flowchart LR
     n4["AgentModelCatalogUpdate.require_catalog_change (backend/app/schemas/agent_routing.py)"]
     n5["AgentModelCatalogService.update_catalog (backend/app/services/agent_model_catalog_service.py)"]
     n6["test_model_updates_reject_null_for_non_nullable_fields (backend/tests/test_agent_model_catalog_api.py)"]
+    n7["test_catalog_effort_defaults_to_unknown_and_refuses_values_outside_the_vocabulary (backend/tests/test_agent_routing_wave3_contract.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/agent_routing.md"
     click n1 "../modules/agent_routing.md"
     click n2 "../modules/mcp_agent_tools.md"
@@ -70,13 +73,14 @@ flowchart LR
     click n4 "../modules/agent_routing.md"
     click n5 "../modules/agent_model_catalog_service.md"
     click n6 "../modules/test_agent_model_catalog_api.md"
+    click n7 "../modules/test_agent_routing_wave3_contract.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing](../modules/agent_routing.md) | 4 | `configured_model_alias`, `context_tier`, `cost_tier`, `enabled`, `expected_revision`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags`, `provider`, `publisher_key`, `reasoning_tier` |
+| [agent_routing](../modules/agent_routing.md) | 4 | `configured_model_alias`, `context_tier`, `cost_tier`, `effort`, `enabled`, `expected_revision`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags`, `provider`, `publisher_key` |
 
 ### Structure
 
@@ -93,3 +97,4 @@ flowchart LR
 | `AgentModelCatalogUpdate.require_catalog_change` | type_reference | [agent_routing](../modules/agent_routing.md) | — |
 | `AgentModelCatalogService.update_catalog` | type_reference | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | — |
 | `test_model_updates_reject_null_for_non_nullable_fields` | type_reference | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | — |
+| `test_catalog_effort_defaults_to_unknown_and_refuses_values_outside_the_vocabulary` | call | [test_agent_routing_wave3_contract](../modules/test_agent_routing_wave3_contract.md) | 3 |

@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_get_execution_usage` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 14 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 15 more
 
 **Complete modules touched:**
 
@@ -22,6 +22,7 @@
 - [query_limits](../modules/query_limits.md)
 - [schemas_execution_usage](../modules/schemas_execution_usage.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -50,17 +51,17 @@ sequenceDiagram
     participant p15 as require_scope
     participant p16 as AgentService.authenticate
     participant p17 as require_identity_writes
-    participant p18 as DeliveryDependencyService.reconcile
-    participant p19 as ExecutionUsageService._scope
-    participant p20 as DiscussionService.enqueue
-    participant p21 as actor_has_scope
-    participant p22 as require_project
-    participant p23 as commit_or_flush
-    participant p24 as DeliveryDependencyService.validate_cycles
-    participant p25 as DiscussionService.recipient_authorized
-    participant p26 as TaskService.reserve_task_version
-    participant p27 as clear_execution_evidence
-    participant p28 as ExecutionUsageService
+    participant p18 as process_reactivation_checks
+    participant p19 as DeliveryDependencyService.reconcile
+    participant p20 as ExecutionUsageService._scope
+    participant p21 as DiscussionService.enqueue
+    participant p22 as actor_has_scope
+    participant p23 as require_project
+    participant p24 as ReactivationService.evaluate_waiting
+    participant p25 as commit_or_flush
+    participant p26 as DeliveryDependencyService.validate_cycles
+    participant p27 as DiscussionService.recipient_authorized
+    participant p28 as TaskService.reserve_task_version
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -80,24 +81,24 @@ sequenceDiagram
     p13->>p15: require_scope
     p12->>p16: AgentService.authenticate
     p14->>p17: require_identity_writes
-    p10->>p18: DeliveryDependencyService.reconcile
-    p8->>p19: ExecutionUsageService._scope
-    p10->>p20: DiscussionService.enqueue
-    p15->>p21: actor_has_scope
-    p19->>p22: require_project
-    p16->>p23: commit_or_flush
-    p18->>p24: DeliveryDependencyService.validate_cycles
-    p20->>p25: DiscussionService.recipient_authorized
-    p18->>p26: TaskService.reserve_task_version
-    p18->>p27: clear_execution_evidence
-    p2->>p28: ExecutionUsageService
+    p10->>p18: process_reactivation_checks
+    p10->>p19: DeliveryDependencyService.reconcile
+    p8->>p20: ExecutionUsageService._scope
+    p10->>p21: DiscussionService.enqueue
+    p15->>p22: actor_has_scope
+    p20->>p23: require_project
+    p18->>p24: ReactivationService.evaluate_waiting
+    p16->>p25: commit_or_flush
+    p19->>p26: DeliveryDependencyService.validate_cycles
+    p21->>p27: DiscussionService.recipient_authorized
+    p19->>p28: TaskService.reserve_task_version
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 301 interactions; 271 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 326 interactions; 296 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 79 (78 omitted); unresolved 1 of 127 (126 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 84 (83 omitted); unresolved 1 of 142 (141 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -111,7 +112,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 89 groups; 81 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 97 groups; 89 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -124,9 +125,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 96; effect analysis evaluated: 62, partial: 2, unavailable: 32. Counts include steps omitted from the displayed trace.
+Source steps: 101; effect analysis evaluated: 66, partial: 2, unavailable: 33. Counts include steps omitted from the displayed trace.
 
-Collector observations for 64 source steps with known totals: observed: 262, emitted: 249, omitted: 13. Unavailable totals are excluded.
+Collector observations for 68 source steps with known totals: observed: 286, emitted: 273, omitted: 13. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
