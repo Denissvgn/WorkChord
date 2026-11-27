@@ -19,17 +19,17 @@
       "api-contracts": 0,
       "dependencies": 1,
       "entities": 1854,
-      "flows": 632,
+      "flows": 635,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1190,
+      "modules": 1191,
       "workflows": 244
     },
     "dependency_architecture": 2,
-    "total": 3937
+    "total": 3941
   },
   "dependency_pages": {
     "count": 2,
@@ -33507,6 +33507,93 @@
       "category": "mcp",
       "detector": "builtin",
       "entry_point": {
+        "label": "agent_get_task_postponement",
+        "source_path": "backend/app/mcp_server.py",
+        "symbol": "agent_get_task_postponement"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 100,
+              "step": "scope_requirement_is_mutating",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "external_call",
+              "line": 102,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 103,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "agent_get_task_postponement",
+              "target": "first 12 steps"
+            },
+            {
+              "kind": "truncated_flow",
+              "line": 0,
+              "step": "agent_get_task_postponement",
+              "target": "depth limit"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": true
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/mcp_server.py",
+            "backend/app/maintenance.py",
+            "backend/app/config.py",
+            "backend/app/commands.py",
+            "backend/app/services/task_reactivation_service.py",
+            "backend/app/authority.py",
+            "backend/app/services/delivery_dependency_service.py",
+            "backend/app/services/task_service.py",
+            "backend/app/services/task_brief_service.py",
+            "backend/app/services/discussion_service.py",
+            "backend/app/models/outbound_webhook.py",
+            "backend/app/services/identity_service.py",
+            "backend/app/services/agent_service.py",
+            "backend/app/utils/time.py",
+            "backend/app/models/identity.py",
+            "backend/app/mcp_agent_tools.py",
+            "backend/app/services/task_postponement_service.py"
+          ],
+          "step_count": 325,
+          "truncated": true
+        }
+      },
+      "id": "mcp-agent_get_task_postponement",
+      "language": "python"
+    },
+    {
+      "category": "mcp",
+      "detector": "builtin",
+      "entry_point": {
         "label": "agent_get_task_replacement",
         "source_path": "backend/app/mcp_server.py",
         "symbol": "agent_get_task_replacement"
@@ -35192,6 +35279,95 @@
       "category": "mcp",
       "detector": "builtin",
       "entry_point": {
+        "label": "agent_postpone_task",
+        "source_path": "backend/app/mcp_server.py",
+        "symbol": "agent_postpone_task"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 100,
+              "step": "scope_requirement_is_mutating",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "external_call",
+              "line": 102,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 103,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "agent_postpone_task",
+              "target": "first 12 steps"
+            },
+            {
+              "kind": "truncated_flow",
+              "line": 0,
+              "step": "agent_postpone_task",
+              "target": "depth limit"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": true
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/mcp_server.py",
+            "backend/app/maintenance.py",
+            "backend/app/config.py",
+            "backend/app/commands.py",
+            "backend/app/services/task_reactivation_service.py",
+            "backend/app/authority.py",
+            "backend/app/services/delivery_dependency_service.py",
+            "backend/app/services/task_service.py",
+            "backend/app/services/task_brief_service.py",
+            "backend/app/services/discussion_service.py",
+            "backend/app/models/outbound_webhook.py",
+            "backend/app/services/identity_service.py",
+            "backend/app/services/agent_service.py",
+            "backend/app/utils/time.py",
+            "backend/app/models/identity.py",
+            "backend/app/mcp_agent_tools.py",
+            "backend/app/services/agent_planning_service.py",
+            "backend/app/schemas/agent_planning.py",
+            "backend/app/models/agent.py"
+          ],
+          "step_count": 331,
+          "truncated": true
+        }
+      },
+      "id": "mcp-agent_postpone_task",
+      "language": "python"
+    },
+    {
+      "category": "mcp",
+      "detector": "builtin",
+      "entry_point": {
         "label": "agent_preview_capacity_adjustment",
         "source_path": "backend/app/mcp_server.py",
         "symbol": "agent_preview_capacity_adjustment"
@@ -35805,6 +35981,95 @@
         }
       },
       "id": "mcp-agent_profile_presets_resource",
+      "language": "python"
+    },
+    {
+      "category": "mcp",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "agent_reactivate_task",
+        "source_path": "backend/app/mcp_server.py",
+        "symbol": "agent_reactivate_task"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 100,
+              "step": "scope_requirement_is_mutating",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "external_call",
+              "line": 102,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 103,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "agent_reactivate_task",
+              "target": "first 12 steps"
+            },
+            {
+              "kind": "truncated_flow",
+              "line": 0,
+              "step": "agent_reactivate_task",
+              "target": "depth limit"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": true
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/mcp_server.py",
+            "backend/app/maintenance.py",
+            "backend/app/config.py",
+            "backend/app/commands.py",
+            "backend/app/services/task_reactivation_service.py",
+            "backend/app/authority.py",
+            "backend/app/services/delivery_dependency_service.py",
+            "backend/app/services/task_service.py",
+            "backend/app/services/task_brief_service.py",
+            "backend/app/services/discussion_service.py",
+            "backend/app/models/outbound_webhook.py",
+            "backend/app/services/identity_service.py",
+            "backend/app/services/agent_service.py",
+            "backend/app/utils/time.py",
+            "backend/app/models/identity.py",
+            "backend/app/mcp_agent_tools.py",
+            "backend/app/services/agent_planning_service.py",
+            "backend/app/schemas/agent_planning.py",
+            "backend/app/models/agent.py"
+          ],
+          "step_count": 331,
+          "truncated": true
+        }
+      },
+      "id": "mcp-agent_reactivate_task",
       "language": "python"
     },
     {
@@ -43084,7 +43349,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 511,
+          "step_count": 515,
           "truncated": true
         }
       },
@@ -47249,7 +47514,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 2832,
+              "line": 2889,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -47257,7 +47522,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 2835,
+              "line": 2892,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -47290,19 +47555,19 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 2819,
+              "line": 2876,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 2820,
+              "line": 2877,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 2826,
+              "line": 2883,
               "step": "main",
               "target": "parser.parse_args"
             },
@@ -52240,6 +52505,7 @@
         "flows/mcp-agent_get_task_actions.md",
         "flows/mcp-agent_get_task_context.md",
         "flows/mcp-agent_get_task_detail.md",
+        "flows/mcp-agent_get_task_postponement.md",
         "flows/mcp-agent_get_task_replacement.md",
         "flows/mcp-agent_get_task_routing_assessment.md",
         "flows/mcp-agent_get_team_setup_status.md",
@@ -52259,6 +52525,7 @@
         "flows/mcp-agent_patch_planning_task.md",
         "flows/mcp-agent_patch_task.md",
         "flows/mcp-agent_pipeline_resource.md",
+        "flows/mcp-agent_postpone_task.md",
         "flows/mcp-agent_preview_capacity_adjustment.md",
         "flows/mcp-agent_preview_capacity_transfer.md",
         "flows/mcp-agent_preview_capacity_transfer_withdrawal.md",
@@ -52266,6 +52533,7 @@
         "flows/mcp-agent_preview_schedule.md",
         "flows/mcp-agent_preview_task_routing.md",
         "flows/mcp-agent_profile_presets_resource.md",
+        "flows/mcp-agent_reactivate_task.md",
         "flows/mcp-agent_reconcile_planning_window.md",
         "flows/mcp-agent_reconcile_run_provenance.md",
         "flows/mcp-agent_record_execution_usage.md",
@@ -53423,6 +53691,7 @@
         "modules/test_postgresql_migrations.md",
         "modules/test_postgresql_transfer.md",
         "modules/test_postponed_out_of_scheduling.md",
+        "modules/test_postponement_agent_tools.md",
         "modules/test_process_roles.md",
         "modules/test_profile_capacity.md",
         "modules/test_profile_capacity_migrations.md",
@@ -70588,6 +70857,8 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/schemas_task_postponement_TaskPostponementResponse",
       "outgoing_internal_links": [
+        "modules/agent_planning_service.md",
+        "modules/mcp_agent_tools.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task_postponement.md"
       ],
@@ -73868,6 +74139,8 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/TaskPostponementService",
       "outgoing_internal_links": [
+        "modules/agent_planning_service.md",
+        "modules/mcp_agent_tools.md",
         "modules/routers_task_domain.md",
         "modules/task_postponement_service.md",
         "modules/task_reactivation_service.md",
@@ -73883,6 +74156,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/TaskPostponeRequest",
       "outgoing_internal_links": [
+        "modules/mcp_agent_tools.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task_postponement.md",
         "modules/test_task_postponement.md",
@@ -73932,6 +74206,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/TaskReactivateRequest",
       "outgoing_internal_links": [
+        "modules/mcp_agent_tools.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task_postponement.md",
         "modules/test_task_postponement.md",
@@ -80264,18 +80539,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/agent_contract",
       "outgoing_internal_links": [
-        "modules/agent_contract.md",
-        "modules/agent_team_setup_service.md",
-        "modules/check_model_aware_routing_closeout.md",
-        "modules/execution_planning_window.md",
-        "modules/mcp_agent_tools.md",
-        "modules/routers_agent.md",
-        "modules/test_agent_model_catalog_api.md",
-        "modules/test_agent_routing_rollout.md",
-        "modules/test_agent_skill_routing_guidance.md",
-        "modules/test_agent_team_runtime_identity.md",
-        "modules/test_delivery_prerequisite_tools.md",
-        "modules/test_execution_planning_window.md"
+        "modules/agent_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/agent_contract.py",
@@ -80376,6 +80640,7 @@
         "modules/task_brief_service.md",
         "modules/task_service.md",
         "modules/test_postponed_out_of_scheduling.md",
+        "modules/test_postponement_agent_tools.md",
         "modules/test_unscheduled_tasks.md",
         "modules/time.md"
       ],
@@ -91192,6 +91457,8 @@
         "entities/schemas_task_postponement_TaskPostponementResponse.md",
         "entities/TaskPostponeRequest.md",
         "entities/TaskReactivateRequest.md",
+        "modules/agent_planning_service.md",
+        "modules/mcp_agent_tools.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task.md",
         "modules/schemas_task_postponement.md",
@@ -91694,6 +91961,7 @@
         "modules/routers_identity.md",
         "modules/server_features.md",
         "modules/test_delivery_prerequisite_tools.md",
+        "modules/test_postponement_agent_tools.md",
         "modules/test_server_features.md"
       ],
       "role": "semantic",
@@ -96204,6 +96472,18 @@
       "title": "test_postponed_out_of_scheduling Module"
     },
     {
+      "canonical_path": "modules/test_postponement_agent_tools.md",
+      "id": "test_postponement_agent_tools",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_postponement_agent_tools",
+      "outgoing_internal_links": [
+        "modules/test_postponement_agent_tools.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_postponement_agent_tools.py",
+      "title": "test_postponement_agent_tools Module"
+    },
+    {
       "canonical_path": "modules/test_process_roles.md",
       "id": "test_process_roles",
       "kind": "modules",
@@ -96727,6 +97007,7 @@
       "mcp_uri": "llm-wiki://modules/test_server_features",
       "outgoing_internal_links": [
         "modules/app_main.md",
+        "modules/mcp_server.md",
         "modules/routers_identity.md",
         "modules/schemas_external_link.md",
         "modules/server_features.md",
@@ -111242,6 +111523,34 @@
       "title": "agent_get_task_detail"
     },
     {
+      "canonical_path": "flows/mcp-agent_get_task_postponement.md",
+      "id": "mcp-agent_get_task_postponement",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/mcp-agent_get_task_postponement",
+      "outgoing_internal_links": [
+        "modules/agent_service.md",
+        "modules/app_maintenance.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/delivery_dependency_service.md",
+        "modules/discussion_service.md",
+        "modules/identity_service.md",
+        "modules/mcp_agent_tools.md",
+        "modules/mcp_server.md",
+        "modules/models_identity.md",
+        "modules/models_outbound_webhook.md",
+        "modules/task_brief_service.md",
+        "modules/task_postponement_service.md",
+        "modules/task_reactivation_service.md",
+        "modules/task_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/mcp_server.py",
+      "title": "agent_get_task_postponement"
+    },
+    {
       "canonical_path": "flows/mcp-agent_get_task_replacement.md",
       "id": "mcp-agent_get_task_replacement",
       "kind": "flows",
@@ -111818,6 +112127,36 @@
       "title": "agent_pipeline_resource"
     },
     {
+      "canonical_path": "flows/mcp-agent_postpone_task.md",
+      "id": "mcp-agent_postpone_task",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/mcp-agent_postpone_task",
+      "outgoing_internal_links": [
+        "modules/agent_planning_service.md",
+        "modules/agent_service.md",
+        "modules/app_maintenance.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/delivery_dependency_service.md",
+        "modules/discussion_service.md",
+        "modules/identity_service.md",
+        "modules/mcp_agent_tools.md",
+        "modules/mcp_server.md",
+        "modules/models_agent.md",
+        "modules/models_identity.md",
+        "modules/models_outbound_webhook.md",
+        "modules/schemas_agent_planning.md",
+        "modules/task_brief_service.md",
+        "modules/task_reactivation_service.md",
+        "modules/task_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/mcp_server.py",
+      "title": "agent_postpone_task"
+    },
+    {
       "canonical_path": "flows/mcp-agent_preview_capacity_adjustment.md",
       "id": "mcp-agent_preview_capacity_adjustment",
       "kind": "flows",
@@ -112028,6 +112367,36 @@
       "role": "mixed",
       "source_path": "backend/app/mcp_server.py",
       "title": "agent_profile_presets_resource"
+    },
+    {
+      "canonical_path": "flows/mcp-agent_reactivate_task.md",
+      "id": "mcp-agent_reactivate_task",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/mcp-agent_reactivate_task",
+      "outgoing_internal_links": [
+        "modules/agent_planning_service.md",
+        "modules/agent_service.md",
+        "modules/app_maintenance.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/delivery_dependency_service.md",
+        "modules/discussion_service.md",
+        "modules/identity_service.md",
+        "modules/mcp_agent_tools.md",
+        "modules/mcp_server.md",
+        "modules/models_agent.md",
+        "modules/models_identity.md",
+        "modules/models_outbound_webhook.md",
+        "modules/schemas_agent_planning.md",
+        "modules/task_brief_service.md",
+        "modules/task_reactivation_service.md",
+        "modules/task_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/mcp_server.py",
+      "title": "agent_reactivate_task"
     },
     {
       "canonical_path": "flows/mcp-agent_reconcile_planning_window.md",
@@ -116929,6 +117298,7 @@
         "modules/test_postgresql_migrations.md",
         "modules/test_postgresql_transfer.md",
         "modules/test_postponed_out_of_scheduling.md",
+        "modules/test_postponement_agent_tools.md",
         "modules/test_process_roles.md",
         "modules/test_profile_capacity.md",
         "modules/test_profile_capacity_migrations.md",
@@ -118130,6 +118500,7 @@
         "modules/test_postgresql_migrations.md",
         "modules/test_postgresql_transfer.md",
         "modules/test_postponed_out_of_scheduling.md",
+        "modules/test_postponement_agent_tools.md",
         "modules/test_process_roles.md",
         "modules/test_profile_capacity.md",
         "modules/test_profile_capacity_migrations.md",
@@ -118333,5 +118704,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:d8172803f784f140fe13c9f70e16edbdd48092e233df22b229db44644c8f2fab"
+  "source_hash": "sha256:b5e52517f8b11c436ed7ba325fc180a277fe4292a429a7dba10af3d957f727b0"
 }

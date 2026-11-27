@@ -88,4 +88,4 @@ flowchart LR
 | `test_mcp_preview_then_update_with_returned_revisions` | call | [test_iteration_date_move](../modules/test_iteration_date_move.md) | 1 |
 | `AgentProtocol.__aenter__` | call | [test_manual_provenance_record](../modules/test_manual_provenance_record.md) | 1 |
 
-> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
