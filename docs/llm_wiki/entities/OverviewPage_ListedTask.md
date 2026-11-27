@@ -1,6 +1,6 @@
 # ListedTask
 
-**Location:** `frontend/src/pages/OverviewPage.tsx:100`
+**Location:** `frontend/src/pages/OverviewPage.tsx:99`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [OverviewPage](../modules/OverviewPage.md)

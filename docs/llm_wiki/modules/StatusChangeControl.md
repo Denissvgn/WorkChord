@@ -15,11 +15,10 @@ _Auto-generated from `frontend/src/components/tasks/StatusChangeControl.tsx`._
 | `../../services/taskService` | `taskService` | — | compiler-dependent |
 | `../../types/task` | `Task`, `TaskStatus`, `CascadeUpdateInfo` | Declaration | erased |
 | `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
-| `../../utils/taskState` | `isStoppedState`, `stateOf` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/Modal` | `Modal` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
-| `../ui/tone` | `pillToneClassName`, `STATE_TONE` | — | compiler-dependent |
+| `../ui/tone` | `pillToneClassName`, `STATUS_TONE` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQueryClient` | — | compiler-dependent |
 | `lucide-react` | `ArrowRight`, `AlertTriangle`, `Check` | — | compiler-dependent |
 | `react` | `useEffect`, `useState` | — | compiler-dependent |
@@ -38,21 +37,64 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend"]
-    n1["frontend/src/components/tasks/StatusChangeControl.tsx"]
-    n0 --> n1
-    n1 --> n0
-    click n1 "../modules/StatusChangeControl.md"
+    n0["frontend/src/components/common/Button.tsx"]
+    n1["frontend/src/components/common/Modal.tsx"]
+    n2["frontend/src/components/feedback/QueryState.tsx"]
+    n3["frontend/src/components/tasks/StatusChangeControl.tsx"]
+    n4["frontend/src/components/tasks/TaskForm.tsx"]
+    n5["frontend/src/components/ui/tone.ts"]
+    n6["frontend/src/features/mutationFeedback.ts"]
+    n7["frontend/src/features/taskTransitions.ts"]
+    n8["frontend/src/services/taskService.ts"]
+    n9["frontend/src/types/task.ts"]
+    n10["frontend/src/utils/formatDate.ts"]
+    n2 --> n0
+    n3 --> n0
+    n3 --> n1
+    n3 --> n2
+    n3 --> n5
+    n3 --> n6
+    n3 --> n7
+    n3 --> n8
+    n3 --> n9
+    n3 --> n10
+    n4 --> n0
+    n4 --> n2
+    n4 --> n3
+    n4 --> n6
+    n4 --> n8
+    n4 --> n9
+    n4 --> n10
+    n5 --> n9
+    n7 --> n9
+    n8 --> n9
+    click n0 "../modules/Button.md"
+    click n1 "../modules/Modal.md"
+    click n2 "../modules/QueryState.md"
+    click n3 "../modules/StatusChangeControl.md"
+    click n4 "../modules/TaskForm.md"
+    click n5 "../modules/tone.md"
+    click n6 "../modules/mutationFeedback.md"
+    click n7 "../modules/taskTransitions.md"
+    click n8 "../modules/taskService.md"
+    click n9 "../modules/types_task.md"
+    click n10 "../modules/formatDate.md"
 ```
-
-> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (2) |
-| Outbound | `frontend` (10) |
+| Inbound | [TaskForm](../modules/TaskForm.md) |
+| Outbound | [Button](../modules/Button.md) |
+| Outbound | [Modal](../modules/Modal.md) |
+| Outbound | [QueryState](../modules/QueryState.md) |
+| Outbound | [tone](../modules/tone.md) |
+| Outbound | [mutationFeedback](../modules/mutationFeedback.md) |
+| Outbound | [taskTransitions](../modules/taskTransitions.md) |
+| Outbound | [taskService](../modules/taskService.md) |
+| Outbound | [types_task](../modules/types_task.md) |
+| Outbound | [formatDate](../modules/formatDate.md) |
 
 ### External packages
 
@@ -60,13 +102,11 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
-
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [StatusChangeControlProps](../entities/StatusChangeControlProps.md) | Interface | 16 | — | — |
+| [StatusChangeControlProps](../entities/StatusChangeControlProps.md) | Interface | 15 | — | — |
 
 ## Functions
 

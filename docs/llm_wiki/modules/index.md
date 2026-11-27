@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/components/ui/index.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `FilterBar`, `FilterBarFilter`, `FilterBarOption`, `FormGrid`, `InlineEmptyState`, `InlineField`, `OverflowMenu`, `OverflowMenuItem`, `PageActions`, `PageHeader`, `PageLayout`, `PageToolbar`, `Pill`, `PillTone`, `STATE_TONE`, `STATUS_TONE`, `SectionCard`, `SegmentedControl`, `SegmentedOption`, `SlideOverDrawer`, `StatusSegment`, `StatusSegmentStrip`, `StickyRail`, `TableFrame`, `ViewSwitch`, `isTaskStatus`, `pillToneClassName`, `stateTextClassName`, `toneBorderClassName`, `toneDotClassName`, `toneGradientClassName`, `toneLineVar`, `toneSoftVar`, `toneSolidClassName`, `toneVar`, `wcPillClass` |
+| Exports | `FilterBar`, `FilterBarFilter`, `FilterBarOption`, `FormGrid`, `InlineEmptyState`, `InlineField`, `OverflowMenu`, `OverflowMenuItem`, `PageActions`, `PageHeader`, `PageLayout`, `PageToolbar`, `Pill`, `PillTone`, `STATUS_TONE`, `SectionCard`, `SegmentedControl`, `SegmentedOption`, `SlideOverDrawer`, `StatusSegment`, `StatusSegmentStrip`, `StickyRail`, `TableFrame`, `ViewSwitch`, `isTaskStatus`, `pillToneClassName`, `toneBorderClassName`, `toneDotClassName`, `toneGradientClassName`, `toneLineVar`, `toneSoftVar`, `toneSolidClassName`, `toneVar`, `wcPillClass` |
 
 ## Local dependency map
 

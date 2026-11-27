@@ -1,6 +1,6 @@
 # TaskDetailService
 
-**Location:** `backend/app/services/task_detail_service.py:16`
+**Location:** `backend/app/services/task_detail_service.py:12`
 **Kind:** Class
 **Bases:** —
 **Module:** [task_detail_service](../modules/task_detail_service.md)
@@ -22,7 +22,7 @@ _Auto-generated from `TaskDetailService` in `backend/app/services/task_detail_se
 | `references` | `()` | `@staticmethod` | — |
 | `reviewer_names` | *(async)* `(task_ids)` | — | Name the agent that holds each task's live review assignment. |
 | `page` | *(async)* `(query, *, limit = 50, after_id = 0)` | — | — |
-| `lookup` | *(async)* `(*, project_id = None, iteration_id = None, query = None, backlog_only = False, limit = 50, after_id = 0, status = None, parent_id = None, roots_only = False, leaf_only = False)` | — | — |
+| `lookup` | *(async)* `(*, project_id = None, iteration_id = None, query = None, backlog_only = False, limit = 50, after_id = 0, status = None, parent_id = None, roots_only = False)` | — | — |
 | `my_work` | *(async)* `(*, limit = 50, after_id = 0, project_id = None, iteration_id = None, backlog_only = False)` | — | Bounded human ownership queues, independent of exact-agent assignment decisions. |
 | `detail` | *(async)* `(task_id, *, limit = 50, children_after_id = 0, dependencies_after_id = 0)` | — | — |
 
@@ -94,4 +94,4 @@ flowchart LR
 | `test_lookup_matches_id_case_and_literal_wildcards_without_private_counts` | call | [test_human_work_queries](../modules/test_human_work_queries.md) | 1 |
 | `test_my_work_filters_before_pagination_and_preserves_scope` | call | [test_human_work_queries](../modules/test_human_work_queries.md) | 1 |
 
-> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

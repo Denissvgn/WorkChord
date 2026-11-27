@@ -1,13 +1,13 @@
 # WorkMetricName
 
-**Location:** `frontend/src/services/taskService.ts:286`
+**Location:** `frontend/src/services/taskService.ts:283`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [taskService](../modules/taskService.md)
 **Target:**
 
 ```typescript
-'total' | 'planned' | 'active' | 'resolved' | 'closed' | 'postponed' | 'canceled' | 'superseded' | 'implemented' | 'accepted' | 'blocked'
+'total' | 'planned' | 'active' | 'resolved' | 'closed' | 'implemented' | 'accepted' | 'blocked'
     | 'overdue' | 'late_start' | 'iteration_overflow' | 'acceptance_unknown' | 'unknown_estimate'
 ```
 

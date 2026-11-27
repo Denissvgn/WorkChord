@@ -1,6 +1,6 @@
 # BoardTaskUpdate
 
-**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx:72`
+**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx:70`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [KanbanBoard](../modules/KanbanBoard.md)

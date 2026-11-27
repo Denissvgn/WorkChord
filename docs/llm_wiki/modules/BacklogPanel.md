@@ -17,7 +17,6 @@ Provides project-scoped capture and bounded backlog navigation without inventing
 | `../../features/useLiveWindow` | `useLiveWindow` | — | compiler-dependent |
 | `../../services/projectService` | `projectService` | — | compiler-dependent |
 | `../../services/taskService` | `taskService` | — | compiler-dependent |
-| `../../utils/taskState` | `stateOf` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `./GuardedTaskDrawer` | `GuardedTaskDrawer` | — | compiler-dependent |
@@ -37,29 +36,73 @@ Provides project-scoped capture and bounded backlog navigation without inventing
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend"]
-    n1["frontend/src/components/tasks/BacklogPanel.tsx"]
-    n0 --> n1
-    n1 --> n0
-    click n1 "../modules/BacklogPanel.md"
+    n0["frontend/src/components/common/Button.tsx"]
+    n1["frontend/src/components/common/Select.tsx"]
+    n2["frontend/src/components/feedback/LiveWindowStatus.tsx"]
+    n3["frontend/src/components/feedback/QueryState.tsx"]
+    n4["frontend/src/components/tasks/BacklogPanel.tsx"]
+    n5["frontend/src/components/tasks/GuardedTaskDrawer.tsx"]
+    n6["frontend/src/features/scope/useScopeLink.ts"]
+    n7["frontend/src/features/scope/useWorkScope.ts"]
+    n8["frontend/src/features/useLiveWindow.ts"]
+    n9["frontend/src/pages/TasksPage.tsx"]
+    n10["frontend/src/services/projectService.ts"]
+    n11["frontend/src/services/taskService.ts"]
+    n2 --> n0
+    n3 --> n0
+    n4 --> n0
+    n4 --> n1
+    n4 --> n2
+    n4 --> n3
+    n4 --> n5
+    n4 --> n6
+    n4 --> n7
+    n4 --> n8
+    n4 --> n10
+    n4 --> n11
+    n5 --> n3
+    n9 --> n0
+    n9 --> n3
+    n9 --> n4
+    n9 --> n5
+    n9 --> n6
+    n9 --> n7
+    n9 --> n11
+    click n0 "../modules/Button.md"
+    click n1 "../modules/Select.md"
+    click n2 "../modules/LiveWindowStatus.md"
+    click n3 "../modules/QueryState.md"
+    click n4 "../modules/BacklogPanel.md"
+    click n5 "../modules/GuardedTaskDrawer.md"
+    click n6 "../modules/useScopeLink.md"
+    click n7 "../modules/useWorkScope.md"
+    click n8 "../modules/useLiveWindow.md"
+    click n9 "../modules/TasksPage.md"
+    click n10 "../modules/projectService.md"
+    click n11 "../modules/taskService.md"
 ```
-
-> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (1) |
-| Outbound | `frontend` (11) |
+| Inbound | [TasksPage](../modules/TasksPage.md) |
+| Outbound | [Button](../modules/Button.md) |
+| Outbound | [Select](../modules/Select.md) |
+| Outbound | [LiveWindowStatus](../modules/LiveWindowStatus.md) |
+| Outbound | [QueryState](../modules/QueryState.md) |
+| Outbound | [GuardedTaskDrawer](../modules/GuardedTaskDrawer.md) |
+| Outbound | [useScopeLink](../modules/useScopeLink.md) |
+| Outbound | [useWorkScope](../modules/useWorkScope.md) |
+| Outbound | [useLiveWindow](../modules/useLiveWindow.md) |
+| Outbound | [projectService](../modules/projectService.md) |
+| Outbound | [taskService](../modules/taskService.md) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | typescript | 4 | 0 |
-
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

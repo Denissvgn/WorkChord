@@ -35,7 +35,7 @@ Human ownership queues apply complete inherited deferral policy to every bounded
 | `app.services.task_service` | `TaskService` |
 | `app.sql_semantics` | `portable_contains` |
 | `sqlalchemy` | `and_`, `literal`, `or_`, `select` |
-| `sqlalchemy.orm` | `aliased`, `selectinload`, `raiseload` |
+| `sqlalchemy.orm` | `selectinload`, `raiseload` |
 
 ## Local dependency map
 
@@ -73,4 +73,4 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskDetailService](../entities/TaskDetailService.md) | 16 | — | — |
+| [TaskDetailService](../entities/TaskDetailService.md) | 12 | — | — |

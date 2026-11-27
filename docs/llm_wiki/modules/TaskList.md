@@ -17,11 +17,10 @@ Merge drafts capture the aggregate revision when their confirmation editor opens
 | `../../services/labelService` | `labelService` | — | compiler-dependent |
 | `../../services/taskService` | `taskService` | — | compiler-dependent |
 | `../../types/label` | `Label` | Declaration | erased |
-| `../../types/task` | `Task`, `TaskDisplayedState`, `TaskStatus` | Declaration | erased |
+| `../../types/task` | `Task`, `TaskStatus` | Declaration | erased |
 | `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
 | `../../utils/graphLimitError` | `isGraphLimitError` | — | compiler-dependent |
 | `../../utils/taskFilters` | `filterTaskBySearch`, `filterTaskWithChildren` | — | compiler-dependent |
-| `../../utils/taskState` | `stateOf` | — | compiler-dependent |
 | `../../utils/visibleWork` | `selectVisibleWork` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/ConfirmDialog` | `ConfirmDialog` | — | compiler-dependent |
@@ -30,7 +29,7 @@ Merge drafts capture the aggregate revision when their confirmation editor opens
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
 | `../labels/LabelChip` | `LabelChip` | — | compiler-dependent |
 | `../ui/InlineEmptyState` | `InlineEmptyState` | — | compiler-dependent |
-| `../ui/tone` | `stateTextClassName` | — | compiler-dependent |
+| `../ui/tone` | `statusTextClassName` | — | compiler-dependent |
 | `./GuardedTaskDrawer` | `GuardedTaskDrawer` | — | compiler-dependent |
 | `./PagedTaskBrowser` | `PagedTaskBrowser` | — | compiler-dependent |
 | `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` | — | compiler-dependent |
@@ -86,7 +85,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (6) |
-| Outbound | `frontend` (32) |
+| Outbound | `frontend` (31) |
 
 ### External packages
 
@@ -94,21 +93,21 @@ flowchart LR
 |---|---:|---:|
 | typescript | 11 | 0 |
 
-> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 37 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskListProps](../entities/TaskListProps.md) | Interface | 86 | — | — |
-| [RowContext](../entities/RowContext.md) | Interface | 609 | — | What every row of the list shares: selection, hierarchy state and inline edits. |
-| [TaskItemProps](../entities/TaskItemProps.md) | Interface | 636 | — | — |
-| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 671 | `TaskItemProps` | — |
-| [SortKey](../entities/TaskList_SortKey.md) | Type alias | 65 | `'priority' \| 'sort_order' \| 'status' \| 'title'` | — |
-| [TaskMode](../entities/TaskMode.md) | Type alias | 66 | `'bulk' \| 'merge'` | — |
-| [RowItem](../entities/RowItem.md) | Type alias | 73 | `{ kind: 'group'; status: string; count: number; collapsed: boolean } \| { kind: 'task'; task: Task }` | — |
-| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 75 | `Parameters<typeof taskService.reorder>[0]` | — |
-| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 76 | <pre><code>&#123;&#10;    order&#58; TaskOrderRequest&#59;&#10;    undoOrder&#58; TaskOrderRequest&#59;&#10;&#125;</code></pre> | — |
+| [TaskListProps](../entities/TaskListProps.md) | Interface | 85 | — | — |
+| [RowContext](../entities/RowContext.md) | Interface | 607 | — | What every row of the list shares: selection, hierarchy state and inline edits. |
+| [TaskItemProps](../entities/TaskItemProps.md) | Interface | 632 | — | — |
+| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 667 | `TaskItemProps` | — |
+| [SortKey](../entities/TaskList_SortKey.md) | Type alias | 64 | `'priority' \| 'sort_order' \| 'status' \| 'title'` | — |
+| [TaskMode](../entities/TaskMode.md) | Type alias | 65 | `'bulk' \| 'merge'` | — |
+| [RowItem](../entities/RowItem.md) | Type alias | 72 | `{ kind: 'group'; status: string; count: number; collapsed: boolean } \| { kind: 'task'; task: Task }` | — |
+| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 74 | `Parameters<typeof taskService.reorder>[0]` | — |
+| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 75 | <pre><code>&#123;&#10;    order&#58; TaskOrderRequest&#59;&#10;    undoOrder&#58; TaskOrderRequest&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 

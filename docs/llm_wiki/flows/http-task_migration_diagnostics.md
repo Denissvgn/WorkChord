@@ -125,17 +125,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_migration_diagnostics | require_operator | 192 | `require_operator(db)` |
+| task_migration_diagnostics | require_operator | 191 | `require_operator(db)` |
 | require_operator | db.info.get | 92 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 94 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
-| task_migration_diagnostics | (…).mappings().all | 193 | `(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings().all(data not statically known)` |
-| task_migration_diagnostics | (…).mappings | 193 | `(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings(data not statically known)` |
-| task_migration_diagnostics | db.execute | 193 | `db.execute(...)` |
-| task_migration_diagnostics | select(…).where(…).order_by(…).limit | 193 | `select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(...)` |
-| task_migration_diagnostics | select(…).where(…).order_by | 193 | `select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id)` |
-| task_migration_diagnostics | select(…).where | 193 | `select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(...)` |
-| task_migration_diagnostics | select | 193 | `select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes)` |
-| task_migration_diagnostics | dict | 195 | `dict(row)` |
+| task_migration_diagnostics | (…).mappings().all | 192 | `(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings().all(data not statically known)` |
+| task_migration_diagnostics | (…).mappings | 192 | `(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings(data not statically known)` |
+| task_migration_diagnostics | db.execute | 192 | `db.execute(...)` |
+| task_migration_diagnostics | select(…).where(…).order_by(…).limit | 192 | `select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(...)` |
+| task_migration_diagnostics | select(…).where(…).order_by | 192 | `select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id)` |
+| task_migration_diagnostics | select(…).where | 192 | `select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(...)` |
+| task_migration_diagnostics | select | 192 | `select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes)` |
+| task_migration_diagnostics | dict | 194 | `dict(row)` |
 
 ### Boundary effects
 
@@ -146,13 +146,13 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | unresolved_call | `require_operator` | `db.info.get` | 92 |
-| unresolved_call | `task_migration_diagnostics` | `(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings().all` | 193 |
-| unresolved_call | `task_migration_diagnostics` | `(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings` | 193 |
-| unresolved_call | `task_migration_diagnostics` | `db.execute` | 193 |
-| unresolved_call | `task_migration_diagnostics` | `select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit` | 193 |
-| unresolved_call | `task_migration_diagnostics` | `select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by` | 193 |
-| unresolved_call | `task_migration_diagnostics` | `select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where` | 193 |
-| external_call | `task_migration_diagnostics` | `select` | 193 |
+| unresolved_call | `task_migration_diagnostics` | `(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings().all` | 192 |
+| unresolved_call | `task_migration_diagnostics` | `(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings` | 192 |
+| unresolved_call | `task_migration_diagnostics` | `db.execute` | 192 |
+| unresolved_call | `task_migration_diagnostics` | `select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit` | 192 |
+| unresolved_call | `task_migration_diagnostics` | `select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by` | 192 |
+| unresolved_call | `task_migration_diagnostics` | `select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where` | 192 |
+| external_call | `task_migration_diagnostics` | `select` | 192 |
 | step_limit | `task_migration_diagnostics` | `first 12 steps` | 0 |
 
 ## Behavior

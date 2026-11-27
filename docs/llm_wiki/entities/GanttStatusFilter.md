@@ -1,13 +1,13 @@
 # GanttStatusFilter
 
-**Location:** `frontend/src/components/gantt/GanttChart.tsx:78`
+**Location:** `frontend/src/components/gantt/GanttChart.tsx:77`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [GanttChart](../modules/GanttChart.md)
 **Target:**
 
 ```typescript
-'' | 'planned' | 'active' | 'resolved' | 'closed' | 'postponed' | 'canceled' | 'superseded'
+'' | 'planned' | 'active' | 'resolved' | 'closed'
 ```
 
 ## Description

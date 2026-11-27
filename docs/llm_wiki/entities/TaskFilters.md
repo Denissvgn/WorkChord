@@ -44,16 +44,16 @@ flowchart LR
     n0["TaskFilters (frontend/src/components/tasks/TaskFiltersBar.tsx)"]
     n1["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
     n2["PipelineView (frontend/src/components/tasks/PipelineView.tsx)"]
-    n3["frontend/src/components/tasks/StoppedWork.test.tsx"]
-    n4["frontend/src/components/tasks/TaskFiltersBar.test.tsx"]
-    n5["TaskFiltersBar (frontend/src/components/tasks/TaskFiltersBar.tsx)"]
-    n6["frontend/src/components/tasks/TaskList.test.tsx"]
-    n7["frontend/src/components/tasks/TaskList.tsx"]
-    n8["frontend/src/components/tasks/useSavedViewManager.tsx"]
-    n9["overviewListFilters (frontend/src/features/overview/overviewSignals.ts)"]
-    n10["activeFilterCount (frontend/src/features/savedViews/taskViewParams.ts)"]
-    n11["filtersFromSearchParams (frontend/src/features/savedViews/taskViewParams.ts)"]
-    n12["writeFiltersToSearchParams (frontend/src/features/savedViews/taskViewParams.ts)"]
+    n3["frontend/src/components/tasks/TaskFiltersBar.test.tsx"]
+    n4["TaskFiltersBar (frontend/src/components/tasks/TaskFiltersBar.tsx)"]
+    n5["frontend/src/components/tasks/TaskList.test.tsx"]
+    n6["frontend/src/components/tasks/TaskList.tsx"]
+    n7["frontend/src/components/tasks/useSavedViewManager.tsx"]
+    n8["overviewListFilters (frontend/src/features/overview/overviewSignals.ts)"]
+    n9["activeFilterCount (frontend/src/features/savedViews/taskViewParams.ts)"]
+    n10["filtersFromSearchParams (frontend/src/features/savedViews/taskViewParams.ts)"]
+    n11["writeFiltersToSearchParams (frontend/src/features/savedViews/taskViewParams.ts)"]
+    n12["filtersFromSavedView (frontend/src/features/savedViews/taskViewState.ts)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -69,16 +69,16 @@ flowchart LR
     click n0 "../modules/TaskFiltersBar.md"
     click n1 "../modules/KanbanBoard.md"
     click n2 "../modules/PipelineView.md"
-    click n3 "../modules/StoppedWork.test.md"
-    click n4 "../modules/TaskFiltersBar.test.md"
-    click n5 "../modules/TaskFiltersBar.md"
-    click n6 "../modules/TaskList.test.md"
-    click n7 "../modules/TaskList.md"
-    click n8 "../modules/useSavedViewManager.md"
-    click n9 "../modules/overviewSignals.md"
+    click n3 "../modules/TaskFiltersBar.test.md"
+    click n4 "../modules/TaskFiltersBar.md"
+    click n5 "../modules/TaskList.test.md"
+    click n6 "../modules/TaskList.md"
+    click n7 "../modules/useSavedViewManager.md"
+    click n8 "../modules/overviewSignals.md"
+    click n9 "../modules/taskViewParams.md"
     click n10 "../modules/taskViewParams.md"
     click n11 "../modules/taskViewParams.md"
-    click n12 "../modules/taskViewParams.md"
+    click n12 "../modules/taskViewState.md"
 ```
 
 ### Summary
@@ -93,7 +93,6 @@ flowchart LR
 |---|---|---|---:|
 | `KanbanBoard` | import | [KanbanBoard](../modules/KanbanBoard.md) | — |
 | `PipelineView` | type_reference | [PipelineView](../modules/PipelineView.md) | — |
-| `StoppedWork.test` | import | [StoppedWork.test](../modules/StoppedWork.test.md) | — |
 | `TaskFiltersBar.test` | import | [TaskFiltersBar.test](../modules/TaskFiltersBar.test.md) | — |
 | `TaskFiltersBar` | type_reference | [TaskFiltersBar](../modules/TaskFiltersBar.md) | — |
 | `TaskList.test` | import | [TaskList.test](../modules/TaskList.test.md) | — |
@@ -103,5 +102,6 @@ flowchart LR
 | `activeFilterCount` | type_reference | [taskViewParams](../modules/taskViewParams.md) | — |
 | `filtersFromSearchParams` | type_reference | [taskViewParams](../modules/taskViewParams.md) | — |
 | `writeFiltersToSearchParams` | type_reference | [taskViewParams](../modules/taskViewParams.md) | — |
+| `filtersFromSavedView` | type_reference | [taskViewState](../modules/taskViewState.md) | — |
 
-> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.
+> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.

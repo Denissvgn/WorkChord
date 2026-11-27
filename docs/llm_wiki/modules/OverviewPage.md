@@ -16,7 +16,7 @@ Overview combines the selected scope’s task counts, planning signals and curre
 | `../components/tasks/usePipeline` | `usePipeline` | — | compiler-dependent |
 | `../components/ui` | `PageHeader`, `PageLayout`, `SectionCard`, `SlideOverDrawer` | — | compiler-dependent |
 | `../components/ui/tone` | `PillTone` | Declaration | erased |
-| `../components/ui/tone` | `STATE_TONE`, `toneSoftVar`, `toneVar` | — | compiler-dependent |
+| `../components/ui/tone` | `STATUS_TONE`, `toneSoftVar`, `toneVar` | — | compiler-dependent |
 | `../features/firstRun/GetStartedPanel` | `GetStartedPanel` | — | compiler-dependent |
 | `../features/firstRun/NextStepEmptyState` | `NextStepEmptyState` | — | compiler-dependent |
 | `../features/firstRun/firstRunSteps` | `firstRunPlanHref` | — | compiler-dependent |
@@ -37,7 +37,6 @@ Overview combines the selected scope’s task counts, planning signals and curre
 | `../types/task` | `Task` | Declaration | erased |
 | `../utils/apiError` | `getApiErrorStatus` | — | compiler-dependent |
 | `../utils/formatDate` | `formatDate` | — | compiler-dependent |
-| `../utils/taskState` | `stateOf` | — | compiler-dependent |
 | `../utils/workNumbers` | `formatDecimal` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQueries`, `useQuery` | — | compiler-dependent |
 | `lucide-react` | `LucideIcon` | Declaration | erased |
@@ -74,7 +73,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (5) |
-| Outbound | `frontend` (27) |
+| Outbound | `frontend` (26) |
 
 ### External packages
 
@@ -82,14 +81,14 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [OverviewLocationState](../entities/OverviewLocationState.md) | Type alias | 76 | <pre><code>&#123;&#10;    returnFocusId&#63;&#58; string&#59;&#10;&#125;</code></pre> | — |
-| [SourceState](../entities/SourceState.md) | Type alias | 84 | `'loading' \| 'failed' \| 'stale' \| 'ready' \| 'unavailable'` | Whether a source Overview needs has arrived. 'stale' means a refresh failed and the last |
-| [AttentionSource](../entities/AttentionSource.md) | Type alias | 86 | `'tasks' \| 'pipeline' \| 'plan'` | — |
-| [TaskGroup](../entities/TaskGroup.md) | Type alias | 97 | `{ iteration: Iteration \| null; roots: Task[] }` | The tasks Overview counts: one group per iteration in view, or the project's backlog. |
-| [ListedTask](../entities/OverviewPage_ListedTask.md) | Type alias | 100 | `{ task: Task; iteration: Iteration \| null }` | A task in one of Overview's own lists, with the iteration it belongs to. |
+| [OverviewLocationState](../entities/OverviewLocationState.md) | Type alias | 75 | <pre><code>&#123;&#10;    returnFocusId&#63;&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [SourceState](../entities/SourceState.md) | Type alias | 83 | `'loading' \| 'failed' \| 'stale' \| 'ready' \| 'unavailable'` | Whether a source Overview needs has arrived. 'stale' means a refresh failed and the last |
+| [AttentionSource](../entities/AttentionSource.md) | Type alias | 85 | `'tasks' \| 'pipeline' \| 'plan'` | — |
+| [TaskGroup](../entities/TaskGroup.md) | Type alias | 96 | `{ iteration: Iteration \| null; roots: Task[] }` | The tasks Overview counts: one group per iteration in view, or the project's backlog. |
+| [ListedTask](../entities/OverviewPage_ListedTask.md) | Type alias | 99 | `{ task: Task; iteration: Iteration \| null }` | A task in one of Overview's own lists, with the iteration it belongs to. |

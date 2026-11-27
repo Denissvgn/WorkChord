@@ -165,4 +165,4 @@ flowchart LR
 | `assigneeDisplay.test` | import | [assigneeDisplay.test](../modules/assigneeDisplay.test.md) | — |
 | `AssigneePicker.test` | import | [AssigneePicker.test](../modules/AssigneePicker.test.md) | — |
 
-> References: showing 12 of 123 logical references; 111 omitted by the 12-row generated summary limit.
+> References: showing 12 of 119 logical references; 107 omitted by the 12-row generated summary limit.

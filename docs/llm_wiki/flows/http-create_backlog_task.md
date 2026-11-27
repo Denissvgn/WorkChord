@@ -187,8 +187,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_backlog_task | HTTPException (backend/app/routers/task_…in.py:create_backlog_task) | 236 | `HTTPException(422, detail=[...])` |
-| create_backlog_task | domain_result | 237 | `domain_result(...)` |
+| create_backlog_task | HTTPException (backend/app/routers/task_…in.py:create_backlog_task) | 235 | `HTTPException(422, detail=[...])` |
+| create_backlog_task | domain_result | 236 | `domain_result(...)` |
 | domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 56 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 58 | `HTTPException(404, detail=str(...))` |
@@ -196,8 +196,8 @@ flowchart LR
 | domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 60 | `HTTPException(422, detail=[...])` |
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 60 | `str(exc)` |
 | domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| create_backlog_task | TaskService(…).create | 237 | `TaskService(db).create(None, data.model_copy(...))` |
-| create_backlog_task | TaskService | 237 | `TaskService(db)` |
+| create_backlog_task | TaskService(…).create | 236 | `TaskService(db).create(None, data.model_copy(...))` |
+| create_backlog_task | TaskService | 236 | `TaskService(db)` |
 
 ### Boundary effects
 
@@ -207,13 +207,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `create_backlog_task` | `HTTPException` | 236 |
+| external_call | `create_backlog_task` | `HTTPException` | 235 |
 | external_call | `domain_result` | `HTTPException` | 56 |
 | unresolved_call | `domain_result` | `exc.detail` | 56 |
 | external_call | `domain_result` | `HTTPException` | 58 |
 | external_call | `domain_result` | `HTTPException` | 60 |
 | external_call | `domain_result` | `HTTPException` | 62 |
-| unresolved_call | `create_backlog_task` | `TaskService(db).create` | 237 |
+| unresolved_call | `create_backlog_task` | `TaskService(db).create` | 236 |
 | step_limit | `create_backlog_task` | `first 12 steps` | 0 |
 
 ## Behavior

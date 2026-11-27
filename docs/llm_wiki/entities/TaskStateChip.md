@@ -1,6 +1,6 @@
 # TaskStateChip
 
-**Location:** `frontend/src/components/tasks/taskStateChip.ts:5`
+**Location:** `frontend/src/components/tasks/taskStateChip.ts:4`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [taskStateChip](../modules/taskStateChip.md)

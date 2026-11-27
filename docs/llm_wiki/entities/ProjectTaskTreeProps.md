@@ -1,6 +1,6 @@
 # ProjectTaskTreeProps
 
-**Location:** `frontend/src/components/projects/ProjectTaskTree.tsx:25`
+**Location:** `frontend/src/components/projects/ProjectTaskTree.tsx:24`
 **Kind:** Interface
 **Bases:** —
 **Module:** [ProjectTaskTree](../modules/ProjectTaskTree.md)

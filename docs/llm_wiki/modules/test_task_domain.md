@@ -24,17 +24,16 @@ Domain commands preserve identity, evidence independence and bounded read contra
 | `app.schemas.task_brief` | `BriefConvert`, `BriefWrite`, `TaskBrief`, `BriefCriterion`, `ProgressWrite`, `CriterionProgress`, `TaskReviewWrite` |
 | `app.schemas.task_domain` | `TaskActionRequest` |
 | `app.schemas.triage` | `TriageItemCreate`, `TriageItemResponse`, `TriageConvertToBacklogRequest` |
-| `app.services` | `task_detail_service` |
 | `app.services.agent_work_service` | `AgentWorkService` |
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService` |
 | `app.services.identity_service` | `IdentityService` |
 | `app.services.task_brief_service` | `TaskBriefService`, `import_legacy_brief`, `render_brief` |
-| `app.services.task_detail_service` | `TaskDetailService`, `TaskDetailService`, `TaskDetailService`, `TaskDetailService` |
+| `app.services.task_detail_service` | `TaskDetailService`, `TaskDetailService` |
 | `app.services.task_domain_service` | `TaskDomainService`, `normalize_effort` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.services.triage_service` | `TriageService` |
 | `app.services.work_metrics` | `aggregate_metrics`, `task_signals` |
-| `app.utils.time` | `utc_now`, `utc_now`, `utc_now` |
+| `app.utils.time` | `utc_now`, `utc_now` |
 | `dataclasses` | `replace` |
 | `datetime` | `timedelta`, `timedelta` |
 | `httpx` | `httpx`, `httpx`, `httpx`, `httpx` |
@@ -94,5 +93,3 @@ flowchart LR
 | `test_progress_availability_matches_open_leaf_execution_permission` | *(async)* `(delivery_store)` | — | — |
 | `test_current_review_does_not_depend_on_first_history_page` | *(async)* `(delivery_store)` | — | — |
 | `test_human_queue_excludes_inherited_deferred_work_across_pagination` | *(async)* `(delivery_store)` | — | — |
-| `test_my_work_lists_stopped_work_apart_from_its_queues` | *(async)* `(delivery_store, monkeypatch)` | — | — |
-| `test_lookup_can_leave_out_parents` | *(async)* `(delivery_store)` | — | — |

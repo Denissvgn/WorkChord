@@ -1,6 +1,6 @@
 # ReorderVariables
 
-**Location:** `frontend/src/components/tasks/TaskList.tsx:76`
+**Location:** `frontend/src/components/tasks/TaskList.tsx:75`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TaskList](../modules/TaskList.md)

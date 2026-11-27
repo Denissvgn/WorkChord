@@ -4634,13 +4634,13 @@ Refreshed against the 1.10.0 code. New and changed subjects: delivery prerequisi
 - Generator version: `6.1.1`
 - Source selection profile: none (default discovery)
 - Source selection fingerprint: none
-- Source snapshot digest: `sha256:484f1e6028ad14a663e1a91d0a7989f4060987535b0a3fc0fa4cd30deb42cea2`
-- Pages created: 18
-- Pages updated: 89
+- Source snapshot digest: `sha256:06019ca75fc8a47ae2622645cc595b9ee6fc9db28f03e1c6b49888e9ba467318`
+- Pages created: 0
+- Pages updated: 0
 - Pages metadata-only: 0
-- Pages skipped (unchanged): 3952
+- Pages skipped (unchanged): 4041
 - Pages deprecated: 0
-- Semantic fields preserved: 1
+- Semantic fields preserved: 0
 - Moved entities: none
 
 ## 2026-11-27
@@ -4650,11 +4650,11 @@ Refreshed against the 1.10.0 code. New and changed subjects: delivery prerequisi
 - Generator version: `6.1.1`
 - Source selection profile: none (default discovery)
 - Source selection fingerprint: none
-- Source snapshot digest: `sha256:7169f38f547a9f3f115dbb00ddb16baf50a4a15cb8f3a55d4d5dc866ad3f3fb3`
-- Pages created: 8
-- Pages updated: 145
+- Source snapshot digest: `sha256:e71a256b54fbf8f50c23a00c8cddf8292500af69640b33828a646fad6210f978`
+- Pages created: 18
+- Pages updated: 89
 - Pages metadata-only: 0
-- Pages skipped (unchanged): 3914
+- Pages skipped (unchanged): 3952
 - Pages deprecated: 0
-- Semantic fields preserved: 12
+- Semantic fields preserved: 1
 - Moved entities: none

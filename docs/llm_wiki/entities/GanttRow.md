@@ -1,6 +1,6 @@
 # GanttRow
 
-**Location:** `frontend/src/components/gantt/GanttChart.tsx:79`
+**Location:** `frontend/src/components/gantt/GanttChart.tsx:78`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [GanttChart](../modules/GanttChart.md)

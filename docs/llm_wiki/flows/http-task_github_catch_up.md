@@ -190,7 +190,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_github_catch_up | domain_result | 374 | `domain_result(...)` |
+| task_github_catch_up | domain_result | 373 | `domain_result(...)` |
 | domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
@@ -198,7 +198,7 @@ flowchart LR
 | domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 60 | `str(exc)` |
 | domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_github_catch_up | GitHubReconciliationService.catch_up | 374 | `GitHubReconciliationService(db).catch_up(task_id)` |
+| task_github_catch_up | GitHubReconciliationService.catch_up | 373 | `GitHubReconciliationService(db).catch_up(task_id)` |
 | GitHubReconciliationService.catch_up | GitHubReconciliationService._task | 93 | `self._task(task_id, 'edit')` |
 | GitHubReconciliationService._task | self.db.scalar | 79 | `self.db.scalar(...)` |
 

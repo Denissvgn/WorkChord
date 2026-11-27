@@ -1,6 +1,6 @@
 # ProjectTaskSection
 
-**Location:** `frontend/src/components/projects/ProjectTaskTree.tsx:19`
+**Location:** `frontend/src/components/projects/ProjectTaskTree.tsx:18`
 **Kind:** Interface
 **Bases:** —
 **Module:** [ProjectTaskTree](../modules/ProjectTaskTree.md)

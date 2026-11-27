@@ -1,6 +1,6 @@
 # WorkPage
 
-**Location:** `frontend/src/pages/MyWorkPage.tsx:39`
+**Location:** `frontend/src/pages/MyWorkPage.tsx:37`
 **Kind:** Interface
 **Bases:** —
 **Module:** [MyWorkPage](../modules/MyWorkPage.md)
@@ -15,8 +15,6 @@ _Auto-generated from `WorkPage` in `frontend/src/pages/MyWorkPage.tsx`._
 |------|------|----------|---------|-------------|
 | `state` | `string` | Yes | — | — |
 | `queues` | `Record<string, TaskReference[]>` | Yes | — | — |
-| `stopped` | `TaskReference[]` | No | — | — |
-| `stopped_has_more` | `boolean` | No | — | — |
 | `has_more` | `boolean` | Yes | — | — |
 | `next_after_id` | `number \| null` | Yes | — | — |
 
@@ -33,4 +31,4 @@ _Auto-generated from `WorkPage` in `frontend/src/pages/MyWorkPage.tsx`._
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [MyWorkPage](../modules/MyWorkPage.md) | 0 | `has_more`, `next_after_id`, `queues`, `state`, `stopped`, `stopped_has_more` |
+| [MyWorkPage](../modules/MyWorkPage.md) | 0 | `has_more`, `next_after_id`, `queues`, `state` |

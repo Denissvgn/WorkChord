@@ -7,7 +7,7 @@
 **Target:**
 
 ```typescript
-'done' | 'postponedOnly' | 'noSchedule' | 'late' | 'atRisk' | 'onTrack'
+'done' | 'noSchedule' | 'late' | 'atRisk' | 'onTrack'
 ```
 
 ## Description

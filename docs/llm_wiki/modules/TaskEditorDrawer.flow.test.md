@@ -15,7 +15,6 @@ _Auto-generated from `frontend/src/components/tasks/TaskEditorDrawer.flow.test.t
 | `./TaskEditorDrawer` | `TaskEditorDrawer` | — | compiler-dependent |
 | `./taskEditorContract` | `emptyTaskBrief` | — | compiler-dependent |
 | `@testing-library/react` | `screen`, `waitFor`, `within` | — | compiler-dependent |
-| `react-router-dom` | `useLocation` | — | compiler-dependent |
 | `vitest` | `afterEach`, `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
@@ -23,7 +22,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskEditorDrawer.flow.test.t
 | Signal | Values |
 |--------|--------|
 | Constants | `service`, `criterion`, `baseTask` |
-| Module calls | `service = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `beforeEach`, `afterEach`, `describe`, `describe` |
+| Module calls | `service = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `beforeEach`, `afterEach`, `describe` |
 
 ## Local dependency map
 
@@ -63,4 +62,4 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 3 | 0 |
+| typescript | 2 | 0 |

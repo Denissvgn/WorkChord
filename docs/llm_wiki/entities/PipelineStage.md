@@ -1,6 +1,6 @@
 # PipelineStage
 
-**Location:** `frontend/src/features/overview/overviewSignals.ts:56`
+**Location:** `frontend/src/features/overview/overviewSignals.ts:55`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [overviewSignals](../modules/overviewSignals.md)

@@ -1,6 +1,6 @@
 # OverviewLocationState
 
-**Location:** `frontend/src/pages/OverviewPage.tsx:76`
+**Location:** `frontend/src/pages/OverviewPage.tsx:75`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [OverviewPage](../modules/OverviewPage.md)

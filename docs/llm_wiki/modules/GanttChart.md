@@ -16,7 +16,6 @@ _Auto-generated from `frontend/src/components/gantt/GanttChart.tsx`._
 | `../../i18n/dateLocale` | `dateFnsLocale` | — | compiler-dependent |
 | `../../types/gantt` | `GanttTask` | Declaration | erased |
 | `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
-| `../../utils/taskState` | `isEndedState`, `isStoppedState`, `STOPPED_STATES` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/ButtonLink` | `ButtonLink` | — | compiler-dependent |
 | `../tasks/TaskAssigneeDisplay` | `TaskAssigneeDisplay` | — | compiler-dependent |
@@ -61,7 +60,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (3) |
-| Outbound | `frontend` (15) |
+| Outbound | `frontend` (14) |
 
 ### External packages
 
@@ -69,18 +68,18 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [GanttChartProps](../entities/GanttChartProps.md) | Interface | 25 | — | — |
-| [FlattenedTask](../entities/GanttChart_FlattenedTask.md) | Interface | 72 | `GanttTask` | — |
-| [TaskTimelineDates](../entities/TaskTimelineDates.md) | Interface | 105 | — | — |
-| [GanttGroupBy](../entities/GanttGroupBy.md) | Type alias | 77 | `typeof GROUP_OPTIONS[number]` | — |
-| [GanttStatusFilter](../entities/GanttStatusFilter.md) | Type alias | 78 | `'' \| 'planned' \| 'active' \| 'resolved' \| 'closed' \| 'postponed' \| 'canceled' \| 'superseded'` | — |
-| [GanttRow](../entities/GanttRow.md) | Type alias | 79 | <pre><code>&#124; &#123; kind&#58; &#39;task&#39;&#59; task&#58; FlattenedTask &#125;&#10;    &#124; &#123; kind&#58; &#39;group&#39;&#59; key&#58; string&#59; label&#58; string&#59; count&#58; number&#59; unassigned&#58; number&#59; start&#58; string &#124; null&#59; end&#58; string &#124; null &#125;</code></pre> | — |
+| [GanttChartProps](../entities/GanttChartProps.md) | Interface | 24 | — | — |
+| [FlattenedTask](../entities/GanttChart_FlattenedTask.md) | Interface | 71 | `GanttTask` | — |
+| [TaskTimelineDates](../entities/TaskTimelineDates.md) | Interface | 104 | — | — |
+| [GanttGroupBy](../entities/GanttGroupBy.md) | Type alias | 76 | `typeof GROUP_OPTIONS[number]` | — |
+| [GanttStatusFilter](../entities/GanttStatusFilter.md) | Type alias | 77 | `'' \| 'planned' \| 'active' \| 'resolved' \| 'closed'` | — |
+| [GanttRow](../entities/GanttRow.md) | Type alias | 78 | <pre><code>&#124; &#123; kind&#58; &#39;task&#39;&#59; task&#58; FlattenedTask &#125;&#10;    &#124; &#123; kind&#58; &#39;group&#39;&#59; key&#58; string&#59; label&#58; string&#59; count&#58; number&#59; unassigned&#58; number&#59; start&#58; string &#124; null&#59; end&#58; string &#124; null &#125;</code></pre> | — |
 
 ## Functions
 

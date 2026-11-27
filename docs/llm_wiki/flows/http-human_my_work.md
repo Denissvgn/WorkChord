@@ -110,9 +110,9 @@ sequenceDiagram
     p1-->>p30: self.db.info.get (backend/app/services/task…TaskDetailService.my_work)('authority')
 ```
 
-> Call sequence diagram shows 30 of 902 interactions; 872 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 884 interactions; 854 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 218 (217 omitted); unresolved 1 of 467 (466 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 216 (215 omitted); unresolved 1 of 452 (451 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -121,11 +121,11 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/identity_service.py:local_work_profile` | 4 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
 | `backend/app/authority.py:internal_authority` | 5 | - | unresolved | 1 |
 | `backend/app/services/identity_service.py:local_work_profile` | 4 | - | unresolved | 1 |
-| `backend/app/services/task_detail_service.py:TaskDetailService.my_work` | 2 | - | unresolved | 31 |
-| `backend/app/services/task_detail_service.py:TaskDetailService.my_work` | 2 | - | external | 8 |
-| `backend/app/services/task_detail_service.py:TaskDetailService.references` | 13 | - | unresolved | 10 |
-| `backend/app/services/task_detail_service.py:TaskDetailService.references` | 13 | - | external | 2 |
-| `backend/app/services/task_display_state.py:displayed_state_expression` | 18 | - | external | 1 |
+| `backend/app/services/task_detail_service.py:TaskDetailService.my_work` | 2 | - | unresolved | 16 |
+| `backend/app/services/task_detail_service.py:TaskDetailService.my_work` | 2 | - | external | 6 |
+| `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | unresolved | 10 |
+| `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | external | 2 |
+| `backend/app/services/task_display_state.py:displayed_state_expression` | 16 | - | external | 1 |
 > Omission summary shows 8 of 188 groups; 180 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
@@ -139,9 +139,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 218; effect analysis evaluated: 154, partial: 8, unavailable: 56. Counts include steps omitted from the displayed trace.
+Source steps: 217; effect analysis evaluated: 154, partial: 7, unavailable: 56. Counts include steps omitted from the displayed trace.
 
-Collector observations for 162 source steps with known totals: observed: 1019, emitted: 962, omitted: 57. Unavailable totals are excluded.
+Collector observations for 161 source steps with known totals: observed: 1010, emitted: 957, omitted: 53. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -150,7 +150,7 @@ Collector observations for 162 source steps with known totals: observed: 1019, e
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
 | `human_my_work` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
-| `TaskDetailService.my_work` | `available` | `partial` | `available` | `23` | `19` | `4` |
+| `TaskDetailService.my_work` | `available` | `evaluated` | `available` | `16` | `16` | `0` |
 | `self.db.info.get (backend/app/services/task…TaskDetailService.my_work)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `local_work_profile` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
 | `internal_authority` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
@@ -158,9 +158,9 @@ Collector observations for 162 source steps with known totals: observed: 1019, e
 | `db.get (backend/app/services/iden…ice.py:local_work_profile)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `select(…).where (backend/app/services/task…TaskDetailService.my_work)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `select (backend/app/services/task…TaskDetailService.my_work)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `or_ (backend/app/services/task…TaskDetailService.my_work)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `Task.assignee_id.in_` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `self.references().where` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `TaskDetailService.references` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `select(…).outerjoin(…).outerjoin` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 
 ```mermaid
 flowchart LR
@@ -173,9 +173,9 @@ flowchart LR
     s7["7. db.get (backend/app/services/iden…ice.py:local_work_profile)"]
     s8["8. select(…).where (backend/app/services/task…TaskDetailService.my_work)"]
     s9["9. select (backend/app/services/task…TaskDetailService.my_work)"]
-    s10["10. or_ (backend/app/services/task…TaskDetailService.my_work)"]
-    s11["11. Task.assignee_id.in_"]
-    s12["12. self.references().where"]
+    s10["10. self.references().where"]
+    s11["11. TaskDetailService.references"]
+    s12["12. select(…).outerjoin(…).outerjoin"]
     s1 -->|"TaskDetailService.my_work(limit=limit, after_id=after_id, project_id=project_id, iteration_id=iteration_id, backlog_only=backlog_only)"| s2
     s2 -. "self.db.info.get (backend/app/services/task…TaskDetailService.my_work)('authority')" .-> s3
     s2 -->|"local_work_profile(self.db, authority.profile_id)"| s4
@@ -184,17 +184,14 @@ flowchart LR
     s4 -. "db.get (backend/app/services/iden…ice.py:local_work_profile)(TeamMemberProfile, profile_id)" .-> s7
     s2 -. "select(…).where (backend/app/services/task…TaskDetailService.my_work)(...)" .-> s8
     s2 -. "select (backend/app/services/task…TaskDetailService.my_work)(TeamMember.id)" .-> s9
-    s2 -. "or_ (backend/app/services/task…TaskDetailService.my_work)(..., Task.assignee_id.in_(...))" .-> s10
-    s2 -. "Task.assignee_id.in_(capacity_rows)" .-> s11
-    s2 -. "self.references().where(mine, or_(...), ..., Task.canceled_at.is_(...), Task.is_summary.is_(...))" .-> s12
-    b0["mutation stopped.append"]
-    s2 -. "mutation stopped.append" .-> b0
+    s2 -. "self.references().where(or_(...), or_(...), Task.canceled_at.is_(...), Task.is_summary.is_(...))" .-> s10
+    s2 -->|"TaskDetailService.references(data not statically known)"| s11
+    s11 -. "select(…).outerjoin(…).outerjoin(Iteration, ...)" .-> s12
     click s1 "../modules/routers_task_domain.md"
     click s2 "../modules/task_detail_service.md"
     click s4 "../modules/identity_service.md"
     click s5 "../modules/authority.md"
-    classDef boundary stroke:#b45309,stroke-dasharray: 4 2
-    class b0 boundary
+    click s11 "../modules/task_detail_service.md"
 ```
 
 ### Step data
@@ -202,7 +199,7 @@ flowchart LR
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
 | `human_my_work` | `db: DB`, `limit: int`, `after_id: int`, `project_id: int \| None`, `iteration_id: int \| None`, `backlog_only: bool` | - | - | `...` |
-| `TaskDetailService.my_work` | `limit`, `after_id`, `project_id`, `iteration_id`, `backlog_only` | `self.db`, `Task`, `Task`, `Task`, `Task`, `self.db`, `Task`, `Task` | `item.reviewer_name` | `unlinked`, `unlinked`, `{...}`, `{...}` |
+| `TaskDetailService.my_work` | `limit`, `after_id`, `project_id`, `iteration_id`, `backlog_only` | `self.db`, `Task`, `Task`, `self.db`, `Task`, `Task` | `item.reviewer_name` | `unlinked`, `unlinked`, `{...}`, `{...}` |
 | `self.db.info.get (backend/app/services/task…TaskDetailService.my_work)` | - | - | - | - |
 | `local_work_profile` | `db`, `profile_id` | - | - | `None`, `...` |
 | `internal_authority` | `db` | - | `db.info[...]`, `db.info[...]` | - |
@@ -210,44 +207,41 @@ flowchart LR
 | `db.get (backend/app/services/iden…ice.py:local_work_profile)` | - | - | - | - |
 | `select(…).where (backend/app/services/task…TaskDetailService.my_work)` | - | - | - | - |
 | `select (backend/app/services/task…TaskDetailService.my_work)` | - | - | - | - |
-| `or_ (backend/app/services/task…TaskDetailService.my_work)` | - | - | - | - |
-| `Task.assignee_id.in_` | - | - | - | - |
 | `self.references().where` | - | - | - | - |
+| `TaskDetailService.references` | - | `Task` | - | `...` |
+| `select(…).outerjoin(…).outerjoin` | - | - | - | - |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| human_my_work | TaskDetailService.my_work | 164 | `TaskDetailService(db).my_work(limit=limit, after_id=after_id, project_id=project_id, iteration_id=iteration_id, backlog_only=backlog_only)` |
-| TaskDetailService.my_work | self.db.info.get (backend/app/services/task…TaskDetailService.my_work) | 118 | `self.db.info.get('authority')` |
-| TaskDetailService.my_work | local_work_profile | 126 | `local_work_profile(self.db, authority.profile_id)` |
+| human_my_work | TaskDetailService.my_work | 163 | `TaskDetailService(db).my_work(limit=limit, after_id=after_id, project_id=project_id, iteration_id=iteration_id, backlog_only=backlog_only)` |
+| TaskDetailService.my_work | self.db.info.get (backend/app/services/task…TaskDetailService.my_work) | 111 | `self.db.info.get('authority')` |
+| TaskDetailService.my_work | local_work_profile | 118 | `local_work_profile(self.db, authority.profile_id)` |
 | local_work_profile | internal_authority | 59 | `internal_authority(db)` |
 | internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 114 | `db.info.get('authority_internal', False)` |
 | local_work_profile | db.get (backend/app/services/iden…ice.py:local_work_profile) | 60 | `db.get(TeamMemberProfile, profile_id)` |
-| TaskDetailService.my_work | select(…).where (backend/app/services/task…TaskDetailService.my_work) | 132 | `select(TeamMember.id).where(...)` |
-| TaskDetailService.my_work | select (backend/app/services/task…TaskDetailService.my_work) | 132 | `select(TeamMember.id)` |
-| TaskDetailService.my_work | or_ (backend/app/services/task…TaskDetailService.my_work) | 133 | `or_(..., Task.assignee_id.in_(...))` |
-| TaskDetailService.my_work | Task.assignee_id.in_ | 133 | `Task.assignee_id.in_(capacity_rows)` |
-| TaskDetailService.my_work | self.references().where | 135 | `self.references().where(mine, or_(...), ..., Task.canceled_at.is_(...), Task.is_summary.is_(...))` |
+| TaskDetailService.my_work | select(…).where (backend/app/services/task…TaskDetailService.my_work) | 124 | `select(TeamMember.id).where(...)` |
+| TaskDetailService.my_work | select (backend/app/services/task…TaskDetailService.my_work) | 124 | `select(TeamMember.id)` |
+| TaskDetailService.my_work | self.references().where | 125 | `self.references().where(or_(...), or_(...), Task.canceled_at.is_(...), Task.is_summary.is_(...))` |
+| TaskDetailService.my_work | TaskDetailService.references | 125 | `self.references(data not statically known)` |
+| TaskDetailService.references | select(…).outerjoin(…).outerjoin | 40 | `select(Task.id, Task.title, Task.version, Task.status, displayed_state_expression(id_column=Task.id, status_column=Task.status, canceled_at_column=Task.canceled_at).label('displayed_state'), Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin(Iteration, ...)` |
 
 ### Boundary effects
 
-| Kind | Target | Step | Line |
-|---|---|---|---:|
-| mutation | `stopped.append` | `TaskDetailService.my_work` | 159 |
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `TaskDetailService.my_work` | `self.db.info.get` | 118 |
+| unresolved_call | `TaskDetailService.my_work` | `self.db.info.get` | 111 |
 | unresolved_call | `internal_authority` | `db.info.get` | 114 |
 | unresolved_call | `local_work_profile` | `db.get` | 60 |
-| unresolved_call | `TaskDetailService.my_work` | `select(TeamMember.id).where` | 132 |
-| external_call | `TaskDetailService.my_work` | `select` | 132 |
-| external_call | `TaskDetailService.my_work` | `or_` | 133 |
-| unresolved_call | `TaskDetailService.my_work` | `Task.assignee_id.in_` | 133 |
-| unresolved_call | `TaskDetailService.my_work` | `self.references().where` | 135 |
+| unresolved_call | `TaskDetailService.my_work` | `select(TeamMember.id).where` | 124 |
+| external_call | `TaskDetailService.my_work` | `select` | 124 |
+| unresolved_call | `TaskDetailService.my_work` | `self.references().where` | 125 |
+| unresolved_call | `TaskDetailService.references` | `select(Task.id, Task.title, Task.version, Task.status, displayed_state_expression(id_column=Task.id, status_column=Task.status, canceled_at_column=Task.canceled_at).label('displayed_state'), Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin` | 40 |
 | step_limit | `human_my_work` | `first 12 steps` | 0 |
 | truncated_flow | `human_my_work` | `depth limit` | 0 |
 
