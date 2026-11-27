@@ -114,13 +114,13 @@ async def command_transaction(db: AsyncSession, *, mode="apply", commit=True):
         if state.failed:
             raise RuntimeError("A failed nested command cannot commit")
         await db.flush()
+        if mode == "apply" and db.info.get("reactivation_checks"):
+            # Work postponed tasks wait for may have changed; evaluate them, before delivery is reconciled, inside this transaction.
+            from app.services.task_reactivation_service import process_reactivation_checks
+            await process_reactivation_checks(db)
         if db.info.get("delivery_changed_nodes") or db.info.get("delivery_graph_changed") or db.info.get("delivery_scope_changed"):
             from app.services.delivery_dependency_service import DeliveryDependencyService
             await DeliveryDependencyService(db).reconcile()
-        if mode == "apply" and db.info.get("reactivation_checks"):
-            # Work postponed tasks wait for may have changed; evaluate them inside this transaction.
-            from app.services.task_reactivation_service import process_reactivation_checks
-            await process_reactivation_checks(db)
         for task_id, version, kind in sorted(db.info.pop("discussion_events", set())):
             from app.services.discussion_service import DiscussionService
             await DiscussionService(db).enqueue(task_id, kind, f"task:{task_id}:{version}:{kind}")
@@ -163,7 +163,8 @@ async def lock_backlog_project(db, project_id):
     """Serialize unscheduled hierarchy writes without manufacturing an iteration."""
     from app.authority import internal_authority, require_project
     from app.models.project import Project
-    require_project(db, project_id, "read")
+    if not db.info.get("authority_internal"):
+        require_project(db, project_id, "read")
     await lock_planning(db)
     state = current_command(db)
     if state is None:

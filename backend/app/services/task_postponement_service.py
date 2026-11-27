@@ -27,6 +27,12 @@ from app.utils.time import utc_now
 POSTPONED = TaskStatus.POSTPONED.value
 
 
+def is_accepted(task):
+    """Accepted work: closed and not canceled. A summary closes by roll-up once every leaf is accepted."""
+    return (task.status == TaskStatus.CLOSED.value and task.canceled_at is None
+            and (task.accepted_at is not None or bool(task.is_summary)))
+
+
 async def open_postponement(db, task_id, *, lock=False):
     """The task's open postponement, if any."""
     statement = select(TaskPostponement).where(TaskPostponement.task_id == task_id, TaskPostponement.reactivated_at.is_(None))
@@ -289,6 +295,10 @@ class TaskPostponementService:
             "postponement_id": postponement.id if postponement is not None else None, "to_status": target,
             "reason": reason, "trigger": trigger, "version": task.version, **(event_extra or {})},
             **({"actor_type": "auto"} if automatic else {}))
+        if target == "resolved":
+            # Resolved work again may be what other postponed work waits for.
+            from app.services.task_reactivation_service import request_reactivation_check
+            request_reactivation_check(self.db, task_id=task.id)
         return task
 
     async def _requirements(self, task, items):
@@ -310,7 +320,7 @@ class TaskPostponementService:
                     raise ValueError(f"Task {item.task_id} is not found or inaccessible")
                 if target.canceled_at is not None:
                     raise ValueError(f"Task {item.task_id} is canceled and can never complete this requirement")
-                if item.kind == "predecessor_accepted" and target.status == TaskStatus.CLOSED.value and target.accepted_at is not None:
+                if item.kind == "predecessor_accepted" and is_accepted(target):
                     raise ValueError(f"Task {item.task_id} is already accepted")
                 if item.kind == "linked_resolved" and target.status in {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}:
                     raise ValueError(f"Task {item.task_id} is already resolved")

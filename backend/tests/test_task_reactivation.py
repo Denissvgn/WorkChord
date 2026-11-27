@@ -406,3 +406,137 @@ async def test_two_final_triggers_race_and_exactly_one_reactivates(delivery_stor
         async with factory() as db:
             assert await db.scalar(select(func.count()).select_from(TaskReactivationRequirement).where(
                 TaskReactivationRequirement.postponement_id == postponement.id, TaskReactivationRequirement.met_at.is_not(None))) == 2
+
+
+async def _backlog_task(factory, project_id, title="Backlog item"):
+    from app.schemas.task import TaskCreate
+    from app.services.task_service import TaskService
+    async with factory() as db:
+        db.info["authority"] = _owner()
+        task = await TaskService(db).create(None, TaskCreate(title=title, project_id=project_id))
+        assert task.iteration_id is None
+        return task.id
+
+
+async def test_backlog_work_in_a_project_the_caller_cannot_read_reactivates(delivery_store):
+    factory, scenario, _ = delivery_store
+    predecessor_id, _, reviewer_id = await _resolved_task(factory, scenario)
+    waiting_id = await _backlog_task(factory, scenario.projects[1])
+    await _postpone_task(factory, waiting_id, {"kind": "predecessor_accepted", "task_id": predecessor_id})
+    await _accept(factory, scenario, reviewer_id, predecessor_id)
+    task, postponement, events = await _state(factory, waiting_id)
+    assert task.status == "planned" and postponement.reactivated_at is not None and len(events) == 1
+
+
+async def test_the_date_check_reactivates_backlog_work_in_managed_mode(delivery_store, monkeypatch):
+    from app.config import get_settings
+    factory, scenario, _ = delivery_store
+    waiting_id = await _backlog_task(factory, scenario.projects[1])
+    day = utc_now().date() + timedelta(days=30)
+    await _postpone_task(factory, waiting_id, {"kind": "date", "on_date": day.isoformat()})
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "managed")
+    get_settings.cache_clear()
+    try:
+        async with factory() as db:
+            assert await ReactivationService(db).run_date_check(now=datetime.now(timezone.utc) + timedelta(days=31)) == [waiting_id]
+    finally:
+        monkeypatch.undo()
+        get_settings.cache_clear()
+    assert (await _state(factory, waiting_id))[0].status == "planned"
+
+
+async def test_a_closed_summary_counts_as_an_accepted_predecessor(delivery_store):
+    factory, scenario, _ = delivery_store
+    summary_id, waiting_id = scenario.tasks["parent"], scenario.tasks["planned"]
+    async with factory() as db:
+        await db.execute(update(Task).where(Task.id == summary_id).values(is_summary=True))
+        await db.commit()
+    await _postpone_task(factory, waiting_id, {"kind": "predecessor_accepted", "task_id": summary_id})
+    async with factory() as db:
+        assert await ReactivationService(db).run_date_check() == []
+        # The roll-up closes the summary without recording an acceptance of its own.
+        await db.execute(update(Task).where(Task.id == summary_id).values(status="closed", accepted_at=None))
+        await db.commit()
+    async with factory() as db:
+        assert await ReactivationService(db).run_date_check() == [waiting_id]
+    other_id = scenario.tasks["active"]
+    async with factory() as db:
+        db.info["authority"] = _owner()
+        version = (await db.get(Task, other_id)).version
+        with pytest.raises(ValueError, match="already accepted"):
+            await TaskPostponementService(db).postpone(other_id, TaskPostponeRequest(**_postpone(
+                version, {"kind": "predecessor_accepted", "task_id": summary_id})))
+
+
+async def test_reactivating_to_resolved_with_the_command_wakes_work_waiting_for_it(delivery_store):
+    from app.schemas.task_postponement import TaskReactivateRequest
+    factory, scenario, _ = delivery_store
+    resolved_id, _, _ = await _resolved_task(factory, scenario)
+    waiting_id = scenario.tasks["planned"]
+    await _postpone_task(factory, resolved_id, {"kind": "date", "on_date": _later()})
+    await _postpone_task(factory, waiting_id, {"kind": "linked_resolved", "task_id": resolved_id})
+    async with factory() as db:
+        db.info["authority"] = _owner()
+        version = (await db.get(Task, resolved_id)).version
+        await TaskPostponementService(db).reactivate(resolved_id, TaskReactivateRequest(expected_version=version, reason="Resume"))
+    assert (await _state(factory, resolved_id))[0].status == "resolved"
+    task, postponement, events = await _state(factory, waiting_id)
+    assert task.status == "planned" and f"linked task {resolved_id} was resolved" in postponement.reactivation_reason
+
+
+async def test_a_sweep_that_finds_nothing_leaves_the_planning_revision_alone(delivery_store):
+    from app.models.capacity import PlanningState
+    factory, scenario, _ = delivery_store
+    await _postpone_task(factory, scenario.tasks["planned"], {"kind": "date", "on_date": _later()})
+    await _postpone_task(factory, scenario.tasks["active"], {"kind": "owner_decision", "description": "Decide"})
+    async with factory() as db:
+        before = await db.scalar(select(PlanningState.revision))
+    for _ in range(3):
+        async with factory() as db:
+            assert await ReactivationService(db).run_date_check() == []
+    async with factory() as db:
+        assert await db.scalar(select(PlanningState.revision)) == before
+
+
+@pytest.mark.parametrize("failure", [RuntimeError("boom"), TypeError("odd")])
+async def test_a_failed_evaluation_never_blocks_the_trigger_and_is_retried(delivery_store, monkeypatch, failure):
+    factory, scenario, _ = delivery_store
+    predecessor_id, _, reviewer_id = await _resolved_task(factory, scenario)
+    waiting_id = scenario.tasks["planned"]
+    await _postpone_task(factory, waiting_id, {"kind": "predecessor_accepted", "task_id": predecessor_id})
+    original = TaskPostponementService.resume
+
+    async def failing(self, *args, **kwargs):
+        raise failure
+
+    monkeypatch.setattr(TaskPostponementService, "resume", failing)
+    accepted = await _accept(factory, scenario, reviewer_id, predecessor_id)
+    assert accepted.status == "closed"
+    task, postponement, _ = await _state(factory, waiting_id)
+    assert task.status == "postponed" and postponement.reactivated_at is None
+    async with factory() as db:
+        requirement = await db.scalar(select(TaskReactivationRequirement).where(TaskReactivationRequirement.task_id == waiting_id))
+        assert requirement.met_at is None
+    monkeypatch.setattr(TaskPostponementService, "resume", original)
+    async with factory() as db:
+        assert await ReactivationService(db).run_date_check() == [waiting_id]
+
+
+async def test_the_owner_decision_also_counts_a_date_that_came_due(delivery_store):
+    factory, scenario, _ = delivery_store
+    task_id = scenario.tasks["planned"]
+    await _postpone_task(factory, task_id, {"kind": "date", "on_date": _later()}, {"kind": "owner_decision", "description": "Go?"})
+    async with factory() as db:
+        await db.execute(update(TaskReactivationRequirement).where(
+            TaskReactivationRequirement.task_id == task_id, TaskReactivationRequirement.kind == "date")
+            .values(on_date=utc_now().date() - timedelta(days=1)))
+        requirement_id = await db.scalar(select(TaskReactivationRequirement.id).where(
+            TaskReactivationRequirement.task_id == task_id, TaskReactivationRequirement.kind == "owner_decision"))
+        version = (await db.get(Task, task_id)).version
+        await db.commit()
+    async with factory() as db:
+        db.info["authority"] = _owner(5)
+        result = await ReactivationService(db).record_owner_decision(
+            task_id, requirement_id, OwnerDecisionRequest(expected_version=version, decision="Go"))
+        assert result["task"].status == "planned"
+        assert [item["met"] for item in result["postponement"]["requirements"]] == [True, True]

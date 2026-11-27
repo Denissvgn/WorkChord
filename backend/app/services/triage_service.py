@@ -139,12 +139,13 @@ class TriageService:
 
     async def _request_reactivation_check(self, triage_item_id: int) -> None:
         """Postponed work may wait for this item to leave the inbox; evaluate it with this change."""
-        from app.commands import current_command
-        from app.services.task_reactivation_service import ReactivationService, request_reactivation_check
+        from app.commands import command_transaction, current_command
+        from app.services.task_reactivation_service import request_reactivation_check
         request_reactivation_check(self.db, triage_item_id=triage_item_id)
         if current_command(self.db) is None:
-            # No owning command: give the check one, committed (or not) with this change.
-            await ReactivationService(self.db).flush_checks(commit=False)
+            # No owning command: give the check one that leaves committing to this change.
+            async with command_transaction(self.db, commit=False):
+                pass
 
     async def _record_triage_event(
         self,
