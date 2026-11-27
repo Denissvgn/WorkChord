@@ -1,9 +1,9 @@
-# import_new_iteration
+# write_new_iteration_import
 
-**Entry point:** `export.import_new_iteration`
+**Entry point:** `export.write_new_iteration_import`
 **Modules involved:** [commands](../modules/commands.md), [export](../modules/export.md), [iteration_service](../modules/iteration_service.md), [schemas_iteration](../modules/schemas_iteration.md)
 
-> Import a new iteration from JSON export file.
+> Create the imported iteration and its contents; return the receipt and the new iteration id.
 
 ## Sequence
 
@@ -23,4 +23,4 @@
 
 ## Behavior
 
-This workflow starts at `export.import_new_iteration`. The generated sequence is a bounded static projection; runtime ordering, branching, and side effects require source-level confirmation.
+This workflow starts at `export.write_new_iteration_import`. The generated sequence is a bounded static projection; runtime ordering, branching, and side effects require source-level confirmation.

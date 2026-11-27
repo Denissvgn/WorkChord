@@ -20,12 +20,13 @@ Export/Import API router.
 | `app.schemas.team` | `TeamMemberCreate`, `VacationCreate` |
 | `app.security` | `require_admin_api_key` |
 | `app.services.import_planning_service` | `observe_import_planning` |
+| `app.services.import_review_service` | `apply_reviewed_import`, `apply_reviewed_import` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.team_service` | `TeamService` |
 | `app.services.work_metrics` | `aggregate_metrics` |
 | `datetime` | `timedelta`, `date`, `date`, `date` |
-| `fastapi` | `APIRouter`, `Depends`, `File`, `HTTPException`, `UploadFile`, `status` |
+| `fastapi` | `APIRouter`, `Depends`, `File`, `Form`, `HTTPException`, `UploadFile`, `status` |
 | `fastapi.encoders` | `jsonable_encoder` |
 | `fastapi.responses` | `JSONResponse` |
 | `json` | `json` |
@@ -50,8 +51,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (3) |
-| Outbound | `backend` (14) |
+| Inbound | `backend` (6) |
+| Outbound | `backend` (15) |
 
 ### External packages
 
@@ -59,7 +60,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -72,8 +73,10 @@ flowchart LR
 | `_task_to_export` | `(task) -> dict` | — | Convert task to export format recursively with full Gantt data. |
 | `_validate_import_data` | `(data)` | — | Validate the complete bounded tree before any imported row can persist. |
 | `preview_iteration_import` | *(async)* `(file: Annotated[UploadFile, File(...)], db: Annotated[AsyncSession, Depends(get_db, scope='function')], iteration_id: int \| None = None)` | `@router.post('/iterations/import-context')`, `@router.post('/iterations/{iteration_id}/import-context')` | Observe all existing scopes before opening a JSON import confirmation. |
-| `import_new_iteration` | *(async)* `(file: Annotated[UploadFile, File(...)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.post('/iterations/import')` | Import a new iteration from JSON export file. |
+| `import_new_iteration` | *(async)* `(file: Annotated[UploadFile, File(...)], db: Annotated[AsyncSession, Depends(get_db, scope='function')], review_digest: Annotated[str \| None, Form()] = None)` | `@router.post('/iterations/import')` | Import a new iteration from JSON export file. |
+| `write_new_iteration_import` | *(async)* `(db: AsyncSession, data: dict, *, expected_revisions = None)` | — | Create the imported iteration and its contents; return the receipt and the new iteration id. |
 | `_process_import` | *(async)* `(iteration_id: int, data: dict, db: AsyncSession, *, create_snapshots: bool = True)` | — | Import team members and tasks while preserving task metadata and dependencies. |
-| `import_iteration` | *(async)* `(iteration_id: int, file: Annotated[UploadFile, File(...)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.post('/iterations/{iteration_id}/import')` | Import tasks and team members into an iteration from JSON file. |
+| `import_iteration` | *(async)* `(iteration_id: int, file: Annotated[UploadFile, File(...)], db: Annotated[AsyncSession, Depends(get_db, scope='function')], review_digest: Annotated[str \| None, Form()] = None)` | `@router.post('/iterations/{iteration_id}/import')` | Import tasks and team members into an iteration from JSON file. |
+| `write_iteration_import` | *(async)* `(db: AsyncSession, iteration_id: int, data: dict, *, expected_revisions = None)` | — | Import team members and tasks into one existing iteration. |
 | `_import_task_record` | *(async)* `(task_service: TaskService, iteration_id: int, task_data: dict, parent_id: Optional[int], name_to_member_id: dict[str, int], id_to_new_id: dict[int, int], external_key_to_new_id: dict[str, int], pending_dependencies: list[tuple[int, list[int], list[str]]], *, create_snapshots: bool = True)` | — | Import one task record after its parent has been persisted. |
 | `_import_task` | *(async)* `(task_service: TaskService, iteration_id: int, task_data: dict, parent_id: Optional[int], name_to_member_id: dict[str, int], id_to_new_id: dict[int, int], external_key_to_new_id: dict[str, int], pending_dependencies: list[tuple[int, list[int], list[str]]], *, create_snapshots: bool = True) -> None` | — | Import a complete task tree iteratively so product depth stays unbounded. |

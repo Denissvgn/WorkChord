@@ -47,7 +47,7 @@ the same audited command and read-model paths.
 | `app.services.agent_profile_catalog_service` | `AgentProfileCatalogService` |
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
 | `app.services.agent_routing_service` | `AgentRoutingService` |
-| `app.services.agent_service` | `AgentConflictError`, `AgentService`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key`, `require_scope`, `require_scope`, `require_scope`, `require_scope`, `require_scope`, `actor_has_scope`, `AgentPermissionError` |
+| `app.services.agent_service` | `AgentConflictError`, `AgentService`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key`, `require_scope`, `require_scope`, `require_scope`, `require_scope`, `require_scope`, `require_scope`, `actor_has_scope`, `AgentPermissionError` |
 | `app.services.agent_skill_bundle_service` | `AgentSkillBundleService`, `SkillBundleArtifactError`, `SkillBundleNotFoundError` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupService` |
 | `app.services.agent_work_service` | `AgentWorkService` |
@@ -59,6 +59,7 @@ the same audited command and read-model paths.
 | `app.services.execution_usage_service` | `ExecutionUsageService` |
 | `app.services.external_link_service` | `ExternalLinkConflictError`, `ExternalLinkService` |
 | `app.services.github_reconciliation_service` | `GitHubReconciliationService`, `GitHubReconciliationService` |
+| `app.services.import_review_service` | `dry_run_import`, `validate_import_payload` |
 | `app.services.iteration_date_move` | `IterationDateMoveService` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.label_service` | `LabelService` |
@@ -111,7 +112,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (21) |
-| Outbound | `backend` (64) |
+| Outbound | `backend` (65) |
 
 ### External packages
 
@@ -119,7 +120,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 85 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 86 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -177,6 +178,7 @@ flowchart LR
 | `update_planning_team_member` | *(async)* `(db: AsyncSession, actor: AgentActor, member_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: update one iteration capacity owner. |
 | `preview_capacity_adjustment` | *(async)* `(db: AsyncSession, actor: AgentActor, member_id: int, payload: dict[str, Any]) -> dict[str, Any]` | — | MCP handler: show effective capacity for a dated adjustment without recording it. |
 | `preview_iteration_date_move` | *(async)* `(db: AsyncSession, actor: AgentActor, iteration_id: int, payload: dict[str, Any]) -> dict[str, Any]` | — | MCP handler: show each person's shortfall for a proposed iteration period without saving it. |
+| `preview_iteration_import` | *(async)* `(db: AsyncSession, actor: AgentActor, iteration_id: int \| None, import_data: Any) -> dict[str, Any]` | — | MCP handler: the exact changes a JSON plan import would make, without writing them. |
 | `apply_capacity_adjustment` | *(async)* `(db: AsyncSession, actor: AgentActor, member_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: record or withdraw dated adjustments on one capacity row. |
 | `preview_capacity_transfer` | *(async)* `(db: AsyncSession, actor: AgentActor, payload: dict[str, Any]) -> dict[str, Any]` | — | MCP handler: show every row's effective capacity with a temporary transfer without recording it. |
 | `apply_capacity_transfer` | *(async)* `(db: AsyncSession, actor: AgentActor, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: lend capacity between rows of one person until a return date. |
