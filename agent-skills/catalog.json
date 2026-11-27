@@ -9,14 +9,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-pm-1.21.7.tar.gz",
-          "sha256": "4af7d0d9c901f9203837fa0f2a9447120798d22d5419be73f6f8a771c00e272f",
+          "sha256": "1bfab061776ee6b61b275848c59ced9f4a456134184a030affc35ea55db1008a",
           "size": 245798
         },
         {
           "format": "zip",
           "path": "workchord-pm-1.21.7.zip",
-          "sha256": "3a6bd6cd6278abdbfccea70ad134f749874117f74bec3d057411e204712454c3",
-          "size": 233793
+          "sha256": "697111ccf0d8bc9c5a8609e16b99d57c1872a2f9a7a9c2b6bd94170e1a8659dd",
+          "size": 233709
         }
       ],
       "entrypoint": "SKILL.md",
@@ -38,8 +38,8 @@
         },
         {
           "path": "references/assignment-scheduling-and-delivery-control.md",
-          "sha256": "02054b341b25d5cd54fb50eaac1d1c08542a3ba84172c166b59252a732db98fa",
-          "size": 32543
+          "sha256": "c998a23eda0c3d51b12235ac3586354d776c41797fe245d227c78cb9abfd8990",
+          "size": 32459
         },
         {
           "path": "references/intake-planning-and-task-briefs.md",
@@ -280,5 +280,5 @@
       "version": "1.20.4"
     }
   ],
-  "source_revision": "sha256:449259021ac5240dde68fc7cd78ebbbf835e6c61ef369ae096f70b759b67db86"
+  "source_revision": "sha256:c84f77ff5be65c96e70373e1e05a1fba3127a94427a0bf75850e8967266f5e41"
 }

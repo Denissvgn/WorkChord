@@ -97,7 +97,7 @@
       "version": "1.23.6"
     },
     {
-      "catalog_sha256": "fe89f17c8a899fcf7392980bbaf68f62fc8a159614ed77c879b49d120b7a82ca",
+      "catalog_sha256": "dc8a73bf31a42d3267744f29d45ab52d277745164cccd415cd9033f40c1bcf76",
       "version": "1.23.7"
     },
     {
@@ -246,7 +246,7 @@
       "version": "1.21.6"
     },
     {
-      "catalog_entry_sha256": "8558ae5351d787c687994a27881bc5b0949ecd4cadafe4d09130384b34f17573",
+      "catalog_entry_sha256": "f7d74dca5c9b12e22934ac841d99171db9d9d78781b7c046d9f66bc6800eabf5",
       "name": "workchord-pm",
       "version": "1.21.7"
     },
