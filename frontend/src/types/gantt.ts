@@ -129,6 +129,8 @@ export interface IdleGap {
     reason: IdleReason;
     /** The prerequisite it waits for, for reason waits_for_prerequisite. */
     waiting_on?: WaitingOnTask;
+    /** The earliest start date that holds it, for reason earliest_start. */
+    earliest_start?: string;
     message: string;
 }
 

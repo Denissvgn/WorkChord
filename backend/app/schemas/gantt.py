@@ -155,6 +155,8 @@ class IdleGap(BaseModel):
     reason: IdleReason
     # The prerequisite it waits for (reason waits_for_prerequisite); omitted otherwise.
     waiting_on: WaitingOnTask | None = Field(default=None, exclude_if=lambda value: value is None)
+    # The earliest start date that holds it (reason earliest_start); omitted otherwise.
+    earliest_start: date | None = Field(default=None, exclude_if=lambda value: value is None)
     message: str
 
 

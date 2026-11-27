@@ -96,9 +96,60 @@ async def test_dates_kept_as_saved_do_not_occupy_the_row(db_session):
     assert {item.task_id for item in result.kept_dates} == {kept.id}
     assert (kept.start_date, kept.end_date) == (date(2026, 1, 5), date(2026, 1, 9))
     assert (ready.start_date, ready.end_date) == (date(2026, 1, 5), date(2026, 1, 7))
-    # The kept period is reported as idle where no placed work covers it.
-    gap = next(row for row in result.idle_days if row.member_id == members[0].id).gaps[0]
-    assert (gap.start_date, gap.end_date) == (date(2026, 1, 8), date(2026, 1, 9))
+    # The assignee has saved work on the kept days, so they are not reported as idle.
+    assert all(row.member_id != members[0].id for row in result.idle_days)
+
+
+async def test_kept_dates_split_idle_days_that_the_next_task_still_explains(db_session):
+    iteration, members, (prerequisite, waiting, ready) = await waiting_plan(db_session, low_hours=48)
+    db_session.add(Task(title="Kept work", iteration=iteration, assignee=members[0], effort_hours=None,
+                        nominal_day_hours=8, priority=1, status="planned",
+                        start_date=date(2026, 1, 7), end_date=date(2026, 1, 7)))
+    await db_session.commit()
+    result = await SchedulerService(db_session).schedule_iteration(iteration.id)
+    (row,) = result.idle_days
+    assert row.idle_working_days == 4
+    assert [(gap.start_date, gap.end_date) for gap in row.gaps] == [
+        (date(2026, 1, 5), date(2026, 1, 6)), (date(2026, 1, 8), date(2026, 1, 9))]
+    assert {gap.task_id for gap in row.gaps} == {waiting.id}
+
+
+@pytest.mark.parametrize(("prerequisite_hours", "min_start", "reason", "starts"), [
+    # The earliest start date is later than the day after the prerequisite ends.
+    (16, date(2026, 1, 8), "earliest_start", date(2026, 1, 8)),
+    # The prerequisite ends after the earliest start date.
+    (40, date(2026, 1, 7), "waits_for_prerequisite", date(2026, 1, 12)),
+])
+async def test_idle_days_name_the_constraint_that_binds(db_session, prerequisite_hours, min_start, reason, starts):
+    iteration, members, (prerequisite, waiting) = await make_plan(db_session, 2, [1, 0], [(0, 1)])
+    prerequisite.effort_hours = prerequisite_hours
+    waiting.min_start_date = min_start
+    await db_session.commit()
+    result = await SchedulerService(db_session).schedule_iteration(iteration.id)
+    assert waiting.start_date == starts
+    (row,) = result.idle_days
+    (gap,) = row.gaps
+    assert gap.reason == reason and gap.task_id == waiting.id
+    if reason == "earliest_start":
+        assert gap.earliest_start == min_start and gap.waiting_on is None
+        assert min_start.isoformat() in gap.message
+    else:
+        assert gap.earliest_start is None and gap.waiting_on.task_id == prerequisite.id
+
+
+async def test_free_days_after_the_iteration_end_are_reported_overdue(db_session):
+    iteration, _, tasks = await make_plan(db_session, 1, [0, 0, 0], [], end=date(2026, 1, 5))
+    tasks[0].min_start_date = date(2026, 1, 12)
+    tasks[0].max_end_date = date(2026, 1, 14)
+    tasks[0].effort_hours = 16
+    await db_session.commit()
+    result = await SchedulerService(db_session).schedule_iteration(iteration.id)
+    by_task = {item.task_id: item for item in result.decisions}
+    assert tasks[1].end_date == date(2026, 1, 5) and by_task[tasks[1].id].decision_type == "reordered"
+    assert tasks[2].end_date == date(2026, 1, 6)
+    late = by_task[tasks[2].id]
+    assert late.decision_type == "overdue"
+    assert "beyond iteration by 1 days" in late.reason and "free days" in late.reason
 
 
 async def test_schedule_preview_lists_idle_days(db_session_factory):

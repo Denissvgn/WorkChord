@@ -810,7 +810,7 @@ class SchedulerService:
                     # first, when it fits there completely. Placed work never moves, and the pop order
                     # is unchanged, so no task starts later than it would after the row's last task.
                     if cursor is None or not self._place_in_free_days(
-                            task, member_schedules, decisions, task_map, max(earliest_start, planning_start), cursor):
+                            task, iteration, member_schedules, decisions, task_map, max(earliest_start, planning_start), cursor):
                         if cursor is not None:
                             # Otherwise the task follows the row's last task, even beyond the iteration.
                             earliest_start = max(earliest_start, cursor + timedelta(days=1))
@@ -860,6 +860,16 @@ class SchedulerService:
             task.calculated_effort_days = before_effort[task.id]
             if saved[0] is not None and saved[1] is not None:
                 kept_dates[task.id] = rule
+
+        # Idle days are read before any task version is reserved, so a missing calendar year still restores dates.
+        try:
+            idle_days = self._idle_days(
+                member_schedules, task_map,
+                span_start=max(planning_start, follow_date) if follow_date is not None else planning_start,
+                planned_ids={task.id for task in leaf_tasks}, satisfied_ids=satisfied_predecessor_ids,
+                kept_ids=set(kept_dates))
+        except MissingCalendarYear as exc:
+            return uncovered_forecast(exc)
 
         # Update composite (parent) task dates based on their children
         for parent in composite_tasks:
@@ -914,10 +924,6 @@ class SchedulerService:
 
         # Check workload balance
         workload_issues = self._check_workload_balance(member_schedules)
-        idle_days = self._idle_days(
-            member_schedules, task_map,
-            span_start=max(planning_start, follow_date) if follow_date is not None else planning_start,
-            planned_ids={task.id for task in leaf_tasks}, satisfied_ids=satisfied_predecessor_ids)
         unscheduled, kept_items = self._unscheduled_tasks(
             all_tasks, member_schedules, unscheduled_reasons, predecessor_messages, before_dates,
             kept_dates=kept_dates, incomplete_ids=incomplete_ids, postponed_waits=postponed_waits,
@@ -1439,6 +1445,7 @@ class SchedulerService:
     def _place_in_free_days(
         self,
         task: Task,
+        iteration: Iteration,
         member_schedules: dict[int, MemberSchedule],
         decisions: list[SchedulingDecision],
         task_map: dict[int, Task],
@@ -1447,8 +1454,10 @@ class SchedulerService:
     ) -> bool:
         """Place a ready task in free days its row left before already placed work, if it fits there.
 
-        The task must fit completely between ``earliest_start`` and ``cursor`` (the row's last placed
-        day) without crossing reserved dates or an absence. Returns False and reserves nothing otherwise.
+        ``cursor`` is the end of the last task this run placed for the assignee after the assignee's earlier
+        work; placements in free days do not move it. The task must fit completely between ``earliest_start``
+        and ``cursor`` without crossing reserved dates or an absence. Returns False and reserves nothing
+        otherwise.
         """
         schedule = member_schedules.get(task.assignee_id)
         if schedule is None or earliest_start > cursor:
@@ -1464,12 +1473,18 @@ class SchedulerService:
         later_id = schedule.allocated_dates[following] if following is not None else None
         later = task_map.get(later_id) if later_id is not None else None
         before = f" before '{later.title}' (ID {later_id})" if later is not None else ""
+        reason = (f"Placed from {task.start_date} in free days{before} that its assignee would otherwise "
+                  "leave idle; no task placed earlier moves.")
+        decision_type = "reordered"
+        if task.end_date > iteration.end_date:
+            # Free days after the iteration still end the task late; say so like any other late placement.
+            decision_type = "overdue"
+            reason = f"Task extends beyond iteration by {(task.end_date - iteration.end_date).days} days. {reason}"
         decisions.append(SchedulingDecision(
             task_id=task.id,
             task_title=task.title,
-            decision_type="reordered",
-            reason=(f"Placed from {task.start_date} in free days{before} that its assignee would otherwise "
-                    "leave idle; no task placed earlier moves."),
+            decision_type=decision_type,
+            reason=reason,
             affected_tasks=[later_id] if later_id is not None else [],
         ))
         return True
@@ -1489,27 +1504,48 @@ class SchedulerService:
         span_start: date,
         planned_ids: set[int],
         satisfied_ids: set[int],
+        kept_ids: set[int],
     ) -> list[AssigneeIdleDays]:
         """Each row's working days left idle before its last work in this run, with the task that follows them.
 
         Only days on or after ``span_start`` count. Days after a row's last work are not reported: no task
-        waits there. Dates kept as saved do not occupy the row, so their days can be reported as idle.
+        waits there. Dates kept as saved do not occupy the row for placement, but the days they cover are
+        not reported as idle: the assignee has saved work there.
         """
+        kept_days: dict[int, set[date]] = {}
+        for task_id in kept_ids:
+            kept = task_map[task_id]
+            if kept.assignee_id is None or kept.start_date is None or kept.end_date is None:
+                continue
+            covered = kept_days.setdefault(kept.assignee_id, set())
+            day = kept.start_date
+            while day <= kept.end_date:
+                covered.add(day)
+                day += timedelta(days=1)
         report: list[AssigneeIdleDays] = []
         for member_id in sorted(member_schedules):
             schedule = member_schedules[member_id]
             busy = sorted(day for day in schedule.allocated_dates if day >= span_start)
             if not busy:
                 continue
+            covered = kept_days.get(member_id, set())
             gaps: list[IdleGap] = []
+            # Idle runs split by kept dates; the next placed work explains all of them.
+            runs: list[list[date]] = []
             run: list[date] = []
             day = span_start
             while day <= busy[-1]:
                 if day in schedule.allocated_dates:
                     if run:
-                        gaps.append(self._idle_gap(run, schedule.allocated_dates[day], task_map,
+                        runs.append(run)
+                    for idle in runs:
+                        gaps.append(self._idle_gap(idle, schedule.allocated_dates[day], task_map, schedule,
                                                    planned_ids, satisfied_ids))
-                        run = []
+                    runs, run = [], []
+                elif day in covered:
+                    if run:
+                        runs.append(run)
+                    run = []
                 elif schedule.is_productive_day(day):
                     run.append(day)
                 day += timedelta(days=1)
@@ -1518,28 +1554,43 @@ class SchedulerService:
                     idle_working_days=sum(gap.working_days for gap in gaps), gaps=gaps))
         return report
 
-    def _idle_gap(self, run: list[date], task_id: int, task_map: dict[int, Task],
+    def _idle_gap(self, run: list[date], task_id: int, task_map: dict[int, Task], schedule: MemberSchedule,
                   planned_ids: set[int], satisfied_ids: set[int]) -> IdleGap:
         task = task_map.get(task_id)
         title = task.title if task is not None else f"ID {task_id}"
         waiting_on = None
+        earliest_start = None
         format_args: dict[str, str] = {}
         if task is None or task.id not in planned_ids:
             reason = "fixed_dates"
         else:
-            # The prerequisite that ends latest on or after the first idle day held the task back.
+            # The binding constraint is the later of the first working day after the latest prerequisite ends
+            # and the earliest start date. It is named only when it reaches the task's start.
             prerequisites = [dep_task for dep in task.dependencies
                              if dep.depends_on_id not in satisfied_ids
                              and (dep_task := task_map.get(dep.depends_on_id)) is not None
-                             and dep_task.end_date is not None and dep_task.end_date >= run[0]]
-            if prerequisites:
-                prerequisite = max(prerequisites, key=lambda item: (item.end_date, -item.id))
+                             and dep_task.end_date is not None]
+            prerequisite = max(prerequisites, key=lambda item: (item.end_date, -item.id), default=None)
+            after_prerequisite = None
+            if prerequisite is not None:
+                after_prerequisite = prerequisite.end_date + timedelta(days=1)
+                for _ in range(366):
+                    if schedule.is_productive_day(after_prerequisite):
+                        break
+                    after_prerequisite += timedelta(days=1)
+
+            def reaches(bound: date | None) -> bool:
+                return bound is not None and bound >= task.start_date
+
+            if reaches(task.min_start_date) and not (
+                    reaches(after_prerequisite) and after_prerequisite >= task.min_start_date):
+                reason = "earliest_start"
+                earliest_start = task.min_start_date
+                format_args["date"] = task.min_start_date.isoformat()
+            elif reaches(after_prerequisite):
                 reason = "waits_for_prerequisite"
                 waiting_on = WaitingOnTask(task_id=prerequisite.id, task_title=prerequisite.title)
                 format_args["prerequisite"] = f"'{prerequisite.title}' (ID {prerequisite.id}, ends {prerequisite.end_date})"
-            elif task.min_start_date is not None and task.min_start_date > run[0]:
-                reason = "earliest_start"
-                format_args["date"] = task.min_start_date.isoformat()
             else:
                 reason = "uninterrupted_slot"
         cause = self.IDLE_REASON_MESSAGES[reason].format(**format_args)
@@ -1547,7 +1598,8 @@ class SchedulerService:
         message = (f"{days} working day{'s' if days != 1 else ''} idle from {run[0]} to {run[-1]} "
                    f"before '{title}' (ID {task_id}), {cause}.")
         return IdleGap(start_date=run[0], end_date=run[-1], working_days=days, task_id=task_id,
-                       task_title=title, reason=reason, waiting_on=waiting_on, message=message)
+                       task_title=title, reason=reason, waiting_on=waiting_on, earliest_start=earliest_start,
+                       message=message)
 
     async def _schedule_composite_task(
         self,

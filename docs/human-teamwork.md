@@ -204,14 +204,17 @@ as before. The same inputs always give the same dates.
 The schedule result and the preview list, for each assignee, the working days
 still left idle before that assignee's last task (`idle_days`), with the task
 that starts after them and why it starts no earlier: it waits for a
-prerequisite, it has an earliest start date, its dates are fixed because it is
-already in progress or done, or it needs an uninterrupted run of working days.
-Days after an assignee's last task are not listed.
+prerequisite, it cannot start before its earliest start date, its dates are
+fixed because it is already in progress or done, or it needs an uninterrupted
+run of working days. When both a prerequisite and an earliest start date apply,
+the later of the two is named. Days after an assignee's last task are not
+listed. On the Plan screen the list appears with a calculated schedule.
 
 Deferred and postponed tasks stay outside scheduling and occupy no days. A task
 that keeps its saved dates because the run could not place it does not occupy
-its assignee's days either: other work may be placed on those days, and they
-can be listed as idle.
+its assignee's days for placement: other work may be placed on those days. The
+days its saved dates cover are not listed as idle, because the assignee has
+saved work there.
 
 ## Read the delivery signals
 

@@ -24,7 +24,7 @@ export const planScheduleEnglish = {
     idleGap_one: '{{start}} to {{end}} ({{count}} day) before', idleGap_other: '{{start}} to {{end}} ({{count}} days) before',
     idleReasons: {
         waits_for_prerequisite: 'It waits for its prerequisite {{task}}.',
-        earliest_start: 'It cannot start before its earliest start date.',
+        earliest_start: 'It cannot start before its earliest start date, {{date}}.',
         fixed_dates: 'Its dates are fixed because it is already in progress or done.',
         uninterrupted_slot: 'It needs an uninterrupted run of working days.',
     },
@@ -60,7 +60,7 @@ export const planScheduleRussian = {
     idleGap_one: 'с {{start}} по {{end}} ({{count}} день) перед', idleGap_few: 'с {{start}} по {{end}} ({{count}} дня) перед', idleGap_many: 'с {{start}} по {{end}} ({{count}} дней) перед', idleGap_other: 'с {{start}} по {{end}} ({{count}} дня) перед',
     idleReasons: {
         waits_for_prerequisite: 'Она ждёт предшествующую задачу {{task}}.',
-        earliest_start: 'Она не может начаться раньше своего самого раннего начала.',
+        earliest_start: 'Она не может начаться раньше своего самого раннего начала, {{date}}.',
         fixed_dates: 'Её даты зафиксированы: она уже в работе или завершена.',
         uninterrupted_slot: 'Ей нужен непрерывный отрезок рабочих дней.',
     },

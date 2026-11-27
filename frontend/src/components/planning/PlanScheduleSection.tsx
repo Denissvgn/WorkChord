@@ -9,7 +9,7 @@ import { ganttService } from '../../services/ganttService';
 import { usePlanScheduleWorkloads } from '../../features/planningMasters/usePlanScheduleWorkloads';
 import { withPlanReturn } from '../../features/planningMasters/planningReturn';
 import { useScopeLink } from '../../features/scope/useScopeLink';
-import type { GanttResponse, GanttTask, SchedulePreviewResponse } from '../../types/gantt';
+import type { GanttResponse, GanttTask, IdleGap, SchedulePreviewResponse } from '../../types/gantt';
 import { unscheduledReasonText } from '../gantt/unscheduledReason';
 import { scheduleLeaves } from '../../features/planningMasters/scheduleEvidence';
 import type { Iteration } from '../../types/iteration';
@@ -110,6 +110,16 @@ export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iteratio
     const keptDates = (result?.kept_dates ?? []).filter(task => !deferred.has(task.task_id));
     // Days an assignee waits with nothing to do, each with the task that follows them.
     const idleDays = result?.idle_days ?? [];
+    // The server's English message stands in when a reason arrives without the detail its sentence names.
+    const idleReasonText = (gap: IdleGap): string => {
+        if (gap.reason === 'waits_for_prerequisite') {
+            return gap.waiting_on ? t('planSchedule.idleReasons.waits_for_prerequisite', { task: gap.waiting_on.task_title }) : gap.message;
+        }
+        if (gap.reason === 'earliest_start') {
+            return gap.earliest_start ? t('planSchedule.idleReasons.earliest_start', { date: formatDate(gap.earliest_start, i18n.language) }) : gap.message;
+        }
+        return t(`planSchedule.idleReasons.${gap.reason}`, { defaultValue: gap.message });
+    };
     const showResult = preview !== null || done || Boolean(result);
     return <div className="space-y-4">
         <p className="text-sm text-content-secondary">{t('planSchedule.datesAreCalculated')}</p>
@@ -167,7 +177,7 @@ export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iteratio
                     <ul>{row.gaps.map(gap => <li key={gap.start_date}>
                         {t('planSchedule.idleGap', { start: formatDate(gap.start_date, i18n.language), end: formatDate(gap.end_date, i18n.language), count: gap.working_days })}{' '}
                         <Link className="underline" to={scopeLink(withPlanReturn('/tasks', 'schedule', { task: String(gap.task_id) }))}>{gap.task_title}</Link>
-                        {'. '}{t(`planSchedule.idleReasons.${gap.reason}`, { task: gap.waiting_on?.task_title ?? '', defaultValue: gap.message })}
+                        {'. '}{idleReasonText(gap)}
                     </li>)}</ul>
                 </li>)}</ul>
             </section>}
