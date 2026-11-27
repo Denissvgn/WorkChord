@@ -2,7 +2,7 @@
 
 **Entry point:** `get_agent_capabilities` (`http`)
 **Source:** [routers_agent](../modules/routers_agent.md)
-**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), [agent_team_setup](../modules/agent_team_setup.md), and 8 more
+**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), [agent_team_setup](../modules/agent_team_setup.md), and 7 more
 
 **Complete modules touched:**
 
@@ -12,7 +12,6 @@
 - [agent_team_setup](../modules/agent_team_setup.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [authority](../modules/authority.md)
-- [autonomy_canonical](../modules/autonomy_canonical.md)
 - [config](../modules/config.md)
 - [routers_agent](../modules/routers_agent.md)
 - [schemas_agent](../modules/schemas_agent.md)
@@ -37,24 +36,24 @@ sequenceDiagram
     participant p8 as get_settings
     participant p9 as AgentCapabilitiesResponse
     participant p10 as actor_scopes
-    participant p11 as AgentTeamSetupService.membership_boundary
-    participant p12 as AgentRoutingTopologyReadiness.unavailable
-    participant p13 as AgentRoutingTopologyReadiness.ready
-    participant p14 as AgentRoutingTopologyReadiness.not_ready
-    participant p15 as AgentTeamSetupService._status_for_topology
-    participant p16 as _member_contract_outdated
-    participant p17 as AgentTeamSetupService._handoff
-    participant p18 as AgentTeamSetupService._runtime_identity_status
-    participant p19 as _canonical_json
-    participant p20 as ensure_agent_team_secret_free
-    participant p21 as AgentRoutingRolloutMode
-    participant p22 as internal_authority
-    participant p23 as AgentRoutingRolloutStatus
-    participant p24 as AgentTeamSetupService._topology
-    participant p25 as AgentRoutingTopologyReadiness
-    participant p26 as Settings
-    participant p27 as AgentTeamMembershipBoundary
-    participant p28 as load_stored_agent_team_master
+    participant p11 as AgentTeamSetupService.readiness_gate
+    participant p12 as AgentTeamSetupService.membership_boundary
+    participant p13 as AgentTeamSetupService._whole_team_readiness
+    participant p14 as AgentTeamSetupService._project_allows
+    participant p15 as AgentRoutingTopologyReadiness.unavailable
+    participant p16 as AgentRoutingTopologyReadiness.ready
+    participant p17 as AgentRoutingTopologyReadiness.not_ready
+    participant p18 as AgentTeamSetupService._status_for_topology
+    participant p19 as _iso_or_none
+    participant p20 as _member_contract_outdated
+    participant p21 as AgentTeamSetupService._handoff
+    participant p22 as AgentTeamSetupService._runtime_identity_status
+    participant p23 as _canonical_json
+    participant p24 as AgentRoutingRolloutMode
+    participant p25 as internal_authority
+    participant p26 as AgentRoutingRolloutStatus
+    participant p27 as readiness_refusal_context
+    participant p28 as AgentRoutingTopologyReadiness
     participant p29 as getattr
     participant p30 as (…).status
     p0->>p1: AgentRoutingRolloutService.status
@@ -67,45 +66,45 @@ sequenceDiagram
     p0->>p8: get_settings
     p0->>p9: AgentCapabilitiesResponse
     p0->>p10: actor_scopes
-    p2->>p11: AgentTeamSetupService.membership_boundary
-    p2->>p12: AgentRoutingTopologyReadiness.unavailable
-    p2->>p13: AgentRoutingTopologyReadiness.ready
-    p2->>p14: AgentRoutingTopologyReadiness.not_ready
-    p11->>p15: AgentTeamSetupService._status_for_topology
-    p15->>p16: _member_contract_outdated
-    p15->>p17: AgentTeamSetupService._handoff
-    p15->>p18: AgentTeamSetupService._runtime_identity_status
-    p15->>p19: _canonical_json
-    p19->>p20: ensure_agent_team_secret_free
-    p1->>p21: AgentRoutingRolloutMode
-    p3->>p22: internal_authority
-    p1->>p23: AgentRoutingRolloutStatus
-    p2->>p24: AgentTeamSetupService._topology
-    p12->>p25: AgentRoutingTopologyReadiness
-    p8->>p26: Settings
-    p11->>p27: AgentTeamMembershipBoundary
-    p15->>p28: load_stored_agent_team_master
+    p2->>p11: AgentTeamSetupService.readiness_gate
+    p11->>p12: AgentTeamSetupService.membership_boundary
+    p11->>p13: AgentTeamSetupService._whole_team_readiness
+    p11->>p14: AgentTeamSetupService._project_allows
+    p11->>p15: AgentRoutingTopologyReadiness.unavailable
+    p13->>p16: AgentRoutingTopologyReadiness.ready
+    p13->>p17: AgentRoutingTopologyReadiness.not_ready
+    p12->>p18: AgentTeamSetupService._status_for_topology
+    p12->>p19: _iso_or_none
+    p18->>p20: _member_contract_outdated
+    p18->>p21: AgentTeamSetupService._handoff
+    p18->>p22: AgentTeamSetupService._runtime_identity_status
+    p18->>p23: _canonical_json
+    p1->>p24: AgentRoutingRolloutMode
+    p3->>p25: internal_authority
+    p1->>p26: AgentRoutingRolloutStatus
+    p11->>p27: readiness_refusal_context
+    p15->>p28: AgentRoutingTopologyReadiness
     p0-->>p29: getattr(service, 'db', None)
     p0-->>p30: (…).status
 ```
 
-> Call sequence diagram shows 30 of 262 interactions; 232 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 264 interactions; 234 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 80 (79 omitted); unresolved 1 of 114 (113 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 75 (74 omitted); unresolved 1 of 107 (106 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
 | `backend/app/services/agent_routing_rollout.py:AgentRoutingRolloutService.status` | 2 | [backend/app/services/agent_routing_rollout.py](../modules/agent_routing_rollout.md) | internal | 2 |
-| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService.membership_boundary` | 9 | - | unresolved | 4 |
-| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService.membership_boundary` | 9 | - | external | 3 |
-| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService.membership_boundary` | 9 | [backend/app/services/agent_team_setup_service.py](../modules/agent_team_setup_service.md) | internal | 1 |
-| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService._topology` | 15 | - | unresolved | 16 |
-| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService._topology` | 15 | - | external | 5 |
-| `backend/app/schemas/agent_team_setup.py:load_stored_agent_team_master` | 38 | - | unresolved | 1 |
-| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService._status_for_topology` | 37 | [backend/app/services/agent_team_setup_service.py](../modules/agent_team_setup_service.md) | internal | 6 |
-> Omission summary shows 8 of 48 groups; 40 further groups are not expanded here. Counts above include all omitted interactions.
+| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService.membership_boundary` | 10 | - | unresolved | 4 |
+| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService.membership_boundary` | 10 | - | external | 8 |
+| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService.membership_boundary` | 10 | [backend/app/services/agent_team_setup_service.py](../modules/agent_team_setup_service.md) | internal | 3 |
+| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService._topology` | 16 | - | unresolved | 16 |
+| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService._topology` | 16 | - | external | 5 |
+| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService._status_for_topology` | 38 | [backend/app/schemas/agent_team_setup.py](../modules/agent_team_setup.md) | internal | 12 |
+| `backend/app/schemas/agent_team_setup.py:load_stored_agent_team_master` | 39 | - | unresolved | 1 |
+> Omission summary shows 8 of 51 groups; 43 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -118,9 +117,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 69; effect analysis evaluated: 39, partial: 2, unavailable: 28. Counts include steps omitted from the displayed trace.
+Source steps: 83; effect analysis evaluated: 54, partial: 1, unavailable: 28. Counts include steps omitted from the displayed trace.
 
-Collector observations for 41 source steps with known totals: observed: 233, emitted: 205, omitted: 28. Unavailable totals are excluded.
+Collector observations for 55 source steps with known totals: observed: 258, emitted: 244, omitted: 14. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -135,11 +134,11 @@ Collector observations for 41 source steps with known totals: observed: 233, emi
 | `AgentRoutingRolloutStatus` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
 | `AgentRoutingRolloutStatus` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
 | `AgentRoutingRolloutService` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
-| `AgentTeamSetupService.routing_readiness` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `AgentTeamSetupService.routing_readiness` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `AgentTeamSetupService.readiness_gate` | `available` | `evaluated` | `available` | `15` | `15` | `0` |
 | `AgentTeamSetupService.membership_boundary` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
 | `self.db.execute (backend/app/services/agen…rvice.membership_boundary)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `select(…).join(…).where` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `select(…).join` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 
 ```mermaid
 flowchart LR
@@ -151,10 +150,10 @@ flowchart LR
     s6["6. AgentRoutingRolloutStatus"]
     s7["7. AgentRoutingRolloutService"]
     s8["8. AgentTeamSetupService.routing_readiness"]
-    s9["9. AgentTeamSetupService.membership_boundary"]
-    s10["10. self.db.execute (backend/app/services/agen…rvice.membership_boundary)"]
-    s11["11. select(…).join(…).where"]
-    s12["12. select(…).join"]
+    s9["9. AgentTeamSetupService.readiness_gate"]
+    s10["10. AgentTeamSetupService.membership_boundary"]
+    s11["11. self.db.execute (backend/app/services/agen…rvice.membership_boundary)"]
+    s12["12. select(…).join(…).where"]
     s1 -->|"AgentRoutingRolloutService.status(data not statically known)"| s2
     s2 -->|"AgentRoutingRolloutMode(self.settings.model_aware_routing_mode)"| s3
     s2 -->|"AgentRoutingRolloutStatus(…)"| s4
@@ -162,10 +161,10 @@ flowchart LR
     s2 -->|"AgentRoutingRolloutStatus(configured_mode=configured, effective_mode=configured, feature_advertised=True, blocker_codes=(...), topology_readiness=readiness)"| s6
     s1 -->|"AgentRoutingRolloutService(data not statically known)"| s7
     s1 -->|"AgentTeamSetupService.routing_readiness(actor)"| s8
-    s8 -->|"AgentTeamSetupService.membership_boundary(actor.id)"| s9
-    s9 -. "self.db.execute (backend/app/services/agen…rvice.membership_boundary)(...)" .-> s10
-    s9 -. "select(…).join(…).where(..., ...)" .-> s11
-    s9 -. "select(…).join(AgentTeamTopologyMember, ...)" .-> s12
+    s8 -->|"AgentTeamSetupService.readiness_gate(actor, observed_boundaries=observed_boundaries)"| s9
+    s9 -->|"AgentTeamSetupService.membership_boundary(principal.id)"| s10
+    s10 -. "self.db.execute (backend/app/services/agen…rvice.membership_boundary)(...)" .-> s11
+    s10 -. "select(…).join(…).where(..., ...)" .-> s12
     b0["mutation features.extend"]
     s1 -. "mutation features.extend" .-> b0
     b1["mutation features.append"]
@@ -179,6 +178,7 @@ flowchart LR
     click s7 "../modules/agent_routing_rollout.md"
     click s8 "../modules/agent_team_setup_service.md"
     click s9 "../modules/agent_team_setup_service.md"
+    click s10 "../modules/agent_team_setup_service.md"
     classDef boundary stroke:#b45309,stroke-dasharray: 4 2
     class b0 boundary
     class b1 boundary
@@ -195,11 +195,11 @@ flowchart LR
 | `AgentRoutingRolloutStatus` | - | - | - | - |
 | `AgentRoutingRolloutStatus` | - | - | - | - |
 | `AgentRoutingRolloutService` | - | - | - | - |
-| `AgentTeamSetupService.routing_readiness` | `actor: AgentActor`, `observed_boundaries: dict[int, AgentTeamMembershipBoundary \| None] \| None` | - | `observed_boundaries[...]` | `AgentRoutingTopologyReadiness.unavailable(...)`, `AgentRoutingTopologyReadiness.ready(...)`, `AgentRoutingTopologyReadiness.not_ready(...)` |
+| `AgentTeamSetupService.routing_readiness` | `actor: AgentActor`, `observed_boundaries: dict[int, AgentTeamMembershipBoundary \| None] \| None` | - | - | `readiness` |
+| `AgentTeamSetupService.readiness_gate` | `principal: AgentActor`, `verifier_actor_id: int \| None`, `project_id: int \| None`, `action: str`, `observed_boundaries: dict[int, AgentTeamMembershipBoundary \| None] \| None` | `CALLER_PRESENCE_BLOCKERS`, `AgentTeamMemberLifecycle` | `observed_boundaries[...]` | `(...)`, `(...)`, `(...)`, `(...)`, `(...)`, `(...)`, `(...)` |
 | `AgentTeamSetupService.membership_boundary` | `actor_id: int` | `AgentTeamTopologyMember`, `AgentTeamTopology` | - | `None`, `None`, `AgentTeamMembershipBoundary(...)` |
 | `self.db.execute (backend/app/services/agen…rvice.membership_boundary)` | - | - | - | - |
 | `select(…).join(…).where` | - | - | - | - |
-| `select(…).join` | - | - | - | - |
 
 ### Call data
 
@@ -212,10 +212,10 @@ flowchart LR
 | AgentRoutingRolloutService.status | AgentRoutingRolloutStatus | 273 | `AgentRoutingRolloutStatus(configured_mode=configured, effective_mode=configured, feature_advertised=True, blocker_codes=(...), topology_readiness=readiness)` |
 | get_agent_capabilities | AgentRoutingRolloutService | 415 | `AgentRoutingRolloutService(data not statically known)` |
 | get_agent_capabilities | AgentTeamSetupService.routing_readiness | 417 | `AgentTeamSetupService(service.db).routing_readiness(actor)` |
-| AgentTeamSetupService.routing_readiness | AgentTeamSetupService.membership_boundary | 3882 | `self.membership_boundary(actor.id)` |
-| AgentTeamSetupService.membership_boundary | self.db.execute (backend/app/services/agen…rvice.membership_boundary) | 3812 | `self.db.execute(...)` |
-| AgentTeamSetupService.membership_boundary | select(…).join(…).where | 3813 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where(..., ...)` |
-| AgentTeamSetupService.membership_boundary | select(…).join | 3813 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, ...)` |
+| AgentTeamSetupService.routing_readiness | AgentTeamSetupService.readiness_gate | 4046 | `self.readiness_gate(actor, observed_boundaries=observed_boundaries)` |
+| AgentTeamSetupService.readiness_gate | AgentTeamSetupService.membership_boundary | 3986 | `self.membership_boundary(principal.id)` |
+| AgentTeamSetupService.membership_boundary | self.db.execute (backend/app/services/agen…rvice.membership_boundary) | 3855 | `self.db.execute(...)` |
+| AgentTeamSetupService.membership_boundary | select(…).join(…).where | 3856 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where(..., ...)` |
 
 ### Boundary effects
 
@@ -228,9 +228,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `AgentTeamSetupService.membership_boundary` | `self.db.execute` | 3812 |
-| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where` | 3813 |
-| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join` | 3813 |
+| unresolved_call | `AgentTeamSetupService.membership_boundary` | `self.db.execute` | 3855 |
+| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where` | 3856 |
 | step_limit | `get_agent_capabilities` | `first 12 steps` | 0 |
 | truncated_flow | `get_agent_capabilities` | `depth limit` | 0 |
 

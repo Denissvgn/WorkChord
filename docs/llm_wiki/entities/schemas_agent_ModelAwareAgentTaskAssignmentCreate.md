@@ -128,4 +128,4 @@ flowchart LR
 | `test_focus_returns_named_worker_blockers_and_selection_on_rest_and_mcp` | call | [test_routing_preview_focus](../modules/test_routing_preview_focus.md) | 1 |
 | `test_team_pm_preview_excludes_other_teams_rows_on_rest_and_mcp` | call | [test_routing_preview_team_scope](../modules/test_routing_preview_team_scope.md) | 1 |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
