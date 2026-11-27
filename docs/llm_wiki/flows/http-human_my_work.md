@@ -2,7 +2,7 @@
 
 **Entry point:** `human_my_work` (`http`)
 **Source:** [routers_task_domain](../modules/routers_task_domain.md)
-**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 26 more
+**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 27 more
 
 **Complete modules touched:**
 
@@ -30,6 +30,7 @@
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_detail](../modules/task_detail.md)
 - [task_detail_service](../modules/task_detail_service.md)
+- [task_display_state](../modules/task_display_state.md)
 - [task_domain_service](../modules/task_domain_service.md)
 - [task_postponement_service](../modules/task_postponement_service.md)
 - [task_replacement_service](../modules/task_replacement_service.md)
@@ -47,68 +48,68 @@ sequenceDiagram
     participant p1 as TaskDetailService.my_work
     participant p2 as TaskDetailService
     participant p3 as local_work_profile
-    participant p4 as require_project
-    participant p5 as TaskDetailService.page
-    participant p6 as TaskDetailService._policy_flags
-    participant p7 as TaskDomainService.allowed_actions
-    participant p8 as TaskDomainService._policy_task
-    participant p9 as get_settings
-    participant p10 as DeliveryDependencyService.ready
-    participant p11 as action_projection
-    participant p12 as replaced_by
-    participant p13 as replacing
-    participant p14 as TaskBriefService.require_review
-    participant p15 as postponement_actions
-    participant p16 as AgentWorkService._start_blockers
-    participant p17 as window_authority_matches
-    participant p18 as DeliveryDependencyService.projection
-    participant p19 as require_acceptable
-    participant p20 as different_publisher_required
-    participant p21 as recovery_attestation_hint
-    participant p22 as AgentWorkService._resolve_rollout
-    participant p23 as AgentWorkService._shadow_handoff
-    participant p24 as AgentWorkService._selection_pending
-    participant p25 as AgentWorkService._is_model_aware_assignment
-    participant p26 as AgentWorkService._validate_assignment_actor
-    participant p27 as sha256_hex
-    participant p28 as AgentWorkService._working_today
+    participant p4 as TaskDetailService.references
+    participant p5 as require_project
+    participant p6 as TaskDetailService.page
+    participant p7 as TaskDetailService._policy_flags
+    participant p8 as TaskDomainService.allowed_actions
+    participant p9 as TaskDomainService._policy_task
+    participant p10 as get_settings
+    participant p11 as displayed_state_expression
+    participant p12 as DeliveryDependencyService.ready
+    participant p13 as action_projection
+    participant p14 as replaced_by
+    participant p15 as replacing
+    participant p16 as TaskBriefService.require_review
+    participant p17 as postponement_actions
+    participant p18 as AgentWorkService._start_blockers
+    participant p19 as window_authority_matches
+    participant p20 as DeliveryDependencyService.projection
+    participant p21 as require_acceptable
+    participant p22 as different_publisher_required
+    participant p23 as recovery_attestation_hint
+    participant p24 as AgentWorkService._resolve_rollout
+    participant p25 as AgentWorkService._shadow_handoff
+    participant p26 as AgentWorkService._selection_pending
+    participant p27 as AgentWorkService._is_model_aware_assignment
+    participant p28 as AgentWorkService._validate_assignment_actor
     participant p29 as HTTPException
     participant p30 as self.db.info.get (backend/app/services/task…TaskDetailService.my_work)
     p0->>p1: TaskDetailService.my_work
     p0->>p2: TaskDetailService
     p1->>p3: local_work_profile
-    p1->>p4: require_project
-    p1->>p5: TaskDetailService.page
-    p1->>p6: TaskDetailService._policy_flags
-    p1->>p7: TaskDomainService.allowed_actions
-    p7->>p8: TaskDomainService._policy_task
-    p4->>p9: get_settings
-    p7->>p10: DeliveryDependencyService.ready
-    p7->>p11: action_projection
-    p7->>p12: replaced_by
-    p7->>p13: replacing
-    p7->>p14: TaskBriefService.require_review
-    p7->>p15: postponement_actions
-    p7->>p16: AgentWorkService._start_blockers
-    p16->>p17: window_authority_matches
-    p10->>p18: DeliveryDependencyService.projection
-    p14->>p19: require_acceptable
-    p14->>p20: different_publisher_required
-    p16->>p21: recovery_attestation_hint
-    p16->>p22: AgentWorkService._resolve_rollout
-    p16->>p23: AgentWorkService._shadow_handoff
-    p16->>p24: AgentWorkService._selection_pending
-    p16->>p25: AgentWorkService._is_model_aware_assignment
-    p16->>p26: AgentWorkService._validate_assignment_actor
-    p14->>p27: sha256_hex
-    p16->>p28: AgentWorkService._working_today
+    p1->>p4: TaskDetailService.references
+    p1->>p5: require_project
+    p1->>p6: TaskDetailService.page
+    p1->>p7: TaskDetailService._policy_flags
+    p1->>p8: TaskDomainService.allowed_actions
+    p8->>p9: TaskDomainService._policy_task
+    p5->>p10: get_settings
+    p4->>p11: displayed_state_expression
+    p8->>p12: DeliveryDependencyService.ready
+    p8->>p13: action_projection
+    p8->>p14: replaced_by
+    p8->>p15: replacing
+    p8->>p16: TaskBriefService.require_review
+    p8->>p17: postponement_actions
+    p8->>p18: AgentWorkService._start_blockers
+    p18->>p19: window_authority_matches
+    p12->>p20: DeliveryDependencyService.projection
+    p16->>p21: require_acceptable
+    p16->>p22: different_publisher_required
+    p18->>p23: recovery_attestation_hint
+    p18->>p24: AgentWorkService._resolve_rollout
+    p18->>p25: AgentWorkService._shadow_handoff
+    p18->>p26: AgentWorkService._selection_pending
+    p18->>p27: AgentWorkService._is_model_aware_assignment
+    p18->>p28: AgentWorkService._validate_assignment_actor
     p0-->>p29: HTTPException(422, detail=[...])
     p1-->>p30: self.db.info.get (backend/app/services/task…TaskDetailService.my_work)('authority')
 ```
 
-> Call sequence diagram shows 30 of 770 interactions; 740 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 779 interactions; 749 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 187 (186 omitted); unresolved 1 of 398 (397 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 190 (189 omitted); unresolved 1 of 402 (401 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -119,10 +120,10 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/identity_service.py:local_work_profile` | 4 | - | unresolved | 1 |
 | `backend/app/services/task_detail_service.py:TaskDetailService.my_work` | 2 | - | unresolved | 16 |
 | `backend/app/services/task_detail_service.py:TaskDetailService.my_work` | 2 | - | external | 6 |
-| `backend/app/services/task_detail_service.py:TaskDetailService.my_work` | 2 | [backend/app/services/task_detail_service.py](../modules/task_detail_service.md) | internal | 2 |
-| `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | unresolved | 9 |
+| `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | unresolved | 10 |
 | `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | external | 2 |
-> Omission summary shows 8 of 162 groups; 154 further groups are not expanded here. Counts above include all omitted interactions.
+| `backend/app/services/task_display_state.py:displayed_state_expression` | 16 | - | external | 1 |
+> Omission summary shows 8 of 168 groups; 160 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -135,9 +136,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 186; effect analysis evaluated: 141, partial: 6, unavailable: 39. Counts include steps omitted from the displayed trace.
+Source steps: 188; effect analysis evaluated: 143, partial: 6, unavailable: 39. Counts include steps omitted from the displayed trace.
 
-Collector observations for 147 source steps with known totals: observed: 907, emitted: 860, omitted: 47. Unavailable totals are excluded.
+Collector observations for 149 source steps with known totals: observed: 915, emitted: 868, omitted: 47. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -211,17 +212,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| human_my_work | TaskDetailService.my_work | 161 | `TaskDetailService(db).my_work(limit=limit, after_id=after_id, project_id=project_id, iteration_id=iteration_id, backlog_only=backlog_only)` |
-| TaskDetailService.my_work | self.db.info.get (backend/app/services/task…TaskDetailService.my_work) | 108 | `self.db.info.get('authority')` |
-| TaskDetailService.my_work | local_work_profile | 115 | `local_work_profile(self.db, authority.profile_id)` |
+| human_my_work | TaskDetailService.my_work | 162 | `TaskDetailService(db).my_work(limit=limit, after_id=after_id, project_id=project_id, iteration_id=iteration_id, backlog_only=backlog_only)` |
+| TaskDetailService.my_work | self.db.info.get (backend/app/services/task…TaskDetailService.my_work) | 111 | `self.db.info.get('authority')` |
+| TaskDetailService.my_work | local_work_profile | 118 | `local_work_profile(self.db, authority.profile_id)` |
 | local_work_profile | internal_authority | 59 | `internal_authority(db)` |
 | internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 113 | `db.info.get('authority_internal', False)` |
 | local_work_profile | db.get (backend/app/services/iden…ice.py:local_work_profile) | 60 | `db.get(TeamMemberProfile, profile_id)` |
-| TaskDetailService.my_work | select(…).where (backend/app/services/task…TaskDetailService.my_work) | 121 | `select(TeamMember.id).where(...)` |
-| TaskDetailService.my_work | select (backend/app/services/task…TaskDetailService.my_work) | 121 | `select(TeamMember.id)` |
-| TaskDetailService.my_work | self.references().where | 122 | `self.references().where(or_(...), or_(...), Task.canceled_at.is_(...), Task.is_summary.is_(...))` |
-| TaskDetailService.my_work | TaskDetailService.references | 122 | `self.references(data not statically known)` |
-| TaskDetailService.references | select(…).outerjoin(…).outerjoin | 39 | `select(Task.id, Task.title, Task.version, Task.status, Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin(Iteration, ...)` |
+| TaskDetailService.my_work | select(…).where (backend/app/services/task…TaskDetailService.my_work) | 124 | `select(TeamMember.id).where(...)` |
+| TaskDetailService.my_work | select (backend/app/services/task…TaskDetailService.my_work) | 124 | `select(TeamMember.id)` |
+| TaskDetailService.my_work | self.references().where | 125 | `self.references().where(or_(...), or_(...), Task.canceled_at.is_(...), Task.is_summary.is_(...))` |
+| TaskDetailService.my_work | TaskDetailService.references | 125 | `self.references(data not statically known)` |
+| TaskDetailService.references | select(…).outerjoin(…).outerjoin | 40 | `select(Task.id, Task.title, Task.version, Task.status, displayed_state_expression(id_column=Task.id, status_column=Task.status, canceled_at_column=Task.canceled_at).label('displayed_state'), Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin(Iteration, ...)` |
 
 ### Boundary effects
 
@@ -231,13 +232,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `TaskDetailService.my_work` | `self.db.info.get` | 108 |
+| unresolved_call | `TaskDetailService.my_work` | `self.db.info.get` | 111 |
 | unresolved_call | `internal_authority` | `db.info.get` | 113 |
 | unresolved_call | `local_work_profile` | `db.get` | 60 |
-| unresolved_call | `TaskDetailService.my_work` | `select(TeamMember.id).where` | 121 |
-| external_call | `TaskDetailService.my_work` | `select` | 121 |
-| unresolved_call | `TaskDetailService.my_work` | `self.references().where` | 122 |
-| unresolved_call | `TaskDetailService.references` | `select(Task.id, Task.title, Task.version, Task.status, Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin` | 39 |
+| unresolved_call | `TaskDetailService.my_work` | `select(TeamMember.id).where` | 124 |
+| external_call | `TaskDetailService.my_work` | `select` | 124 |
+| unresolved_call | `TaskDetailService.my_work` | `self.references().where` | 125 |
+| unresolved_call | `TaskDetailService.references` | `select(Task.id, Task.title, Task.version, Task.status, displayed_state_expression(id_column=Task.id, status_column=Task.status, canceled_at_column=Task.canceled_at).label('displayed_state'), Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin` | 40 |
 | step_limit | `human_my_work` | `first 12 steps` | 0 |
 | truncated_flow | `human_my_work` | `depth limit` | 0 |
 

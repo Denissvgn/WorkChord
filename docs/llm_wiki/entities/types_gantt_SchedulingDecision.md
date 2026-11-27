@@ -1,6 +1,6 @@
 # SchedulingDecision
 
-**Location:** `frontend/src/types/gantt.ts:166`
+**Location:** `frontend/src/types/gantt.ts:168`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

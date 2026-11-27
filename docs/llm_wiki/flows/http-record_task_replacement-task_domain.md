@@ -112,7 +112,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| record_task_replacement | domain_result | 375 | `domain_result(...)` |
+| record_task_replacement | domain_result | 376 | `domain_result(...)` |
 | domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
@@ -120,8 +120,8 @@ flowchart LR
 | domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 59 | `str(exc)` |
 | domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| record_task_replacement | TaskReplacementService(…).record | 375 | `TaskReplacementService(db).record(task_id, data)` |
-| record_task_replacement | TaskReplacementService | 375 | `TaskReplacementService(db)` |
+| record_task_replacement | TaskReplacementService(…).record | 376 | `TaskReplacementService(db).record(task_id, data)` |
+| record_task_replacement | TaskReplacementService | 376 | `TaskReplacementService(db)` |
 
 ### Boundary effects
 
@@ -136,7 +136,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
 | external_call | `domain_result` | `HTTPException` | 61 |
-| unresolved_call | `record_task_replacement` | `TaskReplacementService(db).record` | 375 |
+| unresolved_call | `record_task_replacement` | `TaskReplacementService(db).record` | 376 |
 
 ## Behavior
 

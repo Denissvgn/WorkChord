@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1896,
+      "entities": 1898,
       "flows": 643,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1207,
-      "workflows": 247
+      "modules": 1209,
+      "workflows": 250
     },
     "dependency_architecture": 2,
-    "total": 4010
+    "total": 4017
   },
   "dependency_pages": {
     "count": 2,
@@ -1351,25 +1351,25 @@
             },
             {
               "kind": "external_call",
-              "line": 181,
+              "line": 187,
               "step": "scoped_metric_tasks",
               "target": "select"
             },
             {
               "kind": "unresolved_call",
-              "line": 183,
+              "line": 189,
               "step": "scoped_metric_tasks",
               "target": "statement.where"
             },
             {
               "kind": "unresolved_call",
-              "line": 185,
+              "line": 191,
               "step": "scoped_metric_tasks",
               "target": "statement.where"
             },
             {
               "kind": "unresolved_call",
-              "line": 186,
+              "line": 192,
               "step": "scoped_metric_tasks",
               "target": "(await db.scalars(statement.order_by(Task.id).limit(MAX_PROJECT_TREE_TASKS + 1))).all"
             },
@@ -3008,7 +3008,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 500,
+          "step_count": 502,
           "truncated": true
         }
       },
@@ -3947,7 +3947,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 233,
+              "line": 234,
               "step": "create_backlog_task",
               "target": "HTTPException"
             },
@@ -3983,7 +3983,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 234,
+              "line": 235,
               "step": "create_backlog_task",
               "target": "TaskService(db).create"
             },
@@ -4012,7 +4012,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 149,
+          "step_count": 151,
           "truncated": false
         }
       },
@@ -6484,7 +6484,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 173,
+              "line": 176,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "seen.add"
@@ -6492,7 +6492,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 177,
+              "line": 180,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "ancestors.append"
@@ -6531,13 +6531,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 154,
+              "line": 157,
               "step": "TaskDetailService.detail",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 154,
+              "line": 157,
               "step": "TaskDetailService.detail",
               "target": "select(Task).where(Task.id == task_id).options"
             },
@@ -6569,9 +6569,10 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py",
             "backend/app/schemas/task_detail.py",
+            "backend/app/services/task_display_state.py",
             "backend/app/services/task_postponement_service.py"
           ],
-          "step_count": 282,
+          "step_count": 293,
           "truncated": false
         }
       },
@@ -7748,7 +7749,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 208,
+              "line": 218,
               "step": "DeliveryMetricsService.report",
               "step_index": 10,
               "target": "recovery.append"
@@ -7756,7 +7757,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 211,
+              "line": 221,
               "step": "DeliveryMetricsService.report",
               "step_index": 10,
               "target": "review.sort"
@@ -7764,7 +7765,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 212,
+              "line": 222,
               "step": "DeliveryMetricsService.report",
               "step_index": 10,
               "target": "recovery.sort"
@@ -7829,7 +7830,7 @@
             "backend/app/query_limits.py",
             "backend/app/schemas/delivery_metrics.py"
           ],
-          "step_count": 187,
+          "step_count": 192,
           "truncated": false
         }
       },
@@ -8634,7 +8635,7 @@
             "backend/app/schemas/delivery_metrics.py",
             "backend/app/schemas/execution_usage.py"
           ],
-          "step_count": 302,
+          "step_count": 307,
           "truncated": false
         }
       },
@@ -8990,9 +8991,10 @@
             "backend/app/schemas/team.py",
             "backend/app/services/work_metrics.py",
             "backend/app/utils/time.py",
+            "backend/app/services/task_display_state.py",
             "backend/app/commands.py"
           ],
-          "step_count": 408,
+          "step_count": 433,
           "truncated": false
         }
       },
@@ -12316,13 +12318,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 538,
+              "line": 547,
               "step": "get_project_summary",
               "target": "service.get_summary"
             },
             {
               "kind": "external_call",
-              "line": 540,
+              "line": 549,
               "step": "get_project_summary",
               "target": "HTTPException"
             },
@@ -12384,14 +12386,32 @@
           "boundary_effects": [],
           "gaps": [
             {
+              "kind": "external_call",
+              "line": 28,
+              "step": "validate_state_filter",
+              "target": "ValueError"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 521,
+              "line": 28,
+              "step": "validate_state_filter",
+              "target": "', '.join"
+            },
+            {
+              "kind": "external_call",
+              "line": 529,
+              "step": "get_project_tasks",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 530,
               "step": "get_project_tasks",
               "target": "service.get_tasks"
             },
             {
               "kind": "external_call",
-              "line": 523,
+              "line": 532,
               "step": "get_project_tasks",
               "target": "HTTPException"
             },
@@ -12400,12 +12420,6 @@
               "line": 35,
               "step": "normalize_language",
               "target": "str(value or '').strip().lower"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 35,
-              "step": "normalize_language",
-              "target": "str(value or '').strip"
             },
             {
               "kind": "step_limit",
@@ -12428,6 +12442,7 @@
         "flow": {
           "modules_touched": [
             "backend/app/routers/projects.py",
+            "backend/app/services/task_display_state.py",
             "backend/app/services/language_service.py",
             "backend/app/services/system_settings_service.py",
             "backend/app/utils/url_policy.py",
@@ -12442,7 +12457,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 205,
+          "step_count": 212,
           "truncated": true
         }
       },
@@ -13340,19 +13355,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 1473,
+              "line": 1474,
               "step": "AgentService.get_task_timeline",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 1473,
+              "line": 1474,
               "step": "AgentService.get_task_timeline",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 1473,
+              "line": 1474,
               "step": "AgentService.get_task_timeline",
               "target": "select"
             },
@@ -14459,7 +14474,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 108,
+              "line": 111,
               "step": "TaskDetailService.my_work",
               "target": "self.db.info.get"
             },
@@ -14477,27 +14492,27 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 121,
+              "line": 124,
               "step": "TaskDetailService.my_work",
               "target": "select(TeamMember.id).where"
             },
             {
               "kind": "external_call",
-              "line": 121,
+              "line": 124,
               "step": "TaskDetailService.my_work",
               "target": "select"
             },
             {
               "kind": "unresolved_call",
-              "line": 122,
+              "line": 125,
               "step": "TaskDetailService.my_work",
               "target": "self.references().where"
             },
             {
               "kind": "unresolved_call",
-              "line": 39,
+              "line": 40,
               "step": "TaskDetailService.references",
-              "target": "select(Task.id, Task.title, Task.version, Task.status, Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin"
+              "target": "select(Task.id, Task.title, Task.version, Task.status, displayed_state_expression(id_column=Task.id, status_column=Task.status, canceled_at_column=Task.canceled_at).label('displayed_state'), Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin"
             },
             {
               "kind": "step_limit",
@@ -14523,6 +14538,7 @@
             "backend/app/services/task_detail_service.py",
             "backend/app/services/identity_service.py",
             "backend/app/authority.py",
+            "backend/app/services/task_display_state.py",
             "backend/app/config.py",
             "backend/app/schemas/task_detail.py",
             "backend/app/services/task_domain_service.py",
@@ -14549,7 +14565,7 @@
             "backend/app/services/agent_service.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 771,
+          "step_count": 780,
           "truncated": true
         }
       },
@@ -18440,9 +18456,9 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 39,
+              "line": 40,
               "step": "TaskDetailService.references",
-              "target": "select(Task.id, Task.title, Task.version, Task.status, Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin"
+              "target": "select(Task.id, Task.title, Task.version, Task.status, displayed_state_expression(id_column=Task.id, status_column=Task.status, canceled_at_column=Task.canceled_at).label('displayed_state'), Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin"
             },
             {
               "kind": "step_limit",
@@ -18460,12 +18476,13 @@
           "modules_touched": [
             "backend/app/routers/task_domain.py",
             "backend/app/services/task_detail_service.py",
+            "backend/app/services/task_display_state.py",
             "backend/app/authority.py",
             "backend/app/config.py",
             "backend/app/sql_semantics.py",
             "backend/app/schemas/task_detail.py"
           ],
-          "step_count": 78,
+          "step_count": 100,
           "truncated": false
         }
       },
@@ -19004,19 +19021,19 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 119,
+              "line": 120,
               "step": "metric_matches",
               "target": "HTTPException"
             },
             {
               "kind": "external_call",
-              "line": 120,
+              "line": 121,
               "step": "metric_matches",
               "target": "sum"
             },
             {
               "kind": "external_call",
-              "line": 121,
+              "line": 122,
               "step": "metric_matches",
               "target": "HTTPException"
             },
@@ -19070,10 +19087,11 @@
             "backend/app/query_limits.py",
             "backend/app/utils/time.py",
             "backend/app/authority.py",
+            "backend/app/services/task_display_state.py",
             "backend/app/commands.py",
             "backend/app/config.py"
           ],
-          "step_count": 322,
+          "step_count": 347,
           "truncated": false
         }
       },
@@ -19417,7 +19435,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 178,
+          "step_count": 180,
           "truncated": false
         }
       },
@@ -19950,7 +19968,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 411,
+              "line": 412,
               "step": "postpone_task",
               "target": "TaskPostponementService(db).postpone"
             }
@@ -20610,7 +20628,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 418,
+              "line": 419,
               "step": "reactivate_task",
               "target": "TaskPostponementService(db).reactivate"
             }
@@ -21664,7 +21682,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 429,
+              "line": 430,
               "step": "record_owner_decision",
               "target": "ReactivationService(db).record_owner_decision"
             }
@@ -21818,7 +21836,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 262,
+              "line": 263,
               "step": "record_task_progress",
               "target": "TaskBriefService(db).write_progress"
             },
@@ -21847,7 +21865,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 147,
+          "step_count": 149,
           "truncated": false
         }
       },
@@ -21987,7 +22005,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 375,
+              "line": 376,
               "step": "record_task_replacement",
               "target": "TaskReplacementService(db).record"
             }
@@ -22053,7 +22071,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 390,
+              "line": 391,
               "step": "record_task_supersession",
               "target": "TaskReplacementService(db).supersede"
             }
@@ -22695,19 +22713,19 @@
             },
             {
               "kind": "external_call",
-              "line": 181,
+              "line": 187,
               "step": "scoped_metric_tasks",
               "target": "select"
             },
             {
               "kind": "unresolved_call",
-              "line": 183,
+              "line": 189,
               "step": "scoped_metric_tasks",
               "target": "statement.where"
             },
             {
               "kind": "unresolved_call",
-              "line": 185,
+              "line": 191,
               "step": "scoped_metric_tasks",
               "target": "statement.where"
             },
@@ -23088,7 +23106,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 325,
+              "line": 326,
               "step": "restore_backlog",
               "target": "BacklogSnapshotService(db).restore"
             }
@@ -23541,7 +23559,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 268,
+              "line": 269,
               "step": "review_task",
               "target": "TaskBriefService(db).review"
             },
@@ -23570,7 +23588,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 147,
+          "step_count": 149,
           "truncated": false
         }
       },
@@ -25134,55 +25152,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 299,
+              "line": 300,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 299,
+              "line": 300,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 299,
+              "line": 300,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 300,
+              "line": 301,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 301,
+              "line": 302,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 301,
+              "line": 302,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 301,
+              "line": 302,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 301,
+              "line": 302,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 301,
+              "line": 302,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -25324,7 +25342,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 245,
+              "line": 246,
               "step": "task_command",
               "target": "TaskDomainService(db).command"
             },
@@ -25354,7 +25372,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 147,
+          "step_count": 149,
           "truncated": false
         }
       },
@@ -25450,7 +25468,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 173,
+              "line": 176,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "seen.add"
@@ -25458,7 +25476,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 177,
+              "line": 180,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "ancestors.append"
@@ -25497,13 +25515,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 154,
+              "line": 157,
               "step": "TaskDetailService.detail",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 154,
+              "line": 157,
               "step": "TaskDetailService.detail",
               "target": "select(Task).where(Task.id == task_id).options"
             },
@@ -25535,9 +25553,10 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py",
             "backend/app/schemas/task_detail.py",
+            "backend/app/services/task_display_state.py",
             "backend/app/services/task_postponement_service.py"
           ],
-          "step_count": 276,
+          "step_count": 287,
           "truncated": false
         }
       },
@@ -25808,43 +25827,43 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 190,
+              "line": 191,
               "step": "task_migration_diagnostics",
               "target": "(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings().all"
             },
             {
               "kind": "unresolved_call",
-              "line": 190,
+              "line": 191,
               "step": "task_migration_diagnostics",
               "target": "(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings"
             },
             {
               "kind": "unresolved_call",
-              "line": 190,
+              "line": 191,
               "step": "task_migration_diagnostics",
               "target": "db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 190,
+              "line": 191,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 190,
+              "line": 191,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 190,
+              "line": 191,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where"
             },
             {
               "kind": "external_call",
-              "line": 190,
+              "line": 191,
               "step": "task_migration_diagnostics",
               "target": "select"
             },
@@ -25898,25 +25917,25 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 174,
+              "line": 175,
               "step": "task_owner_options",
               "target": "select(TeamMemberProfile.id, TeamMemberProfile.display_name.label('name')).where"
             },
             {
               "kind": "external_call",
-              "line": 174,
+              "line": 175,
               "step": "task_owner_options",
               "target": "select"
             },
             {
               "kind": "unresolved_call",
-              "line": 174,
+              "line": 175,
               "step": "task_owner_options",
               "target": "TeamMemberProfile.display_name.label"
             },
             {
               "kind": "unresolved_call",
-              "line": 175,
+              "line": 176,
               "step": "task_owner_options",
               "target": "db.info.get"
             },
@@ -26039,55 +26058,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 299,
+              "line": 300,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 299,
+              "line": 300,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 299,
+              "line": 300,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 300,
+              "line": 301,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 301,
+              "line": 302,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 301,
+              "line": 302,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 301,
+              "line": 302,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 301,
+              "line": 302,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 301,
+              "line": 302,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -26217,37 +26236,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 200,
+              "line": 201,
               "step": "task_review_queue",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 202,
+              "line": 203,
               "step": "task_review_queue",
               "target": "service.references().where"
             },
             {
               "kind": "unresolved_call",
-              "line": 202,
+              "line": 203,
               "step": "task_review_queue",
               "target": "service.references"
             },
             {
               "kind": "unresolved_call",
-              "line": 202,
+              "line": 203,
               "step": "task_review_queue",
               "target": "Task.canceled_at.is_"
             },
             {
               "kind": "unresolved_call",
-              "line": 202,
+              "line": 203,
               "step": "task_review_queue",
               "target": "Task.is_summary.is_"
             },
             {
               "kind": "external_call",
-              "line": 204,
+              "line": 205,
               "step": "task_review_queue",
               "target": "HTTPException"
             },
@@ -26298,7 +26317,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 173,
+              "line": 176,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "seen.add"
@@ -26306,7 +26325,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 177,
+              "line": 180,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "ancestors.append"
@@ -26345,13 +26364,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 154,
+              "line": 157,
               "step": "TaskDetailService.detail",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 154,
+              "line": 157,
               "step": "TaskDetailService.detail",
               "target": "select(Task).where(Task.id == task_id).options"
             },
@@ -26383,9 +26402,10 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py",
             "backend/app/schemas/task_detail.py",
+            "backend/app/services/task_display_state.py",
             "backend/app/services/task_postponement_service.py"
           ],
-          "step_count": 283,
+          "step_count": 294,
           "truncated": false
         }
       },
@@ -29658,7 +29678,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 251,
+              "line": 252,
               "step": "write_task_brief",
               "target": "TaskBriefService(db).write"
             },
@@ -29687,7 +29707,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 147,
+          "step_count": 149,
           "truncated": false
         }
       },
@@ -30398,7 +30418,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 416,
+          "step_count": 418,
           "truncated": true
         }
       },
@@ -30937,7 +30957,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 636,
+          "step_count": 638,
           "truncated": true
         }
       },
@@ -31115,7 +31135,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 418,
+          "step_count": 420,
           "truncated": true
         }
       },
@@ -33011,7 +33031,7 @@
             "backend/app/schemas/delivery_metrics.py",
             "backend/app/schemas/execution_usage.py"
           ],
-          "step_count": 576,
+          "step_count": 581,
           "truncated": true
         }
       },
@@ -33668,7 +33688,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 848,
+          "step_count": 849,
           "truncated": true
         }
       },
@@ -34039,9 +34059,10 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py",
             "backend/app/schemas/task_detail.py",
+            "backend/app/services/task_display_state.py",
             "backend/app/services/task_postponement_service.py"
           ],
-          "step_count": 542,
+          "step_count": 553,
           "truncated": true
         }
       },
@@ -35281,7 +35302,7 @@
             "backend/app/services/work_metrics.py",
             "backend/app/schemas/task.py"
           ],
-          "step_count": 413,
+          "step_count": 414,
           "truncated": true
         }
       },
@@ -35815,7 +35836,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 793,
+          "step_count": 794,
           "truncated": true
         }
       },
@@ -36538,7 +36559,7 @@
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 1264,
+          "step_count": 1265,
           "truncated": true
         }
       },
@@ -39607,7 +39628,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 416,
+          "step_count": 418,
           "truncated": true
         }
       },
@@ -40230,9 +40251,10 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/release_service.py",
             "backend/app/services/work_metrics.py",
-            "backend/app/query_limits.py"
+            "backend/app/query_limits.py",
+            "backend/app/services/task_display_state.py"
           ],
-          "step_count": 530,
+          "step_count": 549,
           "truncated": true
         }
       },
@@ -41459,7 +41481,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 690,
+          "step_count": 692,
           "truncated": true
         }
       },
@@ -42564,6 +42586,7 @@
             "backend/app/services/calendar_rules.py",
             "backend/app/schemas/calendar.py",
             "backend/app/services/work_metrics.py",
+            "backend/app/services/task_display_state.py",
             "backend/app/services/team_service.py",
             "backend/app/query_limits.py",
             "backend/app/schemas/team.py",
@@ -42571,7 +42594,7 @@
             "backend/app/services/capacity_adjustments.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 720,
+          "step_count": 745,
           "truncated": true
         }
       },
@@ -42919,11 +42942,12 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/project_service.py",
             "backend/app/services/work_metrics.py",
+            "backend/app/services/task_display_state.py",
             "backend/app/query_limits.py",
             "backend/app/schemas/project.py",
             "backend/app/services/request_source_service.py"
           ],
-          "step_count": 650,
+          "step_count": 669,
           "truncated": true
         }
       },
@@ -43010,9 +43034,10 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/release_service.py",
             "backend/app/services/work_metrics.py",
-            "backend/app/query_limits.py"
+            "backend/app/query_limits.py",
+            "backend/app/services/task_display_state.py"
           ],
-          "step_count": 586,
+          "step_count": 605,
           "truncated": true
         }
       },
@@ -43984,6 +44009,7 @@
             "backend/app/utils/time.py",
             "backend/app/models/identity.py",
             "backend/app/mcp_agent_tools.py",
+            "backend/app/services/task_display_state.py",
             "backend/app/services/project_service.py",
             "backend/app/query_limits.py",
             "backend/app/services/work_metrics.py",
@@ -43992,7 +44018,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 515,
+          "step_count": 551,
           "truncated": true
         }
       },
@@ -44255,9 +44281,10 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/release_service.py",
             "backend/app/query_limits.py",
-            "backend/app/services/work_metrics.py"
+            "backend/app/services/work_metrics.py",
+            "backend/app/services/task_display_state.py"
           ],
-          "step_count": 602,
+          "step_count": 621,
           "truncated": true
         }
       },
@@ -50234,7 +50261,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 452,
+              "line": 455,
               "step": "__main__",
               "target": "unittest.main"
             }
@@ -52277,6 +52304,7 @@
         "entities/TaskDetailService.md",
         "entities/TaskDifficultyBand.md",
         "entities/TaskDifficultyScore.md",
+        "entities/TaskDisplayedState.md",
         "entities/TaskDomainService.md",
         "entities/TaskEditDrawerProps.md",
         "entities/TaskEditorAvailability.md",
@@ -52349,6 +52377,7 @@
         "entities/TaskStatusService.md",
         "entities/TaskSubscription.md",
         "entities/TaskSupersessionCreate.md",
+        "entities/TaskTerminalState.md",
         "entities/TaskTextEditorBodyProps.md",
         "entities/TaskTextEditorModalProps.md",
         "entities/TaskTimelineDates.md",
@@ -54170,6 +54199,7 @@
         "modules/task_context_revision_service.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md",
+        "modules/task_display_state.md",
         "modules/task_domain_service.md",
         "modules/task_hierarchy_service.md",
         "modules/task_import_service.md",
@@ -54458,6 +54488,7 @@
         "modules/test_team_pm_dispatch.md",
         "modules/test_team_pm_recovery.md",
         "modules/test_team_topology_read.md",
+        "modules/test_terminal_task_states.md",
         "modules/test_time_entries.md",
         "modules/test_time_reports.md",
         "modules/test_transfer_catalog.md",
@@ -54723,6 +54754,7 @@
         "workflows/IterationService_to_response.md",
         "workflows/LabelService_create_label.md",
         "workflows/link_profile.md",
+        "workflows/list_project_tasks.md",
         "workflows/load_snapshot.md",
         "workflows/load_source_manifest.md",
         "workflows/login.md",
@@ -54749,6 +54781,7 @@
         "workflows/preview_iteration_schedule.md",
         "workflows/process_import.md",
         "workflows/project_member.md",
+        "workflows/ProjectService__get_tasks_in_state.md",
         "workflows/ProjectService__portfolio_summaries.md",
         "workflows/ProjectService_create.md",
         "workflows/ProjectService_create_initiative.md",
@@ -54802,6 +54835,7 @@
         "workflows/TaskBriefService_require_review.md",
         "workflows/TaskBulkOperationService_run.md",
         "workflows/TaskDetailService_detail.md",
+        "workflows/TaskDetailService_lookup.md",
         "workflows/TaskDetailService_my_work.md",
         "workflows/TaskDomainService_allowed_actions.md",
         "workflows/TaskDomainService_command.md",
@@ -74765,6 +74799,20 @@
       "title": "TaskDifficultyScore"
     },
     {
+      "canonical_path": "entities/TaskDisplayedState.md",
+      "id": "TaskDisplayedState",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TaskDisplayedState",
+      "outgoing_internal_links": [
+        "modules/types_iteration.md",
+        "modules/types_release.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/task.ts",
+      "title": "TaskDisplayedState"
+    },
+    {
       "canonical_path": "entities/TaskDomainService.md",
       "id": "TaskDomainService",
       "kind": "entities",
@@ -75383,12 +75431,14 @@
         "modules/delivery_dependency_service.md",
         "modules/models___init__.md",
         "modules/models_task_replacement.md",
+        "modules/task_display_state.md",
         "modules/task_replacement_service.md",
         "modules/test_github_reconciliation.md",
         "modules/test_replacement_carried_provenance.md",
         "modules/test_task_replacement.md",
         "modules/test_task_supersession.md",
-        "modules/test_task_supersession_migration.md"
+        "modules/test_task_supersession_migration.md",
+        "modules/test_terminal_task_states.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/task_replacement.py",
@@ -75803,6 +75853,18 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/task_replacement.py",
       "title": "TaskSupersessionCreate"
+    },
+    {
+      "canonical_path": "entities/TaskTerminalState.md",
+      "id": "TaskTerminalState",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TaskTerminalState",
+      "outgoing_internal_links": [
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/task.ts",
+      "title": "TaskTerminalState"
     },
     {
       "canonical_path": "entities/TaskTextEditorBodyProps.md",
@@ -88167,17 +88229,7 @@
       "mcp_uri": "llm-wiki://modules/models_task_replacement",
       "outgoing_internal_links": [
         "entities/TaskReplacement.md",
-        "modules/app_database.md",
-        "modules/delivery_dependency_service.md",
-        "modules/models___init__.md",
-        "modules/models_task_replacement.md",
-        "modules/task_replacement_service.md",
-        "modules/test_github_reconciliation.md",
-        "modules/test_replacement_carried_provenance.md",
-        "modules/test_task_replacement.md",
-        "modules/test_task_supersession.md",
-        "modules/test_task_supersession_migration.md",
-        "modules/time.md"
+        "modules/models_task_replacement.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/task_replacement.py",
@@ -89401,7 +89453,8 @@
         "modules/planning_issues.md",
         "modules/saved_view_service.md",
         "modules/task_service.md",
-        "modules/test_planning_issues.md"
+        "modules/test_planning_issues.md",
+        "modules/test_terminal_task_states.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/planning_issues.py",
@@ -94420,6 +94473,26 @@
       "title": "task_detail_service Module"
     },
     {
+      "canonical_path": "modules/task_display_state.md",
+      "id": "task_display_state",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/task_display_state",
+      "outgoing_internal_links": [
+        "modules/mcp_agent_tools.md",
+        "modules/models_task.md",
+        "modules/models_task_replacement.md",
+        "modules/project_service.md",
+        "modules/projects.md",
+        "modules/services_work_metrics.md",
+        "modules/task_detail_service.md",
+        "modules/task_display_state.md",
+        "modules/test_terminal_task_states.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/task_display_state.py",
+      "title": "task_display_state Module"
+    },
+    {
       "canonical_path": "modules/task_domain_service.md",
       "id": "task_domain_service",
       "kind": "modules",
@@ -98852,6 +98925,18 @@
       "title": "test_team_topology_read Module"
     },
     {
+      "canonical_path": "modules/test_terminal_task_states.md",
+      "id": "test_terminal_task_states",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_terminal_task_states",
+      "outgoing_internal_links": [
+        "modules/test_terminal_task_states.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_terminal_task_states.py",
+      "title": "test_terminal_task_states Module"
+    },
+    {
       "canonical_path": "modules/test_time_entries.md",
       "id": "test_time_entries",
       "kind": "modules",
@@ -99994,10 +100079,12 @@
         "entities/TaskActions.md",
         "entities/TaskCommand.md",
         "entities/TaskDetail.md",
+        "entities/TaskDisplayedState.md",
         "entities/TaskFormalizeResponse.md",
         "entities/TaskImproveDescriptionResponse.md",
         "entities/TaskMergeRequest.md",
         "entities/TaskProgress.md",
+        "entities/TaskTerminalState.md",
         "entities/TaskVersionConflictDetail.md",
         "entities/types_task_BriefCriterion.md",
         "entities/types_task_CascadeUpdateInfo.md",
@@ -102092,6 +102179,7 @@
         "modules/authority.md",
         "modules/commands.md",
         "modules/services_work_metrics.md",
+        "modules/task_display_state.md",
         "modules/time.md"
       ],
       "role": "mixed",
@@ -103388,6 +103476,21 @@
       "title": "link_profile"
     },
     {
+      "canonical_path": "workflows/list_project_tasks.md",
+      "id": "list_project_tasks",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/list_project_tasks",
+      "outgoing_internal_links": [
+        "modules/mcp_agent_tools.md",
+        "modules/project_service.md",
+        "modules/task_display_state.md",
+        "modules/task_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/mcp_agent_tools.py",
+      "title": "list_project_tasks"
+    },
+    {
       "canonical_path": "workflows/load_snapshot.md",
       "id": "load_snapshot",
       "kind": "workflows",
@@ -103796,6 +103899,21 @@
       "role": "mixed",
       "source_path": "backend/app/routers/identity.py",
       "title": "project_member"
+    },
+    {
+      "canonical_path": "workflows/ProjectService__get_tasks_in_state.md",
+      "id": "ProjectService__get_tasks_in_state",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/ProjectService__get_tasks_in_state",
+      "outgoing_internal_links": [
+        "modules/project_service.md",
+        "modules/query_limits.md",
+        "modules/task_display_state.md",
+        "modules/task_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/project_service.py",
+      "title": "ProjectService__get_tasks_in_state"
     },
     {
       "canonical_path": "workflows/ProjectService__portfolio_summaries.md",
@@ -104672,6 +104790,21 @@
       "role": "mixed",
       "source_path": "backend/app/services/task_detail_service.py",
       "title": "TaskDetailService_detail"
+    },
+    {
+      "canonical_path": "workflows/TaskDetailService_lookup.md",
+      "id": "TaskDetailService_lookup",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/TaskDetailService_lookup",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/sql_semantics.md",
+        "modules/task_detail_service.md",
+        "modules/task_display_state.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/task_detail_service.py",
+      "title": "TaskDetailService_lookup"
     },
     {
       "canonical_path": "workflows/TaskDetailService_my_work.md",
@@ -106757,6 +106890,7 @@
         "modules/task_brief_service.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md",
+        "modules/task_display_state.md",
         "modules/task_postponement_service.md",
         "modules/task_service.md",
         "modules/time.md"
@@ -107297,6 +107431,7 @@
         "modules/query_limits.md",
         "modules/schemas_team.md",
         "modules/services_work_metrics.md",
+        "modules/task_display_state.md",
         "modules/task_hierarchy_service.md",
         "modules/task_service.md",
         "modules/team_service.md",
@@ -108021,6 +108156,7 @@
         "modules/services_work_metrics.md",
         "modules/system_settings_service.md",
         "modules/task_brief_service.md",
+        "modules/task_display_state.md",
         "modules/task_service.md",
         "modules/time.md",
         "modules/url_policy.md"
@@ -108480,6 +108616,7 @@
         "modules/task_brief_service.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md",
+        "modules/task_display_state.md",
         "modules/task_domain_service.md",
         "modules/task_postponement_service.md",
         "modules/task_replacement_service.md",
@@ -109364,7 +109501,8 @@
         "modules/routers_task_domain.md",
         "modules/sql_semantics.md",
         "modules/task_detail.md",
-        "modules/task_detail_service.md"
+        "modules/task_detail_service.md",
+        "modules/task_display_state.md"
       ],
       "role": "mixed",
       "source_path": "backend/app/routers/task_domain.py",
@@ -109476,6 +109614,7 @@
         "modules/release_service.md",
         "modules/routers_task_domain.md",
         "modules/services_work_metrics.md",
+        "modules/task_display_state.md",
         "modules/time.md"
       ],
       "role": "mixed",
@@ -110802,6 +110941,7 @@
         "modules/task_brief_service.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md",
+        "modules/task_display_state.md",
         "modules/task_postponement_service.md",
         "modules/task_service.md",
         "modules/time.md"
@@ -110971,6 +111111,7 @@
         "modules/task_brief_service.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md",
+        "modules/task_display_state.md",
         "modules/task_postponement_service.md",
         "modules/task_service.md",
         "modules/time.md"
@@ -113184,6 +113325,7 @@
         "modules/task_brief_service.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md",
+        "modules/task_display_state.md",
         "modules/task_postponement_service.md",
         "modules/task_reactivation_service.md",
         "modules/task_service.md",
@@ -115308,6 +115450,7 @@
         "modules/release_service.md",
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
+        "modules/task_display_state.md",
         "modules/task_reactivation_service.md",
         "modules/task_service.md",
         "modules/time.md"
@@ -116121,6 +116264,7 @@
         "modules/schemas_team.md",
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
+        "modules/task_display_state.md",
         "modules/task_reactivation_service.md",
         "modules/task_service.md",
         "modules/team_service.md",
@@ -116238,6 +116382,7 @@
         "modules/schemas_project.md",
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
+        "modules/task_display_state.md",
         "modules/task_reactivation_service.md",
         "modules/task_service.md",
         "modules/time.md"
@@ -116268,6 +116413,7 @@
         "modules/release_service.md",
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
+        "modules/task_display_state.md",
         "modules/task_reactivation_service.md",
         "modules/task_service.md",
         "modules/time.md"
@@ -116599,6 +116745,7 @@
         "modules/schemas_task.md",
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
+        "modules/task_display_state.md",
         "modules/task_reactivation_service.md",
         "modules/task_service.md",
         "modules/time.md"
@@ -116687,6 +116834,7 @@
         "modules/release_service.md",
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
+        "modules/task_display_state.md",
         "modules/task_reactivation_service.md",
         "modules/task_service.md",
         "modules/time.md"
@@ -118794,6 +118942,7 @@
         "modules/task_context_revision_service.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md",
+        "modules/task_display_state.md",
         "modules/task_domain_service.md",
         "modules/task_hierarchy_service.md",
         "modules/task_import_service.md",
@@ -119082,6 +119231,7 @@
         "modules/test_team_pm_dispatch.md",
         "modules/test_team_pm_recovery.md",
         "modules/test_team_topology_read.md",
+        "modules/test_terminal_task_states.md",
         "modules/test_time_entries.md",
         "modules/test_time_reports.md",
         "modules/test_transfer_catalog.md",
@@ -120012,6 +120162,7 @@
         "modules/task_context_revision_service.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md",
+        "modules/task_display_state.md",
         "modules/task_domain_service.md",
         "modules/task_hierarchy_service.md",
         "modules/task_import_service.md",
@@ -120300,6 +120451,7 @@
         "modules/test_team_pm_dispatch.md",
         "modules/test_team_pm_recovery.md",
         "modules/test_team_topology_read.md",
+        "modules/test_terminal_task_states.md",
         "modules/test_time_entries.md",
         "modules/test_time_reports.md",
         "modules/test_transfer_catalog.md",
@@ -120446,5 +120598,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:f48c59bf2f2ca0cdb9df1e4c79839a6560623672c3daebcd2e4a97c18df8e9df"
+  "source_hash": "sha256:3726057799ca871f5f92da51595fa8b168603b8a76628504ccad8ccfe35c9637"
 }

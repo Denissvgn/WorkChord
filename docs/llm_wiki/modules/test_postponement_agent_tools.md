@@ -12,7 +12,6 @@ A PM agent postpones, reactivates and reads postponed work with exactly the REST
 |--------|---------|
 | `app` | `mcp_server` |
 | `app.agent_contract` | `agent_contract_features` |
-| `app.mcp_agent_tools` | `_tasks_with_status` |
 | `app.models.agent` | `AgentActor`, `TaskEvent` |
 | `app.models.identity` | `Principal`, `ProjectMembership` |
 | `app.models.project` | `Project` |
@@ -47,7 +46,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (13) |
+| Outbound | `backend` (12) |
 
 ### External packages
 
@@ -55,7 +54,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -75,7 +74,6 @@ flowchart LR
 | `test_rest_and_mcp_return_the_same_record_shape` | *(async)* `(team, monkeypatch)` | — | — |
 | `test_an_mcp_retry_with_the_same_key_replays_the_receipt` | *(async)* `(team, monkeypatch)` | — | — |
 | `test_other_credentials_cannot_postpone_or_reactivate` | *(async)* `(team, transport, key, monkeypatch)` | `@pytest.mark.parametrize('transport', ['rest', 'mcp'])`, `@pytest.mark.parametrize('key', [OTHER_PM_KEY, VIEWER_KEY, READER_KEY, WORKER_KEY, VERIFIER_KEY])` | — |
-| `test_a_status_filter_keeps_a_matching_grandchild_under_a_non_matching_child` | `()` | — | — |
 | `test_reading_a_postponement_needs_read_access_to_the_project` | *(async)* `(team, transport, monkeypatch)` | `@pytest.mark.parametrize('transport', ['rest', 'mcp'])` | — |
 | `_tool` | *(async)* `(factory, monkeypatch, name, **arguments)` | — | — |
 | `_rows` | `(tree)` | — | — |

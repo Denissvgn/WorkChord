@@ -22,6 +22,7 @@ _Auto-generated from `DeliveryMetricsResponse` in `backend/app/schemas/delivery_
 | `owner_override_acceptance_events` | `int` | `owner_override_acceptance_events` | No | No | `0` | — | — | Acceptances in the window that an owner recorded as an override of publisher independence. They are included in acceptance_events and are not independent reviews. |
 | `rejection_events` | `int` | `rejection_events` | No | No | `0` | — | — | — |
 | `canceled_leaf_tasks` | `int` | `canceled_leaf_tasks` | No | No | `0` | — | — | — |
+| `superseded_leaf_tasks` | `int` | `superseded_leaf_tasks` | No | No | `0` | — | — | Leaf tasks withdrawn in the window because another task delivers their work (a replacement or a supersession). Within one window a task is not also counted as canceled. |
 | `reopened_events` | `int` | `reopened_events` | No | No | `0` | — | — | — |
 | `lead_time` | `DurationSamples` | `lead_time` | Yes | No | — | — | — | — |
 | `cycle_time` | `DurationSamples` | `cycle_time` | Yes | No | — | — | — | — |

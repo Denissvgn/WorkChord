@@ -98,3 +98,5 @@ flowchart LR
 | `test_iteration_and_release_progress_count_postponed_separately` | call | [test_postponed_out_of_scheduling](../modules/test_postponed_out_of_scheduling.md) | 1 |
 | `test_clean_replacement_is_accepted_once_and_carried_work_stays_held` | call | [test_task_replacement](../modules/test_task_replacement.md) | 1 |
 | `test_supersession_moves_dependents_releases_and_requirements_and_counts_once` | call | [test_task_supersession](../modules/test_task_supersession.md) | 1 |
+
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

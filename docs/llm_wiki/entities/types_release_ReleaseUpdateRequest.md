@@ -1,6 +1,6 @@
 # ReleaseUpdateRequest
 
-**Location:** `frontend/src/types/release.ts:40`
+**Location:** `frontend/src/types/release.ts:41`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_release](../modules/types_release.md)

@@ -64,8 +64,8 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [ReleaseStatus](../entities/schemas_release_ReleaseStatus.md) | Enum | 11 | `str`, `Enum` | Release lifecycle independent of task status. |
 | [ReleaseTaskSummary](../entities/schemas_release_ReleaseTaskSummary.md) | Pydantic model | 20 | `BaseModel` | Compact task identity embedded in release responses. |
-| [ReleaseCreate](../entities/ReleaseCreate.md) | Pydantic model | 31 | `BaseModel` | Schema for creating a release. |
-| [ReleaseCreateRequest](../entities/schemas_release_ReleaseCreateRequest.md) | Pydantic model | 47 | `BaseModel` | API request for creating a project-scoped release. |
-| [ReleaseUpdate](../entities/ReleaseUpdate.md) | Pydantic model | 62 | `BaseModel` | Schema for updating a release. |
-| [ReleaseUpdateRequest](../entities/schemas_release_ReleaseUpdateRequest.md) | Pydantic model | 77 | `ReleaseUpdate` | API request for partially updating a release. |
-| [ReleaseResponse](../entities/ReleaseResponse.md) | Pydantic model | 81 | `WorkMetricSummary` | Schema for release responses. |
+| [ReleaseCreate](../entities/ReleaseCreate.md) | Pydantic model | 33 | `BaseModel` | Schema for creating a release. |
+| [ReleaseCreateRequest](../entities/schemas_release_ReleaseCreateRequest.md) | Pydantic model | 49 | `BaseModel` | API request for creating a project-scoped release. |
+| [ReleaseUpdate](../entities/ReleaseUpdate.md) | Pydantic model | 64 | `BaseModel` | Schema for updating a release. |
+| [ReleaseUpdateRequest](../entities/schemas_release_ReleaseUpdateRequest.md) | Pydantic model | 79 | `ReleaseUpdate` | API request for partially updating a release. |
+| [ReleaseResponse](../entities/ReleaseResponse.md) | Pydantic model | 83 | `WorkMetricSummary` | Schema for release responses. |

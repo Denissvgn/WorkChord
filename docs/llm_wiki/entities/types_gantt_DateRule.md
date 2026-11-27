@@ -1,6 +1,6 @@
 # DateRule
 
-**Location:** `frontend/src/types/gantt.ts:87`
+**Location:** `frontend/src/types/gantt.ts:89`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

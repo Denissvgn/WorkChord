@@ -1,6 +1,6 @@
 # AssigneeIdleDays
 
-**Location:** `frontend/src/types/gantt.ts:138`
+**Location:** `frontend/src/types/gantt.ts:140`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

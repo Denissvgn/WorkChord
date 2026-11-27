@@ -1,6 +1,6 @@
 # TaskUpdate
 
-**Location:** `frontend/src/types/task.ts:198`
+**Location:** `frontend/src/types/task.ts:208`
 **Kind:** Interface
 **Bases:** `Partial<TaskCreate>`
 **Module:** [types_task](../modules/types_task.md)

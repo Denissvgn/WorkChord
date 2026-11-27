@@ -6,9 +6,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1896 | [Open section](#entities) |
-| Modules | 1207 | [Open section](#modules) |
-| Workflows | 247 | [Open section](#workflows) |
+| Entities | 1898 | [Open section](#entities) |
+| Modules | 1209 | [Open section](#modules) |
+| Workflows | 250 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 643 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
@@ -1101,6 +1101,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskDetailService](entities/TaskDetailService.md)
 - [TaskDifficultyBand](entities/TaskDifficultyBand.md)
 - [TaskDifficultyScore](entities/TaskDifficultyScore.md)
+- [TaskDisplayedState](entities/TaskDisplayedState.md)
 - [TaskDomainService](entities/TaskDomainService.md)
 - [TaskEditDrawerProps](entities/TaskEditDrawerProps.md)
 - [TaskEditorAvailability](entities/TaskEditorAvailability.md)
@@ -1172,6 +1173,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskStatusService](entities/TaskStatusService.md)
 - [TaskSubscription](entities/TaskSubscription.md)
 - [TaskSupersessionCreate](entities/TaskSupersessionCreate.md)
+- [TaskTerminalState](entities/TaskTerminalState.md)
 - [TaskTextEditorBodyProps](entities/TaskTextEditorBodyProps.md)
 - [TaskTextEditorModalProps](entities/TaskTextEditorModalProps.md)
 - [TaskTimelineDates](entities/TaskTimelineDates.md)
@@ -2823,6 +2825,7 @@ Retained history; these declarations are absent from the selected source invento
 - [task_context_revision_service](modules/task_context_revision_service.md) - Atomic task-version fencing for relationship-backed execution context.
 - [task_detail](modules/task_detail.md) - Bounded UI projections with explicit completeness and deterministic cursors.
 - [task_detail_service](modules/task_detail_service.md) - Small UI reads, independent of the complete authoritative execution graph.
+- [task_display_state](modules/task_display_state.md) - The state a task is shown in: its stored status, or the terminal state of withdrawn work.
 - [task_domain_service](modules/task_domain_service.md) - Durable ownership, normalized effort and explicit task-domain commands.
 - [task_hierarchy_service](modules/task_hierarchy_service.md) - Read-only ownership of bounded task graph hydration and integrity checks.
 - [task_import_service](modules/task_import_service.md) - Task text import, export, and triage intake workflows.
@@ -3024,6 +3027,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_team_pm_dispatch](modules/test_team_pm_dispatch.md) - Authenticated PM queue commands across the REST and MCP transports.
 - [test_team_pm_recovery](modules/test_team_pm_recovery.md) - Authenticated recovery and claim-fenced blocker reporting.
 - [test_team_topology_read](modules/test_team_topology_read.md) - The team topology read names members, model bindings and runtime references, never credentials.
+- [test_terminal_task_states](modules/test_terminal_task_states.md) - Canceled and superseded work is shown and counted as terminal, never under the status it kept.
 - [test_time_entries](modules/test_time_entries.md) - Private explicit minutes, retained corrections and independent recovery behavior.
 - [test_time_reports](modules/test_time_reports.md) - Recorded coverage and manager totals preserve private entry boundaries.
 - [test_transfer_catalog](modules/test_transfer_catalog.md) - Versioned transfer catalog invariants.
@@ -3239,6 +3243,7 @@ Retained history; these declarations are absent from the selected source invento
 - [OutboundWebhookService__enqueue_event_records](workflows/OutboundWebhookService__enqueue_event_records.md) - entry: `outbound_webhook_service.OutboundWebhookService._enqueue_event_records`
 - [OutboundWebhookService_retry_delivery](workflows/OutboundWebhookService_retry_delivery.md) - entry: `outbound_webhook_service.OutboundWebhookService.retry_delivery`
 - [PlanShareService_create](workflows/PlanShareService_create.md) - entry: `plan_share_service.PlanShareService.create`
+- [ProjectService__get_tasks_in_state](workflows/ProjectService__get_tasks_in_state.md) - entry: `project_service.ProjectService._get_tasks_in_state`
 - [ProjectService__portfolio_summaries](workflows/ProjectService__portfolio_summaries.md) - entry: `project_service.ProjectService._portfolio_summaries`
 - [ProjectService_create](workflows/ProjectService_create.md) - entry: `project_service.ProjectService.create`
 - [ProjectService_create_initiative](workflows/ProjectService_create_initiative.md) - entry: `project_service.ProjectService.create_initiative`
@@ -3262,6 +3267,7 @@ Retained history; these declarations are absent from the selected source invento
 - [TaskBriefService_require_review](workflows/TaskBriefService_require_review.md) - entry: `task_brief_service.TaskBriefService.require_review`
 - [TaskBulkOperationService_run](workflows/TaskBulkOperationService_run.md) - entry: `task_bulk_operation_service.TaskBulkOperationService.run`
 - [TaskDetailService_detail](workflows/TaskDetailService_detail.md) - entry: `task_detail_service.TaskDetailService.detail`
+- [TaskDetailService_lookup](workflows/TaskDetailService_lookup.md) - entry: `task_detail_service.TaskDetailService.lookup`
 - [TaskDetailService_my_work](workflows/TaskDetailService_my_work.md) - entry: `task_detail_service.TaskDetailService.my_work`
 - [TaskDomainService_allowed_actions](workflows/TaskDomainService_allowed_actions.md) - entry: `task_domain_service.TaskDomainService.allowed_actions`
 - [TaskDomainService_command](workflows/TaskDomainService_command.md) - entry: `task_domain_service.TaskDomainService.command`
@@ -3330,6 +3336,7 @@ Retained history; these declarations are absent from the selected source invento
 - [initialize_gate](workflows/initialize_gate.md) - entry: `transfer._initialize_gate`
 - [issuer_identity](workflows/issuer_identity.md) - entry: `review_evidence._issuer_identity`
 - [link_profile](workflows/link_profile.md) - entry: `identity.link_profile`
+- [list_project_tasks](workflows/list_project_tasks.md) - entry: `mcp_agent_tools.list_project_tasks`
 - [load_snapshot](workflows/load_snapshot.md) - entry: `transfer.load_snapshot`
 - [load_source_manifest](workflows/load_source_manifest.md) - entry: `transfer._load_source_manifest`
 - [login](workflows/login.md) - entry: `identity.login`

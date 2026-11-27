@@ -1,6 +1,6 @@
 # InvertedDependency
 
-**Location:** `frontend/src/types/gantt.ts:58`
+**Location:** `frontend/src/types/gantt.ts:60`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

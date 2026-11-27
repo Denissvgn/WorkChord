@@ -1,6 +1,6 @@
 # AssignmentSelectionRefresh
 
-**Location:** `backend/app/schemas/gantt.py:178`
+**Location:** `backend/app/schemas/gantt.py:180`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)

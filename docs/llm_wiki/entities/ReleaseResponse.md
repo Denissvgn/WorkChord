@@ -1,6 +1,6 @@
 # ReleaseResponse
 
-**Location:** `backend/app/schemas/release.py:81`
+**Location:** `backend/app/schemas/release.py:83`
 **Kind:** Pydantic model
 **Bases:** `WorkMetricSummary`
 **Module:** [schemas_release](../modules/schemas_release.md)

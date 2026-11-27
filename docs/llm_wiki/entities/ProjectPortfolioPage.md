@@ -1,6 +1,6 @@
 # ProjectPortfolioPage
 
-**Location:** `backend/app/schemas/project.py:373`
+**Location:** `backend/app/schemas/project.py:377`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_project](../modules/schemas_project.md)

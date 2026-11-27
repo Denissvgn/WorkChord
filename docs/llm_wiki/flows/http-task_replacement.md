@@ -187,7 +187,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_replacement | domain_result | 335 | `domain_result(...)` |
+| task_replacement | domain_result | 336 | `domain_result(...)` |
 | domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
@@ -195,7 +195,7 @@ flowchart LR
 | domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 59 | `str(exc)` |
 | domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_replacement | TaskReplacementService.get | 335 | `TaskReplacementService(db).get(task_id)` |
+| task_replacement | TaskReplacementService.get | 336 | `TaskReplacementService(db).get(task_id)` |
 | TaskReplacementService.get | self.db.scalar (backend/app/services/task…askReplacementService.get) | 239 | `self.db.scalar(...)` |
 | TaskReplacementService.get | select(…).where (backend/app/services/task…askReplacementService.get) | 239 | `select(Task).where(...)` |
 

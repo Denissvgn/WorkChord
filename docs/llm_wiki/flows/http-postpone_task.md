@@ -112,7 +112,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| postpone_task | domain_result | 411 | `domain_result(...)` |
+| postpone_task | domain_result | 412 | `domain_result(...)` |
 | domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
@@ -120,8 +120,8 @@ flowchart LR
 | domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 59 | `str(exc)` |
 | domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| postpone_task | TaskPostponementService(…).postpone | 411 | `TaskPostponementService(db).postpone(task_id, data)` |
-| postpone_task | TaskPostponementService | 411 | `TaskPostponementService(db)` |
+| postpone_task | TaskPostponementService(…).postpone | 412 | `TaskPostponementService(db).postpone(task_id, data)` |
+| postpone_task | TaskPostponementService | 412 | `TaskPostponementService(db)` |
 
 ### Boundary effects
 
@@ -136,7 +136,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
 | external_call | `domain_result` | `HTTPException` | 61 |
-| unresolved_call | `postpone_task` | `TaskPostponementService(db).postpone` | 411 |
+| unresolved_call | `postpone_task` | `TaskPostponementService(db).postpone` | 412 |
 
 ## Behavior
 

@@ -1,6 +1,6 @@
 # IdleGap
 
-**Location:** `frontend/src/types/gantt.ts:122`
+**Location:** `frontend/src/types/gantt.ts:124`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)
