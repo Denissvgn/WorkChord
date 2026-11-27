@@ -58,6 +58,7 @@ from app.models.template import TemplateType, WorkTemplate
 from app.models.task import Task, TaskDependency, TaskStatus
 from app.models.task_status_log import TaskStatusLog
 from app.models.task_replacement import TaskReplacement
+from app.models.task_postponement import TaskPostponement, TaskReactivationRequirement
 from app.models.triage import (
     TriageClassificationSuggestion,
     TriageItem,
@@ -135,6 +136,8 @@ __all__ = [
     "TaskStatus",
     "TaskStatusLog",
     "TaskReplacement",
+    "TaskPostponement",
+    "TaskReactivationRequirement",
     "WorkTemplate",
     "TriageClassificationSuggestion",
     "TriageItem",

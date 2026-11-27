@@ -30,6 +30,8 @@ class CommandState:
     # Tasks whose owner-override command is running; every audit row of the command names them.
     owner_acceptance_tasks: set[int] = field(default_factory=set)
     evidence_returns: set[tuple[int, int]] = field(default_factory=set)
+    # Tasks whose status this command moves into or out of postponed under manage authority.
+    postponement_transitions: set[int] = field(default_factory=set)
     planning_revision: int | None = None
 
 

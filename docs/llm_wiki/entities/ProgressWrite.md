@@ -49,6 +49,8 @@ flowchart LR
     n6["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
     n7["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
     n8["test_dependency_mutations_invalidate_evidence_without_erasing_history (backend/tests/test_task_domain_integrity.py)"]
+    n9["_evidenced_task (backend/tests/test_task_postponement.py)"]
+    n10["test_reactivation_returns_work_with_brief_progress_evidence_and_provenance_intact (backend/tests/test_task_postponement.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -57,6 +59,8 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
+    n10 --> n0
     click n0 "../modules/schemas_task_brief.md"
     click n2 "../modules/routers_task_domain.md"
     click n3 "../modules/agent_work_service.md"
@@ -65,6 +69,8 @@ flowchart LR
     click n6 "../modules/test_task_domain.md"
     click n7 "../modules/test_task_domain.md"
     click n8 "../modules/test_task_domain_integrity.md"
+    click n9 "../modules/test_task_postponement.md"
+    click n10 "../modules/test_task_postponement.md"
 ```
 
 ### Summary
@@ -90,3 +96,5 @@ flowchart LR
 | `test_backlog_manual_execution_independent_review_and_reopen` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `test_rework_requires_fresh_progress_and_preserves_prior_evidence` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `test_dependency_mutations_invalidate_evidence_without_erasing_history` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |
+| `_evidenced_task` | call | [test_task_postponement](../modules/test_task_postponement.md) | 1 |
+| `test_reactivation_returns_work_with_brief_progress_evidence_and_provenance_intact` | call | [test_task_postponement](../modules/test_task_postponement.md) | 1 |

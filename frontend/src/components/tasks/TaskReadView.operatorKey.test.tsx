@@ -8,7 +8,7 @@ import type { Task } from '../../types/task';
 import { emptyTaskBrief } from './taskEditorContract';
 import { TaskReadView } from './TaskReadView';
 
-const service = vi.hoisted(() => ({ writeBrief: vi.fn(), actions: vi.fn(), command: vi.fn() }));
+const service = vi.hoisted(() => ({ writeBrief: vi.fn(), actions: vi.fn(), command: vi.fn(), reviews: vi.fn().mockResolvedValue([]) }));
 vi.mock('../../services/taskService', () => ({ taskService: service }));
 vi.mock('../../services/iterationService', () => ({ iterationService: { getAll: vi.fn().mockResolvedValue([]) } }));
 vi.mock('./DeliveryDependencies', () => ({ DeliveryDependencies: () => null }));

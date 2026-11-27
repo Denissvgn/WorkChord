@@ -5,7 +5,7 @@ import type { Task, TaskActions, TaskDetail } from '../../types/task';
 import { emptyTaskBrief } from './taskEditorContract';
 import { TaskEditorDrawer } from './TaskEditorDrawer';
 
-const service = vi.hoisted(() => ({ getDetail: vi.fn(), getById: vi.fn(), actions: vi.fn(), command: vi.fn(), writeBrief: vi.fn(), progress: vi.fn(), review: vi.fn(), lookup: vi.fn() }));
+const service = vi.hoisted(() => ({ getDetail: vi.fn(), getById: vi.fn(), actions: vi.fn(), command: vi.fn(), writeBrief: vi.fn(), progress: vi.fn(), review: vi.fn(), lookup: vi.fn(), reviews: vi.fn().mockResolvedValue([]) }));
 vi.mock('../../services/taskService', () => ({ taskService: service }));
 vi.mock('../../services/iterationService', () => ({ iterationService: { getAll: vi.fn().mockResolvedValue([]) } }));
 vi.mock('../../features/identity/identityContext', () => ({ useIdentity: () => ({ identity: { mode: 'trusted_local', principal: null } }) }));

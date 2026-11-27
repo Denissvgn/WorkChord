@@ -1,6 +1,6 @@
 # Task
 
-**Location:** `backend/app/models/task.py:45`
+**Location:** `backend/app/models/task.py:49`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_task](../modules/models_task.md)

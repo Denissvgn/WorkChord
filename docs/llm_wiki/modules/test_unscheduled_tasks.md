@@ -19,7 +19,7 @@ The scheduler says which planned tasks it left without dates, and readiness says
 | `app.services.agent_planning_service` | `AgentPlanningService`, `AgentPlanningService` |
 | `app.services.agent_readiness` | `evaluate_agent_readiness` |
 | `app.services.scheduler_service` | `SchedulerService` |
-| `datetime` | `date`, `timedelta` |
+| `datetime` | `date` |
 | `httpx` | `httpx` |
 | `pytest` | `pytest` |
 | `sqlalchemy` | `select` |
@@ -119,15 +119,9 @@ flowchart LR
 | `test_agent_capacity_row_assignment_and_apply_schedule_an_unassigned_task` | *(async)* `(delivery_store)` | — | — |
 | `test_schedule_omits_undated_deferred_work_on_apply` | *(async)* `(delivery_store)` | — | — |
 | `_ownerless_chain` | *(async)* `(db, scenario)` | — | A task without a capacity owner, an owned dependent, an ownerless dependent and a dependent of that. |
-| `_assert_chain_reported` | `(kept_dates, root, owned, ownerless, tail)` | — | — |
-| `test_schedule_keeps_the_valid_dates_of_ownerless_task_and_every_dependent_it_cannot_place` | *(async)* `(delivery_store)` | — | — |
+| `_assert_chain_reported` | `(unscheduled, root, owned, ownerless, tail)` | — | — |
+| `test_schedule_names_ownerless_task_and_every_dependent_it_cleared` | *(async)* `(delivery_store)` | — | — |
 | `test_a_task_that_never_had_dates_is_not_reported_as_cleared` | *(async)* `(delivery_store)` | — | — |
 | `_separate_shared_owner_iterations` | *(async)* `(db, scenario)` | — | The seeded owner sits in two overlapping iterations; move the second so a baseline commit is accepted. |
-| `test_rest_schedule_and_preview_responses_name_tasks_that_keep_their_dates` | *(async)* `(delivery_store, monkeypatch)` | — | — |
-| `test_agent_schedule_preview_names_tasks_that_keep_their_dates` | *(async)* `(delivery_store)` | — | — |
-| `_imported_plan_with_unplaceable_tasks` | *(async)* `(db, scenario)` | — | Imported dates on tasks the scheduler cannot place: valid ones, and one for each rule they can break. |
-| `test_schedule_keeps_imported_dates_and_names_the_rule_they_break` | *(async)* `(delivery_store)` | — | — |
-| `test_kept_dates_say_when_they_start_before_the_planning_start_or_a_placed_prerequisite` | *(async)* `(delivery_store, monkeypatch)` | — | — |
-| `test_following_actual_dates_restores_a_half_dated_task_without_failing` | *(async)* `(delivery_store)` | — | — |
-| `test_schedule_preview_and_apply_agree_on_an_imported_plan` | *(async)* `(delivery_store, monkeypatch)` | — | — |
-| `test_a_baseline_commit_does_not_commit_the_dates_it_kept` | *(async)* `(delivery_store, monkeypatch)` | — | — |
+| `test_rest_schedule_and_preview_responses_name_cleared_tasks` | *(async)* `(delivery_store, monkeypatch)` | — | — |
+| `test_agent_schedule_preview_names_cleared_tasks` | *(async)* `(delivery_store)` | — | — |

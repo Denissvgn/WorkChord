@@ -64,7 +64,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (105) |
+| Inbound | `backend` (107) |
 | Outbound | `backend` (17) |
 
 ### External packages
@@ -73,16 +73,16 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 114 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 116 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [CommandState](../entities/CommandState.md) | 13 | — | — |
-| [AggregateVersionConflict](../entities/AggregateVersionConflict.md) | 36 | `RuntimeError` | — |
-| [HierarchyScopeError](../entities/HierarchyScopeError.md) | 47 | `RuntimeError` | — |
-| [PlanningConflict](../entities/PlanningConflict.md) | 52 | `RuntimeError` | — |
+| [AggregateVersionConflict](../entities/AggregateVersionConflict.md) | 38 | `RuntimeError` | — |
+| [HierarchyScopeError](../entities/HierarchyScopeError.md) | 49 | `RuntimeError` | — |
+| [PlanningConflict](../entities/PlanningConflict.md) | 54 | `RuntimeError` | — |
 
 ## Functions
 

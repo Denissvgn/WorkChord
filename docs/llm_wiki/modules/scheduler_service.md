@@ -26,7 +26,7 @@ Applying dates that change accepted work is guarded regardless of how the iterat
 | `app.models.recovery` | `TaskScheduleBaseline` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus`, `TaskStatus`, `TaskStatus` |
 | `app.models.team_member` | `TeamMember`, `Vacation` |
-| `app.schemas.gantt` | `KeptDatesTask`, `SchedulingDecision`, `ScheduleResult`, `UnscheduledTask`, `WorkloadIssue` |
+| `app.schemas.gantt` | `SchedulingDecision`, `ScheduleResult`, `UnscheduledTask`, `WorkloadIssue` |
 | `app.services.agent_work_service` | `AgentWorkService` |
 | `app.services.calendar_rules` | `AnnualCalendars` |
 | `app.services.calendar_service` | `CalendarService` |
@@ -88,7 +88,7 @@ flowchart LR
 | [RescheduleResult](../entities/RescheduleResult.md) | Class | 59 | — | Result of an incremental reschedule operation. |
 | [MemberSchedule](../entities/MemberSchedule.md) | Class | 69 | — | Optimized schedule tracking with O(D) slot finding using sliding window. |
 | [SchedulerService](../entities/SchedulerService.md) | Class | 346 | — | Service for automatic task scheduling. |
-| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1457 | — | Handles incremental rescheduling when a single task changes. |
+| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1356 | — | Handles incremental rescheduling when a single task changes. |
 
 ## Functions
 
