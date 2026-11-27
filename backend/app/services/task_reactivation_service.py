@@ -246,6 +246,10 @@ class ReactivationService:
             task = await self.db.scalar(select(Task).where(Task.id == postponement.task_id))
             if task is None or task.status != POSTPONED:
                 return False
+            # Exactly what _complete_if_met refuses: such a task never reactivates, so never lock for it.
+            if task.canceled_at is not None or task.is_summary or await self.db.scalar(
+                    select(Task.id).where(Task.parent_id == task.id).limit(1)) is not None:
+                return False
             requirements = await self._requirements(postponement)
             return all(requirement.met_at is not None for requirement in requirements) or bool(
                 await self._holding(requirements, task, now or utc_now()))

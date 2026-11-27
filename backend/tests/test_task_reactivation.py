@@ -489,6 +489,14 @@ async def test_a_sweep_that_finds_nothing_leaves_the_planning_revision_alone(del
     factory, scenario, _ = delivery_store
     await _postpone_task(factory, scenario.tasks["planned"], {"kind": "date", "on_date": _later()})
     await _postpone_task(factory, scenario.tasks["active"], {"kind": "owner_decision", "description": "Decide"})
+    canceled_id = scenario.tasks["other_project"]
+    await _postpone_task(factory, canceled_id, {"kind": "date", "on_date": _later()})
+    async with factory() as db:
+        # Canceled postponed work whose requirements are all met can never reactivate.
+        await db.execute(update(TaskReactivationRequirement).where(TaskReactivationRequirement.task_id == canceled_id)
+                         .values(met_at=utc_now()))
+        await db.execute(update(Task).where(Task.id == canceled_id).values(canceled_at=utc_now()))
+        await db.commit()
     async with factory() as db:
         before = await db.scalar(select(PlanningState.revision))
     for _ in range(3):

@@ -163,6 +163,7 @@ async def lock_backlog_project(db, project_id):
     """Serialize unscheduled hierarchy writes without manufacturing an iteration."""
     from app.authority import internal_authority, require_project
     from app.models.project import Project
+    # Skipping the check is safe only because no internal_authority block passes a caller-chosen project.
     if not db.info.get("authority_internal"):
         require_project(db, project_id, "read")
     await lock_planning(db)

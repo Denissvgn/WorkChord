@@ -22,6 +22,7 @@ class BacklogSnapshotService:
 
     @atomic_command
     async def capture(self, project_id, reason="manual"):
+        # Skipping the check is safe only because no internal_authority block passes a caller-chosen project.
         if not self.db.info.get("authority_internal"):
             require_project(self.db, project_id, "read")
         state = current_command(self.db)
