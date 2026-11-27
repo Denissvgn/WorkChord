@@ -62,14 +62,14 @@ sequenceDiagram
     participant p18 as AgentWorkService._decode_page_cursor
     participant p19 as _require_scope_requirement
     participant p20 as IdentityService.actor_context
-    participant p21 as window_authority_matches
-    participant p22 as AgentWorkService._started_blockers
-    participant p23 as AgentWorkService._start_blockers
-    participant p24 as AgentWorkService.run_response
-    participant p25 as assignment_matches
-    participant p26 as require_scope
-    participant p27 as evaluate_actor_authorization
-    participant p28 as AgentService.authenticate
+    participant p21 as AgentWorkService._is_model_aware_assignment
+    participant p22 as AgentWorkService._verification_rollout
+    participant p23 as window_authority_matches
+    participant p24 as AgentWorkService._started_blockers
+    participant p25 as AgentWorkService._start_blockers
+    participant p26 as AgentWorkService.run_response
+    participant p27 as assignment_matches
+    participant p28 as AgentWorkService._routing_snapshot
     participant p29 as json.dumps (backend/app/mcp_server.py:_json_resource)
     participant p30 as decision.model_dump
     p0->>p1: _json_resource
@@ -92,21 +92,21 @@ sequenceDiagram
     p10->>p18: AgentWorkService._decode_page_cursor
     p7->>p19: _require_scope_requirement
     p7->>p20: IdentityService.actor_context
-    p8->>p21: window_authority_matches
-    p9->>p22: AgentWorkService._started_blockers
-    p9->>p23: AgentWorkService._start_blockers
-    p9->>p24: AgentWorkService.run_response
-    p21->>p25: assignment_matches
-    p19->>p26: require_scope
-    p14->>p27: evaluate_actor_authorization
-    p17->>p28: AgentService.authenticate
+    p9->>p21: AgentWorkService._is_model_aware_assignment
+    p9->>p22: AgentWorkService._verification_rollout
+    p8->>p23: window_authority_matches
+    p9->>p24: AgentWorkService._started_blockers
+    p9->>p25: AgentWorkService._start_blockers
+    p9->>p26: AgentWorkService.run_response
+    p23->>p27: assignment_matches
+    p21->>p28: AgentWorkService._routing_snapshot
     p1-->>p29: json.dumps (backend/app/mcp_server.py:_json_resource)(value, ensure_ascii=False, default=str)
     p2-->>p30: decision.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 659 interactions; 629 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 685 interactions; 655 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 181 (180 omitted); unresolved 1 of 289 (288 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 186 (185 omitted); unresolved 1 of 291 (290 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -120,7 +120,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 164 groups; 156 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 171 groups; 163 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -133,9 +133,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 190; effect analysis evaluated: 133, partial: 8, unavailable: 49. Counts include steps omitted from the displayed trace.
+Source steps: 209; effect analysis evaluated: 150, partial: 8, unavailable: 51. Counts include steps omitted from the displayed trace.
 
-Collector observations for 141 source steps with known totals: observed: 858, emitted: 798, omitted: 60. Unavailable totals are excluded.
+Collector observations for 158 source steps with known totals: observed: 943, emitted: 883, omitted: 60. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

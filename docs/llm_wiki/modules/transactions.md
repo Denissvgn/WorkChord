@@ -25,6 +25,7 @@ flowchart LR
     n5["backend/tests/test_routing_preview_focus.py"]
     n6["backend/tests/test_routing_preview_team_scope.py"]
     n7["backend/tests/test_scoped_review_evidence.py"]
+    n8["backend/tests/test_verifier_presence.py"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -47,6 +48,11 @@ flowchart LR
     n7 --> n1
     n7 --> n3
     n7 --> n4
+    n8 --> n0
+    n8 --> n1
+    n8 --> n2
+    n8 --> n3
+    n8 --> n4
     click n0 "../modules/transactions.md"
     click n1 "../modules/test_agent_routing_service.md"
     click n2 "../modules/test_agent_routing_wave6_qualification.md"
@@ -55,6 +61,7 @@ flowchart LR
     click n5 "../modules/test_routing_preview_focus.md"
     click n6 "../modules/test_routing_preview_team_scope.md"
     click n7 "../modules/test_scoped_review_evidence.md"
+    click n8 "../modules/test_verifier_presence.md"
 ```
 
 ### Internal neighbors
@@ -68,6 +75,7 @@ flowchart LR
 | Inbound | [test_routing_preview_focus](../modules/test_routing_preview_focus.md) |
 | Inbound | [test_routing_preview_team_scope](../modules/test_routing_preview_team_scope.md) |
 | Inbound | [test_scoped_review_evidence](../modules/test_scoped_review_evidence.md) |
+| Inbound | [test_verifier_presence](../modules/test_verifier_presence.md) |
 
 ### External packages
 

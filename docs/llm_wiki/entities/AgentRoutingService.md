@@ -18,7 +18,7 @@ Create immutable assessments and deterministic exact-actor previews.
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
 | `__init__` | `(db: AsyncSession, *, rollout_service: AgentRoutingRolloutService \| None = None)` | — | — |
-| `_require_preview_rollout` | *(async)* `(actor: AgentActor)` | — | Translate fail-closed rollout state into the routing error envelope. |
+| `_require_preview_rollout` | *(async)* `(actor: AgentActor, *, verifier_actor_id: int \| None = None, project_id: int \| None = None)` | — | Translate fail-closed rollout state into the routing error envelope. |
 | `_require_read` | `(actor: AgentActor) -> None` | `@staticmethod` | — |
 | `_require_assessment_write` | `(actor: AgentActor) -> None` | `@staticmethod` | — |
 | `_task_version` | *(async)* `(task_id: int) -> int` | — | — |
@@ -107,4 +107,4 @@ flowchart LR
 | `get_task_routing_assessment` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 | `list_task_routing_assessments` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 
-> References: showing 12 of 44 logical references; 32 omitted by the 12-row generated summary limit.
+> References: showing 12 of 47 logical references; 35 omitted by the 12-row generated summary limit.

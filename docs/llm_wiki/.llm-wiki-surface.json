@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1862,
+      "entities": 1863,
       "flows": 638,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1197,
+      "modules": 1198,
       "workflows": 247
     },
     "dependency_architecture": 2,
-    "total": 3961
+    "total": 3963
   },
   "dependency_pages": {
     "count": 2,
@@ -9257,21 +9257,15 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 3812,
+              "line": 3855,
               "step": "AgentTeamSetupService.membership_boundary",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 3813,
+              "line": 3856,
               "step": "AgentTeamSetupService.membership_boundary",
               "target": "select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 3813,
-              "step": "AgentTeamSetupService.membership_boundary",
-              "target": "select(AgentTeamTopology.topology_key).join"
             },
             {
               "kind": "step_limit",
@@ -9299,14 +9293,13 @@
             "backend/app/schemas/agent_team_setup.py",
             "backend/app/utils/time.py",
             "backend/app/services/agent_service.py",
-            "backend/app/autonomy/canonical.py",
+            "backend/app/config.py",
             "backend/app/agent_contract.py",
             "backend/app/services/task_domain_service.py",
             "backend/app/authority.py",
-            "backend/app/config.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 263,
+          "step_count": 265,
           "truncated": true
         }
       },
@@ -14388,7 +14381,7 @@
             "backend/app/services/agent_service.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 776,
+          "step_count": 771,
           "truncated": true
         }
       },
@@ -24700,7 +24693,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 1102,
+          "step_count": 1101,
           "truncated": true
         }
       },
@@ -29361,7 +29354,7 @@
             "backend/app/schemas/agent.py",
             "backend/app/schemas/agent_routing.py"
           ],
-          "step_count": 491,
+          "step_count": 501,
           "truncated": true
         }
       },
@@ -30330,7 +30323,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 475,
+          "step_count": 469,
           "truncated": true
         }
       },
@@ -31504,13 +31497,14 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/agent_team_setup_service.py",
+            "backend/app/schemas/agent_team_setup.py",
             "backend/app/schemas/agent_routing.py",
             "backend/app/models/agent.py",
             "backend/app/services/agent_routing_observability.py",
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/schemas/agent_planning.py"
           ],
-          "step_count": 538,
+          "step_count": 562,
           "truncated": true
         }
       },
@@ -32316,7 +32310,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 530,
+          "step_count": 526,
           "truncated": true
         }
       },
@@ -32416,7 +32410,7 @@
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 926,
+          "step_count": 921,
           "truncated": true
         }
       },
@@ -33048,15 +33042,15 @@
             "backend/app/schemas/agent.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/agent_routing_policy.py",
+            "backend/app/services/agent_team_setup_service.py",
+            "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/work_metrics.py",
             "backend/app/services/review_provenance.py",
             "backend/app/services/retained_planning_output.py",
             "backend/app/services/execution_reconciliation.py",
-            "backend/app/utils/github_links.py",
-            "backend/app/services/agent_team_setup_service.py",
-            "backend/app/services/agent_routing_rollout.py"
+            "backend/app/utils/github_links.py"
           ],
-          "step_count": 626,
+          "step_count": 652,
           "truncated": true
         }
       },
@@ -33146,14 +33140,14 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/schemas/agent.py",
+            "backend/app/services/agent_team_setup_service.py",
+            "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/work_metrics.py",
             "backend/app/services/retained_planning_output.py",
             "backend/app/services/execution_reconciliation.py",
-            "backend/app/utils/github_links.py",
-            "backend/app/services/agent_team_setup_service.py",
-            "backend/app/services/agent_routing_rollout.py"
+            "backend/app/utils/github_links.py"
           ],
-          "step_count": 715,
+          "step_count": 741,
           "truncated": true
         }
       },
@@ -33253,7 +33247,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 853,
+          "step_count": 848,
           "truncated": true
         }
       },
@@ -33444,7 +33438,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 967,
+          "step_count": 962,
           "truncated": true
         }
       },
@@ -34161,7 +34155,7 @@
             "backend/app/schemas/agent.py",
             "backend/app/schemas/agent_routing.py"
           ],
-          "step_count": 546,
+          "step_count": 556,
           "truncated": true
         }
       },
@@ -35400,7 +35394,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 798,
+          "step_count": 793,
           "truncated": true
         }
       },
@@ -36107,6 +36101,7 @@
             "backend/app/services/agent_routing_service.py",
             "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/agent_team_setup_service.py",
+            "backend/app/schemas/agent_team_setup.py",
             "backend/app/query_limits.py",
             "backend/app/schemas/agent_routing.py",
             "backend/app/services/capacity_service.py",
@@ -36121,7 +36116,7 @@
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 1206,
+          "step_count": 1230,
           "truncated": true
         }
       },
@@ -37337,15 +37332,15 @@
             "backend/app/schemas/agent.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/agent_routing_policy.py",
+            "backend/app/services/agent_team_setup_service.py",
+            "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/work_metrics.py",
             "backend/app/services/review_provenance.py",
             "backend/app/services/retained_planning_output.py",
             "backend/app/services/execution_reconciliation.py",
-            "backend/app/utils/github_links.py",
-            "backend/app/services/agent_team_setup_service.py",
-            "backend/app/services/agent_routing_rollout.py"
+            "backend/app/utils/github_links.py"
           ],
-          "step_count": 571,
+          "step_count": 597,
           "truncated": true
         }
       },
@@ -39092,14 +39087,14 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/schemas/agent.py",
+            "backend/app/services/agent_team_setup_service.py",
+            "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/work_metrics.py",
             "backend/app/services/retained_planning_output.py",
             "backend/app/services/execution_reconciliation.py",
-            "backend/app/utils/github_links.py",
-            "backend/app/services/agent_team_setup_service.py",
-            "backend/app/services/agent_routing_rollout.py"
+            "backend/app/utils/github_links.py"
           ],
-          "step_count": 660,
+          "step_count": 686,
           "truncated": true
         }
       },
@@ -39312,7 +39307,7 @@
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 872,
+          "step_count": 867,
           "truncated": true
         }
       },
@@ -48736,16 +48731,16 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/schemas/agent.py",
+            "backend/app/services/agent_team_setup_service.py",
+            "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/work_metrics.py",
             "backend/app/services/retained_planning_output.py",
             "backend/app/services/execution_reconciliation.py",
             "backend/app/utils/github_links.py",
-            "backend/app/services/agent_team_setup_service.py",
-            "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 928,
+          "step_count": 954,
           "truncated": true
         }
       },
@@ -51501,6 +51496,7 @@
         "entities/ScalarResult.md",
         "entities/Scenario.md",
         "entities/ScenarioBase.md",
+        "entities/Scene.md",
         "entities/ScheduleApplyRequest.md",
         "entities/ScheduleExplanationDetailsProps.md",
         "entities/SchedulePreviewComplete.md",
@@ -54000,6 +53996,7 @@
         "modules/test_unused_allocation.md",
         "modules/test_upgrade_current_database_history.md",
         "modules/test_verification_preview_history.md",
+        "modules/test_verifier_presence.md",
         "modules/test_wal_archive_retention.md",
         "modules/test_wiki_lock_root_preflight.md",
         "modules/test_work_correctness.md",
@@ -55875,7 +55872,8 @@
         "modules/test_agent_routing_service.md",
         "modules/test_review_provenance.md",
         "modules/test_scoped_review_evidence.md",
-        "modules/test_task_domain.md"
+        "modules/test_task_domain.md",
+        "modules/test_verifier_presence.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent.py",
@@ -55953,8 +55951,7 @@
         "modules/agent_routing_service.md",
         "modules/agent_work_service.md",
         "modules/mcp_agent_tools.md",
-        "modules/routers_agent.md",
-        "modules/test_agent_routing_rollout.md"
+        "modules/routers_agent.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/agent_routing_rollout.py",
@@ -56007,9 +56004,7 @@
       "mcp_uri": "llm-wiki://entities/AgentRoutingTopologyReadiness",
       "outgoing_internal_links": [
         "modules/agent_routing_rollout.md",
-        "modules/agent_team_setup_service.md",
-        "modules/conftest.md",
-        "modules/test_agent_routing_rollout.md"
+        "modules/agent_team_setup_service.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/agent_routing_rollout.py",
@@ -69213,6 +69208,18 @@
       "role": "semantic",
       "source_path": "backend/tests/test_agent_routing_wave6_qualification.py",
       "title": "ScenarioBase"
+    },
+    {
+      "canonical_path": "entities/Scene.md",
+      "id": "Scene",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/Scene",
+      "outgoing_internal_links": [
+        "modules/test_verifier_presence.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_verifier_presence.py",
+      "title": "Scene"
     },
     {
       "canonical_path": "entities/ScheduleApplyRequest.md",
@@ -97906,6 +97913,19 @@
       "title": "test_verification_preview_history Module"
     },
     {
+      "canonical_path": "modules/test_verifier_presence.md",
+      "id": "test_verifier_presence",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_verifier_presence",
+      "outgoing_internal_links": [
+        "entities/Scene.md",
+        "modules/test_verifier_presence.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_verifier_presence.py",
+      "title": "test_verifier_presence Module"
+    },
+    {
       "canonical_path": "modules/test_wal_archive_retention.md",
       "id": "test_wal_archive_retention",
       "kind": "modules",
@@ -98354,6 +98374,7 @@
         "modules/test_routing_preview_focus.md",
         "modules/test_routing_preview_team_scope.md",
         "modules/test_scoped_review_evidence.md",
+        "modules/test_verifier_presence.md",
         "modules/transactions.md"
       ],
       "role": "semantic",
@@ -106272,7 +106293,6 @@
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
         "modules/authority.md",
-        "modules/autonomy_canonical.md",
         "modules/config.md",
         "modules/routers_agent.md",
         "modules/schemas_agent.md",
@@ -111259,6 +111279,7 @@
         "modules/agent_routing_rollout.md",
         "modules/agent_routing_service.md",
         "modules/agent_service.md",
+        "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
         "modules/app_maintenance.md",
         "modules/authority.md",
@@ -112866,6 +112887,7 @@
         "modules/agent_routing_rollout.md",
         "modules/agent_routing_service.md",
         "modules/agent_service.md",
+        "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
         "modules/app_maintenance.md",
         "modules/authority.md",
@@ -117927,6 +117949,7 @@
         "modules/test_unused_allocation.md",
         "modules/test_upgrade_current_database_history.md",
         "modules/test_verification_preview_history.md",
+        "modules/test_verifier_presence.md",
         "modules/test_wal_archive_retention.md",
         "modules/test_wiki_lock_root_preflight.md",
         "modules/test_work_correctness.md",
@@ -119135,6 +119158,7 @@
         "modules/test_unused_allocation.md",
         "modules/test_upgrade_current_database_history.md",
         "modules/test_verification_preview_history.md",
+        "modules/test_verifier_presence.md",
         "modules/test_wal_archive_retention.md",
         "modules/test_wiki_lock_root_preflight.md",
         "modules/test_work_correctness.md",
@@ -119273,5 +119297,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:da0fa1d7f93fb64fcade7bb35b217d31c0a51f8d2072343a796279eeda603dc7"
+  "source_hash": "sha256:acb2217ab4083ef6ebd501821d4cab7c93203921bd5eb534849d7c7deba28db9"
 }

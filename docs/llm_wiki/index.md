@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1862 | [Open section](#entities) |
-| Modules | 1197 | [Open section](#modules) |
+| Entities | 1863 | [Open section](#entities) |
+| Modules | 1198 | [Open section](#modules) |
 | Workflows | 247 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 638 | [Open section](#entry-point-flows) |
@@ -960,6 +960,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ScalarResult](entities/ScalarResult.md)
 - [Scenario](entities/Scenario.md)
 - [ScenarioBase](entities/ScenarioBase.md)
+- [Scene](entities/Scene.md)
 - [ScheduleApplyRequest](entities/ScheduleApplyRequest.md)
 - [ScheduleExplanationDetailsProps](entities/ScheduleExplanationDetailsProps.md)
 - [SchedulePreviewComplete](entities/SchedulePreviewComplete.md)
@@ -2988,6 +2989,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_unused_allocation](modules/test_unused_allocation.md) - Capacity-row removal reserves planning while preserving unrelated issued work.
 - [test_upgrade_current_database_history](modules/test_upgrade_current_database_history.md) - However much history a database has retained, it starts when current and migrates when not.
 - [test_verification_preview_history](modules/test_verification_preview_history.md) - Verification previews keep assignment-based independence until the stricter policy is enabled.
+- [test_verifier_presence](modules/test_verifier_presence.md) - Verification needs the selected verifier present, not every declared team actor.
 - [test_wal_archive_retention](modules/test_wal_archive_retention.md) - WAL archive retention: segment selection and a point-in-time restore.
 - [test_wiki_lock_root_preflight](modules/test_wiki_lock_root_preflight.md) - Wiki writer preflight refuses checkouts whose lock root leaves the repository.
 - [test_work_correctness](modules/test_work_correctness.md) - Atomic recovery, hierarchy, aggregate versions and cross-surface metric contracts.

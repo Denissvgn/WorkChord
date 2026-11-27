@@ -97,4 +97,4 @@ flowchart LR
 | `AgentRoutingService.validate_assignment_selection` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |
 | `AgentService._validate_run_fence` | call | [agent_service](../modules/agent_service.md) | 1 |
 
-> References: showing 12 of 44 logical references; 32 omitted by the 12-row generated summary limit.
+> References: showing 12 of 45 logical references; 33 omitted by the 12-row generated summary limit.

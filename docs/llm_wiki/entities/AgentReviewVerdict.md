@@ -59,6 +59,7 @@ flowchart LR
     n9["test_supervised_execution_and_exact_independent_review (backend/tests/test_review_provenance.py)"]
     n10["test_scoped_source_packet_from_submission_through_verdict (backend/tests/test_scoped_review_evidence.py)"]
     n11["test_managed_assigned_submission_and_independent_rework (backend/tests/test_task_domain.py)"]
+    n12["pass_verdict (backend/tests/test_verifier_presence.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -70,6 +71,7 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
@@ -81,6 +83,7 @@ flowchart LR
     click n9 "../modules/test_review_provenance.md"
     click n10 "../modules/test_scoped_review_evidence.md"
     click n11 "../modules/test_task_domain.md"
+    click n12 "../modules/test_verifier_presence.md"
 ```
 
 ### Summary
@@ -109,3 +112,4 @@ flowchart LR
 | `test_supervised_execution_and_exact_independent_review` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
 | `test_scoped_source_packet_from_submission_through_verdict` | call | [test_scoped_review_evidence](../modules/test_scoped_review_evidence.md) | 1 |
 | `test_managed_assigned_submission_and_independent_rework` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
+| `pass_verdict` | call | [test_verifier_presence](../modules/test_verifier_presence.md) | 1 |

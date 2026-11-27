@@ -280,10 +280,18 @@ class AgentRoutingService:
         self.task_service = TaskService(db)
         self.rollout_service = rollout_service
 
-    async def _require_preview_rollout(self, actor: AgentActor):
-        """Translate fail-closed rollout state into the routing error envelope."""
+    async def _require_preview_rollout(
+        self, actor: AgentActor, *, verifier_actor_id: int | None = None, project_id: int | None = None,
+    ):
+        """Translate fail-closed rollout state into the routing error envelope.
+
+        With ``verifier_actor_id`` a verification preview needs only that verifier to be present. The refusal
+        names non-ready actors only of a team the caller belongs to, or of the verifier's team for a caller
+        with authority over the task's project.
+        """
 
         rollout_service = self.rollout_service
+        detail: dict[str, Any] = {}
         if rollout_service is None:
             if self.db is None:
                 rollout_service = AgentRoutingRolloutService()
@@ -292,9 +300,9 @@ class AgentRoutingService:
                     AgentTeamSetupService,
                 )
 
-                readiness = await AgentTeamSetupService(
-                    self.db
-                ).routing_readiness(actor)
+                readiness, detail = await AgentTeamSetupService(self.db).readiness_gate(
+                    actor, verifier_actor_id=verifier_actor_id, project_id=project_id
+                )
                 rollout_service = (
                     AgentRoutingRolloutService()
                     if readiness.status
@@ -314,6 +322,7 @@ class AgentRoutingService:
                 effective_mode=status.effective_mode.value,
                 blocker_codes=list(status.blocker_codes),
                 topology_readiness=status.topology_readiness.as_dict(),
+                **{key: value for key, value in detail.items() if key not in {"topology_key", "topology_revision"}},
             ) from exc
 
     @staticmethod
@@ -2228,7 +2237,6 @@ class AgentRoutingService:
     ) -> AgentRoutingPreviewResponse:
         """Return a deterministic preview and stage bounded shadow/audit evidence."""
 
-        rollout = await self._require_preview_rollout(actor)
         self._require_read(actor)
         if actor.id <= 0:
             raise AgentPermissionError(
@@ -2237,6 +2245,11 @@ class AgentRoutingService:
         task = await self.task_service.get_by_id(task_id)
         if task is None:
             raise LookupError("Task not found")
+        rollout = await self._require_preview_rollout(
+            actor,
+            verifier_actor_id=data.focus_actor_id if data.purpose == "verification" else None,
+            project_id=task.project_id,
+        )
         preview = await self._build_preview(
             task=task,
             data=data,
