@@ -41,7 +41,7 @@ class Base(DeclarativeBase):
 
 async def request_command_mode(request: Request) -> str:
     """Match DTO preview defaults before creating the root transaction."""
-    if request.url.path.endswith(("/schedule/preview", "/capacity-adjustments/preview", "/date-move/preview")):
+    if request.url.path.endswith(("/schedule/preview", "/capacity-adjustments/preview", "/date-move/preview", "/import/dry-run")):
         return "preview"
     if "/team-capacity-transfers" in request.url.path and request.url.path.endswith("/preview"):
         return "preview"

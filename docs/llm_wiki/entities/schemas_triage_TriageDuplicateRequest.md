@@ -42,18 +42,21 @@ flowchart LR
     n4["mark_triage_item_duplicate (backend/app/routers/triage.py)"]
     n5["backend/app/schemas/__init__.py"]
     n6["TriageService.mark_duplicate (backend/app/services/triage_service.py)"]
+    n7["test_snoozed_triage_item_keeps_work_postponed_and_a_duplicate_resolves_it (backend/tests/test_task_reactivation.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/schemas_triage.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent_planning.md"
     click n4 "../modules/routers_triage.md"
     click n5 "../modules/schemas___init__.md"
     click n6 "../modules/triage_service.md"
+    click n7 "../modules/test_task_reactivation.md"
 ```
 
 ### Summary
@@ -77,3 +80,4 @@ flowchart LR
 | `mark_triage_item_duplicate` | type_reference | [routers_triage](../modules/routers_triage.md) | — |
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `TriageService.mark_duplicate` | type_reference | [triage_service](../modules/triage_service.md) | — |
+| `test_snoozed_triage_item_keeps_work_postponed_and_a_duplicate_resolves_it` | call | [test_task_reactivation](../modules/test_task_reactivation.md) | 1 |

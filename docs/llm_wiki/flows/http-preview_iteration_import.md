@@ -17,62 +17,61 @@ sequenceDiagram
     participant p3 as _read_json_upload
     participant p4 as IterationService.get_by_id
     participant p5 as IterationService
-    participant p6 as _validate_import_task_tree
-    participant p7 as PlanningConflict
-    participant p8 as HTTPException (backend/app/routers/expor…y:preview_iteration_import)
-    participant p9 as file.read
-    participant p10 as data.get
-    participant p11 as self.db.execute
-    participant p12 as read
-    participant p13 as len (backend/app/routers/export.py:_read_json_upload)
-    participant p14 as isinstance (backend/app/routers/export.py:_validate_import_data)
-    participant p15 as select(…).options(…).where
-    participant p16 as hashlib.sha256(…).hexdigest
+    participant p6 as import_file_sha256
+    participant p7 as _validate_import_task_tree
+    participant p8 as PlanningConflict
+    participant p9 as HTTPException (backend/app/routers/expor…y:preview_iteration_import)
+    participant p10 as file.read
+    participant p11 as data.get
+    participant p12 as self.db.execute
+    participant p13 as read
+    participant p14 as len (backend/app/routers/export.py:_read_json_upload)
+    participant p15 as isinstance (backend/app/routers/export.py:_validate_import_data)
+    participant p16 as select(…).options(…).where
     participant p17 as HTTPException (backend/app/routers/export.py:_read_json_upload)
     participant p18 as HTTPException (backend/app/routers/export.py:_validate_import_data)
     participant p19 as select(…).options
-    participant p20 as hashlib.sha256
-    participant p21 as json.loads
-    participant p22 as select
-    participant p23 as json.dumps(…).encode (backend/app/services/impo…observe_import_planning, 1)
-    participant p24 as content.decode
-    participant p25 as selectinload
-    participant p26 as json.dumps
+    participant p20 as json.loads
+    participant p21 as select
+    participant p22 as content.decode
+    participant p23 as selectinload
+    participant p24 as len (backend/app/services/impo…py:observe_import_planning)
+    participant p25 as json.dumps(…).encode (backend/app/services/impo…py:observe_import_planning)
     p0->>p1: _validate_import_data
     p0->>p2: observe_import_planning
     p0->>p3: _read_json_upload
     p0->>p4: IterationService.get_by_id
     p0->>p5: IterationService
-    p1->>p6: _validate_import_task_tree
-    p2->>p7: PlanningConflict
-    p0-->>p8: HTTPException (backend/app/routers/expor…y:preview_iteration_import)(404, detail='Iteration not found or inaccessible')
-    p3-->>p9: file.read(...)
-    p1-->>p10: data.get('tasks', [...])
-    p4-->>p11: self.db.execute(...)
-    p2-->>p12: read
-    p3-->>p13: len (backend/app/routers/export.py:_read_json_upload)(content)
-    p1-->>p14: isinstance (backend/app/routers/export.py:_validate_import_data)(tasks, list)
-    p4-->>p15: select(…).options(…).where(...)
-    p2-->>p16: hashlib.sha256(…).hexdigest
+    p2->>p6: import_file_sha256
+    p1->>p7: _validate_import_task_tree
+    p2->>p8: PlanningConflict
+    p0-->>p9: HTTPException (backend/app/routers/expor…y:preview_iteration_import)(404, detail='Iteration not found or inaccessible')
+    p3-->>p10: file.read(...)
+    p1-->>p11: data.get('tasks', [...])
+    p4-->>p12: self.db.execute(...)
+    p2-->>p13: read
+    p3-->>p14: len (backend/app/routers/export.py:_read_json_upload)(content)
+    p1-->>p15: isinstance (backend/app/routers/export.py:_validate_import_data)(tasks, list)
+    p4-->>p16: select(…).options(…).where(...)
     p3-->>p17: HTTPException (backend/app/routers/export.py:_read_json_upload)(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail='Import file is too large')
     p1-->>p18: HTTPException (backend/app/routers/export.py:_validate_import_data)(422, detail='Tasks must be a list')
     p4-->>p19: select(…).options(selectinload(...), selectinload(...))
-    p2-->>p20: hashlib.sha256(...)
-    p3-->>p21: json.loads(content.decode(...))
-    p4-->>p22: select(Iteration)
-    p2-->>p23: json.dumps(…).encode (backend/app/services/impo…observe_import_planning, 1)
-    p3-->>p24: content.decode('utf-8')
-    p1-->>p10: data.get('team_members', [...])
-    p4-->>p25: selectinload(Iteration.calendar)
-    p2-->>p26: json.dumps(data, sort_keys=True, separators=(...))
+    p2-->>p13: read
+    p3-->>p20: json.loads(content.decode(...))
+    p4-->>p21: select(Iteration)
+    p3-->>p22: content.decode('utf-8')
+    p1-->>p11: data.get('team_members', [...])
+    p4-->>p23: selectinload(Iteration.calendar)
+    p2-->>p24: len (backend/app/services/impo…py:observe_import_planning)(...)
     p3-->>p17: HTTPException (backend/app/routers/export.py:_read_json_upload)(status_code=status.HTTP_400_BAD_REQUEST, detail=...)
-    p1-->>p14: isinstance (backend/app/routers/export.py:_validate_import_data)(members, list)
-    p4-->>p25: selectinload(Iteration.project)
+    p1-->>p15: isinstance (backend/app/routers/export.py:_validate_import_data)(members, list)
+    p4-->>p23: selectinload(Iteration.project)
+    p2-->>p25: json.dumps(…).encode (backend/app/services/impo…py:observe_import_planning)
 ```
 
-> Call sequence diagram shows 30 of 54 interactions; 24 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 55 interactions; 25 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 13 of 30 (17 omitted); unresolved 10 of 16 (6 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 12 of 30 (18 omitted); unresolved 10 of 16 (6 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -83,9 +82,10 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/routers/export.py:_validate_import_task_tree` | 16 | - | external | 6 |
 | `backend/app/routers/export.py:_validate_import_data` | 12 | - | external | 6 |
 | `backend/app/services/iteration_service.py:IterationService.get_by_id` | 34 | - | unresolved | 1 |
-| `backend/app/services/import_planning_service.py:observe_import_planning` | 44 | - | unresolved | 2 |
-| `backend/app/services/import_planning_service.py:observe_import_planning` | 44 | - | external | 2 |
-| `backend/app/services/import_planning_service.py:observe_import_planning` | 44 | [backend/app/commands.py](../modules/commands.md) | internal | 1 |
+| `backend/app/services/import_planning_service.py:import_file_sha256` | 46 | - | unresolved | 2 |
+| `backend/app/services/import_planning_service.py:import_file_sha256` | 46 | - | external | 2 |
+| `backend/app/services/import_planning_service.py:observe_import_planning` | 44 | - | external | 1 |
+> Omission summary shows 8 of 9 groups; 1 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -96,9 +96,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 9; effect analysis evaluated: 6, partial: 0, unavailable: 3. Counts include steps omitted from the displayed trace.
+Source steps: 10; effect analysis evaluated: 7, partial: 0, unavailable: 3. Counts include steps omitted from the displayed trace.
 
-Collector observations for 6 source steps with known totals: observed: 27, emitted: 27, omitted: 0. Unavailable totals are excluded.
+Collector observations for 7 source steps with known totals: observed: 29, emitted: 29, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.

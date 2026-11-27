@@ -10,6 +10,7 @@ import { usePlanScheduleWorkloads } from '../../features/planningMasters/usePlan
 import { withPlanReturn } from '../../features/planningMasters/planningReturn';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 import type { GanttResponse, GanttTask, SchedulePreviewResponse } from '../../types/gantt';
+import { unscheduledReasonText } from '../gantt/unscheduledReason';
 import { scheduleLeaves } from '../../features/planningMasters/scheduleEvidence';
 import type { Iteration } from '../../types/iteration';
 import type { Task } from '../../types/task';
@@ -152,7 +153,7 @@ export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iteratio
                 <ul className="plan-schedule-reasons">{keptDates.map(task => <li key={task.task_id}>
                     <Link className="underline" to={scopeLink(withPlanReturn('/tasks', 'schedule', { task: String(task.task_id) }))}>{task.task_title}</Link>
                     {' · '}{t('planSchedule.keptDatesRange', { start: formatDate(task.start_date, i18n.language), end: formatDate(task.end_date, i18n.language) })}
-                    <p>{t(`gantt.unscheduled.reasons.${task.reason}`, { defaultValue: task.message })}</p>
+                    <p>{unscheduledReasonText(t, task)}</p>
                     {task.date_rule && <p className="text-feedback-warning-foreground">{t(`planSchedule.dateRules.${task.date_rule}`, { defaultValue: task.message })}</p>}
                 </li>)}</ul>
             </section>}

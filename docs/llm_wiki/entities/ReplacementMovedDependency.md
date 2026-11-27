@@ -1,6 +1,6 @@
 # ReplacementMovedDependency
 
-**Location:** `backend/app/schemas/task_replacement.py:67`
+**Location:** `backend/app/schemas/task_replacement.py:87`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task_replacement](../modules/schemas_task_replacement.md)
@@ -14,8 +14,8 @@ _Auto-generated from `ReplacementMovedDependency` in `backend/app/schemas/task_r
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `task_id` | `int` | `task_id` | Yes | No | — | — | — | — |
-| `kind` | `Literal['schedule', 'delivery']` | `kind` | Yes | No | — | — | — | — |
-| `action` | `Literal['moved', 'merged', 'removed']` | `action` | Yes | No | — | — | — | — |
+| `kind` | `Literal['schedule', 'delivery', 'reactivation']` | `kind` | Yes | No | — | — | — | — |
+| `action` | `Literal['moved', 'merged', 'removed', 'converted']` | `action` | Yes | No | — | — | — | — |
 
 ## Methods
 

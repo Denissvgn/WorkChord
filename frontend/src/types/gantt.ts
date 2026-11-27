@@ -76,7 +76,13 @@ export interface GanttResponse {
 }
 
 export type UnscheduledReason = 'no_assignee' | 'assignee_not_in_iteration' | 'no_estimate' | 'no_capacity'
-    | 'prerequisites_pending' | 'predecessor_unscheduled' | 'deferred' | 'blocked' | 'not_placed';
+    | 'prerequisites_pending' | 'predecessor_unscheduled' | 'predecessor_postponed' | 'deferred' | 'blocked' | 'not_placed';
+
+/** A postponed task a planned task waits on. */
+export interface WaitingOnTask {
+    task_id: number;
+    task_title: string;
+}
 
 export type DateRule = 'dates_incomplete' | 'dates_inverted' | 'outside_iteration' | 'before_min_start_date';
 
@@ -92,6 +98,8 @@ export interface UnscheduledTask {
     date_rule?: DateRule;
     /** Causes of its own that keep it undated once the main reason is resolved. */
     also?: UnscheduledReason[];
+    /** The postponed work it waits on, for reason predecessor_postponed. */
+    waiting_on?: WaitingOnTask[];
 }
 
 /** A planned task the scheduler could not place; it keeps the dates it already had. */
@@ -105,6 +113,7 @@ export interface KeptDatesTask {
     /** The rule the kept dates break, when they break one. */
     date_rule?: DateRule;
     also?: UnscheduledReason[];
+    waiting_on?: WaitingOnTask[];
 }
 
 export interface ScheduleResult {

@@ -1,6 +1,6 @@
 # ReplacementCandidate
 
-**Location:** `backend/app/schemas/task_replacement.py:84`
+**Location:** `backend/app/schemas/task_replacement.py:104`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task_replacement](../modules/schemas_task_replacement.md)

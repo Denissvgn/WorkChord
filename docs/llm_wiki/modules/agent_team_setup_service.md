@@ -65,7 +65,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (20) |
+| Inbound | `backend` (21) |
 | Outbound | `backend` (17) |
 
 ### External packages
@@ -74,7 +74,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 37 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -83,12 +83,14 @@ flowchart LR
 | [AgentTeamSetupConflictError](../entities/AgentTeamSetupConflictError.md) | 110 | `AgentConflictError` | Stable conflict envelope shared by setup REST and MCP reads. |
 | [AgentTeamCallerUnboundError](../entities/AgentTeamCallerUnboundError.md) | 126 | `AgentPermissionError` | A PM asked for team status but is not bound to any live topology. |
 | [AgentTeamMembershipBoundary](../entities/AgentTeamMembershipBoundary.md) | 131 | — | Current topology/revision and active member set for exact-actor routing. |
-| [AgentTeamSetupService](../entities/AgentTeamSetupService.md) | 186 | — | Reconcile one portable topology without making the UI a control plane. |
+| [AgentTeamSetupService](../entities/AgentTeamSetupService.md) | 229 | — | Reconcile one portable topology without making the UI a control plane. |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `_iso_or_none` | `(value: Any) -> str \| None` | — | — |
+| `readiness_refusal_context` | `(boundary: AgentTeamMembershipBoundary, *, required_actor_ids: frozenset[int] \| None = None) -> dict[str, Any]` | — | Name the non-ready actors and the readiness rule for a refusal. |
 | `_json_loads` | `(value: str \| None, fallback: Any) -> Any` | — | — |
 | `_canonical_json` | `(value: Any) -> str` | — | — |
 | `_digest` | `(value: Any) -> str` | — | — |

@@ -133,4 +133,4 @@ flowchart LR
 | `execution_reconciliation` | import | [execution_reconciliation](../modules/execution_reconciliation.md) | — |
 | `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |
 
-> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.
+> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.

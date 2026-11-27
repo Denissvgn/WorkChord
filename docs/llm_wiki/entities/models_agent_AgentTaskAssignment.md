@@ -121,4 +121,4 @@ flowchart LR
 | `AgentRoutingService.validate_assignment_selection` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `agent_service` | import | [agent_service](../modules/agent_service.md) | — |
 
-> References: showing 12 of 118 logical references; 106 omitted by the 12-row generated summary limit.
+> References: showing 12 of 120 logical references; 108 omitted by the 12-row generated summary limit.

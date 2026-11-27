@@ -99,4 +99,4 @@ flowchart LR
 | `test_annual_selection_and_forecast_preserve_live_ownership` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
 | `test_mcp_reports_an_existing_issued_year_conflict` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
 
-> References: showing 12 of 43 logical references; 31 omitted by the 12-row generated summary limit.
+> References: showing 12 of 45 logical references; 33 omitted by the 12-row generated summary limit.

@@ -315,6 +315,65 @@ rework, and recovery command enforce the caller's current topology revision
 and runtime-ready membership. A topology change invalidates stale routing
 evidence.
 
+### Which actors are runtime-ready, and what a refusal tells you
+
+An actor is runtime-ready when it matches its declared role, scopes, profile
+and model bindings, its runtime handoff is issued, its current runtime
+acknowledgement (package, profile and model-binding revisions, runtime instance
+identity) is recorded, its credential is delivered, it is enabled and active,
+and it polled its queue within the topology's
+`maximum_runtime_staleness_seconds`. Polling is what keeps an actor present: an
+actor that stops polling becomes stale and is no longer ready. `blocker_codes`
+name what is missing.
+
+Execution dispatch, rework and recovery depend on the team as it is today: the
+actor that receives the work must be runtime-ready, and enforced model-aware
+dispatch of execution work needs the whole topology ready.
+
+Verification is judged by the selected verifier. While the whole team is not
+ready, a model-aware verification assignment or preview, and the verifier's
+verdict, are allowed when
+
+- the verifier is a runtime-ready member of the caller's team;
+- the caller is bound to that team and holds every readiness condition except a
+  recent poll (a caller that is acting right now need not have polled lately,
+  but a disabled, drifted, unacknowledged or not-yet-ready (for example
+  onboarding) caller is refused); or the caller
+  is bound to no team and has authority over the task's project, in which case
+  the verifier's own team is used.
+
+A verifier that is not present, or is outside the caller's team, is still
+refused. In `trusted_local` mode with no authority set (the single-user local
+mode) a caller bound to no team is treated as having authority over every
+project. A verification preview that names no `focus_actor_id` lists every
+candidate and keeps the whole-team requirement.
+
+Two refusals say who is missing instead of leaving the cause to be guessed.
+`agent_team_actor_outside_topology` (an exact actor that is not a runtime-ready
+member) and `model_aware_routing_preview_unavailable` (routing unavailable
+because the team is not ready), and for a verification assignment also the
+enforced-dispatch refusal, carry:
+
+- `readiness_rule`: the rule above, with the staleness limit in seconds;
+- `maximum_runtime_staleness_seconds`;
+- `non_ready_actors`: one row per declared actor that is not runtime-ready,
+  with `actor_id`, `actor_key`, `role`, `connection_state`, `blocker_codes`,
+  `last_seen_at` (its last queue poll), `last_ready_at` and
+  `blocks_this_request`.
+
+Only a team the caller belongs to is described, or, for a caller bound to no
+team, the verifier's team when the caller has authority over the task's
+project. A preview checks the caller's scopes, identity and the task before it
+says anything about a team.
+
+`last_ready_at` is the last poll while the actor was otherwise ready. It is set
+only when a recent poll is the only thing missing (`runtime_stale`), where it
+equals `last_seen_at`; otherwise it is `null` and `blocker_codes` say why.
+`blocks_this_request` is true for the actors whose absence caused that
+refusal: the exact actor for an assignment, the verifier (and a caller that is
+not ready) for a verification preview or assignment, and every non-ready actor
+otherwise.
+
 ### Read the team and its runtime references
 
 `GET /api/agent/team-setup/topology` and the MCP `agent_get_team_topology` tool

@@ -199,14 +199,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| classify_planning_triage_item | require_scope | 704 | `require_scope(actor, 'planning:write')` |
+| classify_planning_triage_item | require_scope | 736 | `require_scope(actor, 'planning:write')` |
 | require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
-| classify_planning_triage_item | classify_triage_item | 705 | `mcp_agent_tools.classify_triage_item(db, actor, triage_item_id, idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| classify_triage_item | _triage_command_context | 2681 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| classify_planning_triage_item | classify_triage_item | 737 | `mcp_agent_tools.classify_triage_item(db, actor, triage_item_id, idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
+| classify_triage_item | _triage_command_context | 2776 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 | _triage_command_context | validate_idempotency_key | 222 | `validate_idempotency_key(idempotency_key, required=True)` |
 | validate_idempotency_key | ValueError (backend/app/services/agen…:validate_idempotency_key) | 123 | `ValueError('Idempotency-Key is required')` |
 | validate_idempotency_key | value.strip | 127 | `value.strip(data not statically known)` |

@@ -14,9 +14,11 @@ Agent-authenticated PM setup and schedule-control commands.
 | `app.database` | `get_db` |
 | `app.models.agent` | `AgentActor` |
 | `app.routers.agent` | `get_agent_actor` |
+| `app.routers.export` | `_read_json_upload`, `_validate_import_data` |
 | `app.schemas.agent` | `AgentTaskCreate`, `AgentTaskPatch` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext`, `AgentPlanningReceipt`, `AgentScheduleCommand` |
 | `app.schemas.agent_routing` | `TaskRoutingAssessmentCommand`, `TaskRoutingAssessmentListResponse`, `TaskRoutingAssessmentMutationReceipt`, `TaskRoutingAssessmentState` |
+| `app.schemas.import_review` | `ImportDryRunResponse` |
 | `app.schemas.iteration` | `IterationCreate`, `IterationPlanningReadinessSummary`, `IterationUpdate` |
 | `app.schemas.manual_provenance` | `ManualProvenanceWrite` |
 | `app.schemas.project` | `ProjectCreate`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneUpdate`, `ProjectUpdate` |
@@ -26,10 +28,11 @@ Agent-authenticated PM setup and schedule-control commands.
 | `app.services.agent_planning_service` | `AgentPlanningService` |
 | `app.services.agent_routing_service` | `AgentRoutingConflictError`, `AgentRoutingService` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `require_scope` |
+| `app.services.import_review_service` | `ImportFileInvalid` |
 | `app.services.task_service` | `TaskVersionConflictError` |
 | `app.services.triage_service` | `TriageConflictError` |
 | `app.utils.source_link_policy` | `SourceLinkRefused` |
-| `fastapi` | `APIRouter`, `Depends`, `Header`, `HTTPException`, `Query`, `status` |
+| `fastapi` | `APIRouter`, `Depends`, `File`, `Header`, `HTTPException`, `Query`, `UploadFile`, `status` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `typing` | `Annotated`, `NoReturn` |
 
@@ -52,7 +55,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (5) |
-| Outbound | `backend` (19) |
+| Outbound | `backend` (22) |
 
 ### External packages
 
@@ -60,7 +63,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -71,6 +74,7 @@ flowchart LR
 | `get_agent_planning_command_context` | *(async)* `(idempotency_key: Annotated[str, Header(alias='Idempotency-Key')], rationale: Annotated[str, Header(alias='X-Agent-Rationale')], correlation_id: Annotated[str, Header(alias='X-Correlation-ID')]) -> AgentPlanningCommandContext` | — | Validate required durable-audit headers for one PM command. |
 | `_handle_agent_error` | `(exc: Exception) -> NoReturn` | — | Map safe command-domain errors to stable HTTP status codes. |
 | `get_iteration_plan_readiness` | *(async)* `(iteration_id: int, actor: Annotated[AgentActor, Depends(get_agent_actor)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.get('/agent/planning/iterations/{iteration_id}/readiness', response_model=IterationPlanningReadinessSummary)` | Read the six plan checkpoints people see, with one state each. |
+| `dry_run_iteration_import` | *(async)* `(file: Annotated[UploadFile, File(...)], actor: Annotated[AgentActor, Depends(get_agent_actor)], db: Annotated[AsyncSession, Depends(get_db, scope='function')], iteration_id: int \| None = None)` | `@router.post('/agent/planning/iterations/import/dry-run', response_model=ImportDryRunResponse)`, `@router.post('/agent/planning/iterations/{iteration_id}/import/dry-run', response_model=ImportDryRunResponse)` | Return the exact changes a JSON plan import would make; nothing is written. |
 | `get_task_routing_assessment` | *(async)* `(task_id: int, actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentRoutingService, Depends(get_agent_routing_service)])` | `@router.get('/agent/planning/tasks/{task_id}/routing-assessment', response_model=TaskRoutingAssessmentState)` | Read the current task-version-bound routing assessment state. |
 | `list_task_routing_assessments` | *(async)* `(task_id: int, actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentRoutingService, Depends(get_agent_routing_service)], limit: int = Query(default=100, ge=1, le=100))` | `@router.get('/agent/planning/tasks/{task_id}/routing-assessments', response_model=TaskRoutingAssessmentListResponse)` | List bounded append-only routing-assessment history newest first. |
 | `create_task_routing_assessment` | *(async)* `(task_id: int, data: TaskRoutingAssessmentCommand, actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentRoutingService, Depends(get_agent_routing_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.post('/agent/planning/tasks/{task_id}/routing-assessment', response_model=TaskRoutingAssessmentMutationReceipt, status_code=status.HTTP_201_CREATED)` | Append one audited routing assessment for the expected task version. |
@@ -81,7 +85,7 @@ flowchart LR
 | `delete_project_milestone` | *(async)* `(project_id: int, milestone_id: int, actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentPlanningService, Depends(get_agent_planning_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.delete('/agent/planning/projects/{project_id}/milestones/{milestone_id}', response_model=AgentPlanningReceipt)` | Delete one milestone while retaining an exact detachment receipt. |
 | `create_planning_task` | *(async)* `(iteration_id: int, data: AgentTaskCreate, actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentPlanningService, Depends(get_agent_planning_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.post('/agent/planning/iterations/{iteration_id}/tasks', response_model=AgentPlanningReceipt, status_code=status.HTTP_201_CREATED)` | Create one decomposed task with complete PM command metadata. |
 | `patch_planning_task` | *(async)* `(task_id: int, data: AgentTaskPatch, actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentPlanningService, Depends(get_agent_planning_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.patch('/agent/planning/tasks/{task_id}', response_model=AgentPlanningReceipt)` | Patch decomposition fields with optimistic version and exact replay. |
-| `get_task_replacement` | *(async)* `(task_id: int, actor: Annotated[AgentActor, Depends(get_agent_actor)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.get('/agent/planning/tasks/{task_id}/replacement', response_model=TaskReplacementResponse)` | Read the clean-replacement disposition this task takes part in. |
+| `get_task_replacement` | *(async)* `(task_id: int, actor: Annotated[AgentActor, Depends(get_agent_actor)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.get('/agent/planning/tasks/{task_id}/replacement', response_model=TaskReplacementResponse)` | Read the replacement or supersession disposition this task takes part in. |
 | `record_task_replacement` | *(async)* `(task_id: int, data: TaskReplacementCreate, actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentPlanningService, Depends(get_agent_planning_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.post('/agent/planning/tasks/{task_id}/replacement', response_model=AgentPlanningReceipt, status_code=status.HTTP_201_CREATED)` | Replace an unaccepted task with a fresh one under a recorded owner decision. |
 | `record_manual_provenance` | *(async)* `(task_id: int, data: ManualProvenanceWrite, actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentPlanningService, Depends(get_agent_planning_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.post('/agent/planning/tasks/{task_id}/manual-provenance', response_model=AgentPlanningReceipt, status_code=status.HTTP_201_CREATED)` | Record who executed resolved work delivered outside recorded runs, and its exact candidate. |
 | `create_iteration` | *(async)* `(data: IterationCreate, actor: Annotated[AgentActor, Depends(get_agent_actor)], service: Annotated[AgentPlanningService, Depends(get_agent_planning_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.post('/agent/planning/iterations', response_model=AgentPlanningReceipt, status_code=status.HTTP_201_CREATED)` | Create an iteration through the iteration domain service. |

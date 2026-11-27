@@ -88,9 +88,9 @@ sequenceDiagram
     p0-->>p30: JSONResponse(content=jsonable_encoder(...), headers={...})
 ```
 
-> Call sequence diagram shows 30 of 405 interactions; 375 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 407 interactions; 377 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 2 of 148 (146 omitted); unresolved 5 of 223 (218 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 2 of 149 (147 omitted); unresolved 5 of 224 (219 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -117,7 +117,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 35; effect analysis evaluated: 23, partial: 1, unavailable: 11. Counts include steps omitted from the displayed trace.
 
-Collector observations for 24 source steps with known totals: observed: 107, emitted: 104, omitted: 3. Unavailable totals are excluded.
+Collector observations for 24 source steps with known totals: observed: 110, emitted: 107, omitted: 3. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

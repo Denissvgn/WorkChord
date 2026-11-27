@@ -4,7 +4,7 @@
 
 ## Description
 
-An audited disposition that replaces unattributable work with a separate clean task.
+An audited disposition that names the one task delivering another task's work instead.
 
 ## Imports
 
@@ -27,14 +27,16 @@ flowchart LR
     n3["backend/app/services/delivery_dependency_service.py"]
     n4["backend/app/services/task_replacement_service.py"]
     n5["backend/app/utils/time.py"]
-    n6["backend/tests/migrations/test_task_replacement_migration.py"]
+    n6["backend/tests/migrations/test_task_supersession_migration.py"]
     n7["backend/tests/test_github_reconciliation.py"]
     n8["backend/tests/test_replacement_carried_provenance.py"]
     n9["backend/tests/test_task_replacement.py"]
+    n10["backend/tests/test_task_supersession.py"]
     n1 --> n2
     n2 --> n0
     n2 --> n5
     n3 --> n2
+    n3 --> n4
     n4 --> n2
     n4 --> n3
     n4 --> n5
@@ -48,16 +50,21 @@ flowchart LR
     n9 --> n3
     n9 --> n4
     n9 --> n5
+    n10 --> n2
+    n10 --> n3
+    n10 --> n4
+    n10 --> n5
     click n0 "../modules/app_database.md"
     click n1 "../modules/models___init__.md"
     click n2 "../modules/models_task_replacement.md"
     click n3 "../modules/delivery_dependency_service.md"
     click n4 "../modules/task_replacement_service.md"
     click n5 "../modules/time.md"
-    click n6 "../modules/test_task_replacement_migration.md"
+    click n6 "../modules/test_task_supersession_migration.md"
     click n7 "../modules/test_github_reconciliation.md"
     click n8 "../modules/test_replacement_carried_provenance.md"
     click n9 "../modules/test_task_replacement.md"
+    click n10 "../modules/test_task_supersession.md"
 ```
 
 ### Internal neighbors
@@ -67,10 +74,11 @@ flowchart LR
 | Inbound | [models___init__](../modules/models___init__.md) |
 | Inbound | [delivery_dependency_service](../modules/delivery_dependency_service.md) |
 | Inbound | [task_replacement_service](../modules/task_replacement_service.md) |
-| Inbound | [test_task_replacement_migration](../modules/test_task_replacement_migration.md) |
+| Inbound | [test_task_supersession_migration](../modules/test_task_supersession_migration.md) |
 | Inbound | [test_github_reconciliation](../modules/test_github_reconciliation.md) |
 | Inbound | [test_replacement_carried_provenance](../modules/test_replacement_carried_provenance.md) |
 | Inbound | [test_task_replacement](../modules/test_task_replacement.md) |
+| Inbound | [test_task_supersession](../modules/test_task_supersession.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [time](../modules/time.md) |
 

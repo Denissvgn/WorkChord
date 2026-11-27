@@ -9,18 +9,19 @@
 1. `delivery_dependency_service.DeliveryDependencyService.ready`
 2. `delivery_dependency_service.DeliveryDependencyService`
 3. `task_replacement_service.replaced_by`
-4. `task_brief_service.TaskBriefService.require_review`
-5. `task_brief_service.TaskBriefService`
-6. `task_postponement_service.postponement_actions`
-7. `agent_work_service.AgentWorkService._start_blockers`
-8. `agent_work_service.AgentWorkService`
-9. `time.utc_now`
-10. `time.as_utc`
+4. `task_replacement_service.replacing`
+5. `task_brief_service.TaskBriefService.require_review`
+6. `task_brief_service.TaskBriefService`
+7. `task_postponement_service.postponement_actions`
+8. `agent_work_service.AgentWorkService._start_blockers`
+9. `agent_work_service.AgentWorkService`
+10. `time.utc_now`
 11. `time.as_utc`
-12. `time.utc_now`
-13. `task_brief_service.TaskBriefService.require_review`
-14. `task_brief_service.TaskBriefService`
-15. `schemas_task_domain.TaskActionsResponse`
+12. `time.as_utc`
+13. `time.utc_now`
+14. `task_brief_service.TaskBriefService.require_review`
+15. `task_brief_service.TaskBriefService`
+16. `schemas_task_domain.TaskActionsResponse`
 
 ## Touches
 

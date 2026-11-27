@@ -24,4 +24,7 @@ SERVER_FEATURES = (
     # PATCH /api/tasks/{task_id}/delivery-dependencies/{edge_id} changes or clears
     # a prerequisite's target branch.
     "delivery-prerequisite-retarget-v1",
+    # MCP tools agent_get_task_postponement, agent_postpone_task and agent_reactivate_task;
+    # workspace_list_project_tasks takes a status filter that includes postponed.
+    "postponement-agent-tools-v1",
 )

@@ -7,7 +7,7 @@
 **Target:**
 
 ```typescript
-'planned' | 'active' | 'resolved' | 'closed'
+'planned' | 'active' | 'resolved' | 'postponed' | 'closed'
 ```
 
 ## Description
@@ -90,4 +90,4 @@ flowchart LR
 | `useTaskRowEdits` | import | [useTaskRowEdits](../modules/useTaskRowEdits.md) | — |
 | `isTaskStatus` | type_reference | [tone](../modules/tone.md) | — |
 
-> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
+> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.

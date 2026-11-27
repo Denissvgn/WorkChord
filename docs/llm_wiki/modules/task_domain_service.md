@@ -36,7 +36,7 @@ Progress availability follows open-leaf execution permission and excludes direct
 | `app.services.task_brief_service` | `clear_acceptance`, `TaskBriefService`, `TaskBriefService` |
 | `app.services.task_hierarchy_service` | `TaskTreeIntegrityError`, `TaskTreeIntegrityError` |
 | `app.services.task_postponement_service` | `postponement_actions` |
-| `app.services.task_replacement_service` | `replaced_by` |
+| `app.services.task_replacement_service` | `replaced_by`, `SUPERSESSION`, `replacing` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.work_metrics` | `effective_work_flags` |
 | `app.utils.time` | `utc_now`, `as_utc` |
@@ -62,7 +62,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (21) |
+| Inbound | `backend` (23) |
 | Outbound | `backend` (22) |
 
 ### External packages
@@ -71,7 +71,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 42 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

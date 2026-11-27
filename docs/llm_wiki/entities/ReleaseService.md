@@ -48,7 +48,9 @@ flowchart LR
     n6["list_project_releases (backend/app/routers/projects.py)"]
     n7["update_release (backend/app/routers/projects.py)"]
     n8["metric_matches (backend/app/routers/task_domain.py)"]
-    n9["test_clean_replacement_is_accepted_once_and_carried_work_stays_held (backend/tests/test_task_replacement.py)"]
+    n9["test_iteration_and_release_progress_count_postponed_separately (backend/tests/test_postponed_out_of_scheduling.py)"]
+    n10["test_clean_replacement_is_accepted_once_and_carried_work_stays_held (backend/tests/test_task_replacement.py)"]
+    n11["test_supersession_moves_dependents_releases_and_requirements_and_counts_once (backend/tests/test_task_supersession.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -58,6 +60,8 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
+    n11 --> n0
     click n0 "../modules/release_service.md"
     click n1 "../modules/mcp_agent_tools.md"
     click n2 "../modules/mcp_agent_tools.md"
@@ -67,7 +71,9 @@ flowchart LR
     click n6 "../modules/projects.md"
     click n7 "../modules/projects.md"
     click n8 "../modules/routers_task_domain.md"
-    click n9 "../modules/test_task_replacement.md"
+    click n9 "../modules/test_postponed_out_of_scheduling.md"
+    click n10 "../modules/test_task_replacement.md"
+    click n11 "../modules/test_task_supersession.md"
 ```
 
 ### Summary
@@ -89,4 +95,6 @@ flowchart LR
 | `list_project_releases` | type_reference | [projects](../modules/projects.md) | — |
 | `update_release` | type_reference | [projects](../modules/projects.md) | — |
 | `metric_matches` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |
+| `test_iteration_and_release_progress_count_postponed_separately` | call | [test_postponed_out_of_scheduling](../modules/test_postponed_out_of_scheduling.md) | 1 |
 | `test_clean_replacement_is_accepted_once_and_carried_work_stays_held` | call | [test_task_replacement](../modules/test_task_replacement.md) | 1 |
+| `test_supersession_moves_dependents_releases_and_requirements_and_counts_once` | call | [test_task_supersession](../modules/test_task_supersession.md) | 1 |
