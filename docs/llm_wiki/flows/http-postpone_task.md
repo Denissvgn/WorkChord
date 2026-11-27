@@ -112,16 +112,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| postpone_task | domain_result | 412 | `domain_result(...)` |
-| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 59 | `str(exc)` |
-| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| postpone_task | TaskPostponementService(…).postpone | 412 | `TaskPostponementService(db).postpone(task_id, data)` |
-| postpone_task | TaskPostponementService | 412 | `TaskPostponementService(db)` |
+| postpone_task | domain_result | 426 | `domain_result(...)` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| postpone_task | TaskPostponementService(…).postpone | 426 | `TaskPostponementService(db).postpone(task_id, data)` |
+| postpone_task | TaskPostponementService | 426 | `TaskPostponementService(db)` |
 
 ### Boundary effects
 
@@ -131,12 +131,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 55 |
-| unresolved_call | `domain_result` | `exc.detail` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| external_call | `domain_result` | `HTTPException` | 61 |
-| unresolved_call | `postpone_task` | `TaskPostponementService(db).postpone` | 412 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
+| unresolved_call | `postpone_task` | `TaskPostponementService(db).postpone` | 426 |
 
 ## Behavior
 

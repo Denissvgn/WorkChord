@@ -238,15 +238,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_actions | domain_result | 241 | `domain_result(...)` |
-| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
-| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
-| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 59 | `str(exc)` |
-| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_actions | TaskDomainService.allowed_actions | 241 | `TaskDomainService(db).allowed_actions(task_id)` |
+| task_actions | domain_result | 242 | `domain_result(...)` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| task_actions | TaskDomainService.allowed_actions | 242 | `TaskDomainService(db).allowed_actions(task_id)` |
 | TaskDomainService.allowed_actions | TaskDomainService._policy_task | 232 | `self._policy_task(task_id)` |
 | TaskDomainService._policy_task | self.tasks.get_by_id (backend/app/services/task…omainService._policy_task) | 227 | `self.tasks.get_by_id(task_id)` |
 
@@ -267,11 +267,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 55 |
-| unresolved_call | `domain_result` | `exc.detail` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| external_call | `domain_result` | `HTTPException` | 61 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
 | unresolved_call | `TaskDomainService._policy_task` | `self.tasks.get_by_id` | 227 |
 | step_limit | `task_actions` | `first 12 steps` | 0 |
 | truncated_flow | `task_actions` | `depth limit` | 0 |

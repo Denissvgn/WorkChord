@@ -19,6 +19,7 @@ Bulk preview returns original task and iteration revisions. Apply validates thos
 | `app.schemas.team` | `AssigneeRecommendationResponse` |
 | `app.services.assignee_recommendation_service` | `AssigneeRecommendationService` |
 | `app.services.language_service` | `backend_error_message`, `incomplete_dependency_message`, `invalid_status_transition_message`, `localized`, `resolve_runtime_ui_language`, `task_requires_schedule_message` |
+| `app.services.task_routing_service` | `RoutingConsistencyConflict`, `check_routing`, `routing_check_for` |
 | `app.services.task_service` | `TaskService` |
 | `fastapi` | `HTTPException`, `status` |
 | `json` | `json` |
@@ -40,10 +41,11 @@ flowchart LR
     n6["backend/app/services/assignee_recommendation_service.py"]
     n7["backend/app/services/language_service.py"]
     n8["backend/app/services/task_bulk_operation_service.py"]
-    n9["backend/app/services/task_service.py"]
+    n9["backend/app/services/task_routing_service.py"]
+    n10["backend/app/services/task_service.py"]
     n0 --> n1
     n0 --> n2
-    n0 --> n9
+    n0 --> n10
     n1 --> n2
     n2 --> n1
     n3 --> n0
@@ -54,7 +56,7 @@ flowchart LR
     n3 --> n6
     n3 --> n7
     n3 --> n8
-    n3 --> n9
+    n3 --> n10
     n4 --> n5
     n6 --> n2
     n6 --> n5
@@ -66,11 +68,14 @@ flowchart LR
     n8 --> n6
     n8 --> n7
     n8 --> n9
+    n8 --> n10
     n9 --> n0
-    n9 --> n1
-    n9 --> n2
-    n9 --> n4
-    n9 --> n7
+    n10 --> n0
+    n10 --> n1
+    n10 --> n2
+    n10 --> n4
+    n10 --> n7
+    n10 --> n9
     click n0 "../modules/commands.md"
     click n1 "../modules/models_iteration.md"
     click n2 "../modules/models_task.md"
@@ -80,7 +85,8 @@ flowchart LR
     click n6 "../modules/assignee_recommendation_service.md"
     click n7 "../modules/language_service.md"
     click n8 "../modules/task_bulk_operation_service.md"
-    click n9 "../modules/task_service.md"
+    click n9 "../modules/task_routing_service.md"
+    click n10 "../modules/task_service.md"
 ```
 
 ### Internal neighbors
@@ -95,6 +101,7 @@ flowchart LR
 | Outbound | [schemas_team](../modules/schemas_team.md) |
 | Outbound | [assignee_recommendation_service](../modules/assignee_recommendation_service.md) |
 | Outbound | [language_service](../modules/language_service.md) |
+| Outbound | [task_routing_service](../modules/task_routing_service.md) |
 | Outbound | [task_service](../modules/task_service.md) |
 
 ### External packages
@@ -107,4 +114,4 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskBulkOperationService](../entities/TaskBulkOperationService.md) | 33 | — | Validate, preview, and apply selected-task bulk operations. |
+| [TaskBulkOperationService](../entities/TaskBulkOperationService.md) | 34 | — | Validate, preview, and apply selected-task bulk operations. |

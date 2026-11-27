@@ -22,7 +22,7 @@ Creating a project with independent-publisher review enabled requires a workspac
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `require_operator`, `require_operator`, `require_project`, `internal_authority` |
+| `app.authority` | `require_operator`, `require_operator`, `require_operator`, `require_project`, `internal_authority` |
 | `app.commands` | `atomic_command`, `lock_planning`, `commit_or_flush`, `schedule_input_command`, `PlanningConflict` |
 | `app.models.agent` | `AgentRun`, `AgentTaskAssignment` |
 | `app.models.delivery_dependency` | `DeliveryDependency` |

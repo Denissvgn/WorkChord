@@ -28,6 +28,7 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.schemas.task_domain` | `BacklogRestoreRequest`, `TaskActionRequest`, `TaskActionsResponse` |
 | `app.schemas.task_postponement` | `OwnerDecisionRequest`, `TaskPostponeRequest`, `TaskPostponementResponse`, `TaskReactivateRequest` |
 | `app.schemas.task_replacement` | `TaskReplacementCreate`, `TaskReplacementResponse`, `TaskSupersessionCreate` |
+| `app.schemas.task_routing` | `RoutingCheck`, `RoutingConvert`, `RoutingConvertResponse` |
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService`, `BacklogSnapshotService` |
 | `app.services.delivery_metrics_service` | `DeliveryMetricsService` |
 | `app.services.execution_usage_service` | `ExecutionUsageService` |
@@ -69,7 +70,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (6) |
-| Outbound | `backend` (33) |
+| Outbound | `backend` (34) |
 
 ### External packages
 
@@ -77,15 +78,15 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 39 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DB](../entities/routers_task_domain_DB.md) | Type alias | 27 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
-| [MetricMatchItem](../entities/MetricMatchItem.md) | Pydantic model | 95 | `BaseModel` | — |
-| [MetricMatchPage](../entities/routers_task_domain_MetricMatchPage.md) | Pydantic model | 104 | `BaseModel` | — |
+| [DB](../entities/routers_task_domain_DB.md) | Type alias | 28 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
+| [MetricMatchItem](../entities/MetricMatchItem.md) | Pydantic model | 96 | `BaseModel` | — |
+| [MetricMatchPage](../entities/routers_task_domain_MetricMatchPage.md) | Pydantic model | 105 | `BaseModel` | — |
 
 ## Functions
 
@@ -109,6 +110,8 @@ flowchart LR
 | `task_command` | *(async)* `(task_id: int, data: TaskActionRequest, db: DB)` | `@router.post('/tasks/{task_id}/commands', response_model=TaskResponse)` | — |
 | `write_task_brief` | *(async)* `(task_id: int, data: BriefWrite, db: DB)` | `@router.put('/tasks/{task_id}/brief', response_model=TaskResponse)` | — |
 | `convert_task_brief` | *(async)* `(task_id: int, data: BriefConvert, db: DB)` | `@router.post('/tasks/{task_id}/brief/convert')` | — |
+| `check_task_routing` | *(async)* `(task_id: int, db: DB, assignee_id: int \| None = Query(default=None, ge=1, description='A proposed assignee row; the current assignee when omitted.'))` | `@router.get('/tasks/{task_id}/routing/check', response_model=RoutingCheck)` | Check the brief's structured routing against an assignee and the project's review policy. |
+| `convert_task_routing` | *(async)* `(task_id: int, data: RoutingConvert, db: DB)` | `@router.post('/tasks/{task_id}/routing/convert', response_model=RoutingConvertResponse)` | Preview or apply moving routing named in the brief's text into its structured routing. |
 | `record_task_progress` | *(async)* `(task_id: int, data: ProgressWrite, db: DB)` | `@router.post('/tasks/{task_id}/progress', response_model=TaskResponse)` | — |
 | `review_task` | *(async)* `(task_id: int, data: TaskReviewWrite, db: DB)` | `@router.post('/tasks/{task_id}/review', response_model=TaskResponse)` | — |
 | `owner_accept_task` | *(async)* `(task_id: int, data: OwnerAcceptanceWrite, db: DB)` | `@router.post('/tasks/{task_id}/owner-acceptance', response_model=TaskResponse)` | Accept resolved work as a signed-in owner while the different-publisher policy stays on. |

@@ -1,6 +1,6 @@
 # CriterionProgress
 
-**Location:** `backend/app/schemas/task_brief.py:56`
+**Location:** `backend/app/schemas/task_brief.py:60`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task_brief](../modules/schemas_task_brief.md)

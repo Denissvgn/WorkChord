@@ -224,10 +224,10 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.info.pop` | `command_transaction` | 125 |
-| mutation | `db.info.pop` | `command_transaction` | 138 |
-| mutation | `db.info.pop` | `command_transaction` | 139 |
+| mutation | `db.info.pop` | `command_transaction` | 127 |
+| mutation | `db.info.pop` | `command_transaction` | 140 |
 | mutation | `db.info.pop` | `command_transaction` | 141 |
+| mutation | `db.info.pop` | `command_transaction` | 143 |
 
 ### Static analysis gaps
 

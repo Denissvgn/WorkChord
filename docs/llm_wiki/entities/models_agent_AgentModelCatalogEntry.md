@@ -114,4 +114,4 @@ flowchart LR
 | `RoutingQualificationKeyService._bounded_usage` | type_reference | [routing_qualification_key_service](../modules/routing_qualification_key_service.md) | — |
 | `RoutingQualificationKeyService._references` | type_reference | [routing_qualification_key_service](../modules/routing_qualification_key_service.md) | — |
 
-> References: showing 12 of 57 logical references; 45 omitted by the 12-row generated summary limit.
+> References: showing 12 of 62 logical references; 50 omitted by the 12-row generated summary limit.

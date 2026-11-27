@@ -105,9 +105,9 @@ sequenceDiagram
     p0-->>p30: data.model_dump (backend/app/routers/agent…nning_triage_item_to_task)(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 501 interactions; 471 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 530 interactions; 500 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 129 (128 omitted); unresolved 1 of 209 (208 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 129 (128 omitted); unresolved 1 of 234 (233 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -121,7 +121,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/agent_service.py:validate_idempotency_key` | 10 | - | unresolved | 1 |
 | `backend/app/mcp_agent_tools.py:_triage_command_context` | 9 | [backend/app/schemas/agent_planning.py](../modules/schemas_agent_planning.md) | internal | 1 |
 | `backend/app/mcp_agent_tools.py:convert_triage_to_task` | 8 | [backend/app/schemas/triage.py](../modules/schemas_triage.md) | internal | 2 |
-> Omission summary shows 8 of 151 groups; 143 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 154 groups; 146 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -134,9 +134,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 164; effect analysis evaluated: 105, partial: 4, unavailable: 55. Counts include steps omitted from the displayed trace.
+Source steps: 168; effect analysis evaluated: 109, partial: 4, unavailable: 55. Counts include steps omitted from the displayed trace.
 
-Collector observations for 109 source steps with known totals: observed: 648, emitted: 632, omitted: 16. Unavailable totals are excluded.
+Collector observations for 113 source steps with known totals: observed: 664, emitted: 648, omitted: 16. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

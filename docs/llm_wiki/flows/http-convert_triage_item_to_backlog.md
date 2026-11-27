@@ -218,25 +218,25 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | convert_triage_item_to_backlog | command_transaction | 392 | `command_transaction(service.db)` |
-| command_transaction | current_command | 101 | `current_command(db)` |
-| current_command | getattr (backend/app/commands.py:current_command) | 87 | `getattr(db, 'info', None)` |
-| current_command | isinstance (backend/app/commands.py:current_command) | 88 | `isinstance(info, dict)` |
-| current_command | info.get | 88 | `info.get('command')` |
-| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 104 | `RuntimeError('A preview must own its rollback boundary')` |
-| command_transaction | CommandState | 111 | `CommandState(mode=mode)` |
-| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 116 | `RuntimeError('A failed nested command cannot commit')` |
-| command_transaction | db.flush | 117 | `db.flush(data not statically known)` |
-| command_transaction | db.info.get (backend/app/commands.py:command_transaction) | 118 | `db.info.get('reactivation_checks')` |
-| command_transaction | process_reactivation_checks | 121 | `process_reactivation_checks(db)` |
+| command_transaction | current_command | 103 | `current_command(db)` |
+| current_command | getattr (backend/app/commands.py:current_command) | 89 | `getattr(db, 'info', None)` |
+| current_command | isinstance (backend/app/commands.py:current_command) | 90 | `isinstance(info, dict)` |
+| current_command | info.get | 90 | `info.get('command')` |
+| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 106 | `RuntimeError('A preview must own its rollback boundary')` |
+| command_transaction | CommandState | 113 | `CommandState(mode=mode)` |
+| command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 118 | `RuntimeError('A failed nested command cannot commit')` |
+| command_transaction | db.flush | 119 | `db.flush(data not statically known)` |
+| command_transaction | db.info.get (backend/app/commands.py:command_transaction) | 120 | `db.info.get('reactivation_checks')` |
+| command_transaction | process_reactivation_checks | 123 | `process_reactivation_checks(db)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.info.pop` | `command_transaction` | 125 |
-| mutation | `db.info.pop` | `command_transaction` | 138 |
-| mutation | `db.info.pop` | `command_transaction` | 139 |
+| mutation | `db.info.pop` | `command_transaction` | 127 |
+| mutation | `db.info.pop` | `command_transaction` | 140 |
 | mutation | `db.info.pop` | `command_transaction` | 141 |
+| mutation | `db.info.pop` | `command_transaction` | 143 |
 | mutation | `db.info.pop` | `process_reactivation_checks` | 64 |
 | mutation | `db.info.pop` | `process_reactivation_checks` | 68 |
 
@@ -244,13 +244,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `current_command` | `getattr` | 87 |
-| external_call | `current_command` | `isinstance` | 88 |
-| unresolved_call | `current_command` | `info.get` | 88 |
-| external_call | `command_transaction` | `RuntimeError` | 104 |
-| external_call | `command_transaction` | `RuntimeError` | 116 |
-| unresolved_call | `command_transaction` | `db.flush` | 117 |
-| unresolved_call | `command_transaction` | `db.info.get` | 118 |
+| external_call | `current_command` | `getattr` | 89 |
+| external_call | `current_command` | `isinstance` | 90 |
+| unresolved_call | `current_command` | `info.get` | 90 |
+| external_call | `command_transaction` | `RuntimeError` | 106 |
+| external_call | `command_transaction` | `RuntimeError` | 118 |
+| unresolved_call | `command_transaction` | `db.flush` | 119 |
+| unresolved_call | `command_transaction` | `db.info.get` | 120 |
 | step_limit | `convert_triage_item_to_backlog` | `first 12 steps` | 0 |
 | truncated_flow | `convert_triage_item_to_backlog` | `depth limit` | 0 |
 

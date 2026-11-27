@@ -167,15 +167,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_postponement | domain_result | 401 | `domain_result(...)` |
-| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 59 | `str(exc)` |
-| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_postponement | TaskPostponementService.get | 401 | `TaskPostponementService(db).get(task_id)` |
+| task_postponement | domain_result | 415 | `domain_result(...)` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| task_postponement | TaskPostponementService.get | 415 | `TaskPostponementService(db).get(task_id)` |
 | TaskPostponementService.get | self.db.scalar | 182 | `self.db.scalar(...)` |
 | TaskPostponementService.get | select(…).where (backend/app/services/task…askPostponementService.get) | 182 | `select(Task).where(...)` |
 
@@ -187,11 +187,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 55 |
-| unresolved_call | `domain_result` | `exc.detail` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| external_call | `domain_result` | `HTTPException` | 61 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
 | unresolved_call | `TaskPostponementService.get` | `self.db.scalar` | 182 |
 | unresolved_call | `TaskPostponementService.get` | `select(Task).where` | 182 |
 | step_limit | `task_postponement` | `first 12 steps` | 0 |

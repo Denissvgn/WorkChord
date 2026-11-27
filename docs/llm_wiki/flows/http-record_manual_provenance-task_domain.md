@@ -192,15 +192,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| record_manual_provenance | domain_result | 369 | `domain_result(...)` |
-| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 59 | `str(exc)` |
-| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| record_manual_provenance | ManualProvenanceService.record | 369 | `ManualProvenanceService(db).record(task_id, data)` |
+| record_manual_provenance | domain_result | 383 | `domain_result(...)` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| record_manual_provenance | ManualProvenanceService.record | 383 | `ManualProvenanceService(db).record(task_id, data)` |
 | ManualProvenanceService.record | self.db.scalar (backend/app/services/manu…lProvenanceService.record) | 216 | `self.db.scalar(...)` |
 | ManualProvenanceService.record | select(…).where (backend/app/services/manu…lProvenanceService.record) | 216 | `select(Task).where(...)` |
 
@@ -212,11 +212,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 55 |
-| unresolved_call | `domain_result` | `exc.detail` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| external_call | `domain_result` | `HTTPException` | 61 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
 | unresolved_call | `ManualProvenanceService.record` | `self.db.scalar` | 216 |
 | unresolved_call | `ManualProvenanceService.record` | `select(Task).where` | 216 |
 | step_limit | `record_manual_provenance` | `first 12 steps` | 0 |

@@ -93,9 +93,9 @@ sequenceDiagram
     p0-->>p30: (…).all (backend/app/routers/task_domain.py:task_reviews)
 ```
 
-> Call sequence diagram shows 30 of 293 interactions; 263 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 294 interactions; 264 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 88 (87 omitted); unresolved 1 of 134 (133 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 88 (87 omitted); unresolved 1 of 135 (134 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -200,15 +200,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_reviews | domain_result | 285 | `domain_result(...)` |
-| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
-| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
-| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 59 | `str(exc)` |
-| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_reviews | TaskDetailService.detail | 285 | `TaskDetailService(db).detail(task_id, limit=1)` |
+| task_reviews | domain_result | 299 | `domain_result(...)` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| task_reviews | TaskDetailService.detail | 299 | `TaskDetailService(db).detail(task_id, limit=1)` |
 | TaskDetailService.detail | self.db.scalar | 157 | `self.db.scalar(...)` |
 | TaskDetailService.detail | select(…).where(…).options | 157 | `select(Task).where(Task.id == task_id).options(raiseload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...))` |
 
@@ -223,11 +223,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 55 |
-| unresolved_call | `domain_result` | `exc.detail` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| external_call | `domain_result` | `HTTPException` | 61 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
 | unresolved_call | `TaskDetailService.detail` | `self.db.scalar` | 157 |
 | unresolved_call | `TaskDetailService.detail` | `select(Task).where(Task.id == task_id).options` | 157 |
 | step_limit | `task_reviews` | `first 12 steps` | 0 |
