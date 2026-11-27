@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1861,
-      "flows": 637,
+      "entities": 1862,
+      "flows": 638,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1194,
-      "workflows": 245
+      "modules": 1197,
+      "workflows": 247
     },
     "dependency_architecture": 2,
-    "total": 3954
+    "total": 3961
   },
   "dependency_pages": {
     "count": 2,
@@ -12854,19 +12854,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 184,
+              "line": 239,
               "step": "TaskReplacementService.get",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 184,
+              "line": 239,
               "step": "TaskReplacementService.get",
               "target": "select(Task).where"
             },
             {
               "kind": "external_call",
-              "line": 184,
+              "line": 239,
               "step": "TaskReplacementService.get",
               "target": "select"
             },
@@ -14368,9 +14368,9 @@
             "backend/app/commands.py",
             "backend/app/services/delivery_dependency_service.py",
             "backend/app/services/task_service.py",
+            "backend/app/services/task_replacement_service.py",
             "backend/app/services/github_reconciliation_service.py",
             "backend/app/services/work_metrics.py",
-            "backend/app/services/task_replacement_service.py",
             "backend/app/services/task_brief_service.py",
             "backend/app/services/review_provenance.py",
             "backend/app/autonomy/canonical.py",
@@ -14388,7 +14388,7 @@
             "backend/app/services/agent_service.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 775,
+          "step_count": 776,
           "truncated": true
         }
       },
@@ -16049,9 +16049,10 @@
             "backend/app/authority.py",
             "backend/app/config.py",
             "backend/app/services/task_service.py",
+            "backend/app/services/task_replacement_service.py",
             "backend/app/services/github_reconciliation_service.py"
           ],
-          "step_count": 91,
+          "step_count": 110,
           "truncated": false
         }
       },
@@ -19704,7 +19705,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 396,
+              "line": 411,
               "step": "postpone_task",
               "target": "TaskPostponementService(db).postpone"
             }
@@ -20364,7 +20365,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 403,
+              "line": 418,
               "step": "reactivate_task",
               "target": "TaskPostponementService(db).reactivate"
             }
@@ -21418,7 +21419,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 414,
+              "line": 429,
               "step": "record_owner_decision",
               "target": "ReactivationService(db).record_owner_decision"
             }
@@ -21761,6 +21762,72 @@
         }
       },
       "id": "http-record_task_replacement-task_domain",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "record_task_supersession",
+        "source_path": "backend/app/routers/task_domain.py",
+        "symbol": "record_task_supersession"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 55,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 55,
+              "step": "domain_result",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 57,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 59,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 61,
+              "step": "domain_result",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 390,
+              "step": "record_task_supersession",
+              "target": "TaskReplacementService(db).supersede"
+            }
+          ],
+          "generated": true,
+          "step_count": 11,
+          "transfer_count": 10,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/task_domain.py",
+            "backend/app/services/task_replacement_service.py"
+          ],
+          "step_count": 11,
+          "truncated": false
+        }
+      },
+      "id": "http-record_task_supersession",
       "language": "python"
     },
     {
@@ -24484,38 +24551,6 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 264,
-              "step": "TaskDomainService.allowed_actions",
-              "step_index": 10,
-              "target": "actions.append"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "mutation",
-              "line": 267,
-              "step": "TaskDomainService.allowed_actions",
-              "step_index": 10,
-              "target": "progress_blockers.append"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "mutation",
-              "line": 269,
-              "step": "TaskDomainService.allowed_actions",
-              "step_index": 10,
-              "target": "progress_blockers.append"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "mutation",
-              "line": 271,
-              "step": "TaskDomainService.allowed_actions",
-              "step_index": 10,
-              "target": "progress_blockers.append"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "mutation",
               "line": 272,
               "step": "TaskDomainService.allowed_actions",
               "step_index": 10,
@@ -24524,10 +24559,34 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 276,
+              "line": 275,
               "step": "TaskDomainService.allowed_actions",
               "step_index": 10,
-              "target": "actions.extend"
+              "target": "progress_blockers.append"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 277,
+              "step": "TaskDomainService.allowed_actions",
+              "step_index": 10,
+              "target": "progress_blockers.append"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 279,
+              "step": "TaskDomainService.allowed_actions",
+              "step_index": 10,
+              "target": "progress_blockers.append"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 280,
+              "step": "TaskDomainService.allowed_actions",
+              "step_index": 10,
+              "target": "actions.append"
             },
             {
               "confidence": "unknown",
@@ -24535,12 +24594,20 @@
               "line": 284,
               "step": "TaskDomainService.allowed_actions",
               "step_index": 10,
+              "target": "actions.extend"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 292,
+              "step": "TaskDomainService.allowed_actions",
+              "step_index": 10,
               "target": "start_codes.append"
             },
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 286,
+              "line": 294,
               "step": "TaskDomainService.allowed_actions",
               "step_index": 10,
               "target": "start_codes.append"
@@ -24610,9 +24677,9 @@
             "backend/app/authority.py",
             "backend/app/config.py",
             "backend/app/services/task_service.py",
+            "backend/app/services/task_replacement_service.py",
             "backend/app/services/github_reconciliation_service.py",
             "backend/app/services/work_metrics.py",
-            "backend/app/services/task_replacement_service.py",
             "backend/app/services/task_brief_service.py",
             "backend/app/services/review_provenance.py",
             "backend/app/autonomy/canonical.py",
@@ -24633,7 +24700,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 1081,
+          "step_count": 1102,
           "truncated": true
         }
       },
@@ -25678,13 +25745,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 184,
+              "line": 239,
               "step": "TaskReplacementService.get",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 184,
+              "line": 239,
               "step": "TaskReplacementService.get",
               "target": "select(Task).where"
             },
@@ -33173,6 +33240,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/query_limits.py",
             "backend/app/services/agent_work_service.py",
+            "backend/app/services/task_replacement_service.py",
             "backend/app/services/github_reconciliation_service.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/review_provenance.py",
@@ -33185,7 +33253,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 859,
+          "step_count": 853,
           "truncated": true
         }
       },
@@ -33359,9 +33427,9 @@
             "backend/app/models/identity.py",
             "backend/app/mcp_agent_tools.py",
             "backend/app/services/task_domain_service.py",
+            "backend/app/services/task_replacement_service.py",
             "backend/app/services/github_reconciliation_service.py",
             "backend/app/services/work_metrics.py",
-            "backend/app/services/task_replacement_service.py",
             "backend/app/services/review_provenance.py",
             "backend/app/autonomy/canonical.py",
             "backend/app/services/task_postponement_service.py",
@@ -33376,7 +33444,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 966,
+          "step_count": 967,
           "truncated": true
         }
       },
@@ -34354,9 +34422,10 @@
             "backend/app/utils/time.py",
             "backend/app/models/identity.py",
             "backend/app/mcp_agent_tools.py",
+            "backend/app/services/task_replacement_service.py",
             "backend/app/services/github_reconciliation_service.py"
           ],
-          "step_count": 372,
+          "step_count": 391,
           "truncated": true
         }
       },
@@ -35318,6 +35387,7 @@
             "backend/app/mcp_agent_tools.py",
             "backend/app/query_limits.py",
             "backend/app/services/agent_work_service.py",
+            "backend/app/services/task_replacement_service.py",
             "backend/app/services/github_reconciliation_service.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/review_provenance.py",
@@ -35330,7 +35400,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 804,
+          "step_count": 798,
           "truncated": true
         }
       },
@@ -51837,6 +51907,7 @@
         "entities/TaskStatusLogResponse.md",
         "entities/TaskStatusService.md",
         "entities/TaskSubscription.md",
+        "entities/TaskSupersessionCreate.md",
         "entities/TaskTextEditorBodyProps.md",
         "entities/TaskTextEditorModalProps.md",
         "entities/TaskTimelineDates.md",
@@ -52519,6 +52590,7 @@
         "flows/http-record_task_progress.md",
         "flows/http-record_task_replacement-agent_planning.md",
         "flows/http-record_task_replacement-task_domain.md",
+        "flows/http-record_task_supersession.md",
         "flows/http-recover_principal.md",
         "flows/http-refresh_github_external_link.md",
         "flows/http-release_task_claim.md",
@@ -52892,6 +52964,7 @@
         "modules/20261126_0027_task_postponements.md",
         "modules/20261126_0028_team_runtime_identity.md",
         "modules/20261126_0029_catalog_effort.md",
+        "modules/20261127_0030_task_supersession.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -53914,6 +53987,8 @@
         "modules/test_task_reactivation.md",
         "modules/test_task_replacement.md",
         "modules/test_task_replacement_migration.md",
+        "modules/test_task_supersession.md",
+        "modules/test_task_supersession_migration.md",
         "modules/test_team_member_agent_connected.md",
         "modules/test_team_pm_dispatch.md",
         "modules/test_team_pm_recovery.md",
@@ -54268,8 +54343,10 @@
         "workflows/TaskImportService_import_tasks.md",
         "workflows/TaskPostponementService_postpone.md",
         "workflows/TaskPostponementService_resume.md",
+        "workflows/TaskReplacementService__close_postponement.md",
         "workflows/TaskReplacementService__move_dependents.md",
         "workflows/TaskReplacementService_record.md",
+        "workflows/TaskReplacementService_supersede.md",
         "workflows/TaskService__lock_task_scope.md",
         "workflows/TaskService_add_dependency.md",
         "workflows/TaskService_create.md",
@@ -59863,7 +59940,8 @@
         "modules/test_analytics_scopes.md",
         "modules/test_delivery_metrics.md",
         "modules/test_task_postponement.md",
-        "modules/test_task_replacement.md"
+        "modules/test_task_replacement.md",
+        "modules/test_task_supersession.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/delivery_observation.py",
@@ -67366,7 +67444,8 @@
         "modules/release_service.md",
         "modules/routers_task_domain.md",
         "modules/test_postponed_out_of_scheduling.md",
-        "modules/test_task_replacement.md"
+        "modules/test_task_replacement.md",
+        "modules/test_task_supersession.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/release_service.py",
@@ -74382,9 +74461,11 @@
         "modules/models_task_postponement.md",
         "modules/task_postponement_service.md",
         "modules/task_reactivation_service.md",
+        "modules/task_replacement_service.md",
         "modules/test_task_postponement.md",
         "modules/test_task_postponement_migration.md",
-        "modules/test_task_reactivation.md"
+        "modules/test_task_reactivation.md",
+        "modules/test_task_supersession.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/task_postponement.py",
@@ -74484,9 +74565,11 @@
         "modules/models_task_postponement.md",
         "modules/task_postponement_service.md",
         "modules/task_reactivation_service.md",
+        "modules/task_replacement_service.md",
         "modules/test_task_postponement.md",
         "modules/test_task_postponement_migration.md",
-        "modules/test_task_reactivation.md"
+        "modules/test_task_reactivation.md",
+        "modules/test_task_supersession.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/task_postponement.py",
@@ -74519,7 +74602,8 @@
         "modules/test_github_reconciliation.md",
         "modules/test_replacement_carried_provenance.md",
         "modules/test_task_replacement.md",
-        "modules/test_task_replacement_migration.md"
+        "modules/test_task_supersession.md",
+        "modules/test_task_supersession_migration.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/task_replacement.py",
@@ -74535,7 +74619,8 @@
         "modules/routers_agent_planning.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task_replacement.md",
-        "modules/test_task_replacement.md"
+        "modules/test_task_replacement.md",
+        "modules/test_task_supersession.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/task_replacement.py",
@@ -74567,7 +74652,8 @@
         "modules/mcp_agent_tools.md",
         "modules/routers_task_domain.md",
         "modules/task_replacement_service.md",
-        "modules/test_task_replacement.md"
+        "modules/test_task_replacement.md",
+        "modules/test_task_supersession.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/task_replacement_service.py",
@@ -74918,6 +75004,20 @@
       "role": "semantic",
       "source_path": "backend/app/models/discussion.py",
       "title": "TaskSubscription"
+    },
+    {
+      "canonical_path": "entities/TaskSupersessionCreate.md",
+      "id": "TaskSupersessionCreate",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TaskSupersessionCreate",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/schemas_task_replacement.md",
+        "modules/test_task_supersession.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/task_replacement.py",
+      "title": "TaskSupersessionCreate"
     },
     {
       "canonical_path": "entities/TaskTextEditorBodyProps.md",
@@ -80549,6 +80649,16 @@
       "role": "semantic",
       "source_path": "backend/app/migrations/versions/20261126_0029_catalog_effort.py",
       "title": "20261126_0029_catalog_effort Module"
+    },
+    {
+      "canonical_path": "modules/20261127_0030_task_supersession.md",
+      "id": "20261127_0030_task_supersession",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/20261127_0030_task_supersession",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/app/migrations/versions/20261127_0030_task_supersession.py",
+      "title": "20261127_0030_task_supersession Module"
     },
     {
       "canonical_path": "modules/acceptance_artifacts.md",
@@ -87091,9 +87201,11 @@
         "modules/models_task_postponement.md",
         "modules/task_postponement_service.md",
         "modules/task_reactivation_service.md",
+        "modules/task_replacement_service.md",
         "modules/test_task_postponement.md",
         "modules/test_task_postponement_migration.md",
         "modules/test_task_reactivation.md",
+        "modules/test_task_supersession.md",
         "modules/time.md"
       ],
       "role": "semantic",
@@ -87115,7 +87227,8 @@
         "modules/test_github_reconciliation.md",
         "modules/test_replacement_carried_provenance.md",
         "modules/test_task_replacement.md",
-        "modules/test_task_replacement_migration.md",
+        "modules/test_task_supersession.md",
+        "modules/test_task_supersession_migration.md",
         "modules/time.md"
       ],
       "role": "semantic",
@@ -91776,12 +91889,14 @@
         "entities/ReplacementTask.md",
         "entities/TaskReplacementCreate.md",
         "entities/TaskReplacementResponse.md",
+        "entities/TaskSupersessionCreate.md",
         "modules/agent_planning_service.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent_planning.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task_replacement.md",
-        "modules/test_task_replacement.md"
+        "modules/test_task_replacement.md",
+        "modules/test_task_supersession.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/task_replacement.py",
@@ -97589,13 +97704,40 @@
       "outgoing_internal_links": [
         "modules/models_project.md",
         "modules/models_task.md",
-        "modules/models_task_replacement.md",
         "modules/test_task_replacement_migration.md",
         "modules/upgrade_service.md"
       ],
       "role": "semantic",
       "source_path": "backend/tests/migrations/test_task_replacement_migration.py",
       "title": "test_task_replacement_migration Module"
+    },
+    {
+      "canonical_path": "modules/test_task_supersession.md",
+      "id": "test_task_supersession",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_task_supersession",
+      "outgoing_internal_links": [
+        "modules/test_task_supersession.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_task_supersession.py",
+      "title": "test_task_supersession Module"
+    },
+    {
+      "canonical_path": "modules/test_task_supersession_migration.md",
+      "id": "test_task_supersession_migration",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_task_supersession_migration",
+      "outgoing_internal_links": [
+        "modules/models_project.md",
+        "modules/models_task.md",
+        "modules/models_task_replacement.md",
+        "modules/test_task_supersession_migration.md",
+        "modules/upgrade_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/migrations/test_task_supersession_migration.py",
+      "title": "test_task_supersession_migration Module"
     },
     {
       "canonical_path": "modules/test_team_member_agent_connected.md",
@@ -103568,6 +103710,21 @@
       "title": "TaskPostponementService_resume"
     },
     {
+      "canonical_path": "workflows/TaskReplacementService__close_postponement.md",
+      "id": "TaskReplacementService__close_postponement",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/TaskReplacementService__close_postponement",
+      "outgoing_internal_links": [
+        "modules/identity_service.md",
+        "modules/task_postponement_service.md",
+        "modules/task_replacement_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/task_replacement_service.py",
+      "title": "TaskReplacementService__close_postponement"
+    },
+    {
       "canonical_path": "workflows/TaskReplacementService__move_dependents.md",
       "id": "TaskReplacementService__move_dependents",
       "kind": "workflows",
@@ -103576,6 +103733,7 @@
         "modules/authority.md",
         "modules/commands.md",
         "modules/delivery_dependency_service.md",
+        "modules/models_delivery_dependency.md",
         "modules/task_replacement_service.md"
       ],
       "role": "mixed",
@@ -103599,6 +103757,24 @@
       "role": "mixed",
       "source_path": "backend/app/services/task_replacement_service.py",
       "title": "TaskReplacementService_record"
+    },
+    {
+      "canonical_path": "workflows/TaskReplacementService_supersede.md",
+      "id": "TaskReplacementService_supersede",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/TaskReplacementService_supersede",
+      "outgoing_internal_links": [
+        "modules/commands.md",
+        "modules/identity_service.md",
+        "modules/models_task_replacement.md",
+        "modules/snapshot_service.md",
+        "modules/task_reactivation_service.md",
+        "modules/task_replacement_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/task_replacement_service.py",
+      "title": "TaskReplacementService_supersede"
     },
     {
       "canonical_path": "workflows/TaskService__lock_task_scope.md",
@@ -107553,6 +107729,7 @@
         "modules/delivery_dependency_service.md",
         "modules/github_reconciliation_service.md",
         "modules/routers_task_domain.md",
+        "modules/task_replacement_service.md",
         "modules/task_service.md"
       ],
       "role": "mixed",
@@ -108813,6 +108990,19 @@
       "role": "mixed",
       "source_path": "backend/app/routers/task_domain.py",
       "title": "record_task_replacement"
+    },
+    {
+      "canonical_path": "flows/http-record_task_supersession.md",
+      "id": "http-record_task_supersession",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-record_task_supersession",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/task_replacement_service.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/task_domain.py",
+      "title": "record_task_supersession"
     },
     {
       "canonical_path": "flows/http-recover_principal.md",
@@ -111707,6 +111897,7 @@
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
         "modules/task_reactivation_service.md",
+        "modules/task_replacement_service.md",
         "modules/task_service.md",
         "modules/time.md"
       ],
@@ -112111,6 +112302,7 @@
         "modules/models_outbound_webhook.md",
         "modules/task_brief_service.md",
         "modules/task_reactivation_service.md",
+        "modules/task_replacement_service.md",
         "modules/task_service.md",
         "modules/time.md"
       ],
@@ -112448,6 +112640,7 @@
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
         "modules/task_reactivation_service.md",
+        "modules/task_replacement_service.md",
         "modules/task_service.md",
         "modules/time.md"
       ],
@@ -116698,6 +116891,7 @@
         "modules/20261126_0027_task_postponements.md",
         "modules/20261126_0028_team_runtime_identity.md",
         "modules/20261126_0029_catalog_effort.md",
+        "modules/20261127_0030_task_supersession.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -117720,6 +117914,8 @@
         "modules/test_task_reactivation.md",
         "modules/test_task_replacement.md",
         "modules/test_task_replacement_migration.md",
+        "modules/test_task_supersession.md",
+        "modules/test_task_supersession_migration.md",
         "modules/test_team_member_agent_connected.md",
         "modules/test_team_pm_dispatch.md",
         "modules/test_team_pm_recovery.md",
@@ -117903,6 +118099,7 @@
         "modules/20261126_0027_task_postponements.md",
         "modules/20261126_0028_team_runtime_identity.md",
         "modules/20261126_0029_catalog_effort.md",
+        "modules/20261127_0030_task_supersession.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -118925,6 +119122,8 @@
         "modules/test_task_reactivation.md",
         "modules/test_task_replacement.md",
         "modules/test_task_replacement_migration.md",
+        "modules/test_task_supersession.md",
+        "modules/test_task_supersession_migration.md",
         "modules/test_team_member_agent_connected.md",
         "modules/test_team_pm_dispatch.md",
         "modules/test_team_pm_recovery.md",
@@ -119074,5 +119273,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:515aab9700c62e07feeba08ceae054ce472a0925a21a0c7ae8248935034f2772"
+  "source_hash": "sha256:da0fa1d7f93fb64fcade7bb35b217d31c0a51f8d2072343a796279eeda603dc7"
 }

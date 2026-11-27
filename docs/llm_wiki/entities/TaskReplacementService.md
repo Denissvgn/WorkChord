@@ -1,6 +1,6 @@
 # TaskReplacementService
 
-**Location:** `backend/app/services/task_replacement_service.py:174`
+**Location:** `backend/app/services/task_replacement_service.py:229`
 **Kind:** Class
 **Bases:** —
 **Module:** [task_replacement_service](../modules/task_replacement_service.md)
@@ -22,9 +22,15 @@ _Auto-generated from `TaskReplacementService` in `backend/app/services/task_repl
 | `get` | *(async)* `(task_id)` | — | — |
 | `projection` | *(async)* `(relation, task_id)` | — | — |
 | `record` | *(async)* `(original_id, data, *, commit = True)` | `@atomic_command` | Link a fresh replacement to an unaccepted original under one audited decision. |
+| `supersede` | *(async)* `(original_id, data, *, commit = True)` | `@atomic_command` | Record that a closed or accepted successor already delivered this original's work. |
+| `_close_postponement` | *(async)* `(original, successor, data)` | — | End a postponed original's open postponement: its work is delivered, so nothing is left to wait for. |
+| `_require_unused` | *(async)* `(original, replacement)` | — | — |
+| `_require_no_live_execution` | *(async)* `(original)` | — | — |
+| `_require_supersedable` | *(async)* `(original, successor)` | — | — |
 | `_require_eligible` | *(async)* `(original, replacement)` | — | — |
-| `_move_dependents` | *(async)* `(original, replacement)` | — | Point each dependent at the replacement; prerequisite identity, not dependent work, changes. |
-| `_move_releases` | *(async)* `(original, replacement)` | — | Open releases that planned the original's deliverable count the replacement instead. |
+| `_move_dependents` | *(async)* `(original, replacement, *, delivered = False)` | — | Point each dependent at the replacement; prerequisite identity, not dependent work, changes. |
+| `_move_requirements` | *(async)* `(original, successor)` | — | Reactivation requirements of open postponements that name the original name the successor. |
+| `_move_releases` | *(async)* `(original, replacement, *, statuses = ('planned', 'building'))` | — | Releases that planned the original's deliverable count the replacement instead. |
 
 ## Relationships
 
@@ -34,14 +40,16 @@ flowchart LR
     n0["TaskReplacementService (backend/app/services/task_replacement_service.py)"]
     n1["get_task_replacement (backend/app/mcp_agent_tools.py)"]
     n2["record_task_replacement (backend/app/routers/task_domain.py)"]
-    n3["task_replacement (backend/app/routers/task_domain.py)"]
-    n4["backend/app/services/agent_planning_service.py"]
-    n5["_replaced_pair (backend/tests/test_task_replacement.py)"]
-    n6["test_a_chained_replacement_inherits_the_earlier_carried_work (backend/tests/test_task_replacement.py)"]
-    n7["test_clean_replacement_is_accepted_once_and_carried_work_stays_held (backend/tests/test_task_replacement.py)"]
-    n8["test_held_replacement_is_refused_acceptance_without_the_strict_policy (backend/tests/test_task_replacement.py)"]
-    n9["test_only_a_project_manager_or_pm_actor_decides (backend/tests/test_task_replacement.py)"]
-    n10["test_replacement_refuses_ineligible_pairs (backend/tests/test_task_replacement.py)"]
+    n3["record_task_supersession (backend/app/routers/task_domain.py)"]
+    n4["task_replacement (backend/app/routers/task_domain.py)"]
+    n5["backend/app/services/agent_planning_service.py"]
+    n6["_replaced_pair (backend/tests/test_task_replacement.py)"]
+    n7["test_a_chained_replacement_inherits_the_earlier_carried_work (backend/tests/test_task_replacement.py)"]
+    n8["test_clean_replacement_is_accepted_once_and_carried_work_stays_held (backend/tests/test_task_replacement.py)"]
+    n9["test_held_replacement_is_refused_acceptance_without_the_strict_policy (backend/tests/test_task_replacement.py)"]
+    n10["test_only_a_project_manager_or_pm_actor_decides (backend/tests/test_task_replacement.py)"]
+    n11["test_replacement_refuses_ineligible_pairs (backend/tests/test_task_replacement.py)"]
+    n12["_with_service (backend/tests/test_task_supersession.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -52,24 +60,28 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
+    n12 --> n0
     click n0 "../modules/task_replacement_service.md"
     click n1 "../modules/mcp_agent_tools.md"
     click n2 "../modules/routers_task_domain.md"
     click n3 "../modules/routers_task_domain.md"
-    click n4 "../modules/agent_planning_service.md"
-    click n5 "../modules/test_task_replacement.md"
+    click n4 "../modules/routers_task_domain.md"
+    click n5 "../modules/agent_planning_service.md"
     click n6 "../modules/test_task_replacement.md"
     click n7 "../modules/test_task_replacement.md"
     click n8 "../modules/test_task_replacement.md"
     click n9 "../modules/test_task_replacement.md"
     click n10 "../modules/test_task_replacement.md"
+    click n11 "../modules/test_task_replacement.md"
+    click n12 "../modules/test_task_supersession.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [task_replacement_service](../modules/task_replacement_service.md) | 8 | — |
+| [task_replacement_service](../modules/task_replacement_service.md) | 14 | — |
 
 ### References
 
@@ -77,6 +89,7 @@ flowchart LR
 |---|---|---|---:|
 | `get_task_replacement` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `record_task_replacement` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |
+| `record_task_supersession` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |
 | `task_replacement` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |
 | `agent_planning_service` | import | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `_replaced_pair` | call | [test_task_replacement](../modules/test_task_replacement.md) | 1 |
@@ -85,3 +98,6 @@ flowchart LR
 | `test_held_replacement_is_refused_acceptance_without_the_strict_policy` | call | [test_task_replacement](../modules/test_task_replacement.md) | 2 |
 | `test_only_a_project_manager_or_pm_actor_decides` | call | [test_task_replacement](../modules/test_task_replacement.md) | 1 |
 | `test_replacement_refuses_ineligible_pairs` | call | [test_task_replacement](../modules/test_task_replacement.md) | 1 |
+| `_with_service` | call | [test_task_supersession](../modules/test_task_supersession.md) | 1 |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
