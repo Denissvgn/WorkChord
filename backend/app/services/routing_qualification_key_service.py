@@ -22,6 +22,7 @@ from app.models.agent import (
     TaskEvent,
     TaskRoutingAssessment,
 )
+from app.models.routing_calibration import RoutingCalibrationContract
 from app.models.routing_qualification import (
     RoutingQualificationKey,
     RoutingQualificationKeyRevision,
@@ -32,6 +33,7 @@ from app.schemas.agent_planning import AgentPlanningCommandContext
 from app.schemas.agent_routing import AgentModelMutationReceipt
 from app.schemas.routing_qualification import (
     MAX_QUALIFICATION_KEY_USAGE_ITEMS,
+    QualificationKeyCalibrationReference,
     QualificationKeyCatalogReference,
     RoutingQualificationKeyDeclare,
     RoutingQualificationKeyDetail,
@@ -208,14 +210,19 @@ class RoutingQualificationKeyService:
         )
 
     async def usage(self, key: str) -> RoutingQualificationKeyUsage:
-        """Catalog entries holding the key and open tasks requiring it, as visible to the caller.
+        """Catalog entries holding the key, calibration contracts naming it and open tasks requiring it.
+
+        Entries and contracts are deployment-wide; tasks are listed as visible to the caller.
 
         Tasks outside the caller's project scope are not listed or counted.
         """
 
         return self._bounded_usage(*await self._references(key))
 
-    async def _references(self, key: str) -> tuple[list[AgentModelCatalogEntry], list[int]]:
+    async def _references(
+        self,
+        key: str,
+    ) -> tuple[list[AgentModelCatalogEntry], list[int], list[RoutingCalibrationContract]]:
         name = key.strip().lower()
         entries = [
             entry
@@ -241,12 +248,22 @@ class RoutingQualificationKeyService:
             for row in assessments
             if name in ((row.required_model or {}).get("qualification_keys") or [])
         })
-        return entries, task_ids
+        # Submitted or approved, a contract's terms are only enforceable while
+        # every key they name stays declared.
+        contracts = [
+            contract
+            for contract in (await self.db.execute(
+                select(RoutingCalibrationContract).order_by(RoutingCalibrationContract.key)
+            )).scalars()
+            if name in ((contract.terms or {}).get("qualification_keys") or [])
+        ]
+        return entries, task_ids, contracts
 
     @staticmethod
     def _bounded_usage(
         entries: list[AgentModelCatalogEntry],
         task_ids: list[int],
+        contracts: list[RoutingCalibrationContract],
         *,
         total_entries: int | None = None,
         total_tasks: int | None = None,
@@ -262,17 +279,23 @@ class RoutingQualificationKeyService:
             task_ids=task_ids[:limit],
             catalog_entries_omitted=max(total_entries - min(len(entries), limit), 0),
             task_ids_omitted=max(total_tasks - min(len(task_ids), limit), 0),
+            calibration_contracts=[
+                QualificationKeyCalibrationReference(key=contract.key, state=contract.state)
+                for contract in contracts[:limit]
+            ],
+            calibration_contracts_omitted=max(len(contracts) - limit, 0),
         )
 
     async def _retire_usage(self, key: str) -> RoutingQualificationKeyUsage:
         """Usage that decides a retire: every reference counts, but only visible tasks are named."""
 
         with internal_authority(self.db.sync_session):
-            all_entries, all_tasks = await self._references(key)
-        _, visible_tasks = await self._references(key)
+            all_entries, all_tasks, contracts = await self._references(key)
+        _, visible_tasks, _ = await self._references(key)
         return self._bounded_usage(
             all_entries,
             [task_id for task_id in visible_tasks if task_id in set(all_tasks)],
+            contracts,
             total_tasks=len(all_tasks),
         )
 
@@ -498,8 +521,8 @@ class RoutingQualificationKeyService:
             if usage.in_use:
                 raise AgentModelConflictError(
                     "routing_qualification_key_in_use",
-                    "Qualification key is held by catalog entries or required by open tasks; "
-                    "remove it from them first",
+                    "Qualification key is held by catalog entries, named by calibration contracts "
+                    "or required by open tasks; remove it from them first",
                     key=row.key,
                     **usage.model_dump(mode="json"),
                 )

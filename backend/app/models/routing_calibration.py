@@ -15,8 +15,14 @@ CALIBRATION_CONTRACT_ACTIONS = ("submit", "approve")
 # A submitted revision carries no approval; an approved one carries all of it.
 APPROVAL_CONSISTENCY = (
     "(state = 'approved' AND approved_at IS NOT NULL AND approved_by_actor_type IS NOT NULL "
-    "AND approval_reason IS NOT NULL) OR (state = 'submitted' AND approved_at IS NULL "
-    "AND approved_by_actor_type IS NULL AND approved_by_actor_id IS NULL AND approval_reason IS NULL)"
+    "AND approval_reason IS NOT NULL AND approved_as IS NOT NULL) OR (state = 'submitted' AND approved_at IS NULL "
+    "AND approved_by_actor_type IS NULL AND approved_by_actor_id IS NULL AND approval_reason IS NULL "
+    "AND approved_as IS NULL)"
+)
+
+# Only an approve revision names the declared approver it was approved as.
+REVISION_APPROVED_AS = (
+    "(action = 'approve' AND approved_as IS NOT NULL) OR (action = 'submit' AND approved_as IS NULL)"
 )
 
 
@@ -59,6 +65,8 @@ class RoutingCalibrationContract(Base):
     )
     approved_at: Mapped[Optional[datetime]] = mapped_column(UTCDateTime(), nullable=True)
     approval_reason: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    # The declared approver the authenticated principal approved as.
+    approved_as: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now, nullable=False)
     updated_at: Mapped[datetime] = mapped_column(
         UTCDateTime(), default=utc_now, onupdate=utc_now, nullable=False
@@ -93,6 +101,10 @@ class RoutingCalibrationContractRevision(Base):
             "length(trim(reason)) > 0",
             name="ck_routing_calibration_contract_revisions_reason_not_blank",
         ),
+        CheckConstraint(
+            REVISION_APPROVED_AS,
+            name="ck_routing_calibration_contract_revisions_approved_as",
+        ),
         {"sqlite_autoincrement": True},
     )
 
@@ -108,6 +120,7 @@ class RoutingCalibrationContractRevision(Base):
     terms: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
     terms_digest: Mapped[str] = mapped_column(String(64), nullable=False)
     reason: Mapped[str] = mapped_column(Text, nullable=False)
+    approved_as: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     actor_type: Mapped[str] = mapped_column(String(50), nullable=False)
     actor_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("agent_actors.id"), nullable=True

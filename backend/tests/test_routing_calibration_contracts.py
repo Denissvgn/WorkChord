@@ -126,6 +126,8 @@ def test_the_schema_refuses_terms_without_sample_bounds_decay_bias_review_or_app
         {"decay": {"method": "linear", "days": 365}},
         {"bias_review": {**complete["bias_review"], "reviewed_at": "2026-11-20T10:00:00"}},
         {"bias_review": {**complete["bias_review"], "findings": " "}},
+        {"bias_review": {**complete["bias_review"], "reviewed_at": 1795000000}},
+        {"bias_review": {**complete["bias_review"], "reviewed_at": 1795000000.5}},
         {"unknown_term": True},
     ]
     for overrides in invalid:
@@ -135,6 +137,13 @@ def test_the_schema_refuses_terms_without_sample_bounds_decay_bias_review_or_app
 
 def test_the_terms_digest_is_canonical() -> None:
     first = RoutingCalibrationContractTerms.model_validate(_terms())
+    # The same instant written with another offset is the same terms.
+    offset = RoutingCalibrationContractTerms.model_validate(
+        _terms(bias_review={**_terms()["bias_review"], "reviewed_at": "2026-11-20T12:00:00+02:00"})
+    )
+    assert offset.bias_review.reviewed_at == datetime(2026, 11, 20, 10, tzinfo=UTC)
+    assert offset.stored()["bias_review"]["reviewed_at"] == first.stored()["bias_review"]["reviewed_at"]
+    assert offset.digest() == first.digest()
     reordered = RoutingCalibrationContractTerms.model_validate(
         _terms(qualification_keys=["backend-python", "qualified.schema-review"])
     )
@@ -146,7 +155,7 @@ def test_the_terms_digest_is_canonical() -> None:
 
 @pytest.mark.sqlite
 @pytest.mark.asyncio
-async def test_a_contract_is_submitted_approved_by_another_operator_and_every_revision_is_kept(
+async def test_a_contract_is_submitted_approved_and_every_revision_is_kept(
     db_session: AsyncSession,
 ) -> None:
     await _setup(db_session)
@@ -166,7 +175,7 @@ async def test_a_contract_is_submitted_approved_by_another_operator_and_every_re
         assert denied.status_code == 403
         for method, path, body in (
             ("PUT", f"{CONTRACTS}/absent", {"expected_revision": 1, **_terms()}),
-            ("POST", f"{CONTRACTS}/absent/approve", {"expected_revision": 1, "expected_terms_digest": "0" * 64}),
+            ("POST", f"{CONTRACTS}/absent/approve", {"expected_revision": 1, "expected_terms_digest": "0" * 64, "approved_as": "Head of delivery"}),
         ):
             probe = await client.request(method, path, headers=_headers(READER_KEY, f"probe-{method}"), json=body)
             assert probe.status_code == 403, (method, probe.text)
@@ -189,7 +198,8 @@ async def test_a_contract_is_submitted_approved_by_another_operator_and_every_re
             headers=_headers(SUBMITTER_KEY, "future-review"),
             json={"key": "default", **_terms(bias_review={**_terms()["bias_review"], "reviewed_at": future})},
         )
-        assert future_review.status_code == 400
+        assert future_review.status_code == 422
+        assert "bias_review.reviewed_at must not be in the future" in future_review.text
         # A missing reason is refused before anything is stored.
         no_reason = await client.post(
             CONTRACTS,
@@ -224,15 +234,16 @@ async def test_a_contract_is_submitted_approved_by_another_operator_and_every_re
         listed = (await client.get(CONTRACTS, headers=_headers(READER_KEY))).json()
         assert listed["approved_contract_exists"] is False
 
-        def approve_body(revision: int, terms_digest: str = digest) -> dict[str, Any]:
-            return {"expected_revision": revision, "expected_terms_digest": terms_digest}
+        def approve_body(revision: int, terms_digest: str = digest, approved_as: str = "Head of delivery") -> dict[str, Any]:
+            return {"expected_revision": revision, "expected_terms_digest": terms_digest, "approved_as": approved_as}
 
-        # The submitter cannot approve its own terms; nor can a reader.
-        self_approval = await client.post(
-            f"{CONTRACTS}/default/approve", headers=_headers(SUBMITTER_KEY, "self-approve"), json=approve_body(1)
+        # A reader cannot approve, and an approval names the declared approver.
+        missing_approver = await client.post(
+            f"{CONTRACTS}/default/approve",
+            headers=_headers(APPROVER_KEY, "approve-unnamed"),
+            json={"expected_revision": 1, "expected_terms_digest": digest},
         )
-        assert self_approval.status_code == 409
-        assert self_approval.json()["detail"]["code"] == "routing_calibration_contract_self_approval"
+        assert missing_approver.status_code == 422
         reader = await client.post(
             f"{CONTRACTS}/default/approve", headers=_headers(READER_KEY, "reader-approve"), json=approve_body(1)
         )
@@ -240,6 +251,7 @@ async def test_a_contract_is_submitted_approved_by_another_operator_and_every_re
         for body, code in (
             (approve_body(2), "routing_calibration_contract_revision_conflict"),
             (approve_body(1, "f" * 64), "routing_calibration_contract_terms_mismatch"),
+            (approve_body(1, approved_as="Someone else"), "routing_calibration_contract_approver_mismatch"),
         ):
             conflict = await client.post(
                 f"{CONTRACTS}/default/approve", headers=_headers(APPROVER_KEY, f"approve-{code}"), json=body
@@ -257,8 +269,10 @@ async def test_a_contract_is_submitted_approved_by_another_operator_and_every_re
         assert approved.json()["authoritative_revision"] == 2
         assert result["state"] == "approved"
         assert result["approval_reason"] == "Bias review findings are mitigated."
+        # approved_by is the authenticated principal; approved_as is the declared approver.
         assert result["approved_by"]["actor_type"] == "agent"
         assert result["approved_by"] != result["submitted_by"]
+        assert result["approved_as"] == "Head of delivery"
         assert result["terms_digest"] == digest
         again = await client.post(
             f"{CONTRACTS}/default/approve", headers=_headers(APPROVER_KEY, "approve-twice"), json=approve_body(2)
@@ -277,6 +291,7 @@ async def test_a_contract_is_submitted_approved_by_another_operator_and_every_re
         assert revised.json()["authoritative_revision"] == 3
         assert revised.json()["result"]["state"] == "submitted"
         assert revised.json()["result"]["approved_at"] is None
+        assert revised.json()["result"]["approved_as"] is None
         new_digest = revised.json()["result"]["terms_digest"]
         assert new_digest != digest
         assert (await client.get(CONTRACTS, headers=_headers(READER_KEY))).json()["approved_contract_exists"] is False
@@ -287,13 +302,14 @@ async def test_a_contract_is_submitted_approved_by_another_operator_and_every_re
         )
         assert unchanged.status_code == 409
         assert unchanged.json()["detail"]["code"] == "routing_calibration_contract_no_change"
-        # The approver submitted the new terms, so the first submitter now approves them.
+        # The principal that submitted the new terms may approve them; approved_by records it honestly.
         reapproved = await client.post(
             f"{CONTRACTS}/default/approve",
-            headers=_headers(SUBMITTER_KEY, "reapprove-default", "The shorter half-life is reviewed."),
+            headers=_headers(APPROVER_KEY, "reapprove-default", "The shorter half-life is reviewed."),
             json=approve_body(3, new_digest),
         )
         assert reapproved.status_code == 200, reapproved.text
+        assert reapproved.json()["result"]["approved_by"] == reapproved.json()["result"]["submitted_by"]
 
         detail = (await client.get(f"{CONTRACTS}/default", headers=_headers(READER_KEY))).json()
         assert [(item["revision"], item["action"], item["state"], item["reason"]) for item in detail["revisions"]] == [
@@ -303,6 +319,9 @@ async def test_a_contract_is_submitted_approved_by_another_operator_and_every_re
             (4, "approve", "approved", "The shorter half-life is reviewed."),
         ]
         assert [item["terms_digest"] for item in detail["revisions"]] == [digest, digest, new_digest, new_digest]
+        assert [item["approved_as"] for item in detail["revisions"]] == [
+            None, "Head of delivery", None, "Head of delivery"
+        ]
         assert detail["revisions"][0]["terms"]["decay"] == {"method": "exponential", "days": 60}
         assert (await client.get(f"{CONTRACTS}/absent", headers=_headers(READER_KEY))).status_code == 404
 
@@ -337,7 +356,11 @@ async def test_approval_refuses_terms_naming_a_key_retired_since_submission(db_s
         approved = await client.post(
             f"{CONTRACTS}/default/approve",
             headers=_headers(APPROVER_KEY, "approve-retired"),
-            json={"expected_revision": 1, "expected_terms_digest": submitted.json()["result"]["terms_digest"]},
+            json={
+                "expected_revision": 1,
+                "expected_terms_digest": submitted.json()["result"]["terms_digest"],
+                "approved_as": "Head of delivery",
+            },
         )
         assert approved.status_code == 422
         assert "qualified.schema-review" in approved.text
@@ -347,63 +370,163 @@ async def test_approval_refuses_terms_naming_a_key_retired_since_submission(db_s
         await client.aclose()
 
 
+async def _operator_state(db: AsyncSession) -> None:
+    if await db.get(WorkspaceAuthorityState, 1) is None:
+        operator = Principal(kind="system", display_name="Operator API")
+        db.add(operator)
+        await db.flush()
+        db.add(WorkspaceAuthorityState(id=1, operator_principal_id=operator.id))
+        await db.commit()
+
+
+def _command(key: str) -> dict[str, str]:
+    return {
+        "Idempotency-Key": key,
+        "X-Agent-Rationale": "Operator calibration decision.",
+        "X-Correlation-ID": key,
+    }
+
+
 @pytest.mark.sqlite
 @pytest.mark.asyncio
 @pytest.mark.parametrize("auth_mode", ["managed", "trusted_local"])
-async def test_the_operator_admin_key_submits_and_cannot_approve_its_own_terms(
+async def test_the_operator_admin_key_submits_and_approves_and_is_recorded_as_the_operator(
     db_session: AsyncSession,
     monkeypatch: pytest.MonkeyPatch,
     auth_mode: str,
 ) -> None:
     await _setup(db_session)
-    if await db_session.get(WorkspaceAuthorityState, 1) is None:
-        operator = Principal(kind="system", display_name="Operator API")
-        db_session.add(operator)
-        await db_session.flush()
-        db_session.add(WorkspaceAuthorityState(id=1, operator_principal_id=operator.id))
-        await db_session.commit()
+    await _operator_state(db_session)
     monkeypatch.setenv("WORKCHORD_ADMIN_API_KEY", "calibration-operator-key")
     monkeypatch.setenv("WORKCHORD_AUTH_MODE", auth_mode)
     get_settings.cache_clear()
     client = await _client(main_app, db_session)
-
-    def command(key: str) -> dict[str, str]:
-        return {
-            "Idempotency-Key": f"{key}-{auth_mode}",
-            "X-Agent-Rationale": "Operator calibration decision.",
-            "X-Correlation-ID": f"{key}-{auth_mode}",
-        }
-
     operator_headers = {"X-Admin-API-Key": "calibration-operator-key"}
     try:
-        anonymous = await client.post(CONTRACTS, headers=command("anonymous"), json={"key": "default", **_terms()})
+        anonymous = await client.post(CONTRACTS, headers=_command("anonymous"), json={"key": "default", **_terms()})
         assert anonymous.status_code == 401
         submitted = await client.post(
-            CONTRACTS, headers={**operator_headers, **command("submit")}, json={"key": "default", **_terms()}
+            CONTRACTS, headers={**operator_headers, **_command(f"submit-{auth_mode}")}, json={"key": "default", **_terms()}
         )
         assert submitted.status_code == 201, submitted.text
         assert submitted.json()["actor_id"] is None
         assert submitted.json()["result"]["submitted_by"] == {"actor_type": "operator", "actor_id": None}
-        body = {"expected_revision": 1, "expected_terms_digest": submitted.json()["result"]["terms_digest"]}
-        own = await client.post(f"{CONTRACTS}/default/approve", headers={**operator_headers, **command("own")}, json=body)
-        assert own.status_code == 409
-        assert own.json()["detail"]["code"] == "routing_calibration_contract_self_approval"
         approved = await client.post(
-            f"{CONTRACTS}/default/approve", headers=_headers(APPROVER_KEY, f"agent-approve-{auth_mode}"), json=body
+            f"{CONTRACTS}/default/approve",
+            headers={**operator_headers, **_command(f"approve-{auth_mode}")},
+            json={
+                "expected_revision": 1,
+                "expected_terms_digest": submitted.json()["result"]["terms_digest"],
+                "approved_as": "Head of delivery",
+            },
         )
-        listed = await client.get(CONTRACTS, headers=operator_headers)
-        if auth_mode == "trusted_local":
-            # Trusted-local mode lets an admin-scoped agent act as a second operator principal.
-            assert approved.status_code == 200, approved.text
-            assert listed.json()["approved_contract_exists"] is True
-        else:
-            # Managed mode needs an operator membership behind the agent; without one it is refused.
-            assert approved.status_code == 403, approved.text
-            assert listed.json()["approved_contract_exists"] is False
-            assert listed.json()["contracts"][0]["state"] == "submitted"
+        assert approved.status_code == 200, approved.text
+        result = approved.json()["result"]
+        assert result["approved_by"] == {"actor_type": "operator", "actor_id": None}
+        assert result["approved_as"] == "Head of delivery"
+        assert (await client.get(CONTRACTS, headers=operator_headers)).json()["approved_contract_exists"] is True
     finally:
         main_app.dependency_overrides.clear()
         get_settings.cache_clear()
+        await client.aclose()
+
+
+@pytest.mark.sqlite
+@pytest.mark.asyncio
+async def test_in_managed_mode_only_an_agent_with_an_operator_membership_approves(
+    db_session: AsyncSession,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from app.models.identity import WorkspaceMembership
+
+    await _setup(db_session)
+    member_key = "calibration-member-operator-key"
+    member = AgentActor(
+        name="calibration-member-operator",
+        display_name="Calibration Member Operator",
+        api_key_hash=hash_api_key(member_key),
+        scopes='["admin"]',
+        enabled=True,
+        role="pm",
+    )
+    db_session.add(member)
+    await db_session.flush()
+    principal = Principal(kind="agent", display_name=member.display_name, agent_actor_id=member.id)
+    db_session.add(principal)
+    await db_session.flush()
+    db_session.add(WorkspaceMembership(principal_id=principal.id, role="operator"))
+    await db_session.commit()
+    member_id = member.id
+    await _operator_state(db_session)
+    monkeypatch.setenv("WORKCHORD_ADMIN_API_KEY", "calibration-operator-key")
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "managed")
+    get_settings.cache_clear()
+    client = await _client(main_app, db_session)
+    try:
+        submitted = await client.post(
+            CONTRACTS,
+            headers={"X-Admin-API-Key": "calibration-operator-key", **_command("managed-submit")},
+            json={"key": "default", **_terms()},
+        )
+        assert submitted.status_code == 201, submitted.text
+        body = {
+            "expected_revision": 1,
+            "expected_terms_digest": submitted.json()["result"]["terms_digest"],
+            "approved_as": "Head of delivery",
+        }
+        # An admin-scoped agent without an operator membership is refused.
+        refused = await client.post(
+            f"{CONTRACTS}/default/approve", headers=_headers(APPROVER_KEY, "managed-no-membership"), json=body
+        )
+        assert refused.status_code == 403, refused.text
+        approved = await client.post(
+            f"{CONTRACTS}/default/approve", headers=_headers(member_key, "managed-member"), json=body
+        )
+        assert approved.status_code == 200, approved.text
+        assert approved.json()["result"]["approved_by"] == {"actor_type": "agent", "actor_id": member_id}
+    finally:
+        main_app.dependency_overrides.clear()
+        get_settings.cache_clear()
+        await client.aclose()
+
+
+@pytest.mark.sqlite
+@pytest.mark.asyncio
+async def test_a_key_named_by_a_contract_cannot_be_retired(db_session: AsyncSession) -> None:
+    await _setup(db_session)
+    client = await _client(main_app, db_session)
+    keys = "/api/agent/routing-qualification-keys"
+    try:
+        submitted = await client.post(
+            CONTRACTS, headers=_headers(SUBMITTER_KEY, "submit-named"), json={"key": "default", **_terms()}
+        )
+        assert submitted.status_code == 201, submitted.text
+        detail = (await client.get(f"{keys}/qualified.schema-review", headers=_headers(READER_KEY))).json()
+        assert detail["usage"]["calibration_contracts"] == [{"key": "default", "state": "submitted"}]
+        refused = await client.post(
+            f"{keys}/qualified.schema-review/retire",
+            headers=_headers(SUBMITTER_KEY, "retire-named"),
+            json={"expected_revision": 1},
+        )
+        assert refused.status_code == 409
+        assert refused.json()["detail"]["code"] == "routing_qualification_key_in_use"
+        assert refused.json()["detail"]["calibration_contracts"] == [{"key": "default", "state": "submitted"}]
+
+        # Once the terms no longer name the key, it can be retired.
+        revised = await client.put(
+            f"{CONTRACTS}/default",
+            headers=_headers(SUBMITTER_KEY, "revise-unnamed"),
+            json={"expected_revision": 1, **_terms(qualification_keys=["backend-python"])},
+        )
+        assert revised.status_code == 200, revised.text
+        retired = await client.post(
+            f"{keys}/qualified.schema-review/retire",
+            headers=_headers(SUBMITTER_KEY, "retire-unnamed"),
+            json={"expected_revision": 1},
+        )
+        assert retired.status_code == 200, retired.text
+    finally:
+        main_app.dependency_overrides.clear()
         await client.aclose()
 
 
@@ -418,11 +541,13 @@ async def test_contracts_are_submitted_approved_and_read_on_postgresql(postgres_
 
     from app.schemas.agent_planning import AgentPlanningCommandContext
     from app.schemas.routing_calibration import RoutingCalibrationContractApprove
+    from app.schemas.routing_qualification import RoutingQualificationKeyRetire
     from app.services.agent_model_catalog_service import AgentModelConflictError
     from app.services.routing_calibration_contract_service import (
         RoutingCalibrationContractService,
         approved_calibration_contract_count,
     )
+    from app.services.routing_qualification_key_service import RoutingQualificationKeyService
     from app.services.upgrade_service import alembic_config
 
     configure_database(postgres_database.url)
@@ -450,27 +575,40 @@ async def test_contracts_are_submitted_approved_and_read_on_postgresql(postgres_
             )
             digest = receipt.result["terms_digest"]
             assert await approved_calibration_contract_count(db) == 0
-            with pytest.raises(AgentModelConflictError) as own:
+            with pytest.raises(AgentModelConflictError) as wrong:
                 await service.approve(
-                    "default", submitter,
-                    RoutingCalibrationContractApprove(expected_revision=1, expected_terms_digest=digest),
-                    command=context("pg-own"),
+                    "default", approver,
+                    RoutingCalibrationContractApprove(
+                        expected_revision=1, expected_terms_digest=digest, approved_as="Someone else"
+                    ),
+                    command=context("pg-wrong"),
                 )
-            assert own.value.code == "routing_calibration_contract_self_approval"
+            assert wrong.value.code == "routing_calibration_contract_approver_mismatch"
             # The refusal rolled back the session, which expires loaded rows.
             await db.refresh(submitter)
             await db.refresh(approver)
             approved = await service.approve(
                 "default", approver,
-                RoutingCalibrationContractApprove(expected_revision=1, expected_terms_digest=digest),
+                RoutingCalibrationContractApprove(
+                    expected_revision=1, expected_terms_digest=digest, approved_as="Head of delivery"
+                ),
                 command=context("pg-approve"),
             )
             assert approved.authoritative_revision == 2
             assert await approved_calibration_contract_count(db) == 1
             detail = await service.get_contract(approver, "default")
-            assert [(item.action, item.actor_id) for item in detail.revisions] == [
-                ("submit", submitter.id), ("approve", approver.id)
+            assert [(item.action, item.actor_id, item.approved_as) for item in detail.revisions] == [
+                ("submit", submitter.id, None), ("approve", approver.id, "Head of delivery")
             ]
             assert detail.terms.bias_review.reviewed_at == datetime(2026, 11, 20, 10, tzinfo=UTC)
+
+            # An approved contract keeps the key it names from being retired.
+            with pytest.raises(AgentModelConflictError) as in_use:
+                await RoutingQualificationKeyService(db).retire(
+                    "qualified.schema-review", submitter, RoutingQualificationKeyRetire(expected_revision=1),
+                    command=context("pg-retire"),
+                )
+            assert in_use.value.code == "routing_qualification_key_in_use"
+            assert in_use.value.context["calibration_contracts"] == [{"key": "default", "state": "approved"}]
     finally:
         await engine.dispose()

@@ -2239,16 +2239,20 @@ class AgentRoutingService:
             )
         # The preview reports whether a calibration contract is approved, and
         # nothing else from it: candidates and their ranks above never read
-        # performance history. The fields enter the digest only when a
-        # contract is approved, so a deployment without one keeps its digests.
+        # performance history. Until routing consumes history the fields stay
+        # out of the digest, so approving or revising a contract cannot
+        # invalidate a preview a selection is about to use.
         from app.services.routing_calibration_contract_service import (
             approved_calibration_contract_count,
         )
 
+        calibration_values: dict[str, Any] = {}
         approved_contracts = await approved_calibration_contract_count(self.db)
         if approved_contracts:
-            response_values["calibration_contract"] = "approved"
-            response_values["approved_calibration_contracts"] = approved_contracts
+            calibration_values = {
+                "calibration_contract": "approved",
+                "approved_calibration_contracts": approved_contracts,
+            }
         if review_evidence is not None:
             owner = review_evidence["reviewer"]
             response_values["eligibility_basis"]="task_policy_configuration_and_review_evidence"
@@ -2268,7 +2272,9 @@ class AgentRoutingService:
                 canonical_routing_json_bytes(_json_projection(response_values))
             ).hexdigest()
             try:
-                return AgentRoutingPreviewResponse(preview_digest=preview_digest, **response_values)
+                return AgentRoutingPreviewResponse(
+                    preview_digest=preview_digest, **response_values, **calibration_values
+                )
             except ValidationError as exc:
                 errors = exc.errors(include_input=False, include_url=False)
                 if len(errors) != 1 or errors[0]["loc"] or not isinstance(

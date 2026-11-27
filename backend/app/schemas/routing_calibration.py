@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -88,12 +88,21 @@ class CalibrationBiasReview(_CalibrationModel):
             return None
         return _clean_text(value, label="mitigations")
 
+    @field_validator("reviewed_at", mode="before")
+    @classmethod
+    def require_timestamp_text(cls, value: object) -> object:
+        # An epoch number would be read as a time without anyone stating its zone.
+        if not isinstance(value, (str, datetime)):
+            raise ValueError("reviewed_at must be an ISO 8601 date-time with a time zone")
+        return value
+
     @field_validator("reviewed_at")
     @classmethod
     def require_timezone(cls, value: datetime) -> datetime:
         if value.tzinfo is None or value.utcoffset() is None:
             raise ValueError("reviewed_at must be timezone-aware")
-        return value
+        # One instant has one canonical form, so the terms digest does not depend on the offset written.
+        return value.astimezone(UTC)
 
 
 class RoutingCalibrationContractTerms(_CalibrationModel):
@@ -165,10 +174,21 @@ class RoutingCalibrationContractRevise(RoutingCalibrationContractTerms):
 
 
 class RoutingCalibrationContractApprove(_CalibrationModel):
-    """Approve the current submitted terms, named by revision and digest."""
+    """Approve the current submitted terms, named by revision and digest.
+
+    ``approved_as`` is the declared approver the caller approves as; it must
+    equal the terms' ``approver``. The authenticated principal is recorded
+    separately as ``approved_by``.
+    """
 
     expected_revision: PositiveRevision
     expected_terms_digest: RoutingDigest
+    approved_as: str = Field(..., min_length=1, max_length=MAX_CALIBRATION_LABEL)
+
+    @field_validator("approved_as")
+    @classmethod
+    def strip_approved_as(cls, value: str) -> str:
+        return _clean_text(value, label="approved_as")  # type: ignore[return-value]
 
 
 class CalibrationContractActor(_CalibrationModel):
@@ -190,7 +210,12 @@ class RoutingCalibrationContractResponse(_CalibrationModel):
     terms_digest: RoutingDigest
     submitted_by: CalibrationContractActor
     submitted_at: datetime
-    approved_by: CalibrationContractActor | None = None
+    approved_by: CalibrationContractActor | None = Field(
+        default=None, description="The authenticated principal that approved the current terms."
+    )
+    approved_as: str | None = Field(
+        default=None, description="The declared approver (the terms' approver) the approval was given as."
+    )
     approved_at: datetime | None = None
     approval_reason: str | None = None
     created_at: datetime
@@ -215,6 +240,7 @@ class RoutingCalibrationContractResponse(_CalibrationModel):
                 if row.approved_by_actor_type is not None
                 else None
             ),
+            approved_as=row.approved_as,
             approved_at=row.approved_at,
             approval_reason=row.approval_reason,
             created_at=row.created_at,
@@ -231,6 +257,7 @@ class RoutingCalibrationContractRevisionResponse(_CalibrationModel):
     terms: RoutingCalibrationContractTerms
     terms_digest: RoutingDigest
     reason: str
+    approved_as: str | None = None
     actor_type: str
     actor_id: int | None = None
     correlation_id: str | None = None

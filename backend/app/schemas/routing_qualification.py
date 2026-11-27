@@ -129,8 +129,15 @@ class QualificationKeyCatalogReference(_RegistryModel):
     enabled: bool
 
 
+class QualificationKeyCalibrationReference(_RegistryModel):
+    """A calibration contract whose current terms name the key."""
+
+    key: str
+    state: Literal["submitted", "approved"]
+
+
 class RoutingQualificationKeyUsage(_RegistryModel):
-    """Catalog entries and tasks whose current routing assessment name the key."""
+    """Catalog entries, calibration contracts and tasks whose current routing assessment name the key."""
 
     catalog_entries: list[QualificationKeyCatalogReference] = Field(
         default_factory=list,
@@ -139,6 +146,11 @@ class RoutingQualificationKeyUsage(_RegistryModel):
     task_ids: list[int] = Field(default_factory=list, max_length=MAX_QUALIFICATION_KEY_USAGE_ITEMS)
     catalog_entries_omitted: int = Field(default=0, ge=0)
     task_ids_omitted: int = Field(default=0, ge=0)
+    calibration_contracts: list[QualificationKeyCalibrationReference] = Field(
+        default_factory=list,
+        max_length=MAX_QUALIFICATION_KEY_USAGE_ITEMS,
+    )
+    calibration_contracts_omitted: int = Field(default=0, ge=0)
 
     @property
     def in_use(self) -> bool:
@@ -147,6 +159,8 @@ class RoutingQualificationKeyUsage(_RegistryModel):
             or self.task_ids
             or self.catalog_entries_omitted
             or self.task_ids_omitted
+            or self.calibration_contracts
+            or self.calibration_contracts_omitted
         )
 
 

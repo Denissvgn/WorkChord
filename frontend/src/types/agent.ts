@@ -345,6 +345,8 @@ export interface RoutingQualificationKeyUsage {
     task_ids: number[];
     catalog_entries_omitted: number;
     task_ids_omitted: number;
+    calibration_contracts?: { key: string; state: 'submitted' | 'approved' }[];
+    calibration_contracts_omitted?: number;
 }
 
 export interface RoutingQualificationKeyDetail extends RoutingQualificationKey {

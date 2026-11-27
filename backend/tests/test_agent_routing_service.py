@@ -705,15 +705,17 @@ async def test_preview_states_an_approved_calibration_contract_and_ranks_exactly
     contract.approved_by_actor_type = "operator"
     contract.approved_at = now
     contract.approval_reason = "Reviewed."
+    contract.approved_as = "Head of delivery"
     await db_session.commit()
     approved = await service.preview_task_routing(task.id, pm, request, now=now)
     assert approved.calibration_contract == "approved"
     assert approved.approved_calibration_contracts == 1
-    # Routing does not consume history: candidates, ranks and exclusions are unchanged.
+    # Routing does not consume history: candidates, ranks and exclusions are unchanged,
+    # and the calibration fields stay out of the digest.
     assert ranking(approved) == ranking(baseline)
-    assert approved.preview_digest != baseline.preview_digest
+    assert (approved.preview_id, approved.preview_digest) == (baseline.preview_id, baseline.preview_digest)
 
-    # The selection recomputes the same preview, so its digest is accepted.
+    # A preview taken before the approval still matches at selection.
     await service.validate_assignment_selection(
         task=task,
         selected_actor=local_worker,
@@ -725,8 +727,8 @@ async def test_preview_states_an_approved_calibration_contract_and_ranks_exactly
             assessment_id=receipt.assessment.id,
             model_binding_id=local_binding.id,
             model_binding_revision=local_binding.revision,
-            routing_preview_id=approved.preview_id,
-            routing_preview_digest=approved.preview_digest,
+            routing_preview_id=baseline.preview_id,
+            routing_preview_digest=baseline.preview_digest,
         ),
         assignment_created_by_actor=pm,
         now=now,

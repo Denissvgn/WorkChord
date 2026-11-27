@@ -229,7 +229,8 @@ underscores, and it never changes after it is declared.
 - **Revise** an active key's label or description, with its current revision.
 - **Retire** an active key with its current revision. Retiring is refused with
   `routing_qualification_key_in_use` while a catalog entry holds the key,
-  including a disabled entry, or an open task's current routing assessment
+  including a disabled entry, a calibration contract's current terms name it,
+  submitted or approved, or an open task's current routing assessment
   requires it. Every reference counts, but the refusal names only the tasks
   the caller can see and counts the rest in `task_ids_omitted`; remove the
   key from them first. A retired key is refused wherever an unknown key is,
@@ -273,7 +274,7 @@ the task does not require changes neither eligibility nor rank.
 | Method and path | Purpose |
 | --- | --- |
 | `GET /api/agent/routing-qualification-keys?include_retired=false` | The built-in keys (`builtin_keys`) and the declared keys (`keys`), active only unless `include_retired=true`. |
-| `GET /api/agent/routing-qualification-keys/{key}` | One declared key with its `revisions` and its `usage` as visible to the caller: `catalog_entries` and the open `task_ids` in the caller's project scope, bounded, with omitted counts. |
+| `GET /api/agent/routing-qualification-keys/{key}` | One declared key with its `revisions` and its `usage` as visible to the caller: `catalog_entries`, the `calibration_contracts` naming it (with their `state`), and the open `task_ids` in the caller's project scope, bounded, with omitted counts. |
 | `POST /api/agent/routing-qualification-keys` | Declare `{key, label, description?}`. Returns `201` with a model mutation receipt whose `target_type` is `routing_qualification_key`. |
 | `PATCH /api/agent/routing-qualification-keys/{key}` | Revise `{expected_revision, label?, description?}`. |
 | `POST /api/agent/routing-qualification-keys/{key}/retire` | Retire `{expected_revision}`. |
@@ -311,14 +312,17 @@ leaves out any of them, and refuses unknown fields.
 | `decay.method` | `exponential`, `linear` or `window`. |
 | `decay.days` | The half-life for `exponential`, the age at which weight reaches zero for `linear`, or the window length for `window`; not more than `maximum_age_days`. |
 | `bias_review.reviewer` | Who carried out the bias review. |
-| `bias_review.reviewed_at` | When the review was completed, with a time zone; not in the future. |
+| `bias_review.reviewed_at` | When the review was completed: an ISO 8601 date-time with a time zone, not in the future. The server stores it in UTC, so the same instant written with another offset gives the same terms. A number, such as an epoch timestamp, is refused. |
 | `bias_review.findings` | What the review found, such as samples that over-represent one team or task size. |
 | `bias_review.mitigations` | Optional: how the terms address the findings. |
-| `approver` | The accountable person or role whose approval the terms require. |
+| `approver` | The declared approver: the accountable person or role whose approval the terms require. |
 
 The response adds the contract's `key`, `state` (`submitted` or `approved`),
 `revision`, `terms_digest` (SHA-256 of the canonical terms), who submitted the
-current terms and when, and, once approved, who approved them, when and why.
+current terms and when, and, once approved, `approved_as` (the declared
+approver the approval was given as), `approved_by` (the authenticated
+principal that sent the approval: `operator` for the admin key, or the agent
+actor), `approved_at` and `approval_reason`.
 Do not put credentials, private task content or personal data beyond a name
 or role in any field.
 
@@ -342,18 +346,20 @@ Each command needs the usual `Idempotency-Key`, `X-Agent-Rationale` and
    the bias review record and the `terms_digest`.
 4. The approver approves it with
    `POST /api/agent/routing-calibration-contracts/{key}/approve`, giving the
-   current `expected_revision`, the `expected_terms_digest` they read, and a
-   reason. Approval adds a revision in state `approved`.
+   current `expected_revision`, the `expected_terms_digest` they read,
+   `approved_as` set exactly to the terms' `approver`, and a reason. Approval
+   adds a revision in state `approved` that keeps `approved_as`.
 5. Confirm that `GET /api/agent/routing-calibration-contracts` reports
    `approved_contract_exists: true` and that a routing preview reports
    `calibration_contract: approved`.
 
-The principal that submitted the current terms cannot approve them, so
-approval always needs a second principal. The admin key counts as one
-principal, the operator. A deployment run by one person submits with an
-admin-scoped agent key and approves with the admin key, or the reverse, and
-the revision history shows both. In managed mode an agent can act only if
-its actor has an operator membership.
+The server checks operator authority, the reason and that `approved_as`
+names the declared approver; it does not check who the authenticated
+principal is beyond that, and it does not require the approver to differ
+from the submitter. Whoever holds operator authority can approve, and the
+revision history records honestly who submitted and who approved. Make sure
+the declared approver has actually agreed before sending the approval. In
+managed mode an agent can act only if its actor has an operator membership.
 
 To change the terms, submit the complete new terms with
 `PUT /api/agent/routing-calibration-contracts/{key}` and the current
@@ -373,11 +379,11 @@ schema revision once any contract has been submitted.
 A routing preview has a `calibration_contract` field: `none_approved` while
 no contract is approved, and `approved` with `approved_calibration_contracts`
 (the number of approved contracts) once one is. Candidates, ranks, exclusions
-and blockers are computed exactly as before in both cases. While no contract
-is approved, the preview and its digest are identical to those of a server
-without calibration contracts. Approving or revising a contract changes the
-digest of later previews, so a preview taken before the change no longer
-matches at selection; take a fresh preview.
+and blockers are computed exactly as before in both cases. These two fields
+are not covered by `preview_digest` or `preview_id`, so approving or revising
+a contract does not invalidate a preview a selection is about to use, and
+the digest is the same as on a server without calibration contracts. They
+will enter the digest only once routing consumes performance history.
 
 ### API reference
 
@@ -387,16 +393,17 @@ matches at selection; take a fresh preview.
 | `GET /api/agent/routing-calibration-contracts/{key}` | One contract with all its `revisions`. |
 | `POST /api/agent/routing-calibration-contracts` | Submit `{key, qualification_keys, sample_bounds, decay, bias_review, approver}`. Returns `201` with a model mutation receipt whose `target_type` is `routing_calibration_contract`. |
 | `PUT /api/agent/routing-calibration-contracts/{key}` | Submit new terms `{expected_revision, qualification_keys, sample_bounds, decay, bias_review, approver}`. |
-| `POST /api/agent/routing-calibration-contracts/{key}/approve` | Approve `{expected_revision, expected_terms_digest}`. |
+| `POST /api/agent/routing-calibration-contracts/{key}/approve` | Approve `{expected_revision, expected_terms_digest, approved_as}`. |
 
-Missing or invalid terms return `422`; a bias review dated in the future
-returns `400`. Conflicts return `409` with a `code`:
-`routing_calibration_contract_exists`,
+Missing or invalid terms return `422`. Terms that name an unknown or retired
+key, or a bias review dated in the future, also return `422`, with a message
+such as `Unknown routing skill key: <key>`. Conflicts return `409` with a
+`code`: `routing_calibration_contract_exists`,
 `routing_calibration_contract_revision_conflict` (with `current_revision`),
 `routing_calibration_contract_no_change`,
 `routing_calibration_contract_terms_mismatch` (with `current_terms_digest`),
-`routing_calibration_contract_self_approval` or
-`routing_calibration_contract_already_approved`.
+`routing_calibration_contract_approver_mismatch` (with the declared
+`approver`) or `routing_calibration_contract_already_approved`.
 
 ## Supervised rework in shadow mode
 

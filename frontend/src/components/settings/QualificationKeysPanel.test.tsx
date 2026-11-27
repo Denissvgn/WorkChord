@@ -83,7 +83,7 @@ describe('QualificationKeysPanel', () => {
         await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     });
 
-    it('shows the entries and tasks that block retiring a key in use', async () => {
+    it('shows the entries, contracts and tasks that block retiring a key in use', async () => {
         agentServiceMock.retireQualificationKey.mockRejectedValue({
             response: {
                 status: 409,
@@ -95,6 +95,8 @@ describe('QualificationKeysPanel', () => {
                         task_ids: [42],
                         catalog_entries_omitted: 0,
                         task_ids_omitted: 2,
+                        calibration_contracts: [{ key: 'default', state: 'approved' }],
+                        calibration_contracts_omitted: 0,
                     },
                 },
             },
@@ -106,7 +108,7 @@ describe('QualificationKeysPanel', () => {
         await user.click(within(dialog).getByRole('button', { name: 'Retire' }));
 
         expect(await within(dialog).findByRole('alert')).toHaveTextContent(
-            'This key is still named by catalog entries schema-high and tasks #42 and 2 more.',
+            'This key is still named by catalog entries schema-high, calibration contracts default and tasks #42 and 2 more.',
         );
         expect(agentServiceMock.retireQualificationKey).toHaveBeenCalledWith('qualified.schema-review', 2, expect.anything());
     });

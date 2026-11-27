@@ -54,7 +54,7 @@ from app.schemas.triage import (
 from app.schemas.task_replacement import TaskReplacementCreate, TaskReplacementResponse
 from app.schemas.manual_provenance import ManualProvenanceWrite
 from app.services.agent_planning_service import AgentPlanningService
-from app.services.agent_routing_policy import UnknownRoutingKeyError
+from app.services.agent_routing_policy import RoutingTermsRefusedError
 from app.services.agent_routing_service import (
     AgentRoutingConflictError,
     AgentRoutingService,
@@ -121,8 +121,8 @@ def _handle_agent_error(exc: Exception) -> NoReturn:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
     if isinstance(exc, SourceLinkRefused):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=exc.detail())
-    if isinstance(exc, UnknownRoutingKeyError):
-        # The same refusal request validation gives for a key outside the vocabulary.
+    if isinstance(exc, RoutingTermsRefusedError):
+        # The same refusal request validation gives, e.g. for a key outside the vocabulary.
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc))
     if isinstance(exc, ValueError):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))

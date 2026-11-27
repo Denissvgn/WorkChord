@@ -1257,7 +1257,8 @@ class AgentRoutingPreviewResponse(RoutingContractModel):
         default="none_approved",
         description=(
             "Whether the deployment has an approved calibration contract. Routing does not "
-            "consume performance history either way; the ranking is unchanged."
+            "consume performance history either way; the ranking is unchanged, and this "
+            "field and approved_calibration_contracts are not covered by preview_digest."
         ),
     )
     approved_calibration_contracts: int = Field(

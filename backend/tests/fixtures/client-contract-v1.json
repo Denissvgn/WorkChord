@@ -3873,6 +3873,30 @@
         "title": "ProjectTargetDateRisk",
         "type": "string"
       },
+      "QualificationKeyCalibrationReference": {
+        "additionalProperties": false,
+        "description": "A calibration contract whose current terms name the key.",
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "submitted",
+              "approved"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "state"
+        ],
+        "title": "QualificationKeyCalibrationReference",
+        "type": "object"
+      },
       "QualificationKeyCatalogReference": {
         "additionalProperties": false,
         "description": "A catalog entry that holds the key.",
@@ -4005,8 +4029,14 @@
       },
       "RoutingCalibrationContractApprove": {
         "additionalProperties": false,
-        "description": "Approve the current submitted terms, named by revision and digest.",
+        "description": "Approve the current submitted terms, named by revision and digest.\n\n``approved_as`` is the declared approver the caller approves as; it must\nequal the terms' ``approver``. The authenticated principal is recorded\nseparately as ``approved_by``.",
         "properties": {
+          "approved_as": {
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Approved As",
+            "type": "string"
+          },
           "expected_revision": {
             "minimum": 1.0,
             "title": "Expected Revision",
@@ -4022,7 +4052,8 @@
         },
         "required": [
           "expected_revision",
-          "expected_terms_digest"
+          "expected_terms_digest",
+          "approved_as"
         ],
         "title": "RoutingCalibrationContractApprove",
         "type": "object"
@@ -4041,6 +4072,18 @@
               }
             ],
             "title": "Approval Reason"
+          },
+          "approved_as": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The declared approver (the terms' approver) the approval was given as.",
+            "title": "Approved As"
           },
           "approved_at": {
             "anyOf": [
@@ -4062,7 +4105,8 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "description": "The authenticated principal that approved the current terms."
           },
           "created_at": {
             "format": "date-time",
@@ -4193,6 +4237,18 @@
             ],
             "title": "Approval Reason"
           },
+          "approved_as": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The declared approver (the terms' approver) the approval was given as.",
+            "title": "Approved As"
+          },
           "approved_at": {
             "anyOf": [
               {
@@ -4213,7 +4269,8 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "description": "The authenticated principal that approved the current terms."
           },
           "created_at": {
             "format": "date-time",
@@ -4361,6 +4418,17 @@
           "actor_type": {
             "title": "Actor Type",
             "type": "string"
+          },
+          "approved_as": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approved As"
           },
           "correlation_id": {
             "anyOf": [
@@ -4885,8 +4953,22 @@
       },
       "RoutingQualificationKeyUsage": {
         "additionalProperties": false,
-        "description": "Catalog entries and tasks whose current routing assessment name the key.",
+        "description": "Catalog entries, calibration contracts and tasks whose current routing assessment name the key.",
         "properties": {
+          "calibration_contracts": {
+            "items": {
+              "$ref": "#/components/schemas/QualificationKeyCalibrationReference"
+            },
+            "maxItems": 50,
+            "title": "Calibration Contracts",
+            "type": "array"
+          },
+          "calibration_contracts_omitted": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Calibration Contracts Omitted",
+            "type": "integer"
+          },
           "catalog_entries": {
             "items": {
               "$ref": "#/components/schemas/QualificationKeyCatalogReference"

@@ -13,10 +13,10 @@ DIGEST = "a" * 64
 
 _CONTRACT_ROW = text(
     "INSERT INTO routing_calibration_contracts (key, schema_version, state, revision, terms, terms_digest,"
-    " submitted_by_actor_type, submitted_at, approved_by_actor_type, approved_at, approval_reason,"
+    " submitted_by_actor_type, submitted_at, approved_by_actor_type, approved_at, approval_reason, approved_as,"
     " created_at, updated_at)"
     " VALUES (:key, 'routing-calibration-contract-v1', :state, 1, '{}', :digest, 'operator', CURRENT_TIMESTAMP,"
-    " :approved_by, :approved_at, :reason, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"
+    " :approved_by, :approved_at, :reason, :approved_as, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"
 )
 
 
@@ -28,6 +28,7 @@ def _row(key: str, *, state: str = "submitted", approved: bool = False, digest: 
         "approved_by": "operator" if approved else None,
         "approved_at": "2026-11-27 10:00:00+00:00" if approved else None,
         "reason": "Approved after review." if approved else None,
+        "approved_as": "Head of delivery" if approved else None,
     }
 
 

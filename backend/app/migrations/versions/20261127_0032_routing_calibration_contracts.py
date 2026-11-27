@@ -11,8 +11,9 @@ depends_on = None
 
 APPROVAL_CONSISTENCY = (
     "(state = 'approved' AND approved_at IS NOT NULL AND approved_by_actor_type IS NOT NULL "
-    "AND approval_reason IS NOT NULL) OR (state = 'submitted' AND approved_at IS NULL "
-    "AND approved_by_actor_type IS NULL AND approved_by_actor_id IS NULL AND approval_reason IS NULL)"
+    "AND approval_reason IS NOT NULL AND approved_as IS NOT NULL) OR (state = 'submitted' AND approved_at IS NULL "
+    "AND approved_by_actor_type IS NULL AND approved_by_actor_id IS NULL AND approval_reason IS NULL "
+    "AND approved_as IS NULL)"
 )
 
 
@@ -33,6 +34,7 @@ def upgrade() -> None:
         sa.Column("approved_by_actor_id", sa.Integer(), sa.ForeignKey("agent_actors.id"), nullable=True),
         sa.Column("approved_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("approval_reason", sa.Text(), nullable=True),
+        sa.Column("approved_as", sa.String(255), nullable=True),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
         sa.UniqueConstraint("key", name="uq_routing_calibration_contracts_key"),
@@ -60,6 +62,7 @@ def upgrade() -> None:
         sa.Column("terms", sa.JSON(), nullable=False),
         sa.Column("terms_digest", sa.String(64), nullable=False),
         sa.Column("reason", sa.Text(), nullable=False),
+        sa.Column("approved_as", sa.String(255), nullable=True),
         sa.Column("actor_type", sa.String(50), nullable=False),
         sa.Column("actor_id", sa.Integer(), sa.ForeignKey("agent_actors.id"), nullable=True),
         sa.Column("correlation_id", sa.String(255), nullable=True),
@@ -80,6 +83,10 @@ def upgrade() -> None:
         sa.CheckConstraint(
             "length(trim(reason)) > 0",
             name="ck_routing_calibration_contract_revisions_reason_not_blank",
+        ),
+        sa.CheckConstraint(
+            "(action = 'approve' AND approved_as IS NOT NULL) OR (action = 'submit' AND approved_as IS NULL)",
+            name="ck_routing_calibration_contract_revisions_approved_as",
         ),
         sqlite_autoincrement=True,
     )

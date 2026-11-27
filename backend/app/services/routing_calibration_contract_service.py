@@ -1,7 +1,7 @@
 """The deployment's calibration contracts for performance-informed routing.
 
-An operator submits a contract's complete terms and a different operator
-principal approves them. Each command is replay-safe, carries a reason, adds
+An operator submits a contract's complete terms and an operator approves
+them as the contract's declared approver. Each command is replay-safe, carries a reason, adds
 an append-only revision row and records an audit event. Routing consumes no
 performance history: it only reports whether an approved contract exists.
 """
@@ -40,6 +40,7 @@ from app.services.agent_model_catalog_service import (
     AgentModelConflictError,
     _MutationResult,
 )
+from app.services.agent_routing_policy import RoutingTermsRefusedError
 from app.services.agent_service import require_scope
 from app.services.routing_qualification_key_service import require_known_qualification_keys
 from app.utils.time import utc_now
@@ -143,7 +144,7 @@ class RoutingCalibrationContractService:
         )
         await require_known_qualification_keys(self.db, terms.qualification_keys)
         if terms.bias_review.reviewed_at > utc_now() + _REVIEW_CLOCK_SKEW:
-            raise ValueError("bias_review.reviewed_at must not be in the future")
+            raise RoutingTermsRefusedError("bias_review.reviewed_at must not be in the future")
         return terms
 
     def _record(
@@ -165,6 +166,7 @@ class RoutingCalibrationContractService:
                 terms=row.terms,
                 terms_digest=row.terms_digest,
                 reason=command.rationale,
+                approved_as=row.approved_as if action == "approve" else None,
                 correlation_id=command.correlation_id,
                 **audit_actor,
             )
@@ -182,6 +184,7 @@ class RoutingCalibrationContractService:
                     "state": row.state,
                     "authoritative_revision": row.revision,
                     "terms_digest": row.terms_digest,
+                    "approved_as": row.approved_as,
                     "qualification_keys": row.terms.get("qualification_keys", []),
                     "rationale": command.rationale,
                 },
@@ -320,6 +323,7 @@ class RoutingCalibrationContractService:
             row.approved_by_actor_id = None
             row.approved_at = None
             row.approval_reason = None
+            row.approved_as = None
             self._submitted_by(row, actor)
             row.revision += 1
             event = self._record(row, action="submit", principal=actor, command=command, operation=operation)
@@ -344,7 +348,7 @@ class RoutingCalibrationContractService:
         *,
         command: AgentPlanningCommandContext,
     ) -> AgentModelMutationReceipt:
-        """Approve the submitted terms; the submitter of those terms cannot approve them."""
+        """Approve the submitted terms as their declared approver, recording who authenticated."""
 
         require_scope(actor, "admin")
         operation = "routing_calibration_contract.approve"
@@ -369,16 +373,15 @@ class RoutingCalibrationContractService:
                     key=row.key,
                     current_terms_digest=row.terms_digest,
                 )
-            audit_actor = self._commands._audit_actor(actor)
-            if (audit_actor["actor_type"], audit_actor["actor_id"]) == (
-                row.submitted_by_actor_type,
-                row.submitted_by_actor_id,
-            ):
+            declared = row.terms.get("approver")
+            if data.approved_as != declared:
                 raise AgentModelConflictError(
-                    "routing_calibration_contract_self_approval",
-                    "The principal that submitted these terms cannot approve them",
+                    "routing_calibration_contract_approver_mismatch",
+                    "The approval must be given as the contract's declared approver",
                     key=row.key,
+                    approver=declared,
                 )
+            audit_actor = self._commands._audit_actor(actor)
             # Keys retired since submission would make the terms unenforceable.
             await require_known_qualification_keys(self.db, row.terms.get("qualification_keys", []))
             row.state = "approved"
@@ -386,6 +389,7 @@ class RoutingCalibrationContractService:
             row.approved_by_actor_id = audit_actor["actor_id"]
             row.approved_at = utc_now()
             row.approval_reason = command.rationale
+            row.approved_as = data.approved_as
             row.revision += 1
             event = self._record(row, action="approve", principal=actor, command=command, operation=operation)
             return await self._result(row, event)
