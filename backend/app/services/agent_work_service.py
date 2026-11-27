@@ -223,6 +223,7 @@ class AgentWorkService:
         actor: AgentActor,
         *,
         observed_boundaries: dict | None = None,
+        verifier_actor_id: int | None = None,
     ) -> AgentRoutingRolloutService:
         if self._rollout_service_explicit:
             return self.rollout_service
@@ -231,6 +232,12 @@ class AgentWorkService:
         from app.services.agent_team_setup_service import AgentTeamSetupService
 
         setup = AgentTeamSetupService(self.db)
+        if verifier_actor_id is not None:
+            # Verification depends on the selected verifier's presence, not the whole team's; not cached.
+            readiness = await setup.verifier_routing_readiness(actor, verifier_actor_id)
+            if readiness.status == AgentRoutingTopologyReadinessStatus.UNAVAILABLE:
+                return self.rollout_service
+            return AgentRoutingRolloutService(topology_readiness=readiness)
         readiness = (await setup.routing_readiness(actor) if observed_boundaries is None
                      else await setup.routing_readiness(actor, observed_boundaries=observed_boundaries))
         if (
@@ -271,12 +278,24 @@ class AgentWorkService:
 
         return self._require_enforced_rollout(self.rollout_service)
 
-    async def _require_enforced_routing_for_actor(self, actor: AgentActor):
+    async def _require_enforced_routing_for_actor(
+        self, actor: AgentActor, *, verifier_actor_id: int | None = None,
+    ):
         """Require enforcement using the actor's authoritative topology."""
 
-        return self._require_enforced_rollout(
-            await self._resolve_rollout(actor)
-        )
+        rollout = await self._resolve_rollout(actor, verifier_actor_id=verifier_actor_id)
+        try:
+            return self._require_enforced_rollout(rollout)
+        except Exception as exc:
+            from app.services.agent_routing_service import AgentRoutingConflictError
+
+            if verifier_actor_id is not None and isinstance(exc, AgentRoutingConflictError) and self.db is not None:
+                from app.services.agent_team_setup_service import AgentTeamSetupService
+
+                detail = await AgentTeamSetupService(self.db).readiness_refusal_context(
+                    actor.id, required_actor_id=verifier_actor_id)
+                exc.context.update({k: v for k, v in detail.items() if k not in {"topology_key", "topology_revision"}})
+            raise
 
     @staticmethod
     def _require_supervised_rollout(
@@ -1475,7 +1494,8 @@ class AgentWorkService:
                 return response
             raise AgentConflictError("Idempotent assignment receipt is unavailable")
         if isinstance(data, ModelAwareAgentTaskAssignmentCreate):
-            await self._require_enforced_routing_for_actor(principal)
+            await self._require_enforced_routing_for_actor(
+                principal, verifier_actor_id=data.actor_id if data.purpose == "verification" else None)
         else:
             await self._require_supervised_routing_for_actor(principal)
 
@@ -1755,7 +1775,8 @@ class AgentWorkService:
         rollout_status = (await self._resolve_rollout(principal)).status()
         if isinstance(data, ModelAwareAgentTaskAssignmentUpdate):
             rollout_status = await self._require_enforced_routing_for_actor(
-                principal
+                principal,
+                verifier_actor_id=(data.actor_id or assignment.actor_id) if assignment.purpose == "verification" else None,
             )
         if assignment.state != "queued":
             raise AgentConflictError("Only queued assignments can be changed by PM control")

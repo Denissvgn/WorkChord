@@ -274,7 +274,7 @@ async def check_supervised_selection(db, task, principal, selection, reviewer_pr
 
     scope = selection["review_evidence"]
     routing = AgentRoutingService(db)
-    await routing._require_preview_rollout(principal)
+    await routing._require_preview_rollout(principal, verifier_actor_id=scope["reviewer"]["actor_id"])
     data = AgentRoutingPreviewCreate(
         purpose="verification",
         assessment_id=scope["assessment_id"],

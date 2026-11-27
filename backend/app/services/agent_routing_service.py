@@ -280,8 +280,11 @@ class AgentRoutingService:
         self.task_service = TaskService(db)
         self.rollout_service = rollout_service
 
-    async def _require_preview_rollout(self, actor: AgentActor):
-        """Translate fail-closed rollout state into the routing error envelope."""
+    async def _require_preview_rollout(self, actor: AgentActor, *, verifier_actor_id: int | None = None):
+        """Translate fail-closed rollout state into the routing error envelope.
+
+        With ``verifier_actor_id`` a verification preview needs only that verifier to be present.
+        """
 
         rollout_service = self.rollout_service
         if rollout_service is None:
@@ -292,9 +295,12 @@ class AgentRoutingService:
                     AgentTeamSetupService,
                 )
 
-                readiness = await AgentTeamSetupService(
-                    self.db
-                ).routing_readiness(actor)
+                setup = AgentTeamSetupService(self.db)
+                readiness = await (
+                    setup.routing_readiness(actor)
+                    if verifier_actor_id is None
+                    else setup.verifier_routing_readiness(actor, verifier_actor_id)
+                )
                 rollout_service = (
                     AgentRoutingRolloutService()
                     if readiness.status
@@ -307,6 +313,15 @@ class AgentRoutingService:
             return rollout_service.require_preview()
         except AgentRoutingRolloutError as exc:
             status = exc.status
+            detail: dict[str, Any] = {}
+            if self.rollout_service is None and self.db is not None:
+                from app.services.agent_team_setup_service import AgentTeamSetupService
+
+                detail = await AgentTeamSetupService(self.db).readiness_refusal_context(
+                    actor.id, required_actor_id=verifier_actor_id
+                )
+                detail.pop("topology_key", None)
+                detail.pop("topology_revision", None)
             raise AgentRoutingConflictError(
                 exc.code,
                 "Model-aware routing is unavailable in the effective rollout mode",
@@ -314,6 +329,7 @@ class AgentRoutingService:
                 effective_mode=status.effective_mode.value,
                 blocker_codes=list(status.blocker_codes),
                 topology_readiness=status.topology_readiness.as_dict(),
+                **detail,
             ) from exc
 
     @staticmethod
@@ -2216,7 +2232,9 @@ class AgentRoutingService:
     ) -> AgentRoutingPreviewResponse:
         """Return a deterministic preview and stage bounded shadow/audit evidence."""
 
-        rollout = await self._require_preview_rollout(actor)
+        rollout = await self._require_preview_rollout(
+            actor, verifier_actor_id=data.focus_actor_id if data.purpose == "verification" else None
+        )
         self._require_read(actor)
         if actor.id <= 0:
             raise AgentPermissionError(

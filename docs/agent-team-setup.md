@@ -315,6 +315,45 @@ rework, and recovery command enforce the caller's current topology revision
 and runtime-ready membership. A topology change invalidates stale routing
 evidence.
 
+### Which actors are runtime-ready, and what a refusal tells you
+
+An actor is runtime-ready when its runtime handoff is issued, its current
+runtime acknowledgement (package, profile and model-binding revisions, runtime
+instance identity) is recorded, its credential is delivered, it is enabled and
+active, and it polled its queue within the topology's
+`maximum_runtime_staleness_seconds`. Polling is what keeps an actor present: an
+actor that stops polling becomes stale and is no longer ready.
+
+Execution dispatch, rework and recovery still depend on the team as it is
+today: the actor that receives the work must be runtime-ready, and enforced
+model-aware dispatch of execution work needs the whole topology ready.
+Verification is judged by the selected verifier: an owner or PM can assign a
+verifier, and preview routing for it, while that verifier is a runtime-ready
+member of the team, even if other declared actors are not present. A verifier
+that is not present is still refused. A verification preview that names no
+`focus_actor_id` lists every candidate and keeps the whole-team requirement.
+
+Two refusals say who is missing instead of leaving the cause to be guessed.
+`agent_team_actor_outside_topology` (an exact actor that is not a runtime-ready
+member) and `model_aware_routing_preview_unavailable` (routing unavailable
+because the team is not ready), and for a verification assignment also the
+enforced-dispatch refusal, carry:
+
+- `readiness_rule`: the rule above, with the staleness limit in seconds;
+- `maximum_runtime_staleness_seconds`;
+- `non_ready_actors`: one row per declared actor that is not runtime-ready,
+  with `actor_id`, `actor_key`, `role`, `connection_state`, `blocker_codes`,
+  `last_seen_at` (its last queue poll), `last_ready_at` and
+  `blocks_this_request`.
+
+`last_ready_at` is the last time the actor was seen ready. It is set only when
+nothing but presence is missing (`runtime_stale`), where it equals
+`last_seen_at`; it is `null` when the actor never was ready or lost readiness
+for another reason, such as a changed revision, so read `blocker_codes` then.
+`blocks_this_request` is true for the actors whose absence caused that refusal:
+the exact actor for an assignment, the verifier for a verification preview or
+assignment, and every non-ready actor otherwise.
+
 ### Read the team and its runtime references
 
 `GET /api/agent/team-setup/topology` and the MCP `agent_get_team_topology` tool
