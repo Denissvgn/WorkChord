@@ -1,6 +1,6 @@
 # TaskEvent
 
-**Location:** `backend/app/models/agent.py:1005`
+**Location:** `backend/app/models/agent.py:1038`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)

@@ -16,7 +16,7 @@ _Auto-generated from `frontend/src/types/agent.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `AgentActor`, `AgentActorRole`, `AgentActorRosterItem`, `AgentActorRosterProfile`, `AgentActorRosterProfileSkill`, `AgentAssignmentListParams`, `AgentAssignmentPurpose`, `AgentAssignmentQueueClass`, `AgentAssignmentReadItem`, `AgentAssignmentState`, `AgentCapabilities`, `AgentCommandMetadata`, `AgentModelBinding`, `AgentModelBindingCreate`, `AgentModelBindingDisable`, `AgentModelBindingListParams`, `AgentModelBindingStatus`, `AgentModelBindingUpdate`, `AgentModelCatalogCreate`, `AgentModelCatalogDisable`, `AgentModelCatalogEntry`, `AgentModelCatalogUpdate`, `AgentModelMatchBasis`, `AgentModelMutationReceipt`, `AgentModelTrustState`, `AgentPipeline`, `AgentProfileSkillCatalogItem`, `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse`, `AgentRun`, `AgentRunEvent`, `AgentTaskAssignment`, `AgentTeamActionReceipt`, `AgentTeamApplyResponse`, `AgentTeamLifecycle`, `AgentTeamMaster`, `AgentTeamMemberSpec`, `AgentTeamMemberStatus`, `AgentTeamPlan`, `AgentTeamPlanAction`, `AgentTeamReconciliationClass`, `AgentTeamRole`, `AgentTeamRuntimeHandoff`, `AgentTeamSetupStep`, `AgentTeamSkillPackage`, `AgentTeamStatus`, `AgentTeamStepState`, `AgentTeamValidation`, `AssessmentReasonCode`, `JsonObject`, `JsonPrimitive`, `JsonValue`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareRoutingMode`, `ModelAwareRoutingStatus`, `ModelAwareRoutingTopologyReadiness`, `ModelAwareRoutingTopologySource`, `ModelAwareRoutingTopologyStatus`, `ModelContextTier`, `ModelCostTier`, `ModelLatencyTier`, `ModelReasoningTier`, `RequiredModelEnvelope`, `RoutingBlockerCode`, `TaskDifficultyAxes`, `TaskDifficultyBand`, `TaskDifficultyScore`, `TaskReviewMode`, `TaskRoutingAssessment`, `TaskRoutingAssessmentCommand`, `TaskRoutingAssessmentHistory`, `TaskRoutingAssessmentMutationReceipt`, `TaskRoutingAssessmentState`, `TaskSkillLevel`, `TaskTimelineItem`, `TaskTimelineResponse` |
+| Exports | `AgentActor`, `AgentActorRole`, `AgentActorRosterItem`, `AgentActorRosterProfile`, `AgentActorRosterProfileSkill`, `AgentAssignmentListParams`, `AgentAssignmentPurpose`, `AgentAssignmentQueueClass`, `AgentAssignmentReadItem`, `AgentAssignmentState`, `AgentCapabilities`, `AgentCommandMetadata`, `AgentModelBinding`, `AgentModelBindingCreate`, `AgentModelBindingDisable`, `AgentModelBindingListParams`, `AgentModelBindingStatus`, `AgentModelBindingUpdate`, `AgentModelCatalogCreate`, `AgentModelCatalogDisable`, `AgentModelCatalogEntry`, `AgentModelCatalogUpdate`, `AgentModelMatchBasis`, `AgentModelMutationReceipt`, `AgentModelTrustState`, `AgentPipeline`, `AgentProfileSkillCatalogItem`, `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse`, `AgentRun`, `AgentRunEvent`, `AgentTaskAssignment`, `AgentTeamActionReceipt`, `AgentTeamApplyResponse`, `AgentTeamLifecycle`, `AgentTeamMaster`, `AgentTeamMemberSpec`, `AgentTeamMemberStatus`, `AgentTeamPlan`, `AgentTeamPlanAction`, `AgentTeamReconciliationClass`, `AgentTeamRole`, `AgentTeamRuntimeHandoff`, `AgentTeamRuntimeIdentityStatus`, `AgentTeamSetupStep`, `AgentTeamSkillPackage`, `AgentTeamStatus`, `AgentTeamStepState`, `AgentTeamValidation`, `AssessmentReasonCode`, `JsonObject`, `JsonPrimitive`, `JsonValue`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareRoutingMode`, `ModelAwareRoutingStatus`, `ModelAwareRoutingTopologyReadiness`, `ModelAwareRoutingTopologySource`, `ModelAwareRoutingTopologyStatus`, `ModelContextTier`, `ModelCostTier`, `ModelLatencyTier`, `ModelReasoningTier`, `RequiredModelEnvelope`, `RoutingBlockerCode`, `TaskDifficultyAxes`, `TaskDifficultyBand`, `TaskDifficultyScore`, `TaskReviewMode`, `TaskRoutingAssessment`, `TaskRoutingAssessmentCommand`, `TaskRoutingAssessmentHistory`, `TaskRoutingAssessmentMutationReceipt`, `TaskRoutingAssessmentState`, `TaskSkillLevel`, `TaskTimelineItem`, `TaskTimelineResponse` |
 
 ## Local dependency map
 
@@ -38,10 +38,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (39) |
+| Inbound | `frontend` (41) |
 | Outbound | `frontend` (1) |
 
-> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 42 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -96,9 +96,10 @@ flowchart LR
 | [AgentTeamActionReceipt](../entities/types_agent_AgentTeamActionReceipt.md) | Interface | 758 | — | — |
 | [AgentTeamApplyResponse](../entities/types_agent_AgentTeamApplyResponse.md) | Interface | 772 | — | — |
 | [AgentTeamRuntimeHandoff](../entities/types_agent_AgentTeamRuntimeHandoff.md) | Interface | 787 | — | — |
-| [AgentTeamMemberStatus](../entities/types_agent_AgentTeamMemberStatus.md) | Interface | 806 | — | — |
-| [AgentTeamSetupStep](../entities/types_agent_AgentTeamSetupStep.md) | Interface | 838 | — | — |
-| [AgentTeamStatus](../entities/AgentTeamStatus.md) | Interface | 845 | — | — |
+| [AgentTeamRuntimeIdentityStatus](../entities/types_agent_AgentTeamRuntimeIdentityStatus.md) | Interface | 808 | — | Which runtime instance acknowledged a member's handoff; unknown for an acknowledgement made before the identity existed. |
+| [AgentTeamMemberStatus](../entities/types_agent_AgentTeamMemberStatus.md) | Interface | 818 | — | — |
+| [AgentTeamSetupStep](../entities/types_agent_AgentTeamSetupStep.md) | Interface | 851 | — | — |
+| [AgentTeamStatus](../entities/AgentTeamStatus.md) | Interface | 858 | — | — |
 | [JsonPrimitive](../entities/JsonPrimitive.md) | Type alias | 3 | `string \| number \| boolean \| null` | — |
 | [JsonValue](../entities/JsonValue.md) | Type alias | 4 | `JsonPrimitive \| JsonValue[] \| { [key: string]: JsonValue }` | — |
 | [JsonObject](../entities/JsonObject.md) | Type alias | 5 | `{ [key: string]: JsonValue }` | — |

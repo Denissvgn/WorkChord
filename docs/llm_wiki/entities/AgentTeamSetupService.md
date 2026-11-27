@@ -1,6 +1,6 @@
 # AgentTeamSetupService
 
-**Location:** `backend/app/services/agent_team_setup_service.py:183`
+**Location:** `backend/app/services/agent_team_setup_service.py:186`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_team_setup_service](../modules/agent_team_setup_service.md)
@@ -54,6 +54,7 @@ Uses the bundle service's deployed, integrity-validated catalog for role-package
 | `_binding_revisions` | *(async)* `(actor: AgentActor) -> dict[str, int]` | — | — |
 | `_unverified_tool_tags` | *(async)* `(actor: AgentActor \| None, member: AgentTeamMemberSpec) -> dict[str, tuple[str, ...]]` | — | Declared tool tags the binding does not carry yet, per binding key. |
 | `_tool_capability_action` | `(gaps: dict[str, tuple[str, ...]]) -> str \| None` | `@staticmethod` | — |
+| `_runtime_identity_status` | `(record: AgentTeamTopologyMember, *, expected_instance_id: str, acknowledgement: dict[str, Any]) -> AgentTeamRuntimeIdentityStatus` | `@staticmethod` | Read the acknowledging identity from the acknowledgement, and any change or refusal from stored state. |
 | `_handoff` | *(async)* `(*, topology: AgentTeamTopology, manifest: AgentTeamMaster, member_record: AgentTeamTopologyMember, member: AgentTeamMemberSpec) -> AgentTeamRuntimeHandoff \| None` | — | — |
 | `_refresh_handoffs` | *(async)* `(topology: AgentTeamTopology, manifest: AgentTeamMaster) -> None` | — | — |
 | `apply` | *(async)* `(actor: AgentActor, request: AgentTeamApplyRequest, *, command: AgentPlanningCommandContext) -> AgentTeamApplyResponse` | — | Apply only exact approved action IDs and persist resumable receipts. |
@@ -64,7 +65,9 @@ Uses the bundle service's deployed, integrity-validated catalog for role-package
 | `topology` | *(async)* `(actor: AgentActor \| None, *, topology_key: str \| None = None) -> AgentTeamTopologyResponse` | — | Who is on the team, and which runtime reference runs each member. |
 | `report` | *(async)* `(actor: AgentActor, *, topology_key: str \| None = None) -> AgentTeamSetupReport` | — | Return a bounded redacted report without availability overclaims. |
 | `_status_for_topology` | *(async)* `(topology: AgentTeamTopology, *, can_mutate: bool, persist_state: bool) -> AgentTeamStatusResponse` | — | — |
+| `_count_ack_attempt` | `(member: AgentTeamTopologyMember) -> None` | `@staticmethod` | — |
 | `_increment_ack_attempt` | *(async)* `(member: AgentTeamTopologyMember) -> None` | — | — |
+| `_refuse_foreign_runtime_instance` | *(async)* `(actor: AgentActor, supplied_instance_id: str \| None) -> None` | — | Turn away an acknowledgement that returns an identity other than the issued one, and record it. |
 | `acknowledge_runtime` | *(async)* `(api_key: str, acknowledgement: AgentTeamRuntimeAcknowledgement) -> AgentTeamRuntimeAcknowledgementResponse` | — | Accept only the exact restricted onboarding handoff acknowledgement. |
 | `membership_boundary` | *(async)* `(actor_id: int) -> AgentTeamMembershipBoundary \| None` | — | Return the live, drift-aware topology boundary for one bound actor. |
 | `require_dispatch_member` | *(async)* `(principal: AgentActor, target_actor_id: int) -> AgentTeamMembershipBoundary \| None` | — | Fail closed when a bound caller selects outside its active roster. |
@@ -116,7 +119,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_team_setup_service](../modules/agent_team_setup_service.md) | 50 | — |
+| [agent_team_setup_service](../modules/agent_team_setup_service.md) | 53 | — |
 
 ### References
 
@@ -135,4 +138,4 @@ flowchart LR
 | `get_agent_team_starting_points` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `get_agent_team_topology` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 
-> References: showing 12 of 54 logical references; 42 omitted by the 12-row generated summary limit.
+> References: showing 12 of 55 logical references; 43 omitted by the 12-row generated summary limit.

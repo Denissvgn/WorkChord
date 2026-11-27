@@ -18,12 +18,13 @@
 8. `identity_service.bind_verified_system`
 9. `agent_service.AgentPermissionError`
 10. `agent_team_setup.load_stored_agent_team_member`
-11. `agent_team_setup.AgentTeamRuntimeAcknowledgementResponse`
-12. `agent_team_setup.load_stored_agent_team_master`
-13. `time.utc_now`
+11. `commands.commit_or_flush`
+12. `agent_team_setup.AgentTeamRuntimeAcknowledgementResponse`
+13. `agent_team_setup.load_stored_agent_team_master`
 14. `time.utc_now`
-15. `commands.commit_or_flush`
-16. `agent_team_setup.AgentTeamRuntimeAcknowledgementResponse`
+15. `time.utc_now`
+16. `commands.commit_or_flush`
+17. `agent_team_setup.AgentTeamRuntimeAcknowledgementResponse`
 
 ## Touches
 

@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1837 | [Open section](#entities) |
-| Modules | 1176 | [Open section](#modules) |
+| Entities | 1840 | [Open section](#entities) |
+| Modules | 1181 | [Open section](#modules) |
 | Workflows | 241 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 631 | [Open section](#entry-point-flows) |
@@ -923,6 +923,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RuntimeSettingsService](entities/RuntimeSettingsService.md)
 - [S3ObjectLockClient](entities/S3ObjectLockClient.md)
 - [SafeFormatDict](entities/SafeFormatDict.md)
+- [SameReceiptSink](entities/SameReceiptSink.md)
 - [SampleKind](entities/SampleKind.md)
 - [SampleManifest](entities/SampleManifest.md)
 - [SampleRecord](entities/SampleRecord.md)
@@ -1326,6 +1327,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [agent_team_setup_AgentTeamReconciliationClass](entities/agent_team_setup_AgentTeamReconciliationClass.md)
 - [agent_team_setup_AgentTeamReconciliationPlan](entities/agent_team_setup_AgentTeamReconciliationPlan.md)
 - [agent_team_setup_AgentTeamRuntimeHandoff](entities/agent_team_setup_AgentTeamRuntimeHandoff.md)
+- [agent_team_setup_AgentTeamRuntimeIdentityStatus](entities/agent_team_setup_AgentTeamRuntimeIdentityStatus.md)
 - [agent_team_setup_AgentTeamSetupStep](entities/agent_team_setup_AgentTeamSetupStep.md)
 - [agent_team_setup_AgentTeamSkillPackage](entities/agent_team_setup_AgentTeamSkillPackage.md)
 - [deliveryMetrics_DeliveryQueueItem](entities/deliveryMetrics_DeliveryQueueItem.md)
@@ -1657,6 +1659,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_agent_AgentTeamPlanAction](entities/types_agent_AgentTeamPlanAction.md)
 - [types_agent_AgentTeamReconciliationClass](entities/types_agent_AgentTeamReconciliationClass.md)
 - [types_agent_AgentTeamRuntimeHandoff](entities/types_agent_AgentTeamRuntimeHandoff.md)
+- [types_agent_AgentTeamRuntimeIdentityStatus](entities/types_agent_AgentTeamRuntimeIdentityStatus.md)
 - [types_agent_AgentTeamSetupStep](entities/types_agent_AgentTeamSetupStep.md)
 - [types_agent_AgentTeamSkillPackage](entities/types_agent_AgentTeamSkillPackage.md)
 - [types_agent_AssessmentReasonCode](entities/types_agent_AssessmentReasonCode.md)
@@ -1891,6 +1894,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261126_0025_catalog_local_first](modules/20261126_0025_catalog_local_first.md) - Let a model catalog entry prefer a free or local model at equal adequacy.
 - [20261126_0026_review_record_kind](modules/20261126_0026_review_record_kind.md) - Tell an owner's override acceptance apart from an ordinary review in review history.
 - [20261126_0027_task_postponements](modules/20261126_0027_task_postponements.md) - Record postponed tasks and the requirements that must hold before they resume.
+- [20261126_0028_team_runtime_identity](modules/20261126_0028_team_runtime_identity.md) - Record which runtime instance acknowledged each team member's handoff.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AccountMenu](modules/AccountMenu.md) - `frontend/src/features/identity/AccountMenu.tsx`
 - [AccountMenu.test](modules/AccountMenu.test.md) - `frontend/src/features/identity/AccountMenu.test.tsx`
@@ -1951,6 +1955,7 @@ Retained history; these declarations are absent from the selected source invento
 - [ConnectedReadersPanel](modules/ConnectedReadersPanel.md) - `frontend/src/components/settings/ConnectedReadersPanel.tsx`
 - [ConnectedReadersPanel.test](modules/ConnectedReadersPanel.test.md) - `frontend/src/components/settings/ConnectedReadersPanel.test.tsx`
 - [ConnectionSteps](modules/ConnectionSteps.md) - `frontend/src/components/team/ConnectionSteps.tsx`
+- [ConnectionSteps.test](modules/ConnectionSteps.test.md) - `frontend/src/components/team/ConnectionSteps.test.tsx`
 - [ConstraintsPanel](modules/ConstraintsPanel.md) - `frontend/src/components/settings/ConstraintsPanel.tsx`
 - [ContextHelp](modules/ContextHelp.md) - `frontend/src/components/layout/ContextHelp.tsx`
 - [ContextHelp.test](modules/ContextHelp.test.md) - `frontend/src/components/layout/ContextHelp.test.tsx`
@@ -2117,6 +2122,7 @@ Retained history; these declarations are absent from the selected source invento
 - [RoutingCandidateComparison.test](modules/RoutingCandidateComparison.test.md) - `frontend/src/components/agent/RoutingCandidateComparison.test.tsx`
 - [RuntimeConfigSettings](modules/RuntimeConfigSettings.md) - `frontend/src/components/settings/RuntimeConfigSettings.tsx`
 - [RuntimeConfigSettings.test](modules/RuntimeConfigSettings.test.md) - `frontend/src/components/settings/RuntimeConfigSettings.test.tsx`
+- [RuntimeIdentity](modules/RuntimeIdentity.md) - `frontend/src/components/team/RuntimeIdentity.tsx`
 - [SampleProjectAction](modules/SampleProjectAction.md) - `frontend/src/features/firstRun/SampleProjectAction.tsx`
 - [SavedViewsControl](modules/SavedViewsControl.md) - `frontend/src/components/tasks/SavedViewsControl.tsx`
 - [ScheduleExplanationDetails](modules/ScheduleExplanationDetails.md) - `frontend/src/components/gantt/ScheduleExplanationDetails.tsx`
@@ -2790,6 +2796,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_agent_runtime_recovery](modules/test_agent_runtime_recovery.md) - Separate-process protocol simulation; no provider or pilot acceptance implied.
 - [test_agent_skill_routing_guidance](modules/test_agent_skill_routing_guidance.md) - Contract coverage for MAR-SKILL-001, MAR-SKILL-002, and MAR-PKG-001.
 - [test_agent_team_catalog](modules/test_agent_team_catalog.md) - Team setup shares deployed bundle identities and integrity failures.
+- [test_agent_team_runtime_identity](modules/test_agent_team_runtime_identity.md) - The onboarding handoff names a runtime instance and the acknowledgement must return it.
 - [test_agent_team_setup](modules/test_agent_team_setup.md) - Contract and service coverage for portable agent-team setup.
 - [test_agent_team_setup_cli](modules/test_agent_team_setup_cli.md) - No-network contract coverage for the agent-team setup CLI.
 - [test_agent_team_setup_qualification](modules/test_agent_team_setup_qualification.md) - Live topology, recovery, redaction, and compatibility qualification.
@@ -2902,6 +2909,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_routing_preview_team_scope](modules/test_routing_preview_team_scope.md) - A team-bound PM's routing preview carries only its own team's operational rows.
 - [test_run_detail_execution_provenance](modules/test_run_detail_execution_provenance.md) - Run detail returns the stored execution provenance through REST and MCP alike.
 - [test_runtime_boundaries](modules/test_runtime_boundaries.md) - DBM-PERF-002 and DBM-MAINT-001 runtime-boundary tests.
+- [test_runtime_identity_migration](modules/test_runtime_identity_migration.md) - The runtime instance columns migrate reversibly and are never dropped silently.
 - [test_runtime_mutation_policy](modules/test_runtime_mutation_policy.md) - Runtime configuration preserves supplied conflicts in either rollout mode.
 - [test_runtime_observations](modules/test_runtime_observations.md) - Advisory runtime observations: who may record and read them, and that dispatch never sees them.
 - [test_runtime_policy](modules/test_runtime_policy.md) - DBM-RUN-002/003 retry, ordering, and comparison contract tests.

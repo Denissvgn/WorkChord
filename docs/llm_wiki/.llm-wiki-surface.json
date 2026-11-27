@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1837,
+      "entities": 1840,
       "flows": 631,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1176,
+      "modules": 1181,
       "workflows": 241
     },
     "dependency_architecture": 2,
-    "total": 3902
+    "total": 3910
   },
   "dependency_pages": {
     "count": 2,
@@ -1176,7 +1176,7 @@
             "backend/app/schemas/agent.py",
             "backend/app/models/agent.py"
           ],
-          "step_count": 751,
+          "step_count": 761,
           "truncated": true
         }
       },
@@ -9148,19 +9148,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 3643,
+              "line": 3812,
               "step": "AgentTeamSetupService.membership_boundary",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 3644,
+              "line": 3813,
               "step": "AgentTeamSetupService.membership_boundary",
               "target": "select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 3644,
+              "line": 3813,
               "step": "AgentTeamSetupService.membership_boundary",
               "target": "select(AgentTeamTopology.topology_key).join"
             },
@@ -9197,7 +9197,7 @@
             "backend/app/config.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 255,
+          "step_count": 263,
           "truncated": true
         }
       },
@@ -14443,7 +14443,7 @@
             "backend/app/models/task.py",
             "backend/app/schemas/common.py"
           ],
-          "step_count": 1114,
+          "step_count": 1124,
           "truncated": true
         }
       },
@@ -14606,7 +14606,7 @@
             "backend/app/models/task.py",
             "backend/app/schemas/common.py"
           ],
-          "step_count": 1124,
+          "step_count": 1134,
           "truncated": true
         }
       },
@@ -20858,7 +20858,7 @@
             "backend/app/models/identity.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 747,
+          "step_count": 757,
           "truncated": true
         }
       },
@@ -29133,7 +29133,7 @@
             "backend/app/schemas/agent.py",
             "backend/app/schemas/agent_routing.py"
           ],
-          "step_count": 473,
+          "step_count": 481,
           "truncated": true
         }
       },
@@ -30091,7 +30091,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 457,
+          "step_count": 465,
           "truncated": true
         }
       },
@@ -32055,7 +32055,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 497,
+          "step_count": 505,
           "truncated": true
         }
       },
@@ -33612,7 +33612,7 @@
             "backend/app/schemas/agent_team_setup.py",
             "backend/app/autonomy/canonical.py"
           ],
-          "step_count": 481,
+          "step_count": 489,
           "truncated": true
         }
       },
@@ -33700,7 +33700,7 @@
             "backend/app/schemas/agent_team_setup.py",
             "backend/app/autonomy/canonical.py"
           ],
-          "step_count": 486,
+          "step_count": 494,
           "truncated": true
         }
       },
@@ -33792,7 +33792,7 @@
             "backend/app/schemas/agent.py",
             "backend/app/schemas/agent_routing.py"
           ],
-          "step_count": 513,
+          "step_count": 521,
           "truncated": true
         }
       },
@@ -49698,6 +49698,7 @@
         "entities/agent_team_setup_AgentTeamReconciliationClass.md",
         "entities/agent_team_setup_AgentTeamReconciliationPlan.md",
         "entities/agent_team_setup_AgentTeamRuntimeHandoff.md",
+        "entities/agent_team_setup_AgentTeamRuntimeIdentityStatus.md",
         "entities/agent_team_setup_AgentTeamSetupStep.md",
         "entities/agent_team_setup_AgentTeamSkillPackage.md",
         "entities/AgentActorCreate.md",
@@ -50694,6 +50695,7 @@
         "entities/RuntimeSettingsService.md",
         "entities/S3ObjectLockClient.md",
         "entities/SafeFormatDict.md",
+        "entities/SameReceiptSink.md",
         "entities/SampleKind.md",
         "entities/SampleManifest.md",
         "entities/SampleRecord.md",
@@ -51255,6 +51257,7 @@
         "entities/types_agent_AgentTeamPlanAction.md",
         "entities/types_agent_AgentTeamReconciliationClass.md",
         "entities/types_agent_AgentTeamRuntimeHandoff.md",
+        "entities/types_agent_AgentTeamRuntimeIdentityStatus.md",
         "entities/types_agent_AgentTeamSetupStep.md",
         "entities/types_agent_AgentTeamSkillPackage.md",
         "entities/types_agent_AssessmentReasonCode.md",
@@ -52169,6 +52172,7 @@
         "modules/20261126_0025_catalog_local_first.md",
         "modules/20261126_0026_review_record_kind.md",
         "modules/20261126_0027_task_postponements.md",
+        "modules/20261126_0028_team_runtime_identity.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -52330,6 +52334,7 @@
         "modules/ConnectedReadersPanel.md",
         "modules/ConnectedReadersPanel.test.md",
         "modules/ConnectionSteps.md",
+        "modules/ConnectionSteps.test.md",
         "modules/ConstraintsPanel.md",
         "modules/ContextHelp.md",
         "modules/ContextHelp.test.md",
@@ -52761,6 +52766,7 @@
         "modules/runtime_telemetry.md",
         "modules/RuntimeConfigSettings.md",
         "modules/RuntimeConfigSettings.test.md",
+        "modules/RuntimeIdentity.md",
         "modules/russianNames.test.md",
         "modules/safeUrl.md",
         "modules/sampleProject.fixture.md",
@@ -53034,6 +53040,7 @@
         "modules/test_agent_runtime_recovery.md",
         "modules/test_agent_skill_routing_guidance.md",
         "modules/test_agent_team_catalog.md",
+        "modules/test_agent_team_runtime_identity.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_cli.md",
         "modules/test_agent_team_setup_qualification.md",
@@ -53146,6 +53153,7 @@
         "modules/test_routing_preview_team_scope.md",
         "modules/test_run_detail_execution_provenance.md",
         "modules/test_runtime_boundaries.md",
+        "modules/test_runtime_identity_migration.md",
         "modules/test_runtime_mutation_policy.md",
         "modules/test_runtime_observations.md",
         "modules/test_runtime_policy.md",
@@ -54129,11 +54137,25 @@
       "outgoing_internal_links": [
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
+        "modules/test_agent_team_runtime_identity.md",
         "modules/test_agent_team_setup_stored_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_team_setup.py",
       "title": "AgentTeamRuntimeHandoff"
+    },
+    {
+      "canonical_path": "entities/agent_team_setup_AgentTeamRuntimeIdentityStatus.md",
+      "id": "agent_team_setup_AgentTeamRuntimeIdentityStatus",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/agent_team_setup_AgentTeamRuntimeIdentityStatus",
+      "outgoing_internal_links": [
+        "modules/agent_team_setup.md",
+        "modules/agent_team_setup_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/agent_team_setup.py",
+      "title": "AgentTeamRuntimeIdentityStatus"
     },
     {
       "canonical_path": "entities/agent_team_setup_AgentTeamSetupStep.md",
@@ -55892,10 +55914,10 @@
         "modules/agent_team_setup_service.md",
         "modules/execution_reconciliation.md",
         "modules/routers_agent.md",
+        "modules/test_agent_team_runtime_identity.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_qualification.md",
-        "modules/test_agent_team_setup_stored_contract.md",
-        "modules/test_execution_planning_window.md"
+        "modules/test_agent_team_setup_stored_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_team_setup.py",
@@ -56120,9 +56142,7 @@
         "modules/execution_reconciliation.md",
         "modules/models___init__.md",
         "modules/models_agent.md",
-        "modules/review_provenance.md",
-        "modules/test_agent_team_setup.md",
-        "modules/test_agent_team_setup_stored_contract.md"
+        "modules/review_provenance.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/agent.py",
@@ -57825,6 +57845,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/CapturingCredentialSink",
       "outgoing_internal_links": [
+        "modules/test_agent_team_runtime_identity.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_qualification.md",
         "modules/test_agent_team_setup_stored_contract.md"
@@ -67777,6 +67798,19 @@
       "title": "_SafeFormatDict"
     },
     {
+      "canonical_path": "entities/SameReceiptSink.md",
+      "id": "SameReceiptSink",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/SameReceiptSink",
+      "outgoing_internal_links": [
+        "modules/test_agent_team_runtime_identity.md",
+        "modules/test_agent_team_setup.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_agent_team_runtime_identity.py",
+      "title": "SameReceiptSink"
+    },
+    {
       "canonical_path": "entities/SampleKind.md",
       "id": "SampleKind",
       "kind": "entities",
@@ -75628,13 +75662,13 @@
       "mcp_uri": "llm-wiki://entities/types_agent_AgentTeamMaster",
       "outgoing_internal_links": [
         "modules/AgentManifestWorkflow.md",
-        "modules/agentService.test.md",
         "modules/agentTeamSetup_manifest.md",
         "modules/agentTeamSetup_masters.test.md",
         "modules/connectAgent.md",
         "modules/ConnectAgentSteps.md",
         "modules/ConnectAgentSteps.test.md",
         "modules/ConnectionSteps.md",
+        "modules/ConnectionSteps.test.md",
         "modules/TeamProfileManager.test.md",
         "modules/types_agent.md"
       ],
@@ -75652,6 +75686,7 @@
         "modules/ConnectAgentSteps.md",
         "modules/ConnectAgentSteps.test.md",
         "modules/ConnectionSteps.md",
+        "modules/ConnectionSteps.test.md",
         "modules/TeamProfileManager.test.md",
         "modules/types_agent.md"
       ],
@@ -75668,6 +75703,7 @@
         "modules/connectAgent.md",
         "modules/ConnectAgentSteps.test.md",
         "modules/ConnectionSteps.md",
+        "modules/ConnectionSteps.test.md",
         "modules/TeamProfileManager.test.md",
         "modules/types_agent.md"
       ],
@@ -75711,6 +75747,20 @@
       "role": "semantic",
       "source_path": "frontend/src/types/agent.ts",
       "title": "AgentTeamRuntimeHandoff"
+    },
+    {
+      "canonical_path": "entities/types_agent_AgentTeamRuntimeIdentityStatus.md",
+      "id": "types_agent_AgentTeamRuntimeIdentityStatus",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_agent_AgentTeamRuntimeIdentityStatus",
+      "outgoing_internal_links": [
+        "modules/ConnectionSteps.test.md",
+        "modules/RuntimeIdentity.md",
+        "modules/types_agent.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/agent.ts",
+      "title": "AgentTeamRuntimeIdentityStatus"
     },
     {
       "canonical_path": "entities/types_agent_AgentTeamSetupStep.md",
@@ -79447,6 +79497,16 @@
       "title": "20261126_0027_task_postponements Module"
     },
     {
+      "canonical_path": "modules/20261126_0028_team_runtime_identity.md",
+      "id": "20261126_0028_team_runtime_identity",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/20261126_0028_team_runtime_identity",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/app/migrations/versions/20261126_0028_team_runtime_identity.py",
+      "title": "20261126_0028_team_runtime_identity Module"
+    },
+    {
       "canonical_path": "modules/acceptance_artifacts.md",
       "id": "acceptance_artifacts",
       "kind": "modules",
@@ -79701,6 +79761,7 @@
         "modules/test_agent_model_catalog_api.md",
         "modules/test_agent_routing_rollout.md",
         "modules/test_agent_skill_routing_guidance.md",
+        "modules/test_agent_team_runtime_identity.md",
         "modules/test_delivery_prerequisite_tools.md",
         "modules/test_execution_planning_window.md"
       ],
@@ -80111,6 +80172,7 @@
         "entities/agent_team_setup_AgentTeamReconciliationClass.md",
         "entities/agent_team_setup_AgentTeamReconciliationPlan.md",
         "entities/agent_team_setup_AgentTeamRuntimeHandoff.md",
+        "entities/agent_team_setup_AgentTeamRuntimeIdentityStatus.md",
         "entities/agent_team_setup_AgentTeamSetupStep.md",
         "entities/agent_team_setup_AgentTeamSkillPackage.md",
         "entities/AgentTeamActionStatus.md",
@@ -82125,12 +82187,29 @@
         "modules/connectAgent.md",
         "modules/ConnectAgentSteps.md",
         "modules/ConnectionSteps.md",
+        "modules/ConnectionSteps.test.md",
+        "modules/RuntimeIdentity.md",
         "modules/TeamProfileManager.md",
         "modules/types_agent.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/team/ConnectionSteps.tsx",
       "title": "ConnectionSteps Module"
+    },
+    {
+      "canonical_path": "modules/ConnectionSteps.test.md",
+      "id": "ConnectionSteps.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/ConnectionSteps.test",
+      "outgoing_internal_links": [
+        "modules/ConnectionSteps.md",
+        "modules/ConnectionSteps.test.md",
+        "modules/renderWithProviders.md",
+        "modules/types_agent.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/team/ConnectionSteps.test.tsx",
+      "title": "ConnectionSteps.test Module"
     },
     {
       "canonical_path": "modules/ConstraintsPanel.md",
@@ -89299,6 +89378,22 @@
       "title": "RuntimeConfigSettings.test Module"
     },
     {
+      "canonical_path": "modules/RuntimeIdentity.md",
+      "id": "RuntimeIdentity",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/RuntimeIdentity",
+      "outgoing_internal_links": [
+        "modules/AgentManifestWorkflow.md",
+        "modules/ConnectionSteps.md",
+        "modules/formatDate.md",
+        "modules/RuntimeIdentity.md",
+        "modules/types_agent.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/team/RuntimeIdentity.tsx",
+      "title": "RuntimeIdentity Module"
+    },
+    {
       "canonical_path": "modules/russianNames.test.md",
       "id": "russianNames.test",
       "kind": "modules",
@@ -94207,6 +94302,30 @@
       "title": "test_agent_team_catalog Module"
     },
     {
+      "canonical_path": "modules/test_agent_team_runtime_identity.md",
+      "id": "test_agent_team_runtime_identity",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_agent_team_runtime_identity",
+      "outgoing_internal_links": [
+        "entities/SameReceiptSink.md",
+        "modules/agent_contract.md",
+        "modules/agent_team_setup.md",
+        "modules/agent_team_setup_service.md",
+        "modules/app_database.md",
+        "modules/app_main.md",
+        "modules/commands.md",
+        "modules/models_agent.md",
+        "modules/models_identity.md",
+        "modules/test_agent_team_runtime_identity.md",
+        "modules/test_agent_team_setup.md",
+        "modules/test_agent_team_setup_stored_contract.md",
+        "modules/test_delivery_scenarios.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_agent_team_runtime_identity.py",
+      "title": "test_agent_team_runtime_identity Module"
+    },
+    {
       "canonical_path": "modules/test_agent_team_setup.md",
       "id": "test_agent_team_setup",
       "kind": "modules",
@@ -94259,6 +94378,7 @@
         "modules/identity_service.md",
         "modules/models_agent.md",
         "modules/schemas_agent_planning.md",
+        "modules/test_agent_team_runtime_identity.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_stored_contract.md"
       ],
@@ -95792,6 +95912,20 @@
       "title": "test_runtime_boundaries Module"
     },
     {
+      "canonical_path": "modules/test_runtime_identity_migration.md",
+      "id": "test_runtime_identity_migration",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_runtime_identity_migration",
+      "outgoing_internal_links": [
+        "modules/models_agent.md",
+        "modules/test_runtime_identity_migration.md",
+        "modules/upgrade_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/migrations/test_runtime_identity_migration.py",
+      "title": "test_runtime_identity_migration Module"
+    },
+    {
       "canonical_path": "modules/test_runtime_mutation_policy.md",
       "id": "test_runtime_mutation_policy",
       "kind": "modules",
@@ -97207,6 +97341,7 @@
         "entities/types_agent_AgentTeamPlanAction.md",
         "entities/types_agent_AgentTeamReconciliationClass.md",
         "entities/types_agent_AgentTeamRuntimeHandoff.md",
+        "entities/types_agent_AgentTeamRuntimeIdentityStatus.md",
         "entities/types_agent_AgentTeamSetupStep.md",
         "entities/types_agent_AgentTeamSkillPackage.md",
         "entities/types_agent_AssessmentReasonCode.md",
@@ -99124,7 +99259,8 @@
         "modules/agent_team_credentials.md",
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
-        "modules/commands.md"
+        "modules/commands.md",
+        "modules/models_agent.md"
       ],
       "role": "mixed",
       "source_path": "backend/app/services/agent_team_setup_service.py",
@@ -114931,6 +115067,7 @@
         "modules/20261126_0025_catalog_local_first.md",
         "modules/20261126_0026_review_record_kind.md",
         "modules/20261126_0027_task_postponements.md",
+        "modules/20261126_0028_team_runtime_identity.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -115092,6 +115229,7 @@
         "modules/ConnectedReadersPanel.md",
         "modules/ConnectedReadersPanel.test.md",
         "modules/ConnectionSteps.md",
+        "modules/ConnectionSteps.test.md",
         "modules/ConstraintsPanel.md",
         "modules/ContextHelp.md",
         "modules/ContextHelp.test.md",
@@ -115523,6 +115661,7 @@
         "modules/runtime_telemetry.md",
         "modules/RuntimeConfigSettings.md",
         "modules/RuntimeConfigSettings.test.md",
+        "modules/RuntimeIdentity.md",
         "modules/russianNames.test.md",
         "modules/safeUrl.md",
         "modules/sampleProject.fixture.md",
@@ -115796,6 +115935,7 @@
         "modules/test_agent_runtime_recovery.md",
         "modules/test_agent_skill_routing_guidance.md",
         "modules/test_agent_team_catalog.md",
+        "modules/test_agent_team_runtime_identity.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_cli.md",
         "modules/test_agent_team_setup_qualification.md",
@@ -115908,6 +116048,7 @@
         "modules/test_routing_preview_team_scope.md",
         "modules/test_run_detail_execution_provenance.md",
         "modules/test_runtime_boundaries.md",
+        "modules/test_runtime_identity_migration.md",
         "modules/test_runtime_mutation_policy.md",
         "modules/test_runtime_observations.md",
         "modules/test_runtime_policy.md",
@@ -116118,6 +116259,7 @@
         "modules/20261126_0025_catalog_local_first.md",
         "modules/20261126_0026_review_record_kind.md",
         "modules/20261126_0027_task_postponements.md",
+        "modules/20261126_0028_team_runtime_identity.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -116279,6 +116421,7 @@
         "modules/ConnectedReadersPanel.md",
         "modules/ConnectedReadersPanel.test.md",
         "modules/ConnectionSteps.md",
+        "modules/ConnectionSteps.test.md",
         "modules/ConstraintsPanel.md",
         "modules/ContextHelp.md",
         "modules/ContextHelp.test.md",
@@ -116710,6 +116853,7 @@
         "modules/runtime_telemetry.md",
         "modules/RuntimeConfigSettings.md",
         "modules/RuntimeConfigSettings.test.md",
+        "modules/RuntimeIdentity.md",
         "modules/russianNames.test.md",
         "modules/safeUrl.md",
         "modules/sampleProject.fixture.md",
@@ -116983,6 +117127,7 @@
         "modules/test_agent_runtime_recovery.md",
         "modules/test_agent_skill_routing_guidance.md",
         "modules/test_agent_team_catalog.md",
+        "modules/test_agent_team_runtime_identity.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_cli.md",
         "modules/test_agent_team_setup_qualification.md",
@@ -117095,6 +117240,7 @@
         "modules/test_routing_preview_team_scope.md",
         "modules/test_run_detail_execution_provenance.md",
         "modules/test_runtime_boundaries.md",
+        "modules/test_runtime_identity_migration.md",
         "modules/test_runtime_mutation_policy.md",
         "modules/test_runtime_observations.md",
         "modules/test_runtime_policy.md",
@@ -117273,5 +117419,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:069c37413cefc5024b06d37972f7970acd2a744db5079538ecf8bf63f320cd35"
+  "source_hash": "sha256:54bffe6a930379a94a7994400594ab054fa233786c0e207c8def8960b11505cb"
 }
