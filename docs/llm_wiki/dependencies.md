@@ -654,7 +654,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [Button](modules/Button.md) | 162 | 1 |
 | [models_task](modules/models_task.md) | 147 | 9 |
 | [renderWithProviders](modules/renderWithProviders.md) | 137 | 2 |
-| [models_agent](modules/models_agent.md) | 131 | 5 |
+| [models_agent](modules/models_agent.md) | 132 | 5 |
 | [time](modules/time.md) | 123 | 0 |
 | [config](modules/config.md) | 112 | 1 |
 | [types_task](modules/types_task.md) | 112 | 2 |
@@ -686,8 +686,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [types_agent](modules/types_agent.md) | 41 | 1 |
 | [schemas_agent](modules/schemas_agent.md) | 39 | 10 |
 | [identityContext](modules/identityContext.md) | 39 | 1 |
+| [upgrade_service](modules/upgrade_service.md) | 38 | 13 |
 | [types_team](modules/types_team.md) | 38 | 0 |
-| [upgrade_service](modules/upgrade_service.md) | 37 | 13 |
 | [query_limits](modules/query_limits.md) | 34 | 0 |
 | [agent_work_service](modules/agent_work_service.md) | 33 | 36 |
 | [services_work_metrics](modules/services_work_metrics.md) | 33 | 8 |
@@ -1418,6 +1418,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [20261126_0026_review_record_kind](modules/20261126_0026_review_record_kind.md) | 0 | 0 |
 | [20261126_0027_task_postponements](modules/20261126_0027_task_postponements.md) | 0 | 0 |
 | [20261126_0028_team_runtime_identity](modules/20261126_0028_team_runtime_identity.md) | 0 | 0 |
+| [20261126_0029_catalog_effort](modules/20261126_0029_catalog_effort.md) | 0 | 0 |
 | [routers___init__](modules/routers___init__.md) | 0 | 23 |
 | [schemas___init__](modules/schemas___init__.md) | 0 | 19 |
 | [exceptions](modules/exceptions.md) | 0 | 1 |
@@ -1446,6 +1447,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_allocation_identity](modules/test_allocation_identity.md) | 0 | 6 |
 | [test_annual_calendar_migration](modules/test_annual_calendar_migration.md) | 0 | 5 |
 | [test_capacity_adjustment_migration](modules/test_capacity_adjustment_migration.md) | 0 | 4 |
+| [test_catalog_effort_migration](modules/test_catalog_effort_migration.md) | 0 | 2 |
 | [test_delivery_target_branch_migration](modules/test_delivery_target_branch_migration.md) | 0 | 4 |
 | [test_initial_schema](modules/test_initial_schema.md) | 0 | 2 |
 | [test_populated_history_migration](modules/test_populated_history_migration.md) | 0 | 4 |

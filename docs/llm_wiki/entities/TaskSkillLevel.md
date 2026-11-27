@@ -1,6 +1,6 @@
 # TaskSkillLevel
 
-**Location:** `frontend/src/types/agent.ts:20`
+**Location:** `frontend/src/types/agent.ts:22`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

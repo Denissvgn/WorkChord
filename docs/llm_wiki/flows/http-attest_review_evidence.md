@@ -103,9 +103,9 @@ sequenceDiagram
     p1-->>p30: TypeAdapter(…).validate_python(payload)
 ```
 
-> Call sequence diagram shows 30 of 751 interactions; 721 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 754 interactions; 724 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 197 (196 omitted); unresolved 1 of 346 (345 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 197 (196 omitted); unresolved 1 of 347 (346 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -132,9 +132,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 209; effect analysis evaluated: 156, partial: 6, unavailable: 47. Counts include steps omitted from the displayed trace.
+Source steps: 211; effect analysis evaluated: 158, partial: 6, unavailable: 47. Counts include steps omitted from the displayed trace.
 
-Collector observations for 162 source steps with known totals: observed: 882, emitted: 857, omitted: 25. Unavailable totals are excluded.
+Collector observations for 164 source steps with known totals: observed: 897, emitted: 869, omitted: 28. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -216,22 +216,22 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | attest_review_evidence | record_review_evidence | 84 | `record_review_evidence(db, actor, task_id, data, idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| record_review_evidence | require_operator | 323 | `require_operator(db)` |
+| record_review_evidence | require_operator | 324 | `require_operator(db)` |
 | require_operator | db.info.get (backend/app/authority.py:require_operator) | 91 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 93 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
-| record_review_evidence | is_admin_key_principal | 326 | `is_admin_key_principal(actor)` |
-| record_review_evidence | actor_has_scope | 330 | `actor_has_scope(actor, 'admin')` |
+| record_review_evidence | is_admin_key_principal | 327 | `is_admin_key_principal(actor)` |
+| record_review_evidence | actor_has_scope | 331 | `actor_has_scope(actor, 'admin')` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
-| record_review_evidence | AuthorityError | 332 | `AuthorityError('operator_required', 'The authenticated workspace operator must attest review evidence.')` |
-| record_review_evidence | TypeAdapter(…).validate_python | 336 | `TypeAdapter(ReviewEvidenceCommand).validate_python(payload)` |
+| record_review_evidence | AuthorityError | 333 | `AuthorityError('operator_required', 'The authenticated workspace operator must attest review evidence.')` |
+| record_review_evidence | TypeAdapter(…).validate_python | 337 | `TypeAdapter(ReviewEvidenceCommand).validate_python(payload)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.add` | `record_review_evidence` | 455 |
+| mutation | `db.add` | `record_review_evidence` | 456 |
 
 ### Static analysis gaps
 
@@ -240,7 +240,7 @@ flowchart LR
 | unresolved_call | `require_operator` | `db.info.get` | 91 |
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | external_call | `actor_scopes` | `isinstance` | 90 |
-| unresolved_call | `record_review_evidence` | `TypeAdapter(ReviewEvidenceCommand).validate_python` | 336 |
+| unresolved_call | `record_review_evidence` | `TypeAdapter(ReviewEvidenceCommand).validate_python` | 337 |
 | step_limit | `attest_review_evidence` | `first 12 steps` | 0 |
 | truncated_flow | `attest_review_evidence` | `depth limit` | 0 |
 

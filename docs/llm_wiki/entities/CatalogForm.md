@@ -1,6 +1,6 @@
 # CatalogForm
 
-**Location:** `frontend/src/components/team/AgentModelAdministration.tsx:41`
+**Location:** `frontend/src/components/team/AgentModelAdministration.tsx:42`
 **Kind:** Interface
 **Bases:** —
 **Module:** [AgentModelAdministration](../modules/AgentModelAdministration.md)
@@ -19,6 +19,7 @@ _Auto-generated from `CatalogForm` in `frontend/src/components/team/AgentModelAd
 | `provider` | `string` | Yes | — | — |
 | `configuredModelAlias` | `string` | Yes | — | — |
 | `reasoningTier` | `1 \| 2 \| 3` | Yes | — | — |
+| `effort` | `ModelEffort` | Yes | — | — |
 | `contextTier` | `'small' \| 'medium' \| 'large'` | Yes | — | — |
 | `modalityTags` | `string` | Yes | — | — |
 | `costTier` | `'low' \| 'medium' \| 'high'` | Yes | — | — |
@@ -39,4 +40,4 @@ _Auto-generated from `CatalogForm` in `frontend/src/components/team/AgentModelAd
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [AgentModelAdministration](../modules/AgentModelAdministration.md) | 0 | `configuredModelAlias`, `contextTier`, `costTier`, `id`, `key`, `lastVerifiedAt`, `latencyTier`, `localFirst`, `modalityTags`, `provider`, `reasoningTier`, `revision` |
+| [AgentModelAdministration](../modules/AgentModelAdministration.md) | 0 | `configuredModelAlias`, `contextTier`, `costTier`, `effort`, `id`, `key`, `lastVerifiedAt`, `latencyTier`, `localFirst`, `modalityTags`, `provider`, `reasoningTier` |

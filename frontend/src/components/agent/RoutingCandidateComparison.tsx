@@ -117,7 +117,7 @@ export const RoutingCandidateComparison = ({
                                             </span>
                                         </div>
                                         <dl className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
-                                            <div><dt className="text-content-tertiary">{t('taskRouting.modelEnvelope')}</dt><dd className="text-content-primary">{candidate.reasoning_tier} / {candidate.context_tier}</dd></div>
+                                            <div><dt className="text-content-tertiary">{t('taskRouting.modelEnvelope')}</dt><dd className="text-content-primary">{candidate.reasoning_tier} / {t(`modelAdministration.effort_${candidate.effort}`)} / {candidate.context_tier}</dd></div>
                                             <div><dt className="text-content-tertiary">{t('taskRouting.costLatency')}</dt><dd className="text-content-primary">{candidate.cost_tier}{candidate.local_first ? ` (${t('modelAdministration.localFirst')})` : ''} / {candidate.latency_tier}</dd></div>
                                             <div><dt className="text-content-tertiary">{t('taskRouting.availableCapacity')}</dt><dd className="text-content-primary tnum">{candidate.available_capacity_days}</dd></div>
                                             <div><dt className="text-content-tertiary">{t('taskRouting.committedEffort')}</dt><dd className="text-content-primary tnum">{candidate.committed_effort_days}</dd></div>
@@ -217,6 +217,10 @@ export const RoutingCandidateComparison = ({
                                     </div>
                                 )}
                                 <dl className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
+                                    <div>
+                                        <dt className="text-content-tertiary">{t('modelAdministration.effort')}</dt>
+                                        <dd className="text-content-primary">{exclusion.effort ? t(`modelAdministration.effort_${exclusion.effort}`) : t('common.unknown')}</dd>
+                                    </div>
                                     <div>
                                         <dt className="text-content-tertiary">{t('taskRouting.costLatency')}</dt>
                                         <dd className="text-content-primary">

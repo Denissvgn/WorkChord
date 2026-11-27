@@ -118,4 +118,4 @@ flowchart LR
 | `apply_planning_schedule` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `begin_my_work` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 
-> References: showing 12 of 456 logical references; 444 omitted by the 12-row generated summary limit.
+> References: showing 12 of 458 logical references; 446 omitted by the 12-row generated summary limit.
