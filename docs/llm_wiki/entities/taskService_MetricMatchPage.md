@@ -1,6 +1,6 @@
 # MetricMatchPage
 
-**Location:** `frontend/src/services/taskService.ts:286`
+**Location:** `frontend/src/services/taskService.ts:289`
 **Kind:** Interface
 **Bases:** —
 **Module:** [taskService](../modules/taskService.md)
@@ -14,7 +14,7 @@ _Auto-generated from `MetricMatchPage` in `frontend/src/services/taskService.ts`
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `metric` | `WorkMetricName` | Yes | — | — |
-| `items` | `Array<{ id: number; title: string; status: string; project_name: string \| null; iteration_name: string \| null }>` | Yes | — | — |
+| `items` | `Array<{ id: number; title: string; status: string; displayed_state?: string; project_name: string \| null; iteration_name: string \| null }>` | Yes | — | — |
 | `has_more` | `boolean` | Yes | — | — |
 | `next_after_id` | `number \| null` | No | — | — |
 

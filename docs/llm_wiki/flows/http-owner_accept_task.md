@@ -191,7 +191,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| owner_accept_task | domain_result | 293 | `domain_result(...)` |
+| owner_accept_task | domain_result | 294 | `domain_result(...)` |
 | domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
@@ -199,7 +199,7 @@ flowchart LR
 | domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 60 | `str(exc)` |
 | domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| owner_accept_task | TaskBriefService.owner_accept | 293 | `TaskBriefService(db).owner_accept(task_id, data)` |
+| owner_accept_task | TaskBriefService.owner_accept | 294 | `TaskBriefService(db).owner_accept(task_id, data)` |
 | TaskBriefService.owner_accept | require_owner_override | 466 | `require_owner_override(self.db)` |
 | require_owner_override | db.info.get | 103 | `db.info.get('authority')` |
 

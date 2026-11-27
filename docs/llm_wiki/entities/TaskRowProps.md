@@ -1,6 +1,6 @@
 # TaskRowProps
 
-**Location:** `frontend/src/components/tasks/TaskRow.tsx:20`
+**Location:** `frontend/src/components/tasks/TaskRow.tsx:21`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskRow](../modules/TaskRow.md)
@@ -17,6 +17,8 @@ _Auto-generated from `TaskRowProps` in `frontend/src/components/tasks/TaskRow.ts
 | `title` | `string` | Yes | — | — |
 | `titleText` | `string` | No | — | — |
 | `status` | `TaskStatus` | Yes | — | — |
+| `state` | `TaskDisplayedState` | No | — | — |
+| `successor` | `{ id: number; onOpen: () => void } \| null` | No | — | — |
 | `statusLocked` | `boolean` | No | — | — |
 | `priority` | `number \| null` | No | — | — |
 | `chip` | `TaskStateChip \| null` | No | — | — |

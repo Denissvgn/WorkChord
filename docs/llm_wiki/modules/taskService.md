@@ -41,15 +41,15 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (47) |
+| Inbound | `frontend` (49) |
 | Outbound | `frontend` (3) |
 
-> All 50 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 52 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [MetricMatchPage](../entities/taskService_MetricMatchPage.md) | Interface | 286 | — | — |
-| [WorkMetricName](../entities/WorkMetricName.md) | Type alias | 283 | <pre><code>&#39;total&#39; &#124; &#39;planned&#39; &#124; &#39;active&#39; &#124; &#39;resolved&#39; &#124; &#39;closed&#39; &#124; &#39;implemented&#39; &#124; &#39;accepted&#39; &#124; &#39;blocked&#39;&#10;    &#124; &#39;overdue&#39; &#124; &#39;late&#95;start&#39; &#124; &#39;iteration&#95;overflow&#39; &#124; &#39;acceptance&#95;unknown&#39; &#124; &#39;unknown&#95;estimate&#39;</code></pre> | — |
-| [MetricScope](../entities/MetricScope.md) | Type alias | 285 | `{ project_id: number } \| { iteration_id: number } \| { release_id: number }` | — |
+| [MetricMatchPage](../entities/taskService_MetricMatchPage.md) | Interface | 289 | — | — |
+| [WorkMetricName](../entities/WorkMetricName.md) | Type alias | 286 | <pre><code>&#39;total&#39; &#124; &#39;planned&#39; &#124; &#39;active&#39; &#124; &#39;resolved&#39; &#124; &#39;closed&#39; &#124; &#39;postponed&#39; &#124; &#39;canceled&#39; &#124; &#39;superseded&#39; &#124; &#39;implemented&#39; &#124; &#39;accepted&#39; &#124; &#39;blocked&#39;&#10;    &#124; &#39;overdue&#39; &#124; &#39;late&#95;start&#39; &#124; &#39;iteration&#95;overflow&#39; &#124; &#39;acceptance&#95;unknown&#39; &#124; &#39;unknown&#95;estimate&#39;</code></pre> | — |
+| [MetricScope](../entities/MetricScope.md) | Type alias | 288 | `{ project_id: number } \| { iteration_id: number } \| { release_id: number }` | — |

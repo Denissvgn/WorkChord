@@ -1,6 +1,6 @@
 # TaskRowAssigneeOption
 
-**Location:** `frontend/src/components/tasks/TaskRow.tsx:18`
+**Location:** `frontend/src/components/tasks/TaskRow.tsx:19`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskRow](../modules/TaskRow.md)
