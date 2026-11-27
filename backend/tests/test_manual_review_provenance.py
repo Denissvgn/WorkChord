@@ -84,6 +84,13 @@ async def test_authenticated_manual_submission_and_assigned_agent_verdict(db_ses
         started = await post("commands", {"action": "start_manual", "expected_version": task.version, "reason": "Perform owner work"})
         progress = await post("progress", {"expected_version": started["version"], "criteria": [], "artifacts": artifacts})
         resolved = await post("commands", {"action": "resolve_manual", "expected_version": progress["version"], "reason": "Submit the artifact"})
+        if delivery == "repository":
+            # Authenticated manual execution already supplies the provenance; a later record cannot replace it.
+            duplicate = await human.post(f"/api/tasks/{task.id}/manual-provenance", json={
+                "expected_version": resolved["version"], "artifact_revision": resolved["artifact_revision"],
+                "executor": {"kind": "human", "principal_id": owner.id}, "head_commit_url": url + "commit/" + head,
+                "pr_url": url + "pull/1", "reason": "Recorded again"})
+            assert duplicate.status_code == 409 and duplicate.json()["detail"]["code"] == "manual_provenance_execution_recorded"
         pm_key, reviewer_key = team.sink.keys[team.manifest.controller.actor_key], team.sink.keys[verifier.actor_key]
         selection_request = {"task_id": task.id, "expected_task_version": resolved["version"], "actor_id": reviewer.id, "purpose": "verification"}
         if delivery == "missing_artifact":

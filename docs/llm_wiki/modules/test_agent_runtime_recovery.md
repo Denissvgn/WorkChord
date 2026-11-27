@@ -66,15 +66,15 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `peer` | *(async)* `(factory, key, action, *, body = None, idempotency_key = None, **extra)` | — | — |
+| `peer` | *(async)* `(factory, key, action, *, body = None, idempotency_key = None, routing_mode = 'off', **extra)` | — | — |
 | `fence` | `(receipt)` | — | — |
 | `seed_work` | *(async)* `(factory, scenario)` | — | — |
-| `begin_next` | *(async)* `(factory, key, logical_key)` | — | — |
+| `begin_next` | *(async)* `(factory, key, logical_key, routing_mode = 'off')` | — | — |
 | `nest_assigned_work` | *(async)* `(factory, scenario, task_id)` | — | — |
 | `test_ancestor_deferral_blocks_assigned_begin_over_rest_and_mcp` | *(async)* `(delivery_store)` | — | — |
 | `test_ancestor_edit_invalidates_live_worker_renew_submit_and_begin_replay` | *(async)* `(delivery_store)` | — | — |
 | `review_assignment` | *(async)* `(factory, task_id, actor_id)` | — | — |
 | `supervised_refresh` | *(async)* `(factory, scenario, task_id)` | — | A worker pauses; an explicit PM replaces provisional lineage in off mode. |
 | `test_process_restart_ambiguous_replay_and_independent_rework` | *(async)* `(delivery_store)` | — | — |
-| `test_process_restart_expired_fence_requeue_and_failure` | *(async)* `(delivery_store)` | — | — |
+| `test_process_restart_expired_fence_requeue_and_failure` | *(async)* `(delivery_store, routing_mode)` | `@pytest.mark.parametrize('routing_mode', ['off', 'enforced'])` | — |
 | `test_changed_criterion_invalidates_restarted_worker_evidence` | *(async)* `(delivery_store)` | — | — |

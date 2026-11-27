@@ -187,15 +187,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_github_reconciliation | domain_result | 333 | `domain_result(...)` |
-| domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 55 | `str(exc)` |
-| domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
+| task_github_reconciliation | domain_result | 345 | `domain_result(...)` |
+| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
 | domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_github_reconciliation | GitHubReconciliationService.view | 333 | `GitHubReconciliationService(db).view(task_id)` |
+| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 59 | `str(exc)` |
+| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| task_github_reconciliation | GitHubReconciliationService.view | 345 | `GitHubReconciliationService(db).view(task_id)` |
 | GitHubReconciliationService.view | GitHubReconciliationService._task | 104 | `self._task(task_id, 'read')` |
 | GitHubReconciliationService._task | self.db.scalar | 79 | `self.db.scalar(...)` |
 
@@ -207,11 +207,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 53 |
-| unresolved_call | `domain_result` | `exc.detail` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
+| unresolved_call | `domain_result` | `exc.detail` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
+| external_call | `domain_result` | `HTTPException` | 61 |
 | unresolved_call | `GitHubReconciliationService._task` | `self.db.scalar` | 79 |
 | step_limit | `task_github_reconciliation` | `first 12 steps` | 0 |
 | truncated_flow | `task_github_reconciliation` | `depth limit` | 0 |

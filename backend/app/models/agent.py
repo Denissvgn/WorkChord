@@ -1,4 +1,5 @@
 """Agent integration and tracing models."""
+import secrets
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Optional
 
@@ -23,6 +24,11 @@ from sqlalchemy.orm import Mapped, column_property, mapped_column, relationship
 from app.database import Base
 from app.models.team_member import TeamMemberProfile
 from app.utils.time import UTCDateTime, utc_now
+
+def new_runtime_instance_id() -> str:
+    """A server-random runtime identity: opaque, and not reproducible from anything a runtime holds."""
+    return "rti-" + secrets.token_hex(16)
+
 
 if TYPE_CHECKING:
     from app.models.project import ProjectUpdateEntry
@@ -488,6 +494,33 @@ class AgentTeamTopologyMember(Base):
         nullable=True,
     )
     runtime_acknowledged_at: Mapped[Optional[datetime]] = mapped_column(
+        UTCDateTime(),
+        nullable=True,
+    )
+    # Random per issuance: set again whenever a credential delivery succeeds, so a replacement
+    # actor or a recovered credential hands the runtime a new identity.
+    issued_runtime_instance_id: Mapped[Optional[str]] = mapped_column(
+        String(64),
+        default=new_runtime_instance_id,
+        nullable=True,
+    )
+    acknowledged_runtime_instance_id: Mapped[Optional[str]] = mapped_column(
+        String(64),
+        nullable=True,
+    )
+    previous_runtime_instance_id: Mapped[Optional[str]] = mapped_column(
+        String(64),
+        nullable=True,
+    )
+    runtime_identity_changed_at: Mapped[Optional[datetime]] = mapped_column(
+        UTCDateTime(),
+        nullable=True,
+    )
+    rejected_runtime_instance_id: Mapped[Optional[str]] = mapped_column(
+        String(64),
+        nullable=True,
+    )
+    rejected_runtime_instance_at: Mapped[Optional[datetime]] = mapped_column(
         UTCDateTime(),
         nullable=True,
     )

@@ -4157,3 +4157,205 @@ Refreshed against the 1.10.0 code. New and changed subjects: delivery prerequisi
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-11-26
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:bfc90791d8b81dfedc1a24b93db2b7507115639d5d40e678e73aa6faab7b7729`
+- Pages created: 8
+- Pages updated: 314
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3483
+- Pages deprecated: 0
+- Semantic fields preserved: 4
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 2
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-11-26
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:b3a3f9102f92804bf70dd0b664d831548c0cbf9bb9d5cf4d2b06065f1fcc2379`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3805
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-11-26
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:43e89338f79efa79510dd4fa2a0ebbfe51bf70caaa80db568cd0d3564716ed5e`
+- Pages created: 6
+- Pages updated: 85
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 3719
+- Pages deprecated: 0
+- Semantic fields preserved: 14
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 1
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-11-26
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:bfe5ed14453cb9fbf9002162ec46e8254f670bd4fe82a15bb913dae0667a2eb7`
+- Pages created: 0
+- Pages updated: 24
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3787
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+
+## 2026-11-26
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:49ebd303dbcfe6715550ea9737ce6bd61bfc967edf61c9749572c68aa1a33794`
+- Pages created: 0
+- Pages updated: 6
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3806
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 9
+
+## 2026-11-26
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:7910b6d6cd8ae22f52ac1bb6fa47a840c21a784be3ed9bd19364cc1b49c495d3`
+- Pages created: 24
+- Pages updated: 104
+- Pages metadata-only: 4
+- Pages skipped (unchanged): 3702
+- Pages deprecated: 1
+- Semantic fields preserved: 20
+- Moved entities: none
+- Flow pages initialized: 3 (http=3)
+- Workflow pages created: 4
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Generated surface pages retired: 1
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:a990ec86e58e2f4f2cfceea9b158e6ae0787aea277ca1a3141f40b6d4c4e19da`
+- Pages created: 4
+- Pages updated: 29
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3805
+- Pages deprecated: 0
+- Semantic fields preserved: 6
+- Moved entities: none
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:c9343c208c713a96f4a4b72d06049e57064f384c8571e9fab432b40e314e09b1`
+- Pages created: 4
+- Pages updated: 31
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3807
+- Pages deprecated: 0
+- Semantic fields preserved: 5
+- Moved entities: none
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:48c3a571ccc45d9c584b3fbe0a690909237f0c4c1d86d959c597d3ac42d306e0`
+- Pages created: 16
+- Pages updated: 263
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3579
+- Pages deprecated: 0
+- Semantic fields preserved: 8
+- Moved entities: none
+- Flow pages initialized: 3 (http=2, mcp=1)
+- Workflow pages created: 3
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:d86efe470a2ee770b270c5036586a9311b512c9d1a12a6b7c71044c535fa3d45`
+- Pages created: 1
+- Pages updated: 235
+- Pages metadata-only: 1
+- Pages skipped (unchanged): 3622
+- Pages deprecated: 0
+- Semantic fields preserved: 6
+- Moved entities: none
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:936959899c44f581ca60ed627ffef075807ace1df94950c745630f072782e737`
+- Pages created: 8
+- Pages updated: 117
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3742
+- Pages deprecated: 0
+- Semantic fields preserved: 9
+- Moved entities: none

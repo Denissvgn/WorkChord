@@ -109,7 +109,7 @@ async def test_generated_plan_has_no_dependency_or_capacity_overlap(db_session):
 
 
 @pytest.mark.parametrize("cause", ["unassigned", "no_estimate", "blocked", "deferred", "active"])
-async def test_undated_predecessor_leaves_dependents_undated_and_named(db_session, cause):
+async def test_undated_predecessor_leaves_dependents_unplaced_with_their_dates_and_named(db_session, cause):
     iteration, _, tasks = await make_plan(db_session, 2, [0, 1, 0], [(0, 1), (1, 2)])
     predecessor = tasks[0]
     if cause == "unassigned":
@@ -126,10 +126,11 @@ async def test_undated_predecessor_leaves_dependents_undated_and_named(db_sessio
         task.start_date = task.end_date = date(2026, 1, 5)
     await db_session.commit()
     result = await SchedulerService(db_session).schedule_iteration(iteration.id)
-    unscheduled = {item.task_id: item for item in result.unscheduled}
+    kept = {item.task_id: item for item in result.kept_dates}
     for index in [1, 2]:
-        assert tasks[index].start_date is None and tasks[index].end_date is None
-        item = unscheduled[tasks[index].id]
+        assert tasks[index].start_date == tasks[index].end_date == date(2026, 1, 5)
+        item = kept[tasks[index].id]
+        assert item.start_date == item.end_date == date(2026, 1, 5)
         assert item.reason == "predecessor_unscheduled"
         assert tasks[index - 1].title in item.message
         assert any(decision.task_id == tasks[index].id and tasks[index - 1].title in decision.reason

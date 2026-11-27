@@ -192,34 +192,34 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| write_task_brief | domain_result | 249 | `domain_result(...)` |
-| domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
-| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 55 | `str(exc)` |
-| domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
+| write_task_brief | domain_result | 251 | `domain_result(...)` |
+| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| write_task_brief | TaskBriefService(…).write | 249 | `TaskBriefService(db).write(task_id, data)` |
-| write_task_brief | TaskBriefService | 249 | `TaskBriefService(db)` |
-| write_task_brief | TaskService.task_to_response | 250 | `TaskService(db).task_to_response(task)` |
+| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
+| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 59 | `str(exc)` |
+| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| write_task_brief | TaskBriefService(…).write | 251 | `TaskBriefService(db).write(task_id, data)` |
+| write_task_brief | TaskBriefService | 251 | `TaskBriefService(db)` |
+| write_task_brief | TaskService.task_to_response | 252 | `TaskService(db).task_to_response(task)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `signals.pop` | `TaskService.task_to_response` | 1671 |
+| mutation | `signals.pop` | `TaskService.task_to_response` | 1736 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 53 |
-| unresolved_call | `domain_result` | `exc.detail` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
+| unresolved_call | `domain_result` | `exc.detail` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
-| unresolved_call | `write_task_brief` | `TaskBriefService(db).write` | 249 |
+| external_call | `domain_result` | `HTTPException` | 61 |
+| unresolved_call | `write_task_brief` | `TaskBriefService(db).write` | 251 |
 | step_limit | `write_task_brief` | `first 12 steps` | 0 |
 
 ## Behavior

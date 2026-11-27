@@ -39,6 +39,7 @@ Importing the recovery models registers the transactional task deletion hook alo
 | `app.models.system_settings` | `SystemSetting` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |
 | `app.models.task_brief` | `TaskBriefRevision`, `TaskProgressRecord`, `TaskReviewRecord` |
+| `app.models.task_postponement` | `TaskPostponement`, `TaskReactivationRequirement` |
 | `app.models.task_replacement` | `TaskReplacement` |
 | `app.models.task_status_log` | `TaskStatusLog` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberCapacityAdjustment`, `TeamMemberProfile`, `TeamMemberProfileSkill`, `Vacation` |
@@ -66,6 +67,6 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (9) |
-| Outbound | `backend` (34) |
+| Outbound | `backend` (35) |
 
-> All 43 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 44 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

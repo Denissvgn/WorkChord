@@ -110,6 +110,12 @@ Validate and reproducibly package WorkChord role skills.
 | `validate_archive` | `(archive_path: Path, catalog: dict[str, Any], folder_name: str) -> None` | — | Validate an exact role archive without extracting it. |
 | `build_release` | `(skills_dir: Path, output_dir: Path) -> dict[str, Any]` | — | Build and validate deterministic role archives plus their checksum index. |
 | `build_codex_plugin` | `(skills_dir: Path, output_dir: Path) -> Path` | — | Generate a Codex plugin adapter from the canonical validated role folders. |
+| `_verified_role_files` | `(skills_dir: Path, catalog: dict[str, Any]) -> dict[str, dict[str, bytes]]` | — | Read every canonical role folder and prove it still matches the catalog. |
+| `_portable_role_files` | `(files: dict[str, bytes]) -> dict[str, bytes]` | — | Drop the Codex-only interface metadata from a role for other runtimes. |
+| `_write_role_skills` | `(skills_root: Path, role_files: dict[str, dict[str, bytes]]) -> None` | — | — |
+| `build_claude_code_plugin` | `(skills_dir: Path, output_dir: Path) -> Path` | — | Generate a Claude Code plugin adapter from the canonical validated role folders. |
+| `build_antigravity_skills` | `(skills_dir: Path, output_dir: Path) -> Path` | — | Generate an Antigravity skills adapter from the canonical validated role folders. |
+| `build_adapters` | `(skills_dir: Path, output_dir: Path) -> dict[str, Path]` | — | Generate every runtime adapter under one directory, one folder per runtime. |
 | `_inspect_regular_tree` | `(root: Path) -> set[str]` | — | Return a tree inventory while rejecting links and special entries. |
 | `_fsync_tree` | `(root: Path) -> None` | — | Flush staged regular files and directories before publication. |
 | `_rename_exchange` | `(first: Path, second: Path) -> bool` | — | Atomically exchange two trees on Linux; return false when unavailable. |

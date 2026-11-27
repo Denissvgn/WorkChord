@@ -39,6 +39,7 @@ from app.services.agent_team_setup_service import AgentTeamSetupConflictError
 from app.services.task_service import TaskVersionConflictError
 from app.mutation_versions import MissingMutationRevision
 from app.services.triage_service import TriageConflictError
+from app.utils.source_link_policy import SourceLinkRefused
 
 
 MCP_AGENT_API_KEY_ENV = "MCP_AGENT_API_KEY"
@@ -303,6 +304,8 @@ def _structured_tool_error(exc: Exception) -> str:
         payload = {"code": "agent_state_conflict", "message": str(exc)}
     elif isinstance(exc, TriageConflictError):
         payload = {"code": "triage_state_conflict", "message": str(exc)}
+    elif isinstance(exc, SourceLinkRefused):
+        payload = exc.detail()
     elif isinstance(exc, AgentPermissionError):
         payload = {"code": "agent_permission_denied", "message": str(exc)}
     elif isinstance(exc, MCPAuthError):
@@ -1671,6 +1674,28 @@ def create_mcp_server() -> FastMCP:
         return await _tool_call(
             "planning:write",
             lambda db, actor: mcp_agent_tools.record_task_replacement(
+                db,
+                actor,
+                task_id,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_record_manual_provenance(
+        task_id: int,
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Record who executed resolved work delivered outside recorded runs; payload names the executor, head commit, commits, pull request or base, artifact revision and reason."""
+        return await _tool_call(
+            "planning:write",
+            lambda db, actor: mcp_agent_tools.record_manual_provenance(
                 db,
                 actor,
                 task_id,

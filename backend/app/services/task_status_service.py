@@ -36,6 +36,15 @@ class TaskStatusService:
         TaskStatus.ACTIVE.value: {TaskStatus.RESOLVED.value},
         TaskStatus.RESOLVED.value: {TaskStatus.ACTIVE.value, TaskStatus.CLOSED.value},
         TaskStatus.CLOSED.value: set(),
+        # Postponed work moves only through the postpone and reactivate commands.
+        TaskStatus.POSTPONED.value: set(),
+    }
+    # The only moves into and out of postponed; TaskPostponementService owns them.
+    POSTPONEMENT_TRANSITIONS = {
+        TaskStatus.PLANNED.value: {TaskStatus.POSTPONED.value},
+        TaskStatus.ACTIVE.value: {TaskStatus.POSTPONED.value},
+        TaskStatus.RESOLVED.value: {TaskStatus.POSTPONED.value},
+        TaskStatus.POSTPONED.value: {TaskStatus.PLANNED.value, TaskStatus.RESOLVED.value},
     }
     ROLLUP_TRANSITIONS = {
         status.value: {
@@ -54,6 +63,11 @@ class TaskStatusService:
         statuses = list(child_statuses)
         if not statuses:
             raise ValueError("Parent status requires at least one child status.")
+        if all(status == TaskStatus.POSTPONED.value for status in statuses):
+            return TaskStatus.POSTPONED.value
+        # Beside other work, a postponed leaf is neither started nor done.
+        statuses = [TaskStatus.PLANNED.value if status == TaskStatus.POSTPONED.value else status
+                    for status in statuses]
         if all(status == TaskStatus.PLANNED.value for status in statuses):
             return TaskStatus.PLANNED.value
         if all(status == TaskStatus.CLOSED.value for status in statuses):
@@ -102,6 +116,8 @@ class TaskStatusService:
             return None, [], False
         if task.canceled_at or task.blocked_reason:
             raise ValueError("Canceled or blocked work cannot change lifecycle")
+        if task.status == TaskStatus.POSTPONED.value:
+            raise ValueError("Postponed work cannot change lifecycle; reactivate it first")
         if manual_execution and authority is not None and authority.kind not in {"human", "local"}:
             raise AuthorityError("human_execution_required", "Manual execution requires a human identity.")
         if task.is_summary or task.children:
@@ -111,6 +127,8 @@ class TaskStatusService:
         new_status_value = (
             new_status.value if hasattr(new_status, "value") else str(new_status)
         )
+        if new_status_value == TaskStatus.POSTPONED.value:
+            raise ValueError("Postpone work with the postpone command, which records a reason and reactivation requirements")
         from app.services.work_metrics import effective_work_flags
         if new_status_value in {"active", "resolved"} and not review_rework and effective_work_flags(task)["effective_is_deferred"]:
             raise PlanningConflict("task_deferred", "Remove deferral before executing work.")
@@ -201,12 +219,14 @@ class TaskStatusService:
         expected_version: Optional[int],
         automatic: bool,
         reserve_version: bool = True,
+        postponement: bool = False,
     ) -> tuple[Task, list[dict], bool]:
         """Run the shared mutation, audit, delivery, and notification semantics."""
         old_status = task.status
         if old_status == new_status:
             return task, [], False
-        transition_map = self.ROLLUP_TRANSITIONS if automatic else self.VALID_TRANSITIONS
+        transition_map = (self.ROLLUP_TRANSITIONS if automatic else
+                          self.POSTPONEMENT_TRANSITIONS if postponement else self.VALID_TRANSITIONS)
         if new_status not in transition_map.get(old_status, set()):
             raise ValueError(f"Invalid task status transition: {old_status} -> {new_status}")
 
@@ -222,6 +242,10 @@ class TaskStatusService:
         if automatic:
             self.db.info.setdefault("derived_rollups", set()).add(task.id)
             task.is_summary = True
+        elif postponement:
+            # Stopping and resuming keep the brief, progress, evidence, dates and
+            # execution provenance exactly as they were.
+            pass
         elif new_status == TaskStatus.ACTIVE.value:
             task.progress = None
             task.started_at = task.started_at or now
@@ -338,6 +362,36 @@ class TaskStatusService:
         # Delivery is intentionally asynchronous. Keep the legacy response field
         # honest: persistence of an intent is not the same as a sent email.
         return task, cascade_updates, False
+
+    async def apply_postponement_transition(
+        self,
+        task: Task,
+        new_status: str,
+        *,
+        reason: str,
+        expected_version: Optional[int],
+    ) -> Task:
+        """Move one locked leaf into or out of postponed, with the usual audit.
+
+        The caller has checked manage authority, the lifecycle and the
+        postponement record; this writes the status, version, status log, event
+        and webhook, then reconciles the ancestor chain. The command records the
+        task so the write is authorized as the planning decision it is.
+        """
+        from app.commands import current_command
+        command = current_command(self.db)
+        if command is None:
+            raise RuntimeError("Postponement transitions require a command transaction")
+        command.postponement_transitions.add(task.id)
+        authority = self.db.info.get("authority")
+        actor_type = "agent" if getattr(authority, "kind", None) == "agent" else "user"
+        updated, _, _ = await self._apply_transition(
+            task, new_status, reason=reason, actor_type=actor_type, expected_version=expected_version,
+            automatic=False, postponement=True,
+        )
+        if updated.parent_id is not None:
+            await self.reconcile_parent_chain(updated.parent_id, visited={updated.id}, commit=False)
+        return updated
 
     async def reconcile_parent_chain(
         self,

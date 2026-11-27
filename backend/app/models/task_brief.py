@@ -51,6 +51,9 @@ class TaskReviewRecord(Base):
     artifact_revision: Mapped[int] = mapped_column(Integer)
     principal_id: Mapped[int | None] = mapped_column(ForeignKey("principals.id", ondelete="RESTRICT"))
     verdict: Mapped[str] = mapped_column(String(16))
+    # "review" is an ordinary review; "owner_override" is an owner's acceptance that set
+    # aside the project's publisher-independence policy and is never an independent review.
+    kind: Mapped[str] = mapped_column(String(32), default="review", server_default="review", nullable=False)
     reason: Mapped[str] = mapped_column(Text)
     evidence: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now)

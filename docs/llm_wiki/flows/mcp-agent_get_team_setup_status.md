@@ -53,14 +53,14 @@ sequenceDiagram
     participant p18 as DiscussionService.enqueue
     participant p19 as _member_contract_outdated
     participant p20 as AgentTeamSetupService._handoff
-    participant p21 as _canonical_json
-    participant p22 as actor_has_scope
-    participant p23 as ensure_agent_team_secret_free
-    participant p24 as commit_or_flush
-    participant p25 as DeliveryDependencyService.validate_cycles
-    participant p26 as DiscussionService.recipient_authorized
-    participant p27 as TaskService.reserve_task_version
-    participant p28 as clear_execution_evidence
+    participant p21 as AgentTeamSetupService._runtime_identity_status
+    participant p22 as _canonical_json
+    participant p23 as actor_has_scope
+    participant p24 as ensure_agent_team_secret_free
+    participant p25 as commit_or_flush
+    participant p26 as DeliveryDependencyService.validate_cycles
+    participant p27 as DiscussionService.recipient_authorized
+    participant p28 as TaskService.reserve_task_version
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -83,21 +83,21 @@ sequenceDiagram
     p8->>p18: DiscussionService.enqueue
     p11->>p19: _member_contract_outdated
     p11->>p20: AgentTeamSetupService._handoff
-    p11->>p21: _canonical_json
-    p14->>p22: actor_has_scope
-    p21->>p23: ensure_agent_team_secret_free
-    p15->>p24: commit_or_flush
-    p17->>p25: DeliveryDependencyService.validate_cycles
-    p18->>p26: DiscussionService.recipient_authorized
-    p17->>p27: TaskService.reserve_task_version
-    p17->>p28: clear_execution_evidence
+    p11->>p21: AgentTeamSetupService._runtime_identity_status
+    p11->>p22: _canonical_json
+    p14->>p23: actor_has_scope
+    p22->>p24: ensure_agent_team_secret_free
+    p15->>p25: commit_or_flush
+    p17->>p26: DeliveryDependencyService.validate_cycles
+    p18->>p27: DiscussionService.recipient_authorized
+    p17->>p28: TaskService.reserve_task_version
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 468 interactions; 438 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 488 interactions; 458 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 138 (137 omitted); unresolved 1 of 203 (202 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 144 (143 omitted); unresolved 1 of 214 (213 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -111,7 +111,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 106 groups; 98 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 110 groups; 102 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -124,9 +124,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 128; effect analysis evaluated: 77, partial: 3, unavailable: 48. Counts include steps omitted from the displayed trace.
+Source steps: 131; effect analysis evaluated: 78, partial: 3, unavailable: 50. Counts include steps omitted from the displayed trace.
 
-Collector observations for 80 source steps with known totals: observed: 370, emitted: 345, omitted: 25. Unavailable totals are excluded.
+Collector observations for 81 source steps with known totals: observed: 381, emitted: 354, omitted: 27. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -201,10 +201,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_get_team_setup_status | _tool_call | 415 | `_tool_call((...), ...)` |
-| _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
+| agent_get_team_setup_status | _tool_call | 418 | `_tool_call((...), ...)` |
+| _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 527 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `tuple(required_scope)` |

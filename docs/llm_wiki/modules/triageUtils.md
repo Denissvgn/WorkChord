@@ -19,8 +19,8 @@ _Auto-generated from `frontend/src/components/triage/triageUtils.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `AGENT_SOURCE_LABEL_KEYS`, `DuplicateActionDefaults`, `TriageLifecycleAction`, `flattenTasks`, `formatDraftDescription`, `formatSuggestionScore`, `getErrorMessage`, `isDueSnoozed`, `makeLookup`, `optionalText`, `parseOptionalNumber`, `statusClassName`, `statusLabelKeys`, `statusOptions`, `t`, `toLocalDateTimeInputValue`, `triageFiltersFromSavedView` |
-| Constants | `t`, `statusOptions`, `statusLabelKeys`, `AGENT_SOURCE_LABEL_KEYS` |
+| Exports | `AGENT_SOURCE_LABEL_KEYS`, `DuplicateActionDefaults`, `SOURCE_LINK_ERROR_CODE`, `TriageLifecycleAction`, `flattenTasks`, `formatDraftDescription`, `formatSuggestionScore`, `getErrorMessage`, `getSourceLinkError`, `isDueSnoozed`, `makeLookup`, `optionalText`, `parseOptionalNumber`, `statusClassName`, `statusLabelKeys`, `statusOptions`, `t`, `toLocalDateTimeInputValue`, `triageFiltersFromSavedView` |
+| Constants | `t`, `statusOptions`, `statusLabelKeys`, `SOURCE_LINK_ERROR_CODE`, `AGENT_SOURCE_LABEL_KEYS` |
 | Module calls | `t = bind` |
 
 ## Local dependency map
@@ -52,9 +52,9 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskListOption](../entities/TaskListOption.md) | Interface | 112 | — | — |
-| [DuplicateActionDefaults](../entities/DuplicateActionDefaults.md) | Interface | 140 | — | — |
-| [TriageLifecycleAction](../entities/TriageLifecycleAction.md) | Type alias | 132 | `'accept' \| 'decline' \| 'snooze' \| 'clarify' \| 'duplicate'` | — |
+| [TaskListOption](../entities/TaskListOption.md) | Interface | 126 | — | — |
+| [DuplicateActionDefaults](../entities/DuplicateActionDefaults.md) | Interface | 154 | — | — |
+| [TriageLifecycleAction](../entities/TriageLifecycleAction.md) | Type alias | 146 | `'accept' \| 'decline' \| 'snooze' \| 'clarify' \| 'duplicate'` | — |
 
 ## Functions
 
@@ -68,6 +68,7 @@ flowchart LR
 | `formatSuggestionScore` | `(score: number)` | — | — |
 | `formatDraftDescription` | `(draft: TriageTaskDraftResponse)` | — | — |
 | `isDueSnoozed` | `(item: TriageItem)` | — | — |
+| `getSourceLinkError` | `(error: unknown) -> string \| null` | — | The named source-link refusal as one sentence (what is wrong plus the next step), or null for any other error. |
 | `getErrorMessage` | `(error: unknown, fallback: string)` | — | — |
 | `flattenTasks` | `(tasks: Task[] = [], depth = 0) -> TaskListOption[]` | — | — |
 | `makeLookup` | `<T extends { id: number; name: string }>(items: T[])` | — | — |

@@ -1,6 +1,6 @@
 # AgentRun
 
-**Location:** `backend/app/models/agent.py:1051`
+**Location:** `backend/app/models/agent.py:1084`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)
@@ -128,4 +128,4 @@ flowchart LR
 | `AgentService.append_run_event` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `AgentService.finish_run` | type_reference | [agent_service](../modules/agent_service.md) | — |
 
-> References: showing 12 of 83 logical references; 71 omitted by the 12-row generated summary limit.
+> References: showing 12 of 90 logical references; 78 omitted by the 12-row generated summary limit.

@@ -33,13 +33,20 @@ compatibility period. Upgrade the server and every agent runtime together:
    configured external sink. Provider credentials stay in the runtime's secret
    store; a WorkChord model binding contains intended configuration metadata.
 3. Obtain the exact role version and checksum from the verified server catalog.
-   Install those bytes, or use the tracked
-   [Codex role adapter](../adapters/codex/workchord-agent-roles). Missing or
+   Install those bytes, or use the tracked role adapter for the runtime:
+   [Codex](../adapters/codex/workchord-agent-roles),
+   [Claude Code](../adapters/claude-code/workchord-agent-roles) or
+   [Antigravity](../adapters/antigravity/workchord-agent-roles). Regenerate all
+   three with `scripts/build_agent_skills.py build-adapters --output-dir adapters`;
+   CI fails when a committed adapter differs from the generated output. Missing or
    mismatched checksums stop delivery.
 4. Send the exact `agent-team-runtime-ack-v1` fields from the current handoff to
    `POST /api/agent/team-setup/onboarding/acknowledge`, using only its restricted
    `X-Agent-API-Key`. Onboarding credentials cannot call ordinary REST or MCP
-   operations until acknowledgement succeeds.
+   operations until acknowledgement succeeds. Return the handoff's
+   `runtime_instance_id` unchanged, and list `runtime-instance-identity-v1` in the
+   acknowledged `server_features`; a different identity is refused. See
+   [Identify the runtime instance](agent-team-setup.md#identify-the-runtime-instance).
 5. Retain the acknowledgement digest. When revisions change, obtain the current
    handoff and explicitly refresh with `expected_previous_acknowledgement_digest`.
    A stale handoff or changed body does not authorize blind replacement.

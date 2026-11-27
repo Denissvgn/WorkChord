@@ -1,6 +1,6 @@
 # AgentActor
 
-**Location:** `backend/app/models/agent.py:33`
+**Location:** `backend/app/models/agent.py:39`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)
@@ -118,4 +118,4 @@ flowchart LR
 | `apply_planning_schedule` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `begin_my_work` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 
-> References: showing 12 of 446 logical references; 434 omitted by the 12-row generated summary limit.
+> References: showing 12 of 456 logical references; 444 omitted by the 12-row generated summary limit.

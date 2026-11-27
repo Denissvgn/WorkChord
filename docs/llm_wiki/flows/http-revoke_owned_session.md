@@ -149,7 +149,7 @@ flowchart LR
 |---|---|---:|---|
 | revoke_owned_session | require_identity_writes | 410 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 527 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
 | revoke_owned_session | _local_observers | 414 | `_local_observers(authority)` |
@@ -157,7 +157,7 @@ flowchart LR
 | revoke_owned_session | UserSession.principal_id.is_ | 415 | `UserSession.principal_id.is_(None)` |
 | revoke_owned_session | AuthorityError | 417 | `AuthorityError('session_not_found', 'Session not found.', 404)` |
 | revoke_owned_session | internal_authority | 418 | `internal_authority(db)` |
-| internal_authority | db.info.get | 99 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get | 113 | `db.info.get('authority_internal', False)` |
 
 ### Boundary effects
 
@@ -168,7 +168,7 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | unresolved_call | `revoke_owned_session` | `UserSession.principal_id.is_` | 415 |
-| unresolved_call | `internal_authority` | `db.info.get` | 99 |
+| unresolved_call | `internal_authority` | `db.info.get` | 113 |
 | step_limit | `revoke_owned_session` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -1,6 +1,6 @@
 # AgentTeamApplyRun
 
-**Location:** `backend/app/models/agent.py:574`
+**Location:** `backend/app/models/agent.py:607`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)

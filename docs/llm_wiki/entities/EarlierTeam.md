@@ -1,6 +1,6 @@
 # EarlierTeam
 
-**Location:** `backend/tests/test_agent_team_setup_stored_contract.py:236`
+**Location:** `backend/tests/test_agent_team_setup_stored_contract.py:237`
 **Kind:** Class
 **Bases:** —
 **Module:** [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md)

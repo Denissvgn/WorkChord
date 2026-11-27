@@ -91,9 +91,9 @@ sequenceDiagram
     p20-->>p30: _http_agent_key.get
 ```
 
-> Call sequence diagram shows 30 of 200 interactions; 170 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 210 interactions; 180 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 40 (39 omitted); unresolved 1 of 90 (89 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 43 (42 omitted); unresolved 1 of 97 (96 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -106,7 +106,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/commands.py:current_command` | 12 | - | unresolved | 1 |
 | `backend/app/commands.py:command_transaction` | 11 | - | external | 4 |
 | `backend/app/commands.py:command_transaction` | 11 | - | unresolved | 12 |
-| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 23 | - | unresolved | 23 |
+| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 23 | - | unresolved | 28 |
 > Omission summary shows 8 of 59 groups; 51 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
@@ -122,7 +122,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 71; effect analysis evaluated: 48, partial: 0, unavailable: 23. Counts include steps omitted from the displayed trace.
 
-Collector observations for 48 source steps with known totals: observed: 174, emitted: 174, omitted: 0. Unavailable totals are excluded.
+Collector observations for 48 source steps with known totals: observed: 178, emitted: 178, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -214,34 +214,34 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workchord_reviewer_role | _skill_bundle_prompt | 2706 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended verifier skill version, then read workchord://skill-bundles/workchord-reviewer/{version}/SKILL.md. Follow that skill, read your review queue, and record a verdict only for the exact review assignment it returns.')` |
-| _skill_bundle_prompt | _agent_context | 370 | `_agent_context(_skill_bundle_scope_requirement(...))` |
-| _agent_context | _current_agent_key | 278 | `_current_agent_key(data not statically known)` |
-| _current_agent_key | _http_agent_key.get | 205 | `_http_agent_key.get(data not statically known)` |
-| _current_agent_key | os.getenv | 205 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
-| _agent_context | MCPAuthError | 280 | `MCPAuthError(...)` |
-| _agent_context | _open_db_session | 281 | `_open_db_session(data not statically known)` |
-| _open_db_session | _session_factory | 186 | `_session_factory(data not statically known)` |
-| _open_db_session | hasattr | 187 | `hasattr(session_context, '__aenter__')` |
-| _agent_context | command_transaction | 282 | `command_transaction(db, mode=...)` |
-| command_transaction | current_command | 93 | `current_command(db)` |
+| workchord_reviewer_role | _skill_bundle_prompt | 2731 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended verifier skill version, then read workchord://skill-bundles/workchord-reviewer/{version}/SKILL.md. Follow that skill, read your review queue, and record a verdict only for the exact review assignment it returns.')` |
+| _skill_bundle_prompt | _agent_context | 373 | `_agent_context(_skill_bundle_scope_requirement(...))` |
+| _agent_context | _current_agent_key | 279 | `_current_agent_key(data not statically known)` |
+| _current_agent_key | _http_agent_key.get | 206 | `_http_agent_key.get(data not statically known)` |
+| _current_agent_key | os.getenv | 206 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
+| _agent_context | MCPAuthError | 281 | `MCPAuthError(...)` |
+| _agent_context | _open_db_session | 282 | `_open_db_session(data not statically known)` |
+| _open_db_session | _session_factory | 187 | `_session_factory(data not statically known)` |
+| _open_db_session | hasattr | 188 | `hasattr(session_context, '__aenter__')` |
+| _agent_context | command_transaction | 283 | `command_transaction(db, mode=...)` |
+| command_transaction | current_command | 100 | `current_command(db)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| environment_read | `os.getenv` | `_current_agent_key` | 205 |
-| mutation | `db.info.pop` | `command_transaction` | 113 |
-| mutation | `db.info.pop` | `command_transaction` | 126 |
-| mutation | `db.info.pop` | `command_transaction` | 127 |
-| mutation | `db.info.pop` | `command_transaction` | 129 |
+| environment_read | `os.getenv` | `_current_agent_key` | 206 |
+| mutation | `db.info.pop` | `command_transaction` | 120 |
+| mutation | `db.info.pop` | `command_transaction` | 133 |
+| mutation | `db.info.pop` | `command_transaction` | 134 |
+| mutation | `db.info.pop` | `command_transaction` | 136 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `_open_db_session` | `_session_factory` | 186 |
-| external_call | `_open_db_session` | `hasattr` | 187 |
+| unresolved_call | `_open_db_session` | `_session_factory` | 187 |
+| external_call | `_open_db_session` | `hasattr` | 188 |
 | step_limit | `workchord_reviewer_role` | `first 12 steps` | 0 |
 | truncated_flow | `workchord_reviewer_role` | `depth limit` | 0 |
 

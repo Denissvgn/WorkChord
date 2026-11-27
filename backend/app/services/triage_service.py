@@ -39,6 +39,7 @@ from app.services.request_source_service import RequestSourceService
 from app.services.outbound_webhook_service import emit_outbound_webhook_event
 from app.services.llm_service import LLMService
 from app.sql_semantics import portable_contains
+from app.utils.source_link_policy import evaluate_source_link, normalize_source_link
 from app.utils.text_similarity import BM25Similarity, SimilarityDocument, normalize_text
 from app.utils.time import as_utc, utc_now
 
@@ -784,7 +785,7 @@ class TriageService:
             title=data.title,
             description=description,
             source=data.source,
-            source_url=data.source_url,
+            source_url=normalize_source_link(data.source_url),
             external_key=data.external_key,
             status=self._enum_value(data.status),
             priority_hint=data.priority_hint,
@@ -856,6 +857,9 @@ class TriageService:
             raise ValueError(f"Use triage action endpoints to update: {fields}")
 
         update_data = data.model_dump(exclude_unset=True)
+        if "source_url" in update_data and update_data["source_url"] != item.source_url:
+            # An unchanged link is accepted as stored so older intakes stay editable.
+            update_data["source_url"] = normalize_source_link(update_data["source_url"])
         await self._validate_common_references(
             project_hint_id=update_data.get("project_hint_id"),
             iteration_hint_id=update_data.get("iteration_hint_id"),
@@ -1398,6 +1402,9 @@ class TriageService:
         await self.task_service.require_iteration_assignee(data.assignee_id, data.iteration_id)
         await self.task_service._require_same_iteration_dependencies(data.iteration_id, data.depends_on, project_id)
 
+        # Same-instance links become relative paths; links the policy refuses are
+        # left off the task (the response says so) instead of failing the conversion.
+        task_source_url = evaluate_source_link(item.source_url).value
         description = data.description if data.description is not None else item.description
         structured_fields = (
             data.scope,
@@ -1415,7 +1422,7 @@ class TriageService:
                 title=data.title or item.title,
                 context=description,
                 source=item.source,
-                source_url=item.source_url,
+                source_url=task_source_url,
                 external_key=item.external_key,
                 scope=data.scope,
                 out_of_scope=data.out_of_scope,
@@ -1450,7 +1457,7 @@ class TriageService:
             tags=data.tags if data.tags is not None else item.labels,
             external_key=item.external_key,
             source=item.source or "triage",
-            source_url=item.source_url,
+            source_url=task_source_url,
         )
         try:
             old_status = item.status

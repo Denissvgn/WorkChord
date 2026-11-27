@@ -55,12 +55,12 @@ flowchart LR
     n3["backend/app/services/github_reconciliation_service.py"]
     n4["GitHubStatusService.from_runtime (backend/app/services/github_status_service.py)"]
     n5["GitHubWebhookService.__init__ (backend/app/services/github_webhook_service.py)"]
-    n6["backend/app/services/review_provenance.py"]
-    n7["_catch_up (backend/tests/database/test_github_closure_concurrency.py)"]
-    n8["backend/tests/test_delivery_merge_prerequisites.py"]
-    n9["backend/tests/test_github_reconciliation.py"]
-    n10["backend/tests/test_manual_review_provenance.py"]
-    n11["test_commit_only_review_verifies_the_entire_pinned_range (backend/tests/test_review_provenance.py)"]
+    n6["backend/app/services/manual_provenance_service.py"]
+    n7["backend/app/services/review_provenance.py"]
+    n8["_catch_up (backend/tests/database/test_github_closure_concurrency.py)"]
+    n9["backend/tests/test_delivery_merge_prerequisites.py"]
+    n10["backend/tests/test_github_reconciliation.py"]
+    n11["backend/tests/test_manual_provenance_record.py"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -78,12 +78,12 @@ flowchart LR
     click n3 "../modules/github_reconciliation_service.md"
     click n4 "../modules/github_status_service.md"
     click n5 "../modules/github_webhook_service.md"
-    click n6 "../modules/review_provenance.md"
-    click n7 "../modules/test_github_closure_concurrency.md"
-    click n8 "../modules/test_delivery_merge_prerequisites.md"
-    click n9 "../modules/test_github_reconciliation.md"
-    click n10 "../modules/test_manual_review_provenance.md"
-    click n11 "../modules/test_review_provenance.md"
+    click n6 "../modules/manual_provenance_service.md"
+    click n7 "../modules/review_provenance.md"
+    click n8 "../modules/test_github_closure_concurrency.md"
+    click n9 "../modules/test_delivery_merge_prerequisites.md"
+    click n10 "../modules/test_github_reconciliation.md"
+    click n11 "../modules/test_manual_provenance_record.md"
 ```
 
 ### Summary
@@ -102,11 +102,11 @@ flowchart LR
 | `GitHubStatusService.from_runtime` | call | [github_status_service](../modules/github_status_service.md) | 1 |
 | `GitHubStatusService.from_runtime` | type_reference | [github_status_service](../modules/github_status_service.md) | — |
 | `GitHubWebhookService.__init__` | call | [github_webhook_service](../modules/github_webhook_service.md) | 1 |
+| `manual_provenance_service` | import | [manual_provenance_service](../modules/manual_provenance_service.md) | — |
 | `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |
 | `_catch_up` | call | [test_github_closure_concurrency](../modules/test_github_closure_concurrency.md) | 1 |
 | `test_delivery_merge_prerequisites` | import | [test_delivery_merge_prerequisites](../modules/test_delivery_merge_prerequisites.md) | — |
 | `test_github_reconciliation` | import | [test_github_reconciliation](../modules/test_github_reconciliation.md) | — |
-| `test_manual_review_provenance` | import | [test_manual_review_provenance](../modules/test_manual_review_provenance.md) | — |
-| `test_commit_only_review_verifies_the_entire_pinned_range` | call | [test_review_provenance](../modules/test_review_provenance.md) | 1 |
+| `test_manual_provenance_record` | import | [test_manual_provenance_record](../modules/test_manual_provenance_record.md) | — |
 
-> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.
+> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.

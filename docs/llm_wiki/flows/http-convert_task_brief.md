@@ -90,9 +90,9 @@ sequenceDiagram
     p1-->>p30: self.tasks.get_by_id (backend/app/services/task…skBriefService.conversion)(task_id)
 ```
 
-> Call sequence diagram shows 30 of 308 interactions; 278 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 318 interactions; 288 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 80 (79 omitted); unresolved 1 of 168 (167 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 83 (82 omitted); unresolved 1 of 175 (174 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -121,7 +121,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 61; effect analysis evaluated: 38, partial: 1, unavailable: 22. Counts include steps omitted from the displayed trace.
 
-Collector observations for 39 source steps with known totals: observed: 216, emitted: 215, omitted: 1. Unavailable totals are excluded.
+Collector observations for 39 source steps with known totals: observed: 220, emitted: 219, omitted: 1. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -193,17 +193,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| convert_task_brief | domain_result | 255 | `domain_result(...)` |
-| domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 55 | `str(exc)` |
-| domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
+| convert_task_brief | domain_result | 257 | `domain_result(...)` |
+| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
 | domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| convert_task_brief | TaskBriefService.conversion | 255 | `TaskBriefService(db).conversion(task_id, data)` |
-| TaskBriefService.conversion | self.tasks.get_by_id (backend/app/services/task…skBriefService.conversion) | 211 | `self.tasks.get_by_id(task_id)` |
-| TaskBriefService.conversion | ValueError (backend/app/services/task…skBriefService.conversion) | 213 | `ValueError('Task not found or inaccessible')` |
+| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 59 | `str(exc)` |
+| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| convert_task_brief | TaskBriefService.conversion | 257 | `TaskBriefService(db).conversion(task_id, data)` |
+| TaskBriefService.conversion | self.tasks.get_by_id (backend/app/services/task…skBriefService.conversion) | 212 | `self.tasks.get_by_id(task_id)` |
+| TaskBriefService.conversion | ValueError (backend/app/services/task…skBriefService.conversion) | 214 | `ValueError('Task not found or inaccessible')` |
 
 ### Boundary effects
 
@@ -213,13 +213,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 53 |
-| unresolved_call | `domain_result` | `exc.detail` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
+| unresolved_call | `domain_result` | `exc.detail` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
-| unresolved_call | `TaskBriefService.conversion` | `self.tasks.get_by_id` | 211 |
-| external_call | `TaskBriefService.conversion` | `ValueError` | 213 |
+| external_call | `domain_result` | `HTTPException` | 61 |
+| unresolved_call | `TaskBriefService.conversion` | `self.tasks.get_by_id` | 212 |
+| external_call | `TaskBriefService.conversion` | `ValueError` | 214 |
 | step_limit | `convert_task_brief` | `first 12 steps` | 0 |
 | truncated_flow | `convert_task_brief` | `depth limit` | 0 |
 

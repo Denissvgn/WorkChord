@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { AgentTeamMaster, AgentTeamMemberSpec, AgentTeamMemberStatus } from '../../types/agent';
 import { RUNTIME_PRODUCT_NAMES, credentialFilename, runtimeOfMember, runtimeSnippet } from '../../features/agentTeamSetup/connectAgent';
 import { Button } from '../common/Button';
+import { RuntimeIdentity } from './RuntimeIdentity';
 
 const P = 'agentTeamSetup.connect';
 
@@ -46,6 +47,7 @@ export const ConnectionSteps = ({ manifest, member, memberStatus, connected, che
                 <dd>{t(`${P}.packageName`, { name: member.skill_package.name, version: member.skill_package.version })}</dd>
                 <dd className="break-all font-mono text-xs">{t(`${P}.packageDigest`, { digest: member.skill_package.sha256 })}</dd>
             </div>
+            {memberStatus?.configured && <RuntimeIdentity identity={memberStatus.runtime_identity} acknowledgementState={memberStatus.acknowledgement_state} />}
         </dl>
         <p className="text-sm text-content-secondary">{t(`${P}.hostNote`)}</p>
         <pre aria-label={t(`${P}.snippetLabel`, { runtime: runtimeName })} className="overflow-x-auto rounded-md border border-border bg-surface-muted p-4 text-xs">

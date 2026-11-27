@@ -30,9 +30,10 @@ flowchart LR
     n3["backend/app/query_limits.py"]
     n4["backend/app/services/task_domain_service.py"]
     n5["backend/app/services/task_hierarchy_service.py"]
-    n6["backend/app/services/task_service.py"]
-    n7["backend/app/services/task_status_service.py"]
-    n8["backend/tests/test_task_pagination.py"]
+    n6["backend/app/services/task_postponement_service.py"]
+    n7["backend/app/services/task_service.py"]
+    n8["backend/app/services/task_status_service.py"]
+    n9["backend/tests/test_task_pagination.py"]
     n0 --> n1
     n1 --> n0
     n1 --> n2
@@ -41,34 +42,41 @@ flowchart LR
     n4 --> n2
     n4 --> n5
     n4 --> n6
+    n4 --> n7
     n5 --> n0
     n5 --> n1
     n5 --> n2
     n5 --> n3
-    n6 --> n0
     n6 --> n1
-    n6 --> n2
-    n6 --> n3
     n6 --> n4
     n6 --> n5
     n6 --> n7
+    n7 --> n0
     n7 --> n1
+    n7 --> n2
     n7 --> n3
+    n7 --> n4
     n7 --> n5
     n7 --> n6
+    n7 --> n8
     n8 --> n1
     n8 --> n3
     n8 --> n5
-    n8 --> n6
+    n8 --> n7
+    n9 --> n1
+    n9 --> n3
+    n9 --> n5
+    n9 --> n7
     click n0 "../modules/models_request_source.md"
     click n1 "../modules/models_task.md"
     click n2 "../modules/team_member.md"
     click n3 "../modules/query_limits.md"
     click n4 "../modules/task_domain_service.md"
     click n5 "../modules/task_hierarchy_service.md"
-    click n6 "../modules/task_service.md"
-    click n7 "../modules/task_status_service.md"
-    click n8 "../modules/test_task_pagination.md"
+    click n6 "../modules/task_postponement_service.md"
+    click n7 "../modules/task_service.md"
+    click n8 "../modules/task_status_service.md"
+    click n9 "../modules/test_task_pagination.md"
 ```
 
 ### Internal neighbors
@@ -76,6 +84,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [task_domain_service](../modules/task_domain_service.md) |
+| Inbound | [task_postponement_service](../modules/task_postponement_service.md) |
 | Inbound | [task_service](../modules/task_service.md) |
 | Inbound | [task_status_service](../modules/task_status_service.md) |
 | Inbound | [test_task_pagination](../modules/test_task_pagination.md) |

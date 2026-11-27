@@ -30,10 +30,13 @@ flowchart LR
     n0["TaskBatchUpdateItem (backend/app/schemas/task.py)"]
     n1["BaseModel"]
     n2["backend/app/schemas/gantt.py"]
+    n3["test_batch_that_changes_a_fenced_task_prerequisite_ends_the_fence (backend/tests/test_planning_only_edit_fence.py)"]
     n0 --> n1
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/schemas_task.md"
     click n2 "../modules/schemas_gantt.md"
+    click n3 "../modules/test_planning_only_edit_fence.md"
 ```
 
 ### Summary
@@ -53,3 +56,4 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `gantt` | import | [schemas_gantt](../modules/schemas_gantt.md) | — |
+| `test_batch_that_changes_a_fenced_task_prerequisite_ends_the_fence` | call | [test_planning_only_edit_fence](../modules/test_planning_only_edit_fence.md) | 2 |

@@ -37,8 +37,9 @@ flowchart LR
     n6["human (backend/tests/test_iteration_date_move.py)"]
     n7["managed_store (backend/tests/test_managed_authority.py)"]
     n8["test_issuer_subject_unique_without_name_or_ip_identity (backend/tests/test_managed_authority.py)"]
-    n9["test_authenticated_manual_submission_and_assigned_agent_verdict (backend/tests/test_manual_review_provenance.py)"]
-    n10["scripts/ci/serve_disposable_api.py"]
+    n9["test_recorded_provenance_allows_an_independent_review_of_work_merged_outside_runs (backend/tests/test_manual_provenance_record.py)"]
+    n10["test_authenticated_manual_submission_and_assigned_agent_verdict (backend/tests/test_manual_review_provenance.py)"]
+    n11["scripts/ci/serve_disposable_api.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -49,6 +50,7 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
     click n0 "../modules/models_identity.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -58,8 +60,9 @@ flowchart LR
     click n6 "../modules/test_iteration_date_move.md"
     click n7 "../modules/test_managed_authority.md"
     click n8 "../modules/test_managed_authority.md"
-    click n9 "../modules/test_manual_review_provenance.md"
-    click n10 "../modules/serve_disposable_api.md"
+    click n9 "../modules/test_manual_provenance_record.md"
+    click n10 "../modules/test_manual_review_provenance.md"
+    click n11 "../modules/serve_disposable_api.md"
 ```
 
 ### Summary
@@ -85,5 +88,6 @@ flowchart LR
 | `human` | call | [test_iteration_date_move](../modules/test_iteration_date_move.md) | 1 |
 | `managed_store` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
 | `test_issuer_subject_unique_without_name_or_ip_identity` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
+| `test_recorded_provenance_allows_an_independent_review_of_work_merged_outside_runs` | call | [test_manual_provenance_record](../modules/test_manual_provenance_record.md) | 1 |
 | `test_authenticated_manual_submission_and_assigned_agent_verdict` | call | [test_manual_review_provenance](../modules/test_manual_review_provenance.md) | 1 |
 | `serve_disposable_api` | import | [serve_disposable_api](../modules/serve_disposable_api.md) | — |

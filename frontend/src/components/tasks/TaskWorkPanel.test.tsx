@@ -6,7 +6,7 @@ import { emptyTaskBrief } from './taskEditorContract';
 import i18n, { ensureLanguageResources } from '../../i18n/i18n';
 import { TaskWorkPanel } from './TaskWorkPanel';
 
-const service = vi.hoisted(() => ({ actions: vi.fn(), progress: vi.fn(), command: vi.fn(), review: vi.fn(), getDetail: vi.fn() }));
+const service = vi.hoisted(() => ({ actions: vi.fn(), progress: vi.fn(), command: vi.fn(), review: vi.fn(), getDetail: vi.fn(), reviews: vi.fn().mockResolvedValue([]) }));
 vi.mock('../../services/taskService', () => ({ taskService: service }));
 vi.mock('../../services/iterationService', () => ({ iterationService: { getAll: vi.fn().mockResolvedValue([]) } }));
 
@@ -148,6 +148,26 @@ it('keeps the initial aggregate map through a failed uncommit and explicit curre
     await view.user.click(screen.getByRole('button', { name: 'Review current inputs' }));
     await waitFor(() => expect(JSON.parse(sessionStorage.getItem('scoped-command:progress')!).commandRevisions).toEqual({ 1: 99 }));
     expect(screen.getByRole('textbox', { name: 'Reason for the action or review'  })).toHaveValue('Keep this reason');
+});
+
+describe('unavailable actions', () => {
+    afterEach(async () => { await i18n.changeLanguage('en'); });
+
+    it.each([
+        ['en', 'Postpone', 'Reactivate'],
+        ['ru', 'Отложить', 'Возобновить'],
+    ])('names postpone and reactivate in %s', async (language, postpone, reactivate) => {
+        await ensureLanguageResources(language);
+        await i18n.changeLanguage(language);
+        service.actions.mockResolvedValue({ task_id: 42, version: 3, actions: [
+            { action: 'postpone', allowed: false, blockers: [{ code: 'permission_denied', message: 'Project manage permission is required.' }] },
+            { action: 'reactivate', allowed: false, blockers: [{ code: 'not_postponed', message: 'Only postponed work can be reactivated.' }] },
+        ], claim_generation: 0, running_run_ids: [], live_assignment_ids: [] });
+        renderPanel();
+        expect(await screen.findByText(postpone)).toBeInTheDocument();
+        expect(screen.getByText(reactivate)).toBeInTheDocument();
+        expect(screen.queryByText(/domain\.action_/)).not.toBeInTheDocument();
+    });
 });
 
 describe('review by a person', () => {

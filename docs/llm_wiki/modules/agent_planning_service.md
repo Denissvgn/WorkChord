@@ -31,6 +31,7 @@ Preview and apply use the observed iteration revision in the forecast digest. A 
 | `app.schemas.agent` | `AgentTaskCreate`, `AgentTaskPatch` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext`, `AgentPlanningReceipt`, `AgentScheduleCommand`, `AgentScheduleResult`, `AgentScheduleTaskState` |
 | `app.schemas.iteration` | `IterationCreate`, `IterationUpdate` |
+| `app.schemas.manual_provenance` | `ManualProvenanceResponse` |
 | `app.schemas.project` | `ProjectCreate`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneResponse`, `ProjectMilestoneUpdate`, `ProjectResponse`, `ProjectUpdate` |
 | `app.schemas.task` | `TaskCreate`, `TaskResponse`, `TaskUpdate` |
 | `app.schemas.task_replacement` | `TaskReplacementResponse` |
@@ -43,12 +44,14 @@ Preview and apply use the observed iteration revision in the forecast digest. A 
 | `app.services.capacity_transfers` | `CapacityTransferService`, `CapacityTransferService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService`, `DeliveryDependencyService` |
 | `app.services.iteration_service` | `IterationService` |
+| `app.services.manual_provenance_service` | `ManualProvenanceService` |
 | `app.services.project_service` | `ProjectService` |
 | `app.services.scheduler_service` | `SchedulerService` |
 | `app.services.task_replacement_service` | `TaskReplacementService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.team_service` | `TeamService` |
 | `collections.abc` | `Awaitable`, `Callable`, `Mapping` |
+| `dataclasses` | `replace` |
 | `hashlib` | `hashlib` |
 | `json` | `json` |
 | `secrets` | `secrets` |
@@ -76,7 +79,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (10) |
-| Outbound | `backend` (27) |
+| Outbound | `backend` (29) |
 
 ### External packages
 
@@ -84,7 +87,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 37 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 39 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -469,6 +469,8 @@ class IterationService:
         if not iteration:
             return False
 
+        from app.services.task_postponement_service import require_unreferenced as require_unawaited
+        await require_unawaited(self.db, task_ids=(await self.db.scalars(select(Task.id).where(Task.iteration_id == iteration_id))).all())
         await self.db.delete(iteration)
         await commit_or_flush(self.db)
         return True

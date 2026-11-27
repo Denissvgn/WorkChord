@@ -44,7 +44,7 @@ def summarize_observations(rows, start, end):
         if as_utc(row.observed_at) <= end:
             grouped[row.original_task_id].append(row)
     accepted, cancellations = set(), set()
-    acceptance_events = rejection_events = reopened = unknown_acceptance = 0
+    acceptance_events = rejection_events = reopened = unknown_acceptance = owner_overrides = 0
     leads, cycles, reviews = [], [], []
     lead_unknown = cycle_unknown = review_unknown = 0
     lead_censored = cycle_censored = review_censored = 0
@@ -80,6 +80,8 @@ def summarize_observations(rows, start, end):
                 rejection_events += int(in_window)
             elif row.kind == "acceptance_unknown":
                 unknown_acceptance += int(in_window)
+            elif row.kind == "owner_override_accepted":
+                owner_overrides += int(in_window)
             elif row.kind == "accepted":
                 pending = False
                 if not in_window:
@@ -99,6 +101,7 @@ def summarize_observations(rows, start, end):
         cycle_censored += int(pending and active is not None)
         review_censored += int(pending and resolved is not None)
     return dict(accepted_leaf_tasks=len(accepted), acceptance_events=acceptance_events,
+        owner_override_acceptance_events=owner_overrides,
         rejection_events=rejection_events, canceled_leaf_tasks=len(cancellations), reopened_events=reopened,
         lead_time=_samples(leads, censored=lead_censored, unknown=lead_unknown),
         cycle_time=_samples(cycles, censored=cycle_censored, unknown=cycle_unknown),

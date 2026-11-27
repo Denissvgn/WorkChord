@@ -1,7 +1,7 @@
 # AgentTeamTopologyResponse
 
-**Location:** `backend/app/schemas/agent_team_setup.py:1151`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:1199`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 

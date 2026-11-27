@@ -1,6 +1,6 @@
 # ImmutableRoutingAssessmentError
 
-**Location:** `backend/app/models/agent.py:857`
+**Location:** `backend/app/models/agent.py:890`
 **Kind:** Class
 **Bases:** `RuntimeError`
 **Module:** [models_agent](../modules/models_agent.md)

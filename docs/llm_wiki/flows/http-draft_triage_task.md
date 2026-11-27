@@ -46,9 +46,9 @@ sequenceDiagram
     participant p24 as HTTPException (backend/app/routers/triage.py:draft_triage_task)
     participant p25 as service.draft_task
     participant p26 as str (backend/app/routers/triage.py:draft_triage_task)
-    participant p27 as message.lower
-    participant p28 as HTTPException (backend/app/routers/triage.py:_bad_request)
-    participant p29 as re.fullmatch
+    participant p27 as isinstance (backend/app/routers/triage.py:_bad_request)
+    participant p28 as message.lower
+    participant p29 as HTTPException (backend/app/routers/triage.py:_bad_request)
     p0->>p1: resolve_runtime_ui_language
     p0->>p2: backend_error_message
     p0->>p3: _bad_request
@@ -76,14 +76,14 @@ sequenceDiagram
     p0-->>p25: service.draft_task(triage_item_id, data, llm_service=llm_service)
     p0-->>p26: str (backend/app/routers/triage.py:draft_triage_task)(e)
     p0-->>p24: HTTPException (backend/app/routers/triage.py:draft_triage_task)(status_code=status.HTTP_404_NOT_FOUND, detail=...)
-    p2-->>p27: message.lower
-    p3-->>p28: HTTPException (backend/app/routers/triage.py:_bad_request)(status_code=status.HTTP_400_BAD_REQUEST, detail=backend_error_message(...))
-    p2-->>p29: re.fullmatch('(.+) with id ([^ ]+) not found', message)
+    p3-->>p27: isinstance (backend/app/routers/triage.py:_bad_request)(error, SourceLinkRefused)
+    p2-->>p28: message.lower
+    p3-->>p29: HTTPException (backend/app/routers/triage.py:_bad_request)(status_code=status.HTTP_400_BAD_REQUEST, detail=error.detail(...))
 ```
 
-> Call sequence diagram shows 30 of 174 interactions; 144 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 177 interactions; 147 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 5 of 51 (46 omitted); unresolved 2 of 70 (68 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 5 of 53 (48 omitted); unresolved 2 of 71 (69 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -97,7 +97,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/system_settings_service.py:RuntimeSettingsService._decrypt_secret` | 18 | - | unresolved | 3 |
 | `backend/app/services/system_settings_service.py:RuntimeSettingsService._fernet` | 21 | - | external | 2 |
 | `backend/app/services/system_settings_service.py:RuntimeSettingsService._fernet` | 21 | [backend/app/services/system_settings_service.py](../modules/system_settings_service.md) | internal | 2 |
-> Omission summary shows 8 of 32 groups; 24 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 33 groups; 25 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -112,7 +112,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 54; effect analysis evaluated: 33, partial: 2, unavailable: 19. Counts include steps omitted from the displayed trace.
 
-Collector observations for 35 source steps with known totals: observed: 214, emitted: 162, omitted: 52. Unavailable totals are excluded.
+Collector observations for 35 source steps with known totals: observed: 217, emitted: 165, omitted: 52. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -188,8 +188,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| draft_triage_task | service.draft_task | 232 | `service.draft_task(triage_item_id, data, llm_service=llm_service)` |
-| draft_triage_task | resolve_runtime_ui_language | 238 | `resolve_runtime_ui_language(service.db)` |
+| draft_triage_task | service.draft_task | 236 | `service.draft_task(triage_item_id, data, llm_service=llm_service)` |
+| draft_triage_task | resolve_runtime_ui_language | 242 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip (backend/app/services/lang…ice.py:normalize_language) | 35 | `str(value or '').strip(data not statically known)` |
@@ -208,7 +208,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `draft_triage_task` | `service.draft_task` | 232 |
+| unresolved_call | `draft_triage_task` | `service.draft_task` | 236 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `RuntimeSettingsService._definition` | `SETTING_DEFINITIONS.get` | 154 |
