@@ -2,7 +2,7 @@
 
 **Entry point:** `attest_review_evidence` (`http`)
 **Source:** [agent_catalog](../modules/agent_catalog.md)
-**Modules touched:** [agent_catalog](../modules/agent_catalog.md), [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), and 22 more
+**Modules touched:** [agent_catalog](../modules/agent_catalog.md), [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), and 23 more
 
 **Complete modules touched:**
 
@@ -17,6 +17,7 @@
 - [discussion_service](../modules/discussion_service.md)
 - [github_links](../modules/github_links.md)
 - [identity_service](../modules/identity_service.md)
+- [manual_provenance_service](../modules/manual_provenance_service.md)
 - [models_agent](../modules/models_agent.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
 - [mutation_versions](../modules/mutation_versions.md)
@@ -102,9 +103,9 @@ sequenceDiagram
     p1-->>p30: TypeAdapter(…).validate_python(payload)
 ```
 
-> Call sequence diagram shows 30 of 753 interactions; 723 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 741 interactions; 711 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 204 (203 omitted); unresolved 1 of 353 (352 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 194 (193 omitted); unresolved 1 of 339 (338 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -118,7 +119,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/review_evidence.py:record_review_evidence` | 2 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
 | `backend/app/services/review_evidence.py:record_review_evidence` | 2 | - | external | 12 |
 | `backend/app/services/review_evidence.py:record_review_evidence` | 2 | [backend/app/schemas/agent_planning.py](../modules/schemas_agent_planning.md) | internal | 1 |
-> Omission summary shows 8 of 153 groups; 145 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 157 groups; 149 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -131,9 +132,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 197; effect analysis evaluated: 146, partial: 5, unavailable: 46. Counts include steps omitted from the displayed trace.
+Source steps: 209; effect analysis evaluated: 156, partial: 6, unavailable: 47. Counts include steps omitted from the displayed trace.
 
-Collector observations for 151 source steps with known totals: observed: 791, emitted: 767, omitted: 24. Unavailable totals are excluded.
+Collector observations for 162 source steps with known totals: observed: 878, emitted: 853, omitted: 25. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

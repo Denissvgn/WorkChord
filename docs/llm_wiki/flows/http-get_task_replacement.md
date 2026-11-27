@@ -113,9 +113,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 35; effect analysis evaluated: 27, partial: 2, unavailable: 6. Counts include steps omitted from the displayed trace.
+Source steps: 35; effect analysis evaluated: 28, partial: 1, unavailable: 6. Counts include steps omitted from the displayed trace.
 
-Collector observations for 29 source steps with known totals: observed: 146, emitted: 139, omitted: 7. Unavailable totals are excluded.
+Collector observations for 29 source steps with known totals: observed: 134, emitted: 128, omitted: 6. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -191,7 +191,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_task_replacement (backend/app/routers/agent_planning.py) | get_task_replacement (backend/app/mcp_agent_tools.py) | 386 | `mcp_agent_tools.get_task_replacement(db, actor, task_id)` |
+| get_task_replacement (backend/app/routers/agent_planning.py) | get_task_replacement (backend/app/mcp_agent_tools.py) | 387 | `mcp_agent_tools.get_task_replacement(db, actor, task_id)` |
 | get_task_replacement (backend/app/mcp_agent_tools.py) | require_scope | 1249 | `require_scope(actor, 'planning:read')` |
 | require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |

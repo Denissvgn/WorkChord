@@ -32,6 +32,7 @@ An evidence-backed verdict rechecks the packet against the current submission an
 | `app.services.agent_team_setup_service` | `AgentTeamSetupService` |
 | `app.services.execution_planning_window` | `assignment_matches`, `candidate_version` |
 | `app.services.github_status_service` | `GitHubStatusService` |
+| `app.services.manual_provenance_service` | `recorded_provenances`, `submitted_candidate`, `remedy`, `remedy` |
 | `app.services.retained_planning_output` | `retained_attestations` |
 | `app.services.review_evidence` | `resolve` |
 | `app.services.task_replacement_service` | `replacing`, `carried_contributors`, `attributed` |
@@ -64,8 +65,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (16) |
-| Outbound | `backend` (20) |
+| Inbound | `backend` (18) |
+| Outbound | `backend` (21) |
 
 ### External packages
 
@@ -73,7 +74,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 33 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -112,9 +113,14 @@ flowchart LR
 | `mark_server_interruption` | *(async)* `(db, run)` | — | — |
 | `_submitted_review_floor` | `(provenance, assignment_id, actor_id)` | — | An absent handback is unrestricted; a contradictory handback admits no verifier. |
 | `_manual_history` | *(async)* `(db, task)` | — | Verify an actual human executor and immutable evidence, independently of the planned owner. |
+| `_recorded_row` | `(identity, event_id, role, commits)` | — | — |
+| `_recorded_contributions` | *(async)* `(db, task)` | — | Contributors from every manual provenance record, and the record that supplies the candidate. |
+| `_add_recorded` | `(history, rows, human)` | — | — |
 | `review_history` | *(async)* `(db, task, assignments, *, strict, include_carried = True)` | — | A failed or recovered run can have produced retained work. Include every actual attempt. |
-| `_attempt_history` | *(async)* `(db, task, assignments, *, strict)` | — | — |
+| `_attempt_history` | *(async)* `(db, task, assignments, *, strict)` | — | Run history plus every manual provenance record; a current record supplies the candidate without runs. |
+| `_run_history` | *(async)* `(db, task, assignments, executions, runs, *, strict)` | — | — |
 | `_submission_candidate` | *(async)* `(db, task, submitted_run, source)` | — | Use identical repository and revision checks for authenticated worker or human artifact records. |
 | `select_reviewer` | *(async)* `(db, task, assignments, reviewer, *, binding_id = None, reviewer_profile_id = None, review_evidence_id = None)` | — | — |
+| `require_verifiable_candidate` | `(task, selection)` | — | Refuse a new verification assignment that is already known never to be able to pass. |
 | `observe_review_candidate` | *(async)* `(db, assignment_id, actor_id)` | — | Resolve remote PR evidence before taking the task, actor and assignment locks. |
 | `verify_verdict` | *(async)* `(db, task, assignments, assignment, actor, data, observed_candidate)` | — | — |

@@ -210,7 +210,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_get_iteration_plan_readiness | _tool_call | 1877 | `_tool_call((...), ...)` |
+| agent_get_iteration_plan_readiness | _tool_call | 1899 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |

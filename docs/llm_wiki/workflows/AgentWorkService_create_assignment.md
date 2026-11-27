@@ -20,10 +20,11 @@
 10. `agent_routing_service.AgentRoutingService.validate_assignment_selection`
 11. `time.utc_now`
 12. `review_provenance.select_reviewer`
-13. `services_review_evidence.check_supervised_selection`
-14. `review_provenance.require_independent_profile`
-15. `models_agent.AgentTaskAssignment`
-16. `commands.commit_or_flush`
+13. `review_provenance.require_verifiable_candidate`
+14. `services_review_evidence.check_supervised_selection`
+15. `review_provenance.require_independent_profile`
+16. `models_agent.AgentTaskAssignment`
+17. `commands.commit_or_flush`
 
 ## Touches
 

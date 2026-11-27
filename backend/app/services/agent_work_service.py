@@ -106,7 +106,7 @@ from app.services.agent_routing_rollout import (
 from app.services.agent_model_catalog_service import AgentModelCatalogService
 from app.services.review_provenance import (
     ReworkReadCache, actor_provenance, different_publisher_required, require_independent_profile,
-    rework_binding_identity, select_reviewer, supervised_rework_evidence,
+    require_verifiable_candidate, rework_binding_identity, select_reviewer, supervised_rework_evidence,
 )
 from app.services.task_service import TaskService, TaskVersionConflictError
 from app.services.project_service import ProjectService
@@ -1580,6 +1580,7 @@ class AgentWorkService:
             review_selection = await select_reviewer(self.db, task, task_assignments, target,
                 binding_id=getattr(data, "model_binding_id", None) or getattr(data, "review_binding_id", None),
                 reviewer_profile_id=data.reviewer_profile_id, review_evidence_id=data.review_evidence_id)
+            require_verifiable_candidate(task, review_selection)
             if data.review_evidence_id is not None and not isinstance(data, ModelAwareAgentTaskAssignmentCreate):
                 from app.services.review_evidence import check_supervised_selection
                 await check_supervised_selection(self.db,task,principal,review_selection,data.reviewer_profile_id)

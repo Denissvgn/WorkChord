@@ -91,6 +91,49 @@ Under `require_different_review_publisher`, ordinary acceptance needs a pass fro
 
 The acceptance is recorded as an owner override, never as an independent review. In `GET /api/tasks/{task_id}/reviews` and `/reviews/current` its `kind` is `owner_override`; ordinary reviews have `kind` `review`. The task timeline gets an `owner_acceptance_override` event with the reason. Every command audit row the request writes carries the reason and `owner_acceptance_override_task_ids`. In `GET /api/tasks/delivery-metrics`, `owner_override_acceptance_events` counts these acceptances separately. They are still included in `acceptance_events`.
 
+## Manual provenance for work resolved outside recorded runs
+
+Under `require_different_review_publisher`, a verifier needs to know who executed the work. Work that was implemented locally and merged as a pull request outside WorkChord runs, and then marked resolved, has no runs and no authenticated `start_manual`/`resolve_manual` history, so a verification assignment is refused with `verification_publisher_unverifiable`. Recording manual execution afterwards is not possible, because `start_manual` needs planned work. Record its provenance instead. The task stays resolved, and a normal independent review follows.
+
+Send `POST /api/tasks/{task_id}/manual-provenance`, `POST /api/agent/planning/tasks/{task_id}/manual-provenance` with the usual planning command headers, or the MCP tool `agent_record_manual_provenance`, with `{expected_version, artifact_revision, executor, head_commit_url, commit_urls, pr_url, base_commit_url, reason}`:
+
+- `executor` names who executed the work: `{"kind": "human", "principal_id": ...}` or `{"kind": "agent", "actor_id": ..., "model_binding_id": ...}`. A human's linked profile counts as theirs. An agent's profile, model binding and publisher are captured at the moment of the record. Without `model_binding_id`, the actor's enabled default binding is used. A named binding must belong to the actor, but it may since have been disabled, or its catalog entry retired, because the work may predate that; the catalog entry's publisher at the moment of the record is kept. An agent executor must belong to the task's project, through its project membership or an assignment on a task of that project; otherwise it is refused with `manual_provenance_executor_outside_project` before any binding detail is read. An agent whose binding has no publisher, or an actor without a profile, is refused with `manual_provenance_executor_unattributable`.
+- `head_commit_url` is the delivered head as an immutable GitHub commit. `commit_urls` lists every commit the executor contributed; the head is always included.
+- `pr_url` names the pull request that carries the head, or `base_commit_url` names the commit the work started from. One of them is required. A `pr_url` must already be the task's own evidence: one of its progress artifacts or a GitHub link on the task (`manual_provenance_pr_not_task_evidence`).
+- `artifact_revision` must be the task's current artifact revision, and `reason` says why the work ran outside recorded runs.
+
+Before anything is written, the candidate goes through the same GitHub check a verifier's pass uses. The record is refused with `manual_provenance_candidate_unverifiable` when the review could never pass. `attribution_gap` says why, and `offending_sha` names the commit when there is one:
+
+- `commit_attribution`: a commit of the pull request or range is not in `commit_urls`.
+- `coauthor_trailer`: a commit message has a `Co-authored-by:` trailer, so its other contributors stay unverifiable. Commits with co-author trailers cannot be attested this way. This includes commits from tools that add such trailers automatically.
+- `head_mismatch`: the pull request's head is not the declared head commit.
+- `github_unavailable`: GitHub could not be reached, answered with an HTTP error other than not found, or sent a response that is not JSON. Retry later.
+- `candidate_unverifiable`: GitHub does not show the declared commits as one verifiable candidate. This includes a pull request or commit GitHub reports as not found (check the URL and repository access) and a response that does not describe the candidate.
+
+Only a signed-in workspace owner or operator, a project manager, or the project's PM agent can record provenance. The operator API key, a trusted-local browser with no signed-in person, a paired observer, reviewers and other agents are refused with `provenance_recorder_required`. A human executor carries no publisher, so only a signed-in person can attest one; the PM agent is refused with `manual_provenance_human_recorder_required`. A PM agent recorder is itself counted as a contributor under the publisher of every enabled model binding it has, so each of those bindings must declare a publisher (`manual_provenance_recorder_unattributable`).
+
+The task must be resolved, uncanceled leaf work (`manual_provenance_requires_resolved_work`). It must have no agent runs, agent execution events, claims, live or fulfilled execution assignments, or authenticated manual execution of the current artifact (`manual_provenance_execution_recorded`); such execution supplies its own provenance. A record never contradicts authenticated manual execution (`manual_provenance_executor_conflict`). For a task in manual execution, only the person executing it can be named, or any human if no person is recorded. In scheduled mode, every status change records its caller, for example a manager resolving the task through the status route. That person is not evidence of execution, so any executor can be named. A task holds at most 50 records (`manual_provenance_record_limit`). Stale versions and revisions and malformed URLs are refused with 409 or 422.
+
+A record cannot be withdrawn or overridden by a later one. Its executor, and its agent recorder, stay contributors of the task. If a record names the wrong executor, record a clean replacement of the task (see below) and deliver the work there.
+
+The record does not change status, progress or evidence, and it does not reopen or accept the task. The task's version advances, the response returns the record, and the task timeline gets a `manual_provenance_recorded` event with the recorder, executor, commits and reason. Every command audit row of the request carries the reason.
+
+Every record keeps counting for review independence, also after a rejection and rework:
+
+- An agent executor is an ordinary contributor, and its recorded commits stay attributed to it. A verifier with the executor's actor, profile or publisher fails independence (`verification_publisher_not_independent` for the publisher).
+- A PM agent recorder is a contributor in the same way, so a verifier on the recorder's publisher fails too.
+- A human executor is reviewed like authenticated manual execution: the verifier must be a separate automation-enabled verification profile.
+
+Only the latest record supplies the review candidate, and only while the task has no runs and its brief and artifact revisions are unchanged.
+
+A verification assignment whose candidate is already known to be unverifiable is not created. It is refused with `verification_candidate_unverifiable`, and `missing` names the absent facts. The refusal names only a remedy that can help:
+
+- Without runs or authenticated manual execution, `remedy` points at the manual provenance command. This includes a task whose only human-executor record went stale after a brief or artifact change.
+- With authenticated manual execution, the refusal asks for exactly one pull request linked to the task, or a resubmitted artifact with a pull request or compare URL.
+- With runs, the runs must supply a submitted candidate.
+
+When manual execution is missing, the `verification_publisher_unverifiable` refusal includes the same `remedy`.
+
 ## Clean replacement of unattributable work
 
 Under `require_different_review_publisher`, every run of a task counts as a contributor, and a reviewer needs a known publisher that differs from every contributor's. A task whose runs were executed without a model binding therefore can never be accepted. When its work must be done again, the project's PM actor or a project manager or workspace operator records a clean replacement instead of rerunning the same task.
