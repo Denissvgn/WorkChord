@@ -34,36 +34,40 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 flowchart LR
     n0["frontend/src/components/analytics/IterationOutlook.test.tsx"]
     n1["frontend/src/components/analytics/OnTrackSummary.tsx"]
-    n2["frontend/src/components/tasks/MetricCount.tsx"]
-    n3["frontend/src/features/planningMasters/planningReturn.ts"]
-    n4["frontend/src/features/scope/planningLinks.test.tsx"]
-    n5["frontend/src/features/scope/useScopeLink.ts"]
-    n6["frontend/src/pages/AnalyticsPage.tsx"]
-    n7["frontend/src/types/iteration.ts"]
-    n8["frontend/src/utils/formatDate.ts"]
-    n9["frontend/src/utils/workNumbers.ts"]
+    n2["frontend/src/components/analytics/StoppedWorkCounts.test.tsx"]
+    n3["frontend/src/components/tasks/MetricCount.tsx"]
+    n4["frontend/src/features/planningMasters/planningReturn.ts"]
+    n5["frontend/src/features/scope/planningLinks.test.tsx"]
+    n6["frontend/src/features/scope/useScopeLink.ts"]
+    n7["frontend/src/pages/AnalyticsPage.tsx"]
+    n8["frontend/src/types/iteration.ts"]
+    n9["frontend/src/utils/formatDate.ts"]
+    n10["frontend/src/utils/workNumbers.ts"]
     n0 --> n1
-    n0 --> n7
-    n1 --> n2
+    n0 --> n8
     n1 --> n3
-    n1 --> n5
-    n1 --> n7
+    n1 --> n4
+    n1 --> n6
     n1 --> n8
     n1 --> n9
-    n2 --> n5
-    n4 --> n1
-    n4 --> n7
-    n6 --> n1
+    n1 --> n10
+    n2 --> n1
+    n2 --> n8
+    n3 --> n6
+    n5 --> n1
+    n5 --> n8
+    n7 --> n1
     click n0 "../modules/IterationOutlook.test.md"
     click n1 "../modules/OnTrackSummary.md"
-    click n2 "../modules/MetricCount.md"
-    click n3 "../modules/planningReturn.md"
-    click n4 "../modules/planningLinks.test.md"
-    click n5 "../modules/useScopeLink.md"
-    click n6 "../modules/AnalyticsPage.md"
-    click n7 "../modules/types_iteration.md"
-    click n8 "../modules/formatDate.md"
-    click n9 "../modules/workNumbers.md"
+    click n2 "../modules/StoppedWorkCounts.test.md"
+    click n3 "../modules/MetricCount.md"
+    click n4 "../modules/planningReturn.md"
+    click n5 "../modules/planningLinks.test.md"
+    click n6 "../modules/useScopeLink.md"
+    click n7 "../modules/AnalyticsPage.md"
+    click n8 "../modules/types_iteration.md"
+    click n9 "../modules/formatDate.md"
+    click n10 "../modules/workNumbers.md"
 ```
 
 ### Internal neighbors
@@ -71,6 +75,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [IterationOutlook.test](../modules/IterationOutlook.test.md) |
+| Inbound | [StoppedWorkCounts.test](../modules/StoppedWorkCounts.test.md) |
 | Inbound | [planningLinks.test](../modules/planningLinks.test.md) |
 | Inbound | [AnalyticsPage](../modules/AnalyticsPage.md) |
 | Outbound | [MetricCount](../modules/MetricCount.md) |
@@ -90,7 +95,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Verdict](../entities/Verdict.md) | Type alias | 10 | `'done' \| 'noSchedule' \| 'late' \| 'atRisk' \| 'onTrack'` | — |
+| [Verdict](../entities/Verdict.md) | Type alias | 10 | `'done' \| 'postponedOnly' \| 'noSchedule' \| 'late' \| 'atRisk' \| 'onTrack'` | — |
 
 ## Functions
 

@@ -156,15 +156,15 @@ flowchart LR
 |---|---|---:|---|
 | cleanup_runtime_observations | RuntimeObservationService.cleanup | 1654 | `RuntimeObservationService(db).cleanup(limit=limit)` |
 | RuntimeObservationService.cleanup | require_operator | 115 | `require_operator(self.db)` |
-| require_operator | db.info.get (backend/app/authority.py:require_operator) | 91 | `db.info.get('authority')` |
-| require_operator | AuthorityError | 93 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
+| require_operator | db.info.get (backend/app/authority.py:require_operator) | 92 | `db.info.get('authority')` |
+| require_operator | AuthorityError | 94 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
 | RuntimeObservationService.cleanup | get_settings | 116 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |
 | RuntimeObservationService.cleanup | utc_now | 117 | `utc_now(data not statically known)` |
 | utc_now | datetime.now | 13 | `datetime.now(UTC)` |
 | RuntimeObservationService.cleanup | timedelta | 117 | `timedelta(days=retention)` |
 | RuntimeObservationService.cleanup | internal_authority | 118 | `internal_authority(self.db)` |
-| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 113 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 114 | `db.info.get('authority_internal', False)` |
 
 ### Boundary effects
 
@@ -174,10 +174,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_operator` | `db.info.get` | 91 |
+| unresolved_call | `require_operator` | `db.info.get` | 92 |
 | external_call | `utc_now` | `datetime.now` | 13 |
 | external_call | `RuntimeObservationService.cleanup` | `timedelta` | 117 |
-| unresolved_call | `internal_authority` | `db.info.get` | 113 |
+| unresolved_call | `internal_authority` | `db.info.get` | 114 |
 | step_limit | `cleanup_runtime_observations` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -16,7 +16,7 @@ Hook that mirrors the server's edit rule for a project (operator or owner, trust
 
 | Signal | Values |
 |--------|--------|
-| Exports | `PREREQUISITE_RETARGET_FEATURE`, `useProjectEditAccess` |
+| Exports | `PREREQUISITE_RETARGET_FEATURE`, `useProjectEditAccess`, `useProjectManageAccess` |
 | Constants | `PREREQUISITE_RETARGET_FEATURE` |
 
 ## Local dependency map
@@ -26,15 +26,19 @@ Hook that mirrors the server's edit rule for a project (operator or owner, trust
 flowchart LR
     n0["frontend/src/components/tasks/DeliveryDependencies.tsx"]
     n1["frontend/src/components/tasks/GitHubReconciliationPanel.tsx"]
-    n2["frontend/src/features/identity/identityContext.ts"]
-    n3["frontend/src/features/identity/useProjectEditAccess.ts"]
-    n0 --> n3
-    n1 --> n3
-    n3 --> n2
+    n2["frontend/src/components/tasks/TaskWorkPanel.tsx"]
+    n3["frontend/src/features/identity/identityContext.ts"]
+    n4["frontend/src/features/identity/useProjectEditAccess.ts"]
+    n0 --> n4
+    n1 --> n4
+    n2 --> n3
+    n2 --> n4
+    n4 --> n3
     click n0 "../modules/DeliveryDependencies.md"
     click n1 "../modules/GitHubReconciliationPanel.md"
-    click n2 "../modules/identityContext.md"
-    click n3 "../modules/useProjectEditAccess.md"
+    click n2 "../modules/TaskWorkPanel.md"
+    click n3 "../modules/identityContext.md"
+    click n4 "../modules/useProjectEditAccess.md"
 ```
 
 ### Internal neighbors
@@ -43,10 +47,12 @@ flowchart LR
 |---|---|
 | Inbound | [DeliveryDependencies](../modules/DeliveryDependencies.md) |
 | Inbound | [GitHubReconciliationPanel](../modules/GitHubReconciliationPanel.md) |
+| Inbound | [TaskWorkPanel](../modules/TaskWorkPanel.md) |
 | Outbound | [identityContext](../modules/identityContext.md) |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `useProjectManageAccess` | `(projectId: number \| null \| undefined)` | — | Whether the signed-in person may decide in a project (replace or supersede work), mirroring the server rule: |
 | `useProjectEditAccess` | `(projectId: number \| null \| undefined)` | — | Whether the signed-in person may edit in a project, mirroring the server rule so controls are |

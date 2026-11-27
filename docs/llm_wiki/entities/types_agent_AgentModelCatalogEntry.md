@@ -1,6 +1,6 @@
 # AgentModelCatalogEntry
 
-**Location:** `frontend/src/types/agent.ts:192`
+**Location:** `frontend/src/types/agent.ts:193`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -24,6 +24,7 @@ _Auto-generated from `AgentModelCatalogEntry` in `frontend/src/types/agent.ts`._
 | `cost_tier` | `ModelCostTier` | Yes | — | — |
 | `local_first` | `boolean` | Yes | — | — |
 | `latency_tier` | `ModelLatencyTier` | Yes | — | — |
+| `qualification_keys` | `string[]` | No | — | — |
 | `enabled` | `boolean` | Yes | — | — |
 | `revision` | `number` | Yes | — | — |
 | `last_verified_at` | `string \| null` | Yes | — | — |

@@ -11,10 +11,10 @@ _Auto-generated from `frontend/src/components/analytics/StatusDistribution.tsx`.
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../types/iteration` | `IterationSummary` | Declaration | erased |
-| `../../types/task` | `TaskStatus` | Declaration | erased |
+| `../../types/task` | `TaskDisplayedState` | Declaration | erased |
 | `../../utils/workNumbers` | `formatCount`, `formatPercent` | — | compiler-dependent |
 | `../tasks/MetricCount` | `MetricCount` | — | compiler-dependent |
-| `../ui/tone` | `STATUS_TONE`, `toneSoftVar`, `toneVar` | — | compiler-dependent |
+| `../ui/tone` | `STATE_TONE`, `toneSoftVar`, `toneVar` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
@@ -22,7 +22,7 @@ _Auto-generated from `frontend/src/components/analytics/StatusDistribution.tsx`.
 | Signal | Values |
 |--------|--------|
 | Exports | `StatusDistribution` |
-| Constants | `ORDER` |
+| Constants | `ORDER`, `ENDED` |
 
 ## Local dependency map
 
@@ -33,29 +33,34 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 flowchart LR
     n0["frontend/src/components/analytics/IterationOutlook.test.tsx"]
     n1["frontend/src/components/analytics/StatusDistribution.tsx"]
-    n2["frontend/src/components/tasks/MetricCount.tsx"]
-    n3["frontend/src/components/ui/tone.ts"]
-    n4["frontend/src/pages/AnalyticsPage.tsx"]
-    n5["frontend/src/types/iteration.ts"]
-    n6["frontend/src/types/task.ts"]
-    n7["frontend/src/utils/workNumbers.ts"]
+    n2["frontend/src/components/analytics/StoppedWorkCounts.test.tsx"]
+    n3["frontend/src/components/tasks/MetricCount.tsx"]
+    n4["frontend/src/components/ui/tone.ts"]
+    n5["frontend/src/pages/AnalyticsPage.tsx"]
+    n6["frontend/src/types/iteration.ts"]
+    n7["frontend/src/types/task.ts"]
+    n8["frontend/src/utils/workNumbers.ts"]
     n0 --> n1
-    n0 --> n5
-    n1 --> n2
+    n0 --> n6
     n1 --> n3
-    n1 --> n5
+    n1 --> n4
     n1 --> n6
     n1 --> n7
-    n3 --> n6
-    n4 --> n1
+    n1 --> n8
+    n2 --> n1
+    n2 --> n6
+    n4 --> n7
+    n5 --> n1
+    n6 --> n7
     click n0 "../modules/IterationOutlook.test.md"
     click n1 "../modules/StatusDistribution.md"
-    click n2 "../modules/MetricCount.md"
-    click n3 "../modules/tone.md"
-    click n4 "../modules/AnalyticsPage.md"
-    click n5 "../modules/types_iteration.md"
-    click n6 "../modules/types_task.md"
-    click n7 "../modules/workNumbers.md"
+    click n2 "../modules/StoppedWorkCounts.test.md"
+    click n3 "../modules/MetricCount.md"
+    click n4 "../modules/tone.md"
+    click n5 "../modules/AnalyticsPage.md"
+    click n6 "../modules/types_iteration.md"
+    click n7 "../modules/types_task.md"
+    click n8 "../modules/workNumbers.md"
 ```
 
 ### Internal neighbors
@@ -63,6 +68,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [IterationOutlook.test](../modules/IterationOutlook.test.md) |
+| Inbound | [StoppedWorkCounts.test](../modules/StoppedWorkCounts.test.md) |
 | Inbound | [AnalyticsPage](../modules/AnalyticsPage.md) |
 | Outbound | [MetricCount](../modules/MetricCount.md) |
 | Outbound | [tone](../modules/tone.md) |

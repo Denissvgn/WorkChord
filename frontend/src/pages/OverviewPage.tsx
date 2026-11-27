@@ -1,4 +1,5 @@
 import { ButtonLink } from '../components/common/ButtonLink';
+import { stateOf } from '../utils/taskState';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useQueries, useQuery } from '@tanstack/react-query';
@@ -28,7 +29,7 @@ import { projectService } from '../services/projectService';
 import { QueryErrorState, QueryLoadingState, QueryStaleState } from '../components/feedback/QueryState';
 import { PageHeader, PageLayout, SectionCard, SlideOverDrawer } from '../components/ui';
 import type { PillTone } from '../components/ui/tone';
-import { STATUS_TONE, toneSoftVar, toneVar } from '../components/ui/tone';
+import { STATE_TONE, toneSoftVar, toneVar } from '../components/ui/tone';
 import { usePipeline } from '../components/tasks/usePipeline';
 import type { Iteration } from '../types/iteration';
 import type { Task } from '../types/task';
@@ -724,8 +725,8 @@ const TaskRow = ({ task, context, detailed }: { task: Task; context: string[]; d
                     <span className="overview-task-title">{task.title}</span>
                     <span className="overview-task-meta">
                         <span className="overview-task-status">
-                            <span aria-hidden="true" className="overview-task-dot" style={dotStyle(STATUS_TONE[task.status])} />
-                            {t(`statuses.${task.status}`)}
+                            <span aria-hidden="true" className="overview-task-dot" style={dotStyle(STATE_TONE[stateOf(task)])} />
+                            {t(`statuses.${stateOf(task)}`)}
                         </span>
                         {context.map(value => <span key={value} className="truncate">{value}</span>)}
                     </span>
@@ -906,8 +907,8 @@ const CountList = ({ items, label, showIteration, linkProject }: {
                                 <span className="overview-task-title">{task.title}</span>
                                 <span className="overview-task-meta">
                                     <span className="overview-task-status">
-                                        <span aria-hidden="true" className="overview-task-dot" style={dotStyle(STATUS_TONE[task.status])} />
-                                        {t(`statuses.${task.status}`)}
+                                        <span aria-hidden="true" className="overview-task-dot" style={dotStyle(STATE_TONE[stateOf(task)])} />
+                                        {t(`statuses.${stateOf(task)}`)}
                                     </span>
                                     {showIteration && iteration && <span className="truncate">{iteration.name}</span>}
                                     {task.project?.name && <span className="truncate">{task.project.name}</span>}

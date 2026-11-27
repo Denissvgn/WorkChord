@@ -1,4 +1,5 @@
 import { useLiveWindow } from '../../features/useLiveWindow';
+import { stateOf } from '../../utils/taskState';
 import { LiveWindowStatus } from '../../components/feedback/LiveWindowStatus';
 import { useId, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -46,7 +47,7 @@ export const BacklogPanel = () => {
         {tasks.isError && <QueryErrorState error={tasks.error} fallback={t('teamwork.loadFailed')} onRetry={() => void tasks.refetch()} />}
         <ul className="divide-y divide-border">{tasks.data?.pages.flatMap(page => page.items).map(task => {
             const next = new URLSearchParams(params); next.set('task', String(task.id));
-            return <li key={task.id} className="py-2"><Link className="inline-block min-h-9 wrap-break-word font-medium text-action hover:underline" to={scopeLink(`/tasks?${next}`)}>#{task.id} · {task.title}</Link><p className="text-sm text-content-secondary">{task.project_name} · {t(`statuses.${task.status}`)}</p></li>;
+            return <li key={task.id} className="py-2"><Link className="inline-block min-h-9 wrap-break-word font-medium text-action hover:underline" to={scopeLink(`/tasks?${next}`)}>#{task.id} · {task.title}</Link><p className="text-sm text-content-secondary">{task.project_name} · {t(`statuses.${stateOf(task)}`)}</p></li>;
         })}</ul>
         {tasks.isSuccess && tasks.data.pages.every(page => page.items.length === 0) && <p className="text-sm text-content-secondary">{t('teamwork.emptyBacklog')}</p>}
         {tasks.hasNextPage && <Button variant="secondary" disabled={tasks.isFetchingNextPage} onClick={() => void tasks.fetchNextPage()}>{t('teamwork.loadMore')}</Button>}

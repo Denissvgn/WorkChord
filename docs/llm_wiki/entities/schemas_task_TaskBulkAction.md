@@ -1,6 +1,6 @@
 # TaskBulkAction
 
-**Location:** `backend/app/schemas/task.py:285`
+**Location:** `backend/app/schemas/task.py:301`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [schemas_task](../modules/schemas_task.md)

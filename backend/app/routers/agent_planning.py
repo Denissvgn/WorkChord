@@ -55,6 +55,7 @@ from app.schemas.import_review import ImportDryRunResponse
 from app.schemas.task_replacement import TaskReplacementCreate, TaskReplacementResponse
 from app.schemas.manual_provenance import ManualProvenanceWrite
 from app.services.agent_planning_service import AgentPlanningService
+from app.services.agent_routing_policy import RoutingTermsRefusedError
 from app.services.agent_routing_service import (
     AgentRoutingConflictError,
     AgentRoutingService,
@@ -121,6 +122,9 @@ def _handle_agent_error(exc: Exception) -> NoReturn:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
     if isinstance(exc, SourceLinkRefused):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=exc.detail())
+    if isinstance(exc, RoutingTermsRefusedError):
+        # The same refusal request validation gives, e.g. for a key outside the vocabulary.
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc))
     if isinstance(exc, ValueError):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
     raise exc
@@ -414,7 +418,7 @@ async def get_task_replacement(
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
     db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ):
-    """Read the clean-replacement disposition this task takes part in."""
+    """Read the replacement or supersession disposition this task takes part in."""
     try:
         return await mcp_agent_tools.get_task_replacement(db, actor, task_id)
     except Exception as exc:

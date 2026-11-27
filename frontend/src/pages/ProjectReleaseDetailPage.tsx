@@ -22,7 +22,7 @@ import { releaseService } from '../services/releaseService';
 import { getApiErrorMessage, getApiErrorStatus } from '../utils/apiError';
 import { formatDate, formatDateTime } from '../utils/formatDate';
 import type { Release, ReleaseStatus, ReleaseTaskSummary } from '../types/release';
-import { isTaskStatus, pillToneClassName, STATUS_TONE, statusTextClassName, wcPillClass } from '../components/ui/tone';
+import { isDisplayedState, pillToneClassName, STATE_TONE, stateTextClassName, wcPillClass } from '../components/ui/tone';
 import { Breadcrumbs } from '../components/layout/Breadcrumbs';
 import type { MutationFeedbackMeta } from '../features/mutationFeedback';
 
@@ -71,11 +71,13 @@ const ReleaseTaskList = ({ tasks }: { tasks: ReleaseTaskSummary[] }) => {
 
     return (
         <div className="divide-y divide-border-subtle rounded-lg border border-border">
-            {tasks.map(task => (
+            {tasks.map(task => {
+                const state = String(task.displayed_state ?? task.status);
+                return (
                 <div key={task.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
                     <CheckCircle2 className={clsx(
                         'h-5 w-5',
-                        isTaskStatus(task.status) ? statusTextClassName[task.status] : 'text-content-secondary',
+                        isDisplayedState(state) ? stateTextClassName[state] : 'text-content-secondary',
                     )} />
                     <div className="min-w-0 flex-1">
                         <p className="truncate font-medium text-content-primary">{task.title}</p>
@@ -83,12 +85,13 @@ const ReleaseTaskList = ({ tasks }: { tasks: ReleaseTaskSummary[] }) => {
                     </div>
                     <span className={clsx(
                         'rounded-full border px-2 py-0.5 text-xs font-medium',
-                        isTaskStatus(task.status) ? pillToneClassName[STATUS_TONE[task.status]] : pillToneClassName.gray,
+                        isDisplayedState(state) ? pillToneClassName[STATE_TONE[state]] : pillToneClassName.gray,
                     )}>
-                        {isTaskStatus(task.status) ? t(`statuses.${task.status}`) : task.status}
+                        {isDisplayedState(state) ? t(`statuses.${state}`) : state}
                     </span>
                 </div>
-            ))}
+                );
+            })}
         </div>
     );
 };

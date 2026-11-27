@@ -15,6 +15,7 @@ from app.models.task import Task
 from app.schemas.manual_provenance import ManualProvenanceResponse, ManualProvenanceWrite
 from app.schemas.task import TaskCreate, TaskResponse
 from app.schemas.task_brief import BriefWrite, BriefConvert, OwnerAcceptanceWrite, ProgressWrite, TaskReviewWrite, TaskReviewResponse, CurrentTaskReviewResponse
+from app.schemas.task_routing import RoutingCheck, RoutingConvert, RoutingConvertResponse
 from app.schemas.task_domain import BacklogRestoreRequest, TaskActionRequest, TaskActionsResponse
 from app.schemas.task_detail import TaskDetailResponse, TaskReferencePage, HumanWorkResponse
 from app.services.manual_provenance_service import ManualProvenanceService
@@ -96,6 +97,7 @@ class MetricMatchItem(BaseModel):
     id: int
     title: str
     status: str
+    displayed_state: str | None = None
     project_name: str | None
     iteration_name: str | None
 
@@ -143,9 +145,10 @@ async def metric_matches(db: DB, metric: str = Query(max_length=40), project_id:
 @router.get("/tasks/lookup", response_model=TaskReferencePage)
 async def lookup_tasks(db: DB, project_id: int | None = None, iteration_id: int | None = None, q: str | None = Query(default=None, max_length=200), backlog_only: bool = False,
                        limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0),
-                       task_status: str | None = None, parent_id: int | None = Query(default=None, ge=1), roots_only: bool = False):
+                       task_status: str | None = None, parent_id: int | None = Query(default=None, ge=1), roots_only: bool = False,
+                       leaf_only: bool = Query(default=False, description="Only tasks that are not a parent or summary of other tasks.")):
     return await domain_result(TaskDetailService(db).lookup(project_id=project_id, iteration_id=iteration_id, query=q, backlog_only=backlog_only, limit=limit, after_id=after_id,
-        status=task_status, parent_id=parent_id, roots_only=roots_only))
+        status=task_status, parent_id=parent_id, roots_only=roots_only, leaf_only=leaf_only))
 
 
 @router.get("/tasks/capabilities")
@@ -257,6 +260,19 @@ async def convert_task_brief(task_id: int, data: BriefConvert, db: DB):
     return await domain_result(TaskBriefService(db).conversion(task_id, data))
 
 
+@router.get("/tasks/{task_id}/routing/check", response_model=RoutingCheck)
+async def check_task_routing(task_id: int, db: DB, assignee_id: int | None = Query(default=None, ge=1,
+        description="A proposed assignee row; the current assignee when omitted.")):
+    """Check the brief's structured routing against an assignee and the project's review policy."""
+    return await domain_result(TaskBriefService(db).routing_check(task_id, assignee_id))
+
+
+@router.post("/tasks/{task_id}/routing/convert", response_model=RoutingConvertResponse)
+async def convert_task_routing(task_id: int, data: RoutingConvert, db: DB):
+    """Preview or apply moving routing named in the brief's text into its structured routing."""
+    return await domain_result(TaskBriefService(db).routing_conversion(task_id, data))
+
+
 @router.post("/tasks/{task_id}/progress", response_model=TaskResponse)
 async def record_task_progress(task_id: int, data: ProgressWrite, db: DB):
     task = await domain_result(TaskBriefService(db).write_progress(task_id, data))
@@ -330,7 +346,7 @@ from app.schemas.task_replacement import TaskReplacementCreate, TaskReplacementR
 
 @router.get("/tasks/{task_id}/replacement", response_model=TaskReplacementResponse)
 async def task_replacement(task_id: int, db: DB):
-    """Read the clean-replacement disposition this task takes part in, as original or replacement."""
+    """Read the replacement or supersession disposition this task takes part in, as original, replacement or successor."""
     from app.services.task_replacement_service import TaskReplacementService
     return await domain_result(TaskReplacementService(db).get(task_id))
 
@@ -373,6 +389,21 @@ async def record_task_replacement(task_id: int, data: TaskReplacementCreate, db:
     """Replace this unaccepted task with a fresh one; only the project's PM or an operator may decide."""
     from app.services.task_replacement_service import TaskReplacementService
     return await domain_result(TaskReplacementService(db).record(task_id, data))
+
+
+from app.schemas.task_replacement import TaskSupersessionCreate
+
+
+@router.post("/tasks/{task_id}/supersession", response_model=TaskReplacementResponse, status_code=201)
+async def record_task_supersession(task_id: int, data: TaskSupersessionCreate, db: DB):
+    """Record that a closed or accepted task already delivered this task's work; neither task is reopened.
+
+    Only a project owner or manager, an operator, or the project's PM agent may decide. Dependents, delivery
+    prerequisites, release membership and open reactivation requirements move from this task to the successor,
+    and the deliverable counts once.
+    """
+    from app.services.task_replacement_service import TaskReplacementService
+    return await domain_result(TaskReplacementService(db).supersede(task_id, data))
 
 
 from app.schemas.task_postponement import OwnerDecisionRequest, TaskPostponeRequest, TaskPostponementResponse, TaskReactivateRequest

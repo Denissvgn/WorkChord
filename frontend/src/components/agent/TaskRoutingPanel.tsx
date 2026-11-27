@@ -27,8 +27,9 @@ import type {
     TaskRoutingAssessmentCommand,
     TaskSkillLevel,
 } from '../../types/agent';
-import type { Task } from '../../types/task';
-import { normalizeApiError } from '../../utils/apiError';
+import type { RefusalNextStep, Task } from '../../types/task';
+import { RefusalNextStepNote } from '../tasks/RefusalNextStepNote';
+import { getApiNextStep, normalizeApiError } from '../../utils/apiError';
 import { formatDateTime } from '../../utils/formatDate';
 import {
     ASSESSMENT_REASON_CODES,
@@ -196,7 +197,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
     const [selectedCandidate, setSelectedCandidate] = useState<AgentRoutingCandidate | null>(null);
     const [dispatchReason, setDispatchReason] = useState('');
     const [selectionConfirmed, setSelectionConfirmed] = useState(false);
-    const [conflictMessage, setConflictMessage] = useState<string | null>(null);
+    const [conflict, setConflict] = useState<{ message: string; step: RefusalNextStep | null } | null>(null);
     const [clock, setClock] = useState(() => Date.now());
 
     // feedback-policy: query loading,error,retry,empty
@@ -299,7 +300,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
     const handleConflict = (error: unknown, fallback: string) => {
         const normalized = normalizeApiError(error, fallback);
         if (normalized.status === 409) {
-            setConflictMessage(normalized.message);
+            setConflict({ message: normalized.message, step: getApiNextStep(error) });
             clearPreview();
             invalidateRoutingEvidence();
             return;
@@ -318,7 +319,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
         ),
         onSuccess: receipt => {
             clearPreview();
-            setConflictMessage(null);
+            setConflict(null);
             void queryClient.invalidateQueries({ queryKey: ['routing-assessment', task.id] });
             toast.success(t('taskRouting.assessmentSaved'));
             setHydratedAssessmentKey(`assessment:${receipt.assessment.id}`);
@@ -348,7 +349,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
             setSelectedCandidate(null);
             setSelectionConfirmed(false);
             setDispatchReason('');
-            setConflictMessage(null);
+            setConflict(null);
             setClock(Date.now());
         },
         onError: error => handleConflict(error, t('taskRouting.previewFailed')),
@@ -773,10 +774,11 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                     {t('taskRouting.staleTaskEvidence')}
                 </div>
             )}
-            {conflictMessage && (
+            {conflict && (
                 <div className="rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground" role="alert">
                     <p className="font-semibold">{t('taskRouting.conflictTitle')}</p>
-                    <p>{conflictMessage}</p>
+                    <p>{conflict.message}</p>
+                    {conflict.step && <RefusalNextStepNote step={conflict.step} className="mt-1 space-y-1" />}
                     <p className="mt-1">{t('taskRouting.conflictDescription')}</p>
                 </div>
             )}

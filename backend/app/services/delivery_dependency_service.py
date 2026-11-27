@@ -168,12 +168,10 @@ class DeliveryDependencyService:
         else:
             query = select(Task).where(Task.milestone_id == target.id, Task.is_summary.is_(False))
         leaves = (await self.db.scalars(query)).all()
-        from app.models.task_replacement import TaskReplacement
-        with internal_authority(self.db):
-            replaced = set((await self.db.scalars(select(TaskReplacement.original_task_id).where(
-                TaskReplacement.original_task_id.in_([leaf.id for leaf in leaves])))).all())
-        # A replaced original's deliverable is counted once, through its replacement.
-        leaves = [leaf for leaf in leaves if leaf.id not in replaced]
+        from app.services.task_replacement_service import delivering_leaves
+        # A replaced original's deliverable is counted once, through its replacement; a
+        # superseded original counts its successor in its place, wherever that successor lives.
+        leaves = await delivering_leaves(self.db, leaves)
         return bool(leaves) and all([await self._accepted("task", leaf) for leaf in leaves])
 
     async def ready(self, task_id):

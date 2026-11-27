@@ -18,6 +18,8 @@ Agent capability, profile, and operator-owned model catalog API.
 | `app.schemas.agent_routing` | `AgentModelBindingCreate`, `AgentModelBindingDisable`, `AgentModelBindingResponse`, `AgentModelBindingUpdate`, `AgentModelCatalogCreate`, `AgentModelCatalogDisable`, `AgentModelCatalogResponse`, `AgentModelCatalogUpdate`, `AgentModelMutationReceipt` |
 | `app.schemas.agent_team_setup` | `AgentTeamRuntimeAcknowledgement` |
 | `app.schemas.review_evidence` | `ReviewEvidenceCommand` |
+| `app.schemas.routing_calibration` | `RoutingCalibrationContractApprove`, `RoutingCalibrationContractDetail`, `RoutingCalibrationContractListResponse`, `RoutingCalibrationContractRevise`, `RoutingCalibrationContractSubmit` |
+| `app.schemas.routing_qualification` | `RoutingQualificationKeyDeclare`, `RoutingQualificationKeyDetail`, `RoutingQualificationKeyRegistryResponse`, `RoutingQualificationKeyRetire`, `RoutingQualificationKeyRevise` |
 | `app.schemas.team` | `TeamMemberProfileResponse` |
 | `app.security` | `ADMIN_API_KEY_HEADER`, `admin_api_key_is_valid` |
 | `app.services.agent_model_catalog_service` | `AgentModelCatalogService`, `AgentModelConflictError` |
@@ -27,6 +29,8 @@ Agent capability, profile, and operator-owned model catalog API.
 | `app.services.execution_reconciliation` | `reconcile_execution_request` |
 | `app.services.planning_window_reconciliation` | `reconcile_window` |
 | `app.services.review_evidence` | `record_review_evidence` |
+| `app.services.routing_calibration_contract_service` | `RoutingCalibrationContractService` |
+| `app.services.routing_qualification_key_service` | `RoutingQualificationKeyService` |
 | `fastapi` | `APIRouter`, `Depends`, `Header`, `HTTPException`, `Query`, `status` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `typing` | `Annotated`, `Any`, `NoReturn`, `Optional` |
@@ -50,7 +54,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (1) |
-| Outbound | `backend` (17) |
+| Outbound | `backend` (21) |
 
 ### External packages
 
@@ -58,7 +62,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -85,3 +89,15 @@ flowchart LR
 | `create_agent_model_binding` | *(async)* `(data: AgentModelBindingCreate, actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], service: Annotated[AgentModelCatalogService, Depends(get_agent_model_catalog_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.post('/agent/model-bindings', response_model=AgentModelMutationReceipt, status_code=status.HTTP_201_CREATED)` | Bind an existing actor to one existing catalog entry. |
 | `update_agent_model_binding` | *(async)* `(binding_id: int, data: AgentModelBindingUpdate, actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], service: Annotated[AgentModelCatalogService, Depends(get_agent_model_catalog_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.patch('/agent/model-bindings/{binding_id}', response_model=AgentModelMutationReceipt)` | Optimistically update one actor model binding. |
 | `disable_agent_model_binding` | *(async)* `(binding_id: int, data: AgentModelBindingDisable, actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], service: Annotated[AgentModelCatalogService, Depends(get_agent_model_catalog_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.post('/agent/model-bindings/{binding_id}/disable', response_model=AgentModelMutationReceipt)` | Soft-disable a binding without deleting assignment or run evidence. |
+| `get_routing_qualification_key_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> RoutingQualificationKeyService` | — | Return the request-scoped qualification key registry. |
+| `list_routing_qualification_keys` | *(async)* `(actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], service: Annotated[RoutingQualificationKeyService, Depends(get_routing_qualification_key_service)], include_retired: Annotated[bool, Query()] = False)` | `@router.get('/agent/routing-qualification-keys', response_model=RoutingQualificationKeyRegistryResponse)` | Return the built-in routing keys and the deployment's declared keys. |
+| `get_routing_qualification_key` | *(async)* `(key: str, actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], service: Annotated[RoutingQualificationKeyService, Depends(get_routing_qualification_key_service)])` | `@router.get('/agent/routing-qualification-keys/{key}', response_model=RoutingQualificationKeyDetail)` | Return one declared key with its revisions and the entries and tasks naming it. |
+| `declare_routing_qualification_key` | *(async)* `(data: RoutingQualificationKeyDeclare, actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], service: Annotated[RoutingQualificationKeyService, Depends(get_routing_qualification_key_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.post('/agent/routing-qualification-keys', response_model=AgentModelMutationReceipt, status_code=status.HTTP_201_CREATED)` | Declare a qualification key, or declare a retired one again, as the operator. |
+| `revise_routing_qualification_key` | *(async)* `(key: str, data: RoutingQualificationKeyRevise, actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], service: Annotated[RoutingQualificationKeyService, Depends(get_routing_qualification_key_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.patch('/agent/routing-qualification-keys/{key}', response_model=AgentModelMutationReceipt)` | Optimistically revise an active key's label or description. |
+| `retire_routing_qualification_key` | *(async)* `(key: str, data: RoutingQualificationKeyRetire, actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], service: Annotated[RoutingQualificationKeyService, Depends(get_routing_qualification_key_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.post('/agent/routing-qualification-keys/{key}/retire', response_model=AgentModelMutationReceipt)` | Retire a key; refused while a catalog entry or open task requirement names it. |
+| `get_routing_calibration_contract_service` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')]) -> RoutingCalibrationContractService` | — | Return the request-scoped calibration contract service. |
+| `list_routing_calibration_contracts` | *(async)* `(actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], service: Annotated[RoutingCalibrationContractService, Depends(get_routing_calibration_contract_service)])` | `@router.get('/agent/routing-calibration-contracts', response_model=RoutingCalibrationContractListResponse)` | Return every calibration contract and whether any is approved. |
+| `get_routing_calibration_contract` | *(async)* `(key: str, actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], service: Annotated[RoutingCalibrationContractService, Depends(get_routing_calibration_contract_service)])` | `@router.get('/agent/routing-calibration-contracts/{key}', response_model=RoutingCalibrationContractDetail)` | Return one calibration contract with every revision it has had. |
+| `submit_routing_calibration_contract` | *(async)* `(data: RoutingCalibrationContractSubmit, actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], service: Annotated[RoutingCalibrationContractService, Depends(get_routing_calibration_contract_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.post('/agent/routing-calibration-contracts', response_model=AgentModelMutationReceipt, status_code=status.HTTP_201_CREATED)` | Submit a new calibration contract as the operator; it starts unapproved. |
+| `revise_routing_calibration_contract` | *(async)* `(key: str, data: RoutingCalibrationContractRevise, actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], service: Annotated[RoutingCalibrationContractService, Depends(get_routing_calibration_contract_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.put('/agent/routing-calibration-contracts/{key}', response_model=AgentModelMutationReceipt)` | Submit complete new terms as the next revision; an earlier approval lapses. |
+| `approve_routing_calibration_contract` | *(async)* `(key: str, data: RoutingCalibrationContractApprove, actor: Annotated[AgentActor, Depends(get_model_catalog_principal)], service: Annotated[RoutingCalibrationContractService, Depends(get_routing_calibration_contract_service)], command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)])` | `@router.post('/agent/routing-calibration-contracts/{key}/approve', response_model=AgentModelMutationReceipt)` | Approve the submitted terms by revision and digest, as a principal other than the submitter. |

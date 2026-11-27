@@ -1,6 +1,6 @@
 # ReleaseUpdate
 
-**Location:** `backend/app/schemas/release.py:62`
+**Location:** `backend/app/schemas/release.py:64`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_release](../modules/schemas_release.md)

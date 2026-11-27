@@ -52,16 +52,22 @@ flowchart LR
     n3["record_task_replacement (backend/app/routers/agent_planning.py)"]
     n4["record_task_replacement (backend/app/routers/task_domain.py)"]
     n5["backend/tests/test_task_replacement.py"]
+    n6["test_the_fresh_replacement_still_refuses_a_closed_replacement (backend/tests/test_task_supersession.py)"]
+    n7["test_the_successor_of_a_supersession_cannot_be_canceled_but_a_fresh_replacement_can (backend/tests/test_task_supersession.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
+    n6 --> n0
+    n7 --> n0
     click n0 "../modules/schemas_task_replacement.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent_planning.md"
     click n4 "../modules/routers_task_domain.md"
     click n5 "../modules/test_task_replacement.md"
+    click n6 "../modules/test_task_supersession.md"
+    click n7 "../modules/test_task_supersession.md"
 ```
 
 ### Summary
@@ -84,3 +90,5 @@ flowchart LR
 | `record_task_replacement` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 | `record_task_replacement` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `test_task_replacement` | import | [test_task_replacement](../modules/test_task_replacement.md) | — |
+| `test_the_fresh_replacement_still_refuses_a_closed_replacement` | call | [test_task_supersession](../modules/test_task_supersession.md) | 1 |
+| `test_the_successor_of_a_supersession_cannot_be_canceled_but_a_fresh_replacement_can` | call | [test_task_supersession](../modules/test_task_supersession.md) | 1 |

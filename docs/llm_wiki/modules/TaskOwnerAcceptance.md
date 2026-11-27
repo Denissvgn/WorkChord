@@ -64,6 +64,7 @@ flowchart LR
     n3 --> n8
     n3 --> n9
     n7 --> n8
+    n9 --> n8
     click n0 "../modules/Button.md"
     click n1 "../modules/Input.md"
     click n2 "../modules/TaskOwnerAcceptance.md"

@@ -1,4 +1,5 @@
 import type { Task, TaskStatus } from '../../types/task';
+import { isStoppedState, stateOf } from '../../utils/taskState';
 
 /** The one state a row names, chosen by priority: Blocked, Needs definition, Waits for n, Ready to start, In review. */
 export type TaskStateChip =
@@ -12,7 +13,8 @@ export const isDone = (status: TaskStatus | undefined) => status === 'resolved' 
 
 /** Chooses the single state chip for a task; `taskMap` lets Waits count only the dependencies still open. */
 export const taskStateChip = (task: Task, taskMap?: Map<number, Task>): TaskStateChip | null => {
-    if (task.status === 'closed') return null;
+    // Stopped work is not waiting on anything: it names its own state instead of a readiness chip.
+    if (task.status === 'closed' || isStoppedState(stateOf(task))) return null;
     if (task.blocked_reason) return { kind: 'blocked' };
     const startReady = task.agent_readiness.start_ready ?? task.agent_readiness.is_ready;
     if (task.status === 'planned' && !startReady && !task.agent_readiness.definition_ready) return { kind: 'needsDefinition' };

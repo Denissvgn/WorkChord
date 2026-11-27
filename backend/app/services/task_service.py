@@ -791,6 +791,7 @@ class TaskService:
 
         update_data = data.model_dump(exclude_unset=True)
         expected_version = update_data.pop("expected_version", None)
+        routing_resolution = update_data.pop("routing_resolution", "check")
 
         # Dependency writes participate in the same scheduling aggregate as
         # serialized preview/apply. Acquire the aggregate root before any
@@ -915,9 +916,11 @@ class TaskService:
             raise ValueError("A canonical brief cannot be cleared; edit its fields instead")
         if task.brief is not None and "description" in update_data and update_data["description"] != render_brief(brief_input or task.brief):
             raise ValueError("This task has a canonical brief; reload and edit its structured fields")
+        previous_routing = (task.brief or {}).get("routing")
+        brief_revision_before = task.brief_revision
         if brief_input is not None:
-            if await TaskBriefService(self.db).apply_brief(task, data.brief):
-                changed_fields["brief_revision"] = {"old": task.brief_revision - 1, "new": task.brief_revision}
+            # The routing is checked below, once the assignee of this change is in place.
+            await TaskBriefService(self.db).apply_brief(task, data.brief, enforce=False)
             update_data.pop("description", None)
 
         # Convert tags list to JSON string
@@ -929,6 +932,18 @@ class TaskService:
             if old_value != value:
                 changed_fields[field] = {"old": old_value, "new": value}
                 setattr(task, field, value)
+
+        from app.services.task_routing_service import enforce_routing
+        assignee_changed = "assignee_id" in changed_fields
+        removed_routing = previous_routing is not None and (task.brief or {}).get("routing") is None
+        await enforce_routing(self.db, task, resolution=routing_resolution,
+                              changed=assignee_changed or (task.brief or {}).get("routing") != previous_routing,
+                              removed_routing=removed_routing and assignee_changed)
+        if task.brief_revision != brief_revision_before:
+            changed_fields["brief_revision"] = {"old": brief_revision_before, "new": task.brief_revision}
+        if (task.brief or {}).get("routing") != previous_routing:
+            # A routing-only change keeps the brief revision, so it is recorded as its own change.
+            changed_fields["routing"] = {"old": previous_routing, "new": (task.brief or {}).get("routing")}
 
         # Handle dependency updates
         if depends_on_ids is not None:
@@ -1815,6 +1830,9 @@ class TaskService:
             milestone=milestone,
             assignee=assignee,
             status=task.status,
+            displayed_state=task.displayed_state,
+            successor_task_id=task.__dict__.get("successor_task_id") if task.canceled_at is not None else None,
+            successor_kind=task.__dict__.get("successor_kind") if task.canceled_at is not None else None,
             start_date=task.start_date,
             end_date=task.end_date,
             actual_start_date=task.actual_start_date,
@@ -1847,6 +1865,7 @@ class TaskService:
             updated_at=task.updated_at,
             children=children,
             dependencies=dependencies,
+            routing_check=command.routing_checks.get(task.id) if command is not None else None,
         )
 
     async def _get_next_root_sort_order(self, iteration_id: int) -> int:

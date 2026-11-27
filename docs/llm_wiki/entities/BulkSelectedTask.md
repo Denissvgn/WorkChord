@@ -1,6 +1,6 @@
 # BulkSelectedTask
 
-**Location:** `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx:20`
+**Location:** `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx:22`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md)

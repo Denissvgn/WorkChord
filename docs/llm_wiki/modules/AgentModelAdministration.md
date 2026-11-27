@@ -80,9 +80,10 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [CatalogForm](../entities/CatalogForm.md) | Interface | 42 | — | — |
-| [BindingForm](../entities/BindingForm.md) | Interface | 58 | — | — |
-| [ConflictResolution](../entities/ConflictResolution.md) | Interface | 68 | — | — |
-| [ModelHeaderActions](../entities/ModelHeaderActions.md) | Interface | 133 | — | — |
+| [QualificationEvidence](../entities/QualificationEvidence.md) | Interface | 65 | — | — |
+| [BindingForm](../entities/BindingForm.md) | Interface | 82 | — | — |
+| [ConflictResolution](../entities/ConflictResolution.md) | Interface | 92 | — | — |
+| [ModelHeaderActions](../entities/ModelHeaderActions.md) | Interface | 161 | — | — |
 
 ## Functions
 

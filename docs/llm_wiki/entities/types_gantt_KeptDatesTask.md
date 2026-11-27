@@ -1,6 +1,6 @@
 # KeptDatesTask
 
-**Location:** `frontend/src/types/gantt.ts:106`
+**Location:** `frontend/src/types/gantt.ts:108`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

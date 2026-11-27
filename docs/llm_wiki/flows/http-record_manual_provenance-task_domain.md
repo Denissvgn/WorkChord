@@ -89,7 +89,7 @@ sequenceDiagram
     p1-->>p30: self.db.scalar (backend/app/services/manu…lProvenanceService.record)(...)
 ```
 
-> Call sequence diagram shows 30 of 370 interactions; 340 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 371 interactions; 341 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
 > Captured boundary calls: external 1 of 91 (90 omitted); unresolved 1 of 163 (162 omitted). These counts cover the captured static trace.
 
@@ -105,7 +105,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/manual_provenance_service.py:require_provenance_recorder` | 15 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
 | `backend/app/services/manual_provenance_service.py:ManualProvenanceService.record` | 10 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
 | `backend/app/utils/github_links.py:parse_github_url` | 23 | - | unresolved | 10 |
-> Omission summary shows 8 of 78 groups; 70 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 80 groups; 72 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -118,9 +118,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 117; effect analysis evaluated: 70, partial: 1, unavailable: 46. Counts include steps omitted from the displayed trace.
+Source steps: 118; effect analysis evaluated: 71, partial: 1, unavailable: 46. Counts include steps omitted from the displayed trace.
 
-Collector observations for 71 source steps with known totals: observed: 461, emitted: 456, omitted: 5. Unavailable totals are excluded.
+Collector observations for 72 source steps with known totals: observed: 465, emitted: 460, omitted: 5. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -192,17 +192,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| record_manual_provenance | domain_result | 368 | `domain_result(...)` |
-| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 59 | `str(exc)` |
-| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| record_manual_provenance | ManualProvenanceService.record | 368 | `ManualProvenanceService(db).record(task_id, data)` |
-| ManualProvenanceService.record | self.db.scalar (backend/app/services/manu…lProvenanceService.record) | 186 | `self.db.scalar(...)` |
-| ManualProvenanceService.record | select(…).where (backend/app/services/manu…lProvenanceService.record) | 186 | `select(Task).where(...)` |
+| record_manual_provenance | domain_result | 384 | `domain_result(...)` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| record_manual_provenance | ManualProvenanceService.record | 384 | `ManualProvenanceService(db).record(task_id, data)` |
+| ManualProvenanceService.record | self.db.scalar (backend/app/services/manu…lProvenanceService.record) | 216 | `self.db.scalar(...)` |
+| ManualProvenanceService.record | select(…).where (backend/app/services/manu…lProvenanceService.record) | 216 | `select(Task).where(...)` |
 
 ### Boundary effects
 
@@ -212,13 +212,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 55 |
-| unresolved_call | `domain_result` | `exc.detail` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| external_call | `domain_result` | `HTTPException` | 61 |
-| unresolved_call | `ManualProvenanceService.record` | `self.db.scalar` | 186 |
-| unresolved_call | `ManualProvenanceService.record` | `select(Task).where` | 186 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
+| unresolved_call | `ManualProvenanceService.record` | `self.db.scalar` | 216 |
+| unresolved_call | `ManualProvenanceService.record` | `select(Task).where` | 216 |
 | step_limit | `record_manual_provenance` | `first 12 steps` | 0 |
 | truncated_flow | `record_manual_provenance` | `depth limit` | 0 |
 

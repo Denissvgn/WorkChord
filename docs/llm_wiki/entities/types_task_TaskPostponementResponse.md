@@ -1,6 +1,6 @@
 # TaskPostponementResponse
 
-**Location:** `frontend/src/types/task.ts:495`
+**Location:** `frontend/src/types/task.ts:567`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

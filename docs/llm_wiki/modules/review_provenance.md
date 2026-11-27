@@ -26,6 +26,7 @@ An evidence-backed verdict rechecks the packet against the current submission an
 | `app.models.task_brief` | `TaskProgressRecord` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile` |
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_BOUNDED_LIST_ITEMS` |
+| `app.refusal_next_steps` | `next_step_for` |
 | `app.schemas.agent` | `AgentReviewVerdictResponse`, `AgentWorkTerminalResponse`, `AgentRecoveryRequeueResponse` |
 | `app.services.agent_routing_policy` | `ROUTING_DECISION_AUTHORITY`, `ROUTING_LINEAGE_AUTHORITY`, `canonical_routing_json_bytes` |
 | `app.services.agent_routing_service` | `AgentRoutingConflictError`, `AgentRoutingService` |
@@ -35,7 +36,7 @@ An evidence-backed verdict rechecks the packet against the current submission an
 | `app.services.manual_provenance_service` | `recorded_provenances`, `submitted_candidate`, `remedy`, `remedy` |
 | `app.services.retained_planning_output` | `retained_attestations` |
 | `app.services.review_evidence` | `resolve` |
-| `app.services.task_replacement_service` | `replacing`, `carried_contributors`, `attributed` |
+| `app.services.task_replacement_service` | `attributed`, `replacing`, `carried_contributors`, `attributed` |
 | `app.utils.github_links` | `GitHubLinkError`, `parse_github_url` |
 | `app.utils.url_policy` | `normalize_stored_display_url` |
 | `dataclasses` | `dataclass`, `field` |
@@ -65,8 +66,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (19) |
-| Outbound | `backend` (21) |
+| Inbound | `backend` (20) |
+| Outbound | `backend` (22) |
 
 ### External packages
 
@@ -74,20 +75,21 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 36 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [ReworkReadCache](../entities/ReworkReadCache.md) | 50 | — | Ephemeral evidence for one queue/context request or one locked begin transaction. |
-| [ReviewHistory](../entities/ReviewHistory.md) | 665 | — | — |
+| [ReworkReadCache](../entities/ReworkReadCache.md) | 60 | — | Ephemeral evidence for one queue/context request or one locked begin transaction. |
+| [ReviewHistory](../entities/ReviewHistory.md) | 677 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `_conflict` | `(code, message, **details)` | — | — |
+| `_carries_unattributed_run` | `(rows)` | — | Whether replaced-task work with no recorded profile or publisher is carried, so an owner override cannot lift the hold. |
+| `_conflict` | `(code, message, *, step = None, task_id = None, **details)` | — | Raise a routing conflict; ``step`` names the next step this cause allows, where the code has several. |
 | `digest` | `(value)` | — | — |
 | `rework_binding_identity` | `(provenance)` | — | Compare the complete operator binding captured at each authenticated boundary. |
 | `_rework_verdict` | *(async)* `(db, task, assignment, sources, lineage)` | — | Find the unique immutable verifier receipt that issued this exact queued assignment. |
@@ -121,6 +123,7 @@ flowchart LR
 | `_run_history` | *(async)* `(db, task, assignments, executions, runs, *, strict)` | — | — |
 | `_submission_candidate` | *(async)* `(db, task, submitted_run, source)` | — | Use identical repository and revision checks for authenticated worker or human artifact records. |
 | `select_reviewer` | *(async)* `(db, task, assignments, reviewer, *, binding_id = None, reviewer_profile_id = None, review_evidence_id = None)` | — | — |
+| `_publisher_step` | `(code, receipt, history)` | — | The next step for a missing publisher: the verifier's own, a hold an owner cannot lift, or an owner decision. |
 | `require_verifiable_candidate` | `(task, selection)` | — | Refuse a new verification assignment that is already known never to be able to pass. |
 | `observe_review_candidate` | *(async)* `(db, assignment_id, actor_id)` | — | Resolve remote PR evidence before taking the task, actor and assignment locks. |
 | `verify_verdict` | *(async)* `(db, task, assignments, assignment, actor, data, observed_candidate)` | — | — |

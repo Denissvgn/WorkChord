@@ -1,6 +1,6 @@
 # Task
 
-**Location:** `frontend/src/types/task.ts:91`
+**Location:** `frontend/src/types/task.ts:95`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -61,6 +61,9 @@ _Auto-generated from `Task` in `frontend/src/types/task.ts`._
 | `milestone` | `TaskMilestone \| null` | No | — | — |
 | `assignee` | `TaskAssignee \| null` | No | — | — |
 | `status` | `TaskStatus` | Yes | — | — |
+| `displayed_state` | `TaskDisplayedState` | No | — | — |
+| `successor_task_id` | `number \| null` | No | — | — |
+| `successor_kind` | `'replacement' \| 'supersession' \| null` | No | — | — |
 | `start_date` | `string \| null` | No | — | — |
 | `end_date` | `string \| null` | No | — | — |
 | `actual_start_date` | `string \| null` | No | — | — |
@@ -88,6 +91,7 @@ _Auto-generated from `Task` in `frontend/src/types/task.ts`._
 | `updated_at` | `string \| null` | No | — | — |
 | `children` | `Task[]` | Yes | — | — |
 | `dependencies` | `number[]` | Yes | — | — |
+| `routing_check` | `RoutingCheck \| null` | No | — | — |
 
 ## Methods
 
@@ -161,4 +165,4 @@ flowchart LR
 | `assigneeDisplay.test` | import | [assigneeDisplay.test](../modules/assigneeDisplay.test.md) | — |
 | `AssigneePicker.test` | import | [AssigneePicker.test](../modules/AssigneePicker.test.md) | — |
 
-> References: showing 12 of 115 logical references; 103 omitted by the 12-row generated summary limit.
+> References: showing 12 of 123 logical references; 111 omitted by the 12-row generated summary limit.

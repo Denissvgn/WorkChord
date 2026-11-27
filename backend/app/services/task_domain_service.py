@@ -248,6 +248,14 @@ class TaskDomainService:
             reopen["allowed"] = False
             reopen["blockers"].append({"code": "task_replaced",
                                        "message": f"Task {relation.replacement_task_id} delivers this work instead."})
+        from app.services.task_replacement_service import SUPERSESSION, replacing
+        delivering = await replacing(self.db, task.id)
+        if delivering is not None and delivering.disposition == SUPERSESSION:
+            # Canceling the successor would leave the superseded original's deliverable counted nowhere.
+            cancel = next(item for item in actions if item["action"] == "cancel")
+            cancel["allowed"] = False
+            cancel["blockers"].append({"code": "task_delivers_supersession",
+                                       "message": f"This task delivers superseded task {delivering.original_task_id}."})
         authority = self.db.info.get("authority")
         review_action = next(item for item in actions if item["action"] == "review")
         import copy
@@ -295,6 +303,15 @@ class TaskDomainService:
                     review_codes.append(getattr(exc, "code", "current_evidence_required"))
             for action_name, codes in (("begin_assigned_work", start_codes), ("submit_assigned_work", [] if live and authority.allows(task.project_id, "execute") and not task.canceled_at and not task.blocked_reason else ["live_execution_fence_required"]), ("review_assigned_work", review_codes)):
                 actions.append({"action": action_name, "allowed": not codes, "blockers": [{"code": code, "message": code.replace("_", " ")} for code in sorted(set(codes))]})
+        from app.services.manual_provenance_service import provenance_blockers
+        provenance = await provenance_blockers(self.db, task)
+        actions.append({"action": "record_provenance", "allowed": not provenance, "blockers": provenance})
+        from app.refusal_next_steps import next_step_for
+        for item in actions:
+            for blocker in item.get("blockers", ()):
+                step = next_step_for(blocker.get("code"), task_id=task.id)
+                if step is not None:
+                    blocker["next_step"] = step
         return TaskActionsResponse(task_id=task.id, version=task.version,
             actions=actions,
             claim_generation=task.claim_generation, running_run_ids=[run.id for run in runs], live_assignment_ids=[item.id for item in assignments])

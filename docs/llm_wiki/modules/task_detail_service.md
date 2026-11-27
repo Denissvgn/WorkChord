@@ -29,12 +29,13 @@ Human ownership queues apply complete inherited deferral policy to every bounded
 | `app.schemas.task_detail` | `TaskDetailResponse`, `TaskReference`, `TaskReferencePage` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.identity_service` | `local_work_profile` |
+| `app.services.task_display_state` | `displayed_state_expression`, `task_state_clause`, `validate_state_filter` |
 | `app.services.task_domain_service` | `TaskDomainService` |
 | `app.services.task_postponement_service` | `open_postponement`, `postponement_record` |
 | `app.services.task_service` | `TaskService` |
 | `app.sql_semantics` | `portable_contains` |
 | `sqlalchemy` | `and_`, `literal`, `or_`, `select` |
-| `sqlalchemy.orm` | `selectinload`, `raiseload` |
+| `sqlalchemy.orm` | `aliased`, `selectinload`, `raiseload` |
 
 ## Local dependency map
 
@@ -58,7 +59,7 @@ flowchart LR
 |---|---|
 | Inbound | `backend` (6) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (16) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
@@ -66,10 +67,10 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskDetailService](../entities/TaskDetailService.md) | 12 | — | — |
+| [TaskDetailService](../entities/TaskDetailService.md) | 16 | — | — |

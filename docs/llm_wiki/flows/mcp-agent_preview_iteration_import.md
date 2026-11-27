@@ -207,7 +207,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_preview_iteration_import | _tool_call | 1903 | `_tool_call('planning:write', ..., preview=True)` |
+| agent_preview_iteration_import | _tool_call | 1913 | `_tool_call('planning:write', ..., preview=True)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |

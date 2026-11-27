@@ -1,6 +1,6 @@
 # UnscheduledReason
 
-**Location:** `frontend/src/types/gantt.ts:78`
+**Location:** `frontend/src/types/gantt.ts:80`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

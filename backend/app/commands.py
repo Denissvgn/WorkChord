@@ -3,7 +3,7 @@
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from functools import wraps
-from typing import Literal
+from typing import Any, Literal
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -32,6 +32,8 @@ class CommandState:
     evidence_returns: set[tuple[int, int]] = field(default_factory=set)
     # Tasks whose status this command moves into or out of postponed under manage authority.
     postponement_transitions: set[int] = field(default_factory=set)
+    # The routing check each task's assignee or routing change met in this command, for its response.
+    routing_checks: dict[int, Any] = field(default_factory=dict)
     planning_revision: int | None = None
 
 
@@ -57,7 +59,8 @@ class PlanningConflict(RuntimeError):
         super().__init__(message)
 
     def detail(self):
-        return {"code": self.code, "message": str(self)}
+        from app.refusal_next_steps import with_next_step
+        return with_next_step({"code": self.code, "message": str(self)})
 
 
 async def lock_planning(db, *, expected=None):

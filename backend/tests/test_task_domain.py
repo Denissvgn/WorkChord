@@ -437,3 +437,52 @@ async def test_human_queue_excludes_inherited_deferred_work_across_pagination(de
             values.extend(task for queue in work['queues'].values() for task in queue)
         assert scenario.tasks['nested'] not in {task['id'] for task in values}
         assert scenario.tasks['planned'] in {task['id'] for task in values}
+
+
+async def test_my_work_lists_stopped_work_apart_from_its_queues(delivery_store, monkeypatch):
+    from app.services import task_detail_service
+    from app.services.task_detail_service import TaskDetailService
+    from app.utils.time import utc_now
+    monkeypatch.setattr(task_detail_service, "STOPPED_WORK_LIMIT", 2)
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        authority, _ = await human_context(db, scenario.projects[0])
+        planned = await db.get(Task, scenario.tasks['planned'])
+        paused = await db.get(Task, scenario.tasks['nested'])
+        planned.owner_profile_id = paused.owner_profile_id = scenario.profile
+        paused.status = "postponed"
+        dropped_ids = []
+        # More canceled history than the stopped limit, created after the live work so it is the newest.
+        for index in range(3):
+            task = await TaskService(db).create(None, TaskCreate(title=f"Dropped {index}", project_id=scenario.projects[0]))
+            task.owner_profile_id = scenario.profile
+            task.canceled_at = utc_now()
+            task.canceled_reason = "No longer needed"
+            dropped_ids.append(task.id)
+        await db.commit()
+        db.info['authority'] = Authority(authority.principal_id, 'human', profile_id=scenario.profile,
+            projects={scenario.projects[0]: 'manager'})
+        first = await TaskDetailService(db).my_work(limit=50)
+        queued = {task['id'] for queue in first['queues'].values() for task in queue}
+        # Live work fills the queues; stopped work is neither in them nor in the page that pages them.
+        assert planned.id in queued
+        assert not queued & ({paused.id} | set(dropped_ids))
+        assert not first['has_more']
+        # Stopped work is bounded, newest first, and says more exists.
+        assert [task['id'] for task in first['stopped']] == sorted(dropped_ids, reverse=True)[:2]
+        assert first['stopped_has_more'] is True
+        assert all(task['actions'] == [] and task['displayed_state'] == 'canceled' for task in first['stopped'])
+        # Only the first page carries it.
+        later = await TaskDetailService(db).my_work(limit=1, after_id=1)
+        assert later['stopped'] == [] and later['stopped_has_more'] is False
+
+
+async def test_lookup_can_leave_out_parents(delivery_store):
+    from app.services.task_detail_service import TaskDetailService
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        db.info['authority'] = Authority(None, 'human', workspace_role='operator')
+        everything = {item.id for item in (await TaskDetailService(db).lookup(project_id=scenario.projects[0], limit=100)).items}
+        leaves = {item.id for item in (await TaskDetailService(db).lookup(project_id=scenario.projects[0], limit=100, leaf_only=True)).items}
+        assert scenario.tasks['parent'] in everything and scenario.tasks['parent'] not in leaves
+        assert scenario.tasks['nested'] in leaves

@@ -18,16 +18,18 @@ Formal review on a project with the different-publisher policy requires the assi
 |--------|---------|
 | `app.authority` | `AuthorityError`, `require_owner_override`, `require_project` |
 | `app.autonomy.canonical` | `sha256_hex` |
-| `app.commands` | `atomic_command`, `command_transaction`, `current_command`, `current_command`, `PlanningConflict`, `current_command` |
+| `app.commands` | `atomic_command`, `command_transaction`, `command_transaction`, `current_command`, `current_command`, `PlanningConflict`, `current_command` |
 | `app.models.autonomy` | `AgentWorkPackage` |
 | `app.models.task` | `Task` |
 | `app.models.task_brief` | `TaskBriefRevision`, `TaskProgressRecord`, `TaskReviewRecord` |
 | `app.schemas.task_brief` | `TaskBrief`, `OwnerAcceptanceWrite`, `ProgressWrite`, `TaskReviewWrite`, `BriefCriterion` |
+| `app.schemas.task_routing` | `TaskRouting` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.identity_service` | `acting_principal_id` |
 | `app.services.review_provenance` | `different_publisher_required`, `different_publisher_required` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_replacement_service` | `require_acceptable` |
+| `app.services.task_routing_service` | `resolve_routing`, `enforce_routing`, `enforce_routing`, `check_routing`, `convert_text_routing` |
 | `app.services.task_service` | `TaskService` |
 | `copy` | `copy` |
 | `dataclasses` | `replace` |
@@ -53,8 +55,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (26) |
-| Outbound | `backend` (13) |
+| Inbound | `backend` (28) |
+| Outbound | `backend` (15) |
 
 ### External packages
 
@@ -62,18 +64,22 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskBriefService](../entities/TaskBriefService.md) | 141 | — | — |
+| [TaskBriefService](../entities/TaskBriefService.md) | 203 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `_render_rung` | `(rung: dict) -> str` | — | — |
+| `render_routing` | `(routing: dict \| None) -> str` | — | Render the structured routing as the brief's Routing section body. |
+| `evidence_brief` | `(brief: dict \| None) -> dict \| None` | — | The part of a stored brief that the brief revision and criterion evidence bind to. |
+| `brief_payload` | `(brief: TaskBrief) -> dict` | — | The stored JSON form; a brief without routing keeps the shape it had before routing existed. |
 | `render_brief` | `(brief: TaskBrief \| dict) -> str` | — | Derive Markdown from canonical fields without projecting progress as acceptance. |
 | `brief_definition_blockers` | `(brief: dict) -> list[str]` | — | Shared structured definition requirements for every agent projection. |
 | `import_legacy_brief` | `(task_id: int, description: str \| None) -> tuple[TaskBrief, list[str]]` | — | Conservatively parse supported headings and preserve every unparsed line. |

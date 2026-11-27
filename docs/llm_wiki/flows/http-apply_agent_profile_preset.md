@@ -75,9 +75,9 @@ sequenceDiagram
     p3-->>p17: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, TriageConflictError)
 ```
 
-> Call sequence diagram shows 30 of 84 interactions; 54 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 87 interactions; 57 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 11 of 39 (28 omitted); unresolved 3 of 22 (19 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 11 of 42 (31 omitted); unresolved 3 of 22 (19 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -104,7 +104,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 24; effect analysis evaluated: 16, partial: 1, unavailable: 7. Counts include steps omitted from the displayed trace.
 
-Collector observations for 17 source steps with known totals: observed: 126, emitted: 120, omitted: 6. Unavailable totals are excluded.
+Collector observations for 17 source steps with known totals: observed: 128, emitted: 120, omitted: 8. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -185,7 +185,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| apply_agent_profile_preset | AgentPlanningService.apply_profile_preset | 215 | `AgentPlanningService(db).apply_profile_preset(preset_key, actor, command=command)` |
+| apply_agent_profile_preset | AgentPlanningService.apply_profile_preset | 231 | `AgentPlanningService(db).apply_profile_preset(preset_key, actor, command=command)` |
 | AgentPlanningService.apply_profile_preset | AgentPlanningService._execute | 703 | `self._execute(actor=actor, scope='team:write', operation='planning.profile_preset.apply', target_type='team_member_profile', idempotency_target_id=0, command=command, request_payload=payload, mutate=mutate)` |
 | AgentPlanningService._execute | isinstance (backend/app/services/agen…ntPlanningService._execute) | 155 | `isinstance(scope, str)` |
 | AgentPlanningService._execute | require_scope | 156 | `require_scope(actor, scope)` |

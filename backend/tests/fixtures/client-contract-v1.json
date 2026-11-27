@@ -339,6 +339,14 @@
             "description": "Operator-verified canonical model publisher, independent of serving provider.",
             "title": "Publisher Key"
           },
+          "qualification_keys": {
+            "description": "Built-in or declared qualification keys this entry holds at its effort setting.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Qualification Keys",
+            "type": "array"
+          },
           "reasoning_tier": {
             "$ref": "#/components/schemas/ReasoningTier"
           },
@@ -472,6 +480,14 @@
             ],
             "description": "Operator-verified canonical model publisher, independent of serving provider.",
             "title": "Publisher Key"
+          },
+          "qualification_keys": {
+            "description": "Built-in or declared qualification keys this entry holds at its effort setting.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Qualification Keys",
+            "type": "array"
           },
           "reasoning_tier": {
             "$ref": "#/components/schemas/ReasoningTier"
@@ -641,6 +657,21 @@
             ],
             "title": "Publisher Key"
           },
+          "qualification_keys": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Replaces the entry's qualification keys. An effort change without this field clears them.",
+            "title": "Qualification Keys"
+          },
           "reasoning_tier": {
             "anyOf": [
               {
@@ -735,7 +766,9 @@
           "target_type": {
             "enum": [
               "model_catalog",
-              "model_binding"
+              "model_binding",
+              "routing_qualification_key",
+              "routing_calibration_contract"
             ],
             "title": "Target Type",
             "type": "string"
@@ -905,6 +938,132 @@
           "brief"
         ],
         "title": "BriefWrite",
+        "type": "object"
+      },
+      "CalibrationBiasReview": {
+        "additionalProperties": false,
+        "description": "The record of the bias review the terms were checked against.",
+        "properties": {
+          "findings": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "title": "Findings",
+            "type": "string"
+          },
+          "mitigations": {
+            "anyOf": [
+              {
+                "maxLength": 4000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mitigations"
+          },
+          "reviewed_at": {
+            "format": "date-time",
+            "title": "Reviewed At",
+            "type": "string"
+          },
+          "reviewer": {
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Reviewer",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reviewer",
+          "reviewed_at",
+          "findings"
+        ],
+        "title": "CalibrationBiasReview",
+        "type": "object"
+      },
+      "CalibrationContractActor": {
+        "additionalProperties": false,
+        "description": "Who issued a command: the operator's admin key, or an agent actor.",
+        "properties": {
+          "actor_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor Id"
+          },
+          "actor_type": {
+            "title": "Actor Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "actor_type"
+        ],
+        "title": "CalibrationContractActor",
+        "type": "object"
+      },
+      "CalibrationDecay": {
+        "additionalProperties": false,
+        "description": "How an older observation's weight falls.\n\n``days`` is the half-life for ``exponential``, the age at which weight\nreaches zero for ``linear``, and the length of the window for ``window``.",
+        "properties": {
+          "days": {
+            "maximum": 3650.0,
+            "minimum": 1.0,
+            "title": "Days",
+            "type": "integer"
+          },
+          "method": {
+            "enum": [
+              "exponential",
+              "linear",
+              "window"
+            ],
+            "title": "Method",
+            "type": "string"
+          }
+        },
+        "required": [
+          "method",
+          "days"
+        ],
+        "title": "CalibrationDecay",
+        "type": "object"
+      },
+      "CalibrationSampleBounds": {
+        "additionalProperties": false,
+        "description": "How many observations, and how old, a calibration may use per model and key.",
+        "properties": {
+          "maximum_age_days": {
+            "maximum": 3650.0,
+            "minimum": 1.0,
+            "title": "Maximum Age Days",
+            "type": "integer"
+          },
+          "maximum_samples": {
+            "maximum": 1000000.0,
+            "minimum": 1.0,
+            "title": "Maximum Samples",
+            "type": "integer"
+          },
+          "minimum_samples": {
+            "maximum": 1000000.0,
+            "minimum": 1.0,
+            "title": "Minimum Samples",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "minimum_samples",
+          "maximum_samples",
+          "maximum_age_days"
+        ],
+        "title": "CalibrationSampleBounds",
         "type": "object"
       },
       "CascadeUpdateInfo": {
@@ -1144,6 +1303,12 @@
             "default": "scope_at_observation",
             "title": "Scope Basis",
             "type": "string"
+          },
+          "superseded_leaf_tasks": {
+            "default": 0,
+            "description": "Leaf tasks withdrawn in the window because another task delivers their work (a replacement or a supersession). Within one window a task is not also counted as canceled.",
+            "title": "Superseded Leaf Tasks",
+            "type": "integer"
           },
           "window_end": {
             "format": "date-time",
@@ -1626,6 +1791,17 @@
             ],
             "title": "Canceled At"
           },
+          "displayed_state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Displayed State"
+          },
           "id": {
             "title": "Id",
             "type": "integer"
@@ -1764,6 +1940,18 @@
           "state": {
             "title": "State",
             "type": "string"
+          },
+          "stopped": {
+            "items": {
+              "$ref": "#/components/schemas/HumanWorkReference"
+            },
+            "title": "Stopped",
+            "type": "array"
+          },
+          "stopped_has_more": {
+            "default": false,
+            "title": "Stopped Has More",
+            "type": "boolean"
           }
         },
         "required": [
@@ -2609,6 +2797,17 @@
       },
       "MetricMatchItem": {
         "properties": {
+          "displayed_state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Displayed State"
+          },
           "id": {
             "title": "Id",
             "type": "integer"
@@ -3203,6 +3402,16 @@
             "title": "Require Different Review Publisher",
             "type": "boolean"
           },
+          "routing_conflict_mode": {
+            "default": "refuse",
+            "description": "Whether task routing that conflicts with the review policy is refused or saved with a warning.",
+            "enum": [
+              "refuse",
+              "warn"
+            ],
+            "title": "Routing Conflict Mode",
+            "type": "string"
+          },
           "sort_order": {
             "default": 0,
             "title": "Sort Order",
@@ -3446,6 +3655,11 @@
             "title": "Blocked Tasks",
             "type": "integer"
           },
+          "canceled_tasks": {
+            "default": 0,
+            "title": "Canceled Tasks",
+            "type": "integer"
+          },
           "completed_tasks": {
             "default": 0,
             "title": "Completed Tasks",
@@ -3523,6 +3737,11 @@
           "structural_tasks": {
             "default": 0,
             "title": "Structural Tasks",
+            "type": "integer"
+          },
+          "superseded_tasks": {
+            "default": 0,
+            "title": "Superseded Tasks",
             "type": "integer"
           },
           "target_date_risk": {
@@ -3662,6 +3881,11 @@
             "title": "Require Different Review Publisher",
             "type": "boolean"
           },
+          "routing_conflict_mode": {
+            "default": "refuse",
+            "title": "Routing Conflict Mode",
+            "type": "string"
+          },
           "sort_order": {
             "default": 0,
             "title": "Sort Order",
@@ -3740,6 +3964,55 @@
         ],
         "title": "ProjectTargetDateRisk",
         "type": "string"
+      },
+      "QualificationKeyCalibrationReference": {
+        "additionalProperties": false,
+        "description": "A calibration contract whose current terms name the key.",
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "submitted",
+              "approved"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "state"
+        ],
+        "title": "QualificationKeyCalibrationReference",
+        "type": "object"
+      },
+      "QualificationKeyCatalogReference": {
+        "additionalProperties": false,
+        "description": "A catalog entry that holds the key.",
+        "properties": {
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "enabled"
+        ],
+        "title": "QualificationKeyCatalogReference",
+        "type": "object"
       },
       "ReactivationRequirementResponse": {
         "properties": {
@@ -3846,6 +4119,1367 @@
         "title": "ReasoningTier",
         "type": "integer"
       },
+      "RefusalNextStep": {
+        "description": "What a person or agent may do about a refusal, from the shared refusal catalogue.",
+        "properties": {
+          "authority": {
+            "description": "Who may take the step.",
+            "title": "Authority",
+            "type": "string"
+          },
+          "commands": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The REST route or MCP tool that takes the step.",
+            "title": "Commands",
+            "type": "object"
+          },
+          "kind": {
+            "description": "Stable key for the step, such as record_provenance or accept_as_owner.",
+            "title": "Kind",
+            "type": "string"
+          },
+          "message": {
+            "description": "One sentence a person can act on.",
+            "title": "Message",
+            "type": "string"
+          },
+          "ui_action": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The task page form that takes the step, when there is one.",
+            "title": "Ui Action"
+          }
+        },
+        "required": [
+          "kind",
+          "authority",
+          "message"
+        ],
+        "title": "RefusalNextStep",
+        "type": "object"
+      },
+      "RoutingCalibrationContractApprove": {
+        "additionalProperties": false,
+        "description": "Approve the current submitted terms, named by revision and digest.\n\n``approved_as`` is the declared approver the caller approves as; it must\nequal the terms' ``approver``. The authenticated principal is recorded\nseparately as ``approved_by``.",
+        "properties": {
+          "approved_as": {
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Approved As",
+            "type": "string"
+          },
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "expected_terms_digest": {
+            "maxLength": 64,
+            "minLength": 64,
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Expected Terms Digest",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expected_revision",
+          "expected_terms_digest",
+          "approved_as"
+        ],
+        "title": "RoutingCalibrationContractApprove",
+        "type": "object"
+      },
+      "RoutingCalibrationContractDetail": {
+        "additionalProperties": false,
+        "description": "One contract with every revision it has had.",
+        "properties": {
+          "approval_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approval Reason"
+          },
+          "approved_as": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The declared approver (the terms' approver) the approval was given as.",
+            "title": "Approved As"
+          },
+          "approved_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approved At"
+          },
+          "approved_by": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CalibrationContractActor"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The authenticated principal that approved the current terms."
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "revisions": {
+            "items": {
+              "$ref": "#/components/schemas/RoutingCalibrationContractRevisionResponse"
+            },
+            "title": "Revisions",
+            "type": "array"
+          },
+          "schema_version": {
+            "const": "routing-calibration-contract-v1",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "submitted",
+              "approved"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "submitted_at": {
+            "format": "date-time",
+            "title": "Submitted At",
+            "type": "string"
+          },
+          "submitted_by": {
+            "$ref": "#/components/schemas/CalibrationContractActor"
+          },
+          "terms": {
+            "$ref": "#/components/schemas/RoutingCalibrationContractTerms"
+          },
+          "terms_digest": {
+            "maxLength": 64,
+            "minLength": 64,
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Terms Digest",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "schema_version",
+          "state",
+          "revision",
+          "terms",
+          "terms_digest",
+          "submitted_by",
+          "submitted_at",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "RoutingCalibrationContractDetail",
+        "type": "object"
+      },
+      "RoutingCalibrationContractListResponse": {
+        "additionalProperties": false,
+        "description": "The deployment's contracts, and whether routing may treat any as approved.",
+        "properties": {
+          "approved_contract_exists": {
+            "title": "Approved Contract Exists",
+            "type": "boolean"
+          },
+          "contracts": {
+            "items": {
+              "$ref": "#/components/schemas/RoutingCalibrationContractResponse"
+            },
+            "title": "Contracts",
+            "type": "array"
+          },
+          "performance_history_use": {
+            "const": "advisory",
+            "default": "advisory",
+            "description": "Routing does not consume performance history, whether or not a contract is approved.",
+            "title": "Performance History Use",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": "routing-calibration-contract-v1",
+            "default": "routing-calibration-contract-v1",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "approved_contract_exists",
+          "contracts"
+        ],
+        "title": "RoutingCalibrationContractListResponse",
+        "type": "object"
+      },
+      "RoutingCalibrationContractResponse": {
+        "additionalProperties": false,
+        "description": "The current revision of one contract.",
+        "properties": {
+          "approval_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approval Reason"
+          },
+          "approved_as": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The declared approver (the terms' approver) the approval was given as.",
+            "title": "Approved As"
+          },
+          "approved_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approved At"
+          },
+          "approved_by": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CalibrationContractActor"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The authenticated principal that approved the current terms."
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "schema_version": {
+            "const": "routing-calibration-contract-v1",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "submitted",
+              "approved"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "submitted_at": {
+            "format": "date-time",
+            "title": "Submitted At",
+            "type": "string"
+          },
+          "submitted_by": {
+            "$ref": "#/components/schemas/CalibrationContractActor"
+          },
+          "terms": {
+            "$ref": "#/components/schemas/RoutingCalibrationContractTerms"
+          },
+          "terms_digest": {
+            "maxLength": 64,
+            "minLength": 64,
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Terms Digest",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "schema_version",
+          "state",
+          "revision",
+          "terms",
+          "terms_digest",
+          "submitted_by",
+          "submitted_at",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "RoutingCalibrationContractResponse",
+        "type": "object"
+      },
+      "RoutingCalibrationContractRevise": {
+        "additionalProperties": false,
+        "description": "Submit complete new terms for an existing contract; any approval lapses.",
+        "properties": {
+          "approver": {
+            "description": "The accountable person or role whose approval the terms require.",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Approver",
+            "type": "string"
+          },
+          "bias_review": {
+            "$ref": "#/components/schemas/CalibrationBiasReview"
+          },
+          "decay": {
+            "$ref": "#/components/schemas/CalibrationDecay"
+          },
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "qualification_keys": {
+            "items": {
+              "maxLength": 120,
+              "minLength": 1,
+              "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+              "type": "string"
+            },
+            "maxItems": 32,
+            "minItems": 1,
+            "title": "Qualification Keys",
+            "type": "array"
+          },
+          "sample_bounds": {
+            "$ref": "#/components/schemas/CalibrationSampleBounds"
+          }
+        },
+        "required": [
+          "qualification_keys",
+          "sample_bounds",
+          "decay",
+          "bias_review",
+          "approver",
+          "expected_revision"
+        ],
+        "title": "RoutingCalibrationContractRevise",
+        "type": "object"
+      },
+      "RoutingCalibrationContractRevisionResponse": {
+        "additionalProperties": false,
+        "description": "One append-only command on a contract, with its terms and reason.",
+        "properties": {
+          "action": {
+            "enum": [
+              "submit",
+              "approve"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "actor_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor Id"
+          },
+          "actor_type": {
+            "title": "Actor Type",
+            "type": "string"
+          },
+          "approved_as": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approved As"
+          },
+          "correlation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correlation Id"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "state": {
+            "enum": [
+              "submitted",
+              "approved"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "terms": {
+            "$ref": "#/components/schemas/RoutingCalibrationContractTerms"
+          },
+          "terms_digest": {
+            "maxLength": 64,
+            "minLength": 64,
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Terms Digest",
+            "type": "string"
+          }
+        },
+        "required": [
+          "revision",
+          "action",
+          "state",
+          "terms",
+          "terms_digest",
+          "reason",
+          "actor_type",
+          "created_at"
+        ],
+        "title": "RoutingCalibrationContractRevisionResponse",
+        "type": "object"
+      },
+      "RoutingCalibrationContractSubmit": {
+        "additionalProperties": false,
+        "description": "Submit a new contract under a key that names no contract yet.",
+        "properties": {
+          "approver": {
+            "description": "The accountable person or role whose approval the terms require.",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Approver",
+            "type": "string"
+          },
+          "bias_review": {
+            "$ref": "#/components/schemas/CalibrationBiasReview"
+          },
+          "decay": {
+            "$ref": "#/components/schemas/CalibrationDecay"
+          },
+          "key": {
+            "maxLength": 120,
+            "minLength": 1,
+            "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+            "title": "Key",
+            "type": "string"
+          },
+          "qualification_keys": {
+            "items": {
+              "maxLength": 120,
+              "minLength": 1,
+              "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+              "type": "string"
+            },
+            "maxItems": 32,
+            "minItems": 1,
+            "title": "Qualification Keys",
+            "type": "array"
+          },
+          "sample_bounds": {
+            "$ref": "#/components/schemas/CalibrationSampleBounds"
+          }
+        },
+        "required": [
+          "qualification_keys",
+          "sample_bounds",
+          "decay",
+          "bias_review",
+          "approver",
+          "key"
+        ],
+        "title": "RoutingCalibrationContractSubmit",
+        "type": "object"
+      },
+      "RoutingCalibrationContractTerms": {
+        "additionalProperties": false,
+        "description": "The complete terms of one contract revision; every field is required.",
+        "properties": {
+          "approver": {
+            "description": "The accountable person or role whose approval the terms require.",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Approver",
+            "type": "string"
+          },
+          "bias_review": {
+            "$ref": "#/components/schemas/CalibrationBiasReview"
+          },
+          "decay": {
+            "$ref": "#/components/schemas/CalibrationDecay"
+          },
+          "qualification_keys": {
+            "items": {
+              "maxLength": 120,
+              "minLength": 1,
+              "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+              "type": "string"
+            },
+            "maxItems": 32,
+            "minItems": 1,
+            "title": "Qualification Keys",
+            "type": "array"
+          },
+          "sample_bounds": {
+            "$ref": "#/components/schemas/CalibrationSampleBounds"
+          }
+        },
+        "required": [
+          "qualification_keys",
+          "sample_bounds",
+          "decay",
+          "bias_review",
+          "approver"
+        ],
+        "title": "RoutingCalibrationContractTerms",
+        "type": "object"
+      },
+      "RoutingCheck": {
+        "description": "Routing consistency of one task for one assignee, with a consistent replacement.",
+        "properties": {
+          "applied": {
+            "default": false,
+            "description": "The suggestion was saved with this change.",
+            "title": "Applied",
+            "type": "boolean"
+          },
+          "assignee_catalog_keys": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Assignee Catalog Keys",
+            "type": "array"
+          },
+          "assignee_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignee Id"
+          },
+          "assignee_profile_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignee Profile Id"
+          },
+          "assignee_publishers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Assignee Publishers",
+            "type": "array"
+          },
+          "conflict_mode": {
+            "default": "refuse",
+            "enum": [
+              "refuse",
+              "warn"
+            ],
+            "title": "Conflict Mode",
+            "type": "string"
+          },
+          "consistent": {
+            "default": true,
+            "title": "Consistent",
+            "type": "boolean"
+          },
+          "different_publisher_required": {
+            "default": false,
+            "title": "Different Publisher Required",
+            "type": "boolean"
+          },
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/RoutingIssue"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "routing": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TaskRouting"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The routing that was checked."
+          },
+          "structured": {
+            "default": false,
+            "description": "The routing is stored as structure in the brief.",
+            "title": "Structured",
+            "type": "boolean"
+          },
+          "suggested_reviewer": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RoutingReviewer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "suggestion": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TaskRouting"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "A routing consistent with the assignee and policy, when it differs."
+          },
+          "task_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Task Id"
+          },
+          "text_routing": {
+            "default": false,
+            "description": "The brief names routing only in free text; convert it to check it.",
+            "title": "Text Routing",
+            "type": "boolean"
+          }
+        },
+        "title": "RoutingCheck",
+        "type": "object"
+      },
+      "RoutingIssue": {
+        "description": "One inconsistency between a task's routing, its assignee and the project policy.",
+        "properties": {
+          "catalog_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catalog Key"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "field": {
+            "enum": [
+              "first_rung",
+              "escalation",
+              "reviewer",
+              "assignee",
+              "routing"
+            ],
+            "title": "Field",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "publisher_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publisher Key"
+          },
+          "severity": {
+            "enum": [
+              "conflict",
+              "warning"
+            ],
+            "title": "Severity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "severity",
+          "field",
+          "message"
+        ],
+        "title": "RoutingIssue",
+        "type": "object"
+      },
+      "RoutingQualificationKeyDeclare": {
+        "additionalProperties": false,
+        "description": "Declare a new key, or bring back a retired one under the same name.",
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "key": {
+            "maxLength": 120,
+            "minLength": 1,
+            "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "label"
+        ],
+        "title": "RoutingQualificationKeyDeclare",
+        "type": "object"
+      },
+      "RoutingQualificationKeyDetail": {
+        "additionalProperties": false,
+        "description": "One key with its revision history and current usage.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "retired_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retired At"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "revisions": {
+            "items": {
+              "$ref": "#/components/schemas/RoutingQualificationKeyRevisionResponse"
+            },
+            "title": "Revisions",
+            "type": "array"
+          },
+          "state": {
+            "enum": [
+              "active",
+              "retired"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/RoutingQualificationKeyUsage"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "label",
+          "state",
+          "revision",
+          "created_at",
+          "updated_at",
+          "usage"
+        ],
+        "title": "RoutingQualificationKeyDetail",
+        "type": "object"
+      },
+      "RoutingQualificationKeyRegistryResponse": {
+        "additionalProperties": false,
+        "description": "The built-in keys routing always accepts, and the deployment's declared keys.",
+        "properties": {
+          "builtin_keys": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Builtin Keys",
+            "type": "array"
+          },
+          "keys": {
+            "items": {
+              "$ref": "#/components/schemas/RoutingQualificationKeyResponse"
+            },
+            "title": "Keys",
+            "type": "array"
+          }
+        },
+        "required": [
+          "builtin_keys",
+          "keys"
+        ],
+        "title": "RoutingQualificationKeyRegistryResponse",
+        "type": "object"
+      },
+      "RoutingQualificationKeyResponse": {
+        "additionalProperties": false,
+        "description": "The current state of one declared key.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "retired_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retired At"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "state": {
+            "enum": [
+              "active",
+              "retired"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "label",
+          "state",
+          "revision",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "RoutingQualificationKeyResponse",
+        "type": "object"
+      },
+      "RoutingQualificationKeyRetire": {
+        "additionalProperties": false,
+        "description": "Retire an active key that no catalog entry or current task requirement names.",
+        "properties": {
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "expected_revision"
+        ],
+        "title": "RoutingQualificationKeyRetire",
+        "type": "object"
+      },
+      "RoutingQualificationKeyRevise": {
+        "additionalProperties": false,
+        "description": "Change an active key's label or description; the key itself never changes.",
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          }
+        },
+        "required": [
+          "expected_revision"
+        ],
+        "title": "RoutingQualificationKeyRevise",
+        "type": "object"
+      },
+      "RoutingQualificationKeyRevisionResponse": {
+        "additionalProperties": false,
+        "description": "One append-only change to a declared key, with its reason.",
+        "properties": {
+          "action": {
+            "enum": [
+              "declare",
+              "revise",
+              "retire"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "actor_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor Id"
+          },
+          "actor_type": {
+            "title": "Actor Type",
+            "type": "string"
+          },
+          "correlation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correlation Id"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "state": {
+            "enum": [
+              "active",
+              "retired"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "revision",
+          "action",
+          "state",
+          "label",
+          "reason",
+          "actor_type",
+          "created_at"
+        ],
+        "title": "RoutingQualificationKeyRevisionResponse",
+        "type": "object"
+      },
+      "RoutingQualificationKeyUsage": {
+        "additionalProperties": false,
+        "description": "Catalog entries, calibration contracts and tasks whose current routing assessment name the key.",
+        "properties": {
+          "calibration_contracts": {
+            "items": {
+              "$ref": "#/components/schemas/QualificationKeyCalibrationReference"
+            },
+            "maxItems": 50,
+            "title": "Calibration Contracts",
+            "type": "array"
+          },
+          "calibration_contracts_omitted": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Calibration Contracts Omitted",
+            "type": "integer"
+          },
+          "catalog_entries": {
+            "items": {
+              "$ref": "#/components/schemas/QualificationKeyCatalogReference"
+            },
+            "maxItems": 50,
+            "title": "Catalog Entries",
+            "type": "array"
+          },
+          "catalog_entries_omitted": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Catalog Entries Omitted",
+            "type": "integer"
+          },
+          "task_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 50,
+            "title": "Task Ids",
+            "type": "array"
+          },
+          "task_ids_omitted": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Task Ids Omitted",
+            "type": "integer"
+          }
+        },
+        "title": "RoutingQualificationKeyUsage",
+        "type": "object"
+      },
+      "RoutingReviewer": {
+        "additionalProperties": false,
+        "description": "The model that reviews the task's result, and optionally the reviewer profile to dispatch.",
+        "properties": {
+          "catalog_key": {
+            "description": "Key of a model catalog entry.",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Catalog Key",
+            "type": "string"
+          },
+          "configured_model_alias": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filled by the server from the catalog entry.",
+            "title": "Configured Model Alias"
+          },
+          "effort": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filled by the server from the catalog entry.",
+            "title": "Effort"
+          },
+          "harness": {
+            "default": "",
+            "description": "Where the model runs, for people, such as an agent client name.",
+            "maxLength": 120,
+            "title": "Harness",
+            "type": "string"
+          },
+          "instructions": {
+            "default": "",
+            "description": "What the review checks, for example each criterion against its evidence.",
+            "maxLength": 2000,
+            "title": "Instructions",
+            "type": "string"
+          },
+          "profile_id": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Reviewer profile passed as reviewer_profile_id at dispatch.",
+            "title": "Profile Id"
+          },
+          "publisher_key": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filled by the server from the catalog entry.",
+            "title": "Publisher Key"
+          }
+        },
+        "required": [
+          "catalog_key"
+        ],
+        "title": "RoutingReviewer",
+        "type": "object"
+      },
+      "RoutingRung": {
+        "additionalProperties": false,
+        "description": "One model catalog entry that may execute the task.",
+        "properties": {
+          "catalog_key": {
+            "description": "Key of a model catalog entry.",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Catalog Key",
+            "type": "string"
+          },
+          "configured_model_alias": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filled by the server from the catalog entry.",
+            "title": "Configured Model Alias"
+          },
+          "effort": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filled by the server from the catalog entry.",
+            "title": "Effort"
+          },
+          "harness": {
+            "default": "",
+            "description": "Where the model runs, for people, such as an agent client name.",
+            "maxLength": 120,
+            "title": "Harness",
+            "type": "string"
+          },
+          "publisher_key": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filled by the server from the catalog entry.",
+            "title": "Publisher Key"
+          }
+        },
+        "required": [
+          "catalog_key"
+        ],
+        "title": "RoutingRung",
+        "type": "object"
+      },
       "TaskActionAvailability": {
         "properties": {
           "action": {
@@ -3880,6 +5514,16 @@
           "message": {
             "title": "Message",
             "type": "string"
+          },
+          "next_step": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RefusalNextStep"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -4169,6 +5813,17 @@
             "maxLength": 8000,
             "title": "Goal",
             "type": "string"
+          },
+          "routing": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TaskRouting"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "First rung, escalation and reviewer as catalog entries; the brief text renders a Routing section from it."
           },
           "schema_version": {
             "const": 1,
@@ -4718,7 +6373,7 @@
                 "type": "null"
               }
             ],
-            "description": "'command' for an explicit reactivation, 'requirements_met' when the last requirement was met.",
+            "description": "'command' for an explicit reactivation, 'requirements_met' when the last requirement was met, 'supersession' when the postponed task was superseded by delivered work.",
             "title": "Reactivation Trigger"
           },
           "reason": {
@@ -4816,6 +6471,17 @@
               }
             ],
             "title": "Canceled At"
+          },
+          "displayed_state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Displayed State"
           },
           "id": {
             "title": "Id",
@@ -5193,6 +6859,18 @@
             ],
             "title": "Description"
           },
+          "displayed_state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The state to show: the stored status, or canceled / superseded for withdrawn work. Canceled work keeps the status it had when it was canceled; read this instead of status to count or show it.",
+            "title": "Displayed State"
+          },
           "effective_is_deferred": {
             "default": false,
             "title": "Effective Is Deferred",
@@ -5503,6 +7181,17 @@
             ],
             "title": "Resolved At"
           },
+          "routing_check": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RoutingCheck"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Present on a write that changed the assignee or routing: whether the routing is consistent, its issues and a consistent replacement with a suggested reviewer."
+          },
           "sort_order": {
             "default": 0,
             "title": "Sort Order",
@@ -5557,6 +7246,34 @@
           "status": {
             "title": "Status",
             "type": "string"
+          },
+          "successor_kind": {
+            "anyOf": [
+              {
+                "enum": [
+                  "replacement",
+                  "supersession"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "How the successor delivers it: a clean replacement or an earlier supersession.",
+            "title": "Successor Kind"
+          },
+          "successor_task_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The task that delivers this task's work instead, for superseded work.",
+            "title": "Successor Task Id"
           },
           "tags": {
             "default": [],
@@ -5722,6 +7439,78 @@
           "reason"
         ],
         "title": "TaskReviewWrite",
+        "type": "object"
+      },
+      "TaskRouting": {
+        "additionalProperties": false,
+        "description": "First rung, escalation ladder and reviewer of one task.",
+        "properties": {
+          "after_last_rung": {
+            "default": "",
+            "description": "What happens when the ladder is exhausted.",
+            "maxLength": 2000,
+            "title": "After Last Rung",
+            "type": "string"
+          },
+          "escalate_after_failed_runs": {
+            "default": 2,
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Escalate After Failed Runs",
+            "type": "integer"
+          },
+          "escalation": {
+            "items": {
+              "$ref": "#/components/schemas/RoutingRung"
+            },
+            "maxItems": 8,
+            "title": "Escalation",
+            "type": "array"
+          },
+          "first_rung": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RoutingRung"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "notes": {
+            "default": "",
+            "description": "Further routing rules, rendered after the ladder.",
+            "maxLength": 4000,
+            "title": "Notes",
+            "type": "string"
+          },
+          "reviewer": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RoutingReviewer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "source_text": {
+            "description": "Original sentences a conversion replaced with this structure; kept for audit and never rendered.",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Source Text",
+            "type": "array"
+          }
+        },
+        "title": "TaskRouting",
         "type": "object"
       },
       "TaskStatus": {
@@ -6137,6 +7926,16 @@
               }
             ],
             "title": "Project Id"
+          },
+          "routing_resolution": {
+            "default": "check",
+            "description": "How an assignee or routing change treats the brief's structured routing: check it against the assignee and the project's review policy (refused or warned as the project is configured), or save the suggested consistent routing.",
+            "enum": [
+              "check",
+              "apply_suggestion"
+            ],
+            "title": "Routing Resolution",
+            "type": "string"
           },
           "sort_order": {
             "anyOf": [
@@ -8769,6 +10568,944 @@
         ]
       }
     },
+    "/api/agent/routing-calibration-contracts": {
+      "get": {
+        "description": "Return every calibration contract and whether any is approved.",
+        "operationId": "list_routing_calibration_contracts_api_agent_routing_calibration_contracts_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoutingCalibrationContractListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Routing Calibration Contracts",
+        "tags": [
+          "Agent Catalog"
+        ]
+      },
+      "post": {
+        "description": "Submit a new calibration contract as the operator; it starts unapproved.",
+        "operationId": "submit_routing_calibration_contract_api_agent_routing_calibration_contracts_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Rationale",
+            "required": true,
+            "schema": {
+              "title": "X-Agent-Rationale",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Correlation-ID",
+            "required": true,
+            "schema": {
+              "title": "X-Correlation-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoutingCalibrationContractSubmit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Submit Routing Calibration Contract",
+        "tags": [
+          "Agent Catalog"
+        ]
+      }
+    },
+    "/api/agent/routing-calibration-contracts/{key}": {
+      "get": {
+        "description": "Return one calibration contract with every revision it has had.",
+        "operationId": "get_routing_calibration_contract_api_agent_routing_calibration_contracts__key__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoutingCalibrationContractDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Routing Calibration Contract",
+        "tags": [
+          "Agent Catalog"
+        ]
+      },
+      "put": {
+        "description": "Submit complete new terms as the next revision; an earlier approval lapses.",
+        "operationId": "revise_routing_calibration_contract_api_agent_routing_calibration_contracts__key__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Rationale",
+            "required": true,
+            "schema": {
+              "title": "X-Agent-Rationale",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Correlation-ID",
+            "required": true,
+            "schema": {
+              "title": "X-Correlation-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoutingCalibrationContractRevise"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Revise Routing Calibration Contract",
+        "tags": [
+          "Agent Catalog"
+        ]
+      }
+    },
+    "/api/agent/routing-calibration-contracts/{key}/approve": {
+      "post": {
+        "description": "Approve the submitted terms by revision and digest, as a principal other than the submitter.",
+        "operationId": "approve_routing_calibration_contract_api_agent_routing_calibration_contracts__key__approve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Rationale",
+            "required": true,
+            "schema": {
+              "title": "X-Agent-Rationale",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Correlation-ID",
+            "required": true,
+            "schema": {
+              "title": "X-Correlation-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoutingCalibrationContractApprove"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Approve Routing Calibration Contract",
+        "tags": [
+          "Agent Catalog"
+        ]
+      }
+    },
+    "/api/agent/routing-qualification-keys": {
+      "get": {
+        "description": "Return the built-in routing keys and the deployment's declared keys.",
+        "operationId": "list_routing_qualification_keys_api_agent_routing_qualification_keys_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "include_retired",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Retired",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoutingQualificationKeyRegistryResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Routing Qualification Keys",
+        "tags": [
+          "Agent Catalog"
+        ]
+      },
+      "post": {
+        "description": "Declare a qualification key, or declare a retired one again, as the operator.",
+        "operationId": "declare_routing_qualification_key_api_agent_routing_qualification_keys_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Rationale",
+            "required": true,
+            "schema": {
+              "title": "X-Agent-Rationale",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Correlation-ID",
+            "required": true,
+            "schema": {
+              "title": "X-Correlation-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoutingQualificationKeyDeclare"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Declare Routing Qualification Key",
+        "tags": [
+          "Agent Catalog"
+        ]
+      }
+    },
+    "/api/agent/routing-qualification-keys/{key}": {
+      "get": {
+        "description": "Return one declared key with its revisions and the entries and tasks naming it.",
+        "operationId": "get_routing_qualification_key_api_agent_routing_qualification_keys__key__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoutingQualificationKeyDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Routing Qualification Key",
+        "tags": [
+          "Agent Catalog"
+        ]
+      },
+      "patch": {
+        "description": "Optimistically revise an active key's label or description.",
+        "operationId": "revise_routing_qualification_key_api_agent_routing_qualification_keys__key__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Rationale",
+            "required": true,
+            "schema": {
+              "title": "X-Agent-Rationale",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Correlation-ID",
+            "required": true,
+            "schema": {
+              "title": "X-Correlation-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoutingQualificationKeyRevise"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Revise Routing Qualification Key",
+        "tags": [
+          "Agent Catalog"
+        ]
+      }
+    },
+    "/api/agent/routing-qualification-keys/{key}/retire": {
+      "post": {
+        "description": "Retire a key; refused while a catalog entry or open task requirement names it.",
+        "operationId": "retire_routing_qualification_key_api_agent_routing_qualification_keys__key__retire_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Rationale",
+            "required": true,
+            "schema": {
+              "title": "X-Agent-Rationale",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Correlation-ID",
+            "required": true,
+            "schema": {
+              "title": "X-Correlation-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoutingQualificationKeyRetire"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Retire Routing Qualification Key",
+        "tags": [
+          "Agent Catalog"
+        ]
+      }
+    },
     "/api/auth/logout": {
       "post": {
         "operationId": "logout_api_auth_logout_post",
@@ -10328,6 +13065,18 @@
             "schema": {
               "default": false,
               "title": "Roots Only",
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Only tasks that are not a parent or summary of other tasks.",
+            "in": "query",
+            "name": "leaf_only",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Only tasks that are not a parent or summary of other tasks.",
+              "title": "Leaf Only",
               "type": "boolean"
             }
           }

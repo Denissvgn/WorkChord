@@ -39,6 +39,7 @@ the same audited command and read-model paths.
 | `app.schemas.task_domain` | `TaskActionRequest` |
 | `app.schemas.task_postponement` | `TaskPostponementResponse`, `TaskPostponeRequest`, `TaskReactivateRequest` |
 | `app.schemas.task_replacement` | `TaskReplacementResponse`, `TaskReplacementCreate` |
+| `app.schemas.task_routing` | `RoutingConvert` |
 | `app.schemas.team` | `MemberCapacity`, `MemberWorkload`, `TeamMemberProfileResponse`, `TeamMemberProfileCreate`, `TeamMemberProfileUpdate`, `TeamMemberCreate`, `TeamMemberResponse`, `TeamMemberUpdate`, `VacationCreate`, `VacationResponse`, `VacationUpdate`, `CapacityAdjustmentCommand`, `CapacityAdjustmentResult`, `CapacityAdjustmentCommand`, `CapacityTransferCommand`, `CapacityTransferResult`, `CapacityTransferCommand`, `CapacityTransferResult`, `CapacityTransferWithdrawal`, `CapacityTransferWithdrawal` |
 | `app.schemas.template` | `TemplateType`, `WorkTemplateResponse` |
 | `app.schemas.triage` | `TriageActionRequest`, `TriageClassificationSuggestionResponse`, `TriageConvertToTaskRequest`, `TriageConvertToTaskResponse`, `TriageDuplicateRequest`, `TriageItemCreate`, `TriageItemResponse`, `TriageItemStatus`, `TriageItemUpdate`, `TriageSnoozeRequest`, `TriageSourceLinkOutcome`, `TriageTaskDraftRequest`, `TriageConvertToBacklogRequest` |
@@ -68,9 +69,10 @@ the same audited command and read-model paths.
 | `app.services.request_source_service` | `RequestSourceConflictError`, `RequestSourceService` |
 | `app.services.saved_view_service` | `SavedViewService` |
 | `app.services.system_settings_service` | `RuntimeSettingsService` |
-| `app.services.task_brief_service` | `TaskBriefService` |
+| `app.services.task_brief_service` | `TaskBriefService`, `TaskBriefService`, `TaskBriefService` |
 | `app.services.task_context_revision_service` | `TaskContextVersionConflictError`, `lock_task_context` |
 | `app.services.task_detail_service` | `TaskDetailService` |
+| `app.services.task_display_state` | `validate_state_filter` |
 | `app.services.task_domain_service` | `domain_capabilities`, `TaskDomainService`, `TaskDomainService` |
 | `app.services.task_postponement_service` | `TaskPostponementService` |
 | `app.services.task_replacement_service` | `TaskReplacementService` |
@@ -111,8 +113,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (21) |
-| Outbound | `backend` (65) |
+| Inbound | `backend` (22) |
+| Outbound | `backend` (67) |
 
 ### External packages
 
@@ -120,7 +122,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 86 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 89 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -184,7 +186,7 @@ flowchart LR
 | `apply_capacity_transfer` | *(async)* `(db: AsyncSession, actor: AgentActor, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: lend capacity between rows of one person until a return date. |
 | `preview_capacity_transfer_withdrawal` | *(async)* `(db: AsyncSession, actor: AgentActor, group_token: str, payload: dict[str, Any]) -> dict[str, Any]` | — | MCP handler: show the capacity every row of a transfer gets back without recording it. |
 | `withdraw_capacity_transfer` | *(async)* `(db: AsyncSession, actor: AgentActor, group_token: str, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: return the lent capacity of every row of one transfer together. |
-| `get_task_replacement` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any]` | — | MCP handler: read the clean-replacement disposition a task takes part in. |
+| `get_task_replacement` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any]` | — | MCP handler: read the replacement or supersession disposition a task takes part in. |
 | `record_task_replacement` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: replace an unaccepted task with a fresh one under a recorded owner decision. |
 | `record_manual_provenance` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: record who executed resolved work delivered outside recorded runs. |
 | `get_task_postponement` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any]` | — | MCP handler: GET /api/tasks/{task_id}/postponement, with each requirement and whether it is met. |
@@ -261,8 +263,7 @@ flowchart LR
 | `get_project_milestone` | *(async)* `(db: AsyncSession, project_id: int, milestone_id: int) -> dict[str, Any] \| None` | — | MCP handler: read one project-scoped milestone. |
 | `list_project_updates` | *(async)* `(db: AsyncSession, project_id: int) -> list[dict[str, Any]] \| None` | — | MCP handler: list append-only project status updates. |
 | `create_agent_project_update` | *(async)* `(db: AsyncSession, actor: AgentActor, project_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: append an attributed, evidence-backed project update. |
-| `_tasks_with_status` | `(nodes: list[dict[str, Any]], status: str) -> list[dict[str, Any]]` | — | Keep the branches of a task tree that hold work in this status, with the other siblings pruned. |
-| `list_project_tasks` | *(async)* `(db: AsyncSession, project_id: int, status: str \| None = None) -> list[dict[str, Any]] \| None` | — | MCP handler: list tasks linked to a project, optionally only branches holding work in one status. |
+| `list_project_tasks` | *(async)* `(db: AsyncSession, project_id: int, status: Optional[str] = None) -> list[dict[str, Any]] \| None` | — | MCP handler: list tasks linked to a project, or those shown in one state. |
 | `list_triage_items` | *(async)* `(db: AsyncSession, active: Optional[bool] = True, statuses: Optional[list[str]] = None, q: Optional[str] = None, source: Optional[str] = None, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]` | — | MCP handler: list triage items. |
 | `get_triage_item` | *(async)* `(db: AsyncSession, triage_item_id: int) -> dict[str, Any] \| None` | — | MCP handler: get a triage item. |
 | `create_triage_item` | *(async)* `(db: AsyncSession, actor: AgentActor, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: idempotently create a PM-controlled triage item. |
@@ -296,4 +297,6 @@ flowchart LR
 | `apply_task_command` | *(async)* `(db, actor, task_id, payload)` | — | Apply the same guarded domain command exposed over REST. |
 | `create_project_backlog_task` | *(async)* `(db, actor, project_id, payload)` | — | Capture durable project work without scheduling or capacity fabrication. |
 | `write_task_brief` | *(async)* `(db, actor, task_id, payload)` | — | Write canonical fields using the shared task context version. |
+| `check_task_routing` | *(async)* `(db, actor, task_id, assignee_id = None)` | — | Check a brief's structured routing against the current or a proposed assignee. |
+| `convert_task_routing` | *(async)* `(db, actor, task_id, payload)` | — | Preview or apply moving a brief's free-text routing into structured routing. |
 | `convert_triage_to_backlog` | *(async)* `(db, actor, triage_item_id, payload)` | — | Use an explicit project backlog destination while preserving legacy conversion. |

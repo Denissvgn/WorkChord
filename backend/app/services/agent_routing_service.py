@@ -51,6 +51,7 @@ from app.schemas.agent_routing import (
     TaskRoutingAssessmentState,
 )
 from app.services.agent_routing_policy import (
+    ROUTING_SKILL_KEYS,
     MAX_ROUTING_CANDIDATES,
     MAX_ROUTING_EXCLUSIONS,
     MAX_ROUTING_PACKET_BYTES,
@@ -129,11 +130,13 @@ class AgentRoutingConflictError(AgentConflictError):
     def detail(self) -> dict[str, Any]:
         """Return the client-safe structured conflict envelope."""
 
-        return {
+        from app.refusal_next_steps import with_next_step
+
+        return with_next_step({
             "code": self.code,
             "message": self.message,
             **self.context,
-        }
+        })
 
 
 @dataclass(frozen=True)
@@ -205,6 +208,18 @@ def _json_projection(value: Any) -> Any:
 
 
 RoutingRowFocus = Callable[[Any], bool] | None
+
+
+def _retired_key_note(missing: Sequence[str], retired: Sequence[str]) -> str:
+    """Name the missing required keys that are retired and can no longer be held."""
+
+    names = [key for key in missing if key in retired]
+    if not names:
+        return ""
+    return (
+        f" Required qualification keys {', '.join(names)} are retired, so no "
+        "catalog entry can hold them; reassess the task."
+    )
 
 
 def _routing_row_focus(
@@ -280,10 +295,18 @@ class AgentRoutingService:
         self.task_service = TaskService(db)
         self.rollout_service = rollout_service
 
-    async def _require_preview_rollout(self, actor: AgentActor):
-        """Translate fail-closed rollout state into the routing error envelope."""
+    async def _require_preview_rollout(
+        self, actor: AgentActor, *, verifier_actor_id: int | None = None, project_id: int | None = None,
+    ):
+        """Translate fail-closed rollout state into the routing error envelope.
+
+        With ``verifier_actor_id`` a verification preview needs only that verifier to be present. The refusal
+        names non-ready actors only of a team the caller belongs to, or of the verifier's team for a caller
+        with authority over the task's project.
+        """
 
         rollout_service = self.rollout_service
+        detail: dict[str, Any] = {}
         if rollout_service is None:
             if self.db is None:
                 rollout_service = AgentRoutingRolloutService()
@@ -292,9 +315,9 @@ class AgentRoutingService:
                     AgentTeamSetupService,
                 )
 
-                readiness = await AgentTeamSetupService(
-                    self.db
-                ).routing_readiness(actor)
+                readiness, detail = await AgentTeamSetupService(self.db).readiness_gate(
+                    actor, verifier_actor_id=verifier_actor_id, project_id=project_id
+                )
                 rollout_service = (
                     AgentRoutingRolloutService()
                     if readiness.status
@@ -306,7 +329,12 @@ class AgentRoutingService:
         try:
             return rollout_service.require_preview()
         except AgentRoutingRolloutError as exc:
+            from app.refusal_next_steps import next_step_for
+
             status = exc.status
+            if "model_aware_routing_disabled" in status.blocker_codes:
+                # The deployment switch is off: no team readiness changes that.
+                detail = {**detail, "next_step": next_step_for(exc.code, variant="enable_routing_mode")}
             raise AgentRoutingConflictError(
                 exc.code,
                 "Model-aware routing is unavailable in the effective rollout mode",
@@ -314,6 +342,7 @@ class AgentRoutingService:
                 effective_mode=status.effective_mode.value,
                 blocker_codes=list(status.blocker_codes),
                 topology_readiness=status.topology_readiness.as_dict(),
+                **{key: value for key, value in detail.items() if key not in {"topology_key", "topology_revision"}},
             ) from exc
 
     @staticmethod
@@ -616,6 +645,15 @@ class AgentRoutingService:
                 raise TaskVersionConflictError(
                     data.expected_task_version,
                     self.task_service._metadata_from_task(task),
+                )
+            if data.required_model.qualification_keys:
+                from app.services.routing_qualification_key_service import (
+                    require_known_qualification_keys,
+                )
+
+                await require_known_qualification_keys(
+                    self.db,
+                    data.required_model.qualification_keys,
                 )
             if data.confidence < MIN_ROUTING_ASSESSMENT_CONFIDENCE:
                 raise ValueError(
@@ -1178,6 +1216,7 @@ class AgentRoutingService:
                     Task.iteration_id == iteration.id,
                     Task.assignee_id.is_not(None),
                     Task.is_deferred.is_(False),
+                    Task.canceled_at.is_(None),
                     # Postponed work occupies no capacity until it is reactivated.
                     Task.status != TaskStatus.POSTPONED.value,
                     Task.id != task.id,
@@ -1453,6 +1492,9 @@ class AgentRoutingService:
                                         binding.model_catalog.reasoning_tier
                                     ),
                                     "effort": binding.model_catalog.effort,
+                                    "qualification_keys": sorted(
+                                        binding.model_catalog.qualification_keys or []
+                                    ),
                                     "context_tier": binding.model_catalog.context_tier,
                                     "modality_tags": sorted(
                                         binding.model_catalog.modality_tags or []
@@ -1587,6 +1629,27 @@ class AgentRoutingService:
                 assessment_id=assessment.id,
                 confidence=assessment.confidence,
                 minimum_confidence=MIN_ROUTING_ASSESSMENT_CONFIDENCE,
+            )
+        # A candidate's catalog entry must hold every required qualification key.
+        required_qualification_keys = tuple(sorted(
+            (assessment.required_model or {}).get("qualification_keys") or ()
+        ))
+        # A required key retired since the assessment can never be held again,
+        # so exclusions name it instead of leaving a silent dead end.
+        retired_qualification_keys: tuple[str, ...] = ()
+        if required_qualification_keys:
+            from app.services.routing_qualification_key_service import (
+                active_qualification_keys,
+            )
+
+            active = await active_qualification_keys(
+                self.db,
+                [key for key in required_qualification_keys if key not in ROUTING_SKILL_KEYS],
+            )
+            retired_qualification_keys = tuple(
+                key
+                for key in required_qualification_keys
+                if key not in ROUTING_SKILL_KEYS and key not in active
             )
 
         (
@@ -1912,6 +1975,11 @@ class AgentRoutingService:
                     actual_tool_tags=binding.tool_tags or (),
                     actual_data_policy_tags=binding.data_policy_tags or (),
                     actual_effort=catalog.effort if catalog is not None else None,
+                    actual_qualification_keys=(
+                        catalog.qualification_keys or ()
+                        if catalog is not None
+                        else ()
+                    ),
                 )
                 publisher_blockers = history.publisher_blockers(catalog.publisher_key if catalog else None) if strict_review else []
                 blockers = sorted(set((*actor_blockers, *model.hard_blocker_codes, *publisher_blockers)))
@@ -2023,6 +2091,9 @@ class AgentRoutingService:
                                 "data_policy_tags": sorted(
                                     binding.data_policy_tags or []
                                 ),
+                                "qualification_keys": list(
+                                    required_qualification_keys
+                                ),
                                 "eligible": True,
                                 "hard_blocker_codes": [],
                                 "adequacy_class": model.adequacy_class,
@@ -2055,9 +2126,16 @@ class AgentRoutingService:
                             "missing_data_policy_tags": list(
                                 model.missing_data_policy_tags
                             ),
+                            "missing_qualification_keys": list(
+                                model.missing_qualification_keys
+                            ),
                             "rationale": (
                                 "Excluded by one or more deterministic hard "
                                 "routing gates."
+                                + _retired_key_note(
+                                    model.missing_qualification_keys,
+                                    retired_qualification_keys,
+                                )
                             ),
                         }
                     )
@@ -2083,6 +2161,12 @@ class AgentRoutingService:
                     f" The task requires effort {required_effort} or higher; "
                     f"this model runs at {values['effort']}, and effort above "
                     "the requirement counts toward adequacy."
+                )
+            if required_qualification_keys:
+                values["rationale"] += (
+                    " The task requires qualification keys "
+                    f"{', '.join(required_qualification_keys)}; this catalog "
+                    "entry holds them at its effort setting."
                 )
             ranked_candidates.append(AgentRoutingCandidate.model_validate(values))
         exclusions = [
@@ -2172,6 +2256,22 @@ class AgentRoutingService:
             response_values["acceptance_blocker_codes"] = (
                 [] if history.candidate else [RoutingBlockerCode.VERIFICATION_CANDIDATE_UNVERIFIABLE.value]
             )
+        # The preview reports whether a calibration contract is approved, and
+        # nothing else from it: candidates and their ranks above never read
+        # performance history. Until routing consumes history the fields stay
+        # out of the digest, so approving or revising a contract cannot
+        # invalidate a preview a selection is about to use.
+        from app.services.routing_calibration_contract_service import (
+            approved_calibration_contract_count,
+        )
+
+        calibration_values: dict[str, Any] = {}
+        approved_contracts = await approved_calibration_contract_count(self.db)
+        if approved_contracts:
+            calibration_values = {
+                "calibration_contract": "approved",
+                "approved_calibration_contracts": approved_contracts,
+            }
         if review_evidence is not None:
             owner = review_evidence["reviewer"]
             response_values["eligibility_basis"]="task_policy_configuration_and_review_evidence"
@@ -2191,7 +2291,9 @@ class AgentRoutingService:
                 canonical_routing_json_bytes(_json_projection(response_values))
             ).hexdigest()
             try:
-                return AgentRoutingPreviewResponse(preview_digest=preview_digest, **response_values)
+                return AgentRoutingPreviewResponse(
+                    preview_digest=preview_digest, **response_values, **calibration_values
+                )
             except ValidationError as exc:
                 errors = exc.errors(include_input=False, include_url=False)
                 if len(errors) != 1 or errors[0]["loc"] or not isinstance(
@@ -2228,7 +2330,6 @@ class AgentRoutingService:
     ) -> AgentRoutingPreviewResponse:
         """Return a deterministic preview and stage bounded shadow/audit evidence."""
 
-        rollout = await self._require_preview_rollout(actor)
         self._require_read(actor)
         if actor.id <= 0:
             raise AgentPermissionError(
@@ -2237,6 +2338,11 @@ class AgentRoutingService:
         task = await self.task_service.get_by_id(task_id)
         if task is None:
             raise LookupError("Task not found")
+        rollout = await self._require_preview_rollout(
+            actor,
+            verifier_actor_id=data.focus_actor_id if data.purpose == "verification" else None,
+            project_id=task.project_id,
+        )
         preview = await self._build_preview(
             task=task,
             data=data,

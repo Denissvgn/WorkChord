@@ -192,6 +192,10 @@ const TaskEditorDrawerContent = ({
                         session={viewSession}
                         onSession={updateViewSession}
                         onTaskUpdated={latest => setOpeningSnapshot(latest)}
+                        onOpenTask={id => guard.request(() => {
+                            const next = new URLSearchParams(params); next.set('task', String(id));
+                            onClose(); navigate(scopeLink(`/tasks?${next}`));
+                        })}
                         onEditAll={() => setEditAll(true)}
                         onDirty={guard.setDirty}
                         onPending={guard.setPending}

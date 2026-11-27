@@ -259,6 +259,7 @@ async def _check_model(db, task, reviewer, expected_assessment, method, tests):
         actual_tool_tags=binding.tool_tags or (),
         actual_data_policy_tags=binding.data_policy_tags or (),
         actual_effort=catalog.effort,
+        actual_qualification_keys=catalog.qualification_keys or (),
     )
     if eligibility.hard_blocker_codes:
         _conflict(
@@ -275,7 +276,7 @@ async def check_supervised_selection(db, task, principal, selection, reviewer_pr
 
     scope = selection["review_evidence"]
     routing = AgentRoutingService(db)
-    await routing._require_preview_rollout(principal)
+    await routing._require_preview_rollout(principal, verifier_actor_id=scope["reviewer"]["actor_id"], project_id=task.project_id)
     data = AgentRoutingPreviewCreate(
         purpose="verification",
         assessment_id=scope["assessment_id"],

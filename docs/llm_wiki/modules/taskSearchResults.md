@@ -11,6 +11,7 @@ _Auto-generated from `frontend/src/components/tasks/taskSearchResults.ts`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../types/task` | `TaskReference` | Declaration | erased |
+| `../../utils/taskState` | `stateOf` | — | compiler-dependent |
 | `i18next` | `TFunction` | Declaration | erased |
 
 ## Module Signals
@@ -29,11 +30,15 @@ flowchart LR
     n0["frontend/src/components/layout/CommandMenu.tsx"]
     n1["frontend/src/components/tasks/taskSearchResults.ts"]
     n2["frontend/src/types/task.ts"]
+    n3["frontend/src/utils/taskState.ts"]
     n0 --> n1
     n1 --> n2
+    n1 --> n3
+    n3 --> n2
     click n0 "../modules/CommandMenu.md"
     click n1 "../modules/taskSearchResults.md"
     click n2 "../modules/types_task.md"
+    click n3 "../modules/taskState.md"
 ```
 
 ### Internal neighbors
@@ -42,6 +47,7 @@ flowchart LR
 |---|---|
 | Inbound | [CommandMenu](../modules/CommandMenu.md) |
 | Outbound | [types_task](../modules/types_task.md) |
+| Outbound | [taskState](../modules/taskState.md) |
 
 ### External packages
 

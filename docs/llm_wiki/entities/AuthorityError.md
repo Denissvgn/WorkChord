@@ -85,7 +85,7 @@ flowchart LR
 |---|---|---|---:|
 | `_check_bulk_write` | call | [authority](../modules/authority.md) | 4 |
 | `_guard_bulk_project_review_policy` | call | [authority](../modules/authority.md) | 2 |
-| `authorize_domain_writes` | call | [authority](../modules/authority.md) | 13 |
+| `authorize_domain_writes` | call | [authority](../modules/authority.md) | 14 |
 | `require_operator` | call | [authority](../modules/authority.md) | 1 |
 | `require_owner_override` | call | [authority](../modules/authority.md) | 1 |
 | `require_project` | call | [authority](../modules/authority.md) | 2 |
@@ -96,4 +96,4 @@ flowchart LR
 | `authority_error` | type_reference | [app_main](../modules/app_main.md) | — |
 | `mcp_server` | import | [mcp_server](../modules/mcp_server.md) | — |
 
-> References: showing 12 of 106 logical references; 94 omitted by the 12-row generated summary limit.
+> References: showing 12 of 110 logical references; 98 omitted by the 12-row generated summary limit.

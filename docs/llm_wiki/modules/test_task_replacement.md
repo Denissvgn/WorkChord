@@ -11,7 +11,7 @@ A clean replacement of unattributable work: audited, counted once, and held when
 | Source | Symbols |
 |--------|---------|
 | `app.authority` | `Authority`, `AuthorityError` |
-| `app.commands` | `PlanningConflict`, `PlanningConflict` |
+| `app.commands` | `PlanningConflict`, `command_transaction`, `PlanningConflict` |
 | `app.config` | `get_settings` |
 | `app.main` | `app` |
 | `app.models.agent` | `AgentModelCatalogEntry`, `AgentRun`, `AgentTaskAssignment` |
@@ -23,6 +23,7 @@ A clean replacement of unattributable work: audited, counted once, and held when
 | `app.models.release` | `Release`, `release_tasks` |
 | `app.models.task` | `Task`, `TaskDependency` |
 | `app.models.task_replacement` | `TaskReplacement` |
+| `app.refusal_next_steps` | `NEXT_STEPS`, `VARIANTS` |
 | `app.schemas.task_replacement` | `TaskReplacementCreate` |
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService`, `DeliveryDependencyService` |
@@ -67,7 +68,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (1) |
-| Outbound | `backend` (31) |
+| Outbound | `backend` (32) |
 
 ### External packages
 
@@ -75,7 +76,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 33 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -91,6 +92,7 @@ flowchart LR
 | `test_replacement_refuses_ineligible_pairs` | *(async)* `(db_session, task_factory, monkeypatch)` | `@pytest.mark.sqlite` | — |
 | `test_only_a_project_manager_or_pm_actor_decides` | *(async)* `(db_session, task_factory, kind, role, scopes, allowed)` | `@pytest.mark.sqlite`, `@pytest.mark.parametrize(('kind', 'role', 'scopes', 'allowed'), [('human', None, (), False), ('human', None, (), True), ('agent', 'worker', ('planning:read', 'planning:write'), False), ('agent', 'pm', ('planning:read', 'planning:write'), True)])` | — |
 | `test_held_replacement_is_refused_acceptance_without_the_strict_policy` | *(async)* `(db_session, task_factory, monkeypatch, actor_factory)` | `@pytest.mark.sqlite` | — |
+| `test_an_owner_override_cannot_accept_a_held_replacement_so_no_next_step_offers_it` | *(async)* `(db_session, task_factory, monkeypatch, actor_factory)` | `@pytest.mark.sqlite` | — |
 | `test_carried_contributor_cannot_verify_without_the_strict_policy` | *(async)* `(db_session, db_session_factory, task_factory, team_member_factory, actor_factory, monkeypatch, transport, overlap)` | `@databases`, `@pytest.mark.parametrize('transport', ['rest', 'mcp'])`, `@pytest.mark.parametrize('overlap', ['same_actor', 'same_profile'])`, `@pytest.mark.usefixtures('deployed_agent_skill_release')` | — |
 | `test_a_chained_replacement_inherits_the_earlier_carried_work` | *(async)* `(db_session, task_factory, actor_factory, monkeypatch)` | `@pytest.mark.sqlite` | — |
 | `_replaced_pair` | *(async)* `(db, task_factory, *, backlog)` | — | — |

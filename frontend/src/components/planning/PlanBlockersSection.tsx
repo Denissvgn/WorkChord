@@ -15,11 +15,13 @@ import type { Task, TaskBulkOperationRequest, TaskBulkOperationResponse } from '
 import type { TeamMember } from '../../types/team';
 import { formatDecimal } from '../../utils/workNumbers';
 import { getApiErrorMessage } from '../../utils/apiError';
+import { resultsNeedingRouting, routingChangeItems, routingNeedsResolution, type RoutingChangeItem } from '../../utils/routingCheck';
+import { RoutingResultsList } from '../tasks/RoutingCheckNotice';
 
 import { Select } from '../../components/common/Select';
 interface Props { iterationId: number; tasks: Task[]; members: TeamMember[]; unassignedCount: number; effortCount: number }
 interface RowLoad { member: TeamMember; current: number; capacity: number; added: number; unknown: boolean }
-interface Batch { request: TaskBulkOperationRequest; response: TaskBulkOperationResponse }
+interface Batch { request: TaskBulkOperationRequest; response: TaskBulkOperationResponse; items: RoutingChangeItem[]; canKeep: boolean }
 const effortHours = (task: Task) => task.effort_hours ?? (task.effort_days ?? 0) * (task.nominal_day_hours ?? 8);
 
 export const PlanBlockersSection = ({ iterationId, tasks, members, unassignedCount, effortCount }: Props) => {
@@ -98,24 +100,37 @@ export const PlanBlockersSection = ({ iterationId, tasks, members, unassignedCou
                 const request: TaskBulkOperationRequest = { task_ids: selected.map(task => task.id), action: 'set_assignee', payload: { assignee_id: load.member.id }, dry_run: true,
                     expected_versions: Object.fromEntries(selected.map(task => [task.id, task.version])), expected_revisions: { [iterationId]: revision } };
                 const response = await taskService.runBulkOperation(request);
-                if (response.failed_count || response.results.length !== selected.length || response.results.some(result => result.outcome !== 'would_update')
+                // A reviewer that no longer fits the new assignee is a choice to make in the preview, not a failure.
+                const settled = (result: TaskBulkOperationResponse['results'][number]) => result.outcome === 'would_update'
+                    || (result.outcome === 'failed' && routingNeedsResolution(result.routing_check));
+                if (response.results.length !== selected.length || response.results.some(result => !settled(result))
                     || response.input_revisions?.[iterationId] !== revision || selected.some(task => response.task_versions?.[task.id] !== task.version)) {
                     throw new Error(response.results.find(result => result.error)?.error || t('planWork.refreshRequired'));
                 }
-                batches.push({ request, response });
+                const needing = resultsNeedingRouting(response.results);
+                // Using the suggested routing can rewrite more tasks than the ones that conflict, so list what it would change.
+                const suggested = needing.length > 0
+                    ? await taskService.runBulkOperation({ ...request, payload: { ...request.payload, routing_resolution: 'apply_suggestion' } })
+                    : null;
+                batches.push({ request, response, items: suggested ? routingChangeItems(needing, suggested.results) : [],
+                    canKeep: needing.every(result => result.routing_check?.conflict_mode === 'warn') });
             }
             setPreview({ signature, batches, loads });
         } catch (err) { setError(getApiErrorMessage(err, t('planWork.refreshRequired'))); }
         finally { setPending(false); }
     };
-    const apply = async () => {
+    const routingItems = currentPreview ? currentPreview.batches.flatMap(batch => batch.items) : [];
+    const routingCanKeep = currentPreview ? currentPreview.batches.every(batch => batch.canKeep) : false;
+    const taskTitles = new Map(tasks.map(task => [task.id, task.title]));
+    const apply = async (resolution?: 'apply_suggestion') => {
         if (!currentPreview) return;
         setPending(true); setError(null); setMessage(null);
         let applied = 0;
         try {
             let revisions = currentPreview.batches[0].response.input_revisions;
             for (const batch of currentPreview.batches) {
-                const response = await taskService.runBulkOperation({ ...batch.request, dry_run: false,
+                const request = resolution && batch.items.length > 0 ? { ...batch.request, payload: { ...batch.request.payload, routing_resolution: resolution } } : batch.request;
+                const response = await taskService.runBulkOperation({ ...request, dry_run: false,
                     expected_versions: batch.response.task_versions, expected_revisions: revisions });
                 applied += response.results.filter(result => result.outcome === 'updated').length;
                 if (response.failed_count || response.results.some(result => result.outcome !== 'updated')) throw new Error(t('planWork.refreshRequired'));
@@ -159,10 +174,20 @@ export const PlanBlockersSection = ({ iterationId, tasks, members, unassignedCou
                         <th scope="row" className="px-2 py-3">{load.member.name}</th><td className="px-2 py-3">{hours(load.current)}</td><td className="px-2 py-3">{hours(load.added)}</td><td className="px-2 py-3">{hours(load.current + load.added)}
                             {load.current + load.added > load.capacity && <strong className="block">{t('planWork.overCapacity')}</strong>}{load.unknown && <span className="block">{t('planWork.unknownEffort')}</span>}</td><td className="px-2 py-3">{hours(load.capacity)}</td>
                     </tr>)}</tbody></table></div>
+                {routingItems.length > 0 && <div role="region" aria-label={t('taskReassign.bulkTitle', { count: routingItems.length })} className="space-y-2 rounded-md border border-feedback-warning-border bg-feedback-warning-muted px-3 py-2 text-feedback-warning-foreground">
+                    <p className="text-sm font-semibold">{t('taskReassign.bulkTitle', { count: routingItems.length })}</p>
+                    <RoutingResultsList items={routingItems} titleOf={taskId => taskTitles.get(taskId) ?? t('surfaces.taskBulk.taskNumber', { id: taskId })} />
+                    <p className="text-sm">{t('taskReassign.bulkHelp')}</p>
+                    {routingItems.some(item => !item.after) && <p className="text-sm font-medium">{t('taskReassign.bulkNoSuggestion')}</p>}
+                </div>}
                 {currentPreview.batches.flatMap(batch => batch.response.results.flatMap(result => result.warnings.map((warning, index) => <p key={`${result.task_id}-${index}`} className="text-sm">{warning}</p>)))}
             </div>}
             {unassigned.length > 0 && <div className="flex flex-wrap gap-2"><Button variant="secondary" disabled={pending || !options.isSuccess || options.isFetching || assignments.some(group => !members.some(member => member.id === group.row))} onClick={() => void previewAssignments()}>{t('planWork.preview')}</Button>
-                {currentPreview && <Button disabled={pending || options.isFetching} onClick={() => void apply()}>{t('planWork.assign', { count: unassigned.length })}</Button>}</div>}
+                {currentPreview && routingItems.length > 0 && <Button disabled={pending || options.isFetching || routingItems.some(item => !item.after)} onClick={() => void apply('apply_suggestion')}>{t('taskReassign.planAssignWithSuggestions', { count: unassigned.length })}</Button>}
+                {currentPreview && routingItems.length > 0 && routingCanKeep
+                    && <Button variant="secondary" disabled={pending || options.isFetching} onClick={() => void apply()}>{t('taskReassign.planAssignKeepReviewers', { count: unassigned.length })}</Button>}
+                {currentPreview && routingItems.length === 0 && <Button disabled={pending || options.isFetching} onClick={() => void apply()}>{t('planWork.assign', { count: unassigned.length })}</Button>}</div>}
+            <p role="status" className="sr-only">{routingItems.length > 0 ? `${t('taskReassign.bulkTitle', { count: routingItems.length })}. ${t('taskReassign.bulkHelp')}` : ''}</p>
             {message && <p role="status">{message}</p>}{error && <p role="alert" className="text-feedback-danger-foreground">{error}</p>}
         </section>
         <section aria-labelledby="plan-needs-effort" className="space-y-3">

@@ -112,4 +112,4 @@ flowchart LR
 | `preview_iteration_schedule` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
 | `schedule_iteration` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
 
-> References: showing 12 of 81 logical references; 69 omitted by the 12-row generated summary limit.
+> References: showing 12 of 82 logical references; 70 omitted by the 12-row generated summary limit.

@@ -113,15 +113,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_agent_route_index | _require_catalog_read | 195 | `_require_catalog_read(actor)` |
-| _require_catalog_read | any | 159 | `any(...)` |
-| _require_catalog_read | actor_has_scope | 160 | `actor_has_scope(actor, scope)` |
+| get_agent_route_index | _require_catalog_read | 211 | `_require_catalog_read(actor)` |
+| _require_catalog_read | any | 175 | `any(...)` |
+| _require_catalog_read | actor_has_scope | 176 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance | 90 | `isinstance(scopes, list)` |
-| _require_catalog_read | HTTPException | 163 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Missing catalog read scope')` |
-| get_agent_route_index | AgentProfileCatalogService.routes | 196 | `AgentProfileCatalogService(db).routes(data not statically known)` |
-| get_agent_route_index | AgentProfileCatalogService | 196 | `AgentProfileCatalogService(db)` |
+| _require_catalog_read | HTTPException | 179 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Missing catalog read scope')` |
+| get_agent_route_index | AgentProfileCatalogService.routes | 212 | `AgentProfileCatalogService(db).routes(data not statically known)` |
+| get_agent_route_index | AgentProfileCatalogService | 212 | `AgentProfileCatalogService(db)` |
 
 ### Boundary effects
 
@@ -131,10 +131,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `_require_catalog_read` | `any` | 159 |
+| external_call | `_require_catalog_read` | `any` | 175 |
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | external_call | `actor_scopes` | `isinstance` | 90 |
-| external_call | `_require_catalog_read` | `HTTPException` | 163 |
+| external_call | `_require_catalog_read` | `HTTPException` | 179 |
 
 ## Behavior
 

@@ -41,6 +41,7 @@
     | 'model_reasoning_tier_insufficient'
     | 'model_context_tier_insufficient'
     | 'model_effort_insufficient'
+    | 'model_qualification_missing'
     | 'model_modality_missing'
     | 'model_tool_missing'
     | 'model_data_policy_missing'

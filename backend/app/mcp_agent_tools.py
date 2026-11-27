@@ -1256,7 +1256,7 @@ async def get_task_replacement(
     actor: AgentActor,
     task_id: int,
 ) -> dict[str, Any]:
-    """MCP handler: read the clean-replacement disposition a task takes part in."""
+    """MCP handler: read the replacement or supersession disposition a task takes part in."""
     from app.schemas.task_replacement import TaskReplacementResponse
     from app.services.agent_service import require_scope
     from app.services.task_replacement_service import TaskReplacementService
@@ -2638,28 +2638,20 @@ async def create_agent_project_update(
     return response.model_dump(mode="json")
 
 
-def _tasks_with_status(nodes: list[dict[str, Any]], status: str) -> list[dict[str, Any]]:
-    """Keep the branches of a task tree that hold work in this status, with the other siblings pruned."""
-    kept = []
-    for node in nodes:
-        children = _tasks_with_status(node.get("children") or [], status)
-        if node["status"] == status or children:
-            kept.append({**node, "children": children})
-    return kept
+async def list_project_tasks(db: AsyncSession, project_id: int, status: Optional[str] = None) -> list[dict[str, Any]] | None:
+    """MCP handler: list tasks linked to a project, or those shown in one state.
 
-
-async def list_project_tasks(
-    db: AsyncSession,
-    project_id: int,
-    status: str | None = None,
-) -> list[dict[str, Any]] | None:
-    """MCP handler: list tasks linked to a project, optionally only branches holding work in one status."""
-    tasks = await ProjectService(db).get_tasks(project_id)
+    ``status`` is a displayed state: planned, active, resolved, closed, postponed, canceled or
+    superseded. With it the result is a flat list of the tasks at any depth shown in that state.
+    """
+    if status is not None:
+        from app.services.task_display_state import validate_state_filter
+        validate_state_filter(status)
+    tasks = await ProjectService(db).get_tasks(project_id, status)
     if tasks is None:
         return None
     task_service = TaskService(db)
-    rows = [task_service.task_to_response(task).model_dump(mode="json") for task in tasks]
-    return rows if status is None else _tasks_with_status(rows, status)
+    return [task_service.task_to_response(task).model_dump(mode="json") for task in tasks]
 
 
 async def list_triage_items(
@@ -3698,6 +3690,20 @@ async def write_task_brief(db, actor, task_id, payload):
     from app.services.task_brief_service import TaskBriefService
     task = await TaskBriefService(db).write(task_id, BriefWrite.model_validate(payload))
     return TaskService(db).task_to_response(task).model_dump(mode="json")
+
+
+async def check_task_routing(db, actor, task_id, assignee_id=None):
+    """Check a brief's structured routing against the current or a proposed assignee."""
+    from app.services.task_brief_service import TaskBriefService
+    return (await TaskBriefService(db).routing_check(task_id, assignee_id)).model_dump(mode="json")
+
+
+async def convert_task_routing(db, actor, task_id, payload):
+    """Preview or apply moving a brief's free-text routing into structured routing."""
+    from app.schemas.task_routing import RoutingConvert
+    from app.services.task_brief_service import TaskBriefService
+    result = await TaskBriefService(db).routing_conversion(task_id, RoutingConvert.model_validate(payload))
+    return result.model_dump(mode="json")
 
 
 async def convert_triage_to_backlog(db, actor, triage_item_id, payload):

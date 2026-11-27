@@ -24,7 +24,8 @@ class AuthorityError(RuntimeError):
         super().__init__(message)
 
     def detail(self):
-        return {"code": self.code, "message": str(self)}
+        from app.refusal_next_steps import with_next_step
+        return with_next_step({"code": self.code, "message": str(self)})
 
 
 @dataclass(frozen=True)
@@ -248,13 +249,16 @@ def _guard_bulk_project_review_policy(state):
         for row in parameters if isinstance(parameters, (list, tuple)) else [parameters]:
             if isinstance(row, dict):
                 pairs.extend(row.items())
+    # Each policy column with the value a non-operator may insert.
+    permitted = {column: False, "routing_conflict_mode": "refuse"}
     for key, value in pairs:
-        if getattr(key, "key", key) == column:
+        name = getattr(key, "key", key)
+        if name in permitted:
             # Existing-row changes and expression-valued inserts need the operator.
-            if state.is_update or getattr(value, "value", value) is not False:
-                raise AuthorityError("operator_required", "Changing the project's review publisher policy requires an operator.")
-    if column in (getattr(statement, "_select_names", None) or ()):
-        raise AuthorityError("operator_required", "Importing the project's review publisher policy requires an operator.")
+            if state.is_update or getattr(value, "value", value) != permitted[name] or not isinstance(getattr(value, "value", value), type(permitted[name])):
+                raise AuthorityError("operator_required", "Changing the project's review policy requires an operator.")
+    if set(permitted) & set(getattr(statement, "_select_names", None) or ()):
+        raise AuthorityError("operator_required", "Importing the project's review policy requires an operator.")
 
 
 def _check_bulk_write(state, authority):
@@ -381,6 +385,9 @@ def authorize_domain_writes(session, _flush_context, _instances):
             if (obj in session.new and obj.require_different_review_publisher
                     or obj not in session.new and "require_different_review_publisher" in changed):
                 raise AuthorityError("operator_required", "Changing the project's review publisher policy requires an operator.")
+            if (obj in session.new and obj.routing_conflict_mode not in (None, "refuse")
+                    or obj not in session.new and "routing_conflict_mode" in changed):
+                raise AuthorityError("operator_required", "Changing the project's routing conflict mode requires an operator.")
         if (table == "agent_actors" and obj in session.dirty and obj not in session.deleted
                 and changed <= {"queue_revision", "updated_at"}):
             if obj.id in session.info.get("domain_queue_actors", set()):

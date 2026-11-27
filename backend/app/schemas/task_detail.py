@@ -13,6 +13,8 @@ class TaskReference(BaseModel):
     title: str
     version: int
     status: str
+    # The stored status, or canceled / superseded for withdrawn work (which keeps its old stored status).
+    displayed_state: str | None = None
     project_id: int | None
     iteration_id: int | None
     parent_id: int | None
@@ -53,5 +55,9 @@ class HumanWorkReference(TaskReference):
 class HumanWorkResponse(BaseModel):
     state: str
     queues: dict[str, list[HumanWorkReference]]
+    # The person's postponed, canceled and superseded work: shown as such, never as actionable work in a queue.
+    stopped: list[HumanWorkReference] = Field(default_factory=list)
+    # More stopped work exists than the first page lists (newest first).
+    stopped_has_more: bool = False
     has_more: bool
     next_after_id: int | None

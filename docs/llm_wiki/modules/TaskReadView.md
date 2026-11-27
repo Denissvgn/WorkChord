@@ -18,16 +18,19 @@ _Auto-generated from `frontend/src/components/tasks/TaskReadView.tsx`._
 | `../../utils/adminAccess` | `clearAdminApiKey` | — | compiler-dependent |
 | `../../utils/apiError` | `getApiErrorMessage`, `normalizeApiError` | — | compiler-dependent |
 | `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
+| `../../utils/taskState` | `isEndedState`, `stateOf` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/ButtonLink` | `ButtonLink` | — | compiler-dependent |
 | `../common/Input` | `Input` | — | compiler-dependent |
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
-| `../ui/tone` | `pillToneClassName`, `STATUS_TONE` | — | compiler-dependent |
+| `../ui/tone` | `pillToneClassName`, `STATE_TONE` | — | compiler-dependent |
 | `./DeliveryDependencies` | `DeliveryDependencies` | — | compiler-dependent |
 | `./GitHubReconciliationPanel` | `GitHubReconciliationPanel` | — | compiler-dependent |
 | `./TaskAssigneeDisplay` | `TaskAssigneeDisplay` | — | compiler-dependent |
 | `./TaskBriefEditor` | `TaskBriefEditor` | — | compiler-dependent |
 | `./TaskDiscussion` | `TaskDiscussion` | — | compiler-dependent |
+| `./TaskReassign` | `TaskReassign` | — | compiler-dependent |
+| `./TaskRoutingSummary` | `TaskRoutingSummary` | — | compiler-dependent |
 | `./TaskTimelinePanel` | `TaskTimelinePanel` | — | compiler-dependent |
 | `./TaskWorkPanel` | `TaskWorkPanel` | — | compiler-dependent |
 | `./TimeEntriesPanel` | `TimeEntriesPanel` | — | compiler-dependent |
@@ -69,8 +72,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (7) |
-| Outbound | `frontend` (24) |
+| Inbound | `frontend` (8) |
+| Outbound | `frontend` (27) |
 
 ### External packages
 
@@ -78,16 +81,16 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskViewPart](../entities/TaskViewPart.md) | Type alias | 32 | `'brief' \| 'work' \| 'activity'` | — |
+| [TaskViewPart](../entities/TaskViewPart.md) | Type alias | 35 | `'brief' \| 'work' \| 'activity'` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskReadView` | <pre><code>&#40;&#123; task&#44; draftKey&#44; session&#58; heldSession&#44; onSession&#58; onHeldSession&#44; onTaskUpdated&#44; onEditAll&#44; onDirty&#44; onPending&#44; onReload &#125;&#58; &#123;&#10;    &#47;&#42;&#42; Panel state held by the drawer across version remounts&#59; the view keeps its own when none is given&#46; &#42;&#47;&#10;    session&#63;&#58; TaskViewSession&#59;&#10;    onSession&#63;&#58; TaskViewSessionUpdate&#59;&#10;    task&#58; Task&#59;&#10;    draftKey&#58; string &#124; null&#59;&#10;    onTaskUpdated&#58; &#40;task&#58; Task&#41; &#61;&#62; void&#59;&#10;    onEditAll&#58; &#40;&#41; &#61;&#62; void&#59;&#10;    onDirty&#58; &#40;dirty&#58; boolean&#41; &#61;&#62; void&#59;&#10;    onPending&#58; &#40;pending&#58; boolean&#41; &#61;&#62; void&#59;&#10;    onReload&#58; &#40;&#41; &#61;&#62; void&#59;&#10;&#125;&#41;</code></pre> | — | Read-first task view: Brief, Work & review, Activity. Nothing is an input |
+| `TaskReadView` | <pre><code>&#40;&#123; task&#44; draftKey&#44; session&#58; heldSession&#44; onSession&#58; onHeldSession&#44; onTaskUpdated&#44; onOpenTask&#44; onEditAll&#44; onDirty&#44; onPending&#44; onReload &#125;&#58; &#123;&#10;    &#47;&#42;&#42; Panel state held by the drawer across version remounts&#59; the view keeps its own when none is given&#46; &#42;&#47;&#10;    session&#63;&#58; TaskViewSession&#59;&#10;    onSession&#63;&#58; TaskViewSessionUpdate&#59;&#10;    task&#58; Task&#59;&#10;    draftKey&#58; string &#124; null&#59;&#10;    onTaskUpdated&#58; &#40;task&#58; Task&#41; &#61;&#62; void&#59;&#10;    &#47;&#42;&#42; Opens another task from a link in this view&#44; such as a superseded task&#39;s successor&#59; the drawer closes and navigates&#46; &#42;&#47;&#10;    onOpenTask&#63;&#58; &#40;taskId&#58; number&#41; &#61;&#62; void&#59;&#10;    onEditAll&#58; &#40;&#41; &#61;&#62; void&#59;&#10;    onDirty&#58; &#40;dirty&#58; boolean&#41; &#61;&#62; void&#59;&#10;    onPending&#58; &#40;pending&#58; boolean&#41; &#61;&#62; void&#59;&#10;    onReload&#58; &#40;&#41; &#61;&#62; void&#59;&#10;&#125;&#41;</code></pre> | — | Read-first task view: Brief, Work & review, Activity. Nothing is an input |

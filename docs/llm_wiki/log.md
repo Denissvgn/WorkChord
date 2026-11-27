@@ -4469,3 +4469,208 @@ Refreshed against the 1.10.0 code. New and changed subjects: delivery prerequisi
 - Dependency pages initialized: 0
 - Surface policy updated: no
 - Generated surface pages retired: 1
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3ce76d74c3cdf2d4f4cfba7e95502708b38b23db3dca5e6f6d299492d4e34b53`
+- Pages created: 7
+- Pages updated: 88
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3823
+- Pages deprecated: 0
+- Semantic fields preserved: 5
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 2
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:f49e4c02c2deb93480e9846348f399e9a2b4722fb8ae45eda1ea0a4f58b2beaa`
+- Pages created: 2
+- Pages updated: 56
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3862
+- Pages deprecated: 0
+- Semantic fields preserved: 5
+- Moved entities: none
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:c772116734185eacb52856c59717640da255b4c2459a743cef462de48ce5fa43`
+- Pages created: 40
+- Pages updated: 246
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3674
+- Pages deprecated: 0
+- Semantic fields preserved: 8
+- Moved entities: none
+- Flow pages initialized: 5 (http=5)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:668d03c74655a6a02f5d4f20383b81db30cf5d7a2a86d9ba4d6ba51253717f56`
+- Pages created: 7
+- Pages updated: 39
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3921
+- Pages deprecated: 0
+- Semantic fields preserved: 5
+- Moved entities: none
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:8974edc07497c27ff89111e49c906886ad34023575171b12cf360ec1c769100b`
+- Pages created: 7
+- Pages updated: 270
+- Pages metadata-only: 3
+- Pages skipped (unchanged): 3695
+- Pages deprecated: 0
+- Semantic fields preserved: 17
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 3
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 1
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 9
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3a5bac76f91a89ae1c9a3835b7f8461352fe8d6d94b6963d434dfbc1c6a4cc19`
+- Pages created: 10
+- Pages updated: 120
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3854
+- Pages deprecated: 0
+- Semantic fields preserved: 10
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 1
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3ca4fbc978ed38ba9f6ef8126708d9059220e643d9d0bae120c0fc6ac9c1ce2d`
+- Pages created: 33
+- Pages updated: 170
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3814
+- Pages deprecated: 0
+- Semantic fields preserved: 6
+- Moved entities: none
+- Flow pages initialized: 5 (http=5)
+- Workflow pages created: 1
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:c1de0a55a10be18a46cecde98472d6cc14d8ca64cc070578153f550acfb396e0`
+- Pages created: 24
+- Pages updated: 312
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3705
+- Pages deprecated: 0
+- Semantic fields preserved: 12
+- Moved entities: none
+- Flow pages initialized: 4 (http=2, mcp=2)
+- Workflow pages created: 2
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:06019ca75fc8a47ae2622645cc595b9ee6fc9db28f03e1c6b49888e9ba467318`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 4041
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:e71a256b54fbf8f50c23a00c8cddf8292500af69640b33828a646fad6210f978`
+- Pages created: 18
+- Pages updated: 89
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3952
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:4dbd5a4023f895057b8df83b9bb4ea8b2ced059b7f99ee10b40f8c0201cb3679`
+- Pages created: 8
+- Pages updated: 145
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3914
+- Pages deprecated: 0
+- Semantic fields preserved: 12
+- Moved entities: none

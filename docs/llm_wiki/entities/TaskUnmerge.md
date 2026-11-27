@@ -1,6 +1,6 @@
 # TaskUnmerge
 
-**Location:** `backend/app/schemas/task.py:278`
+**Location:** `backend/app/schemas/task.py:294`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

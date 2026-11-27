@@ -1,6 +1,6 @@
 # TaskBulkOperationsPanelProps
 
-**Location:** `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx:22`
+**Location:** `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx:24`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md)

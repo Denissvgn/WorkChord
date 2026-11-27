@@ -12,6 +12,7 @@ _Auto-generated from `frontend/src/components/projects/ProjectTaskTree.tsx`._
 |--------|---------|-----------|------------------|
 | `../../i18n/i18n` | `i18n` | — | compiler-dependent |
 | `../../types/task` | `Task` | Declaration | erased |
+| `../../utils/taskState` | `stateOf` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `../tasks/TaskEditorDrawer` | `TaskEditorDrawer` | — | compiler-dependent |
 | `../tasks/TaskRow` | `TaskRow` | — | compiler-dependent |
@@ -54,7 +55,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (12) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -62,14 +63,14 @@ flowchart LR
 |---|---:|---:|
 | typescript | 1 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ProjectTaskSection](../entities/ProjectTaskSection.md) | Interface | 18 | — | — |
-| [ProjectTaskTreeProps](../entities/ProjectTaskTreeProps.md) | Interface | 24 | — | — |
+| [ProjectTaskSection](../entities/ProjectTaskSection.md) | Interface | 19 | — | — |
+| [ProjectTaskTreeProps](../entities/ProjectTaskTreeProps.md) | Interface | 25 | — | — |
 
 ## Functions
 

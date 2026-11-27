@@ -1,6 +1,6 @@
 # SavedIn
 
-**Location:** `frontend/src/pages/SettingsPage.tsx:55`
+**Location:** `frontend/src/pages/SettingsPage.tsx:57`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SettingsPage](../modules/SettingsPage.md)

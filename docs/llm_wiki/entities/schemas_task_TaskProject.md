@@ -1,6 +1,6 @@
 # TaskProject
 
-**Location:** `backend/app/schemas/task.py:149`
+**Location:** `backend/app/schemas/task.py:153`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

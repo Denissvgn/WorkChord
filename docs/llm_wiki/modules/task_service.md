@@ -48,6 +48,7 @@ Generic task events reserve the review evidence issue and revocation names for t
 | `app.services.task_hierarchy_service` | `TaskHierarchyService`, `TaskTreeIntegrityError` |
 | `app.services.task_import_service` | `TaskImportService` |
 | `app.services.task_postponement_service` | `require_unreferenced`, `require_unreferenced` |
+| `app.services.task_routing_service` | `enforce_routing` |
 | `app.services.task_status_service` | `TaskStatusService` |
 | `app.services.work_metrics` | `task_signals`, `task_signals` |
 | `datetime` | `date` |
@@ -77,9 +78,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (75) |
+| Inbound | `backend` (76) |
 | Inbound | `scripts` (2) |
-| Outbound | `backend` (30) |
+| Outbound | `backend` (31) |
 
 ### External packages
 
@@ -87,7 +88,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 98 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 100 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

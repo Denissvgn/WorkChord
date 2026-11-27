@@ -90,9 +90,9 @@ sequenceDiagram
     p3-->>p30: exc.detail
 ```
 
-> Call sequence diagram shows 30 of 177 interactions; 147 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 180 interactions; 150 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 54 (53 omitted); unresolved 1 of 70 (69 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 54 (53 omitted); unresolved 1 of 73 (72 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -191,17 +191,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| owner_accept_task | domain_result | 278 | `domain_result(...)` |
-| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
-| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
-| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 59 | `str(exc)` |
-| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| owner_accept_task | TaskBriefService.owner_accept | 278 | `TaskBriefService(db).owner_accept(task_id, data)` |
-| TaskBriefService.owner_accept | require_owner_override | 337 | `require_owner_override(self.db)` |
-| require_owner_override | db.info.get | 102 | `db.info.get('authority')` |
+| owner_accept_task | domain_result | 294 | `domain_result(...)` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| owner_accept_task | TaskBriefService.owner_accept | 294 | `TaskBriefService(db).owner_accept(task_id, data)` |
+| TaskBriefService.owner_accept | require_owner_override | 466 | `require_owner_override(self.db)` |
+| require_owner_override | db.info.get | 103 | `db.info.get('authority')` |
 
 ### Boundary effects
 
@@ -211,12 +211,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 55 |
-| unresolved_call | `domain_result` | `exc.detail` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| external_call | `domain_result` | `HTTPException` | 61 |
-| unresolved_call | `require_owner_override` | `db.info.get` | 102 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
+| unresolved_call | `require_owner_override` | `db.info.get` | 103 |
 | step_limit | `owner_accept_task` | `first 12 steps` | 0 |
 
 ## Behavior

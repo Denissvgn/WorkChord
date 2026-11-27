@@ -1,6 +1,6 @@
 # TaskDependency
 
-**Location:** `backend/app/models/task.py:262`
+**Location:** `backend/app/models/task.py:282`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_task](../modules/models_task.md)
@@ -100,4 +100,4 @@ flowchart LR
 | `dependency_order` | import | [dependency_order](../modules/dependency_order.md) | — |
 | `import_review_service` | import | [import_review_service](../modules/import_review_service.md) | — |
 
-> References: showing 12 of 44 logical references; 32 omitted by the 12-row generated summary limit.
+> References: showing 12 of 47 logical references; 35 omitted by the 12-row generated summary limit.
