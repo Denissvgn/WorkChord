@@ -14,8 +14,9 @@
 6. `commands.commit_or_flush`
 7. `commands.commit_or_flush`
 8. `agent_team_setup.AgentTeamActionReceipt`
-9. `commands.commit_or_flush`
-10. `agent_team_setup.AgentTeamActionReceipt`
+9. `models_agent.new_runtime_instance_id`
+10. `commands.commit_or_flush`
+11. `agent_team_setup.AgentTeamActionReceipt`
 
 ## Touches
 

@@ -15,7 +15,7 @@ The planning-window and allocation commands share the durable live assignment an
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
-| `app.agent_contract` | `EXECUTION_PLANNING_WINDOW_FEATURE` |
+| `app.agent_contract` | `EXECUTION_PLANNING_WINDOW_FEATURE`, `RUNTIME_INSTANCE_IDENTITY_FEATURE` |
 | `app.authority` | `internal_authority` |
 | `app.config` | `get_settings` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord`, `AgentRun`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentTaskAssignment`, `AgentTeamTopology`, `AgentTeamTopologyMember`, `TaskEvent` |
@@ -75,7 +75,7 @@ flowchart LR
 | `current_window` | `(task)` | — | — |
 | `assignment_matches` | `(task, assignment)` | — | — |
 | `candidate_version` | `(task)` | — | — |
-| `feature_free_acknowledgement` | *(async)* `(db, member)` | — | Return a member's acknowledgement digest as if it lacked only the planning-window feature. |
+| `earlier_acknowledgements` | *(async)* `(db, member)` | — | Return digests of the acknowledgement as it was before a runtime adopted newer fields. |
 | `authority_stamp` | *(async)* `(db, task, assignment, *, lock = False, as_of = None)` | — | Fingerprint the actual scope, roster and bindings of both assignment principals. |
 | `authority_matches` | *(async)* `(db, task, assignment, expected, *, lock = False)` | — | Compare a sealed stamp with current authority. |
 | `_authority_basis` | *(async)* `(db, task, assignment, *, lock = False, as_of = None)` | — | — |

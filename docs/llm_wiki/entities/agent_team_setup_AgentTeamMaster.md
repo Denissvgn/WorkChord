@@ -1,7 +1,7 @@
 # AgentTeamMaster
 
-**Location:** `backend/app/schemas/agent_team_setup.py:332`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:333`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 
@@ -121,4 +121,4 @@ flowchart LR
 | `AgentTeamSetupService._refresh_handoffs` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `test_agent_team_catalog` | import | [test_agent_team_catalog](../modules/test_agent_team_catalog.md) | — |
 
-> References: showing 12 of 24 logical references; 12 omitted by the 12-row generated summary limit.
+> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.

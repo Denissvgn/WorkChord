@@ -1,6 +1,6 @@
 # StatusTone
 
-**Location:** `frontend/src/components/team/AgentManifestWorkflow.tsx:66`
+**Location:** `frontend/src/components/team/AgentManifestWorkflow.tsx:67`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md)

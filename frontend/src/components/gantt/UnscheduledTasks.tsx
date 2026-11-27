@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import type { UnscheduledTask } from '../../types/gantt';
+import { unscheduledReasonText } from './unscheduledReason';
 
 /** The planned tasks a schedule run leaves without dates, each with what would get it scheduled. */
 export const UnscheduledTasks = ({ items }: { items?: UnscheduledTask[] }) => {
@@ -16,7 +17,7 @@ export const UnscheduledTasks = ({ items }: { items?: UnscheduledTask[] }) => {
                         <span className="font-medium text-content-primary">#{item.task_id} {item.task_title}</span>
                         {' · '}
                         <span className="text-content-secondary">
-                            {t(`gantt.unscheduled.reasons.${item.reason}`, { defaultValue: item.message })}
+                            {unscheduledReasonText(t, item)}
                         </span>
                     </li>
                 ))}

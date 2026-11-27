@@ -66,6 +66,7 @@ const catalogFixture = (
     modality_tags: ['text'],
     cost_tier: 'medium',
     local_first: false,
+    effort: 'unknown',
     latency_tier: 'balanced',
     enabled: true,
     revision: 3,
@@ -218,6 +219,33 @@ describe('AgentModelAdministration', () => {
         await user.type(within(dialog).getByLabelText('Change rationale'), 'Prefer the local model');
         await user.click(within(dialog).getByRole('button', { name: 'Save' }));
         await waitFor(() => expect(agentServiceMock.updateModelCatalogEntry).toHaveBeenCalledWith(11, expect.objectContaining({ local_first: true, expected_revision: 3 }), expect.objectContaining({ rationale: 'Prefer the local model' })));
+    });
+
+    it('records a catalog entry effort, shows it in the catalog and where a binding names the model', async () => {
+        const high = catalogFixture({ effort: 'high' });
+        agentServiceMock.getModelCatalog.mockResolvedValue([high]);
+        agentServiceMock.getModelBindings.mockResolvedValue([bindingFixture({ model_catalog: high })]);
+        const { user } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        await screen.findByRole('heading', { name: 'Model catalog' });
+
+        const [catalogTable, bindingTable] = screen.getAllByRole('table');
+        expect(within(catalogTable).getByRole('columnheader', { name: 'Effort' })).toBeVisible();
+        expect(within(catalogTable).getByRole('cell', { name: 'High' })).toBeVisible();
+        expect(within(bindingTable).getByText('Effort: High')).toBeVisible();
+
+        await user.click(screen.getByRole('button', { name: /Edit model catalog entry Balanced Code/i }));
+        const drawer = screen.getByRole('dialog', { name: /Edit catalog entry/i });
+        const effort = within(drawer).getByRole('combobox', { name: /Effort/ });
+        expect(effort).toHaveValue('high');
+        expect(within(effort).getAllByRole('option').map(option => option.getAttribute('value'))).toEqual(
+            ['unknown', 'low', 'medium', 'high', 'xhigh', 'max'],
+        );
+        await user.selectOptions(effort, 'xhigh');
+        await user.click(within(drawer).getByRole('button', { name: 'Save' }));
+        const dialog = screen.getByRole('dialog', { name: 'Audited change controls' });
+        await user.type(within(dialog).getByLabelText('Change rationale'), 'Record the effort');
+        await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(agentServiceMock.updateModelCatalogEntry).toHaveBeenCalledWith(11, expect.objectContaining({ effort: 'xhigh', expected_revision: 3 }), expect.objectContaining({ rationale: 'Record the effort' })));
     });
 
     it('loads catalog and bindings and creates a binding with only the saved admin key', async () => {

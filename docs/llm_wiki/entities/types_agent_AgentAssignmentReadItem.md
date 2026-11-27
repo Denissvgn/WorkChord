@@ -1,6 +1,6 @@
 # AgentAssignmentReadItem
 
-**Location:** `frontend/src/types/agent.ts:563`
+**Location:** `frontend/src/types/agent.ts:572`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

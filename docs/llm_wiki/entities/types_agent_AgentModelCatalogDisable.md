@@ -1,6 +1,6 @@
 # AgentModelCatalogDisable
 
-**Location:** `frontend/src/types/agent.ts:237`
+**Location:** `frontend/src/types/agent.ts:243`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

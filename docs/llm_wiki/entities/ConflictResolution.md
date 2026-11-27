@@ -1,6 +1,6 @@
 # ConflictResolution
 
-**Location:** `frontend/src/components/team/AgentModelAdministration.tsx:66`
+**Location:** `frontend/src/components/team/AgentModelAdministration.tsx:68`
 **Kind:** Interface
 **Bases:** —
 **Module:** [AgentModelAdministration](../modules/AgentModelAdministration.md)

@@ -46,15 +46,15 @@ sequenceDiagram
     participant p19 as utc_now
     participant p20 as effective_work_flags
     participant p21 as _dependency_task
-    participant p22 as as_utc
-    participant p23 as brief_definition_blockers
-    participant p24 as _description_is_actionable
-    participant p25 as TaskAgentReadiness
-    participant p26 as ExternalLinkResponse
-    participant p27 as TaskAgentReadinessCriterion
-    participant p28 as HTTPException
-    participant p29 as TaskBriefService(…).review
-    participant p30 as exc.detail
+    participant p22 as postponed_work_under
+    participant p23 as as_utc
+    participant p24 as brief_definition_blockers
+    participant p25 as _description_is_actionable
+    participant p26 as TaskAgentReadiness
+    participant p27 as ExternalLinkResponse
+    participant p28 as TaskAgentReadinessCriterion
+    participant p29 as HTTPException
+    participant p30 as TaskBriefService(…).review
     p0->>p1: TaskService.task_to_response
     p0->>p2: domain_result
     p0->>p3: TaskBriefService
@@ -76,25 +76,26 @@ sequenceDiagram
     p6->>p19: utc_now
     p5->>p20: effective_work_flags
     p6->>p21: _dependency_task
-    p6->>p22: as_utc
-    p6->>p23: brief_definition_blockers
-    p6->>p24: _description_is_actionable
-    p6->>p25: TaskAgentReadiness
-    p9->>p26: ExternalLinkResponse
-    p11->>p27: TaskAgentReadinessCriterion
-    p2-->>p28: HTTPException(409, detail=exc.detail(...))
-    p0-->>p29: TaskBriefService(…).review(task_id, data)
-    p2-->>p30: exc.detail
+    p6->>p22: postponed_work_under
+    p6->>p23: as_utc
+    p6->>p24: brief_definition_blockers
+    p6->>p25: _description_is_actionable
+    p6->>p26: TaskAgentReadiness
+    p9->>p27: ExternalLinkResponse
+    p11->>p28: TaskAgentReadinessCriterion
+    p2-->>p29: HTTPException(409, detail=exc.detail(...))
+    p0-->>p30: TaskBriefService(…).review(task_id, data)
 ```
 
-> Call sequence diagram shows 30 of 129 interactions; 99 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 146 interactions; 116 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 43 (42 omitted); unresolved 2 of 45 (43 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 48 (47 omitted); unresolved 1 of 56 (55 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
+| `backend/app/routers/task_domain.py:domain_result` | 2 | - | unresolved | 1 |
 | `backend/app/routers/task_domain.py:domain_result` | 2 | - | external | 5 |
 | `backend/app/commands.py:current_command` | 13 | - | external | 2 |
 | `backend/app/commands.py:current_command` | 13 | - | unresolved | 1 |
@@ -102,8 +103,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_service.py:TaskService.task_to_response` | 12 | - | external | 5 |
 | `backend/app/services/work_metrics.py:working_today` | 22 | - | unresolved | 2 |
 | `backend/app/services/work_metrics.py:working_today` | 22 | [backend/app/utils/time.py](../modules/time.md) | internal | 2 |
-| `backend/app/utils/time.py:as_utc` | 25 | - | unresolved | 2 |
-> Omission summary shows 8 of 29 groups; 21 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 32 groups; 24 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -114,9 +114,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 42; effect analysis evaluated: 29, partial: 0, unavailable: 13. Counts include steps omitted from the displayed trace.
+Source steps: 43; effect analysis evaluated: 30, partial: 0, unavailable: 13. Counts include steps omitted from the displayed trace.
 
-Collector observations for 29 source steps with known totals: observed: 158, emitted: 158, omitted: 0. Unavailable totals are excluded.
+Collector observations for 30 source steps with known totals: observed: 169, emitted: 169, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.

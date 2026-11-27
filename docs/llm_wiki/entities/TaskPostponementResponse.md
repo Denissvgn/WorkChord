@@ -1,6 +1,6 @@
 # TaskPostponementResponse
 
-**Location:** `backend/app/schemas/task_postponement.py:137`
+**Location:** `backend/app/schemas/task_postponement.py:157`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task_postponement](../modules/schemas_task_postponement.md)
@@ -29,15 +29,18 @@ flowchart LR
     n1["BaseModel"]
     n2["postpone_task (backend/app/routers/task_domain.py)"]
     n3["reactivate_task (backend/app/routers/task_domain.py)"]
-    n4["task_postponement (backend/app/routers/task_domain.py)"]
+    n4["record_owner_decision (backend/app/routers/task_domain.py)"]
+    n5["task_postponement (backend/app/routers/task_domain.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/schemas_task_postponement.md"
     click n2 "../modules/routers_task_domain.md"
     click n3 "../modules/routers_task_domain.md"
     click n4 "../modules/routers_task_domain.md"
+    click n5 "../modules/routers_task_domain.md"
 ```
 
 ### Summary
@@ -58,4 +61,5 @@ flowchart LR
 |---|---|---|---:|
 | `postpone_task` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `reactivate_task` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
+| `record_owner_decision` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `task_postponement` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |

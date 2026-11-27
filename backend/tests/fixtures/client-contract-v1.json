@@ -273,6 +273,11 @@
           "cost_tier": {
             "$ref": "#/components/schemas/CostTier"
           },
+          "effort": {
+            "$ref": "#/components/schemas/ModelEffort",
+            "default": "unknown",
+            "description": "Reasoning-effort setting this entry runs at; unknown when not recorded."
+          },
           "enabled": {
             "default": true,
             "title": "Enabled",
@@ -397,6 +402,11 @@
             "format": "date-time",
             "title": "Created At",
             "type": "string"
+          },
+          "effort": {
+            "$ref": "#/components/schemas/ModelEffort",
+            "default": "unknown",
+            "description": "Reasoning-effort setting this entry runs at; unknown when not recorded."
           },
           "enabled": {
             "default": true,
@@ -524,6 +534,16 @@
             "anyOf": [
               {
                 "$ref": "#/components/schemas/CostTier"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "effort": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ModelEffort"
               },
               {
                 "type": "null"
@@ -2649,6 +2669,19 @@
         "title": "MetricMatchPage",
         "type": "object"
       },
+      "ModelEffort": {
+        "description": "Reasoning-effort setting a catalog entry runs at.\n\n``unknown`` is the explicit value for an entry whose setting is not\nrecorded; it is not ordered and can never satisfy a stated requirement.",
+        "enum": [
+          "unknown",
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "title": "ModelEffort",
+        "type": "string"
+      },
       "NativeApprovalResponse": {
         "properties": {
           "approved": {
@@ -3429,6 +3462,11 @@
           "overdue_tasks": {
             "default": 0,
             "title": "Overdue Tasks",
+            "type": "integer"
+          },
+          "postponed_tasks": {
+            "default": 0,
+            "title": "Postponed Tasks",
             "type": "integer"
           },
           "project_id": {

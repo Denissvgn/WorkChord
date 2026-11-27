@@ -108,4 +108,4 @@ flowchart LR
 | `test_scoped_manager_can_restore_another_eligible_person_without_profile_access` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
 | `test_workspace_reports_keep_authorization_and_recorded_backlog_scope` | call | [test_analytics_scopes](../modules/test_analytics_scopes.md) | 1 |
 
-> References: showing 12 of 78 logical references; 66 omitted by the 12-row generated summary limit.
+> References: showing 12 of 81 logical references; 69 omitted by the 12-row generated summary limit.

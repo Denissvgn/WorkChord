@@ -176,6 +176,32 @@ candidate as local-first and states in its rationale that the preference
 applied. Changing the setting revises the catalog entry, so live assignments
 that depend on it follow the usual reconciliation.
 
+## Recording a model's effort
+
+A catalog entry has an `effort` setting: `unknown`, `low`, `medium`, `high`,
+`xhigh` or `max`. An operator sets it when creating or updating the entry
+through the API or the model catalog form in Settings; a value outside this
+list is refused. Two entries for the same runtime model at different effort
+settings are separate entries that differ by this field, not only by key.
+Existing entries upgrade with `unknown` and are never guessed from a key or
+alias; the upgrade works on a populated catalog and keeps every binding. The
+database refuses a downgrade while any entry records an effort, because an
+older server would merge entries that differ only by it.
+
+A task states a required effort with the optional `required_model.minimum_effort`
+field of its routing assessment, set to `low`, `medium`, `high`, `xhigh` or
+`max`; `unknown` is not accepted there. A task that omits it states no effort
+requirement, and effort then changes neither eligibility nor rank. When it is
+stated, routing treats it as a hard gate: a candidate whose effort is lower,
+or `unknown`, is excluded with the `model_effort_insufficient` blocker. For the
+candidates that pass, each step of effort above the requirement counts as one
+step of excess adequacy, like reasoning and context tiers, so the lowest
+setting that satisfies the requirement ranks first. The routing preview, the
+catalog table, the binding list and the model names in the team directory show
+the effort, and the preview rationale names the requirement. Changing an
+entry's effort revises the entry, so live assignments that depend on it follow
+the usual reconciliation.
+
 ## Supervised rework in shadow mode
 
 After an independent reviewer requests changes, read the original worker's

@@ -26,7 +26,7 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.schemas.task_brief` | `BriefWrite`, `BriefConvert`, `OwnerAcceptanceWrite`, `ProgressWrite`, `TaskReviewWrite`, `TaskReviewResponse`, `CurrentTaskReviewResponse` |
 | `app.schemas.task_detail` | `TaskDetailResponse`, `TaskReferencePage`, `HumanWorkResponse` |
 | `app.schemas.task_domain` | `BacklogRestoreRequest`, `TaskActionRequest`, `TaskActionsResponse` |
-| `app.schemas.task_postponement` | `TaskPostponeRequest`, `TaskPostponementResponse`, `TaskReactivateRequest` |
+| `app.schemas.task_postponement` | `OwnerDecisionRequest`, `TaskPostponeRequest`, `TaskPostponementResponse`, `TaskReactivateRequest` |
 | `app.schemas.task_replacement` | `TaskReplacementCreate`, `TaskReplacementResponse` |
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService`, `BacklogSnapshotService` |
 | `app.services.delivery_metrics_service` | `DeliveryMetricsService` |
@@ -39,6 +39,7 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.services.task_detail_service` | `TaskDetailService` |
 | `app.services.task_domain_service` | `TaskDomainService`, `domain_capabilities` |
 | `app.services.task_postponement_service` | `TaskPostponementService`, `TaskPostponementService`, `TaskPostponementService` |
+| `app.services.task_reactivation_service` | `ReactivationService` |
 | `app.services.task_replacement_service` | `TaskReplacementService`, `TaskReplacementService` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.services.work_metrics` | `METRIC_MATCHES`, `aggregate_metrics` |
@@ -68,7 +69,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (6) |
-| Outbound | `backend` (32) |
+| Outbound | `backend` (33) |
 
 ### External packages
 
@@ -76,7 +77,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 39 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -126,3 +127,4 @@ flowchart LR
 | `task_postponement` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/postponement', response_model=TaskPostponementResponse)` | Read the task's open postponement, or its most recent one, with its reactivation requirements. |
 | `postpone_task` | *(async)* `(task_id: int, data: TaskPostponeRequest, db: DB)` | `@router.post('/tasks/{task_id}/postpone', response_model=TaskPostponementResponse)` | Stop planned, active or resolved work without canceling it, with a reason and reactivation requirements. |
 | `reactivate_task` | *(async)* `(task_id: int, data: TaskReactivateRequest, db: DB)` | `@router.post('/tasks/{task_id}/reactivate', response_model=TaskPostponementResponse)` | Return postponed work to planned, or to resolved if it was postponed after resolution. |
+| `record_owner_decision` | *(async)* `(task_id: int, requirement_id: int, data: OwnerDecisionRequest, db: DB)` | `@router.post('/tasks/{task_id}/postponement/requirements/{requirement_id}/decision', response_model=TaskPostponementResponse)` | Record the owner's decision for an owner_decision requirement of the task's open postponement. |

@@ -1,6 +1,6 @@
 # AgentTeamManagedObject
 
-**Location:** `backend/app/models/agent.py:518`
+**Location:** `backend/app/models/agent.py:558`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)

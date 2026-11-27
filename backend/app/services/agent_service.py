@@ -1520,7 +1520,8 @@ class AgentService:
                 selectinload(Task.dependencies).selectinload(TaskDependency.depends_on),
                 selectinload(Task.parent),
             )
-            .where(and_(Task.status != "closed", Task.is_deferred == False))
+            # Postponed work is stopped until it is reactivated: no pipeline stage offers it.
+            .where(and_(Task.status.notin_(("closed", "postponed")), Task.is_deferred == False))
             .order_by(Task.priority.asc(), Task.id.asc())
             .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )
