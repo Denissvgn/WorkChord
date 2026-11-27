@@ -115,7 +115,7 @@ flowchart LR
 | `test_dependency_chain_crosses_three_rows` | *(async)* `(db_session)` | — | — |
 | `generated_plan` | `()` | — | — |
 | `test_generated_plan_has_no_dependency_or_capacity_overlap` | *(async)* `(db_session)` | — | — |
-| `test_undated_predecessor_leaves_dependents_undated_and_named` | *(async)* `(db_session, cause)` | `@pytest.mark.parametrize('cause', ['unassigned', 'no_estimate', 'blocked', 'deferred', 'active'])` | — |
+| `test_undated_predecessor_leaves_dependents_unplaced_with_their_dates_and_named` | *(async)* `(db_session, cause)` | `@pytest.mark.parametrize('cause', ['unassigned', 'no_estimate', 'blocked', 'deferred', 'active'])` | — |
 | `test_finished_predecessor_does_not_delay_dependents` | *(async)* `(db_session, status, saved_dates, follow_date)` | `@pytest.mark.parametrize('status', ['resolved', 'closed', 'canceled'])`, `@pytest.mark.parametrize('saved_dates', [(None, None), (date(2026, 2, 2), None), (None, date(2026, 2, 3)), (date(2026, 2, 2), date(2026, 2, 3))], ids=['undated', 'start_only', 'end_only', 'dated'])`, `@pytest.mark.parametrize('follow_date', [None, date(2026, 1, 12)], ids=['schedule', 'follow'])` | — |
 | `test_ready_tasks_keep_pass_priority_and_cross_pass_dependencies` | *(async)* `(db_session)` | — | — |
 | `test_row_stays_serial_after_iteration_overflow` | *(async)* `(db_session)` | — | — |

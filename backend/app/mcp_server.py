@@ -1684,6 +1684,28 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_record_manual_provenance(
+        task_id: int,
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Record who executed resolved work delivered outside recorded runs; payload names the executor, head commit, commits, pull request or base, artifact revision and reason."""
+        return await _tool_call(
+            "planning:write",
+            lambda db, actor: mcp_agent_tools.record_manual_provenance(
+                db,
+                actor,
+                task_id,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
     @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_github_reconciliation(task_id: int) -> dict[str, Any]:
         """Compare a task's submitted commits with its linked pull requests as last observed, with who acts next."""

@@ -12,10 +12,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models.task_brief import TaskBriefRevision, TaskProgressRecord, TaskReviewRecord
 from app.models.task import Task
+from app.schemas.manual_provenance import ManualProvenanceResponse, ManualProvenanceWrite
 from app.schemas.task import TaskCreate, TaskResponse
 from app.schemas.task_brief import BriefWrite, BriefConvert, OwnerAcceptanceWrite, ProgressWrite, TaskReviewWrite, TaskReviewResponse, CurrentTaskReviewResponse
 from app.schemas.task_domain import BacklogRestoreRequest, TaskActionRequest, TaskActionsResponse
 from app.schemas.task_detail import TaskDetailResponse, TaskReferencePage, HumanWorkResponse
+from app.services.manual_provenance_service import ManualProvenanceService
 from app.services.task_service import TaskService, TaskVersionConflictError
 from app.services.task_domain_service import TaskDomainService
 from app.services.task_brief_service import TaskBriefService
@@ -356,8 +358,46 @@ async def task_github_catch_up(task_id: int, db: DB):
     return await domain_result(GitHubReconciliationService(db).catch_up(task_id))
 
 
+@router.post("/tasks/{task_id}/manual-provenance", response_model=ManualProvenanceResponse, status_code=201)
+async def record_manual_provenance(task_id: int, data: ManualProvenanceWrite, db: DB):
+    """Record who executed resolved work delivered outside recorded runs, and its exact candidate.
+
+    Only a signed-in owner, operator or project manager, or the project's PM agent, may record it. The task's status,
+    progress and evidence are unchanged; its version advances and the timeline records it.
+    """
+    return await domain_result(ManualProvenanceService(db).record(task_id, data))
+
+
 @router.post("/tasks/{task_id}/replacement", response_model=TaskReplacementResponse, status_code=201)
 async def record_task_replacement(task_id: int, data: TaskReplacementCreate, db: DB):
     """Replace this unaccepted task with a fresh one; only the project's PM or an operator may decide."""
     from app.services.task_replacement_service import TaskReplacementService
     return await domain_result(TaskReplacementService(db).record(task_id, data))
+
+
+from app.schemas.task_postponement import TaskPostponeRequest, TaskPostponementResponse, TaskReactivateRequest
+
+
+@router.get("/tasks/{task_id}/postponement", response_model=TaskPostponementResponse)
+async def task_postponement(task_id: int, db: DB):
+    """Read the task's open postponement, or its most recent one, with its reactivation requirements."""
+    from app.services.task_postponement_service import TaskPostponementService
+    return await domain_result(TaskPostponementService(db).get(task_id))
+
+
+@router.post("/tasks/{task_id}/postpone", response_model=TaskPostponementResponse)
+async def postpone_task(task_id: int, data: TaskPostponeRequest, db: DB):
+    """Stop planned, active or resolved work without canceling it, with a reason and reactivation requirements.
+
+    Only the project's PM, a project manager or an operator may decide. Live
+    execution is released under the ownership fence the actions endpoint returns.
+    """
+    from app.services.task_postponement_service import TaskPostponementService
+    return await domain_result(TaskPostponementService(db).postpone(task_id, data))
+
+
+@router.post("/tasks/{task_id}/reactivate", response_model=TaskPostponementResponse)
+async def reactivate_task(task_id: int, data: TaskReactivateRequest, db: DB):
+    """Return postponed work to planned, or to resolved if it was postponed after resolution."""
+    from app.services.task_postponement_service import TaskPostponementService
+    return await domain_result(TaskPostponementService(db).reactivate(task_id, data))

@@ -230,18 +230,18 @@ flowchart LR
 | execute | <dynamic> | 28 | `<dynamic>(data not statically known)` |
 | execute | async_sessionmaker | 28 | `async_sessionmaker(engine, expire_on_commit=False)` |
 | execute | command_transaction | 29 | `command_transaction(db)` |
-| command_transaction | current_command | 98 | `current_command(db)` |
-| current_command | getattr (backend/app/commands.py:current_command) | 84 | `getattr(db, 'info', None)` |
-| current_command | isinstance (backend/app/commands.py:current_command) | 85 | `isinstance(info, dict)` |
+| command_transaction | current_command | 100 | `current_command(db)` |
+| current_command | getattr (backend/app/commands.py:current_command) | 86 | `getattr(db, 'info', None)` |
+| current_command | isinstance (backend/app/commands.py:current_command) | 87 | `isinstance(info, dict)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.info.pop` | `command_transaction` | 118 |
-| mutation | `db.info.pop` | `command_transaction` | 131 |
-| mutation | `db.info.pop` | `command_transaction` | 132 |
+| mutation | `db.info.pop` | `command_transaction` | 120 |
+| mutation | `db.info.pop` | `command_transaction` | 133 |
 | mutation | `db.info.pop` | `command_transaction` | 134 |
+| mutation | `db.info.pop` | `command_transaction` | 136 |
 
 ### Static analysis gaps
 
@@ -253,8 +253,8 @@ flowchart LR
 | external_call | `execute` | `create_async_engine` | 22 |
 | unresolved_call | `execute` | `<dynamic>` | 28 |
 | external_call | `execute` | `async_sessionmaker` | 28 |
-| external_call | `current_command` | `getattr` | 84 |
-| external_call | `current_command` | `isinstance` | 85 |
+| external_call | `current_command` | `getattr` | 86 |
+| external_call | `current_command` | `isinstance` | 87 |
 | step_limit | `__main__` | `first 12 steps` | 0 |
 | truncated_flow | `__main__` | `depth limit` | 0 |
 

@@ -191,15 +191,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| owner_accept_task | domain_result | 276 | `domain_result(...)` |
-| domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
-| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 55 | `str(exc)` |
-| domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
+| owner_accept_task | domain_result | 278 | `domain_result(...)` |
+| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| owner_accept_task | TaskBriefService.owner_accept | 276 | `TaskBriefService(db).owner_accept(task_id, data)` |
+| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
+| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 59 | `str(exc)` |
+| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| owner_accept_task | TaskBriefService.owner_accept | 278 | `TaskBriefService(db).owner_accept(task_id, data)` |
 | TaskBriefService.owner_accept | require_owner_override | 337 | `require_owner_override(self.db)` |
 | require_owner_override | db.info.get | 102 | `db.info.get('authority')` |
 
@@ -211,11 +211,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 53 |
-| unresolved_call | `domain_result` | `exc.detail` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
+| unresolved_call | `domain_result` | `exc.detail` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
+| external_call | `domain_result` | `HTTPException` | 61 |
 | unresolved_call | `require_owner_override` | `db.info.get` | 102 |
 | step_limit | `owner_accept_task` | `first 12 steps` | 0 |
 

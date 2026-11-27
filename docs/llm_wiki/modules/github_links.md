@@ -25,48 +25,53 @@ flowchart LR
     n1["backend/app/services/agent_work_service.py"]
     n2["backend/app/services/external_link_service.py"]
     n3["backend/app/services/github_reconciliation_service.py"]
-    n4["backend/app/services/retained_planning_output.py"]
-    n5["backend/app/services/review_provenance.py"]
-    n6["backend/app/services/task_replacement_service.py"]
-    n7["backend/app/utils/github_links.py"]
-    n8["backend/tests/test_review_provenance.py"]
-    n9["backend/tests/test_work_delivery_links.py"]
-    n0 --> n7
+    n4["backend/app/services/manual_provenance_service.py"]
+    n5["backend/app/services/retained_planning_output.py"]
+    n6["backend/app/services/review_provenance.py"]
+    n7["backend/app/services/task_replacement_service.py"]
+    n8["backend/app/utils/github_links.py"]
+    n9["backend/tests/test_review_provenance.py"]
+    n10["backend/tests/test_work_delivery_links.py"]
+    n0 --> n8
     n1 --> n0
     n1 --> n2
-    n1 --> n4
     n1 --> n5
-    n1 --> n7
-    n2 --> n7
-    n3 --> n6
+    n1 --> n6
+    n1 --> n8
+    n2 --> n8
     n3 --> n7
-    n4 --> n0
-    n4 --> n1
-    n4 --> n5
-    n4 --> n7
+    n3 --> n8
+    n4 --> n6
+    n4 --> n8
     n5 --> n0
-    n5 --> n4
+    n5 --> n1
     n5 --> n6
-    n5 --> n7
+    n5 --> n8
+    n6 --> n0
+    n6 --> n4
     n6 --> n5
     n6 --> n7
-    n8 --> n0
-    n8 --> n1
-    n8 --> n5
-    n8 --> n7
+    n6 --> n8
+    n7 --> n6
+    n7 --> n8
     n9 --> n0
     n9 --> n1
-    n9 --> n7
+    n9 --> n6
+    n9 --> n8
+    n10 --> n0
+    n10 --> n1
+    n10 --> n8
     click n0 "../modules/schemas_agent.md"
     click n1 "../modules/agent_work_service.md"
     click n2 "../modules/external_link_service.md"
     click n3 "../modules/github_reconciliation_service.md"
-    click n4 "../modules/retained_planning_output.md"
-    click n5 "../modules/review_provenance.md"
-    click n6 "../modules/task_replacement_service.md"
-    click n7 "../modules/github_links.md"
-    click n8 "../modules/test_review_provenance.md"
-    click n9 "../modules/test_work_delivery_links.md"
+    click n4 "../modules/manual_provenance_service.md"
+    click n5 "../modules/retained_planning_output.md"
+    click n6 "../modules/review_provenance.md"
+    click n7 "../modules/task_replacement_service.md"
+    click n8 "../modules/github_links.md"
+    click n9 "../modules/test_review_provenance.md"
+    click n10 "../modules/test_work_delivery_links.md"
 ```
 
 ### Internal neighbors
@@ -77,6 +82,7 @@ flowchart LR
 | Inbound | [agent_work_service](../modules/agent_work_service.md) |
 | Inbound | [external_link_service](../modules/external_link_service.md) |
 | Inbound | [github_reconciliation_service](../modules/github_reconciliation_service.md) |
+| Inbound | [manual_provenance_service](../modules/manual_provenance_service.md) |
 | Inbound | [retained_planning_output](../modules/retained_planning_output.md) |
 | Inbound | [review_provenance](../modules/review_provenance.md) |
 | Inbound | [task_replacement_service](../modules/task_replacement_service.md) |

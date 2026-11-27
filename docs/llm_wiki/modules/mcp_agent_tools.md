@@ -28,6 +28,7 @@ the same audited command and read-model paths.
 | `app.schemas.github` | `GitHubReconciliationResponse`, `GitHubReconciliationResponse` |
 | `app.schemas.iteration` | `IterationCreate`, `IterationPlanningReadinessSummary`, `IterationSummary`, `IterationUpdate`, `IterationDateMovePreview`, `IterationDateMoveRequest` |
 | `app.schemas.label` | `LabelGroupResponse`, `LabelResponse` |
+| `app.schemas.manual_provenance` | `ManualProvenanceWrite` |
 | `app.schemas.project` | `ProjectCreate`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneResponse`, `ProjectMilestoneUpdate`, `ProjectResponse`, `ProjectUpdate`, `ProjectUpdateEntryResponse` |
 | `app.schemas.release` | `ReleaseResponse` |
 | `app.schemas.request_source` | `RequestSourceLinkCreateRequest`, `RequestSourceLinkWithSourceResponse`, `RequestSourceResponse` |
@@ -108,7 +109,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (20) |
-| Outbound | `backend` (61) |
+| Outbound | `backend` (62) |
 
 ### External packages
 
@@ -116,7 +117,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 81 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 82 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -181,6 +182,7 @@ flowchart LR
 | `withdraw_capacity_transfer` | *(async)* `(db: AsyncSession, actor: AgentActor, group_token: str, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: return the lent capacity of every row of one transfer together. |
 | `get_task_replacement` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any]` | — | MCP handler: read the clean-replacement disposition a task takes part in. |
 | `record_task_replacement` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: replace an unaccepted task with a fresh one under a recorded owner decision. |
+| `record_manual_provenance` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: record who executed resolved work delivered outside recorded runs. |
 | `get_github_reconciliation` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any]` | — | MCP handler: GET /api/tasks/{task_id}/github-reconciliation. |
 | `run_github_catch_up` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any]` | — | MCP handler: POST /api/tasks/{task_id}/github-reconciliation/catch-up. |
 | `list_delivery_dependencies` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> list[dict[str, Any]]` | — | MCP handler: GET /api/tasks/{task_id}/delivery-dependencies. |

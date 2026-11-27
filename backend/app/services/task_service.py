@@ -1083,6 +1083,8 @@ class TaskService:
         from sqlalchemy import delete
         subtree = await self._task_subtree_ids(task_id)
         await DeliveryDependencyService(self.db).require_unreferenced(subtree)
+        from app.services.task_postponement_service import require_unreferenced as require_unawaited
+        await require_unawaited(self.db, task_ids=subtree)
         await self.db.execute(delete(DeliveryDependency).where(DeliveryDependency.task_id.in_(subtree)))
         old_parent_id = task.parent_id
         # Create snapshot before deletion
@@ -1432,6 +1434,8 @@ class TaskService:
         from sqlalchemy.orm import attributes
         attributes.set_committed_value(parent, "children", [])
         if delete_parent:
+            from app.services.task_postponement_service import require_unreferenced as require_unawaited
+            await require_unawaited(self.db, task_ids=[parent.id])
             await self.db.delete(parent)
         else:
             await self.reserve_task_version(parent, parent.version)
@@ -1913,6 +1917,7 @@ class TaskService:
         TaskStatus.ACTIVE.value: [TaskStatus.RESOLVED.value],
         TaskStatus.RESOLVED.value: [TaskStatus.ACTIVE.value, TaskStatus.CLOSED.value],
         TaskStatus.CLOSED.value: [],
+        TaskStatus.POSTPONED.value: [],
     }
 
     @property

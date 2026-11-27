@@ -20,21 +20,25 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.schemas.delivery_metrics` | `DeliveryMetricsResponse` |
 | `app.schemas.execution_usage` | `ExecutionUsageSummary` |
 | `app.schemas.github` | `GitHubReconciliationResponse` |
+| `app.schemas.manual_provenance` | `ManualProvenanceResponse`, `ManualProvenanceWrite` |
 | `app.schemas.planning_inputs` | `PlanningInputContext`, `MemberPlanningIntent` |
 | `app.schemas.task` | `TaskCreate`, `TaskResponse` |
 | `app.schemas.task_brief` | `BriefWrite`, `BriefConvert`, `OwnerAcceptanceWrite`, `ProgressWrite`, `TaskReviewWrite`, `TaskReviewResponse`, `CurrentTaskReviewResponse` |
 | `app.schemas.task_detail` | `TaskDetailResponse`, `TaskReferencePage`, `HumanWorkResponse` |
 | `app.schemas.task_domain` | `BacklogRestoreRequest`, `TaskActionRequest`, `TaskActionsResponse` |
+| `app.schemas.task_postponement` | `TaskPostponeRequest`, `TaskPostponementResponse`, `TaskReactivateRequest` |
 | `app.schemas.task_replacement` | `TaskReplacementCreate`, `TaskReplacementResponse` |
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService`, `BacklogSnapshotService` |
 | `app.services.delivery_metrics_service` | `DeliveryMetricsService` |
 | `app.services.execution_usage_service` | `ExecutionUsageService` |
 | `app.services.github_reconciliation_service` | `GitHubReconciliationService`, `GitHubReconciliationService` |
+| `app.services.manual_provenance_service` | `ManualProvenanceService` |
 | `app.services.planning_input_context` | `observe_planning_input`, `observe_planning_input` |
 | `app.services.release_service` | `ReleaseService` |
 | `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.task_detail_service` | `TaskDetailService` |
 | `app.services.task_domain_service` | `TaskDomainService`, `domain_capabilities` |
+| `app.services.task_postponement_service` | `TaskPostponementService`, `TaskPostponementService`, `TaskPostponementService` |
 | `app.services.task_replacement_service` | `TaskReplacementService`, `TaskReplacementService` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.services.work_metrics` | `METRIC_MATCHES`, `aggregate_metrics` |
@@ -64,7 +68,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (6) |
-| Outbound | `backend` (28) |
+| Outbound | `backend` (32) |
 
 ### External packages
 
@@ -72,15 +76,15 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DB](../entities/routers_task_domain_DB.md) | Type alias | 25 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
-| [MetricMatchItem](../entities/MetricMatchItem.md) | Pydantic model | 93 | `BaseModel` | — |
-| [MetricMatchPage](../entities/routers_task_domain_MetricMatchPage.md) | Pydantic model | 101 | `BaseModel` | — |
+| [DB](../entities/routers_task_domain_DB.md) | Type alias | 27 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
+| [MetricMatchItem](../entities/MetricMatchItem.md) | Pydantic model | 95 | `BaseModel` | — |
+| [MetricMatchPage](../entities/routers_task_domain_MetricMatchPage.md) | Pydantic model | 103 | `BaseModel` | — |
 
 ## Functions
 
@@ -117,4 +121,8 @@ flowchart LR
 | `task_replacement` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/replacement', response_model=TaskReplacementResponse)` | Read the clean-replacement disposition this task takes part in, as original or replacement. |
 | `task_github_reconciliation` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/github-reconciliation', response_model=GitHubReconciliationResponse)` | Compare the commits a task submitted with its linked pull requests as last observed. |
 | `task_github_catch_up` | *(async)* `(task_id: int, db: DB)` | `@router.post('/tasks/{task_id}/github-reconciliation/catch-up', response_model=GitHubReconciliationResponse)` | Read this task's own pull requests from GitHub for events a webhook never delivered. |
+| `record_manual_provenance` | *(async)* `(task_id: int, data: ManualProvenanceWrite, db: DB)` | `@router.post('/tasks/{task_id}/manual-provenance', response_model=ManualProvenanceResponse, status_code=201)` | Record who executed resolved work delivered outside recorded runs, and its exact candidate. |
 | `record_task_replacement` | *(async)* `(task_id: int, data: TaskReplacementCreate, db: DB)` | `@router.post('/tasks/{task_id}/replacement', response_model=TaskReplacementResponse, status_code=201)` | Replace this unaccepted task with a fresh one; only the project's PM or an operator may decide. |
+| `task_postponement` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/postponement', response_model=TaskPostponementResponse)` | Read the task's open postponement, or its most recent one, with its reactivation requirements. |
+| `postpone_task` | *(async)* `(task_id: int, data: TaskPostponeRequest, db: DB)` | `@router.post('/tasks/{task_id}/postpone', response_model=TaskPostponementResponse)` | Stop planned, active or resolved work without canceling it, with a reason and reactivation requirements. |
+| `reactivate_task` | *(async)* `(task_id: int, data: TaskReactivateRequest, db: DB)` | `@router.post('/tasks/{task_id}/reactivate', response_model=TaskPostponementResponse)` | Return postponed work to planned, or to resolved if it was postponed after resolution. |

@@ -5,7 +5,7 @@ import i18n, { ensureLanguageResources } from '../../i18n/i18n';
 import type { Task } from '../../types/task';
 import { emptyTaskBrief } from './taskEditorContract';
 import { TaskReadView } from './TaskReadView';
-const service = vi.hoisted(() => ({ writeBrief: vi.fn(), actions: vi.fn(), getDetail: vi.fn() }));
+const service = vi.hoisted(() => ({ writeBrief: vi.fn(), actions: vi.fn(), getDetail: vi.fn(), reviews: vi.fn().mockResolvedValue([]) }));
 vi.mock('../../services/taskService', () => ({ taskService: service }));
 vi.mock('../../services/iterationService', () => ({ iterationService: { getAll: vi.fn().mockResolvedValue([]) } }));
 vi.mock('./DeliveryDependencies', () => ({ DeliveryDependencies: () => null }));

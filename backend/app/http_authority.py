@@ -209,10 +209,14 @@ async def enforce_http_authority(request: Request, db: Annotated[object, Depends
                 action = "execute"
             elif relative.endswith(("/review", "/owner-acceptance")):
                 action = "review"
+            elif relative.endswith("/manual-provenance"):
+                action = "manage"
             elif relative.endswith("/commands"):
                 payload = await request.json()
                 command = payload.get("action") if isinstance(payload, dict) else None
                 action = "execute" if command in {"start_manual", "resolve_manual"} else "manage" if command in {"cancel", "reopen"} else "edit"
+            elif relative.endswith(("/postpone", "/reactivate")):
+                action = "manage"
             if relative.endswith("/status"):
                 payload = await request.json()
                 action = "review" if isinstance(payload, dict) and payload.get("status") == "closed" else "execute"

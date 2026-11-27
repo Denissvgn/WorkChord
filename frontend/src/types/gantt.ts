@@ -78,6 +78,8 @@ export interface GanttResponse {
 export type UnscheduledReason = 'no_assignee' | 'assignee_not_in_iteration' | 'no_estimate' | 'no_capacity'
     | 'prerequisites_pending' | 'predecessor_unscheduled' | 'deferred' | 'blocked' | 'not_placed';
 
+export type DateRule = 'dates_incomplete' | 'dates_inverted' | 'outside_iteration' | 'before_min_start_date';
+
 /** A planned task the scheduler left without dates, with the cause and the server's English hint. */
 export interface UnscheduledTask {
     task_id: number;
@@ -86,7 +88,22 @@ export interface UnscheduledTask {
     message: string;
     /** The task held dates before this run and the run removed them. */
     dates_cleared?: boolean;
+    /** The rule the removed dates broke; only a half-dated task loses its dates. */
+    date_rule?: DateRule;
     /** Causes of its own that keep it undated once the main reason is resolved. */
+    also?: UnscheduledReason[];
+}
+
+/** A planned task the scheduler could not place; it keeps the dates it already had. */
+export interface KeptDatesTask {
+    task_id: number;
+    task_title: string;
+    reason: UnscheduledReason;
+    message: string;
+    start_date: string;
+    end_date: string;
+    /** The rule the kept dates break, when they break one. */
+    date_rule?: DateRule;
     also?: UnscheduledReason[];
 }
 
@@ -98,6 +115,7 @@ export interface ScheduleResult {
     workload_balanced: boolean;
     workload_issues: WorkloadIssue[];
     unscheduled?: UnscheduledTask[];
+    kept_dates?: KeptDatesTask[];
 }
 
 /** Server dry-run of sandbox edits through the real scheduler (nothing persisted). */

@@ -52,6 +52,7 @@ from app.schemas.triage import (
     TriageSnoozeRequest,
 )
 from app.schemas.task_replacement import TaskReplacementCreate, TaskReplacementResponse
+from app.schemas.manual_provenance import ManualProvenanceWrite
 from app.services.agent_planning_service import AgentPlanningService
 from app.services.agent_routing_service import (
     AgentRoutingConflictError,
@@ -403,6 +404,25 @@ async def record_task_replacement(
     """Replace an unaccepted task with a fresh one under a recorded owner decision."""
     try:
         return await service.record_task_replacement(task_id, actor, data, command=command)
+    except Exception as exc:
+        _handle_agent_error(exc)
+
+
+@router.post(
+    "/agent/planning/tasks/{task_id}/manual-provenance",
+    response_model=AgentPlanningReceipt,
+    status_code=status.HTTP_201_CREATED,
+)
+async def record_manual_provenance(
+    task_id: int,
+    data: ManualProvenanceWrite,
+    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    service: Annotated[AgentPlanningService, Depends(get_agent_planning_service)],
+    command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)],
+):
+    """Record who executed resolved work delivered outside recorded runs, and its exact candidate."""
+    try:
+        return await service.record_manual_provenance(task_id, actor, data, command=command)
     except Exception as exc:
         _handle_agent_error(exc)
 

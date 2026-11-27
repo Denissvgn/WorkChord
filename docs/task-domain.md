@@ -48,6 +48,31 @@ Every other field is an execution input. These include the title, description an
 
 Scheduling day boundaries use the project's IANA timezone, with the availability calendar used for work without a project. An author's recorded-time work date remains an explicit local date with its separately selected timezone. Capacity reflects current shared calendars and absences; task recovery points restore their supported planning state while those shared inputs remain current.
 
+## Postponed work
+
+`postponed` is a task status. It stops planned, active or resolved leaf work by a recorded decision, without canceling it, and records what must be true before the work resumes. Only the project's PM actor, a project manager or a workspace operator can postpone or reactivate work.
+
+`POST /api/tasks/{task_id}/postpone` takes `{expected_version, reason, requirements}` and at least one requirement:
+
+- `{"kind": "predecessor_accepted", "task_id": ...}`: the named task is accepted.
+- `{"kind": "date", "on_date": "YYYY-MM-DD"}`: the day arrives in the task's working time zone. It must be after today.
+- `{"kind": "owner_decision", "description": ...}`: the owner records the described decision.
+- `{"kind": "linked_resolved", "task_id": ...}` or `{"kind": "linked_resolved", "triage_item_id": ...}`: the named task or triage item is resolved. A task is resolved when it is resolved or closed. A triage item is resolved when it is accepted, declined, marked as a duplicate or converted, which means any status except new and snoozed.
+
+A requirement that can never hold, such as a canceled task, or that already holds, such as an accepted predecessor, a resolved task or triage item, or a past date, is refused. Work named by a requirement of an open postponement cannot be deleted. A task delete, an iteration delete, an unmerge that deletes the parent, or a restore that would remove such a task is refused with `reactivation_requirement_referenced`. Reactivate the postponed task first. A task named only by an earlier, closed postponement can be deleted, and that history keeps the requirement with no target.
+
+Postponing work with a live claim, assignment or run releases them through the same fenced path as cancellation. Supply the `claim_generation`, `running_run_ids` and `live_assignment_ids` from `GET /api/tasks/{task_id}/actions` as `expected_claim_generation`, `expected_running_run_ids` and `expected_live_assignment_ids`. If ownership changed after that read, the command is refused with `execution_ownership_changed`. The release is recorded on the task timeline as `execution_released`. Agents must take new assignments after the work is reactivated. The task is not canceled, and its brief, progress, evidence, artifact trail, dates and execution provenance are kept. New evidence is not recorded while the work is postponed.
+
+`POST /api/tasks/{task_id}/reactivate` takes `{expected_version, reason}`. It returns resolved work to `resolved`, and planned or active work to `planned`, where it starts again through the usual commands. `GET /api/tasks/{task_id}/postponement` returns the open postponement, or the most recent one: who decided, when and why, the released execution, each requirement and, after reactivation, who reactivated the work, why and to which status. The actions endpoint reports `postpone` and `reactivate` availability. `GET /api/tasks/capabilities` lists `task-postponement-v1` when the server supports these commands.
+
+Only these two commands move work into or out of `postponed`. A status change, a bulk status change or a task update that names `postponed` is refused, as is any other status change of postponed work. Canceled postponed work stays postponed; reopening it returns it to its open postponement. A summary task is postponed when all its leaves are postponed. Alongside other leaves, a postponed leaf counts as not started. An iteration or backlog restore that would move a task into or out of `postponed` is refused with `restore_conflicts_with_task_postponement`.
+
+### Postponed or deferred
+
+Use deferral for backlog work that should stay out of the schedule and not start yet, with no particular condition for its return. Deferral is a scheduling policy inherited through the task's ancestry. It does not change the task's status, it blocks only the start of planned work, and it records no reason or requirement.
+
+Use postponement when work must stop, including work that has already started or been resolved, until a known condition holds. Postponement changes the status, releases live agent execution and records the reason and the reactivation requirements. The two are independent: deferred work can be postponed, and removing deferral from postponed work leaves it postponed.
+
 ## Estimates
 
 `effort_hours` is authoritative; it is the value people enter in the task form. `effort_days` is derived using `nominal_day_hours`, independent of personal availability and productivity coefficients, and the form shows it as a hint. A calendar declares its nominal workday; the compatibility default is eight hours. Inputs supplying both units must agree. Hours are rounded to six decimal places.
@@ -79,6 +104,49 @@ Under `require_different_review_publisher`, ordinary acceptance needs a pass fro
 - `owner_override_not_required`: the project does not require a different review publisher. Use an ordinary review instead.
 
 The acceptance is recorded as an owner override, never as an independent review. In `GET /api/tasks/{task_id}/reviews` and `/reviews/current` its `kind` is `owner_override`; ordinary reviews have `kind` `review`. The task timeline gets an `owner_acceptance_override` event with the reason. Every command audit row the request writes carries the reason and `owner_acceptance_override_task_ids`. In `GET /api/tasks/delivery-metrics`, `owner_override_acceptance_events` counts these acceptances separately. They are still included in `acceptance_events`.
+
+## Manual provenance for work resolved outside recorded runs
+
+Under `require_different_review_publisher`, a verifier needs to know who executed the work. Work that was implemented locally and merged as a pull request outside WorkChord runs, and then marked resolved, has no runs and no authenticated `start_manual`/`resolve_manual` history, so a verification assignment is refused with `verification_publisher_unverifiable`. Recording manual execution afterwards is not possible, because `start_manual` needs planned work. Record its provenance instead. The task stays resolved, and a normal independent review follows.
+
+Send `POST /api/tasks/{task_id}/manual-provenance`, `POST /api/agent/planning/tasks/{task_id}/manual-provenance` with the usual planning command headers, or the MCP tool `agent_record_manual_provenance`, with `{expected_version, artifact_revision, executor, head_commit_url, commit_urls, pr_url, base_commit_url, reason}`:
+
+- `executor` names who executed the work: `{"kind": "human", "principal_id": ...}` or `{"kind": "agent", "actor_id": ..., "model_binding_id": ...}`. A human's linked profile counts as theirs. An agent's profile, model binding and publisher are captured at the moment of the record. Without `model_binding_id`, the actor's enabled default binding is used. A named binding must belong to the actor, but it may since have been disabled, or its catalog entry retired, because the work may predate that; the catalog entry's publisher at the moment of the record is kept. An agent executor must belong to the task's project, through its project membership or an assignment on a task of that project; otherwise it is refused with `manual_provenance_executor_outside_project` before any binding detail is read. An agent whose binding has no publisher, or an actor without a profile, is refused with `manual_provenance_executor_unattributable`.
+- `head_commit_url` is the delivered head as an immutable GitHub commit. `commit_urls` lists every commit the executor contributed; the head is always included.
+- `pr_url` names the pull request that carries the head, or `base_commit_url` names the commit the work started from. One of them is required. A `pr_url` must already be the task's own evidence: one of its progress artifacts or a GitHub link on the task (`manual_provenance_pr_not_task_evidence`).
+- `artifact_revision` must be the task's current artifact revision, and `reason` says why the work ran outside recorded runs.
+
+Before anything is written, the candidate goes through the same GitHub check a verifier's pass uses. The record is refused with `manual_provenance_candidate_unverifiable` when the review could never pass. `attribution_gap` says why, and `offending_sha` names the commit when there is one:
+
+- `commit_attribution`: a commit of the pull request or range is not in `commit_urls`.
+- `coauthor_trailer`: a commit message has a `Co-authored-by:` trailer, so its other contributors stay unverifiable. Commits with co-author trailers cannot be attested this way. This includes commits from tools that add such trailers automatically.
+- `head_mismatch`: the pull request's head is not the declared head commit.
+- `github_unavailable`: GitHub could not be reached, answered with an HTTP error other than not found, or sent a response that is not JSON. Retry later.
+- `candidate_unverifiable`: GitHub does not show the declared commits as one verifiable candidate. This includes a pull request or commit GitHub reports as not found (check the URL and repository access) and a response that does not describe the candidate.
+
+Only a signed-in workspace owner or operator, a project manager, or the project's PM agent can record provenance. The operator API key, a trusted-local browser with no signed-in person, a paired observer, reviewers and other agents are refused with `provenance_recorder_required`. A human executor carries no publisher, so only a signed-in person can attest one; the PM agent is refused with `manual_provenance_human_recorder_required`. A PM agent recorder is itself counted as a contributor under the publisher of every enabled model binding it has, so each of those bindings must declare a publisher (`manual_provenance_recorder_unattributable`).
+
+The task must be resolved, uncanceled leaf work (`manual_provenance_requires_resolved_work`). It must have no agent runs, agent execution events, claims, live or fulfilled execution assignments, or authenticated manual execution of the current artifact (`manual_provenance_execution_recorded`); such execution supplies its own provenance. A record never contradicts authenticated manual execution (`manual_provenance_executor_conflict`). For a task in manual execution, only the person executing it can be named, or any human if no person is recorded. In scheduled mode, every status change records its caller, for example a manager resolving the task through the status route. That person is not evidence of execution, so any executor can be named. A task holds at most 50 records (`manual_provenance_record_limit`). Stale versions and revisions and malformed URLs are refused with 409 or 422.
+
+A record cannot be withdrawn or overridden by a later one. Its executor, and its agent recorder, stay contributors of the task. If a record names the wrong executor, record a clean replacement of the task (see below) and deliver the work there.
+
+The record does not change status, progress or evidence, and it does not reopen or accept the task. The task's version advances, the response returns the record, and the task timeline gets a `manual_provenance_recorded` event with the recorder, executor, commits and reason. Every command audit row of the request carries the reason.
+
+Every record keeps counting for review independence, also after a rejection and rework:
+
+- An agent executor is an ordinary contributor, and its recorded commits stay attributed to it. A verifier with the executor's actor, profile or publisher fails independence (`verification_publisher_not_independent` for the publisher).
+- A PM agent recorder is a contributor in the same way, so a verifier on the recorder's publisher fails too.
+- A human executor is reviewed like authenticated manual execution: the verifier must be a separate automation-enabled verification profile.
+
+Only the latest record supplies the review candidate, and only while the task has no runs and its brief and artifact revisions are unchanged.
+
+A verification assignment whose candidate is already known to be unverifiable is not created. It is refused with `verification_candidate_unverifiable`, and `missing` names the absent facts. The refusal names only a remedy that can help:
+
+- Without runs or authenticated manual execution, `remedy` points at the manual provenance command. This includes a task whose only human-executor record went stale after a brief or artifact change.
+- With authenticated manual execution, the refusal asks for exactly one pull request linked to the task, or a resubmitted artifact with a pull request or compare URL.
+- With runs, the runs must supply a submitted candidate.
+
+When manual execution is missing, the `verification_publisher_unverifiable` refusal includes the same `remedy`.
 
 ## Clean replacement of unattributable work
 

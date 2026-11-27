@@ -194,13 +194,13 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | list_delivery_dependencies | domain_result | 19 | `domain_result(...)` |
-| domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 55 | `str(exc)` |
-| domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
+| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
 | domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 59 | `str(exc)` |
+| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | list_delivery_dependencies | DeliveryDependencyService.projection | 19 | `DeliveryDependencyService(db).projection(task_id)` |
 | DeliveryDependencyService.projection | self.db.scalar | 55 | `self.db.scalar(...)` |
 | DeliveryDependencyService.projection | select(…).where (backend/app/services/deli…dencyService.projection, 1) | 55 | `select(Task).where(...)` |
@@ -218,11 +218,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 53 |
-| unresolved_call | `domain_result` | `exc.detail` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
+| unresolved_call | `domain_result` | `exc.detail` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
+| external_call | `domain_result` | `HTTPException` | 61 |
 | unresolved_call | `DeliveryDependencyService.projection` | `self.db.scalar` | 55 |
 | unresolved_call | `DeliveryDependencyService.projection` | `select(Task).where` | 55 |
 | step_limit | `list_delivery_dependencies` | `first 12 steps` | 0 |
