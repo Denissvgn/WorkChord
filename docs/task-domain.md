@@ -171,14 +171,20 @@ The iteration import routes, `POST /api/iterations/import` (a new iteration) and
 - REST: `POST /api/agent/planning/iterations/{iteration_id}/import/dry-run`, or `POST /api/agent/planning/iterations/import/dry-run` for a file that creates a new iteration, with the file as the multipart field `file` and an agent key that has `planning:write`.
 - MCP: `agent_preview_iteration_import` with `import_data` (the file's JSON object) and, for an existing iteration, `iteration_id`.
 
-The caller must be able to plan work in the target iteration's project and in every project the file names, and to read every iteration the import reserves (iterations that share a team member's profile included). Otherwise the request is refused with HTTP 403, or 404 when the iteration is not visible to the caller. Nothing is written.
+The caller must be able to plan work in the target iteration's project and in every project the file names, and to read every iteration the import reserves (iterations that share a team member's profile included). Otherwise the request is refused with HTTP 403, or 404 when the iteration is not visible to the caller. The caller must also be able to read every existing team member profile the import refers to, whether by `profile_id`, `owner_profile_id` or a matching name or email. If it cannot, the request is refused with HTTP 403 and `incomplete_authorized_graph`, and a profile that does not exist is refused the same way. Nothing is written.
+
+While the import runs, the dry run holds the workspace-wide planning reservation, so it is bounded. Each of these is refused with HTTP 409 before any reservation is taken:
+
+- `import_dry_run_too_large`: the file has more than 250 tasks (children included) or more than 100 team members. Review a larger plan in smaller files.
+- `import_iteration_tree_too_large`: the iteration would hold more than 2,500 tasks after the import.
+- `import_dry_run_busy`: another dry run is running on the same server process. Try again shortly.
 
 The dry run runs the import itself in a transaction that is always rolled back, as the operator would run it, and returns:
 
 - `changes`: the tasks, dependencies, links (task source fields and external links), dates, team members and profiles the import creates, changes or removes, and the iteration it creates for a new-iteration file. A row the import creates has a stable reference such as `new-task-1`, `new-member-1` or `new-profile-1`, used wherever another row points at it (a parent, an assignee, a dependency); existing rows keep their ids. Changed rows list each field with its `from` and `to` values. Each entry of `dates` names a task, a date field and its old and new value.
 - `summary`: counts per section.
 - `expected_revisions` and `file_sha256`: the revision of every iteration the import reserves and the digest of the file's canonical JSON, as `import-context` reports them.
-- `review_digest`: binds the file, those revisions and the exact change set.
+- `review_digest`: binds the file, those revisions and the exact change set. It is an integrity binding, not proof that anyone reviewed the changes: anyone who holds the file and can run the dry run obtains the same digest.
 - `written`: always `false`.
 
 To apply exactly what was reviewed, the operator sends the same file to the same import route with the multipart field `review_digest`. The write runs the import, compares the result with the review, and is refused, with nothing written, with HTTP 409 and one of these codes:

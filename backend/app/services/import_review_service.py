@@ -29,7 +29,8 @@ _DIGEST_PATTERN = re.compile(rf"^{REVIEW_DIGEST_VERSION}:([0-9a-f]{{64}}):([0-9a
 TASK_FIELDS = (
     "parent_id", "title", "description", "status", "priority", "effort_hours", "effort_days",
     "assignee_id", "owner_profile_id", "project_id", "milestone_id", "is_summary", "is_optional",
-    "is_deferred", "tags", "sort_order", "brief", "execution_mode",
+    "is_deferred", "tags", "sort_order", "brief", "execution_mode", "nominal_day_hours",
+    "estimate_provenance", "ownership_provenance", "brief_revision",
 )
 DATE_FIELDS = (
     "start_date", "end_date", "actual_start_date", "actual_end_date", "min_start_date",
@@ -42,6 +43,16 @@ MEMBER_FIELDS = (
 )
 ITERATION_FIELDS = ("name", "start_date", "end_date", "calendar_id", "project_id")
 EXTERNAL_LINK_FIELDS = ("provider", "external_key", "url", "title")
+
+
+# The dry run holds the workspace-wide planning reservation (on SQLite, the writer lock)
+# while the import runs, so a planner can only preview a bounded file. 250 tasks keeps
+# the reservation to a few seconds and the response to a reviewable size; a larger plan
+# is reviewed in parts or applied by the operator without a review.
+MAX_DRY_RUN_IMPORT_TASKS = 250
+MAX_DRY_RUN_IMPORT_MEMBERS = 100
+# One dry run at a time per server process, so planners cannot stack reservations.
+_dry_run_active = False
 
 
 class ImportReviewRefused(PlanningConflict):
@@ -139,12 +150,16 @@ def _sort_key(value) -> str:
     return _canonical(value).decode()
 
 
-def diff_import_state(before, after, *, profile_floor: int, profiles: dict[int, dict]) -> dict[str, Any]:
-    """Describe exactly what changed, naming rows the import creates by stable local references."""
+def diff_import_state(before, after, *, created_profiles: dict[int, dict]) -> dict[str, Any]:
+    """Describe exactly what changed, naming rows the import creates by stable local references.
+
+    ``created_profiles`` holds the profiles this command inserted, so a profile another
+    session committed meanwhile is never reported as created by the import.
+    """
     task_refs = {task_id: f"new-task-{index}" for index, task_id in enumerate(sorted(set(after["tasks"]) - set(before["tasks"])), 1)}
     member_refs = {member_id: f"new-member-{index}" for index, member_id in enumerate(sorted(set(after["members"]) - set(before["members"])), 1)}
-    referenced_profiles = {row["profile_id"] for row in after["members"].values()} | {row["owner_profile_id"] for row in after["tasks"].values()}
-    new_profiles = sorted(pid for pid in referenced_profiles if pid is not None and pid > profile_floor)
+    profiles = created_profiles
+    new_profiles = sorted(profiles)
     profile_refs = {profile_id: f"new-profile-{index}" for index, profile_id in enumerate(new_profiles, 1)}
 
     def task_ref(value):
@@ -223,7 +238,7 @@ def diff_import_state(before, after, *, profile_floor: int, profiles: dict[int, 
         "links": links,
         "dates": sorted(dates, key=lambda item: (isinstance(item["task"], str), _sort_key(item["task"]), DATE_FIELDS.index(item["field"]))),
         "team_members": members,
-        "profiles": {"created": [{"ref": profile_refs[pid], **profiles[pid]} for pid in new_profiles if pid in profiles]},
+        "profiles": {"created": [{"ref": profile_refs[pid], **profiles[pid]} for pid in new_profiles]},
     }
 
 
@@ -236,35 +251,40 @@ def summarize_changes(changes: dict) -> dict[str, int]:
     return summary
 
 
-async def _profile_floor(db) -> int:
+@contextmanager
+def _track_created_profiles(db):
+    """Collect the profiles this session inserts while the writer runs."""
     from app.models.team_member import TeamMemberProfile
-    with internal_authority(db):
-        return await db.scalar(select(func.max(TeamMemberProfile.id))) or 0
+    created: list[TeamMemberProfile] = []
 
+    def persisted(_session, instance):
+        if isinstance(instance, TeamMemberProfile):
+            created.append(instance)
 
-async def _new_profiles(db, floor) -> dict[int, dict]:
-    from app.models.team_member import TeamMemberProfile
-    with internal_authority(db):
-        rows = (await db.execute(select(TeamMemberProfile.id, TeamMemberProfile.display_name, TeamMemberProfile.email,
-            TeamMemberProfile.profile_kind).where(TeamMemberProfile.id > floor))).all()
-    return {row.id: {"display_name": row.display_name, "email": row.email, "profile_kind": row.profile_kind} for row in rows}
+    event.listen(db.sync_session, "pending_to_persistent", persisted)
+    try:
+        yield created
+    finally:
+        event.remove(db.sync_session, "pending_to_persistent", persisted)
 
 
 async def run_import_with_changes(db, iteration_id, data, *, expected_revisions):
     """Run the import writer and return its receipt with the exact change set it made."""
     from app.routers.export import write_iteration_import, write_new_iteration_import
 
-    floor = await _profile_floor(db)
-    if iteration_id is None:
-        before = EMPTY_STATE
-        result, target = await write_new_iteration_import(db, data, expected_revisions=expected_revisions)
-    else:
-        before = await capture_import_state(db, iteration_id)
-        result = await write_iteration_import(db, iteration_id, data, expected_revisions=expected_revisions)
-        target = iteration_id
-    await db.flush()
+    with _track_created_profiles(db) as created:
+        if iteration_id is None:
+            before = EMPTY_STATE
+            result, target = await write_new_iteration_import(db, data, expected_revisions=expected_revisions)
+        else:
+            before = await capture_import_state(db, iteration_id)
+            result = await write_iteration_import(db, iteration_id, data, expected_revisions=expected_revisions)
+            target = iteration_id
+        await db.flush()
     after = await capture_import_state(db, target)
-    return result, diff_import_state(before, after, profile_floor=floor, profiles=await _new_profiles(db, floor))
+    profiles = {profile.id: {"display_name": profile.display_name, "email": profile.email, "profile_kind": profile.profile_kind}
+                for profile in created}
+    return result, diff_import_state(before, after, created_profiles=profiles)
 
 
 def _referenced_project_ids(iteration, data) -> set:
@@ -296,6 +316,79 @@ async def _authorize_reviewer(db, iteration_id, data):
             raise LookupError("Iteration not found or inaccessible")
     for project_id in sorted(_referenced_project_ids(iteration, data), key=lambda value: (value is not None, value or 0)):
         require_project(db, project_id, "create")
+
+
+def _file_tasks(data):
+    stack = list(data.get("tasks", []))
+    while stack:
+        task = stack.pop()
+        yield task
+        stack.extend(task.get("children", []))
+
+
+async def _bound_dry_run(db, iteration_id, data):
+    """Refuse a file too large to preview before any planning reservation is taken."""
+    from app.models.task import Task
+    from app.query_limits import MAX_ITERATION_TREE_TASKS
+    tasks = sum(1 for _ in _file_tasks(data))
+    members = len(data.get("team_members", []))
+    if tasks > MAX_DRY_RUN_IMPORT_TASKS or members > MAX_DRY_RUN_IMPORT_MEMBERS:
+        raise PlanningConflict("import_dry_run_too_large",
+            f"A dry run previews at most {MAX_DRY_RUN_IMPORT_TASKS} tasks and {MAX_DRY_RUN_IMPORT_MEMBERS} team members. "
+            "Review the plan in smaller files.")
+    existing = 0
+    if iteration_id is not None:
+        with internal_authority(db):
+            existing = await db.scalar(select(func.count(Task.id)).where(Task.iteration_id == iteration_id)) or 0
+    if existing + tasks > MAX_ITERATION_TREE_TASKS:
+        raise PlanningConflict("import_iteration_tree_too_large",
+            f"The iteration would hold more than {MAX_ITERATION_TREE_TASKS} tasks after this import.")
+
+
+def _explicit_profile_ids(data) -> set[int]:
+    ids = set()
+    for member in data.get("team_members", []):
+        if member.get("profile_id") is not None:
+            ids.add(member["profile_id"])
+    for task in _file_tasks(data):
+        if task.get("owner_profile_id") is not None:
+            ids.add(task["owner_profile_id"])
+    return ids
+
+
+def _resolved_profile_ids(changes) -> set[int]:
+    """Existing profiles the change set points at (created profiles carry string references)."""
+    ids = set()
+    for row in changes["team_members"]["created"]:
+        ids.add(row["profile_id"])
+    for row in changes["tasks"]["created"]:
+        ids.add(row["owner_profile_id"])
+    for section, field in (("team_members", "profile_id"), ("tasks", "owner_profile_id")):
+        for row in changes[section]["changed"]:
+            if field in row["changes"]:
+                ids.add(row["changes"][field]["to"])
+    return {value for value in ids if isinstance(value, int)}
+
+
+async def _require_readable_profiles(db, profile_ids):
+    """Under the caller's own authority: every profile the import refers to must be readable.
+
+    Missing and unreadable profiles are refused alike, so the dry run cannot be used to
+    learn which names or ids exist in a profile directory the caller cannot read.
+    """
+    from app.authority import AuthorityError
+    from app.models.team_member import TeamMemberProfile
+    wanted = set()
+    for value in profile_ids:
+        try:
+            wanted.add(int(value))
+        except (TypeError, ValueError):
+            raise AuthorityError("incomplete_authorized_graph", "This import refers to a team member profile you cannot read.")
+    if not wanted:
+        return
+    readable = set((await db.scalars(select(TeamMemberProfile.id).where(TeamMemberProfile.id.in_(sorted(wanted))))).all())
+    if readable != wanted:
+        raise AuthorityError("incomplete_authorized_graph", "This import refers to a team member profile you cannot read.")
 
 
 @contextmanager
@@ -330,24 +423,37 @@ async def dry_run_import(db, iteration_id, data) -> dict[str, Any]:
     """Return the exact changes an import of this file would make, and write nothing."""
     from app.services.import_planning_service import import_file_sha256, import_scope_revisions
 
+    global _dry_run_active
     command = current_command(db)
     if command is None or command.mode != "preview":
         raise RuntimeError("A plan-import dry run must own a rollback-only command")
-    await _authorize_reviewer(db, iteration_id, data)
-    # Read under the reviewer's own authority: it must see every scheduling input the import reserves.
-    revisions = await import_scope_revisions(db, iteration_id, data)
-    if len(_canonical(revisions)) > 16384:
-        raise PlanningConflict("planning_scope_oversized", "The complete import revision context exceeds the supported header limit.")
-    caller = db.info.get("authority")
+    if _dry_run_active:
+        raise PlanningConflict("import_dry_run_busy", "Another plan-import dry run is running. Try again shortly.")
+    _dry_run_active = True
     try:
-        with _operator_simulation(db, await _operator_authority(db, caller)):
-            result, changes = await run_import_with_changes(db, iteration_id, data, expected_revisions=revisions)
-            await db.flush()
-    except HTTPException as exc:
-        raise ValueError(str(exc.detail)) from exc
-    except KeyError as exc:
-        raise ValueError(f"Import entry is missing required field {exc}") from exc
-    del result
+        # Everything up to the writer reads without taking the planning reservation.
+        await _authorize_reviewer(db, iteration_id, data)
+        await _bound_dry_run(db, iteration_id, data)
+        await _require_readable_profiles(db, _explicit_profile_ids(data))
+        # Read under the reviewer's own authority: it must see every scheduling input the import reserves.
+        revisions = await import_scope_revisions(db, iteration_id, data)
+        if len(_canonical(revisions)) > 16384:
+            raise PlanningConflict("planning_scope_oversized", "The complete import revision context exceeds the supported header limit.")
+        caller = db.info.get("authority")
+        try:
+            with _operator_simulation(db, await _operator_authority(db, caller)):
+                _, changes = await run_import_with_changes(db, iteration_id, data, expected_revisions=revisions)
+                await db.flush()
+        except HTTPException as exc:
+            raise ValueError(str(exc.detail)) from exc
+        except KeyError as exc:
+            raise ValueError(f"Import entry is missing required field {exc}") from exc
+        # Back under the caller's authority: a profile matched by name or email must be one it can read.
+        await _require_readable_profiles(db, _resolved_profile_ids(changes))
+    finally:
+        _dry_run_active = False
+    # Work the root command does on exit (delivery reconciliation, discussion enqueueing)
+    # runs after this diff and is rolled back with everything else.
     file_sha = import_file_sha256(data)
     target_sha = target_sha256(iteration_id, revisions)
     return {

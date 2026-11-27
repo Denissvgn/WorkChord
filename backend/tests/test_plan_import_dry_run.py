@@ -146,7 +146,7 @@ async def test_apply_with_the_digest_makes_exactly_the_reviewed_changes(managed_
         new_tasks = {task.title: task for task in (await db.scalars(select(Task).where(
             Task.iteration_id == iteration_id, Task.id.not_in(list(state_before["tasks"]))))).all()}
         dependency = await db.scalar(select(TaskDependency).where(TaskDependency.task_id == new_tasks["Reviewed follower"].id))
-    assert diff_import_state(state_before, state_after, profile_floor=floor, profiles=profiles) == reviewed["changes"]
+    assert diff_import_state(state_before, state_after, created_profiles=profiles) == reviewed["changes"]
     assert set(new_tasks) == {"Reviewed parent", "Reviewed child", "Reviewed follower"}
     assert new_tasks["Reviewed child"].parent_id == new_tasks["Reviewed parent"].id
     assert dependency.depends_on_id == new_tasks["Reviewed child"].id
@@ -273,4 +273,110 @@ async def test_mcp_preview_matches_the_rest_dry_run(managed_store, monkeypatch):
         assert body["changes"] == rest["changes"]
         denied = await call(READER_KEY, {"iteration_id": iteration_id, "import_data": data})
         assert denied["isError"]
+    assert await persisted(factory) == before
+
+
+def refuse_planning_reservation(monkeypatch):
+    """Fail the test if a refusal is decided only after the workspace planning reservation."""
+    import app.commands
+
+    async def reserved(*_args, **_kwargs):
+        raise AssertionError("the planning reservation was taken")
+    monkeypatch.setattr(app.commands, "lock_planning", reserved)
+
+
+async def test_oversized_previews_are_refused_before_any_reservation(managed_store, monkeypatch):
+    import app.query_limits
+    from app.services import import_review_service
+
+    factory, scenario, _, _ = managed_store
+    await add_agents(factory, scenario)
+    path = f"/api/agent/planning/iterations/{scenario.iterations[0]}/import/dry-run"
+    before = await persisted(factory)
+    refuse_planning_reservation(monkeypatch)
+
+    many = {"tasks": [{"title": f"Bulk {index}", "project_id": scenario.projects[0], "effort_hours": 1}
+                      for index in range(import_review_service.MAX_DRY_RUN_IMPORT_TASKS + 1)]}
+    too_many = await dry_run(PM_KEY, path, many)
+    assert too_many.status_code == 409, too_many.text
+    assert too_many.json()["detail"]["code"] == "import_dry_run_too_large"
+
+    crowd = {"team_members": [{"name": f"Person {index}"} for index in range(import_review_service.MAX_DRY_RUN_IMPORT_MEMBERS + 1)]}
+    too_many_members = await dry_run(PM_KEY, path, crowd)
+    assert too_many_members.json()["detail"]["code"] == "import_dry_run_too_large"
+
+    async with factory() as db:
+        existing = await db.scalar(select(func.count(Task.id)).where(Task.iteration_id == scenario.iterations[0]))
+    monkeypatch.setattr(app.query_limits, "MAX_ITERATION_TREE_TASKS", existing + 2)
+    tree = await dry_run(PM_KEY, path, plan_file(scenario.projects[0]))
+    assert tree.status_code == 409, tree.text
+    assert tree.json()["detail"]["code"] == "import_iteration_tree_too_large"
+
+    monkeypatch.setattr(import_review_service, "_dry_run_active", True)
+    busy = await dry_run(PM_KEY, path, plan_file(scenario.projects[0]))
+    assert busy.status_code == 409 and busy.json()["detail"]["code"] == "import_dry_run_busy", busy.text
+    assert await persisted(factory) == before
+
+
+async def test_profiles_the_caller_cannot_read_are_refused_alike(managed_store):
+    factory, scenario, _, _ = managed_store
+    await add_agents(factory, scenario)
+    async with factory() as db:
+        hidden = TeamMemberProfile(display_name="Hidden directory person", profile_kind="human", automation_enabled=False)
+        db.add(hidden)
+        await db.commit()
+        hidden_id = hidden.id
+    path = f"/api/agent/planning/iterations/{scenario.iterations[0]}/import/dry-run"
+    before = await persisted(factory)
+
+    by_name = await dry_run(PM_KEY, path, {"team_members": [{"name": "Hidden directory person"}]})
+    assert by_name.status_code == 403, by_name.text
+    assert by_name.json()["detail"]["code"] == "incomplete_authorized_graph"
+    assert str(hidden_id) not in by_name.text
+
+    def owned(profile_id):
+        return {"tasks": [{"title": "Owned task", "project_id": scenario.projects[0], "effort_hours": 1,
+                           "owner_profile_id": profile_id}]}
+    existing = await dry_run(PM_KEY, path, owned(hidden_id))
+    missing = await dry_run(PM_KEY, path, owned(999_999))
+    assert existing.status_code == missing.status_code == 403
+    assert existing.json() == missing.json()
+
+    unknown = await dry_run(PM_KEY, path, {"team_members": [{"name": "Nobody known yet"}]})
+    assert unknown.status_code == 200, unknown.text
+    assert await persisted(factory) == before
+
+
+async def test_the_elevated_writer_cannot_commit_and_needs_a_preview_root(managed_store, monkeypatch):
+    import pytest
+    import app.routers.export as export
+    from app.authority import Authority
+    from app.commands import command_transaction
+    from app.services.import_review_service import dry_run_import
+
+    factory, scenario, _, _ = managed_store
+    data = plan_file(scenario.projects[0])
+    before = await persisted(factory)
+    operator = Authority(None, "system", workspace_role="operator")
+    original = export._process_import
+
+    async def committing(iteration_id, payload, db, **kwargs):
+        result = await original(iteration_id, payload, db, **kwargs)
+        await db.commit()
+        return result
+    monkeypatch.setattr(export, "_process_import", committing)
+
+    async with factory() as db:
+        db.info["authority"] = operator
+        with pytest.raises(RuntimeError, match="cannot commit"):
+            async with command_transaction(db, mode="preview"):
+                await dry_run_import(db, scenario.iterations[0], data)
+    assert await persisted(factory) == before
+
+    monkeypatch.setattr(export, "_process_import", original)
+    async with factory() as db:
+        db.info["authority"] = operator
+        with pytest.raises(RuntimeError, match="rollback-only"):
+            async with command_transaction(db, mode="apply"):
+                await dry_run_import(db, scenario.iterations[0], data)
     assert await persisted(factory) == before
