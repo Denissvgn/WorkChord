@@ -104,9 +104,9 @@ sequenceDiagram
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 717 interactions; 687 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 719 interactions; 689 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 229 (228 omitted); unresolved 1 of 347 (346 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 230 (229 omitted); unresolved 1 of 348 (347 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -135,7 +135,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 142; effect analysis evaluated: 95, partial: 3, unavailable: 44. Counts include steps omitted from the displayed trace.
 
-Collector observations for 98 source steps with known totals: observed: 421, emitted: 405, omitted: 16. Unavailable totals are excluded.
+Collector observations for 98 source steps with known totals: observed: 424, emitted: 408, omitted: 16. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -210,7 +210,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_get_iteration_summary | _tool_call | 1907 | `_tool_call((...), ...)` |
+| workspace_get_iteration_summary | _tool_call | 1977 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |

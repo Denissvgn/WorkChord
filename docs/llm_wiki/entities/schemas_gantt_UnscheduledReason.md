@@ -4,7 +4,7 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)
-**Target:** `Literal['no_assignee', 'assignee_not_in_iteration', 'no_estimate', 'no_capacity', 'prerequisites_pending', 'predecessor_unscheduled', 'deferred', 'blocked', 'not_placed']`
+**Target:** `Literal['no_assignee', 'assignee_not_in_iteration', 'no_estimate', 'no_capacity', 'prerequisites_pending', 'predecessor_unscheduled', 'predecessor_postponed', 'deferred', 'blocked', 'not_placed']`
 
 ## Description
 

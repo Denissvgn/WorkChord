@@ -29,9 +29,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (69) |
+| Inbound | `frontend` (71) |
 
-> All 69 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 71 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

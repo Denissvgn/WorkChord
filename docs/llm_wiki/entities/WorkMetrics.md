@@ -18,6 +18,7 @@ _Auto-generated from `WorkMetrics` in `frontend/src/types/workMetrics.ts`._
 | `required_tasks` | `number` | No | — | — |
 | `optional_tasks` | `number` | No | — | — |
 | `structural_tasks` | `number` | No | — | — |
+| `postponed_tasks` | `number` | No | — | — |
 | `implemented_tasks` | `number` | No | — | — |
 | `accepted_tasks` | `number` | No | — | — |
 | `overdue_tasks` | `number` | No | — | — |
@@ -71,7 +72,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [workMetrics](../modules/workMetrics.md) | 0 | `acceptance_unknown_tasks`, `accepted_percent`, `accepted_tasks`, `implemented_tasks`, `iteration_overflow_tasks`, `late_start_tasks`, `metric_contract_version`, `optional_tasks`, `overdue_tasks`, `project_target_overflow_tasks`, `required_tasks`, `structural_tasks` |
+| [workMetrics](../modules/workMetrics.md) | 0 | `acceptance_unknown_tasks`, `accepted_percent`, `accepted_tasks`, `implemented_tasks`, `iteration_overflow_tasks`, `late_start_tasks`, `metric_contract_version`, `optional_tasks`, `overdue_tasks`, `postponed_tasks`, `project_target_overflow_tasks`, `required_tasks` |
 
 ### Structure
 

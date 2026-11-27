@@ -96,9 +96,9 @@ sequenceDiagram
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 599 interactions; 569 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 601 interactions; 571 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 197 (196 omitted); unresolved 1 of 300 (299 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 198 (197 omitted); unresolved 1 of 301 (300 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -127,7 +127,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 103; effect analysis evaluated: 71, partial: 3, unavailable: 29. Counts include steps omitted from the displayed trace.
 
-Collector observations for 74 source steps with known totals: observed: 331, emitted: 315, omitted: 16. Unavailable totals are excluded.
+Collector observations for 74 source steps with known totals: observed: 334, emitted: 318, omitted: 16. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -202,7 +202,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_list_releases | _tool_call | 2305 | `_tool_call('tasks:read', ...)` |
+| workspace_list_releases | _tool_call | 2380 | `_tool_call('tasks:read', ...)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |

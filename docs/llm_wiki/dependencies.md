@@ -21,7 +21,7 @@ flowchart TD
 
 > These additional coupling groups include deferred, `TYPE_CHECKING`, or erased TypeScript imports. Startup cycles, including any smaller cycles within these groups, are listed above.
 
-- [authority](modules/authority.md) ⇄ [commands](modules/commands.md) ⇄ [app_database](modules/app_database.md) ⇄ [models_agent](modules/models_agent.md) ⇄ [models_autonomy](modules/models_autonomy.md) ⇄ [models_calendar](modules/models_calendar.md) ⇄ [models_capacity](modules/models_capacity.md) ⇄ [models_delivery_dependency](modules/models_delivery_dependency.md) ⇄ [models_discussion](modules/models_discussion.md) ⇄ [models_external_link](modules/models_external_link.md) ⇄ [models_github](modules/models_github.md) ⇄ [models_identity](modules/models_identity.md) ⇄ [models_iteration](modules/models_iteration.md) ⇄ [models_label](modules/models_label.md) ⇄ [models_maintenance](modules/models_maintenance.md) ⇄ [models_outbound_webhook](modules/models_outbound_webhook.md) ⇄ [models_plan_share](modules/models_plan_share.md) ⇄ [models_project](modules/models_project.md) ⇄ [recovery](modules/recovery.md) ⇄ [models_release](modules/models_release.md) ⇄ [models_request_source](modules/models_request_source.md) ⇄ [models_saved_view](modules/models_saved_view.md) ⇄ [models_system_settings](modules/models_system_settings.md) ⇄ [models_task](modules/models_task.md) ⇄ [models_task_brief](modules/models_task_brief.md) ⇄ [models_task_postponement](modules/models_task_postponement.md) ⇄ [models_task_replacement](modules/models_task_replacement.md) ⇄ [task_status_log](modules/task_status_log.md) ⇄ [team_member](modules/team_member.md) ⇄ [models_template](modules/models_template.md) ⇄ [models_triage](modules/models_triage.md) ⇄ [user_session](modules/user_session.md) ⇄ [observability](modules/observability.md) ⇄ [export](modules/export.md) ⇄ [snapshots](modules/snapshots.md) ⇄ [schemas_agent](modules/schemas_agent.md) ⇄ [schemas_triage](modules/schemas_triage.md) ⇄ [agent_model_catalog_service](modules/agent_model_catalog_service.md) ⇄ [agent_planning_service](modules/agent_planning_service.md) ⇄ [agent_profile_catalog_service](modules/agent_profile_catalog_service.md) ⇄ [agent_readiness](modules/agent_readiness.md) ⇄ [agent_routing_observability](modules/agent_routing_observability.md) ⇄ [agent_routing_service](modules/agent_routing_service.md) ⇄ [agent_service](modules/agent_service.md) ⇄ [agent_team_setup_service](modules/agent_team_setup_service.md) ⇄ [agent_work_service](modules/agent_work_service.md) ⇄ [allocation_removal](modules/allocation_removal.md) ⇄ [backlog_snapshot_service](modules/backlog_snapshot_service.md) ⇄ [calendar_rules](modules/calendar_rules.md) ⇄ [calendar_service](modules/calendar_service.md) ⇄ [capacity_adjustments](modules/capacity_adjustments.md) ⇄ [capacity_service](modules/capacity_service.md) ⇄ [capacity_transfers](modules/capacity_transfers.md) ⇄ [delivery_dependency_service](modules/delivery_dependency_service.md) ⇄ [dependency_order](modules/dependency_order.md) ⇄ [discussion_service](modules/discussion_service.md) ⇄ [email_settings_service](modules/email_settings_service.md) ⇄ [execution_planning_window](modules/execution_planning_window.md) ⇄ [execution_reconciliation](modules/execution_reconciliation.md) ⇄ [external_link_service](modules/external_link_service.md) ⇄ [github_reconciliation_service](modules/github_reconciliation_service.md) ⇄ [github_status_automation_service](modules/github_status_automation_service.md) ⇄ [github_status_service](modules/github_status_service.md) ⇄ [hierarchy_repair_service](modules/hierarchy_repair_service.md) ⇄ [identity_service](modules/identity_service.md) ⇄ [import_planning_service](modules/import_planning_service.md) ⇄ [iteration_service](modules/iteration_service.md) ⇄ [label_service](modules/label_service.md) ⇄ [language_service](modules/language_service.md) ⇄ [llm_service](modules/llm_service.md) ⇄ [maintenance_window_service](modules/maintenance_window_service.md) ⇄ [manual_provenance_service](modules/manual_provenance_service.md) ⇄ [notification_service](modules/notification_service.md) ⇄ [outbound_webhook_service](modules/outbound_webhook_service.md) ⇄ [planning_input_context](modules/planning_input_context.md) ⇄ [planning_window_reconciliation](modules/planning_window_reconciliation.md) ⇄ [project_service](modules/project_service.md) ⇄ [request_source_service](modules/request_source_service.md) ⇄ [retained_planning_output](modules/retained_planning_output.md) ⇄ [services_review_evidence](modules/services_review_evidence.md) ⇄ [review_provenance](modules/review_provenance.md) ⇄ [saved_view_service](modules/saved_view_service.md) ⇄ [scheduler_service](modules/scheduler_service.md) ⇄ [snapshot_service](modules/snapshot_service.md) ⇄ [system_settings_service](modules/system_settings_service.md) ⇄ [task_brief_service](modules/task_brief_service.md) ⇄ [task_context_revision_service](modules/task_context_revision_service.md) ⇄ [task_domain_service](modules/task_domain_service.md) ⇄ [task_hierarchy_service](modules/task_hierarchy_service.md) ⇄ [task_import_service](modules/task_import_service.md) ⇄ [task_postponement_service](modules/task_postponement_service.md) ⇄ [task_reactivation_service](modules/task_reactivation_service.md) ⇄ [task_recovery_service](modules/task_recovery_service.md) ⇄ [task_replacement_service](modules/task_replacement_service.md) ⇄ [task_service](modules/task_service.md) ⇄ [task_status_service](modules/task_status_service.md) ⇄ [task_timeline_service](modules/task_timeline_service.md) ⇄ [team_service](modules/team_service.md) ⇄ [template_service](modules/template_service.md) ⇄ [triage_service](modules/triage_service.md) ⇄ [upgrade_service](modules/upgrade_service.md) ⇄ [services_work_metrics](modules/services_work_metrics.md) ⇄ [import_parser](modules/import_parser.md)
+- [authority](modules/authority.md) ⇄ [commands](modules/commands.md) ⇄ [app_database](modules/app_database.md) ⇄ [models_agent](modules/models_agent.md) ⇄ [models_autonomy](modules/models_autonomy.md) ⇄ [models_calendar](modules/models_calendar.md) ⇄ [models_capacity](modules/models_capacity.md) ⇄ [models_delivery_dependency](modules/models_delivery_dependency.md) ⇄ [models_discussion](modules/models_discussion.md) ⇄ [models_external_link](modules/models_external_link.md) ⇄ [models_github](modules/models_github.md) ⇄ [models_identity](modules/models_identity.md) ⇄ [models_iteration](modules/models_iteration.md) ⇄ [models_label](modules/models_label.md) ⇄ [models_maintenance](modules/models_maintenance.md) ⇄ [models_outbound_webhook](modules/models_outbound_webhook.md) ⇄ [models_plan_share](modules/models_plan_share.md) ⇄ [models_project](modules/models_project.md) ⇄ [recovery](modules/recovery.md) ⇄ [models_release](modules/models_release.md) ⇄ [models_request_source](modules/models_request_source.md) ⇄ [models_saved_view](modules/models_saved_view.md) ⇄ [models_system_settings](modules/models_system_settings.md) ⇄ [models_task](modules/models_task.md) ⇄ [models_task_brief](modules/models_task_brief.md) ⇄ [models_task_postponement](modules/models_task_postponement.md) ⇄ [models_task_replacement](modules/models_task_replacement.md) ⇄ [task_status_log](modules/task_status_log.md) ⇄ [team_member](modules/team_member.md) ⇄ [models_template](modules/models_template.md) ⇄ [models_triage](modules/models_triage.md) ⇄ [user_session](modules/user_session.md) ⇄ [observability](modules/observability.md) ⇄ [export](modules/export.md) ⇄ [snapshots](modules/snapshots.md) ⇄ [schemas_agent](modules/schemas_agent.md) ⇄ [schemas_triage](modules/schemas_triage.md) ⇄ [agent_model_catalog_service](modules/agent_model_catalog_service.md) ⇄ [agent_planning_service](modules/agent_planning_service.md) ⇄ [agent_profile_catalog_service](modules/agent_profile_catalog_service.md) ⇄ [agent_readiness](modules/agent_readiness.md) ⇄ [agent_routing_observability](modules/agent_routing_observability.md) ⇄ [agent_routing_service](modules/agent_routing_service.md) ⇄ [agent_service](modules/agent_service.md) ⇄ [agent_team_setup_service](modules/agent_team_setup_service.md) ⇄ [agent_work_service](modules/agent_work_service.md) ⇄ [allocation_removal](modules/allocation_removal.md) ⇄ [backlog_snapshot_service](modules/backlog_snapshot_service.md) ⇄ [calendar_rules](modules/calendar_rules.md) ⇄ [calendar_service](modules/calendar_service.md) ⇄ [capacity_adjustments](modules/capacity_adjustments.md) ⇄ [capacity_service](modules/capacity_service.md) ⇄ [capacity_transfers](modules/capacity_transfers.md) ⇄ [delivery_dependency_service](modules/delivery_dependency_service.md) ⇄ [dependency_order](modules/dependency_order.md) ⇄ [discussion_service](modules/discussion_service.md) ⇄ [email_settings_service](modules/email_settings_service.md) ⇄ [execution_planning_window](modules/execution_planning_window.md) ⇄ [execution_reconciliation](modules/execution_reconciliation.md) ⇄ [external_link_service](modules/external_link_service.md) ⇄ [github_reconciliation_service](modules/github_reconciliation_service.md) ⇄ [github_status_automation_service](modules/github_status_automation_service.md) ⇄ [github_status_service](modules/github_status_service.md) ⇄ [hierarchy_repair_service](modules/hierarchy_repair_service.md) ⇄ [identity_service](modules/identity_service.md) ⇄ [import_planning_service](modules/import_planning_service.md) ⇄ [import_review_service](modules/import_review_service.md) ⇄ [iteration_service](modules/iteration_service.md) ⇄ [label_service](modules/label_service.md) ⇄ [language_service](modules/language_service.md) ⇄ [llm_service](modules/llm_service.md) ⇄ [maintenance_window_service](modules/maintenance_window_service.md) ⇄ [manual_provenance_service](modules/manual_provenance_service.md) ⇄ [notification_service](modules/notification_service.md) ⇄ [outbound_webhook_service](modules/outbound_webhook_service.md) ⇄ [planning_input_context](modules/planning_input_context.md) ⇄ [planning_window_reconciliation](modules/planning_window_reconciliation.md) ⇄ [project_service](modules/project_service.md) ⇄ [request_source_service](modules/request_source_service.md) ⇄ [retained_planning_output](modules/retained_planning_output.md) ⇄ [services_review_evidence](modules/services_review_evidence.md) ⇄ [review_provenance](modules/review_provenance.md) ⇄ [saved_view_service](modules/saved_view_service.md) ⇄ [scheduler_service](modules/scheduler_service.md) ⇄ [snapshot_service](modules/snapshot_service.md) ⇄ [system_settings_service](modules/system_settings_service.md) ⇄ [task_brief_service](modules/task_brief_service.md) ⇄ [task_context_revision_service](modules/task_context_revision_service.md) ⇄ [task_domain_service](modules/task_domain_service.md) ⇄ [task_hierarchy_service](modules/task_hierarchy_service.md) ⇄ [task_import_service](modules/task_import_service.md) ⇄ [task_postponement_service](modules/task_postponement_service.md) ⇄ [task_reactivation_service](modules/task_reactivation_service.md) ⇄ [task_recovery_service](modules/task_recovery_service.md) ⇄ [task_replacement_service](modules/task_replacement_service.md) ⇄ [task_service](modules/task_service.md) ⇄ [task_status_service](modules/task_status_service.md) ⇄ [task_timeline_service](modules/task_timeline_service.md) ⇄ [team_service](modules/team_service.md) ⇄ [template_service](modules/template_service.md) ⇄ [triage_service](modules/triage_service.md) ⇄ [upgrade_service](modules/upgrade_service.md) ⇄ [services_work_metrics](modules/services_work_metrics.md) ⇄ [import_parser](modules/import_parser.md)
 - [test_review_provenance_transports](modules/test_review_provenance_transports.md) ⇄ [test_supervised_shadow_rework](modules/test_supervised_shadow_rework.md) ⇄ [test_team_pm_recovery](modules/test_team_pm_recovery.md)
 - [AssigneeSelect](modules/AssigneeSelect.md) ⇄ [TaskRow](modules/TaskRow.md)
 - [TaskFiltersBar](modules/TaskFiltersBar.md) ⇄ [taskFilterDefaults](modules/taskFilterDefaults.md)
@@ -84,6 +84,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TaskEditDrawer](modules/TaskEditDrawer.md) | [types_gantt](modules/types_gantt.md) |
 | [TaskEditDrawer](modules/TaskEditDrawer.md) | [types_task](modules/types_task.md) |
 | [UnscheduledTasks](modules/UnscheduledTasks.md) | [types_gantt](modules/types_gantt.md) |
+| [unscheduledReason](modules/unscheduledReason.md) | [types_gantt](modules/types_gantt.md) |
 | [AllIterationsDrawer](modules/AllIterationsDrawer.md) | [types_iteration](modules/types_iteration.md) |
 | [AnnualCalendarFields](modules/AnnualCalendarFields.md) | [types_calendar](modules/types_calendar.md) |
 | [IterationEditorDrawer](modules/IterationEditorDrawer.md) | [types_iteration](modules/types_iteration.md) |
@@ -272,6 +273,12 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TaskOwnerAcceptance.test](modules/TaskOwnerAcceptance.test.md) | [types_task](modules/types_task.md) |
 | [TaskOwnerAcceptance](modules/TaskOwnerAcceptance.md) | [mutationFeedback](modules/mutationFeedback.md) |
 | [TaskOwnerAcceptance](modules/TaskOwnerAcceptance.md) | [types_task](modules/types_task.md) |
+| [TaskPostponeForm](modules/TaskPostponeForm.md) | [mutationFeedback](modules/mutationFeedback.md) |
+| [TaskPostponeForm](modules/TaskPostponeForm.md) | [types_task](modules/types_task.md) |
+| [TaskPostponement.test](modules/TaskPostponement.test.md) | [identityService](modules/identityService.md) |
+| [TaskPostponement.test](modules/TaskPostponement.test.md) | [types_task](modules/types_task.md) |
+| [TaskPostponementPanel](modules/TaskPostponementPanel.md) | [mutationFeedback](modules/mutationFeedback.md) |
+| [TaskPostponementPanel](modules/TaskPostponementPanel.md) | [types_task](modules/types_task.md) |
 | [TaskReadView.brief.test](modules/TaskReadView.brief.test.md) | [types_task](modules/types_task.md) |
 | [TaskReadView.dispatch.test](modules/TaskReadView.dispatch.test.md) | [types_task](modules/types_task.md) |
 | [TaskReadView.operatorKey.test](modules/TaskReadView.operatorKey.test.md) | [identityService](modules/identityService.md) |
@@ -651,102 +658,102 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 
 | Module | Fan-in | Fan-out |
 |--------|--------|---------|
-| [Button](modules/Button.md) | 162 | 1 |
-| [models_task](modules/models_task.md) | 149 | 9 |
-| [renderWithProviders](modules/renderWithProviders.md) | 137 | 2 |
-| [models_agent](modules/models_agent.md) | 133 | 5 |
-| [time](modules/time.md) | 125 | 0 |
-| [config](modules/config.md) | 114 | 1 |
-| [commands](modules/commands.md) | 112 | 18 |
-| [types_task](modules/types_task.md) | 112 | 2 |
+| [Button](modules/Button.md) | 164 | 1 |
+| [models_task](modules/models_task.md) | 153 | 9 |
+| [renderWithProviders](modules/renderWithProviders.md) | 138 | 2 |
+| [models_agent](modules/models_agent.md) | 135 | 5 |
+| [time](modules/time.md) | 126 | 0 |
+| [config](modules/config.md) | 115 | 1 |
+| [types_task](modules/types_task.md) | 115 | 2 |
+| [commands](modules/commands.md) | 114 | 18 |
 | [app_database](modules/app_database.md) | 108 | 5 |
-| [authority](modules/authority.md) | 103 | 6 |
-| [models_iteration](modules/models_iteration.md) | 100 | 6 |
-| [models_project](modules/models_project.md) | 85 | 9 |
-| [QueryState](modules/QueryState.md) | 81 | 2 |
-| [team_member](modules/team_member.md) | 79 | 6 |
+| [authority](modules/authority.md) | 105 | 6 |
+| [models_iteration](modules/models_iteration.md) | 102 | 6 |
+| [models_project](modules/models_project.md) | 86 | 9 |
+| [QueryState](modules/QueryState.md) | 83 | 2 |
+| [team_member](modules/team_member.md) | 81 | 6 |
+| [models_identity](modules/models_identity.md) | 77 | 2 |
 | [task_service](modules/task_service.md) | 77 | 30 |
-| [models_identity](modules/models_identity.md) | 74 | 2 |
-| [apiError](modules/apiError.md) | 69 | 0 |
-| [i18n](modules/i18n.md) | 63 | 1 |
-| [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 61 | 9 |
-| [app_main](modules/app_main.md) | 60 | 49 |
-| [agent_service](modules/agent_service.md) | 53 | 20 |
-| [formatDate](modules/formatDate.md) | 53 | 1 |
+| [apiError](modules/apiError.md) | 71 | 0 |
+| [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 64 | 9 |
+| [i18n](modules/i18n.md) | 64 | 1 |
+| [app_main](modules/app_main.md) | 62 | 49 |
+| [agent_service](modules/agent_service.md) | 56 | 20 |
+| [formatDate](modules/formatDate.md) | 54 | 1 |
 | [types_iteration](modules/types_iteration.md) | 50 | 1 |
 | [identity_service](modules/identity_service.md) | 49 | 10 |
-| [Select](modules/Select.md) | 48 | 1 |
+| [Select](modules/Select.md) | 49 | 1 |
 | [api](modules/api.md) | 46 | 2 |
+| [taskService](modules/taskService.md) | 45 | 3 |
 | [models_calendar](modules/models_calendar.md) | 44 | 2 |
 | [schemas_task](modules/schemas_task.md) | 43 | 5 |
-| [taskService](modules/taskService.md) | 43 | 3 |
 | [Input](modules/Input.md) | 42 | 0 |
 | [index](modules/index.md) | 42 | 0 |
+| [identityContext](modules/identityContext.md) | 41 | 1 |
 | [useScopeLink](modules/useScopeLink.md) | 41 | 3 |
 | [types_agent](modules/types_agent.md) | 41 | 1 |
-| [schemas_agent](modules/schemas_agent.md) | 39 | 10 |
-| [identityContext](modules/identityContext.md) | 39 | 1 |
+| [schemas_agent](modules/schemas_agent.md) | 40 | 10 |
 | [upgrade_service](modules/upgrade_service.md) | 38 | 13 |
 | [types_team](modules/types_team.md) | 38 | 0 |
-| [query_limits](modules/query_limits.md) | 34 | 0 |
-| [services_work_metrics](modules/services_work_metrics.md) | 34 | 8 |
-| [agent_work_service](modules/agent_work_service.md) | 33 | 36 |
+| [query_limits](modules/query_limits.md) | 36 | 0 |
+| [services_work_metrics](modules/services_work_metrics.md) | 35 | 8 |
+| [agent_work_service](modules/agent_work_service.md) | 34 | 36 |
 | [user_session](modules/user_session.md) | 32 | 6 |
 | [teamService](modules/teamService.md) | 32 | 3 |
-| [mutationFeedback](modules/mutationFeedback.md) | 29 | 0 |
+| [mutationFeedback](modules/mutationFeedback.md) | 31 | 0 |
+| [mcp_server](modules/mcp_server.md) | 30 | 23 |
+| [test_managed_authority](modules/test_managed_authority.md) | 29 | 16 |
 | [scopeStore](modules/scopeStore.md) | 29 | 1 |
 | [types_project](modules/types_project.md) | 29 | 3 |
+| [agent_routing_service](modules/agent_routing_service.md) | 28 | 23 |
 | [iterationService](modules/iterationService.md) | 28 | 3 |
 | [planningInputService](modules/planningInputService.md) | 28 | 1 |
-| [mcp_server](modules/mcp_server.md) | 27 | 23 |
-| [agent_routing_service](modules/agent_routing_service.md) | 27 | 23 |
 | [snapshot_service](modules/snapshot_service.md) | 27 | 24 |
-| [test_managed_authority](modules/test_managed_authority.md) | 27 | 16 |
 | [recovery](modules/recovery.md) | 26 | 3 |
+| [iteration_service](modules/iteration_service.md) | 26 | 23 |
 | [task_brief_service](modules/task_brief_service.md) | 26 | 13 |
 | [projectService](modules/projectService.md) | 26 | 5 |
 | [agent_routing_policy](modules/agent_routing_policy.md) | 25 | 0 |
 | [schemas_agent_planning](modules/schemas_agent_planning.md) | 24 | 0 |
 | [agent_routing](modules/agent_routing.md) | 24 | 2 |
-| [iteration_service](modules/iteration_service.md) | 24 | 23 |
 | [test_team_pm_dispatch](modules/test_team_pm_dispatch.md) | 24 | 12 |
 | [ButtonLink](modules/ButtonLink.md) | 23 | 1 |
 | [toast](modules/toast.md) | 23 | 0 |
 | [schemas_team](modules/schemas_team.md) | 22 | 2 |
 | [task_domain_service](modules/task_domain_service.md) | 22 | 22 |
+| [team_service](modules/team_service.md) | 22 | 16 |
 | [useWorkScope](modules/useWorkScope.md) | 22 | 5 |
 | [adminAccess](modules/adminAccess.md) | 22 | 1 |
 | [autonomy_canonical](modules/autonomy_canonical.md) | 21 | 0 |
+| [mcp_agent_tools](modules/mcp_agent_tools.md) | 21 | 65 |
 | [schemas_task_brief](modules/schemas_task_brief.md) | 21 | 1 |
 | [delivery_dependency_service](modules/delivery_dependency_service.md) | 21 | 9 |
-| [team_service](modules/team_service.md) | 21 | 16 |
 | [test_agent_team_setup_qualification](modules/test_agent_team_setup_qualification.md) | 21 | 12 |
 | [Modal](modules/Modal.md) | 21 | 1 |
+| [identityService](modules/identityService.md) | 21 | 1 |
 | [useAdminAccess](modules/useAdminAccess.md) | 21 | 2 |
-| [mcp_agent_tools](modules/mcp_agent_tools.md) | 20 | 62 |
+| [types_gantt](modules/types_gantt.md) | 21 | 2 |
 | [agent_team_setup_service](modules/agent_team_setup_service.md) | 20 | 17 |
 | [tone](modules/tone.md) | 20 | 1 |
-| [identityService](modules/identityService.md) | 20 | 1 |
-| [types_gantt](modules/types_gantt.md) | 20 | 2 |
+| [review_provenance](modules/review_provenance.md) | 19 | 21 |
 | [models_capacity](modules/models_capacity.md) | 18 | 2 |
 | [models_triage](modules/models_triage.md) | 18 | 7 |
 | [agent_team_setup](modules/agent_team_setup.md) | 18 | 1 |
-| [review_provenance](modules/review_provenance.md) | 18 | 21 |
+| [capacity_service](modules/capacity_service.md) | 18 | 15 |
 | [types_triage](modules/types_triage.md) | 18 | 1 |
 | [schemas_iteration](modules/schemas_iteration.md) | 17 | 2 |
-| [capacity_service](modules/capacity_service.md) | 17 | 15 |
 | [outbound_webhook_service](modules/outbound_webhook_service.md) | 17 | 12 |
+| [useDraftDismissal](modules/useDraftDismissal.md) | 17 | 0 |
 | [planningReturn](modules/planningReturn.md) | 17 | 0 |
 | [schemas_common](modules/schemas_common.md) | 16 | 0 |
 | [language_service](modules/language_service.md) | 16 | 2 |
+| [scheduler_service](modules/scheduler_service.md) | 16 | 20 |
 | [taskEditorContract](modules/taskEditorContract.md) | 16 | 2 |
 | [workScope](modules/workScope.md) | 16 | 2 |
+| [models_external_link](modules/models_external_link.md) | 15 | 2 |
 | [schemas_task_domain](modules/schemas_task_domain.md) | 15 | 0 |
 | [project_service](modules/project_service.md) | 15 | 20 |
-| [scheduler_service](modules/scheduler_service.md) | 15 | 20 |
-| [useDraftDismissal](modules/useDraftDismissal.md) | 15 | 0 |
 | [models_delivery_dependency](modules/models_delivery_dependency.md) | 14 | 3 |
-| [models_external_link](modules/models_external_link.md) | 14 | 2 |
 | [schemas_triage](modules/schemas_triage.md) | 14 | 4 |
 | [calendar_rules](modules/calendar_rules.md) | 14 | 4 |
 | [github_status_service](modules/github_status_service.md) | 14 | 10 |
@@ -761,12 +768,14 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [planningTaskIssues](modules/planningTaskIssues.md) | 13 | 2 |
 | [destinations](modules/destinations.md) | 13 | 0 |
 | [taskFilterDefaults](modules/taskFilterDefaults.md) | 13 | 1 |
+| [agent_contract](modules/agent_contract.md) | 12 | 0 |
 | [database_migration_manifest](modules/database_migration_manifest.md) | 12 | 0 |
 | [models_task_brief](modules/models_task_brief.md) | 12 | 2 |
 | [backlog_snapshot_service](modules/backlog_snapshot_service.md) | 12 | 15 |
 | [calendar_service](modules/calendar_service.md) | 12 | 8 |
 | [capacity_adjustments](modules/capacity_adjustments.md) | 12 | 14 |
 | [execution_planning_window](modules/execution_planning_window.md) | 12 | 14 |
+| [task_postponement_service](modules/task_postponement_service.md) | 12 | 16 |
 | [url_policy](modules/url_policy.md) | 12 | 1 |
 | [Checkbox](modules/Checkbox.md) | 12 | 0 |
 | [triageUtils](modules/triageUtils.md) | 12 | 4 |
@@ -774,7 +783,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [seedDisplay](modules/seedDisplay.md) | 12 | 5 |
 | [types_label](modules/types_label.md) | 12 | 0 |
 | [savedView](modules/savedView.md) | 12 | 0 |
-| [agent_contract](modules/agent_contract.md) | 11 | 0 |
 | [planning_input_context](modules/planning_input_context.md) | 11 | 11 |
 | [system_settings_service](modules/system_settings_service.md) | 11 | 5 |
 | [task_replacement_service](modules/task_replacement_service.md) | 11 | 17 |
@@ -788,9 +796,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [task_status_log](modules/task_status_log.md) | 10 | 3 |
 | [routers_agent](modules/routers_agent.md) | 10 | 32 |
 | [schemas_project](modules/schemas_project.md) | 10 | 3 |
-| [agent_planning_service](modules/agent_planning_service.md) | 10 | 29 |
-| [task_postponement_service](modules/task_postponement_service.md) | 10 | 16 |
+| [agent_planning_service](modules/agent_planning_service.md) | 10 | 31 |
 | [github_links](modules/github_links.md) | 10 | 0 |
+| [test_agent_routing_service](modules/test_agent_routing_service.md) | 10 | 10 |
 | [test_team_pm_recovery](modules/test_team_pm_recovery.md) | 10 | 16 |
 | [CollapsibleSection](modules/CollapsibleSection.md) | 10 | 0 |
 | [ScopeBar](modules/ScopeBar.md) | 10 | 8 |
@@ -805,7 +813,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [external_link_service](modules/external_link_service.md) | 9 | 9 |
 | [session_service](modules/session_service.md) | 9 | 9 |
 | [sql_semantics](modules/sql_semantics.md) | 9 | 0 |
-| [test_agent_routing_service](modules/test_agent_routing_service.md) | 9 | 10 |
 | [TaskRow](modules/TaskRow.md) | 9 | 9 |
 | [OverflowMenu](modules/OverflowMenu.md) | 9 | 2 |
 | [routeModules](modules/routeModules.md) | 9 | 2 |
@@ -813,6 +820,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [types_template](modules/types_template.md) | 9 | 0 |
 | [postgresql___init__](modules/postgresql___init__.md) | 8 | 1 |
 | [source](modules/source.md) | 8 | 5 |
+| [models_release](modules/models_release.md) | 8 | 5 |
 | [mutation_versions](modules/mutation_versions.md) | 8 | 2 |
 | [schemas_execution_usage](modules/schemas_execution_usage.md) | 8 | 0 |
 | [security](modules/security.md) | 8 | 1 |
@@ -831,7 +839,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [catalog](modules/catalog.md) | 7 | 2 |
 | [project_identity](modules/project_identity.md) | 7 | 0 |
 | [delivery_observation](modules/delivery_observation.md) | 7 | 6 |
-| [models_release](modules/models_release.md) | 7 | 5 |
 | [models_request_source](modules/models_request_source.md) | 7 | 5 |
 | [models_saved_view](modules/models_saved_view.md) | 7 | 3 |
 | [models_task_replacement](modules/models_task_replacement.md) | 7 | 2 |
@@ -846,6 +853,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [transactions](modules/transactions.md) | 7 | 0 |
 | [test_agent_team_setup](modules/test_agent_team_setup.md) | 7 | 17 |
 | [test_task_domain](modules/test_task_domain.md) | 7 | 25 |
+| [Textarea](modules/Textarea.md) | 7 | 1 |
 | [LiveWindowStatus](modules/LiveWindowStatus.md) | 7 | 1 |
 | [ToastProvider](modules/ToastProvider.md) | 7 | 2 |
 | [AppSidebar](modules/AppSidebar.md) | 7 | 4 |
@@ -861,6 +869,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [signing](modules/signing.md) | 6 | 1 |
 | [models_autonomy](modules/models_autonomy.md) | 6 | 2 |
 | [models_task_postponement](modules/models_task_postponement.md) | 6 | 2 |
+| [export](modules/export.md) | 6 | 15 |
 | [routers_task_domain](modules/routers_task_domain.md) | 6 | 33 |
 | [schemas_calendar](modules/schemas_calendar.md) | 6 | 1 |
 | [schemas_external_link](modules/schemas_external_link.md) | 6 | 1 |
@@ -868,6 +877,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [planning_inputs](modules/planning_inputs.md) | 6 | 0 |
 | [schemas_request_source](modules/schemas_request_source.md) | 6 | 1 |
 | [schemas_system_settings](modules/schemas_system_settings.md) | 6 | 0 |
+| [schemas_task_postponement](modules/schemas_task_postponement.md) | 6 | 1 |
 | [execution_reconciliation](modules/execution_reconciliation.md) | 6 | 14 |
 | [services_review_evidence](modules/services_review_evidence.md) | 6 | 14 |
 | [task_context_revision_service](modules/task_context_revision_service.md) | 6 | 5 |
@@ -894,29 +904,32 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [transfer](modules/transfer.md) | 5 | 9 |
 | [models_execution_usage](modules/models_execution_usage.md) | 5 | 2 |
 | [models_plan_share](modules/models_plan_share.md) | 5 | 4 |
-| [routers_agent_planning](modules/routers_agent_planning.md) | 5 | 19 |
+| [routers_agent_planning](modules/routers_agent_planning.md) | 5 | 22 |
 | [routers_gantt](modules/routers_gantt.md) | 5 | 14 |
 | [schemas_gantt](modules/schemas_gantt.md) | 5 | 3 |
 | [manual_provenance](modules/manual_provenance.md) | 5 | 0 |
 | [schemas_saved_view](modules/schemas_saved_view.md) | 5 | 0 |
 | [schemas_task_replacement](modules/schemas_task_replacement.md) | 5 | 0 |
 | [agent_profile_catalog_service](modules/agent_profile_catalog_service.md) | 5 | 3 |
+| [agent_readiness](modules/agent_readiness.md) | 5 | 6 |
 | [assignee_recommendation_service](modules/assignee_recommendation_service.md) | 5 | 5 |
 | [label_service](modules/label_service.md) | 5 | 6 |
 | [planning_window_reconciliation](modules/planning_window_reconciliation.md) | 5 | 15 |
+| [release_service](modules/release_service.md) | 5 | 11 |
 | [request_source_service](modules/request_source_service.md) | 5 | 9 |
 | [retained_planning_output](modules/retained_planning_output.md) | 5 | 12 |
 | [saved_view_service](modules/saved_view_service.md) | 5 | 9 |
 | [settings_read](modules/settings_read.md) | 5 | 1 |
 | [support_database](modules/support_database.md) | 5 | 0 |
 | [test_agent_routing_wave6_qualification](modules/test_agent_routing_wave6_qualification.md) | 5 | 14 |
-| [Textarea](modules/Textarea.md) | 5 | 1 |
 | [projectStatusStyles](modules/projectStatusStyles.md) | 5 | 2 |
 | [AdminAccessGate](modules/AdminAccessGate.md) | 5 | 4 |
 | [MetricCount](modules/MetricCount.md) | 5 | 5 |
+| [TaskWorkPanel](modules/TaskWorkPanel.md) | 5 | 21 |
 | [useTaskRowEdits](modules/useTaskRowEdits.md) | 5 | 7 |
 | [directoryModel](modules/directoryModel.md) | 5 | 2 |
 | [InlineEmptyState](modules/InlineEmptyState.md) | 5 | 0 |
+| [MutationSuccessFeedback](modules/MutationSuccessFeedback.md) | 5 | 3 |
 | [agentDispatch](modules/agentDispatch.md) | 5 | 1 |
 | [connectAgent](modules/connectAgent.md) | 5 | 2 |
 | [agentTeamSetup_masters](modules/agentTeamSetup_masters.md) | 5 | 1 |
@@ -947,17 +960,17 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [schemas_label](modules/schemas_label.md) | 4 | 0 |
 | [schemas_release](modules/schemas_release.md) | 4 | 1 |
 | [schemas_review_evidence](modules/schemas_review_evidence.md) | 4 | 0 |
-| [schemas_task_postponement](modules/schemas_task_postponement.md) | 4 | 1 |
 | [schemas_template](modules/schemas_template.md) | 4 | 1 |
 | [schemas_time_entry](modules/schemas_time_entry.md) | 4 | 0 |
+| [server_features](modules/server_features.md) | 4 | 0 |
 | [agent_routing_observability](modules/agent_routing_observability.md) | 4 | 5 |
 | [discussion_service](modules/discussion_service.md) | 4 | 11 |
 | [email_settings_service](modules/email_settings_service.md) | 4 | 6 |
 | [github_webhook_service](modules/github_webhook_service.md) | 4 | 16 |
+| [import_review_service](modules/import_review_service.md) | 4 | 11 |
 | [maintenance_window_service](modules/maintenance_window_service.md) | 4 | 8 |
 | [manual_provenance_service](modules/manual_provenance_service.md) | 4 | 13 |
 | [planning_issues](modules/planning_issues.md) | 4 | 0 |
-| [release_service](modules/release_service.md) | 4 | 11 |
 | [task_timeline_service](modules/task_timeline_service.md) | 4 | 8 |
 | [time_entry_service](modules/time_entry_service.md) | 4 | 9 |
 | [test_project_identity](modules/test_project_identity.md) | 4 | 8 |
@@ -976,11 +989,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [PersonCapacity](modules/PersonCapacity.md) | 4 | 7 |
 | [TaskAssigneeDisplay](modules/TaskAssigneeDisplay.md) | 4 | 4 |
 | [TaskBriefEditor](modules/TaskBriefEditor.md) | 4 | 3 |
-| [TaskWorkPanel](modules/TaskWorkPanel.md) | 4 | 19 |
 | [TimeEntriesPanel](modules/TimeEntriesPanel.md) | 4 | 14 |
 | [taskRowValues](modules/taskRowValues.md) | 4 | 1 |
 | [usePipeline](modules/usePipeline.md) | 4 | 6 |
-| [MutationSuccessFeedback](modules/MutationSuccessFeedback.md) | 4 | 3 |
 | [agentTeamSetup_manifest](modules/agentTeamSetup_manifest.md) | 4 | 1 |
 | [FirstRunLanding](modules/FirstRunLanding.md) | 4 | 5 |
 | [sampleProjectStore](modules/sampleProjectStore.md) | 4 | 1 |
@@ -1007,7 +1018,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [models_template](modules/models_template.md) | 3 | 2 |
 | [observability](modules/observability.md) | 3 | 8 |
 | [agent_skill_bundles](modules/agent_skill_bundles.md) | 3 | 5 |
-| [export](modules/export.md) | 3 | 14 |
 | [snapshots](modules/snapshots.md) | 3 | 13 |
 | [schemas_delivery_dependency](modules/schemas_delivery_dependency.md) | 3 | 0 |
 | [schemas_intake](modules/schemas_intake.md) | 3 | 0 |
@@ -1015,8 +1025,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [schemas_maintenance](modules/schemas_maintenance.md) | 3 | 0 |
 | [schemas_outbound_webhook](modules/schemas_outbound_webhook.md) | 3 | 1 |
 | [task_detail](modules/task_detail.md) | 3 | 3 |
-| [server_features](modules/server_features.md) | 3 | 0 |
-| [agent_readiness](modules/agent_readiness.md) | 3 | 6 |
 | [allocation_removal](modules/allocation_removal.md) | 3 | 10 |
 | [github_status_automation_service](modules/github_status_automation_service.md) | 3 | 7 |
 | [llm_service](modules/llm_service.md) | 3 | 7 |
@@ -1117,6 +1125,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [bounded_scope_reads](modules/bounded_scope_reads.md) | 2 | 0 |
 | [dependency_order](modules/dependency_order.md) | 2 | 4 |
 | [hierarchy_repair_service](modules/hierarchy_repair_service.md) | 2 | 8 |
+| [import_planning_service](modules/import_planning_service.md) | 2 | 4 |
 | [iteration_date_move](modules/iteration_date_move.md) | 2 | 11 |
 | [notification_service](modules/notification_service.md) | 2 | 3 |
 | [plan_checkpoints](modules/plan_checkpoints.md) | 2 | 0 |
@@ -1145,6 +1154,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [UnsavedLeaveGuard](modules/UnsavedLeaveGuard.md) | 2 | 2 |
 | [WorkFreshness](modules/WorkFreshness.md) | 2 | 1 |
 | [WorkRefreshStatus](modules/WorkRefreshStatus.md) | 2 | 2 |
+| [unscheduledReason](modules/unscheduledReason.md) | 2 | 1 |
 | [AllIterationsDrawer](modules/AllIterationsDrawer.md) | 2 | 6 |
 | [AnnualCalendarFields](modules/AnnualCalendarFields.md) | 2 | 2 |
 | [IterationCapacityLine](modules/IterationCapacityLine.md) | 2 | 4 |
@@ -1260,6 +1270,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [plan_shares](modules/plan_shares.md) | 1 | 6 |
 | [time_entries](modules/time_entries.md) | 1 | 7 |
 | [schemas_agent_connect](modules/schemas_agent_connect.md) | 1 | 0 |
+| [import_review](modules/import_review.md) | 1 | 0 |
 | [schemas_scheduling_rules](modules/schemas_scheduling_rules.md) | 1 | 0 |
 | [schemas_session](modules/schemas_session.md) | 1 | 0 |
 | [snapshot](modules/snapshot.md) | 1 | 0 |
@@ -1267,7 +1278,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [agent_run_read_service](modules/agent_run_read_service.md) | 1 | 6 |
 | [agent_team_credentials](modules/agent_team_credentials.md) | 1 | 0 |
 | [autonomy_work_package_service](modules/autonomy_work_package_service.md) | 1 | 9 |
-| [import_planning_service](modules/import_planning_service.md) | 1 | 4 |
 | [native_session_service](modules/native_session_service.md) | 1 | 8 |
 | [runtime_observation_service](modules/runtime_observation_service.md) | 1 | 8 |
 | [task_bulk_operation_service](modules/task_bulk_operation_service.md) | 1 | 8 |
@@ -1300,7 +1310,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [VacationManager](modules/VacationManager.md) | 1 | 12 |
 | [GanttBarInputs](modules/GanttBarInputs.md) | 1 | 5 |
 | [ScheduleExplanationDetails](modules/ScheduleExplanationDetails.md) | 1 | 4 |
-| [UnscheduledTasks](modules/UnscheduledTasks.md) | 1 | 1 |
+| [UnscheduledTasks](modules/UnscheduledTasks.md) | 1 | 2 |
 | [IterationEditorDrawer](modules/IterationEditorDrawer.md) | 1 | 4 |
 | [IterationImportDialog](modules/IterationImportDialog.md) | 1 | 8 |
 | [IterationList](modules/IterationList.md) | 1 | 12 |
@@ -1311,7 +1321,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [PlanIterationCheckpoint](modules/PlanIterationCheckpoint.md) | 1 | 6 |
 | [PlanIterationDrawers](modules/PlanIterationDrawers.md) | 1 | 6 |
 | [PlanReviewSection](modules/PlanReviewSection.md) | 1 | 13 |
-| [PlanScheduleSection](modules/PlanScheduleSection.md) | 1 | 15 |
+| [PlanScheduleSection](modules/PlanScheduleSection.md) | 1 | 16 |
 | [PlanWorkSection](modules/PlanWorkSection.md) | 1 | 14 |
 | [AddMilestoneModal](modules/AddMilestoneModal.md) | 1 | 7 |
 | [InitiativeForm](modules/InitiativeForm.md) | 1 | 12 |
@@ -1338,6 +1348,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TaskContextSummary](modules/TaskContextSummary.md) | 1 | 5 |
 | [TaskMergeDialog](modules/TaskMergeDialog.md) | 1 | 6 |
 | [TaskOwnerAcceptance](modules/TaskOwnerAcceptance.md) | 1 | 8 |
+| [TaskPostponeForm](modules/TaskPostponeForm.md) | 1 | 9 |
+| [TaskPostponementPanel](modules/TaskPostponementPanel.md) | 1 | 10 |
 | [TaskReviewHistory](modules/TaskReviewHistory.md) | 1 | 4 |
 | [TaskReviewer](modules/TaskReviewer.md) | 1 | 3 |
 | [TaskViewOptions](modules/TaskViewOptions.md) | 1 | 3 |
@@ -1523,6 +1535,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_person_run_reads](modules/test_person_run_reads.md) | 0 | 9 |
 | [test_pipeline_active_outside_run](modules/test_pipeline_active_outside_run.md) | 0 | 11 |
 | [test_plan_checkpoints](modules/test_plan_checkpoints.md) | 0 | 3 |
+| [test_plan_import_dry_run](modules/test_plan_import_dry_run.md) | 0 | 16 |
 | [test_plan_shares](modules/test_plan_shares.md) | 0 | 6 |
 | [test_planning_input_context](modules/test_planning_input_context.md) | 0 | 18 |
 | [test_planning_issues](modules/test_planning_issues.md) | 0 | 1 |
@@ -1531,6 +1544,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_planning_window_digest_validation](modules/test_planning_window_digest_validation.md) | 0 | 9 |
 | [test_pm_forecast_calendar](modules/test_pm_forecast_calendar.md) | 0 | 12 |
 | [test_postgresql_lifecycle](modules/test_postgresql_lifecycle.md) | 0 | 0 |
+| [test_postponed_out_of_scheduling](modules/test_postponed_out_of_scheduling.md) | 0 | 17 |
+| [test_postponement_agent_tools](modules/test_postponement_agent_tools.md) | 0 | 13 |
 | [test_process_roles](modules/test_process_roles.md) | 0 | 3 |
 | [test_profile_capacity_migrations](modules/test_profile_capacity_migrations.md) | 0 | 4 |
 | [test_profile_seed_key_binding](modules/test_profile_seed_key_binding.md) | 0 | 14 |
@@ -1549,7 +1564,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_saved_dependency_order](modules/test_saved_dependency_order.md) | 0 | 6 |
 | [test_saved_view_service](modules/test_saved_view_service.md) | 0 | 3 |
 | [test_schedule_working_date](modules/test_schedule_working_date.md) | 0 | 7 |
-| [test_server_features](modules/test_server_features.md) | 0 | 7 |
+| [test_server_features](modules/test_server_features.md) | 0 | 8 |
 | [test_settings_read_access](modules/test_settings_read_access.md) | 0 | 5 |
 | [test_shadow_review_independence](modules/test_shadow_review_independence.md) | 0 | 12 |
 | [test_shared_member_revisions](modules/test_shared_member_revisions.md) | 0 | 9 |
@@ -1660,6 +1675,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TaskFormSections.test](modules/TaskFormSections.test.md) | 0 | 4 |
 | [TaskList.test](modules/TaskList.test.md) | 0 | 8 |
 | [TaskOwnerAcceptance.test](modules/TaskOwnerAcceptance.test.md) | 0 | 8 |
+| [TaskPostponement.test](modules/TaskPostponement.test.md) | 0 | 7 |
 | [TaskReadView.brief.test](modules/TaskReadView.brief.test.md) | 0 | 5 |
 | [TaskReadView.dispatch.test](modules/TaskReadView.dispatch.test.md) | 0 | 3 |
 | [TaskReadView.operatorKey.test](modules/TaskReadView.operatorKey.test.md) | 0 | 7 |

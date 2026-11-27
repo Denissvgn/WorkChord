@@ -37,6 +37,7 @@ the same audited command and read-model paths.
 | `app.schemas.task` | `TaskCreate` |
 | `app.schemas.task_brief` | `BriefWrite` |
 | `app.schemas.task_domain` | `TaskActionRequest` |
+| `app.schemas.task_postponement` | `TaskPostponementResponse`, `TaskPostponeRequest`, `TaskReactivateRequest` |
 | `app.schemas.task_replacement` | `TaskReplacementResponse`, `TaskReplacementCreate` |
 | `app.schemas.team` | `MemberCapacity`, `MemberWorkload`, `TeamMemberProfileResponse`, `TeamMemberProfileCreate`, `TeamMemberProfileUpdate`, `TeamMemberCreate`, `TeamMemberResponse`, `TeamMemberUpdate`, `VacationCreate`, `VacationResponse`, `VacationUpdate`, `CapacityAdjustmentCommand`, `CapacityAdjustmentResult`, `CapacityAdjustmentCommand`, `CapacityTransferCommand`, `CapacityTransferResult`, `CapacityTransferCommand`, `CapacityTransferResult`, `CapacityTransferWithdrawal`, `CapacityTransferWithdrawal` |
 | `app.schemas.template` | `TemplateType`, `WorkTemplateResponse` |
@@ -46,7 +47,7 @@ the same audited command and read-model paths.
 | `app.services.agent_profile_catalog_service` | `AgentProfileCatalogService` |
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
 | `app.services.agent_routing_service` | `AgentRoutingService` |
-| `app.services.agent_service` | `AgentConflictError`, `AgentService`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key`, `require_scope`, `require_scope`, `require_scope`, `require_scope`, `require_scope`, `actor_has_scope`, `AgentPermissionError` |
+| `app.services.agent_service` | `AgentConflictError`, `AgentService`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key`, `require_scope`, `require_scope`, `require_scope`, `require_scope`, `require_scope`, `require_scope`, `actor_has_scope`, `AgentPermissionError` |
 | `app.services.agent_skill_bundle_service` | `AgentSkillBundleService`, `SkillBundleArtifactError`, `SkillBundleNotFoundError` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupService` |
 | `app.services.agent_work_service` | `AgentWorkService` |
@@ -58,6 +59,7 @@ the same audited command and read-model paths.
 | `app.services.execution_usage_service` | `ExecutionUsageService` |
 | `app.services.external_link_service` | `ExternalLinkConflictError`, `ExternalLinkService` |
 | `app.services.github_reconciliation_service` | `GitHubReconciliationService`, `GitHubReconciliationService` |
+| `app.services.import_review_service` | `dry_run_import`, `validate_import_payload` |
 | `app.services.iteration_date_move` | `IterationDateMoveService` |
 | `app.services.iteration_service` | `IterationService` |
 | `app.services.label_service` | `LabelService` |
@@ -70,6 +72,7 @@ the same audited command and read-model paths.
 | `app.services.task_context_revision_service` | `TaskContextVersionConflictError`, `lock_task_context` |
 | `app.services.task_detail_service` | `TaskDetailService` |
 | `app.services.task_domain_service` | `domain_capabilities`, `TaskDomainService`, `TaskDomainService` |
+| `app.services.task_postponement_service` | `TaskPostponementService` |
 | `app.services.task_replacement_service` | `TaskReplacementService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.team_service` | `TeamService` |
@@ -108,8 +111,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (20) |
-| Outbound | `backend` (62) |
+| Inbound | `backend` (21) |
+| Outbound | `backend` (65) |
 
 ### External packages
 
@@ -117,7 +120,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 82 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 86 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -175,6 +178,7 @@ flowchart LR
 | `update_planning_team_member` | *(async)* `(db: AsyncSession, actor: AgentActor, member_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: update one iteration capacity owner. |
 | `preview_capacity_adjustment` | *(async)* `(db: AsyncSession, actor: AgentActor, member_id: int, payload: dict[str, Any]) -> dict[str, Any]` | — | MCP handler: show effective capacity for a dated adjustment without recording it. |
 | `preview_iteration_date_move` | *(async)* `(db: AsyncSession, actor: AgentActor, iteration_id: int, payload: dict[str, Any]) -> dict[str, Any]` | — | MCP handler: show each person's shortfall for a proposed iteration period without saving it. |
+| `preview_iteration_import` | *(async)* `(db: AsyncSession, actor: AgentActor, iteration_id: int \| None, import_data: Any) -> dict[str, Any]` | — | MCP handler: the exact changes a JSON plan import would make, without writing them. |
 | `apply_capacity_adjustment` | *(async)* `(db: AsyncSession, actor: AgentActor, member_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: record or withdraw dated adjustments on one capacity row. |
 | `preview_capacity_transfer` | *(async)* `(db: AsyncSession, actor: AgentActor, payload: dict[str, Any]) -> dict[str, Any]` | — | MCP handler: show every row's effective capacity with a temporary transfer without recording it. |
 | `apply_capacity_transfer` | *(async)* `(db: AsyncSession, actor: AgentActor, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: lend capacity between rows of one person until a return date. |
@@ -183,6 +187,9 @@ flowchart LR
 | `get_task_replacement` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any]` | — | MCP handler: read the clean-replacement disposition a task takes part in. |
 | `record_task_replacement` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: replace an unaccepted task with a fresh one under a recorded owner decision. |
 | `record_manual_provenance` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: record who executed resolved work delivered outside recorded runs. |
+| `get_task_postponement` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any]` | — | MCP handler: GET /api/tasks/{task_id}/postponement, with each requirement and whether it is met. |
+| `postpone_task` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: POST /api/tasks/{task_id}/postpone as an audited planning command. |
+| `reactivate_task` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: POST /api/tasks/{task_id}/reactivate as an audited planning command. |
 | `get_github_reconciliation` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any]` | — | MCP handler: GET /api/tasks/{task_id}/github-reconciliation. |
 | `run_github_catch_up` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any]` | — | MCP handler: POST /api/tasks/{task_id}/github-reconciliation/catch-up. |
 | `list_delivery_dependencies` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> list[dict[str, Any]]` | — | MCP handler: GET /api/tasks/{task_id}/delivery-dependencies. |
@@ -254,7 +261,8 @@ flowchart LR
 | `get_project_milestone` | *(async)* `(db: AsyncSession, project_id: int, milestone_id: int) -> dict[str, Any] \| None` | — | MCP handler: read one project-scoped milestone. |
 | `list_project_updates` | *(async)* `(db: AsyncSession, project_id: int) -> list[dict[str, Any]] \| None` | — | MCP handler: list append-only project status updates. |
 | `create_agent_project_update` | *(async)* `(db: AsyncSession, actor: AgentActor, project_id: int, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: append an attributed, evidence-backed project update. |
-| `list_project_tasks` | *(async)* `(db: AsyncSession, project_id: int) -> list[dict[str, Any]] \| None` | — | MCP handler: list tasks linked to a project. |
+| `_tasks_with_status` | `(nodes: list[dict[str, Any]], status: str) -> list[dict[str, Any]]` | — | Keep the branches of a task tree that hold work in this status, with the other siblings pruned. |
+| `list_project_tasks` | *(async)* `(db: AsyncSession, project_id: int, status: str \| None = None) -> list[dict[str, Any]] \| None` | — | MCP handler: list tasks linked to a project, optionally only branches holding work in one status. |
 | `list_triage_items` | *(async)* `(db: AsyncSession, active: Optional[bool] = True, statuses: Optional[list[str]] = None, q: Optional[str] = None, source: Optional[str] = None, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]` | — | MCP handler: list triage items. |
 | `get_triage_item` | *(async)* `(db: AsyncSession, triage_item_id: int) -> dict[str, Any] \| None` | — | MCP handler: get a triage item. |
 | `create_triage_item` | *(async)* `(db: AsyncSession, actor: AgentActor, payload: dict[str, Any], *, idempotency_key: str, rationale: str, correlation_id: str) -> dict[str, Any]` | — | MCP handler: idempotently create a PM-controlled triage item. |

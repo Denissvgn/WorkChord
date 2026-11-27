@@ -761,6 +761,17 @@
             "contentMediaType": "application/octet-stream",
             "title": "File",
             "type": "string"
+          },
+          "review_digest": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Review Digest"
           }
         },
         "required": [
@@ -775,6 +786,17 @@
             "contentMediaType": "application/octet-stream",
             "title": "File",
             "type": "string"
+          },
+          "review_digest": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Review Digest"
           }
         },
         "required": [
@@ -3462,6 +3484,11 @@
           "overdue_tasks": {
             "default": 0,
             "title": "Overdue Tasks",
+            "type": "integer"
+          },
+          "postponed_tasks": {
+            "default": 0,
+            "title": "Postponed Tasks",
             "type": "integer"
           },
           "project_id": {
@@ -9117,7 +9144,7 @@
     },
     "/api/iterations/import": {
       "post": {
-        "description": "Import a new iteration from JSON export file.",
+        "description": "Import a new iteration from JSON export file.\n\nWith ``review_digest`` from a plan-import dry run, the write applies only the\nreviewed change set and is refused when the file or its target changed.",
         "operationId": "import_new_iteration_api_iterations_import_post",
         "parameters": [
           {
@@ -9322,7 +9349,7 @@
     },
     "/api/iterations/{iteration_id}/import": {
       "post": {
-        "description": "Import tasks and team members into an iteration from JSON file.",
+        "description": "Import tasks and team members into an iteration from JSON file.\n\nWith ``review_digest`` from a plan-import dry run, the write applies only the\nreviewed change set and is refused when the file or its target changed.",
         "operationId": "import_iteration_api_iterations__iteration_id__import_post",
         "parameters": [
           {

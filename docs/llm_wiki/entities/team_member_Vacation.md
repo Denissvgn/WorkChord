@@ -35,13 +35,13 @@ flowchart LR
     n3["AgentPlanningService.create_vacation (backend/app/services/agent_planning_service.py)"]
     n4["AgentPlanningService.update_vacation (backend/app/services/agent_planning_service.py)"]
     n5["backend/app/services/capacity_service.py"]
-    n6["backend/app/services/planning_input_context.py"]
-    n7["backend/app/services/scheduler_service.py"]
-    n8["SnapshotService.restore (backend/app/services/snapshot_service.py)"]
-    n9["TeamService.add_vacation (backend/app/services/team_service.py)"]
-    n10["TeamService.import_vacations (backend/app/services/team_service.py)"]
-    n11["TeamService.update_vacation (backend/app/services/team_service.py)"]
-    n12["test_routing_preserves_single_year_ratios_and_uses_each_annual_nominal (backend/tests/test_annual_calendar_coverage.py)"]
+    n6["backend/app/services/import_review_service.py"]
+    n7["backend/app/services/planning_input_context.py"]
+    n8["backend/app/services/scheduler_service.py"]
+    n9["SnapshotService.restore (backend/app/services/snapshot_service.py)"]
+    n10["TeamService.add_vacation (backend/app/services/team_service.py)"]
+    n11["TeamService.import_vacations (backend/app/services/team_service.py)"]
+    n12["TeamService.update_vacation (backend/app/services/team_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -60,13 +60,13 @@ flowchart LR
     click n3 "../modules/agent_planning_service.md"
     click n4 "../modules/agent_planning_service.md"
     click n5 "../modules/capacity_service.md"
-    click n6 "../modules/planning_input_context.md"
-    click n7 "../modules/scheduler_service.md"
-    click n8 "../modules/snapshot_service.md"
-    click n9 "../modules/team_service.md"
+    click n6 "../modules/import_review_service.md"
+    click n7 "../modules/planning_input_context.md"
+    click n8 "../modules/scheduler_service.md"
+    click n9 "../modules/snapshot_service.md"
     click n10 "../modules/team_service.md"
     click n11 "../modules/team_service.md"
-    click n12 "../modules/test_annual_calendar_coverage.md"
+    click n12 "../modules/team_service.md"
 ```
 
 ### Summary
@@ -89,6 +89,7 @@ flowchart LR
 | `AgentPlanningService.create_vacation` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `AgentPlanningService.update_vacation` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |
 | `capacity_service` | import | [capacity_service](../modules/capacity_service.md) | — |
+| `import_review_service` | import | [import_review_service](../modules/import_review_service.md) | — |
 | `planning_input_context` | import | [planning_input_context](../modules/planning_input_context.md) | — |
 | `scheduler_service` | import | [scheduler_service](../modules/scheduler_service.md) | — |
 | `SnapshotService.restore` | call | [snapshot_service](../modules/snapshot_service.md) | 1 |
@@ -96,6 +97,5 @@ flowchart LR
 | `TeamService.add_vacation` | type_reference | [team_service](../modules/team_service.md) | — |
 | `TeamService.import_vacations` | type_reference | [team_service](../modules/team_service.md) | — |
 | `TeamService.update_vacation` | type_reference | [team_service](../modules/team_service.md) | — |
-| `test_routing_preserves_single_year_ratios_and_uses_each_annual_nominal` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
 
-> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.
+> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.

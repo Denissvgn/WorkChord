@@ -20,6 +20,7 @@ _Auto-generated from `TaskDetail` in `frontend/src/types/task.ts`._
 | `dependencies` | `TaskReferencePage` | Yes | — | — |
 | `execution_context_complete` | `false` | Yes | — | — |
 | `reviewer_name` | `string \| null` | No | — | — |
+| `postponement` | `TaskPostponementRecord \| null` | No | — | — |
 
 ## Methods
 
@@ -59,7 +60,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `ancestors`, `ancestors_complete`, `children`, `dependencies`, `execution_context_complete`, `reviewer_name`, `task` |
+| [types_task](../modules/types_task.md) | 0 | `ancestors`, `ancestors_complete`, `children`, `dependencies`, `execution_context_complete`, `postponement`, `reviewer_name`, `task` |
 
 ### References
 

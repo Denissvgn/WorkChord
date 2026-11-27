@@ -104,9 +104,9 @@ sequenceDiagram
     p2-->>p30: decision.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 658 interactions; 628 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 659 interactions; 629 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 181 (180 omitted); unresolved 1 of 288 (287 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 181 (180 omitted); unresolved 1 of 289 (288 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -135,7 +135,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 190; effect analysis evaluated: 133, partial: 8, unavailable: 49. Counts include steps omitted from the displayed trace.
 
-Collector observations for 141 source steps with known totals: observed: 856, emitted: 798, omitted: 58. Unavailable totals are excluded.
+Collector observations for 141 source steps with known totals: observed: 858, emitted: 798, omitted: 60. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -211,7 +211,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_work_resource | _json_resource | 2593 | `_json_resource((...), ...)` |
+| agent_work_resource | _json_resource | 2668 | `_json_resource((...), ...)` |
 | _json_resource | _tool_call | 367 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

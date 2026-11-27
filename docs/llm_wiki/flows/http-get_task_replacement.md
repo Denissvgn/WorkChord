@@ -191,14 +191,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_task_replacement (backend/app/routers/agent_planning.py) | get_task_replacement (backend/app/mcp_agent_tools.py) | 387 | `mcp_agent_tools.get_task_replacement(db, actor, task_id)` |
-| get_task_replacement (backend/app/mcp_agent_tools.py) | require_scope | 1249 | `require_scope(actor, 'planning:read')` |
+| get_task_replacement (backend/app/routers/agent_planning.py) | get_task_replacement (backend/app/mcp_agent_tools.py) | 419 | `mcp_agent_tools.get_task_replacement(db, actor, task_id)` |
+| get_task_replacement (backend/app/mcp_agent_tools.py) | require_scope | 1264 | `require_scope(actor, 'planning:read')` |
 | require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
-| get_task_replacement (backend/app/mcp_agent_tools.py) | TaskReplacementService.get | 1250 | `TaskReplacementService(db).get(task_id)` |
+| get_task_replacement (backend/app/mcp_agent_tools.py) | TaskReplacementService.get | 1265 | `TaskReplacementService(db).get(task_id)` |
 | TaskReplacementService.get | self.db.scalar (backend/app/services/task…askReplacementService.get) | 184 | `self.db.scalar(...)` |
 | TaskReplacementService.get | select(…).where (backend/app/services/task…askReplacementService.get) | 184 | `select(Task).where(...)` |
 | TaskReplacementService.get | select (backend/app/services/task…askReplacementService.get) | 184 | `select(Task)` |

@@ -41,7 +41,7 @@ flowchart LR
     n10["BacklogSnapshotService.restore (backend/app/services/backlog_snapshot_service.py)"]
     n11["backend/app/services/delivery_dependency_service.py"]
     n12["backend/app/services/dependency_order.py"]
-    n13["backend/app/services/project_service.py"]
+    n13["backend/app/services/import_review_service.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -68,7 +68,7 @@ flowchart LR
     click n10 "../modules/backlog_snapshot_service.md"
     click n11 "../modules/delivery_dependency_service.md"
     click n12 "../modules/dependency_order.md"
-    click n13 "../modules/project_service.md"
+    click n13 "../modules/import_review_service.md"
 ```
 
 ### Summary
@@ -98,6 +98,6 @@ flowchart LR
 | `BacklogSnapshotService.restore` | call | [backlog_snapshot_service](../modules/backlog_snapshot_service.md) | 1 |
 | `delivery_dependency_service` | import | [delivery_dependency_service](../modules/delivery_dependency_service.md) | — |
 | `dependency_order` | import | [dependency_order](../modules/dependency_order.md) | — |
-| `project_service` | import | [project_service](../modules/project_service.md) | — |
+| `import_review_service` | import | [import_review_service](../modules/import_review_service.md) | — |
 
-> References: showing 12 of 37 logical references; 25 omitted by the 12-row generated summary limit.
+> References: showing 12 of 44 logical references; 32 omitted by the 12-row generated summary limit.
