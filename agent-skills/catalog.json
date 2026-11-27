@@ -9,14 +9,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-pm-1.21.7.tar.gz",
-          "sha256": "1bfab061776ee6b61b275848c59ced9f4a456134184a030affc35ea55db1008a",
+          "sha256": "a71681aeb166baa470f425163a81ad4473962e915f65df0e6317adedf373f38b",
           "size": 245798
         },
         {
           "format": "zip",
           "path": "workchord-pm-1.21.7.zip",
-          "sha256": "697111ccf0d8bc9c5a8609e16b99d57c1872a2f9a7a9c2b6bd94170e1a8659dd",
-          "size": 233709
+          "sha256": "bd8eb7b456c3a73617c46c5aa36f7dae1ca0c9d5cbde50726af29a51ab2cfd3a",
+          "size": 235872
         }
       ],
       "entrypoint": "SKILL.md",
@@ -38,13 +38,13 @@
         },
         {
           "path": "references/assignment-scheduling-and-delivery-control.md",
-          "sha256": "c998a23eda0c3d51b12235ac3586354d776c41797fe245d227c78cb9abfd8990",
-          "size": 32459
+          "sha256": "65790619812022fe07e171c74cc06157f09ee618d86e8b5ed31f91f95ba986b7",
+          "size": 32718
         },
         {
           "path": "references/intake-planning-and-task-briefs.md",
-          "sha256": "6d0c7fdc54a0810fb866fc57bcd2d638163f5abb56bdbfca84232478585dea74",
-          "size": 20030
+          "sha256": "0b7c3e66f5f712e52d485259b43db3f57ae03d5fcc1effe39d53aba491f0eda3",
+          "size": 20168
         },
         {
           "path": "references/plan-mapping-and-roadmap.md",
@@ -63,8 +63,8 @@
         },
         {
           "path": "references/verification-rework-and-recovery.md",
-          "sha256": "0148d07fea494da2adbb893e44561ab9843f39d528a460f2d8f24f298d3cf0c5",
-          "size": 37145
+          "sha256": "1fd4a5ca5cd202301ae85c42233e284460d52ba3a9c07b44ca3c2d1748bf6777",
+          "size": 38911
         },
         {
           "path": "references/workflow-and-names.md",
@@ -122,14 +122,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-reviewer-1.8.6.tar.gz",
-          "sha256": "d8aa074f14d8af92e4134b74e07363ef6bf2e5bd078336c6517257da628fb551",
+          "sha256": "5e583ac2649f46f9148d139ebbe88dbe91025460f0684466be565e259cb2107e",
           "size": 61463
         },
         {
           "format": "zip",
           "path": "workchord-reviewer-1.8.6.zip",
-          "sha256": "650bd891db77ffe31a9fe5e4ce476eb31150bff6173b97ac9e47a9ed6729d38d",
-          "size": 52099
+          "sha256": "458c49fdd09ed396a776e25226c30d25bc9b1cca29312b5e4b5131d7b130238b",
+          "size": 52615
         }
       ],
       "entrypoint": "SKILL.md",
@@ -151,8 +151,8 @@
         },
         {
           "path": "references/review-packet-and-verdict.md",
-          "sha256": "7d255984a870f2f8d49287d30aa7ad831dcae86b81d81e3b461db709655a561c",
-          "size": 13403
+          "sha256": "1c062bf6f0521be5109959a5199236efd352a2e35f6bf7827157224e9ee2a20b",
+          "size": 13919
         },
         {
           "path": "references/workflow-and-names.md",
@@ -192,14 +192,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-worker-1.20.4.tar.gz",
-          "sha256": "72aa867b8e7a5c3bd77fe9b7aed347ceeb96af23402ac2da1845a0e4c94b7825",
+          "sha256": "308a55341dfc451ec98a9a9598315545f0782935d73ecb27152bb8617155fabc",
           "size": 112668
         },
         {
           "format": "zip",
           "path": "workchord-worker-1.20.4.zip",
-          "sha256": "829e667025a42735696b55a4c3eea972559d642aff4505745e5788fcff6b68a4",
-          "size": 98021
+          "sha256": "d57f96f017aa27de352219667a6a564db45ad660a237f9ceaf1486c6386dea69",
+          "size": 98484
         }
       ],
       "entrypoint": "SKILL.md",
@@ -221,8 +221,8 @@
         },
         {
           "path": "references/claim-run-and-task-state.md",
-          "sha256": "edfd7c1d45a952e92a560e250118a10029afbb57443514a7851130e739f712fa",
-          "size": 16102
+          "sha256": "81471e2164bd9d79d2d5b2357f550cacfa1fe87ba3f340008a702a9417f3b06c",
+          "size": 16565
         },
         {
           "path": "references/events-errors-and-recovery.md",
@@ -280,5 +280,5 @@
       "version": "1.20.4"
     }
   ],
-  "source_revision": "sha256:c84f77ff5be65c96e70373e1e05a1fba3127a94427a0bf75850e8967266f5e41"
+  "source_revision": "sha256:ec7840361ed80a13e728588f5dfb20965f5e74cefd7801469a1bf1480fef1b69"
 }

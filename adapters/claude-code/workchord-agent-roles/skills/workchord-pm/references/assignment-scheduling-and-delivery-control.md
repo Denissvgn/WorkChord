@@ -294,6 +294,7 @@ For executing work:
 7. Page the complete verifier or recovery collection with its opaque cursor before choosing an intervention; restart on snapshot drift.
 8. Use explicit reassign, recovery, or rework actions when supported. To stop work that may resume, postpone the task (see [Stop Work by Postponing It](#stop-work-by-postponing-it)); cancel an assignment only to replace it, and cancel a task only when its work will never be done. Under supervised v0, stop additional dispatch and ask the human recovery owner to reconcile the separate claim, run, and task states.
 9. Re-read pipeline and affected task after intervention.
+10. When prerequisites resolve, activate any task whose work already started on an unmerged branch, and after each merge confirm the task closed (see [Move Tasks Through Their Statuses](verification-rework-and-recovery.md#move-tasks-through-their-statuses)).
 
 Never edit worker-produced artifacts, finish the worker run, or transition active work merely to make the board look consistent. Treat push notifications as hints and refetch authoritative state before acting.
 

@@ -199,6 +199,18 @@ Send the acknowledgement with your own key. A repeat returns the same receipt. T
 
 ### Submit
 
+Before you submit:
+
+- test against the server's real response shapes, not mocks of data the server
+  never sends;
+- run the project's real type check, the full lint, and the contract
+  regeneration, and commit what they change;
+- when a migration depends on one that is not merged, commit the real
+  `down_revision` of the unmerged migration, and point at a local chain only
+  uncommitted, for your own run.
+
+Send one final report, not a series of partial ones.
+
 Re-fetch context, then supply atomic submit with:
 
 - assignment, task, current version, claim/fence, and run IDs;

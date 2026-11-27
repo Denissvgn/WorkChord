@@ -8,6 +8,8 @@ Use this reference to route resolved work to an independent reviewer, follow its
 - [Handle model evidence and escalation](#handle-model-evidence-and-escalation)
 - [Read the verdict](#read-the-verdict)
 - [Close work with its delivery trace](#close-work-with-its-delivery-trace)
+- [Move tasks through their statuses](#move-tasks-through-their-statuses)
+- [Merge pull requests that share regenerated files](#merge-pull-requests-that-share-regenerated-files)
 - [Return work for rework](#return-work-for-rework)
 - [Reconcile the pull request and replace unattributable work](#reconcile-the-pull-request-and-replace-unattributable-work)
 - [Supersede work another task already delivered](#supersede-work-another-task-already-delivered)
@@ -199,6 +201,35 @@ request or its release tag
 `workspace_list_external_links` (`entity_type` `release`) and name the link in
 the release's project update. A release without either link is not reported as
 shipped.
+
+## Move Tasks Through Their Statuses
+
+A task moves `planned`, `active`, `resolved`, `closed`. Mark it resolved when
+its work is pushed and its pull request is open for review. Record the review
+outcome in WorkChord: the review and verification flow, or owner acceptance
+with a stated reason. Close it after the merge, without an override.
+
+A task whose prerequisites are still open cannot become active. Work started
+early on an unmerged branch must be activated as soon as the prerequisites
+resolve; until then the task cannot be resolved. After each merge, re-read the
+task and confirm it actually closed. A task that is still `active`, `resolved`
+or `planned` after its pull request merged is status drift: find the open
+prerequisite or missing review outcome and fix it there instead of forcing the
+status.
+
+## Merge Pull Requests That Share Regenerated Files
+
+Pull requests that regenerate shared files (generated documentation, contract
+fixtures) conflict with each other: every merge makes the remaining ones
+conflict, and a conflicting pull request gets no CI. Merge them one at a time,
+or stacked so each one is prepared on top of the one below it and merges bottom
+first. Ask the worker to regenerate the shared files before opening the pull
+request, so CI runs once instead of after every rebase. The repository's
+stacked merge queue example, `examples/integrations/stacked-merge-queue`,
+does this and keeps the task statuses in step.
+
+Put a small follow-up change into the next queued pull request instead of
+opening a new one; a new one joins the queue and conflicts again.
 
 ## Return Work for Rework
 

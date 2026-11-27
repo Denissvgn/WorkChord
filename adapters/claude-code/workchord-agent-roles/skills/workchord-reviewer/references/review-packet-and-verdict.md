@@ -9,6 +9,7 @@ changes, and hand rework to an explicit owner.
 - [Build the review packet](#build-the-review-packet)
 - [Check the delivery trace](#check-the-delivery-trace)
 - [Check model evidence](#check-model-evidence)
+- [Probe beyond the diff](#probe-beyond-the-diff)
 - [Accept](#accept)
 - [Request changes](#request-changes)
 - [Stay present and follow a refusal's next step](#stay-present-and-follow-a-refusals-next-step)
@@ -162,6 +163,18 @@ binding and the run's observed model and trust state:
 
 A queued model-aware review cannot be recorded while enforcement is inactive;
 report that to the PM.
+
+## Probe Beyond The Diff
+
+Confirm each finding with a throwaway probe test before you report it, and do
+not commit the probe. Check the skill or documentation text against the code it
+describes. Always look for:
+
+- UI gating that differs from the backend's authority rule;
+- caches keyed by a version that goes stale;
+- a next step that points at an action the server would refuse;
+- pagination swamped by permanent history;
+- work done before the authority check.
 
 ## Accept
 
