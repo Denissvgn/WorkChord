@@ -8,7 +8,7 @@
 
 ## Description
 
-_Auto-generated from `RoutingConflictMode` in `backend/app/schemas/task_routing.py`._
+What a project does when a task's routing is inconsistent with its assignee or review policy: `refuse` rejects the change, `warn` accepts it and reports the issues.
 
 ## Attributes
 

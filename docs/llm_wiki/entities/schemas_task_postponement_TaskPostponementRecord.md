@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `TaskPostponementRecord` in `backend/app/schemas/task_postponement.py`._
+One postponement of a task: why and by whom, the status it came from, the execution ownership it released, its reactivation requirements, and how it ended (the status returned to, the trigger and who reactivated it). The trigger is `command`, `requirements_met` or `supersession`.
 
 ## Attributes
 

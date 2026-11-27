@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `ReplacementOriginal` in `backend/app/schemas/task_replacement.py`._
+The original task of a disposition as it stood when it was decided, with its recorded attempts and attribution. It can never be independently accepted; its deliverable counts only through the replacement or successor.
 
 ## Attributes
 

@@ -242,4 +242,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `import_iteration` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Imports a JSON plan file. When the request carries the `review_digest` of a plan-import dry run, the write runs the same writer, recomputes the file hash, the target revisions and the change set, and applies only if all three still match the reviewed digest; otherwise it is refused and rolled back. Without a digest it applies the file as before.

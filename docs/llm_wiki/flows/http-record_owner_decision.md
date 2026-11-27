@@ -140,4 +140,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `record_owner_decision` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Records that the owner made the decision an `owner_decision` requirement waits for. Only the workspace owner can record it; the task must still be postponed for that requirement under the expected version. Under the planning lock the requirement is marked met, the decision text and principal are written to the timeline, and the same evaluation as any other trigger runs, so a date that came due since the last check also counts. When it was the last unmet requirement the task returns to its lifecycle at once. Recording an already met decision changes nothing.

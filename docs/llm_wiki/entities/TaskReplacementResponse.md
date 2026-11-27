@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `TaskReplacementResponse` in `backend/app/schemas/task_replacement.py`._
+A recorded replacement or supersession as seen from one of its tasks, with its role (original, replacement or successor), the decision, the review policy, both tasks, carried contributions, what moved, and the acceptance state. Acceptance is `clean` or `held`, and a hold names why, such as carried work with no attribution.
 
 ## Attributes
 

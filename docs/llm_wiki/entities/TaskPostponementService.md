@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `TaskPostponementService` in `backend/app/services/task_postponement_service.py`._
+Stops planned, active or resolved leaf work without canceling it, and returns it later. Postponing records the reason, who decided and the requirements that must hold, releases live execution through the same fenced path as cancellation, and keeps the brief, progress, evidence and execution provenance intact. Reactivation returns resolved work to resolved and everything else to planned. Only the project's PM actor, a project manager or an operator may decide; automatic reactivation by met requirements is done by the reactivation service. This is distinct from deferral, which is a scheduling policy for backlog work.
 
 ## Attributes
 
@@ -20,13 +20,13 @@ _Auto-generated from `TaskPostponementService` in `backend/app/services/task_pos
 | `__init__` | `(db)` | — | — |
 | `tasks` | `()` | `@property` | — |
 | `get` | *(async)* `(task_id)` | — | The task with its open postponement, or its most recent one. |
-| `projection` | *(async)* `(task_id, postponement)` | — | — |
-| `_locked_task` | *(async)* `(task_id, expected_version)` | — | — |
+| `projection` | *(async)* `(task_id, postponement)` | — | The task and its postponement record in the shape clients receive. |
+| `_locked_task` | *(async)* `(task_id, expected_version)` | — | Authorize the decider, lock the task's tree scope, check the expected version and refuse summaries, parents and canceled work. |
 | `postpone` | *(async)* `(task_id, data, *, commit = True)` | `@atomic_command` | Stop planned, active or resolved leaf work until its requirements are met. |
 | `reactivate` | *(async)* `(task_id, data, *, trigger = 'command', commit = True)` | `@atomic_command` | Return postponed work to planned, or to resolved if it was postponed after resolution. |
 | `resume` | *(async)* `(task, postponement, *, reason, trigger, expected_version, automatic = False, event_extra = None)` | — | Move locked postponed work back to planned or resolved and close its postponement. |
 | `_requirements` | *(async)* `(task, items)` | — | Validate each requirement against current facts; refuse one that can never or already holds. |
-| `_timezone` | *(async)* `(task)` | — | — |
+| `_timezone` | *(async)* `(task)` | — | The working time zone that date requirements are judged in: the project's, else the iteration calendar's. |
 
 ## Relationships
 

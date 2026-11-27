@@ -178,4 +178,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `list_routing_qualification_keys` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Read-only. Returns the built-in routing keys and the deployment's declared keys together; the built-in keys live in code and are never stored in the registry.

@@ -178,4 +178,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `approve_routing_calibration_contract` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Approves the submitted terms of a contract. The approval must name the current revision and the terms digest, and must be given as the contract's declared approver; a different digest, approver or revision is refused, as is a contract that is already approved. Keys retired since submission make the terms unenforceable and block approval. The approver's authenticated identity is recorded. Routing consumes no performance history: it only reports whether an approved contract exists.

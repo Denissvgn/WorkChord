@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `ReplacementReviewPolicy` in `backend/app/schemas/task_replacement.py`._
+The project's different-review-publisher policy as it applied when the disposition was recorded and as it applies now, so a held replacement can be judged against the policy that was in force.
 
 ## Attributes
 

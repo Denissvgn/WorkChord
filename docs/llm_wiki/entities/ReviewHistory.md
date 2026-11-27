@@ -9,7 +9,7 @@
 
 ## Description
 
-_Auto-generated from `ReviewHistory` in `backend/app/services/review_provenance.py`._
+The attribution facts independent review reads for one task: every contributor with a known publisher, the candidate under review, any manual execution record, and the reviewer profiles a handback requires. A verifier's publisher is refused when it cannot be verified or matches a contributor, so the reviewing model never shares a publisher with the work. A missing manual fact is named rather than guessed.
 
 ## Attributes
 

@@ -178,4 +178,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `submit_routing_calibration_contract` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Operator command that submits a calibration contract's complete terms: the qualification keys it covers, the sample bounds and decay any calibration must respect, the bias review that preceded it and the declared approver. The contract starts unapproved. The command is replay-safe, carries a reason and writes an append-only revision row and an audit event. Storing terms changes no routing decision.
