@@ -312,6 +312,30 @@ async def test_oversized_previews_are_refused_before_any_reservation(managed_sto
     assert tree.status_code == 409, tree.text
     assert tree.json()["detail"]["code"] == "import_iteration_tree_too_large"
 
+    chain = {"id": 0, "title": "Level 0", "project_id": scenario.projects[0]}
+    node = chain
+    for level in range(1, import_review_service.MAX_DRY_RUN_IMPORT_DEPTH + 1):
+        child = {"id": level, "title": f"Level {level}"}
+        node["children"] = [child]
+        node = child
+    deep = await dry_run(PM_KEY, path, {"tasks": [chain]})
+    assert deep.status_code == 409 and deep.json()["detail"]["code"] == "import_dry_run_too_large", deep.text
+    assert "levels of subtasks" in deep.json()["detail"]["message"]
+
+    tangled = {"tasks": [{"id": index, "title": f"Step {index}", "project_id": scenario.projects[0], "effort_hours": 1,
+                          "dependencies": list(range(index))} for index in range(40)]}
+    tangled_response = await dry_run(PM_KEY, path, tangled)
+    assert "dependency references" in tangled_response.json()["detail"]["message"], tangled_response.text
+
+    away = {"team_members": [{"name": "Often away", "vacations": [{"start_date": "2026-01-05", "end_date": "2026-01-05"}]
+                              * (import_review_service.MAX_DRY_RUN_IMPORT_VACATIONS + 1)}]}
+    away_response = await dry_run(PM_KEY, path, away)
+    assert "vacations" in away_response.json()["detail"]["message"], away_response.text
+
+    unhashable = await dry_run(PM_KEY, path, {"tasks": [{"title": "Odd owner", "project_id": scenario.projects[0],
+                                                         "owner_profile_id": [2]}]})
+    assert unhashable.status_code == 422 and unhashable.json()["detail"]["code"] == "import_file_invalid", unhashable.text
+
     monkeypatch.setattr(import_review_service, "_dry_run_active", True)
     busy = await dry_run(PM_KEY, path, plan_file(scenario.projects[0]))
     assert busy.status_code == 409 and busy.json()["detail"]["code"] == "import_dry_run_busy", busy.text
@@ -344,6 +368,65 @@ async def test_profiles_the_caller_cannot_read_are_refused_alike(managed_store):
 
     unknown = await dry_run(PM_KEY, path, {"team_members": [{"name": "Nobody known yet"}]})
     assert unknown.status_code == 200, unknown.text
+    assert await persisted(factory) == before
+
+
+async def test_a_planner_may_name_people_already_on_a_team_it_can_read(managed_store):
+    factory, scenario, _, _ = managed_store
+    await add_agents(factory, scenario)
+    async with factory() as db:
+        current = await db.get(Iteration, scenario.iterations[0])
+        earlier = Iteration(name="Earlier delivery", start_date=current.start_date, end_date=current.end_date,
+                            calendar_id=current.calendar_id, project_id=scenario.projects[0])
+        colleague = TeamMemberProfile(display_name="Iteration colleague", profile_kind="human", automation_enabled=False)
+        db.add_all([earlier, colleague])
+        await db.flush()
+        # The colleague is on another team of the planner's own project, so the planner sees them there.
+        db.add(TeamMember(name="Iteration colleague", position="Engineer", profile_id=colleague.id,
+                          iteration_id=earlier.id))
+        await db.commit()
+        colleague_id = colleague.id
+    path = f"/api/agent/planning/iterations/{scenario.iterations[0]}/import/dry-run"
+
+    named = await dry_run(PM_KEY, path, {"team_members": [{"name": "Iteration colleague"}]})
+
+    assert named.status_code == 200, named.text
+    created = named.json()["changes"]["team_members"]["created"]
+    assert [(row["name"], row["profile_id"]) for row in created] == [("Iteration colleague", colleague_id)]
+    assert named.json()["changes"]["profiles"]["created"] == []
+
+
+async def test_a_dry_run_over_its_budget_is_refused_and_rolled_back(managed_store, monkeypatch):
+    import asyncio
+    from sqlalchemy import text
+    import app.routers.export as export
+    from app.services import import_review_service
+
+    factory, scenario, _, _ = managed_store
+    await add_agents(factory, scenario)
+    path = f"/api/agent/planning/iterations/{scenario.iterations[0]}/import/dry-run"
+    data = plan_file(scenario.projects[0])
+    before = await persisted(factory)
+    original = export._process_import
+
+    async def slow(iteration_id, payload, db, **kwargs):
+        result = await original(iteration_id, payload, db, **kwargs)
+        if db.bind.dialect.name == "postgresql":
+            await db.execute(text("SELECT pg_sleep(3)"))
+        else:
+            await asyncio.sleep(3)
+        return result
+    monkeypatch.setattr(export, "_process_import", slow)
+    monkeypatch.setattr(import_review_service, "DRY_RUN_BUDGET_SECONDS", 0.5)
+
+    refused = await dry_run(PM_KEY, path, data)
+
+    assert refused.status_code == 409, refused.text
+    assert refused.json()["detail"]["code"] == "import_dry_run_too_slow"
+    assert await persisted(factory) == before
+    monkeypatch.setattr(export, "_process_import", original)
+    again = await dry_run(PM_KEY, path, data)
+    assert again.status_code == 200, again.text
     assert await persisted(factory) == before
 
 

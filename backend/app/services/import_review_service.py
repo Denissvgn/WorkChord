@@ -46,13 +46,29 @@ EXTERNAL_LINK_FIELDS = ("provider", "external_key", "url", "title")
 
 
 # The dry run holds the workspace-wide planning reservation (on SQLite, the writer lock)
-# while the import runs, so a planner can only preview a bounded file. 250 tasks keeps
-# the reservation to a few seconds and the response to a reviewable size; a larger plan
-# is reviewed in parts or applied by the operator without a review.
-MAX_DRY_RUN_IMPORT_TASKS = 250
-MAX_DRY_RUN_IMPORT_MEMBERS = 100
+# while the import runs, so a planner can only preview a bounded file. The shape caps
+# are checked before the reservation; they keep ordinary plans well inside the time
+# budget and the response reviewable. Whatever still runs long is cut off by the budget.
+# A larger plan is reviewed in parts, or applied by the operator without a review.
+# Measured worst shape within these caps (100 tasks as 20 chains five levels deep, each
+# depending on two earlier tasks): about 2.7 s on SQLite and 4.1 s on PostgreSQL per request.
+MAX_DRY_RUN_IMPORT_TASKS = 100
+MAX_DRY_RUN_IMPORT_MEMBERS = 50
+MAX_DRY_RUN_IMPORT_DEPTH = 5
+MAX_DRY_RUN_IMPORT_DEPENDENCIES = 200
+MAX_DRY_RUN_IMPORT_VACATIONS = 100
+# Wall-clock budget for the import inside the dry run, enforced as an asyncio deadline
+# and, on PostgreSQL, as a per-statement timeout for the rest of the rolled-back transaction.
+DRY_RUN_BUDGET_SECONDS = 5.0
 # One dry run at a time per server process, so planners cannot stack reservations.
 _dry_run_active = False
+
+
+class ImportFileInvalid(ValueError):
+    """An import file field has the wrong type."""
+
+    def detail(self):
+        return {"code": "import_file_invalid", "message": str(self)}
 
 
 class ImportReviewRefused(PlanningConflict):
@@ -318,24 +334,50 @@ async def _authorize_reviewer(db, iteration_id, data):
         require_project(db, project_id, "create")
 
 
-def _file_tasks(data):
-    stack = list(data.get("tasks", []))
+def _file_tasks_with_depth(data):
+    stack = [(task, 1) for task in data.get("tasks", [])]
     while stack:
-        task = stack.pop()
+        task, depth = stack.pop()
+        yield task, depth
+        stack.extend((child, depth + 1) for child in task.get("children", []))
+
+
+def _file_tasks(data):
+    for task, _depth in _file_tasks_with_depth(data):
         yield task
-        stack.extend(task.get("children", []))
+
+
+def _list_field(row, name, where):
+    value = row.get(name, [])
+    if value is None:
+        return []
+    if not isinstance(value, list):
+        raise ImportFileInvalid(f"{where}.{name} must be a list")
+    return value
 
 
 async def _bound_dry_run(db, iteration_id, data):
     """Refuse a file too large to preview before any planning reservation is taken."""
     from app.models.task import Task
     from app.query_limits import MAX_ITERATION_TREE_TASKS
-    tasks = sum(1 for _ in _file_tasks(data))
-    members = len(data.get("team_members", []))
-    if tasks > MAX_DRY_RUN_IMPORT_TASKS or members > MAX_DRY_RUN_IMPORT_MEMBERS:
-        raise PlanningConflict("import_dry_run_too_large",
-            f"A dry run previews at most {MAX_DRY_RUN_IMPORT_TASKS} tasks and {MAX_DRY_RUN_IMPORT_MEMBERS} team members. "
-            "Review the plan in smaller files.")
+    tasks = depth = references = 0
+    for task, task_depth in _file_tasks_with_depth(data):
+        tasks += 1
+        depth = max(depth, task_depth)
+        references += len(_list_field(task, "dependencies", "task")) + len(_list_field(task, "dependency_external_keys", "task"))
+    members = data.get("team_members", [])
+    vacations = sum(len(_list_field(member, "vacations", "team_member")) for member in members)
+    limits = (
+        (tasks, MAX_DRY_RUN_IMPORT_TASKS, "tasks"),
+        (len(members), MAX_DRY_RUN_IMPORT_MEMBERS, "team members"),
+        (depth, MAX_DRY_RUN_IMPORT_DEPTH, "levels of subtasks"),
+        (references, MAX_DRY_RUN_IMPORT_DEPENDENCIES, "dependency references"),
+        (vacations, MAX_DRY_RUN_IMPORT_VACATIONS, "vacations"),
+    )
+    for count, limit, label in limits:
+        if count > limit:
+            raise PlanningConflict("import_dry_run_too_large",
+                f"A dry run previews at most {limit} {label}; this file has {count}. Review the plan in smaller files.")
     existing = 0
     if iteration_id is not None:
         with internal_authority(db):
@@ -345,14 +387,24 @@ async def _bound_dry_run(db, iteration_id, data):
             f"The iteration would hold more than {MAX_ITERATION_TREE_TASKS} tasks after this import.")
 
 
+def _profile_reference(value, where) -> int:
+    if isinstance(value, bool):
+        raise ImportFileInvalid(f"{where} must be an integer")
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str) and value.strip().isdigit():
+        return int(value)
+    raise ImportFileInvalid(f"{where} must be an integer")
+
+
 def _explicit_profile_ids(data) -> set[int]:
     ids = set()
     for member in data.get("team_members", []):
         if member.get("profile_id") is not None:
-            ids.add(member["profile_id"])
+            ids.add(_profile_reference(member["profile_id"], "team_member.profile_id"))
     for task in _file_tasks(data):
         if task.get("owner_profile_id") is not None:
-            ids.add(task["owner_profile_id"])
+            ids.add(_profile_reference(task["owner_profile_id"], "task.owner_profile_id"))
     return ids
 
 
@@ -370,20 +422,23 @@ def _resolved_profile_ids(changes) -> set[int]:
     return {value for value in ids if isinstance(value, int)}
 
 
-async def _require_readable_profiles(db, profile_ids):
+async def _team_profiles(db) -> set[int]:
+    """Profiles of team members in iterations the caller can read, taken before the import runs."""
+    from app.models.team_member import TeamMember
+    return set((await db.scalars(select(TeamMember.profile_id).where(TeamMember.profile_id.is_not(None)).distinct())).all())
+
+
+async def _require_readable_profiles(db, profile_ids, team_profiles: set[int]):
     """Under the caller's own authority: every profile the import refers to must be readable.
 
-    Missing and unreadable profiles are refused alike, so the dry run cannot be used to
-    learn which names or ids exist in a profile directory the caller cannot read.
+    A profile is readable when the caller's scope shows it directly (a workspace member
+    reads every profile, anyone else only their own) or when it belongs to a team member
+    of an iteration the caller can read, as the iteration team view shows it. Missing and
+    unreadable profiles are refused alike, so no profile id leaks.
     """
     from app.authority import AuthorityError
     from app.models.team_member import TeamMemberProfile
-    wanted = set()
-    for value in profile_ids:
-        try:
-            wanted.add(int(value))
-        except (TypeError, ValueError):
-            raise AuthorityError("incomplete_authorized_graph", "This import refers to a team member profile you cannot read.")
+    wanted = set(profile_ids) - team_profiles
     if not wanted:
         return
     readable = set((await db.scalars(select(TeamMemberProfile.id).where(TeamMemberProfile.id.in_(sorted(wanted))))).all())
@@ -419,6 +474,38 @@ async def _operator_authority(db, caller: Authority | None) -> Authority:
     return operator
 
 
+def _too_slow() -> PlanningConflict:
+    return PlanningConflict("import_dry_run_too_slow",
+        f"The dry run exceeded its {DRY_RUN_BUDGET_SECONDS:g}-second budget and was rolled back. Review the plan in smaller files.")
+
+
+async def _run_within_budget(db, operator, iteration_id, data, revisions):
+    """Run the writer as the operator under a wall-clock budget; any overrun is refused and rolled back."""
+    import asyncio
+    from sqlalchemy import text
+    from sqlalchemy.exc import DBAPIError
+
+    try:
+        async with asyncio.timeout(DRY_RUN_BUDGET_SECONDS):
+            with _operator_simulation(db, operator):
+                if db.bind.dialect.name == "postgresql":
+                    # SET LOCAL ends with this transaction, which the preview always rolls back.
+                    await db.execute(text(f"SET LOCAL statement_timeout = {max(1, int(DRY_RUN_BUDGET_SECONDS * 1000))}"))
+                _, changes = await run_import_with_changes(db, iteration_id, data, expected_revisions=revisions)
+                await db.flush()
+                return changes
+    except TimeoutError as exc:
+        raise _too_slow() from exc
+    except DBAPIError as exc:
+        if getattr(exc.orig, "sqlstate", None) == "57014":
+            raise _too_slow() from exc
+        raise
+    except HTTPException as exc:
+        raise ValueError(str(exc.detail)) from exc
+    except KeyError as exc:
+        raise ValueError(f"Import entry is missing required field {exc}") from exc
+
+
 async def dry_run_import(db, iteration_id, data) -> dict[str, Any]:
     """Return the exact changes an import of this file would make, and write nothing."""
     from app.services.import_planning_service import import_file_sha256, import_scope_revisions
@@ -434,22 +521,16 @@ async def dry_run_import(db, iteration_id, data) -> dict[str, Any]:
         # Everything up to the writer reads without taking the planning reservation.
         await _authorize_reviewer(db, iteration_id, data)
         await _bound_dry_run(db, iteration_id, data)
-        await _require_readable_profiles(db, _explicit_profile_ids(data))
+        team_profiles = await _team_profiles(db)
+        await _require_readable_profiles(db, _explicit_profile_ids(data), team_profiles)
         # Read under the reviewer's own authority: it must see every scheduling input the import reserves.
         revisions = await import_scope_revisions(db, iteration_id, data)
         if len(_canonical(revisions)) > 16384:
             raise PlanningConflict("planning_scope_oversized", "The complete import revision context exceeds the supported header limit.")
-        caller = db.info.get("authority")
-        try:
-            with _operator_simulation(db, await _operator_authority(db, caller)):
-                _, changes = await run_import_with_changes(db, iteration_id, data, expected_revisions=revisions)
-                await db.flush()
-        except HTTPException as exc:
-            raise ValueError(str(exc.detail)) from exc
-        except KeyError as exc:
-            raise ValueError(f"Import entry is missing required field {exc}") from exc
+        operator = await _operator_authority(db, db.info.get("authority"))
+        changes = await _run_within_budget(db, operator, iteration_id, data, revisions)
         # Back under the caller's authority: a profile matched by name or email must be one it can read.
-        await _require_readable_profiles(db, _resolved_profile_ids(changes))
+        await _require_readable_profiles(db, _resolved_profile_ids(changes), team_profiles)
     finally:
         _dry_run_active = False
     # Work the root command does on exit (delivery reconciliation, discussion enqueueing)

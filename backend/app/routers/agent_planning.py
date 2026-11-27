@@ -168,8 +168,11 @@ async def dry_run_iteration_import(
         _handle_agent_error(exc)
     data = await _read_json_upload(file)
     _validate_import_data(data)
+    from app.services.import_review_service import ImportFileInvalid
     try:
         return await mcp_agent_tools.preview_iteration_import(db, actor, iteration_id, data)
+    except ImportFileInvalid as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=exc.detail()) from exc
     except Exception as exc:
         _handle_agent_error(exc)
 

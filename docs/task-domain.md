@@ -171,13 +171,20 @@ The iteration import routes, `POST /api/iterations/import` (a new iteration) and
 - REST: `POST /api/agent/planning/iterations/{iteration_id}/import/dry-run`, or `POST /api/agent/planning/iterations/import/dry-run` for a file that creates a new iteration, with the file as the multipart field `file` and an agent key that has `planning:write`.
 - MCP: `agent_preview_iteration_import` with `import_data` (the file's JSON object) and, for an existing iteration, `iteration_id`.
 
-The caller must be able to plan work in the target iteration's project and in every project the file names, and to read every iteration the import reserves (iterations that share a team member's profile included). Otherwise the request is refused with HTTP 403, or 404 when the iteration is not visible to the caller. The caller must also be able to read every existing team member profile the import refers to, whether by `profile_id`, `owner_profile_id` or a matching name or email. If it cannot, the request is refused with HTTP 403 and `incomplete_authorized_graph`, and a profile that does not exist is refused the same way. Nothing is written.
+The caller must be able to plan work in the target iteration's project and in every project the file names, and to read every iteration the import reserves (iterations that share a team member's profile included). Otherwise the request is refused with HTTP 403, or 404 when the iteration is not visible to the caller. The caller must also be able to read every existing team member profile the import refers to, whether by `profile_id`, `owner_profile_id` or a matching name or email. A caller can read a profile when it is a workspace member, when the profile is its own, or when the profile belongs to a team member of an iteration it can read. If the caller cannot read a profile, the request is refused with HTTP 403 and `incomplete_authorized_graph`.
+
+- An explicit id that does not exist is refused the same way, so ids reveal nothing.
+- A name or email that matches no profile is not refused: the import would create a new profile, and the dry run shows it as `new-profile-1`. Whether such a name already exists in a directory the caller cannot read therefore remains observable, although the profile itself is never shown.
+
+A `profile_id` or `owner_profile_id` that is not an integer, or a `dependencies`, `dependency_external_keys` or `vacations` field that is not a list, is refused with HTTP 422 and `import_file_invalid`. Nothing is written.
 
 While the import runs, the dry run holds the workspace-wide planning reservation, so it is bounded. Each of these is refused with HTTP 409 before any reservation is taken:
 
-- `import_dry_run_too_large`: the file has more than 250 tasks (children included) or more than 100 team members. Review a larger plan in smaller files.
+- `import_dry_run_too_large`: the file has more than 100 tasks (children included), more than 5 levels of subtasks, more than 200 dependency references, more than 50 team members or more than 100 vacations. Review a larger plan in smaller files.
 - `import_iteration_tree_too_large`: the iteration would hold more than 2,500 tasks after the import.
 - `import_dry_run_busy`: another dry run is running on the same server process. Try again shortly.
+
+A dry run that does not finish within 5 seconds is stopped, rolled back and refused with HTTP 409 and `import_dry_run_too_slow`.
 
 The dry run runs the import itself in a transaction that is always rolled back, as the operator would run it, and returns:
 
