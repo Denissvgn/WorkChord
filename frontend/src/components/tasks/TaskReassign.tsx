@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import type { RoutingCheck, RoutingResolution, Task, TaskRouting } from '../../types/task';
+import type { RoutingCheck, TaskRoutingResolution, Task, TaskRouting } from '../../types/task';
 import { taskService } from '../../services/taskService';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { routingCheckFromError, routingNeedsResolution, routingShape } from '../../utils/routingCheck';
@@ -50,7 +50,7 @@ export const TaskReassign = ({ task, disabled = false, focusOnMount = false, onT
 
     // feedback-policy: mutation pending,inline - the result is announced here and the refused change keeps its conflict on screen.
     const save = useMutation({
-        mutationFn: ({ resolution }: { resolution: RoutingResolution; shown: TaskRouting | null }) => taskService.update(task.id, {
+        mutationFn: ({ resolution }: { resolution: TaskRoutingResolution; shown: TaskRouting | null }) => taskService.update(task.id, {
             assignee_id: choice ?? null, expected_version: task.version, routing_resolution: resolution,
         }),
         onMutate: () => onPending(true),

@@ -210,7 +210,7 @@ export interface TaskCreate {
 export interface TaskUpdate extends Partial<TaskCreate> {
     status?: string;
     /** `apply_suggestion` saves the consistent routing with an assignee change. */
-    routing_resolution?: RoutingResolution;
+    routing_resolution?: TaskRoutingResolution;
     /** Rendered task version used for optimistic concurrency. */
     expected_version?: number;
 }
@@ -490,8 +490,8 @@ export interface TaskRouting {
     notes?: string;
 }
 
-export type RoutingConflictMode = 'refuse' | 'warn';
-export type RoutingResolution = 'check' | 'apply_suggestion';
+export type TaskRoutingConflictMode = 'refuse' | 'warn';
+export type TaskRoutingResolution = 'check' | 'apply_suggestion';
 
 export interface RoutingIssue {
     code: string;
@@ -510,7 +510,7 @@ export interface RoutingCheck {
     assignee_publishers: string[];
     assignee_catalog_keys: string[];
     different_publisher_required: boolean;
-    conflict_mode: RoutingConflictMode;
+    conflict_mode: TaskRoutingConflictMode;
     structured: boolean;
     text_routing: boolean;
     consistent: boolean;
