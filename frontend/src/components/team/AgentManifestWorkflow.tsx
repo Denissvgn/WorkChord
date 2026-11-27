@@ -41,6 +41,7 @@ import type {
 } from '../../types/agent';
 import { captureFocusOrigin, focusOwnedTarget } from '../../utils/focusLifecycle';
 import { formatDateTime } from '../../utils/formatDate';
+import { RuntimeIdentity } from './RuntimeIdentity';
 import { DisabledReason } from '../../components/common/DisabledReason';
 
 import { Button } from '../../components/common/Button';
@@ -1309,6 +1310,7 @@ const AgentManifestWorkflow = ({ embedded = false }: { embedded?: boolean }) => 
                                         <dt>{t('agentTeamSetup.acknowledgement')}</dt>
                                         <dd>{t(`agentTeamSetup.acknowledgementStates.${member.acknowledgement_state ?? 'unknown'}`)}</dd>
                                     </div>
+                                    <RuntimeIdentity identity={member.runtime_identity} acknowledgementState={member.acknowledgement_state} />
                                     <div>
                                         <dt>{t('agentTeamSetup.modelAttestation')}</dt>
                                         <dd>{t('agentTeamSetup.notIndependentlyAttested')}</dd>

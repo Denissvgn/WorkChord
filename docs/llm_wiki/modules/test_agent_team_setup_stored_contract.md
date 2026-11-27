@@ -48,8 +48,9 @@ flowchart LR
     n5["backend/app/schemas/agent_team_setup.py"]
     n6["backend/app/services/agent_team_setup_service.py"]
     n7["backend/app/services/identity_service.py"]
-    n8["backend/tests/test_agent_team_setup.py"]
-    n9["backend/tests/test_agent_team_setup_stored_contract.py"]
+    n8["backend/tests/test_agent_team_runtime_identity.py"]
+    n9["backend/tests/test_agent_team_setup.py"]
+    n10["backend/tests/test_agent_team_setup_stored_contract.py"]
     n1 --> n0
     n2 --> n0
     n2 --> n1
@@ -60,14 +61,13 @@ flowchart LR
     n6 --> n5
     n6 --> n7
     n7 --> n0
-    n8 --> n0
     n8 --> n1
     n8 --> n2
     n8 --> n3
-    n8 --> n4
     n8 --> n5
     n8 --> n6
-    n8 --> n7
+    n8 --> n9
+    n8 --> n10
     n9 --> n0
     n9 --> n1
     n9 --> n2
@@ -76,7 +76,15 @@ flowchart LR
     n9 --> n5
     n9 --> n6
     n9 --> n7
-    n9 --> n8
+    n10 --> n0
+    n10 --> n1
+    n10 --> n2
+    n10 --> n3
+    n10 --> n4
+    n10 --> n5
+    n10 --> n6
+    n10 --> n7
+    n10 --> n9
     click n0 "../modules/config.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/app_main.md"
@@ -85,14 +93,16 @@ flowchart LR
     click n5 "../modules/agent_team_setup.md"
     click n6 "../modules/agent_team_setup_service.md"
     click n7 "../modules/identity_service.md"
-    click n8 "../modules/test_agent_team_setup.md"
-    click n9 "../modules/test_agent_team_setup_stored_contract.md"
+    click n8 "../modules/test_agent_team_runtime_identity.md"
+    click n9 "../modules/test_agent_team_setup.md"
+    click n10 "../modules/test_agent_team_setup_stored_contract.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [test_agent_team_runtime_identity](../modules/test_agent_team_runtime_identity.md) |
 | Outbound | [config](../modules/config.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [app_main](../modules/app_main.md) |
@@ -114,7 +124,7 @@ flowchart LR
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [FailingForOneMemberSink](../entities/FailingForOneMemberSink.md) | 123 | `CapturingCredentialSink` | Lose the first credential delivery for one chosen member. |
-| [EarlierTeam](../entities/EarlierTeam.md) | 236 | — | — |
+| [EarlierTeam](../entities/EarlierTeam.md) | 237 | — | — |
 
 ## Functions
 
@@ -125,7 +135,7 @@ flowchart LR
 | `earlier_role_rules` | `(package_name: str) -> Iterator[None]` | `@contextmanager` | Validate like a release whose verifiers carried ``package_name``. |
 | `stored_text` | `(value: Any) -> str` | — | Serialize a contract the way an apply stores it. |
 | `apply_every_action` | *(async)* `(service: AgentTeamSetupService, manifest: AgentTeamMaster, *, expected_revision: int, key: str, only: tuple[str, ...] \| None = None) -> AgentTeamApplyResponse` | — | Approve and confirm the planned actions, or just the ``only`` ones. |
-| `store_team` | *(async)* `(db: AsyncSession, payload: dict[str, Any], *, key: str, sink: CapturingCredentialSink \| None = None) -> tuple[AgentTeamSetupService, CapturingCredentialSink]` | — | — |
+| `store_team` | *(async)* `(db: AsyncSession, payload: dict[str, Any], *, key: str, sink: CapturingCredentialSink \| None = None, lossy: bool \| None = None) -> tuple[AgentTeamSetupService, CapturingCredentialSink]` | — | — |
 | `store_team_under_earlier_rules` | *(async)* `(db: AsyncSession, package_name: str, *, acknowledged: bool = False) -> EarlierTeam` | — | Apply a team as the earlier release did, then return to today's rules. |
 | `stored_topology` | *(async)* `(db: AsyncSession) -> AgentTeamTopology` | — | — |
 | `member_records` | *(async)* `(db: AsyncSession) -> dict[str, AgentTeamTopologyMember]` | — | — |

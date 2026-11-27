@@ -803,8 +803,9 @@ class TeamService:
             raise PlanningConflict("calendar_nominal_hours_invalid", "Workload day equivalents require a positive normal day length.")
         from app.services.work_metrics import included_work_ids
         included = await included_work_ids(self.db, {member.iteration_id})
+        # Postponed work occupies no capacity until it is reactivated.
         allocated_hours = await self.db.scalar(select(func.coalesce(func.sum(Task.effort_hours), 0)).where(
-            Task.assignee_id == member_id, Task.id.in_(included)))
+            Task.assignee_id == member_id, Task.id.in_(included), Task.status != "postponed"))
         allocated_days = allocated_hours / calendar.nominal_day_hours
         capacity_days = capacity.hours / calendar.nominal_day_hours
         free_days = capacity_days - allocated_days

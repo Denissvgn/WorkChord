@@ -126,9 +126,14 @@ class DeliveryDependencyService:
             # A submitted task waits on the independent reviewer. A closed task has no status transitions
             # and verification needs a submitted task, so one whose acceptance no longer matches its
             # version can only be reopened, which is the project manager's audited command.
-            owner = "pm" if canceled or target.status == "closed" else "reviewer" if target.status == "resolved" else "worker"
+            postponed = not canceled and target.status == "postponed"
+            owner = "pm" if canceled or postponed or target.status == "closed" else "reviewer" if target.status == "resolved" else "worker"
             if canceled:
                 action = f"{label} was canceled; record a replacement task for it."
+            elif postponed:
+                # Postponed work is stopped by a recorded decision; nothing moves until it is reactivated.
+                action = (f"Waiting on postponed {label} '{target.title}'. Reactivate it when its reactivation "
+                          f"requirements are met; it must then be accepted and merged on {branch}.")
             elif target.status == "closed":
                 action = (f"Reopen {label}; its acceptance no longer matches its current version. It must be resubmitted "
                     f"and accepted again by the independent reviewer, and its code merged on {branch}.")

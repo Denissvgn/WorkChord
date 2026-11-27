@@ -1178,6 +1178,8 @@ class AgentRoutingService:
                     Task.iteration_id == iteration.id,
                     Task.assignee_id.is_not(None),
                     Task.is_deferred.is_(False),
+                    # Postponed work occupies no capacity until it is reactivated.
+                    Task.status != TaskStatus.POSTPONED.value,
                     Task.id != task.id,
                 )
                 .group_by(Task.assignee_id)
@@ -1450,6 +1452,7 @@ class AgentRoutingService:
                                     "reasoning_tier": (
                                         binding.model_catalog.reasoning_tier
                                     ),
+                                    "effort": binding.model_catalog.effort,
                                     "context_tier": binding.model_catalog.context_tier,
                                     "modality_tags": sorted(
                                         binding.model_catalog.modality_tags or []
@@ -1908,6 +1911,7 @@ class AgentRoutingService:
                     ),
                     actual_tool_tags=binding.tool_tags or (),
                     actual_data_policy_tags=binding.data_policy_tags or (),
+                    actual_effort=catalog.effort if catalog is not None else None,
                 )
                 publisher_blockers = history.publisher_blockers(catalog.publisher_key if catalog else None) if strict_review else []
                 blockers = sorted(set((*actor_blockers, *model.hard_blocker_codes, *publisher_blockers)))
@@ -1955,6 +1959,7 @@ class AgentRoutingService:
                     "reasoning_tier": (
                         catalog.reasoning_tier if catalog else None
                     ),
+                    "effort": catalog.effort if catalog else None,
                     "context_tier": catalog.context_tier if catalog else None,
                     "cost_tier": catalog.cost_tier if catalog else None,
                     "local_first": bool(catalog.local_first) if catalog else None,
@@ -2058,6 +2063,7 @@ class AgentRoutingService:
                     )
 
         eligible_rows.sort(key=lambda item: item[0])
+        required_effort = (assessment.required_model or {}).get("minimum_effort")
         ranked_candidates: list[AgentRoutingCandidate] = []
         for rank, (_, values) in enumerate(eligible_rows, start=1):
             values["rank"] = rank
@@ -2071,6 +2077,12 @@ class AgentRoutingService:
                     "preferred over a hosted model of equal adequacy. "
                     "Otherwise ordered by adequacy, local-first preference, "
                     "cost, queue, schedule, latency, actor, and binding."
+                )
+            if required_effort is not None:
+                values["rationale"] += (
+                    f" The task requires effort {required_effort} or higher; "
+                    f"this model runs at {values['effort']}, and effort above "
+                    "the requirement counts toward adequacy."
                 )
             ranked_candidates.append(AgentRoutingCandidate.model_validate(values))
         exclusions = [
@@ -2816,6 +2828,7 @@ class AgentRoutingService:
             configured_model_alias=selected.configured_model_alias,
             selected_reasoning_tier=selected.reasoning_tier,
             selected_context_tier=selected.context_tier,
+            selected_effort=selected.effort,
             resolved_model=None,
             review_mode=assessment.review_mode,
             reviewer_profile_id=effective_reviewer_profile_id,

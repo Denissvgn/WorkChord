@@ -1,7 +1,7 @@
 # AgentTeamPlanAction
 
-**Location:** `backend/app/schemas/agent_team_setup.py:534`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:535`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 

@@ -6,6 +6,8 @@ import pytest
 from pydantic import ValidationError
 
 from app.schemas.agent_routing import (
+    AgentModelCatalogCreate,
+    AgentModelCatalogUpdate,
     AgentRoutingCandidate,
     AgentRoutingExclusion,
     AgentRoutingPreviewCreate,
@@ -23,6 +25,7 @@ from app.services.agent_routing_policy import (
     MIN_ROUTING_ASSESSMENT_CONFIDENCE,
     ROUTING_PREVIEW_TTL_SECONDS,
     RoutingBlockerCode,
+    effort_meets,
     evaluate_model_envelope,
     evaluate_required_skills,
     routing_candidate_rank_key,
@@ -436,3 +439,78 @@ def test_local_first_ranks_ahead_of_hosted_only_at_equal_adequacy() -> None:
     assert _rank() == _rank(local_first=False)
     # An adequacy difference always wins over the preference.
     assert _rank(adequacy_class=0, cost_tier="high") < _rank(adequacy_class=1, local_first=True, cost_tier="low")
+
+
+_ENVELOPE = {
+    "minimum_reasoning_tier": 1,
+    "minimum_context_tier": "small",
+    "modality_tags": ["text"],
+    "tool_tags": [],
+    "data_policy_tags": [],
+}
+_ACTUAL = {
+    "actual_reasoning_tier": 1,
+    "actual_context_tier": "small",
+    "actual_modality_tags": ["text"],
+}
+
+
+def test_effort_requirement_gates_on_an_ordered_setting_and_never_on_unknown() -> None:
+    assert effort_meets("high", "medium") and effort_meets("medium", "medium")
+    assert not effort_meets("low", "medium")
+    assert not effort_meets("unknown", "low")
+    assert not effort_meets(None, "low")
+    with pytest.raises(ValueError):
+        effort_meets("high", "unknown")
+
+    required = {**_ENVELOPE, "minimum_effort": "medium"}
+    for actual in ("low", "unknown", None):
+        decision = evaluate_model_envelope(required, actual_effort=actual, **_ACTUAL)
+        assert decision.hard_blocker_codes == ("model_effort_insufficient",)
+        assert decision.adequacy_class is None
+    met = evaluate_model_envelope(required, actual_effort="xhigh", **_ACTUAL)
+    assert met.eligible and met.adequacy_class == 2
+    exact = evaluate_model_envelope(required, actual_effort="medium", **_ACTUAL)
+    assert exact.adequacy_class == 0
+
+
+def test_effort_is_ignored_when_the_task_states_no_requirement() -> None:
+    for envelope in (_ENVELOPE, {**_ENVELOPE, "minimum_effort": None}):
+        for actual in ("unknown", "low", "max", None):
+            decision = evaluate_model_envelope(envelope, actual_effort=actual, **_ACTUAL)
+            assert decision.eligible and decision.adequacy_class == 0
+    # Callers written before the field existed keep working.
+    assert evaluate_model_envelope(_ENVELOPE, **_ACTUAL).eligible
+
+
+def test_catalog_effort_defaults_to_unknown_and_refuses_values_outside_the_vocabulary() -> None:
+    entry = AgentModelCatalogCreate.model_validate(
+        {
+            "key": "effort-entry",
+            "provider": "configured-provider",
+            "configured_model_alias": "runtime-model",
+            "reasoning_tier": 2,
+            "context_tier": "medium",
+            "cost_tier": "medium",
+            "latency_tier": "balanced",
+        }
+    )
+    assert entry.effort == "unknown"
+    assert AgentModelCatalogUpdate(expected_revision=1, effort="xhigh").effort == "xhigh"
+    for bad in ("extreme", "HIGH ", "", 3):
+        with pytest.raises(ValidationError):
+            AgentModelCatalogUpdate(expected_revision=1, effort=bad)
+    with pytest.raises(ValidationError, match="cannot be null"):
+        AgentModelCatalogUpdate(expected_revision=1, effort=None)
+
+
+def test_required_effort_is_optional_stored_only_when_stated_and_never_unknown() -> None:
+    command = TaskRoutingAssessmentCommand.model_validate(_assessment_command())
+    assert "minimum_effort" not in command.required_model.model_dump()
+    stated = _assessment_command()
+    stated["required_model"] = {**stated["required_model"], "minimum_effort": "high"}
+    assert TaskRoutingAssessmentCommand.model_validate(stated).required_model.model_dump()["minimum_effort"] == "high"
+    for bad in ("unknown", "extreme"):
+        stated["required_model"] = {**stated["required_model"], "minimum_effort": bad}
+        with pytest.raises(ValidationError):
+            TaskRoutingAssessmentCommand.model_validate(stated)

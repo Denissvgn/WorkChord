@@ -16,7 +16,7 @@ _Auto-generated from `frontend/src/types/agent.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `AgentActor`, `AgentActorRole`, `AgentActorRosterItem`, `AgentActorRosterProfile`, `AgentActorRosterProfileSkill`, `AgentAssignmentListParams`, `AgentAssignmentPurpose`, `AgentAssignmentQueueClass`, `AgentAssignmentReadItem`, `AgentAssignmentState`, `AgentCapabilities`, `AgentCommandMetadata`, `AgentModelBinding`, `AgentModelBindingCreate`, `AgentModelBindingDisable`, `AgentModelBindingListParams`, `AgentModelBindingStatus`, `AgentModelBindingUpdate`, `AgentModelCatalogCreate`, `AgentModelCatalogDisable`, `AgentModelCatalogEntry`, `AgentModelCatalogUpdate`, `AgentModelMatchBasis`, `AgentModelMutationReceipt`, `AgentModelTrustState`, `AgentPipeline`, `AgentProfileSkillCatalogItem`, `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse`, `AgentRun`, `AgentRunEvent`, `AgentTaskAssignment`, `AgentTeamActionReceipt`, `AgentTeamApplyResponse`, `AgentTeamLifecycle`, `AgentTeamMaster`, `AgentTeamMemberSpec`, `AgentTeamMemberStatus`, `AgentTeamPlan`, `AgentTeamPlanAction`, `AgentTeamReconciliationClass`, `AgentTeamRole`, `AgentTeamRuntimeHandoff`, `AgentTeamSetupStep`, `AgentTeamSkillPackage`, `AgentTeamStatus`, `AgentTeamStepState`, `AgentTeamValidation`, `AssessmentReasonCode`, `JsonObject`, `JsonPrimitive`, `JsonValue`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareRoutingMode`, `ModelAwareRoutingStatus`, `ModelAwareRoutingTopologyReadiness`, `ModelAwareRoutingTopologySource`, `ModelAwareRoutingTopologyStatus`, `ModelContextTier`, `ModelCostTier`, `ModelLatencyTier`, `ModelReasoningTier`, `RequiredModelEnvelope`, `RoutingBlockerCode`, `TaskDifficultyAxes`, `TaskDifficultyBand`, `TaskDifficultyScore`, `TaskReviewMode`, `TaskRoutingAssessment`, `TaskRoutingAssessmentCommand`, `TaskRoutingAssessmentHistory`, `TaskRoutingAssessmentMutationReceipt`, `TaskRoutingAssessmentState`, `TaskSkillLevel`, `TaskTimelineItem`, `TaskTimelineResponse` |
+| Exports | `AgentActor`, `AgentActorRole`, `AgentActorRosterItem`, `AgentActorRosterProfile`, `AgentActorRosterProfileSkill`, `AgentAssignmentListParams`, `AgentAssignmentPurpose`, `AgentAssignmentQueueClass`, `AgentAssignmentReadItem`, `AgentAssignmentState`, `AgentCapabilities`, `AgentCommandMetadata`, `AgentModelBinding`, `AgentModelBindingCreate`, `AgentModelBindingDisable`, `AgentModelBindingListParams`, `AgentModelBindingStatus`, `AgentModelBindingUpdate`, `AgentModelCatalogCreate`, `AgentModelCatalogDisable`, `AgentModelCatalogEntry`, `AgentModelCatalogUpdate`, `AgentModelMatchBasis`, `AgentModelMutationReceipt`, `AgentModelTrustState`, `AgentPipeline`, `AgentProfileSkillCatalogItem`, `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse`, `AgentRun`, `AgentRunEvent`, `AgentTaskAssignment`, `AgentTeamActionReceipt`, `AgentTeamApplyResponse`, `AgentTeamLifecycle`, `AgentTeamMaster`, `AgentTeamMemberSpec`, `AgentTeamMemberStatus`, `AgentTeamPlan`, `AgentTeamPlanAction`, `AgentTeamReconciliationClass`, `AgentTeamRole`, `AgentTeamRuntimeHandoff`, `AgentTeamRuntimeIdentityStatus`, `AgentTeamSetupStep`, `AgentTeamSkillPackage`, `AgentTeamStatus`, `AgentTeamStepState`, `AgentTeamValidation`, `AssessmentReasonCode`, `JsonObject`, `JsonPrimitive`, `JsonValue`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareRoutingMode`, `ModelAwareRoutingStatus`, `ModelAwareRoutingTopologyReadiness`, `ModelAwareRoutingTopologySource`, `ModelAwareRoutingTopologyStatus`, `ModelContextTier`, `ModelCostTier`, `ModelEffort`, `ModelLatencyTier`, `ModelReasoningTier`, `RequiredModelEffort`, `RequiredModelEnvelope`, `RoutingBlockerCode`, `TaskDifficultyAxes`, `TaskDifficultyBand`, `TaskDifficultyScore`, `TaskReviewMode`, `TaskRoutingAssessment`, `TaskRoutingAssessmentCommand`, `TaskRoutingAssessmentHistory`, `TaskRoutingAssessmentMutationReceipt`, `TaskRoutingAssessmentState`, `TaskSkillLevel`, `TaskTimelineItem`, `TaskTimelineResponse` |
 
 ## Local dependency map
 
@@ -38,67 +38,68 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (39) |
+| Inbound | `frontend` (41) |
 | Outbound | `frontend` (1) |
 
-> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 42 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [AgentCommandMetadata](../entities/AgentCommandMetadata.md) | Interface | 94 | — | — |
-| [AgentActor](../entities/types_agent_AgentActor.md) | Interface | 100 | — | — |
-| [ModelAwareRoutingTopologyReadiness](../entities/ModelAwareRoutingTopologyReadiness.md) | Interface | 127 | — | — |
-| [ModelAwareRoutingStatus](../entities/ModelAwareRoutingStatus.md) | Interface | 136 | — | — |
-| [AgentCapabilities](../entities/AgentCapabilities.md) | Interface | 144 | — | — |
-| [AgentProfileSkillCatalogItem](../entities/AgentProfileSkillCatalogItem.md) | Interface | 160 | — | — |
-| [AgentActorRosterProfileSkill](../entities/types_agent_AgentActorRosterProfileSkill.md) | Interface | 167 | — | — |
-| [AgentActorRosterProfile](../entities/types_agent_AgentActorRosterProfile.md) | Interface | 178 | — | — |
-| [AgentModelCatalogEntry](../entities/types_agent_AgentModelCatalogEntry.md) | Interface | 189 | — | — |
-| [AgentModelCatalogCreate](../entities/types_agent_AgentModelCatalogCreate.md) | Interface | 207 | — | — |
-| [AgentModelCatalogUpdate](../entities/types_agent_AgentModelCatalogUpdate.md) | Interface | 222 | — | — |
-| [AgentModelCatalogDisable](../entities/types_agent_AgentModelCatalogDisable.md) | Interface | 237 | — | — |
-| [AgentModelBinding](../entities/types_agent_AgentModelBinding.md) | Interface | 242 | — | — |
-| [AgentModelBindingCreate](../entities/types_agent_AgentModelBindingCreate.md) | Interface | 261 | — | — |
-| [AgentModelBindingUpdate](../entities/types_agent_AgentModelBindingUpdate.md) | Interface | 271 | — | — |
-| [AgentModelBindingDisable](../entities/types_agent_AgentModelBindingDisable.md) | Interface | 280 | — | — |
-| [AgentModelMutationReceipt](../entities/types_agent_AgentModelMutationReceipt.md) | Interface | 285 | — | — |
-| [AgentActorRosterItem](../entities/types_agent_AgentActorRosterItem.md) | Interface | 303 | `AgentActor` | — |
-| [TaskDifficultyAxes](../entities/types_agent_TaskDifficultyAxes.md) | Interface | 313 | — | — |
-| [RequiredModelEnvelope](../entities/types_agent_RequiredModelEnvelope.md) | Interface | 321 | — | — |
-| [TaskRoutingAssessmentCommand](../entities/types_agent_TaskRoutingAssessmentCommand.md) | Interface | 329 | — | — |
-| [TaskRoutingAssessment](../entities/types_agent_TaskRoutingAssessment.md) | Interface | 341 | — | — |
-| [TaskRoutingAssessmentState](../entities/types_agent_TaskRoutingAssessmentState.md) | Interface | 361 | — | — |
-| [TaskRoutingAssessmentHistory](../entities/TaskRoutingAssessmentHistory.md) | Interface | 368 | — | — |
-| [TaskRoutingAssessmentMutationReceipt](../entities/types_agent_TaskRoutingAssessmentMutationReceipt.md) | Interface | 376 | — | — |
-| [AgentRoutingPreviewCreate](../entities/types_agent_AgentRoutingPreviewCreate.md) | Interface | 390 | — | — |
-| [AgentRoutingCandidate](../entities/types_agent_AgentRoutingCandidate.md) | Interface | 397 | — | — |
-| [AgentRoutingExclusion](../entities/types_agent_AgentRoutingExclusion.md) | Interface | 439 | — | — |
-| [AgentRoutingPreviewResponse](../entities/types_agent_AgentRoutingPreviewResponse.md) | Interface | 479 | — | — |
-| [ModelAwareAgentTaskAssignmentCreate](../entities/types_agent_ModelAwareAgentTaskAssignmentCreate.md) | Interface | 506 | — | — |
-| [ModelAwareAgentTaskAssignmentUpdate](../entities/types_agent_ModelAwareAgentTaskAssignmentUpdate.md) | Interface | 524 | — | — |
-| [AgentTaskAssignment](../entities/types_agent_AgentTaskAssignment.md) | Interface | 539 | — | — |
-| [AgentAssignmentReadItem](../entities/types_agent_AgentAssignmentReadItem.md) | Interface | 563 | — | An assignment as a person reads it, without routing evidence or the assigner's reason. |
-| [AgentAssignmentListParams](../entities/AgentAssignmentListParams.md) | Interface | 584 | — | — |
-| [AgentModelBindingListParams](../entities/AgentModelBindingListParams.md) | Interface | 592 | — | — |
-| [AgentRunEvent](../entities/types_agent_AgentRunEvent.md) | Interface | 597 | — | — |
-| [AgentRun](../entities/types_agent_AgentRun.md) | Interface | 610 | — | — |
-| [AgentPipeline](../entities/AgentPipeline.md) | Interface | 638 | — | — |
-| [TaskTimelineItem](../entities/types_agent_TaskTimelineItem.md) | Interface | 649 | — | — |
-| [TaskTimelineResponse](../entities/types_agent_TaskTimelineResponse.md) | Interface | 660 | — | — |
-| [AgentTeamSkillPackage](../entities/types_agent_AgentTeamSkillPackage.md) | Interface | 676 | — | — |
-| [AgentTeamMemberSpec](../entities/types_agent_AgentTeamMemberSpec.md) | Interface | 682 | — | — |
-| [AgentTeamMaster](../entities/types_agent_AgentTeamMaster.md) | Interface | 698 | — | — |
-| [AgentTeamValidation](../entities/AgentTeamValidation.md) | Interface | 714 | — | — |
-| [AgentTeamPlanAction](../entities/types_agent_AgentTeamPlanAction.md) | Interface | 731 | — | — |
-| [AgentTeamPlan](../entities/AgentTeamPlan.md) | Interface | 748 | — | — |
-| [AgentTeamActionReceipt](../entities/types_agent_AgentTeamActionReceipt.md) | Interface | 758 | — | — |
-| [AgentTeamApplyResponse](../entities/types_agent_AgentTeamApplyResponse.md) | Interface | 772 | — | — |
-| [AgentTeamRuntimeHandoff](../entities/types_agent_AgentTeamRuntimeHandoff.md) | Interface | 787 | — | — |
-| [AgentTeamMemberStatus](../entities/types_agent_AgentTeamMemberStatus.md) | Interface | 806 | — | — |
-| [AgentTeamSetupStep](../entities/types_agent_AgentTeamSetupStep.md) | Interface | 838 | — | — |
-| [AgentTeamStatus](../entities/AgentTeamStatus.md) | Interface | 845 | — | — |
+| [AgentCommandMetadata](../entities/AgentCommandMetadata.md) | Interface | 97 | — | — |
+| [AgentActor](../entities/types_agent_AgentActor.md) | Interface | 103 | — | — |
+| [ModelAwareRoutingTopologyReadiness](../entities/ModelAwareRoutingTopologyReadiness.md) | Interface | 130 | — | — |
+| [ModelAwareRoutingStatus](../entities/ModelAwareRoutingStatus.md) | Interface | 139 | — | — |
+| [AgentCapabilities](../entities/AgentCapabilities.md) | Interface | 147 | — | — |
+| [AgentProfileSkillCatalogItem](../entities/AgentProfileSkillCatalogItem.md) | Interface | 163 | — | — |
+| [AgentActorRosterProfileSkill](../entities/types_agent_AgentActorRosterProfileSkill.md) | Interface | 170 | — | — |
+| [AgentActorRosterProfile](../entities/types_agent_AgentActorRosterProfile.md) | Interface | 181 | — | — |
+| [AgentModelCatalogEntry](../entities/types_agent_AgentModelCatalogEntry.md) | Interface | 192 | — | — |
+| [AgentModelCatalogCreate](../entities/types_agent_AgentModelCatalogCreate.md) | Interface | 211 | — | — |
+| [AgentModelCatalogUpdate](../entities/types_agent_AgentModelCatalogUpdate.md) | Interface | 227 | — | — |
+| [AgentModelCatalogDisable](../entities/types_agent_AgentModelCatalogDisable.md) | Interface | 243 | — | — |
+| [AgentModelBinding](../entities/types_agent_AgentModelBinding.md) | Interface | 248 | — | — |
+| [AgentModelBindingCreate](../entities/types_agent_AgentModelBindingCreate.md) | Interface | 267 | — | — |
+| [AgentModelBindingUpdate](../entities/types_agent_AgentModelBindingUpdate.md) | Interface | 277 | — | — |
+| [AgentModelBindingDisable](../entities/types_agent_AgentModelBindingDisable.md) | Interface | 286 | — | — |
+| [AgentModelMutationReceipt](../entities/types_agent_AgentModelMutationReceipt.md) | Interface | 291 | — | — |
+| [AgentActorRosterItem](../entities/types_agent_AgentActorRosterItem.md) | Interface | 309 | `AgentActor` | — |
+| [TaskDifficultyAxes](../entities/types_agent_TaskDifficultyAxes.md) | Interface | 319 | — | — |
+| [RequiredModelEnvelope](../entities/types_agent_RequiredModelEnvelope.md) | Interface | 327 | — | — |
+| [TaskRoutingAssessmentCommand](../entities/types_agent_TaskRoutingAssessmentCommand.md) | Interface | 336 | — | — |
+| [TaskRoutingAssessment](../entities/types_agent_TaskRoutingAssessment.md) | Interface | 348 | — | — |
+| [TaskRoutingAssessmentState](../entities/types_agent_TaskRoutingAssessmentState.md) | Interface | 368 | — | — |
+| [TaskRoutingAssessmentHistory](../entities/TaskRoutingAssessmentHistory.md) | Interface | 375 | — | — |
+| [TaskRoutingAssessmentMutationReceipt](../entities/types_agent_TaskRoutingAssessmentMutationReceipt.md) | Interface | 383 | — | — |
+| [AgentRoutingPreviewCreate](../entities/types_agent_AgentRoutingPreviewCreate.md) | Interface | 397 | — | — |
+| [AgentRoutingCandidate](../entities/types_agent_AgentRoutingCandidate.md) | Interface | 404 | — | — |
+| [AgentRoutingExclusion](../entities/types_agent_AgentRoutingExclusion.md) | Interface | 447 | — | — |
+| [AgentRoutingPreviewResponse](../entities/types_agent_AgentRoutingPreviewResponse.md) | Interface | 488 | — | — |
+| [ModelAwareAgentTaskAssignmentCreate](../entities/types_agent_ModelAwareAgentTaskAssignmentCreate.md) | Interface | 515 | — | — |
+| [ModelAwareAgentTaskAssignmentUpdate](../entities/types_agent_ModelAwareAgentTaskAssignmentUpdate.md) | Interface | 533 | — | — |
+| [AgentTaskAssignment](../entities/types_agent_AgentTaskAssignment.md) | Interface | 548 | — | — |
+| [AgentAssignmentReadItem](../entities/types_agent_AgentAssignmentReadItem.md) | Interface | 572 | — | An assignment as a person reads it, without routing evidence or the assigner's reason. |
+| [AgentAssignmentListParams](../entities/AgentAssignmentListParams.md) | Interface | 593 | — | — |
+| [AgentModelBindingListParams](../entities/AgentModelBindingListParams.md) | Interface | 601 | — | — |
+| [AgentRunEvent](../entities/types_agent_AgentRunEvent.md) | Interface | 606 | — | — |
+| [AgentRun](../entities/types_agent_AgentRun.md) | Interface | 619 | — | — |
+| [AgentPipeline](../entities/AgentPipeline.md) | Interface | 647 | — | — |
+| [TaskTimelineItem](../entities/types_agent_TaskTimelineItem.md) | Interface | 658 | — | — |
+| [TaskTimelineResponse](../entities/types_agent_TaskTimelineResponse.md) | Interface | 669 | — | — |
+| [AgentTeamSkillPackage](../entities/types_agent_AgentTeamSkillPackage.md) | Interface | 685 | — | — |
+| [AgentTeamMemberSpec](../entities/types_agent_AgentTeamMemberSpec.md) | Interface | 691 | — | — |
+| [AgentTeamMaster](../entities/types_agent_AgentTeamMaster.md) | Interface | 707 | — | — |
+| [AgentTeamValidation](../entities/AgentTeamValidation.md) | Interface | 723 | — | — |
+| [AgentTeamPlanAction](../entities/types_agent_AgentTeamPlanAction.md) | Interface | 740 | — | — |
+| [AgentTeamPlan](../entities/AgentTeamPlan.md) | Interface | 757 | — | — |
+| [AgentTeamActionReceipt](../entities/types_agent_AgentTeamActionReceipt.md) | Interface | 767 | — | — |
+| [AgentTeamApplyResponse](../entities/types_agent_AgentTeamApplyResponse.md) | Interface | 781 | — | — |
+| [AgentTeamRuntimeHandoff](../entities/types_agent_AgentTeamRuntimeHandoff.md) | Interface | 796 | — | — |
+| [AgentTeamRuntimeIdentityStatus](../entities/types_agent_AgentTeamRuntimeIdentityStatus.md) | Interface | 817 | — | Which runtime instance acknowledged a member's handoff; unknown for an acknowledgement made before the identity existed. |
+| [AgentTeamMemberStatus](../entities/types_agent_AgentTeamMemberStatus.md) | Interface | 827 | — | — |
+| [AgentTeamSetupStep](../entities/types_agent_AgentTeamSetupStep.md) | Interface | 860 | — | — |
+| [AgentTeamStatus](../entities/AgentTeamStatus.md) | Interface | 867 | — | — |
 | [JsonPrimitive](../entities/JsonPrimitive.md) | Type alias | 3 | `string \| number \| boolean \| null` | — |
 | [JsonValue](../entities/JsonValue.md) | Type alias | 4 | `JsonPrimitive \| JsonValue[] \| { [key: string]: JsonValue }` | — |
 | [JsonObject](../entities/JsonObject.md) | Type alias | 5 | `{ [key: string]: JsonValue }` | — |
@@ -110,19 +111,21 @@ flowchart LR
 | [AgentModelTrustState](../entities/AgentModelTrustState.md) | Type alias | 12 | `'matched' \| 'mismatch' \| 'unreported' \| 'unverifiable'` | — |
 | [AgentModelMatchBasis](../entities/AgentModelMatchBasis.md) | Type alias | 13 | `'configured_alias' \| 'catalog_key'` | — |
 | [ModelReasoningTier](../entities/ModelReasoningTier.md) | Type alias | 15 | `1 \| 2 \| 3` | — |
-| [ModelContextTier](../entities/ModelContextTier.md) | Type alias | 16 | `'small' \| 'medium' \| 'large'` | — |
-| [ModelCostTier](../entities/ModelCostTier.md) | Type alias | 17 | `'low' \| 'medium' \| 'high'` | — |
-| [ModelLatencyTier](../entities/ModelLatencyTier.md) | Type alias | 18 | `'fast' \| 'balanced' \| 'slow'` | — |
-| [TaskDifficultyScore](../entities/TaskDifficultyScore.md) | Type alias | 19 | `1 \| 2 \| 3` | — |
-| [TaskSkillLevel](../entities/TaskSkillLevel.md) | Type alias | 20 | `1 \| 2 \| 3 \| 4 \| 5` | — |
-| [TaskDifficultyBand](../entities/TaskDifficultyBand.md) | Type alias | 21 | `'routine' \| 'standard' \| 'advanced'` | — |
-| [TaskReviewMode](../entities/TaskReviewMode.md) | Type alias | 22 | `'none' \| 'standard' \| 'independent' \| 'specialist-independent'` | — |
-| [AssessmentReasonCode](../entities/types_agent_AssessmentReasonCode.md) | Type alias | 24 | <pre><code>&#124; &#39;novel&#45;architecture&#39;&#10;    &#124; &#39;material&#45;ambiguity&#39;&#10;    &#124; &#39;broad&#45;context&#39;&#10;    &#124; &#39;security&#39;&#10;    &#124; &#39;authorization&#39;&#10;    &#124; &#39;migration&#39;&#10;    &#124; &#39;data&#45;integrity&#39;&#10;    &#124; &#39;concurrency&#39;&#10;    &#124; &#39;production&#39;&#10;    &#124; &#39;irreversible&#45;change&#39;&#10;    &#124; &#39;independent&#45;verification&#39;&#10;    &#124; &#39;specialist&#45;verification&#39;</code></pre> | — |
-| [RoutingBlockerCode](../entities/types_agent_RoutingBlockerCode.md) | Type alias | 38 | <pre><code>&#124; &#39;assignment&#95;purpose&#95;queue&#95;class&#95;incompatible&#39;&#10;    &#124; &#39;assessment&#95;missing&#39;&#10;    &#124; &#39;assessment&#95;stale&#39;&#10;    &#124; &#39;assessment&#95;policy&#95;mismatch&#39;&#10;    &#124; &#39;assessment&#95;low&#95;confidence&#39;&#10;    &#124; &#39;task&#95;definition&#95;not&#95;ready&#39;&#10;    &#124; &#39;task&#95;status&#95;incompatible&#39;&#10;    &#124; &#39;task&#95;deferred&#39;&#10;    &#124; &#39;task&#95;composite&#39;&#10;    &#124; &#39;task&#95;dependency&#95;unresolved&#39;&#10;    &#124; &#39;actor&#95;disabled&#39;&#10;    &#124; &#39;actor&#95;role&#95;incompatible&#39;&#10;    &#124; &#39;actor&#95;scope&#95;missing&#39;&#10;    &#124; &#39;actor&#95;policy&#95;incompatible&#39;&#10;    &#124; &#39;actor&#95;topology&#95;incompatible&#39;&#10;    &#124; &#39;actor&#95;profile&#95;missing&#39;&#10;    &#124; &#39;capacity&#95;owner&#95;missing&#39;&#10;    &#124; &#39;capacity&#95;owner&#95;profile&#95;missing&#39;&#10;    &#124; &#39;actor&#95;capacity&#95;profile&#95;mismatch&#39;&#10;    &#124; &#39;profile&#95;kind&#95;human&#39;&#10;    &#124; &#39;profile&#95;kind&#95;unsupported&#39;&#10;    &#124; &#39;profile&#95;automation&#95;disabled&#39;&#10;    &#124; &#39;profile&#95;assignment&#95;mode&#95;missing&#39;&#10;    &#124; &#39;required&#95;skill&#95;missing&#39;&#10;    &#124; &#39;required&#95;skill&#95;level&#95;insufficient&#39;&#10;    &#124; &#39;required&#95;skill&#95;blocking&#95;weakness&#39;&#10;    &#124; &#39;model&#95;binding&#95;missing&#39;&#10;    &#124; &#39;model&#95;binding&#95;disabled&#39;&#10;    &#124; &#39;model&#95;binding&#95;stale&#39;&#10;    &#124; &#39;model&#95;catalog&#95;missing&#39;&#10;    &#124; &#39;model&#95;catalog&#95;disabled&#39;&#10;    &#124; &#39;model&#95;reasoning&#95;tier&#95;insufficient&#39;&#10;    &#124; &#39;model&#95;context&#95;tier&#95;insufficient&#39;&#10;    &#124; &#39;model&#95;modality&#95;missing&#39;&#10;    &#124; &#39;model&#95;tool&#95;missing&#39;&#10;    &#124; &#39;model&#95;data&#95;policy&#95;missing&#39;&#10;    &#124; &#39;capacity&#95;unavailable&#39;&#10;    &#124; &#39;workload&#95;limit&#95;exceeded&#39;&#10;    &#124; &#39;vacation&#95;conflict&#39;&#10;    &#124; &#39;schedule&#95;missing&#39;&#10;    &#124; &#39;schedule&#95;conflict&#39;&#10;    &#124; &#39;queue&#95;limit&#95;exceeded&#39;&#10;    &#124; &#39;current&#95;work&#95;conflict&#39;&#10;    &#124; &#39;reviewer&#95;profile&#95;missing&#39;&#10;    &#124; &#39;reviewer&#95;profile&#95;mismatch&#39;&#10;    &#124; &#39;verification&#95;actor&#95;not&#95;independent&#39;&#10;    &#124; &#39;verification&#95;profile&#95;not&#95;independent&#39;&#10;    &#124; &#39;verification&#95;independence&#95;unverifiable&#39;&#10;    &#124; &#39;verification&#95;specialist&#95;skill&#95;missing&#39;&#10;    &#124; &#39;preview&#95;not&#95;found&#39;&#10;    &#124; &#39;preview&#95;stale&#39;&#10;    &#124; &#39;preview&#95;expired&#39;&#10;    &#124; &#39;preview&#95;digest&#95;mismatch&#39;&#10;    &#124; &#39;no&#95;eligible&#95;candidate&#39;</code></pre> | — |
-| [ModelAwareRoutingMode](../entities/ModelAwareRoutingMode.md) | Type alias | 116 | `'off' \| 'shadow' \| 'enforced'` | — |
-| [ModelAwareRoutingTopologyStatus](../entities/ModelAwareRoutingTopologyStatus.md) | Type alias | 118 | <pre><code>&#124; &#39;unavailable&#39;&#10;    &#124; &#39;not&#95;ready&#39;&#10;    &#124; &#39;ready&#39;</code></pre> | — |
-| [ModelAwareRoutingTopologySource](../entities/ModelAwareRoutingTopologySource.md) | Type alias | 123 | <pre><code>&#124; &#39;unavailable&#39;&#10;    &#124; &#39;agent&#45;team&#45;master&#45;v1&#39;</code></pre> | — |
-| [AgentTeamRole](../entities/AgentTeamRole.md) | Type alias | 665 | `'pm' \| 'worker' \| 'verifier'` | — |
-| [AgentTeamStepState](../entities/AgentTeamStepState.md) | Type alias | 666 | `'done' \| 'warn' \| 'blocked' \| 'todo'` | — |
-| [AgentTeamLifecycle](../entities/AgentTeamLifecycle.md) | Type alias | 667 | <pre><code>&#124; &#39;desired&#39;&#10;    &#124; &#39;configured&#39;&#10;    &#124; &#39;credential&#95;delivered&#39;&#10;    &#124; &#39;onboarding&#39;&#10;    &#124; &#39;connected&#39;&#10;    &#124; &#39;runtime&#95;ready&#39;&#10;    &#124; &#39;disabled&#39;</code></pre> | — |
-| [AgentTeamReconciliationClass](../entities/types_agent_AgentTeamReconciliationClass.md) | Type alias | 722 | <pre><code>&#124; &#39;create&#39;&#10;    &#124; &#39;safe&#95;update&#39;&#10;    &#124; &#39;no&#95;change&#39;&#10;    &#124; &#39;blocked&#95;conflict&#39;&#10;    &#124; &#39;requires&#95;replacement&#39;&#10;    &#124; &#39;propose&#95;disable&#39;&#10;    &#124; &#39;unmanaged&#39;</code></pre> | — |
+| [ModelEffort](../entities/types_agent_ModelEffort.md) | Type alias | 16 | `'unknown' \| 'low' \| 'medium' \| 'high' \| 'xhigh' \| 'max'` | — |
+| [RequiredModelEffort](../entities/RequiredModelEffort.md) | Type alias | 17 | `Exclude<ModelEffort, 'unknown'>` | — |
+| [ModelContextTier](../entities/ModelContextTier.md) | Type alias | 18 | `'small' \| 'medium' \| 'large'` | — |
+| [ModelCostTier](../entities/ModelCostTier.md) | Type alias | 19 | `'low' \| 'medium' \| 'high'` | — |
+| [ModelLatencyTier](../entities/ModelLatencyTier.md) | Type alias | 20 | `'fast' \| 'balanced' \| 'slow'` | — |
+| [TaskDifficultyScore](../entities/TaskDifficultyScore.md) | Type alias | 21 | `1 \| 2 \| 3` | — |
+| [TaskSkillLevel](../entities/TaskSkillLevel.md) | Type alias | 22 | `1 \| 2 \| 3 \| 4 \| 5` | — |
+| [TaskDifficultyBand](../entities/TaskDifficultyBand.md) | Type alias | 23 | `'routine' \| 'standard' \| 'advanced'` | — |
+| [TaskReviewMode](../entities/TaskReviewMode.md) | Type alias | 24 | `'none' \| 'standard' \| 'independent' \| 'specialist-independent'` | — |
+| [AssessmentReasonCode](../entities/types_agent_AssessmentReasonCode.md) | Type alias | 26 | <pre><code>&#124; &#39;novel&#45;architecture&#39;&#10;    &#124; &#39;material&#45;ambiguity&#39;&#10;    &#124; &#39;broad&#45;context&#39;&#10;    &#124; &#39;security&#39;&#10;    &#124; &#39;authorization&#39;&#10;    &#124; &#39;migration&#39;&#10;    &#124; &#39;data&#45;integrity&#39;&#10;    &#124; &#39;concurrency&#39;&#10;    &#124; &#39;production&#39;&#10;    &#124; &#39;irreversible&#45;change&#39;&#10;    &#124; &#39;independent&#45;verification&#39;&#10;    &#124; &#39;specialist&#45;verification&#39;</code></pre> | — |
+| [RoutingBlockerCode](../entities/types_agent_RoutingBlockerCode.md) | Type alias | 40 | <pre><code>&#124; &#39;assignment&#95;purpose&#95;queue&#95;class&#95;incompatible&#39;&#10;    &#124; &#39;assessment&#95;missing&#39;&#10;    &#124; &#39;assessment&#95;stale&#39;&#10;    &#124; &#39;assessment&#95;policy&#95;mismatch&#39;&#10;    &#124; &#39;assessment&#95;low&#95;confidence&#39;&#10;    &#124; &#39;task&#95;definition&#95;not&#95;ready&#39;&#10;    &#124; &#39;task&#95;status&#95;incompatible&#39;&#10;    &#124; &#39;task&#95;deferred&#39;&#10;    &#124; &#39;task&#95;composite&#39;&#10;    &#124; &#39;task&#95;dependency&#95;unresolved&#39;&#10;    &#124; &#39;actor&#95;disabled&#39;&#10;    &#124; &#39;actor&#95;role&#95;incompatible&#39;&#10;    &#124; &#39;actor&#95;scope&#95;missing&#39;&#10;    &#124; &#39;actor&#95;policy&#95;incompatible&#39;&#10;    &#124; &#39;actor&#95;topology&#95;incompatible&#39;&#10;    &#124; &#39;actor&#95;profile&#95;missing&#39;&#10;    &#124; &#39;capacity&#95;owner&#95;missing&#39;&#10;    &#124; &#39;capacity&#95;owner&#95;profile&#95;missing&#39;&#10;    &#124; &#39;actor&#95;capacity&#95;profile&#95;mismatch&#39;&#10;    &#124; &#39;profile&#95;kind&#95;human&#39;&#10;    &#124; &#39;profile&#95;kind&#95;unsupported&#39;&#10;    &#124; &#39;profile&#95;automation&#95;disabled&#39;&#10;    &#124; &#39;profile&#95;assignment&#95;mode&#95;missing&#39;&#10;    &#124; &#39;required&#95;skill&#95;missing&#39;&#10;    &#124; &#39;required&#95;skill&#95;level&#95;insufficient&#39;&#10;    &#124; &#39;required&#95;skill&#95;blocking&#95;weakness&#39;&#10;    &#124; &#39;model&#95;binding&#95;missing&#39;&#10;    &#124; &#39;model&#95;binding&#95;disabled&#39;&#10;    &#124; &#39;model&#95;binding&#95;stale&#39;&#10;    &#124; &#39;model&#95;catalog&#95;missing&#39;&#10;    &#124; &#39;model&#95;catalog&#95;disabled&#39;&#10;    &#124; &#39;model&#95;reasoning&#95;tier&#95;insufficient&#39;&#10;    &#124; &#39;model&#95;context&#95;tier&#95;insufficient&#39;&#10;    &#124; &#39;model&#95;effort&#95;insufficient&#39;&#10;    &#124; &#39;model&#95;modality&#95;missing&#39;&#10;    &#124; &#39;model&#95;tool&#95;missing&#39;&#10;    &#124; &#39;model&#95;data&#95;policy&#95;missing&#39;&#10;    &#124; &#39;capacity&#95;unavailable&#39;&#10;    &#124; &#39;workload&#95;limit&#95;exceeded&#39;&#10;    &#124; &#39;vacation&#95;conflict&#39;&#10;    &#124; &#39;schedule&#95;missing&#39;&#10;    &#124; &#39;schedule&#95;conflict&#39;&#10;    &#124; &#39;queue&#95;limit&#95;exceeded&#39;&#10;    &#124; &#39;current&#95;work&#95;conflict&#39;&#10;    &#124; &#39;reviewer&#95;profile&#95;missing&#39;&#10;    &#124; &#39;reviewer&#95;profile&#95;mismatch&#39;&#10;    &#124; &#39;verification&#95;actor&#95;not&#95;independent&#39;&#10;    &#124; &#39;verification&#95;profile&#95;not&#95;independent&#39;&#10;    &#124; &#39;verification&#95;independence&#95;unverifiable&#39;&#10;    &#124; &#39;verification&#95;specialist&#95;skill&#95;missing&#39;&#10;    &#124; &#39;preview&#95;not&#95;found&#39;&#10;    &#124; &#39;preview&#95;stale&#39;&#10;    &#124; &#39;preview&#95;expired&#39;&#10;    &#124; &#39;preview&#95;digest&#95;mismatch&#39;&#10;    &#124; &#39;no&#95;eligible&#95;candidate&#39;</code></pre> | — |
+| [ModelAwareRoutingMode](../entities/ModelAwareRoutingMode.md) | Type alias | 119 | `'off' \| 'shadow' \| 'enforced'` | — |
+| [ModelAwareRoutingTopologyStatus](../entities/ModelAwareRoutingTopologyStatus.md) | Type alias | 121 | <pre><code>&#124; &#39;unavailable&#39;&#10;    &#124; &#39;not&#95;ready&#39;&#10;    &#124; &#39;ready&#39;</code></pre> | — |
+| [ModelAwareRoutingTopologySource](../entities/ModelAwareRoutingTopologySource.md) | Type alias | 126 | <pre><code>&#124; &#39;unavailable&#39;&#10;    &#124; &#39;agent&#45;team&#45;master&#45;v1&#39;</code></pre> | — |
+| [AgentTeamRole](../entities/AgentTeamRole.md) | Type alias | 674 | `'pm' \| 'worker' \| 'verifier'` | — |
+| [AgentTeamStepState](../entities/AgentTeamStepState.md) | Type alias | 675 | `'done' \| 'warn' \| 'blocked' \| 'todo'` | — |
+| [AgentTeamLifecycle](../entities/AgentTeamLifecycle.md) | Type alias | 676 | <pre><code>&#124; &#39;desired&#39;&#10;    &#124; &#39;configured&#39;&#10;    &#124; &#39;credential&#95;delivered&#39;&#10;    &#124; &#39;onboarding&#39;&#10;    &#124; &#39;connected&#39;&#10;    &#124; &#39;runtime&#95;ready&#39;&#10;    &#124; &#39;disabled&#39;</code></pre> | — |
+| [AgentTeamReconciliationClass](../entities/types_agent_AgentTeamReconciliationClass.md) | Type alias | 731 | <pre><code>&#124; &#39;create&#39;&#10;    &#124; &#39;safe&#95;update&#39;&#10;    &#124; &#39;no&#95;change&#39;&#10;    &#124; &#39;blocked&#95;conflict&#39;&#10;    &#124; &#39;requires&#95;replacement&#39;&#10;    &#124; &#39;propose&#95;disable&#39;&#10;    &#124; &#39;unmanaged&#39;</code></pre> | — |

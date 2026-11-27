@@ -14,7 +14,7 @@ Team’s Models tab reads the catalog and actor bindings through their separate 
 | `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
 | `../../hooks/useAgentAccess` | `useAgentAccess` | — | compiler-dependent |
 | `../../services/agentService` | `agentService` | — | compiler-dependent |
-| `../../types/agent` | `AgentModelBinding`, `AgentModelBindingCreate`, `AgentModelCatalogCreate`, `AgentModelCatalogEntry` | Declaration | erased |
+| `../../types/agent` | `AgentModelBinding`, `AgentModelBindingCreate`, `AgentModelCatalogCreate`, `AgentModelCatalogEntry`, `ModelEffort` | Declaration | erased |
 | `../../utils/apiError` | `normalizeApiError` | — | compiler-dependent |
 | `../../utils/modelRouting` | `createAgentCommandMetadata`, `parseRoutingTags` | — | compiler-dependent |
 | `../../utils/protectedQueries` | `protectedQueryRetry` | — | compiler-dependent |
@@ -42,7 +42,7 @@ Team’s Models tab reads the catalog and actor bindings through their separate 
 | Signal | Values |
 |--------|--------|
 | Exports | `AgentModelAdministration`, `ModelHeaderActions` |
-| Constants | `EMPTY_CATALOG_FORM`, `EMPTY_BINDING_FORM` |
+| Constants | `MODEL_EFFORT_LEVELS`, `EMPTY_CATALOG_FORM`, `EMPTY_BINDING_FORM` |
 
 ## Local dependency map
 
@@ -79,10 +79,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CatalogForm](../entities/CatalogForm.md) | Interface | 41 | — | — |
-| [BindingForm](../entities/BindingForm.md) | Interface | 56 | — | — |
-| [ConflictResolution](../entities/ConflictResolution.md) | Interface | 66 | — | — |
-| [ModelHeaderActions](../entities/ModelHeaderActions.md) | Interface | 128 | — | — |
+| [CatalogForm](../entities/CatalogForm.md) | Interface | 42 | — | — |
+| [BindingForm](../entities/BindingForm.md) | Interface | 58 | — | — |
+| [ConflictResolution](../entities/ConflictResolution.md) | Interface | 68 | — | — |
+| [ModelHeaderActions](../entities/ModelHeaderActions.md) | Interface | 133 | — | — |
 
 ## Functions
 

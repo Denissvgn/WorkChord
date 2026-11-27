@@ -13,7 +13,7 @@ _Auto-generated from `frontend/src/features/planningMasters/usePlanningReadiness
 | `../../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
 | `../../types/gantt` | `GanttResponse`, `GanttTask` | Declaration | erased |
 | `../../types/iteration` | `Iteration` | Declaration | erased |
-| `../../types/task` | `Task` | Declaration | erased |
+| `../../types/task` | `Task`, `TaskStatus` | Declaration | erased |
 | `../../types/team` | `TeamMember` | Declaration | erased |
 | `./usePlanningReadiness` | `usePlanningReadiness` | — | compiler-dependent |
 | `@tanstack/react-query` | `QueryClient`, `QueryClientProvider` | — | compiler-dependent |

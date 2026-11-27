@@ -30,14 +30,15 @@ task that started on ``follow_date``; it takes its assignee's row from there.
 14. `delivery_dependency_service.DeliveryDependencyService`
 15. `schemas_gantt.SchedulingDecision`
 16. `schemas_gantt.SchedulingDecision`
-17. `commands.PlanningConflict`
-18. `recovery.TaskScheduleBaseline`
-19. `capacity_service.CapacityService.schedule_issues`
-20. `capacity_service.CapacityService`
-21. `commands.PlanningConflict`
-22. `commands.commit_or_flush`
-23. `schemas_gantt.SchedulingDecision`
-24. `schemas_gantt.ScheduleResult`
+17. `schemas_gantt.SchedulingDecision`
+18. `commands.PlanningConflict`
+19. `recovery.TaskScheduleBaseline`
+20. `capacity_service.CapacityService.schedule_issues`
+21. `capacity_service.CapacityService`
+22. `commands.PlanningConflict`
+23. `commands.commit_or_flush`
+24. `schemas_gantt.SchedulingDecision`
+25. `schemas_gantt.ScheduleResult`
 
 ## Touches
 

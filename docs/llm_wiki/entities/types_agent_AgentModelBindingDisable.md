@@ -1,6 +1,6 @@
 # AgentModelBindingDisable
 
-**Location:** `frontend/src/types/agent.ts:280`
+**Location:** `frontend/src/types/agent.ts:286`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

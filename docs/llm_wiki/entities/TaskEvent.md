@@ -1,6 +1,6 @@
 # TaskEvent
 
-**Location:** `backend/app/models/agent.py:1005`
+**Location:** `backend/app/models/agent.py:1045`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)
@@ -102,4 +102,4 @@ flowchart LR
 | `AgentService.create_actor` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentTeamSetupService._stage_event` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 
-> References: showing 12 of 57 logical references; 45 omitted by the 12-row generated summary limit.
+> References: showing 12 of 58 logical references; 46 omitted by the 12-row generated summary limit.

@@ -24,9 +24,9 @@ Applying dates that change accepted work is guarded regardless of how the iterat
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project` |
 | `app.models.recovery` | `TaskScheduleBaseline` |
-| `app.models.task` | `Task`, `TaskDependency`, `TaskStatus`, `TaskStatus`, `TaskStatus` |
+| `app.models.task` | `Task`, `TaskDependency`, `TaskStatus`, `TaskStatus`, `TaskStatus`, `TaskStatus`, `TaskStatus` |
 | `app.models.team_member` | `TeamMember`, `Vacation` |
-| `app.schemas.gantt` | `KeptDatesTask`, `SchedulingDecision`, `ScheduleResult`, `UnscheduledTask`, `WorkloadIssue` |
+| `app.schemas.gantt` | `KeptDatesTask`, `SchedulingDecision`, `ScheduleResult`, `UnscheduledTask`, `WaitingOnTask`, `WorkloadIssue` |
 | `app.services.agent_work_service` | `AgentWorkService` |
 | `app.services.calendar_rules` | `AnnualCalendars` |
 | `app.services.calendar_service` | `CalendarService` |
@@ -37,7 +37,7 @@ Applying dates that change accepted work is guarded regardless of how the iterat
 | `app.services.scheduling_rules_service` | `SchedulingRulesService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.team_service` | `TeamService` |
-| `app.services.work_metrics` | `effective_work_flags`, `effective_work_flags`, `working_today`, `effective_work_flags` |
+| `app.services.work_metrics` | `effective_work_flags`, `effective_work_flags`, `postponed_work_under`, `working_today`, `effective_work_flags` |
 | `collections` | `defaultdict` |
 | `dataclasses` | `dataclass`, `field` |
 | `datetime` | `date`, `timedelta` |
@@ -67,7 +67,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (15) |
+| Inbound | `backend` (16) |
 | Outbound | `backend` (20) |
 
 ### External packages
@@ -76,7 +76,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -88,7 +88,7 @@ flowchart LR
 | [RescheduleResult](../entities/RescheduleResult.md) | Class | 59 | — | Result of an incremental reschedule operation. |
 | [MemberSchedule](../entities/MemberSchedule.md) | Class | 69 | — | Optimized schedule tracking with O(D) slot finding using sliding window. |
 | [SchedulerService](../entities/SchedulerService.md) | Class | 346 | — | Service for automatic task scheduling. |
-| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1457 | — | Handles incremental rescheduling when a single task changes. |
+| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1521 | — | Handles incremental rescheduling when a single task changes. |
 
 ## Functions
 

@@ -1,6 +1,6 @@
 # AgentRoutingExclusion
 
-**Location:** `backend/app/schemas/agent_routing.py:1037`
+**Location:** `backend/app/schemas/agent_routing.py:1058`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -43,6 +43,7 @@ Bounded reason evidence for one ineligible actor/binding pair.
 | `insufficient_skill_keys` | `list[RoutingKey]` | `insufficient_skill_keys` | No | No | factory: `list` | — | — | — |
 | `blocking_weakness_keys` | `list[RoutingKey]` | `blocking_weakness_keys` | No | No | factory: `list` | — | — | — |
 | `reasoning_tier` | `ReasoningTier \| None` | `reasoning_tier` | No | Yes | `None` | — | — | — |
+| `effort` | `ModelEffortSetting \| None` | `effort` | No | Yes | `None` | — | — | — |
 | `context_tier` | `ModelContextTier \| None` | `context_tier` | No | Yes | `None` | — | — | — |
 | `cost_tier` | `ModelCostTier \| None` | `cost_tier` | No | Yes | `None` | — | — | — |
 | `local_first` | `bool \| None` | `local_first` | No | Yes | `None` | — | — | — |

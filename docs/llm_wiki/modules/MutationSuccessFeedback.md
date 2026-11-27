@@ -34,28 +34,31 @@ flowchart LR
     n0["frontend/src/components/feedback/toast.ts"]
     n1["frontend/src/components/settings/TemplateLabelSettings.test.tsx"]
     n2["frontend/src/components/tasks/TaskOwnerAcceptance.test.tsx"]
-    n3["frontend/src/features/identity/IdentityProvider.tsx"]
-    n4["frontend/src/features/mutationFeedback.test.tsx"]
-    n5["frontend/src/features/mutationFeedback.ts"]
-    n6["frontend/src/features/MutationSuccessFeedback.tsx"]
-    n7["frontend/src/utils/apiError.ts"]
-    n1 --> n6
-    n2 --> n6
-    n3 --> n6
+    n3["frontend/src/components/tasks/TaskPostponement.test.tsx"]
+    n4["frontend/src/features/identity/IdentityProvider.tsx"]
+    n5["frontend/src/features/mutationFeedback.test.tsx"]
+    n6["frontend/src/features/mutationFeedback.ts"]
+    n7["frontend/src/features/MutationSuccessFeedback.tsx"]
+    n8["frontend/src/utils/apiError.ts"]
+    n1 --> n7
+    n2 --> n7
     n3 --> n7
-    n4 --> n5
-    n4 --> n6
-    n6 --> n0
-    n6 --> n5
-    n6 --> n7
+    n4 --> n7
+    n4 --> n8
+    n5 --> n6
+    n5 --> n7
+    n7 --> n0
+    n7 --> n6
+    n7 --> n8
     click n0 "../modules/toast.md"
     click n1 "../modules/TemplateLabelSettings.test.md"
     click n2 "../modules/TaskOwnerAcceptance.test.md"
-    click n3 "../modules/IdentityProvider.md"
-    click n4 "../modules/mutationFeedback.test.md"
-    click n5 "../modules/mutationFeedback.md"
-    click n6 "../modules/MutationSuccessFeedback.md"
-    click n7 "../modules/apiError.md"
+    click n3 "../modules/TaskPostponement.test.md"
+    click n4 "../modules/IdentityProvider.md"
+    click n5 "../modules/mutationFeedback.test.md"
+    click n6 "../modules/mutationFeedback.md"
+    click n7 "../modules/MutationSuccessFeedback.md"
+    click n8 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
@@ -64,6 +67,7 @@ flowchart LR
 |---|---|
 | Inbound | [TemplateLabelSettings.test](../modules/TemplateLabelSettings.test.md) |
 | Inbound | [TaskOwnerAcceptance.test](../modules/TaskOwnerAcceptance.test.md) |
+| Inbound | [TaskPostponement.test](../modules/TaskPostponement.test.md) |
 | Inbound | [IdentityProvider](../modules/IdentityProvider.md) |
 | Inbound | [mutationFeedback.test](../modules/mutationFeedback.test.md) |
 | Outbound | [toast](../modules/toast.md) |

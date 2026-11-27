@@ -1,6 +1,6 @@
 # WorkflowFocusIntent
 
-**Location:** `frontend/src/components/team/AgentManifestWorkflow.tsx:136`
+**Location:** `frontend/src/components/team/AgentManifestWorkflow.tsx:137`
 **Kind:** Interface
 **Bases:** —
 **Module:** [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md)
