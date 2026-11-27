@@ -164,6 +164,31 @@ Only the replacement can be accepted. The original cannot be reviewed, accepted 
 
 `GET /api/tasks/{task_id}/replacement`, `GET /api/agent/planning/tasks/{task_id}/replacement` or `agent_get_task_replacement` returns the disposition for either task: who decided, when and why, the owner decision, the review policy at the decision and now, the original's attempts with their missing attribution, the replacement's recorded base and current submitted candidate and contributors, the carried contributions, the moved dependents and releases, and whether the deliverable is clean or held. A task that takes part in a disposition cannot be deleted. An iteration or backlog restore that would change such a task's canceled state or status, or any dependency that touches one, is refused with `restore_conflicts_with_task_replacement`; restore a snapshot taken after the replacement instead.
 
+## Reviewing a plan import before it is applied
+
+The iteration import routes, `POST /api/iterations/import` (a new iteration) and `POST /api/iterations/{iteration_id}/import`, write a JSON plan file in one request and need the operator key. A planner can review the exact effect of a file first, without writing anything:
+
+- REST: `POST /api/agent/planning/iterations/{iteration_id}/import/dry-run`, or `POST /api/agent/planning/iterations/import/dry-run` for a file that creates a new iteration, with the file as the multipart field `file` and an agent key that has `planning:write`.
+- MCP: `agent_preview_iteration_import` with `import_data` (the file's JSON object) and, for an existing iteration, `iteration_id`.
+
+The caller must be able to plan work in the target iteration's project and in every project the file names, and to read every iteration the import reserves (iterations that share a team member's profile included). Otherwise the request is refused with HTTP 403, or 404 when the iteration is not visible to the caller. Nothing is written.
+
+The dry run runs the import itself in a transaction that is always rolled back, as the operator would run it, and returns:
+
+- `changes`: the tasks, dependencies, links (task source fields and external links), dates, team members and profiles the import creates, changes or removes, and the iteration it creates for a new-iteration file. A row the import creates has a stable reference such as `new-task-1`, `new-member-1` or `new-profile-1`, used wherever another row points at it (a parent, an assignee, a dependency); existing rows keep their ids. Changed rows list each field with its `from` and `to` values. Each entry of `dates` names a task, a date field and its old and new value.
+- `summary`: counts per section.
+- `expected_revisions` and `file_sha256`: the revision of every iteration the import reserves and the digest of the file's canonical JSON, as `import-context` reports them.
+- `review_digest`: binds the file, those revisions and the exact change set.
+- `written`: always `false`.
+
+To apply exactly what was reviewed, the operator sends the same file to the same import route with the multipart field `review_digest`. The write runs the import, compares the result with the review, and is refused, with nothing written, with HTTP 409 and one of these codes:
+
+- `import_review_file_changed`: the file differs from the reviewed one.
+- `import_review_target_changed`: an iteration the import reserves changed since the review, for example a task edited concurrently.
+- `import_review_changes_differ`: the import would now make a different change set than the one reviewed.
+
+A malformed digest is refused with HTTP 422 and `import_review_digest_invalid`. After a refusal, run the dry run again and review the new changes. A write without `review_digest` behaves as before. The write keeps its operator authority; the dry run grants no new way to write.
+
 ## External links
 
 `POST /api/tasks/{task_id}/external-links` attaches a link to a task with a provider: `github`, `gitlab`, `figma`, `sentry`, `custom` or `agdash`. Display links must be absolute http(s) URLs without credentials, and private or loopback hosts are refused. The one exception is an `agdash` link, which names an agent session observed on one computer: it may point at a loopback host (`localhost`, `127.0.0.1` or `[::1]`), because the server never fetches display links, and it opens only on the computer that observed the session. Private network addresses stay refused for it too. Repeating an `agdash` link with the same `external_key` on the same task returns the existing link instead of adding another. An update that changes the provider or URL is checked against the resulting pair. Creating a link needs edit access to the task.
