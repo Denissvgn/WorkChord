@@ -101,6 +101,9 @@ def evaluate_agent_readiness(
         if planned_and_available
         else "Task must be planned and not deferred."
     )
+    if task.status == TaskStatus.POSTPONED.value:
+        # Postponed work is stopped by a recorded decision: it is never ready until it is reactivated.
+        status_reason = "Task is postponed. Reactivate it when its reactivation requirements are met before handoff."
     if not ancestry_known:
         status_reason = "Task ancestry is unavailable; repair or reload it before handoff."
     _add_criterion(
@@ -162,18 +165,26 @@ def evaluate_agent_readiness(
     )
 
     unresolved_dependencies: list[str] = []
+    postponed_dependencies: list[str] = []
     unknown_dependencies: list[int] = []
     for dependency in dependencies:
         dependency_task = _dependency_task(dependency)
         if dependency_task is None:
             unknown_dependencies.append(dependency.depends_on_id)
             continue
-        if dependency_task.status not in {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}:
+        if dependency_task.status == TaskStatus.POSTPONED.value and not dependency_task.canceled_at:
+            postponed_dependencies.append(f"'{dependency_task.title}' (ID {dependency_task.id})")
+        elif dependency_task.status not in {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}:
             unresolved_dependencies.append(f"{dependency_task.title} ({dependency_task.status})")
 
-    dependencies_ready = not unresolved_dependencies and not unknown_dependencies
-    if unresolved_dependencies:
-        dependency_reason = f"Unresolved dependencies: {', '.join(unresolved_dependencies)}."
+    dependencies_ready = not unresolved_dependencies and not unknown_dependencies and not postponed_dependencies
+    if postponed_dependencies or unresolved_dependencies:
+        parts = []
+        if postponed_dependencies:
+            parts.append(f"Waiting on postponed task {', '.join(postponed_dependencies)} until it is reactivated.")
+        if unresolved_dependencies:
+            parts.append(f"Unresolved dependencies: {', '.join(unresolved_dependencies)}.")
+        dependency_reason = " ".join(parts)
     elif unknown_dependencies:
         dependency_reason = f"Dependency status unavailable for: {', '.join(str(dep_id) for dep_id in unknown_dependencies)}."
     elif dependencies:

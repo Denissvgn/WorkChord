@@ -448,11 +448,13 @@ class SchedulerService:
 
         # Collect all leaf tasks (tasks without children) that need scheduling
         # IMPORTANT: Only schedule tasks with PLANNED status
-        # Tasks in other statuses (ACTIVE, RESOLVED, CLOSED) already have actual dates
+        # Tasks in ACTIVE, RESOLVED and CLOSED already have actual dates
         # that should not be modified by auto-scheduling
         from app.models.task import TaskStatus
 
-        all_leaf_tasks = [t for t in all_tasks if not t.children and not t.is_summary and not self._effective_flags(t)["effective_is_deferred"] and not t.canceled_at and not t.blocked_reason]
+        # Postponed work keeps its last dates as history only: it occupies no capacity, is not placed,
+        # and is never reported as kept, unscheduled or missing dates.
+        all_leaf_tasks = [t for t in all_tasks if not t.children and not t.is_summary and not self._holds_no_schedule(t) and not t.canceled_at and not t.blocked_reason]
 
         # Split into schedulable (PLANNED) and locked (non-PLANNED) tasks
         leaf_tasks = [t for t in all_leaf_tasks if t.status == TaskStatus.PLANNED.value]
@@ -482,6 +484,26 @@ class SchedulerService:
                 task.start_date = task.end_date = task.calculated_effort_days = None
                 decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title, decision_type="unavailable",
                     reason="Accept the delivery prerequisites before scheduling this work."))
+        # Work that depends on postponed work waits for it by name; the postponed task holds no schedule
+        # until it is reactivated, so its old dates are no evidence of when the dependent can start.
+        predecessor_messages: dict[int, str] = {}
+        postponed = {task.id: task for task in all_tasks
+                     if task.status == TaskStatus.POSTPONED.value and not task.canceled_at}
+        for task in leaf_tasks:
+            if task.id in unavailable_ids:
+                continue
+            waiting_on = sorted({dep.depends_on_id for dep in task.dependencies if dep.depends_on_id in postponed})
+            if not waiting_on:
+                continue
+            names = ", ".join(f"'{postponed[item].title}' (ID {item})" for item in waiting_on)
+            message = (f"Waiting on postponed task {names}. Postponed work holds no schedule until it is reactivated; "
+                       "reactivate it or remove the dependency, then schedule again.")
+            unavailable_ids.add(task.id)
+            unscheduled_reasons[task.id] = "predecessor_unscheduled"
+            predecessor_messages[task.id] = message
+            task.start_date = task.end_date = task.calculated_effort_days = None
+            decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title, decision_type="unavailable",
+                reason=message))
         leaf_tasks = [task for task in leaf_tasks if task.id not in unavailable_ids]
 
         logger.warning(f"[SCHEDULER] Task status filter: {len(leaf_tasks)} PLANNED (to schedule), {len(locked_tasks)} non-PLANNED (dates locked)")
@@ -701,7 +723,7 @@ class SchedulerService:
                         for task in leaf_tasks}
         for index, task in enumerate(composite_tasks):
             predecessors[task.id] = {child.id for child in task.children
-                                    if not self._effective_flags(child)["effective_is_deferred"]}
+                                    if not self._holds_no_schedule(child)}
             ranks[task.id] = (-1, (), index)
         dependents: dict[int, list[int]] = defaultdict(list)
         outstanding: dict[int, set[int]] = {}
@@ -756,7 +778,6 @@ class SchedulerService:
                 if not outstanding[dependent_id]:
                     heapq.heappush(ready, (ranks[dependent_id], dependent_id))
 
-        predecessor_messages: dict[int, str] = {}
         for task in pending.values():
             if task.children:
                 continue
@@ -1033,8 +1054,9 @@ class SchedulerService:
             notes.append(f"They start before the planning start ({planning_start}).")
         for dependency in task.dependencies:
             predecessor = by_id.get(dependency.depends_on_id)
+            # A postponed prerequisite's dates are history; the report already names it as the wait.
             if (predecessor is None or predecessor.id in satisfied_ids or predecessor.id in kept_dates
-                    or predecessor.end_date is None or task.start_date is None):
+                    or predecessor.status == "postponed" or predecessor.end_date is None or task.start_date is None):
                 continue
             if task.start_date <= predecessor.end_date:
                 notes.append(f"They start on or before the end of its prerequisite '{predecessor.title}' "
@@ -1213,6 +1235,11 @@ class SchedulerService:
         from app.services.work_metrics import effective_work_flags
         return getattr(self, "_work_flags", {}).get(task.id) or effective_work_flags(task)
 
+    def _holds_no_schedule(self, task) -> bool:
+        """Deferred work is backlog and postponed work is stopped: neither is placed nor occupies capacity."""
+        from app.models.task import TaskStatus
+        return task.status == TaskStatus.POSTPONED.value or self._effective_flags(task)["effective_is_deferred"]
+
     @staticmethod
     def _planning_start(iteration: Iteration) -> date:
         """Keep new forecasts on or after the workspace's current working date."""
@@ -1340,8 +1367,8 @@ class SchedulerService:
         sorted_children = self._topological_sort_children(task.children, child_ids)
 
         for child in sorted_children:
-            if self._effective_flags(child)["effective_is_deferred"]:
-                continue  # Skip deferred tasks
+            if self._holds_no_schedule(child):
+                continue  # Skip deferred and postponed tasks
             if child.children:
                 await self._schedule_composite_task(
                     child, iteration, member_schedules, decisions, task_map, earliest_start
@@ -1351,8 +1378,8 @@ class SchedulerService:
                     child, iteration, member_schedules, decisions, task_map, earliest_start
                 )
 
-        # Compute parent dates from children (excluding deferred tasks)
-        children_with_dates = [c for c in task.children if c.start_date and c.end_date and not self._effective_flags(c)["effective_is_deferred"]]
+        # Compute parent dates from children (excluding deferred and postponed tasks)
+        children_with_dates = [c for c in task.children if c.start_date and c.end_date and not self._holds_no_schedule(c)]
 
         if children_with_dates:
             child_start_dates = [
@@ -1402,8 +1429,8 @@ class SchedulerService:
             if child.children:
                 self._update_composite_task_dates(child, iteration, decisions)
 
-        # Compute dates from children (excluding deferred tasks)
-        children_with_dates = [c for c in task.children if c.start_date and c.end_date and not self._effective_flags(c)["effective_is_deferred"]]
+        # Compute dates from children (excluding deferred and postponed tasks)
+        children_with_dates = [c for c in task.children if c.start_date and c.end_date and not self._holds_no_schedule(c)]
 
         if children_with_dates:
             child_start_dates = [
@@ -1657,7 +1684,7 @@ class IncrementalScheduler:
 
         # Track existing allocations for non-affected tasks
         for existing_task in all_tasks:
-            if existing_task.id not in affected_task_ids and existing_task.start_date and not self.scheduler._effective_flags(existing_task)["effective_is_deferred"]:
+            if existing_task.id not in affected_task_ids and existing_task.start_date and not self.scheduler._holds_no_schedule(existing_task):
                 if existing_task.assignee_id and existing_task.assignee_id in member_schedules:
                     schedule = member_schedules[existing_task.assignee_id]
                     if existing_task.end_date:

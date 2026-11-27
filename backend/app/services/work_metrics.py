@@ -5,6 +5,10 @@ from zoneinfo import ZoneInfo
 
 from app.utils.time import as_utc, utc_now
 
+# Progress counts report each status on its own. Postponed work stays in its iteration and in the
+# totals, but holds no schedule: it is never late, overdue or overflowing, and is not remaining work.
+STATUS_COUNT_KEYS = ("planned", "active", "resolved", "closed", "postponed")
+
 
 def working_today(timezone="UTC", now: datetime | None = None):
     return as_utc(now or utc_now()).astimezone(ZoneInfo(timezone or "UTC")).date()
@@ -35,6 +39,8 @@ def task_signals(task, *, iteration_end=None, project_target=None, timezone="UTC
     flags = effective_flags if effective_flags is not None else effective_work_flags(task)
     deferred, optional = flags["effective_is_deferred"], flags["effective_is_optional"]
     excluded = composite or deferred or bool(getattr(task, "canceled_at", None))
+    # Postponed work keeps its last dates as history only; they raise no schedule signal.
+    unscheduled = excluded or task.status == "postponed"
     implemented = task.status in {"resolved", "closed"}
     accepted = (task.status == "closed" and getattr(task, "accepted_at", None) is not None
                 and getattr(task, "accepted_by_principal_id", None) is not None
@@ -45,10 +51,10 @@ def task_signals(task, *, iteration_end=None, project_target=None, timezone="UTC
     late_start = bool(start and (actual_start > start if actual_start else task.status == "planned" and start < today))
     return {"metric_contract_version": 2,
             "effective_is_deferred": deferred, "effective_is_optional": optional,
-            "is_late_start": not excluded and late_start,
-            "is_overdue": not excluded and not implemented and bool(task.end_date and task.end_date < today),
-            "is_iteration_overflow": not excluded and bool(task.end_date and iteration_end and task.end_date > iteration_end),
-            "is_project_target_overflow": not excluded and bool(task.end_date and project_target and task.end_date > project_target),
+            "is_late_start": not unscheduled and late_start,
+            "is_overdue": not unscheduled and not implemented and bool(task.end_date and task.end_date < today),
+            "is_iteration_overflow": not unscheduled and bool(task.end_date and iteration_end and task.end_date > iteration_end),
+            "is_project_target_overflow": not unscheduled and bool(task.end_date and project_target and task.end_date > project_target),
             "is_implemented": not excluded and implemented, "is_accepted": not excluded and accepted,
             "acceptance_unknown": not excluded and task.status == "closed" and not accepted}
 
@@ -65,11 +71,11 @@ def leaf_metrics(tasks, *, iteration_end=None, project_target=None, timezone="UT
         pending.extend(task.__dict__.get("children", []) or [])
     parents = {task.parent_id for task in by_id.values() if task.parent_id is not None}
     parents.update(task.id for task in by_id.values() if getattr(task, "is_summary", False))
-    result = {key: 0 for key in ["total_tasks", "required_tasks", "optional_tasks", "deferred_tasks", "structural_tasks",
+    result = {key: 0 for key in ["total_tasks", "required_tasks", "optional_tasks", "deferred_tasks", "postponed_tasks", "structural_tasks",
               "implemented_tasks", "accepted_tasks", "required_implemented_tasks", "required_accepted_tasks",
               "overdue_tasks", "late_start_tasks", "iteration_overflow_tasks", "project_target_overflow_tasks", "acceptance_unknown_tasks", "unknown_estimate_tasks"]}
     result.update(total_effort_days=0.0, remaining_effort_days=0.0, required_effort_days=0.0,
-                  metric_contract_version=2, tasks_by_status={state: 0 for state in ["planned", "active", "resolved", "closed"]})
+                  metric_contract_version=2, tasks_by_status={state: 0 for state in STATUS_COUNT_KEYS})
     for task in by_id.values():
         if task.id in parents:
             result["structural_tasks"] += 1
@@ -85,6 +91,8 @@ def leaf_metrics(tasks, *, iteration_end=None, project_target=None, timezone="UT
         result["total_tasks"] += 1
         result["optional_tasks" if optional else "required_tasks"] += 1
         result["tasks_by_status"][task.status] = result["tasks_by_status"].get(task.status, 0) + 1
+        postponed = task.status == "postponed"
+        result["postponed_tasks"] += int(postponed)
         for source, target in [("is_implemented", "implemented_tasks"), ("is_accepted", "accepted_tasks"),
                                ("is_overdue", "overdue_tasks"), ("is_late_start", "late_start_tasks"),
                                ("is_iteration_overflow", "iteration_overflow_tasks"), ("is_project_target_overflow", "project_target_overflow_tasks"),
@@ -100,7 +108,7 @@ def leaf_metrics(tasks, *, iteration_end=None, project_target=None, timezone="UT
             result["total_effort_days"] += effort
             if not optional:
                 result["required_effort_days"] += effort
-            if not signals["is_implemented"]:
+            if not signals["is_implemented"] and not postponed:
                 result["remaining_effort_days"] += effort
     result["completed_tasks"] = result["implemented_tasks"]
     result["completion_percent"] = round(result["implemented_tasks"] * 100 / result["total_tasks"], 1) if result["total_tasks"] else 0.0
@@ -150,7 +158,7 @@ async def scoped_metric_tasks(db, *, project_id=None, iteration_id=None):
 
 
 # Counts a person can open: each names the predicate the aggregate counts with.
-METRIC_MATCHES = ("total", "planned", "active", "resolved", "closed", "implemented", "accepted", "blocked",
+METRIC_MATCHES = ("total", "planned", "active", "resolved", "closed", "postponed", "implemented", "accepted", "blocked",
                   "overdue", "late_start", "iteration_overflow", "acceptance_unknown", "unknown_estimate")
 
 
@@ -214,6 +222,8 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     included = and_(leaf, ~tree.c.deferred, t.c.canceled_at.is_(None))
     required = and_(included, ~tree.c.optional)
     implemented = t.c.status.in_(["resolved", "closed"])
+    # Postponed work holds no schedule: its kept dates raise no signal and it is not remaining work.
+    scheduled = and_(included, t.c.status != "postponed")
     accepted = and_(t.c.status == "closed", t.c.accepted_at.is_not(None), t.c.accepted_by_principal_id.is_not(None), t.c.accepted_version == t.c.version)
     accepted = func.coalesce(accepted, false())
     overdue = and_(~implemented, t.c.end_date < today)
@@ -230,11 +240,11 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     joined = t.join(tree, tree.c.id == t.c.id).outerjoin(parent_ids, parent_ids.c.parent_id == t.c.id).outerjoin(iterations, iterations.c.id == t.c.iteration_id).outerjoin(projects, projects.c.id == t.c.project_id)
     # One predicate per countable metric: the counts below and the lists they open both use these.
     predicates = {"total": included, "implemented": and_(included, implemented), "accepted": and_(included, accepted),
-        "blocked": and_(included, blocked), "overdue": and_(included, overdue), "late_start": and_(included, late),
-        "iteration_overflow": and_(included, t.c.end_date > iterations.c.end_date),
+        "blocked": and_(included, blocked), "overdue": and_(scheduled, overdue), "late_start": and_(scheduled, late),
+        "iteration_overflow": and_(scheduled, t.c.end_date > iterations.c.end_date),
         "acceptance_unknown": and_(included, t.c.status == "closed", ~accepted),
         "unknown_estimate": and_(included, (t.c.effort_hours / t.c.nominal_day_hours).is_(None)),
-        **{state: and_(included, t.c.status == state) for state in ["planned", "active", "resolved", "closed"]}}
+        **{state: and_(included, t.c.status == state) for state in STATUS_COUNT_KEYS}}
     if matching is not None:
         if matching not in predicates:
             raise ValueError("Unknown work metric")
@@ -252,18 +262,19 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     def count(predicate, name):
         return func.coalesce(func.sum(case((predicate, 1), else_=0)), 0).label(name)
     columns = [count(predicates["total"], "total_tasks"), count(required, "required_tasks"), count(and_(included, tree.c.optional), "optional_tasks"),
-        count(and_(leaf, tree.c.deferred), "deferred_tasks"), count(composite, "structural_tasks"),
+        count(and_(leaf, tree.c.deferred), "deferred_tasks"), count(predicates["postponed"], "postponed_tasks"),
+        count(composite, "structural_tasks"),
         count(predicates["implemented"], "implemented_tasks"), count(predicates["accepted"], "accepted_tasks"),
         count(and_(required, implemented), "required_implemented_tasks"), count(and_(required, accepted), "required_accepted_tasks"),
         count(predicates["overdue"], "overdue_tasks"), count(predicates["late_start"], "late_start_tasks"),
         count(predicates["iteration_overflow"], "iteration_overflow_tasks"),
-        count(and_(included, t.c.end_date > projects.c.target_date), "project_target_overflow_tasks"),
+        count(and_(scheduled, t.c.end_date > projects.c.target_date), "project_target_overflow_tasks"),
         count(predicates["acceptance_unknown"], "acceptance_unknown_tasks"),
         count(predicates["unknown_estimate"], "unknown_estimate_tasks"), count(predicates["blocked"], "blocked_tasks"),
         func.coalesce(func.sum(case((included, (t.c.effort_hours / t.c.nominal_day_hours)), else_=0.0)), 0.0).label("total_effort_days"),
-        func.coalesce(func.sum(case((and_(included, ~implemented), (t.c.effort_hours / t.c.nominal_day_hours)), else_=0.0)), 0.0).label("remaining_effort_days"),
-        func.min(case((included, t.c.start_date))).label("task_start_date"), func.max(case((included, t.c.end_date))).label("task_end_date"),
-        *[count(predicates[state], "status_" + state) for state in ["planned", "active", "resolved", "closed"]]]
+        func.coalesce(func.sum(case((and_(scheduled, ~implemented), (t.c.effort_hours / t.c.nominal_day_hours)), else_=0.0)), 0.0).label("remaining_effort_days"),
+        func.min(case((scheduled, t.c.start_date))).label("task_start_date"), func.max(case((scheduled, t.c.end_date))).label("task_end_date"),
+        *[count(predicates[state], "status_" + state) for state in STATUS_COUNT_KEYS]]
     grouping = {"project": t.c.project_id, "milestone": t.c.milestone_id}.get(group_by)
     if grouping is not None:
         columns.insert(0, grouping.label("group_id"))
@@ -285,7 +296,7 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
             raise HierarchyScopeError()
         if values.pop("_validation_only"):
             continue
-        values["status_counts"] = {state: int(values.pop("status_" + state)) for state in ["planned", "active", "resolved", "closed"]}
+        values["status_counts"] = {state: int(values.pop("status_" + state)) for state in STATUS_COUNT_KEYS}
         values["completed_tasks"] = values["implemented_tasks"]
         values["completion_percent"] = round(values["implemented_tasks"] * 100 / values["total_tasks"], 1) if values["total_tasks"] else 0.0
         values["accepted_percent"] = round(values["required_accepted_tasks"] * 100 / values["required_tasks"], 1) if values["required_tasks"] else 0.0
