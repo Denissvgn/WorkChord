@@ -235,6 +235,10 @@ async def test_dependent_with_saved_dates_and_its_own_cause_keeps_dates_and_wait
     assert (kept[dependent_id]["start_date"], kept[dependent_id]["end_date"]) == ("2026-01-12", "2026-01-13")
     assert "Waiting on postponed task 'Vendor integration'" in kept[dependent_id]["message"]
     assert "positive effort estimate" in kept[dependent_id]["message"]
+    # One decision explains the waiting task: the wait, with its own cause named beside it.
+    explained = [item for item in result["decisions"] if item["task_id"] == dependent_id]
+    assert len(explained) == 1 and explained[0]["decision_type"] == "unavailable"
+    assert "Waiting on postponed task" in explained[0]["reason"] and "effort estimate" in explained[0]["reason"]
     unscheduled = {item["task_id"]: item for item in result["unscheduled"]}
     assert unscheduled[blocked_id]["reason"] == "predecessor_postponed"
     assert unscheduled[blocked_id]["also"] == ["blocked"]

@@ -25,6 +25,14 @@ it('names the postponed work a planned task waits on', async () => {
     expect(screen.queryByText(/Schedule it first/)).not.toBeInTheDocument();
 });
 
+it('falls back to the server message when a postponed wait comes without names', async () => {
+    const { user } = renderWithProviders(<UnscheduledTasks items={[
+        { task_id: 13, task_title: 'Vendor report', reason: 'predecessor_postponed', message: 'Waiting on postponed task from the server' },
+    ]} />);
+    await user.click(screen.getByText('1 planned task stays without dates'));
+    expect(screen.getByText('Waiting on postponed task from the server')).toBeInTheDocument();
+});
+
 it('renders nothing when every planned task got dates', () => {
     renderWithProviders(<UnscheduledTasks items={[]} />);
     expect(screen.queryByText(/stays? without dates/)).not.toBeInTheDocument();

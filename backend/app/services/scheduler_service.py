@@ -492,10 +492,15 @@ class SchedulerService:
         # task's own causes are reported beside it.
         predecessor_messages: dict[int, str] = {}
         postponed_waits = self._postponed_waits(all_tasks, task_map)
+        # One decision per waiting task: the wait, with any cause of its own named beside it.
+        decisions[:] = [decision for decision in decisions if decision.task_id not in postponed_waits]
         for task in leaf_tasks:
             if task.id not in postponed_waits:
                 continue
             message = self._postponed_wait_message(postponed_waits[task.id])
+            own = unscheduled_reasons.get(task.id)
+            if own is not None:
+                message = f"{message} It also needs a fix of its own: {self.UNSCHEDULED_MESSAGES[own]}"
             if task.id not in unavailable_ids:
                 unavailable_ids.add(task.id)
                 task.start_date = task.end_date = task.calculated_effort_days = None

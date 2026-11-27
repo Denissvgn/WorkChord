@@ -13,8 +13,10 @@ STATUS_COUNT_KEYS = ("planned", "active", "resolved", "closed", "postponed")
 def postponed_work_under(task):
     """The postponed work a prerequisite stands for: itself, or the postponed leaves below a summary.
 
-    Reads only loaded children. Canceled and deferred work is skipped: canceled work is satisfied
-    and deferred work is backlog that nothing waits on.
+    Reads only loaded children and never lazy-loads: callers must load the prerequisite's subtree
+    (as the scheduler's iteration tree does), or a summary is judged by its own status alone.
+    Canceled and deferred work is skipped: canceled work is satisfied and deferred work is backlog
+    that nothing waits on.
     """
     def children(item):
         return item.__dict__.get("children") or []
