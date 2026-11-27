@@ -1,7 +1,7 @@
 # TaskService_update
 
 **Entry point:** `task_service.TaskService.update`
-**Modules involved:** [authority](../modules/authority.md), [commands](../modules/commands.md), [execution_planning_window](../modules/execution_planning_window.md), [models_task](../modules/models_task.md), [outbound_webhook_service](../modules/outbound_webhook_service.md), [snapshot_service](../modules/snapshot_service.md), [task_brief_service](../modules/task_brief_service.md), [task_domain_service](../modules/task_domain_service.md), [task_service](../modules/task_service.md)
+**Modules involved:** [authority](../modules/authority.md), [commands](../modules/commands.md), [execution_planning_window](../modules/execution_planning_window.md), [models_task](../modules/models_task.md), [outbound_webhook_service](../modules/outbound_webhook_service.md), [snapshot_service](../modules/snapshot_service.md), [task_brief_service](../modules/task_brief_service.md), [task_domain_service](../modules/task_domain_service.md), [task_routing_service](../modules/task_routing_service.md), [task_service](../modules/task_service.md)
 
 > Update an existing task.
 
@@ -17,16 +17,17 @@
 7. `task_brief_service.render_brief`
 8. `task_brief_service.TaskBriefService.apply_brief`
 9. `task_brief_service.TaskBriefService`
-10. `models_task.TaskDependency`
-11. `execution_planning_window.is_planning_only_change`
-12. `execution_planning_window.live_assignments`
-13. `execution_planning_window.current_window`
-14. `execution_planning_window.execution_context`
-15. `task_brief_service.clear_execution_evidence`
-16. `task_brief_service.clear_acceptance`
-17. `execution_planning_window.fence_planning_only_edit`
-18. `outbound_webhook_service.emit_outbound_webhook_event`
-19. `commands.commit_or_flush`
+10. `task_routing_service.enforce_routing`
+11. `models_task.TaskDependency`
+12. `execution_planning_window.is_planning_only_change`
+13. `execution_planning_window.live_assignments`
+14. `execution_planning_window.current_window`
+15. `execution_planning_window.execution_context`
+16. `task_brief_service.clear_execution_evidence`
+17. `task_brief_service.clear_acceptance`
+18. `execution_planning_window.fence_planning_only_edit`
+19. `outbound_webhook_service.emit_outbound_webhook_event`
+20. `commands.commit_or_flush`
 
 ## Touches
 
@@ -38,6 +39,7 @@
 - [snapshot_service](../modules/snapshot_service.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_domain_service](../modules/task_domain_service.md)
+- [task_routing_service](../modules/task_routing_service.md)
 - [task_service](../modules/task_service.md)
 
 ## Behavior

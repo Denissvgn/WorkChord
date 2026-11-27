@@ -17,6 +17,7 @@ Outcome-oriented planning container above tasks and iterations. SQLite allocates
 | `name` | `Mapped[str]` | `mapped_column(String(255), nullable=False)` | — |
 | `timezone` | `Mapped[str]` | `mapped_column(String(64), default='UTC', server_default='UTC', nullable=False)` | — |
 | `require_different_review_publisher` | `Mapped[bool]` | `mapped_column(Boolean, default=False, server_default=false(), nullable=False)` | — |
+| `routing_conflict_mode` | `Mapped[str]` | `mapped_column(String(16), server_default='refuse', nullable=False)` | — |
 | `description` | `Mapped[Optional[str]]` | `mapped_column(Text, nullable=True)` | — |
 | `status` | `Mapped[str]` | `mapped_column(String(50), default=ProjectStatus.PLANNED.value, nullable=False, index=True)` | — |
 | `health` | `Mapped[str]` | `mapped_column(String(50), default=ProjectHealth.UNKNOWN.value, nullable=False, index=True)` | — |
@@ -54,14 +55,14 @@ flowchart LR
     n3["backend/app/commands.py"]
     n4["backend/app/models/__init__.py"]
     n5["backend/app/models/iteration.py"]
-    n6["backend/app/models/release.py"]
-    n7["backend/app/models/request_source.py"]
-    n8["backend/app/models/task.py"]
-    n9["backend/app/models/team_member.py"]
-    n10["backend/app/models/triage.py"]
-    n11["backend/app/routers/identity.py"]
-    n12["backend/app/routers/task_domain.py"]
-    n13["AgentWorkService.create_project_update (backend/app/services/agent_work_service.py)"]
+    n6["_default_routing_conflict_mode (backend/app/models/project.py)"]
+    n7["backend/app/models/release.py"]
+    n8["backend/app/models/request_source.py"]
+    n9["backend/app/models/task.py"]
+    n10["backend/app/models/team_member.py"]
+    n11["backend/app/models/triage.py"]
+    n12["backend/app/routers/identity.py"]
+    n13["backend/app/routers/task_domain.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -81,14 +82,14 @@ flowchart LR
     click n3 "../modules/commands.md"
     click n4 "../modules/models___init__.md"
     click n5 "../modules/models_iteration.md"
-    click n6 "../modules/models_release.md"
-    click n7 "../modules/models_request_source.md"
-    click n8 "../modules/models_task.md"
-    click n9 "../modules/team_member.md"
-    click n10 "../modules/models_triage.md"
-    click n11 "../modules/routers_identity.md"
-    click n12 "../modules/routers_task_domain.md"
-    click n13 "../modules/agent_work_service.md"
+    click n6 "../modules/models_project.md"
+    click n7 "../modules/models_release.md"
+    click n8 "../modules/models_request_source.md"
+    click n9 "../modules/models_task.md"
+    click n10 "../modules/team_member.md"
+    click n11 "../modules/models_triage.md"
+    click n12 "../modules/routers_identity.md"
+    click n13 "../modules/routers_task_domain.md"
 ```
 
 ### Summary
@@ -111,6 +112,7 @@ flowchart LR
 | `commands` | import | [commands](../modules/commands.md) | — |
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `iteration` | import | [models_iteration](../modules/models_iteration.md) | — |
+| `_default_routing_conflict_mode` | type_reference | [models_project](../modules/models_project.md) | — |
 | `release` | import | [models_release](../modules/models_release.md) | — |
 | `request_source` | import | [models_request_source](../modules/models_request_source.md) | — |
 | `task` | import | [models_task](../modules/models_task.md) | — |
@@ -118,6 +120,5 @@ flowchart LR
 | `triage` | import | [models_triage](../modules/models_triage.md) | — |
 | `identity` | import | [routers_identity](../modules/routers_identity.md) | — |
 | `task_domain` | import | [routers_task_domain](../modules/routers_task_domain.md) | — |
-| `AgentWorkService.create_project_update` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 
-> References: showing 12 of 114 logical references; 102 omitted by the 12-row generated summary limit.
+> References: showing 12 of 121 logical references; 109 omitted by the 12-row generated summary limit.

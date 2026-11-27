@@ -1,6 +1,6 @@
 # MetricMatchItem
 
-**Location:** `backend/app/routers/task_domain.py:95`
+**Location:** `backend/app/routers/task_domain.py:96`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [routers_task_domain](../modules/routers_task_domain.md)
@@ -16,6 +16,7 @@ _Auto-generated from `MetricMatchItem` in `backend/app/routers/task_domain.py`._
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `title` | `str` | `title` | Yes | No | — | — | — | — |
 | `status` | `str` | `status` | Yes | No | — | — | — | — |
+| `displayed_state` | `str \| None` | `displayed_state` | No | Yes | `None` | — | — | — |
 | `project_name` | `str \| None` | `project_name` | Yes | Yes | — | — | — | — |
 | `iteration_name` | `str \| None` | `iteration_name` | Yes | Yes | — | — | — | — |
 
@@ -38,7 +39,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [routers_task_domain](../modules/routers_task_domain.md) | 0 | `id`, `iteration_name`, `project_name`, `status`, `title` |
+| [routers_task_domain](../modules/routers_task_domain.md) | 0 | `displayed_state`, `id`, `iteration_name`, `project_name`, `status`, `title` |
 
 ### Structure
 

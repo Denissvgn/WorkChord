@@ -15,6 +15,7 @@ Schema for creating a project.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `timezone` | `WorkingZone` | `timezone` | No | No | `'UTC'` | — | — | — |
 | `require_different_review_publisher` | `bool` | `require_different_review_publisher` | No | No | `False` | — | — | — |
+| `routing_conflict_mode` | `Literal['refuse', 'warn']` | `routing_conflict_mode` | No | No | `'refuse'` | — | — | Whether task routing that conflicts with the review policy is refused or saved with a warning. |
 | `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
 | `status` | `ProjectStatus` | `status` | No | No | `ProjectStatus.PLANNED` | — | — | — |
@@ -72,7 +73,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_project](../modules/schemas_project.md) | 0 | `description`, `health`, `initiative_id`, `name`, `owner_id`, `owner_profile_id`, `require_different_review_publisher`, `sort_order`, `start_date`, `status`, `target_date`, `timezone` |
+| [schemas_project](../modules/schemas_project.md) | 0 | `description`, `health`, `initiative_id`, `name`, `owner_id`, `owner_profile_id`, `require_different_review_publisher`, `routing_conflict_mode`, `sort_order`, `start_date`, `status`, `target_date` |
 
 ### Structure
 

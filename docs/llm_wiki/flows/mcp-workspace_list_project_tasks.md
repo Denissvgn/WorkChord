@@ -2,7 +2,7 @@
 
 **Entry point:** `workspace_list_project_tasks` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_readiness](../modules/agent_readiness.md), [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), and 19 more
+**Modules touched:** [agent_readiness](../modules/agent_readiness.md), [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), and 20 more
 
 **Complete modules touched:**
 
@@ -26,6 +26,7 @@
 - [schemas_task](../modules/schemas_task.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_display_state](../modules/task_display_state.md)
 - [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
@@ -41,19 +42,19 @@ sequenceDiagram
     participant p1 as _tool_call
     participant p2 as list_project_tasks
     participant p3 as enforce_mcp_access
-    participant p4 as ProjectService.get_tasks
-    participant p5 as _agent_context
+    participant p4 as _agent_context
+    participant p5 as ProjectService.get_tasks
     participant p6 as TaskService.task_to_response
     participant p7 as get_settings
     participant p8 as ProjectService.get_by_id
-    participant p9 as command_transaction
-    participant p10 as _authenticate_agent_key
-    participant p11 as _require_scope_requirement
-    participant p12 as task_signals
-    participant p13 as IdentityService.actor_context
-    participant p14 as evaluate_agent_readiness
-    participant p15 as ExternalLinkService.task_links_to_response
-    participant p16 as TaskService.load_owner_names
+    participant p9 as ProjectService._get_tasks_in_state
+    participant p10 as command_transaction
+    participant p11 as _authenticate_agent_key
+    participant p12 as _require_scope_requirement
+    participant p13 as task_signals
+    participant p14 as IdentityService.actor_context
+    participant p15 as evaluate_agent_readiness
+    participant p16 as ExternalLinkService.task_links_to_response
     participant p17 as working_today
     participant p18 as ExternalLinkService.link_to_response
     participant p19 as require_scope
@@ -61,9 +62,9 @@ sequenceDiagram
     participant p21 as AgentService.authenticate
     participant p22 as ProjectService._project_query
     participant p23 as require_identity_writes
-    participant p24 as process_reactivation_checks
-    participant p25 as _add_criterion
-    participant p26 as require_project
+    participant p24 as task_state_clause
+    participant p25 as process_reactivation_checks
+    participant p26 as _add_criterion
     participant p27 as DeliveryDependencyService.reconcile
     participant p28 as DiscussionService.enqueue
     participant p29 as ToolError
@@ -71,38 +72,38 @@ sequenceDiagram
     p0->>p1: _tool_call
     p0->>p2: list_project_tasks
     p1->>p3: enforce_mcp_access
-    p2->>p4: ProjectService.get_tasks
-    p1->>p5: _agent_context
+    p1->>p4: _agent_context
+    p2->>p5: ProjectService.get_tasks
     p2->>p6: TaskService.task_to_response
     p3->>p7: get_settings
-    p4->>p8: ProjectService.get_by_id
-    p5->>p9: command_transaction
-    p5->>p10: _authenticate_agent_key
-    p5->>p11: _require_scope_requirement
-    p6->>p12: task_signals
-    p5->>p13: IdentityService.actor_context
-    p6->>p14: evaluate_agent_readiness
-    p6->>p15: ExternalLinkService.task_links_to_response
-    p4->>p16: TaskService.load_owner_names
-    p12->>p17: working_today
-    p15->>p18: ExternalLinkService.link_to_response
-    p11->>p19: require_scope
-    p15->>p20: ExternalLinkService.legacy_task_link_response
-    p10->>p21: AgentService.authenticate
+    p5->>p8: ProjectService.get_by_id
+    p5->>p9: ProjectService._get_tasks_in_state
+    p4->>p10: command_transaction
+    p4->>p11: _authenticate_agent_key
+    p4->>p12: _require_scope_requirement
+    p6->>p13: task_signals
+    p4->>p14: IdentityService.actor_context
+    p6->>p15: evaluate_agent_readiness
+    p6->>p16: ExternalLinkService.task_links_to_response
+    p13->>p17: working_today
+    p16->>p18: ExternalLinkService.link_to_response
+    p12->>p19: require_scope
+    p16->>p20: ExternalLinkService.legacy_task_link_response
+    p11->>p21: AgentService.authenticate
     p8->>p22: ProjectService._project_query
-    p13->>p23: require_identity_writes
-    p9->>p24: process_reactivation_checks
-    p14->>p25: _add_criterion
-    p16->>p26: require_project
-    p9->>p27: DeliveryDependencyService.reconcile
-    p9->>p28: DiscussionService.enqueue
+    p14->>p23: require_identity_writes
+    p9->>p24: task_state_clause
+    p10->>p25: process_reactivation_checks
+    p15->>p26: _add_criterion
+    p10->>p27: DeliveryDependencyService.reconcile
+    p10->>p28: DiscussionService.enqueue
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 510 interactions; 480 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 551 interactions; 521 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 149 (148 omitted); unresolved 1 of 228 (227 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 164 (163 omitted); unresolved 1 of 243 (242 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -116,7 +117,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 132 groups; 124 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 144 groups; 136 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -129,9 +130,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 134; effect analysis evaluated: 90, partial: 2, unavailable: 42. Counts include steps omitted from the displayed trace.
+Source steps: 145; effect analysis evaluated: 99, partial: 2, unavailable: 44. Counts include steps omitted from the displayed trace.
 
-Collector observations for 92 source steps with known totals: observed: 445, emitted: 432, omitted: 13. Unavailable totals are excluded.
+Collector observations for 101 source steps with known totals: observed: 491, emitted: 478, omitted: 13. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -139,7 +140,7 @@ Collector observations for 92 source steps with known totals: observed: 445, emi
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
-| `workspace_list_project_tasks` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `workspace_list_project_tasks` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
 | `_tool_call` | `available` | `partial` | `available` | `19` | `12` | `7` |
 | `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
@@ -189,7 +190,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `workspace_list_project_tasks` | `project_id: int` | - | - | `...` |
+| `workspace_list_project_tasks` | `project_id: int`, `status: Optional[Literal['planned', 'active', 'resolved', 'closed', 'postponed', 'canceled', 'superseded']]` | - | - | `...` |
 | `_tool_call` | `required_scope: ScopeRequirement`, `func: Callable[[Any, AgentActor], Any]`, `preview` | `ToolError`, `MissingMutationRevision`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AuthorityError`, `MCPAuthError`, `MaintenanceModeError` | - | `...` |
 | `enforce_mcp_access` | `required_scope: Any` | - | - | `none` |
 | `get_settings` | - | - | - | `Settings(...)` |
@@ -206,7 +207,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_list_project_tasks | _tool_call | 2089 | `_tool_call('tasks:read', ...)` |
+| workspace_list_project_tasks | _tool_call | 2174 | `_tool_call('tasks:read', ...)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |

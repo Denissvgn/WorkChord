@@ -1,6 +1,6 @@
 # SchedulingDecision
 
-**Location:** `backend/app/schemas/gantt.py:66`
+**Location:** `backend/app/schemas/gantt.py:68`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)
@@ -36,9 +36,9 @@ flowchart LR
     n5["LLMService._schedule_explanation_fallback (backend/app/services/llm_service.py)"]
     n6["LLMService._schedule_recommendations (backend/app/services/llm_service.py)"]
     n7["LLMService.explain_schedule (backend/app/services/llm_service.py)"]
-    n8["SchedulerService._schedule_composite_task (backend/app/services/scheduler_service.py)"]
-    n9["SchedulerService._schedule_leaf_task (backend/app/services/scheduler_service.py)"]
-    n10["SchedulerService._update_composite_task_dates (backend/app/services/scheduler_service.py)"]
+    n8["SchedulerService._place_in_free_days (backend/app/services/scheduler_service.py)"]
+    n9["SchedulerService._schedule_composite_task (backend/app/services/scheduler_service.py)"]
+    n10["SchedulerService._schedule_leaf_task (backend/app/services/scheduler_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -83,11 +83,11 @@ flowchart LR
 | `LLMService._schedule_explanation_fallback` | type_reference | [llm_service](../modules/llm_service.md) | — |
 | `LLMService._schedule_recommendations` | type_reference | [llm_service](../modules/llm_service.md) | — |
 | `LLMService.explain_schedule` | type_reference | [llm_service](../modules/llm_service.md) | — |
+| `SchedulerService._place_in_free_days` | call | [scheduler_service](../modules/scheduler_service.md) | 1 |
+| `SchedulerService._place_in_free_days` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `SchedulerService._schedule_composite_task` | call | [scheduler_service](../modules/scheduler_service.md) | 1 |
 | `SchedulerService._schedule_composite_task` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `SchedulerService._schedule_leaf_task` | call | [scheduler_service](../modules/scheduler_service.md) | 1 |
 | `SchedulerService._schedule_leaf_task` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
-| `SchedulerService._update_composite_task_dates` | call | [scheduler_service](../modules/scheduler_service.md) | 1 |
-| `SchedulerService._update_composite_task_dates` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.

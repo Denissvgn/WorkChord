@@ -118,9 +118,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_capabilities | domain_capabilities | 154 | `domain_capabilities(db)` |
+| task_capabilities | domain_capabilities | 156 | `domain_capabilities(db)` |
 | domain_capabilities | internal_authority | 56 | `internal_authority(db)` |
-| internal_authority | db.info.get | 113 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get | 114 | `db.info.get('authority_internal', False)` |
 | domain_capabilities | db.scalar | 57 | `db.scalar(...)` |
 | domain_capabilities | select(…).where(…).limit | 57 | `select(Task.id).where(Task.domain_backfill_version < 1).limit(1)` |
 | domain_capabilities | select(…).where | 57 | `select(Task.id).where(...)` |
@@ -137,7 +137,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `internal_authority` | `db.info.get` | 113 |
+| unresolved_call | `internal_authority` | `db.info.get` | 114 |
 | unresolved_call | `domain_capabilities` | `db.scalar` | 57 |
 | unresolved_call | `domain_capabilities` | `select(Task.id).where(Task.domain_backfill_version < 1).limit` | 57 |
 | unresolved_call | `domain_capabilities` | `select(Task.id).where` | 57 |

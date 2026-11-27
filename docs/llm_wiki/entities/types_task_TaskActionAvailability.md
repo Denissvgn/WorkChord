@@ -1,6 +1,6 @@
 # TaskActionAvailability
 
-**Location:** `frontend/src/types/task.ts:501`
+**Location:** `frontend/src/types/task.ts:579`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -15,7 +15,7 @@ _Auto-generated from `TaskActionAvailability` in `frontend/src/types/task.ts`._
 |------|------|----------|---------|-------------|
 | `action` | `string` | Yes | — | — |
 | `allowed` | `boolean` | Yes | — | — |
-| `blockers` | `{ code: string; message: string }[]` | Yes | — | — |
+| `blockers` | `{ code: string; message: string; next_step?: RefusalNextStep \| null }[]` | Yes | — | — |
 
 ## Methods
 

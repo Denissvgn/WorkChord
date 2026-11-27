@@ -1,13 +1,13 @@
 # WaitingOnTask
 
-**Location:** `frontend/src/types/gantt.ts:82`
+**Location:** `frontend/src/types/gantt.ts:84`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)
 
 ## Description
 
-A postponed task a planned task waits on.
+A task a planned task waits on: postponed work, or the prerequisite behind idle days.
 
 ## Attributes
 

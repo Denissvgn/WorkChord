@@ -61,7 +61,7 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [ManualProvenanceExecutor](../entities/ManualProvenanceExecutor.md) | 9 | `BaseModel` | The human or agent that actually executed the work. |
-| [ManualProvenanceWrite](../entities/ManualProvenanceWrite.md) | 29 | `BaseModel` | Record who executed one resolved task and the exact repository candidate they delivered. |
+| [ManualProvenanceExecutor](../entities/manual_provenance_ManualProvenanceExecutor.md) | 9 | `BaseModel` | The human or agent that actually executed the work. |
+| [ManualProvenanceWrite](../entities/manual_provenance_ManualProvenanceWrite.md) | 29 | `BaseModel` | Record who executed one resolved task and the exact repository candidate they delivered. |
 | [ManualProvenanceExecutorRecord](../entities/ManualProvenanceExecutorRecord.md) | 80 | `BaseModel` | — |
 | [ManualProvenanceResponse](../entities/ManualProvenanceResponse.md) | 90 | `BaseModel` | The recorded provenance as it appears on the task timeline. |

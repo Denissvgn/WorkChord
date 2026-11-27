@@ -31,10 +31,11 @@ Routing previews are bounded using the complete validated response, including it
 | `app.models.task` | `Task`, `TaskStatus` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile` |
 | `app.query_limits` | `CollectionLimitExceededError` |
+| `app.refusal_next_steps` | `with_next_step`, `next_step_for` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.agent_routing` | `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse`, `RoutingDecisionSnapshot`, `TaskRoutingAssessmentCommand`, `TaskRoutingAssessmentCreate`, `TaskRoutingAssessmentListResponse`, `TaskRoutingAssessmentMutationReceipt`, `TaskRoutingAssessmentResponse`, `TaskRoutingAssessmentState` |
 | `app.services.agent_routing_observability` | `RoutingOperationalEvent`, `record_routing_operational_event`, `routing_exclusion_projection` |
-| `app.services.agent_routing_policy` | `MAX_ROUTING_CANDIDATES`, `MAX_ROUTING_EXCLUSIONS`, `MAX_ROUTING_PACKET_BYTES`, `MIN_ROUTING_ASSESSMENT_CONFIDENCE`, `MODEL_FAILURE_CATEGORIES`, `REVIEW_MODE_ORDER`, `ROUTING_DECISION_LINEAGE_FIELDS`, `ROUTING_LINEAGE_AUTHORITY`, `ROUTING_POLICY_VERSION`, `ROUTING_PREVIEW_TTL_SECONDS`, `RoutingBlockerCode`, `RoutingPacketSizeError`, `RoutingProfileEvidence`, `canonical_routing_json_bytes`, `evaluate_actor_authorization`, `evaluate_assignment_compatibility`, `evaluate_model_envelope`, `evaluate_required_skills`, `normalize_model_failure_category`, `routing_candidate_rank_key`, `review_mode_meets`, `validate_routing_packet_size` |
+| `app.services.agent_routing_policy` | `ROUTING_SKILL_KEYS`, `MAX_ROUTING_CANDIDATES`, `MAX_ROUTING_EXCLUSIONS`, `MAX_ROUTING_PACKET_BYTES`, `MIN_ROUTING_ASSESSMENT_CONFIDENCE`, `MODEL_FAILURE_CATEGORIES`, `REVIEW_MODE_ORDER`, `ROUTING_DECISION_LINEAGE_FIELDS`, `ROUTING_LINEAGE_AUTHORITY`, `ROUTING_POLICY_VERSION`, `ROUTING_PREVIEW_TTL_SECONDS`, `RoutingBlockerCode`, `RoutingPacketSizeError`, `RoutingProfileEvidence`, `canonical_routing_json_bytes`, `evaluate_actor_authorization`, `evaluate_assignment_compatibility`, `evaluate_model_envelope`, `evaluate_required_skills`, `normalize_model_failure_category`, `routing_candidate_rank_key`, `review_mode_meets`, `validate_routing_packet_size` |
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutError`, `AgentRoutingRolloutMode`, `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupService`, `AgentTeamSetupService`, `AgentTeamSetupService` |
@@ -43,6 +44,8 @@ Routing previews are bounded using the complete validated response, including it
 | `app.services.capacity_service` | `CapacityService` |
 | `app.services.review_evidence` | `assignment_observation`, `requirements_for`, `resolve` |
 | `app.services.review_provenance` | `different_publisher_required`, `execution_profile_history`, `historical_profile`, `review_history` |
+| `app.services.routing_calibration_contract_service` | `approved_calibration_contract_count` |
+| `app.services.routing_qualification_key_service` | `require_known_qualification_keys`, `active_qualification_keys` |
 | `app.services.task_brief_service` | `brief_definition_blockers` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.utils.time` | `as_utc`, `utc_now` |
@@ -78,8 +81,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (28) |
-| Outbound | `backend` (23) |
+| Inbound | `backend` (31) |
+| Outbound | `backend` (26) |
 
 ### External packages
 
@@ -87,15 +90,15 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 49 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 55 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentRoutingConflictError](../entities/AgentRoutingConflictError.md) | 120 | `AgentConflictError` | Stable routing conflict shared by REST, MCP, and assignment commands. |
-| [RoutingSelectionValidation](../entities/RoutingSelectionValidation.md) | 140 | — | Authoritative result consumed inside the assignment transaction. |
-| [AgentRoutingService](../entities/AgentRoutingService.md) | 270 | — | Create immutable assessments and deterministic exact-actor previews. |
+| [AgentRoutingConflictError](../entities/AgentRoutingConflictError.md) | 121 | `AgentConflictError` | Stable routing conflict shared by REST, MCP, and assignment commands. |
+| [RoutingSelectionValidation](../entities/RoutingSelectionValidation.md) | 143 | — | Authoritative result consumed inside the assignment transaction. |
+| [AgentRoutingService](../entities/AgentRoutingService.md) | 285 | — | Create immutable assessments and deterministic exact-actor previews. |
 
 ## Functions
 
@@ -106,6 +109,7 @@ flowchart LR
 | `_brief_sections` | `(description: str \| None) -> dict[str, str]` | — | — |
 | `_assessment_payload` | `(record: TaskRoutingAssessment) -> dict[str, Any]` | — | — |
 | `_json_projection` | `(value: Any) -> Any` | — | Convert nested schema/time values to the canonical JSON-native boundary. |
+| `_retired_key_note` | `(missing: Sequence[str], retired: Sequence[str]) -> str` | — | Name the missing required keys that are retired and can no longer be held. |
 | `_routing_row_focus` | `(actor_id: int \| None, model_binding_id: int \| None) -> RoutingRowFocus` | — | Match the named actor's rows: one binding's row, or all of them. |
 | `_bounded_rows` | `(rows: list[Any], limit: int, focus: RoutingRowFocus, *, keep_first: bool = False) -> list[Any]` | — | Keep the first ``limit`` rows in order, claiming focused rows first. |
 | `_pop_trimmable` | `(rows: list[Any], *, keep_first: int, focus: RoutingRowFocus) -> bool` | — | Drop the last row after ``keep_first`` that is not focused. |

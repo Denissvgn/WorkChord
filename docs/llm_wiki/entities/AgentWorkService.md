@@ -21,7 +21,8 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `_resolve_rollout` | *(async)* `(actor: AgentActor, *, observed_boundaries: dict \| None = None) -> AgentRoutingRolloutService` | — | — |
 | `_require_enforced_rollout` | `(rollout_service: AgentRoutingRolloutService)` | `@staticmethod` | Require effective enforcement and return its bounded status. |
 | `_require_enforced_routing` | `()` | — | Preserve the explicit/static rollout guard for compatibility. |
-| `_require_enforced_routing_for_actor` | *(async)* `(actor: AgentActor)` | — | Require enforcement using the actor's authoritative topology. |
+| `_verification_rollout` | *(async)* `(actor: AgentActor, verifier_actor_id: int, project_id: int \| None) -> tuple[AgentRoutingRolloutService, dict]` | — | Rollout for verification work, judged by the verifier's presence (not cached) with refusal detail. |
+| `_require_enforced_routing_for_actor` | *(async)* `(actor: AgentActor, *, verifier_actor_id: int \| None = None, project_id: int \| None = None)` | — | Require enforcement using the actor's authoritative topology. |
 | `_require_supervised_rollout` | `(rollout_service: AgentRoutingRolloutService)` | `@staticmethod` | Permit legacy/supervised dispatch only while enforcement is inactive. |
 | `_require_supervised_routing` | `()` | — | Preserve the explicit/static rollout guard for compatibility. |
 | `_require_supervised_routing_for_actor` | *(async)* `(actor: AgentActor)` | — | Require supervised mode using the actor's authoritative topology. |
@@ -158,7 +159,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_work_service](../modules/agent_work_service.md) | 91 | — |
+| [agent_work_service](../modules/agent_work_service.md) | 92 | — |
 
 ### References
 
@@ -177,4 +178,4 @@ flowchart LR
 | `list_agent_assignments_page` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `list_agent_recovery_tasks` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 85 logical references; 73 omitted by the 12-row generated summary limit.
+> References: showing 12 of 90 logical references; 78 omitted by the 12-row generated summary limit.

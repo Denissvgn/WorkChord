@@ -1,6 +1,6 @@
 # SettingsGroup
 
-**Location:** `frontend/src/pages/SettingsPage.tsx:75`
+**Location:** `frontend/src/pages/SettingsPage.tsx:77`
 **Kind:** Interface
 **Bases:** —
 **Module:** [SettingsPage](../modules/SettingsPage.md)

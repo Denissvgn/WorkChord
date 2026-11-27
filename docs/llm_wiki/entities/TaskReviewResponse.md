@@ -1,6 +1,6 @@
 # TaskReviewResponse
 
-**Location:** `backend/app/schemas/task_brief.py:107`
+**Location:** `backend/app/schemas/task_brief.py:111`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task_brief](../modules/schemas_task_brief.md)

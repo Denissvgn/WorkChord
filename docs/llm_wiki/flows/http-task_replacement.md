@@ -113,9 +113,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 47; effect analysis evaluated: 37, partial: 3, unavailable: 7. Counts include steps omitted from the displayed trace.
+Source steps: 47; effect analysis evaluated: 36, partial: 4, unavailable: 7. Counts include steps omitted from the displayed trace.
 
-Collector observations for 40 source steps with known totals: observed: 236, emitted: 229, omitted: 7. Unavailable totals are excluded.
+Collector observations for 40 source steps with known totals: observed: 237, emitted: 229, omitted: 8. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -187,17 +187,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_replacement | domain_result | 335 | `domain_result(...)` |
-| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 59 | `str(exc)` |
-| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_replacement | TaskReplacementService.get | 335 | `TaskReplacementService(db).get(task_id)` |
-| TaskReplacementService.get | self.db.scalar (backend/app/services/task…askReplacementService.get) | 184 | `self.db.scalar(...)` |
-| TaskReplacementService.get | select(…).where (backend/app/services/task…askReplacementService.get) | 184 | `select(Task).where(...)` |
+| task_replacement | domain_result | 350 | `domain_result(...)` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| task_replacement | TaskReplacementService.get | 350 | `TaskReplacementService(db).get(task_id)` |
+| TaskReplacementService.get | self.db.scalar (backend/app/services/task…askReplacementService.get) | 239 | `self.db.scalar(...)` |
+| TaskReplacementService.get | select(…).where (backend/app/services/task…askReplacementService.get) | 239 | `select(Task).where(...)` |
 
 ### Boundary effects
 
@@ -207,13 +207,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 55 |
-| unresolved_call | `domain_result` | `exc.detail` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| external_call | `domain_result` | `HTTPException` | 61 |
-| unresolved_call | `TaskReplacementService.get` | `self.db.scalar` | 184 |
-| unresolved_call | `TaskReplacementService.get` | `select(Task).where` | 184 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
+| unresolved_call | `TaskReplacementService.get` | `self.db.scalar` | 239 |
+| unresolved_call | `TaskReplacementService.get` | `select(Task).where` | 239 |
 | step_limit | `task_replacement` | `first 12 steps` | 0 |
 | truncated_flow | `task_replacement` | `depth limit` | 0 |
 

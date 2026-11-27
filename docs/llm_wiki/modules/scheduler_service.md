@@ -26,7 +26,7 @@ Applying dates that change accepted work is guarded regardless of how the iterat
 | `app.models.recovery` | `TaskScheduleBaseline` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus`, `TaskStatus`, `TaskStatus`, `TaskStatus`, `TaskStatus` |
 | `app.models.team_member` | `TeamMember`, `Vacation` |
-| `app.schemas.gantt` | `KeptDatesTask`, `SchedulingDecision`, `ScheduleResult`, `UnscheduledTask`, `WaitingOnTask`, `WorkloadIssue` |
+| `app.schemas.gantt` | `AssigneeIdleDays`, `IdleGap`, `KeptDatesTask`, `SchedulingDecision`, `ScheduleResult`, `UnscheduledTask`, `WaitingOnTask`, `WorkloadIssue` |
 | `app.services.agent_work_service` | `AgentWorkService` |
 | `app.services.calendar_rules` | `AnnualCalendars` |
 | `app.services.calendar_service` | `CalendarService` |
@@ -67,7 +67,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (16) |
+| Inbound | `backend` (17) |
 | Outbound | `backend` (20) |
 
 ### External packages
@@ -76,7 +76,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 36 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -87,8 +87,8 @@ flowchart LR
 | [TaskChange](../entities/TaskChange.md) | Class | 48 | — | Represents a change to a task for incremental rescheduling. |
 | [RescheduleResult](../entities/RescheduleResult.md) | Class | 59 | — | Result of an incremental reschedule operation. |
 | [MemberSchedule](../entities/MemberSchedule.md) | Class | 69 | — | Optimized schedule tracking with O(D) slot finding using sliding window. |
-| [SchedulerService](../entities/SchedulerService.md) | Class | 346 | — | Service for automatic task scheduling. |
-| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1521 | — | Handles incremental rescheduling when a single task changes. |
+| [SchedulerService](../entities/SchedulerService.md) | Class | 389 | — | Service for automatic task scheduling. |
+| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1744 | — | Handles incremental rescheduling when a single task changes. |
 
 ## Functions
 

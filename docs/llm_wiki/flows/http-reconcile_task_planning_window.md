@@ -107,9 +107,9 @@ sequenceDiagram
     p1-->>p30: _EVIDENCE_DIGEST.fullmatch(expected_evidence_digest)
 ```
 
-> Call sequence diagram shows 30 of 789 interactions; 759 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 792 interactions; 762 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 253 (252 omitted); unresolved 1 of 401 (400 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 256 (255 omitted); unresolved 1 of 401 (400 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -138,7 +138,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 136; effect analysis evaluated: 94, partial: 10, unavailable: 32. Counts include steps omitted from the displayed trace.
 
-Collector observations for 104 source steps with known totals: observed: 672, emitted: 601, omitted: 71. Unavailable totals are excluded.
+Collector observations for 104 source steps with known totals: observed: 674, emitted: 601, omitted: 73. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -224,13 +224,13 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| reconcile_task_planning_window | reconcile_window | 130 | `reconcile_window(db, actor, task_id, planning_receipt_id, apply=apply, planning_actor_id=planning_actor_id, planning_command_key=planning_command_key, expected_evidence_digest=expected_evidence_digest, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| reconcile_task_planning_window | reconcile_window | 146 | `reconcile_window(db, actor, task_id, planning_receipt_id, apply=apply, planning_actor_id=planning_actor_id, planning_command_key=planning_command_key, expected_evidence_digest=expected_evidence_digest, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 | reconcile_window | isinstance (backend/app/services/plan…ation.py:reconcile_window) | 318 | `isinstance(expected_evidence_digest, str)` |
 | reconcile_window | _EVIDENCE_DIGEST.fullmatch | 319 | `_EVIDENCE_DIGEST.fullmatch(expected_evidence_digest)` |
 | reconcile_window | ValueError (backend/app/services/plan…ation.py:reconcile_window) | 321 | `ValueError(INVALID_EVIDENCE_DIGEST_MESSAGE)` |
 | reconcile_window | require_operator | 322 | `require_operator(db)` |
-| require_operator | db.info.get (backend/app/authority.py:require_operator) | 91 | `db.info.get('authority')` |
-| require_operator | AuthorityError | 93 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
+| require_operator | db.info.get (backend/app/authority.py:require_operator) | 92 | `db.info.get('authority')` |
+| require_operator | AuthorityError | 94 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
 | reconcile_window | is_admin_key_principal | 328 | `is_admin_key_principal(actor)` |
 | reconcile_window | actor_has_scope | 332 | `actor_has_scope(actor, 'admin')` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
@@ -251,7 +251,7 @@ flowchart LR
 | external_call | `reconcile_window` | `isinstance` | 318 |
 | unresolved_call | `reconcile_window` | `_EVIDENCE_DIGEST.fullmatch` | 319 |
 | external_call | `reconcile_window` | `ValueError` | 321 |
-| unresolved_call | `require_operator` | `db.info.get` | 91 |
+| unresolved_call | `require_operator` | `db.info.get` | 92 |
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | step_limit | `reconcile_task_planning_window` | `first 12 steps` | 0 |
 | truncated_flow | `reconcile_task_planning_window` | `depth limit` | 0 |

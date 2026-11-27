@@ -202,7 +202,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_retarget_delivery_dependency | _tool_call | 1765 | `_tool_call(AGENT_TASK_WRITE_SCOPES, ...)` |
+| agent_retarget_delivery_dependency | _tool_call | 1827 | `_tool_call(AGENT_TASK_WRITE_SCOPES, ...)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |

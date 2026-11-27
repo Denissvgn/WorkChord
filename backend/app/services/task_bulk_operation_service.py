@@ -27,6 +27,7 @@ from app.services.language_service import (
     resolve_runtime_ui_language,
     task_requires_schedule_message,
 )
+from app.services.task_routing_service import RoutingConsistencyConflict, check_routing, routing_check_for
 from app.services.task_service import TaskService
 
 
@@ -37,6 +38,7 @@ class TaskBulkOperationService:
         self.db = db
         self.task_service = TaskService(db)
         self.recommendation_service = AssigneeRecommendationService(db)
+        self.routing_checks: dict[int, Any] = {}
 
     @atomic_command
     async def run(self, data: TaskBulkOperationRequest) -> TaskBulkOperationResponse:
@@ -101,6 +103,15 @@ class TaskBulkOperationService:
 
             try:
                 result = await self._run_for_task(fresh_task, data, iteration_end_date, ui_language)
+            except RoutingConsistencyConflict as exc:
+                if not data.dry_run:
+                    await self.db.rollback()
+                result = TaskBulkOperationResult(
+                    task_id=task_id,
+                    outcome="failed",
+                    error=backend_error_message(str(exc), ui_language),
+                    routing_check=exc.check,
+                )
             except ValueError as exc:
                 await self.db.rollback()
                 result = TaskBulkOperationResult(
@@ -134,6 +145,7 @@ class TaskBulkOperationService:
             return await self._delete_task(task, data.dry_run, ui_language)
 
         update, changes, recommendation, warnings = await self._build_update(task, data, ui_language)
+        routing_check = self.routing_checks.get(task.id)
         if not changes:
             return TaskBulkOperationResult(
                 task_id=task.id,
@@ -143,12 +155,15 @@ class TaskBulkOperationService:
             )
 
         if data.dry_run:
+            if routing_check is not None and not routing_check.consistent and routing_check.conflict_mode == "refuse":
+                raise RoutingConsistencyConflict(routing_check)
             return TaskBulkOperationResult(
                 task_id=task.id,
                 outcome="would_update",
                 changes=changes,
                 warnings=warnings,
                 assignee_recommendation=recommendation,
+                routing_check=routing_check,
             )
 
         if data.action == "change_status":
@@ -174,6 +189,7 @@ class TaskBulkOperationService:
             warnings=warnings,
             task=self.task_service.task_to_response(updated_task, iteration_end_date),
             assignee_recommendation=recommendation,
+            routing_check=routing_check_for(self.db, task.id),
         )
 
     async def _delete_task(self, task: Task, dry_run: bool, ui_language) -> TaskBulkOperationResult:
@@ -266,10 +282,39 @@ class TaskBulkOperationService:
         else:
             raise ValueError(f"Unsupported bulk action: {data.action}")
 
+        if "assignee_id" in update_data:
+            resolution = payload.get("routing_resolution", "check")
+            if resolution not in ("check", "apply_suggestion"):
+                raise ValueError("routing_resolution must be check or apply_suggestion")
+            if update_data["assignee_id"] != task.assignee_id or resolution == "apply_suggestion":
+                # Applying the suggestion also repairs the routing of a task whose assignee stays.
+                self.routing_checks[task.id] = await self._preview_routing(task, update_data["assignee_id"], resolution)
+            update_data["routing_resolution"] = resolution
         update = TaskUpdate(**update_data)
         await self._validate_update(task, update)
         changes = self._changes_for_update(task, update)
+        check = self.routing_checks.get(task.id)
+        if check is not None and check.applied:
+            changes["routing"] = {"old": (task.brief or {}).get("routing"), "new": check.routing.model_dump(mode="json")}
         return update, changes, recommendation, warnings
+
+    async def _preview_routing(self, task: Task, assignee_id: Optional[int], resolution: str):
+        """The routing check the reassignment will meet, and the routing applying the suggestion would leave.
+
+        When the suggestion would be saved, the answer checks that routing and marks it applied; the
+        task itself is not changed by a preview.
+        """
+        brief = task.brief or {}
+        check = await check_routing(self.db, task=task, project_id=task.project_id, assignee_id=assignee_id,
+                                    routing=brief.get("routing"), brief_text=task.description)
+        if resolution == "apply_suggestion" and check.suggestion is not None:
+            suggestion = check.suggestion
+            notes = [issue for issue in check.issues if issue.code.startswith("suggested_")]
+            check = await check_routing(self.db, task=task, project_id=task.project_id, assignee_id=assignee_id,
+                                        routing=suggestion, brief_text=task.description)
+            check.issues.extend(notes)
+            check.applied = True
+        return check
 
     async def _validate_update(self, task: Task, update: TaskUpdate) -> None:
         update_data = update.model_dump(exclude_unset=True)
@@ -311,6 +356,8 @@ class TaskBulkOperationService:
         changes: dict[str, Any] = {}
         update_data = update.model_dump(exclude_unset=True)
         for field, new_value in update_data.items():
+            if field == "routing_resolution":
+                continue
             if field == "status":
                 old_value = task.status
                 new_value = new_value.value if hasattr(new_value, "value") else new_value

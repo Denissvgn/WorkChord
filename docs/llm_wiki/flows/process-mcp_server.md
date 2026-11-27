@@ -225,10 +225,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | argparse.ArgumentParser | 2819 | `argparse.ArgumentParser(description='Run WorkChord MCP server')` |
-| main | parser.add_argument | 2820 | `parser.add_argument('--transport', choices=[...], default='stdio', help='MCP transport to run')` |
-| main | parser.parse_args | 2826 | `parser.parse_args(argv)` |
-| main | _load_stdio_agent_key | 2830 | `_load_stdio_agent_key(data not statically known)` |
+| main | argparse.ArgumentParser | 2904 | `argparse.ArgumentParser(description='Run WorkChord MCP server')` |
+| main | parser.add_argument | 2905 | `parser.add_argument('--transport', choices=[...], default='stdio', help='MCP transport to run')` |
+| main | parser.parse_args | 2911 | `parser.parse_args(argv)` |
+| main | _load_stdio_agent_key | 2915 | `_load_stdio_agent_key(data not statically known)` |
 | _load_stdio_agent_key | os.getenv | 216 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
 | _load_stdio_agent_key | os.getenv | 218 | `os.getenv(MCP_AGENT_API_KEY_FILE_ENV)` |
 | _load_stdio_agent_key | read_agent_key_file | 221 | `read_agent_key_file(key_file)` |
@@ -241,8 +241,8 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| output | `print` | `main` | 2832 |
-| output | `print` | `main` | 2835 |
+| output | `print` | `main` | 2917 |
+| output | `print` | `main` | 2920 |
 | environment_read | `os.getenv` | `_load_stdio_agent_key` | 216 |
 | environment_read | `os.getenv` | `_load_stdio_agent_key` | 218 |
 | filesystem_read | `location.read_text` | `read_agent_key_file` | 43 |
@@ -251,9 +251,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `main` | `argparse.ArgumentParser` | 2819 |
-| unresolved_call | `main` | `parser.add_argument` | 2820 |
-| unresolved_call | `main` | `parser.parse_args` | 2826 |
+| external_call | `main` | `argparse.ArgumentParser` | 2904 |
+| unresolved_call | `main` | `parser.add_argument` | 2905 |
+| unresolved_call | `main` | `parser.parse_args` | 2911 |
 | unresolved_call | `read_agent_key_file` | `Path(path).expanduser` | 28 |
 | unresolved_call | `read_agent_key_file` | `location.stat` | 30 |
 | step_limit | `main` | `first 12 steps` | 0 |

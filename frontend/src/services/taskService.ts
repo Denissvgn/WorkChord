@@ -26,7 +26,8 @@ import type {
     TaskBatchUpdateRequest,
     TaskBatchUpdateResponse,
 } from '../types/task';
-import type { TaskActions, TaskCommand, TaskDetail, TaskBrief, CriterionProgress, TaskReferencePage, TaskReviewRecord, TaskPostponementResponse, ReactivationRequirementInput } from '../types/task';
+import type { RoutingCheck } from '../types/task';
+import type { TaskActions, TaskCommand, TaskDetail, TaskBrief, CriterionProgress, TaskReferencePage, TaskReviewRecord, ManualProvenanceWrite, TaskPostponementResponse, ReactivationRequirementInput } from '../types/task';
 import type { AssigneeRecommendation } from '../types/team';
 
 export const taskService = {
@@ -41,6 +42,7 @@ export const taskService = {
         }
         return page;
     },
+    routingCheck: async (taskId: number, assigneeId?: number | null) => (await api.get<RoutingCheck>(`/tasks/${taskId}/routing/check`, { params: assigneeId ? { assignee_id: assigneeId } : {} })).data,
     actions: async (taskId: number) => (await api.get<TaskActions>(`/tasks/${taskId}/actions`)).data,
     postpone: async (taskId: number, data: { expected_version: number; reason: string; requirements: ReactivationRequirementInput[];
         expected_claim_generation?: number; expected_running_run_ids?: number[]; expected_live_assignment_ids?: number[] }) => (await api.post<TaskPostponementResponse>(`/tasks/${taskId}/postpone`, data)).data,
@@ -55,6 +57,7 @@ export const taskService = {
     progress: async (taskId: number, data: { expected_version: number; criteria: CriterionProgress[]; artifacts: string[] }) => (await api.post<Task>(`/tasks/${taskId}/progress`, data)).data,
     review: async (taskId: number, data: { expected_version: number; brief_revision: number; artifact_revision: number; verdict: 'accept' | 'reject'; reason: string; evidence?: string }) => (await api.post<Task>(`/tasks/${taskId}/review`, data)).data,
     ownerAccept: async (taskId: number, data: { expected_version: number; brief_revision: number; artifact_revision: number; reason: string; evidence?: string }) => (await api.post<Task>(`/tasks/${taskId}/owner-acceptance`, data)).data,
+    recordProvenance: async (taskId: number, data: ManualProvenanceWrite) => (await api.post<{ event_id: number; task_version: number }>(`/tasks/${taskId}/manual-provenance`, data)).data,
     reviews: async (taskId: number, params: { limit?: number; after_id?: number } = {}) => (await api.get<TaskReviewRecord[]>(`/tasks/${taskId}/reviews`, { params })).data,
 
     getByIteration: async (iterationId: number) => {

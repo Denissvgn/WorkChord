@@ -33,6 +33,8 @@ import { emptyTaskBrief, newCriterion } from './taskEditorContract';
 import { TaskTimelinePanel } from './TaskTimelinePanel';
 import { AssigneeRecommendationsPanel } from '../team/AssigneeRecommendationsPanel';
 import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
+import { routingCheckFromError } from '../../utils/routingCheck';
+import { RoutingCheckNotice } from './RoutingCheckNotice';
 import {
     getPayloadBoolean,
     getPayloadString,
@@ -51,7 +53,7 @@ import {
     type TaskConflictMetadata,
     type TaskEditorValues,
 } from './taskEditorContract';
-import type { TaskUpdate } from '../../types/task';
+import type { RoutingCheck, TaskUpdate } from '../../types/task';
 import { formatDate, formatDateTime } from '../../utils/formatDate';
 import { useIdentity } from '../../features/identity/identityContext';
 import { readTaskDraft, writeTaskDraft, removeTaskDraft, readPendingTaskWrite } from './taskDraftStorage';
@@ -112,6 +114,8 @@ export const TaskForm = ({
     const [addingCapacity, setAddingCapacity] = useState(false);
     const [capacityAdded, setCapacityAdded] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    // The routing check a refused reassignment came back with, shown with the error so the conflict is named.
+    const [routingRefused, setRoutingRefused] = useState<RoutingCheck | null>(null);
     const [statusMessage, setStatusMessage] = useState<string | null>(null);
     const [aiContext, setAiContext] = useState('');
     const [aiSuggestion, setAiSuggestion] = useState<GroundedAISuggestionResponse | null>(null);
@@ -251,7 +255,7 @@ export const TaskForm = ({
             // A task just created can be deleted again while nothing else depends on it.
             undo: data => ({ run: () => taskService.delete((data as Task).id, (data as Task).version, (data as Task).iteration_revision ?? undefined) }),
         } satisfies MutationFeedbackMeta,
-        onMutate: () => checkpointWrite('task'),
+        onMutate: () => { setRoutingRefused(null); return checkpointWrite('task'); },
         onSuccess: () => {
             invalidateTaskProjectQueries();
             if (!isActive()) return;
@@ -304,6 +308,7 @@ export const TaskForm = ({
                 return;
             }
             setError(mapped.message);
+            setRoutingRefused(routingCheckFromError(err));
         },
     });
     const isSubmitting = addingCapacity || createMutation.isPending || updateMutation.isPending || createTriageMutation.isPending || statusPending || isRefreshing;
@@ -1038,6 +1043,8 @@ export const TaskForm = ({
                     {error}
                 </div>
             )}
+            {error && routingRefused && <RoutingCheckNotice check={routingRefused} showSuggestion={false}
+                assigneeName={teamMembers?.find(member => member.id === routingRefused.assignee_id)?.name ?? t('taskReassign.theNewAssignee')} />}
             {pendingWrite && !createMutation.isPending && !updateMutation.isPending && !createTriageMutation.isPending && <div role="status" className="space-y-2 rounded-md border border-feedback-warning-border p-3 text-sm">
                 <p>{t('teamwork.uncertainTask')}</p>
                 <Button type="button" size="sm" variant="secondary" disabled={isSubmitting} onClick={() => void comparePendingWrite()}>{t('teamwork.reloadCurrentWork')}</Button>

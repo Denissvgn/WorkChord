@@ -1,6 +1,6 @@
 # TaskReorder
 
-**Location:** `backend/app/schemas/task.py:108`
+**Location:** `backend/app/schemas/task.py:112`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

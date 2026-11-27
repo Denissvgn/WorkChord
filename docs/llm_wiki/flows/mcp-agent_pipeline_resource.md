@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_pipeline_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 26 more
+**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 27 more
 
 **Complete modules touched:**
 
@@ -33,6 +33,7 @@
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_reactivation_service](../modules/task_reactivation_service.md)
+- [task_replacement_service](../modules/task_replacement_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -106,9 +107,9 @@ sequenceDiagram
     p2-->>p30: task.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 803 interactions; 773 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 793 interactions; 763 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 214 (213 omitted); unresolved 1 of 391 (390 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 212 (211 omitted); unresolved 1 of 388 (387 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -122,7 +123,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 165 groups; 157 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 164 groups; 156 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -135,9 +136,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 199; effect analysis evaluated: 144, partial: 9, unavailable: 46. Counts include steps omitted from the displayed trace.
+Source steps: 194; effect analysis evaluated: 140, partial: 8, unavailable: 46. Counts include steps omitted from the displayed trace.
 
-Collector observations for 153 source steps with known totals: observed: 938, emitted: 865, omitted: 73. Unavailable totals are excluded.
+Collector observations for 148 source steps with known totals: observed: 892, emitted: 833, omitted: 59. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -213,7 +214,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_pipeline_resource | _json_resource | 2621 | `_json_resource('planning:read', ...)` |
+| agent_pipeline_resource | _json_resource | 2706 | `_json_resource('planning:read', ...)` |
 | _json_resource | _tool_call | 367 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

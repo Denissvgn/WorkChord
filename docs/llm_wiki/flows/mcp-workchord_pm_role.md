@@ -215,7 +215,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workchord_pm_role | _skill_bundle_prompt | 2711 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended PM skill version, then read workchord://skill-bundles/workchord-pm/{version}/SKILL.md. Follow that controller skill and its referenced files; do not infer authority from profile capability matches.')` |
+| workchord_pm_role | _skill_bundle_prompt | 2796 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended PM skill version, then read workchord://skill-bundles/workchord-pm/{version}/SKILL.md. Follow that controller skill and its referenced files; do not infer authority from profile capability matches.')` |
 | _skill_bundle_prompt | _agent_context | 373 | `_agent_context(_skill_bundle_scope_requirement(...))` |
 | _agent_context | _current_agent_key | 279 | `_current_agent_key(data not statically known)` |
 | _current_agent_key | _http_agent_key.get | 206 | `_http_agent_key.get(data not statically known)` |
@@ -225,17 +225,17 @@ flowchart LR
 | _open_db_session | _session_factory | 187 | `_session_factory(data not statically known)` |
 | _open_db_session | hasattr | 188 | `hasattr(session_context, '__aenter__')` |
 | _agent_context | command_transaction | 283 | `command_transaction(db, mode=...)` |
-| command_transaction | current_command | 100 | `current_command(db)` |
+| command_transaction | current_command | 103 | `current_command(db)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
 | environment_read | `os.getenv` | `_current_agent_key` | 206 |
-| mutation | `db.info.pop` | `command_transaction` | 124 |
-| mutation | `db.info.pop` | `command_transaction` | 137 |
-| mutation | `db.info.pop` | `command_transaction` | 138 |
+| mutation | `db.info.pop` | `command_transaction` | 127 |
 | mutation | `db.info.pop` | `command_transaction` | 140 |
+| mutation | `db.info.pop` | `command_transaction` | 141 |
+| mutation | `db.info.pop` | `command_transaction` | 143 |
 
 ### Static analysis gaps
 

@@ -65,6 +65,18 @@ Postponing work with a live claim, assignment or run releases them through the s
 
 `POST /api/tasks/{task_id}/reactivate` takes `{expected_version, reason}`. It returns resolved work to `resolved`, and planned or active work to `planned`, where it starts again through the usual commands. `GET /api/tasks/{task_id}/postponement` returns the open postponement, or the most recent one: who decided, when and why, the released execution, each requirement and, after reactivation, who reactivated the work, why and to which status. The actions endpoint reports `postpone` and `reactivate` availability. `GET /api/tasks/capabilities` lists `task-postponement-v1` when the server supports these commands.
 
+### Agent tools
+
+A PM agent postpones and reactivates work with the same commands and the same authority as the REST routes. The MCP tools are:
+
+- `agent_postpone_task(task_id, payload, idempotency_key, rationale, correlation_id)` with `{expected_version, reason, requirements, expected_claim_generation?, expected_running_run_ids?, expected_live_assignment_ids?}`, as for `POST /api/tasks/{task_id}/postpone`.
+- `agent_reactivate_task(task_id, payload, idempotency_key, rationale, correlation_id)` with `{expected_version, reason}`, as for `POST /api/tasks/{task_id}/reactivate`.
+- `agent_get_task_postponement(task_id)`, as for `GET /api/tasks/{task_id}/postponement`: the reason, who decided, the released execution, and each requirement with `met` and `met_at`.
+
+The two write tools are audited planning commands that need a task write scope (`tasks:write`, `planning:write` or `admin`), an idempotency key, a rationale and a correlation ID; a repeated key replays the receipt. The receipt's `result` is the same `{task, postponement}` body the REST routes return. They are refused for a worker or reviewer agent, for a credential without write scope, for read-only access, and for a PM of another team, with the REST routes' error codes (`postpone_decider_required`, `permission_denied`, or not found). The read tool needs read access to the task's project. Recording the owner decision is not an agent tool; only the workspace owner does it, through the REST route.
+
+`agent_list_ready_tasks` returns only planned work, so postponed work is never queued or claimable. `workspace_list_project_tasks` returns postponed tasks with `status: "postponed"`, and its optional `status` argument (`planned`, `active`, `resolved`, `closed` or `postponed`) keeps only the branches of the task tree that hold work in that status. The agent contract lists `agent-task-postponement-v1` and `GET /api/auth/me` lists `postponement-agent-tools-v1` when these tools exist.
+
 ### Automatic reactivation
 
 Nobody has to watch for the requirements. When the last unmet requirement of an open postponement becomes true, the server reactivates the task itself, to `resolved` if it was postponed after resolution and to `planned` otherwise. The postponement closes with the trigger `requirements_met`, no person is recorded as reactivating it, and the task timeline's `task_reactivated` entry names the requirement that completed it and lists every requirement with when it was met. A `task.reactivated` webhook event carries the same record for subscribers, and the status change email to the iteration manager names the requirement.
@@ -117,6 +129,26 @@ Under `require_different_review_publisher`, ordinary acceptance needs a pass fro
 - `owner_override_not_required`: the project does not require a different review publisher. Use an ordinary review instead.
 
 The acceptance is recorded as an owner override, never as an independent review. In `GET /api/tasks/{task_id}/reviews` and `/reviews/current` its `kind` is `owner_override`; ordinary reviews have `kind` `review`. The task timeline gets an `owner_acceptance_override` event with the reason. Every command audit row the request writes carries the reason and `owner_acceptance_override_task_ids`. In `GET /api/tasks/delivery-metrics`, `owner_override_acceptance_events` counts these acceptances separately. They are still included in `acceptance_events`.
+
+### Routing: first rung, escalation and reviewer
+
+A brief can carry `routing`: the `first_rung`, the `escalation` ladder, `escalate_after_failed_runs` (default 2), `after_last_rung`, the `reviewer` and free `notes`. Each rung and the reviewer name a model catalog entry by `catalog_key`; `harness` is a label for people. When the routing is saved, the server fills each entry's `effort`, `publisher_key` and `configured_model_alias` from the catalog and refuses an unknown or disabled entry. The reviewer may name the `profile_id` to pass as `reviewer_profile_id` at dispatch, and `instructions` for what the review checks. The derived Markdown gets a Routing section after Verification. A brief write that leaves out `routing` keeps the stored routing; `routing: null` removes it. Routing names who executes and reviews, not what is accepted. A change to the routing alone keeps the brief revision, criterion progress and every record bound to them, such as manual provenance. Like an assignee change, it moves the task version and clears acceptance, through the brief write as well as the task update. The description is rendered again, and the timeline gets a `brief_routing_changed` event with the previous and new routing. The brief revision therefore does not cover the Routing section's free text (`notes`, the reviewer's `instructions`, `after_last_rung`, `harness`); changes there are recorded only by `brief_routing_changed`. A change to any other brief field is an ordinary brief edit. A routing that names no first rung, escalation or reviewer, such as `{}`, is stored as no routing.
+
+The server checks the routing when the assignee or the routing changes, in `PUT /api/tasks/{task_id}`, task creation, the brief write, `/iterations/{id}/tasks/batch-update`, the agent planning patch and the `set_assignee`, `clear_assignee` and `auto_assign` bulk operations:
+
+- `first_rung_not_assignee_model` (conflict): the first rung is not a model bound to an active agent of the assignee row's profile.
+- `reviewer_shares_assignee_publisher` (conflict, under `require_different_review_publisher`): the reviewer's publisher is the assignee's, the first rung's, or that of a contributor review provenance already records for the task (runs and manual provenance records).
+- `reviewer_publisher_unknown` (conflict, under the policy): the reviewer's catalog entry has no publisher.
+- `reviewer_has_no_verifier` (conflict under the policy, otherwise a warning): no active verification profile other than the assignee's runs the reviewer's model.
+- `reviewer_profile_is_assignee_profile` (conflict): the reviewer profile is the assignee's profile.
+- `routing_removed` (conflict under the policy, otherwise a warning): the same change reassigns the task and removes its routing.
+- Warnings: `reviewer_shares_escalation_publisher`, `reviewer_missing`, `reviewer_profile_lacks_model`, `contributor_publishers_unknown`, `first_rung_missing`, `assignee_models_unknown`, `reviewer_is_first_rung`, `catalog_entry_unavailable`, and `routing_in_text` for a brief that names its routing only in text. With a suggestion, `suggested_first_rung_lower` and `suggested_first_rung_missing_qualifications` say what the new first rung gives up.
+
+Publishers are read from the current catalog entries, not from the values stored in the routing. The check does not model the owner acceptance override: a reviewer that conflicts with the policy is reported even though an owner could still accept the work by override.
+
+The project's `routing_conflict_mode` decides what a conflict does. `refuse` (the default) answers 409 `routing_inconsistent` with `routing_check` in the detail and changes nothing; `warn` saves the change. Either way the answer's `routing_check` holds the issues, a consistent `suggestion` and the `suggested_reviewer`. The suggestion moves the first rung to the assignee's default model, turns ladder rungs of the vendor the task leaves into step-ups of the new vendor, drops rungs whose catalog entry is disabled, and picks a reviewer that some verification profile runs; under the policy that reviewer comes from a publisher outside the assignee, the first rung and the recorded contributors. Send `routing_resolution: "apply_suggestion"` with the change, or in the bulk operation's `payload`, to save the suggestion with it. In a bulk preview, `routing_check.applied` marks the routing the change would save and `changes.routing` shows it; with an unchanged assignee, `apply_suggestion` repairs the routing in place. Changing `routing_conflict_mode` needs an operator, like the publisher policy.
+
+`GET /api/tasks/{task_id}/routing/check?assignee_id=` checks the current routing against the current or a proposed assignee without changing anything. `POST /api/tasks/{task_id}/routing/convert` with `{expected_version, apply, routing?}` moves routing named in the brief's context and verification into `routing`. It recognises "First rung: …", "Reviewer: … at … effort", "After two failed acceptance runs the task moves to …", "Independent review by …" and the inline "first rung … @ …; escalation … @ … -> …" form. A sentence is replaced only when the parenthesised key or the named model is exactly one enabled entry's key or alias, at the stated effort ("default" means an entry with unknown effort). Others stay in the text and are listed as `unresolved` until a supplied `routing` settles them. Only the line a sentence came from is tidied. A conversion that finds nothing leaves the brief untouched, and an empty routing is never stored. For a brief that already has routing, a later conversion fills only its empty parts or removes sentences that repeat it. Every replaced sentence is kept in `routing.source_text`, which is never rendered. A conversion edits the brief's text, so it is an ordinary brief edit: it creates a brief revision and clears current criterion progress. The preview's `resets_progress` is true when applying would clear progress the task has. MCP clients use `agent_get_task_routing_check` and `agent_convert_task_routing`.
 
 ## Manual provenance for work resolved outside recorded runs
 
@@ -196,6 +228,47 @@ Canceled work keeps the status it had when it was canceled; the stored `status` 
 Counts report withdrawn work apart. Iteration, project, milestone, release and portfolio summaries carry `canceled_tasks` and `superseded_tasks`, and `status_counts` has `canceled` and `superseded` keys. Withdrawn leaves are outside `total_tasks` and every other status count, so they are never planned, active or resolved work, and they no longer count as deferred. `GET /api/tasks/metric-matches` opens either count with `metric=canceled` or `metric=superseded`. Delivery analytics report `superseded_leaf_tasks` beside `canceled_leaf_tasks`; within one window a task is not counted as both. The agent pipeline, its review stage and the ready-task listing skip withdrawn work.
 
 Status filters match the displayed state. `GET /api/tasks/lookup?task_status=` accepts `planned`, `active`, `resolved`, `closed`, `postponed`, `canceled` and `superseded`; a filter for a stored status no longer returns withdrawn work that kept that status. `GET /api/projects/{project_id}/tasks?status=` and the MCP tool `workspace_list_project_tasks` take the same values and then return a flat list of the matching tasks at any depth instead of the tree roots.
+
+## Reviewing a plan import before it is applied
+
+The iteration import routes, `POST /api/iterations/import` (a new iteration) and `POST /api/iterations/{iteration_id}/import`, write a JSON plan file in one request and need the operator key. A planner can review the exact effect of a file first, without writing anything:
+
+- REST: `POST /api/agent/planning/iterations/{iteration_id}/import/dry-run`, or `POST /api/agent/planning/iterations/import/dry-run` for a file that creates a new iteration, with the file as the multipart field `file` and an agent key that has `planning:write`.
+- MCP: `agent_preview_iteration_import` with `import_data` (the file's JSON object) and, for an existing iteration, `iteration_id`.
+
+The caller must be able to plan work in the target iteration's project and in every project the file names, and to read every iteration the import reserves (iterations that share a team member's profile included). Otherwise the request is refused with HTTP 403, or 404 when the iteration is not visible to the caller. The caller must also be able to read every existing team member profile the import refers to, whether by `profile_id`, `owner_profile_id` or a matching name or email. A caller can read a profile when it is a workspace member, when the profile is its own, or when the profile belongs to a team member of an iteration it can read. If the caller cannot read a profile, the request is refused with HTTP 403 and `incomplete_authorized_graph`.
+
+- An explicit id that does not exist is refused the same way, so ids reveal nothing.
+- A name or email that matches no profile is not refused: the import would create a new profile, and the dry run shows it as `new-profile-1`. Whether such a name already exists in a directory the caller cannot read therefore remains observable, although the profile itself is never shown.
+
+A `profile_id` or `owner_profile_id` that is not an integer, or a `dependencies`, `dependency_external_keys` or `vacations` field that is not a list, is refused with HTTP 422 and `import_file_invalid`. Nothing is written.
+
+While the import runs, the dry run holds the workspace-wide planning reservation, so it is bounded. Each of these is refused with HTTP 409 before any reservation is taken:
+
+- `import_dry_run_too_large`: the file has more than 100 tasks (children included), more than 5 levels of subtasks, more than 200 dependency references, more than 50 team members or more than 100 vacations. Review a larger plan in smaller files.
+- `import_iteration_tree_too_large`: the iteration would hold more than 2,500 tasks after the import.
+- `import_dry_run_busy`: another dry run is running on the same server process. Try again shortly.
+
+A dry run that does not finish within 5 seconds is stopped, rolled back and refused with HTTP 409 and `import_dry_run_too_slow`. The caps keep typical files within this budget but do not guarantee it.
+
+- **Large target:** a large target iteration lowers the practical file size. For example, a 100-task chained file into an iteration of about 900 tasks exceeds the budget; review such a plan in smaller files.
+- **Waiting counts:** time spent waiting for the planning reservation behind another command counts toward the budget. If the reservation was busy, try again.
+
+The dry run runs the import itself in a transaction that is always rolled back, as the operator would run it, and returns:
+
+- `changes`: the tasks, dependencies, links (task source fields and external links), dates, team members and profiles the import creates, changes or removes, and the iteration it creates for a new-iteration file. A row the import creates has a stable reference such as `new-task-1`, `new-member-1` or `new-profile-1`, used wherever another row points at it (a parent, an assignee, a dependency); existing rows keep their ids. Changed rows list each field with its `from` and `to` values. Each entry of `dates` names a task, a date field and its old and new value.
+- `summary`: counts per section.
+- `expected_revisions` and `file_sha256`: the revision of every iteration the import reserves and the digest of the file's canonical JSON, as `import-context` reports them.
+- `review_digest`: binds the file, those revisions and the exact change set. It is an integrity binding, not proof that anyone reviewed the changes: anyone who holds the file and can run the dry run obtains the same digest.
+- `written`: always `false`.
+
+To apply exactly what was reviewed, the operator sends the same file to the same import route with the multipart field `review_digest`. The write runs the import, compares the result with the review, and is refused, with nothing written, with HTTP 409 and one of these codes:
+
+- `import_review_file_changed`: the file differs from the reviewed one.
+- `import_review_target_changed`: an iteration the import reserves changed since the review, for example a task edited concurrently.
+- `import_review_changes_differ`: the import would now make a different change set than the one reviewed.
+
+A malformed digest is refused with HTTP 422 and `import_review_digest_invalid`. After a refusal, run the dry run again and review the new changes. A write without `review_digest` behaves as before. The write keeps its operator authority; the dry run grants no new way to write.
 
 ## External links
 

@@ -8,6 +8,7 @@ import { TaskReadView } from './TaskReadView';
 
 const service = vi.hoisted(() => ({ writeBrief: vi.fn(), actions: vi.fn(), command: vi.fn(), reviews: vi.fn().mockResolvedValue([]) }));
 vi.mock('../../services/taskService', () => ({ taskService: service }));
+vi.mock('../../services/teamService', () => ({ teamService: { getByIteration: vi.fn().mockResolvedValue([]) } }));
 vi.mock('./TaskWorkPanel', () => ({ TaskWorkPanel: () => <p>Work panel</p> }));
 vi.mock('./DeliveryDependencies', () => ({ DeliveryDependencies: () => null }));
 vi.mock('./GitHubReconciliationPanel', () => ({ GitHubReconciliationPanel: () => <p>Reconciliation panel</p> }));

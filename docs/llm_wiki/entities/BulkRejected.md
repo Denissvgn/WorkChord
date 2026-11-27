@@ -1,6 +1,6 @@
 # BulkRejected
 
-**Location:** `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx:41`
+**Location:** `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx:59`
 **Kind:** Class
 **Bases:** `Error`
 **Module:** [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md)

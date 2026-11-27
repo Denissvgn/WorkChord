@@ -19,70 +19,24 @@ Shared capability handshake contract for REST and MCP projections.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/agent_contract.py"]
-    n1["backend/app/mcp_agent_tools.py"]
-    n2["backend/app/routers/agent.py"]
-    n3["backend/app/services/agent_team_setup_service.py"]
-    n4["backend/app/services/execution_planning_window.py"]
-    n5["backend/tests/test_agent_model_catalog_api.py"]
-    n6["backend/tests/test_agent_routing_rollout.py"]
-    n7["backend/tests/test_agent_skill_routing_guidance.py"]
-    n8["backend/tests/test_agent_team_runtime_identity.py"]
-    n9["backend/tests/test_delivery_prerequisite_tools.py"]
-    n10["backend/tests/test_execution_planning_window.py"]
-    n11["scripts/ci/check_model_aware_routing_closeout.py"]
-    n1 --> n0
-    n1 --> n3
-    n2 --> n0
-    n2 --> n3
-    n3 --> n0
-    n4 --> n0
-    n4 --> n3
-    n5 --> n0
-    n5 --> n1
-    n5 --> n2
-    n6 --> n0
-    n6 --> n1
-    n6 --> n2
-    n7 --> n0
-    n7 --> n1
-    n7 --> n2
-    n8 --> n0
-    n8 --> n3
-    n9 --> n0
-    n10 --> n0
-    n10 --> n3
-    n10 --> n4
-    n11 --> n0
-    click n0 "../modules/agent_contract.md"
-    click n1 "../modules/mcp_agent_tools.md"
-    click n2 "../modules/routers_agent.md"
-    click n3 "../modules/agent_team_setup_service.md"
-    click n4 "../modules/execution_planning_window.md"
-    click n5 "../modules/test_agent_model_catalog_api.md"
-    click n6 "../modules/test_agent_routing_rollout.md"
-    click n7 "../modules/test_agent_skill_routing_guidance.md"
-    click n8 "../modules/test_agent_team_runtime_identity.md"
-    click n9 "../modules/test_delivery_prerequisite_tools.md"
-    click n10 "../modules/test_execution_planning_window.md"
-    click n11 "../modules/check_model_aware_routing_closeout.md"
+    n0["backend"]
+    n1["backend/app/agent_contract.py"]
+    n2["scripts"]
+    n0 --> n1
+    n2 --> n1
+    click n1 "../modules/agent_contract.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [mcp_agent_tools](../modules/mcp_agent_tools.md) |
-| Inbound | [routers_agent](../modules/routers_agent.md) |
-| Inbound | [agent_team_setup_service](../modules/agent_team_setup_service.md) |
-| Inbound | [execution_planning_window](../modules/execution_planning_window.md) |
-| Inbound | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) |
-| Inbound | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) |
-| Inbound | [test_agent_skill_routing_guidance](../modules/test_agent_skill_routing_guidance.md) |
-| Inbound | [test_agent_team_runtime_identity](../modules/test_agent_team_runtime_identity.md) |
-| Inbound | [test_delivery_prerequisite_tools](../modules/test_delivery_prerequisite_tools.md) |
-| Inbound | [test_execution_planning_window](../modules/test_execution_planning_window.md) |
-| Inbound | [check_model_aware_routing_closeout](../modules/check_model_aware_routing_closeout.md) |
+| Inbound | `backend` (11) |
+| Inbound | `scripts` (1) |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

@@ -1,6 +1,6 @@
 # TaskCreate
 
-**Location:** `backend/app/schemas/task.py:38`
+**Location:** `backend/app/schemas/task.py:39`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

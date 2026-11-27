@@ -1,6 +1,6 @@
 # BriefWrite
 
-**Location:** `backend/app/schemas/task_brief.py:44`
+**Location:** `backend/app/schemas/task_brief.py:48`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task_brief](../modules/schemas_task_brief.md)

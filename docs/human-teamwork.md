@@ -186,6 +186,36 @@ schedule commitment. Allocations must have durable profiles, and forecast dates
 must fit within their allocated iteration before commitment. Existing commitments remain visible for reconciliation;
 the scheduler does not silently redistribute another project's allocations.
 
+### How the schedule places work
+
+The scheduler places each planned task once its prerequisites have dates,
+taking the best-ranked ready task first (the scheduling passes, then priority).
+An assignee works on one task at a time, and each task normally starts after
+the last task already placed for that assignee.
+
+A higher-ranked task that waits for a prerequisite on another assignee can
+leave its own assignee with free days before it. A ready lower-ranked task uses
+those days when it fits there completely: start to end, without an absence in
+between and without touching work already placed. Work already placed never
+moves, so no task starts later than it would if every task followed the
+assignee's last task. A task that does not fit follows the assignee's last task
+as before. The same inputs always give the same dates.
+
+The schedule result and the preview list, for each assignee, the working days
+still left idle before that assignee's last task (`idle_days`), with the task
+that starts after them and why it starts no earlier: it waits for a
+prerequisite, it cannot start before its earliest start date, its dates are
+fixed because it is already in progress or done, or it needs an uninterrupted
+run of working days. When both a prerequisite and an earliest start date apply,
+the later of the two is named. Days after an assignee's last task are not
+listed. On the Plan screen the list appears with a calculated schedule.
+
+Deferred and postponed tasks stay outside scheduling and occupy no days. A task
+that keeps its saved dates because the run could not place it does not occupy
+its assignee's days for placement: other work may be placed on those days. The
+days its saved dates cover are not listed as idle, because the assignee has
+saved work there.
+
 ## Read the delivery signals
 
 A task committed to start Monday but actually started Wednesday is **late to

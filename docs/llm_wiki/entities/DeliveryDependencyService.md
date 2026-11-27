@@ -102,4 +102,4 @@ flowchart LR
 | `AgentWorkService.get_task_context` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 | `BacklogSnapshotService.restore` | call | [backlog_snapshot_service](../modules/backlog_snapshot_service.md) | 1 |
 
-> References: showing 12 of 41 logical references; 29 omitted by the 12-row generated summary limit.
+> References: showing 12 of 44 logical references; 32 omitted by the 12-row generated summary limit.

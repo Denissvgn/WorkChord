@@ -1,6 +1,6 @@
 # AgentTaskAssignment
 
-**Location:** `backend/app/models/agent.py:909`
+**Location:** `backend/app/models/agent.py:913`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)
@@ -121,4 +121,4 @@ flowchart LR
 | `AgentRoutingService.validate_assignment_selection` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `agent_service` | import | [agent_service](../modules/agent_service.md) | — |
 
-> References: showing 12 of 118 logical references; 106 omitted by the 12-row generated summary limit.
+> References: showing 12 of 122 logical references; 110 omitted by the 12-row generated summary limit.

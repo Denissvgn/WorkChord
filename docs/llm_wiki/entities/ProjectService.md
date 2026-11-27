@@ -59,7 +59,8 @@ Service for project CRUD, linked task retrieval, and summary metrics.
 | `get_latest_project_update` | *(async)* `(project_id: int) -> Optional[ProjectUpdateEntry]` | — | Get the newest project update for summary display. |
 | `count_linked_tasks` | *(async)* `(project_id: int) -> int` | — | Count all tasks linked to a project. |
 | `delete` | *(async)* `(project_id: int, detach_tasks: bool = False) -> str` | `@schedule_input_command('project')` | Delete a project, optionally detaching linked tasks first. |
-| `get_tasks` | *(async)* `(project_id: int) -> Optional[Sequence[Task]]` | — | Get linked root tasks for a project with response relationships loaded. |
+| `get_tasks` | *(async)* `(project_id: int, state: Optional[str] = None) -> Optional[Sequence[Task]]` | — | Get linked root tasks for a project with response relationships loaded. |
+| `_get_tasks_in_state` | *(async)* `(project_id: int, state: str) -> list[Task]` | — | — |
 | `_get_all_linked_tasks` | *(async)* `(project_id: int) -> Sequence[Task]` | — | Get every task linked to a project for aggregate calculations. |
 | `_calculate_task_date_range` | `(tasks: Sequence[Task]) -> tuple[Optional[date], Optional[date]]` | — | Calculate min scheduled start and max scheduled end date. |
 | `_calculate_completion_percent` | `(total_tasks: int, completed_tasks: int) -> float` | — | Calculate completion percentage for linked tasks. |
@@ -122,7 +123,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [project_service](../modules/project_service.md) | 55 | — |
+| [project_service](../modules/project_service.md) | 56 | — |
 
 ### References
 
@@ -141,4 +142,4 @@ flowchart LR
 | `create_project_update` | type_reference | [projects](../modules/projects.md) | — |
 | `delete_initiative` | type_reference | [projects](../modules/projects.md) | — |
 
-> References: showing 12 of 48 logical references; 36 omitted by the 12-row generated summary limit.
+> References: showing 12 of 49 logical references; 37 omitted by the 12-row generated summary limit.

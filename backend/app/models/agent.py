@@ -198,6 +198,10 @@ class AgentModelCatalogEntry(Base):
         Boolean, default=False, server_default=false(), nullable=False
     )
     latency_tier: Mapped[str] = mapped_column(String(20), nullable=False)
+    # Built-in or declared qualification keys this entry holds at its effort setting.
+    qualification_keys: Mapped[list[Any]] = mapped_column(
+        JSON, default=list, server_default=text("'[]'"), nullable=False
+    )
     enabled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     revision: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
     last_verified_at: Mapped[Optional[datetime]] = mapped_column(

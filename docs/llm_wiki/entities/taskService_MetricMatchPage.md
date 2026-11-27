@@ -1,6 +1,6 @@
 # MetricMatchPage
 
-**Location:** `frontend/src/services/taskService.ts:283`
+**Location:** `frontend/src/services/taskService.ts:286`
 **Kind:** Interface
 **Bases:** —
 **Module:** [taskService](../modules/taskService.md)
