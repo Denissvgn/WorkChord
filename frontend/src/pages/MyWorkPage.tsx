@@ -28,6 +28,8 @@ import { NextStepEmptyState } from '../features/firstRun/NextStepEmptyState';
 import { useScopeLink } from '../features/scope/useScopeLink';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { getApiErrorMessage } from '../utils/apiError';
+import { ALL_STATES, stateOf } from '../utils/taskState';
+import { Select } from '../components/common/Select';
 import { useAdminAccess } from '../hooks/useAdminAccess';
 import { OperatorIdentityNotice } from '../features/identity/OperatorIdentityNotice';
 
@@ -93,10 +95,13 @@ const MyWorkPage = () => {
     const selectedQuery = queue === 'inbox' ? inbox : queue === 'review' ? reviews : work;
     const reviewPages = reviews.data?.pages;
     const workPages = work.data?.pages;
-    const items = useMemo(
+    // The state filter narrows what the queue shows by what the work is shown as; the queue's own counts stay the server's.
+    const [stateFilter, setStateFilter] = useState('');
+    const queueItems = useMemo(
         () => queue === 'review' ? reviewPages?.flatMap(page => page.items) ?? [] : workPages?.flatMap(page => page.queues[queue] ?? []) ?? [],
         [queue, reviewPages, workPages],
     );
+    const items = useMemo(() => stateFilter ? queueItems.filter(item => stateOf(item) === stateFilter) : queueItems, [queueItems, stateFilter]);
     const workState = work.data?.pages[0].state;
     const workQueue = WORK_QUEUES.includes(queue);
     const queueLabel = (key: Queue) => {
@@ -151,6 +156,13 @@ const MyWorkPage = () => {
         {queue !== 'inbox' && rowData.error && <QueryErrorState error={rowData.error} fallback={t('queryFeedback.optionLoadFailed')} onRetry={rowData.refetch} />}
         {queue !== 'inbox' && scopeIterationId !== null && <TaskSelectionBar iterationId={scopeIterationId} selectedTasks={selectedTasks}
             matchingCount={selection.matchingIds.length} onSelectAll={selection.selectAll} onClearSelection={selection.clear} />}
+        {queue !== 'inbox' && queueItems.length > 0 && <div className="flex flex-wrap items-center gap-2 text-sm">
+            <label className="field-lbl" htmlFor="my-work-state">{t('stoppedWork.stateFilter')}</label>
+            <Select id="my-work-state" className="input" value={stateFilter} onChange={event => setStateFilter(event.target.value)}>
+                <option value="">{t('stoppedWork.allStates')}</option>
+                {ALL_STATES.map(state => <option key={state} value={state}>{t(`statuses.${state}`)}</option>)}
+            </Select>
+        </div>}
         {queue !== 'inbox' && items.length > 0 && <ul className="rounded-lg border border-border bg-surface-card">{items.map(task => {
             const full = rowData.tasksById.get(task.id);
             const canPick = selectableIds.has(task.id);
@@ -160,7 +172,8 @@ const MyWorkPage = () => {
             const chip: TaskStateChip | null = full ? taskStateChip(full, rowData.tasksById)
                 : task.blocked_reason ? { kind: 'blocked' } : task.status === 'resolved' ? { kind: 'inReview' } : null;
             return <li key={task.id}>
-                <TaskRow id={task.id} title={task.title} titleText={`#${task.id} · ${task.title}`} status={task.status}
+                <TaskRow id={task.id} title={task.title} titleText={`#${task.id} · ${task.title}`} status={task.status} state={stateOf(task)}
+                    successor={full?.successor_task_id ? { id: full.successor_task_id, onOpen: () => selectTask(full.successor_task_id as number) } : null}
                     statusLocked={full ? full.is_composite || (full.children?.length ?? 0) > 0 : false}
                     priority={full?.priority}
                     chip={chip}
@@ -181,7 +194,8 @@ const MyWorkPage = () => {
                     selectDisabledReason={canPick && !selection.canAdd(task.id) ? t('taskList.selectOneIteration') : undefined} />
             </li>;
         })}</ul>}
-        {queue !== 'inbox' && selectedQuery.isSuccess && items.length === 0 && !(workQueue && workState !== 'ready') && <NextStepEmptyState description={t('emptyStates.myWork.queueBody')} fallback={{ label: t('overview.openTasks'), to: scopeLink('/tasks') }} />}
+        {queue !== 'inbox' && stateFilter && queueItems.length > 0 && items.length === 0 && <p role="status" className="text-sm text-content-secondary">{t('stoppedWork.noneInState', { state: t(`statuses.${stateFilter}`) })}</p>}
+        {queue !== 'inbox' && selectedQuery.isSuccess && queueItems.length === 0 && !(workQueue && workState !== 'ready') && <NextStepEmptyState description={t('emptyStates.myWork.queueBody')} fallback={{ label: t('overview.openTasks'), to: scopeLink('/tasks') }} />}
         {queue === 'inbox' && <>
             <ul className="divide-y divide-border">{inbox.data?.pages.flatMap(page => page.items).map(item => <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
                 <div className="min-w-0"><Button type="button" className="min-h-9 wrap-break-word text-left font-medium text-action hover:underline" onClick={() => selectTask(item.task_id)} variant="plain">{item.title}</Button>

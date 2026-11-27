@@ -37,7 +37,7 @@ export const TASK_GROUP_PARAM = 'group';
 export const TASK_CLEARED_VIEW_PARAM = 'filters';
 export const TASK_CLEARED_VIEW_VALUE = 'none';
 
-const TASK_STATUSES = ['planned', 'active', 'resolved', 'closed'];
+const TASK_STATUSES = ['planned', 'active', 'resolved', 'closed', 'postponed', 'canceled', 'superseded'];
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const UNASSIGNED_VALUE = 'none';
 const SORT_PARAM_VALUES: Record<SortKey, string | null> = {

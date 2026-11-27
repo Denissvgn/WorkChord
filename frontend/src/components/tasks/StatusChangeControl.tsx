@@ -7,7 +7,8 @@ import { Modal } from '../common/Modal';
 import { QueryErrorState } from '../feedback/QueryState';
 import { taskService } from '../../services/taskService';
 import type { Task, TaskStatus, CascadeUpdateInfo } from '../../types/task';
-import { pillToneClassName, STATUS_TONE } from '../ui/tone';
+import { pillToneClassName, STATE_TONE } from '../ui/tone';
+import { stateOf } from '../../utils/taskState';
 import { formatDate } from '../../utils/formatDate';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 import { canTransition, TASK_TRANSITIONS } from '../../features/taskTransitions';
@@ -91,8 +92,8 @@ export const StatusChangeControl = ({ task, iterationId, onStatusChanged, onPend
             {/* Current status badge */}
             <div className="flex items-center gap-2">
                 <span className="text-sm text-content-secondary">{t('statusChange.currentStatus')}</span>
-                <span className={`px-2 py-1 rounded-full text-sm font-medium ${pillToneClassName[STATUS_TONE[task.status]]}`}>
-                    {statusLabel(currentTask.status)}
+                <span className={`px-2 py-1 rounded-full text-sm font-medium ${pillToneClassName[STATE_TONE[stateOf(currentTask)]]}`}>
+                    {t(`statuses.${stateOf(currentTask)}`)}
                 </span>
                 {task.is_delayed && (
                     <span className="flex items-center gap-1 text-feedback-purple-foreground text-sm">

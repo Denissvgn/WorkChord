@@ -44,6 +44,9 @@ export const taskService = {
     actions: async (taskId: number) => (await api.get<TaskActions>(`/tasks/${taskId}/actions`)).data,
     postpone: async (taskId: number, data: { expected_version: number; reason: string; requirements: ReactivationRequirementInput[];
         expected_claim_generation?: number; expected_running_run_ids?: number[]; expected_live_assignment_ids?: number[] }) => (await api.post<TaskPostponementResponse>(`/tasks/${taskId}/postpone`, data)).data,
+    /** Records that a closed or accepted successor already delivered this task's work. */
+    supersede: async (taskId: number, data: { successor_task_id: number; expected_original_version: number; expected_successor_version: number; reason: string }) =>
+        (await api.post<{ id: number; disposition: 'replacement' | 'supersession'; original_task_id: number; replacement_task_id: number }>(`/tasks/${taskId}/supersession`, data)).data,
     reactivate: async (taskId: number, data: { expected_version: number; reason: string }) => (await api.post<TaskPostponementResponse>(`/tasks/${taskId}/reactivate`, data)).data,
     recordOwnerDecision: async (taskId: number, requirementId: number, data: { expected_version: number; decision: string }) => (await api.post<TaskPostponementResponse>(`/tasks/${taskId}/postponement/requirements/${requirementId}/decision`, data)).data,
     command: async (taskId: number, data: TaskCommand) => (await api.post<Task>(`/tasks/${taskId}/commands`, data)).data,
@@ -277,12 +280,12 @@ export const taskService = {
     },
 };
 
-export type WorkMetricName = 'total' | 'planned' | 'active' | 'resolved' | 'closed' | 'implemented' | 'accepted' | 'blocked'
+export type WorkMetricName = 'total' | 'planned' | 'active' | 'resolved' | 'closed' | 'postponed' | 'canceled' | 'superseded' | 'implemented' | 'accepted' | 'blocked'
     | 'overdue' | 'late_start' | 'iteration_overflow' | 'acceptance_unknown' | 'unknown_estimate';
 export type MetricScope = { project_id: number } | { iteration_id: number } | { release_id: number };
 export interface MetricMatchPage {
     metric: WorkMetricName;
-    items: Array<{ id: number; title: string; status: string; project_name: string | null; iteration_name: string | null }>;
+    items: Array<{ id: number; title: string; status: string; displayed_state?: string; project_name: string | null; iteration_name: string | null }>;
     has_more: boolean;
     next_after_id?: number | null;
 }

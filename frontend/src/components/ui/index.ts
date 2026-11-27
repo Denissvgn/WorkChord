@@ -19,6 +19,8 @@ export { StickyRail } from './StickyRail';
 export { ViewSwitch } from './ViewSwitch';
 export {
     STATUS_TONE,
+    STATE_TONE,
+    stateTextClassName,
     isTaskStatus,
     type PillTone,
     pillToneClassName,

@@ -143,6 +143,29 @@ describe('GanttChart clarity states', () => {
         expect(screen.getByText(i18n.t('common.unassigned'))).toBeInTheDocument();
     });
 
+    it.each([
+        ['postponed', 'postponed', 'Postponed'],
+        ['canceled', 'active', 'Canceled'],
+        ['superseded', 'planned', 'Superseded'],
+    ] as const)('lists %s work with its state and never draws it as scheduled work', (state, stored, label) => {
+        // The server still sends dates for stopped work; the chart does not draw them.
+        const stopped = { ...taskFixture, id: 300, title: `Stopped ${state}`, status: stored, displayed_state: state } as unknown as GanttTask;
+        renderChart(false, [stopped, { ...taskFixture, id: 301, title: 'Live work' }]);
+
+        expect(screen.getByRole('button', { name: scheduledTaskName({ ...taskFixture, title: 'Live work' }) })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: new RegExp(`^Open scheduled task.*Stopped ${state}`) })).not.toBeInTheDocument();
+        const entry = screen.getByRole('button', { name: i18n.t('gantt.openUnscheduledTask', { title: stopped.title }) });
+        // The state is written out beside the row, not only coloured.
+        expect(entry).toHaveTextContent(`${label}, not scheduled`);
+    });
+
+    it('does not count stopped work as unscheduled work waiting for a plan', () => {
+        const stopped = { ...taskFixture, id: 300, title: 'Paused', status: 'postponed', displayed_state: 'postponed' } as unknown as GanttTask;
+        renderChart(false, [stopped]);
+        // The summary above the chart is a status line; stopped work does not raise it.
+        expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    });
+
     it('distinguishes an empty iteration from an empty filtered result', async () => {
         const emptyRender = renderChart(false, []);
         expect(screen.getByRole('heading', { name: i18n.t('gantt.noTasksTitle') })).toBeInTheDocument();

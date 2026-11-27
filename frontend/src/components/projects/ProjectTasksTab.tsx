@@ -9,14 +9,15 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { ProjectTaskTree } from './ProjectTaskTree';
 import { GuardedTaskDrawer } from '../tasks/GuardedTaskDrawer';
-import type { Task } from '../../types/task';
+import type { Task, TaskDisplayedState } from '../../types/task';
 
 import {
     InlineEmptyState,
     SectionCard,
     StatusSegmentStrip
 } from '../ui';
-import { STATUS_TONE } from '../ui/tone';
+import { STATE_TONE, STATUS_TONE } from '../ui/tone';
+import { stateOf } from '../../utils/taskState';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 
 export const ProjectTasksTab = ({ tasks, summary, projectId: numericProjectId, isLoading: areTasksLoading }: {
@@ -29,8 +30,8 @@ export const ProjectTasksTab = ({ tasks, summary, projectId: numericProjectId, i
     const PROJECT_TASK_PREVIEW = 10;
     const statusCounts = summary?.status_counts || {};
     // The first ten root tasks, grouped by status in working order; the rest open in Tasks.
-    const groupedPreview = (['active', 'planned', 'resolved', 'closed'] as const).reduce<{ status: Task['status']; total: number; tasks: Task[] }[]>((groups, status) => {
-        const inStatus = tasks.filter(task => task.status === status);
+    const groupedPreview = (['active', 'planned', 'resolved', 'closed', 'postponed', 'canceled', 'superseded'] as const).reduce<{ status: TaskDisplayedState; total: number; tasks: Task[] }[]>((groups, status) => {
+        const inStatus = tasks.filter(task => stateOf(task) === status);
         const shown = groups.reduce((count, group) => count + group.tasks.length, 0);
         const take = inStatus.slice(0, Math.max(0, PROJECT_TASK_PREVIEW - shown));
         return inStatus.length > 0 && take.length > 0 ? [...groups, { status, total: inStatus.length, tasks: take }] : groups;
@@ -57,6 +58,9 @@ export const ProjectTasksTab = ({ tasks, summary, projectId: numericProjectId, i
                     { key: 'active', label: t('statuses.active'), value: statusCounts.active ?? 0, tone: STATUS_TONE.active },
                     { key: 'resolved', label: t('statuses.resolved'), value: statusCounts.resolved ?? 0, tone: STATUS_TONE.resolved },
                     { key: 'closed', label: t('statuses.closed'), value: statusCounts.closed ?? 0, tone: STATUS_TONE.closed },
+                    { key: 'postponed', label: t('statuses.postponed'), value: statusCounts.postponed ?? 0, tone: STATE_TONE.postponed },
+                    { key: 'canceled', label: t('statuses.canceled'), value: statusCounts.canceled ?? 0, tone: STATE_TONE.canceled },
+                    { key: 'superseded', label: t('statuses.superseded'), value: statusCounts.superseded ?? 0, tone: STATE_TONE.superseded },
                 ]}
             />
 

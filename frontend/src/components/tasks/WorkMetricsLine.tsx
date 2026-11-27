@@ -13,6 +13,10 @@ export const WorkMetricsLine = ({ metrics, scope = null }: { metrics?: WorkMetri
         ['overdueDelivery', 'overdue', metrics.overdue_tasks], ['lateStart', 'late_start', metrics.late_start_tasks],
         ['iterationOverflow', 'iteration_overflow', metrics.iteration_overflow_tasks],
     ] as const satisfies ReadonlyArray<readonly [string, WorkMetricName, number | undefined]>;
+    // Stopped work is counted apart: postponed work stays in the totals, canceled and superseded work is outside them.
+    const stopped = ([
+        ['postponed', metrics.postponed_tasks], ['canceled', metrics.canceled_tasks], ['superseded', metrics.superseded_tasks],
+    ] as const).filter(([, value]) => (value ?? 0) > 0);
     return <dl className="flex flex-wrap gap-x-6 gap-y-3 border-y border-border-subtle py-3" aria-label={t('workStatus.deliveryMetrics')}>
         {values.map(([label, metric, value]) => {
             const text = formatCount(value, i18n.language);
@@ -24,5 +28,11 @@ export const WorkMetricsLine = ({ metrics, scope = null }: { metrics?: WorkMetri
                 </dd>
             </div>;
         })}
+        {stopped.map(([state, value]) => <div key={state} className="flex items-baseline gap-2" data-stopped-count={state}>
+            <dt className="text-sm text-content-secondary">{t(`statuses.${state}`)}</dt>
+            <dd className="font-semibold tabular-nums text-content-primary">
+                <MetricCount metric={state} scope={scope} title={t(`statuses.${state}`)}>{formatCount(value, i18n.language)}</MetricCount>
+            </dd>
+        </div>)}
     </dl>;
 };

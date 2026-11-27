@@ -9,7 +9,7 @@ import type { Task } from '../types/task';
 import { useLocation } from 'react-router-dom';
 import { expectPageChrome } from '../test/pageChrome';
 import { taskDetailResponse } from '../test/fixtures/taskDetail';
-import i18n from '../i18n/i18n';
+import i18n, { ensureLanguageResources } from '../i18n/i18n';
 
 const api = vi.hoisted(() => ({ get: vi.fn(), put: vi.fn(), post: vi.fn() }));
 vi.mock('../services/api', () => ({ default: api }));
@@ -421,4 +421,39 @@ it.each(['active', 'inbox'])('hides Notifications for a local person on the %s U
     expect(screen.getByText('Notifications are available only to a signed-in account, not a local person profile.')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Notifications/ })).not.toBeInTheDocument();
     expect(api.get.mock.calls.some(([path]) => path.startsWith('/notifications'))).toBe(false);
+});
+
+it('shows postponed, canceled and superseded work as their own states and filters by each', async () => {
+    await ensureLanguageResources('en');
+    await i18n.changeLanguage('en');
+    api.get.mockImplementation(async (path: string) => {
+        if (path === '/tasks/my-work') return { data: { state: 'ready', has_more: false, next_after_id: null, queues: { active: [
+            { id: 1, title: 'Live work', status: 'active', iteration_id: null },
+            { id: 2, title: 'Paused work', status: 'postponed', displayed_state: 'postponed', iteration_id: null },
+            // Canceled work keeps the status it had; it must read as canceled, not active.
+            { id: 3, title: 'Dropped work', status: 'active', displayed_state: 'canceled', iteration_id: null },
+            { id: 4, title: 'Replaced work', status: 'planned', displayed_state: 'superseded', iteration_id: null },
+        ], queued: [], blocked: [], awaiting_review: [] } } };
+        if (path === '/tasks/review-queue' || path.startsWith('/notifications')) return { data: { items: [], has_more: false } };
+        return { data: [] };
+    });
+    renderWithProviders(<SignedInWork />, { initialEntries: ['/my-work?queue=active'] });
+    const rowOf = async (title: string) => (await screen.findByRole('button', { name: new RegExp(`· ${title}$`) })).closest('[data-task-row]') as HTMLElement;
+    expect(within(await rowOf('Paused work')).getByText('Postponed', { selector: '[data-task-state]' })).toBeVisible();
+    expect(within(await rowOf('Dropped work')).getByText('Canceled', { selector: '[data-task-state]' })).toBeVisible();
+    expect(within(await rowOf('Replaced work')).getByText('Superseded', { selector: '[data-task-state]' })).toBeVisible();
+    expect((await rowOf('Live work')).querySelector('[data-task-state]')).toBeNull();
+
+    const filter = screen.getByRole('combobox', { name: 'State' });
+    expect(within(filter).getAllByRole('option').map(option => option.textContent)).toEqual(
+        ['All states', 'Planned', 'Active', 'Resolved', 'Closed', 'Postponed', 'Canceled', 'Superseded']);
+    // Choosing a state narrows the queue by what each task is shown as, not the status it kept.
+    fireEvent.change(filter, { target: { value: 'active' } });
+    expect(screen.getByRole('button', { name: /· Live work$/ })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /· Dropped work$/ })).not.toBeInTheDocument();
+    fireEvent.change(filter, { target: { value: 'canceled' } });
+    expect(screen.getByRole('button', { name: /· Dropped work$/ })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /· Live work$/ })).not.toBeInTheDocument();
+    fireEvent.change(filter, { target: { value: 'closed' } });
+    expect(screen.getByText('Nothing in this queue is Closed.')).toBeInTheDocument();
 });

@@ -20,6 +20,7 @@ import { FilterBar, OverflowMenu, PageToolbar } from '../ui';
 import type { OverflowMenuItem } from '../ui/OverflowMenu';
 import { GanttBarInputs } from './GanttBarInputs';
 import { useScopeLink } from '../../features/scope/useScopeLink';
+import { isStoppedState, STOPPED_STATES } from '../../utils/taskState';
 
 interface GanttChartProps {
     iterationId: number;
@@ -74,7 +75,7 @@ interface FlattenedTask extends GanttTask {
 
 const GROUP_OPTIONS = ['none', 'milestone', 'prefix', 'assignee', 'status'] as const;
 type GanttGroupBy = typeof GROUP_OPTIONS[number];
-type GanttStatusFilter = '' | 'planned' | 'active' | 'resolved' | 'closed';
+type GanttStatusFilter = '' | 'planned' | 'active' | 'resolved' | 'closed' | 'postponed' | 'canceled' | 'superseded';
 type GanttRow =
     | { kind: 'task'; task: FlattenedTask }
     | { kind: 'group'; key: string; label: string; count: number; unassigned: number; start: string | null; end: string | null };
@@ -106,7 +107,13 @@ interface TaskTimelineDates {
     end: string | null;
 }
 
-const getTaskTimelineDates = (task: GanttTask): TaskTimelineDates => ({
+/** What the task is shown as: its displayed state, which is canceled or superseded for withdrawn work. */
+const ganttState = (task: GanttTask) => task.displayed_state ?? task.status;
+
+/** Postponed, canceled and superseded work is not scheduled work: it is listed, never drawn as a bar. */
+const isStoppedTask = (task: GanttTask) => isStoppedState(ganttState(task));
+
+const getTaskTimelineDates = (task: GanttTask): TaskTimelineDates => (isStoppedTask(task) ? { start: null, end: null } : {
     start: task.schedule_result?.scheduled_start ?? task.start_date,
     end: task.schedule_result?.scheduled_end ?? task.end_date,
 });
@@ -289,7 +296,7 @@ export const GanttChart = ({
         const findMaxEndDate = (taskList: GanttTask[]): Date => {
             let maxDate = iterationEnd;
             taskList.forEach(task => {
-                if (task.end_date) {
+                if (task.end_date && !isStoppedTask(task)) {
                     const taskEnd = new Date(task.end_date);
                     if (taskEnd > maxDate) maxDate = taskEnd;
                 }
@@ -383,7 +390,7 @@ export const GanttChart = ({
         let matches = true;
         if (assigneeId) matches = task.assignee?.id === assigneeId;
         if (hideUnassignedTasks && !task.assignee) matches = false;
-        if (matches && statusFilter) matches = task.status === statusFilter;
+        if (matches && statusFilter) matches = ganttState(task) === statusFilter;
         if (matches && normalizedSearch) {
             matches = task.title.toLowerCase().includes(normalizedSearch) || `#${task.id}` === normalizedSearch || String(task.id) === normalizedSearch;
         }
@@ -396,7 +403,7 @@ export const GanttChart = ({
         let count = 0;
         const visit = (task: GanttTask) => {
             if (task.children?.length) task.children.forEach(visit);
-            else if (!hasCompleteTimelineDates(getTaskTimelineDates(task))) count += 1;
+            else if (!isStoppedTask(task) && !hasCompleteTimelineDates(getTaskTimelineDates(task))) count += 1;
         };
         tasks.forEach(visit);
         return count;
@@ -447,7 +454,7 @@ export const GanttChart = ({
             if (groupBy === 'milestone') {
                 return task.milestone ? { key: `m${task.milestone.id}`, label: task.milestone.name } : { key: 'm-none', label: t('surfaces.ganttChart.noMilestone') };
             }
-            if (groupBy === 'status') return { key: task.status, label: t(`statuses.${task.status}`) };
+            if (groupBy === 'status') return { key: ganttState(task), label: t(`statuses.${ganttState(task)}`) };
             if (groupBy === 'assignee') {
                 return task.assignee ? { key: `a${task.assignee.id}`, label: task.assignee.name } : { key: 'a-none', label: t('common.unassigned') };
             }
@@ -570,7 +577,7 @@ export const GanttChart = ({
         }
         return t('gantt.taskBarSummary', {
             title: task.title,
-            status: t(`statuses.${task.status}`),
+            status: t(`statuses.${ganttState(task)}`),
             flags: taskTimingFlags(task),
             ...formatTaskTimelineDates(dates),
         }) + ` · ${t('taskList.assignee')}: ${task.assignee?.name ?? t('common.unassigned')}`;
@@ -583,7 +590,7 @@ export const GanttChart = ({
         }
         return t('gantt.openScheduledTask', {
             title: task.title,
-            status: t(`statuses.${task.status}`),
+            status: t(`statuses.${ganttState(task)}`),
             assignee: task.assignee?.name ?? t('common.unassigned'),
             priority: task.priority,
             ...formatTaskTimelineDates(dates),
@@ -596,7 +603,9 @@ export const GanttChart = ({
             : t('gantt.assignTaskToSchedule')
     );
 
-    const getUnscheduledTaskDescription = (task: GanttTask) => t(
+    const getUnscheduledTaskDescription = (task: GanttTask) => isStoppedTask(task)
+        ? t('stoppedWork.notScheduledDescription', { title: task.title, state: t(`statuses.${ganttState(task)}`) })
+        : t(
         'gantt.unscheduledTaskDescription',
         {
             title: task.title,
@@ -878,7 +887,7 @@ export const GanttChart = ({
                         className="input h-9 w-44 text-sm"
                     />}
                 filters={<FilterBar filters={[
-                    { id: 'status', label: t('surfaces.ganttChart.statusFilter'), value: statusFilter, options: LEGEND_STATUSES.map(status => ({ value: status, label: t(`statuses.${status}`) })) },
+                    { id: 'status', label: t('surfaces.ganttChart.statusFilter'), value: statusFilter, options: [...LEGEND_STATUSES, ...STOPPED_STATES].map(status => ({ value: status, label: t(`statuses.${status}`) })) },
                     { id: 'assignee', label: t('surfaces.ganttChart.assignee'), value: selectedAssigneeId === null ? (hideUnassigned ? 'assigned' : '') : String(selectedAssigneeId), options: [{ value: 'assigned', label: t('surfaces.ganttChart.hideTasksWithoutAssignee') }, ...uniqueAssignees.map(assignee => ({ value: String(assignee.id), label: assignee.name }))] },
                     { id: 'dates', label: t('surfaces.ganttChart.hideUnscheduled'), value: hideUnscheduled ? 'yes' : '', options: [{ value: 'yes', label: t('common.yes') }] },
                 ]} onChange={(id, value) => {
@@ -1362,7 +1371,9 @@ export const GanttChart = ({
                                             title={getUnscheduledTaskDescription(task)}
                                          variant="plain">
                                             <CalendarOff aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
-                                            <span className="shrink-0 font-medium">{t('gantt.notScheduled')}</span>
+                                            <span className="shrink-0 font-medium">{isStoppedTask(task)
+                                                ? t('stoppedWork.notScheduledState', { state: t(`statuses.${ganttState(task)}`) })
+                                                : t('gantt.notScheduled')}</span>
                                         </Button>
                                     )}
                                 </div>

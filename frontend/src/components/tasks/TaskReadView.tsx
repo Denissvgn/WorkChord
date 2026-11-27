@@ -16,7 +16,8 @@ import { useToast } from '../feedback/toast';
 import { getApiErrorMessage, normalizeApiError } from '../../utils/apiError';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 import { formatDate } from '../../utils/formatDate';
-import { pillToneClassName, STATUS_TONE } from '../ui/tone';
+import { pillToneClassName, STATE_TONE } from '../ui/tone';
+import { isEndedState, stateOf } from '../../utils/taskState';
 import { emptyTaskBrief } from './taskEditorContract';
 import { TaskBriefEditor } from './TaskBriefEditor';
 import { TaskWorkPanel } from './TaskWorkPanel';
@@ -121,7 +122,8 @@ export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: 
         onSettled: () => onPending(false),
     });
 
-    const next = NEXT_TRANSITION[task.status];
+    // Canceled and superseded work keeps the status it had, but it is not work to start, submit or review.
+    const next = isEndedState(stateOf(task)) ? undefined : NEXT_TRANSITION[task.status];
     // Shared with Work & review, so the header and the panel read one availability snapshot.
     // feedback-policy: query loading,error,retry,empty
     const actions = useQuery({ queryKey: ['taskActions', task.id, task.version], queryFn: () => taskService.actions(task.id), enabled: Boolean(next?.reasonKey) });
@@ -161,7 +163,7 @@ export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: 
     // taken as a person, so those two are not offered until editing is locked again.
     const { actingAsOperator } = useAdminAccess();
     const operatorKeyBlocksNext = actingAsOperator && (next?.action === 'start_manual' || next?.action === 'resolve_manual');
-    const offerDispatch = task.status === 'planned' && assigneeDisplay.dispatch === 'notSentYet';
+    const offerDispatch = task.status === 'planned' && !isEndedState(stateOf(task)) && assigneeDisplay.dispatch === 'notSentYet';
     const dispatchShown = params.get('layout') === 'pipeline';
     // Owner is shown only when it is known to differ from the assignee's profile: with no assignee,
     // or once that profile has been read. While it loads, fails or has no team row, Owner stays hidden.
@@ -187,9 +189,14 @@ export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: 
         <div className="task-read-view flex flex-col gap-5">
             <header className="sticky top-0 z-10 -mx-4 flex flex-col gap-3 border-b border-border bg-surface-card px-4 pb-0 pt-1 sm:-mx-6 sm:px-6">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
-                    <span className={clsx('rounded-full px-2.5 py-0.5 text-xs font-semibold', pillToneClassName[STATUS_TONE[task.status]])}>
-                        {t(`statuses.${task.status}`)}
+                    <span data-task-state={stateOf(task)} className={clsx('rounded-full px-2.5 py-0.5 text-xs font-semibold', pillToneClassName[STATE_TONE[stateOf(task)]])}>
+                        {t(`statuses.${stateOf(task)}`)}
                     </span>
+                    {stateOf(task) === 'superseded' && task.successor_task_id && (
+                        <Button type="button" variant="ghost" size="sm" onClick={() => { const next = new URLSearchParams(params); next.set('task', String(task.successor_task_id)); next.delete(TASK_PART_PARAM); setParams(next); }}>
+                            {t('stoppedWork.supersededBy', { id: task.successor_task_id })}
+                        </Button>
+                    )}
                     <TaskAssigneeDisplay task={task} iterationId={task.iteration_id} />
                     {task.owner && ownerDiffers && <span className="text-content-secondary">{t('taskView.owner')} <b className="font-semibold text-content-primary">{task.owner.name}</b></span>}
                     {task.end_date && <span className="text-content-secondary">{t('taskView.due')} <b className="font-semibold text-content-primary">{formatDate(task.end_date, i18n.language)}</b></span>}

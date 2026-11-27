@@ -7,7 +7,7 @@ import { MetricCount } from '../tasks/MetricCount';
 import { planStepHref } from '../../features/planningMasters/planningReturn';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 
-type Verdict = 'done' | 'noSchedule' | 'late' | 'atRisk' | 'onTrack';
+type Verdict = 'done' | 'postponedOnly' | 'noSchedule' | 'late' | 'atRisk' | 'onTrack';
 
 /** Capacity still available: the iteration's capacity spread evenly over its working days. */
 const capacityLeft = (summary: IterationSummary) => {
@@ -17,7 +17,8 @@ const capacityLeft = (summary: IterationSummary) => {
 
 const onTrackVerdict = (summary: IterationSummary): Verdict => {
     const open = (summary.status_counts?.planned ?? 0) + (summary.status_counts?.active ?? 0);
-    if (summary.total_tasks > 0 && open === 0) return 'done';
+    // Postponed work is still in the totals but is not done: with only it left, the iteration is neither finished nor on a schedule.
+    if (summary.total_tasks > 0 && open === 0) return (summary.status_counts?.postponed ?? 0) > 0 ? 'postponedOnly' : 'done';
     if (!summary.scheduled_finish) return 'noSchedule';
     if (summary.scheduled_finish > summary.end_date) return 'late';
     const left = capacityLeft(summary);
@@ -36,7 +37,7 @@ export const OnTrackSummary = ({ summary }: { summary: IterationSummary }) => {
     const scale = Math.max(remaining, left ?? 0, 0.0001);
     const effort = (value: number | null) => formatEffortDays(value, locale) ?? t('common.unknown');
     const scope = { iteration_id: summary.id };
-    const tone = verdict === 'late' ? 'text-feedback-danger-foreground' : verdict === 'atRisk' || verdict === 'noSchedule' ? 'text-feedback-warning-foreground' : 'text-feedback-success-foreground';
+    const tone = verdict === 'late' ? 'text-feedback-danger-foreground' : verdict === 'atRisk' || verdict === 'noSchedule' || verdict === 'postponedOnly' ? 'text-feedback-warning-foreground' : 'text-feedback-success-foreground';
     return (
         <section className="card card-pad space-y-4" aria-labelledby="on-track-title">
             <h2 id="on-track-title" className="text-base font-semibold">{t('analytics.onTrack.title')}</h2>

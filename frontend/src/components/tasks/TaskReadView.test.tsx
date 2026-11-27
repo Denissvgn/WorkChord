@@ -160,3 +160,21 @@ describe('header status change', () => {
         expect(service.command).not.toHaveBeenCalled();
     });
 });
+
+describe('task view for stopped work', () => {
+    it.each([
+        ['postponed', 'postponed', 'Postponed'], ['canceled', 'active', 'Canceled'], ['superseded', 'planned', 'Superseded'],
+    ] as const)('shows %s as its own state and offers no work to start or submit', (state, stored, label) => {
+        renderView({ task: { ...task, status: stored, displayed_state: state, successor_task_id: state === 'superseded' ? 77 : null } as Task });
+        expect(screen.getByText(label, { selector: '[data-task-state]' })).toBeVisible();
+        expect(screen.queryByRole('button', { name: /Start work|Submit for review|Review work/ })).not.toBeInTheDocument();
+    });
+
+    it('links a superseded task to its successor and keeps the keyboard path', async () => {
+        const { user } = renderView({ task: { ...task, status: 'planned', displayed_state: 'superseded', successor_task_id: 77, successor_kind: 'supersession' } as Task });
+        const link = screen.getByRole('button', { name: 'Superseded by #77' });
+        link.focus();
+        await user.keyboard('{Enter}');
+        expect(screen.getByTestId('location')).toHaveTextContent('task=77');
+    });
+});
