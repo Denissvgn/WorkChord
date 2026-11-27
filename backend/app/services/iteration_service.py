@@ -566,7 +566,8 @@ class IterationService:
         task_row = (
             await self.db.execute(
                 select(
-                    func.count(Task.id),
+                    # Only work that holds a schedule makes "the schedule is built" true.
+                    func.coalesce(func.sum(case((holds_schedule, 1), else_=0)), 0),
                     func.coalesce(
                         func.sum(case((and_(is_gap_candidate, Task.assignee_id.is_(None), ~agent_working), 1), else_=0)),
                         0,

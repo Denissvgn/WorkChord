@@ -136,7 +136,8 @@ class TaskDetailService:
         reviewers = await self.reviewer_names([item.id for item in page.items if item.status == "resolved"])
         for item in page.items:
             item.reviewer_name = reviewers.get(item.id)
-            if (await self._policy_flags(item.id))['effective_is_deferred']:
+            # Deferred work is backlog and postponed work is stopped: neither is queued work.
+            if item.status == "postponed" or (await self._policy_flags(item.id))['effective_is_deferred']:
                 continue
             actions = await TaskDomainService(self.db).allowed_actions(item.id)
             blocked = item.status == "closed" or bool(item.blocked_reason) or any(

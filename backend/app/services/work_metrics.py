@@ -10,6 +10,33 @@ from app.utils.time import as_utc, utc_now
 STATUS_COUNT_KEYS = ("planned", "active", "resolved", "closed", "postponed")
 
 
+def postponed_work_under(task):
+    """The postponed work a prerequisite stands for: itself, or the postponed leaves below a summary.
+
+    Reads only loaded children. Canceled and deferred work is skipped: canceled work is satisfied
+    and deferred work is backlog that nothing waits on.
+    """
+    def children(item):
+        return item.__dict__.get("children") or []
+
+    if getattr(task, "canceled_at", None):
+        return []
+    found, pending, seen = [], list(children(task)), set()
+    while pending:
+        item = pending.pop()
+        if item.id in seen or getattr(item, "canceled_at", None) or item.is_deferred:
+            continue
+        seen.add(item.id)
+        below = children(item)
+        if below:
+            pending.extend(below)
+        elif item.status == "postponed":
+            found.append(item)
+    if not found and task.status == "postponed":
+        found = [task]
+    return sorted(found, key=lambda item: item.id)
+
+
 def working_today(timezone="UTC", now: datetime | None = None):
     return as_utc(now or utc_now()).astimezone(ZoneInfo(timezone or "UTC")).date()
 
@@ -101,6 +128,9 @@ def leaf_metrics(tasks, *, iteration_end=None, project_target=None, timezone="UT
         if not optional:
             result["required_implemented_tasks"] += int(signals["is_implemented"])
             result["required_accepted_tasks"] += int(signals["is_accepted"])
+        if postponed:
+            # Postponed effort is neither planned, remaining nor done until the work is reactivated.
+            continue
         effort = task.effort_days
         if effort is None:
             result["unknown_estimate_tasks"] += 1
@@ -108,7 +138,7 @@ def leaf_metrics(tasks, *, iteration_end=None, project_target=None, timezone="UT
             result["total_effort_days"] += effort
             if not optional:
                 result["required_effort_days"] += effort
-            if not signals["is_implemented"] and not postponed:
+            if not signals["is_implemented"]:
                 result["remaining_effort_days"] += effort
     result["completed_tasks"] = result["implemented_tasks"]
     result["completion_percent"] = round(result["implemented_tasks"] * 100 / result["total_tasks"], 1) if result["total_tasks"] else 0.0
@@ -222,7 +252,8 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     included = and_(leaf, ~tree.c.deferred, t.c.canceled_at.is_(None))
     required = and_(included, ~tree.c.optional)
     implemented = t.c.status.in_(["resolved", "closed"])
-    # Postponed work holds no schedule: its kept dates raise no signal and it is not remaining work.
+    # Postponed work holds no schedule: its kept dates raise no signal, its effort is neither planned
+    # nor remaining, and it is counted only under its own status.
     scheduled = and_(included, t.c.status != "postponed")
     accepted = and_(t.c.status == "closed", t.c.accepted_at.is_not(None), t.c.accepted_by_principal_id.is_not(None), t.c.accepted_version == t.c.version)
     accepted = func.coalesce(accepted, false())
@@ -240,10 +271,10 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     joined = t.join(tree, tree.c.id == t.c.id).outerjoin(parent_ids, parent_ids.c.parent_id == t.c.id).outerjoin(iterations, iterations.c.id == t.c.iteration_id).outerjoin(projects, projects.c.id == t.c.project_id)
     # One predicate per countable metric: the counts below and the lists they open both use these.
     predicates = {"total": included, "implemented": and_(included, implemented), "accepted": and_(included, accepted),
-        "blocked": and_(included, blocked), "overdue": and_(scheduled, overdue), "late_start": and_(scheduled, late),
+        "blocked": and_(scheduled, blocked), "overdue": and_(scheduled, overdue), "late_start": and_(scheduled, late),
         "iteration_overflow": and_(scheduled, t.c.end_date > iterations.c.end_date),
         "acceptance_unknown": and_(included, t.c.status == "closed", ~accepted),
-        "unknown_estimate": and_(included, (t.c.effort_hours / t.c.nominal_day_hours).is_(None)),
+        "unknown_estimate": and_(scheduled, (t.c.effort_hours / t.c.nominal_day_hours).is_(None)),
         **{state: and_(included, t.c.status == state) for state in STATUS_COUNT_KEYS}}
     if matching is not None:
         if matching not in predicates:
@@ -271,7 +302,7 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
         count(and_(scheduled, t.c.end_date > projects.c.target_date), "project_target_overflow_tasks"),
         count(predicates["acceptance_unknown"], "acceptance_unknown_tasks"),
         count(predicates["unknown_estimate"], "unknown_estimate_tasks"), count(predicates["blocked"], "blocked_tasks"),
-        func.coalesce(func.sum(case((included, (t.c.effort_hours / t.c.nominal_day_hours)), else_=0.0)), 0.0).label("total_effort_days"),
+        func.coalesce(func.sum(case((scheduled, (t.c.effort_hours / t.c.nominal_day_hours)), else_=0.0)), 0.0).label("total_effort_days"),
         func.coalesce(func.sum(case((and_(scheduled, ~implemented), (t.c.effort_hours / t.c.nominal_day_hours)), else_=0.0)), 0.0).label("remaining_effort_days"),
         func.min(case((scheduled, t.c.start_date))).label("task_start_date"), func.max(case((scheduled, t.c.end_date))).label("task_end_date"),
         *[count(predicates[state], "status_" + state) for state in STATUS_COUNT_KEYS]]

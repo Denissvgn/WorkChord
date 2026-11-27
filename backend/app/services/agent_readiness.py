@@ -9,7 +9,7 @@ from app.models.task import Task, TaskDependency, TaskStatus
 from app.schemas.task import TaskAgentReadiness, TaskAgentReadinessCriterion
 from app.services.agent_routing_policy import CAPABILITY_LABEL_SKILL_KEYS
 from app.utils.time import as_utc, utc_now
-from app.services.work_metrics import effective_work_flags
+from app.services.work_metrics import effective_work_flags, postponed_work_under
 
 
 DEFAULT_AGENT_CAPABILITY_SLUGS = frozenset(CAPABILITY_LABEL_SKILL_KEYS)
@@ -172,8 +172,11 @@ def evaluate_agent_readiness(
         if dependency_task is None:
             unknown_dependencies.append(dependency.depends_on_id)
             continue
-        if dependency_task.status == TaskStatus.POSTPONED.value and not dependency_task.canceled_at:
-            postponed_dependencies.append(f"'{dependency_task.title}' (ID {dependency_task.id})")
+        # A postponed prerequisite, or postponed work below a summary prerequisite, is named as the wait.
+        postponed_work = postponed_work_under(dependency_task)
+        if postponed_work:
+            postponed_dependencies.extend(f"'{item.title}' (ID {item.id})" for item in postponed_work
+                                          if f"'{item.title}' (ID {item.id})" not in postponed_dependencies)
         elif dependency_task.status not in {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}:
             unresolved_dependencies.append(f"{dependency_task.title} ({dependency_task.status})")
 
