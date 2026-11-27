@@ -8,7 +8,7 @@
 
 ## Description
 
-_Auto-generated from `SourceLinkAction` in `backend/app/utils/source_link_policy.py`._
+What the source link policy did with a link: `none` when there was no link, `kept` when it was allowed as written, `rewritten` when an absolute link to this same instance became a relative path, and `dropped` when it was refused but left on the intake.
 
 ## Attributes
 

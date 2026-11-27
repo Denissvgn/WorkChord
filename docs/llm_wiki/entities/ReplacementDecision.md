@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `ReplacementDecision` in `backend/app/schemas/task_replacement.py`._
+Who decided a replacement or supersession and why: the reason, the owner's recorded decision where one authorizes a replacement, when it was decided, and the deciding principal or actor.
 
 ## Attributes
 

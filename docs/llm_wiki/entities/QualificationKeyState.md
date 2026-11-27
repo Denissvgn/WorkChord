@@ -8,7 +8,7 @@
 
 ## Description
 
-_Auto-generated from `QualificationKeyState` in `backend/app/schemas/routing_qualification.py`._
+Whether a registry qualification key is `active`, and may be named by catalog entries and task routing requirements, or `retired`. A key cannot be retired while a catalog entry, a calibration contract or an open task requirement still names it.
 
 ## Attributes
 

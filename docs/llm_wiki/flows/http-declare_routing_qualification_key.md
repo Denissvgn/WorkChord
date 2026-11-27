@@ -178,4 +178,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `declare_routing_qualification_key` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Operator command that declares a qualification key, or declares a retired one again under the same name. The command is replay-safe, carries a reason, writes an append-only revision row and an audit event, and returns a mutation receipt. A declared key then joins the built-in routing skill keys, which stay fixed in code, as vocabulary that catalog entries and task routing requirements may name.

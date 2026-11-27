@@ -8,7 +8,7 @@
 
 ## Description
 
-_Auto-generated from `CalibrationContractState` in `backend/app/schemas/routing_calibration.py`._
+Whether a calibration contract's current revision is `submitted` (stored but unapproved) or `approved`. Routing reads only whether an approved contract exists; submitting new terms revises the contract and drops it back to `submitted`.
 
 ## Attributes
 

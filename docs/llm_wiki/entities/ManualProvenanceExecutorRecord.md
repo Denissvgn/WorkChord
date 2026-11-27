@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `ManualProvenanceExecutorRecord` in `backend/app/schemas/manual_provenance.py`._
+The executor stored on a manual provenance record: the human or agent that delivered resolved work outside recorded runs. It keeps the identities, the profiles that count as the executor's for review independence, and for an agent the model binding, catalog key and publisher at the time of the record, so later changes to the agent do not rewrite who was an independent reviewer.
 
 ## Attributes
 

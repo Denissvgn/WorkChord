@@ -8,7 +8,7 @@
 
 ## Description
 
-_Auto-generated from `CalibrationDecayMethod` in `backend/app/schemas/routing_calibration.py`._
+How an observation's weight falls with age in a calibration contract: `exponential` (the days value is a half-life), `linear` (the age at which weight reaches zero) or `window` (the length of a window that excludes anything older).
 
 ## Attributes
 

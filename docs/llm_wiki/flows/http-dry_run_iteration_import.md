@@ -227,4 +227,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `dry_run_iteration_import` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Shows exactly what a JSON plan import would create, change or remove, and writes nothing. The real import writer runs inside a rollback-only command and the target iteration is compared before and after, so the preview and the eventual write cannot drift. The result lists tasks, dependencies, links, dates, team members and profiles, counts them, and carries a review digest binding the canonical file, the revisions of every iteration the import reserves and the exact change set. The file is size-capped (tasks, team members, levels of subtasks, dependency references and vacations), the run is time-bounded, and only one dry run runs at a time per process; another is refused as busy.

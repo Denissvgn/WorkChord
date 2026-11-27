@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `TaskReplacementService` in `backend/app/services/task_replacement_service.py`._
+Records and reads the audited disposition that names which task delivers another task's work. A replacement redoes an original whose runs lack attribution as a separate task from a clean base: the original keeps its history and is withdrawn from delivery counts, its dependents and release membership move, and only the replacement can be accepted. A supersession records that a closed or accepted successor already delivered the original's work, without reopening or re-executing either task. A replacement moves dependents, delivery prerequisites and open (planned or building) release membership. A supersession also moves shipped release membership and the open reactivation requirements that name the original, and closes a postponed original's postponement, so the deliverable is counted once.
 
 ## Attributes
 

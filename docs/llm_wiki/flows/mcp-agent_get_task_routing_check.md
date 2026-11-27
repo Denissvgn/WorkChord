@@ -233,4 +233,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `agent_get_task_routing_check` and is classified as `mcp`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Read-only evaluation of a task's structured routing against an assignee and the project's review policy. It fills catalog facts into the routing, then reports issues as conflicts or warnings: a first rung that is not a model the assignee's agent runs, a reviewer who shares the assignee's profile or, under a different-publisher policy, a publisher with the assignee, first rung or a recorded contributor, a reviewer nobody can carry out, and unavailable catalog entries. When the routing is inconsistent it proposes a consistent replacement. Routing named only in free text is reported as such so it can be converted. Nothing is saved.

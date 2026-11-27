@@ -234,4 +234,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `agent_convert_task_routing` and is classified as `mcp`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Moves routing that a brief names in free text (first rung, escalation, reviewer) into the brief's structured routing. Without `apply` it returns a preview with the structure the conversion parsed and the sentences it would remove; an ambiguous model can be settled by supplying the routing to use. With `apply` it saves the structured routing through the brief with the caller's expected version and removes the replaced sentences, keeping them as audit-only source text. Removing sentences from the brief text is a substantive brief edit, so applying such a conversion can reset the task's progress; the response reports this as `resets_progress`. A brief with nothing to convert is reported as such and not changed.

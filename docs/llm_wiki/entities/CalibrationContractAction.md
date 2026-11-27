@@ -8,7 +8,7 @@
 
 ## Description
 
-_Auto-generated from `CalibrationContractAction` in `backend/app/schemas/routing_calibration.py`._
+The commands that move a routing calibration contract between states: `submit` stores complete terms as unapproved and `approve` accepts a named revision. Both are recorded as audit events; neither changes any routing decision.
 
 ## Attributes
 

@@ -8,7 +8,7 @@
 
 ## Description
 
-_Auto-generated from `RequirementKind` in `backend/app/schemas/task_postponement.py`._
+The four kinds of reactivation requirement: `predecessor_accepted` (a named task is accepted), `date` (a day after today in the task's working time zone), `owner_decision` (the workspace owner records a decision) and `linked_resolved` (a named task or triage item is resolved).
 
 ## Attributes
 

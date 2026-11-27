@@ -232,4 +232,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `agent_reactivate_task` and is classified as `mcp`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Returns postponed work to planned, or to resolved when it was postponed after resolution, on an explicit decision. The task must be postponed and carry the expected version; the open postponement is closed with the reason, the decider and the trigger `command`, and the timeline records the reactivation. Reaching resolved again can in turn satisfy other postponements that wait on this task, so a reactivation check is requested at the end of the command. Automatic reactivation by met requirements goes through the reactivation service instead, with the system as the actor. Through MCP only the PM agent can call it, and the call is replay-safe under its idempotency key.
