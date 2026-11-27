@@ -69,4 +69,4 @@ flowchart LR
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [WorkMetricSummary](../entities/WorkMetricSummary.md) | 6 | `BaseModel` | — |
-| [TaskMetricSignals](../entities/TaskMetricSignals.md) | 24 | `BaseModel` | — |
+| [TaskMetricSignals](../entities/TaskMetricSignals.md) | 30 | `BaseModel` | — |

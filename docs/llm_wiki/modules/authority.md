@@ -28,6 +28,7 @@ A validated controller command grants one queue-revision update for a named acto
 | `app.models.identity` | `CommandAudit`, `CommandAudit` |
 | `app.models.project` | `Project` |
 | `app.models.task` | `Task` |
+| `app.refusal_next_steps` | `with_next_step` |
 | `contextlib` | `contextmanager` |
 | `dataclasses` | `dataclass`, `field` |
 | `json` | `json` |
@@ -56,9 +57,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (100) |
+| Inbound | `backend` (110) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (6) |
+| Outbound | `backend` (7) |
 
 ### External packages
 
@@ -66,14 +67,14 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 107 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 118 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [AuthorityError](../entities/AuthorityError.md) | 21 | `RuntimeError` | — |
-| [Authority](../entities/Authority.md) | 31 | — | — |
+| [Authority](../entities/Authority.md) | 32 | — | — |
 
 ## Functions
 

@@ -2,7 +2,7 @@
 
 **Entry point:** `lookup_tasks` (`http`)
 **Source:** [routers_task_domain](../modules/routers_task_domain.md)
-**Modules touched:** [authority](../modules/authority.md), [config](../modules/config.md), [routers_task_domain](../modules/routers_task_domain.md), [sql_semantics](../modules/sql_semantics.md), and 2 more
+**Modules touched:** [authority](../modules/authority.md), [config](../modules/config.md), [routers_task_domain](../modules/routers_task_domain.md), [sql_semantics](../modules/sql_semantics.md), and 3 more
 
 **Complete modules touched:**
 
@@ -12,6 +12,7 @@
 - [sql_semantics](../modules/sql_semantics.md)
 - [task_detail](../modules/task_detail.md)
 - [task_detail_service](../modules/task_detail_service.md)
+- [task_display_state](../modules/task_display_state.md)
 
 ## Call sequence
 
@@ -24,73 +25,75 @@ sequenceDiagram
     participant p1 as TaskDetailService.lookup
     participant p2 as domain_result
     participant p3 as TaskDetailService
-    participant p4 as require_project
-    participant p5 as portable_contains
-    participant p6 as TaskDetailService.page
-    participant p7 as get_settings
-    participant p8 as TaskDetailService.references
-    participant p9 as normalize_text
-    participant p10 as AuthorityError
-    participant p11 as _escaped_like
-    participant p12 as TaskReferencePage
-    participant p13 as Settings
-    participant p14 as HTTPException
-    participant p15 as exc.detail
-    participant p16 as statement.where
-    participant p17 as str
-    participant p18 as Task.iteration_id.is_
-    participant p19 as ValueError (backend/app/services/task…y:TaskDetailService.lookup)
-    participant p20 as Task.parent_id.is_
-    participant p21 as self.db.get
+    participant p4 as TaskDetailService.references
+    participant p5 as require_project
+    participant p6 as task_state_clause
+    participant p7 as portable_contains
+    participant p8 as TaskDetailService.page
+    participant p9 as state_clause
+    participant p10 as get_settings
+    participant p11 as displayed_state_expression
+    participant p12 as validate_state_filter
+    participant p13 as normalize_text
+    participant p14 as AuthorityError
+    participant p15 as _escaped_like
+    participant p16 as TaskReferencePage
+    participant p17 as Settings
+    participant p18 as withdrawn_by_successor
+    participant p19 as HTTPException
+    participant p20 as exc.detail
+    participant p21 as statement.where
+    participant p22 as str
+    participant p23 as Task.iteration_id.is_
     p0->>p1: TaskDetailService.lookup
     p0->>p2: domain_result
     p0->>p3: TaskDetailService
-    p1->>p4: require_project
-    p1->>p5: portable_contains
-    p1->>p6: TaskDetailService.page
-    p4->>p7: get_settings
-    p1->>p8: TaskDetailService.references
-    p5->>p9: normalize_text
-    p4->>p10: AuthorityError
-    p5->>p11: _escaped_like
-    p6->>p12: TaskReferencePage
-    p7->>p13: Settings
-    p2-->>p14: HTTPException(409, detail=exc.detail(...))
-    p2-->>p15: exc.detail
-    p2-->>p14: HTTPException(404, detail=str(...))
-    p1-->>p16: statement.where(...)
-    p2-->>p17: str(exc)
-    p1-->>p16: statement.where(...)
-    p2-->>p14: HTTPException(422, detail=[...])
-    p1-->>p16: statement.where(Task.iteration_id.is_(...))
-    p2-->>p17: str(exc)
-    p1-->>p18: Task.iteration_id.is_(None)
-    p2-->>p14: HTTPException(404, detail='Task not found or inaccessible')
-    p1-->>p19: ValueError (backend/app/services/task…y:TaskDetailService.lookup)('Select a supported task status')
-    p1-->>p16: statement.where(...)
-    p1-->>p19: ValueError (backend/app/services/task…y:TaskDetailService.lookup)('Select roots or a parent, not both')
-    p1-->>p16: statement.where(Task.parent_id.is_(...))
-    p1-->>p20: Task.parent_id.is_(None)
-    p1-->>p21: self.db.get(Task, parent_id)
+    p1->>p4: TaskDetailService.references
+    p1->>p5: require_project
+    p1->>p6: task_state_clause
+    p1->>p7: portable_contains
+    p1->>p8: TaskDetailService.page
+    p6->>p9: state_clause
+    p5->>p10: get_settings
+    p4->>p11: displayed_state_expression
+    p1->>p12: validate_state_filter
+    p7->>p13: normalize_text
+    p5->>p14: AuthorityError
+    p7->>p15: _escaped_like
+    p8->>p16: TaskReferencePage
+    p10->>p17: Settings
+    p11->>p18: withdrawn_by_successor
+    p2-->>p19: HTTPException(409, detail=exc.detail(...))
+    p2-->>p20: exc.detail
+    p2-->>p19: HTTPException(404, detail=str(...))
+    p1-->>p21: statement.where(...)
+    p2-->>p22: str(exc)
+    p1-->>p21: statement.where(...)
+    p2-->>p19: HTTPException(422, detail=[...])
+    p1-->>p21: statement.where(Task.iteration_id.is_(...))
+    p2-->>p22: str(exc)
+    p1-->>p23: Task.iteration_id.is_(None)
+    p2-->>p19: HTTPException(404, detail='Task not found or inaccessible')
+    p1-->>p21: statement.where(task_state_clause(...))
 ```
 
-> Call sequence diagram shows 30 of 77 interactions; 47 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 99 interactions; 69 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 8 of 21 (13 omitted); unresolved 9 of 40 (31 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 6 of 27 (21 omitted); unresolved 6 of 48 (42 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
-| `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | unresolved | 9 |
+| `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | unresolved | 10 |
 | `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | external | 2 |
-| `backend/app/authority.py:require_project` | 23 | - | unresolved | 2 |
-| `backend/app/authority.py:require_project` | 23 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
-| `backend/app/services/task_detail_service.py:TaskDetailService.lookup` | 10 | - | external | 7 |
-| `backend/app/services/task_detail_service.py:TaskDetailService.lookup` | 10 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
-| `backend/app/services/task_detail_service.py:TaskDetailService.lookup` | 10 | - | unresolved | 6 |
-| `backend/app/sql_semantics.py:normalize_text` | 49 | - | unresolved | 1 |
-> Omission summary shows 8 of 15 groups; 7 further groups are not expanded here. Counts above include all omitted interactions.
+| `backend/app/services/task_display_state.py:displayed_state_expression` | 16 | - | external | 1 |
+| `backend/app/services/task_display_state.py:displayed_state_expression` | 16 | - | unresolved | 1 |
+| `backend/app/services/task_display_state.py:withdrawn_by_successor` | 19 | - | external | 2 |
+| `backend/app/services/task_display_state.py:withdrawn_by_successor` | 19 | - | unresolved | 2 |
+| `backend/app/authority.py:require_project` | 32 | - | unresolved | 2 |
+| `backend/app/authority.py:require_project` | 32 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
+> Omission summary shows 8 of 24 groups; 16 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -101,9 +104,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 17; effect analysis evaluated: 10, partial: 2, unavailable: 5. Counts include steps omitted from the displayed trace.
+Source steps: 25; effect analysis evaluated: 18, partial: 2, unavailable: 5. Counts include steps omitted from the displayed trace.
 
-Collector observations for 12 source steps with known totals: observed: 58, emitted: 54, omitted: 4. Unavailable totals are excluded.
+Collector observations for 20 source steps with known totals: observed: 88, emitted: 85, omitted: 3. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -120,7 +123,7 @@ Collector observations for 12 source steps with known totals: observed: 58, emit
 | `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `TaskDetailService.lookup` | `available` | `partial` | `available` | `19` | `17` | `2` |
+| `TaskDetailService.lookup` | `available` | `partial` | `available` | `18` | `17` | `1` |
 | `TaskDetailService.references` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `select(…).outerjoin(…).outerjoin` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 
@@ -168,7 +171,7 @@ flowchart LR
 | `HTTPException` | - | - | - | - |
 | `str` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
-| `TaskDetailService.lookup` | `project_id`, `iteration_id`, `query`, `backlog_only`, `limit`, `after_id`, `status`, `parent_id` | `self.db`, `Task`, `Task`, `Task`, `Task`, `self.db`, `Task`, `Task` | - | `...` |
+| `TaskDetailService.lookup` | `project_id`, `iteration_id`, `query`, `backlog_only`, `limit`, `after_id`, `status`, `parent_id` | `self.db`, `Task`, `Task`, `Task`, `self.db`, `Task`, `Task`, `Task` | - | `...` |
 | `TaskDetailService.references` | - | `Task` | - | `...` |
 | `select(…).outerjoin(…).outerjoin` | - | - | - | - |
 
@@ -176,7 +179,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| lookup_tasks | domain_result | 147 | `domain_result(...)` |
+| lookup_tasks | domain_result | 148 | `domain_result(...)` |
 | domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
@@ -184,9 +187,9 @@ flowchart LR
 | domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 59 | `str(exc)` |
 | domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| lookup_tasks | TaskDetailService.lookup | 147 | `TaskDetailService(db).lookup(project_id=project_id, iteration_id=iteration_id, query=q, backlog_only=backlog_only, limit=limit, after_id=after_id, status=task_status, parent_id=parent_id, roots_only=roots_only)` |
-| TaskDetailService.lookup | TaskDetailService.references | 69 | `self.references(data not statically known)` |
-| TaskDetailService.references | select(…).outerjoin(…).outerjoin | 39 | `select(Task.id, Task.title, Task.version, Task.status, Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin(Iteration, ...)` |
+| lookup_tasks | TaskDetailService.lookup | 148 | `TaskDetailService(db).lookup(project_id=project_id, iteration_id=iteration_id, query=q, backlog_only=backlog_only, limit=limit, after_id=after_id, status=task_status, parent_id=parent_id, roots_only=roots_only)` |
+| TaskDetailService.lookup | TaskDetailService.references | 72 | `self.references(data not statically known)` |
+| TaskDetailService.references | select(…).outerjoin(…).outerjoin | 40 | `select(Task.id, Task.title, Task.version, Task.status, displayed_state_expression(id_column=Task.id, status_column=Task.status, canceled_at_column=Task.canceled_at).label('displayed_state'), Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin(Iteration, ...)` |
 
 ### Boundary effects
 
@@ -201,7 +204,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
 | external_call | `domain_result` | `HTTPException` | 61 |
-| unresolved_call | `TaskDetailService.references` | `select(Task.id, Task.title, Task.version, Task.status, Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin` | 39 |
+| unresolved_call | `TaskDetailService.references` | `select(Task.id, Task.title, Task.version, Task.status, displayed_state_expression(id_column=Task.id, status_column=Task.status, canceled_at_column=Task.canceled_at).label('displayed_state'), Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin` | 40 |
 | step_limit | `lookup_tasks` | `first 12 steps` | 0 |
 
 ## Behavior

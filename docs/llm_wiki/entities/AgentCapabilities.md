@@ -1,6 +1,6 @@
 # AgentCapabilities
 
-**Location:** `frontend/src/types/agent.ts:147`
+**Location:** `frontend/src/types/agent.ts:148`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

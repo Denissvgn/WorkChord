@@ -19,7 +19,7 @@ Task progress metrics grouped under one milestone or unassigned work.
 | `task_count` | `int` | `task_count` | No | No | `0` | — | — | — |
 | `completed_tasks` | `int` | `completed_tasks` | No | No | `0` | — | — | — |
 | `completion_percent` | `float` | `completion_percent` | No | No | `0.0` | — | — | — |
-| `status_counts` | `dict[str, int]` | `status_counts` | No | No | factory: `lambda: {'planned': 0, 'active': 0, 'resolved': 0, 'closed': 0}` | — | — | — |
+| `status_counts` | `dict[str, int]` | `status_counts` | No | No | factory: `lambda: {'planned': 0, 'active': 0, 'resolved': 0, 'closed': 0, 'postponed': 0, 'canceled': 0, 'superseded': 0}` | — | — | — |
 | `total_effort_days` | `float` | `total_effort_days` | No | No | `0.0` | — | — | — |
 | `remaining_effort_days` | `float` | `remaining_effort_days` | No | No | `0.0` | — | — | — |
 

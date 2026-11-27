@@ -807,6 +807,33 @@ describe('schedule and review inside Plan', () => {
         expect(dated[0]).toHaveTextContent(/2026.* to .*2026/);
     });
 
+    it('lists each assignee\'s idle working days with the task that waits after them', async () => {
+        const { preview } = scheduleWorkspace();
+        services.gantt.previewSchedule.mockResolvedValue({ ...preview, schedule_result: {
+            ...preview.schedule_result, idle_days: [{ member_id: 7, member_name: 'Ada', idle_working_days: 2, gaps: [{
+                start_date: '2026-08-06', end_date: '2026-08-07', working_days: 2, task_id: 11, task_title: 'Prepare release',
+                reason: 'waits_for_prerequisite', waiting_on: { task_id: 10, task_title: 'Build package' }, message: '2 working days idle.',
+            }] }, { member_id: 8, member_name: 'Grace', idle_working_days: 2, gaps: [{
+                start_date: '2026-08-03', end_date: '2026-08-03', working_days: 1, task_id: 12, task_title: 'Launch',
+                reason: 'earliest_start', earliest_start: '2026-08-04', message: '1 working day idle.',
+            }, {
+                start_date: '2026-08-10', end_date: '2026-08-10', working_days: 1, task_id: 13, task_title: 'Follow-up',
+                reason: 'waits_for_prerequisite', message: 'Server says it waits.',
+            }] }],
+        } });
+        const { user } = renderPlan();
+        await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
+        const section = await screen.findByRole('region', { name: 'Idle working days' });
+        expect(within(section).getByText(/It cannot start before its earliest start date, .*2026\./)).toBeVisible();
+        // Without the prerequisite's name the server's message is shown instead of a sentence with a blank.
+        expect(within(section).getByText(/Server says it waits\./)).toBeVisible();
+        expect(within(section).getByText('Ada')).toBeVisible();
+        expect(within(section).getAllByText(/2 idle working days/)).toHaveLength(2);
+        expect(within(section).getByRole('link', { name: 'Prepare release' })).toHaveAttribute('href', '/tasks?task=11&fromPlanStep=schedule&project=1&iteration=1');
+        expect(within(section).getByText(/It waits for its prerequisite Build package\./)).toBeVisible();
+        expect(within(section).getByText(/\(2 days\) before/)).toBeVisible();
+    });
+
     it('says every task has dates after Apply schedule when the saved result lists no unscheduled tasks', async () => {
         const { result } = scheduleWorkspace();
         const saved = { success: result.success, decisions: [], workload_balanced: true, workload_issues: [] };

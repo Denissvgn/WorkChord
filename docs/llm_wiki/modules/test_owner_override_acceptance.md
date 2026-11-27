@@ -18,6 +18,7 @@ An owner may accept one resolved task while the different-publisher policy stays
 | `app.models.task` | `Task` |
 | `app.models.task_brief` | `TaskReviewRecord` |
 | `app.schemas.task_brief` | `BriefCriterion`, `OwnerAcceptanceWrite`, `TaskBrief` |
+| `app.services.manual_provenance_service` | `MAX_RECORDS` |
 | `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.task_service` | `TaskService` |
 | `json` | `json` |
@@ -43,7 +44,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (12) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -51,7 +52,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 1 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -66,3 +67,6 @@ flowchart LR
 | `test_trusted_local_browser_without_a_signed_in_person_cannot_override` | *(async)* `(delivery_store)` | — | — |
 | `test_only_a_signed_in_owner_or_operator_may_override` | *(async)* `(delivery_store, authority)` | `@pytest.mark.parametrize('authority', [Authority(None, 'local', local=True), Authority(1, 'system', workspace_role='operator', review_override=True, reason=REASON), Authority(None, 'agent', actor_id=1, actor_role='verifier', local=True, scopes=frozenset({'admin'})), Authority(1, 'human', workspace_role='owner', read_only=True), Authority(1, 'human', workspace_role='member', projects={1: 'manager'})], ids=['trusted-local', 'operator-key', 'agent', 'observer', 'project-manager'])` | — |
 | `test_override_grant_covers_only_its_task_revision_and_acceptance` | *(async)* `(delivery_store)` | — | — |
+| `test_the_refusal_and_the_task_actions_name_the_owner_acceptance_next_step` | *(async)* `(managed_store)` | — | — |
+| `test_the_actions_say_whether_a_provenance_record_would_be_accepted` | *(async)* `(managed_store)` | — | — |
+| `test_the_actions_refuse_a_provenance_record_past_the_record_limit` | *(async)* `(managed_store)` | — | — |

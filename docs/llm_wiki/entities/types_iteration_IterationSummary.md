@@ -1,6 +1,6 @@
 # IterationSummary
 
-**Location:** `frontend/src/types/iteration.ts:64`
+**Location:** `frontend/src/types/iteration.ts:65`
 **Kind:** Interface
 **Bases:** `WorkMetrics`
 **Module:** [types_iteration](../modules/types_iteration.md)
@@ -26,7 +26,7 @@ _Auto-generated from `IterationSummary` in `frontend/src/types/iteration.ts`._
 | `total_effort_days` | `number` | Yes | — | — |
 | `team_capacity_days` | `number` | Yes | — | — |
 | `overdue_tasks_count` | `number` | Yes | — | — |
-| `status_counts` | `Partial<Record<'planned' \| 'active' \| 'resolved' \| 'closed', number>>` | No | — | — |
+| `status_counts` | `Partial<Record<TaskDisplayedState, number>>` | No | — | — |
 | `blocked_tasks` | `number` | No | — | — |
 | `remaining_effort_days` | `number` | No | — | — |
 | `unknown_estimate_tasks` | `number` | No | — | — |

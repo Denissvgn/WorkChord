@@ -624,7 +624,7 @@ class SavedViewService:
         if filters.get("priority") is not None and task.priority != filters["priority"]:
             return False
 
-        if filters.get("status") is not None and task.status != filters["status"]:
+        if filters.get("status") is not None and (task.displayed_state or task.status) != filters["status"]:
             return False
 
         if filters.get("hasDependency") is not None:

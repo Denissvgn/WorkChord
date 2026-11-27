@@ -48,6 +48,7 @@ flowchart LR
     n1 --> n7
     n3 --> n6
     n4 --> n1
+    n5 --> n6
     click n0 "../modules/IterationOutlook.test.md"
     click n1 "../modules/StatusDistribution.md"
     click n2 "../modules/MetricCount.md"

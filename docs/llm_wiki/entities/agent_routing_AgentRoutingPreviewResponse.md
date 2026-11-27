@@ -1,6 +1,6 @@
 # AgentRoutingPreviewResponse
 
-**Location:** `backend/app/schemas/agent_routing.py:1178`
+**Location:** `backend/app/schemas/agent_routing.py:1248`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -26,6 +26,8 @@ Expiring non-dispatch result over a digest-bound routing input snapshot.
 | `runtime_availability` | `Literal['unknown']` | `runtime_availability` | No | No | `'unknown'` | — | — | — |
 | `eligibility_basis` | `Literal['task_policy_and_configuration', 'task_policy_configuration_and_review_evidence']` | `eligibility_basis` | No | No | `'task_policy_and_configuration'` | — | — | — |
 | `model_attestation` | `Literal['not_independently_attested']` | `model_attestation` | No | No | `'not_independently_attested'` | — | — | — |
+| `calibration_contract` | `Literal['none_approved', 'approved']` | `calibration_contract` | No | No | `'none_approved'` | — | — | Whether the deployment has an approved calibration contract. Routing does not consume performance history either way; the ranking is unchanged, and this field and approved_calibration_contracts are not covered by preview_digest. |
+| `approved_calibration_contracts` | `int` | `approved_calibration_contracts` | No | No | `0` | ge=0; strict=True | — | How many calibration contracts are approved; omitted when none is. |
 | `preview_id` | `str` | `preview_id` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `preview_digest` | `RoutingDigest` | `preview_digest` | Yes | No | — | — | — | — |
 | `input_digest` | `RoutingDigest` | `input_digest` | Yes | No | — | — | — | — |
@@ -99,7 +101,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing](../modules/agent_routing.md) | 3 | `acceptance_blocker_codes`, `assessment_id`, `assessment_task_version`, `current_task_version`, `eligibility_basis`, `eligible_candidates`, `eligible_candidates_omitted`, `exclusions`, `exclusions_omitted`, `expires_at`, `generated_at`, `hard_blocker_codes` |
+| [agent_routing](../modules/agent_routing.md) | 3 | `acceptance_blocker_codes`, `approved_calibration_contracts`, `assessment_id`, `assessment_task_version`, `calibration_contract`, `current_task_version`, `eligibility_basis`, `eligible_candidates`, `eligible_candidates_omitted`, `exclusions`, `exclusions_omitted`, `expires_at` |
 
 ### Structure
 

@@ -1,6 +1,6 @@
 # GitHubExternalLinkCreate
 
-**Location:** `frontend/src/types/task.ts:78`
+**Location:** `frontend/src/types/task.ts:82`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

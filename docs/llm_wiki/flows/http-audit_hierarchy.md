@@ -201,15 +201,15 @@ flowchart LR
 |---|---|---:|---|
 | audit_hierarchy | HierarchyRepairService.audit | 256 | `HierarchyRepairService(db).audit(iteration_id)` |
 | HierarchyRepairService.audit | require_operator | 19 | `require_operator(self.db)` |
-| require_operator | db.info.get | 91 | `db.info.get('authority')` |
-| require_operator | AuthorityError | 93 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
+| require_operator | db.info.get | 92 | `db.info.get('authority')` |
+| require_operator | AuthorityError | 94 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
 | HierarchyRepairService.audit | ValueError (backend/app/services/hier…erarchyRepairService.audit) | 21 | `ValueError('Repair limit must be between 1 and 500')` |
 | HierarchyRepairService.audit | scoped_metric_tasks | 22 | `scoped_metric_tasks(self.db, iteration_id=iteration_id)` |
-| scoped_metric_tasks | select | 141 | `select(Task)` |
-| scoped_metric_tasks | statement.where | 143 | `statement.where(...)` |
-| scoped_metric_tasks | statement.where | 145 | `statement.where(...)` |
-| scoped_metric_tasks | list (backend/app/services/work…ics.py:scoped_metric_tasks) | 146 | `list(...)` |
-| scoped_metric_tasks | (…).all | 146 | `(await db.scalars(statement.order_by(Task.id).limit(MAX_PROJECT_TREE_TASKS + 1))).all(data not statically known)` |
+| scoped_metric_tasks | select | 187 | `select(Task)` |
+| scoped_metric_tasks | statement.where | 189 | `statement.where(...)` |
+| scoped_metric_tasks | statement.where | 191 | `statement.where(...)` |
+| scoped_metric_tasks | list (backend/app/services/work…ics.py:scoped_metric_tasks) | 192 | `list(...)` |
+| scoped_metric_tasks | (…).all | 192 | `(await db.scalars(statement.order_by(Task.id).limit(MAX_PROJECT_TREE_TASKS + 1))).all(data not statically known)` |
 
 ### Boundary effects
 
@@ -225,12 +225,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_operator` | `db.info.get` | 91 |
+| unresolved_call | `require_operator` | `db.info.get` | 92 |
 | external_call | `HierarchyRepairService.audit` | `ValueError` | 21 |
-| external_call | `scoped_metric_tasks` | `select` | 141 |
-| unresolved_call | `scoped_metric_tasks` | `statement.where` | 143 |
-| unresolved_call | `scoped_metric_tasks` | `statement.where` | 145 |
-| unresolved_call | `scoped_metric_tasks` | `(await db.scalars(statement.order_by(Task.id).limit(MAX_PROJECT_TREE_TASKS + 1))).all` | 146 |
+| external_call | `scoped_metric_tasks` | `select` | 187 |
+| unresolved_call | `scoped_metric_tasks` | `statement.where` | 189 |
+| unresolved_call | `scoped_metric_tasks` | `statement.where` | 191 |
+| unresolved_call | `scoped_metric_tasks` | `(await db.scalars(statement.order_by(Task.id).limit(MAX_PROJECT_TREE_TASKS + 1))).all` | 192 |
 | step_limit | `audit_hierarchy` | `first 12 steps` | 0 |
 
 ## Behavior

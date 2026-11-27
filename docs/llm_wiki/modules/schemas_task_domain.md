@@ -32,7 +32,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (13) |
+| Inbound | `backend` (14) |
 | Inbound | `scripts` (1) |
 
 ### External packages
@@ -41,7 +41,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -49,7 +49,8 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [TaskAction](../entities/TaskAction.md) | Type alias | 7 | `Literal['start_manual', 'resolve_manual', 'block', 'unblock', 'cancel', 'reopen', 'commit', 'uncommit']` | — |
 | [TaskActionRequest](../entities/TaskActionRequest.md) | Pydantic model | 10 | `BaseModel` | — |
-| [TaskActionBlocker](../entities/TaskActionBlocker.md) | Pydantic model | 30 | `BaseModel` | — |
-| [TaskActionAvailability](../entities/schemas_task_domain_TaskActionAvailability.md) | Pydantic model | 35 | `BaseModel` | — |
-| [TaskActionsResponse](../entities/TaskActionsResponse.md) | Pydantic model | 41 | `BaseModel` | — |
-| [BacklogRestoreRequest](../entities/BacklogRestoreRequest.md) | Pydantic model | 50 | `BaseModel` | — |
+| [RefusalNextStep](../entities/schemas_task_domain_RefusalNextStep.md) | Pydantic model | 30 | `BaseModel` | What a person or agent may do about a refusal, from the shared refusal catalogue. |
+| [TaskActionBlocker](../entities/TaskActionBlocker.md) | Pydantic model | 40 | `BaseModel` | — |
+| [TaskActionAvailability](../entities/schemas_task_domain_TaskActionAvailability.md) | Pydantic model | 46 | `BaseModel` | — |
+| [TaskActionsResponse](../entities/TaskActionsResponse.md) | Pydantic model | 52 | `BaseModel` | — |
+| [BacklogRestoreRequest](../entities/BacklogRestoreRequest.md) | Pydantic model | 61 | `BaseModel` | — |

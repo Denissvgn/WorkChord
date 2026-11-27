@@ -1,6 +1,6 @@
 # UnscheduledReason
 
-**Location:** `frontend/src/types/gantt.ts:78`
+**Location:** `frontend/src/types/gantt.ts:80`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)
@@ -8,7 +8,7 @@
 
 ```typescript
 'no_assignee' | 'assignee_not_in_iteration' | 'no_estimate' | 'no_capacity'
-    | 'prerequisites_pending' | 'predecessor_unscheduled' | 'deferred' | 'blocked' | 'not_placed'
+    | 'prerequisites_pending' | 'predecessor_unscheduled' | 'predecessor_postponed' | 'deferred' | 'blocked' | 'not_placed'
 ```
 
 ## Description

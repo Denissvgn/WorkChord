@@ -13,6 +13,8 @@ class TaskReference(BaseModel):
     title: str
     version: int
     status: str
+    # The stored status, or canceled / superseded for withdrawn work (which keeps its old stored status).
+    displayed_state: str | None = None
     project_id: int | None
     iteration_id: int | None
     parent_id: int | None

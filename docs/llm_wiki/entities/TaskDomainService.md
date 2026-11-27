@@ -94,4 +94,4 @@ flowchart LR
 | `test_deep_ancestor_deferral_clearing_and_unscheduled_manual_freedom` | call | [test_effective_deferral](../modules/test_effective_deferral.md) | 2 |
 | `test_reparenting_recomputes_inherited_deferral_without_copying_the_flag` | call | [test_effective_deferral](../modules/test_effective_deferral.md) | 2 |
 
-> References: showing 12 of 28 logical references; 16 omitted by the 12-row generated summary limit.
+> References: showing 12 of 31 logical references; 19 omitted by the 12-row generated summary limit.

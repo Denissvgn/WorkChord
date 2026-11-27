@@ -21,6 +21,7 @@ _Auto-generated from `DeliveryMetrics` in `frontend/src/types/deliveryMetrics.ts
 | `acceptance_events` | `number` | Yes | — | — |
 | `rejection_events` | `number` | Yes | — | — |
 | `canceled_leaf_tasks` | `number` | Yes | — | — |
+| `superseded_leaf_tasks` | `number` | No | — | — |
 | `reopened_events` | `number` | Yes | — | — |
 | `lead_time` | `DurationSamples` | Yes | — | — |
 | `cycle_time` | `DurationSamples` | Yes | — | — |

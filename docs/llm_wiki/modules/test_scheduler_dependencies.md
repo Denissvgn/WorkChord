@@ -18,7 +18,7 @@ Dependency-ready scheduling across capacity rows and configured passes.
 | `app.schemas.gantt` | `ScheduleApplyRequest`, `SchedulePreviewRequest` |
 | `app.services` | `work_metrics` |
 | `app.services.scheduler_service` | `SchedulerService` |
-| `datetime` | `date`, `datetime`, `timezone` |
+| `datetime` | `date`, `datetime`, `timedelta`, `timezone` |
 | `pytest` | `pytest` |
 | `random` | `random` |
 | `time` | `perf_counter` |
@@ -39,6 +39,7 @@ flowchart LR
     n7["backend/app/services/work_metrics.py"]
     n8["backend/tests/test_schedule_working_date.py"]
     n9["backend/tests/test_scheduler_dependencies.py"]
+    n10["backend/tests/test_scheduler_free_days.py"]
     n0 --> n1
     n1 --> n0
     n1 --> n2
@@ -71,6 +72,10 @@ flowchart LR
     n9 --> n5
     n9 --> n6
     n9 --> n7
+    n10 --> n2
+    n10 --> n6
+    n10 --> n7
+    n10 --> n9
     click n0 "../modules/models_calendar.md"
     click n1 "../modules/models_iteration.md"
     click n2 "../modules/models_task.md"
@@ -81,6 +86,7 @@ flowchart LR
     click n7 "../modules/services_work_metrics.md"
     click n8 "../modules/test_schedule_working_date.md"
     click n9 "../modules/test_scheduler_dependencies.md"
+    click n10 "../modules/test_scheduler_free_days.md"
 ```
 
 ### Internal neighbors
@@ -88,6 +94,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [test_schedule_working_date](../modules/test_schedule_working_date.md) |
+| Inbound | [test_scheduler_free_days](../modules/test_scheduler_free_days.md) |
 | Outbound | [models_calendar](../modules/models_calendar.md) |
 | Outbound | [models_iteration](../modules/models_iteration.md) |
 | Outbound | [models_task](../modules/models_task.md) |
@@ -118,7 +125,7 @@ flowchart LR
 | `test_undated_predecessor_leaves_dependents_unplaced_with_their_dates_and_named` | *(async)* `(db_session, cause)` | `@pytest.mark.parametrize('cause', ['unassigned', 'no_estimate', 'blocked', 'deferred', 'active'])` | — |
 | `test_finished_predecessor_does_not_delay_dependents` | *(async)* `(db_session, status, saved_dates, follow_date)` | `@pytest.mark.parametrize('status', ['resolved', 'closed', 'canceled'])`, `@pytest.mark.parametrize('saved_dates', [(None, None), (date(2026, 2, 2), None), (None, date(2026, 2, 3)), (date(2026, 2, 2), date(2026, 2, 3))], ids=['undated', 'start_only', 'end_only', 'dated'])`, `@pytest.mark.parametrize('follow_date', [None, date(2026, 1, 12)], ids=['schedule', 'follow'])` | — |
 | `test_ready_tasks_keep_pass_priority_and_cross_pass_dependencies` | *(async)* `(db_session)` | — | — |
-| `test_row_stays_serial_after_iteration_overflow` | *(async)* `(db_session)` | — | — |
+| `test_row_stays_serial_after_iteration_overflow` | *(async)* `(db_session, fits_before)` | `@pytest.mark.parametrize('fits_before', [True, False])` | — |
 | `test_dependencies_preserve_calendars_time_off_modifiers_and_locked_dates` | *(async)* `(db_session)` | — | — |
 | `test_reassigned_tasks_preview_and_apply_without_capacity_refusal` | *(async)* `(db_session)` | — | — |
 | `test_summary_predecessor_waits_for_current_child_dates` | *(async)* `(db_session, missing_child)` | `@pytest.mark.parametrize('missing_child', [False, True])` | — |

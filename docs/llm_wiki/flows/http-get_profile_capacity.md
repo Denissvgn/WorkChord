@@ -83,9 +83,9 @@ sequenceDiagram
     p3-->>p29: selectinload(…).selectinload(Iteration.calendar)
 ```
 
-> Call sequence diagram shows 30 of 176 interactions; 146 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 177 interactions; 147 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 3 of 57 (54 omitted); unresolved 10 of 95 (85 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 3 of 57 (54 omitted); unresolved 10 of 96 (86 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -97,7 +97,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/authority.py:internal_authority` | 16 | - | unresolved | 1 |
 | `backend/app/services/capacity_service.py:CapacityService.require_visible` | 5 | [backend/app/commands.py](../modules/commands.md) | internal | 1 |
 | `backend/app/services/capacity_service.py:CapacityService._projection` | 4 | - | external | 32 |
-| `backend/app/services/capacity_service.py:CapacityService._projection` | 4 | - | unresolved | 25 |
+| `backend/app/services/capacity_service.py:CapacityService._projection` | 4 | - | unresolved | 26 |
 | `backend/app/services/calendar_rules.py:AnnualCalendars.for_iteration` | 37 | [backend/app/services/calendar_rules.py](../modules/calendar_rules.md) | internal | 1 |
 > Omission summary shows 8 of 21 groups; 13 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
@@ -214,10 +214,10 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `missing_years.add` | `CapacityService._projection` | 382 |
-| mutation | `observed_zones.add` | `CapacityService._projection` | 385 |
-| mutation | `observed_years.add` | `CapacityService._projection` | 386 |
-| mutation | `result.append` | `CapacityService._projection` | 397 |
+| mutation | `missing_years.add` | `CapacityService._projection` | 383 |
+| mutation | `observed_zones.add` | `CapacityService._projection` | 386 |
+| mutation | `observed_years.add` | `CapacityService._projection` | 387 |
+| mutation | `result.append` | `CapacityService._projection` | 398 |
 
 ### Static analysis gaps
 

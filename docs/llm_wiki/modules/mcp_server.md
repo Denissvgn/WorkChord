@@ -53,7 +53,7 @@ A planning command rejected by the domain returns its scoped conflict code and p
 | `starlette.routing` | `Route` |
 | `starlette.types` | `ASGIApp`, `Receive`, `Scope`, `Send` |
 | `sys` | `sys` |
-| `typing` | `Any`, `AsyncIterator`, `Callable`, `Optional` |
+| `typing` | `Any`, `AsyncIterator`, `Callable`, `Literal`, `Optional` |
 
 ## Local dependency map
 
@@ -73,7 +73,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (27) |
+| Inbound | `backend` (31) |
 | Outbound | `backend` (23) |
 
 ### External packages
@@ -82,7 +82,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 50 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 54 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

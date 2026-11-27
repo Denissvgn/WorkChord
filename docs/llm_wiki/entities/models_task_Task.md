@@ -103,6 +103,7 @@ A durable work item has either iteration scope or explicit project backlog scope
 | `effort_days` | `() -> float \| None` | `@hybrid_property` | — |
 | `_set_effort_days` | `(value: float \| None) -> None` | `@effort_days.inplace.setter` | — |
 | `_effort_days_expression` | `()` | `@effort_days.inplace.expression`, `@classmethod` | — |
+| `displayed_state` | `() -> str` | `@property` | The state to show: the stored status, or the terminal state of withdrawn work. |
 
 ## Relationships
 
@@ -156,7 +157,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_task](../modules/models_task.md) | 3 | `_legacy_effort_days`, `accepted_at`, `accepted_by_principal_id`, `accepted_version`, `actual_end_date`, `actual_start_date`, `agent_assignments`, `agent_runs`, `artifact_revision`, `assignee`, `assignee_id`, `baseline_end_date` |
+| [models_task](../modules/models_task.md) | 4 | `_legacy_effort_days`, `accepted_at`, `accepted_by_principal_id`, `accepted_version`, `actual_end_date`, `actual_start_date`, `agent_assignments`, `agent_runs`, `artifact_revision`, `assignee`, `assignee_id`, `baseline_end_date` |
 
 ### Structure
 
@@ -181,4 +182,4 @@ flowchart LR
 | `recovery` | import | [recovery](../modules/recovery.md) | — |
 | `release` | import | [models_release](../modules/models_release.md) | — |
 
-> References: showing 12 of 371 logical references; 359 omitted by the 12-row generated summary limit.
+> References: showing 12 of 408 logical references; 396 omitted by the 12-row generated summary limit.

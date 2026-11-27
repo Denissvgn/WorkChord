@@ -99,7 +99,8 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         assert after_rows.pop("task_replacements") == []
         for table in ("task_postponements", "task_reactivation_requirements"):
             assert after_rows.pop(table) == []
-        for table in ("routing_qualification_keys", "routing_qualification_key_revisions"):
+        for table in ("routing_qualification_keys", "routing_qualification_key_revisions",
+                      "routing_calibration_contracts", "routing_calibration_contract_revisions"):
             assert after_rows.pop(table) == []
         for table, columns in LATER_COLUMNS.items():
             for row in after_rows[table]:
@@ -143,6 +144,10 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         assert "ck_routing_qualification_keys_state" in after_catalog.pop("routing_qualification_keys")["checks"]
         assert "ck_routing_qualification_key_revisions_action" in after_catalog.pop(
             "routing_qualification_key_revisions")["checks"]
+        # A later revision keeps the deployment's calibration contracts.
+        assert "ck_routing_calibration_contracts_approval" in after_catalog.pop("routing_calibration_contracts")["checks"]
+        assert "ck_routing_calibration_contract_revisions_action" in after_catalog.pop(
+            "routing_calibration_contract_revisions")["checks"]
         assert after_catalog["projects"]["columns"].pop("require_different_review_publisher") == {"type": {"family": "boolean"}, "nullable": False}
         # A later revision lets a project refuse or only warn about inconsistent task routing.
         assert after_catalog["projects"]["columns"].pop("routing_conflict_mode") == {"type": {"family": "text"}, "nullable": False}

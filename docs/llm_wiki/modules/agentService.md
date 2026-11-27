@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/services/agentService.ts`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `../types/agent` | `AgentActorRosterItem`, `AgentAssignmentListParams`, `AgentAssignmentReadItem`, `AgentCapabilities`, `AgentCommandMetadata`, `AgentModelBinding`, `AgentModelBindingCreate`, `AgentModelBindingDisable`, `AgentModelBindingListParams`, `AgentModelBindingUpdate`, `AgentModelCatalogCreate`, `AgentModelCatalogDisable`, `AgentModelCatalogEntry`, `AgentModelCatalogUpdate`, `AgentModelMutationReceipt`, `AgentPipeline`, `AgentProfileSkillCatalogItem`, `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse`, `AgentRun`, `AgentTaskAssignment`, `AgentTeamApplyResponse`, `AgentTeamMaster`, `AgentTeamPlan`, `AgentTeamStatus`, `AgentTeamValidation`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `TaskRoutingAssessmentCommand`, `TaskRoutingAssessmentHistory`, `TaskRoutingAssessmentMutationReceipt`, `TaskRoutingAssessmentState`, `TaskTimelineResponse` | Declaration | erased |
+| `../types/agent` | `AgentActorRosterItem`, `AgentAssignmentListParams`, `AgentAssignmentReadItem`, `AgentCapabilities`, `AgentCommandMetadata`, `AgentModelBinding`, `AgentModelBindingCreate`, `AgentModelBindingDisable`, `AgentModelBindingListParams`, `AgentModelBindingUpdate`, `AgentModelCatalogCreate`, `AgentModelCatalogDisable`, `AgentModelCatalogEntry`, `AgentModelCatalogUpdate`, `AgentModelMutationReceipt`, `AgentPipeline`, `AgentProfileSkillCatalogItem`, `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse`, `AgentRun`, `AgentTaskAssignment`, `AgentTeamApplyResponse`, `AgentTeamMaster`, `AgentTeamPlan`, `AgentTeamStatus`, `AgentTeamValidation`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `RoutingQualificationKey`, `RoutingQualificationKeyDeclare`, `RoutingQualificationKeyDetail`, `RoutingQualificationKeyRegistry`, `RoutingQualificationKeyRevise`, `TaskRoutingAssessmentCommand`, `TaskRoutingAssessmentHistory`, `TaskRoutingAssessmentMutationReceipt`, `TaskRoutingAssessmentState`, `TaskTimelineResponse` | Declaration | erased |
 | `./api` | `api` | — | compiler-dependent |
 
 ## Module Signals
@@ -40,7 +40,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (14) |
+| Inbound | `frontend` (16) |
 | Outbound | `frontend` (2) |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

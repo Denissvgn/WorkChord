@@ -15,7 +15,7 @@ _Auto-generated from `frontend/src/components/planning/PlanScheduleSection.tsx`.
 | `../../features/planningMasters/usePlanScheduleWorkloads` | `usePlanScheduleWorkloads` | — | compiler-dependent |
 | `../../features/scope/useScopeLink` | `useScopeLink` | — | compiler-dependent |
 | `../../services/ganttService` | `ganttService` | — | compiler-dependent |
-| `../../types/gantt` | `GanttResponse`, `GanttTask`, `SchedulePreviewResponse` | Declaration | erased |
+| `../../types/gantt` | `GanttResponse`, `GanttTask`, `IdleGap`, `SchedulePreviewResponse` | Declaration | erased |
 | `../../types/iteration` | `Iteration` | Declaration | erased |
 | `../../types/task` | `Task` | Declaration | erased |
 | `../../types/team` | `TeamMember` | Declaration | erased |
@@ -25,6 +25,7 @@ _Auto-generated from `frontend/src/components/planning/PlanScheduleSection.tsx`.
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/ButtonLink` | `ButtonLink` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../gantt/unscheduledReason` | `unscheduledReasonText` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQueryClient` | — | compiler-dependent |
 | `react` | `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
@@ -57,7 +58,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (15) |
+| Outbound | `frontend` (16) |
 
 ### External packages
 
@@ -65,13 +66,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ListedTask](../entities/PlanScheduleSection_ListedTask.md) | Type alias | 21 | `Pick<Task, 'id' \| 'start_date' \| 'end_date' \| 'is_deferred' \| 'effective_is_deferred'> & { children?: ListedTask[] }` | — |
+| [ListedTask](../entities/PlanScheduleSection_ListedTask.md) | Type alias | 22 | `Pick<Task, 'id' \| 'start_date' \| 'end_date' \| 'is_deferred' \| 'effective_is_deferred'> & { children?: ListedTask[] }` | — |
 
 ## Functions
 

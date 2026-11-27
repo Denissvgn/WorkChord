@@ -2,10 +2,11 @@
 
 from datetime import datetime
 
-from sqlalchemy import JSON, CheckConstraint, ForeignKey, Index, Integer, String, Text, UniqueConstraint
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import JSON, CheckConstraint, ForeignKey, Index, Integer, String, Text, UniqueConstraint, case, select
+from sqlalchemy.orm import Mapped, column_property, mapped_column
 
 from app.database import Base
+from app.models.task import Task
 from app.utils.time import UTCDateTime, utc_now
 
 
@@ -51,3 +52,18 @@ class TaskReplacement(Base):
     decided_by_principal_id: Mapped[int | None] = mapped_column(ForeignKey("principals.id", ondelete="SET NULL"))
     decided_by_actor_id: Mapped[int | None] = mapped_column(ForeignKey("agent_actors.id", ondelete="SET NULL"))
     decided_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now, nullable=False)
+
+
+# Who delivers a withdrawn task's work, read with the task itself. The subqueries use the table, not
+# the entity, so the authority scope on task reads does not apply to them a second time. They are
+# correlated to the task row only (correlate_except), so a query that also joins the replacement table
+# still compiles, and they probe only canceled rows: a live task has no successor, so it skips the lookup.
+_replacements = TaskReplacement.__table__
+Task.successor_task_id = column_property(case(
+    (Task.canceled_at.is_not(None), select(_replacements.c.replacement_task_id)
+     .where(_replacements.c.original_task_id == Task.id).correlate_except(_replacements).scalar_subquery()),
+    else_=None))
+Task.successor_kind = column_property(case(
+    (Task.canceled_at.is_not(None), select(_replacements.c.disposition)
+     .where(_replacements.c.original_task_id == Task.id).correlate_except(_replacements).scalar_subquery()),
+    else_=None))

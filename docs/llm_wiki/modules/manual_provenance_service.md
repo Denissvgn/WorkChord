@@ -53,7 +53,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (4) |
+| Inbound | `backend` (6) |
 | Outbound | `backend` (13) |
 
 ### External packages
@@ -62,14 +62,14 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [ProvenanceConflict](../entities/ProvenanceConflict.md) | 45 | `PlanningConflict` | A refusal that also names the offending fact, such as a commit and its attribution gap. |
-| [ManualProvenanceService](../entities/ManualProvenanceService.md) | 170 | — | — |
+| [ManualProvenanceService](../entities/ManualProvenanceService.md) | 200 | — | — |
 
 ## Functions
 
@@ -77,6 +77,8 @@ flowchart LR
 |----------|-----------|------------|-------------|
 | `remedy` | `(task_id)` | — | Where an accountable owner or PM records the missing provenance. |
 | `require_provenance_recorder` | `(db, project_id)` | — | A signed-in owner, operator or project manager, or the project's PM agent, records provenance. |
+| `_record_count` | *(async)* `(db, task_id)` | — | — |
+| `provenance_blockers` | *(async)* `(db, task)` | — | Why a provenance record would be refused for this task now, as action blockers; empty when it may be recorded. |
 | `_commit` | `(url, field)` | — | — |
 | `_links` | `(data)` | — | — |
 | `submitted_candidate` | `(record)` | — | The candidate fields review provenance verifies, as a worker submission would carry them. |

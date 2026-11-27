@@ -30,6 +30,13 @@ from app.schemas.agent_routing import (
     AgentModelCatalogUpdate,
     AgentModelMutationReceipt,
 )
+from app.schemas.routing_calibration import (
+    RoutingCalibrationContractApprove,
+    RoutingCalibrationContractDetail,
+    RoutingCalibrationContractListResponse,
+    RoutingCalibrationContractRevise,
+    RoutingCalibrationContractSubmit,
+)
 from app.schemas.routing_qualification import (
     RoutingQualificationKeyDeclare,
     RoutingQualificationKeyDetail,
@@ -44,6 +51,7 @@ from app.services.agent_model_catalog_service import (
 )
 from app.services.agent_planning_service import AgentPlanningService
 from app.services.agent_profile_catalog_service import AgentProfileCatalogService
+from app.services.routing_calibration_contract_service import RoutingCalibrationContractService
 from app.services.routing_qualification_key_service import RoutingQualificationKeyService
 from app.security import ADMIN_API_KEY_HEADER, admin_api_key_is_valid
 from app.services.agent_service import AgentService, actor_has_scope
@@ -607,5 +615,127 @@ async def retire_routing_qualification_key(
 
     try:
         return await service.retire(key, actor, data, command=command)
+    except Exception as exc:
+        _handle_model_error(exc)
+
+
+async def get_routing_calibration_contract_service(
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+) -> RoutingCalibrationContractService:
+    """Return the request-scoped calibration contract service."""
+
+    return RoutingCalibrationContractService(db)
+
+
+@router.get(
+    "/agent/routing-calibration-contracts",
+    response_model=RoutingCalibrationContractListResponse,
+)
+async def list_routing_calibration_contracts(
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
+    service: Annotated[
+        RoutingCalibrationContractService,
+        Depends(get_routing_calibration_contract_service),
+    ],
+):
+    """Return every calibration contract and whether any is approved."""
+
+    try:
+        return await service.list_contracts(actor)
+    except Exception as exc:
+        _handle_model_error(exc)
+
+
+@router.get(
+    "/agent/routing-calibration-contracts/{key}",
+    response_model=RoutingCalibrationContractDetail,
+)
+async def get_routing_calibration_contract(
+    key: str,
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
+    service: Annotated[
+        RoutingCalibrationContractService,
+        Depends(get_routing_calibration_contract_service),
+    ],
+):
+    """Return one calibration contract with every revision it has had."""
+
+    try:
+        return await service.get_contract(actor, key)
+    except Exception as exc:
+        _handle_model_error(exc)
+
+
+@router.post(
+    "/agent/routing-calibration-contracts",
+    response_model=AgentModelMutationReceipt,
+    status_code=status.HTTP_201_CREATED,
+)
+async def submit_routing_calibration_contract(
+    data: RoutingCalibrationContractSubmit,
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
+    service: Annotated[
+        RoutingCalibrationContractService,
+        Depends(get_routing_calibration_contract_service),
+    ],
+    command: Annotated[
+        AgentPlanningCommandContext,
+        Depends(get_agent_planning_command_context),
+    ],
+):
+    """Submit a new calibration contract as the operator; it starts unapproved."""
+
+    try:
+        return await service.submit(actor, data, command=command)
+    except Exception as exc:
+        _handle_model_error(exc)
+
+
+@router.put(
+    "/agent/routing-calibration-contracts/{key}",
+    response_model=AgentModelMutationReceipt,
+)
+async def revise_routing_calibration_contract(
+    key: str,
+    data: RoutingCalibrationContractRevise,
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
+    service: Annotated[
+        RoutingCalibrationContractService,
+        Depends(get_routing_calibration_contract_service),
+    ],
+    command: Annotated[
+        AgentPlanningCommandContext,
+        Depends(get_agent_planning_command_context),
+    ],
+):
+    """Submit complete new terms as the next revision; an earlier approval lapses."""
+
+    try:
+        return await service.revise(key, actor, data, command=command)
+    except Exception as exc:
+        _handle_model_error(exc)
+
+
+@router.post(
+    "/agent/routing-calibration-contracts/{key}/approve",
+    response_model=AgentModelMutationReceipt,
+)
+async def approve_routing_calibration_contract(
+    key: str,
+    data: RoutingCalibrationContractApprove,
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
+    service: Annotated[
+        RoutingCalibrationContractService,
+        Depends(get_routing_calibration_contract_service),
+    ],
+    command: Annotated[
+        AgentPlanningCommandContext,
+        Depends(get_agent_planning_command_context),
+    ],
+):
+    """Approve the submitted terms by revision and digest, as a principal other than the submitter."""
+
+    try:
+        return await service.approve(key, actor, data, command=command)
     except Exception as exc:
         _handle_model_error(exc)

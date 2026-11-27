@@ -25,6 +25,10 @@ _Auto-generated from `CatalogForm` in `frontend/src/components/team/AgentModelAd
 | `costTier` | `'low' \| 'medium' \| 'high'` | Yes | — | — |
 | `localFirst` | `boolean` | Yes | — | — |
 | `latencyTier` | `'fast' \| 'balanced' \| 'slow'` | Yes | — | — |
+| `qualificationKeys` | `string` | Yes | — | — |
+| `originalQualificationKeys` | `string` | Yes | — | — |
+| `originalEvidence` | `QualificationEvidence \| null` | Yes | — | — |
+| `keepQualificationKeys` | `boolean` | Yes | — | — |
 | `lastVerifiedAt` | `string` | Yes | — | — |
 
 ## Methods
@@ -40,4 +44,4 @@ _Auto-generated from `CatalogForm` in `frontend/src/components/team/AgentModelAd
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [AgentModelAdministration](../modules/AgentModelAdministration.md) | 0 | `configuredModelAlias`, `contextTier`, `costTier`, `effort`, `id`, `key`, `lastVerifiedAt`, `latencyTier`, `localFirst`, `modalityTags`, `provider`, `reasoningTier` |
+| [AgentModelAdministration](../modules/AgentModelAdministration.md) | 0 | `configuredModelAlias`, `contextTier`, `costTier`, `effort`, `id`, `keepQualificationKeys`, `key`, `lastVerifiedAt`, `latencyTier`, `localFirst`, `modalityTags`, `originalEvidence` |

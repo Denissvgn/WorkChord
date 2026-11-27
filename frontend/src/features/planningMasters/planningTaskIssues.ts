@@ -34,6 +34,7 @@ export const parsePlanningIterationId = (value: unknown): number | null => {
 
 export const isPlanningLeafTask = (task: Task) => (
     !(task.effective_is_deferred ?? task.is_deferred)
+    && !task.canceled_at
     && !task.is_composite
     && !task.children?.length
 );

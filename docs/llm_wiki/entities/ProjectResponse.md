@@ -1,6 +1,6 @@
 # ProjectResponse
 
-**Location:** `backend/app/schemas/project.py:278`
+**Location:** `backend/app/schemas/project.py:281`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_project](../modules/schemas_project.md)

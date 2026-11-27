@@ -218,7 +218,10 @@ async def test_operator_declares_revises_and_retires_a_key_with_audited_revision
             (2, "revise", "active", "Trial now covers migrations."),
             (3, "retire", "retired", "The class is no longer routed separately."),
         ]
-        assert detail["usage"] == {"catalog_entries": [], "task_ids": [], "catalog_entries_omitted": 0, "task_ids_omitted": 0}
+        assert detail["usage"] == {
+            "catalog_entries": [], "task_ids": [], "catalog_entries_omitted": 0, "task_ids_omitted": 0,
+            "calibration_contracts": [], "calibration_contracts_omitted": 0,
+        }
 
         # Declaring a retired key again continues its revision sequence.
         again = await client.post(
