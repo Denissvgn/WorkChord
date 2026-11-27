@@ -1,6 +1,6 @@
 # TaskDetailResponse
 
-**Location:** `backend/app/schemas/task_detail.py:36`
+**Location:** `backend/app/schemas/task_detail.py:37`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [task_detail](../modules/task_detail.md)
@@ -20,6 +20,7 @@ _Auto-generated from `TaskDetailResponse` in `backend/app/schemas/task_detail.py
 | `dependencies` | `TaskReferencePage` | `dependencies` | Yes | No | — | — | — | — |
 | `execution_context_complete` | `bool` | `execution_context_complete` | No | No | `False` | — | — | — |
 | `reviewer_name` | `str \| None` | `reviewer_name` | No | Yes | `None` | — | — | — |
+| `postponement` | `TaskPostponementRecord \| None` | `postponement` | No | Yes | `None` | — | — | The open postponement of postponed work, with each reactivation requirement and whether it is met. |
 
 ## Methods
 
@@ -49,7 +50,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [task_detail](../modules/task_detail.md) | 0 | `ancestors`, `ancestors_complete`, `children`, `dependencies`, `execution_context_complete`, `reviewer_name`, `task` |
+| [task_detail](../modules/task_detail.md) | 0 | `ancestors`, `ancestors_complete`, `children`, `dependencies`, `execution_context_complete`, `postponement`, `reviewer_name`, `task` |
 
 ### Structure
 
