@@ -809,6 +809,7 @@ export const surfacesRussian = {
             githubPrReady: "GitHub PR готов к проверке", githubPrDraft: "GitHub PR переведён в черновик",
             githubPrClosed: "GitHub PR закрыт", githubPrMerged: "GitHub PR смержен",
             githubAutomationFailed: "Ошибка автоматизации GitHub", releaseShipped: "Релиз выпущен",
+            ownerAcceptanceOverride: "Принято владельцем в обход независимой проверки",
             agentProgress: "Ход работы", agentCheckpoint: "Контрольная точка", agentBlocker: "Сообщено о блокере",
         },
     },

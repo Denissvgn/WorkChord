@@ -6,7 +6,7 @@ import { emptyTaskBrief } from './taskEditorContract';
 import i18n, { ensureLanguageResources } from '../../i18n/i18n';
 import { TaskWorkPanel } from './TaskWorkPanel';
 
-const service = vi.hoisted(() => ({ actions: vi.fn(), progress: vi.fn(), command: vi.fn(), review: vi.fn(), getDetail: vi.fn() }));
+const service = vi.hoisted(() => ({ actions: vi.fn(), progress: vi.fn(), command: vi.fn(), review: vi.fn(), getDetail: vi.fn(), reviews: vi.fn().mockResolvedValue([]) }));
 vi.mock('../../services/taskService', () => ({ taskService: service }));
 vi.mock('../../services/iterationService', () => ({ iterationService: { getAll: vi.fn().mockResolvedValue([]) } }));
 
