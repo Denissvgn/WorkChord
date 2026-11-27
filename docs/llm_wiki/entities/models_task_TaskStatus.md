@@ -14,6 +14,9 @@ Workflow: PLANNED -> ACTIVE -> RESOLVED -> CLOSED
 - ACTIVE: Work has started
 - RESOLVED: Work completed, pending validation
 - CLOSED: Fully completed and validated
+- POSTPONED: Stopped by a recorded decision until its reactivation
+  requirements are met; entered from planned, active or resolved only
+  through the postpone command, and left only by reactivation.
 
 ## Attributes
 
@@ -23,6 +26,7 @@ Workflow: PLANNED -> ACTIVE -> RESOLVED -> CLOSED
 | `ACTIVE` | `'active'` | — |
 | `RESOLVED` | `'resolved'` | — |
 | `CLOSED` | `'closed'` | — |
+| `POSTPONED` | `'postponed'` | — |
 
 ## Methods
 
@@ -37,17 +41,17 @@ flowchart LR
     n1["Enum"]
     n2["str"]
     n3["backend/app/models/__init__.py"]
-    n4["backend/app/services/agent_readiness.py"]
-    n5["backend/app/services/agent_routing_service.py"]
-    n6["backend/app/services/agent_service.py"]
-    n7["backend/app/services/agent_work_service.py"]
-    n8["backend/app/services/dependency_order.py"]
-    n9["GitHubStatusAutomationService.apply_rules (backend/app/services/github_status_automation_service.py)"]
-    n10["backend/app/services/iteration_service.py"]
-    n11["backend/app/services/project_service.py"]
-    n12["backend/app/services/scheduler_service.py"]
-    n13["TaskBulkOperationService._build_update (backend/app/services/task_bulk_operation_service.py)"]
-    n14["TaskBulkOperationService._status_transition_error (backend/app/services/task_bulk_operation_service.py)"]
+    n4["backend/app/routers/snapshots.py"]
+    n5["backend/app/services/agent_readiness.py"]
+    n6["backend/app/services/agent_routing_service.py"]
+    n7["backend/app/services/agent_service.py"]
+    n8["backend/app/services/agent_work_service.py"]
+    n9["backend/app/services/dependency_order.py"]
+    n10["GitHubStatusAutomationService.apply_rules (backend/app/services/github_status_automation_service.py)"]
+    n11["backend/app/services/iteration_service.py"]
+    n12["backend/app/services/project_service.py"]
+    n13["backend/app/services/scheduler_service.py"]
+    n14["TaskBulkOperationService._build_update (backend/app/services/task_bulk_operation_service.py)"]
     n0 --> n1
     n0 --> n2
     n3 --> n0
@@ -64,16 +68,16 @@ flowchart LR
     n14 --> n0
     click n0 "../modules/models_task.md"
     click n3 "../modules/models___init__.md"
-    click n4 "../modules/agent_readiness.md"
-    click n5 "../modules/agent_routing_service.md"
-    click n6 "../modules/agent_service.md"
-    click n7 "../modules/agent_work_service.md"
-    click n8 "../modules/dependency_order.md"
-    click n9 "../modules/github_status_automation_service.md"
-    click n10 "../modules/iteration_service.md"
-    click n11 "../modules/project_service.md"
-    click n12 "../modules/scheduler_service.md"
-    click n13 "../modules/task_bulk_operation_service.md"
+    click n4 "../modules/snapshots.md"
+    click n5 "../modules/agent_readiness.md"
+    click n6 "../modules/agent_routing_service.md"
+    click n7 "../modules/agent_service.md"
+    click n8 "../modules/agent_work_service.md"
+    click n9 "../modules/dependency_order.md"
+    click n10 "../modules/github_status_automation_service.md"
+    click n11 "../modules/iteration_service.md"
+    click n12 "../modules/project_service.md"
+    click n13 "../modules/scheduler_service.md"
     click n14 "../modules/task_bulk_operation_service.md"
 ```
 
@@ -81,7 +85,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_task](../modules/models_task.md) | 0 | `ACTIVE`, `CLOSED`, `PLANNED`, `RESOLVED` |
+| [models_task](../modules/models_task.md) | 0 | `ACTIVE`, `CLOSED`, `PLANNED`, `POSTPONED`, `RESOLVED` |
 
 ### Structure
 
@@ -95,6 +99,7 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
+| `snapshots` | import | [snapshots](../modules/snapshots.md) | — |
 | `agent_readiness` | import | [agent_readiness](../modules/agent_readiness.md) | — |
 | `agent_routing_service` | import | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `agent_service` | import | [agent_service](../modules/agent_service.md) | — |
@@ -105,6 +110,5 @@ flowchart LR
 | `project_service` | import | [project_service](../modules/project_service.md) | — |
 | `scheduler_service` | import | [scheduler_service](../modules/scheduler_service.md) | — |
 | `TaskBulkOperationService._build_update` | call | [task_bulk_operation_service](../modules/task_bulk_operation_service.md) | 1 |
-| `TaskBulkOperationService._status_transition_error` | type_reference | [task_bulk_operation_service](../modules/task_bulk_operation_service.md) | — |
 
-> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.
+> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.

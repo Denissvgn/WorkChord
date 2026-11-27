@@ -34,6 +34,31 @@ Cancellation retains lifecycle history and invalidates agent execution ownership
 
 Scheduling day boundaries use the project's IANA timezone, with the availability calendar used for work without a project. An author's recorded-time work date remains an explicit local date with its separately selected timezone. Capacity reflects current shared calendars and absences; task recovery points restore their supported planning state while those shared inputs remain current.
 
+## Postponed work
+
+`postponed` is a task status. It stops planned, active or resolved leaf work by a recorded decision, without canceling it, and records what must be true before the work resumes. Only the project's PM actor, a project manager or a workspace operator can postpone or reactivate work.
+
+`POST /api/tasks/{task_id}/postpone` takes `{expected_version, reason, requirements}` and at least one requirement:
+
+- `{"kind": "predecessor_accepted", "task_id": ...}`: the named task is accepted.
+- `{"kind": "date", "on_date": "YYYY-MM-DD"}`: the day arrives in the task's working time zone. It must be after today.
+- `{"kind": "owner_decision", "description": ...}`: the owner records the described decision.
+- `{"kind": "linked_resolved", "task_id": ...}` or `{"kind": "linked_resolved", "triage_item_id": ...}`: the named task or triage item is resolved. A task is resolved when it is resolved or closed. A triage item is resolved when it is accepted, declined, marked as a duplicate or converted, which means any status except new and snoozed.
+
+A requirement that can never hold, such as a canceled task, or that already holds, such as an accepted predecessor, a resolved task or triage item, or a past date, is refused. Work named by a requirement of an open postponement cannot be deleted. A task delete, an iteration delete, an unmerge that deletes the parent, or a restore that would remove such a task is refused with `reactivation_requirement_referenced`. Reactivate the postponed task first. A task named only by an earlier, closed postponement can be deleted, and that history keeps the requirement with no target.
+
+Postponing work with a live claim, assignment or run releases them through the same fenced path as cancellation. Supply the `claim_generation`, `running_run_ids` and `live_assignment_ids` from `GET /api/tasks/{task_id}/actions` as `expected_claim_generation`, `expected_running_run_ids` and `expected_live_assignment_ids`. If ownership changed after that read, the command is refused with `execution_ownership_changed`. The release is recorded on the task timeline as `execution_released`. Agents must take new assignments after the work is reactivated. The task is not canceled, and its brief, progress, evidence, artifact trail, dates and execution provenance are kept. New evidence is not recorded while the work is postponed.
+
+`POST /api/tasks/{task_id}/reactivate` takes `{expected_version, reason}`. It returns resolved work to `resolved`, and planned or active work to `planned`, where it starts again through the usual commands. `GET /api/tasks/{task_id}/postponement` returns the open postponement, or the most recent one: who decided, when and why, the released execution, each requirement and, after reactivation, who reactivated the work, why and to which status. The actions endpoint reports `postpone` and `reactivate` availability. `GET /api/tasks/capabilities` lists `task-postponement-v1` when the server supports these commands.
+
+Only these two commands move work into or out of `postponed`. A status change, a bulk status change or a task update that names `postponed` is refused, as is any other status change of postponed work. Canceled postponed work stays postponed; reopening it returns it to its open postponement. A summary task is postponed when all its leaves are postponed. Alongside other leaves, a postponed leaf counts as not started. An iteration or backlog restore that would move a task into or out of `postponed` is refused with `restore_conflicts_with_task_postponement`.
+
+### Postponed or deferred
+
+Use deferral for backlog work that should stay out of the schedule and not start yet, with no particular condition for its return. Deferral is a scheduling policy inherited through the task's ancestry. It does not change the task's status, it blocks only the start of planned work, and it records no reason or requirement.
+
+Use postponement when work must stop, including work that has already started or been resolved, until a known condition holds. Postponement changes the status, releases live agent execution and records the reason and the reactivation requirements. The two are independent: deferred work can be postponed, and removing deferral from postponed work leaves it postponed.
+
 ## Estimates
 
 `effort_hours` is authoritative; it is the value people enter in the task form. `effort_days` is derived using `nominal_day_hours`, independent of personal availability and productivity coefficients, and the form shows it as a hint. A calendar declares its nominal workday; the compatibility default is eight hours. Inputs supplying both units must agree. Hours are rounded to six decimal places.

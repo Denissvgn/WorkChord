@@ -98,4 +98,4 @@ flowchart LR
 | `ImportTasksModal` | import | [ImportTasksModal](../modules/ImportTasksModal.md) | — |
 | `KanbanBoard` | import | [KanbanBoard](../modules/KanbanBoard.md) | — |
 
-> References: showing 12 of 28 logical references; 16 omitted by the 12-row generated summary limit.
+> References: showing 12 of 29 logical references; 17 omitted by the 12-row generated summary limit.
