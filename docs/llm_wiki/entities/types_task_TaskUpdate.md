@@ -1,6 +1,6 @@
 # TaskUpdate
 
-**Location:** `frontend/src/types/task.ts:210`
+**Location:** `frontend/src/types/task.ts:208`
 **Kind:** Interface
 **Bases:** `Partial<TaskCreate>`
 **Module:** [types_task](../modules/types_task.md)
@@ -14,7 +14,6 @@ _Auto-generated from `TaskUpdate` in `frontend/src/types/task.ts`._
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `status` | `string` | No | — | — |
-| `routing_resolution` | `TaskRoutingResolution` | No | — | — |
 | `expected_version` | `number` | No | — | — |
 
 ## Methods
@@ -63,7 +62,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `expected_version`, `routing_resolution`, `status` |
+| [types_task](../modules/types_task.md) | 0 | `expected_version`, `status` |
 
 ### Structure
 

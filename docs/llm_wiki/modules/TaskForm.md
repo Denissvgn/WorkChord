@@ -30,13 +30,12 @@ An unresolved write freezes its submitted draft and every write target. Its pers
 | `../../services/templateService` | `templateService` | — | compiler-dependent |
 | `../../services/triageService` | `triageService` | — | compiler-dependent |
 | `../../types/iteration` | `Iteration` | Declaration | erased |
-| `../../types/task` | `GroundedAISuggestionResponse`, `TaskAISuggestRequest`, `TaskCreate`, `Task`, `RoutingCheck`, `TaskUpdate` | Declaration | erased |
+| `../../types/task` | `GroundedAISuggestionResponse`, `TaskAISuggestRequest`, `TaskCreate`, `Task`, `TaskUpdate` | Declaration | erased |
 | `../../types/team` | `TeamMemberProfile` | Declaration | erased |
 | `../../types/template` | `WorkTemplate` | Declaration | erased |
 | `../../types/triage` | `TriageItemCreate` | Declaration | erased |
 | `../../utils/apiError` | `getApiErrorMessage`, `getApiErrorStatus` | — | compiler-dependent |
 | `../../utils/formatDate` | `formatDate`, `formatDateTime` | — | compiler-dependent |
-| `../../utils/routingCheck` | `routingCheckFromError` | — | compiler-dependent |
 | `../../utils/templateDefaults` | `getPayloadBoolean`, `getPayloadString`, `mergeLabels` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/CollapsibleSection` | `CollapsibleSection` | — | compiler-dependent |
@@ -48,7 +47,6 @@ An unresolved write freezes its submitted draft and every write target. Its pers
 | `./AssigneePicker` | `AssigneePicker` | — | compiler-dependent |
 | `./DeliveryDependencies` | `DeliveryDependencies` | — | compiler-dependent |
 | `./PersonCapacity` | `PersonCapacity` | — | compiler-dependent |
-| `./RoutingCheckNotice` | `RoutingCheckNotice` | — | compiler-dependent |
 | `./StatusChangeControl` | `StatusChangeControl` | — | compiler-dependent |
 | `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` | — | compiler-dependent |
 | `./TaskBriefEditor` | `TaskBriefEditor` | — | compiler-dependent |
@@ -94,7 +92,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (6) |
-| Outbound | `frontend` (44) |
+| Outbound | `frontend` (42) |
 
 ### External packages
 
@@ -102,13 +100,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 50 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 48 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskFormProps](../entities/TaskFormProps.md) | Interface | 65 | — | — |
+| [TaskFormProps](../entities/TaskFormProps.md) | Interface | 63 | — | — |
 
 ## Functions
 

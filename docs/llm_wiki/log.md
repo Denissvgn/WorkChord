@@ -4634,11 +4634,11 @@ Refreshed against the 1.10.0 code. New and changed subjects: delivery prerequisi
 - Generator version: `6.1.1`
 - Source selection profile: none (default discovery)
 - Source selection fingerprint: none
-- Source snapshot digest: `sha256:484f1e6028ad14a663e1a91d0a7989f4060987535b0a3fc0fa4cd30deb42cea2`
-- Pages created: 18
-- Pages updated: 89
+- Source snapshot digest: `sha256:06019ca75fc8a47ae2622645cc595b9ee6fc9db28f03e1c6b49888e9ba467318`
+- Pages created: 0
+- Pages updated: 0
 - Pages metadata-only: 0
-- Pages skipped (unchanged): 3952
+- Pages skipped (unchanged): 4041
 - Pages deprecated: 0
-- Semantic fields preserved: 1
+- Semantic fields preserved: 0
 - Moved entities: none

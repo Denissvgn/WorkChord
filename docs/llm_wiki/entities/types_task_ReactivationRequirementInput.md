@@ -1,6 +1,6 @@
 # ReactivationRequirementInput
 
-**Location:** `frontend/src/types/task.ts:554`
+**Location:** `frontend/src/types/task.ts:492`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

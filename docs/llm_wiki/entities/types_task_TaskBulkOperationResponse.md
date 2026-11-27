@@ -1,6 +1,6 @@
 # TaskBulkOperationResponse
 
-**Location:** `frontend/src/types/task.ts:365`
+**Location:** `frontend/src/types/task.ts:360`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -32,15 +32,12 @@ _Auto-generated from `TaskBulkOperationResponse` in `frontend/src/types/task.ts`
 flowchart LR
     n0["TaskBulkOperationResponse (frontend/src/types/task.ts)"]
     n1["frontend/src/components/planning/PlanBlockersSection.tsx"]
-    n2["frontend/src/components/tasks/TaskBulkOperationsPanel.tsx"]
-    n3["frontend/src/services/taskService.ts"]
+    n2["frontend/src/services/taskService.ts"]
     n1 --> n0
     n2 --> n0
-    n3 --> n0
     click n0 "../modules/types_task.md"
     click n1 "../modules/PlanBlockersSection.md"
-    click n2 "../modules/TaskBulkOperationsPanel.md"
-    click n3 "../modules/taskService.md"
+    click n2 "../modules/taskService.md"
 ```
 
 ### Summary
@@ -54,5 +51,4 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `PlanBlockersSection` | import | [PlanBlockersSection](../modules/PlanBlockersSection.md) | — |
-| `TaskBulkOperationsPanel` | import | [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md) | — |
 | `taskService` | import | [taskService](../modules/taskService.md) | — |

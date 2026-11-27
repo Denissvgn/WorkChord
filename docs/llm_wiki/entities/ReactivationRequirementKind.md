@@ -1,6 +1,6 @@
 # ReactivationRequirementKind
 
-**Location:** `frontend/src/types/task.ts:553`
+**Location:** `frontend/src/types/task.ts:491`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

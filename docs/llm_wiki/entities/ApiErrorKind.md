@@ -1,6 +1,6 @@
 # ApiErrorKind
 
-**Location:** `frontend/src/utils/apiError.ts:4`
+**Location:** `frontend/src/utils/apiError.ts:3`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [apiError](../modules/apiError.md)

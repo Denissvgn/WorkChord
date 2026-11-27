@@ -1,6 +1,6 @@
 # UnknownRecord
 
-**Location:** `frontend/src/utils/apiError.ts:29`
+**Location:** `frontend/src/utils/apiError.ts:28`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [apiError](../modules/apiError.md)

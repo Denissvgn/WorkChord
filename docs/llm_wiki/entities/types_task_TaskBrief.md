@@ -1,6 +1,6 @@
 # TaskBrief
 
-**Location:** `frontend/src/types/task.ts:456`
+**Location:** `frontend/src/types/task.ts:451`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -21,7 +21,6 @@ _Auto-generated from `TaskBrief` in `frontend/src/types/task.ts`._
 | `acceptance_criteria` | `BriefCriterion[]` | Yes | — | — |
 | `verification` | `string` | Yes | — | — |
 | `artifact_expectations` | `string` | Yes | — | — |
-| `routing` | `TaskRouting \| null` | No | — | — |
 
 ## Methods
 
@@ -61,7 +60,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `acceptance_criteria`, `artifact_expectations`, `context`, `exclusions`, `goal`, `routing`, `schema_version`, `scope`, `verification` |
+| [types_task](../modules/types_task.md) | 0 | `acceptance_criteria`, `artifact_expectations`, `context`, `exclusions`, `goal`, `schema_version`, `scope`, `verification` |
 
 ### References
 

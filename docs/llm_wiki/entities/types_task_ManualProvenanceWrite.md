@@ -1,6 +1,6 @@
 # ManualProvenanceWrite
 
-**Location:** `frontend/src/types/task.ts:582`
+**Location:** `frontend/src/types/task.ts:520`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

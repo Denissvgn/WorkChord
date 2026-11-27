@@ -1,6 +1,6 @@
 # BulkKind
 
-**Location:** `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx:19`
+**Location:** `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx:17`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md)

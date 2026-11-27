@@ -33,35 +33,32 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 flowchart LR
     n0["frontend/src/components/feedback/toast.ts"]
     n1["frontend/src/components/settings/TemplateLabelSettings.test.tsx"]
-    n2["frontend/src/components/tasks/TaskBulkReassign.test.tsx"]
-    n3["frontend/src/components/tasks/TaskOwnerAcceptance.test.tsx"]
-    n4["frontend/src/components/tasks/TaskPostponement.test.tsx"]
-    n5["frontend/src/features/identity/IdentityProvider.tsx"]
-    n6["frontend/src/features/mutationFeedback.test.tsx"]
-    n7["frontend/src/features/mutationFeedback.ts"]
-    n8["frontend/src/features/MutationSuccessFeedback.tsx"]
-    n9["frontend/src/utils/apiError.ts"]
-    n1 --> n8
-    n2 --> n8
-    n3 --> n8
+    n2["frontend/src/components/tasks/TaskOwnerAcceptance.test.tsx"]
+    n3["frontend/src/components/tasks/TaskPostponement.test.tsx"]
+    n4["frontend/src/features/identity/IdentityProvider.tsx"]
+    n5["frontend/src/features/mutationFeedback.test.tsx"]
+    n6["frontend/src/features/mutationFeedback.ts"]
+    n7["frontend/src/features/MutationSuccessFeedback.tsx"]
+    n8["frontend/src/utils/apiError.ts"]
+    n1 --> n7
+    n2 --> n7
+    n3 --> n7
+    n4 --> n7
     n4 --> n8
-    n5 --> n8
-    n5 --> n9
-    n6 --> n7
-    n6 --> n8
-    n8 --> n0
-    n8 --> n7
-    n8 --> n9
+    n5 --> n6
+    n5 --> n7
+    n7 --> n0
+    n7 --> n6
+    n7 --> n8
     click n0 "../modules/toast.md"
     click n1 "../modules/TemplateLabelSettings.test.md"
-    click n2 "../modules/TaskBulkReassign.test.md"
-    click n3 "../modules/TaskOwnerAcceptance.test.md"
-    click n4 "../modules/TaskPostponement.test.md"
-    click n5 "../modules/IdentityProvider.md"
-    click n6 "../modules/mutationFeedback.test.md"
-    click n7 "../modules/mutationFeedback.md"
-    click n8 "../modules/MutationSuccessFeedback.md"
-    click n9 "../modules/apiError.md"
+    click n2 "../modules/TaskOwnerAcceptance.test.md"
+    click n3 "../modules/TaskPostponement.test.md"
+    click n4 "../modules/IdentityProvider.md"
+    click n5 "../modules/mutationFeedback.test.md"
+    click n6 "../modules/mutationFeedback.md"
+    click n7 "../modules/MutationSuccessFeedback.md"
+    click n8 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
@@ -69,7 +66,6 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [TemplateLabelSettings.test](../modules/TemplateLabelSettings.test.md) |
-| Inbound | [TaskBulkReassign.test](../modules/TaskBulkReassign.test.md) |
 | Inbound | [TaskOwnerAcceptance.test](../modules/TaskOwnerAcceptance.test.md) |
 | Inbound | [TaskPostponement.test](../modules/TaskPostponement.test.md) |
 | Inbound | [IdentityProvider](../modules/IdentityProvider.md) |

@@ -1,6 +1,6 @@
 # TaskBulkOperationResult
 
-**Location:** `frontend/src/types/task.ts:354`
+**Location:** `frontend/src/types/task.ts:350`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -20,7 +20,6 @@ _Auto-generated from `TaskBulkOperationResult` in `frontend/src/types/task.ts`._
 | `error` | `string \| null` | No | — | — |
 | `task` | `Task \| null` | No | — | — |
 | `assignee_recommendation` | `AssigneeRecommendation \| null` | No | — | — |
-| `routing_check` | `RoutingCheck \| null` | No | — | — |
 
 ## Methods
 
@@ -29,27 +28,10 @@ _Auto-generated from `TaskBulkOperationResult` in `frontend/src/types/task.ts`._
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-```mermaid
-flowchart LR
-    n0["TaskBulkOperationResult (frontend/src/types/task.ts)"]
-    n1["resultsNeedingRouting (frontend/src/utils/routingCheck.ts)"]
-    n2["routingChangeItems (frontend/src/utils/routingCheck.ts)"]
-    n1 --> n0
-    n2 --> n0
-    click n0 "../modules/types_task.md"
-    click n1 "../modules/routingCheck.md"
-    click n2 "../modules/routingCheck.md"
-```
+*No generated relationships detected.*
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `assignee_recommendation`, `changes`, `error`, `outcome`, `routing_check`, `task`, `task_id`, `warnings` |
-
-### References
-
-| Reference | Kind | Source | Call sites |
-|---|---|---|---:|
-| `resultsNeedingRouting` | type_reference | [routingCheck](../modules/routingCheck.md) | — |
-| `routingChangeItems` | type_reference | [routingCheck](../modules/routingCheck.md) | — |
+| [types_task](../modules/types_task.md) | 0 | `assignee_recommendation`, `changes`, `error`, `outcome`, `task`, `task_id`, `warnings` |

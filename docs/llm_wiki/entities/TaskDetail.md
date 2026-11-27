@@ -1,6 +1,6 @@
 # TaskDetail
 
-**Location:** `frontend/src/types/task.ts:546`
+**Location:** `frontend/src/types/task.ts:484`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

@@ -1,6 +1,6 @@
 # RowLoad
 
-**Location:** `frontend/src/components/planning/PlanBlockersSection.tsx:23`
+**Location:** `frontend/src/components/planning/PlanBlockersSection.tsx:21`
 **Kind:** Interface
 **Bases:** —
 **Module:** [PlanBlockersSection](../modules/PlanBlockersSection.md)

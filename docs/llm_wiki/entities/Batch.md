@@ -1,6 +1,6 @@
 # Batch
 
-**Location:** `frontend/src/components/planning/PlanBlockersSection.tsx:24`
+**Location:** `frontend/src/components/planning/PlanBlockersSection.tsx:22`
 **Kind:** Interface
 **Bases:** —
 **Module:** [PlanBlockersSection](../modules/PlanBlockersSection.md)
@@ -15,8 +15,6 @@ _Auto-generated from `Batch` in `frontend/src/components/planning/PlanBlockersSe
 |------|------|----------|---------|-------------|
 | `request` | `TaskBulkOperationRequest` | Yes | — | — |
 | `response` | `TaskBulkOperationResponse` | Yes | — | — |
-| `items` | `RoutingChangeItem[]` | Yes | — | — |
-| `canKeep` | `boolean` | Yes | — | — |
 
 ## Methods
 
@@ -31,4 +29,4 @@ _Auto-generated from `Batch` in `frontend/src/components/planning/PlanBlockersSe
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [PlanBlockersSection](../modules/PlanBlockersSection.md) | 0 | `canKeep`, `items`, `request`, `response` |
+| [PlanBlockersSection](../modules/PlanBlockersSection.md) | 0 | `request`, `response` |
