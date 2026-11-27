@@ -1404,7 +1404,8 @@ async def test_date_only_reservation(
                 resolved = await call(
                     *submit,
                     wk,
-                    payload={**fence(next_run), **retained, "commit_urls": [body["commit_url"]]},
+                    # The pull request makes the submission an exact candidate a verifier can be assigned to.
+                    payload={**fence(next_run), **retained, "commit_urls": [body["commit_url"]], "pr_url": body["pr_url"]},
                     receipt="submit-fresh",
                 )
                 review = await call(

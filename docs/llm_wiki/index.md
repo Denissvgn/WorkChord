@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1809 | [Open section](#entities) |
-| Modules | 1156 | [Open section](#modules) |
-| Workflows | 232 | [Open section](#workflows) |
+| Entities | 1837 | [Open section](#entities) |
+| Modules | 1176 | [Open section](#modules) |
+| Workflows | 241 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 624 | [Open section](#entry-point-flows) |
+| Entry-point flows | 631 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -83,6 +83,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AgentProfileSkillCatalogItem](entities/AgentProfileSkillCatalogItem.md)
 - [AgentProjectUpdateCreate](entities/AgentProjectUpdateCreate.md)
 - [AgentProjectUpdateResponse](entities/AgentProjectUpdateResponse.md)
+- [AgentProtocol](entities/AgentProtocol.md)
 - [AgentRecoveryItem](entities/AgentRecoveryItem.md)
 - [AgentRecoveryListResponse](entities/AgentRecoveryListResponse.md)
 - [AgentRecoveryRequeue](entities/AgentRecoveryRequeue.md)
@@ -612,6 +613,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [MaintenanceWindowService](entities/MaintenanceWindowService.md)
 - [ManagementSection](entities/ManagementSection.md)
 - [ManifestError](entities/ManifestError.md)
+- [ManualProvenanceExecutor](entities/ManualProvenanceExecutor.md)
+- [ManualProvenanceExecutorRecord](entities/ManualProvenanceExecutorRecord.md)
+- [ManualProvenanceResponse](entities/ManualProvenanceResponse.md)
+- [ManualProvenanceService](entities/ManualProvenanceService.md)
+- [ManualProvenanceWrite](entities/ManualProvenanceWrite.md)
 - [ManualPublicationHandoff](entities/ManualPublicationHandoff.md)
 - [MappedModelFactory](entities/MappedModelFactory.md)
 - [MasterProgressProps](entities/MasterProgressProps.md)
@@ -695,6 +701,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [OverviewPage_ListedTask](entities/OverviewPage_ListedTask.md)
 - [OverviewTaskList](entities/OverviewTaskList.md)
 - [OverviewTaskThreadSource](entities/OverviewTaskThreadSource.md)
+- [OwnerAcceptanceWrite](entities/OwnerAcceptanceWrite.md)
 - [OwnerLink](entities/OwnerLink.md)
 - [OwnershipSelection](entities/OwnershipSelection.md)
 - [OwnershipTransfer](entities/OwnershipTransfer.md)
@@ -750,6 +757,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [PostgresOwnership](entities/PostgresOwnership.md)
 - [PostgresTestDatabase](entities/PostgresTestDatabase.md)
 - [PostgresTestDatabaseManager](entities/PostgresTestDatabaseManager.md)
+- [PostponementRelease](entities/PostponementRelease.md)
 - [PreflightPredicateResult](entities/PreflightPredicateResult.md)
 - [Principal](entities/Principal.md)
 - [PrincipalProfileLink](entities/PrincipalProfileLink.md)
@@ -785,6 +793,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ProjectUpdateFormStore](entities/ProjectUpdateFormStore.md)
 - [ProjectsPage_SortKey](entities/ProjectsPage_SortKey.md)
 - [ProposedDates](entities/ProposedDates.md)
+- [ProvenanceConflict](entities/ProvenanceConflict.md)
 - [ProviderActionRequest](entities/ProviderActionRequest.md)
 - [ProviderAuditObservation](entities/ProviderAuditObservation.md)
 - [ProviderMutationAdapter](entities/ProviderMutationAdapter.md)
@@ -805,6 +814,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [Queue](entities/Queue.md)
 - [QuickCaptureTarget](entities/QuickCaptureTarget.md)
 - [RateLimitWindow](entities/RateLimitWindow.md)
+- [ReactivationRequirementInput](entities/ReactivationRequirementInput.md)
+- [ReactivationRequirementResponse](entities/ReactivationRequirementResponse.md)
 - [Readiness](entities/Readiness.md)
 - [ReadyTopology](entities/ReadyTopology.md)
 - [ReasonCodeRule](entities/ReasonCodeRule.md)
@@ -847,6 +858,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RequestSourceTargetNotFoundError](entities/RequestSourceTargetNotFoundError.md)
 - [RequestSourceUpdate](entities/RequestSourceUpdate.md)
 - [RequestSourceValidationError](entities/RequestSourceValidationError.md)
+- [RequirementKind](entities/RequirementKind.md)
 - [RescheduleResult](entities/RescheduleResult.md)
 - [ResolvedHandoffFact](entities/ResolvedHandoffFact.md)
 - [ResolvedStatusEvidence](entities/ResolvedStatusEvidence.md)
@@ -1011,6 +1023,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [SortCriterionSchema](entities/SortCriterionSchema.md)
 - [SortableTaskItemProps](entities/SortableTaskItemProps.md)
 - [SourceCollectorRegistry](entities/SourceCollectorRegistry.md)
+- [SourceLinkAction](entities/SourceLinkAction.md)
+- [SourceLinkDecision](entities/SourceLinkDecision.md)
+- [SourceLinkRefused](entities/SourceLinkRefused.md)
 - [SourceState](entities/SourceState.md)
 - [SqlStateFailure](entities/SqlStateFailure.md)
 - [StatusAmendmentLedger](entities/StatusAmendmentLedger.md)
@@ -1093,8 +1108,15 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskMetricSignals](entities/TaskMetricSignals.md)
 - [TaskMode](entities/TaskMode.md)
 - [TaskOrderRequest](entities/TaskOrderRequest.md)
+- [TaskPostponeRequest](entities/TaskPostponeRequest.md)
+- [TaskPostponement](entities/TaskPostponement.md)
+- [TaskPostponementRecord](entities/TaskPostponementRecord.md)
+- [TaskPostponementResponse](entities/TaskPostponementResponse.md)
+- [TaskPostponementService](entities/TaskPostponementService.md)
 - [TaskProgress](entities/TaskProgress.md)
 - [TaskProgressRecord](entities/TaskProgressRecord.md)
+- [TaskReactivateRequest](entities/TaskReactivateRequest.md)
+- [TaskReactivationRequirement](entities/TaskReactivationRequirement.md)
 - [TaskReorder](entities/TaskReorder.md)
 - [TaskReplacement](entities/TaskReplacement.md)
 - [TaskReplacementCreate](entities/TaskReplacementCreate.md)
@@ -1102,7 +1124,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskReplacementService](entities/TaskReplacementService.md)
 - [TaskResponse](entities/TaskResponse.md)
 - [TaskReviewMode](entities/TaskReviewMode.md)
-- [TaskReviewRecord](entities/TaskReviewRecord.md)
 - [TaskReviewResponse](entities/TaskReviewResponse.md)
 - [TaskReviewWrite](entities/TaskReviewWrite.md)
 - [TaskRoutingAssessmentCreate](entities/TaskRoutingAssessmentCreate.md)
@@ -1206,6 +1227,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TriageListParams](entities/TriageListParams.md)
 - [TriageRowProps](entities/TriageRowProps.md)
 - [TriageService](entities/TriageService.md)
+- [TriageSourceLinkOutcome](entities/TriageSourceLinkOutcome.md)
 - [TrustedKeyBinding](entities/TrustedKeyBinding.md)
 - [URLPolicyError](entities/URLPolicyError.md)
 - [UTCDateTime](entities/UTCDateTime.md)
@@ -1363,6 +1385,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [models_saved_view_SavedViewType](entities/models_saved_view_SavedViewType.md)
 - [models_task_Task](entities/models_task_Task.md)
 - [models_task_TaskStatus](entities/models_task_TaskStatus.md)
+- [models_task_brief_TaskReviewRecord](entities/models_task_brief_TaskReviewRecord.md)
 - [models_template_TemplateType](entities/models_template_TemplateType.md)
 - [models_template_WorkTemplate](entities/models_template_WorkTemplate.md)
 - [models_time_entry_TimeEntry](entities/models_time_entry_TimeEntry.md)
@@ -1430,8 +1453,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_external_link_ExternalLinkProvider](entities/schemas_external_link_ExternalLinkProvider.md)
 - [schemas_external_link_ExternalLinkUpdate](entities/schemas_external_link_ExternalLinkUpdate.md)
 - [schemas_external_link_GitHubExternalLinkCreate](entities/schemas_external_link_GitHubExternalLinkCreate.md)
+- [schemas_gantt_DateRule](entities/schemas_gantt_DateRule.md)
 - [schemas_gantt_GanttResponse](entities/schemas_gantt_GanttResponse.md)
 - [schemas_gantt_GanttTask](entities/schemas_gantt_GanttTask.md)
+- [schemas_gantt_KeptDatesTask](entities/schemas_gantt_KeptDatesTask.md)
 - [schemas_gantt_SchedulePreviewResponse](entities/schemas_gantt_SchedulePreviewResponse.md)
 - [schemas_gantt_ScheduleResult](entities/schemas_gantt_ScheduleResult.md)
 - [schemas_gantt_SchedulingDecision](entities/schemas_gantt_SchedulingDecision.md)
@@ -1652,11 +1677,13 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_calendar_CalendarImportResponse](entities/types_calendar_CalendarImportResponse.md)
 - [types_calendar_CalendarUpdate](entities/types_calendar_CalendarUpdate.md)
 - [types_calendar_WorkingDaysResponse](entities/types_calendar_WorkingDaysResponse.md)
+- [types_gantt_DateRule](entities/types_gantt_DateRule.md)
 - [types_gantt_ExplainScheduleRequest](entities/types_gantt_ExplainScheduleRequest.md)
 - [types_gantt_ExplainScheduleResponse](entities/types_gantt_ExplainScheduleResponse.md)
 - [types_gantt_GanttResponse](entities/types_gantt_GanttResponse.md)
 - [types_gantt_GanttTask](entities/types_gantt_GanttTask.md)
 - [types_gantt_InvertedDependency](entities/types_gantt_InvertedDependency.md)
+- [types_gantt_KeptDatesTask](entities/types_gantt_KeptDatesTask.md)
 - [types_gantt_ScheduleDecisionExplanation](entities/types_gantt_ScheduleDecisionExplanation.md)
 - [types_gantt_SchedulePreviewResponse](entities/types_gantt_SchedulePreviewResponse.md)
 - [types_gantt_ScheduleResult](entities/types_gantt_ScheduleResult.md)
@@ -1752,6 +1779,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_task_TaskProject](entities/types_task_TaskProject.md)
 - [types_task_TaskReference](entities/types_task_TaskReference.md)
 - [types_task_TaskReferencePage](entities/types_task_TaskReferencePage.md)
+- [types_task_TaskReviewRecord](entities/types_task_TaskReviewRecord.md)
 - [types_task_TaskStatus](entities/types_task_TaskStatus.md)
 - [types_task_TaskStatusChangeResponse](entities/types_task_TaskStatusChangeResponse.md)
 - [types_task_TaskStatusLog](entities/types_task_TaskStatusLog.md)
@@ -1860,6 +1888,9 @@ Retained history; these declarations are absent from the selected source invento
 - [20261124_0022_capacity_adjustments](modules/20261124_0022_capacity_adjustments.md) - Record dated availability adjustments on iteration capacity rows.
 - [20261124_0023_task_replacements](modules/20261124_0023_task_replacements.md) - Record audited clean-replacement dispositions between tasks.
 - [20261124_0024_delivery_dependency_target_branch](modules/20261124_0024_delivery_dependency_target_branch.md) - Let a delivery prerequisite require accepted code merged on a named branch.
+- [20261126_0025_catalog_local_first](modules/20261126_0025_catalog_local_first.md) - Let a model catalog entry prefer a free or local model at equal adequacy.
+- [20261126_0026_review_record_kind](modules/20261126_0026_review_record_kind.md) - Tell an owner's override acceptance apart from an ordinary review in review history.
+- [20261126_0027_task_postponements](modules/20261126_0027_task_postponements.md) - Record postponed tasks and the requirements that must hold before they resume.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AccountMenu](modules/AccountMenu.md) - `frontend/src/features/identity/AccountMenu.tsx`
 - [AccountMenu.test](modules/AccountMenu.test.md) - `frontend/src/features/identity/AccountMenu.test.tsx`
@@ -2144,11 +2175,14 @@ Retained history; these declarations are absent from the selected source invento
 - [TaskList](modules/TaskList.md) - `frontend/src/components/tasks/TaskList.tsx`
 - [TaskList.test](modules/TaskList.test.md) - `frontend/src/components/tasks/TaskList.test.tsx`
 - [TaskMergeDialog](modules/TaskMergeDialog.md) - `frontend/src/components/tasks/TaskMergeDialog.tsx`
+- [TaskOwnerAcceptance](modules/TaskOwnerAcceptance.md) - `frontend/src/components/tasks/TaskOwnerAcceptance.tsx`
+- [TaskOwnerAcceptance.test](modules/TaskOwnerAcceptance.test.md) - `frontend/src/components/tasks/TaskOwnerAcceptance.test.tsx`
 - [TaskReadView](modules/TaskReadView.md) - `frontend/src/components/tasks/TaskReadView.tsx`
 - [TaskReadView.brief.test](modules/TaskReadView.brief.test.md) - `frontend/src/components/tasks/TaskReadView.brief.test.tsx`
 - [TaskReadView.dispatch.test](modules/TaskReadView.dispatch.test.md) - `frontend/src/components/tasks/TaskReadView.dispatch.test.tsx`
 - [TaskReadView.operatorKey.test](modules/TaskReadView.operatorKey.test.md) - `frontend/src/components/tasks/TaskReadView.operatorKey.test.tsx`
 - [TaskReadView.test](modules/TaskReadView.test.md) - `frontend/src/components/tasks/TaskReadView.test.tsx`
+- [TaskReviewHistory](modules/TaskReviewHistory.md) - `frontend/src/components/tasks/TaskReviewHistory.tsx`
 - [TaskReviewer](modules/TaskReviewer.md) - `frontend/src/components/tasks/TaskReviewer.tsx`
 - [TaskRoutingPanel](modules/TaskRoutingPanel.md) - `frontend/src/components/agent/TaskRoutingPanel.tsx`
 - [TaskRoutingPanel.test](modules/TaskRoutingPanel.test.md) - `frontend/src/components/agent/TaskRoutingPanel.test.tsx`
@@ -2356,7 +2390,7 @@ Retained history; these declarations are absent from the selected source invento
 - [executionUsage](modules/executionUsage.md) - `frontend/src/types/executionUsage.ts`
 - [executionUsageService](modules/executionUsageService.md) - `frontend/src/services/executionUsageService.ts`
 - [execution_mode](modules/execution_mode.md) - Execution-mode guards shared by legacy and autonomous migration tools.
-- [execution_planning_window](modules/execution_planning_window.md) - Preserve a proved assignment context across an iteration end-date extension.
+- [execution_planning_window](modules/execution_planning_window.md) - Preserve a proved assignment context across a planning change that leaves execution inputs alone.
 - [execution_reconciliation](modules/execution_reconciliation.md) - Reconcile a terminal run using authenticated, contemporaneous server records.
 - [execution_usage_service](modules/execution_usage_service.md) - Bounded usage corrections, immutable pricing and scoped advisory totals.
 - [export](modules/export.md) - Export/Import API router.
@@ -2433,6 +2467,8 @@ Retained history; these declarations are absent from the selected source invento
 - [maintenance_windows](modules/maintenance_windows.md) - Operator commands for a coordinated control-plane maintenance window.
 - [manifestLocations](modules/manifestLocations.md) - /** * Where things are in the manifest editor: the line of each JSON path, so a * problem can say "line 12" and the editor can jump there. */
 - [manifestLocations.test](modules/manifestLocations.test.md) - `frontend/src/features/agentTeamSetup/manifestLocations.test.ts`
+- [manual_provenance](modules/manual_provenance.md) - Attributable execution provenance for resolved work that never ran through recorded runs.
+- [manual_provenance_service](modules/manual_provenance_service.md) - Record who executed resolved work that was delivered outside recorded runs.
 - [mcp_agent_tools](modules/mcp_agent_tools.md) - Framework-neutral MCP tool handlers for agent task access.
 - [mcp_server](modules/mcp_server.md) - MCP server facade for external LLM-agent integrations.
 - [migrations_env](modules/migrations_env.md) - Alembic environment configuration.
@@ -2464,6 +2500,7 @@ Retained history; these declarations are absent from the selected source invento
 - [models_system_settings](modules/models_system_settings.md) - Runtime system settings model.
 - [models_task](modules/models_task.md) - Task model.
 - [models_task_brief](modules/models_task_brief.md) - Append-only brief, progress and ordinary review history.
+- [models_task_postponement](modules/models_task_postponement.md) - A recorded decision that stopped a task, and what must be true before it resumes.
 - [models_task_replacement](modules/models_task_replacement.md) - An audited disposition that replaces unattributable work with a separate clean task.
 - [models_template](modules/models_template.md) - Reusable work template model.
 - [models_time_entry](modules/models_time_entry.md) - Private explicit work records and retained corrections, independent of task state.
@@ -2629,6 +2666,7 @@ Retained history; these declarations are absent from the selected source invento
 - [schemas_task](modules/schemas_task.md) - Task schemas.
 - [schemas_task_brief](modules/schemas_task_brief.md) - Canonical brief inputs and separate execution evidence/review contracts.
 - [schemas_task_domain](modules/schemas_task_domain.md) - Explicit task commands and typed action availability.
+- [schemas_task_postponement](modules/schemas_task_postponement.md) - Postpone and reactivate commands and the postponement record they return.
 - [schemas_task_replacement](modules/schemas_task_replacement.md) - Clean-replacement disposition commands and their auditable projection.
 - [schemas_team](modules/schemas_team.md) - Team member schemas.
 - [schemas_template](modules/schemas_template.md) - Reusable work template schemas.
@@ -2673,6 +2711,7 @@ Retained history; these declarations are absent from the selected source invento
 - [snapshots](modules/snapshots.md) - Snapshots API router.
 - [source](modules/source.md) - Read-only SQLite snapshot creation and source preflight.
 - [source_binding](modules/source_binding.md) - Independently bind local measurements to the source that actually executes.
+- [source_link_policy](modules/source_link_policy.md) - One policy for the source link carried by intakes and tasks.
 - [sql_semantics](modules/sql_semantics.md) - Cross-dialect text matching rules for the supported SQLite/PostgreSQL window.
 - [src_main](modules/src_main.md) - `frontend/src/main.tsx`
 - [status](modules/status.md) - Deterministic DBM task/gate status amendment evaluation.
@@ -2712,6 +2751,7 @@ Retained history; these declarations are absent from the selected source invento
 - [task_domain_service](modules/task_domain_service.md) - Durable ownership, normalized effort and explicit task-domain commands.
 - [task_hierarchy_service](modules/task_hierarchy_service.md) - Read-only ownership of bounded task graph hydration and integrity checks.
 - [task_import_service](modules/task_import_service.md) - Task text import, export, and triage intake workflows.
+- [task_postponement_service](modules/task_postponement_service.md) - Postpone task work with a recorded reason and requirements, and reactivate it.
 - [task_recovery_service](modules/task_recovery_service.md) - Version allocation shared by scheduled and project-backlog recovery.
 - [task_replacement_service](modules/task_replacement_service.md) - Record and read an audited clean replacement of task work that cannot be attributed.
 - [task_service](modules/task_service.md) - Task service with business logic.
@@ -2802,6 +2842,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_human_work_queries](modules/test_human_work_queries.md) - Human ownership queries and exact-ID lookup respect project visibility.
 - [test_identity_lifecycle](modules/test_identity_lifecycle.md) - OIDC, native bearer, revocation, ownership and real MCP transport contracts.
 - [test_initial_schema](modules/test_initial_schema.md) - The packaged initial schema and fail-closed development reset boundary.
+- [test_intake_source_link](modules/test_intake_source_link.md) - Source links on intakes and tasks follow one policy.
 - [test_iteration_date_move](modules/test_iteration_date_move.md) - A proposed iteration period is checked against each person's bookings elsewhere and saves nothing.
 - [test_load_seed_postgresql](modules/test_load_seed_postgresql.md) - Real-PostgreSQL small seed and resumability qualification.
 - [test_load_tooling](modules/test_load_tooling.md) - Unit contracts for deterministic, sealed, fail-closed load tooling.
@@ -2809,7 +2850,9 @@ Retained history; these declarations are absent from the selected source invento
 - [test_maintenance_window](modules/test_maintenance_window.md) - A coordinated maintenance window protects only the live claims whose owners acknowledged it.
 - [test_managed_authority](modules/test_managed_authority.md) - Real principal, transport, scoped-read and command-denial contracts.
 - [test_managed_worker_discovery](modules/test_managed_worker_discovery.md) - Managed discovery attribution, scope and transaction boundaries for assigned workers.
+- [test_manual_provenance_record](modules/test_manual_provenance_record.md) - Recorded provenance lets work resolved outside recorded runs receive an ordinary independent review.
 - [test_manual_review_provenance](modules/test_manual_review_provenance.md) - Authenticated human delivery still requires an assigned agent decision in a strict project.
+- [test_mcp_proxy_host_header](modules/test_mcp_proxy_host_header.md) - The stock frontend proxy must forward MCP requests with the client's Host port.
 - [test_mcp_tool_annotations](modules/test_mcp_tool_annotations.md) - Every MCP tool tells clients whether it reads, writes, or removes.
 - [test_metric_matches](modules/test_metric_matches.md) - A work-metric count and the list it opens are chosen by the same predicate.
 - [test_mobile_contract](modules/test_mobile_contract.md) - Android's golden examples are derived from current canonical backend schemas.
@@ -2818,6 +2861,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_native_runtimes](modules/test_native_runtimes.md) - Native orchestration preserves isolation, real result requirements and cleanup.
 - [test_observability](modules/test_observability.md) - DBM-OBS-001 readiness, drain, and safe-metrics tests.
 - [test_observer_sessions](modules/test_observer_sessions.md) - Paired observer sessions read like their principal, change nothing, and renew within a cap.
+- [test_owner_override_acceptance](modules/test_owner_override_acceptance.md) - An owner may accept one resolved task while the different-publisher policy stays on.
 - [test_person_assignment_reads](modules/test_person_assignment_reads.md) - People read the assignments of tasks they can see; agent keys keep the full projection.
 - [test_person_run_reads](modules/test_person_run_reads.md) - People read the runs of tasks they can see; run logs stay behind keys.
 - [test_pipeline_active_outside_run](modules/test_pipeline_active_outside_run.md) - Active work with no WorkChord run is shown in its own pipeline stage.
@@ -2825,6 +2869,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_plan_shares](modules/test_plan_shares.md) - Plan-share ownership and immutable snapshot behavior.
 - [test_planning_input_context](modules/test_planning_input_context.md) - Initial shared-input observations are complete, bounded and side-effect free.
 - [test_planning_issues](modules/test_planning_issues.md) - The "needs an assignee" and "missing effort" rule shared by counts and filters.
+- [test_planning_only_edit_fence](modules/test_planning_only_edit_fence.md) - A planning-only task edit keeps sealed issued work valid; an execution-input edit still stales it.
 - [test_planning_read_models](modules/test_planning_read_models.md) - Independent synthetic counterexamples for read-model and inherited policy parity.
 - [test_planning_window_digest_validation](modules/test_planning_window_digest_validation.md) - Malformed evidence digests get the same refusal on the REST and MCP planning reconciliation routes.
 - [test_pm_forecast_calendar](modules/test_pm_forecast_calendar.md) - A managed planning principal can forecast an iteration using a single annual calendar.
@@ -2850,6 +2895,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_replacement_carried_provenance](modules/test_replacement_carried_provenance.md) - A replacement's carried contributors stay out of independent review, and their history walk is bounded.
 - [test_review_provenance](modules/test_review_provenance.md) - Exercise independent publisher review through the atomic work commands.
 - [test_review_provenance_transports](modules/test_review_provenance_transports.md) - Exercise strict review, interruption and return through the registered worker and PM protocols.
+- [test_review_record_kind_migration](modules/test_review_record_kind_migration.md) - Review history gains a kind reversibly and never silently loses an owner override.
 - [test_routing_evidence](modules/test_routing_evidence.md) - Keep CI evidence inventories aligned with the checked-in implementation.
 - [test_routing_preview_focus](modules/test_routing_preview_focus.md) - A focused routing preview keeps a named team actor's rows inside the bounded response.
 - [test_routing_preview_size](modules/test_routing_preview_size.md) - The routed decision, its defaults, and its digest share one exact canonical byte budget.
@@ -2882,6 +2928,8 @@ Retained history; these declarations are absent from the selected source invento
 - [test_task_domain_integrity](modules/test_task_domain_integrity.md) - Task context, recovery and project projections stay consistent across commands.
 - [test_task_domain_migrations](modules/test_task_domain_migrations.md) - Initial task-domain constraints, evidence retention and identity fences.
 - [test_task_pagination](modules/test_task_pagination.md) - Keyset coverage, mutation semantics and permission-bounded history reads.
+- [test_task_postponement](modules/test_task_postponement.md) - Postponed work stops natively, releases live execution under its fence, and resumes with its evidence intact.
+- [test_task_postponement_migration](modules/test_task_postponement_migration.md) - Task postponement migrates a populated database unchanged, and never loses postponed work on rollback.
 - [test_task_replacement](modules/test_task_replacement.md) - A clean replacement of unattributable work: audited, counted once, and held when it carries unknown work.
 - [test_task_replacement_migration](modules/test_task_replacement_migration.md) - Clean-replacement dispositions migrate reversibly and an existing disposition is never dropped silently.
 - [test_team_member_agent_connected](modules/test_team_member_agent_connected.md) - Team-member responses say whether an agent is connected, to every reader, without naming it.
@@ -3090,6 +3138,8 @@ Retained history; these declarations are absent from the selected source invento
 - [IterationService_to_response](workflows/IterationService_to_response.md) - entry: `iteration_service.IterationService.to_response`
 - [LabelService_create_label](workflows/LabelService_create_label.md) - entry: `label_service.LabelService.create_label`
 - [MaintenanceWindowService_announce](workflows/MaintenanceWindowService_announce.md) - entry: `maintenance_window_service.MaintenanceWindowService.announce`
+- [ManualProvenanceService__agent_recorder](workflows/ManualProvenanceService__agent_recorder.md) - entry: `manual_provenance_service.ManualProvenanceService._agent_recorder`
+- [ManualProvenanceService__verify_candidate](workflows/ManualProvenanceService__verify_candidate.md) - entry: `manual_provenance_service.ManualProvenanceService._verify_candidate`
 - [NativeSessionService_approve](workflows/NativeSessionService_approve.md) - entry: `native_session_service.NativeSessionService.approve`
 - [NativeSessionService_connection](workflows/NativeSessionService_connection.md) - entry: `native_session_service.NativeSessionService.connection`
 - [NativeSessionService_deny](workflows/NativeSessionService_deny.md) - entry: `native_session_service.NativeSessionService.deny`
@@ -3116,15 +3166,17 @@ Retained history; these declarations are absent from the selected source invento
 - [SnapshotService_build_snapshot_data](workflows/SnapshotService_build_snapshot_data.md) - entry: `snapshot_service.SnapshotService.build_snapshot_data`
 - [SnapshotService_create_snapshot](workflows/SnapshotService_create_snapshot.md) - entry: `snapshot_service.SnapshotService.create_snapshot`
 - [SnapshotService_restore](workflows/SnapshotService_restore.md) - entry: `snapshot_service.SnapshotService.restore`
+- [TaskBriefService_record_review](workflows/TaskBriefService_record_review.md) - entry: `task_brief_service.TaskBriefService.record_review`
 - [TaskBriefService_require_review](workflows/TaskBriefService_require_review.md) - entry: `task_brief_service.TaskBriefService.require_review`
 - [TaskBulkOperationService_run](workflows/TaskBulkOperationService_run.md) - entry: `task_bulk_operation_service.TaskBulkOperationService.run`
 - [TaskDetailService_detail](workflows/TaskDetailService_detail.md) - entry: `task_detail_service.TaskDetailService.detail`
 - [TaskDetailService_my_work](workflows/TaskDetailService_my_work.md) - entry: `task_detail_service.TaskDetailService.my_work`
-- [TaskDomainService__cancel_execution](workflows/TaskDomainService__cancel_execution.md) - entry: `task_domain_service.TaskDomainService._cancel_execution`
 - [TaskDomainService_allowed_actions](workflows/TaskDomainService_allowed_actions.md) - entry: `task_domain_service.TaskDomainService.allowed_actions`
 - [TaskDomainService_command](workflows/TaskDomainService_command.md) - entry: `task_domain_service.TaskDomainService.command`
 - [TaskImportService_bulk_update_tasks_from_text](workflows/TaskImportService_bulk_update_tasks_from_text.md) - entry: `task_import_service.TaskImportService.bulk_update_tasks_from_text`
 - [TaskImportService_import_tasks](workflows/TaskImportService_import_tasks.md) - entry: `task_import_service.TaskImportService.import_tasks`
+- [TaskPostponementService_postpone](workflows/TaskPostponementService_postpone.md) - entry: `task_postponement_service.TaskPostponementService.postpone`
+- [TaskPostponementService_reactivate](workflows/TaskPostponementService_reactivate.md) - entry: `task_postponement_service.TaskPostponementService.reactivate`
 - [TaskReplacementService__move_dependents](workflows/TaskReplacementService__move_dependents.md) - entry: `task_replacement_service.TaskReplacementService._move_dependents`
 - [TaskReplacementService_record](workflows/TaskReplacementService_record.md) - entry: `task_replacement_service.TaskReplacementService.record`
 - [TaskService__lock_task_scope](workflows/TaskService__lock_task_scope.md) - entry: `task_service.TaskService._lock_task_scope`
@@ -3135,6 +3187,7 @@ Retained history; these declarations are absent from the selected source invento
 - [TaskService_move_task](workflows/TaskService_move_task.md) - entry: `task_service.TaskService.move_task`
 - [TaskService_remove_dependency](workflows/TaskService_remove_dependency.md) - entry: `task_service.TaskService.remove_dependency`
 - [TaskService_task_to_response](workflows/TaskService_task_to_response.md) - entry: `task_service.TaskService.task_to_response`
+- [TaskService_unmerge_task](workflows/TaskService_unmerge_task.md) - entry: `task_service.TaskService.unmerge_task`
 - [TaskService_update](workflows/TaskService_update.md) - entry: `task_service.TaskService.update`
 - [TaskStatusService__apply_transition](workflows/TaskStatusService__apply_transition.md) - entry: `task_status_service.TaskStatusService._apply_transition`
 - [TaskStatusService_change_status](workflows/TaskStatusService_change_status.md) - entry: `task_status_service.TaskStatusService.change_status`
@@ -3151,6 +3204,7 @@ Retained history; these declarations are absent from the selected source invento
 - [TriageService_create](workflows/TriageService_create.md) - entry: `triage_service.TriageService.create`
 - [TriageService_mark_duplicate](workflows/TriageService_mark_duplicate.md) - entry: `triage_service.TriageService.mark_duplicate`
 - [TriageService_snooze](workflows/TriageService_snooze.md) - entry: `triage_service.TriageService.snooze`
+- [TriageService_update](workflows/TriageService_update.md) - entry: `triage_service.TriageService.update`
 - [affected_iteration_ids](workflows/affected_iteration_ids.md) - entry: `planning_input_context.affected_iteration_ids`
 - [aggregate_metrics](workflows/aggregate_metrics.md) - entry: `work_metrics.aggregate_metrics`
 - [assert_postgresql_contract](workflows/assert_postgresql_contract.md) - entry: `transfer._assert_postgresql_contract`
@@ -3163,6 +3217,7 @@ Retained history; these declarations are absent from the selected source invento
 - [check_supervised_selection](workflows/check_supervised_selection.md) - entry: `review_evidence.check_supervised_selection`
 - [choose_local_profile](workflows/choose_local_profile.md) - entry: `identity.choose_local_profile`
 - [convert_triage_item_to_backlog](workflows/convert_triage_item_to_backlog.md) - entry: `triage.convert_triage_item_to_backlog`
+- [convert_triage_to_backlog](workflows/convert_triage_to_backlog.md) - entry: `mcp_agent_tools.convert_triage_to_backlog`
 - [convert_triage_to_task](workflows/convert_triage_to_task.md) - entry: `mcp_agent_tools.convert_triage_to_task`
 - [create_request_source_link](workflows/create_request_source_link.md) - entry: `mcp_agent_tools.create_request_source_link`
 - [create_session](workflows/create_session.md) - entry: `session_service._create_session`
@@ -3206,6 +3261,7 @@ Retained history; these declarations are absent from the selected source invento
 - [record_routing_operational_event](workflows/record_routing_operational_event.md) - entry: `agent_routing_observability.record_routing_operational_event`
 - [recover_principal](workflows/recover_principal.md) - entry: `identity.recover_principal`
 - [refuse_removing_transfer_row](workflows/refuse_removing_transfer_row.md) - entry: `capacity_transfers.refuse_removing_transfer_row`
+- [release_execution](workflows/release_execution.md) - entry: `task_domain_service.release_execution`
 - [repair_sequences](workflows/repair_sequences.md) - entry: `transfer._repair_sequences`
 - [require_agent_read_access](workflows/require_agent_read_access.md) - entry: `agent.require_agent_read_access`
 - [reserve_iteration_annuals](workflows/reserve_iteration_annuals.md) - entry: `calendar_rules.reserve_iteration_annuals`
@@ -3218,6 +3274,7 @@ Retained history; these declarations are absent from the selected source invento
 - [rotate_session](workflows/rotate_session.md) - entry: `session_service.rotate_session`
 - [run_post_migration_repairs](workflows/run_post_migration_repairs.md) - entry: `upgrade_service.run_post_migration_repairs`
 - [run_server_acceptance](workflows/run_server_acceptance.md) - entry: `server_acceptance.run_server_acceptance`
+- [select_reviewer](workflows/select_reviewer.md) - entry: `review_provenance.select_reviewer`
 - [sequence_facts](workflows/sequence_facts.md) - entry: `transfer._sequence_facts`
 - [service_worksets_flow](workflows/service_worksets_flow.md) - entry: `service_worksets.run`
 - [source_phase](workflows/source_phase.md) - entry: `installed_wheel_postgresql_qualification._source_phase`
@@ -3506,12 +3563,14 @@ Retained history; these declarations are absent from the selected source invento
 - [http-move_task](flows/http-move_task.md) - entry: `move_task`
 - [http-native_token](flows/http-native_token.md) - entry: `native_token`
 - [http-new_mutation](flows/http-new_mutation.md) - entry: `new_mutation`
+- [http-owner_accept_task](flows/http-owner_accept_task.md) - entry: `owner_accept_task`
 - [http-patch_agent_task](flows/http-patch_agent_task.md) - entry: `patch_agent_task`
 - [http-patch_planning_task](flows/http-patch_planning_task.md) - entry: `patch_planning_task`
 - [http-personal_inbox](flows/http-personal_inbox.md) - entry: `personal_inbox`
 - [http-personal_notification_deliveries](flows/http-personal_notification_deliveries.md) - entry: `personal_notification_deliveries`
 - [http-plan_agent_team_reconciliation](flows/http-plan_agent_team_reconciliation.md) - entry: `plan_agent_team_reconciliation`
 - [http-planning_input_context](flows/http-planning_input_context.md) - entry: `planning_input_context`
+- [http-postpone_task](flows/http-postpone_task.md) - entry: `postpone_task`
 - [http-preview_capacity_adjustment](flows/http-preview_capacity_adjustment.md) - entry: `preview_capacity_adjustment`
 - [http-preview_capacity_transfer](flows/http-preview_capacity_transfer.md) - entry: `preview_capacity_transfer`
 - [http-preview_capacity_transfer_withdrawal](flows/http-preview_capacity_transfer_withdrawal.md) - entry: `preview_capacity_transfer_withdrawal`
@@ -3521,6 +3580,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-preview_schedule](flows/http-preview_schedule.md) - entry: `preview_schedule`
 - [http-preview_task_routing](flows/http-preview_task_routing.md) - entry: `preview_task_routing`
 - [http-project_member](flows/http-project_member.md) - entry: `project_member`
+- [http-reactivate_task](flows/http-reactivate_task.md) - entry: `reactivate_task`
 - [http-read](flows/http-read.md) - entry: `read`
 - [http-read_fault](flows/http-read_fault.md) - entry: `read_fault`
 - [http-read_snapshot](flows/http-read_snapshot.md) - entry: `read_snapshot`
@@ -3531,6 +3591,8 @@ Retained history; these declarations are absent from the selected source invento
 - [http-record_execution_usage](flows/http-record_execution_usage.md) - entry: `record_execution_usage`
 - [http-record_maintenance_notice](flows/http-record_maintenance_notice.md) - entry: `record_maintenance_notice`
 - [http-record_maintenance_notice_receipt](flows/http-record_maintenance_notice_receipt.md) - entry: `record_maintenance_notice_receipt`
+- [http-record_manual_provenance-agent_planning](flows/http-record_manual_provenance-agent_planning.md) - entry: `record_manual_provenance`
+- [http-record_manual_provenance-task_domain](flows/http-record_manual_provenance-task_domain.md) - entry: `record_manual_provenance`
 - [http-record_runtime_observation](flows/http-record_runtime_observation.md) - entry: `record_runtime_observation`
 - [http-record_task_progress](flows/http-record_task_progress.md) - entry: `record_task_progress`
 - [http-record_task_replacement-agent_planning](flows/http-record_task_replacement-agent_planning.md) - entry: `record_task_replacement`
@@ -3583,6 +3645,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-task_mention_options](flows/http-task_mention_options.md) - entry: `task_mention_options`
 - [http-task_migration_diagnostics](flows/http-task_migration_diagnostics.md) - entry: `task_migration_diagnostics`
 - [http-task_owner_options](flows/http-task_owner_options.md) - entry: `task_owner_options`
+- [http-task_postponement](flows/http-task_postponement.md) - entry: `task_postponement`
 - [http-task_progress_history](flows/http-task_progress_history.md) - entry: `task_progress_history`
 - [http-task_replacement](flows/http-task_replacement.md) - entry: `task_replacement`
 - [http-task_review_queue](flows/http-task_review_queue.md) - entry: `task_review_queue`
@@ -3716,6 +3779,7 @@ Retained history; these declarations are absent from the selected source invento
 - [mcp-agent_reconcile_planning_window](flows/mcp-agent_reconcile_planning_window.md) - entry: `agent_reconcile_planning_window`
 - [mcp-agent_reconcile_run_provenance](flows/mcp-agent_reconcile_run_provenance.md) - entry: `agent_reconcile_run_provenance`
 - [mcp-agent_record_execution_usage](flows/mcp-agent_record_execution_usage.md) - entry: `agent_record_execution_usage`
+- [mcp-agent_record_manual_provenance](flows/mcp-agent_record_manual_provenance.md) - entry: `agent_record_manual_provenance`
 - [mcp-agent_record_task_replacement](flows/mcp-agent_record_task_replacement.md) - entry: `agent_record_task_replacement`
 - [mcp-agent_release_task](flows/mcp-agent_release_task.md) - entry: `agent_release_task`
 - [mcp-agent_renew_claim](flows/mcp-agent_renew_claim.md) - entry: `agent_renew_claim`

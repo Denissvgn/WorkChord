@@ -237,6 +237,10 @@ class AgentModelCatalogFields(RoutingContractModel):
     context_tier: ModelContextTier
     modality_tags: list[str] = Field(default_factory=lambda: ["text"])
     cost_tier: ModelCostTier
+    local_first: bool = Field(
+        default=False,
+        description="Prefer this free or local model over a hosted one of equal adequacy; never overrides a gate.",
+    )
     latency_tier: ModelLatencyTier
     enabled: bool = True
     revision: PositiveRevision = 1
@@ -292,6 +296,7 @@ class AgentModelCatalogUpdate(RoutingContractModel):
     context_tier: ModelContextTier | None = None
     modality_tags: list[str] | None = None
     cost_tier: ModelCostTier | None = None
+    local_first: bool | None = None
     latency_tier: ModelLatencyTier | None = None
     enabled: Literal[True] | None = None
     last_verified_at: datetime | None = None
@@ -338,6 +343,7 @@ class AgentModelCatalogUpdate(RoutingContractModel):
             "context_tier",
             "modality_tags",
             "cost_tier",
+            "local_first",
             "latency_tier",
             "enabled",
         }
@@ -985,6 +991,7 @@ class AgentRoutingCandidate(RoutingContractModel):
     tool_tags: list[str] = Field(default_factory=list)
     data_policy_tags: list[str] = Field(default_factory=list)
     cost_tier: ModelCostTier
+    local_first: bool = False
     latency_tier: ModelLatencyTier
     available_capacity_days: float = Field(..., ge=0)
     committed_effort_days: float = Field(..., ge=0)
@@ -1064,6 +1071,7 @@ class AgentRoutingExclusion(RoutingContractModel):
     reasoning_tier: ReasoningTier | None = None
     context_tier: ModelContextTier | None = None
     cost_tier: ModelCostTier | None = None
+    local_first: bool | None = None
     latency_tier: ModelLatencyTier | None = None
     missing_modality_tags: list[str] = Field(default_factory=list)
     missing_tool_tags: list[str] = Field(default_factory=list)

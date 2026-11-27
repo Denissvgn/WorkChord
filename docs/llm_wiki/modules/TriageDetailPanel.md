@@ -14,7 +14,7 @@ _Auto-generated from `frontend/src/components/triage/TriageDetailPanel.tsx`._
 | `../../types/triage` | `TriageDuplicateSuggestion`, `TriageItem` | Declaration | erased |
 | `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
 | `../../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
-| `../../utils/safeUrl` | `safeExternalHref` | — | compiler-dependent |
+| `../../utils/safeUrl` | `sourceLinkHref` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../requestSources/RequestSourceLinksPanel` | `RequestSourceLinksPanel` | — | compiler-dependent |
 | `../ui` | `OverflowMenu` | — | compiler-dependent |

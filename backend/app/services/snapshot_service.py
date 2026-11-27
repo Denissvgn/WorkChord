@@ -440,8 +440,12 @@ class SnapshotService:
         removed_ids = {task.id for task in current} - ids
         from app.services.task_replacement_service import require_restore_compatible
         await require_restore_compatible(self.db, [row for row, _ in flat], current)
+        from app.services.task_postponement_service import require_restore_compatible as require_postponement_compatible
+        await require_postponement_compatible(self.db, [row for row, _ in flat], current)
         self.db.info.setdefault("delivery_changed_nodes", set()).update(("task", task_id) for task_id in ids)
         await DeliveryDependencyService(self.db).require_unreferenced(removed_ids)
+        from app.services.task_postponement_service import require_unreferenced as require_unawaited
+        await require_unawaited(self.db, task_ids=removed_ids)
         await self.db.execute(delete(DeliveryDependency).where(DeliveryDependency.task_id.in_(removed_ids)))
         outside = await self.db.scalar(select(TaskDependency.task_id).where(TaskDependency.depends_on_id.in_({t.id for t in current} - ids), TaskDependency.task_id.notin_(ids)).limit(1))
         if outside is not None:

@@ -43,6 +43,7 @@ Composed planning mutations share one transaction and retain exact durable mutat
 | `apply_capacity_transfer` | *(async)* `(actor: AgentActor, data: CapacityTransferCommand, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Lend capacity between rows of one person until a return date, every side in one command. |
 | `withdraw_capacity_transfer` | *(async)* `(group_token: str, actor: AgentActor, data: CapacityTransferWithdrawal, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Return the lent capacity of every row of one transfer together. |
 | `record_task_replacement` | *(async)* `(task_id: int, actor: AgentActor, data: Any, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Replace an unaccepted task with a fresh one under a recorded owner decision. |
+| `record_manual_provenance` | *(async)* `(task_id: int, actor: AgentActor, data: Any, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Record who executed resolved work delivered outside recorded runs, and its exact candidate. |
 | `add_delivery_dependency` | *(async)* `(task_id: int, actor: AgentActor, data: Any, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Record a delivery prerequisite through the same command as the REST route. |
 | `retarget_delivery_dependency` | *(async)* `(task_id: int, edge_id: int, actor: AgentActor, data: Any, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Change or clear a prerequisite's target branch through the same command as the REST route. |
 | `_iteration_tasks_for_update` | *(async)* `(iteration_id: int) -> list[Task]` | — | — |
@@ -105,7 +106,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_planning_service](../modules/agent_planning_service.md) | 36 | — |
+| [agent_planning_service](../modules/agent_planning_service.md) | 37 | — |
 
 ### References
 
@@ -124,4 +125,4 @@ flowchart LR
 | `create_planning_team_member` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `create_planning_vacation` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 53 logical references; 41 omitted by the 12-row generated summary limit.
+> References: showing 12 of 55 logical references; 43 omitted by the 12-row generated summary limit.

@@ -35,12 +35,12 @@ flowchart LR
     n5["backend/app/services/discussion_service.py"]
     n6["backend/app/services/execution_planning_window.py"]
     n7["backend/app/services/identity_service.py"]
-    n8["backend/app/services/task_domain_service.py"]
-    n9["backend/tests/migrations/test_project_identity.py"]
-    n10["test_scoped_manager_can_restore_another_eligible_person_without_profile_access (backend/tests/test_allocation_recovery.py)"]
-    n11["test_annual_selection_and_forecast_preserve_live_ownership (backend/tests/test_annual_calendar_work_control.py)"]
-    n12["test_mcp_reports_an_existing_issued_year_conflict (backend/tests/test_annual_calendar_work_control.py)"]
-    n13["test_postgres_dispatch_serializes_with_supplemental_policy_replacement (backend/tests/test_annual_calendar_work_control.py)"]
+    n8["backend/app/services/manual_provenance_service.py"]
+    n9["backend/app/services/task_domain_service.py"]
+    n10["backend/tests/migrations/test_project_identity.py"]
+    n11["test_scoped_manager_can_restore_another_eligible_person_without_profile_access (backend/tests/test_allocation_recovery.py)"]
+    n12["test_annual_selection_and_forecast_preserve_live_ownership (backend/tests/test_annual_calendar_work_control.py)"]
+    n13["test_mcp_reports_an_existing_issued_year_conflict (backend/tests/test_annual_calendar_work_control.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -62,10 +62,10 @@ flowchart LR
     click n5 "../modules/discussion_service.md"
     click n6 "../modules/execution_planning_window.md"
     click n7 "../modules/identity_service.md"
-    click n8 "../modules/task_domain_service.md"
-    click n9 "../modules/test_project_identity.md"
-    click n10 "../modules/test_allocation_recovery.md"
-    click n11 "../modules/test_annual_calendar_work_control.md"
+    click n8 "../modules/manual_provenance_service.md"
+    click n9 "../modules/task_domain_service.md"
+    click n10 "../modules/test_project_identity.md"
+    click n11 "../modules/test_allocation_recovery.md"
     click n12 "../modules/test_annual_calendar_work_control.md"
     click n13 "../modules/test_annual_calendar_work_control.md"
 ```
@@ -92,11 +92,11 @@ flowchart LR
 | `discussion_service` | import | [discussion_service](../modules/discussion_service.md) | — |
 | `execution_planning_window` | import | [execution_planning_window](../modules/execution_planning_window.md) | — |
 | `identity_service` | import | [identity_service](../modules/identity_service.md) | — |
+| `manual_provenance_service` | import | [manual_provenance_service](../modules/manual_provenance_service.md) | — |
 | `task_domain_service` | import | [task_domain_service](../modules/task_domain_service.md) | — |
 | `test_project_identity` | import | [test_project_identity](../modules/test_project_identity.md) | — |
 | `test_scoped_manager_can_restore_another_eligible_person_without_profile_access` | call | [test_allocation_recovery](../modules/test_allocation_recovery.md) | 1 |
 | `test_annual_selection_and_forecast_preserve_live_ownership` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
 | `test_mcp_reports_an_existing_issued_year_conflict` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
-| `test_postgres_dispatch_serializes_with_supplemental_policy_replacement` | call | [test_annual_calendar_work_control](../modules/test_annual_calendar_work_control.md) | 1 |
 
-> References: showing 12 of 37 logical references; 25 omitted by the 12-row generated summary limit.
+> References: showing 12 of 43 logical references; 31 omitted by the 12-row generated summary limit.

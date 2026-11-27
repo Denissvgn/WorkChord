@@ -161,16 +161,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| member_planning_context | HTTPException (backend/app/routers/task_…py:member_planning_context) | 43 | `HTTPException(422, detail='Use a positive planning resource identity.')` |
-| member_planning_context | domain_result | 45 | `domain_result(observe_planning_input(...))` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 53 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 55 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 55 | `str(exc)` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 57 | `HTTPException(422, detail=[...])` |
+| member_planning_context | HTTPException (backend/app/routers/task_…py:member_planning_context) | 45 | `HTTPException(422, detail='Use a positive planning resource identity.')` |
+| member_planning_context | domain_result | 47 | `domain_result(observe_planning_input(...))` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 55 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 57 | `HTTPException(404, detail=str(...))` |
 | domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| member_planning_context | observe_planning_input | 45 | `observe_planning_input(db, 'member', resource_id, creating_member=creating_member, intent=data.model_dump(...))` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 59 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 59 | `str(exc)` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| member_planning_context | observe_planning_input | 47 | `observe_planning_input(db, 'member', resource_id, creating_member=creating_member, intent=data.model_dump(...))` |
 | observe_planning_input | revisions | 149 | `revisions(data not statically known)` |
 
 ### Boundary effects
@@ -181,12 +181,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `member_planning_context` | `HTTPException` | 43 |
-| external_call | `domain_result` | `HTTPException` | 53 |
-| unresolved_call | `domain_result` | `exc.detail` | 53 |
+| external_call | `member_planning_context` | `HTTPException` | 45 |
 | external_call | `domain_result` | `HTTPException` | 55 |
+| unresolved_call | `domain_result` | `exc.detail` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
+| external_call | `domain_result` | `HTTPException` | 61 |
 | unresolved_call | `observe_planning_input` | `revisions` | 149 |
 | step_limit | `member_planning_context` | `first 12 steps` | 0 |
 

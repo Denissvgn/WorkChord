@@ -195,6 +195,7 @@ export interface AgentModelCatalogEntry {
     context_tier: ModelContextTier;
     modality_tags: string[];
     cost_tier: ModelCostTier;
+    local_first: boolean;
     latency_tier: ModelLatencyTier;
     enabled: boolean;
     revision: number;
@@ -211,6 +212,7 @@ export interface AgentModelCatalogCreate {
     context_tier: ModelContextTier;
     modality_tags?: string[];
     cost_tier: ModelCostTier;
+    local_first?: boolean;
     latency_tier: ModelLatencyTier;
     enabled?: boolean;
     revision?: 1;
@@ -225,6 +227,7 @@ export interface AgentModelCatalogUpdate {
     context_tier?: ModelContextTier;
     modality_tags?: string[];
     cost_tier?: ModelCostTier;
+    local_first?: boolean;
     latency_tier?: ModelLatencyTier;
     enabled?: true;
     last_verified_at?: string | null;
@@ -416,6 +419,7 @@ export interface AgentRoutingCandidate {
     tool_tags: string[];
     data_policy_tags: string[];
     cost_tier: ModelCostTier;
+    local_first: boolean;
     latency_tier: ModelLatencyTier;
     available_capacity_days: number;
     committed_effort_days: number;
@@ -455,6 +459,7 @@ export interface AgentRoutingExclusion {
     reasoning_tier: ModelReasoningTier | null;
     context_tier: ModelContextTier | null;
     cost_tier: ModelCostTier | null;
+    local_first: boolean | null;
     latency_tier: ModelLatencyTier | null;
     missing_modality_tags: string[];
     missing_tool_tags: string[];

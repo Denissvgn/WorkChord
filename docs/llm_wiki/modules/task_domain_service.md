@@ -35,6 +35,7 @@ Progress availability follows open-leaf execution permission and excludes direct
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_brief_service` | `clear_acceptance`, `TaskBriefService`, `TaskBriefService` |
 | `app.services.task_hierarchy_service` | `TaskTreeIntegrityError`, `TaskTreeIntegrityError` |
+| `app.services.task_postponement_service` | `postponement_actions` |
 | `app.services.task_replacement_service` | `replaced_by` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.work_metrics` | `effective_work_flags` |
@@ -61,8 +62,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (19) |
-| Outbound | `backend` (21) |
+| Inbound | `backend` (21) |
+| Outbound | `backend` (22) |
 
 ### External packages
 
@@ -70,13 +71,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskDomainService](../entities/TaskDomainService.md) | 158 | — | — |
+| [TaskDomainService](../entities/TaskDomainService.md) | 207 | — | — |
 
 ## Functions
 
@@ -88,3 +89,4 @@ flowchart LR
 | `domain_capabilities` | *(async)* `(db)` | — | Advertise adoption only after the installed schema's backfill is complete. |
 | `require_owner` | *(async)* `(db, profile_id, project_id)` | — | Validate human ownership independently of capacity IDs and agent assignment. |
 | `action_projection` | `(task, authority, *, dependencies_complete = True, live_assignment = False)` | — | Transport-independent availability; execution commands recheck under row locks. |
+| `release_execution` | *(async)* `(db, task, reason, *, expected_claim_generation, expected_live_assignment_ids, expected_running_run_ids, event_type, purpose, only_when_live = False, extra = None)` | — | End a task's claim, live assignments and running runs under the caller's ownership fence. |

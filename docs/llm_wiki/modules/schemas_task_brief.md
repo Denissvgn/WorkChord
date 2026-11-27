@@ -36,7 +36,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (17) |
+| Inbound | `backend` (19) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (1) |
 
@@ -46,7 +46,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -59,5 +59,6 @@ flowchart LR
 | [CriterionProgress](../entities/schemas_task_brief_CriterionProgress.md) | 56 | `BaseModel` | — |
 | [ProgressWrite](../entities/ProgressWrite.md) | 64 | `BaseModel` | — |
 | [TaskReviewWrite](../entities/TaskReviewWrite.md) | 80 | `BaseModel` | — |
-| [TaskReviewResponse](../entities/TaskReviewResponse.md) | 90 | `BaseModel` | — |
-| [CurrentTaskReviewResponse](../entities/CurrentTaskReviewResponse.md) | 103 | `BaseModel` | — |
+| [OwnerAcceptanceWrite](../entities/OwnerAcceptanceWrite.md) | 90 | `BaseModel` | An owner's acceptance of one resolved task without a verified review publisher. |
+| [TaskReviewResponse](../entities/TaskReviewResponse.md) | 107 | `BaseModel` | — |
+| [CurrentTaskReviewResponse](../entities/CurrentTaskReviewResponse.md) | 122 | `BaseModel` | — |

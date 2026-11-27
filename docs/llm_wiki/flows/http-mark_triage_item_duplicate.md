@@ -45,11 +45,10 @@ sequenceDiagram
     participant p23 as normalize_provider_api_url
     participant p24 as HTTPException (backend/app/routers/triag…ark_triage_item_duplicate)
     participant p25 as service.mark_duplicate
-    participant p26 as HTTPException (backend/app/routers/triage.py:_bad_request)
-    participant p27 as str (backend/app/routers/triage.py:_bad_request)
-    participant p28 as message.lower
-    participant p29 as re.fullmatch
-    participant p30 as match.groups
+    participant p26 as isinstance (backend/app/routers/triage.py:_bad_request)
+    participant p27 as HTTPException (backend/app/routers/triage.py:_bad_request)
+    participant p28 as error.detail
+    participant p29 as str (backend/app/routers/triage.py:_bad_request)
     p0->>p1: _bad_request
     p0->>p2: _not_found_detail
     p1->>p3: resolve_runtime_ui_language
@@ -75,29 +74,29 @@ sequenceDiagram
     p14->>p23: normalize_provider_api_url
     p0-->>p24: HTTPException (backend/app/routers/triag…ark_triage_item_duplicate)(status_code=status.HTTP_404_NOT_FOUND, detail=...)
     p0-->>p25: service.mark_duplicate(triage_item_id, data)
-    p1-->>p26: HTTPException (backend/app/routers/triage.py:_bad_request)(status_code=status.HTTP_400_BAD_REQUEST, detail=backend_error_message(...))
-    p1-->>p27: str (backend/app/routers/triage.py:_bad_request)(error)
-    p4-->>p28: message.lower
-    p4-->>p29: re.fullmatch('(.+) with id ([^ ]+) not found', message)
-    p4-->>p30: match.groups
+    p1-->>p26: isinstance (backend/app/routers/triage.py:_bad_request)(error, SourceLinkRefused)
+    p1-->>p27: HTTPException (backend/app/routers/triage.py:_bad_request)(status_code=status.HTTP_400_BAD_REQUEST, detail=error.detail(...))
+    p1-->>p28: error.detail
+    p1-->>p27: HTTPException (backend/app/routers/triage.py:_bad_request)(status_code=status.HTTP_400_BAD_REQUEST, detail=backend_error_message(...))
+    p1-->>p29: str (backend/app/routers/triage.py:_bad_request)(error)
 ```
 
-> Call sequence diagram shows 30 of 165 interactions; 135 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 168 interactions; 138 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 4 of 47 (43 omitted); unresolved 3 of 70 (67 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 5 of 49 (44 omitted); unresolved 2 of 71 (69 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
-| `backend/app/services/language_service.py:normalize_language` | 5 | - | unresolved | 2 |
-| `backend/app/services/language_service.py:normalize_language` | 5 | - | external | 1 |
-| `backend/app/services/system_settings_service.py:RuntimeSettingsService._definition` | 11 | - | unresolved | 1 |
-| `backend/app/services/system_settings_service.py:RuntimeSettingsService._row` | 14 | - | unresolved | 3 |
-| `backend/app/services/system_settings_service.py:RuntimeSettingsService._row` | 14 | - | external | 1 |
-| `backend/app/services/system_settings_service.py:RuntimeSettingsService._decrypt_secret` | 19 | - | unresolved | 3 |
-| `backend/app/services/system_settings_service.py:RuntimeSettingsService._coerce` | 25 | - | external | 8 |
-| `backend/app/services/system_settings_service.py:RuntimeSettingsService._coerce` | 25 | [backend/app/services/system_settings_service.py](../modules/system_settings_service.md) | internal | 14 |
+| `backend/app/services/language_service.py:normalize_language` | 8 | - | unresolved | 2 |
+| `backend/app/services/language_service.py:normalize_language` | 8 | - | external | 1 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._definition` | 14 | - | unresolved | 1 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._row` | 17 | - | unresolved | 3 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._row` | 17 | - | external | 1 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._decrypt_secret` | 22 | - | unresolved | 3 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._coerce` | 28 | - | external | 8 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._coerce` | 28 | [backend/app/services/system_settings_service.py](../modules/system_settings_service.md) | internal | 14 |
 > Omission summary shows 8 of 27 groups; 19 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
@@ -113,7 +112,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 49; effect analysis evaluated: 30, partial: 1, unavailable: 18. Counts include steps omitted from the displayed trace.
 
-Collector observations for 31 source steps with known totals: observed: 159, emitted: 133, omitted: 26. Unavailable totals are excluded.
+Collector observations for 31 source steps with known totals: observed: 162, emitted: 136, omitted: 26. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -123,49 +122,47 @@ Collector observations for 31 source steps with known totals: observed: 159, emi
 |---|---|---|---|---:|---:|---:|
 | `mark_triage_item_duplicate` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
 | `service.mark_duplicate` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `_bad_request` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `_bad_request` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
+| `isinstance (backend/app/routers/triage.py:_bad_request)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException (backend/app/routers/triage.py:_bad_request)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `error.detail` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `resolve_runtime_ui_language` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
 | `normalize_language` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
 | `str(…).strip().lower` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `str(…).strip (backend/app/services/lang…ice.py:normalize_language)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `str (backend/app/services/lang…ice.py:normalize_language)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `RuntimeSettingsService.get_app_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
-| `RuntimeSettingsService.resolve` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
-| `RuntimeSettingsService._definition` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
-| `SETTING_DEFINITIONS.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 
 ```mermaid
 flowchart LR
     s1["1. mark_triage_item_duplicate"]
     s2["2. service.mark_duplicate"]
     s3["3. _bad_request"]
-    s4["4. resolve_runtime_ui_language"]
-    s5["5. normalize_language"]
-    s6["6. str(…).strip().lower"]
-    s7["7. str(…).strip (backend/app/services/lang…ice.py:normalize_language)"]
-    s8["8. str (backend/app/services/lang…ice.py:normalize_language)"]
-    s9["9. RuntimeSettingsService.get_app_settings"]
-    s10["10. RuntimeSettingsService.resolve"]
-    s11["11. RuntimeSettingsService._definition"]
-    s12["12. SETTING_DEFINITIONS.get"]
+    s4["4. isinstance (backend/app/routers/triage.py:_bad_request)"]
+    s5["5. HTTPException (backend/app/routers/triage.py:_bad_request)"]
+    s6["6. error.detail"]
+    s7["7. resolve_runtime_ui_language"]
+    s8["8. normalize_language"]
+    s9["9. str(…).strip().lower"]
+    s10["10. str(…).strip (backend/app/services/lang…ice.py:normalize_language)"]
+    s11["11. str (backend/app/services/lang…ice.py:normalize_language)"]
+    s12["12. RuntimeSettingsService.get_app_settings"]
     s1 -. "service.mark_duplicate(triage_item_id, data)" .-> s2
     s1 -->|"_bad_request(service, e)"| s3
-    s3 -->|"resolve_runtime_ui_language(service.db)"| s4
-    s4 -->|"normalize_language(default)"| s5
-    s5 -. "str(…).strip().lower(data not statically known)" .-> s6
-    s5 -. "str(…).strip (backend/app/services/lang…ice.py:normalize_language)(data not statically known)" .-> s7
-    s5 -. "str (backend/app/services/lang…ice.py:normalize_language)(...)" .-> s8
-    s4 -->|"RuntimeSettingsService.get_app_settings(data not statically known)"| s9
-    s9 -->|"RuntimeSettingsService.resolve('app.ui_language')"| s10
-    s10 -->|"RuntimeSettingsService._definition(key)"| s11
-    s11 -. "SETTING_DEFINITIONS.get(key)" .-> s12
+    s3 -. "isinstance (backend/app/routers/triage.py:_bad_request)(error, SourceLinkRefused)" .-> s4
+    s3 -. "HTTPException (backend/app/routers/triage.py:_bad_request)(status_code=status.HTTP_400_BAD_REQUEST, detail=error.detail(...))" .-> s5
+    s3 -. "error.detail(data not statically known)" .-> s6
+    s3 -->|"resolve_runtime_ui_language(service.db)"| s7
+    s7 -->|"normalize_language(default)"| s8
+    s8 -. "str(…).strip().lower(data not statically known)" .-> s9
+    s8 -. "str(…).strip (backend/app/services/lang…ice.py:normalize_language)(data not statically known)" .-> s10
+    s8 -. "str (backend/app/services/lang…ice.py:normalize_language)(...)" .-> s11
+    s7 -->|"RuntimeSettingsService.get_app_settings(data not statically known)"| s12
     click s1 "../modules/routers_triage.md"
     click s3 "../modules/routers_triage.md"
-    click s4 "../modules/language_service.md"
-    click s5 "../modules/language_service.md"
-    click s9 "../modules/system_settings_service.md"
-    click s10 "../modules/system_settings_service.md"
-    click s11 "../modules/system_settings_service.md"
+    click s7 "../modules/language_service.md"
+    click s8 "../modules/language_service.md"
+    click s12 "../modules/system_settings_service.md"
 ```
 
 ### Step data
@@ -174,32 +171,32 @@ flowchart LR
 |---|---|---|---|---|
 | `mark_triage_item_duplicate` | `triage_item_id: int`, `data: TriageDuplicateRequest`, `service: Annotated[TriageService, Depends(get_triage_service)]` | `status` | - | `item` |
 | `service.mark_duplicate` | - | - | - | - |
-| `_bad_request` | `service`, `error: ValueError` | `status` | - | `HTTPException(...)` |
+| `_bad_request` | `service`, `error: ValueError` | `SourceLinkRefused`, `status`, `status` | - | `HTTPException(...)`, `HTTPException(...)` |
+| `isinstance (backend/app/routers/triage.py:_bad_request)` | - | - | - | - |
+| `HTTPException (backend/app/routers/triage.py:_bad_request)` | - | - | - | - |
+| `error.detail` | - | - | - | - |
 | `resolve_runtime_ui_language` | `db: Any`, `default: LanguageCode \| None` | - | - | `normalize_language(...)`, `normalize_language(...)`, `fallback` |
 | `normalize_language` | `value: Any`, `default: LanguageCode` | - | - | `normalized`, `default` |
 | `str(…).strip().lower` | - | - | - | - |
 | `str(…).strip (backend/app/services/lang…ice.py:normalize_language)` | - | - | - | - |
 | `str (backend/app/services/lang…ice.py:normalize_language)` | - | - | - | - |
 | `RuntimeSettingsService.get_app_settings` | - | - | - | `SimpleNamespace(...)` |
-| `RuntimeSettingsService.resolve` | `key: str` | - | - | `(...)`, `(...)`, `(...)` |
-| `RuntimeSettingsService._definition` | `key: str` | - | - | `definition` |
-| `SETTING_DEFINITIONS.get` | - | - | - | - |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| mark_triage_item_duplicate | service.mark_duplicate | 334 | `service.mark_duplicate(triage_item_id, data)` |
-| mark_triage_item_duplicate | _bad_request | 336 | `_bad_request(service, e)` |
-| _bad_request | resolve_runtime_ui_language | 65 | `resolve_runtime_ui_language(service.db)` |
+| mark_triage_item_duplicate | service.mark_duplicate | 338 | `service.mark_duplicate(triage_item_id, data)` |
+| mark_triage_item_duplicate | _bad_request | 340 | `_bad_request(service, e)` |
+| _bad_request | isinstance (backend/app/routers/triage.py:_bad_request) | 67 | `isinstance(error, SourceLinkRefused)` |
+| _bad_request | HTTPException (backend/app/routers/triage.py:_bad_request) | 68 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error.detail(...))` |
+| _bad_request | error.detail | 68 | `error.detail(data not statically known)` |
+| _bad_request | resolve_runtime_ui_language | 69 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip (backend/app/services/lang…ice.py:normalize_language) | 35 | `str(value or '').strip(data not statically known)` |
 | normalize_language | str (backend/app/services/lang…ice.py:normalize_language) | 35 | `str(...)` |
 | resolve_runtime_ui_language | RuntimeSettingsService.get_app_settings | 411 | `RuntimeSettingsService(db).get_app_settings(data not statically known)` |
-| RuntimeSettingsService.get_app_settings | RuntimeSettingsService.resolve | 337 | `self.resolve('app.ui_language')` |
-| RuntimeSettingsService.resolve | RuntimeSettingsService._definition | 284 | `self._definition(key)` |
-| RuntimeSettingsService._definition | SETTING_DEFINITIONS.get | 154 | `SETTING_DEFINITIONS.get(key)` |
 
 ### Boundary effects
 
@@ -209,10 +206,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `mark_triage_item_duplicate` | `service.mark_duplicate` | 334 |
+| unresolved_call | `mark_triage_item_duplicate` | `service.mark_duplicate` | 338 |
+| external_call | `_bad_request` | `isinstance` | 67 |
+| external_call | `_bad_request` | `HTTPException` | 68 |
+| unresolved_call | `_bad_request` | `error.detail` | 68 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
-| unresolved_call | `RuntimeSettingsService._definition` | `SETTING_DEFINITIONS.get` | 154 |
 | step_limit | `mark_triage_item_duplicate` | `first 12 steps` | 0 |
 | truncated_flow | `mark_triage_item_duplicate` | `depth limit` | 0 |
 

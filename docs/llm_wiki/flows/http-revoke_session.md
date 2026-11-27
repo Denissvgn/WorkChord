@@ -146,12 +146,12 @@ flowchart LR
 | revoke_session (backend/app/services/session_service.py) | utc_now | 232 | `utc_now(data not statically known)` |
 | utc_now | datetime.now | 13 | `datetime.now(UTC)` |
 | revoke_session (backend/app/services/session_service.py) | commit_or_flush | 233 | `commit_or_flush(db)` |
-| commit_or_flush | current_command | 85 | `current_command(db)` |
-| current_command | getattr | 79 | `getattr(db, 'info', None)` |
-| current_command | isinstance | 80 | `isinstance(info, dict)` |
-| current_command | info.get | 80 | `info.get('command')` |
-| commit_or_flush | db.flush | 86 | `db.flush(data not statically known)` |
-| commit_or_flush | db.commit | 88 | `db.commit(data not statically known)` |
+| commit_or_flush | current_command | 92 | `current_command(db)` |
+| current_command | getattr | 86 | `getattr(db, 'info', None)` |
+| current_command | isinstance | 87 | `isinstance(info, dict)` |
+| current_command | info.get | 87 | `info.get('command')` |
+| commit_or_flush | db.flush | 93 | `db.flush(data not statically known)` |
+| commit_or_flush | db.commit | 95 | `db.commit(data not statically known)` |
 | revoke_session (backend/app/services/session_service.py) | _cookie_options | 234 | `_cookie_options(data not statically known)` |
 
 ### Boundary effects
@@ -163,11 +163,11 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | external_call | `utc_now` | `datetime.now` | 13 |
-| external_call | `current_command` | `getattr` | 79 |
-| external_call | `current_command` | `isinstance` | 80 |
-| unresolved_call | `current_command` | `info.get` | 80 |
-| unresolved_call | `commit_or_flush` | `db.flush` | 86 |
-| unresolved_call | `commit_or_flush` | `db.commit` | 88 |
+| external_call | `current_command` | `getattr` | 86 |
+| external_call | `current_command` | `isinstance` | 87 |
+| unresolved_call | `current_command` | `info.get` | 87 |
+| unresolved_call | `commit_or_flush` | `db.flush` | 93 |
+| unresolved_call | `commit_or_flush` | `db.commit` | 95 |
 | step_limit | `revoke_session` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -949,6 +949,44 @@ class AgentPlanningService:
             mutate=mutate,
         )
 
+    async def record_manual_provenance(
+        self,
+        task_id: int,
+        actor: AgentActor,
+        data: Any,
+        *,
+        command: AgentPlanningCommandContext,
+    ) -> AgentPlanningReceipt:
+        """Record who executed resolved work delivered outside recorded runs, and its exact candidate."""
+        from app.schemas.manual_provenance import ManualProvenanceResponse
+        from app.services.manual_provenance_service import ManualProvenanceService
+
+        payload = {"task_id": task_id, "data": data.model_dump(mode="json")}
+
+        async def mutate() -> MutationResult:
+            result = await ManualProvenanceService(self.db).record(task_id, data, commit=False)
+            return task_id, ManualProvenanceResponse.model_validate(result).model_dump(mode="json")
+
+        # Every audit row of this command, its receipt included, carries the record's own reason.
+        from dataclasses import replace
+        authority = self.db.info.get("authority")
+        if authority is not None:
+            self.db.info["authority"] = replace(authority, reason=data.reason[:2000])
+        try:
+            return await self._execute(
+                actor=actor,
+                scope="planning:write",
+                operation="planning.task.manual_provenance",
+                target_type="task",
+                idempotency_target_id=task_id,
+                command=command,
+                request_payload=payload,
+                mutate=mutate,
+            )
+        finally:
+            if authority is not None:
+                self.db.info["authority"] = authority
+
     async def add_delivery_dependency(
         self,
         task_id: int,
@@ -1344,6 +1382,9 @@ class AgentPlanningService:
             ],
             unscheduled=[
                 item.model_dump(mode="json") for item in schedule.unscheduled
+            ],
+            kept_dates=[
+                item.model_dump(mode="json") for item in schedule.kept_dates
             ],
             input_digest=input_digest,
             task_states=AgentPlanningService._schedule_task_states(tasks),

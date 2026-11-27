@@ -104,4 +104,4 @@ flowchart LR
 | `ProjectService.get_milestone_for_project` | type_reference | [project_service](../modules/project_service.md) | — |
 | `ProjectService.list_milestones` | type_reference | [project_service](../modules/project_service.md) | — |
 
-> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

@@ -113,9 +113,9 @@ flowchart LR
 | reorder_tasks | HTTPException | 683 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
 | reorder_tasks | str | 683 | `str(e)` |
 | reorder_tasks | current_command | 685 | `current_command(service.db)` |
-| current_command | getattr | 79 | `getattr(db, 'info', None)` |
-| current_command | isinstance | 80 | `isinstance(info, dict)` |
-| current_command | info.get | 80 | `info.get('command')` |
+| current_command | getattr | 86 | `getattr(db, 'info', None)` |
+| current_command | isinstance | 87 | `isinstance(info, dict)` |
+| current_command | info.get | 87 | `info.get('command')` |
 | reorder_tasks | str | 687 | `str(...)` |
 | reorder_tasks | MessageResponse | 688 | `MessageResponse(message='Tasks reordered', success=True)` |
 
@@ -129,9 +129,9 @@ flowchart LR
 |---|---|---|---:|
 | unresolved_call | `reorder_tasks` | `service.reorder_tasks` | 676 |
 | external_call | `reorder_tasks` | `HTTPException` | 683 |
-| external_call | `current_command` | `getattr` | 79 |
-| external_call | `current_command` | `isinstance` | 80 |
-| unresolved_call | `current_command` | `info.get` | 80 |
+| external_call | `current_command` | `getattr` | 86 |
+| external_call | `current_command` | `isinstance` | 87 |
+| unresolved_call | `current_command` | `info.get` | 87 |
 
 ## Behavior
 

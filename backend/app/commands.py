@@ -24,7 +24,14 @@ class CommandState:
     worker_blockers: set[tuple[int, int, int, str]] = field(default_factory=set)
     failed: bool = False
     verified_publishers: set[tuple[int, int, int, int]] = field(default_factory=set)
+    # A workspace owner's recorded decision to accept exactly this task state without
+    # a verified publisher; it never applies to another task, revision or command.
+    owner_acceptance_overrides: set[tuple[int, int, int, int]] = field(default_factory=set)
+    # Tasks whose owner-override command is running; every audit row of the command names them.
+    owner_acceptance_tasks: set[int] = field(default_factory=set)
     evidence_returns: set[tuple[int, int]] = field(default_factory=set)
+    # Tasks whose status this command moves into or out of postponed under manage authority.
+    postponement_transitions: set[int] = field(default_factory=set)
     planning_revision: int | None = None
 
 
@@ -312,7 +319,7 @@ async def planning_input_reservation(db, kind, values):
                     if window:
                         task.execution_planning_window = window
                         await service.record_task_event(task.id, "task.execution_planning_window",
-                            {"source": "iteration_end_extension", "from": window["from"], "through": window["through"],
+                            {"source": "iteration_end_extension", "window_kind": window["kind"], "from": window["from"], "through": window["through"],
                              "assignment_ids": sorted(map(int, window["assignments"])), **extension}, actor_type="system")
     finally:
         if parent is None:

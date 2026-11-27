@@ -16,7 +16,7 @@ Task schemas.
 | `app.schemas.task_brief` | `TaskBrief` |
 | `app.schemas.team` | `AssigneeRecommendationResponse` |
 | `app.schemas.work_metrics` | `TaskMetricSignals` |
-| `app.utils.url_policy` | `URLPolicyError`, `normalize_stored_display_url` |
+| `app.utils.source_link_policy` | `SourceLinkRefused`, `normalize_source_link` |
 | `datetime` | `date`, `datetime` |
 | `enum` | `Enum` |
 | `pydantic` | `BaseModel`, `Field`, `field_validator` |
@@ -42,7 +42,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (38) |
+| Inbound | `backend` (41) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (5) |
 
@@ -52,7 +52,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 44 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 47 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

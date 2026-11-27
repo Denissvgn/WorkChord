@@ -117,6 +117,7 @@ from app.schemas.triage import (
     TriageItemStatus,
     TriageItemUpdate,
     TriageSnoozeRequest,
+    TriageSourceLinkOutcome,
     TriageTaskDraftRequest,
 )
 from app.services.agent_profile_catalog_service import AgentProfileCatalogService
@@ -1267,6 +1268,32 @@ async def record_task_replacement(
         task_id,
         actor,
         TaskReplacementCreate.model_validate(payload),
+        command=_planning_command_context(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def record_manual_provenance(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: record who executed resolved work delivered outside recorded runs."""
+    from app.schemas.manual_provenance import ManualProvenanceWrite
+
+    receipt = await AgentPlanningService(db).record_manual_provenance(
+        task_id,
+        actor,
+        ManualProvenanceWrite.model_validate(payload),
         command=_planning_command_context(
             idempotency_key=idempotency_key,
             rationale=rationale,
@@ -2924,6 +2951,7 @@ async def convert_triage_to_task(
         response = TriageConvertToTaskResponse(
             triage_item=TriageItemResponse.model_validate(item),
             task=TaskService(db).task_to_response(task),
+            source_link=TriageSourceLinkOutcome.for_link(item.source_url),
         ).model_dump(mode="json")
         await _stage_triage_command_audit_event(
             db,
@@ -3584,4 +3612,8 @@ async def convert_triage_to_backlog(db, actor, triage_item_id, payload):
     if result is None:
         return None
     item, task = result
-    return {"triage_item": TriageItemResponse.model_validate(item).model_dump(mode="json"), "task": TaskService(db).task_to_response(task).model_dump(mode="json")}
+    return TriageConvertToTaskResponse(
+        triage_item=TriageItemResponse.model_validate(item),
+        task=TaskService(db).task_to_response(task),
+        source_link=TriageSourceLinkOutcome.for_link(item.source_url),
+    ).model_dump(mode="json")

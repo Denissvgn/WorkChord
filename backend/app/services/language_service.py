@@ -435,12 +435,14 @@ _TASK_STATUS_LABELS: dict[LanguageCode, dict[str, str]] = {
         "active": "Active",
         "resolved": "Resolved",
         "closed": "Closed",
+        "postponed": "Postponed",
     },
     "ru": {
         "planned": "Запланировано",
         "active": "Активно",
         "resolved": "Решено",
         "closed": "Закрыто",
+        "postponed": "Отложено",
     },
 }
 

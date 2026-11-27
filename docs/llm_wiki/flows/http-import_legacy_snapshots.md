@@ -67,8 +67,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| import_legacy_snapshots | SnapshotService(…).import_legacy | 278 | `SnapshotService(db).import_legacy(iteration_id, dry_run=data.dry_run, limit=data.limit)` |
-| import_legacy_snapshots | SnapshotService | 278 | `SnapshotService(db)` |
+| import_legacy_snapshots | SnapshotService(…).import_legacy | 280 | `SnapshotService(db).import_legacy(iteration_id, dry_run=data.dry_run, limit=data.limit)` |
+| import_legacy_snapshots | SnapshotService | 280 | `SnapshotService(db)` |
 
 ### Boundary effects
 
@@ -78,7 +78,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `import_legacy_snapshots` | `SnapshotService(db).import_legacy` | 278 |
+| unresolved_call | `import_legacy_snapshots` | `SnapshotService(db).import_legacy` | 280 |
 
 ## Behavior
 

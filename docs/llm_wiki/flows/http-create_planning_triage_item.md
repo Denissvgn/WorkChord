@@ -2,12 +2,13 @@
 
 **Entry point:** `create_planning_triage_item` (`http`)
 **Source:** [routers_agent_planning](../modules/routers_agent_planning.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [commands](../modules/commands.md), [mcp_agent_tools](../modules/mcp_agent_tools.md), [models_agent](../modules/models_agent.md), and 8 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [commands](../modules/commands.md), [config](../modules/config.md), [mcp_agent_tools](../modules/mcp_agent_tools.md), and 11 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
 - [commands](../modules/commands.md)
+- [config](../modules/config.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [models_agent](../modules/models_agent.md)
 - [models_triage](../modules/models_triage.md)
@@ -15,9 +16,11 @@
 - [routers_agent_planning](../modules/routers_agent_planning.md)
 - [schemas_agent_planning](../modules/schemas_agent_planning.md)
 - [schemas_triage](../modules/schemas_triage.md)
+- [source_link_policy](../modules/source_link_policy.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_service](../modules/task_service.md)
 - [triage_service](../modules/triage_service.md)
+- [url_policy](../modules/url_policy.md)
 
 ## Call sequence
 
@@ -39,22 +42,22 @@ sequenceDiagram
     participant p10 as _commit_triage_command
     participant p11 as TriageService._validate_common_references
     participant p12 as TaskService.record_task_event
-    participant p13 as TriageService._record_triage_event
-    participant p14 as emit_outbound_webhook_event
-    participant p15 as commit_or_flush
-    participant p16 as TriageService._require_project_exists
-    participant p17 as TriageService.get_by_id
-    participant p18 as OutboundWebhookService.safe_emit_event
-    participant p19 as TriageService._require_iteration_exists
-    participant p20 as TriageService._require_duplicate_item_exists
-    participant p21 as TriageService._require_task_exists
-    participant p22 as OutboundWebhookService.enqueue_event
-    participant p23 as AgentPermissionError
-    participant p24 as TriageItemCreate
-    participant p25 as _triage_audited_request
-    participant p26 as TriageService
-    participant p27 as _response
-    participant p28 as actor_scopes
+    participant p13 as normalize_source_link
+    participant p14 as TriageService._record_triage_event
+    participant p15 as emit_outbound_webhook_event
+    participant p16 as commit_or_flush
+    participant p17 as TriageService._require_project_exists
+    participant p18 as evaluate_source_link
+    participant p19 as TriageService.get_by_id
+    participant p20 as OutboundWebhookService.safe_emit_event
+    participant p21 as TriageService._require_iteration_exists
+    participant p22 as TriageService._require_duplicate_item_exists
+    participant p23 as TriageService._require_task_exists
+    participant p24 as OutboundWebhookService.enqueue_event
+    participant p25 as _instance_authorities
+    participant p26 as normalize_stored_display_url
+    participant p27 as AgentPermissionError
+    participant p28 as TriageItemCreate
     participant p29 as isinstance (backend/app/routers/agent…ng.py:_handle_agent_error)
     participant p30 as data.model_dump (backend/app/routers/agent…eate_planning_triage_item)
     p0->>p1: require_scope
@@ -69,43 +72,43 @@ sequenceDiagram
     p2->>p10: _commit_triage_command
     p7->>p11: TriageService._validate_common_references
     p8->>p12: TaskService.record_task_event
-    p7->>p13: TriageService._record_triage_event
-    p7->>p14: emit_outbound_webhook_event
-    p7->>p15: commit_or_flush
-    p11->>p16: TriageService._require_project_exists
-    p13->>p17: TriageService.get_by_id
-    p14->>p18: OutboundWebhookService.safe_emit_event
-    p11->>p19: TriageService._require_iteration_exists
-    p11->>p20: TriageService._require_duplicate_item_exists
-    p11->>p21: TriageService._require_task_exists
-    p18->>p22: OutboundWebhookService.enqueue_event
-    p1->>p23: AgentPermissionError
-    p2->>p24: TriageItemCreate
-    p2->>p25: _triage_audited_request
-    p2->>p26: TriageService
-    p2->>p27: _response
-    p4->>p28: actor_scopes
+    p7->>p13: normalize_source_link
+    p7->>p14: TriageService._record_triage_event
+    p7->>p15: emit_outbound_webhook_event
+    p7->>p16: commit_or_flush
+    p11->>p17: TriageService._require_project_exists
+    p13->>p18: evaluate_source_link
+    p14->>p19: TriageService.get_by_id
+    p15->>p20: OutboundWebhookService.safe_emit_event
+    p11->>p21: TriageService._require_iteration_exists
+    p11->>p22: TriageService._require_duplicate_item_exists
+    p11->>p23: TriageService._require_task_exists
+    p20->>p24: OutboundWebhookService.enqueue_event
+    p18->>p25: _instance_authorities
+    p18->>p26: normalize_stored_display_url
+    p1->>p27: AgentPermissionError
+    p2->>p28: TriageItemCreate
     p3-->>p29: isinstance (backend/app/routers/agent…ng.py:_handle_agent_error)(exc, AgentPermissionError)
     p0-->>p30: data.model_dump (backend/app/routers/agent…eate_planning_triage_item)(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 151 interactions; 121 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 197 interactions; 167 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 51 (50 omitted); unresolved 1 of 45 (44 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 63 (62 omitted); unresolved 1 of 60 (59 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
+| `backend/app/services/agent_service.py:actor_has_scope` | 3 | [backend/app/services/agent_service.py](../modules/agent_service.md) | internal | 1 |
 | `backend/app/services/agent_service.py:actor_scopes` | 4 | - | external | 2 |
 | `backend/app/mcp_agent_tools.py:_triage_command_context` | 9 | [backend/app/services/agent_service.py](../modules/agent_service.md) | internal | 1 |
 | `backend/app/services/agent_service.py:validate_idempotency_key` | 10 | - | external | 6 |
 | `backend/app/services/agent_service.py:validate_idempotency_key` | 10 | - | unresolved | 1 |
 | `backend/app/mcp_agent_tools.py:_triage_command_context` | 9 | [backend/app/schemas/agent_planning.py](../modules/schemas_agent_planning.md) | internal | 1 |
+| `backend/app/mcp_agent_tools.py:create_triage_item` | 8 | [backend/app/mcp_agent_tools.py](../modules/mcp_agent_tools.md) | internal | 2 |
 | `backend/app/mcp_agent_tools.py:create_triage_item` | 8 | - | unresolved | 2 |
-| `backend/app/mcp_agent_tools.py:_triage_command_replay` | 22 | - | unresolved | 3 |
-| `backend/app/mcp_agent_tools.py:_triage_command_replay` | 22 | - | external | 4 |
-> Omission summary shows 8 of 60 groups; 52 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 77 groups; 69 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -118,9 +121,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 56; effect analysis evaluated: 41, partial: 3, unavailable: 12. Counts include steps omitted from the displayed trace.
+Source steps: 75; effect analysis evaluated: 52, partial: 3, unavailable: 20. Counts include steps omitted from the displayed trace.
 
-Collector observations for 44 source steps with known totals: observed: 218, emitted: 212, omitted: 6. Unavailable totals are excluded.
+Collector observations for 55 source steps with known totals: observed: 255, emitted: 247, omitted: 8. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -197,15 +200,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_planning_triage_item | require_scope | 655 | `require_scope(actor, 'planning:write')` |
+| create_planning_triage_item | require_scope | 678 | `require_scope(actor, 'planning:write')` |
 | require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
-| create_planning_triage_item | create_triage_item | 656 | `mcp_agent_tools.create_triage_item(db, actor, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| create_triage_item | _triage_command_context | 2581 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
-| _triage_command_context | validate_idempotency_key | 221 | `validate_idempotency_key(idempotency_key, required=True)` |
+| create_planning_triage_item | create_triage_item | 679 | `mcp_agent_tools.create_triage_item(db, actor, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
+| create_triage_item | _triage_command_context | 2608 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| _triage_command_context | validate_idempotency_key | 222 | `validate_idempotency_key(idempotency_key, required=True)` |
 | validate_idempotency_key | ValueError (backend/app/services/agen…:validate_idempotency_key) | 123 | `ValueError('Idempotency-Key is required')` |
 | validate_idempotency_key | value.strip | 127 | `value.strip(data not statically known)` |
 

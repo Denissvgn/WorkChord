@@ -195,7 +195,7 @@ flowchart LR
 | CapacityTransferService._group | self.db.scalars | 356 | `self.db.scalars(...)` |
 | CapacityTransferService._group | query.with_for_update | 356 | `query.with_for_update(data not statically known)` |
 | CapacityTransferService._group | internal_authority | 357 | `internal_authority(self.db)` |
-| internal_authority | db.info.get | 99 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get | 113 | `db.info.get('authority_internal', False)` |
 
 ### Boundary effects
 
@@ -213,7 +213,7 @@ flowchart LR
 | unresolved_call | `CapacityTransferService._group` | `(await self.db.scalars(query.with_for_update() if lock else query)).all` | 356 |
 | unresolved_call | `CapacityTransferService._group` | `self.db.scalars` | 356 |
 | unresolved_call | `CapacityTransferService._group` | `query.with_for_update` | 356 |
-| unresolved_call | `internal_authority` | `db.info.get` | 99 |
+| unresolved_call | `internal_authority` | `db.info.get` | 113 |
 | step_limit | `get_capacity_transfer` | `first 12 steps` | 0 |
 
 ## Behavior

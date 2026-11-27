@@ -301,6 +301,12 @@
             "latency_tier": {
               "$ref": "#/components/schemas/LatencyTier"
             },
+            "local_first": {
+              "default": false,
+              "description": "Prefer this free or local model over a hosted one of equal adequacy; never overrides a gate.",
+              "title": "Local First",
+              "type": "boolean"
+            },
             "modality_tags": {
               "items": {
                 "type": "string"
@@ -423,6 +429,12 @@
             },
             "latency_tier": {
               "$ref": "#/components/schemas/LatencyTier"
+            },
+            "local_first": {
+              "default": false,
+              "description": "Prefer this free or local model over a hosted one of equal adequacy; never overrides a gate.",
+              "title": "Local First",
+              "type": "boolean"
             },
             "modality_tags": {
               "items": {
@@ -557,6 +569,17 @@
                   "type": "null"
                 }
               ]
+            },
+            "local_first": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Local First"
             },
             "modality_tags": {
               "anyOf": [
@@ -1037,6 +1060,12 @@
             },
             "lead_time": {
               "$ref": "#/components/schemas/DurationSamples"
+            },
+            "owner_override_acceptance_events": {
+              "default": 0,
+              "description": "Acceptances in the window that an owner recorded as an override of publisher independence. They are included in acceptance_events and are not independent reviews.",
+              "title": "Owner Override Acceptance Events",
+              "type": "integer"
             },
             "queues_truncated": {
               "default": false,
@@ -2117,6 +2146,347 @@
           "title": "LatencyTier",
           "type": "string"
         },
+        "ManualProvenanceExecutor": {
+          "additionalProperties": false,
+          "description": "The human or agent that actually executed the work.",
+          "properties": {
+            "actor_id": {
+              "anyOf": [
+                {
+                  "minimum": 1.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The agent actor that executed the work; required for kind agent.",
+              "title": "Actor Id"
+            },
+            "kind": {
+              "enum": [
+                "human",
+                "agent"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "model_binding_id": {
+              "anyOf": [
+                {
+                  "minimum": 1.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The agent's model binding used for the work; its default binding when omitted. Only for kind agent.",
+              "title": "Model Binding Id"
+            },
+            "principal_id": {
+              "anyOf": [
+                {
+                  "minimum": 1.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The human who executed the work; required for kind human.",
+              "title": "Principal Id"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "title": "ManualProvenanceExecutor",
+          "type": "object"
+        },
+        "ManualProvenanceExecutorRecord": {
+          "properties": {
+            "actor_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Actor Id"
+            },
+            "binding_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Binding Id"
+            },
+            "catalog_key": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Catalog Key"
+            },
+            "kind": {
+              "enum": [
+                "human",
+                "agent"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "principal_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Principal Id"
+            },
+            "profile_ids": {
+              "description": "Profiles that count as the executor's for review independence.",
+              "items": {
+                "type": "integer"
+              },
+              "title": "Profile Ids",
+              "type": "array"
+            },
+            "publisher_key": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The agent executor's model publisher at the time of the record.",
+              "title": "Publisher Key"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "title": "ManualProvenanceExecutorRecord",
+          "type": "object"
+        },
+        "ManualProvenanceResponse": {
+          "description": "The recorded provenance as it appears on the task timeline.",
+          "properties": {
+            "artifact_revision": {
+              "title": "Artifact Revision",
+              "type": "integer"
+            },
+            "base_commit_url": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Base Commit Url"
+            },
+            "brief_revision": {
+              "title": "Brief Revision",
+              "type": "integer"
+            },
+            "commit_urls": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Commit Urls",
+              "type": "array"
+            },
+            "event_id": {
+              "title": "Event Id",
+              "type": "integer"
+            },
+            "executor": {
+              "$ref": "#/components/schemas/ManualProvenanceExecutorRecord"
+            },
+            "head_commit_url": {
+              "title": "Head Commit Url",
+              "type": "string"
+            },
+            "pr_url": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pr Url"
+            },
+            "reason": {
+              "title": "Reason",
+              "type": "string"
+            },
+            "recorded_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Recorded At"
+            },
+            "recorded_by_actor_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Recorded By Actor Id"
+            },
+            "recorded_by_principal_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Recorded By Principal Id"
+            },
+            "recorder_publisher_key": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "An agent recorder's model publisher. An agent recorder counts as a contributor, so a verifier must differ from it too.",
+              "title": "Recorder Publisher Key"
+            },
+            "task_id": {
+              "title": "Task Id",
+              "type": "integer"
+            },
+            "task_version": {
+              "title": "Task Version",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "event_id",
+            "task_id",
+            "task_version",
+            "brief_revision",
+            "artifact_revision",
+            "executor",
+            "head_commit_url",
+            "commit_urls",
+            "reason"
+          ],
+          "title": "ManualProvenanceResponse",
+          "type": "object"
+        },
+        "ManualProvenanceWrite": {
+          "additionalProperties": false,
+          "description": "Record who executed one resolved task and the exact repository candidate they delivered.",
+          "properties": {
+            "artifact_revision": {
+              "description": "The task's current artifact revision; the record applies to it only.",
+              "minimum": 0.0,
+              "title": "Artifact Revision",
+              "type": "integer"
+            },
+            "base_commit_url": {
+              "anyOf": [
+                {
+                  "maxLength": 1000,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Immutable GitHub commit the work started from, for a commit range without a pull request.",
+              "title": "Base Commit Url"
+            },
+            "commit_urls": {
+              "description": "Every GitHub commit the executor contributed to the candidate. The head commit is always included.",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 250,
+              "title": "Commit Urls",
+              "type": "array"
+            },
+            "executor": {
+              "$ref": "#/components/schemas/ManualProvenanceExecutor"
+            },
+            "expected_version": {
+              "minimum": 1.0,
+              "title": "Expected Version",
+              "type": "integer"
+            },
+            "head_commit_url": {
+              "description": "Immutable GitHub commit URL of the delivered head.",
+              "maxLength": 1000,
+              "minLength": 1,
+              "title": "Head Commit Url",
+              "type": "string"
+            },
+            "pr_url": {
+              "anyOf": [
+                {
+                  "maxLength": 1000,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The GitHub pull request that carries the head commit.",
+              "title": "Pr Url"
+            },
+            "reason": {
+              "description": "Why the work was executed outside recorded runs and how the record was established.",
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            }
+          },
+          "required": [
+            "expected_version",
+            "artifact_revision",
+            "executor",
+            "head_commit_url",
+            "reason"
+          ],
+          "title": "ManualProvenanceWrite",
+          "type": "object"
+        },
         "MemberPlanningIntent": {
           "properties": {
             "csv_text": {
@@ -2502,6 +2872,48 @@
             "renewable_until"
           ],
           "title": "NativeTokenResponse",
+          "type": "object"
+        },
+        "OwnerAcceptanceWrite": {
+          "additionalProperties": false,
+          "description": "An owner's acceptance of one resolved task without a verified review publisher.",
+          "properties": {
+            "artifact_revision": {
+              "minimum": 0.0,
+              "title": "Artifact Revision",
+              "type": "integer"
+            },
+            "brief_revision": {
+              "minimum": 0.0,
+              "title": "Brief Revision",
+              "type": "integer"
+            },
+            "evidence": {
+              "default": "",
+              "maxLength": 8000,
+              "title": "Evidence",
+              "type": "string"
+            },
+            "expected_version": {
+              "minimum": 1.0,
+              "title": "Expected Version",
+              "type": "integer"
+            },
+            "reason": {
+              "description": "Why the owner accepts this work without an independent publisher review.",
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            }
+          },
+          "required": [
+            "expected_version",
+            "brief_revision",
+            "artifact_revision",
+            "reason"
+          ],
+          "title": "OwnerAcceptanceWrite",
           "type": "object"
         },
         "PlanCheckpoint": {
@@ -4852,6 +5264,16 @@
               "title": "Id",
               "type": "integer"
             },
+            "kind": {
+              "default": "review",
+              "description": "owner_override marks an owner's acceptance that set aside publisher independence; it is not an independent review.",
+              "enum": [
+                "review",
+                "owner_override"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
             "principal_id": {
               "anyOf": [
                 {
@@ -6649,6 +7071,17 @@
         "TriageConvertToTaskResponse": {
           "description": "Response for triage item conversion.",
           "properties": {
+            "source_link": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TriageSourceLinkOutcome"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Set when the source link was rewritten to a relative path or dropped; absent when there was no link or it was kept as a normal link."
+            },
             "task": {
               "$ref": "#/components/schemas/TaskResponse"
             },
@@ -6859,6 +7292,51 @@
             "brief"
           ],
           "title": "TriageItemResponse",
+          "type": "object"
+        },
+        "TriageSourceLinkOutcome": {
+          "description": "What conversion did with the intake's source link when it was not carried over unchanged.",
+          "properties": {
+            "action": {
+              "enum": [
+                "rewritten",
+                "dropped"
+              ],
+              "title": "Action",
+              "type": "string"
+            },
+            "message": {
+              "title": "Message",
+              "type": "string"
+            },
+            "original": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Original"
+            },
+            "task_source_url": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Task Source Url"
+            }
+          },
+          "required": [
+            "action",
+            "message"
+          ],
+          "title": "TriageSourceLinkOutcome",
           "type": "object"
         },
         "UserSession": {
@@ -10413,6 +10891,59 @@
           ]
         }
       },
+      "/api/tasks/{task_id}/manual-provenance": {
+        "post": {
+          "description": "Record who executed resolved work delivered outside recorded runs, and its exact candidate.\n\nOnly a signed-in owner, operator or project manager, or the project's PM agent, may record it. The task's status,\nprogress and evidence are unchanged; its version advances and the timeline records it.",
+          "operationId": "record_manual_provenance_api_tasks__task_id__manual_provenance_post",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "task_id",
+              "required": true,
+              "schema": {
+                "title": "Task Id",
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManualProvenanceWrite"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "201": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ManualProvenanceResponse"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Record Manual Provenance",
+          "tags": [
+            "Task domain"
+          ]
+        }
+      },
       "/api/tasks/{task_id}/move": {
         "post": {
           "description": "Move a task subtree to a target iteration.",
@@ -10463,6 +10994,59 @@
           "summary": "Move Task",
           "tags": [
             "Tasks"
+          ]
+        }
+      },
+      "/api/tasks/{task_id}/owner-acceptance": {
+        "post": {
+          "description": "Accept resolved work as a signed-in owner while the different-publisher policy stays on.\n\nThe acceptance is recorded as an owner override, never as an independent review.",
+          "operationId": "owner_accept_task_api_tasks__task_id__owner_acceptance_post",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "task_id",
+              "required": true,
+              "schema": {
+                "title": "Task Id",
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnerAcceptanceWrite"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TaskResponse"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Owner Accept Task",
+          "tags": [
+            "Task domain"
           ]
         }
       },
@@ -12260,6 +12844,7 @@
       "created_at": "2026-10-03T12:00:00Z",
       "evidence": "Independent review of abc123",
       "id": 12,
+      "kind": "review",
       "principal_id": 19,
       "reason": "The artifact needs more detail",
       "task_version": 8,

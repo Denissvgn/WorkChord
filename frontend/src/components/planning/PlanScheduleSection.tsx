@@ -105,6 +105,8 @@ export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iteratio
     const { deferred, scheduled } = sortByDeferral(iterationTasks);
     const everyTaskDated = everyTaskHasDates(scheduled, datedInSchedule(preview?.tasks));
     const unscheduled = (result?.unscheduled ?? []).filter(task => task.reason !== 'deferred' && !deferred.has(task.task_id));
+    // Tasks the run could not place keep the dates they had; the screen says so instead of implying a calculation.
+    const keptDates = (result?.kept_dates ?? []).filter(task => !deferred.has(task.task_id));
     const showResult = preview !== null || done || Boolean(result);
     return <div className="space-y-4">
         <p className="text-sm text-content-secondary">{t('planSchedule.datesAreCalculated')}</p>
@@ -144,6 +146,16 @@ export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iteratio
                     <p>{task.message}</p>
                 </li>)}</ul> : <p className="text-sm text-content-secondary">{t('planSchedule.calculateForReasons')}</p>}
             </section>
+            {keptDates.length > 0 && <section aria-label={t('planSchedule.keptDates')} className="space-y-2">
+                <h3 className="text-sm font-semibold">{t('planSchedule.keptDates')}</h3>
+                <p className="text-sm text-content-secondary">{t('planSchedule.keptDatesHelp')}</p>
+                <ul className="plan-schedule-reasons">{keptDates.map(task => <li key={task.task_id}>
+                    <Link className="underline" to={scopeLink(withPlanReturn('/tasks', 'schedule', { task: String(task.task_id) }))}>{task.task_title}</Link>
+                    {' · '}{t('planSchedule.keptDatesRange', { start: formatDate(task.start_date, i18n.language), end: formatDate(task.end_date, i18n.language) })}
+                    <p>{t(`gantt.unscheduled.reasons.${task.reason}`, { defaultValue: task.message })}</p>
+                    {task.date_rule && <p className="text-feedback-warning-foreground">{t(`planSchedule.dateRules.${task.date_rule}`, { defaultValue: task.message })}</p>}
+                </li>)}</ul>
+            </section>}
         </>}
     </div>;
 };

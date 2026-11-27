@@ -5,9 +5,9 @@ import type { Task } from '../../types/task';
 import { TaskReadView } from './TaskReadView';
 
 // The Work & review panel is the real one: only the services under it are replaced.
-const services = vi.hoisted(() => ({ team: vi.fn(), actions: vi.fn(), detail: vi.fn(), task: vi.fn() }));
+const services = vi.hoisted(() => ({ team: vi.fn(), actions: vi.fn(), detail: vi.fn(), task: vi.fn(), reviews: vi.fn().mockResolvedValue([]) }));
 vi.mock('../../services/teamService', () => ({ teamService: { getByIteration: services.team } }));
-vi.mock('../../services/taskService', () => ({ taskService: { actions: services.actions, getDetail: services.detail, getById: services.task } }));
+vi.mock('../../services/taskService', () => ({ taskService: { actions: services.actions, getDetail: services.detail, getById: services.task, reviews: services.reviews } }));
 vi.mock('../../services/iterationService', () => ({ iterationService: { getAll: vi.fn().mockResolvedValue([]) } }));
 vi.mock('./DeliveryDependencies', () => ({ DeliveryDependencies: () => null }));
 vi.mock('./GitHubReconciliationPanel', () => ({ GitHubReconciliationPanel: () => null }));

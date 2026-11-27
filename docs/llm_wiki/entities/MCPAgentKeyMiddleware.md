@@ -1,6 +1,6 @@
 # MCPAgentKeyMiddleware
 
-**Location:** `backend/app/mcp_server.py:110`
+**Location:** `backend/app/mcp_server.py:111`
 **Kind:** Class
 **Bases:** —
 **Module:** [mcp_server](../modules/mcp_server.md)
@@ -37,7 +37,7 @@ flowchart LR
     n9["test_reconciliation_uses_operator_and_archived_catalog (backend/tests/test_execution_reconciliation.py)"]
     n10["test_mcp_http_uses_the_same_principal_and_project_boundary (backend/tests/test_identity_lifecycle.py)"]
     n11["test_mcp_preview_then_update_with_returned_revisions (backend/tests/test_iteration_date_move.py)"]
-    n12["test_mcp_refuses_malformed_digest_with_typed_code (backend/tests/test_planning_window_digest_validation.py)"]
+    n12["AgentProtocol.__aenter__ (backend/tests/test_manual_provenance_record.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -62,7 +62,7 @@ flowchart LR
     click n9 "../modules/test_execution_reconciliation.md"
     click n10 "../modules/test_identity_lifecycle.md"
     click n11 "../modules/test_iteration_date_move.md"
-    click n12 "../modules/test_planning_window_digest_validation.md"
+    click n12 "../modules/test_manual_provenance_record.md"
 ```
 
 ### Summary
@@ -86,6 +86,6 @@ flowchart LR
 | `test_reconciliation_uses_operator_and_archived_catalog` | call | [test_execution_reconciliation](../modules/test_execution_reconciliation.md) | 2 |
 | `test_mcp_http_uses_the_same_principal_and_project_boundary` | call | [test_identity_lifecycle](../modules/test_identity_lifecycle.md) | 1 |
 | `test_mcp_preview_then_update_with_returned_revisions` | call | [test_iteration_date_move](../modules/test_iteration_date_move.md) | 1 |
-| `test_mcp_refuses_malformed_digest_with_typed_code` | call | [test_planning_window_digest_validation](../modules/test_planning_window_digest_validation.md) | 1 |
+| `AgentProtocol.__aenter__` | call | [test_manual_provenance_record](../modules/test_manual_provenance_record.md) | 1 |
 
-> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.
+> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.

@@ -184,11 +184,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| metric_matches | HTTPException | 117 | `HTTPException(422, detail=[...])` |
-| metric_matches | sum (backend/app/routers/task_domain.py:metric_matches) | 118 | `sum(...)` |
 | metric_matches | HTTPException | 119 | `HTTPException(422, detail=[...])` |
-| metric_matches | ReleaseService | 123 | `ReleaseService(db)` |
-| metric_matches | ReleaseService.get_by_id | 124 | `releases.get_by_id(release_id)` |
+| metric_matches | sum (backend/app/routers/task_domain.py:metric_matches) | 120 | `sum(...)` |
+| metric_matches | HTTPException | 121 | `HTTPException(422, detail=[...])` |
+| metric_matches | ReleaseService | 125 | `ReleaseService(db)` |
+| metric_matches | ReleaseService.get_by_id | 126 | `releases.get_by_id(release_id)` |
 | ReleaseService.get_by_id | self.db.execute | 117 | `self.db.execute(...)` |
 | ReleaseService.get_by_id | select(…).options(…).where | 118 | `select(Release).options(*self._release_options()).where(...)` |
 | ReleaseService.get_by_id | select(…).options | 118 | `select(Release).options(...)` |
@@ -204,9 +204,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `metric_matches` | `HTTPException` | 117 |
-| external_call | `metric_matches` | `sum` | 118 |
 | external_call | `metric_matches` | `HTTPException` | 119 |
+| external_call | `metric_matches` | `sum` | 120 |
+| external_call | `metric_matches` | `HTTPException` | 121 |
 | unresolved_call | `ReleaseService.get_by_id` | `self.db.execute` | 117 |
 | unresolved_call | `ReleaseService.get_by_id` | `select(Release).options(*self._release_options()).where` | 118 |
 | unresolved_call | `ReleaseService.get_by_id` | `select(Release).options` | 118 |
