@@ -1,6 +1,6 @@
 # TaskReviewMode
 
-**Location:** `frontend/src/types/agent.ts:22`
+**Location:** `frontend/src/types/agent.ts:24`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

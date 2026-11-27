@@ -1,6 +1,6 @@
 # RoutingBlockerCode
 
-**Location:** `frontend/src/types/agent.ts:38`
+**Location:** `frontend/src/types/agent.ts:40`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -40,6 +40,7 @@
     | 'model_catalog_disabled'
     | 'model_reasoning_tier_insufficient'
     | 'model_context_tier_insufficient'
+    | 'model_effort_insufficient'
     | 'model_modality_missing'
     | 'model_tool_missing'
     | 'model_data_policy_missing'

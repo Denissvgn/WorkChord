@@ -123,6 +123,7 @@ const modelCatalog: AgentModelCatalogEntry = {
     modality_tags: ['text'],
     cost_tier: 'medium',
     local_first: false,
+    effort: 'unknown',
     latency_tier: 'balanced',
     enabled: true,
     revision: 5,
@@ -798,6 +799,32 @@ describe('TaskRoutingPanel routing gates', () => {
         await user.selectOptions(reviewMode, 'independent');
         expect(screen.queryByText(i18n.t('taskRouting.reviewBelowMinimum'))).not.toBeInTheDocument();
         expect(save).toBeEnabled();
+    });
+
+    it('carries a required effort into a revised assessment and omits it when cleared', async () => {
+        agentServiceMock.getTaskRoutingAssessment.mockResolvedValue({
+            ...currentAssessmentState,
+            state: 'stale',
+            assessment: {
+                ...currentAssessment,
+                task_version: taskFixture.version - 1,
+                is_current: false,
+                required_model: { ...currentAssessment.required_model, minimum_effort: 'high' },
+            },
+        });
+        agentServiceMock.createTaskRoutingAssessment.mockResolvedValue(currentAssessmentState);
+        const { user } = renderPanel();
+
+        const effort = await screen.findByRole('combobox', { name: i18n.t('taskRouting.minimumEffort') });
+        expect(effort).toHaveValue('high');
+        await user.click(screen.getByRole('button', { name: i18n.t('taskRouting.saveAssessment') }));
+        await waitFor(() => expect(agentServiceMock.createTaskRoutingAssessment).toHaveBeenCalledTimes(1));
+        expect(agentServiceMock.createTaskRoutingAssessment.mock.calls[0][1].required_model).toMatchObject({ minimum_effort: 'high' });
+
+        await user.selectOptions(effort, '');
+        await user.click(screen.getByRole('button', { name: i18n.t('taskRouting.saveAssessment') }));
+        await waitFor(() => expect(agentServiceMock.createTaskRoutingAssessment).toHaveBeenCalledTimes(2));
+        expect(agentServiceMock.createTaskRoutingAssessment.mock.calls[1][1].required_model).not.toHaveProperty('minimum_effort');
     });
 
     it('keeps a current task-version assessment immutable in the UI', async () => {

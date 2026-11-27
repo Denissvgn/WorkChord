@@ -19,22 +19,22 @@ Stored contracts are read with the stored-contract loaders, so a team stored und
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
-| `app.agent_contract` | `AGENT_CONTRACT_FEATURES`, `AGENT_TEAM_MASTER_FEATURE`, `MODEL_AWARE_ROUTING_FEATURE` |
+| `app.agent_contract` | `AGENT_CONTRACT_FEATURES`, `AGENT_TEAM_MASTER_FEATURE`, `MODEL_AWARE_ROUTING_FEATURE`, `RUNTIME_INSTANCE_IDENTITY_FEATURE` |
 | `app.authority` | `internal_authority`, `internal_authority` |
 | `app.commands` | `commit_or_flush` |
 | `app.config` | `get_settings` |
-| `app.models.agent` | `AgentActor`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRun`, `AgentTeamActionReceipt`, `AgentTeamApplyRun`, `AgentTeamManagedObject`, `AgentTeamTopology`, `AgentTeamTopologyMember`, `AgentTaskAssignment`, `TaskEvent` |
+| `app.models.agent` | `AgentActor`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRun`, `AgentTeamActionReceipt`, `AgentTeamApplyRun`, `AgentTeamManagedObject`, `AgentTeamTopology`, `AgentTeamTopologyMember`, `AgentTaskAssignment`, `TaskEvent`, `new_runtime_instance_id` |
 | `app.models.identity` | `Principal` |
 | `app.models.team_member` | `TeamMemberProfile` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.agent_skill_bundle` | `SkillBundleCatalogResponse` |
-| `app.schemas.agent_team_setup` | `AGENT_TEAM_PLAN_SCHEMA_VERSION`, `AGENT_TEAM_ROLE_RULE_FIELDS`, `MAX_AGENT_TEAM_ACTIONS`, `ROLE_SCOPE_PRESETS`, `AgentTeamActionReceipt`, `AgentTeamActionStatus`, `AgentTeamApplyRequest`, `AgentTeamApplyResponse`, `AgentTeamCurrentMember`, `AgentTeamCurrentSnapshot`, `AgentTeamManifestRequest`, `AgentTeamMaster`, `AgentTeamMemberLifecycle`, `AgentTeamMemberSpec`, `AgentTeamMemberStatus`, `AgentTeamPlanAction`, `AgentTeamPlanRequest`, `AgentTeamReconciliationClass`, `AgentTeamReconciliationPlan`, `AgentTeamRuntimeAcknowledgement`, `AgentTeamRuntimeAcknowledgementResponse`, `AgentTeamRuntimeHandoff`, `AgentTeamDispatchAvailability`, `AgentTeamSetupReport`, `AgentTeamSetupReportCounts`, `AgentTeamSetupReportEvidence`, `AgentTeamSetupStep`, `AgentTeamSkillPackage`, `AgentTeamStatusResponse`, `AgentTeamTopologyMemberRead`, `AgentTeamTopologyResponse`, `AgentTeamValidateResponse`, `ensure_agent_team_secret_free`, `load_stored_agent_team_master`, `load_stored_agent_team_member`, `parse_agent_team_master`, `reconcile_agent_team_master` |
+| `app.schemas.agent_team_setup` | `AGENT_TEAM_PLAN_SCHEMA_VERSION`, `AGENT_TEAM_ROLE_RULE_FIELDS`, `MAX_AGENT_TEAM_ACTIONS`, `ROLE_SCOPE_PRESETS`, `AgentTeamActionReceipt`, `AgentTeamActionStatus`, `AgentTeamApplyRequest`, `AgentTeamApplyResponse`, `AgentTeamCurrentMember`, `AgentTeamCurrentSnapshot`, `AgentTeamManifestRequest`, `AgentTeamMaster`, `AgentTeamMemberLifecycle`, `AgentTeamMemberSpec`, `AgentTeamMemberStatus`, `AgentTeamPlanAction`, `AgentTeamPlanRequest`, `AgentTeamReconciliationClass`, `AgentTeamReconciliationPlan`, `AgentTeamRuntimeAcknowledgement`, `AgentTeamRuntimeAcknowledgementResponse`, `AgentTeamRuntimeHandoff`, `AgentTeamRuntimeIdentityStatus`, `AgentTeamDispatchAvailability`, `AgentTeamSetupReport`, `AgentTeamSetupReportCounts`, `AgentTeamSetupReportEvidence`, `AgentTeamSetupStep`, `AgentTeamSkillPackage`, `AgentTeamStatusResponse`, `AgentTeamTopologyMemberRead`, `AgentTeamTopologyResponse`, `AgentTeamValidateResponse`, `ensure_agent_team_secret_free`, `load_stored_agent_team_master`, `load_stored_agent_team_member`, `parse_agent_team_master`, `reconcile_agent_team_master` |
 | `app.services.agent_profile_catalog_service` | `ALL_PROFILE_PRESETS`, `AgentProfileCatalogService` |
 | `app.services.agent_routing_rollout` | `AgentRoutingTopologyReadiness` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `AgentService`, `actor_scopes`, `hash_api_key`, `require_scope`, `validate_idempotency_key` |
 | `app.services.agent_skill_bundle_service` | `AgentSkillBundleService`, `SkillBundleArtifactError` |
 | `app.services.agent_team_credentials` | `CredentialDeliveryError`, `AgentTeamCredentialSink`, `FilesystemAgentTeamCredentialSink` |
-| `app.services.identity_service` | `bind_verified_system` |
+| `app.services.identity_service` | `bind_verified_system`, `bind_verified_system` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `dataclasses` | `dataclass` |
 | `datetime` | `timedelta` |
@@ -43,7 +43,7 @@ Stored contracts are read with the stored-contract loaders, so a team stored und
 | `secrets` | `secrets` |
 | `sqlalchemy` | `func`, `or_`, `select`, `text` |
 | `sqlalchemy.exc` | `IntegrityError` |
-| `sqlalchemy.ext.asyncio` | `AsyncSession` |
+| `sqlalchemy.ext.asyncio` | `AsyncConnection`, `AsyncSession` |
 | `sqlalchemy.orm` | `selectinload` |
 | `typing` | `Any` |
 
@@ -65,7 +65,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (19) |
+| Inbound | `backend` (20) |
 | Outbound | `backend` (17) |
 
 ### External packages
@@ -74,16 +74,16 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 36 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 37 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentTeamSetupConflictError](../entities/AgentTeamSetupConflictError.md) | 107 | `AgentConflictError` | Stable conflict envelope shared by setup REST and MCP reads. |
-| [AgentTeamCallerUnboundError](../entities/AgentTeamCallerUnboundError.md) | 123 | `AgentPermissionError` | A PM asked for team status but is not bound to any live topology. |
-| [AgentTeamMembershipBoundary](../entities/AgentTeamMembershipBoundary.md) | 128 | — | Current topology/revision and active member set for exact-actor routing. |
-| [AgentTeamSetupService](../entities/AgentTeamSetupService.md) | 183 | — | Reconcile one portable topology without making the UI a control plane. |
+| [AgentTeamSetupConflictError](../entities/AgentTeamSetupConflictError.md) | 110 | `AgentConflictError` | Stable conflict envelope shared by setup REST and MCP reads. |
+| [AgentTeamCallerUnboundError](../entities/AgentTeamCallerUnboundError.md) | 126 | `AgentPermissionError` | A PM asked for team status but is not bound to any live topology. |
+| [AgentTeamMembershipBoundary](../entities/AgentTeamMembershipBoundary.md) | 131 | — | Current topology/revision and active member set for exact-actor routing. |
+| [AgentTeamSetupService](../entities/AgentTeamSetupService.md) | 186 | — | Reconcile one portable topology without making the UI a control plane. |
 
 ## Functions
 

@@ -1,6 +1,6 @@
 # PostponementRelease
 
-**Location:** `backend/app/schemas/task_postponement.py:108`
+**Location:** `backend/app/schemas/task_postponement.py:127`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task_postponement](../modules/schemas_task_postponement.md)

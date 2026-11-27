@@ -1,6 +1,6 @@
 # AgentTeamMaster
 
-**Location:** `frontend/src/types/agent.ts:698`
+**Location:** `frontend/src/types/agent.ts:707`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -36,15 +36,15 @@ flowchart LR
     n1["frontend/src/components/team/AgentManifestWorkflow.tsx"]
     n2["frontend/src/components/team/ConnectAgentSteps.test.tsx"]
     n3["frontend/src/components/team/ConnectAgentSteps.tsx"]
-    n4["ConnectionSteps (frontend/src/components/team/ConnectionSteps.tsx)"]
-    n5["frontend/src/components/team/TeamProfileManager.test.tsx"]
-    n6["buildConnectedMember (frontend/src/features/agentTeamSetup/connectAgent.ts)"]
-    n7["hasPM (frontend/src/features/agentTeamSetup/connectAgent.ts)"]
-    n8["replacesPendingPM (frontend/src/features/agentTeamSetup/connectAgent.ts)"]
-    n9["waitingMembers (frontend/src/features/agentTeamSetup/connectAgent.ts)"]
-    n10["parseAgentTeamMasterEditor (frontend/src/features/agentTeamSetup/manifest.ts)"]
-    n11["frontend/src/features/agentTeamSetup/masters.test.ts"]
-    n12["frontend/src/services/agentService.test.ts"]
+    n4["frontend/src/components/team/ConnectionSteps.test.tsx"]
+    n5["ConnectionSteps (frontend/src/components/team/ConnectionSteps.tsx)"]
+    n6["frontend/src/components/team/TeamProfileManager.test.tsx"]
+    n7["buildConnectedMember (frontend/src/features/agentTeamSetup/connectAgent.ts)"]
+    n8["hasPM (frontend/src/features/agentTeamSetup/connectAgent.ts)"]
+    n9["replacesPendingPM (frontend/src/features/agentTeamSetup/connectAgent.ts)"]
+    n10["waitingMembers (frontend/src/features/agentTeamSetup/connectAgent.ts)"]
+    n11["parseAgentTeamMasterEditor (frontend/src/features/agentTeamSetup/manifest.ts)"]
+    n12["frontend/src/features/agentTeamSetup/masters.test.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -61,15 +61,15 @@ flowchart LR
     click n1 "../modules/AgentManifestWorkflow.md"
     click n2 "../modules/ConnectAgentSteps.test.md"
     click n3 "../modules/ConnectAgentSteps.md"
-    click n4 "../modules/ConnectionSteps.md"
-    click n5 "../modules/TeamProfileManager.test.md"
-    click n6 "../modules/connectAgent.md"
+    click n4 "../modules/ConnectionSteps.test.md"
+    click n5 "../modules/ConnectionSteps.md"
+    click n6 "../modules/TeamProfileManager.test.md"
     click n7 "../modules/connectAgent.md"
     click n8 "../modules/connectAgent.md"
     click n9 "../modules/connectAgent.md"
-    click n10 "../modules/agentTeamSetup_manifest.md"
-    click n11 "../modules/agentTeamSetup_masters.test.md"
-    click n12 "../modules/agentService.test.md"
+    click n10 "../modules/connectAgent.md"
+    click n11 "../modules/agentTeamSetup_manifest.md"
+    click n12 "../modules/agentTeamSetup_masters.test.md"
 ```
 
 ### Summary
@@ -85,6 +85,7 @@ flowchart LR
 | `AgentManifestWorkflow` | import | [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md) | — |
 | `ConnectAgentSteps.test` | import | [ConnectAgentSteps.test](../modules/ConnectAgentSteps.test.md) | — |
 | `ConnectAgentSteps` | import | [ConnectAgentSteps](../modules/ConnectAgentSteps.md) | — |
+| `ConnectionSteps.test` | import | [ConnectionSteps.test](../modules/ConnectionSteps.test.md) | — |
 | `ConnectionSteps` | type_reference | [ConnectionSteps](../modules/ConnectionSteps.md) | — |
 | `TeamProfileManager.test` | import | [TeamProfileManager.test](../modules/TeamProfileManager.test.md) | — |
 | `buildConnectedMember` | type_reference | [connectAgent](../modules/connectAgent.md) | — |
@@ -93,6 +94,5 @@ flowchart LR
 | `waitingMembers` | type_reference | [connectAgent](../modules/connectAgent.md) | — |
 | `parseAgentTeamMasterEditor` | type_reference | [agentTeamSetup_manifest](../modules/agentTeamSetup_manifest.md) | — |
 | `masters.test` | import | [agentTeamSetup_masters.test](../modules/agentTeamSetup_masters.test.md) | — |
-| `agentService.test` | import | [agentService.test](../modules/agentService.test.md) | — |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

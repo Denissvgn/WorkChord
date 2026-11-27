@@ -1,7 +1,7 @@
 # TaskDetailService_detail
 
 **Entry point:** `task_detail_service.TaskDetailService.detail`
-**Modules involved:** [authority](../modules/authority.md), [commands](../modules/commands.md), [schemas_task](../modules/schemas_task.md), [task_detail](../modules/task_detail.md), [task_detail_service](../modules/task_detail_service.md), [task_service](../modules/task_service.md)
+**Modules involved:** [authority](../modules/authority.md), [commands](../modules/commands.md), [schemas_task](../modules/schemas_task.md), [task_detail](../modules/task_detail.md), [task_detail_service](../modules/task_detail_service.md), [task_postponement_service](../modules/task_postponement_service.md), [task_service](../modules/task_service.md)
 
 ## Sequence
 
@@ -13,7 +13,9 @@
 5. `task_service.TaskService`
 6. `schemas_task.TaskAgentReadiness`
 7. `commands.PlanningConflict`
-8. `task_detail.TaskDetailResponse`
+8. `task_postponement_service.open_postponement`
+9. `task_postponement_service.postponement_record`
+10. `task_detail.TaskDetailResponse`
 
 ## Touches
 
@@ -22,6 +24,7 @@
 - [schemas_task](../modules/schemas_task.md)
 - [task_detail](../modules/task_detail.md)
 - [task_detail_service](../modules/task_detail_service.md)
+- [task_postponement_service](../modules/task_postponement_service.md)
 - [task_service](../modules/task_service.md)
 
 ## Behavior

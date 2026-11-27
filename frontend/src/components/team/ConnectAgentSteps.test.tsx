@@ -50,7 +50,7 @@ const status: AgentTeamStatus = {
 };
 const model: AgentModelCatalogEntry = {
     id: 1, key: 'catalog-model', provider: 'OpenAI', configured_model_alias: 'Catalog model', reasoning_tier: 2, context_tier: 'large', cost_tier: 'medium',
-    latency_tier: 'balanced', local_first: false, modality_tags: ['text'], enabled: true, revision: 1, last_verified_at: null, created_at: '', updated_at: '',
+    latency_tier: 'balanced', local_first: false, effort: 'unknown', modality_tags: ['text'], enabled: true, revision: 1, last_verified_at: null, created_at: '', updated_at: '',
 };
 const planFor = (manifest: AgentTeamMaster, actorKey = manifest.workers.at(-1)!.actor_key): AgentTeamPlan => ({
     schema_version: 'agent-team-reconciliation-plan-v1', topology_key: 'team', expected_topology_revision: 7, manifest_digest: 'a'.repeat(64),

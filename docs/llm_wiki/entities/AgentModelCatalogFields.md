@@ -1,6 +1,6 @@
 # AgentModelCatalogFields
 
-**Location:** `backend/app/schemas/agent_routing.py:229`
+**Location:** `backend/app/schemas/agent_routing.py:231`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -27,6 +27,7 @@ Secret-free provider-neutral model catalog fields.
 | `publisher_key` | `RoutingKey \| None` | `publisher_key` | No | Yes | `None` | — | — | Operator-verified canonical model publisher, independent of serving provider. |
 | `configured_model_alias` | `str` | `configured_model_alias` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `reasoning_tier` | `ReasoningTier` | `reasoning_tier` | Yes | No | — | — | — | — |
+| `effort` | `ModelEffortSetting` | `effort` | No | No | `ModelEffort.UNKNOWN` | — | — | Reasoning-effort setting this entry runs at; unknown when not recorded. |
 | `context_tier` | `ModelContextTier` | `context_tier` | Yes | No | — | — | — | — |
 | `modality_tags` | `list[str]` | `modality_tags` | No | No | factory: `lambda: ['text']` | — | — | — |
 | `cost_tier` | `ModelCostTier` | `cost_tier` | Yes | No | — | — | — | — |
@@ -67,7 +68,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing](../modules/agent_routing.md) | 4 | `configured_model_alias`, `context_tier`, `cost_tier`, `enabled`, `key`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags`, `provider`, `publisher_key`, `reasoning_tier` |
+| [agent_routing](../modules/agent_routing.md) | 4 | `configured_model_alias`, `context_tier`, `cost_tier`, `effort`, `enabled`, `key`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags`, `provider`, `publisher_key` |
 
 ### Structure
 

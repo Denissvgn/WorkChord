@@ -19,6 +19,7 @@ import type {
     AssessmentReasonCode,
     ModelContextTier,
     ModelReasoningTier,
+    RequiredModelEffort,
     TaskDifficultyAxes,
     TaskDifficultyScore,
     TaskReviewMode,
@@ -63,6 +64,7 @@ interface AssessmentDraft {
     requiredSkillLevels: Record<string, TaskSkillLevel>;
     minimumReasoningTier: ModelReasoningTier;
     minimumContextTier: ModelContextTier;
+    minimumEffort: RequiredModelEffort | '';
     modalityTags: string;
     toolTags: string;
     dataPolicyTags: string;
@@ -83,6 +85,7 @@ const DEFAULT_DRAFT: AssessmentDraft = {
     requiredSkillLevels: {},
     minimumReasoningTier: 2,
     minimumContextTier: 'medium',
+    minimumEffort: '',
     modalityTags: 'text',
     toolTags: '',
     dataPolicyTags: '',
@@ -91,6 +94,8 @@ const DEFAULT_DRAFT: AssessmentDraft = {
     reasonCodes: [],
     rationale: '',
 };
+
+const REQUIRED_EFFORT_LEVELS: RequiredModelEffort[] = ['low', 'medium', 'high', 'xhigh', 'max'];
 
 const AXIS_KEYS = [
     'reasoning',
@@ -160,6 +165,7 @@ const assessmentToDraft = (assessment: TaskRoutingAssessment): AssessmentDraft =
     ),
     minimumReasoningTier: assessment.required_model.minimum_reasoning_tier,
     minimumContextTier: assessment.required_model.minimum_context_tier,
+    minimumEffort: assessment.required_model.minimum_effort ?? '',
     modalityTags: assessment.required_model.modality_tags.join(', '),
     toolTags: assessment.required_model.tool_tags.join(', '),
     dataPolicyTags: assessment.required_model.data_policy_tags.join(', '),
@@ -551,6 +557,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
             required_model: {
                 minimum_reasoning_tier: draft.minimumReasoningTier,
                 minimum_context_tier: draft.minimumContextTier,
+                ...(draft.minimumEffort ? { minimum_effort: draft.minimumEffort } : {}),
                 modality_tags: parseRoutingTags(draft.modalityTags),
                 tool_tags: parseRoutingTags(draft.toolTags),
                 data_policy_tags: parseRoutingTags(draft.dataPolicyTags),
@@ -918,6 +925,13 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                                 <span className="field-lbl">{t('taskRouting.minimumContextTier')}</span>
                                 <Select className="input" value={draft.minimumContextTier} onChange={event => { setDraft({ ...draft, minimumContextTier: event.target.value as ModelContextTier }); clearPreview(); }}>
                                     <option value="small">small</option><option value="medium">medium</option><option value="large">large</option>
+                                </Select>
+                            </label>
+                            <label className="field">
+                                <span className="field-lbl">{t('taskRouting.minimumEffort')}</span>
+                                <Select className="input" value={draft.minimumEffort} onChange={event => { setDraft({ ...draft, minimumEffort: event.target.value as RequiredModelEffort | '' }); clearPreview(); }}>
+                                    <option value="">{t('taskRouting.noEffortRequirement')}</option>
+                                    {REQUIRED_EFFORT_LEVELS.map(level => <option key={level} value={level}>{t(`modelAdministration.effort_${level}`)}</option>)}
                                 </Select>
                             </label>
                         </div>

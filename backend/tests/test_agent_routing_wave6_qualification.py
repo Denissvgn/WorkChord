@@ -469,6 +469,7 @@ def _assert_selected_snapshot(
     assert snapshot["model_binding_revision"] == candidate.binding.revision
     assert snapshot["model_catalog_id"] == candidate.catalog.id
     assert snapshot["model_catalog_revision"] == candidate.catalog.revision
+    assert snapshot["selected_effort"] == candidate.catalog.effort
     assert snapshot["selection_reason_codes"] == [
         "deterministic-rank",
         "hard-gates-passed",

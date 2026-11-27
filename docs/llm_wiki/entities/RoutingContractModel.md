@@ -1,6 +1,6 @@
 # RoutingContractModel
 
-**Location:** `backend/app/schemas/agent_routing.py:205`
+**Location:** `backend/app/schemas/agent_routing.py:207`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [agent_routing](../modules/agent_routing.md)

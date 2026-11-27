@@ -38,6 +38,7 @@ from app.services.agent_routing_policy import (
     LatencyTier,
     ROUTING_POLICY_VERSION,
     ROUTING_SKILL_KEYS,
+    ModelEffort,
     ReasoningTier,
     ReviewMode,
     RoutingBlockerCode,
@@ -81,6 +82,7 @@ RoutingDigest = Annotated[
 ]
 ModelContextTier = ContextTier
 ModelCostTier = CostTier
+ModelEffortSetting = ModelEffort
 ModelLatencyTier = LatencyTier
 TaskDifficultyBand = DifficultyBand
 TaskReviewMode = ReviewMode
@@ -234,6 +236,10 @@ class AgentModelCatalogFields(RoutingContractModel):
     publisher_key: RoutingKey | None = Field(default=None, description="Operator-verified canonical model publisher, independent of serving provider.")
     configured_model_alias: str = Field(..., min_length=1, max_length=255)
     reasoning_tier: ReasoningTier
+    effort: ModelEffortSetting = Field(
+        default=ModelEffort.UNKNOWN,
+        description="Reasoning-effort setting this entry runs at; unknown when not recorded.",
+    )
     context_tier: ModelContextTier
     modality_tags: list[str] = Field(default_factory=lambda: ["text"])
     cost_tier: ModelCostTier
@@ -293,6 +299,7 @@ class AgentModelCatalogUpdate(RoutingContractModel):
         max_length=255,
     )
     reasoning_tier: ReasoningTier | None = None
+    effort: ModelEffortSetting | None = None
     context_tier: ModelContextTier | None = None
     modality_tags: list[str] | None = None
     cost_tier: ModelCostTier | None = None
@@ -340,6 +347,7 @@ class AgentModelCatalogUpdate(RoutingContractModel):
             "provider",
             "configured_model_alias",
             "reasoning_tier",
+            "effort",
             "context_tier",
             "modality_tags",
             "cost_tier",
@@ -537,6 +545,11 @@ class RequiredModelEnvelope(RoutingContractModel):
 
     minimum_reasoning_tier: ReasoningTier
     minimum_context_tier: ModelContextTier
+    minimum_effort: ModelEffortSetting | None = Field(
+        default=None,
+        description="Lowest effort setting a candidate model may run at; omitted when the task states no effort requirement.",
+        exclude_if=lambda value: value is None,
+    )
     modality_tags: list[str] = Field(default_factory=lambda: ["text"])
     tool_tags: list[str] = Field(default_factory=list)
     allow_source_only_review: bool = Field(default=False, strict=True, exclude_if=lambda value: not value)
@@ -547,6 +560,13 @@ class RequiredModelEnvelope(RoutingContractModel):
     def require_integer_reasoning_tier(cls, value: Any) -> Any:
         if isinstance(value, bool) or not isinstance(value, int):
             raise ValueError("minimum_reasoning_tier must be an integer")
+        return value
+
+    @field_validator("minimum_effort")
+    @classmethod
+    def require_ranked_effort(cls, value: ModelEffort | None) -> ModelEffort | None:
+        if value == ModelEffort.UNKNOWN:
+            raise ValueError("minimum_effort must name a ranked effort level, not unknown")
         return value
 
     @field_validator("modality_tags", "tool_tags", "data_policy_tags")
@@ -986,6 +1006,7 @@ class AgentRoutingCandidate(RoutingContractModel):
         max_length=0,
     )
     reasoning_tier: ReasoningTier
+    effort: ModelEffortSetting = ModelEffort.UNKNOWN
     context_tier: ModelContextTier
     modality_tags: list[str] = Field(default_factory=list)
     tool_tags: list[str] = Field(default_factory=list)
@@ -1069,6 +1090,7 @@ class AgentRoutingExclusion(RoutingContractModel):
     insufficient_skill_keys: list[RoutingKey] = Field(default_factory=list)
     blocking_weakness_keys: list[RoutingKey] = Field(default_factory=list)
     reasoning_tier: ReasoningTier | None = None
+    effort: ModelEffortSetting | None = None
     context_tier: ModelContextTier | None = None
     cost_tier: ModelCostTier | None = None
     local_first: bool | None = None
@@ -1403,6 +1425,11 @@ class RoutingDecisionSnapshot(RoutingContractModel):
     configured_model_alias: str = Field(..., min_length=1, max_length=255)
     selected_reasoning_tier: ReasoningTier
     selected_context_tier: ModelContextTier
+    selected_effort: ModelEffortSetting | None = Field(
+        default=None,
+        description="Effort setting of the selected catalog entry; absent on selections recorded before effort was tracked.",
+        exclude_if=lambda value: value is None,
+    )
     resolved_model: str | None = Field(default=None, min_length=1, max_length=255)
     review_mode: TaskReviewMode
     reviewer_profile_id: int | None = Field(default=None, strict=True, ge=1)

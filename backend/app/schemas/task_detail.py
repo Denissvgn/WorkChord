@@ -4,6 +4,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
 from app.schemas.task import TaskResponse
 from app.schemas.task_domain import TaskActionAvailability
+from app.schemas.task_postponement import TaskPostponementRecord
 
 
 class TaskReference(BaseModel):
@@ -41,6 +42,8 @@ class TaskDetailResponse(BaseModel):
     dependencies: TaskReferencePage
     execution_context_complete: bool = False
     reviewer_name: str | None = None
+    postponement: TaskPostponementRecord | None = Field(
+        default=None, description="The open postponement of postponed work, with each reactivation requirement and whether it is met.")
 
 
 class HumanWorkReference(TaskReference):

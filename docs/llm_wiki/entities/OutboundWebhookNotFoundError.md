@@ -1,6 +1,6 @@
 # OutboundWebhookNotFoundError
 
-**Location:** `backend/app/services/outbound_webhook_service.py:138`
+**Location:** `backend/app/services/outbound_webhook_service.py:139`
 **Kind:** Class
 **Bases:** `LookupError`
 **Module:** [outbound_webhook_service](../modules/outbound_webhook_service.md)

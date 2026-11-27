@@ -114,6 +114,10 @@ async def command_transaction(db: AsyncSession, *, mode="apply", commit=True):
         if state.failed:
             raise RuntimeError("A failed nested command cannot commit")
         await db.flush()
+        if mode == "apply" and db.info.get("reactivation_checks"):
+            # Work postponed tasks wait for may have changed; evaluate them, before delivery is reconciled, inside this transaction.
+            from app.services.task_reactivation_service import process_reactivation_checks
+            await process_reactivation_checks(db)
         if db.info.get("delivery_changed_nodes") or db.info.get("delivery_graph_changed") or db.info.get("delivery_scope_changed"):
             from app.services.delivery_dependency_service import DeliveryDependencyService
             await DeliveryDependencyService(db).reconcile()
@@ -132,7 +136,7 @@ async def command_transaction(db: AsyncSession, *, mode="apply", commit=True):
     finally:
         db.info.pop("command", None)
         db.info.pop("time_entry_commands", None)
-        for key in ["request_expected_revisions", "command_triage_projects", "review_rework_tasks", "domain_queue_actors", "command_task_projects", "derived_rollups", "claim_bound_discovery", "authority_audited", "authority_audit_pending", "delivery_changed_nodes", "delivery_graph_changed", "delivery_reconciling", "delivery_scope_changed", "discussion_events", "observation_acceptance_preservations"]:
+        for key in ["request_expected_revisions", "command_triage_projects", "review_rework_tasks", "domain_queue_actors", "command_task_projects", "derived_rollups", "claim_bound_discovery", "authority_audited", "authority_audit_pending", "delivery_changed_nodes", "delivery_graph_changed", "delivery_reconciling", "delivery_scope_changed", "discussion_events", "observation_acceptance_preservations", "reactivation_checks"]:
             db.info.pop(key, None)
 
 
@@ -159,7 +163,9 @@ async def lock_backlog_project(db, project_id):
     """Serialize unscheduled hierarchy writes without manufacturing an iteration."""
     from app.authority import internal_authority, require_project
     from app.models.project import Project
-    require_project(db, project_id, "read")
+    # Skipping the check is safe only because no internal_authority block passes a caller-chosen project.
+    if not db.info.get("authority_internal"):
+        require_project(db, project_id, "read")
     await lock_planning(db)
     state = current_command(db)
     if state is None:

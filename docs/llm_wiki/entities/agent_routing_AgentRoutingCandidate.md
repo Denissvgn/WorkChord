@@ -1,6 +1,6 @@
 # AgentRoutingCandidate
 
-**Location:** `backend/app/schemas/agent_routing.py:957`
+**Location:** `backend/app/schemas/agent_routing.py:977`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -40,6 +40,7 @@ One eligible actor plus exact model-binding candidate.
 | `missing_skill_keys` | `list[RoutingKey]` | `missing_skill_keys` | No | No | factory: `list` | max_length=0 | — | — |
 | `blocking_weakness_keys` | `list[RoutingKey]` | `blocking_weakness_keys` | No | No | factory: `list` | max_length=0 | — | — |
 | `reasoning_tier` | `ReasoningTier` | `reasoning_tier` | Yes | No | — | — | — | — |
+| `effort` | `ModelEffortSetting` | `effort` | No | No | `ModelEffort.UNKNOWN` | — | — | — |
 | `context_tier` | `ModelContextTier` | `context_tier` | Yes | No | — | — | — | — |
 | `modality_tags` | `list[str]` | `modality_tags` | No | No | factory: `list` | — | — | — |
 | `tool_tags` | `list[str]` | `tool_tags` | No | No | factory: `list` | — | — | — |

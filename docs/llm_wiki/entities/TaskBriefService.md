@@ -99,4 +99,4 @@ flowchart LR
 | `TaskDomainService.allowed_actions` | call | [task_domain_service](../modules/task_domain_service.md) | 2 |
 | `TaskService.create` | call | [task_service](../modules/task_service.md) | 1 |
 
-> References: showing 12 of 31 logical references; 19 omitted by the 12-row generated summary limit.
+> References: showing 12 of 32 logical references; 20 omitted by the 12-row generated summary limit.
