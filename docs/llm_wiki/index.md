@@ -7,10 +7,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1854 | [Open section](#entities) |
-| Modules | 1190 | [Open section](#modules) |
+| Modules | 1191 | [Open section](#modules) |
 | Workflows | 244 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 632 | [Open section](#entry-point-flows) |
+| Entry-point flows | 635 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -2908,6 +2908,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_postgresql_migrations](modules/test_postgresql_migrations.md) - Real PostgreSQL migration, locking, and schema contract tests.
 - [test_postgresql_transfer](modules/test_postgresql_transfer.md) - Real PostgreSQL loader and fail-closed reconciliation tests.
 - [test_postponed_out_of_scheduling](modules/test_postponed_out_of_scheduling.md) - Postponed work keeps its last dates as history: it is never scheduled, counted, ready, dispatched or verified.
+- [test_postponement_agent_tools](modules/test_postponement_agent_tools.md) - A PM agent postpones, reactivates and reads postponed work with exactly the REST authority.
 - [test_process_roles](modules/test_process_roles.md) - DBM-WORK-001 command ownership and process-role tests.
 - [test_profile_capacity](modules/test_profile_capacity.md) - Shared person capacity, calendar arithmetic and private availability boundaries.
 - [test_profile_capacity_migrations](modules/test_profile_capacity_migrations.md) - Preserve legacy absence identities and report conflicting person calendars.
@@ -3785,6 +3786,7 @@ Retained history; these declarations are absent from the selected source invento
 - [mcp-agent_get_task_actions](flows/mcp-agent_get_task_actions.md) - entry: `agent_get_task_actions`
 - [mcp-agent_get_task_context](flows/mcp-agent_get_task_context.md) - entry: `agent_get_task_context`
 - [mcp-agent_get_task_detail](flows/mcp-agent_get_task_detail.md) - entry: `agent_get_task_detail`
+- [mcp-agent_get_task_postponement](flows/mcp-agent_get_task_postponement.md) - entry: `agent_get_task_postponement`
 - [mcp-agent_get_task_replacement](flows/mcp-agent_get_task_replacement.md) - entry: `agent_get_task_replacement`
 - [mcp-agent_get_task_routing_assessment](flows/mcp-agent_get_task_routing_assessment.md) - entry: `agent_get_task_routing_assessment`
 - [mcp-agent_get_team_setup_status](flows/mcp-agent_get_team_setup_status.md) - entry: `agent_get_team_setup_status`
@@ -3804,6 +3806,7 @@ Retained history; these declarations are absent from the selected source invento
 - [mcp-agent_patch_planning_task](flows/mcp-agent_patch_planning_task.md) - entry: `agent_patch_planning_task`
 - [mcp-agent_patch_task](flows/mcp-agent_patch_task.md) - entry: `agent_patch_task`
 - [mcp-agent_pipeline_resource](flows/mcp-agent_pipeline_resource.md) - entry: `agent_pipeline_resource`
+- [mcp-agent_postpone_task](flows/mcp-agent_postpone_task.md) - entry: `agent_postpone_task`
 - [mcp-agent_preview_capacity_adjustment](flows/mcp-agent_preview_capacity_adjustment.md) - entry: `agent_preview_capacity_adjustment`
 - [mcp-agent_preview_capacity_transfer](flows/mcp-agent_preview_capacity_transfer.md) - entry: `agent_preview_capacity_transfer`
 - [mcp-agent_preview_capacity_transfer_withdrawal](flows/mcp-agent_preview_capacity_transfer_withdrawal.md) - entry: `agent_preview_capacity_transfer_withdrawal`
@@ -3811,6 +3814,7 @@ Retained history; these declarations are absent from the selected source invento
 - [mcp-agent_preview_schedule](flows/mcp-agent_preview_schedule.md) - entry: `agent_preview_schedule`
 - [mcp-agent_preview_task_routing](flows/mcp-agent_preview_task_routing.md) - entry: `agent_preview_task_routing`
 - [mcp-agent_profile_presets_resource](flows/mcp-agent_profile_presets_resource.md) - entry: `agent_profile_presets_resource`
+- [mcp-agent_reactivate_task](flows/mcp-agent_reactivate_task.md) - entry: `agent_reactivate_task`
 - [mcp-agent_reconcile_planning_window](flows/mcp-agent_reconcile_planning_window.md) - entry: `agent_reconcile_planning_window`
 - [mcp-agent_reconcile_run_provenance](flows/mcp-agent_reconcile_run_provenance.md) - entry: `agent_reconcile_run_provenance`
 - [mcp-agent_record_execution_usage](flows/mcp-agent_record_execution_usage.md) - entry: `agent_record_execution_usage`

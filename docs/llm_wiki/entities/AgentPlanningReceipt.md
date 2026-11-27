@@ -108,4 +108,4 @@ flowchart LR
 | `preview_schedule` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 | `record_manual_provenance` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 
-> References: showing 12 of 48 logical references; 36 omitted by the 12-row generated summary limit.
+> References: showing 12 of 51 logical references; 39 omitted by the 12-row generated summary limit.
