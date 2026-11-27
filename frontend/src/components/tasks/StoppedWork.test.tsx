@@ -11,6 +11,7 @@ import { defaultFilters } from '../../utils/taskFilterDefaults';
 import { filterTaskBySearch, filterTaskWithChildren } from '../../utils/taskFilters';
 import { TaskFiltersBar, type TaskFilters } from './TaskFiltersBar';
 import { TaskRow } from './TaskRow';
+import { taskStateChip } from './taskStateChip';
 import { TaskSupersedeForm } from './TaskSupersedeForm';
 import { TaskWorkPanel } from './TaskWorkPanel';
 
@@ -85,6 +86,16 @@ describe('task row states', () => {
         await setLanguage('ru');
         row({ state: 'canceled' });
         expect(screen.getByText('Отменено', { selector: '[data-task-state]' })).toBeVisible();
+    });
+});
+
+describe('readiness chip', () => {
+    it('is not shown for stopped work, whatever status it kept', () => {
+        const unready = { ...base, status: 'planned', agent_readiness: { is_ready: false, definition_ready: false, blockers: [], warnings: [], criteria: [] } } as unknown as Task;
+        expect(taskStateChip(unready)).toEqual({ kind: 'needsDefinition' });
+        for (const state of ['postponed', 'canceled', 'superseded'] as const) {
+            expect(taskStateChip({ ...unready, displayed_state: state })).toBeNull();
+        }
     });
 });
 
