@@ -97,4 +97,4 @@ flowchart LR
 | `AgentTeamSetupService._execute_action` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 3 |
 | `AgentTeamSetupService._refuse_foreign_runtime_instance` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 
-> References: showing 12 of 28 logical references; 16 omitted by the 12-row generated summary limit.
+> References: showing 12 of 30 logical references; 18 omitted by the 12-row generated summary limit.

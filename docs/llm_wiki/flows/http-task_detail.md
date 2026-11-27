@@ -2,7 +2,7 @@
 
 **Entry point:** `task_detail` (`http`)
 **Source:** [routers_task_domain](../modules/routers_task_domain.md)
-**Modules touched:** [agent_readiness](../modules/agent_readiness.md), [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), and 10 more
+**Modules touched:** [agent_readiness](../modules/agent_readiness.md), [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), and 12 more
 
 **Complete modules touched:**
 
@@ -18,6 +18,8 @@
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_detail](../modules/task_detail.md)
 - [task_detail_service](../modules/task_detail_service.md)
+- [task_display_state](../modules/task_display_state.md)
+- [task_postponement_service](../modules/task_postponement_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -37,26 +39,26 @@ sequenceDiagram
     participant p6 as TaskService.task_to_response
     participant p7 as TaskDetailService._policy_flags
     participant p8 as TaskDetailService.page
-    participant p9 as get_settings
-    participant p10 as task_signals
-    participant p11 as evaluate_agent_readiness
-    participant p12 as ExternalLinkService.task_links_to_response
-    participant p13 as working_today
-    participant p14 as ExternalLinkService.link_to_response
-    participant p15 as ExternalLinkService.legacy_task_link_response
-    participant p16 as _add_criterion
-    participant p17 as TaskService
-    participant p18 as TaskAgentReadiness
-    participant p19 as TaskDetailService.references
-    participant p20 as PlanningConflict
-    participant p21 as TaskDetailService.reviewer_names
-    participant p22 as TaskDetailResponse
-    participant p23 as internal_authority
-    participant p24 as current_command
-    participant p25 as AuthorityError
-    participant p26 as TaskReferencePage
-    participant p27 as TaskAssignee
-    participant p28 as TaskProject
+    participant p9 as TaskDetailService.references
+    participant p10 as postponement_record
+    participant p11 as get_settings
+    participant p12 as displayed_state_expression
+    participant p13 as task_signals
+    participant p14 as evaluate_agent_readiness
+    participant p15 as ExternalLinkService.task_links_to_response
+    participant p16 as working_today
+    participant p17 as ExternalLinkService.link_to_response
+    participant p18 as ExternalLinkService.legacy_task_link_response
+    participant p19 as _add_criterion
+    participant p20 as TaskService
+    participant p21 as TaskAgentReadiness
+    participant p22 as PlanningConflict
+    participant p23 as TaskDetailService.reviewer_names
+    participant p24 as open_postponement
+    participant p25 as TaskDetailResponse
+    participant p26 as internal_authority
+    participant p27 as current_command
+    participant p28 as AuthorityError
     participant p29 as HTTPException
     participant p30 as self.db.scalar
     p0->>p1: TaskDetailService.detail
@@ -67,33 +69,33 @@ sequenceDiagram
     p1->>p6: TaskService.task_to_response
     p1->>p7: TaskDetailService._policy_flags
     p1->>p8: TaskDetailService.page
-    p4->>p9: get_settings
-    p6->>p10: task_signals
-    p6->>p11: evaluate_agent_readiness
-    p6->>p12: ExternalLinkService.task_links_to_response
-    p10->>p13: working_today
-    p12->>p14: ExternalLinkService.link_to_response
-    p12->>p15: ExternalLinkService.legacy_task_link_response
-    p11->>p16: _add_criterion
-    p1->>p17: TaskService
-    p1->>p18: TaskAgentReadiness
-    p1->>p19: TaskDetailService.references
-    p1->>p20: PlanningConflict
-    p1->>p21: TaskDetailService.reviewer_names
-    p1->>p22: TaskDetailResponse
-    p5->>p23: internal_authority
-    p6->>p24: current_command
-    p4->>p25: AuthorityError
-    p8->>p26: TaskReferencePage
-    p6->>p27: TaskAssignee
-    p6->>p28: TaskProject
+    p1->>p9: TaskDetailService.references
+    p1->>p10: postponement_record
+    p4->>p11: get_settings
+    p9->>p12: displayed_state_expression
+    p6->>p13: task_signals
+    p6->>p14: evaluate_agent_readiness
+    p6->>p15: ExternalLinkService.task_links_to_response
+    p13->>p16: working_today
+    p15->>p17: ExternalLinkService.link_to_response
+    p15->>p18: ExternalLinkService.legacy_task_link_response
+    p14->>p19: _add_criterion
+    p1->>p20: TaskService
+    p1->>p21: TaskAgentReadiness
+    p1->>p22: PlanningConflict
+    p1->>p23: TaskDetailService.reviewer_names
+    p1->>p24: open_postponement
+    p1->>p25: TaskDetailResponse
+    p5->>p26: internal_authority
+    p6->>p27: current_command
+    p4->>p28: AuthorityError
     p2-->>p29: HTTPException(409, detail=exc.detail(...))
     p1-->>p30: self.db.scalar(...)
 ```
 
-> Call sequence diagram shows 30 of 242 interactions; 212 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 286 interactions; 256 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 75 (74 omitted); unresolved 1 of 102 (101 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 86 (85 omitted); unresolved 1 of 129 (128 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -107,7 +109,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/config.py:get_settings` | 24 | [backend/app/config.py](../modules/config.md) | internal | 1 |
 | `backend/app/authority.py:require_project` | 22 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
 | `backend/app/authority.py:internal_authority` | 30 | - | unresolved | 1 |
-> Omission summary shows 8 of 56 groups; 48 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 69 groups; 61 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -118,9 +120,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 66; effect analysis evaluated: 45, partial: 0, unavailable: 21. Counts include steps omitted from the displayed trace.
+Source steps: 72; effect analysis evaluated: 51, partial: 0, unavailable: 21. Counts include steps omitted from the displayed trace.
 
-Collector observations for 45 source steps with known totals: observed: 230, emitted: 230, omitted: 0. Unavailable totals are excluded.
+Collector observations for 51 source steps with known totals: observed: 261, emitted: 261, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -136,7 +138,7 @@ Collector observations for 45 source steps with known totals: observed: 230, emi
 | `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `str (backend/app/routers/task_domain.py:domain_result)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `TaskDetailService.detail` | `available` | `evaluated` | `available` | `17` | `17` | `0` |
+| `TaskDetailService.detail` | `available` | `evaluated` | `available` | `19` | `19` | `0` |
 | `self.db.scalar` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `select(…).where(…).options` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 
@@ -190,7 +192,7 @@ flowchart LR
 | `HTTPException` | - | - | - | - |
 | `str (backend/app/routers/task_domain.py:domain_result)` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
-| `TaskDetailService.detail` | `task_id`, `limit`, `children_after_id`, `dependencies_after_id` | `Task`, `self.db`, `Task`, `TaskDependency`, `Task` | `response.children`, `response.dependencies`, `response.agent_readiness`, `response.is_composite` | `None`, `TaskDetailResponse(...)` |
+| `TaskDetailService.detail` | `task_id`, `limit`, `children_after_id`, `dependencies_after_id` | `Task`, `self.db`, `Task`, `TaskDependency`, `Task`, `self.db`, `self.db` | `response.children`, `response.dependencies`, `response.agent_readiness`, `response.is_composite` | `None`, `TaskDetailResponse(...)` |
 | `self.db.scalar` | - | - | - | - |
 | `select(…).where(…).options` | - | - | - | - |
 
@@ -198,7 +200,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_detail | domain_result | 227 | `domain_result(...)` |
+| task_detail | domain_result | 228 | `domain_result(...)` |
 | domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
@@ -206,16 +208,16 @@ flowchart LR
 | domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 59 | `str(exc)` |
 | domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_detail | TaskDetailService.detail | 227 | `TaskDetailService(db).detail(task_id, limit=limit, children_after_id=children_after_id, dependencies_after_id=dependencies_after_id)` |
-| TaskDetailService.detail | self.db.scalar | 153 | `self.db.scalar(...)` |
-| TaskDetailService.detail | select(…).where(…).options | 153 | `select(Task).where(Task.id == task_id).options(raiseload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...))` |
+| task_detail | TaskDetailService.detail | 228 | `TaskDetailService(db).detail(task_id, limit=limit, children_after_id=children_after_id, dependencies_after_id=dependencies_after_id)` |
+| TaskDetailService.detail | self.db.scalar | 157 | `self.db.scalar(...)` |
+| TaskDetailService.detail | select(…).where(…).options | 157 | `select(Task).where(Task.id == task_id).options(raiseload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...))` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `seen.add` | `TaskDetailService.detail` | 172 |
-| mutation | `ancestors.append` | `TaskDetailService.detail` | 176 |
+| mutation | `seen.add` | `TaskDetailService.detail` | 176 |
+| mutation | `ancestors.append` | `TaskDetailService.detail` | 180 |
 
 ### Static analysis gaps
 
@@ -226,8 +228,8 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
 | external_call | `domain_result` | `HTTPException` | 61 |
-| unresolved_call | `TaskDetailService.detail` | `self.db.scalar` | 153 |
-| unresolved_call | `TaskDetailService.detail` | `select(Task).where(Task.id == task_id).options` | 153 |
+| unresolved_call | `TaskDetailService.detail` | `self.db.scalar` | 157 |
+| unresolved_call | `TaskDetailService.detail` | `select(Task).where(Task.id == task_id).options` | 157 |
 | step_limit | `task_detail` | `first 12 steps` | 0 |
 
 ## Behavior

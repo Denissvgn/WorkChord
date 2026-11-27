@@ -1,6 +1,6 @@
 # AgentTeamRuntimeHandoff
 
-**Location:** `frontend/src/types/agent.ts:796`
+**Location:** `frontend/src/types/agent.ts:866`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

@@ -1127,6 +1127,21 @@ async def preview_iteration_date_move(
     return IterationDateMovePreview.model_validate(result).model_dump(mode="json")
 
 
+async def preview_iteration_import(
+    db: AsyncSession,
+    actor: AgentActor,
+    iteration_id: int | None,
+    import_data: Any,
+) -> dict[str, Any]:
+    """MCP handler: the exact changes a JSON plan import would make, without writing them."""
+    from app.services.agent_service import require_scope
+    from app.services.import_review_service import dry_run_import, validate_import_payload
+
+    require_scope(actor, "planning:write")
+    validate_import_payload(import_data)
+    return await dry_run_import(db, iteration_id, import_data)
+
+
 async def apply_capacity_adjustment(
     db: AsyncSession,
     actor: AgentActor,
@@ -1294,6 +1309,71 @@ async def record_manual_provenance(
         task_id,
         actor,
         ManualProvenanceWrite.model_validate(payload),
+        command=_planning_command_context(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def get_task_postponement(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+) -> dict[str, Any]:
+    """MCP handler: GET /api/tasks/{task_id}/postponement, with each requirement and whether it is met."""
+    from app.schemas.task_postponement import TaskPostponementResponse
+    from app.services.task_postponement_service import TaskPostponementService
+
+    result = await TaskPostponementService(db).get(task_id)
+    return TaskPostponementResponse.model_validate(result).model_dump(mode="json")
+
+
+async def postpone_task(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: POST /api/tasks/{task_id}/postpone as an audited planning command."""
+    from app.schemas.task_postponement import TaskPostponeRequest
+
+    receipt = await AgentPlanningService(db).postpone_task(
+        task_id,
+        actor,
+        TaskPostponeRequest.model_validate(payload),
+        command=_planning_command_context(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def reactivate_task(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: POST /api/tasks/{task_id}/reactivate as an audited planning command."""
+    from app.schemas.task_postponement import TaskReactivateRequest
+
+    receipt = await AgentPlanningService(db).reactivate_task(
+        task_id,
+        actor,
+        TaskReactivateRequest.model_validate(payload),
         command=_planning_command_context(
             idempotency_key=idempotency_key,
             rationale=rationale,
@@ -2558,9 +2638,16 @@ async def create_agent_project_update(
     return response.model_dump(mode="json")
 
 
-async def list_project_tasks(db: AsyncSession, project_id: int) -> list[dict[str, Any]] | None:
-    """MCP handler: list tasks linked to a project."""
-    tasks = await ProjectService(db).get_tasks(project_id)
+async def list_project_tasks(db: AsyncSession, project_id: int, status: Optional[str] = None) -> list[dict[str, Any]] | None:
+    """MCP handler: list tasks linked to a project, or those shown in one state.
+
+    ``status`` is a displayed state: planned, active, resolved, closed, postponed, canceled or
+    superseded. With it the result is a flat list of the tasks at any depth shown in that state.
+    """
+    if status is not None:
+        from app.services.task_display_state import validate_state_filter
+        validate_state_filter(status)
+    tasks = await ProjectService(db).get_tasks(project_id, status)
     if tasks is None:
         return None
     task_service = TaskService(db)

@@ -4,7 +4,7 @@ from app.commands import commit_or_flush, command_transaction, planning_input_re
 import json
 from typing import Annotated, Any, Optional
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -105,7 +105,7 @@ async def export_iteration(
 
         def process_task(task):
             nonlocal allocated_days, task_count
-            if not task.children and not task.is_summary and task.assignee and task.assignee.id == member.id and not task.is_deferred:
+            if not task.children and not task.is_summary and task.assignee and task.assignee.id == member.id and not task.is_deferred and task.status != "postponed" and task.canceled_at is None:
                 if task.start_date and task.end_date:
                     # Count working days (simple approximation)
                     from datetime import timedelta
@@ -270,14 +270,31 @@ async def preview_iteration_import(file: Annotated[UploadFile, File(...)],
 @router.post("/iterations/import")
 async def import_new_iteration(
     file: Annotated[UploadFile, File(...)],
-    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+    review_digest: Annotated[str | None, Form()] = None,
 ):
-    """Import a new iteration from JSON export file."""
+    """Import a new iteration from JSON export file.
+
+    With ``review_digest`` from a plan-import dry run, the write applies only the
+    reviewed change set and is refused when the file or its target changed.
+    """
     data = await _read_json_upload(file)
 
     _validate_import_data(data)
+    if review_digest is not None:
+        from app.services.import_review_service import apply_reviewed_import
+        return await apply_reviewed_import(db, None, data, review_digest)
+    result, _ = await write_new_iteration_import(db, data)
+    return result
+
+
+async def write_new_iteration_import(db: AsyncSession, data: dict, *, expected_revisions=None):
+    """Create the imported iteration and its contents; return the receipt and the new iteration id."""
+    values = {'iteration_id': None, 'import_data': data}
+    if expected_revisions is not None:
+        values['expected_revisions'] = expected_revisions
     async with command_transaction(db):
-        async with planning_input_reservation(db, 'member', {'iteration_id': None, 'import_data': data}) as owned_scope:
+        async with planning_input_reservation(db, 'member', values) as owned_scope:
             # Create iteration first
             if "iteration" not in data:
                 raise HTTPException(
@@ -312,7 +329,7 @@ async def import_new_iteration(
             try:
                 await lock_iterations(db, [new_iteration.id], expected={new_iteration.id: new_iteration.revision}, require_expected=True)
                 owned_scope.add(new_iteration.id)
-                return await _process_import(new_iteration.id, data, db)
+                return await _process_import(new_iteration.id, data, db), new_iteration.id
             except ValueError as e:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -413,9 +430,14 @@ async def _process_import(
 async def import_iteration(
     iteration_id: int,
     file: Annotated[UploadFile, File(...)],
-    db: Annotated[AsyncSession, Depends(get_db, scope="function")]
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+    review_digest: Annotated[str | None, Form()] = None,
 ):
-    """Import tasks and team members into an iteration from JSON file."""
+    """Import tasks and team members into an iteration from JSON file.
+
+    With ``review_digest`` from a plan-import dry run, the write applies only the
+    reviewed change set and is refused when the file or its target changed.
+    """
     data = await _read_json_upload(file)
 
     iteration_service = IterationService(db)
@@ -428,8 +450,19 @@ async def import_iteration(
         )
 
     _validate_import_data(data)
+    if review_digest is not None:
+        from app.services.import_review_service import apply_reviewed_import
+        return await apply_reviewed_import(db, iteration_id, data, review_digest)
+    return await write_iteration_import(db, iteration_id, data)
+
+
+async def write_iteration_import(db: AsyncSession, iteration_id: int, data: dict, *, expected_revisions=None):
+    """Import team members and tasks into one existing iteration."""
+    values = {'iteration_id': iteration_id, 'import_data': data}
+    if expected_revisions is not None:
+        values['expected_revisions'] = expected_revisions
     async with command_transaction(db):
-        async with planning_input_reservation(db, 'member', {'iteration_id': iteration_id, 'import_data': data}):
+        async with planning_input_reservation(db, 'member', values):
             try:
                 return await _process_import(iteration_id, data, db)
             except ValueError as e:
@@ -520,7 +553,7 @@ async def _import_task_record(
         or task_data.get("actual_start_date")
         or task_data.get("actual_end_date")
     ):
-        await task_service.db.commit()
+        await commit_or_flush(task_service.db)
 
     pending_dependencies.append(
         (

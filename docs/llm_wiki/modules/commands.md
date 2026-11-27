@@ -25,6 +25,7 @@ A capacity allocation removal reserves the shared planning input and affected it
 | `app.models.recovery` | `ApplicationSnapshot` |
 | `app.models.task` | `Task`, `Task` |
 | `app.mutation_versions` | `require_mutation_revision`, `require_mutation_revision` |
+| `app.refusal_next_steps` | `with_next_step` |
 | `app.runtime_telemetry` | `metrics` |
 | `app.services.allocation_removal` | `inspect_allocation_history`, `is_unused_allocation` |
 | `app.services.calendar_rules` | `reserve_iteration_annuals` |
@@ -34,6 +35,7 @@ A capacity allocation removal reserves the shared planning input and affected it
 | `app.services.execution_planning_window` | `current_window`, `extension_input`, `live_assignments`, `make_window`, `seal_authority`, `task_context` |
 | `app.services.planning_input_context` | `affected_iteration_ids` |
 | `app.services.snapshot_service` | `SnapshotService` |
+| `app.services.task_reactivation_service` | `process_reactivation_checks` |
 | `app.services.task_service` | `TaskService` |
 | `contextlib` | `asynccontextmanager` |
 | `dataclasses` | `dataclass`, `field` |
@@ -64,8 +66,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (111) |
-| Outbound | `backend` (17) |
+| Inbound | `backend` (117) |
+| Outbound | `backend` (19) |
 
 ### External packages
 
@@ -73,7 +75,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 120 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 127 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

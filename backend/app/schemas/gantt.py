@@ -42,6 +42,8 @@ class GanttTask(TaskMetricSignals):
     min_start_date: Optional[date] = None
     max_end_date: Optional[date] = None
     status: Optional[str] = None  # planned, active, resolved, closed
+    # The stored status, or canceled / superseded for withdrawn work, which keeps the status it had.
+    displayed_state: Optional[str] = None
     milestone: Optional[GanttMilestone] = None
     assignee: Optional[GanttAssignee] = None
     assignees: list[GanttAssignee] = []  # For composite tasks
@@ -79,6 +81,7 @@ UnscheduledReason = Literal[
     "no_capacity",
     "prerequisites_pending",
     "predecessor_unscheduled",
+    "predecessor_postponed",
     "deferred",
     "blocked",
     "not_placed",
@@ -93,6 +96,16 @@ DateRule = Literal[
 ]
 
 
+class WaitingOnTask(BaseModel):
+    """A task a planned task waits on: postponed work, or the prerequisite behind idle days."""
+    task_id: int
+    task_title: str
+
+
+def _no_waits(tasks: list[WaitingOnTask]) -> bool:
+    return not tasks
+
+
 class UnscheduledTask(BaseModel):
     """A planned task the scheduler left without dates, and what would change that."""
     task_id: int
@@ -105,6 +118,8 @@ class UnscheduledTask(BaseModel):
     date_rule: DateRule | None = Field(default=None, exclude_if=lambda rule: rule is None)
     # Causes of its own that keep it undated once the main reason is resolved.
     also: list[UnscheduledReason] = []
+    # The postponed work it waits on (reason predecessor_postponed); omitted otherwise.
+    waiting_on: list[WaitingOnTask] = Field(default_factory=list, exclude_if=_no_waits)
 
 
 class KeptDatesTask(BaseModel):
@@ -119,6 +134,40 @@ class KeptDatesTask(BaseModel):
     date_rule: DateRule | None = Field(default=None, exclude_if=lambda rule: rule is None)
     # Causes of its own that stop the scheduler from placing it once the main reason is resolved.
     also: list[UnscheduledReason] = []
+    # The postponed work it waits on (reason predecessor_postponed); omitted otherwise.
+    waiting_on: list[WaitingOnTask] = Field(default_factory=list, exclude_if=_no_waits)
+
+
+IdleReason = Literal[
+    "waits_for_prerequisite",
+    "earliest_start",
+    "fixed_dates",
+    "uninterrupted_slot",
+]
+
+
+class IdleGap(BaseModel):
+    """Working days an assignee is left idle before the task that follows them on the row."""
+    start_date: date
+    end_date: date
+    working_days: int
+    # The task that starts after these days and the reason it starts no earlier.
+    task_id: int
+    task_title: str
+    reason: IdleReason
+    # The prerequisite it waits for (reason waits_for_prerequisite); omitted otherwise.
+    waiting_on: WaitingOnTask | None = Field(default=None, exclude_if=lambda value: value is None)
+    # The earliest start date that holds it (reason earliest_start); omitted otherwise.
+    earliest_start: date | None = Field(default=None, exclude_if=lambda value: value is None)
+    message: str
+
+
+class AssigneeIdleDays(BaseModel):
+    """An assignee's working days left idle inside the scheduled span, before the row's last work."""
+    member_id: int
+    member_name: str
+    idle_working_days: int
+    gaps: list[IdleGap]
 
 
 class WorkloadIssue(BaseModel):
@@ -150,6 +199,8 @@ class ScheduleResult(BaseModel):
     unscheduled: list[UnscheduledTask] = []
     # Planned leaf tasks the run could not place that keep the dates they already had.
     kept_dates: list[KeptDatesTask] = Field(default_factory=list, exclude_if=lambda rows: not rows)
+    # Each assignee's remaining idle working days before its last work, with the task that follows them.
+    idle_days: list[AssigneeIdleDays] = Field(default_factory=list, exclude_if=lambda rows: not rows)
 
 
 class GanttResponse(BaseModel):

@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/types/release.ts`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `./task` | `TaskStatus` | Declaration | erased |
+| `./task` | `TaskDisplayedState`, `TaskStatus` | Declaration | erased |
 | `./workMetrics` | `WorkMetrics` | Declaration | erased |
 
 ## Module Signals
@@ -73,7 +73,7 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [ReleaseTaskSummary](../entities/types_release_ReleaseTaskSummary.md) | Interface | 6 | — | — |
-| [Release](../entities/types_release_Release.md) | Interface | 13 | `WorkMetrics` | — |
-| [ReleaseCreateRequest](../entities/types_release_ReleaseCreateRequest.md) | Interface | 29 | — | — |
-| [ReleaseUpdateRequest](../entities/types_release_ReleaseUpdateRequest.md) | Interface | 40 | — | — |
+| [Release](../entities/types_release_Release.md) | Interface | 14 | `WorkMetrics` | — |
+| [ReleaseCreateRequest](../entities/types_release_ReleaseCreateRequest.md) | Interface | 30 | — | — |
+| [ReleaseUpdateRequest](../entities/types_release_ReleaseUpdateRequest.md) | Interface | 41 | — | — |
 | [ReleaseStatus](../entities/types_release_ReleaseStatus.md) | Type alias | 4 | `'planned' \| 'building' \| 'shipped' \| 'canceled'` | — |

@@ -2,7 +2,7 @@
 
 from typing import Annotated, NoReturn
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Query, status
+from fastapi import APIRouter, Depends, File, Header, HTTPException, Query, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import mcp_agent_tools
@@ -51,6 +51,7 @@ from app.schemas.triage import (
     TriageItemUpdate,
     TriageSnoozeRequest,
 )
+from app.schemas.import_review import ImportDryRunResponse
 from app.schemas.task_replacement import TaskReplacementCreate, TaskReplacementResponse
 from app.schemas.manual_provenance import ManualProvenanceWrite
 from app.services.agent_planning_service import AgentPlanningService
@@ -147,6 +148,37 @@ async def get_iteration_plan_readiness(
     if summary is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Iteration not found")
     return summary
+
+
+@router.post(
+    "/agent/planning/iterations/import/dry-run",
+    response_model=ImportDryRunResponse,
+)
+@router.post(
+    "/agent/planning/iterations/{iteration_id}/import/dry-run",
+    response_model=ImportDryRunResponse,
+)
+async def dry_run_iteration_import(
+    file: Annotated[UploadFile, File(...)],
+    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+    iteration_id: int | None = None,
+):
+    """Return the exact changes a JSON plan import would make; nothing is written."""
+    from app.routers.export import _read_json_upload, _validate_import_data
+    try:
+        require_scope(actor, "planning:write")
+    except Exception as exc:
+        _handle_agent_error(exc)
+    data = await _read_json_upload(file)
+    _validate_import_data(data)
+    from app.services.import_review_service import ImportFileInvalid
+    try:
+        return await mcp_agent_tools.preview_iteration_import(db, actor, iteration_id, data)
+    except ImportFileInvalid as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=exc.detail()) from exc
+    except Exception as exc:
+        _handle_agent_error(exc)
 
 
 @router.get(

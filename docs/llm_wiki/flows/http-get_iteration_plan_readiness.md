@@ -95,9 +95,9 @@ sequenceDiagram
     p3-->>p30: exc.detail
 ```
 
-> Call sequence diagram shows 30 of 484 interactions; 454 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 492 interactions; 462 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 185 (184 omitted); unresolved 1 of 209 (208 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 192 (191 omitted); unresolved 1 of 210 (209 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -122,9 +122,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 91; effect analysis evaluated: 66, partial: 2, unavailable: 23. Counts include steps omitted from the displayed trace.
+Source steps: 91; effect analysis evaluated: 65, partial: 3, unavailable: 23. Counts include steps omitted from the displayed trace.
 
-Collector observations for 68 source steps with known totals: observed: 332, emitted: 318, omitted: 14. Unavailable totals are excluded.
+Collector observations for 68 source steps with known totals: observed: 336, emitted: 319, omitted: 17. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -140,7 +140,7 @@ Collector observations for 68 source steps with known totals: observed: 332, emi
 | `isinstance (backend/app/services/agent_service.py:actor_scopes)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `AgentPermissionError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
 | `get_iteration_plan_readiness (backend/app/mcp_agent_tools.py)` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
-| `IterationService.get_planning_readiness_summary` | `available` | `evaluated` | `available` | `10` | `10` | `0` |
+| `IterationService.get_planning_readiness_summary` | `available` | `partial` | `available` | `12` | `11` | `1` |
 | `IterationService.get_by_id` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
 | `self.db.execute (backend/app/services/iter…terationService.get_by_id)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `select(…).options(…).where (backend/app/services/iter…terationService.get_by_id)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
@@ -192,7 +192,7 @@ flowchart LR
 | `isinstance (backend/app/services/agent_service.py:actor_scopes)` | - | - | - | - |
 | `AgentPermissionError` | - | - | - | - |
 | `get_iteration_plan_readiness (backend/app/mcp_agent_tools.py)` | `db: AsyncSession`, `iteration_id: int` | `IterationPlanningReadinessSummary` | - | `...` |
-| `IterationService.get_planning_readiness_summary` | `iteration_id: int` | `self.db`, `Task`, `Task`, `Task`, `Task`, `Task`, `self.db` | - | `None`, `IterationPlanningReadinessSummary(...)` |
+| `IterationService.get_planning_readiness_summary` | `iteration_id: int` | `self.db`, `Task`, `Task`, `Task`, `Task`, `Task`, `Task`, `TaskStatusModel` | - | `None`, `IterationPlanningReadinessSummary(...)` |
 | `IterationService.get_by_id` | `iteration_id: int` | `Iteration` | - | `result.scalar_one_or_none(...)` |
 | `self.db.execute (backend/app/services/iter…terationService.get_by_id)` | - | - | - | - |
 | `select(…).options(…).where (backend/app/services/iter…terationService.get_by_id)` | - | - | - | - |
@@ -201,13 +201,13 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_iteration_plan_readiness (backend/app/routers/agent_planning.py) | require_scope | 139 | `require_scope(actor, 'planning:read')` |
+| get_iteration_plan_readiness (backend/app/routers/agent_planning.py) | require_scope | 144 | `require_scope(actor, 'planning:read')` |
 | require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
-| get_iteration_plan_readiness (backend/app/routers/agent_planning.py) | get_iteration_plan_readiness (backend/app/mcp_agent_tools.py) | 140 | `mcp_agent_tools.get_iteration_plan_readiness(db, iteration_id)` |
+| get_iteration_plan_readiness (backend/app/routers/agent_planning.py) | get_iteration_plan_readiness (backend/app/mcp_agent_tools.py) | 145 | `mcp_agent_tools.get_iteration_plan_readiness(db, iteration_id)` |
 | get_iteration_plan_readiness (backend/app/mcp_agent_tools.py) | IterationService.get_planning_readiness_summary | 654 | `IterationService(db).get_planning_readiness_summary(iteration_id)` |
 | IterationService.get_planning_readiness_summary | IterationService.get_by_id | 540 | `self.get_by_id(iteration_id)` |
 | IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 338 | `self.db.execute(...)` |

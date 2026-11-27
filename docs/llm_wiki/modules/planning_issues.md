@@ -28,17 +28,21 @@ flowchart LR
     n2["backend/app/services/saved_view_service.py"]
     n3["backend/app/services/task_service.py"]
     n4["backend/tests/test_planning_issues.py"]
+    n5["backend/tests/test_terminal_task_states.py"]
     n0 --> n1
     n0 --> n3
     n2 --> n1
     n2 --> n3
     n3 --> n1
     n4 --> n1
+    n5 --> n0
+    n5 --> n1
     click n0 "../modules/iteration_service.md"
     click n1 "../modules/planning_issues.md"
     click n2 "../modules/saved_view_service.md"
     click n3 "../modules/task_service.md"
     click n4 "../modules/test_planning_issues.md"
+    click n5 "../modules/test_terminal_task_states.md"
 ```
 
 ### Internal neighbors
@@ -49,12 +53,13 @@ flowchart LR
 | Inbound | [saved_view_service](../modules/saved_view_service.md) |
 | Inbound | [task_service](../modules/task_service.md) |
 | Inbound | [test_planning_issues](../modules/test_planning_issues.md) |
+| Inbound | [test_terminal_task_states](../modules/test_terminal_task_states.md) |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `is_planning_gap_candidate` | `(task: Any) -> bool` | — | A planned, non-deferred leaf: the only work the scheduler places. |
+| `is_planning_gap_candidate` | `(task: Any) -> bool` | — | A planned, non-deferred, not canceled leaf: the only work the scheduler places. |
 | `_agent_working` | `(task: Any) -> bool` | — | Whether an agent holds live execution work: a response's ``agent_working`` field, |
 | `needs_assignee` | `(task: Any) -> bool` | — | — |
 | `agent_working_without_capacity` | `(task: Any) -> bool` | — | — |

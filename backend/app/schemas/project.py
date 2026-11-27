@@ -269,6 +269,9 @@ class ProjectMilestoneTaskGroup(WorkMetricSummary):
             "active": 0,
             "resolved": 0,
             "closed": 0,
+            "postponed": 0,
+            "canceled": 0,
+            "superseded": 0,
         }
     )
     total_effort_days: float = 0.0
@@ -344,6 +347,9 @@ class ProjectSummary(WorkMetricSummary):
             "active": 0,
             "resolved": 0,
             "closed": 0,
+            "postponed": 0,
+            "canceled": 0,
+            "superseded": 0,
         }
     )
     total_effort_days: float = 0.0

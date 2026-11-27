@@ -157,7 +157,7 @@ flowchart LR
 | revoke_owned_session | UserSession.principal_id.is_ | 415 | `UserSession.principal_id.is_(None)` |
 | revoke_owned_session | AuthorityError | 417 | `AuthorityError('session_not_found', 'Session not found.', 404)` |
 | revoke_owned_session | internal_authority | 418 | `internal_authority(db)` |
-| internal_authority | db.info.get | 113 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get | 114 | `db.info.get('authority_internal', False)` |
 
 ### Boundary effects
 
@@ -168,7 +168,7 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | unresolved_call | `revoke_owned_session` | `UserSession.principal_id.is_` | 415 |
-| unresolved_call | `internal_authority` | `db.info.get` | 113 |
+| unresolved_call | `internal_authority` | `db.info.get` | 114 |
 | step_limit | `revoke_owned_session` | `first 12 steps` | 0 |
 
 ## Behavior

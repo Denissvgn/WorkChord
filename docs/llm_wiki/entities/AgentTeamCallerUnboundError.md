@@ -1,6 +1,6 @@
 # AgentTeamCallerUnboundError
 
-**Location:** `backend/app/services/agent_team_setup_service.py:126`
+**Location:** `backend/app/services/agent_team_setup_service.py:128`
 **Kind:** Class
 **Bases:** `AgentPermissionError`
 **Module:** [agent_team_setup_service](../modules/agent_team_setup_service.md)

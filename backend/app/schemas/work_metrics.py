@@ -8,6 +8,12 @@ class WorkMetricSummary(BaseModel):
     required_tasks: int = 0
     optional_tasks: int = 0
     deferred_tasks: int = 0
+    # Postponed leaves stay in the totals and are also counted here, apart from every other status.
+    postponed_tasks: int = 0
+    # Withdrawn leaves are outside every total and status count above, and counted only here: canceled
+    # work, and superseded work whose deliverable another task carries (a clean replacement included).
+    canceled_tasks: int = 0
+    superseded_tasks: int = 0
     structural_tasks: int = 0
     implemented_tasks: int = 0
     accepted_tasks: int = 0

@@ -1,6 +1,6 @@
 # TaskReference
 
-**Location:** `frontend/src/types/task.ts:466`
+**Location:** `frontend/src/types/task.ts:476`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -23,6 +23,7 @@ _Auto-generated from `TaskReference` in `frontend/src/types/task.ts`._
 | `title` | `string` | Yes | — | — |
 | `version` | `number` | Yes | — | — |
 | `status` | `TaskStatus` | Yes | — | — |
+| `displayed_state` | `TaskDisplayedState` | No | — | — |
 | `project_id` | `number \| null` | Yes | — | — |
 | `iteration_id` | `number \| null` | Yes | — | — |
 | `parent_id` | `number \| null` | Yes | — | — |
@@ -66,7 +67,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `acceptance_current`, `blocked_reason`, `canceled_at`, `id`, `iteration_id`, `iteration_name`, `owner_profile_id`, `parent_id`, `project_id`, `project_name`, `reviewer_name`, `status` |
+| [types_task](../modules/types_task.md) | 0 | `acceptance_current`, `blocked_reason`, `canceled_at`, `displayed_state`, `id`, `iteration_id`, `iteration_name`, `owner_profile_id`, `parent_id`, `project_id`, `project_name`, `reviewer_name` |
 
 ### References
 

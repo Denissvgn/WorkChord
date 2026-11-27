@@ -1,6 +1,6 @@
 # TaskBatchUpdateResponse
 
-**Location:** `backend/app/schemas/task.py:461`
+**Location:** `backend/app/schemas/task.py:470`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

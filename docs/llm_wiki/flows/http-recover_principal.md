@@ -163,15 +163,15 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | recover_principal | require_operator | 454 | `require_operator(db)` |
-| require_operator | db.info.get (backend/app/authority.py:require_operator) | 91 | `db.info.get('authority')` |
-| require_operator | AuthorityError | 93 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
+| require_operator | db.info.get (backend/app/authority.py:require_operator) | 92 | `db.info.get('authority')` |
+| require_operator | AuthorityError | 94 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
 | recover_principal | require_identity_writes | 455 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
 | recover_principal | internal_authority | 457 | `internal_authority(db)` |
-| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 113 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 114 | `db.info.get('authority_internal', False)` |
 | recover_principal | db.get | 458 | `db.get(Principal, principal_id)` |
 
 ### Boundary effects
@@ -184,8 +184,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_operator` | `db.info.get` | 91 |
-| unresolved_call | `internal_authority` | `db.info.get` | 113 |
+| unresolved_call | `require_operator` | `db.info.get` | 92 |
+| unresolved_call | `internal_authority` | `db.info.get` | 114 |
 | unresolved_call | `recover_principal` | `db.get` | 458 |
 | step_limit | `recover_principal` | `first 12 steps` | 0 |
 

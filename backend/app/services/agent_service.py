@@ -320,6 +320,7 @@ class AgentService:
             )
             .where(
                 Task.status == TaskStatus.PLANNED.value,
+                Task.canceled_at.is_(None),
                 Task.is_deferred.is_(False),
             )
             .order_by(Task.priority, Task.sort_order, Task.id)
@@ -1520,7 +1521,9 @@ class AgentService:
                 selectinload(Task.dependencies).selectinload(TaskDependency.depends_on),
                 selectinload(Task.parent),
             )
-            .where(and_(Task.status != "closed", Task.is_deferred == False))
+            # Postponed work is stopped until it is reactivated, and canceled or superseded work is
+            # withdrawn whatever status it kept: no pipeline stage (review queue included) offers it.
+            .where(and_(Task.status.notin_(("closed", "postponed")), Task.canceled_at.is_(None), Task.is_deferred == False))
             .order_by(Task.priority.asc(), Task.id.asc())
             .limit(MAX_BOUNDED_LIST_ITEMS + 1)
         )

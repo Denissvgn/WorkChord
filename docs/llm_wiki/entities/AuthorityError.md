@@ -96,4 +96,4 @@ flowchart LR
 | `authority_error` | type_reference | [app_main](../modules/app_main.md) | — |
 | `mcp_server` | import | [mcp_server](../modules/mcp_server.md) | — |
 
-> References: showing 12 of 103 logical references; 91 omitted by the 12-row generated summary limit.
+> References: showing 12 of 109 logical references; 97 omitted by the 12-row generated summary limit.

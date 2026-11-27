@@ -1,6 +1,6 @@
 # TaskActionAvailability
 
-**Location:** `backend/app/schemas/task_domain.py:35`
+**Location:** `backend/app/schemas/task_domain.py:46`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task_domain](../modules/schemas_task_domain.md)

@@ -226,7 +226,7 @@ flowchart LR
 | resolve_http_identity | request.headers.get | 57 | `request.headers.get('X-Admin-API-Key')` |
 | resolve_http_identity | request.headers.get | 58 | `request.headers.get('Authorization')` |
 | resolve_http_identity | internal_authority | 59 | `internal_authority(db)` |
-| internal_authority | db.info.get | 113 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get | 114 | `db.info.get('authority_internal', False)` |
 | resolve_http_identity | AgentService.authenticate | 62 | `AgentService(db).authenticate(agent_key, touch=False)` |
 | AgentService.authenticate | hash_api_key | 146 | `hash_api_key(api_key)` |
 
@@ -250,7 +250,7 @@ flowchart LR
 | unresolved_call | `resolve_http_identity` | `request.headers.get` | 56 |
 | unresolved_call | `resolve_http_identity` | `request.headers.get` | 57 |
 | unresolved_call | `resolve_http_identity` | `request.headers.get` | 58 |
-| unresolved_call | `internal_authority` | `db.info.get` | 113 |
+| unresolved_call | `internal_authority` | `db.info.get` | 114 |
 | step_limit | `me` | `first 12 steps` | 0 |
 
 ## Behavior

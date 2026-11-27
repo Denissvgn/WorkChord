@@ -1,6 +1,6 @@
 # ReplacementAcceptance
 
-**Location:** `backend/app/schemas/task_replacement.py:100`
+**Location:** `backend/app/schemas/task_replacement.py:120`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task_replacement](../modules/schemas_task_replacement.md)

@@ -19,7 +19,7 @@ _Auto-generated from `frontend/src/components/gantt/UnscheduledTasks.test.tsx`._
 
 | Signal | Values |
 |--------|--------|
-| Module calls | `it`, `it` |
+| Module calls | `it`, `it`, `it`, `it` |
 
 ## Local dependency map
 

@@ -136,17 +136,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| backlog_snapshots | BacklogSnapshotService.list | 319 | `BacklogSnapshotService(db).list(project_id)` |
-| BacklogSnapshotService.list | require_project | 53 | `require_project(self.db, project_id)` |
-| require_project | db.info.get | 81 | `db.info.get('authority')` |
-| require_project | get_settings | 83 | `get_settings(data not statically known)` |
+| backlog_snapshots | BacklogSnapshotService.list | 320 | `BacklogSnapshotService(db).list(project_id)` |
+| BacklogSnapshotService.list | require_project | 55 | `require_project(self.db, project_id)` |
+| require_project | db.info.get | 82 | `db.info.get('authority')` |
+| require_project | get_settings | 84 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |
-| require_project | AuthorityError | 85 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
-| require_project | authority.allows | 86 | `authority.allows(project_id, action)` |
-| require_project | AuthorityError | 87 | `AuthorityError(data not statically known)` |
-| BacklogSnapshotService.list | (…).all | 54 | `(await self.db.scalars(select(ApplicationSnapshot).where(ApplicationSnapshot.project_id == project_id).order_by(ApplicationSnapshot.id.desc()).limit(get_settings().snapshot_retention_count))).all(data not statically known)` |
-| BacklogSnapshotService.list | self.db.scalars | 54 | `self.db.scalars(...)` |
-| BacklogSnapshotService.list | select(…).where(…).order_by(…).limit | 54 | `select(ApplicationSnapshot).where(ApplicationSnapshot.project_id == project_id).order_by(ApplicationSnapshot.id.desc()).limit(...)` |
+| require_project | AuthorityError | 86 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
+| require_project | authority.allows | 87 | `authority.allows(project_id, action)` |
+| require_project | AuthorityError | 88 | `AuthorityError(data not statically known)` |
+| BacklogSnapshotService.list | (…).all | 56 | `(await self.db.scalars(select(ApplicationSnapshot).where(ApplicationSnapshot.project_id == project_id).order_by(ApplicationSnapshot.id.desc()).limit(get_settings().snapshot_retention_count))).all(data not statically known)` |
+| BacklogSnapshotService.list | self.db.scalars | 56 | `self.db.scalars(...)` |
+| BacklogSnapshotService.list | select(…).where(…).order_by(…).limit | 56 | `select(ApplicationSnapshot).where(ApplicationSnapshot.project_id == project_id).order_by(ApplicationSnapshot.id.desc()).limit(...)` |
 
 ### Boundary effects
 
@@ -156,11 +156,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_project` | `db.info.get` | 81 |
-| unresolved_call | `require_project` | `authority.allows` | 86 |
-| unresolved_call | `BacklogSnapshotService.list` | `(await self.db.scalars(select(ApplicationSnapshot).where(ApplicationSnapshot.project_id == project_id).order_by(ApplicationSnapshot.id.desc()).limit(get_settings().snapshot_retention_count))).all` | 54 |
-| unresolved_call | `BacklogSnapshotService.list` | `self.db.scalars` | 54 |
-| unresolved_call | `BacklogSnapshotService.list` | `select(ApplicationSnapshot).where(ApplicationSnapshot.project_id == project_id).order_by(ApplicationSnapshot.id.desc()).limit` | 54 |
+| unresolved_call | `require_project` | `db.info.get` | 82 |
+| unresolved_call | `require_project` | `authority.allows` | 87 |
+| unresolved_call | `BacklogSnapshotService.list` | `(await self.db.scalars(select(ApplicationSnapshot).where(ApplicationSnapshot.project_id == project_id).order_by(ApplicationSnapshot.id.desc()).limit(get_settings().snapshot_retention_count))).all` | 56 |
+| unresolved_call | `BacklogSnapshotService.list` | `self.db.scalars` | 56 |
+| unresolved_call | `BacklogSnapshotService.list` | `select(ApplicationSnapshot).where(ApplicationSnapshot.project_id == project_id).order_by(ApplicationSnapshot.id.desc()).limit` | 56 |
 | step_limit | `backlog_snapshots` | `first 12 steps` | 0 |
 
 ## Behavior

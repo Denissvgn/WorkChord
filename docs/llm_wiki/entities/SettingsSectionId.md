@@ -9,7 +9,7 @@
 ```typescript
 | 'theme' | 'shortcuts'
     | 'language' | 'work_calendar' | 'scheduling' | 'templates_labels' | 'notifications'
-    | 'github' | 'webhooks' | 'web_intake' | 'ai_provider'
+    | 'github' | 'webhooks' | 'web_intake' | 'ai_provider' | 'qualification_keys'
     | 'access' | 'runtime' | 'about'
 ```
 
