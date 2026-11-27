@@ -2084,9 +2084,11 @@ def create_mcp_server() -> FastMCP:
         )
 
     @mcp.tool(annotations=READ_ONLY_TOOL)
-    async def workspace_list_project_tasks(project_id: int) -> list[dict[str, Any]] | None:
-        """List project-linked tasks."""
-        return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.list_project_tasks(db, project_id))
+    async def workspace_list_project_tasks(project_id: int, status: Optional[str] = None) -> list[dict[str, Any]] | None:
+        """List project-linked tasks. Set status to a displayed state (planned, active, resolved, closed, postponed,
+        canceled or superseded) for a flat list of the tasks in that state; canceled and superseded work keeps the status
+        it had when it was withdrawn, so read displayed_state, not status, to see it."""
+        return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.list_project_tasks(db, project_id, status))
 
     @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_triage_items(

@@ -15,12 +15,13 @@ LIVE_EXECUTION_ASSIGNMENT_STATES = ("queued", "accepted")
 
 
 def is_planning_gap_candidate(task: Any) -> bool:
-    """A planned, non-deferred leaf: the only work the scheduler places."""
+    """A planned, non-deferred, not canceled leaf: the only work the scheduler places."""
     deferred = getattr(task, "effective_is_deferred", None)
     if deferred is None:
         deferred = getattr(task, "is_deferred", False)
     return (
         getattr(task, "status", None) == PLANNING_ISSUE_STATUS
+        and getattr(task, "canceled_at", None) is None
         and not deferred
         and not getattr(task, "is_composite", False)
         and not getattr(task, "children", None)

@@ -258,6 +258,23 @@ class Task(Base):
         order_by="RequestSourceLink.created_at, RequestSourceLink.id",
     )
 
+    # ``successor_task_id`` and ``successor_kind`` are column properties that app.models.task_replacement
+    # attaches: the task that delivers this task's work instead, and how (replacement or supersession).
+    # Both are None when there is none.
+
+    @property
+    def displayed_state(self) -> str:
+        """The state to show: the stored status, or the terminal state of withdrawn work.
+
+        Canceled work keeps the status it had when it was canceled, so the stored status is not what a
+        person should see. Work whose deliverable another task carries is superseded (a clean
+        replacement counts as superseded too); any other canceled work is canceled. Read without a
+        lazy load: a row created in this session has not read its successor yet.
+        """
+        if self.canceled_at is None:
+            return self.status
+        return "superseded" if self.__dict__.get("successor_task_id") is not None else "canceled"
+
 
 class TaskDependency(Base):
     """Task dependency relationship (including cross-parent subtask dependencies)."""

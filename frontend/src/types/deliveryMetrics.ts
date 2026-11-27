@@ -23,6 +23,8 @@ export interface DeliveryMetrics {
     acceptance_events: number;
     rejection_events: number;
     canceled_leaf_tasks: number;
+    /** Leaves withdrawn because another task delivers their work; never also counted as canceled. */
+    superseded_leaf_tasks?: number;
     reopened_events: number;
     lead_time: DurationSamples;
     cycle_time: DurationSamples;

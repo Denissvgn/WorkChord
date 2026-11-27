@@ -2558,9 +2558,16 @@ async def create_agent_project_update(
     return response.model_dump(mode="json")
 
 
-async def list_project_tasks(db: AsyncSession, project_id: int) -> list[dict[str, Any]] | None:
-    """MCP handler: list tasks linked to a project."""
-    tasks = await ProjectService(db).get_tasks(project_id)
+async def list_project_tasks(db: AsyncSession, project_id: int, status: Optional[str] = None) -> list[dict[str, Any]] | None:
+    """MCP handler: list tasks linked to a project, or those shown in one state.
+
+    ``status`` is a displayed state: planned, active, resolved, closed, postponed, canceled or
+    superseded. With it the result is a flat list of the tasks at any depth shown in that state.
+    """
+    if status is not None:
+        from app.services.task_display_state import validate_state_filter
+        validate_state_filter(status)
+    tasks = await ProjectService(db).get_tasks(project_id, status)
     if tasks is None:
         return None
     task_service = TaskService(db)
