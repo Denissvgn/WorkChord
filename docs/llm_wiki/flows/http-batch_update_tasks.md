@@ -90,9 +90,9 @@ sequenceDiagram
     p0-->>p30: scheduler_service.schedule_iteration(iteration_id, expected_planning_revision=data.expected_planning_revision)
 ```
 
-> Call sequence diagram shows 30 of 278 interactions; 248 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 288 interactions; 258 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 70 (69 omitted); unresolved 1 of 148 (147 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 73 (72 omitted); unresolved 1 of 155 (154 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -105,7 +105,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/commands.py:command_transaction` | 12 | - | external | 4 |
 | `backend/app/commands.py:command_transaction` | 12 | - | unresolved | 12 |
 | `backend/app/commands.py:command_transaction` | 12 | [backend/app/services/delivery_dependency_service.py](../modules/delivery_dependency_service.md) | internal | 2 |
-| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 24 | - | unresolved | 23 |
+| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 24 | - | unresolved | 28 |
 > Omission summary shows 8 of 54 groups; 46 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
@@ -121,7 +121,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 61; effect analysis evaluated: 36, partial: 0, unavailable: 25. Counts include steps omitted from the displayed trace.
 
-Collector observations for 36 source steps with known totals: observed: 181, emitted: 181, omitted: 0. Unavailable totals are excluded.
+Collector observations for 36 source steps with known totals: observed: 188, emitted: 188, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.

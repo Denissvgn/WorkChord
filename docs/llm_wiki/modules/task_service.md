@@ -37,6 +37,7 @@ Generic task events reserve the review evidence issue and revocation names for t
 | `app.services.agent_readiness` | `evaluate_agent_readiness` |
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService`, `BacklogSnapshotService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
+| `app.services.execution_planning_window` | `current_window`, `execution_context`, `fence_planning_only_edit`, `is_planning_only_change`, `live_assignments` |
 | `app.services.external_link_service` | `ExternalLinkService` |
 | `app.services.language_service` | `automatic_child_status_reason`, `incomplete_dependency_message`, `resolve_runtime_ui_language`, `task_requires_schedule_message` |
 | `app.services.outbound_webhook_service` | `emit_outbound_webhook_event` |
@@ -76,9 +77,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (73) |
+| Inbound | `backend` (74) |
 | Inbound | `scripts` (2) |
-| Outbound | `backend` (29) |
+| Outbound | `backend` (30) |
 
 ### External packages
 
@@ -86,7 +87,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 95 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 97 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

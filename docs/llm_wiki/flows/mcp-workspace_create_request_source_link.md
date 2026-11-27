@@ -101,9 +101,9 @@ sequenceDiagram
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 416 interactions; 386 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 426 interactions; 396 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 106 (105 omitted); unresolved 1 of 159 (158 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 109 (108 omitted); unresolved 1 of 166 (165 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -132,7 +132,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 152; effect analysis evaluated: 91, partial: 6, unavailable: 55. Counts include steps omitted from the displayed trace.
 
-Collector observations for 97 source steps with known totals: observed: 541, emitted: 524, omitted: 17. Unavailable totals are excluded.
+Collector observations for 97 source steps with known totals: observed: 546, emitted: 529, omitted: 17. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

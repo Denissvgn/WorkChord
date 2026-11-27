@@ -104,9 +104,9 @@ sequenceDiagram
     p0-->>p30: data.model_dump (backend/app/routers/agent…nning_triage_item_to_task)(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 465 interactions; 435 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 468 interactions; 438 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 118 (117 omitted); unresolved 1 of 190 (189 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 119 (118 omitted); unresolved 1 of 192 (191 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -135,7 +135,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 158; effect analysis evaluated: 99, partial: 4, unavailable: 55. Counts include steps omitted from the displayed trace.
 
-Collector observations for 103 source steps with known totals: observed: 603, emitted: 589, omitted: 14. Unavailable totals are excluded.
+Collector observations for 103 source steps with known totals: observed: 607, emitted: 593, omitted: 14. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

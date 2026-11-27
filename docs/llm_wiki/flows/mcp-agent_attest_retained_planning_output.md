@@ -91,9 +91,9 @@ sequenceDiagram
     p0-->>p30: attest_retained_output(db, actor, run_id, AgentRetainedOutputAttestation.model_validate(...), idempotency_key=idempotency_key)
 ```
 
-> Call sequence diagram shows 30 of 247 interactions; 217 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 257 interactions; 227 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 68 (67 omitted); unresolved 1 of 106 (105 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 71 (70 omitted); unresolved 1 of 113 (112 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -122,7 +122,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 74; effect analysis evaluated: 48, partial: 2, unavailable: 24. Counts include steps omitted from the displayed trace.
 
-Collector observations for 50 source steps with known totals: observed: 215, emitted: 202, omitted: 13. Unavailable totals are excluded.
+Collector observations for 50 source steps with known totals: observed: 219, emitted: 206, omitted: 13. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1837 | [Open section](#entities) |
-| Modules | 1175 | [Open section](#modules) |
+| Modules | 1176 | [Open section](#modules) |
 | Workflows | 241 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 631 | [Open section](#entry-point-flows) |
@@ -2390,7 +2390,7 @@ Retained history; these declarations are absent from the selected source invento
 - [executionUsage](modules/executionUsage.md) - `frontend/src/types/executionUsage.ts`
 - [executionUsageService](modules/executionUsageService.md) - `frontend/src/services/executionUsageService.ts`
 - [execution_mode](modules/execution_mode.md) - Execution-mode guards shared by legacy and autonomous migration tools.
-- [execution_planning_window](modules/execution_planning_window.md) - Preserve a proved assignment context across an iteration end-date extension.
+- [execution_planning_window](modules/execution_planning_window.md) - Preserve a proved assignment context across a planning change that leaves execution inputs alone.
 - [execution_reconciliation](modules/execution_reconciliation.md) - Reconcile a terminal run using authenticated, contemporaneous server records.
 - [execution_usage_service](modules/execution_usage_service.md) - Bounded usage corrections, immutable pricing and scoped advisory totals.
 - [export](modules/export.md) - Export/Import API router.
@@ -2869,6 +2869,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_plan_shares](modules/test_plan_shares.md) - Plan-share ownership and immutable snapshot behavior.
 - [test_planning_input_context](modules/test_planning_input_context.md) - Initial shared-input observations are complete, bounded and side-effect free.
 - [test_planning_issues](modules/test_planning_issues.md) - The "needs an assignee" and "missing effort" rule shared by counts and filters.
+- [test_planning_only_edit_fence](modules/test_planning_only_edit_fence.md) - A planning-only task edit keeps sealed issued work valid; an execution-input edit still stales it.
 - [test_planning_read_models](modules/test_planning_read_models.md) - Independent synthetic counterexamples for read-model and inherited policy parity.
 - [test_planning_window_digest_validation](modules/test_planning_window_digest_validation.md) - Malformed evidence digests get the same refusal on the REST and MCP planning reconciliation routes.
 - [test_pm_forecast_calendar](modules/test_pm_forecast_calendar.md) - A managed planning principal can forecast an iteration using a single annual calendar.

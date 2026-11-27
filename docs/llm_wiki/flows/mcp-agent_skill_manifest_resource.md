@@ -93,9 +93,9 @@ sequenceDiagram
     p3-->>p30: _agent_skill_bundle_service().manifest_payload(skill_name, skill_version)
 ```
 
-> Call sequence diagram shows 30 of 222 interactions; 192 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 229 interactions; 199 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 70 (69 omitted); unresolved 1 of 84 (83 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 72 (71 omitted); unresolved 1 of 89 (88 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -124,7 +124,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 69; effect analysis evaluated: 45, partial: 2, unavailable: 22. Counts include steps omitted from the displayed trace.
 
-Collector observations for 47 source steps with known totals: observed: 195, emitted: 182, omitted: 13. Unavailable totals are excluded.
+Collector observations for 47 source steps with known totals: observed: 199, emitted: 186, omitted: 13. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

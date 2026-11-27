@@ -92,9 +92,9 @@ sequenceDiagram
     p2-->>p30: service.task_service.get_by_id(task_id)
 ```
 
-> Call sequence diagram shows 30 of 212 interactions; 182 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 219 interactions; 189 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 65 (64 omitted); unresolved 1 of 83 (82 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 67 (66 omitted); unresolved 1 of 88 (87 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -123,7 +123,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 65; effect analysis evaluated: 41, partial: 2, unavailable: 22. Counts include steps omitted from the displayed trace.
 
-Collector observations for 43 source steps with known totals: observed: 183, emitted: 170, omitted: 13. Unavailable totals are excluded.
+Collector observations for 43 source steps with known totals: observed: 187, emitted: 174, omitted: 13. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
