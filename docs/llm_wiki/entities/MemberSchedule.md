@@ -50,6 +50,9 @@ Performance optimizations:
 | `find_next_available_date` | `(earliest_start: date) -> Optional[date]` | — | Find the first available working date on or after earliest_start. |
 | `find_uninterrupted_slot` | `(earliest_start: date, effort_days: int) -> Optional[date]` | — | Find the earliest date where effort_days contiguous working days are available. |
 | `_is_projectable_working_day` | `(day: date) -> bool` | — | Working-day check for dates that may lie outside the iteration period. |
+| `_day_capacity` | `(day: date, by_hours: bool) -> float` | — | Productive capacity of a projectable working day: hours, or 1 per usable day. |
+| `is_productive_day` | `(day: date) -> bool` | — | A working day on which this row can do work (not a weekend, holiday, absence or zero-capacity date). |
+| `find_free_slot_before` | `(earliest_start: date, last_day: date, effort_days: int, required_hours: float \| None = None) -> Optional[date]` | — | The earliest start on or after ``earliest_start`` from which the effort fits entirely in free |
 | `allocate` | `(start_date: date, effort_days: int, task_id: int, accounting_days: Optional[float] = None, required_hours: float \| None = None) -> tuple[date, date]` | — | Reserve whole working dates, including overflow, until the requested effort fits. |
 
 ## Relationships
@@ -60,30 +63,39 @@ flowchart LR
     n0["MemberSchedule (backend/app/services/scheduler_service.py)"]
     n1["SchedulerService._build_member_schedules (backend/app/services/scheduler_service.py)"]
     n2["SchedulerService._check_workload_balance (backend/app/services/scheduler_service.py)"]
-    n3["SchedulerService._schedule_composite_task (backend/app/services/scheduler_service.py)"]
-    n4["SchedulerService._schedule_leaf_task (backend/app/services/scheduler_service.py)"]
-    n5["SchedulerService._unscheduled_tasks (backend/app/services/scheduler_service.py)"]
-    n6["test_short_workday_and_overflow_are_reserved_for_the_person (backend/tests/test_profile_capacity.py)"]
+    n3["SchedulerService._idle_days (backend/app/services/scheduler_service.py)"]
+    n4["SchedulerService._idle_gap (backend/app/services/scheduler_service.py)"]
+    n5["SchedulerService._place_in_free_days (backend/app/services/scheduler_service.py)"]
+    n6["SchedulerService._schedule_composite_task (backend/app/services/scheduler_service.py)"]
+    n7["SchedulerService._schedule_leaf_task (backend/app/services/scheduler_service.py)"]
+    n8["SchedulerService._unscheduled_tasks (backend/app/services/scheduler_service.py)"]
+    n9["test_short_workday_and_overflow_are_reserved_for_the_person (backend/tests/test_profile_capacity.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
+    n8 --> n0
+    n9 --> n0
     click n0 "../modules/scheduler_service.md"
     click n1 "../modules/scheduler_service.md"
     click n2 "../modules/scheduler_service.md"
     click n3 "../modules/scheduler_service.md"
     click n4 "../modules/scheduler_service.md"
     click n5 "../modules/scheduler_service.md"
-    click n6 "../modules/test_profile_capacity.md"
+    click n6 "../modules/scheduler_service.md"
+    click n7 "../modules/scheduler_service.md"
+    click n8 "../modules/scheduler_service.md"
+    click n9 "../modules/test_profile_capacity.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [scheduler_service](../modules/scheduler_service.md) | 9 | `_available_cache`, `_cache_valid`, `_date_to_idx`, `allocated_dates`, `allocated_days`, `annual_calendars`, `capacity_days`, `dated_factors`, `holiday_dates`, `member_id`, `member_name`, `nominal_day_hours` |
+| [scheduler_service](../modules/scheduler_service.md) | 12 | `_available_cache`, `_cache_valid`, `_date_to_idx`, `allocated_dates`, `allocated_days`, `annual_calendars`, `capacity_days`, `dated_factors`, `holiday_dates`, `member_id`, `member_name`, `nominal_day_hours` |
 
 ### References
 
@@ -92,6 +104,9 @@ flowchart LR
 | `SchedulerService._build_member_schedules` | call | [scheduler_service](../modules/scheduler_service.md) | 1 |
 | `SchedulerService._build_member_schedules` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `SchedulerService._check_workload_balance` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
+| `SchedulerService._idle_days` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
+| `SchedulerService._idle_gap` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
+| `SchedulerService._place_in_free_days` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `SchedulerService._schedule_composite_task` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `SchedulerService._schedule_leaf_task` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `SchedulerService._unscheduled_tasks` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |

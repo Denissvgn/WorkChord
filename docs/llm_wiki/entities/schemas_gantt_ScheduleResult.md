@@ -1,6 +1,6 @@
 # ScheduleResult
 
-**Location:** `backend/app/schemas/gantt.py:155`
+**Location:** `backend/app/schemas/gantt.py:187`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)
@@ -22,6 +22,7 @@ Result of scheduling operation.
 | `workload_issues` | `list[WorkloadIssue]` | `workload_issues` | No | No | `[]` | — | — | — |
 | `unscheduled` | `list[UnscheduledTask]` | `unscheduled` | No | No | `[]` | — | — | — |
 | `kept_dates` | `list[KeptDatesTask]` | `kept_dates` | No | No | factory: `list` | — | — | — |
+| `idle_days` | `list[AssigneeIdleDays]` | `idle_days` | No | No | factory: `list` | — | — | — |
 
 ## Methods
 
@@ -51,7 +52,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `assignment_refreshes`, `capacity_issues`, `decisions`, `kept_dates`, `planning_revision`, `success`, `unscheduled`, `workload_balanced`, `workload_issues` |
+| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `assignment_refreshes`, `capacity_issues`, `decisions`, `idle_days`, `kept_dates`, `planning_revision`, `success`, `unscheduled`, `workload_balanced`, `workload_issues` |
 
 ### Structure
 

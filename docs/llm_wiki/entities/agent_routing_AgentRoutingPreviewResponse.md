@@ -1,6 +1,6 @@
 # AgentRoutingPreviewResponse
 
-**Location:** `backend/app/schemas/agent_routing.py:1178`
+**Location:** `backend/app/schemas/agent_routing.py:1246`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)

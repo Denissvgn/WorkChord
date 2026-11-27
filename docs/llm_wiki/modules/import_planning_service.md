@@ -17,7 +17,7 @@ JSON import observations resolve all existing affected iteration revisions, chec
 | `app.models.iteration` | `Iteration` |
 | `app.services.planning_input_context` | `affected_iteration_ids` |
 | `hashlib` | `hashlib` |
-| `json` | `json` |
+| `json` | `json`, `json` |
 | `sqlalchemy` | `select` |
 
 ## Local dependency map
@@ -30,25 +30,33 @@ flowchart LR
     n2["backend/app/models/iteration.py"]
     n3["backend/app/routers/export.py"]
     n4["backend/app/services/import_planning_service.py"]
-    n5["backend/app/services/planning_input_context.py"]
+    n5["backend/app/services/import_review_service.py"]
+    n6["backend/app/services/planning_input_context.py"]
     n1 --> n0
     n1 --> n2
-    n1 --> n5
+    n1 --> n6
     n3 --> n1
     n3 --> n4
+    n3 --> n5
     n4 --> n0
     n4 --> n1
     n4 --> n2
-    n4 --> n5
+    n4 --> n6
     n5 --> n0
     n5 --> n1
     n5 --> n2
+    n5 --> n3
+    n5 --> n4
+    n6 --> n0
+    n6 --> n1
+    n6 --> n2
     click n0 "../modules/authority.md"
     click n1 "../modules/commands.md"
     click n2 "../modules/models_iteration.md"
     click n3 "../modules/export.md"
     click n4 "../modules/import_planning_service.md"
-    click n5 "../modules/planning_input_context.md"
+    click n5 "../modules/import_review_service.md"
+    click n6 "../modules/planning_input_context.md"
 ```
 
 ### Internal neighbors
@@ -56,6 +64,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [export](../modules/export.md) |
+| Inbound | [import_review_service](../modules/import_review_service.md) |
 | Outbound | [authority](../modules/authority.md) |
 | Outbound | [commands](../modules/commands.md) |
 | Outbound | [models_iteration](../modules/models_iteration.md) |
@@ -71,4 +80,6 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `import_file_sha256` | `(data)` | — | Digest of the canonical JSON form of one import file. |
+| `import_scope_revisions` | *(async)* `(db, iteration_id, data)` | — | Current revision of every iteration an import of this file reserves, under the caller's authority. |
 | `observe_import_planning` | *(async)* `(db, iteration_id, data)` | — | — |

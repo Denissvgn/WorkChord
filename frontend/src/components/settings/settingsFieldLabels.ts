@@ -1,7 +1,7 @@
 export type SettingsSectionId =
     | 'theme' | 'shortcuts'
     | 'language' | 'work_calendar' | 'scheduling' | 'templates_labels' | 'notifications'
-    | 'github' | 'webhooks' | 'web_intake' | 'ai_provider'
+    | 'github' | 'webhooks' | 'web_intake' | 'ai_provider' | 'qualification_keys'
     | 'access' | 'runtime' | 'about';
 
 /**
@@ -216,6 +216,11 @@ export const SETTINGS_FIELD_LABEL_KEYS: Readonly<Record<SettingsSectionId, reado
         'settings.maxOutputTokens',
         'settings.replaceApiKey',
         'settings.clearRuntimeApiKey',
+    ],
+    qualification_keys: [
+        'qualificationKeys.title',
+        'qualificationKeys.showRetired',
+        'qualificationKeys.builtinTitle',
     ],
     access: [
         'settingsPage.access.title',

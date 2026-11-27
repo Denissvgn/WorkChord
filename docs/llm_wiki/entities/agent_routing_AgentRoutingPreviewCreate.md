@@ -1,6 +1,6 @@
 # AgentRoutingPreviewCreate
 
-**Location:** `backend/app/schemas/agent_routing.py:951`
+**Location:** `backend/app/schemas/agent_routing.py:996`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -48,11 +48,11 @@ flowchart LR
     n6["AgentRoutingService.validate_assignment_selection (backend/app/services/agent_routing_service.py)"]
     n7["check_supervised_selection (backend/app/services/review_evidence.py)"]
     n8["test_completed_rework_update_persists_prior_and_new_routing_lineage (backend/tests/test_agent_routing_service.py)"]
-    n9["test_local_first_preference_breaks_ties_but_never_overrides_a_gate (backend/tests/test_agent_routing_service.py)"]
-    n10["test_model_aware_assignment_and_begin_enforce_observed_model (backend/tests/test_agent_routing_service.py)"]
-    n11["test_preview_is_deterministic_and_relevant_mutation_invalidates_it (backend/tests/test_agent_routing_service.py)"]
-    n12["test_verification_independence_requires_authoritative_profile_history (backend/tests/test_agent_routing_service.py)"]
-    n13["test_preview_contract_accepts_eligible_and_explicit_no_candidate_states (backend/tests/test_agent_routing_wave3_contract.py)"]
+    n9["test_declared_qualification_key_is_a_requirement_the_candidate_must_hold (backend/tests/test_agent_routing_service.py)"]
+    n10["test_local_first_preference_breaks_ties_but_never_overrides_a_gate (backend/tests/test_agent_routing_service.py)"]
+    n11["test_model_aware_assignment_and_begin_enforce_observed_model (backend/tests/test_agent_routing_service.py)"]
+    n12["test_preview_is_deterministic_and_relevant_mutation_invalidates_it (backend/tests/test_agent_routing_service.py)"]
+    n13["test_verification_independence_requires_authoritative_profile_history (backend/tests/test_agent_routing_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -79,7 +79,7 @@ flowchart LR
     click n10 "../modules/test_agent_routing_service.md"
     click n11 "../modules/test_agent_routing_service.md"
     click n12 "../modules/test_agent_routing_service.md"
-    click n13 "../modules/test_agent_routing_wave3_contract.md"
+    click n13 "../modules/test_agent_routing_service.md"
 ```
 
 ### Summary
@@ -105,10 +105,10 @@ flowchart LR
 | `AgentRoutingService.validate_assignment_selection` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |
 | `check_supervised_selection` | call | [services_review_evidence](../modules/services_review_evidence.md) | 1 |
 | `test_completed_rework_update_persists_prior_and_new_routing_lineage` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
+| `test_declared_qualification_key_is_a_requirement_the_candidate_must_hold` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 2 |
 | `test_local_first_preference_breaks_ties_but_never_overrides_a_gate` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
 | `test_model_aware_assignment_and_begin_enforce_observed_model` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
 | `test_preview_is_deterministic_and_relevant_mutation_invalidates_it` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
 | `test_verification_independence_requires_authoritative_profile_history` | call | [test_agent_routing_service](../modules/test_agent_routing_service.md) | 1 |
-| `test_preview_contract_accepts_eligible_and_explicit_no_candidate_states` | call | [test_agent_routing_wave3_contract](../modules/test_agent_routing_wave3_contract.md) | 1 |
 
-> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.
+> References: showing 12 of 25 logical references; 13 omitted by the 12-row generated summary limit.

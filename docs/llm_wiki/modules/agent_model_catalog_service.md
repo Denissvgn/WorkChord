@@ -17,6 +17,7 @@ Operator-owned model catalog, binding administration, and audit receipts.
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.agent_routing` | `AgentModelBindingCreate`, `AgentModelBindingDisable`, `AgentModelBindingResponse`, `AgentModelBindingUpdate`, `AgentModelCatalogCreate`, `AgentModelCatalogDisable`, `AgentModelCatalogResponse`, `AgentModelCatalogUpdate`, `AgentModelMutationReceipt` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope`, `is_admin_key_principal`, `require_scope`, `validate_idempotency_key` |
+| `app.services.routing_qualification_key_service` | `require_known_qualification_keys` |
 | `collections.abc` | `Awaitable`, `Callable` |
 | `dataclasses` | `dataclass` |
 | `hashlib` | `hashlib` |
@@ -46,8 +47,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (8) |
-| Outbound | `backend` (6) |
+| Inbound | `backend` (11) |
+| Outbound | `backend` (7) |
 
 ### External packages
 
@@ -55,12 +56,12 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentModelConflictError](../entities/AgentModelConflictError.md) | 55 | `AgentConflictError` | Stable model-control conflict shared by REST and MCP. |
-| [_MutationResult](../entities/MutationResult.md) | 73 | — | — |
-| [AgentModelCatalogService](../entities/AgentModelCatalogService.md) | 85 | — | Expose secret-free reads and replay-safe admin model mutations. |
+| [AgentModelConflictError](../entities/AgentModelConflictError.md) | 58 | `AgentConflictError` | Stable model-control conflict shared by REST and MCP. |
+| [_MutationResult](../entities/MutationResult.md) | 76 | — | — |
+| [AgentModelCatalogService](../entities/AgentModelCatalogService.md) | 88 | — | Expose secret-free reads and replay-safe admin model mutations. |

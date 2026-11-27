@@ -48,11 +48,11 @@ export interface TaskAgentReadiness {
     criteria: TaskAgentReadinessCriterion[];
 }
 
-export type TaskStatus = 'planned' | 'active' | 'resolved' | 'closed';
+export type TaskStatus = 'planned' | 'active' | 'resolved' | 'postponed' | 'closed';
 /** Withdrawn work: canceled, or superseded when another task delivers its work (a clean replacement included). */
 export type TaskTerminalState = 'canceled' | 'superseded';
-/** What a task is shown as: its stored status, or its terminal state. Postponed is a status of its own. */
-export type TaskDisplayedState = TaskStatus | 'postponed' | TaskTerminalState;
+/** What a task is shown as: its stored status, or its terminal state. */
+export type TaskDisplayedState = TaskStatus | TaskTerminalState;
 export type ExternalLinkProvider = 'github' | 'gitlab' | 'figma' | 'sentry' | 'custom' | 'agdash' | string;
 
 export interface ExternalLink {
@@ -485,7 +485,24 @@ export interface TaskDetail {
     task: Task; ancestors: TaskReference[]; ancestors_complete: boolean;
     children: TaskReferencePage; dependencies: TaskReferencePage; execution_context_complete: false;
     reviewer_name?: string | null;
+    /** The open postponement of postponed work. */
+    postponement?: TaskPostponementRecord | null;
 }
+export type ReactivationRequirementKind = 'predecessor_accepted' | 'date' | 'owner_decision' | 'linked_resolved';
+export interface ReactivationRequirementInput {
+    kind: ReactivationRequirementKind; task_id?: number; triage_item_id?: number; on_date?: string; description?: string;
+}
+export interface ReactivationRequirement {
+    id: number; position: number; kind: ReactivationRequirementKind; task_id: number | null; triage_item_id: number | null;
+    on_date: string | null; description: string | null; met: boolean; met_at: string | null;
+}
+export interface TaskPostponementRecord {
+    id: number; task_id: number; open: boolean; from_status: 'planned' | 'active' | 'resolved'; reason: string; postponed_at: string;
+    released: { claim_actor_id: number | null; claim_generation: number | null; assignment_ids: number[]; run_ids: number[] };
+    requirements: ReactivationRequirement[];
+    reactivated_at: string | null; reactivated_to_status: 'planned' | 'resolved' | null; reactivation_reason: string | null;
+}
+export interface TaskPostponementResponse { task: Task; postponement: TaskPostponementRecord | null }
 /** One recorded review. `owner_override` is an owner's acceptance that set aside publisher independence. */
 export interface TaskReviewRecord {
     id: number; task_version: number; brief_revision: number; artifact_revision: number; principal_id: number | null;

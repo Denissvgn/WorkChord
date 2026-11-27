@@ -92,9 +92,9 @@ sequenceDiagram
     p0-->>p30: data.model_dump (backend/app/routers/agent…eate_planning_triage_item)(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 197 interactions; 167 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 200 interactions; 170 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 63 (62 omitted); unresolved 1 of 60 (59 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 66 (65 omitted); unresolved 1 of 60 (59 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -123,7 +123,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 75; effect analysis evaluated: 52, partial: 3, unavailable: 20. Counts include steps omitted from the displayed trace.
 
-Collector observations for 55 source steps with known totals: observed: 255, emitted: 247, omitted: 8. Unavailable totals are excluded.
+Collector observations for 55 source steps with known totals: observed: 257, emitted: 247, omitted: 10. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -200,14 +200,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_planning_triage_item | require_scope | 678 | `require_scope(actor, 'planning:write')` |
+| create_planning_triage_item | require_scope | 714 | `require_scope(actor, 'planning:write')` |
 | require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
-| create_planning_triage_item | create_triage_item | 679 | `mcp_agent_tools.create_triage_item(db, actor, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| create_triage_item | _triage_command_context | 2608 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| create_planning_triage_item | create_triage_item | 715 | `mcp_agent_tools.create_triage_item(db, actor, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
+| create_triage_item | _triage_command_context | 2703 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 | _triage_command_context | validate_idempotency_key | 222 | `validate_idempotency_key(idempotency_key, required=True)` |
 | validate_idempotency_key | ValueError (backend/app/services/agen…:validate_idempotency_key) | 123 | `ValueError('Idempotency-Key is required')` |
 | validate_idempotency_key | value.strip | 127 | `value.strip(data not statically known)` |

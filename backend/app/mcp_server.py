@@ -6,7 +6,7 @@ import os
 import sys
 from contextlib import asynccontextmanager, redirect_stdout
 from contextvars import ContextVar
-from typing import Any, AsyncIterator, Callable, Optional
+from typing import Any, AsyncIterator, Callable, Literal, Optional
 
 from mcp.server.fastmcp import FastMCP
 from app.commands import command_transaction, AggregateVersionConflict, HierarchyScopeError, PlanningConflict
@@ -1707,6 +1707,58 @@ def create_mcp_server() -> FastMCP:
         )
 
     @mcp.tool(annotations=READ_ONLY_TOOL)
+    async def agent_get_task_postponement(task_id: int) -> dict[str, Any]:
+        """Read a task's open or most recent postponement: reason, who decided, and each reactivation requirement with whether it is met."""
+        return await _tool_call(
+            AGENT_TASK_READ_SCOPES,
+            lambda db, actor: mcp_agent_tools.get_task_postponement(db, actor, task_id),
+        )
+
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_postpone_task(
+        task_id: int,
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Postpone planned, active or resolved leaf work (PM agent only); payload is {expected_version, reason, requirements, expected_claim_generation?, expected_running_run_ids?, expected_live_assignment_ids?}."""
+        return await _tool_call(
+            AGENT_TASK_WRITE_SCOPES,
+            lambda db, actor: mcp_agent_tools.postpone_task(
+                db,
+                actor,
+                task_id,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
+    @mcp.tool(annotations=WRITE_TOOL)
+    async def agent_reactivate_task(
+        task_id: int,
+        payload: dict[str, Any],
+        idempotency_key: str,
+        rationale: str,
+        correlation_id: str,
+    ) -> dict[str, Any]:
+        """Return postponed work to planned, or to resolved (PM agent only); payload is {expected_version, reason}."""
+        return await _tool_call(
+            AGENT_TASK_WRITE_SCOPES,
+            lambda db, actor: mcp_agent_tools.reactivate_task(
+                db,
+                actor,
+                task_id,
+                payload,
+                idempotency_key=idempotency_key,
+                rationale=rationale,
+                correlation_id=correlation_id,
+            ),
+        )
+
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_github_reconciliation(task_id: int) -> dict[str, Any]:
         """Compare a task's submitted commits with its linked pull requests as last observed, with who acts next."""
         return await _tool_call(
@@ -1833,6 +1885,24 @@ def create_mcp_server() -> FastMCP:
         return await _tool_call(
             "planning:write",
             lambda db, actor: mcp_agent_tools.preview_iteration_date_move(db, actor, iteration_id, payload),
+            preview=True,
+        )
+
+    @mcp.tool(annotations=READ_ONLY_TOOL)
+    async def agent_preview_iteration_import(
+        import_data: dict[str, Any],
+        iteration_id: int | None = None,
+    ) -> dict[str, Any]:
+        """Show the exact tasks, dependencies, links, dates and team members a JSON plan import would create, change or remove, without writing anything.
+
+        import_data is the import file's JSON object. Pass iteration_id to import into that
+        iteration; omit it when the file creates a new iteration. The operator applies the
+        reviewed result by sending the same file and the returned review_digest to the import
+        route; the write is refused if the file or the target changed since this preview.
+        """
+        return await _tool_call(
+            "planning:write",
+            lambda db, actor: mcp_agent_tools.preview_iteration_import(db, actor, iteration_id, import_data),
             preview=True,
         )
 
@@ -2084,7 +2154,10 @@ def create_mcp_server() -> FastMCP:
         )
 
     @mcp.tool(annotations=READ_ONLY_TOOL)
-    async def workspace_list_project_tasks(project_id: int, status: Optional[str] = None) -> list[dict[str, Any]] | None:
+    async def workspace_list_project_tasks(
+        project_id: int,
+        status: Optional[Literal["planned", "active", "resolved", "closed", "postponed", "canceled", "superseded"]] = None,
+    ) -> list[dict[str, Any]] | None:
         """List project-linked tasks. Set status to a displayed state (planned, active, resolved, closed, postponed,
         canceled or superseded) for a flat list of the tasks in that state; canceled and superseded work keeps the status
         it had when it was withdrawn, so read displayed_state, not status, to see it."""

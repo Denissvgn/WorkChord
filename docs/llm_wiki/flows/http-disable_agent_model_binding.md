@@ -55,15 +55,15 @@ sequenceDiagram
     p2-->>p11: exc.detail (backend/app/routers/agent…ing.py:_handle_agent_error)
 ```
 
-> Call sequence diagram shows 30 of 33 interactions; 3 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 36 interactions; 6 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 23 of 26 (3 omitted); unresolved 5 of 5 (0 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 23 of 29 (6 omitted); unresolved 5 of 5 (0 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
-| `backend/app/routers/agent_planning.py:_handle_agent_error` | 10 | - | external | 3 |
+| `backend/app/routers/agent_planning.py:_handle_agent_error` | 10 | - | external | 6 |
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -76,7 +76,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 3; effect analysis evaluated: 2, partial: 1, unavailable: 0. Counts include steps omitted from the displayed trace.
 
-Collector observations for 3 source steps with known totals: observed: 25, emitted: 19, omitted: 6. Unavailable totals are excluded.
+Collector observations for 3 source steps with known totals: observed: 27, emitted: 19, omitted: 8. Unavailable totals are excluded.
 
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
 
@@ -91,7 +91,7 @@ Collector observations for 3 source steps with known totals: observed: 25, emitt
 | `isinstance (backend/app/routers/agent…log.py:_handle_model_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `HTTPException (backend/app/routers/agent…log.py:_handle_model_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `str (backend/app/routers/agent…log.py:_handle_model_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `_handle_agent_error` | `available` | `partial` | `available` | `15` | `9` | `6` |
+| `_handle_agent_error` | `available` | `partial` | `available` | `17` | `9` | `8` |
 | `isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 
@@ -146,17 +146,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| disable_agent_model_binding | service.disable_binding | 473 | `service.disable_binding(binding_id, actor, data, command=command)` |
-| disable_agent_model_binding | _handle_model_error | 480 | `_handle_model_error(exc)` |
-| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 142 | `isinstance(exc, AgentModelConflictError)` |
-| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 143 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_model_error | exc.detail (backend/app/routers/agent…log.py:_handle_model_error) | 145 | `exc.detail(data not statically known)` |
-| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 147 | `isinstance(exc, LookupError)` |
-| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 148 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={...})` |
-| _handle_model_error | str (backend/app/routers/agent…log.py:_handle_model_error) | 152 | `str(exc)` |
-| _handle_model_error | _handle_agent_error | 155 | `_handle_agent_error(exc)` |
-| _handle_agent_error | isinstance (backend/app/routers/agent…ing.py:_handle_agent_error) | 109 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error) | 110 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
+| disable_agent_model_binding | service.disable_binding | 481 | `service.disable_binding(binding_id, actor, data, command=command)` |
+| disable_agent_model_binding | _handle_model_error | 488 | `_handle_model_error(exc)` |
+| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 150 | `isinstance(exc, AgentModelConflictError)` |
+| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 151 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_model_error | exc.detail (backend/app/routers/agent…log.py:_handle_model_error) | 153 | `exc.detail(data not statically known)` |
+| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 155 | `isinstance(exc, LookupError)` |
+| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 156 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={...})` |
+| _handle_model_error | str (backend/app/routers/agent…log.py:_handle_model_error) | 160 | `str(exc)` |
+| _handle_model_error | _handle_agent_error | 163 | `_handle_agent_error(exc)` |
+| _handle_agent_error | isinstance (backend/app/routers/agent…ing.py:_handle_agent_error) | 111 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error) | 112 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
 
 ### Boundary effects
 
@@ -166,14 +166,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `disable_agent_model_binding` | `service.disable_binding` | 473 |
-| external_call | `_handle_model_error` | `isinstance` | 142 |
-| external_call | `_handle_model_error` | `HTTPException` | 143 |
-| unresolved_call | `_handle_model_error` | `exc.detail` | 145 |
-| external_call | `_handle_model_error` | `isinstance` | 147 |
-| external_call | `_handle_model_error` | `HTTPException` | 148 |
-| external_call | `_handle_agent_error` | `isinstance` | 109 |
-| external_call | `_handle_agent_error` | `HTTPException` | 110 |
+| unresolved_call | `disable_agent_model_binding` | `service.disable_binding` | 481 |
+| external_call | `_handle_model_error` | `isinstance` | 150 |
+| external_call | `_handle_model_error` | `HTTPException` | 151 |
+| unresolved_call | `_handle_model_error` | `exc.detail` | 153 |
+| external_call | `_handle_model_error` | `isinstance` | 155 |
+| external_call | `_handle_model_error` | `HTTPException` | 156 |
+| external_call | `_handle_agent_error` | `isinstance` | 111 |
+| external_call | `_handle_agent_error` | `HTTPException` | 112 |
 | step_limit | `disable_agent_model_binding` | `first 12 steps` | 0 |
 
 ## Behavior

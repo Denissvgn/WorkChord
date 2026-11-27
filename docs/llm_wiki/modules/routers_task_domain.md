@@ -27,7 +27,7 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.schemas.task_detail` | `TaskDetailResponse`, `TaskReferencePage`, `HumanWorkResponse` |
 | `app.schemas.task_domain` | `BacklogRestoreRequest`, `TaskActionRequest`, `TaskActionsResponse` |
 | `app.schemas.task_postponement` | `OwnerDecisionRequest`, `TaskPostponeRequest`, `TaskPostponementResponse`, `TaskReactivateRequest` |
-| `app.schemas.task_replacement` | `TaskReplacementCreate`, `TaskReplacementResponse` |
+| `app.schemas.task_replacement` | `TaskReplacementCreate`, `TaskReplacementResponse`, `TaskSupersessionCreate` |
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService`, `BacklogSnapshotService` |
 | `app.services.delivery_metrics_service` | `DeliveryMetricsService` |
 | `app.services.execution_usage_service` | `ExecutionUsageService` |
@@ -40,7 +40,7 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.services.task_domain_service` | `TaskDomainService`, `domain_capabilities` |
 | `app.services.task_postponement_service` | `TaskPostponementService`, `TaskPostponementService`, `TaskPostponementService` |
 | `app.services.task_reactivation_service` | `ReactivationService` |
-| `app.services.task_replacement_service` | `TaskReplacementService`, `TaskReplacementService` |
+| `app.services.task_replacement_service` | `TaskReplacementService`, `TaskReplacementService`, `TaskReplacementService` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.services.work_metrics` | `METRIC_MATCHES`, `aggregate_metrics` |
 | `decimal` | `Decimal` |
@@ -119,11 +119,12 @@ flowchart LR
 | `task_progress_history` | *(async)* `(task_id: int, db: DB, limit: int = Query(default=10, ge=1, le=20), after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/{task_id}/progress/history')` | — |
 | `backlog_snapshots` | *(async)* `(project_id: int, db: DB)` | `@router.get('/projects/{project_id}/backlog/snapshots')` | — |
 | `restore_backlog` | *(async)* `(project_id: int, snapshot_id: int, data: BacklogRestoreRequest, db: DB)` | `@router.post('/projects/{project_id}/backlog/snapshots/{snapshot_id}/restore', response_model=list[TaskResponse])` | — |
-| `task_replacement` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/replacement', response_model=TaskReplacementResponse)` | Read the clean-replacement disposition this task takes part in, as original or replacement. |
+| `task_replacement` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/replacement', response_model=TaskReplacementResponse)` | Read the replacement or supersession disposition this task takes part in, as original, replacement or successor. |
 | `task_github_reconciliation` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/github-reconciliation', response_model=GitHubReconciliationResponse)` | Compare the commits a task submitted with its linked pull requests as last observed. |
 | `task_github_catch_up` | *(async)* `(task_id: int, db: DB)` | `@router.post('/tasks/{task_id}/github-reconciliation/catch-up', response_model=GitHubReconciliationResponse)` | Read this task's own pull requests from GitHub for events a webhook never delivered. |
 | `record_manual_provenance` | *(async)* `(task_id: int, data: ManualProvenanceWrite, db: DB)` | `@router.post('/tasks/{task_id}/manual-provenance', response_model=ManualProvenanceResponse, status_code=201)` | Record who executed resolved work delivered outside recorded runs, and its exact candidate. |
 | `record_task_replacement` | *(async)* `(task_id: int, data: TaskReplacementCreate, db: DB)` | `@router.post('/tasks/{task_id}/replacement', response_model=TaskReplacementResponse, status_code=201)` | Replace this unaccepted task with a fresh one; only the project's PM or an operator may decide. |
+| `record_task_supersession` | *(async)* `(task_id: int, data: TaskSupersessionCreate, db: DB)` | `@router.post('/tasks/{task_id}/supersession', response_model=TaskReplacementResponse, status_code=201)` | Record that a closed or accepted task already delivered this task's work; neither task is reopened. |
 | `task_postponement` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/postponement', response_model=TaskPostponementResponse)` | Read the task's open postponement, or its most recent one, with its reactivation requirements. |
 | `postpone_task` | *(async)* `(task_id: int, data: TaskPostponeRequest, db: DB)` | `@router.post('/tasks/{task_id}/postpone', response_model=TaskPostponementResponse)` | Stop planned, active or resolved work without canceling it, with a reason and reactivation requirements. |
 | `reactivate_task` | *(async)* `(task_id: int, data: TaskReactivateRequest, db: DB)` | `@router.post('/tasks/{task_id}/reactivate', response_model=TaskPostponementResponse)` | Return postponed work to planned, or to resolved if it was postponed after resolution. |

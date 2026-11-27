@@ -1,6 +1,6 @@
 # AgentRoutingExclusion
 
-**Location:** `frontend/src/types/agent.ts:447`
+**Location:** `frontend/src/types/agent.ts:515`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -41,6 +41,7 @@ _Auto-generated from `AgentRoutingExclusion` in `frontend/src/types/agent.ts`._
 | `missing_modality_tags` | `string[]` | Yes | — | — |
 | `missing_tool_tags` | `string[]` | Yes | — | — |
 | `missing_data_policy_tags` | `string[]` | Yes | — | — |
+| `missing_qualification_keys` | `string[]` | No | — | — |
 | `available_capacity_days` | `number \| null` | Yes | — | — |
 | `committed_effort_days` | `number \| null` | Yes | — | — |
 | `workload_ratio` | `number \| null` | Yes | — | — |

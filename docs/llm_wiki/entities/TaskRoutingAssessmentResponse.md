@@ -1,6 +1,6 @@
 # TaskRoutingAssessmentResponse
 
-**Location:** `backend/app/schemas/agent_routing.py:787`
+**Location:** `backend/app/schemas/agent_routing.py:832`
 **Kind:** Pydantic model
 **Bases:** `PersistedTaskRoutingAssessmentFields`
 **Module:** [agent_routing](../modules/agent_routing.md)
