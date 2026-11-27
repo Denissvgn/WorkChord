@@ -29,19 +29,23 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 flowchart LR
     n0["frontend/src/components/common/Select.tsx"]
     n1["frontend/src/components/tasks/AssigneeSelect.tsx"]
-    n2["frontend/src/components/tasks/TaskRow.tsx"]
+    n2["frontend/src/components/tasks/TaskReassign.tsx"]
+    n3["frontend/src/components/tasks/TaskRow.tsx"]
     n1 --> n0
-    n1 --> n2
+    n1 --> n3
     n2 --> n1
+    n3 --> n1
     click n0 "../modules/Select.md"
     click n1 "../modules/AssigneeSelect.md"
-    click n2 "../modules/TaskRow.md"
+    click n2 "../modules/TaskReassign.md"
+    click n3 "../modules/TaskRow.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [TaskReassign](../modules/TaskReassign.md) |
 | Inbound | [TaskRow](../modules/TaskRow.md) |
 | Outbound | [Select](../modules/Select.md) |
 | Outbound | [TaskRow](../modules/TaskRow.md) |

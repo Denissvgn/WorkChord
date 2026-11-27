@@ -28,6 +28,8 @@ _Auto-generated from `frontend/src/components/tasks/TaskReadView.tsx`._
 | `./TaskAssigneeDisplay` | `TaskAssigneeDisplay` | — | compiler-dependent |
 | `./TaskBriefEditor` | `TaskBriefEditor` | — | compiler-dependent |
 | `./TaskDiscussion` | `TaskDiscussion` | — | compiler-dependent |
+| `./TaskReassign` | `TaskReassign` | — | compiler-dependent |
+| `./TaskRoutingSummary` | `TaskRoutingSummary` | — | compiler-dependent |
 | `./TaskTimelinePanel` | `TaskTimelinePanel` | — | compiler-dependent |
 | `./TaskWorkPanel` | `TaskWorkPanel` | — | compiler-dependent |
 | `./TimeEntriesPanel` | `TimeEntriesPanel` | — | compiler-dependent |
@@ -69,8 +71,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (7) |
-| Outbound | `frontend` (24) |
+| Inbound | `frontend` (8) |
+| Outbound | `frontend` (26) |
 
 ### External packages
 
@@ -78,13 +80,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskViewPart](../entities/TaskViewPart.md) | Type alias | 32 | `'brief' \| 'work' \| 'activity'` | — |
+| [TaskViewPart](../entities/TaskViewPart.md) | Type alias | 34 | `'brief' \| 'work' \| 'activity'` | — |
 
 ## Functions
 

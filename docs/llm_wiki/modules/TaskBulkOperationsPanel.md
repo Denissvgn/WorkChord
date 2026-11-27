@@ -16,11 +16,14 @@ _Auto-generated from `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx`
 | `../../services/projectService` | `projectService` | — | compiler-dependent |
 | `../../services/taskService` | `taskService` | — | compiler-dependent |
 | `../../services/teamService` | `teamService` | — | compiler-dependent |
-| `../../types/task` | `Task`, `TaskBulkAction`, `TaskStatus` | Declaration | erased |
+| `../../types/task` | `Task`, `TaskBulkAction`, `TaskBulkOperationResponse`, `TaskStatus` | Declaration | erased |
 | `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/routingCheck` | `RoutingChangeItem` | Specifier | compiler-dependent |
+| `../../utils/routingCheck` | `resultsNeedingRouting`, `routingChangeItems`, `routingNeedsResolution` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `../ui/OverflowMenu` | `OverflowMenu` | — | compiler-dependent |
+| `./RoutingCheckNotice` | `RoutingResultsList` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `lucide-react` | `Trash2` | — | compiler-dependent |
 | `react` | `useEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
@@ -53,8 +56,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (2) |
-| Outbound | `frontend` (11) |
+| Inbound | `frontend` (3) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -62,16 +65,18 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [BulkRejected](../entities/BulkRejected.md) | Class | 41 | `Error` | — |
-| [TaskBulkOperationsPanelProps](../entities/TaskBulkOperationsPanelProps.md) | Interface | 22 | — | — |
-| [BulkKind](../entities/BulkKind.md) | Type alias | 17 | `'assign' \| 'status' \| 'priority' \| 'iteration' \| 'project' \| 'clearProject' \| 'milestone' \| 'clearMilestone' \| 'addLabels' \| 'removeLabels' \| 'flags' \| 'delete'` | — |
-| [BulkSelectedTask](../entities/BulkSelectedTask.md) | Type alias | 20 | `Pick<Task, 'id' \| 'title' \| 'version'>` | What the bar needs of a selected task. |
+| [BulkRejected](../entities/BulkRejected.md) | Class | 59 | `Error` | — |
+| [TaskBulkOperationsPanelProps](../entities/TaskBulkOperationsPanelProps.md) | Interface | 24 | — | — |
+| [RoutingDecision](../entities/RoutingDecision.md) | Interface | 49 | — | A dry run that found tasks whose reviewer would no longer fit; nothing was written. It keeps the |
+| [BulkKind](../entities/BulkKind.md) | Type alias | 19 | `'assign' \| 'status' \| 'priority' \| 'iteration' \| 'project' \| 'clearProject' \| 'milestone' \| 'clearMilestone' \| 'addLabels' \| 'removeLabels' \| 'flags' \| 'delete'` | — |
+| [BulkSelectedTask](../entities/BulkSelectedTask.md) | Type alias | 22 | `Pick<Task, 'id' \| 'title' \| 'version'>` | What the bar needs of a selected task. |
+| [RoutingChoice](../entities/RoutingChoice.md) | Type alias | 43 | `'apply_suggestion' \| 'keep'` | — |
 
 ## Functions
 

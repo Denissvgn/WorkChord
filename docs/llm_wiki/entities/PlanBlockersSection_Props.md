@@ -1,6 +1,6 @@
 # Props
 
-**Location:** `frontend/src/components/planning/PlanBlockersSection.tsx:20`
+**Location:** `frontend/src/components/planning/PlanBlockersSection.tsx:22`
 **Kind:** Interface
 **Bases:** —
 **Module:** [PlanBlockersSection](../modules/PlanBlockersSection.md)

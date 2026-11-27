@@ -20,9 +20,12 @@ _Auto-generated from `frontend/src/components/planning/PlanBlockersSection.tsx`.
 | `../../types/task` | `Task`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse` | Declaration | erased |
 | `../../types/team` | `TeamMember` | Declaration | erased |
 | `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/routingCheck` | `RoutingChangeItem` | Specifier | compiler-dependent |
+| `../../utils/routingCheck` | `resultsNeedingRouting`, `routingChangeItems`, `routingNeedsResolution` | — | compiler-dependent |
 | `../../utils/workNumbers` | `formatDecimal` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../tasks/RoutingCheckNotice` | `RoutingResultsList` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `lucide-react` | `Bot`, `UserRound` | — | compiler-dependent |
 | `react` | `useMemo`, `useState` | — | compiler-dependent |
@@ -56,7 +59,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (13) |
+| Outbound | `frontend` (15) |
 
 ### External packages
 
@@ -64,15 +67,15 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Props](../entities/PlanBlockersSection_Props.md) | Interface | 20 | — | — |
-| [RowLoad](../entities/RowLoad.md) | Interface | 21 | — | — |
-| [Batch](../entities/Batch.md) | Interface | 22 | — | — |
+| [Props](../entities/PlanBlockersSection_Props.md) | Interface | 22 | — | — |
+| [RowLoad](../entities/RowLoad.md) | Interface | 23 | — | — |
+| [Batch](../entities/Batch.md) | Interface | 24 | — | — |
 
 ## Functions
 

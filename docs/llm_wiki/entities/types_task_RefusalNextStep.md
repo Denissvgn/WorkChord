@@ -1,6 +1,6 @@
 # RefusalNextStep
 
-**Location:** `frontend/src/types/task.ts:512`
+**Location:** `frontend/src/types/task.ts:574`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

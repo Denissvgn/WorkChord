@@ -1,6 +1,6 @@
 # TaskBulkOutcome
 
-**Location:** `frontend/src/types/task.ts:339`
+**Location:** `frontend/src/types/task.ts:343`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

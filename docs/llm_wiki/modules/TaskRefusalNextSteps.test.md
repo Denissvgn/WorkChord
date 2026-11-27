@@ -59,6 +59,7 @@ flowchart LR
     n2 --> n8
     n3 --> n4
     n6 --> n5
+    n8 --> n5
     n8 --> n7
     click n0 "../modules/taskEditorContract.md"
     click n1 "../modules/TaskRefusalNextSteps.test.md"
