@@ -78,7 +78,9 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     # An older server would route without the requirement a key expresses and
-    # would lose the registry's audited history, so both must be empty first.
+    # would lose the registry's audited history. Declared keys and their
+    # revisions are never deleted, so a deployment that has declared one
+    # cannot downgrade past this revision.
     connection = op.get_bind()
     catalog = sa.table("agent_model_catalog_entries", sa.column("qualification_keys", sa.JSON()))
     keys = sa.table("routing_qualification_keys", sa.column("id"))
@@ -88,7 +90,8 @@ def downgrade() -> None:
     )
     if held or connection.scalar(sa.select(sa.literal(1)).select_from(keys).limit(1)):
         raise RuntimeError(
-            "Qualification keys are declared or held by catalog entries; clear them before downgrading."
+            "Downgrade is unsupported once a qualification key has been declared or a catalog entry holds one: "
+            "the registry keeps its audited history and offers no delete."
         )
     with op.batch_alter_table("agent_model_catalog_entries") as batch:
         batch.drop_column("qualification_keys")

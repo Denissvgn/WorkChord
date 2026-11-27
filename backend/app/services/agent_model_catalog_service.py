@@ -50,6 +50,9 @@ from app.services.agent_service import (
 
 LIVE_ASSIGNMENT_STATES = ("queued", "accepted")
 MODEL_CATALOG_READ_SCOPES = ("planning:read", "admin")
+# Changing any of these makes an entry a different model run, so its
+# qualification keys no longer describe it.
+QUALIFICATION_EVIDENCE_FIELDS = ("configured_model_alias", "provider", "reasoning_tier", "effort")
 
 
 class AgentModelConflictError(AgentConflictError):
@@ -71,7 +74,7 @@ class AgentModelConflictError(AgentConflictError):
 
 @dataclass(frozen=True)
 class _MutationResult:
-    target_type: Literal["model_catalog", "model_binding"]
+    target_type: Literal["model_catalog", "model_binding", "routing_qualification_key"]
     target_id: int
     authoritative_revision: int
     result: dict[str, Any]
@@ -174,6 +177,7 @@ class AgentModelCatalogService:
         command: AgentPlanningCommandContext,
         request_payload: dict[str, Any],
         mutate: Mutation,
+        integrity_conflict: Callable[[], AgentModelConflictError] | None = None,
     ) -> AgentModelMutationReceipt:
         require_scope(actor, "admin")
         operator = is_admin_key_principal(actor)
@@ -245,6 +249,8 @@ class AgentModelCatalogService:
             replay = await replay_receipt()
             if replay is not None:
                 return replay
+            if integrity_conflict is not None:
+                raise integrity_conflict() from exc
             raise AgentModelConflictError(
                 "agent_model_uniqueness_conflict",
                 "Model catalog or binding conflicts with current authoritative state",
@@ -841,12 +847,15 @@ class AgentModelCatalogService:
                 )
             if "qualification_keys" in updates:
                 await self._require_known_qualification_keys(updates["qualification_keys"])
-            # Qualification is evidence about the entry at its effort setting,
-            # so a new effort clears the keys unless this update restates them.
+            # Qualification is evidence about the model this entry runs, so a
+            # new runtime model, provider, reasoning tier or effort clears the
+            # keys unless this update restates them.
             cleared_qualification_keys: list[str] = []
             if (
-                "effort" in updates
-                and updates["effort"] != entry.effort
+                any(
+                    field in updates and updates[field] != getattr(entry, field)
+                    for field in QUALIFICATION_EVIDENCE_FIELDS
+                )
                 and "qualification_keys" not in updates
                 and entry.qualification_keys
             ):

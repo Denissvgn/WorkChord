@@ -93,18 +93,20 @@ describe('QualificationKeysPanel', () => {
                         message: 'Qualification key is held by catalog entries or required by open tasks',
                         catalog_entries: [{ id: 3, key: 'schema-high', enabled: true }],
                         task_ids: [42],
+                        catalog_entries_omitted: 0,
+                        task_ids_omitted: 2,
                     },
                 },
             },
         });
         const { user } = renderWithProviders(<QualificationKeysPanel />);
-        await user.click(await screen.findByRole('button', { name: 'Retire' }));
+        await user.click(await screen.findByRole('button', { name: 'Retire qualified.schema-review' }));
         const dialog = screen.getByRole('dialog');
         await user.type(within(dialog).getByLabelText(/^Reason/), 'No longer routed');
         await user.click(within(dialog).getByRole('button', { name: 'Retire' }));
 
         expect(await within(dialog).findByRole('alert')).toHaveTextContent(
-            'This key is still named by catalog entries schema-high and tasks #42.',
+            'This key is still named by catalog entries schema-high and tasks #42 and 2 more.',
         );
         expect(agentServiceMock.retireQualificationKey).toHaveBeenCalledWith('qualified.schema-review', 2, expect.anything());
     });
@@ -119,7 +121,7 @@ describe('QualificationKeysPanel', () => {
             usage: { catalog_entries: [{ id: 3, key: 'schema-high', enabled: true }], task_ids: [], catalog_entries_omitted: 0, task_ids_omitted: 0 },
         });
         const { user } = renderWithProviders(<QualificationKeysPanel />);
-        await user.click(await screen.findByRole('button', { name: 'History' }));
+        await user.click(await screen.findByRole('button', { name: 'History of qualified.schema-review' }));
         const dialog = screen.getByRole('dialog');
         expect(await within(dialog).findByText('Trial passed')).toBeInTheDocument();
         expect(within(dialog).getByText('Clearer name')).toBeInTheDocument();
@@ -135,7 +137,7 @@ describe('QualificationKeysPanel', () => {
         await screen.findByText('No qualification keys are declared.');
         await user.click(screen.getByRole('checkbox', { name: 'Show retired keys' }));
         expect(await screen.findByText('Retired')).toBeInTheDocument();
-        await user.click(screen.getByRole('button', { name: 'Declare again' }));
+        await user.click(screen.getByRole('button', { name: 'Declare qualified.schema-review again' }));
         const keyField = within(screen.getByRole('dialog')).getByLabelText(/^Key/);
         expect(keyField).toHaveValue('qualified.schema-review');
         expect(keyField).toBeDisabled();

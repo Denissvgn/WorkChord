@@ -148,6 +148,13 @@ async def test_operator_declares_revises_and_retires_a_key_with_audited_revision
             json={"key": "qualified.schema-review", "label": "Schema review"},
         )
         assert denied.status_code == 403
+        # Authority is checked before the key is looked up, so a missing key reveals nothing.
+        for method, path, body in (
+            ("PATCH", f"{KEYS}/qualified.absent", {"expected_revision": 1, "label": "Absent"}),
+            ("POST", f"{KEYS}/qualified.absent/retire", {"expected_revision": 1}),
+        ):
+            probe = await client.request(method, path, headers=_headers(READER_KEY, f"probe-{method}"), json=body)
+            assert probe.status_code == 403, (method, probe.text)
 
         declared = await client.post(
             KEYS,
@@ -273,38 +280,42 @@ async def test_catalog_entries_hold_declared_keys_and_an_effort_change_clears_th
         assert detail["code"] == "routing_qualification_key_in_use"
         assert detail["catalog_entries"] == [{"id": catalog_id, "key": "schema-high", "enabled": True}]
 
-        # Another field leaves the keys alone; a new effort invalidates them.
-        renamed = await client.patch(
-            f"/api/agent/model-catalog/{catalog_id}",
-            headers=_headers(ADMIN_KEY, "catalog-alias"),
-            json={"expected_revision": 1, "configured_model_alias": "schema-high-runtime"},
-        )
-        assert renamed.json()["result"]["qualification_keys"] == ["backend-python", "qualified.schema-review"]
-        lowered = await client.patch(
-            f"/api/agent/model-catalog/{catalog_id}",
-            headers=_headers(ADMIN_KEY, "catalog-effort", "Running the entry at medium effort."),
-            json={"expected_revision": 2, "effort": "medium"},
-        )
-        assert lowered.status_code == 200, lowered.text
-        assert lowered.json()["result"]["qualification_keys"] == []
-        audit = await db_session.get(TaskEvent, max(lowered.json()["audit_event_ids"]))
-        payload = json.loads(audit.payload)
+        async def patch(revision: int, command_key: str, **changes):
+            response = await client.patch(
+                f"/api/agent/model-catalog/{catalog_id}",
+                headers=_headers(ADMIN_KEY, command_key, "Catalog change for qualification evidence."),
+                json={"expected_revision": revision, **changes},
+            )
+            assert response.status_code == 200, response.text
+            audit = await db_session.get(TaskEvent, max(response.json()["audit_event_ids"]))
+            return response.json()["result"]["qualification_keys"], json.loads(audit.payload)
+
+        # A field that does not change which model runs leaves the keys alone.
+        keys, payload = await patch(1, "catalog-cost", cost_tier="high")
+        assert keys == ["backend-python", "qualified.schema-review"]
+        assert "cleared_qualification_keys" not in payload
+
+        # A new runtime model clears them, and the audit event names what it cleared.
+        keys, payload = await patch(2, "catalog-alias", configured_model_alias="schema-high-runtime")
+        assert keys == []
         assert payload["cleared_qualification_keys"] == ["backend-python", "qualified.schema-review"]
+
+        # Restating the keys in the same update keeps them.
+        keys, payload = await patch(3, "catalog-restate", effort="medium", qualification_keys=["qualified.schema-review"])
+        assert keys == ["qualified.schema-review"]
+        assert "cleared_qualification_keys" not in payload
         assert payload["configuration"]["effort"] == "medium"
 
-        # Restating the keys with the effort change keeps them.
-        restated = await client.patch(
-            f"/api/agent/model-catalog/{catalog_id}",
-            headers=_headers(ADMIN_KEY, "catalog-restate"),
-            json={"expected_revision": 3, "effort": "high", "qualification_keys": ["qualified.schema-review"]},
-        )
-        assert restated.json()["result"]["qualification_keys"] == ["qualified.schema-review"]
-        cleared = await client.patch(
-            f"/api/agent/model-catalog/{catalog_id}",
-            headers=_headers(ADMIN_KEY, "catalog-clear"),
-            json={"expected_revision": 4, "qualification_keys": []},
-        )
-        assert cleared.json()["result"]["qualification_keys"] == []
+        # Provider, reasoning tier and effort clear them the same way.
+        revision = 4
+        for field, value in (("provider", "other-provider"), ("reasoning_tier", 3), ("effort", "high")):
+            keys, payload = await patch(revision, f"catalog-{field}", **{field: value})
+            assert keys == [], field
+            assert payload["cleared_qualification_keys"] == ["qualified.schema-review"], field
+            revision += 1
+            if field != "effort":
+                await patch(revision, f"catalog-{field}-restate", qualification_keys=["qualified.schema-review"])
+                revision += 1
 
         retired = await client.post(
             f"{KEYS}/qualified.schema-review/retire",
@@ -316,7 +327,7 @@ async def test_catalog_entries_hold_declared_keys_and_an_effort_change_clears_th
         after = await client.patch(
             f"/api/agent/model-catalog/{catalog_id}",
             headers=_headers(ADMIN_KEY, "catalog-retired-key"),
-            json={"expected_revision": 5, "qualification_keys": ["qualified.schema-review"]},
+            json={"expected_revision": revision, "qualification_keys": ["qualified.schema-review"]},
         )
         assert after.status_code == 422
         assert after.json()["detail"] == "Unknown routing skill key: qualified.schema-review"
@@ -385,6 +396,89 @@ async def test_usage_and_share_locked_validation_work_on_postgresql(postgres_dat
             with pytest.raises(UnknownRoutingKeyError):
                 await require_known_qualification_keys(db, ["qualified.other"])
             await db.rollback()
+    finally:
+        await engine.dispose()
+
+
+@pytest.mark.postgresql
+@pytest.mark.integration
+@pytest.mark.allow_network
+@pytest.mark.asyncio
+async def test_retire_and_validation_serialize_across_postgresql_sessions(postgres_database, configure_database) -> None:
+    import asyncio
+
+    from alembic import command as alembic_command
+    from sqlalchemy import create_engine
+    from sqlalchemy.ext.asyncio import AsyncSession as Session, create_async_engine
+
+    from app.models.agent import AgentModelCatalogEntry
+    from app.models.routing_qualification import RoutingQualificationKey
+    from app.schemas.agent_planning import AgentPlanningCommandContext
+    from app.schemas.routing_qualification import RoutingQualificationKeyRetire
+    from app.services.agent_model_catalog_service import AgentModelConflictError
+    from app.services.routing_qualification_key_service import (
+        RoutingQualificationKeyService,
+        require_known_qualification_keys,
+    )
+    from app.services.upgrade_service import alembic_config
+
+    configure_database(postgres_database.url)
+    sync_engine = create_engine(postgres_database.url)
+    with sync_engine.connect() as connection:
+        alembic_command.upgrade(alembic_config(connection=connection), "head")
+    sync_engine.dispose()
+    engine = create_async_engine(postgres_database.url)
+
+    def entry(key: str) -> AgentModelCatalogEntry:
+        return AgentModelCatalogEntry(
+            key=key, provider="p", configured_model_alias=key, reasoning_tier=2, effort="high",
+            context_tier="medium", modality_tags=["text"], cost_tier="medium", latency_tier="balanced",
+            qualification_keys=["qualified.race"],
+        )
+
+    def command(key: str) -> AgentPlanningCommandContext:
+        return AgentPlanningCommandContext(idempotency_key=key, rationale="Retire the race key.", correlation_id=key)
+
+    try:
+        async with Session(engine, expire_on_commit=False) as setup:
+            admin = AgentActor(name="race-admin", display_name="Race Admin", api_key_hash="race-hash",
+                               scopes='["admin"]', enabled=True, role="pm")
+            setup.add_all([admin, RoutingQualificationKey(key="qualified.race", label="Race")])
+            await setup.commit()
+
+        # Validation first: its share lock makes the retire wait, and the retire then sees the new holder.
+        async with Session(engine, expire_on_commit=False) as writer, Session(engine, expire_on_commit=False) as retirer:
+            await require_known_qualification_keys(writer, ["qualified.race"])
+            retire = asyncio.create_task(RoutingQualificationKeyService(retirer).retire(
+                "qualified.race", admin, RoutingQualificationKeyRetire(expected_revision=1), command=command("race-1"),
+            ))
+            await asyncio.sleep(0.5)
+            assert not retire.done()
+            writer.add(entry("race-holder"))
+            await writer.commit()
+            with pytest.raises(AgentModelConflictError) as refused:
+                await retire
+            assert refused.value.code == "routing_qualification_key_in_use"
+            assert [item["key"] for item in refused.value.context["catalog_entries"]] == ["race-holder"]
+
+        async with Session(engine, expire_on_commit=False) as cleanup:
+            holder = (await cleanup.execute(select(AgentModelCatalogEntry))).scalar_one()
+            holder.qualification_keys = []
+            await cleanup.commit()
+
+        # Retire first: its row lock makes the validation wait, and the validation then refuses the key.
+        async with Session(engine, expire_on_commit=False) as retirer, Session(engine, expire_on_commit=False) as writer:
+            service = RoutingQualificationKeyService(retirer)
+            row = await service._key("qualified.race", for_update=True)
+            assert row is not None
+            validation = asyncio.create_task(require_known_qualification_keys(writer, ["qualified.race"]))
+            await asyncio.sleep(0.5)
+            assert not validation.done()
+            row.state = "retired"
+            await retirer.commit()
+            with pytest.raises(UnknownRoutingKeyError):
+                await validation
+            await writer.rollback()
     finally:
         await engine.dispose()
 

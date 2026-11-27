@@ -9,9 +9,10 @@ key beside the built-in routing skill keys, which stay fixed in code.
 from __future__ import annotations
 
 import json
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
+from contextlib import contextmanager
 
-from sqlalchemy import String, cast, select, text
+from sqlalchemy import String, bindparam, cast, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -46,6 +47,7 @@ from app.services.agent_model_catalog_service import (
     AgentModelConflictError,
     _MutationResult,
 )
+from app.services.agent_service import require_scope
 from app.services.agent_routing_policy import (
     ROUTING_POLICY_VERSION,
     ROUTING_SKILL_KEYS,
@@ -57,13 +59,37 @@ from app.utils.time import utc_now
 TARGET_TYPE = "routing_qualification_key"
 
 
-async def _lock_rows(db: AsyncSession, table: str, ids: Iterable[int]) -> None:
-    """Take SQLite's write lock before reading rows another command may change."""
+async def _lock_keys(db: AsyncSession, names: Iterable[str]) -> None:
+    """Take SQLite's database write lock before reading the named keys.
 
-    ids = sorted(set(ids))
-    if ids and db.get_bind().dialect.name == "sqlite":
-        for row_id in ids:
-            await db.execute(text(f"UPDATE {table} SET id = id WHERE id = :id"), {"id": row_id})
+    SQLite has no row locks, so a no-op write makes a concurrent writer wait
+    until this transaction ends; the read that follows then sees settled rows.
+    """
+
+    names = sorted(set(names))
+    if names and db.get_bind().dialect.name == "sqlite":
+        await db.execute(
+            text("UPDATE routing_qualification_keys SET id = id WHERE key IN :names").bindparams(
+                bindparam("names", expanding=True)
+            ),
+            {"names": names},
+        )
+
+
+@contextmanager
+def _internal_reads(db: AsyncSession) -> Iterator[None]:
+    """Read every row regardless of the caller's project scope, then restore it."""
+
+    info = db.sync_session.info
+    previous = info.get("authority_internal")
+    info["authority_internal"] = True
+    try:
+        yield
+    finally:
+        if previous is None:
+            info.pop("authority_internal", None)
+        else:
+            info["authority_internal"] = previous
 
 
 async def active_qualification_keys(
@@ -86,11 +112,11 @@ async def active_qualification_keys(
         if not names:
             return frozenset()
         query = query.where(RoutingQualificationKey.key.in_(names))
+        if lock:
+            await _lock_keys(db, names)
     if lock and db.get_bind().dialect.name != "sqlite":
         query = query.with_for_update(read=True)
     rows = (await db.execute(query)).all()
-    if lock:
-        await _lock_rows(db, RoutingQualificationKey.__tablename__, (row.id for row in rows))
     return frozenset(row.key for row in rows)
 
 
@@ -117,7 +143,12 @@ async def require_known_qualification_keys(
 
 
 class RoutingQualificationKeyService:
-    """Read the registry and run its owner- or operator-authorized commands."""
+    """Read the registry and run its deployment-operator commands.
+
+    Writes use the same gate as the model catalog: the operator's admin key,
+    or an agent key whose actor holds the ``admin`` scope where the workspace's
+    authority mode lets an agent change deployment settings.
+    """
 
     def __init__(self, db: AsyncSession):
         self.db = db
@@ -138,13 +169,11 @@ class RoutingQualificationKeyService:
         name = key.strip().lower()
         query = select(RoutingQualificationKey).where(RoutingQualificationKey.key == name)
         if for_update:
-            hint = (await self.db.execute(
-                select(RoutingQualificationKey.id).where(RoutingQualificationKey.key == name)
-            )).scalar_one_or_none()
-            if hint is not None:
-                await _lock_rows(self.db, RoutingQualificationKey.__tablename__, [hint])
+            await _lock_keys(self.db, [name])
             if self.db.get_bind().dialect.name != "sqlite":
                 query = query.with_for_update()
+            # Refresh an already loaded row with the locked values.
+            query = query.execution_options(populate_existing=True)
         return (await self.db.execute(query)).scalar_one_or_none()
 
     async def list_registry(
@@ -188,8 +217,14 @@ class RoutingQualificationKeyService:
         )
 
     async def usage(self, key: str) -> RoutingQualificationKeyUsage:
-        """Find catalog entries holding the key and open tasks whose current assessment requires it."""
+        """Catalog entries holding the key and open tasks requiring it, as visible to the caller.
 
+        Tasks outside the caller's project scope are not listed or counted.
+        """
+
+        return self._bounded_usage(*await self._references(key))
+
+    async def _references(self, key: str) -> tuple[list[AgentModelCatalogEntry], list[int]]:
         name = key.strip().lower()
         entries = [
             entry
@@ -215,15 +250,39 @@ class RoutingQualificationKeyService:
             for row in assessments
             if name in ((row.required_model or {}).get("qualification_keys") or [])
         })
+        return entries, task_ids
+
+    @staticmethod
+    def _bounded_usage(
+        entries: list[AgentModelCatalogEntry],
+        task_ids: list[int],
+        *,
+        total_entries: int | None = None,
+        total_tasks: int | None = None,
+    ) -> RoutingQualificationKeyUsage:
         limit = MAX_QUALIFICATION_KEY_USAGE_ITEMS
+        total_entries = len(entries) if total_entries is None else total_entries
+        total_tasks = len(task_ids) if total_tasks is None else total_tasks
         return RoutingQualificationKeyUsage(
             catalog_entries=[
                 QualificationKeyCatalogReference(id=entry.id, key=entry.key, enabled=entry.enabled)
                 for entry in entries[:limit]
             ],
             task_ids=task_ids[:limit],
-            catalog_entries_omitted=max(len(entries) - limit, 0),
-            task_ids_omitted=max(len(task_ids) - limit, 0),
+            catalog_entries_omitted=max(total_entries - min(len(entries), limit), 0),
+            task_ids_omitted=max(total_tasks - min(len(task_ids), limit), 0),
+        )
+
+    async def _retire_usage(self, key: str) -> RoutingQualificationKeyUsage:
+        """Usage that decides a retire: every reference counts, but only visible tasks are named."""
+
+        with _internal_reads(self.db):
+            all_entries, all_tasks = await self._references(key)
+        _, visible_tasks = await self._references(key)
+        return self._bounded_usage(
+            all_entries,
+            [task_id for task_id in visible_tasks if task_id in set(all_tasks)],
+            total_tasks=len(all_tasks),
         )
 
     def _record(
@@ -304,6 +363,7 @@ class RoutingQualificationKeyService:
     ) -> AgentModelMutationReceipt:
         """Declare a key, or bring back a retired one as its next revision."""
 
+        require_scope(actor, "admin")
         operation = "routing_qualification_key.declare"
 
         async def mutate() -> _MutationResult:
@@ -348,6 +408,19 @@ class RoutingQualificationKeyService:
             command=command,
             request_payload=self._commands._audited_request(data, command),
             mutate=mutate,
+            integrity_conflict=lambda: AgentModelConflictError(
+                "routing_qualification_key_exists",
+                "Qualification key was declared by a concurrent command",
+                key=data.key,
+            ),
+        )
+
+    @staticmethod
+    def _concurrent_revision(key: str) -> AgentModelConflictError:
+        return AgentModelConflictError(
+            "routing_qualification_key_revision_conflict",
+            "Qualification key was changed by a concurrent command",
+            key=key.strip().lower(),
         )
 
     async def _target_id(self, key: str) -> int:
@@ -366,6 +439,7 @@ class RoutingQualificationKeyService:
     ) -> AgentModelMutationReceipt:
         """Change an active key's label or description as its next revision."""
 
+        require_scope(actor, "admin")
         operation = "routing_qualification_key.revise"
         target_id = await self._target_id(key)
 
@@ -401,6 +475,7 @@ class RoutingQualificationKeyService:
             command=command,
             request_payload=self._commands._audited_request(data, command),
             mutate=mutate,
+            integrity_conflict=lambda: self._concurrent_revision(key),
         )
 
     async def retire(
@@ -413,6 +488,7 @@ class RoutingQualificationKeyService:
     ) -> AgentModelMutationReceipt:
         """Retire a key that no catalog entry or open task requirement names."""
 
+        require_scope(actor, "admin")
         operation = "routing_qualification_key.retire"
         target_id = await self._target_id(key)
 
@@ -427,7 +503,7 @@ class RoutingQualificationKeyService:
                     "Qualification key is already retired",
                     key=row.key,
                 )
-            usage = await self.usage(row.key)
+            usage = await self._retire_usage(row.key)
             if usage.in_use:
                 raise AgentModelConflictError(
                     "routing_qualification_key_in_use",
@@ -450,4 +526,5 @@ class RoutingQualificationKeyService:
             command=command,
             request_payload=self._commands._audited_request(data, command),
             mutate=mutate,
+            integrity_conflict=lambda: self._concurrent_revision(key),
         )

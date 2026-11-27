@@ -29,7 +29,16 @@ interface InUseDetail {
     code?: string;
     catalog_entries?: { key: string }[];
     task_ids?: number[];
+    catalog_entries_omitted?: number;
+    task_ids_omitted?: number;
 }
+
+/** A list of names, with how many more the bounded or scoped response left out. */
+const namedWithOmitted = (names: string[], omitted: number | undefined, more: (count: number) => string) => {
+    const parts = names.length > 0 ? [names.join(', ')] : [];
+    if (omitted) parts.push(more(omitted));
+    return parts.join(' ') || '—';
+};
 
 const inUseDetail = (error: unknown): InUseDetail | null => {
     const detail = (error as { response?: { data?: { detail?: InUseDetail } } })?.response?.data?.detail;
@@ -78,9 +87,10 @@ export const QualificationKeysPanel = () => {
     const failed = (error: unknown) => {
         const inUse = inUseDetail(error);
         if (inUse) {
+            const more = (count: number) => t('qualificationKeys.andMore', { count });
             setDialogError(t('qualificationKeys.inUse', {
-                entries: (inUse.catalog_entries ?? []).map(entry => entry.key).join(', ') || '—',
-                tasks: (inUse.task_ids ?? []).map(id => `#${id}`).join(', ') || '—',
+                entries: namedWithOmitted((inUse.catalog_entries ?? []).map(entry => entry.key), inUse.catalog_entries_omitted, more),
+                tasks: namedWithOmitted((inUse.task_ids ?? []).map(id => `#${id}`), inUse.task_ids_omitted, more),
             }));
             return;
         }
@@ -205,20 +215,20 @@ export const QualificationKeysPanel = () => {
                                         <td className="p-2 tnum">{entry.revision}</td>
                                         <td className="p-2">
                                             <div className="flex flex-wrap gap-2">
-                                                <Button size="sm" variant="ghost" onClick={() => open({ kind: 'history', entry })}>
+                                                <Button size="sm" variant="ghost" aria-label={t('qualificationKeys.historyAction', { key: entry.key })} onClick={() => open({ kind: 'history', entry })}>
                                                     {t('qualificationKeys.history')}
                                                 </Button>
                                                 {entry.state === 'active' ? (
                                                     <>
-                                                        <Button size="sm" variant="secondary" onClick={() => open({ kind: 'revise', entry, label: entry.label, description: entry.description ?? '' })}>
+                                                        <Button size="sm" variant="secondary" aria-label={t('qualificationKeys.reviseAction', { key: entry.key })} onClick={() => open({ kind: 'revise', entry, label: entry.label, description: entry.description ?? '' })}>
                                                             {t('qualificationKeys.revise')}
                                                         </Button>
-                                                        <Button size="sm" variant="outline" onClick={() => open({ kind: 'retire', entry })}>
+                                                        <Button size="sm" variant="outline" aria-label={t('qualificationKeys.retireAction', { key: entry.key })} onClick={() => open({ kind: 'retire', entry })}>
                                                             {t('qualificationKeys.retire')}
                                                         </Button>
                                                     </>
                                                 ) : (
-                                                    <Button size="sm" variant="secondary" onClick={() => open({ kind: 'declare', key: entry.key, label: entry.label, description: entry.description ?? '', locked: true })}>
+                                                    <Button size="sm" variant="secondary" aria-label={t('qualificationKeys.declareAgainAction', { key: entry.key })} onClick={() => open({ kind: 'declare', key: entry.key, label: entry.label, description: entry.description ?? '', locked: true })}>
                                                         {t('qualificationKeys.declareAgain')}
                                                     </Button>
                                                 )}

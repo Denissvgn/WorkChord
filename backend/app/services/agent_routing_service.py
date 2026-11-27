@@ -51,6 +51,7 @@ from app.schemas.agent_routing import (
     TaskRoutingAssessmentState,
 )
 from app.services.agent_routing_policy import (
+    ROUTING_SKILL_KEYS,
     MAX_ROUTING_CANDIDATES,
     MAX_ROUTING_EXCLUSIONS,
     MAX_ROUTING_PACKET_BYTES,
@@ -205,6 +206,18 @@ def _json_projection(value: Any) -> Any:
 
 
 RoutingRowFocus = Callable[[Any], bool] | None
+
+
+def _retired_key_note(missing: Sequence[str], retired: Sequence[str]) -> str:
+    """Name the missing required keys that are retired and can no longer be held."""
+
+    names = [key for key in missing if key in retired]
+    if not names:
+        return ""
+    return (
+        f" Required qualification keys {', '.join(names)} are retired, so no "
+        "catalog entry can hold them; reassess the task."
+    )
 
 
 def _routing_row_focus(
@@ -1602,6 +1615,23 @@ class AgentRoutingService:
         required_qualification_keys = tuple(sorted(
             (assessment.required_model or {}).get("qualification_keys") or ()
         ))
+        # A required key retired since the assessment can never be held again,
+        # so exclusions name it instead of leaving a silent dead end.
+        retired_qualification_keys: tuple[str, ...] = ()
+        if required_qualification_keys:
+            from app.services.routing_qualification_key_service import (
+                active_qualification_keys,
+            )
+
+            active = await active_qualification_keys(
+                self.db,
+                [key for key in required_qualification_keys if key not in ROUTING_SKILL_KEYS],
+            )
+            retired_qualification_keys = tuple(
+                key
+                for key in required_qualification_keys
+                if key not in ROUTING_SKILL_KEYS and key not in active
+            )
 
         (
             iteration,
@@ -2083,6 +2113,10 @@ class AgentRoutingService:
                             "rationale": (
                                 "Excluded by one or more deterministic hard "
                                 "routing gates."
+                                + _retired_key_note(
+                                    model.missing_qualification_keys,
+                                    retired_qualification_keys,
+                                )
                             ),
                         }
                     )

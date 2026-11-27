@@ -95,7 +95,7 @@ def test_upgrade_gives_existing_entries_no_keys_and_downgrade_refuses_to_lose_th
                 db.execute(text("UPDATE routing_qualification_keys SET state = 'paused'"))
             db.rollback()
 
-            with pytest.raises(RuntimeError, match="clear them before downgrading"):
+            with pytest.raises(RuntimeError, match="Downgrade is unsupported once a qualification key"):
                 command.downgrade(config, previous)
             db.rollback()
             db.execute(text("DELETE FROM routing_qualification_keys"))
@@ -104,7 +104,7 @@ def test_upgrade_gives_existing_entries_no_keys_and_downgrade_refuses_to_lose_th
                      " WHERE key = 'shared-high'")
             )
             db.commit()
-            with pytest.raises(RuntimeError, match="clear them before downgrading"):
+            with pytest.raises(RuntimeError, match="Downgrade is unsupported once a qualification key"):
                 command.downgrade(config, previous)
             db.rollback()
             db.execute(text("UPDATE agent_model_catalog_entries SET qualification_keys = '[]'"))

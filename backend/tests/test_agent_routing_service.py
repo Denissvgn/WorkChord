@@ -9,7 +9,7 @@ from types import SimpleNamespace
 
 import pytest
 from tests.support.transactions import reload_session_fixture
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.agent import (
@@ -21,6 +21,7 @@ from app.models.agent import (
     TaskEvent,
     TaskRoutingAssessment,
 )
+from app.models.routing_qualification import RoutingQualificationKey
 from app.models.team_member import TeamMember, TeamMemberProfile, TeamMemberProfileSkill
 from app.schemas.agent import (
     AgentTaskAssignmentCreate,
@@ -770,6 +771,27 @@ async def test_declared_qualification_key_is_a_requirement_the_candidate_must_ho
     assert refused.value.code == "routing_qualification_key_in_use"
     assert refused.value.context["task_ids"] == [task_id]
     assert refused.value.context["catalog_entries"][0]["key"] == "schema-reviewer-high"
+    assert "Required qualification keys" not in excluded.rationale
+
+    # A key retired outside the guarded command is named as retired in the exclusion.
+    assessment_id = receipt.assessment.id
+    await db_session.execute(
+        update(RoutingQualificationKey).values(state="retired")
+    )
+    await db_session.commit()
+    await db_session.refresh(pm)
+    retired_preview = await service.preview_task_routing(
+        task_id,
+        pm,
+        AgentRoutingPreviewCreate(
+            purpose="execution",
+            assessment_id=assessment_id,
+            expected_task_version=task_version,
+        ),
+        now=datetime(2026, 7, 22, 12, 0, tzinfo=UTC),
+    )
+    retired_exclusion = {e.actor_id: e for e in retired_preview.exclusions}[unqualified_id]
+    assert "Required qualification keys qualified.schema-review are retired" in retired_exclusion.rationale
 
 
 @pytest.mark.asyncio

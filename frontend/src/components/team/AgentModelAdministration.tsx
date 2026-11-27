@@ -53,10 +53,31 @@ interface CatalogForm {
     localFirst: boolean;
     latencyTier: 'fast' | 'balanced' | 'slow';
     qualificationKeys: string;
-    /** The keys as loaded, so an effort change sends them only when they were edited. */
+    /** The keys as loaded, so an update sends them only when they were edited or kept. */
     originalQualificationKeys: string;
+    /** The fields whose change clears the keys, as loaded; null for a new entry. */
+    originalEvidence: QualificationEvidence | null;
+    /** Restate unedited keys when a change to the fields above would clear them. */
+    keepQualificationKeys: boolean;
     lastVerifiedAt: string;
 }
+
+interface QualificationEvidence {
+    configuredModelAlias: string;
+    provider: string;
+    reasoningTier: 1 | 2 | 3;
+    effort: ModelEffort;
+}
+
+/** True when the form changes a field that makes the entry a different model run. */
+const qualificationEvidenceChanged = (form: CatalogForm) => (
+    form.originalEvidence !== null && (
+        form.configuredModelAlias.trim() !== form.originalEvidence.configuredModelAlias
+        || form.provider.trim() !== form.originalEvidence.provider
+        || form.reasoningTier !== form.originalEvidence.reasoningTier
+        || form.effort !== form.originalEvidence.effort
+    )
+);
 
 interface BindingForm {
     id: number | null;
@@ -90,6 +111,8 @@ const EMPTY_CATALOG_FORM: CatalogForm = {
     latencyTier: 'balanced',
     qualificationKeys: '',
     originalQualificationKeys: '',
+    originalEvidence: null,
+    keepQualificationKeys: false,
     lastVerifiedAt: '',
 };
 
@@ -430,8 +453,10 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
                     cost_tier: createData.cost_tier,
                     local_first: createData.local_first,
                     latency_tier: createData.latency_tier,
-                    // Unedited keys are left out, so a new effort clears them on the server.
+                    // Unedited keys are left out, so a change of model run clears them
+                    // on the server, unless the operator chose to keep them.
                     ...(catalogForm.qualificationKeys !== catalogForm.originalQualificationKeys
+                        || (catalogForm.keepQualificationKeys && qualificationEvidenceChanged(catalogForm))
                         ? { qualification_keys: createData.qualification_keys }
                         : {}),
                     last_verified_at: createData.last_verified_at,
@@ -492,6 +517,13 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
             latencyTier: entry.latency_tier,
             qualificationKeys: (entry.qualification_keys ?? []).join(', '),
             originalQualificationKeys: (entry.qualification_keys ?? []).join(', '),
+            originalEvidence: {
+                configuredModelAlias: entry.configured_model_alias,
+                provider: entry.provider,
+                reasoningTier: entry.reasoning_tier,
+                effort: entry.effort,
+            },
+            keepQualificationKeys: false,
             lastVerifiedAt: toLocalDateTime(entry.last_verified_at),
         });
         setCatalogDrawerOpen(true);
@@ -825,6 +857,14 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
                                 <div>
                                     <Input label={t('modelAdministration.qualificationKeys')} aria-describedby="catalog-qualification-keys-hint" value={catalogForm.qualificationKeys} onChange={event => setCatalogForm({ ...catalogForm, qualificationKeys: event.target.value })} placeholder="qualified.schema-review" />
                                     <p id="catalog-qualification-keys-hint" className="mt-1 text-xs text-content-secondary">{t('modelAdministration.qualificationKeysHint')}</p>
+                                    {qualificationEvidenceChanged(catalogForm)
+                                        && catalogForm.originalQualificationKeys !== ''
+                                        && catalogForm.qualificationKeys === catalogForm.originalQualificationKeys && (
+                                        <div className="mt-2 rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground" role="status">
+                                            <p>{t(catalogForm.keepQualificationKeys ? 'modelAdministration.qualificationKeysKept' : 'modelAdministration.qualificationKeysWillClear', { keys: catalogForm.originalQualificationKeys })}</p>
+                                            <Checkbox checked={catalogForm.keepQualificationKeys} onChange={keepQualificationKeys => setCatalogForm({ ...catalogForm, keepQualificationKeys })} label={t('modelAdministration.keepQualificationKeys')} />
+                                        </div>
+                                    )}
                                 </div>
                                 <Input label={t('modelAdministration.lastVerified')} type="datetime-local" value={catalogForm.lastVerifiedAt} onChange={event => setCatalogForm({ ...catalogForm, lastVerifiedAt: event.target.value })} />
                                 <div className="flex flex-wrap justify-end gap-2">
