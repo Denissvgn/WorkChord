@@ -112,9 +112,9 @@ NEXT_STEPS: dict[str, dict[str, Any]] = {
         "More than one reviewer profile fits. Name the reviewer profile in the assignment.", _ASSIGN_VERIFIER_COMMANDS),
     "reviewer_profile_not_independent": _ASSIGN_INDEPENDENT_VERIFIER,
     "replacement_contribution_unattributed": _step(
-        "attribute_carried_run", AUTHORITY_OWNER_OPERATOR,
-        "This replacement carries commits from a run with no recorded attribution, so it stays held. " + _ACCEPT_AS_OWNER_POLICY
-        + " Otherwise replace it with a clean task.", _OWNER_ACCEPT_COMMANDS),
+        "attribute_carried_run", AUTHORITY_TEAM_MANAGER,
+        "A run this replacement carries has no recorded profile or publisher, so the replacement stays held and even an owner"
+        " cannot accept it. Attribute the carried run, or replace the task with a clean one."),
     # Review authority.
     "verified_publisher_review_required": _step(
         "accept_as_owner", AUTHORITY_OWNER_OPERATOR,
@@ -222,6 +222,11 @@ NEXT_STEPS: dict[str, dict[str, Any]] = {
 VARIANTS: dict[str, dict[str, Any]] = {
     "record_provenance": _RECORD_PROVENANCE,
     "resubmit_artifact": NEXT_STEPS["verification_candidate_unverifiable"],
+    "carried_run_unattributed": NEXT_STEPS["replacement_contribution_unattributed"],
+    "give_verifier_publisher": _step(
+        "give_verifier_publisher", AUTHORITY_TEAM_MANAGER,
+        "The verifier's model binding declares no publisher, so independence cannot be shown. Give an enabled binding of the"
+        " verifier a catalog entry with a publisher, then assign it again.", _ASSIGN_VERIFIER_COMMANDS),
     "runs_submit_candidate": _step(
         "runs_submit_candidate", AUTHORITY_EXECUTOR,
         "The task's recorded agent runs must supply a submitted repository candidate. Have the executing agent resubmit its"

@@ -260,3 +260,17 @@ async def test_the_actions_say_whether_a_provenance_record_would_be_accepted(man
     async with client(**{"X-Admin-API-Key": "managed-operator-fixture"}) as operator_key:
         denied = record((await operator_key.get(f"/api/tasks/{task_id}/actions")).json())
         assert denied["allowed"] is False and denied["blockers"][0]["code"] == "provenance_recorder_required"
+
+
+async def test_the_actions_refuse_a_provenance_record_past_the_record_limit(managed_store):
+    from app.services.manual_provenance_service import MAX_RECORDS
+    factory, _, _, _ = managed_store
+    task_id, _, _ = await policy_scope(managed_store)
+    async with factory() as db:
+        db.add_all([TaskEvent(task_id=task_id, event_type="manual_provenance_recorded", payload="{}") for _ in range(MAX_RECORDS)])
+        await db.commit()
+    async with owner_client(managed_store) as owner:
+        record = next(item for item in (await owner.get(f"/api/tasks/{task_id}/actions")).json()["actions"]
+                      if item["action"] == "record_provenance")
+        assert record["allowed"] is False
+        assert [item["code"] for item in record["blockers"]] == ["manual_provenance_record_limit"]

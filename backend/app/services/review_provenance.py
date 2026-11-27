@@ -28,6 +28,12 @@ from app.utils.github_links import GitHubLinkError, parse_github_url
 from app.utils.url_policy import normalize_stored_display_url
 
 
+def _carries_unattributed_run(rows):
+    """Whether replaced-task work with no recorded profile or publisher is carried, so an owner override cannot lift the hold."""
+    from app.services.task_replacement_service import attributed
+    return any(row.get("carried_from_task_id") and not attributed(row) for row in rows)
+
+
 def _conflict(code, message, *, step=None, task_id=None, **details):
     """Raise a routing conflict; ``step`` names the next step this cause allows, where the code has several."""
     from app.refusal_next_steps import next_step_for
@@ -508,7 +514,7 @@ async def require_independent_profile(db, assignments, reviewer, reviewer_profil
     history = await execution_profile_history(db, assignments, task_id=task_id)
     if any(row.get("truncated") for row in history):
         _conflict("verification_independence_unverifiable", "The carried replacement history is too long or cyclic to prove independence.",
-                  step="history_too_long", task_id=task_id)
+                  step="carried_run_unattributed" if _carries_unattributed_run(history) else "history_too_long", task_id=task_id)
     if any(row.get("carried_from_task_id") and row["actor_id"] == reviewer.id for row in history):
         _conflict("verification_actor_not_independent", "An actor whose run this replacement carries cannot verify it.")
     profiles = {reviewer.profile_id, reviewer_profile_id} - {None}
@@ -1017,7 +1023,8 @@ async def select_reviewer(db, task, assignments, reviewer, *, binding_id=None, r
     receipt = await actor_provenance(db, reviewer, binding_id=binding_id, lock=True)
     if not receipt["profile_id"] or any(row["profile_id"] is None for row in history.contributors):
         _conflict("verification_independence_unverifiable", "An implementation or verifier profile lacks historical evidence.",
-                 step="profile_evidence_missing", task_id=task.id,
+                 step="carried_run_unattributed" if _carries_unattributed_run(history.contributors) else "profile_evidence_missing",
+                 task_id=task.id,
                  missing=[{"run_id": r["run_id"], "facts": r.get("missing", ["profile_id"])} for r in history.contributors if r["profile_id"] is None])
     if reviewer_profile_id is not None and receipt["profile_id"] != reviewer_profile_id:
         _conflict("reviewer_profile_mismatch", "The selected reviewer must hold the requested profile.")
@@ -1044,7 +1051,7 @@ async def select_reviewer(db, task, assignments, reviewer, *, binding_id=None, r
                       missing=[{"task_id": task.id, "facts": [history.missing_manual_fact, "manual_provenance"]}],
                       remedy=remedy(task.id), step="record_provenance", task_id=task.id)
         _conflict(blockers[0], "Review requires a known publisher distinct from every contributing publisher.",
-                 step="unrecorded_publisher" if blockers[0] == "verification_publisher_unverifiable" else None, task_id=task.id,
+                 step=_publisher_step(blockers[0], receipt, history), task_id=task.id,
                  missing=[{"run_id": r["run_id"], "facts": r.get("missing", ["publisher_key"])}
                           for r in history.contributors if not r.get("publisher_key")])
     selection = {"reviewer": receipt, "candidate": history.candidate, "contributors": history.contributors,
@@ -1055,6 +1062,15 @@ async def select_reviewer(db, task, assignments, reviewer, *, binding_id=None, r
         from app.services.review_evidence import resolve
         selection["review_evidence"] = await resolve(db, task, review_evidence_id, history, reviewer=receipt)
     return selection
+
+
+def _publisher_step(code, receipt, history):
+    """The next step for a missing publisher: the verifier's own, a hold an owner cannot lift, or an owner decision."""
+    if code != "verification_publisher_unverifiable":
+        return None
+    if not receipt["publisher_key"]:
+        return "give_verifier_publisher"
+    return "carried_run_unattributed" if _carries_unattributed_run(history.contributors) else "unrecorded_publisher"
 
 
 def require_verifiable_candidate(task, selection):

@@ -385,6 +385,39 @@ async def test_held_replacement_is_refused_acceptance_without_the_strict_policy(
                                  default=str))["state"] == "held"
 
 
+@pytest.mark.sqlite
+async def test_an_owner_override_cannot_accept_a_held_replacement_so_no_next_step_offers_it(db_session, task_factory,
+                                                                                              monkeypatch, actor_factory):
+    from app.commands import command_transaction
+    from app.refusal_next_steps import NEXT_STEPS, VARIANTS
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "trusted_local")
+    get_settings.cache_clear()
+    project, original, replacement = await _plain(db_session, task_factory)
+    project.require_different_review_publisher = True
+    worker = await actor_factory()
+    execution = AgentTaskAssignment(task_id=original.id, actor_id=worker.id, purpose="execution", queue_class="normal",
+                                    state="fulfilled", task_version=original.version, routing_snapshot="{}")
+    db_session.add(execution)
+    await db_session.flush()
+    run = AgentRun(task_id=original.id, actor_id=worker.id, assignment_id=execution.id, status="succeeded",
+                   commit_url=URL + "commit/" + "f" * 40)
+    db_session.add(run)
+    await db_session.commit()
+    await TaskReplacementService(db_session).record(original.id, _data(original, replacement, carried_run_ids=[run.id]))
+    held = await db_session.get(Task, replacement.id)
+    held.status = "resolved"
+    await db_session.commit()
+    async with command_transaction(db_session, mode="preview") as command:
+        command.owner_acceptance_overrides.add((held.id, held.version, held.brief_revision, held.artifact_revision))
+        with pytest.raises(AuthorityError) as refused:
+            await TaskBriefService(db_session).require_review(held, accepting=True)
+    assert refused.value.code == "replacement_contribution_unattributed"
+    # The owner override cannot lift the hold, so the steps for a held replacement never offer it.
+    for step in (NEXT_STEPS["replacement_contribution_unattributed"], VARIANTS["carried_run_unattributed"]):
+        assert step["ui_action"] is None and "owner-acceptance" not in " ".join(step["commands"].values())
+        assert "owner" not in step["message"].lower().replace("even an owner cannot", "")
+
+
 @databases
 @pytest.mark.parametrize("transport", ["rest", "mcp"])
 @pytest.mark.parametrize("overlap", ["same_actor", "same_profile"])

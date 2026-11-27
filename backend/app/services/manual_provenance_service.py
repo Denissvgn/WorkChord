@@ -70,6 +70,11 @@ def require_provenance_recorder(db, project_id):
     return authority
 
 
+async def _record_count(db, task_id):
+    return await db.scalar(select(func.count(TaskEvent.id)).where(
+        TaskEvent.task_id == task_id, TaskEvent.event_type == EVENT_TYPE))
+
+
 async def provenance_blockers(db, task):
     """Why a provenance record would be refused for this task now, as action blockers; empty when it may be recorded.
 
@@ -85,6 +90,9 @@ async def provenance_blockers(db, task):
         blockers.append({"code": "manual_provenance_requires_resolved_work",
                          "message": "Record manual provenance on resolved, uncanceled leaf work."})
         return blockers
+    if await _record_count(db, task.id) >= MAX_RECORDS:
+        blockers.append({"code": "manual_provenance_record_limit",
+                         "message": f"This task already has {MAX_RECORDS} provenance records, the most review can read."})
     try:
         await ManualProvenanceService(db)._require_no_recorded_execution(task)
     except PlanningConflict as exc:
@@ -289,8 +297,7 @@ class ManualProvenanceService:
                 "Record manual provenance on resolved, uncanceled leaf work. The record never reopens or accepts a task.")
         if task.artifact_revision != data.artifact_revision:
             raise ValueError("Artifact revision is stale")
-        existing = await self.db.scalar(select(func.count(TaskEvent.id)).where(
-            TaskEvent.task_id == task.id, TaskEvent.event_type == EVENT_TYPE))
+        existing = await _record_count(self.db, task.id)
         if existing >= MAX_RECORDS:
             # Review reads every record; more than the bound would make the task unreviewable.
             raise PlanningConflict("manual_provenance_record_limit",
