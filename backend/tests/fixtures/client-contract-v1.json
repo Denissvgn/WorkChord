@@ -3076,6 +3076,49 @@
         "title": "PlanningInputContext",
         "type": "object"
       },
+      "PostponementRelease": {
+        "description": "Execution ownership the postponement ended through the fenced release.",
+        "properties": {
+          "assignment_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Assignment Ids",
+            "type": "array"
+          },
+          "claim_actor_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Claim Actor Id"
+          },
+          "claim_generation": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Claim Generation"
+          },
+          "run_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Run Ids",
+            "type": "array"
+          }
+        },
+        "title": "PostponementRelease",
+        "type": "object"
+      },
       "ProgressWrite": {
         "additionalProperties": false,
         "properties": {
@@ -3726,6 +3769,101 @@
           "enabled"
         ],
         "title": "QualificationKeyCatalogReference",
+        "type": "object"
+      },
+      "ReactivationRequirementResponse": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "kind": {
+            "enum": [
+              "predecessor_accepted",
+              "date",
+              "owner_decision",
+              "linked_resolved"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "met": {
+            "description": "Whether the requirement is met. A met requirement stays met.",
+            "title": "Met",
+            "type": "boolean"
+          },
+          "met_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "When the requirement was evaluated as met; null while unmet.",
+            "title": "Met At"
+          },
+          "on_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "On Date"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "task_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The task this requirement names; null if it was deleted.",
+            "title": "Task Id"
+          },
+          "triage_item_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The triage item this requirement names; null if it was deleted.",
+            "title": "Triage Item Id"
+          }
+        },
+        "required": [
+          "id",
+          "position",
+          "kind",
+          "met"
+        ],
+        "title": "ReactivationRequirementResponse",
         "type": "object"
       },
       "ReasoningTier": {
@@ -4780,6 +4918,17 @@
             "title": "Execution Context Complete",
             "type": "boolean"
           },
+          "postponement": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TaskPostponementRecord"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The open postponement of postponed work, with each reactivation requirement and whether it is met."
+          },
           "reviewer_name": {
             "anyOf": [
               {
@@ -4888,6 +5037,161 @@
           "iteration_id"
         ],
         "title": "TaskMoveRequest",
+        "type": "object"
+      },
+      "TaskPostponementRecord": {
+        "properties": {
+          "from_status": {
+            "enum": [
+              "planned",
+              "active",
+              "resolved"
+            ],
+            "title": "From Status",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "open": {
+            "title": "Open",
+            "type": "boolean"
+          },
+          "postponed_at": {
+            "format": "date-time",
+            "title": "Postponed At",
+            "type": "string"
+          },
+          "postponed_by_actor_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Postponed By Actor Id"
+          },
+          "postponed_by_principal_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Postponed By Principal Id"
+          },
+          "reactivated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reactivated At"
+          },
+          "reactivated_by_actor_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reactivated By Actor Id"
+          },
+          "reactivated_by_principal_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reactivated By Principal Id"
+          },
+          "reactivated_to_status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "planned",
+                  "resolved"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reactivated To Status"
+          },
+          "reactivation_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reactivation Reason"
+          },
+          "reactivation_trigger": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "'command' for an explicit reactivation, 'requirements_met' when the last requirement was met, 'supersession' when the postponed task was superseded by delivered work.",
+            "title": "Reactivation Trigger"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "released": {
+            "$ref": "#/components/schemas/PostponementRelease"
+          },
+          "requirements": {
+            "items": {
+              "$ref": "#/components/schemas/ReactivationRequirementResponse"
+            },
+            "title": "Requirements",
+            "type": "array"
+          },
+          "task_id": {
+            "title": "Task Id",
+            "type": "integer"
+          },
+          "task_version": {
+            "title": "Task Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "task_id",
+          "open",
+          "from_status",
+          "reason",
+          "postponed_at",
+          "task_version",
+          "released",
+          "requirements"
+        ],
+        "title": "TaskPostponementRecord",
         "type": "object"
       },
       "TaskProject": {

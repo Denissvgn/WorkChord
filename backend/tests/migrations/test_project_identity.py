@@ -156,8 +156,9 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         # A later revision records dated adjustments on capacity rows.
         assert after_catalog.pop("team_member_capacity_adjustments")["checks"] == [
             "ck_team_member_capacity_adjustments_dates", "ck_team_member_capacity_adjustments_percent"]
-        # A later revision records audited clean-replacement dispositions.
-        assert after_catalog.pop("task_replacements")["checks"] == ["ck_task_replacements_distinct"]
+        # A later revision records audited clean-replacement dispositions, and a later one supersessions.
+        assert after_catalog.pop("task_replacements")["checks"] == [
+            "ck_task_replacements_disposition", "ck_task_replacements_distinct", "ck_task_replacements_replacement_basis"]
         # A later revision lets a delivery prerequisite name the branch its code must merge on.
         assert after_catalog["delivery_dependencies"]["columns"].pop("target_branch") == {"type": {"family": "text"}, "nullable": True}
         # A later revision tells an owner's override acceptance apart from an ordinary review.

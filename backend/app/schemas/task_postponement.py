@@ -94,6 +94,24 @@ class TaskReactivateRequest(BaseModel):
         return _stripped(value)
 
 
+class OwnerDecisionRequest(BaseModel):
+    """Record that the owner made the decision an owner_decision requirement waits for.
+
+    Only the workspace owner can record it, and the postponed work returns to its
+    lifecycle when this was the last unmet requirement.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    expected_version: int = Field(ge=1)
+    decision: str = Field(min_length=1, max_length=2000, description="What the owner decided.")
+
+    @field_validator("decision")
+    @classmethod
+    def _decision(cls, value: str) -> str:
+        return _stripped(value)
+
+
 class ReactivationRequirementResponse(BaseModel):
     id: int
     position: int
@@ -102,6 +120,7 @@ class ReactivationRequirementResponse(BaseModel):
     triage_item_id: int | None = Field(default=None, description="The triage item this requirement names; null if it was deleted.")
     on_date: date | None = None
     description: str | None = None
+    met: bool = Field(description="Whether the requirement is met. A met requirement stays met.")
     met_at: datetime | None = Field(default=None, description="When the requirement was evaluated as met; null while unmet.")
 
 
@@ -128,7 +147,9 @@ class TaskPostponementRecord(BaseModel):
     requirements: list[ReactivationRequirementResponse]
     reactivated_at: datetime | None = None
     reactivated_to_status: Literal["planned", "resolved"] | None = None
-    reactivation_trigger: str | None = None
+    reactivation_trigger: str | None = Field(
+        default=None, description="'command' for an explicit reactivation, 'requirements_met' when the last requirement was met, "
+                                  "'supersession' when the postponed task was superseded by delivered work.")
     reactivation_reason: str | None = None
     reactivated_by_principal_id: int | None = None
     reactivated_by_actor_id: int | None = None

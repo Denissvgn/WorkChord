@@ -386,7 +386,7 @@ async def get_task_replacement(
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
     db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ):
-    """Read the clean-replacement disposition this task takes part in."""
+    """Read the replacement or supersession disposition this task takes part in."""
     try:
         return await mcp_agent_tools.get_task_replacement(db, actor, task_id)
     except Exception as exc:
