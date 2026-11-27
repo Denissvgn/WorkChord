@@ -71,6 +71,25 @@ describe('assigning iteration capacity from the task form', () => {
         expect(api.post.mock.calls.filter(([path]) => path === '/iterations/2/team')).toHaveLength(1);
     });
 
+    it('names a refused reviewer conflict and points to the Routing section when the form saves a new assignee', async () => {
+        const task = { id: 101, version: 3, iteration_id: 2, project_id: 1, title: 'Import holidays', status: 'planned',
+            priority: 3, effort_days: 1, tags: [], dependencies: [], children: [], agent_readiness: { is_ready: false, blockers: [], warnings: [], criteria: [] } } as unknown as Task;
+        const check = { task_id: 101, assignee_id: 7, assignee_publishers: ['gamma'], assignee_catalog_keys: [], different_publisher_required: true, conflict_mode: 'refuse',
+            structured: true, text_routing: false, consistent: false, applied: false, routing: null, suggestion: null,
+            issues: [{ code: 'reviewer_shares_assignee_publisher', severity: 'conflict', field: 'reviewer', message: 'Same publisher.' }] };
+        api.put.mockRejectedValueOnce({ response: { status: 409, data: { detail: { code: 'routing_inconsistent', message: 'The task\'s routing conflicts.', routing_check: check } } } });
+        const { user } = renderWithProviders(<TaskForm iterationId={2} initialData={task} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        const select = await screen.findByRole('combobox', { name: 'Assignee' });
+        await within(select).findByRole('option', { name: 'Sam · 40% load' });
+        await user.selectOptions(select, '7');
+        await user.click(screen.getByRole('button', { name: 'Update task' }));
+        const alert = await screen.findByRole('alert');
+        expect(alert).toHaveTextContent(/same publisher as the new assignee/);
+        expect(alert).toHaveTextContent(/Reassign to/);
+        expect(alert).not.toHaveTextContent('The task\'s routing conflicts.');
+        expect(await screen.findByRole('group', { name: 'Routing check' })).toBeVisible();
+    });
+
     it('keeps Owner editable only under More', async () => {
         const { user } = openForm();
         expect(screen.queryByRole('combobox', { name: 'Owner' })).not.toBeInTheDocument();

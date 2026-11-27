@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
@@ -75,7 +76,8 @@ describe('reassigning a task with structured routing', () => {
         expect(service.routingCheck).toHaveBeenCalledWith(312, 9);
         expect(within(notice).getByText(/does not fit Vendor Agent/)).toBeVisible();
         expect(within(notice).getByText(/same publisher as the new assignee/)).toBeVisible();
-        expect(within(notice).getByText('Suggested reviewer: alpha-review at medium effort (alpha).')).toBeVisible();
+        expect(within(notice).getByText('Reviewer: gamma-review at medium effort (gamma) → alpha-review at medium effort (alpha)')).toBeVisible();
+        expect(within(notice).getByText('First rung: alpha-large at high effort (alpha) → gamma-large (gamma)')).toBeVisible();
         expect(within(notice).getByText(/does not save a reassignment that leaves this conflict/)).toBeVisible();
         expect(service.update).not.toHaveBeenCalled();
         expect(screen.queryByRole('button', { name: 'Reassign' })).not.toBeInTheDocument();
@@ -116,10 +118,31 @@ describe('reassigning a task with structured routing', () => {
         await choose(user);
         await user.click(await screen.findByRole('button', { name: 'Reassign' }));
         const notice = await screen.findByRole('group', { name: 'Routing check' });
-        expect(within(notice).getByText('Suggested reviewer: alpha-review at medium effort (alpha).')).toBeVisible();
+        expect(within(notice).getByText('Reviewer: gamma-review at medium effort (gamma) → alpha-review at medium effort (alpha)')).toBeVisible();
+        expect(within(notice).getByText('First rung: alpha-large at high effort (alpha) → gamma-large (gamma)')).toBeVisible();
         expect(screen.queryByRole('alert')).not.toBeInTheDocument();
         await user.click(screen.getByRole('button', { name: 'Reassign and use the suggested routing' }));
         await waitFor(() => expect(service.update).toHaveBeenLastCalledWith(312, { assignee_id: 9, expected_version: 4, routing_resolution: 'apply_suggestion' }));
+    });
+
+    it('does not offer the suggestion, or tell people to use it, when none could be made', async () => {
+        service.routingCheck.mockResolvedValue({ ...conflictCheck('refuse'), suggestion: null, suggested_reviewer: null });
+        const { user } = renderReassign();
+        await choose(user);
+        const notice = await screen.findByRole('group', { name: 'Routing check' });
+        expect(within(notice).getByText(/no consistent routing could be suggested/)).toBeVisible();
+        expect(within(notice).queryByText(/Use the suggested routing/)).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Reassign and use the suggested routing' })).not.toBeInTheDocument();
+        expect(screen.getByRole('status', { name: '' })).toHaveTextContent('Routing conflict for Vendor Agent.');
+    });
+
+    it('says so when the saved routing differs from the suggestion that was shown', async () => {
+        service.routingCheck.mockResolvedValue(conflictCheck('refuse'));
+        service.update.mockResolvedValueOnce({ ...task, version: 5, assignee: { id: 9, name: 'Vendor Agent' }, brief: { ...task.brief, routing: { ...routing, reviewer: { catalog_key: 'delta-review' } } } });
+        const { user } = renderReassign();
+        await choose(user);
+        await user.click(await screen.findByRole('button', { name: 'Reassign and use the suggested routing' }));
+        expect(await screen.findByText(/saved routing differs from the suggestion shown/)).toBeVisible();
     });
 
     it('lets the change be chosen, checked and saved with the keyboard alone', async () => {
@@ -157,7 +180,7 @@ describe('reassigning a task with structured routing', () => {
             await user.selectOptions(select, 'Vendor Agent');
             const notice = await screen.findByRole('group', { name: 'Проверка маршрутизации' });
             expect(within(notice).getByText(/Ревьюер от того же издателя/)).toBeVisible();
-            expect(within(notice).getByText('Предлагаемый ревьюер: alpha-review, усилие medium (alpha).')).toBeVisible();
+            expect(within(notice).getByText('Ревьюер: gamma-review, усилие medium (gamma) → alpha-review, усилие medium (alpha)')).toBeVisible();
             expect(screen.getByRole('button', { name: 'Переназначить и взять предложенную маршрутизацию' })).toBeVisible();
         } finally {
             await changeAppLanguage('en');
@@ -167,6 +190,21 @@ describe('reassigning a task with structured routing', () => {
 });
 
 describe('routing on the task page', () => {
+    it('returns focus to the reassign control after a saved reassignment', async () => {
+        service.actions.mockResolvedValue({ task_id: 312, version: 4, claim_generation: 0, running_run_ids: [], live_assignment_ids: [], actions: [] });
+        service.routingCheck.mockResolvedValue(noRoutingCheck);
+        const Host = () => {
+            const [current, setCurrent] = useState(task);
+            return <TaskReadView task={current} draftKey={null} onTaskUpdated={setCurrent} onEditAll={vi.fn()} onDirty={vi.fn()} onPending={vi.fn()} onReload={vi.fn()} />;
+        };
+        const { user } = renderWithProviders(<Host />);
+        const select = await screen.findByRole('combobox', { name: 'Reassign to' });
+        await waitFor(() => expect(within(select).getByRole('option', { name: 'Vendor Agent' })).toBeInTheDocument());
+        await user.selectOptions(select, 'Vendor Agent');
+        await user.click(await screen.findByRole('button', { name: 'Reassign' }));
+        await waitFor(() => expect(screen.getByRole('combobox', { name: 'Reassign to' })).toHaveFocus());
+    });
+
     it('shows the first rung, the escalation and the reviewer', async () => {
         service.actions.mockResolvedValue({ task_id: 312, version: 4, claim_generation: 0, running_run_ids: [], live_assignment_ids: [], actions: [] });
         renderWithProviders(<TaskReadView task={task} draftKey={null} onTaskUpdated={vi.fn()} onEditAll={vi.fn()} onDirty={vi.fn()} onPending={vi.fn()} onReload={vi.fn()} />);

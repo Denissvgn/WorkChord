@@ -10,8 +10,8 @@ import { projectService } from '../../services/projectService';
 import { iterationService } from '../../services/iterationService';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { QueryErrorState } from '../feedback/QueryState';
-import type { Task, TaskBulkAction, TaskBulkOperationResult, TaskStatus } from '../../types/task';
-import { resultsNeedingRouting, routingNeedsResolution } from '../../utils/routingCheck';
+import type { Task, TaskBulkAction, TaskBulkOperationResponse, TaskStatus } from '../../types/task';
+import { resultsNeedingRouting, routingChangeItems, routingNeedsResolution, type RoutingChangeItem } from '../../utils/routingCheck';
 import { RoutingResultsList } from './RoutingCheckNotice';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
@@ -42,10 +42,19 @@ const selectClassName = 'h-8 rounded-md border border-border-strong bg-surface-c
 
 type RoutingChoice = 'apply_suggestion' | 'keep';
 
-/** A dry run that found tasks whose reviewer would no longer fit; nothing was written. */
-interface RoutingDecision { needsRouting: TaskBulkOperationResult[] }
+/**
+ * A dry run that found tasks whose reviewer would no longer fit; nothing was written. It keeps the
+ * versions it was read at, and what it was read for, so a changed selection or choice drops it.
+ */
+interface RoutingDecision {
+    signature: string;
+    items: RoutingChangeItem[];
+    canKeep: boolean;
+    versions: TaskBulkOperationResponse['task_versions'];
+    revisions: TaskBulkOperationResponse['input_revisions'];
+}
 
-const isRoutingDecision = (value: unknown): value is RoutingDecision => Boolean(value) && typeof value === 'object' && 'needsRouting' in (value as object);
+const isRoutingDecision = (value: unknown): value is RoutingDecision => Boolean(value) && typeof value === 'object' && 'signature' in (value as object);
 
 class BulkRejected extends Error {
     readonly failures: { taskId: number; message: string }[];
@@ -68,8 +77,10 @@ export const TaskBulkOperationsPanel = ({
     const [isOptional, setIsOptional] = useState('');
     const [isDeferred, setIsDeferred] = useState('');
     const [failures, setFailures] = useState<{ taskId: number; message: string }[]>([]);
-    const [decision, setDecision] = useState<TaskBulkOperationResult[] | null>(null);
+    const [decision, setDecision] = useState<RoutingDecision | null>(null);
     const selectedCount = selectedTasks.length;
+    const signature = JSON.stringify([kind, value, selectedTasks.map(task => [task.id, task.version])]);
+    const currentDecision = decision && decision.signature === signature ? decision : null;
     const titles = useMemo(() => new Map(selectedTasks.map(task => [task.id, task.title])), [selectedTasks]);
 
     const teamQuery = useQuery({ queryKey: ['team', iterationId], queryFn: () => teamService.getByIteration(iterationId), enabled: kind === 'assign' });
@@ -149,9 +160,11 @@ export const TaskBulkOperationsPanel = ({
             }
             const base = request();
             if (!base) return null;
-            // Choosing the suggested reviewers rides with the change; keeping them sends the plain change.
+            // Choosing the suggested routing rides with the change; keeping the reviewers sends the plain change.
             const operation = choice === 'apply_suggestion' ? { ...base, payload: { ...base.payload, routing_resolution: choice } } : base;
-            const check = await taskService.runBulkOperation({ task_ids: taskIds, ...operation, dry_run: true });
+            // A confirmation is read at the versions the list was shown at.
+            const expected = choice && currentDecision ? { expected_versions: currentDecision.versions, expected_revisions: currentDecision.revisions } : {};
+            const check = await taskService.runBulkOperation({ task_ids: taskIds, ...operation, ...expected, dry_run: true });
             const failed = check.results.filter(result => result.outcome === 'failed');
             const needsRouting = resultsNeedingRouting(check.results);
             // A refused reviewer conflict is a decision to take, not a rejection, until the person has taken it.
@@ -159,17 +172,35 @@ export const TaskBulkOperationsPanel = ({
             if (failed.length > 0 && !onlyRouting) {
                 throw new BulkRejected(failed.map(result => ({ taskId: result.task_id, message: result.error ?? t('surfaces.taskBulk.failedToRun') })));
             }
-            if (choice === undefined && needsRouting.length > 0) return { needsRouting } satisfies RoutingDecision;
+            if (choice === undefined && needsRouting.length > 0) {
+                // List exactly what using the suggested routing would change: it can rewrite more tasks than the ones that conflict.
+                const suggested = await taskService.runBulkOperation({
+                    task_ids: taskIds, ...base, payload: { ...base.payload, routing_resolution: 'apply_suggestion' },
+                    expected_versions: check.task_versions, expected_revisions: check.input_revisions, dry_run: true,
+                });
+                return {
+                    signature, items: routingChangeItems(needsRouting, suggested.results), canKeep: needsRouting.every(result => result.routing_check?.conflict_mode === 'warn'),
+                    versions: check.task_versions, revisions: check.input_revisions,
+                } satisfies RoutingDecision;
+            }
+            if (choice === 'apply_suggestion' && currentDecision) {
+                const shown = currentDecision.items.map(item => item.taskId).sort().join();
+                const rewritten = routingChangeItems([], check.results).map(item => item.taskId).sort().join();
+                // The server would now rewrite something other than what was shown: show the new list instead of saving.
+                if (shown !== rewritten) {
+                    return { ...currentDecision, items: routingChangeItems(needsRouting, check.results) } satisfies RoutingDecision;
+                }
+            }
             return taskService.runBulkOperation({
-                task_ids: taskIds, ...operation, dry_run: false,
-                expected_versions: check.task_versions, expected_revisions: check.input_revisions,
+                task_ids: taskIds, ...operation, ...expected, dry_run: false,
+                ...(choice && currentDecision ? {} : { expected_versions: check.task_versions, expected_revisions: check.input_revisions }),
             });
         },
         // Stopping at the reviewer list changes nothing, so it announces nothing.
         meta: { success: (data) => isRoutingDecision(data) ? '' : t('feedback.bulkApplied', { count: selectedCount }) } satisfies MutationFeedbackMeta,
         onSuccess: async (data) => {
             if (isRoutingDecision(data)) {
-                setDecision(data.needsRouting);
+                setDecision(data);
                 return;
             }
             await Promise.all(['tasks', 'workload', 'gantt', 'projects', 'projectSummary', 'saved-view-dashboard-cards']
@@ -300,15 +331,18 @@ export const TaskBulkOperationsPanel = ({
                 </div>
             )}
 
-            {decision && (
-                <div role="region" aria-label={t('taskReassign.bulkTitle', { count: decision.length })}
+            {/* Mounted before it has text, so the stop is announced. */}
+            <p role="status" className="sr-only">{currentDecision ? `${t('taskReassign.bulkTitle', { count: currentDecision.items.length })}. ${t('taskReassign.bulkHelp')}` : ''}</p>
+            {currentDecision && (
+                <div role="region" aria-label={t('taskReassign.bulkTitle', { count: currentDecision.items.length })}
                     className="space-y-2 rounded-md border border-feedback-warning-border bg-feedback-warning-muted px-3 py-2 text-feedback-warning-foreground">
-                    <p className="text-sm font-semibold">{t('taskReassign.bulkTitle', { count: decision.length, total: selectedCount })}</p>
-                    <RoutingResultsList results={decision} titleOf={taskId => titles.get(taskId) ?? t('surfaces.taskBulk.taskNumber', { id: taskId })} />
+                    <p className="text-sm font-semibold">{t('taskReassign.bulkTitle', { count: currentDecision.items.length })}</p>
+                    <RoutingResultsList items={currentDecision.items} titleOf={taskId => titles.get(taskId) ?? t('surfaces.taskBulk.taskNumber', { id: taskId })} />
                     <p className="text-sm">{t('taskReassign.bulkHelp')}</p>
+                    {currentDecision.items.some(item => !item.after) && <p className="text-sm font-medium">{t('taskReassign.bulkNoSuggestion')}</p>}
                     <div className="flex flex-wrap items-center gap-2">
-                        <Button size="sm" disabled={mutation.isPending} isLoading={mutation.isPending} onClick={() => mutation.mutate('apply_suggestion')}>{t('taskReassign.bulkApplySuggestions')}</Button>
-                        {decision.every(result => result.routing_check?.conflict_mode === 'warn') && (
+                        <Button size="sm" disabled={mutation.isPending || currentDecision.items.some(item => !item.after)} isLoading={mutation.isPending} onClick={() => mutation.mutate('apply_suggestion')}>{t('taskReassign.bulkApplySuggestions')}</Button>
+                        {currentDecision.canKeep && (
                             <Button size="sm" variant="secondary" disabled={mutation.isPending} onClick={() => mutation.mutate('keep')}>{t('taskReassign.bulkKeepReviewers')}</Button>
                         )}
                         <Button size="sm" variant="ghost" disabled={mutation.isPending} onClick={() => setDecision(null)}>{t('taskReassign.bulkBack')}</Button>

@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import type { RoutingCheck, RoutingResolution, Task } from '../../types/task';
+import type { RoutingCheck, RoutingResolution, Task, TaskRouting } from '../../types/task';
 import { taskService } from '../../services/taskService';
 import { getApiErrorMessage } from '../../utils/apiError';
-import { routingCheckFromError, routingNeedsResolution } from '../../utils/routingCheck';
+import { routingCheckFromError, routingNeedsResolution, routingShape } from '../../utils/routingCheck';
 import { Button } from '../common/Button';
 import { QueryErrorState } from '../feedback/QueryState';
 import { useToast } from '../feedback/toast';
@@ -18,16 +18,22 @@ import { useAssigneeOptions } from './useTaskRowEdits';
  * suggested reviewer are shown first; the person then reassigns with the suggestion, or, where
  * the project only warns, without it.
  */
-export const TaskReassign = ({ task, disabled = false, onTaskUpdated, onPending }: {
+export const TaskReassign = ({ task, disabled = false, focusOnMount = false, onTaskUpdated, onPending, onSaved }: {
     task: Task;
     disabled?: boolean;
     onTaskUpdated: (task: Task) => void;
     onPending: (pending: boolean) => void;
+    /** Put focus on the assignee control when this mounts, after a save that replaced the view. */
+    focusOnMount?: boolean;
+    /** The reassignment was saved; called before the updated task is handed on. */
+    onSaved?: (updated: Task) => void;
 }) => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const toast = useToast();
     const { options, error: optionsError, refetch: refetchOptions } = useAssigneeOptions(task.iteration_id);
+    const formRef = useRef<HTMLFormElement>(null);
+    useEffect(() => { if (focusOnMount) formRef.current?.querySelector('select')?.focus(); }, [focusOnMount]);
     const [choice, setChoice] = useState<number | null | undefined>(undefined);
     const [refused, setRefused] = useState<RoutingCheck | null>(null);
     const changing = choice !== undefined && choice !== (task.assignee?.id ?? null);
@@ -44,17 +50,22 @@ export const TaskReassign = ({ task, disabled = false, onTaskUpdated, onPending 
 
     // feedback-policy: mutation pending,inline - the result is announced here and the refused change keeps its conflict on screen.
     const save = useMutation({
-        mutationFn: (resolution: RoutingResolution) => taskService.update(task.id, {
+        mutationFn: ({ resolution }: { resolution: RoutingResolution; shown: TaskRouting | null }) => taskService.update(task.id, {
             assignee_id: choice ?? null, expected_version: task.version, routing_resolution: resolution,
         }),
         onMutate: () => onPending(true),
-        onSuccess: updated => {
+        onSuccess: (updated, { resolution, shown }) => {
             setChoice(undefined);
             setRefused(null);
+            onSaved?.(updated);
             onTaskUpdated(updated);
             void queryClient.invalidateQueries({ queryKey: ['tasks'] });
             void queryClient.invalidateQueries({ queryKey: ['workload'] });
             toast.success(t('taskReassign.reassigned', { title: updated.title }));
+            // What was saved is what the server made of the suggestion; say so when it is not what was shown.
+            if (resolution === 'apply_suggestion' && shown && routingShape(updated.brief?.routing) !== routingShape(shown)) {
+                toast.info(t('taskReassign.savedDiffers', { title: updated.title }));
+            }
         },
         onError: error => setRefused(routingCheckFromError(error)),
         onSettled: () => onPending(false),
@@ -72,8 +83,8 @@ export const TaskReassign = ({ task, disabled = false, onTaskUpdated, onPending 
     const refusedMessage = save.isError && !refused ? getApiErrorMessage(save.error, t('taskReassign.reassignFailed')) : null;
 
     return (
-        <form className="flex flex-col gap-3" aria-label={t('taskReassign.reassignForm')}
-            onSubmit={event => { event.preventDefault(); if (canSave && !needsResolution) save.mutate('check'); }}>
+        <form ref={formRef} className="flex flex-col gap-3" aria-label={t('taskReassign.reassignForm')}
+            onSubmit={event => { event.preventDefault(); if (canSave && !needsResolution) save.mutate({ resolution: 'check', shown: null }); }}>
             <div className="flex flex-wrap items-end gap-3">
                 <label className="flex flex-col gap-1 text-xs text-content-secondary">
                     {t('taskReassign.reassignTo')}
@@ -83,6 +94,8 @@ export const TaskReassign = ({ task, disabled = false, onTaskUpdated, onPending 
                         onChange={choose} />
                 </label>
             </div>
+            {/* Mounted before it has text, so a conflict that appears is announced. */}
+            <p role="status" className="sr-only">{needsResolution && changing ? t('taskReassign.conflictStatus', { name: chosenName }) : ''}</p>
             {optionsError != null && <QueryErrorState error={optionsError} fallback={t('queryFeedback.optionLoadFailed')} onRetry={() => void refetchOptions()} />}
             {assigneeToCheck !== null && !refused && check.isLoading && <p role="status" className="text-sm text-content-secondary">{t('taskReassign.checking')}</p>}
             {assigneeToCheck !== null && !refused && check.isError && (
@@ -92,8 +105,8 @@ export const TaskReassign = ({ task, disabled = false, onTaskUpdated, onPending 
             {changing && (
                 <div className="flex flex-wrap items-center gap-2">
                     {!needsResolution && !waiting && <Button type="submit" size="sm" disabled={!canSave} isLoading={save.isPending}>{t('taskReassign.reassign')}</Button>}
-                    {needsResolution && suggestion && <Button type="button" size="sm" disabled={!canSave} isLoading={save.isPending} onClick={() => save.mutate('apply_suggestion')}>{t('taskReassign.reassignWithSuggestion')}</Button>}
-                    {needsResolution && !refuses && <Button type="button" size="sm" variant="secondary" disabled={!canSave} onClick={() => save.mutate('check')}>{t('taskReassign.reassignAnyway')}</Button>}
+                    {needsResolution && suggestion && <Button type="button" size="sm" disabled={!canSave} isLoading={save.isPending} onClick={() => save.mutate({ resolution: 'apply_suggestion', shown: activeCheck?.suggestion ?? null })}>{t('taskReassign.reassignWithSuggestion')}</Button>}
+                    {needsResolution && !refuses && <Button type="button" size="sm" variant="secondary" disabled={!canSave} onClick={() => save.mutate({ resolution: 'check', shown: null })}>{t('taskReassign.reassignAnyway')}</Button>}
                     <Button type="button" size="sm" variant="ghost" disabled={save.isPending} onClick={() => choose(undefined)}>{t('actions.cancel')}</Button>
                 </div>
             )}

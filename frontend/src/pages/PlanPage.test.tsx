@@ -581,6 +581,7 @@ describe('work and blockers inside Plan', () => {
             task_id: taskId, assignee_id: 1, assignee_publishers: ['gamma'], assignee_catalog_keys: [], different_publisher_required: true,
             conflict_mode: 'refuse', structured: true, text_routing: false, consistent: applied, applied,
             issues: applied ? [] : [{ code: 'reviewer_shares_assignee_publisher', severity: 'conflict', field: 'reviewer', message: 'Same publisher.' }],
+            routing: { schema_version: 1, escalation: [], escalate_after_failed_runs: 2, reviewer: { catalog_key: 'gamma-review', publisher_key: 'gamma' } },
             suggestion: { schema_version: 1, escalation: [], escalate_after_failed_runs: 2, reviewer: { catalog_key: 'alpha-review', publisher_key: 'alpha' } },
             suggested_reviewer: { catalog_key: 'alpha-review', publisher_key: 'alpha' },
         });
@@ -588,21 +589,25 @@ describe('work and blockers inside Plan', () => {
             const response = await original(request);
             const resolved = request.payload?.routing_resolution === 'apply_suggestion';
             response.results = response.results.map((result: { task_id: number; outcome: string }) => result.task_id !== 1 ? result
-                : resolved ? { ...result, routing_check: check(1, true) }
+                : resolved ? { ...result, changes: { routing: { old: check(1, false).routing, new: check(1, false).suggestion } }, routing_check: check(1, true) }
                     : { ...result, outcome: 'failed', error: 'The routing conflicts', routing_check: check(1, false) });
             response.failed_count = response.results.filter((result: { outcome: string }) => result.outcome === 'failed').length;
+            // Using the suggestion also rewrites the routing of a task that does not conflict.
+            if (resolved) response.results = response.results.map((result: { task_id: number }) => result.task_id === 2
+                ? { ...result, changes: { routing: { old: check(1, false).routing, new: check(1, false).suggestion } } } : result);
             return response;
         });
         const { user } = renderPlan(BLOCKERS_ENTRY);
         const preview = await screen.findByRole('button', { name: 'Preview assignments' });
         await waitFor(() => expect(preview).toBeEnabled());
         await user.click(preview);
-        const region = await screen.findByRole('region', { name: '1 task needs a new reviewer' });
+        const region = await screen.findByRole('region', { name: '2 tasks need a new reviewer' });
         expect(within(region).getByText('Work item 1')).toBeVisible();
-        expect(within(region).getByText('Suggested reviewer: alpha-review (alpha).')).toBeVisible();
+        expect(within(region).getByText('Work item 2')).toBeVisible();
+        expect(within(region).getAllByText('Reviewer: gamma-review (gamma) → alpha-review (alpha)')).toHaveLength(2);
         expect(screen.queryByRole('button', { name: 'Assign 2 tasks' })).not.toBeInTheDocument();
         expect(services.tasks.runBulkOperation.mock.calls.every(call => call[0].dry_run)).toBe(true);
-        await user.click(screen.getByRole('button', { name: 'Assign 2 tasks and use suggested reviewers' }));
+        await user.click(screen.getByRole('button', { name: 'Assign 2 tasks and use the suggested routing' }));
         await screen.findByText('2 tasks assigned.');
         expect(tasks.every(task => task.assignee)).toBe(true);
         const writes = services.tasks.runBulkOperation.mock.calls.map(call => call[0] as TaskBulkOperationRequest).filter(request => !request.dry_run);
