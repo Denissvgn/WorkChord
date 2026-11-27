@@ -92,9 +92,9 @@ sequenceDiagram
     p0-->>p30: service.convert_to_task(triage_item_id, data)
 ```
 
-> Call sequence diagram shows 30 of 326 interactions; 296 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 336 interactions; 306 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 78 (77 omitted); unresolved 1 of 157 (156 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 81 (80 omitted); unresolved 1 of 164 (163 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -104,8 +104,8 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/commands.py:current_command` | 3 | - | unresolved | 1 |
 | `backend/app/commands.py:command_transaction` | 2 | - | external | 4 |
 | `backend/app/commands.py:command_transaction` | 2 | - | unresolved | 12 |
-| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 14 | - | unresolved | 23 |
-| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 14 | - | external | 10 |
+| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 14 | - | unresolved | 28 |
+| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 14 | - | external | 12 |
 | `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 14 | [backend/app/authority.py](../modules/authority.md) | internal | 3 |
 | `backend/app/authority.py:internal_authority` | 20 | - | unresolved | 1 |
 > Omission summary shows 8 of 74 groups; 66 further groups are not expanded here. Counts above include all omitted interactions.
@@ -123,7 +123,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 92; effect analysis evaluated: 54, partial: 0, unavailable: 38. Counts include steps omitted from the displayed trace.
 
-Collector observations for 54 source steps with known totals: observed: 210, emitted: 210, omitted: 0. Unavailable totals are excluded.
+Collector observations for 54 source steps with known totals: observed: 214, emitted: 214, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -134,7 +134,7 @@ Collector observations for 54 source steps with known totals: observed: 210, emi
 | `command_transaction` | `available` | `evaluated` | `available` | `10` | `10` | `0` |
 | `current_command` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `getattr (backend/app/commands.py:current_command)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `isinstance` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `isinstance (backend/app/commands.py:current_command)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `info.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `RuntimeError (backend/app/commands.py:command_transaction)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `CommandState` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -149,7 +149,7 @@ flowchart LR
     s2["2. command_transaction"]
     s3["3. current_command"]
     s4["4. getattr (backend/app/commands.py:current_command)"]
-    s5["5. isinstance"]
+    s5["5. isinstance (backend/app/commands.py:current_command)"]
     s6["6. info.get"]
     s7["7. RuntimeError (backend/app/commands.py:command_transaction)"]
     s8["8. CommandState"]
@@ -160,7 +160,7 @@ flowchart LR
     s1 -->|"command_transaction(service.db)"| s2
     s2 -->|"current_command(db)"| s3
     s3 -. "getattr (backend/app/commands.py:current_command)(db, 'info', None)" .-> s4
-    s3 -. "isinstance(info, dict)" .-> s5
+    s3 -. "isinstance (backend/app/commands.py:current_command)(info, dict)" .-> s5
     s3 -. "info.get('command')" .-> s6
     s2 -. "RuntimeError (backend/app/commands.py:command_transaction)('A preview must own its rollback boundary')" .-> s7
     s2 -->|"CommandState(mode=mode)"| s8
@@ -195,7 +195,7 @@ flowchart LR
 | `command_transaction` | `db: AsyncSession`, `mode`, `commit` | - | `previous.failed`, `db.info[...]` | `none` |
 | `current_command` | `db` | - | - | `...` |
 | `getattr (backend/app/commands.py:current_command)` | - | - | - | - |
-| `isinstance` | - | - | - | - |
+| `isinstance (backend/app/commands.py:current_command)` | - | - | - | - |
 | `info.get` | - | - | - | - |
 | `RuntimeError (backend/app/commands.py:command_transaction)` | - | - | - | - |
 | `CommandState` | - | - | - | - |
@@ -211,7 +211,7 @@ flowchart LR
 | convert_triage_item_to_backlog | command_transaction | 392 | `command_transaction(service.db)` |
 | command_transaction | current_command | 100 | `current_command(db)` |
 | current_command | getattr (backend/app/commands.py:current_command) | 86 | `getattr(db, 'info', None)` |
-| current_command | isinstance | 87 | `isinstance(info, dict)` |
+| current_command | isinstance (backend/app/commands.py:current_command) | 87 | `isinstance(info, dict)` |
 | current_command | info.get | 87 | `info.get('command')` |
 | command_transaction | RuntimeError (backend/app/commands.py:command_transaction) | 103 | `RuntimeError('A preview must own its rollback boundary')` |
 | command_transaction | CommandState | 110 | `CommandState(mode=mode)` |

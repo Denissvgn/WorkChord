@@ -112,4 +112,4 @@ flowchart LR
 | `test_actor_provisioning_creates_binding_and_audit_atomically` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 1 |
 | `test_binding_and_preset_routes_preserve_credential_permissions` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 2 |
 
-> References: showing 12 of 53 logical references; 41 omitted by the 12-row generated summary limit.
+> References: showing 12 of 54 logical references; 42 omitted by the 12-row generated summary limit.

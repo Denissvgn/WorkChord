@@ -100,4 +100,4 @@ flowchart LR
 | `dependency_order` | import | [dependency_order](../modules/dependency_order.md) | — |
 | `project_service` | import | [project_service](../modules/project_service.md) | — |
 
-> References: showing 12 of 36 logical references; 24 omitted by the 12-row generated summary limit.
+> References: showing 12 of 37 logical references; 25 omitted by the 12-row generated summary limit.

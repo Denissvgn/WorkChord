@@ -98,9 +98,9 @@ sequenceDiagram
     p2-->>p30: TaskDomainService(…).command(task_id, TaskActionRequest.model_validate(...))
 ```
 
-> Call sequence diagram shows 30 of 363 interactions; 333 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 373 interactions; 343 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 102 (101 omitted); unresolved 1 of 147 (146 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 105 (104 omitted); unresolved 1 of 154 (153 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -129,7 +129,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 115; effect analysis evaluated: 76, partial: 2, unavailable: 37. Counts include steps omitted from the displayed trace.
 
-Collector observations for 78 source steps with known totals: observed: 370, emitted: 357, omitted: 13. Unavailable totals are excluded.
+Collector observations for 78 source steps with known totals: observed: 374, emitted: 361, omitted: 13. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

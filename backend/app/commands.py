@@ -319,7 +319,7 @@ async def planning_input_reservation(db, kind, values):
                     if window:
                         task.execution_planning_window = window
                         await service.record_task_event(task.id, "task.execution_planning_window",
-                            {"source": "iteration_end_extension", "from": window["from"], "through": window["through"],
+                            {"source": "iteration_end_extension", "window_kind": window["kind"], "from": window["from"], "through": window["through"],
                              "assignment_ids": sorted(map(int, window["assignments"])), **extension}, actor_type="system")
     finally:
         if parent is None:

@@ -52,7 +52,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (10) |
+| Inbound | `backend` (12) |
 | Outbound | `backend` (14) |
 
 ### External packages
@@ -61,14 +61,16 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `is_planning_only_change` | `(changed_fields) -> bool` | — | True when a non-empty set of changed task fields lies inside ``PLANNING_ONLY_FIELDS``. |
 | `digest` | `(value)` | — | — |
 | `task_context` | `(task)` | — | — |
+| `execution_context` | `(task)` | — | The sealed task context without planning-only fields, plus labels and the optional flag. |
 | `assignment_context` | `(assignment)` | — | — |
 | `current_window` | `(task)` | — | — |
 | `assignment_matches` | `(task, assignment)` | — | — |
@@ -79,8 +81,9 @@ flowchart LR
 | `_authority_basis` | *(async)* `(db, task, assignment, *, lock = False, as_of = None)` | — | — |
 | `window_authority_matches` | *(async)* `(db, task, assignment, *, lock = False)` | — | — |
 | `require_window_authority` | *(async)* `(db, task, assignment)` | — | — |
-| `make_window` | `(task, old_version, assignments, *, prior = None, evidence)` | — | — |
+| `make_window` | `(task, old_version, assignments, *, prior = None, evidence, kind = ITERATION_END_EXTENSION)` | — | — |
 | `original_ownership` | *(async)* `(db, task, row, before)` | — | Verify one current assignment against its original, authenticated worker, PM or reviewer receipt. |
 | `seal_authority` | *(async)* `(db, task, window, assignments, *, prior = None, lock = False, as_of = None)` | — | — |
+| `fence_planning_only_edit` | *(async)* `(db, basis, issued, *, edited_task_id, fields)` | — | Seal a window for each task whose version a planning-only edit reserved. |
 | `extension_input` | *(async)* `(db, values, iterations)` | — | Only an explicit date-only extension may preserve issued execution state. |
 | `live_assignments` | *(async)* `(db, task_ids, *, lock = False)` | — | — |
