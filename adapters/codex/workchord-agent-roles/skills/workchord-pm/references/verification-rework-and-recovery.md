@@ -217,7 +217,8 @@ that requires a different publisher refuses it with
 `verified_publisher_review_required`.
 
 A task whose prerequisites are still open cannot start, so work begun early on
-an unmerged branch stays `planned` until they are accepted. After each merge,
+an unmerged branch stays `planned` until they are resolved or, for delivery prerequisites,
+accepted. After each merge,
 re-read the task and confirm it closed. A task that is not `closed` after its
 pull request merged is status drift: find the missing verdict or acceptance, or
 the open prerequisite, and resolve that instead of forcing the status.

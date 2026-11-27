@@ -9,14 +9,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-pm-1.21.7.tar.gz",
-          "sha256": "3ded38edd8b01582718a1d7a1e8f8f7593c2c15e9d60e5230854f03e0ca41ae7",
+          "sha256": "d05ff777971e34771be6f00ce9b4cd689e338cc41f091ae6277c83f9b56485b8",
           "size": 245798
         },
         {
           "format": "zip",
           "path": "workchord-pm-1.21.7.zip",
-          "sha256": "eec4eba7bdea10d5d351789138bde4ccb36e8f48df2170c79ef13c1996fc28fd",
-          "size": 236316
+          "sha256": "ad2950fd8f72ad403ef6290df9e32a9521dcf33babda9e4cdbdad108d6b9ceb3",
+          "size": 236357
         }
       ],
       "entrypoint": "SKILL.md",
@@ -63,8 +63,8 @@
         },
         {
           "path": "references/verification-rework-and-recovery.md",
-          "sha256": "a2cd7d42b3a66aeb9bc260c14c97be96e3c404754e28a61b5f7c3faff04dfddd",
-          "size": 39366
+          "sha256": "acd8e6bdcc445c11e9f75c5ac0441db2aa759f6537fe124f21d20fd52ae8c9f7",
+          "size": 39407
         },
         {
           "path": "references/workflow-and-names.md",
@@ -280,5 +280,5 @@
       "version": "1.20.4"
     }
   ],
-  "source_revision": "sha256:e8dbed2ca127e646b530b18a0ab9b335669c1f86947fd4f6706ae8564affdd32"
+  "source_revision": "sha256:4f0f09644e71f2a44cdcd638cb22c1293a7de1f2a061abf5067db664643b688c"
 }

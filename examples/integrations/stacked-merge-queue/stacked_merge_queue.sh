@@ -91,7 +91,7 @@ prepare(){  # prepare BRANCH BASE SUBJECT
     if [ -n "$(git rev-list --no-merges HEAD..$2 | head -1)" ] && ! git merge -q --no-edit $2; then
       [ -n "$RESOLVE_CMD" ] && eval "$RESOLVE_CMD"
       if [ -n "$GENERATED_DIR" ]; then
-        git diff --name-only --diff-filter=U | grep -qF -e "$GENERATED_DIR/" && {
+        git diff --name-only --diff-filter=U | awk -v d="$GENERATED_DIR/" 'index($0,d)==1' | grep -q . && {
           git rm -r -q --cached -- "$GENERATED_DIR"; rm -rf -- "./$GENERATED_DIR"; git checkout $2 -- "$GENERATED_DIR"; }
       fi
       U=$(git diff --name-only --diff-filter=U)
