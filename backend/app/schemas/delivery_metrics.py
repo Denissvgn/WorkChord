@@ -34,7 +34,7 @@ class DeliveryMetricsResponse(BaseModel):
     canceled_leaf_tasks: int = 0
     superseded_leaf_tasks: int = Field(default=0, description=(
         "Leaf tasks withdrawn in the window because another task delivers their work (a replacement or a supersession). "
-        "They are not also counted as canceled."))
+        "Within one window a task is not also counted as canceled."))
     reopened_events: int = 0
     lead_time: DurationSamples
     cycle_time: DurationSamples

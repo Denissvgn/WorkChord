@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from sqlalchemy import JSON, CheckConstraint, ForeignKey, Index, Integer, String, Text, UniqueConstraint, select
+from sqlalchemy import JSON, CheckConstraint, ForeignKey, Index, Integer, String, Text, UniqueConstraint, case, select
 from sqlalchemy.orm import Mapped, column_property, mapped_column
 
 from app.database import Base
@@ -55,9 +55,15 @@ class TaskReplacement(Base):
 
 
 # Who delivers a withdrawn task's work, read with the task itself. The subqueries use the table, not
-# the entity, so the authority scope on task reads does not apply to them a second time.
+# the entity, so the authority scope on task reads does not apply to them a second time. They are
+# correlated to the task row only (correlate_except), so a query that also joins the replacement table
+# still compiles, and they probe only canceled rows: a live task has no successor, so it skips the lookup.
 _replacements = TaskReplacement.__table__
-Task.successor_task_id = column_property(
-    select(_replacements.c.replacement_task_id).where(_replacements.c.original_task_id == Task.id).scalar_subquery())
-Task.successor_kind = column_property(
-    select(_replacements.c.disposition).where(_replacements.c.original_task_id == Task.id).scalar_subquery())
+Task.successor_task_id = column_property(case(
+    (Task.canceled_at.is_not(None), select(_replacements.c.replacement_task_id)
+     .where(_replacements.c.original_task_id == Task.id).correlate_except(_replacements).scalar_subquery()),
+    else_=None))
+Task.successor_kind = column_property(case(
+    (Task.canceled_at.is_not(None), select(_replacements.c.disposition)
+     .where(_replacements.c.original_task_id == Task.id).correlate_except(_replacements).scalar_subquery()),
+    else_=None))

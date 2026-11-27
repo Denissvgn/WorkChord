@@ -268,8 +268,11 @@ class Task(Base):
 
         Canceled work keeps the status it had when it was canceled, so the stored status is not what a
         person should see. Work whose deliverable another task carries is superseded (a clean
-        replacement counts as superseded too); any other canceled work is canceled. Read without a
-        lazy load: a row created in this session has not read its successor yet.
+        replacement counts as superseded too); any other canceled work is canceled.
+
+        The successor is read from ``__dict__`` and never lazy-loaded (an async session cannot). It is
+        absent on a row created in this session and after a flush expires it, and then canceled work reads
+        as canceled until the row is refreshed or loaded again.
         """
         if self.canceled_at is None:
             return self.status

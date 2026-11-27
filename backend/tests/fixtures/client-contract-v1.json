@@ -1125,7 +1125,7 @@
           },
           "superseded_leaf_tasks": {
             "default": 0,
-            "description": "Leaf tasks withdrawn in the window because another task delivers their work (a replacement or a supersession). They are not also counted as canceled.",
+            "description": "Leaf tasks withdrawn in the window because another task delivers their work (a replacement or a supersession). Within one window a task is not also counted as canceled.",
             "title": "Superseded Leaf Tasks",
             "type": "integer"
           },

@@ -14,9 +14,11 @@ Postponed stays a stored status of its own.
 
 from sqlalchemy import and_, case, exists, select
 
+from app.models.task import TaskStatus
+
 CANCELED, SUPERSEDED = "canceled", "superseded"
 TERMINAL_STATES = (CANCELED, SUPERSEDED)
-STORED_STATES = ("planned", "active", "resolved", "closed", "postponed")
+STORED_STATES = tuple(status.value for status in TaskStatus)
 DISPLAYED_STATES = (*STORED_STATES, *TERMINAL_STATES)
 
 
@@ -31,7 +33,7 @@ def withdrawn_by_successor(id_column):
     """SQL: a replacement record names another task as delivering this one's work."""
     from app.models.task_replacement import TaskReplacement
     table = TaskReplacement.__table__
-    return exists(select(table.c.id).where(table.c.original_task_id == id_column))
+    return exists(select(table.c.id).where(table.c.original_task_id == id_column).correlate_except(table))
 
 
 def state_clause(state, *, id_column, status_column, canceled_at_column):

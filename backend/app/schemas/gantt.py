@@ -42,6 +42,8 @@ class GanttTask(TaskMetricSignals):
     min_start_date: Optional[date] = None
     max_end_date: Optional[date] = None
     status: Optional[str] = None  # planned, active, resolved, closed
+    # The stored status, or canceled / superseded for withdrawn work, which keeps the status it had.
+    displayed_state: Optional[str] = None
     milestone: Optional[GanttMilestone] = None
     assignee: Optional[GanttAssignee] = None
     assignees: list[GanttAssignee] = []  # For composite tasks

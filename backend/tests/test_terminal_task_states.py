@@ -258,3 +258,19 @@ def test_canceled_planned_work_is_no_planning_gap():
     assert needs_assignee(planned) and missing_effort(planned)
     planned.canceled_at = utc_now()
     assert not needs_assignee(planned) and not missing_effort(planned)
+
+
+async def test_queries_joining_the_replacement_table_still_compile_and_run(delivery_store):
+    from sqlalchemy import select
+    from app.services.task_display_state import task_state_clause
+    factory, scenario, _ = delivery_store
+    s, _, replaced_id, _, _ = await _withdrawn_scenario(factory, scenario)
+    async with factory() as db:
+        joined = select(Task).join(TaskReplacement, TaskReplacement.original_task_id == Task.id)
+        str(joined.compile())
+        rows = list((await db.scalars(joined.where(task_state_clause("superseded")).order_by(Task.id))).all())
+        assert {task.id for task in rows} == {s.original.id, replaced_id}
+        assert {task.successor_kind for task in rows} == {"supersession", "replacement"}
+        # A live task has no successor to probe for.
+        live = await db.get(Task, scenario.tasks["closed_low"])
+        assert live.successor_task_id is None and live.displayed_state == "closed"
