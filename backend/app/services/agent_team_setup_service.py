@@ -140,15 +140,18 @@ class AgentTeamMembershipBoundary:
     # Declared members that are not runtime-ready now, for refusals that must say who is missing.
     non_ready_actors: tuple[dict[str, Any], ...] = ()
     maximum_runtime_staleness_seconds: int | None = None
+    topology_runtime_ready: bool = False
+    topology_blocker_codes: tuple[str, ...] = ()
 
 
 RUNTIME_READINESS_RULE = (
-    "An actor is runtime-ready when its runtime handoff is issued, its current runtime acknowledgement "
-    "(package, profile and model-binding revisions, runtime instance identity) is recorded, its credential "
-    "is delivered, it is enabled and active, and it polled its queue within the last {seconds} seconds."
+    "An actor is runtime-ready when it matches its declared role, scopes, profile and model bindings, its runtime "
+    "handoff is issued, its current runtime acknowledgement (package, profile and model-binding revisions, runtime "
+    "instance identity) is recorded, its credential is delivered, it is enabled and active, and it polled its queue "
+    "within the last {seconds} seconds. blocker_codes name what is missing."
 )
-# Blockers that only mean the actor has not been seen lately; any other blocker ended readiness at an unrecorded time.
-_PRESENCE_ONLY_BLOCKERS = frozenset({"runtime_stale", "runtime_unobserved"})
+# A caller that is acting right now needs no recent poll, but must hold every other readiness condition.
+CALLER_PRESENCE_BLOCKERS = frozenset({"runtime_stale", "runtime_unobserved"})
 
 
 def _iso_or_none(value: Any) -> str | None:
@@ -158,11 +161,11 @@ def _iso_or_none(value: Any) -> str | None:
 def readiness_refusal_context(
     boundary: AgentTeamMembershipBoundary,
     *,
-    required_actor_id: int | None = None,
+    required_actor_ids: frozenset[int] | None = None,
 ) -> dict[str, Any]:
     """Name the non-ready actors and the readiness rule for a refusal.
 
-    ``required_actor_id`` marks the one actor whose presence the refused request needs; without it every
+    ``required_actor_ids`` marks the actors whose presence the refused request needs; without it every
     non-ready actor blocks the request.
     """
 
@@ -173,7 +176,7 @@ def readiness_refusal_context(
         "readiness_rule": RUNTIME_READINESS_RULE.format(seconds=seconds if seconds is not None else "the configured number of"),
         "maximum_runtime_staleness_seconds": seconds,
         "non_ready_actors": [
-            {**row, "blocks_this_request": required_actor_id is None or row["actor_id"] == required_actor_id}
+            {**row, "blocks_this_request": required_actor_ids is None or row["actor_id"] in required_actor_ids}
             for row in boundary.non_ready_actors
         ],
     }
@@ -3884,12 +3887,12 @@ class AgentTeamSetupService:
                 "role": member.role,
                 "connection_state": member.connection_state,
                 "last_seen_at": _iso_or_none(member.last_seen_at),
-                # Present readiness lapsed when it was last seen only if nothing but presence is missing.
+                # The last poll while otherwise ready, known only when nothing but a recent poll is missing.
                 "last_ready_at": (
                     _iso_or_none(member.last_seen_at)
                     if member.last_seen_at is not None
                     and member.acknowledgement_state == "current"
-                    and set(member.blocker_codes) <= _PRESENCE_ONLY_BLOCKERS
+                    and set(member.blocker_codes) == {"runtime_stale"}
                     else None
                 ),
                 "blocker_codes": list(member.blocker_codes),
@@ -3912,6 +3915,8 @@ class AgentTeamSetupService:
             runtime_ready_actor_ids=runtime_ready_actor_ids,
             non_ready_actors=non_ready_actors,
             maximum_runtime_staleness_seconds=staleness,
+            topology_runtime_ready=status.runtime_ready,
+            topology_blocker_codes=tuple(status.blocker_codes),
         )
 
     async def require_dispatch_member(
@@ -3929,45 +3934,21 @@ class AgentTeamSetupService:
                 "agent_team_actor_outside_topology",
                 "Exact actor is not runtime-ready in the caller's current topology",
                 target_actor_id=target_actor_id,
-                **readiness_refusal_context(boundary, required_actor_id=target_actor_id),
+                **readiness_refusal_context(boundary, required_actor_ids=frozenset({target_actor_id})),
             )
         return boundary
 
-    async def readiness_refusal_context(
-        self,
-        actor_id: int,
-        *,
-        required_actor_id: int | None = None,
-    ) -> dict[str, Any]:
-        """Refusal detail for the topology an actor, or else the required actor, is bound to."""
+    def _project_allows(self, project_id: int | None, action: str) -> bool:
+        """Whether the caller's authority covers the project, without raising."""
 
-        boundary = await self.membership_boundary(actor_id)
-        if boundary is None and required_actor_id is not None:
-            boundary = await self.membership_boundary(required_actor_id)
-        if boundary is None:
-            return {}
-        return readiness_refusal_context(boundary, required_actor_id=required_actor_id)
+        authority = self.db.info.get("authority")
+        if authority is None:
+            return get_settings().workchord_auth_mode == "trusted_local"
+        return authority.allows(project_id, action)
 
-    async def verifier_routing_readiness(
-        self,
-        principal: AgentActor,
-        verifier_actor_id: int,
-    ) -> AgentRoutingTopologyReadiness:
-        """Judge verification routing by the selected verifier's presence, not the whole team's.
-
-        A bound principal needs the verifier to be a runtime-ready member of its own topology; a principal
-        without a topology, such as an owner, is judged by the topology the verifier belongs to.
-        """
-
-        boundary = await self.membership_boundary(principal.id)
-        if boundary is None:
-            boundary = await self.membership_boundary(verifier_actor_id)
-        if boundary is None:
-            return AgentRoutingTopologyReadiness.unavailable()
-        if verifier_actor_id not in boundary.member_actor_ids:
-            # Outside the caller's team the team-wide judgement stays as it was.
-            return await self.routing_readiness(principal)
-        if verifier_actor_id in boundary.runtime_ready_actor_ids:
+    @staticmethod
+    def _whole_team_readiness(boundary: AgentTeamMembershipBoundary) -> AgentRoutingTopologyReadiness:
+        if boundary.topology_runtime_ready:
             return AgentRoutingTopologyReadiness.ready(
                 topology_id=boundary.topology_key,
                 topology_revision=boundary.topology_revision,
@@ -3975,7 +3956,75 @@ class AgentTeamSetupService:
         return AgentRoutingTopologyReadiness.not_ready(
             topology_id=boundary.topology_key,
             topology_revision=boundary.topology_revision,
-            blocker_codes=("verifier_not_runtime_ready",),
+            blocker_codes=boundary.topology_blocker_codes or ("topology_not_runtime_ready",),
+        )
+
+    async def readiness_gate(
+        self,
+        principal: AgentActor,
+        *,
+        verifier_actor_id: int | None = None,
+        project_id: int | None = None,
+        action: str = "manage",
+        observed_boundaries: dict[int, AgentTeamMembershipBoundary | None] | None = None,
+    ) -> tuple[AgentRoutingTopologyReadiness, dict[str, Any]]:
+        """Judge routing readiness and say who is missing when it is not met.
+
+        Without ``verifier_actor_id`` the whole topology must be ready. With one, a ready topology still
+        passes, and otherwise verification needs only the selected verifier, as a runtime-ready member of
+        the caller's team, and a caller whose own readiness is intact apart from a recent poll. A caller
+        bound to no team may do this only with authority over the task's project, and is then judged by the
+        verifier's team. The refusal detail names only the caller's own team, or the verifier's team for a
+        caller with that authority.
+        """
+
+        boundary = await self.membership_boundary(principal.id)
+        if observed_boundaries is not None:
+            observed_boundaries[principal.id] = boundary
+        if boundary is not None:
+            whole = self._whole_team_readiness(boundary)
+            if verifier_actor_id is None or boundary.topology_runtime_ready:
+                return whole, ({} if boundary.topology_runtime_ready else readiness_refusal_context(boundary))
+            required = frozenset({verifier_actor_id})
+            codes: tuple[str, ...]
+            if verifier_actor_id not in boundary.member_actor_ids:
+                codes = ("verifier_outside_topology",)
+            else:
+                caller = next((row for row in boundary.non_ready_actors if row["actor_id"] == principal.id), None)
+                if caller is not None and not set(caller["blocker_codes"]) <= CALLER_PRESENCE_BLOCKERS:
+                    codes, required = ("caller_not_runtime_ready",), required | {principal.id}
+                elif verifier_actor_id in boundary.runtime_ready_actor_ids:
+                    return AgentRoutingTopologyReadiness.ready(
+                        topology_id=boundary.topology_key,
+                        topology_revision=boundary.topology_revision,
+                    ), {}
+                else:
+                    codes = ("verifier_not_runtime_ready",)
+            return (
+                AgentRoutingTopologyReadiness.not_ready(
+                    topology_id=boundary.topology_key,
+                    topology_revision=boundary.topology_revision,
+                    blocker_codes=codes,
+                ),
+                readiness_refusal_context(boundary, required_actor_ids=required),
+            )
+        if verifier_actor_id is None or not self._project_allows(project_id, action):
+            return AgentRoutingTopologyReadiness.unavailable(), {}
+        boundary = await self.membership_boundary(verifier_actor_id)
+        if boundary is None:
+            return AgentRoutingTopologyReadiness.unavailable(), {}
+        if verifier_actor_id in boundary.runtime_ready_actor_ids:
+            return AgentRoutingTopologyReadiness.ready(
+                topology_id=boundary.topology_key,
+                topology_revision=boundary.topology_revision,
+            ), {}
+        return (
+            AgentRoutingTopologyReadiness.not_ready(
+                topology_id=boundary.topology_key,
+                topology_revision=boundary.topology_revision,
+                blocker_codes=("verifier_not_runtime_ready",),
+            ),
+            readiness_refusal_context(boundary, required_actor_ids=frozenset({verifier_actor_id})),
         )
 
     async def routing_readiness(
@@ -3986,29 +4035,5 @@ class AgentTeamSetupService:
     ) -> AgentRoutingTopologyReadiness:
         """Project authoritative setup state into the rollout readiness hook."""
 
-        boundary = await self.membership_boundary(actor.id)
-        if observed_boundaries is not None:
-            observed_boundaries[actor.id] = boundary
-        if boundary is None:
-            return AgentRoutingTopologyReadiness.unavailable()
-        topology = await self._topology(
-            boundary.topology_key,
-            load_members=True,
-        )
-        assert topology is not None
-        status = await self._status_for_topology(
-            topology,
-            can_mutate=False,
-            persist_state=False,
-        )
-        if status.runtime_ready:
-            return AgentRoutingTopologyReadiness.ready(
-                topology_id=boundary.topology_key,
-                topology_revision=boundary.topology_revision,
-            )
-        return AgentRoutingTopologyReadiness.not_ready(
-            topology_id=boundary.topology_key,
-            topology_revision=boundary.topology_revision,
-            blocker_codes=status.blocker_codes
-            or ("topology_not_runtime_ready",),
-        )
+        readiness, _ = await self.readiness_gate(actor, observed_boundaries=observed_boundaries)
+        return readiness
