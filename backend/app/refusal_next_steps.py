@@ -256,6 +256,9 @@ NOT_REFUSAL_CODES = frozenset({
     "candidate_unverifiable", "manual_provenance_event_id", "manual_provenance_record", "manual_provenance_recorded",
     "owner_acceptance_override", "owner_acceptance_override_task_ids", "owner_override_accepted", "reviewer_profile_id",
     "reviewer_profile_ids",
+    # Routing-check issue codes: reported inside a routing check (and a routing_inconsistent
+    # refusal's routing_check), each with its own message and a suggested routing.
+    "reviewer_profile_is_assignee_profile", "reviewer_profile_lacks_model",
 })
 
 
