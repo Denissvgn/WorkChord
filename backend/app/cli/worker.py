@@ -14,6 +14,7 @@ from app.services.outbound_webhook_service import (
     outbound_delivery_worker_loop,
     run_due_outbound_delivery_jobs,
 )
+from app.services.task_reactivation_service import postponement_check_loop
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -62,10 +63,14 @@ async def _run(*, once: bool) -> int:
                 loop.add_signal_handler(signal_name, stop_event.set)
             except NotImplementedError:  # pragma: no cover - Windows fallback
                 pass
-        await outbound_delivery_worker_loop(
-            stop_event,
-            poll_seconds=settings.outbound_delivery_poll_seconds,
-            batch_size=settings.outbound_delivery_batch_size,
+        # The date check returns postponed work whose day has come, in each project's time zone.
+        await asyncio.gather(
+            outbound_delivery_worker_loop(
+                stop_event,
+                poll_seconds=settings.outbound_delivery_poll_seconds,
+                batch_size=settings.outbound_delivery_batch_size,
+            ),
+            postponement_check_loop(stop_event),
         )
         return 0
     finally:

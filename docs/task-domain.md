@@ -65,6 +65,19 @@ Postponing work with a live claim, assignment or run releases them through the s
 
 `POST /api/tasks/{task_id}/reactivate` takes `{expected_version, reason}`. It returns resolved work to `resolved`, and planned or active work to `planned`, where it starts again through the usual commands. `GET /api/tasks/{task_id}/postponement` returns the open postponement, or the most recent one: who decided, when and why, the released execution, each requirement and, after reactivation, who reactivated the work, why and to which status. The actions endpoint reports `postpone` and `reactivate` availability. `GET /api/tasks/capabilities` lists `task-postponement-v1` when the server supports these commands.
 
+### Automatic reactivation
+
+Nobody has to watch for the requirements. When the last unmet requirement of an open postponement becomes true, the server reactivates the task itself, to `resolved` if it was postponed after resolution and to `planned` otherwise. The postponement closes with the trigger `requirements_met`, no person is recorded as reactivating it, and the task timeline's `task_reactivated` entry names the requirement that completed it and lists every requirement with when it was met. A `task.reactivated` webhook event carries the same record for subscribers, and the status change email to the iteration manager names the requirement.
+
+Each requirement kind is evaluated when its facts can change:
+
+- `predecessor_accepted`: when the named task is accepted.
+- `linked_resolved`: when the named task becomes resolved or accepted, or the named triage item is accepted, declined, marked a duplicate or converted. A snoozed item is not resolved.
+- `date`: on the daily date check, once the day has come in the project's time zone (the iteration calendar's time zone for work outside a project). The worker process runs the check every 15 minutes, and each run is idempotent.
+- `owner_decision`: only when the workspace owner records it with `POST /api/tasks/{task_id}/postponement/requirements/{requirement_id}/decision`, which takes `{expected_version, decision}`. A project manager, a PM agent or an operator who is not the owner cannot record it, and nothing else satisfies it.
+
+A requirement stays met once it has been met. Two triggers arriving together are serialized, so the task is reactivated once. The task detail (`GET /api/tasks/{task_id}/detail`) carries `postponement` for postponed work: the reason, and each requirement with `met` and `met_at`.
+
 Only these two commands move work into or out of `postponed`. A status change, a bulk status change or a task update that names `postponed` is refused, as is any other status change of postponed work. Canceled postponed work stays postponed; reopening it returns it to its open postponement. A summary task is postponed when all its leaves are postponed. Alongside other leaves, a postponed leaf counts as not started. An iteration or backlog restore that would move a task into or out of `postponed` is refused with `restore_conflicts_with_task_postponement`.
 
 ### Postponed or deferred
