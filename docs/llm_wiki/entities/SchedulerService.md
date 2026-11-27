@@ -1,6 +1,6 @@
 # SchedulerService
 
-**Location:** `backend/app/services/scheduler_service.py:346`
+**Location:** `backend/app/services/scheduler_service.py:389`
 **Kind:** Class
 **Bases:** —
 **Module:** [scheduler_service](../modules/scheduler_service.md)
@@ -36,6 +36,9 @@ Service for automatic task scheduling.
 | `_holds_no_schedule` | `(task) -> bool` | — | Deferred work is backlog and postponed work is stopped: neither is placed nor occupies capacity. |
 | `_planning_start` | `(iteration: Iteration) -> date` | `@staticmethod` | Keep new forecasts on or after the workspace's current working date. |
 | `_schedule_leaf_task` | *(async)* `(task: Task, iteration: Iteration, member_schedules: dict[int, MemberSchedule], decisions: list[SchedulingDecision], task_map: dict[int, Task], earliest_start: Optional[date] = None)` | — | Schedule a leaf task (no children). |
+| `_place_in_free_days` | `(task: Task, iteration: Iteration, member_schedules: dict[int, MemberSchedule], decisions: list[SchedulingDecision], task_map: dict[int, Task], earliest_start: date, cursor: date) -> bool` | — | Place a ready task in free days its row left before already placed work, if it fits there. |
+| `_idle_days` | `(member_schedules: dict[int, MemberSchedule], task_map: dict[int, Task], span_start: date, planned_ids: set[int], satisfied_ids: set[int], kept_ids: set[int]) -> list[AssigneeIdleDays]` | — | Each row's working days left idle before its last work in this run, with the task that follows them. |
+| `_idle_gap` | `(run: list[date], task_id: int, task_map: dict[int, Task], schedule: MemberSchedule, planned_ids: set[int], satisfied_ids: set[int]) -> IdleGap` | — | — |
 | `_schedule_composite_task` | *(async)* `(task: Task, iteration: Iteration, member_schedules: dict[int, MemberSchedule], decisions: list[SchedulingDecision], task_map: dict[int, Task], parent_earliest_start: Optional[date] = None)` | — | Schedule a composite task (with children). |
 | `_get_earliest_start` | `(task: Task, iteration_start: date, task_map: dict[int, Task]) -> date` | — | Get earliest possible start date based on dependencies. |
 | `_update_composite_task_dates` | `(task: Task, iteration: Iteration, decisions: list[SchedulingDecision])` | — | Update a composite task's dates based on its children. |
@@ -84,7 +87,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [scheduler_service](../modules/scheduler_service.md) | 23 | — |
+| [scheduler_service](../modules/scheduler_service.md) | 26 | — |
 
 ### References
 
@@ -103,4 +106,4 @@ flowchart LR
 | `IncrementalScheduler.__init__` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `test_capacity_scheduler_and_profile_owner_use_each_selected_day` | call | [test_annual_calendar_coverage](../modules/test_annual_calendar_coverage.md) | 1 |
 
-> References: showing 12 of 56 logical references; 44 omitted by the 12-row generated summary limit.
+> References: showing 12 of 66 logical references; 54 omitted by the 12-row generated summary limit.

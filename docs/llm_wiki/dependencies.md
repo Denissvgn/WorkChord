@@ -661,14 +661,14 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | Module | Fan-in | Fan-out |
 |--------|--------|---------|
 | [Button](modules/Button.md) | 165 | 1 |
-| [models_task](modules/models_task.md) | 157 | 9 |
+| [models_task](modules/models_task.md) | 158 | 9 |
 | [models_agent](modules/models_agent.md) | 140 | 5 |
 | [renderWithProviders](modules/renderWithProviders.md) | 139 | 2 |
 | [time](modules/time.md) | 130 | 0 |
 | [config](modules/config.md) | 118 | 1 |
-| [commands](modules/commands.md) | 115 | 18 |
+| [commands](modules/commands.md) | 116 | 18 |
 | [types_task](modules/types_task.md) | 115 | 2 |
-| [app_database](modules/app_database.md) | 110 | 5 |
+| [app_database](modules/app_database.md) | 111 | 5 |
 | [authority](modules/authority.md) | 109 | 6 |
 | [models_iteration](modules/models_iteration.md) | 105 | 6 |
 | [models_project](modules/models_project.md) | 90 | 9 |
@@ -677,8 +677,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [models_identity](modules/models_identity.md) | 79 | 2 |
 | [task_service](modules/task_service.md) | 78 | 30 |
 | [apiError](modules/apiError.md) | 72 | 0 |
+| [app_main](modules/app_main.md) | 65 | 49 |
 | [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 65 | 9 |
-| [app_main](modules/app_main.md) | 64 | 49 |
 | [i18n](modules/i18n.md) | 64 | 1 |
 | [agent_service](modules/agent_service.md) | 59 | 20 |
 | [formatDate](modules/formatDate.md) | 55 | 1 |
@@ -698,7 +698,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [useScopeLink](modules/useScopeLink.md) | 41 | 3 |
 | [types_team](modules/types_team.md) | 38 | 0 |
 | [query_limits](modules/query_limits.md) | 37 | 0 |
-| [services_work_metrics](modules/services_work_metrics.md) | 36 | 8 |
+| [services_work_metrics](modules/services_work_metrics.md) | 37 | 8 |
 | [agent_work_service](modules/agent_work_service.md) | 35 | 36 |
 | [user_session](modules/user_session.md) | 32 | 6 |
 | [teamService](modules/teamService.md) | 32 | 3 |
@@ -745,11 +745,11 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [types_triage](modules/types_triage.md) | 18 | 1 |
 | [schemas_iteration](modules/schemas_iteration.md) | 17 | 2 |
 | [outbound_webhook_service](modules/outbound_webhook_service.md) | 17 | 12 |
+| [scheduler_service](modules/scheduler_service.md) | 17 | 20 |
 | [useDraftDismissal](modules/useDraftDismissal.md) | 17 | 0 |
 | [planningReturn](modules/planningReturn.md) | 17 | 0 |
 | [schemas_common](modules/schemas_common.md) | 16 | 0 |
 | [language_service](modules/language_service.md) | 16 | 2 |
-| [scheduler_service](modules/scheduler_service.md) | 16 | 20 |
 | [taskEditorContract](modules/taskEditorContract.md) | 16 | 2 |
 | [workScope](modules/workScope.md) | 16 | 2 |
 | [agentService](modules/agentService.md) | 16 | 2 |
@@ -1142,6 +1142,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_github_reconciliation](modules/test_github_reconciliation.md) | 2 | 11 |
 | [test_iteration_date_move](modules/test_iteration_date_move.md) | 2 | 18 |
 | [test_schedule_follows_actual_dates](modules/test_schedule_follows_actual_dates.md) | 2 | 15 |
+| [test_scheduler_dependencies](modules/test_scheduler_dependencies.md) | 2 | 8 |
 | [UserSessionBadge](modules/UserSessionBadge.md) | 2 | 3 |
 | [AssignedAgentsSummary](modules/AssignedAgentsSummary.md) | 2 | 4 |
 | [RoutingCandidateComparison](modules/RoutingCandidateComparison.md) | 2 | 2 |
@@ -1305,7 +1306,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_delivery_dependencies](modules/test_delivery_dependencies.md) | 1 | 13 |
 | [test_execution_planning_window](modules/test_execution_planning_window.md) | 1 | 23 |
 | [test_execution_usage](modules/test_execution_usage.md) | 1 | 11 |
-| [test_scheduler_dependencies](modules/test_scheduler_dependencies.md) | 1 | 8 |
 | [test_supervised_shadow_rework](modules/test_supervised_shadow_rework.md) | 1 | 19 |
 | [test_task_postponement](modules/test_task_postponement.md) | 1 | 25 |
 | [test_task_replacement](modules/test_task_replacement.md) | 1 | 31 |
@@ -1575,6 +1575,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_saved_dependency_order](modules/test_saved_dependency_order.md) | 0 | 6 |
 | [test_saved_view_service](modules/test_saved_view_service.md) | 0 | 3 |
 | [test_schedule_working_date](modules/test_schedule_working_date.md) | 0 | 7 |
+| [test_scheduler_free_days](modules/test_scheduler_free_days.md) | 0 | 7 |
 | [test_server_features](modules/test_server_features.md) | 0 | 8 |
 | [test_settings_read_access](modules/test_settings_read_access.md) | 0 | 5 |
 | [test_shadow_review_independence](modules/test_shadow_review_independence.md) | 0 | 12 |

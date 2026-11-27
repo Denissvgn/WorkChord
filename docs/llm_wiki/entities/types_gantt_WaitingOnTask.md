@@ -7,7 +7,7 @@
 
 ## Description
 
-A postponed task a planned task waits on.
+A task a planned task waits on: postponed work, or the prerequisite behind idle days.
 
 ## Attributes
 
