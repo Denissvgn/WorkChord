@@ -120,4 +120,6 @@ class RoutingConvertResponse(BaseModel):
     removed: list[str] = Field(default_factory=list, description="Sentences the structured routing replaces.")
     unresolved: list[str] = Field(default_factory=list, description="Routing sentences kept as text because no single catalog entry matched.")
     check: RoutingCheck | None = None
+    resets_progress: bool = Field(default=False, description=(
+        "Applying edits the brief's text, which creates a brief revision and clears the task's current criterion progress."))
     task_version: int | None = None

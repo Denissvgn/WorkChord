@@ -520,6 +520,74 @@ async def test_routing_changes_keep_progress_and_evidence_of_resolved_work(deliv
         assert len(events) == 2
 
 
+async def test_routing_changes_clear_acceptance_on_both_write_paths(delivery_store):
+    factory, scenario, _ = delivery_store
+    members, profiles = await routing_scope(factory, scenario)
+    async with _client() as client:
+        created = await create_task(client, scenario, members["gpt"], gpt_routing(profiles))
+        path = f"/api/tasks/{created['id']}"
+
+    async def accept():
+        from app.models.identity import Principal
+        async with factory() as db:
+            owner = Principal(kind="human", display_name="Owner")
+            db.add(owner)
+            await db.flush()
+            task = await db.get(Task, created["id"])
+            task.status, task.accepted_at, task.accepted_version = "closed", task.updated_at, task.version
+            task.accepted_by_principal_id = owner.id
+            await db.commit()
+        async with _client() as client:
+            body = (await client.get(path)).json()
+            assert body["is_accepted"] is True
+            return body
+
+    for write in ("brief", "task"):
+        accepted = await accept()
+        routing = {**accepted["brief"]["routing"], "notes": f"Changed through the {write} write."}
+        async with _client() as client:
+            if write == "brief":
+                response = await client.put(f"{path}/brief", json={"expected_version": accepted["version"],
+                                                                   "brief": {**accepted["brief"], "routing": routing}})
+            else:
+                response = await client.put(path, json={"expected_version": accepted["version"],
+                                                        "brief": {**accepted["brief"], "routing": routing}})
+            assert response.status_code == 200, response.text
+            body = (await client.get(path)).json()
+        assert body["brief_revision"] == accepted["brief_revision"] and body["progress"] == accepted["progress"]
+        assert body["accepted_at"] is None and body["is_accepted"] is False, write
+        async with factory() as db:
+            assert (await db.get(Task, created["id"])).accepted_version is None
+
+
+async def test_empty_routing_is_stored_as_no_routing(delivery_store):
+    factory, scenario, _ = delivery_store
+    members, profiles = await routing_scope(factory, scenario)
+    async with _client() as client:
+        created = await create_task(client, scenario, members["gpt"], {})
+        assert created["brief"]["routing"] is None and "## Routing" not in created["description"]
+    async with factory() as db:
+        assert "routing" not in (await db.get(Task, created["id"])).brief
+
+
+async def test_conversion_preview_says_when_applying_resets_progress(delivery_store):
+    factory, scenario, _ = delivery_store
+    members, _ = await routing_scope(factory, scenario)
+    async with _client() as client:
+        written = await write_text_brief(client, scenario, members)
+        path = f"/api/tasks/{written['id']}"
+        assert (await client.post(f"{path}/routing/convert", json={"expected_version": written["version"]})).json()["resets_progress"] is False
+        criterion = written["brief"]["acceptance_criteria"][0]
+        progress = await client.post(f"{path}/progress", json={"expected_version": written["version"], "criteria": [
+            {"criterion_id": criterion["id"], "criterion_revision": criterion["revision"], "state": "completed", "evidence": "Done"}]})
+        assert progress.status_code == 200, progress.text
+        preview = (await client.post(f"{path}/routing/convert", json={"expected_version": progress.json()["version"]})).json()
+        assert preview["resets_progress"] is True
+        applied = await client.post(f"{path}/routing/convert", json={"expected_version": progress.json()["version"], "apply": True})
+        assert applied.status_code == 200, applied.text
+        assert (await client.get(path)).json()["progress"] is None
+
+
 async def test_recorded_contributor_publishers_bind_the_reviewer(delivery_store):
     factory, scenario, _ = delivery_store
     members, profiles = await routing_scope(factory, scenario)

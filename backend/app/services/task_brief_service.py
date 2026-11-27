@@ -71,10 +71,9 @@ def render_routing(routing: dict | None) -> str:
 
 
 def evidence_brief(brief: dict | None) -> dict | None:
-    """The part of a stored brief that criterion evidence and work-package verification bind to.
+    """The part of a stored brief that the brief revision and criterion evidence bind to.
 
-    Routing says who executes and reviews, not what is accepted, so it is left out; a brief
-    without routing is unchanged, which keeps digests recorded before routing existed valid.
+    Routing says who executes and reviews, not what is accepted, so it is left out.
     """
     if brief is None:
         return None
@@ -223,6 +222,9 @@ class TaskBriefService:
             # A writer that does not send routing keeps it; an explicit null clears it.
             from app.schemas.task_routing import TaskRouting
             brief = brief.model_copy(update={"routing": TaskRouting.model_validate(previous["routing"])})
+        if brief.routing is not None and brief.routing.first_rung is None and not brief.routing.escalation and brief.routing.reviewer is None:
+            # A routing that names no rung and no reviewer is stored as no routing.
+            brief = brief.model_copy(update={"routing": None})
         routing_changed = brief.routing is not None and brief.routing.model_dump(mode="json") != previous.get("routing")
         if routing_changed and resolve_routing:
             from app.services.task_routing_service import resolve_routing as fill_routing
@@ -243,12 +245,14 @@ class TaskBriefService:
             return False
         if task.brief is not None and evidence_brief(payload) == evidence_brief(task.brief):
             # Only the routing changed. It names who executes and reviews, not what is accepted, so the
-            # brief revision, criterion progress, acceptance and every record bound to them stay valid.
-            # The task version moves, the description is rendered again and the timeline keeps both routings.
+            # brief revision, criterion progress and every record bound to them stay valid. Acceptance
+            # is cleared, as for an assignee change, because the version it was given at moves on.
+            # The description is rendered again and the timeline keeps both routings.
             previous_routing = task.brief.get("routing")
             await self.tasks.reserve_task_version(task, task.version)
             task.brief = payload
             task.description = render_brief(payload)
+            clear_acceptance(task)
             await self.tasks.record_task_event(task.id, "brief_routing_changed", {
                 "version": task.version, "brief_revision": task.brief_revision, "provenance": provenance,
                 "previous_routing": previous_routing, "routing": payload.get("routing")})
@@ -429,7 +433,7 @@ class TaskBriefService:
             raise AuthorityError("package_verification_required", "The authoritative work package must pass its verification protocol.")
         if task.brief and package is not None:
             from app.autonomy.canonical import sha256_hex
-            if (package.task_context_version, package.task_brief_revision, package.task_artifact_revision, package.task_brief_digest) != (task.version, task.brief_revision, task.artifact_revision, sha256_hex(evidence_brief(task.brief))):
+            if (package.task_context_version, package.task_brief_revision, package.task_artifact_revision, package.task_brief_digest) != (task.version, task.brief_revision, task.artifact_revision, sha256_hex(task.brief)):
                 raise AuthorityError("package_context_stale", "Work-package verification is bound to another task, brief or artifact revision.")
         if task.brief and not override:
             progress = task.progress or {}

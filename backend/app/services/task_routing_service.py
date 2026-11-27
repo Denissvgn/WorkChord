@@ -593,7 +593,7 @@ def parse_text_routing(brief: dict, entries, existing: dict | None = None) -> tu
 async def convert_text_routing(db, task, *, override: TaskRouting | None = None, apply: bool = False) -> RoutingConvertResponse:
     """Preview or apply moving a brief's free-text routing into structure, keeping every replaced sentence."""
     from app.schemas.task_brief import TaskBrief
-    from app.services.task_brief_service import TaskBriefService, brief_payload
+    from app.services.task_brief_service import TaskBriefService, brief_payload, evidence_brief
     if task.brief is None:
         raise ValueError("Convert the task's description to a structured brief first")
     existing = task.brief.get("routing")
@@ -623,8 +623,11 @@ async def convert_text_routing(db, task, *, override: TaskRouting | None = None,
     cleaned = {key: value for key, value in cleaned.items() if key != "routing"}
     proposed = TaskBrief.model_validate({**cleaned, "routing": routing.model_dump(mode="json")})
     check = await check_routing(db, task=task, project_id=task.project_id, assignee_id=task.assignee_id, routing=routing)
-    response = RoutingConvertResponse(task_id=task.id, routing=routing, brief=brief_payload(proposed), removed=removed,
-                                      unresolved=unresolved, check=check, task_version=task.version)
+    payload = brief_payload(proposed)
+    # Cutting sentences from the text is a substantive brief edit; only a routing-only change keeps progress.
+    resets_progress = task.progress is not None and evidence_brief(payload) != evidence_brief(task.brief)
+    response = RoutingConvertResponse(task_id=task.id, routing=routing, brief=payload, removed=removed,
+                                      unresolved=unresolved, check=check, task_version=task.version, resets_progress=resets_progress)
     if apply:
         await TaskBriefService(db).apply_brief(task, proposed, provenance="routing_converted", enforce=False)
         notes = list(task.brief_migration_notes or [])
