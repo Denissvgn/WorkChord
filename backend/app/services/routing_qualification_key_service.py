@@ -9,13 +9,13 @@ key beside the built-in routing skill keys, which stay fixed in code.
 from __future__ import annotations
 
 import json
-from collections.abc import Iterable, Iterator
-from contextlib import contextmanager
+from collections.abc import Iterable
 
 from sqlalchemy import String, bindparam, cast, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.authority import internal_authority
 from app.models.agent import (
     AgentActor,
     AgentModelCatalogEntry,
@@ -67,29 +67,17 @@ async def _lock_keys(db: AsyncSession, names: Iterable[str]) -> None:
     """
 
     names = sorted(set(names))
-    if names and db.get_bind().dialect.name == "sqlite":
+    if not names or db.get_bind().dialect.name != "sqlite":
+        return
+    # The statement carries no caller data and changes nothing, so it runs
+    # outside the caller's project scope, which refuses unscoped text writes.
+    with internal_authority(db.sync_session):
         await db.execute(
             text("UPDATE routing_qualification_keys SET id = id WHERE key IN :names").bindparams(
                 bindparam("names", expanding=True)
             ),
             {"names": names},
         )
-
-
-@contextmanager
-def _internal_reads(db: AsyncSession) -> Iterator[None]:
-    """Read every row regardless of the caller's project scope, then restore it."""
-
-    info = db.sync_session.info
-    previous = info.get("authority_internal")
-    info["authority_internal"] = True
-    try:
-        yield
-    finally:
-        if previous is None:
-            info.pop("authority_internal", None)
-        else:
-            info["authority_internal"] = previous
 
 
 async def active_qualification_keys(
@@ -200,11 +188,14 @@ class RoutingQualificationKeyService:
         """Read one declared key with its revisions and what currently names it."""
 
         self._commands._require_read(actor)
-        row = (await self.db.execute(
-            select(RoutingQualificationKey)
-            .options(selectinload(RoutingQualificationKey.revisions))
-            .where(RoutingQualificationKey.key == key.strip().lower())
-        )).scalar_one_or_none()
+        # Revisions are registry history, not the caller's data; reading them
+        # inside the caller's scope would filter them by the actor that wrote them.
+        with internal_authority(self.db.sync_session):
+            row = (await self.db.execute(
+                select(RoutingQualificationKey)
+                .options(selectinload(RoutingQualificationKey.revisions))
+                .where(RoutingQualificationKey.key == key.strip().lower())
+            )).scalar_one_or_none()
         if row is None:
             raise LookupError("Qualification key not found")
         return RoutingQualificationKeyDetail(
@@ -276,7 +267,7 @@ class RoutingQualificationKeyService:
     async def _retire_usage(self, key: str) -> RoutingQualificationKeyUsage:
         """Usage that decides a retire: every reference counts, but only visible tasks are named."""
 
-        with _internal_reads(self.db):
+        with internal_authority(self.db.sync_session):
             all_entries, all_tasks = await self._references(key)
         _, visible_tasks = await self._references(key)
         return self._bounded_usage(

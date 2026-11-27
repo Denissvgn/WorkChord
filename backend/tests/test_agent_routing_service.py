@@ -21,6 +21,9 @@ from app.models.agent import (
     TaskEvent,
     TaskRoutingAssessment,
 )
+from app.authority import Authority
+from app.models.iteration import Iteration
+from app.models.project import Project
 from app.models.routing_qualification import RoutingQualificationKey
 from app.models.team_member import TeamMember, TeamMemberProfile, TeamMemberProfileSkill
 from app.schemas.agent import (
@@ -792,6 +795,61 @@ async def test_declared_qualification_key_is_a_requirement_the_candidate_must_ho
     )
     retired_exclusion = {e.actor_id: e for e in retired_preview.exclusions}[unqualified_id]
     assert "Required qualification keys qualified.schema-review are retired" in retired_exclusion.rationale
+
+
+@pytest.mark.asyncio
+async def test_a_project_scoped_agent_can_require_a_declared_key(
+    db_session: AsyncSession,
+    profile_factory,
+    actor_factory,
+    team_member_factory,
+    task_factory,
+) -> None:
+    pm, _, task, _, _ = await _routing_fixture(
+        db_session, profile_factory, actor_factory, team_member_factory, task_factory
+    )
+    operator = await actor_factory(role="pm", scopes=json.dumps(["admin"]))
+    await RoutingQualificationKeyService(db_session).declare(
+        operator,
+        RoutingQualificationKeyDeclare(key="qualified.schema-review", label="Schema review"),
+        command=_command_context("declare-for-scoped-pm"),
+    )
+    # The scope needs a project; the fixture task has none, so give it one.
+    project = Project(name="Scoped routing work")
+    db_session.add(project)
+    await db_session.flush()
+    task.project_id = project_id = project.id
+    if task.iteration_id is not None:
+        (await db_session.get(Iteration, task.iteration_id)).project_id = project_id
+    await db_session.commit()
+    await db_session.refresh(task)
+    # A managed-mode PM agent: no workspace role, not local, scoped to one project.
+    scoped = Authority(
+        None,
+        "agent",
+        projects={project_id: "manager"},
+        actor_id=pm.id,
+        actor_role="pm",
+        scopes=frozenset({"planning:read", "planning:write"}),
+        source="agent_rest",
+    )
+    assert not scoped.operator and not scoped.local
+    task_id = task.id
+    db_session.info["authority"] = scoped
+    try:
+        receipt = await AgentRoutingService(db_session).create_assessment(
+            task.id,
+            pm,
+            _assessment_command(task_version=task.version, qualification_keys=["qualified.schema-review"]),
+            _command_context("assessment-scoped-declared-key"),
+        )
+        # Registry history is not filtered by the actor that wrote each revision.
+        detail = await RoutingQualificationKeyService(db_session).get_key(pm, "qualified.schema-review")
+        assert [revision.action for revision in detail.revisions] == ["declare"]
+        assert detail.usage.task_ids == [task_id]
+    finally:
+        db_session.info.pop("authority", None)
+    assert receipt.assessment.required_model.qualification_keys == ["qualified.schema-review"]
 
 
 @pytest.mark.asyncio
