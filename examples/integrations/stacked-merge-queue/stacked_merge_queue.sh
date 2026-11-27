@@ -11,9 +11,11 @@
 # order, bottom first.
 #
 # Safety: never force-pushes, never deletes or resets a remote branch, never closes a PR;
-# merges only the bottom item with --match-head-commit after green CI; re-runs failed jobs
-# once per head; stops on a second failure or on a merge conflict it cannot resolve; can be
-# rerun with the same arguments to resume (merged items are skipped, prepared ones reused).
+# merges only the bottom item with --match-head-commit after green CI and an approved review
+# (REQUIRE_APPROVAL=0 leaves review to branch protection); re-runs failed jobs once per head;
+# stops on a second failure or on a merge conflict it cannot resolve; can be rerun with the
+# same arguments to resume (merged items are skipped, prepared ones reused). It never writes
+# WorkChord task statuses: it only reads each task after its merge and reports STATUS DRIFT.
 #
 # Configuration (environment):
 #   REPO           checkout used for fetch and GitHub queries            (default: .)
@@ -22,47 +24,41 @@
 #   REGEN_CMD      regenerates shared files and commits them with the subject in $1
 #                  (optional; prints "no changes" when there is nothing to commit)
 #   RESOLVE_CMD    resolves known mechanical conflicts in the current checkout (optional)
-#   GENERATED_DIR  conflicts under this path take the base's version (optional)
+#   GENERATED_DIR  conflicts under this repository-relative path take the base's version
+#                  (optional; absolute paths and ".." are refused)
+#   REQUIRE_APPROVAL  1 (default) merges only PRs whose review decision is APPROVED; 0 leaves
+#                  review to branch protection
 #   DEPTH          PRs in CI at once                                     (default: 3)
 #   WORKCHORD_URL  e.g. https://workchord.example.com/api                (optional)
-#   WORKCHORD_API_KEY  agent or operator key, read from the environment, never printed
-#   CLOSE_REASON   reason recorded when closing a task after merge
+#   WORKCHORD_API_KEY  key used only to read tasks, from the environment, never printed
+#   STATE_DIR      lock and bookkeeping (default: per repository, under TMPDIR)
 set -u
-: ${REPO:=.} ${DEPTH:=3} ${GENERATED_DIR:=} ${REGEN_CMD:=} ${RESOLVE_CMD:=}
+: ${REPO:=.} ${DEPTH:=3} ${GENERATED_DIR:=} ${REGEN_CMD:=} ${RESOLVE_CMD:=} ${REQUIRE_APPROVAL:=1}
 : ${WORKTREE:?set WORKTREE} ${BODY_DIR:?set BODY_DIR}
-: ${CLOSE_REASON:=Merged after independent review and green CI}
-STATE_DIR=${STATE_DIR:-${TMPDIR:-/tmp}/stacked-merge-queue}; mkdir -p $STATE_DIR
+if [[ -n $GENERATED_DIR ]] && [[ $GENERATED_DIR == /* || $GENERATED_DIR == *..* ]]; then
+  print -u2 "GENERATED_DIR must be a repository-relative path without '..'"; exit 2; fi
+GENERATED_DIR=${GENERATED_DIR%/}
+if [ -n "${WORKCHORD_URL:-}" ] && [ -z "${WORKCHORD_API_KEY:-}" ]; then
+  print -u2 "WORKCHORD_URL is set but WORKCHORD_API_KEY is not"; exit 2; fi
+REPO_KEY=$(git -C $REPO remote get-url origin 2>/dev/null | (shasum 2>/dev/null || sha1sum) | cut -c1-12)
+STATE_DIR=${STATE_DIR:-${TMPDIR:-/tmp}/stacked-merge-queue-${REPO_KEY:-local}}; mkdir -p $STATE_DIR
 NOCHANGE=$STATE_DIR/nochange.txt; touch $NOCHANGE; LOCK=$STATE_DIR/lock
 log(){ print -r -- "$(date +%H:%M) $*"; }
 
-# --- WorkChord task status (planned -> active -> resolved -> closed) -------------------------
-wc(){  # wc METHOD PATH [JSON]
-  [ -n "${WORKCHORD_URL:-}" ] || return 1
-  curl -fsS -X $1 "$WORKCHORD_URL$2" -H "X-Agent-API-Key: $WORKCHORD_API_KEY" \
-       -H 'Content-Type: application/json' ${3:+--data "$3"}
+# --- WorkChord task check (read-only) ---------------------------------------------------------
+# Task statuses are never written here: the worker's submit, a verifier's pass verdict or an
+# owner's acceptance move them. After a merge the task should be closed; if it is not, a
+# verdict, an acceptance or an open prerequisite is missing.
+task_status(){
+  curl -fsS "$WORKCHORD_URL/tasks/$1" -H "X-Agent-API-Key: $WORKCHORD_API_KEY" |
+    python3 -c "import json,sys; print(json.load(sys.stdin)['status'])"
 }
-task_field(){ wc GET /tasks/$1 | python3 -c "import json,sys; print(json.load(sys.stdin)['$2'])"; }
-set_status(){  # set_status TASK STATUS REASON
-  local v; v=$(task_field $1 version) || return 1
-  wc PUT /tasks/$1/status "$(python3 -c 'import json,sys; print(json.dumps({"status":sys.argv[1],"expected_version":int(sys.argv[2]),"reason":sys.argv[3]}))' $2 $v "$3")" >/dev/null
-}
-# Resolved means "done, awaiting acceptance". Mark it when the PR is opened, so reviewers and
-# the PM see it; close only after the merge. A task whose prerequisites were still open when
-# it was started is moved to active first (the server refuses planned -> resolved).
-mark_resolved(){
+check_task(){  # check_task TASK PR
   [ -n "${WORKCHORD_URL:-}" ] || return 0
-  local st; st=$(task_field $1 status 2>/dev/null)
-  [ "$st" = planned ] && set_status $1 active "Prerequisites resolved; work is under way"
-  st=$(task_field $1 status 2>/dev/null)
-  [ "$st" = active ] && set_status $1 resolved "Pull request #$2 opened for review"
-  true
-}
-close_task(){
-  [ -n "${WORKCHORD_URL:-}" ] || return 0
-  mark_resolved $1 $2
-  [ "$(task_field $1 status 2>/dev/null)" = resolved ] && set_status $1 closed "$CLOSE_REASON (PR #$2)"
-  local st; st=$(task_field $1 status 2>/dev/null)
-  [ "$st" = closed ] && log "$1 closed" || log "STATUS DRIFT: task $1 is '$st' after PR #$2 merged"
+  local st; st=$(task_status $1 2>/dev/null)
+  [ "$st" = closed ] && log "task $1 closed" ||
+    log "STATUS DRIFT: task $1 is '${st:-unreadable}' after PR #$2 merged; check for a pass verdict or owner acceptance and for open prerequisites"
+  return 0
 }
 
 # --- GitHub ------------------------------------------------------------------------------------
@@ -70,6 +66,7 @@ cd $REPO
 fetch(){ git fetch -q origin || { sleep 30; git fetch -q origin; }; }
 open_pr(){ gh pr list --head $1 --state open --json number --jq '.[0].number // empty' 2>/dev/null; }
 merged_pr(){ gh pr list --head $1 --state merged --json number --jq '.[0].number // empty' 2>/dev/null; }
+approved(){ [ "$REQUIRE_APPROVAL" = 0 ] || [ "$(gh pr view $1 --json reviewDecision --jq .reviewDecision 2>/dev/null)" = APPROVED ]; }
 pr_state(){ gh pr view $1 --json headRefOid,mergeStateStatus,statusCheckRollup --jq '[.mergeStateStatus, .headRefOid,
   ([.statusCheckRollup[]|select(.status!="COMPLETED")]|length),
   ([.statusCheckRollup[]|select(.status=="COMPLETED" and (.conclusion|IN("SUCCESS","SKIPPED","NEUTRAL")|not))]|length),
@@ -87,15 +84,15 @@ valid(){  # branch holds every commit of its base and its tip is the regeneratio
   [[ "$(git log -1 --format=%s origin/$1)" == "${3}"* ]] || grep -qx "$(git rev-parse origin/$1)" $NOCHANGE
 }
 
-prepare(){  # prepare BRANCH BASE SUBJECT TASK
+prepare(){  # prepare BRANCH BASE SUBJECT
   ( cd $WORKTREE || exit 1
     [ -z "$(git status --porcelain --untracked-files=no)" ] || { log "STOP: $WORKTREE is not clean"; exit 9; }
     git fetch -q origin && git switch -q -C $1 origin/$1 || exit 1
     if [ -n "$(git rev-list --no-merges HEAD..$2 | head -1)" ] && ! git merge -q --no-edit $2; then
       [ -n "$RESOLVE_CMD" ] && eval "$RESOLVE_CMD"
       if [ -n "$GENERATED_DIR" ]; then
-        git diff --name-only --diff-filter=U | grep -q "^$GENERATED_DIR/" && {
-          git rm -r -q --cached $GENERATED_DIR; rm -rf $GENERATED_DIR; git checkout $2 -- $GENERATED_DIR; }
+        git diff --name-only --diff-filter=U | grep -qF -e "$GENERATED_DIR/" && {
+          git rm -r -q --cached -- "$GENERATED_DIR"; rm -rf -- "./$GENERATED_DIR"; git checkout $2 -- "$GENERATED_DIR"; }
       fi
       U=$(git diff --name-only --diff-filter=U)
       [ -z "$U" ] || { log "STOP: conflicts with $2 need a person:"; print -r -- "$U"; git merge --abort; exit 4; }
@@ -113,7 +110,6 @@ prepare(){  # prepare BRANCH BASE SUBJECT TASK
       log "opened PR #$(open_pr $1)"
     fi
     git switch -q --detach origin/main ) || return 1
-  mark_resolved $4 "$(open_pr $1)"
 }
 
 if [ "${DRY:-0}" = 1 ]; then
@@ -128,7 +124,7 @@ fi
 mkdir $LOCK 2>/dev/null || { log "STOP: another queue holds $LOCK"; exit 2; }
 trap 'rmdir $LOCK 2>/dev/null' EXIT INT TERM
 while (( first <= N )) && m=$(merged_pr ${BR[$first]}) && [ -n "$m" ]; do
-  log "already merged: ${BR[$first]} (#$m)"; close_task ${TK[$first]} $m; (( first++ ))
+  log "already merged: ${BR[$first]} (#$m)"; check_task ${TK[$first]} $m; (( first++ ))
 done
 
 while (( first <= N )); do
@@ -138,7 +134,7 @@ while (( first <= N )); do
     B=${BR[$k]}; [ -n "${BLOCKED[$B]:-}" ] && break
     if ! valid $B $(base_of $k) "${SJ[$k]}" || [ -z "$(open_pr $B)" ]; then
       log "=== prepare $B on $(base_of $k)"
-      prepare $B $(base_of $k) "${SJ[$k]}" ${TK[$k]} && fetch || { BLOCKED[$B]=1; log "BLOCKED $B"; break; }
+      prepare $B $(base_of $k) "${SJ[$k]}" && fetch || { BLOCKED[$B]=1; log "BLOCKED $B"; break; }
     fi
   done
   for (( k = first; k <= last; k++ )); do          # one re-run per failed head (flakes)
@@ -154,16 +150,17 @@ while (( first <= N )); do
   [ -n "${BLOCKED[$B]:-}" ] && { log "STOP: $B is blocked; fix it and rerun with the same items"; exit 4; }
   PR=$(open_pr $B); [ -n "$PR" ] || { sleep 60; continue; }
   read st sha pend bad total <<< "$(pr_state $PR)"
-  if [ "${st:-}" = DIRTY ]; then prepare $B origin/main "${SJ[$first]}" $T || BLOCKED[$B]=1; continue; fi
+  if [ "${st:-}" = DIRTY ]; then prepare $B origin/main "${SJ[$first]}" || BLOCKED[$B]=1; continue; fi
   if [ -z "${st:-}" ] || [ "${total:-0}" = 0 ] || [ "$pend" != 0 ] || [ "$st" = UNKNOWN ]; then sleep 60; continue; fi
   if [ "$bad" != 0 ]; then
     if [ -n "${RERUN[$sha]:-}" ] && (( $(date +%s) - RERUN[$sha] > 300 )); then
       log "STOP: PR #$PR failed CI after one re-run"; exit 4; fi
     sleep 60; continue
   fi
-  if [[ $st == (CLEAN|BEHIND) ]]; then
+  if [[ $st == (CLEAN|BEHIND) ]] && ! approved $PR; then log "PR #$PR is green but not approved; waiting"; sleep 60
+  elif [[ $st == (CLEAN|BEHIND) ]]; then
     gh pr merge $PR --merge --match-head-commit $sha >/dev/null 2>&1 || { log "merge of #$PR refused; retrying"; sleep 60; continue; }
-    log "MERGED #$PR $B"; close_task $T $PR; (( first++ ))
+    log "MERGED #$PR $B"; check_task $T $PR; (( first++ ))
   else sleep 60; fi
 done
 log "QUEUE DONE"

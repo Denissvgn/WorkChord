@@ -204,29 +204,34 @@ shipped.
 
 ## Move Tasks Through Their Statuses
 
-A task moves `planned`, `active`, `resolved`, `closed`. Mark it resolved when
-its work is pushed and its pull request is open for review. Record the review
-outcome in WorkChord: the review and verification flow, or owner acceptance
-with a stated reason. Close it after the merge, without an override.
+A task moves `planned`, `active`, `resolved`, `closed`, and an agent never
+writes those statuses through the REST status route: it is refused with
+`agent_protocol_required`, and an agent that is not the verifier is refused a
+close with `independent_review_required`. The worker's submit resolves the task.
+A person starts and resolves manual work with the manual-execution commands.
+Review and close are one step: a pass verdict moves `resolved` to `closed`, and
+owner acceptance closes it too. A direct close through the status route is an
+acceptance, so it needs review authority and writes an accept record; the
+operator key also needs the review override header and a reason, and a project
+that requires a different publisher refuses it with
+`verified_publisher_review_required`.
 
-A task whose prerequisites are still open cannot become active. Work started
-early on an unmerged branch must be activated as soon as the prerequisites
-resolve; until then the task cannot be resolved. After each merge, re-read the
-task and confirm it actually closed. A task that is still `active`, `resolved`
-or `planned` after its pull request merged is status drift: find the open
-prerequisite or missing review outcome and fix it there instead of forcing the
-status.
+A task whose prerequisites are still open cannot start, so work begun early on
+an unmerged branch stays `planned` until they are accepted. After each merge,
+re-read the task and confirm it closed. A task that is not `closed` after its
+pull request merged is status drift: find the missing verdict or acceptance, or
+the open prerequisite, and resolve that instead of forcing the status.
 
 ## Merge Pull Requests That Share Regenerated Files
 
 Pull requests that regenerate shared files (generated documentation, contract
 fixtures) conflict with each other: every merge makes the remaining ones
-conflict, and a conflicting pull request gets no CI. Merge them one at a time,
+conflict, and a conflicting pull request gets no CI on GitHub. Merge them one at a time,
 or stacked so each one is prepared on top of the one below it and merges bottom
 first. Ask the worker to regenerate the shared files before opening the pull
-request, so CI runs once instead of after every rebase. The repository's
-stacked merge queue example, `examples/integrations/stacked-merge-queue`,
-does this and keeps the task statuses in step.
+request, so CI runs once instead of after every rebase. The stacked merge queue example in the WorkChord repository,
+`examples/integrations/stacked-merge-queue`, does this and reports tasks that
+did not close; it never writes task statuses.
 
 Put a small follow-up change into the next queued pull request instead of
 opening a new one; a new one joins the queue and conflicts again.

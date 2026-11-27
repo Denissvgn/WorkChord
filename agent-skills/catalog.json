@@ -9,14 +9,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-pm-1.21.7.tar.gz",
-          "sha256": "a71681aeb166baa470f425163a81ad4473962e915f65df0e6317adedf373f38b",
+          "sha256": "3ded38edd8b01582718a1d7a1e8f8f7593c2c15e9d60e5230854f03e0ca41ae7",
           "size": 245798
         },
         {
           "format": "zip",
           "path": "workchord-pm-1.21.7.zip",
-          "sha256": "bd8eb7b456c3a73617c46c5aa36f7dae1ca0c9d5cbde50726af29a51ab2cfd3a",
-          "size": 235872
+          "sha256": "eec4eba7bdea10d5d351789138bde4ccb36e8f48df2170c79ef13c1996fc28fd",
+          "size": 236316
         }
       ],
       "entrypoint": "SKILL.md",
@@ -38,8 +38,8 @@
         },
         {
           "path": "references/assignment-scheduling-and-delivery-control.md",
-          "sha256": "65790619812022fe07e171c74cc06157f09ee618d86e8b5ed31f91f95ba986b7",
-          "size": 32718
+          "sha256": "8ed4572cd72012f8912a5468be30295ebf8d03a6455549c23baa97b0d5f4110d",
+          "size": 32707
         },
         {
           "path": "references/intake-planning-and-task-briefs.md",
@@ -63,8 +63,8 @@
         },
         {
           "path": "references/verification-rework-and-recovery.md",
-          "sha256": "1fd4a5ca5cd202301ae85c42233e284460d52ba3a9c07b44ca3c2d1748bf6777",
-          "size": 38911
+          "sha256": "a2cd7d42b3a66aeb9bc260c14c97be96e3c404754e28a61b5f7c3faff04dfddd",
+          "size": 39366
         },
         {
           "path": "references/workflow-and-names.md",
@@ -280,5 +280,5 @@
       "version": "1.20.4"
     }
   ],
-  "source_revision": "sha256:ec7840361ed80a13e728588f5dfb20965f5e74cefd7801469a1bf1480fef1b69"
+  "source_revision": "sha256:e8dbed2ca127e646b530b18a0ab9b335669c1f86947fd4f6706ae8564affdd32"
 }
