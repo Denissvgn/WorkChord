@@ -26,6 +26,7 @@ Agent-authenticated PM setup and schedule-control commands.
 | `app.schemas.team` | `TeamMemberCreate`, `TeamMemberProfileCreate`, `TeamMemberProfileUpdate`, `TeamMemberUpdate`, `VacationCreate`, `VacationUpdate` |
 | `app.schemas.triage` | `TriageActionRequest`, `TriageClassificationSuggestionResponse`, `TriageConvertToTaskRequest`, `TriageConvertToTaskResponse`, `TriageDuplicateRequest`, `TriageItemCreate`, `TriageItemResponse`, `TriageItemUpdate`, `TriageSnoozeRequest` |
 | `app.services.agent_planning_service` | `AgentPlanningService` |
+| `app.services.agent_routing_policy` | `UnknownRoutingKeyError` |
 | `app.services.agent_routing_service` | `AgentRoutingConflictError`, `AgentRoutingService` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `require_scope` |
 | `app.services.import_review_service` | `ImportFileInvalid` |
@@ -55,7 +56,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (5) |
-| Outbound | `backend` (22) |
+| Outbound | `backend` (23) |
 
 ### External packages
 
@@ -63,7 +64,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

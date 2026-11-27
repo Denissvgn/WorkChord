@@ -1,10 +1,10 @@
 # AgentModelMutationReceipt
 
-**Location:** `frontend/src/types/agent.ts:291`
+**Location:** `frontend/src/types/agent.ts:297`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
-**Type parameters:** <pre><code>TResult extends AgentModelCatalogEntry &#124; AgentModelBinding &#61;&#10;        AgentModelCatalogEntry &#124; AgentModelBinding</code></pre>
+**Type parameters:** <pre><code>TResult extends AgentModelCatalogEntry &#124; AgentModelBinding &#124; RoutingQualificationKey &#61;&#10;        AgentModelCatalogEntry &#124; AgentModelBinding</code></pre>
 
 ## Description
 
@@ -16,7 +16,7 @@ _Auto-generated from `AgentModelMutationReceipt` in `frontend/src/types/agent.ts
 |------|------|----------|---------|-------------|
 | `operation` | `string` | Yes | — | — |
 | `actor_id` | `number \| null` | Yes | — | — |
-| `target_type` | `'model_catalog' \| 'model_binding'` | Yes | — | — |
+| `target_type` | `'model_catalog' \| 'model_binding' \| 'routing_qualification_key'` | Yes | — | — |
 | `target_id` | `number` | Yes | — | — |
 | `idempotency_key` | `string` | Yes | — | — |
 | `rationale` | `string` | Yes | — | — |

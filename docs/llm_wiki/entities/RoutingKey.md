@@ -21,10 +21,23 @@ _Auto-generated from `RoutingKey` in `backend/app/schemas/agent_routing.py`._
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-*No generated relationships detected.*
+```mermaid
+flowchart LR
+    n0["RoutingKey (backend/app/schemas/agent_routing.py)"]
+    n1["backend/app/schemas/routing_qualification.py"]
+    n1 --> n0
+    click n0 "../modules/agent_routing.md"
+    click n1 "../modules/schemas_routing_qualification.md"
+```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
 | [agent_routing](../modules/agent_routing.md) | 0 | — |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `routing_qualification` | import | [schemas_routing_qualification](../modules/schemas_routing_qualification.md) | — |

@@ -1,6 +1,6 @@
 # AgentTaskAssignment
 
-**Location:** `frontend/src/types/agent.ts:548`
+**Location:** `frontend/src/types/agent.ts:618`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

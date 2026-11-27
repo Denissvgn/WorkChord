@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_preview_task_routing` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_routing](../modules/agent_routing.md), [agent_routing_observability](../modules/agent_routing_observability.md), [agent_routing_policy](../modules/agent_routing_policy.md), and 30 more
+**Modules touched:** [agent_routing](../modules/agent_routing.md), [agent_routing_observability](../modules/agent_routing_observability.md), [agent_routing_policy](../modules/agent_routing_policy.md), and 31 more
 
 **Complete modules touched:**
 
@@ -33,6 +33,7 @@
 - [outbound_webhook_service](../modules/outbound_webhook_service.md)
 - [query_limits](../modules/query_limits.md)
 - [review_provenance](../modules/review_provenance.md)
+- [routing_qualification_key_service](../modules/routing_qualification_key_service.md)
 - [services_review_evidence](../modules/services_review_evidence.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_reactivation_service](../modules/task_reactivation_service.md)
@@ -72,10 +73,10 @@ sequenceDiagram
     participant p22 as process_reactivation_checks
     participant p23 as DeliveryDependencyService.reconcile
     participant p24 as DiscussionService.enqueue
-    participant p25 as AgentRoutingService._preview_context
-    participant p26 as AgentRoutingService._capacity_inputs
-    participant p27 as different_publisher_required
-    participant p28 as AgentRoutingService._routing_input_evidence
+    participant p25 as active_qualification_keys
+    participant p26 as AgentRoutingService._preview_context
+    participant p27 as AgentRoutingService._capacity_inputs
+    participant p28 as different_publisher_required
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -102,17 +103,17 @@ sequenceDiagram
     p8->>p22: process_reactivation_checks
     p8->>p23: DeliveryDependencyService.reconcile
     p8->>p24: DiscussionService.enqueue
-    p12->>p25: AgentRoutingService._preview_context
-    p12->>p26: AgentRoutingService._capacity_inputs
-    p12->>p27: different_publisher_required
-    p12->>p28: AgentRoutingService._routing_input_evidence
+    p12->>p25: active_qualification_keys
+    p12->>p26: AgentRoutingService._preview_context
+    p12->>p27: AgentRoutingService._capacity_inputs
+    p12->>p28: different_publisher_required
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 1229 interactions; 1199 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 1263 interactions; 1233 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 430 (429 omitted); unresolved 1 of 496 (495 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 445 (444 omitted); unresolved 1 of 511 (510 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -126,7 +127,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 278 groups; 270 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 285 groups; 277 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -139,9 +140,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 304; effect analysis evaluated: 216, partial: 15, unavailable: 73. Counts include steps omitted from the displayed trace.
+Source steps: 308; effect analysis evaluated: 220, partial: 15, unavailable: 73. Counts include steps omitted from the displayed trace.
 
-Collector observations for 231 source steps with known totals: observed: 1427, emitted: 1288, omitted: 139. Unavailable totals are excluded.
+Collector observations for 235 source steps with known totals: observed: 1453, emitted: 1304, omitted: 149. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

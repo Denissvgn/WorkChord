@@ -94,6 +94,30 @@ describe('RoutingCandidateComparison', () => {
         expect(screen.getByText('Low', { selector: 'dd' })).toBeVisible();
     });
 
+    it('names the qualification keys a candidate holds and the ones an exclusion lacks', () => {
+        renderWithProviders(
+            <RoutingCandidateComparison
+                preview={{
+                    ...modelAwareRoutingPreview,
+                    eligible_candidates: modelAwareRoutingPreview.eligible_candidates.map(candidate => ({ ...candidate, qualification_keys: ['qualified.schema-review'] })),
+                    exclusions: modelAwareRoutingPreview.exclusions.map(exclusion => ({
+                        ...exclusion,
+                        hard_blocker_codes: ['model_qualification_missing'],
+                        missing_qualification_keys: ['qualified.migrations'],
+                    })),
+                }}
+                roster={modelAwareRoutingRoster}
+                selectedCandidateKey={null}
+                onSelectCandidate={vi.fn()}
+            />,
+        );
+
+        expect(screen.getByText('Qualification keys held')).toBeVisible();
+        expect(screen.getAllByText('qualified.schema-review')[0]).toBeVisible();
+        expect(screen.getByText('Missing qualification keys')).toBeVisible();
+        expect(screen.getAllByText('qualified.migrations')[0]).toBeVisible();
+    });
+
     it('selects an eligible candidate from the keyboard', async () => {
         const onSelectCandidate = vi.fn();
         const { user } = renderWithProviders(

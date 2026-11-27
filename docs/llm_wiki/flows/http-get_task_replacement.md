@@ -84,9 +84,9 @@ sequenceDiagram
     p2-->>p26: isinstance (backend/app/routers/agent…ng.py:_handle_agent_error)(exc, AgentRoutingConflictError)
 ```
 
-> Call sequence diagram shows 30 of 114 interactions; 84 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 117 interactions; 87 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 4 of 41 (37 omitted); unresolved 1 of 39 (38 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 4 of 44 (40 omitted); unresolved 1 of 39 (38 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -115,7 +115,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 35; effect analysis evaluated: 27, partial: 2, unavailable: 6. Counts include steps omitted from the displayed trace.
 
-Collector observations for 29 source steps with known totals: observed: 135, emitted: 128, omitted: 7. Unavailable totals are excluded.
+Collector observations for 29 source steps with known totals: observed: 137, emitted: 128, omitted: 9. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -191,7 +191,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_task_replacement (backend/app/routers/agent_planning.py) | get_task_replacement (backend/app/mcp_agent_tools.py) | 419 | `mcp_agent_tools.get_task_replacement(db, actor, task_id)` |
+| get_task_replacement (backend/app/routers/agent_planning.py) | get_task_replacement (backend/app/mcp_agent_tools.py) | 423 | `mcp_agent_tools.get_task_replacement(db, actor, task_id)` |
 | get_task_replacement (backend/app/mcp_agent_tools.py) | require_scope | 1264 | `require_scope(actor, 'planning:read')` |
 | require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |

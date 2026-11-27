@@ -96,4 +96,4 @@ flowchart LR
 | `DeliveryMetricsService.report` | call | [delivery_metrics_service](../modules/delivery_metrics_service.md) | 3 |
 | `ExecutionUsageService._history` | call | [execution_usage_service](../modules/execution_usage_service.md) | 1 |
 
-> References: showing 12 of 43 logical references; 31 omitted by the 12-row generated summary limit.
+> References: showing 12 of 44 logical references; 32 omitted by the 12-row generated summary limit.

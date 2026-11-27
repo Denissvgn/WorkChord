@@ -17,6 +17,7 @@ import type { SchedulingRulesResponse } from '../types/schedulingRules';
 import type { OutboundWebhookTarget } from '../types/outboundWebhook';
 import type { GitHubStatusAutomationRule } from '../types/github';
 import type { SystemSettings } from '../types/systemSettings';
+import { agentService } from '../services/agentService';
 import SettingsPage from './SettingsPage';
 
 const adminAccessMock = vi.hoisted(() => ({ hasAdminKey: true }));
@@ -136,7 +137,7 @@ const renderSettings = (tab: string, useDataRouter = false) => {
 };
 
 
-const sections: SettingsSectionId[] = ['theme', 'shortcuts', 'language', 'work_calendar', 'scheduling', 'templates_labels', 'notifications', 'github', 'webhooks', 'web_intake', 'ai_provider', 'access', 'runtime', 'about'];
+const sections: SettingsSectionId[] = ['theme', 'shortcuts', 'language', 'work_calendar', 'scheduling', 'templates_labels', 'notifications', 'github', 'webhooks', 'web_intake', 'ai_provider', 'qualification_keys', 'access', 'runtime', 'about'];
 
 const checkLabels = (section: SettingsSectionId, root: ParentNode, fixtureHeadings: Element[] = []) => {
     const indexed = SETTINGS_FIELD_LABEL_KEYS[section].flatMap(key => [1, 2].map(index => i18n.t(key, { index, name: 'Merged PR resolves', id: 'professionalism' })));
@@ -178,6 +179,7 @@ describe('Settings search rendered labels', () => {
         vi.clearAllMocks();
         adminAccessMock.hasAdminKey = true;
         vi.spyOn(identityService, 'sessions').mockResolvedValue([]);
+        vi.spyOn(agentService, 'getQualificationKeys').mockResolvedValue({ builtin_keys: ['backend-python'], keys: [] });
         window.localStorage.clear();
         window.sessionStorage.clear();
         templateServiceMock.getAll.mockResolvedValue([template(1, 'Bug report', 'task')]);
@@ -225,6 +227,7 @@ describe('Settings search rendered labels', () => {
             notifications: 'surfaces.emailSettings.smtpHost', github: 'settings.githubApiUrl',
             web_intake: 'settings.rateLimitPerMinute', ai_provider: 'settings.model',
             access: 'agentAccess.title', runtime: 'settings.restartRequired',
+            qualification_keys: 'qualificationKeys.builtinTitle',
         };
         if (ready[section]) await screen.findAllByText(i18n.t(ready[section]!));
         if (section === 'templates_labels') await screen.findByText('Bug report');

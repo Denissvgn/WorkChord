@@ -41,7 +41,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (135) |
+| Inbound | `backend` (138) |
 | Inbound | `scripts` (2) |
 | Outbound | `backend` (5) |
 
@@ -51,7 +51,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 139 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 142 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -59,19 +59,19 @@ flowchart LR
 |-------|------|-------|-------------|
 | [AgentActor](../entities/models_agent_AgentActor.md) | 39 | `Base` | Automated agent identity authorized to operate on tasks. |
 | [AgentModelCatalogEntry](../entities/models_agent_AgentModelCatalogEntry.md) | 135 | `Base` | Secret-free provider-neutral model capability declaration. |
-| [AgentModelBinding](../entities/models_agent_AgentModelBinding.md) | 220 | `Base` | Versioned runtime capability binding owned by one exact actor. |
-| [AgentTeamTopology](../entities/AgentTeamTopology.md) | 316 | `Base` | Applied portable agent-team manifest and authoritative readiness state. |
-| [AgentTeamTopologyMember](../entities/AgentTeamTopologyMember.md) | 388 | `Base` | Installation-local mapping from a portable actor key to one actor. |
-| [AgentTeamManagedObject](../entities/AgentTeamManagedObject.md) | 558 | `Base` | Topology-local mapping for reusable profiles, catalogs, and bindings. |
-| [AgentTeamApplyRun](../entities/AgentTeamApplyRun.md) | 614 | `Base` | Replay-safe setup command receipt with a resumable action plan. |
-| [AgentTeamActionReceipt](../entities/models_agent_AgentTeamActionReceipt.md) | 710 | `Base` | Durable redacted result for one explicitly approved setup action. |
-| [TaskRoutingAssessment](../entities/models_agent_TaskRoutingAssessment.md) | 767 | `Base` | Append-only routing assessment for one concrete task version. |
-| [ImmutableRoutingAssessmentError](../entities/ImmutableRoutingAssessmentError.md) | 897 | `RuntimeError` | Raised when application code attempts to mutate append-only evidence. |
-| [AgentTaskAssignment](../entities/models_agent_AgentTaskAssignment.md) | 909 | `Base` | Durable delegation of task execution or verification to one actor. |
-| [AgentIdempotencyRecord](../entities/AgentIdempotencyRecord.md) | 1015 | `Base` | Replay-safe record for agent and PM mutations. |
-| [TaskEvent](../entities/TaskEvent.md) | 1045 | `Base` | Append-only ledger entry for task mutations and agent checkpoints. |
-| [AgentRun](../entities/models_agent_AgentRun.md) | 1091 | `Base` | Trace record for one automated agent execution. |
-| [AgentRunEvent](../entities/models_agent_AgentRunEvent.md) | 1198 | `Base` | Append-only event emitted during an agent run. |
+| [AgentModelBinding](../entities/models_agent_AgentModelBinding.md) | 224 | `Base` | Versioned runtime capability binding owned by one exact actor. |
+| [AgentTeamTopology](../entities/AgentTeamTopology.md) | 320 | `Base` | Applied portable agent-team manifest and authoritative readiness state. |
+| [AgentTeamTopologyMember](../entities/AgentTeamTopologyMember.md) | 392 | `Base` | Installation-local mapping from a portable actor key to one actor. |
+| [AgentTeamManagedObject](../entities/AgentTeamManagedObject.md) | 562 | `Base` | Topology-local mapping for reusable profiles, catalogs, and bindings. |
+| [AgentTeamApplyRun](../entities/AgentTeamApplyRun.md) | 618 | `Base` | Replay-safe setup command receipt with a resumable action plan. |
+| [AgentTeamActionReceipt](../entities/models_agent_AgentTeamActionReceipt.md) | 714 | `Base` | Durable redacted result for one explicitly approved setup action. |
+| [TaskRoutingAssessment](../entities/models_agent_TaskRoutingAssessment.md) | 771 | `Base` | Append-only routing assessment for one concrete task version. |
+| [ImmutableRoutingAssessmentError](../entities/ImmutableRoutingAssessmentError.md) | 901 | `RuntimeError` | Raised when application code attempts to mutate append-only evidence. |
+| [AgentTaskAssignment](../entities/models_agent_AgentTaskAssignment.md) | 913 | `Base` | Durable delegation of task execution or verification to one actor. |
+| [AgentIdempotencyRecord](../entities/AgentIdempotencyRecord.md) | 1019 | `Base` | Replay-safe record for agent and PM mutations. |
+| [TaskEvent](../entities/TaskEvent.md) | 1049 | `Base` | Append-only ledger entry for task mutations and agent checkpoints. |
+| [AgentRun](../entities/models_agent_AgentRun.md) | 1095 | `Base` | Trace record for one automated agent execution. |
+| [AgentRunEvent](../entities/models_agent_AgentRunEvent.md) | 1202 | `Base` | Append-only event emitted during an agent run. |
 
 ## Functions
 

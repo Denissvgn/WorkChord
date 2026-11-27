@@ -72,7 +72,7 @@ def database_rows(engine):
 # Columns later revisions add, with the value every retained row receives.
 LATER_COLUMNS = {
     "projects": {"require_different_review_publisher": 0},
-    "agent_model_catalog_entries": {"local_first": 0, "effort": "unknown"},
+    "agent_model_catalog_entries": {"local_first": 0, "effort": "unknown", "qualification_keys": "[]"},
     "tasks": {"execution_planning_window": None},
     "task_review_records": {"kind": "review"},
 }
@@ -98,6 +98,8 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         assert after_rows.pop("team_member_capacity_adjustments") == []
         assert after_rows.pop("task_replacements") == []
         for table in ("task_postponements", "task_reactivation_requirements"):
+            assert after_rows.pop(table) == []
+        for table in ("routing_qualification_keys", "routing_qualification_key_revisions"):
             assert after_rows.pop(table) == []
         for table, columns in LATER_COLUMNS.items():
             for row in after_rows[table]:
@@ -136,6 +138,11 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         assert after_catalog["agent_model_catalog_entries"]["columns"].pop("local_first") == {"type": {"family": "boolean"}, "nullable": False}
         assert after_catalog["agent_model_catalog_entries"]["columns"].pop("effort") == {"type": {"family": "text"}, "nullable": False}
         after_catalog["agent_model_catalog_entries"]["checks"].remove("ck_agent_model_catalog_effort")
+        assert after_catalog["agent_model_catalog_entries"]["columns"].pop("qualification_keys") == {"type": {"family": "json"}, "nullable": False}
+        # A later revision keeps the deployment's declared qualification keys.
+        assert "ck_routing_qualification_keys_state" in after_catalog.pop("routing_qualification_keys")["checks"]
+        assert "ck_routing_qualification_key_revisions_action" in after_catalog.pop(
+            "routing_qualification_key_revisions")["checks"]
         assert after_catalog["projects"]["columns"].pop("require_different_review_publisher") == {"type": {"family": "boolean"}, "nullable": False}
         assert after_catalog["tasks"]["columns"].pop("execution_planning_window") == {"type": {"family": "json"}, "nullable": True}
         # A later revision records which annual calendars an iteration or profile spans.

@@ -20,11 +20,12 @@ interface RoutingCandidateComparisonProps {
     selectionDisabled?: boolean;
 }
 
-const EvidenceList = ({ values }: { values: string[] }) => (
+/** `exact` shows each value as written, for operator-declared keys. */
+const EvidenceList = ({ values, exact = false }: { values: string[]; exact?: boolean }) => (
     <div className="flex flex-wrap gap-1">
         {values.map(value => (
             <span key={value} className="rounded-full border border-border bg-surface-card px-2 py-0.5 text-xs text-content-secondary">
-                {formatRoutingCode(value)}
+                {exact ? value : formatRoutingCode(value)}
             </span>
         ))}
     </div>
@@ -138,6 +139,12 @@ export const RoutingCandidateComparison = ({
                                                 <p className="mb-1 text-xs font-medium text-content-secondary">{t('taskRouting.toolsDataPolicy')}</p>
                                                 <EvidenceList values={[...candidate.tool_tags, ...candidate.data_policy_tags]} />
                                             </div>
+                                            {(candidate.qualification_keys?.length ?? 0) > 0 && (
+                                                <div>
+                                                    <p className="mb-1 text-xs font-medium text-content-secondary">{t('taskRouting.heldQualificationKeys')}</p>
+                                                    <EvidenceList values={candidate.qualification_keys ?? []} exact />
+                                                </div>
+                                            )}
                                         </div>
                                         <p className="mt-3 text-sm text-content-secondary">{candidate.rationale}</p>
                                     </div>
@@ -204,6 +211,12 @@ export const RoutingCandidateComparison = ({
                                             ...exclusion.insufficient_skill_keys,
                                             ...exclusion.blocking_weakness_keys,
                                         ]} />
+                                    </div>
+                                )}
+                                {(exclusion.missing_qualification_keys?.length ?? 0) > 0 && (
+                                    <div className="mt-2">
+                                        <p className="mb-1 text-xs font-medium text-content-secondary">{t('taskRouting.missingQualificationKeys')}</p>
+                                        <EvidenceList values={exclusion.missing_qualification_keys ?? []} exact />
                                     </div>
                                 )}
                                 {(exclusion.missing_modality_tags.length > 0 || exclusion.missing_tool_tags.length > 0 || exclusion.missing_data_policy_tags.length > 0) && (

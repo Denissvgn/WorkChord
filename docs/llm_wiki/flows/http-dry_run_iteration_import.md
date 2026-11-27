@@ -91,9 +91,9 @@ sequenceDiagram
     p0-->>p30: exc.detail (backend/app/routers/agent…:dry_run_iteration_import)
 ```
 
-> Call sequence diagram shows 30 of 531 interactions; 501 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 534 interactions; 504 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 207 (206 omitted); unresolved 1 of 215 (214 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 210 (209 omitted); unresolved 1 of 215 (214 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -102,11 +102,11 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/agent_service.py:actor_has_scope` | 3 | [backend/app/services/agent_service.py](../modules/agent_service.md) | internal | 1 |
 | `backend/app/services/agent_service.py:actor_scopes` | 4 | - | external | 2 |
 | `backend/app/services/agent_service.py:require_scope` | 2 | [backend/app/services/agent_service.py](../modules/agent_service.md) | internal | 1 |
-| `backend/app/routers/agent_planning.py:_handle_agent_error` | 8 | - | external | 21 |
+| `backend/app/routers/agent_planning.py:_handle_agent_error` | 8 | - | external | 24 |
 | `backend/app/routers/agent_planning.py:_handle_agent_error` | 8 | - | unresolved | 3 |
-| `backend/app/routers/export.py:_read_json_upload` | 33 | - | unresolved | 2 |
-| `backend/app/routers/export.py:_read_json_upload` | 33 | - | external | 7 |
-| `backend/app/routers/export.py:_validate_import_data` | 43 | - | unresolved | 2 |
+| `backend/app/routers/export.py:_read_json_upload` | 36 | - | unresolved | 2 |
+| `backend/app/routers/export.py:_read_json_upload` | 36 | - | external | 7 |
+| `backend/app/routers/export.py:_validate_import_data` | 46 | - | unresolved | 2 |
 > Omission summary shows 8 of 117 groups; 109 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
@@ -122,7 +122,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 110; effect analysis evaluated: 78, partial: 5, unavailable: 27. Counts include steps omitted from the displayed trace.
 
-Collector observations for 83 source steps with known totals: observed: 402, emitted: 382, omitted: 20. Unavailable totals are excluded.
+Collector observations for 83 source steps with known totals: observed: 406, emitted: 382, omitted: 24. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -137,7 +137,7 @@ Collector observations for 83 source steps with known totals: observed: 402, emi
 | `json.loads (backend/app/services/agent_service.py:actor_scopes)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `isinstance (backend/app/services/agent_service.py:actor_scopes)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `AgentPermissionError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
-| `_handle_agent_error` | `available` | `partial` | `available` | `15` | `9` | `6` |
+| `_handle_agent_error` | `available` | `partial` | `available` | `17` | `9` | `8` |
 | `isinstance (backend/app/routers/agent…ng.py:_handle_agent_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `HTTPException (backend/app/routers/agent…ng.py:_handle_agent_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `str (backend/app/routers/agent…ng.py:_handle_agent_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
@@ -197,17 +197,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| dry_run_iteration_import | require_scope | 166 | `require_scope(actor, 'planning:write')` |
+| dry_run_iteration_import | require_scope | 170 | `require_scope(actor, 'planning:write')` |
 | require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
-| dry_run_iteration_import | _handle_agent_error | 168 | `_handle_agent_error(exc)` |
-| _handle_agent_error | isinstance (backend/app/routers/agent…ng.py:_handle_agent_error) | 110 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | HTTPException (backend/app/routers/agent…ng.py:_handle_agent_error) | 111 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
-| _handle_agent_error | str (backend/app/routers/agent…ng.py:_handle_agent_error) | 111 | `str(exc)` |
-| _handle_agent_error | isinstance (backend/app/routers/agent…ng.py:_handle_agent_error) | 112 | `isinstance(exc, AgentRoutingConflictError)` |
+| dry_run_iteration_import | _handle_agent_error | 172 | `_handle_agent_error(exc)` |
+| _handle_agent_error | isinstance (backend/app/routers/agent…ng.py:_handle_agent_error) | 111 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | HTTPException (backend/app/routers/agent…ng.py:_handle_agent_error) | 112 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
+| _handle_agent_error | str (backend/app/routers/agent…ng.py:_handle_agent_error) | 112 | `str(exc)` |
+| _handle_agent_error | isinstance (backend/app/routers/agent…ng.py:_handle_agent_error) | 113 | `isinstance(exc, AgentRoutingConflictError)` |
 
 ### Boundary effects
 
@@ -219,9 +219,9 @@ flowchart LR
 |---|---|---|---:|
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | external_call | `actor_scopes` | `isinstance` | 90 |
-| external_call | `_handle_agent_error` | `isinstance` | 110 |
-| external_call | `_handle_agent_error` | `HTTPException` | 111 |
-| external_call | `_handle_agent_error` | `isinstance` | 112 |
+| external_call | `_handle_agent_error` | `isinstance` | 111 |
+| external_call | `_handle_agent_error` | `HTTPException` | 112 |
+| external_call | `_handle_agent_error` | `isinstance` | 113 |
 | step_limit | `dry_run_iteration_import` | `first 12 steps` | 0 |
 | truncated_flow | `dry_run_iteration_import` | `depth limit` | 0 |
 

@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_create_task_routing_assessment` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_routing](../modules/agent_routing.md), [agent_routing_observability](../modules/agent_routing_observability.md), [agent_routing_policy](../modules/agent_routing_policy.md), and 23 more
+**Modules touched:** [agent_routing](../modules/agent_routing.md), [agent_routing_observability](../modules/agent_routing_observability.md), [agent_routing_policy](../modules/agent_routing_policy.md), and 24 more
 
 **Complete modules touched:**
 
@@ -27,6 +27,7 @@
 - [models_identity](../modules/models_identity.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
 - [outbound_webhook_service](../modules/outbound_webhook_service.md)
+- [routing_qualification_key_service](../modules/routing_qualification_key_service.md)
 - [schemas_agent_planning](../modules/schemas_agent_planning.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_reactivation_service](../modules/task_reactivation_service.md)
@@ -56,19 +57,19 @@ sequenceDiagram
     participant p13 as _require_scope_requirement
     participant p14 as IdentityService.actor_context
     participant p15 as AgentRoutingService._require_preview_rollout
-    participant p16 as record_routing_operational_event
-    participant p17 as require_scope
-    participant p18 as AgentRoutingService.lock_selection_inputs
-    participant p19 as AgentTeamSetupService.readiness_gate
-    participant p20 as build_routing_operational_payload
-    participant p21 as AgentService.authenticate
-    participant p22 as TaskService.record_task_event
-    participant p23 as require_identity_writes
-    participant p24 as emit_outbound_webhook_event
-    participant p25 as _request_hash
-    participant p26 as process_reactivation_checks
-    participant p27 as DeliveryDependencyService.reconcile
-    participant p28 as DiscussionService.enqueue
+    participant p16 as require_known_qualification_keys
+    participant p17 as record_routing_operational_event
+    participant p18 as require_scope
+    participant p19 as AgentRoutingService.lock_selection_inputs
+    participant p20 as AgentTeamSetupService.readiness_gate
+    participant p21 as build_routing_operational_payload
+    participant p22 as AgentService.authenticate
+    participant p23 as TaskService.record_task_event
+    participant p24 as require_identity_writes
+    participant p25 as emit_outbound_webhook_event
+    participant p26 as _request_hash
+    participant p27 as active_qualification_keys
+    participant p28 as process_reactivation_checks
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -86,26 +87,26 @@ sequenceDiagram
     p5->>p13: _require_scope_requirement
     p5->>p14: IdentityService.actor_context
     p4->>p15: AgentRoutingService._require_preview_rollout
-    p4->>p16: record_routing_operational_event
-    p13->>p17: require_scope
-    p12->>p18: AgentRoutingService.lock_selection_inputs
-    p15->>p19: AgentTeamSetupService.readiness_gate
-    p16->>p20: build_routing_operational_payload
-    p11->>p21: AgentService.authenticate
-    p16->>p22: TaskService.record_task_event
-    p14->>p23: require_identity_writes
-    p16->>p24: emit_outbound_webhook_event
-    p10->>p25: _request_hash
-    p9->>p26: process_reactivation_checks
-    p9->>p27: DeliveryDependencyService.reconcile
-    p9->>p28: DiscussionService.enqueue
+    p4->>p16: require_known_qualification_keys
+    p4->>p17: record_routing_operational_event
+    p13->>p18: require_scope
+    p12->>p19: AgentRoutingService.lock_selection_inputs
+    p15->>p20: AgentTeamSetupService.readiness_gate
+    p17->>p21: build_routing_operational_payload
+    p11->>p22: AgentService.authenticate
+    p17->>p23: TaskService.record_task_event
+    p14->>p24: require_identity_writes
+    p17->>p25: emit_outbound_webhook_event
+    p10->>p26: _request_hash
+    p16->>p27: active_qualification_keys
+    p9->>p28: process_reactivation_checks
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 561 interactions; 531 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 606 interactions; 576 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 174 (173 omitted); unresolved 1 of 218 (217 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 193 (192 omitted); unresolved 1 of 237 (236 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -119,7 +120,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 160 groups; 152 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 174 groups; 166 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -132,9 +133,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 170; effect analysis evaluated: 110, partial: 6, unavailable: 54. Counts include steps omitted from the displayed trace.
+Source steps: 177; effect analysis evaluated: 116, partial: 6, unavailable: 55. Counts include steps omitted from the displayed trace.
 
-Collector observations for 116 source steps with known totals: observed: 614, emitted: 576, omitted: 38. Unavailable totals are excluded.
+Collector observations for 122 source steps with known totals: observed: 638, emitted: 599, omitted: 39. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

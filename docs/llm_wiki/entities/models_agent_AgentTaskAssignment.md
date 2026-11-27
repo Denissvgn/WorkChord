@@ -1,6 +1,6 @@
 # AgentTaskAssignment
 
-**Location:** `backend/app/models/agent.py:909`
+**Location:** `backend/app/models/agent.py:913`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)
