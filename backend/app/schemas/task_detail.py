@@ -57,5 +57,7 @@ class HumanWorkResponse(BaseModel):
     queues: dict[str, list[HumanWorkReference]]
     # The person's postponed, canceled and superseded work: shown as such, never as actionable work in a queue.
     stopped: list[HumanWorkReference] = Field(default_factory=list)
+    # More stopped work exists than the first page lists (newest first).
+    stopped_has_more: bool = False
     has_more: bool
     next_after_id: int | None

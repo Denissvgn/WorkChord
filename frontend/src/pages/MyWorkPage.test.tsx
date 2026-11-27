@@ -465,7 +465,7 @@ it('does not claim nothing matches while more work can still load', async () => 
     await ensureLanguageResources('en');
     await i18n.changeLanguage('en');
     api.get.mockImplementation(async (path: string) => {
-        if (path === '/tasks/my-work') return { data: { state: 'ready', has_more: true, next_after_id: 1, queues: { active: [{ id: 1, title: 'Live work', status: 'active', iteration_id: null }], queued: [], blocked: [], awaiting_review: [] }, stopped: [] } };
+        if (path === '/tasks/my-work') return { data: { state: 'ready', has_more: true, next_after_id: 1, stopped_has_more: true, queues: { active: [{ id: 1, title: 'Live work', status: 'active', iteration_id: null }], queued: [], blocked: [], awaiting_review: [] }, stopped: [] } };
         if (path === '/tasks/review-queue' || path.startsWith('/notifications')) return { data: { items: [], has_more: false } };
         return { data: [] };
     });
@@ -473,4 +473,26 @@ it('does not claim nothing matches while more work can still load', async () => 
     await screen.findByRole('button', { name: /· Live work$/ });
     fireEvent.change(screen.getByRole('combobox', { name: 'State' }), { target: { value: 'canceled' } });
     expect(screen.getByText('None of the work loaded so far is Canceled. Load more to check the rest.')).toBeInTheDocument();
+});
+
+it('bases the loaded-so-far message for a stopped state on the stopped list, not the queue paging', async () => {
+    await ensureLanguageResources('en');
+    await i18n.changeLanguage('en');
+    const stoppedMore = { value: true };
+    api.get.mockImplementation(async (path: string) => {
+        if (path === '/tasks/my-work') return { data: { state: 'ready', has_more: true, next_after_id: 1, stopped_has_more: stoppedMore.value,
+            queues: { active: [{ id: 1, title: 'Live work', status: 'active', iteration_id: null }], queued: [], blocked: [], awaiting_review: [] },
+            stopped: [{ id: 3, title: 'Dropped work', status: 'active', displayed_state: 'canceled', iteration_id: null }] } };
+        if (path === '/tasks/review-queue' || path.startsWith('/notifications')) return { data: { items: [], has_more: false } };
+        return { data: [] };
+    });
+    const view = renderWithProviders(<SignedInWork />, { initialEntries: ['/my-work?queue=active'] });
+    await screen.findByRole('button', { name: /· Live work$/ });
+    // The queue has more pages, but all stopped work is listed: nothing postponed is a firm answer.
+    stoppedMore.value = false;
+    view.unmount();
+    renderWithProviders(<SignedInWork />, { initialEntries: ['/my-work?queue=active'] });
+    await screen.findByRole('button', { name: /· Live work$/ });
+    fireEvent.change(screen.getByRole('combobox', { name: 'State' }), { target: { value: 'postponed' } });
+    expect(screen.getByText('Nothing in this queue is Postponed.')).toBeInTheDocument();
 });

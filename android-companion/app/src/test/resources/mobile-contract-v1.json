@@ -1767,6 +1767,11 @@
               },
               "title": "Stopped",
               "type": "array"
+            },
+            "stopped_has_more": {
+              "default": false,
+              "title": "Stopped Has More",
+              "type": "boolean"
             }
           },
           "required": [

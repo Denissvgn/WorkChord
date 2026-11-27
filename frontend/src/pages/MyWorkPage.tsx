@@ -36,7 +36,7 @@ import { OperatorIdentityNotice } from '../features/identity/OperatorIdentityNot
 const QUEUES = ['active', 'queued', 'blocked', 'awaiting_review', 'review', 'inbox'] as const;
 const WORK_QUEUES: readonly string[] = ['active', 'queued', 'blocked', 'awaiting_review'];
 type Queue = typeof QUEUES[number];
-interface WorkPage { state: string; queues: Record<string, TaskReference[]>; stopped?: TaskReference[]; has_more: boolean; next_after_id: number | null }
+interface WorkPage { state: string; queues: Record<string, TaskReference[]>; stopped?: TaskReference[]; stopped_has_more?: boolean; has_more: boolean; next_after_id: number | null }
 
 const MyWorkPage = () => {
     const { t } = useTranslation();
@@ -104,6 +104,8 @@ const MyWorkPage = () => {
     // The server lists the person's postponed, canceled and superseded work apart from the queues.
     const stoppedItems = useMemo(() => workPages?.flatMap(page => page.stopped ?? []) ?? [], [workPages]);
     const showsStopped = isStoppedState(stateFilter) && queue !== 'review';
+    // Stopped work comes newest first on the first page only, so "loaded so far" follows its own flag, not the queue's paging.
+    const moreToLoad = showsStopped ? Boolean(workPages?.[0]?.stopped_has_more) : Boolean(selectedQuery.hasNextPage);
     const items = useMemo(() => stateFilter
         ? (showsStopped ? stoppedItems : queueItems).filter(item => stateOf(item) === stateFilter)
         : queueItems, [queueItems, stoppedItems, stateFilter, showsStopped]);
@@ -199,7 +201,7 @@ const MyWorkPage = () => {
                     selectDisabledReason={canPick && !selection.canAdd(task.id) ? t('taskList.selectOneIteration') : undefined} />
             </li>;
         })}</ul>}
-        {queue !== 'inbox' && stateFilter && items.length === 0 && <p role="status" className="text-sm text-content-secondary">{t(selectedQuery.hasNextPage ? 'stoppedWork.noneInStateLoaded' : 'stoppedWork.noneInState', { state: t(`statuses.${stateFilter}`) })}</p>}
+        {queue !== 'inbox' && stateFilter && items.length === 0 && <p role="status" className="text-sm text-content-secondary">{t(moreToLoad ? 'stoppedWork.noneInStateLoaded' : 'stoppedWork.noneInState', { state: t(`statuses.${stateFilter}`) })}</p>}
         {queue !== 'inbox' && selectedQuery.isSuccess && queueItems.length === 0 && !stateFilter && !(workQueue && workState !== 'ready') && <NextStepEmptyState description={t('emptyStates.myWork.queueBody')} fallback={{ label: t('overview.openTasks'), to: scopeLink('/tasks') }} />}
         {queue === 'inbox' && <>
             <ul className="divide-y divide-border">{inbox.data?.pages.flatMap(page => page.items).map(item => <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
