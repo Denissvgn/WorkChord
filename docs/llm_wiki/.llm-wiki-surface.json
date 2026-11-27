@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1890,
+      "entities": 1896,
       "flows": 643,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1206,
+      "modules": 1207,
       "workflows": 247
     },
     "dependency_architecture": 2,
-    "total": 4003
+    "total": 4010
   },
   "dependency_pages": {
     "count": 2,
@@ -51980,9 +51980,12 @@
         "entities/schemas_external_link_ExternalLinkProvider.md",
         "entities/schemas_external_link_ExternalLinkUpdate.md",
         "entities/schemas_external_link_GitHubExternalLinkCreate.md",
+        "entities/schemas_gantt_AssigneeIdleDays.md",
         "entities/schemas_gantt_DateRule.md",
         "entities/schemas_gantt_GanttResponse.md",
         "entities/schemas_gantt_GanttTask.md",
+        "entities/schemas_gantt_IdleGap.md",
+        "entities/schemas_gantt_IdleReason.md",
         "entities/schemas_gantt_KeptDatesTask.md",
         "entities/schemas_gantt_SchedulePreviewResponse.md",
         "entities/schemas_gantt_ScheduleResult.md",
@@ -52501,11 +52504,14 @@
         "entities/types_calendar_CalendarImportResponse.md",
         "entities/types_calendar_CalendarUpdate.md",
         "entities/types_calendar_WorkingDaysResponse.md",
+        "entities/types_gantt_AssigneeIdleDays.md",
         "entities/types_gantt_DateRule.md",
         "entities/types_gantt_ExplainScheduleRequest.md",
         "entities/types_gantt_ExplainScheduleResponse.md",
         "entities/types_gantt_GanttResponse.md",
         "entities/types_gantt_GanttTask.md",
+        "entities/types_gantt_IdleGap.md",
+        "entities/types_gantt_IdleReason.md",
         "entities/types_gantt_InvertedDependency.md",
         "entities/types_gantt_KeptDatesTask.md",
         "entities/types_gantt_ScheduleDecisionExplanation.md",
@@ -54422,6 +54428,7 @@
         "modules/test_schedule_follows_actual_dates.md",
         "modules/test_schedule_working_date.md",
         "modules/test_scheduler_dependencies.md",
+        "modules/test_scheduler_free_days.md",
         "modules/test_schema_behavior.md",
         "modules/test_scoped_review_evidence.md",
         "modules/test_server_acceptance.md",
@@ -70535,6 +70542,19 @@
       "title": "GitHubExternalLinkCreate"
     },
     {
+      "canonical_path": "entities/schemas_gantt_AssigneeIdleDays.md",
+      "id": "schemas_gantt_AssigneeIdleDays",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/schemas_gantt_AssigneeIdleDays",
+      "outgoing_internal_links": [
+        "modules/scheduler_service.md",
+        "modules/schemas_gantt.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/gantt.py",
+      "title": "AssigneeIdleDays"
+    },
+    {
       "canonical_path": "entities/schemas_gantt_DateRule.md",
       "id": "schemas_gantt_DateRule",
       "kind": "entities",
@@ -70574,6 +70594,31 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/gantt.py",
       "title": "GanttTask"
+    },
+    {
+      "canonical_path": "entities/schemas_gantt_IdleGap.md",
+      "id": "schemas_gantt_IdleGap",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/schemas_gantt_IdleGap",
+      "outgoing_internal_links": [
+        "modules/scheduler_service.md",
+        "modules/schemas_gantt.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/gantt.py",
+      "title": "IdleGap"
+    },
+    {
+      "canonical_path": "entities/schemas_gantt_IdleReason.md",
+      "id": "schemas_gantt_IdleReason",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/schemas_gantt_IdleReason",
+      "outgoing_internal_links": [
+        "modules/schemas_gantt.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/gantt.py",
+      "title": "IdleReason"
     },
     {
       "canonical_path": "entities/schemas_gantt_KeptDatesTask.md",
@@ -77930,6 +77975,18 @@
       "title": "WorkingDaysResponse"
     },
     {
+      "canonical_path": "entities/types_gantt_AssigneeIdleDays.md",
+      "id": "types_gantt_AssigneeIdleDays",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_gantt_AssigneeIdleDays",
+      "outgoing_internal_links": [
+        "modules/types_gantt.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/gantt.ts",
+      "title": "AssigneeIdleDays"
+    },
+    {
       "canonical_path": "entities/types_gantt_DateRule.md",
       "id": "types_gantt_DateRule",
       "kind": "entities",
@@ -78010,6 +78067,31 @@
       "role": "semantic",
       "source_path": "frontend/src/types/gantt.ts",
       "title": "GanttTask"
+    },
+    {
+      "canonical_path": "entities/types_gantt_IdleGap.md",
+      "id": "types_gantt_IdleGap",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_gantt_IdleGap",
+      "outgoing_internal_links": [
+        "modules/PlanScheduleSection.md",
+        "modules/types_gantt.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/gantt.ts",
+      "title": "IdleGap"
+    },
+    {
+      "canonical_path": "entities/types_gantt_IdleReason.md",
+      "id": "types_gantt_IdleReason",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_gantt_IdleReason",
+      "outgoing_internal_links": [
+        "modules/types_gantt.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/gantt.ts",
+      "title": "IdleReason"
     },
     {
       "canonical_path": "entities/types_gantt_InvertedDependency.md",
@@ -92209,9 +92291,12 @@
         "entities/GanttMilestone.md",
         "entities/ScheduleApplyRequest.md",
         "entities/SchedulePreviewRequest.md",
+        "entities/schemas_gantt_AssigneeIdleDays.md",
         "entities/schemas_gantt_DateRule.md",
         "entities/schemas_gantt_GanttResponse.md",
         "entities/schemas_gantt_GanttTask.md",
+        "entities/schemas_gantt_IdleGap.md",
+        "entities/schemas_gantt_IdleReason.md",
         "entities/schemas_gantt_KeptDatesTask.md",
         "entities/schemas_gantt_SchedulePreviewResponse.md",
         "entities/schemas_gantt_ScheduleResult.md",
@@ -98314,11 +98399,31 @@
         "modules/services_work_metrics.md",
         "modules/team_member.md",
         "modules/test_schedule_working_date.md",
-        "modules/test_scheduler_dependencies.md"
+        "modules/test_scheduler_dependencies.md",
+        "modules/test_scheduler_free_days.md"
       ],
       "role": "semantic",
       "source_path": "backend/tests/test_scheduler_dependencies.py",
       "title": "test_scheduler_dependencies Module"
+    },
+    {
+      "canonical_path": "modules/test_scheduler_free_days.md",
+      "id": "test_scheduler_free_days",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_scheduler_free_days",
+      "outgoing_internal_links": [
+        "modules/app_database.md",
+        "modules/app_main.md",
+        "modules/commands.md",
+        "modules/models_task.md",
+        "modules/scheduler_service.md",
+        "modules/services_work_metrics.md",
+        "modules/test_scheduler_dependencies.md",
+        "modules/test_scheduler_free_days.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_scheduler_free_days.py",
+      "title": "test_scheduler_free_days Module"
     },
     {
       "canonical_path": "modules/test_schema_behavior.md",
@@ -99713,11 +99818,14 @@
       "mcp_uri": "llm-wiki://modules/types_gantt",
       "outgoing_internal_links": [
         "entities/ExplainScheduleDetailLevel.md",
+        "entities/types_gantt_AssigneeIdleDays.md",
         "entities/types_gantt_DateRule.md",
         "entities/types_gantt_ExplainScheduleRequest.md",
         "entities/types_gantt_ExplainScheduleResponse.md",
         "entities/types_gantt_GanttResponse.md",
         "entities/types_gantt_GanttTask.md",
+        "entities/types_gantt_IdleGap.md",
+        "entities/types_gantt_IdleReason.md",
         "entities/types_gantt_InvertedDependency.md",
         "entities/types_gantt_KeptDatesTask.md",
         "entities/types_gantt_ScheduleDecisionExplanation.md",
@@ -118944,6 +119052,7 @@
         "modules/test_schedule_follows_actual_dates.md",
         "modules/test_schedule_working_date.md",
         "modules/test_scheduler_dependencies.md",
+        "modules/test_scheduler_free_days.md",
         "modules/test_schema_behavior.md",
         "modules/test_scoped_review_evidence.md",
         "modules/test_server_acceptance.md",
@@ -120161,6 +120270,7 @@
         "modules/test_schedule_follows_actual_dates.md",
         "modules/test_schedule_working_date.md",
         "modules/test_scheduler_dependencies.md",
+        "modules/test_scheduler_free_days.md",
         "modules/test_schema_behavior.md",
         "modules/test_scoped_review_evidence.md",
         "modules/test_server_acceptance.md",
@@ -120336,5 +120446,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:6676e2f645d9c9e000540ec602613f2ea3ce20fbdf76614384f7a4c22fa2a315"
+  "source_hash": "sha256:f48c59bf2f2ca0cdb9df1e4c79839a6560623672c3daebcd2e4a97c18df8e9df"
 }

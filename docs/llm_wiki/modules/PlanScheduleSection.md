@@ -15,7 +15,7 @@ _Auto-generated from `frontend/src/components/planning/PlanScheduleSection.tsx`.
 | `../../features/planningMasters/usePlanScheduleWorkloads` | `usePlanScheduleWorkloads` | — | compiler-dependent |
 | `../../features/scope/useScopeLink` | `useScopeLink` | — | compiler-dependent |
 | `../../services/ganttService` | `ganttService` | — | compiler-dependent |
-| `../../types/gantt` | `GanttResponse`, `GanttTask`, `SchedulePreviewResponse` | Declaration | erased |
+| `../../types/gantt` | `GanttResponse`, `GanttTask`, `IdleGap`, `SchedulePreviewResponse` | Declaration | erased |
 | `../../types/iteration` | `Iteration` | Declaration | erased |
 | `../../types/task` | `Task` | Declaration | erased |
 | `../../types/team` | `TeamMember` | Declaration | erased |

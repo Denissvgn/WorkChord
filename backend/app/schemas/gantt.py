@@ -95,7 +95,7 @@ DateRule = Literal[
 
 
 class WaitingOnTask(BaseModel):
-    """A postponed task a planned task waits on."""
+    """A task a planned task waits on: postponed work, or the prerequisite behind idle days."""
     task_id: int
     task_title: str
 
@@ -136,6 +136,38 @@ class KeptDatesTask(BaseModel):
     waiting_on: list[WaitingOnTask] = Field(default_factory=list, exclude_if=_no_waits)
 
 
+IdleReason = Literal[
+    "waits_for_prerequisite",
+    "earliest_start",
+    "fixed_dates",
+    "uninterrupted_slot",
+]
+
+
+class IdleGap(BaseModel):
+    """Working days an assignee is left idle before the task that follows them on the row."""
+    start_date: date
+    end_date: date
+    working_days: int
+    # The task that starts after these days and the reason it starts no earlier.
+    task_id: int
+    task_title: str
+    reason: IdleReason
+    # The prerequisite it waits for (reason waits_for_prerequisite); omitted otherwise.
+    waiting_on: WaitingOnTask | None = Field(default=None, exclude_if=lambda value: value is None)
+    # The earliest start date that holds it (reason earliest_start); omitted otherwise.
+    earliest_start: date | None = Field(default=None, exclude_if=lambda value: value is None)
+    message: str
+
+
+class AssigneeIdleDays(BaseModel):
+    """An assignee's working days left idle inside the scheduled span, before the row's last work."""
+    member_id: int
+    member_name: str
+    idle_working_days: int
+    gaps: list[IdleGap]
+
+
 class WorkloadIssue(BaseModel):
     """Workload issue for a team member."""
     member_id: int
@@ -165,6 +197,8 @@ class ScheduleResult(BaseModel):
     unscheduled: list[UnscheduledTask] = []
     # Planned leaf tasks the run could not place that keep the dates they already had.
     kept_dates: list[KeptDatesTask] = Field(default_factory=list, exclude_if=lambda rows: not rows)
+    # Each assignee's remaining idle working days before its last work, with the task that follows them.
+    idle_days: list[AssigneeIdleDays] = Field(default_factory=list, exclude_if=lambda rows: not rows)
 
 
 class GanttResponse(BaseModel):

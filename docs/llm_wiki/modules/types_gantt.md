@@ -17,7 +17,7 @@ _Auto-generated from `frontend/src/types/gantt.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `DateRule`, `ExplainScheduleDetailLevel`, `ExplainScheduleRequest`, `ExplainScheduleResponse`, `GanttResponse`, `GanttTask`, `InvertedDependency`, `KeptDatesTask`, `ScheduleDecisionExplanation`, `SchedulePreviewResponse`, `ScheduleResult`, `SchedulingDecision`, `UnscheduledReason`, `UnscheduledTask`, `WaitingOnTask`, `WorkloadAnalysis`, `WorkloadIssue` |
+| Exports | `AssigneeIdleDays`, `DateRule`, `ExplainScheduleDetailLevel`, `ExplainScheduleRequest`, `ExplainScheduleResponse`, `GanttResponse`, `GanttTask`, `IdleGap`, `IdleReason`, `InvertedDependency`, `KeptDatesTask`, `ScheduleDecisionExplanation`, `SchedulePreviewResponse`, `ScheduleResult`, `SchedulingDecision`, `UnscheduledReason`, `UnscheduledTask`, `WaitingOnTask`, `WorkloadAnalysis`, `WorkloadIssue` |
 
 ## Local dependency map
 
@@ -51,17 +51,20 @@ flowchart LR
 | [GanttTask](../entities/types_gantt_GanttTask.md) | Interface | 6 | — | — |
 | [InvertedDependency](../entities/types_gantt_InvertedDependency.md) | Interface | 58 | — | — |
 | [GanttResponse](../entities/types_gantt_GanttResponse.md) | Interface | 67 | — | — |
-| [WaitingOnTask](../entities/types_gantt_WaitingOnTask.md) | Interface | 82 | — | A postponed task a planned task waits on. |
+| [WaitingOnTask](../entities/types_gantt_WaitingOnTask.md) | Interface | 82 | — | A task a planned task waits on: postponed work, or the prerequisite behind idle days. |
 | [UnscheduledTask](../entities/types_gantt_UnscheduledTask.md) | Interface | 90 | — | A planned task the scheduler left without dates, with the cause and the server's English hint. |
 | [KeptDatesTask](../entities/types_gantt_KeptDatesTask.md) | Interface | 106 | — | A planned task the scheduler could not place; it keeps the dates it already had. |
-| [ScheduleResult](../entities/types_gantt_ScheduleResult.md) | Interface | 119 | — | — |
-| [SchedulePreviewResponse](../entities/types_gantt_SchedulePreviewResponse.md) | Interface | 131 | — | Server dry-run of sandbox edits through the real scheduler (nothing persisted). |
-| [SchedulingDecision](../entities/types_gantt_SchedulingDecision.md) | Interface | 139 | — | — |
-| [WorkloadIssue](../entities/types_gantt_WorkloadIssue.md) | Interface | 147 | — | — |
-| [ExplainScheduleRequest](../entities/types_gantt_ExplainScheduleRequest.md) | Interface | 155 | — | — |
-| [ScheduleDecisionExplanation](../entities/types_gantt_ScheduleDecisionExplanation.md) | Interface | 159 | — | — |
-| [WorkloadAnalysis](../entities/types_gantt_WorkloadAnalysis.md) | Interface | 166 | — | — |
-| [ExplainScheduleResponse](../entities/types_gantt_ExplainScheduleResponse.md) | Interface | 171 | — | — |
+| [IdleGap](../entities/types_gantt_IdleGap.md) | Interface | 122 | — | Working days an assignee is left idle before the task that follows them on the row. |
+| [AssigneeIdleDays](../entities/types_gantt_AssigneeIdleDays.md) | Interface | 138 | — | An assignee's working days left idle inside the scheduled span, before the row's last work. |
+| [ScheduleResult](../entities/types_gantt_ScheduleResult.md) | Interface | 145 | — | — |
+| [SchedulePreviewResponse](../entities/types_gantt_SchedulePreviewResponse.md) | Interface | 158 | — | Server dry-run of sandbox edits through the real scheduler (nothing persisted). |
+| [SchedulingDecision](../entities/types_gantt_SchedulingDecision.md) | Interface | 166 | — | — |
+| [WorkloadIssue](../entities/types_gantt_WorkloadIssue.md) | Interface | 174 | — | — |
+| [ExplainScheduleRequest](../entities/types_gantt_ExplainScheduleRequest.md) | Interface | 182 | — | — |
+| [ScheduleDecisionExplanation](../entities/types_gantt_ScheduleDecisionExplanation.md) | Interface | 186 | — | — |
+| [WorkloadAnalysis](../entities/types_gantt_WorkloadAnalysis.md) | Interface | 193 | — | — |
+| [ExplainScheduleResponse](../entities/types_gantt_ExplainScheduleResponse.md) | Interface | 198 | — | — |
 | [UnscheduledReason](../entities/types_gantt_UnscheduledReason.md) | Type alias | 78 | <pre><code>&#39;no&#95;assignee&#39; &#124; &#39;assignee&#95;not&#95;in&#95;iteration&#39; &#124; &#39;no&#95;estimate&#39; &#124; &#39;no&#95;capacity&#39;&#10;    &#124; &#39;prerequisites&#95;pending&#39; &#124; &#39;predecessor&#95;unscheduled&#39; &#124; &#39;predecessor&#95;postponed&#39; &#124; &#39;deferred&#39; &#124; &#39;blocked&#39; &#124; &#39;not&#95;placed&#39;</code></pre> | — |
 | [DateRule](../entities/types_gantt_DateRule.md) | Type alias | 87 | `'dates_incomplete' \| 'dates_inverted' \| 'outside_iteration' \| 'before_min_start_date'` | — |
-| [ExplainScheduleDetailLevel](../entities/ExplainScheduleDetailLevel.md) | Type alias | 153 | `'brief' \| 'full'` | — |
+| [IdleReason](../entities/types_gantt_IdleReason.md) | Type alias | 119 | `'waits_for_prerequisite' \| 'earliest_start' \| 'fixed_dates' \| 'uninterrupted_slot'` | — |
+| [ExplainScheduleDetailLevel](../entities/ExplainScheduleDetailLevel.md) | Type alias | 180 | `'brief' \| 'full'` | — |

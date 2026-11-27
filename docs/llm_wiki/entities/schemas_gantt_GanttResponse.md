@@ -1,6 +1,6 @@
 # GanttResponse
 
-**Location:** `backend/app/schemas/gantt.py:170`
+**Location:** `backend/app/schemas/gantt.py:204`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)

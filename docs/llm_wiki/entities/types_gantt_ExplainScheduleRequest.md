@@ -1,6 +1,6 @@
 # ExplainScheduleRequest
 
-**Location:** `frontend/src/types/gantt.ts:155`
+**Location:** `frontend/src/types/gantt.ts:182`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)
