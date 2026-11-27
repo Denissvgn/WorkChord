@@ -98,6 +98,9 @@ class WorkflowContracts(unittest.TestCase):
         self.assertIn('--browser-only', script)
         self.assertNotIn('--full-backend', script)
         self.assertFalse(any('native-postgres' in step.get('uses', '') for step in delivery['steps']))
+        # Android checks are deferred: automatic CI skips them; they run only on a manual dispatch.
+        self.assertEqual(client['jobs']['android']['if'], "github.event_name == 'workflow_dispatch' && inputs.android_checks")
+        self.assertFalse(client['on' if 'on' in client else True]['workflow_dispatch']['inputs']['android_checks']['default'])
         command = gate['steps'][0]['run']
         def evaluate(values):
             return subprocess.run(['bash', '-e', '-c', command], env={**os.environ, 'CHECK_RESULTS': json.dumps(values)}, capture_output=True).returncode
