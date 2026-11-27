@@ -70,6 +70,28 @@ def require_provenance_recorder(db, project_id):
     return authority
 
 
+async def provenance_blockers(db, task):
+    """Why a provenance record would be refused for this task now, as action blockers; empty when it may be recorded.
+
+    It checks the same conditions a record is judged by, without raising, so the task page offers the form only
+    where it can succeed.
+    """
+    blockers = []
+    try:
+        require_provenance_recorder(db, task.project_id)
+    except AuthorityError as exc:
+        blockers.append({"code": exc.code, "message": str(exc)})
+    if task.is_summary or task.canceled_at is not None or task.status != "resolved":
+        blockers.append({"code": "manual_provenance_requires_resolved_work",
+                         "message": "Record manual provenance on resolved, uncanceled leaf work."})
+        return blockers
+    try:
+        await ManualProvenanceService(db)._require_no_recorded_execution(task)
+    except PlanningConflict as exc:
+        blockers.append({"code": exc.code, "message": str(exc)})
+    return blockers
+
+
 def _commit(url, field):
     try:
         link = parse_github_url(url)

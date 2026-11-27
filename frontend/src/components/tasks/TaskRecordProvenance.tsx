@@ -29,7 +29,9 @@ export const TaskRecordProvenance = ({ task, disabled, disabledReasons = [], onP
     const isActive = useActiveMount();
     const identity = useIdentity()?.identity;
     const [kind, setKind] = useState<ManualProvenanceExecutor['kind']>('human');
-    const [executorId, setExecutorId] = useState(() => identity?.principal?.kind === 'human' ? String(identity.principal.id) : '');
+    const [executorId, setExecutorId] = useState('');
+    // The artifact revision a record was made for: the form stays closed until the artifact changes or a person asks to record again.
+    const [recordedFor, setRecordedFor] = useState<number | null>(null);
     const [bindingId, setBindingId] = useState('');
     const [head, setHead] = useState('');
     const [commits, setCommits] = useState('');
@@ -60,7 +62,7 @@ export const TaskRecordProvenance = ({ task, disabled, disabledReasons = [], onP
             });
             return (await taskService.getDetail(task.id)).task;
         },
-        onSuccess: latest => { setReason(''); onUpdated(latest); },
+        onSuccess: latest => { setReason(''); setRecordedFor(task.artifact_revision ?? 0); onUpdated(latest); },
         onSettled: () => { if (isActive()) onPending(false); },
         // feedback-policy: mutation pending,inline
     });
@@ -77,10 +79,13 @@ export const TaskRecordProvenance = ({ task, disabled, disabledReasons = [], onP
         <h4 id={`${id}-heading`} className="font-medium text-content-primary">{t('domain.recordProvenance')}</h4>
         <p className="text-sm text-content-secondary">{t('domain.recordProvenanceHelp')}</p>
         {unavailable && <p role="status" className="text-sm text-content-secondary">{unavailable}</p>}
-        {mayRecord && <form className="space-y-3" onSubmit={event => { event.preventDefault(); if (missing.length === 0 && !record.isPending) { onPending(true); record.mutate(); } }}>
+        {mayRecord && recordedFor === (task.artifact_revision ?? 0) && <div className="flex flex-wrap items-center gap-2">
+            <p role="status" className="text-sm text-content-secondary">{t('domain.provenanceDone')}</p>
+            <Button type="button" size="sm" variant="secondary" onClick={() => setRecordedFor(null)}>{t('domain.provenanceRecordAgain')}</Button>
+        </div>}
+        {mayRecord && recordedFor !== (task.artifact_revision ?? 0) && <form className="space-y-3" onSubmit={event => { event.preventDefault(); if (missing.length === 0 && !record.isPending) { onPending(true); record.mutate(); } }}>
             <Select label={t('domain.provenanceExecutorKind')} value={kind} disabled={disabled || record.isPending}
-                onChange={event => { const next = event.target.value as ManualProvenanceExecutor['kind']; setKind(next);
-                    setExecutorId(next === 'human' && identity?.principal?.kind === 'human' ? String(identity.principal.id) : ''); }}>
+                onChange={event => { setKind(event.target.value as ManualProvenanceExecutor['kind']); setExecutorId(''); }}>
                 <option value="human">{t('domain.provenanceKindHuman')}</option>
                 <option value="agent">{t('domain.provenanceKindAgent')}</option>
             </Select>

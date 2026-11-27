@@ -316,7 +316,12 @@ class AgentRoutingService:
         try:
             return rollout_service.require_preview()
         except AgentRoutingRolloutError as exc:
+            from app.refusal_next_steps import next_step_for
+
             status = exc.status
+            if "model_aware_routing_disabled" in status.blocker_codes:
+                # The deployment switch is off: no team readiness changes that.
+                detail = {**detail, "next_step": next_step_for(exc.code, variant="enable_routing_mode")}
             raise AgentRoutingConflictError(
                 exc.code,
                 "Model-aware routing is unavailable in the effective rollout mode",

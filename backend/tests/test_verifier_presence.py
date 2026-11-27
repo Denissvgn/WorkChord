@@ -200,6 +200,7 @@ async def test_absent_verifier_is_refused_with_the_non_ready_actors_and_the_rule
         await verification_preview(db, scene)
     detail = unavailable.value.detail()
     assert detail["code"] == "model_aware_routing_preview_unavailable"
+    assert detail["next_step"]["kind"] in {"ready_routing_topology", "enable_routing_mode"}
     assert detail["topology_readiness"]["blocker_codes"] == ["verifier_not_runtime_ready"]
     assert "role, scopes, profile and model bindings" in detail["readiness_rule"]
     assert "polled its queue within the last" in detail["readiness_rule"]

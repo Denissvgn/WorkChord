@@ -1,6 +1,6 @@
 import type { RefusalNextStep } from '../types/task';
 
-export type ApiErrorKind ='response' | 'network' | 'unknown';
+export type ApiErrorKind = 'response' | 'network' | 'unknown';
 
 export interface ApiFieldError {
     field: string | null;
@@ -172,7 +172,7 @@ export const getApiNextStep = (error: unknown): RefusalNextStep | null => {
     };
 };
 
-export const getApiErrorStatus =(error: unknown) => (
+export const getApiErrorStatus = (error: unknown) => (
     normalizedStatus(asApiError(error).response?.status)
 );
 

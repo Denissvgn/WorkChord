@@ -13,19 +13,25 @@ from app.main import app
 from app.mcp_server import _structured_tool_error, mcp
 from app.refusal_next_steps import NEXT_STEPS, NOT_REFUSAL_CODES, next_step_for
 from app.services.agent_routing_rollout import AgentRoutingRolloutService
-from app.services.agent_routing_service import AgentRoutingConflictError
+from app.services.agent_routing_service import AgentRoutingConflictError, AgentRoutingService
 from app.services.agent_team_setup_service import AgentTeamSetupConflictError
 
 APP_DIR = Path(__file__).resolve().parents[1] / "app"
 # A quoted string that is shaped like a verification or review refusal code.
 CODE_SHAPE = re.compile(
     r"""["']((?:verification_[a-z_]+)|(?:[a-z_]+_review_required)|(?:[a-z_]+_unverifiable)|(?:[a-z_]*outside_topology)"""
-    r"""|(?:caller_not_[a-z_]+)|(?:verifier_(?:not|outside)_[a-z_]+)|(?:model_aware_routing_preview_unavailable))["']""")
+    r"""|(?:caller_not_[a-z_]+)|(?:verifier_(?:not|outside)_[a-z_]+)|(?:model_aware_routing_preview_unavailable)"""
+    r"""|(?:manual_provenance_[a-z_]+)|(?:provenance_recorder_required)|(?:reviewer_profile_[a-z_]+)"""
+    r"""|(?:replacement_contribution_[a-z_]+)|(?:owner_(?:acceptance|override)_[a-z_]+)|(?:override_reason_required))["']""")
 REQUIRED = {
     "verification_publisher_unverifiable", "verification_candidate_unverifiable", "verification_independence_unverifiable",
     "verified_publisher_review_required", "accountable_review_required", "independent_review_required",
     "agent_team_actor_outside_topology", "model_aware_routing_preview_unavailable",
-    "verifier_outside_topology", "caller_not_runtime_ready",
+    "verifier_outside_topology", "caller_not_runtime_ready", "reviewer_profile_mismatch", "replacement_contribution_unattributed",
+    "owner_acceptance_required", "override_reason_required", "owner_override_not_required", "provenance_recorder_required",
+    "manual_provenance_execution_recorded", "manual_provenance_requires_resolved_work", "manual_provenance_pr_not_task_evidence",
+    "manual_provenance_executor_unknown", "manual_provenance_executor_outside_project", "manual_provenance_executor_conflict",
+    "manual_provenance_human_recorder_required",
 }
 
 
@@ -60,7 +66,7 @@ async def mcp_tool_names():
 
 async def test_every_next_step_is_a_sentence_with_commands_that_exist():
     routes, tools = route_templates(), await mcp_tool_names()
-    for code, step in NEXT_STEPS.items():
+    for code, step in {**NEXT_STEPS, **{f"variant:{name}": step for name, step in catalogue.VARIANTS.items()}}.items():
         assert set(step) == {"kind", "authority", "message", "commands", "ui_action"}, code
         assert step["kind"] and step["authority"], code
         assert step["message"].endswith(".") and len(step["message"].split()) >= 8, code
@@ -73,10 +79,41 @@ async def test_every_next_step_is_a_sentence_with_commands_that_exist():
                 assert f"{verb} {path.split(' ')[0]}" in routes, (code, command)
 
 
+def test_a_kind_names_exactly_one_sentence_so_the_page_can_translate_it_by_kind():
+    sentences = {}
+    for step in [*NEXT_STEPS.values(), *catalogue.VARIANTS.values()]:
+        assert sentences.setdefault(step["kind"], step["message"]) == step["message"], step["kind"]
+
+
+def test_the_provenance_record_is_offered_only_where_the_refusal_names_that_remedy():
+    source = (APP_DIR / "services" / "review_provenance.py").read_text(encoding="utf-8")
+    assert source.count('step="record_provenance"') == source.count("remedy=remedy(") >= 2
+    # No default step sends a verification refusal to a record that work with runs would be refused.
+    for code in ("verification_publisher_unverifiable", "verification_candidate_unverifiable",
+                 "verification_independence_unverifiable", "verification_contributors_unverifiable"):
+        assert NEXT_STEPS[code]["ui_action"] is None
+        assert "manual-provenance" not in " ".join(NEXT_STEPS[code]["commands"].values())
+
+
+async def test_a_disabled_deployment_switch_is_the_deployment_operators_step_not_team_readiness():
+    from types import SimpleNamespace
+    off = AgentRoutingRolloutService(settings_override=SimpleNamespace(model_aware_routing_mode="off"))
+    with pytest.raises(AgentRoutingConflictError) as refused:
+        await AgentRoutingService(None, rollout_service=off)._require_preview_rollout(None)
+    step = refused.value.detail()["next_step"]
+    assert (step["kind"], step["authority"]) == ("enable_routing_mode", "deployment_operator")
+    assert "MODEL_AWARE_ROUTING_MODE" in step["message"]
+
+    waiting = AgentRoutingRolloutService(settings_override=SimpleNamespace(model_aware_routing_mode="shadow"))
+    with pytest.raises(AgentRoutingConflictError) as not_ready:
+        await AgentRoutingService(None, rollout_service=waiting)._require_preview_rollout(None)
+    assert not_ready.value.detail()["next_step"]["kind"] == "ready_routing_topology"
+
+
 def test_the_task_id_fills_the_command_templates_without_changing_the_catalogue():
-    step = next_step_for("verification_candidate_unverifiable", task_id=42)
+    step = next_step_for("verification_candidate_unverifiable", task_id=42, variant="record_provenance")
     assert step["commands"]["rest"] == "POST /api/tasks/42/manual-provenance"
-    assert NEXT_STEPS["verification_candidate_unverifiable"]["commands"]["rest"].endswith("{task_id}/manual-provenance")
+    assert catalogue.VARIANTS["record_provenance"]["commands"]["rest"].endswith("{task_id}/manual-provenance")
     assert next_step_for("not_a_refusal") is None
 
 
@@ -102,4 +139,4 @@ def test_the_rollout_refusal_keeps_its_readiness_detail_and_gains_the_next_step(
     error = AgentRoutingConflictError("model_aware_routing_preview_unavailable", "Unavailable.",
                                       effective_mode=status.effective_mode.value, blocker_codes=list(status.blocker_codes))
     detail = error.detail()
-    assert detail["effective_mode"] == "off" and detail["next_step"]["kind"] == "enable_routing_preview"
+    assert detail["effective_mode"] == "off" and detail["next_step"]["kind"] == "ready_routing_topology"
