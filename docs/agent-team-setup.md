@@ -337,12 +337,15 @@ verdict, are allowed when
 - the verifier is a runtime-ready member of the caller's team;
 - the caller is bound to that team and holds every readiness condition except a
   recent poll (a caller that is acting right now need not have polled lately,
-  but a disabled, drifted or unacknowledged caller is refused); or the caller
+  but a disabled, drifted, unacknowledged or not-yet-ready (for example
+  onboarding) caller is refused); or the caller
   is bound to no team and has authority over the task's project, in which case
   the verifier's own team is used.
 
 A verifier that is not present, or is outside the caller's team, is still
-refused. A verification preview that names no `focus_actor_id` lists every
+refused. In `trusted_local` mode with no authority set (the single-user local
+mode) a caller bound to no team is treated as having authority over every
+project. A verification preview that names no `focus_actor_id` lists every
 candidate and keeps the whole-team requirement.
 
 Two refusals say who is missing instead of leaving the cause to be guessed.

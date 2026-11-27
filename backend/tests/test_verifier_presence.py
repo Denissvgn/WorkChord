@@ -4,10 +4,11 @@ import json
 from datetime import timedelta
 
 import pytest
+from sqlalchemy import select
 
 from app.authority import Authority
 from app.config import get_settings
-from app.models.agent import AgentActor, AgentTaskAssignment
+from app.models.agent import AgentActor, AgentTaskAssignment, AgentTeamTopologyMember
 from app.models.iteration import Iteration
 from app.schemas.agent import AgentReviewVerdict, AgentTaskAssignmentCreate, ModelAwareAgentTaskAssignmentCreate
 from app.schemas.agent_routing import AgentRoutingPreviewCreate
@@ -169,6 +170,23 @@ async def test_verifier_that_goes_stale_after_assignment_is_refused_at_verdict_t
 
 @database_engines
 @pytest.mark.usefixtures("deployed_agent_skill_release", "qualified_model_aware_routing_test_context")
+async def test_verification_queue_item_follows_the_verifier_rule(db_session, team_member_factory, task_factory):
+    db = db_session
+    scene = await resolved_task_with_team(db, team_member_factory, task_factory)
+    await set_last_seen(db, scene.spare_id, quiet=True)
+    preview = await verification_preview(db, scene)
+    verification = await assign_verifier(db, scene, preview, "presence-queue-item")
+    assignment_id = verification.id
+    work = AgentWorkService(db)
+    item = await work._work_item(await db.get(AgentTaskAssignment, assignment_id), 1, utc_now())
+    assert "model_aware_assignment_inactive" not in item.blocker_codes
+    await set_last_seen(db, scene.reviewer_id, quiet=True)
+    item = await work._work_item(await db.get(AgentTaskAssignment, assignment_id), 1, utc_now())
+    assert "model_aware_assignment_inactive" in item.blocker_codes
+
+
+@database_engines
+@pytest.mark.usefixtures("deployed_agent_skill_release", "qualified_model_aware_routing_test_context")
 async def test_absent_verifier_is_refused_with_the_non_ready_actors_and_the_rule(
     db_session, team_member_factory, task_factory,
 ):
@@ -235,6 +253,21 @@ async def test_caller_must_hold_its_own_readiness_apart_from_a_recent_poll(
     assert readiness.blocker_codes == ("caller_not_runtime_ready",)
     flagged = {row["actor_id"] for row in detail["non_ready_actors"] if row["blocks_this_request"]}
     assert scene.pm_id in flagged
+
+    # A caller whose member is not at the runtime_ready lifecycle is refused although no blocker names it.
+    await set_enabled(db, scene.pm_id, True)
+    member = await db.scalar(select(AgentTeamTopologyMember).where(AgentTeamTopologyMember.actor_id == scene.pm_id))
+    member.lifecycle_state = "onboarding"
+    await db.commit()
+    await reload_session_fixture(db)
+    pm = await db.get(AgentActor, scene.pm_id)
+    readiness, detail = await setup.readiness_gate(pm, verifier_actor_id=scene.reviewer_id, project_id=scene.project_id)
+    assert readiness.blocker_codes == ("caller_not_runtime_ready",)
+    assert next(row for row in detail["non_ready_actors"] if row["actor_id"] == scene.pm_id)["lifecycle_state"] == "onboarding"
+    member = await db.scalar(select(AgentTeamTopologyMember).where(AgentTeamTopologyMember.actor_id == scene.pm_id))
+    member.lifecycle_state = "runtime_ready"
+    await db.commit()
+    await reload_session_fixture(db)
 
     # A caller that only has not polled lately is accepted.
     await set_enabled(db, scene.pm_id, True)

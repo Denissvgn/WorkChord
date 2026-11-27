@@ -4401,11 +4401,7 @@ class AgentWorkService:
             mode = read.modes[assignment_actor.id]
         else:
             observed = read.teams if assignment.queue_class == "rework" else None
-            if assignment.purpose == "verification":
-                rollout = (await self._verification_rollout(assignment_actor, assignment_actor.id, task.project_id))[0]
-            else:
-                rollout = await self._resolve_rollout(assignment_actor, observed_boundaries=observed)
-            mode = rollout.status().effective_mode
+            mode = (await self._resolve_rollout(assignment_actor, observed_boundaries=observed)).status().effective_mode
             if assignment.queue_class == "rework":
                 read.modes[assignment_actor.id] = mode
         supervised, evidence = await self._shadow_handoff(task, assignment, assignment_actor, mode, read)
@@ -4533,6 +4529,14 @@ class AgentWorkService:
                 self._validate_assignment_actor(verifier, "verification")
             except ValueError:
                 blockers.append("assignment_actor_ineligible")
+            if (
+                verifier is not None
+                and self._is_model_aware_assignment(assignment)
+                and (await self._verification_rollout(verifier, verifier.id, task.project_id))[0].status().effective_mode
+                != AgentRoutingRolloutMode.ENFORCED
+            ):
+                # Judged as the verdict is: by the verifier's presence, not the whole team's.
+                blockers.append("model_aware_assignment_inactive")
             if task.status != TaskStatus.RESOLVED.value:
                 blockers.append("task_status_resolved_required")
             if assignment.not_before is not None and as_utc(assignment.not_before) > as_utc(now):

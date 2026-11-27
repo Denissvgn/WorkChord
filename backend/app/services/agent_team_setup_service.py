@@ -3886,6 +3886,7 @@ class AgentTeamSetupService:
                 "actor_key": member.actor_key,
                 "role": member.role,
                 "connection_state": member.connection_state,
+                "lifecycle_state": member.lifecycle_state.value if hasattr(member.lifecycle_state, "value") else member.lifecycle_state,
                 "last_seen_at": _iso_or_none(member.last_seen_at),
                 # The last poll while otherwise ready, known only when nothing but a recent poll is missing.
                 "last_ready_at": (
@@ -3939,7 +3940,11 @@ class AgentTeamSetupService:
         return boundary
 
     def _project_allows(self, project_id: int | None, action: str) -> bool:
-        """Whether the caller's authority covers the project, without raising."""
+        """Whether the caller's authority covers the project, without raising.
+
+        With no authority set, this is true only in trusted_local mode, the single-user local mode where
+        every caller is the workspace owner; any other mode needs an authority.
+        """
 
         authority = self.db.info.get("authority")
         if authority is None:
@@ -3991,7 +3996,10 @@ class AgentTeamSetupService:
                 codes = ("verifier_outside_topology",)
             else:
                 caller = next((row for row in boundary.non_ready_actors if row["actor_id"] == principal.id), None)
-                if caller is not None and not set(caller["blocker_codes"]) <= CALLER_PRESENCE_BLOCKERS:
+                if caller is not None and (
+                    not set(caller["blocker_codes"]) <= CALLER_PRESENCE_BLOCKERS
+                    or caller["lifecycle_state"] != AgentTeamMemberLifecycle.RUNTIME_READY.value
+                ):
                     codes, required = ("caller_not_runtime_ready",), required | {principal.id}
                 elif verifier_actor_id in boundary.runtime_ready_actor_ids:
                     return AgentRoutingTopologyReadiness.ready(
