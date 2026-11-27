@@ -108,4 +108,4 @@ flowchart LR
 | `RoutingQualificationKeyService.list_registry` | type_reference | [routing_qualification_key_service](../modules/routing_qualification_key_service.md) | — |
 | `RoutingQualificationKeyService.retire` | type_reference | [routing_qualification_key_service](../modules/routing_qualification_key_service.md) | — |
 
-> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

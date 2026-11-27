@@ -15,7 +15,7 @@ _Auto-generated from `_MutationResult` in `backend/app/services/agent_model_cata
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `target_type` | `Literal['model_catalog', 'model_binding', 'routing_qualification_key']` | *required* | — |
+| `target_type` | `Literal['model_catalog', 'model_binding', 'routing_qualification_key', 'routing_calibration_contract']` | *required* | — |
 | `target_id` | `int` | *required* | — |
 | `authoritative_revision` | `int` | *required* | — |
 | `result` | `dict[str, Any]` | *required* | — |
@@ -32,10 +32,13 @@ _Auto-generated from `_MutationResult` in `backend/app/services/agent_model_cata
 ```mermaid
 flowchart LR
     n0["_MutationResult (backend/app/services/agent_model_catalog_service.py)"]
-    n1["RoutingQualificationKeyService._result (backend/app/services/routing_qualification_key_service.py)"]
+    n1["RoutingCalibrationContractService._result (backend/app/services/routing_calibration_contract_service.py)"]
+    n2["RoutingQualificationKeyService._result (backend/app/services/routing_qualification_key_service.py)"]
     n1 --> n0
+    n2 --> n0
     click n0 "../modules/agent_model_catalog_service.md"
-    click n1 "../modules/routing_qualification_key_service.md"
+    click n1 "../modules/routing_calibration_contract_service.md"
+    click n2 "../modules/routing_qualification_key_service.md"
 ```
 
 ### Summary
@@ -48,5 +51,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `RoutingCalibrationContractService._result` | call | [routing_calibration_contract_service](../modules/routing_calibration_contract_service.md) | 1 |
+| `RoutingCalibrationContractService._result` | type_reference | [routing_calibration_contract_service](../modules/routing_calibration_contract_service.md) | — |
 | `RoutingQualificationKeyService._result` | call | [routing_qualification_key_service](../modules/routing_qualification_key_service.md) | 1 |
 | `RoutingQualificationKeyService._result` | type_reference | [routing_qualification_key_service](../modules/routing_qualification_key_service.md) | — |

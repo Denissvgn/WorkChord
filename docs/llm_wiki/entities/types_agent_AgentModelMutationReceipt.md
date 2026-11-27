@@ -16,7 +16,7 @@ _Auto-generated from `AgentModelMutationReceipt` in `frontend/src/types/agent.ts
 |------|------|----------|---------|-------------|
 | `operation` | `string` | Yes | — | — |
 | `actor_id` | `number \| null` | Yes | — | — |
-| `target_type` | `'model_catalog' \| 'model_binding' \| 'routing_qualification_key'` | Yes | — | — |
+| `target_type` | `'model_catalog' \| 'model_binding' \| 'routing_qualification_key' \| 'routing_calibration_contract'` | Yes | — | — |
 | `target_id` | `number` | Yes | — | — |
 | `idempotency_key` | `string` | Yes | — | — |
 | `rationale` | `string` | Yes | — | — |

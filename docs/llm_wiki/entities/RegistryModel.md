@@ -31,14 +31,15 @@ _Auto-generated from `_RegistryModel` in `backend/app/schemas/routing_qualificat
 flowchart LR
     n0["_RegistryModel (backend/app/schemas/routing_qualification.py)"]
     n1["BaseModel"]
-    n2["QualificationKeyCatalogReference (backend/app/schemas/routing_qualification.py)"]
-    n3["RoutingQualificationKeyDeclare (backend/app/schemas/routing_qualification.py)"]
-    n4["RoutingQualificationKeyRegistryResponse (backend/app/schemas/routing_qualification.py)"]
-    n5["RoutingQualificationKeyResponse (backend/app/schemas/routing_qualification.py)"]
-    n6["RoutingQualificationKeyRetire (backend/app/schemas/routing_qualification.py)"]
-    n7["RoutingQualificationKeyRevise (backend/app/schemas/routing_qualification.py)"]
-    n8["RoutingQualificationKeyRevisionResponse (backend/app/schemas/routing_qualification.py)"]
-    n9["RoutingQualificationKeyUsage (backend/app/schemas/routing_qualification.py)"]
+    n2["QualificationKeyCalibrationReference (backend/app/schemas/routing_qualification.py)"]
+    n3["QualificationKeyCatalogReference (backend/app/schemas/routing_qualification.py)"]
+    n4["RoutingQualificationKeyDeclare (backend/app/schemas/routing_qualification.py)"]
+    n5["RoutingQualificationKeyRegistryResponse (backend/app/schemas/routing_qualification.py)"]
+    n6["RoutingQualificationKeyResponse (backend/app/schemas/routing_qualification.py)"]
+    n7["RoutingQualificationKeyRetire (backend/app/schemas/routing_qualification.py)"]
+    n8["RoutingQualificationKeyRevise (backend/app/schemas/routing_qualification.py)"]
+    n9["RoutingQualificationKeyRevisionResponse (backend/app/schemas/routing_qualification.py)"]
+    n10["RoutingQualificationKeyUsage (backend/app/schemas/routing_qualification.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -48,6 +49,7 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/schemas_routing_qualification.md"
     click n2 "../modules/schemas_routing_qualification.md"
     click n3 "../modules/schemas_routing_qualification.md"
@@ -57,6 +59,7 @@ flowchart LR
     click n7 "../modules/schemas_routing_qualification.md"
     click n8 "../modules/schemas_routing_qualification.md"
     click n9 "../modules/schemas_routing_qualification.md"
+    click n10 "../modules/schemas_routing_qualification.md"
 ```
 
 ### Summary
@@ -70,6 +73,7 @@ flowchart LR
 | Kind | Entity | Module |
 |---|---|---|
 | Base | `BaseModel` | — |
+| Subclass | `QualificationKeyCalibrationReference` | [schemas_routing_qualification](../modules/schemas_routing_qualification.md) |
 | Subclass | `QualificationKeyCatalogReference` | [schemas_routing_qualification](../modules/schemas_routing_qualification.md) |
 | Subclass | `RoutingQualificationKeyDeclare` | [schemas_routing_qualification](../modules/schemas_routing_qualification.md) |
 | Subclass | `RoutingQualificationKeyRegistryResponse` | [schemas_routing_qualification](../modules/schemas_routing_qualification.md) |

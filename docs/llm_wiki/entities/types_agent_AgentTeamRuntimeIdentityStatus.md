@@ -1,6 +1,6 @@
 # AgentTeamRuntimeIdentityStatus
 
-**Location:** `frontend/src/types/agent.ts:887`
+**Location:** `frontend/src/types/agent.ts:891`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

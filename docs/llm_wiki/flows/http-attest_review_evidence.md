@@ -217,7 +217,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| attest_review_evidence | record_review_evidence | 92 | `record_review_evidence(db, actor, task_id, data, idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
+| attest_review_evidence | record_review_evidence | 100 | `record_review_evidence(db, actor, task_id, data, idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
 | record_review_evidence | require_operator | 325 | `require_operator(db)` |
 | require_operator | db.info.get (backend/app/authority.py:require_operator) | 92 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 94 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |

@@ -44,6 +44,7 @@ Routing previews are bounded using the complete validated response, including it
 | `app.services.capacity_service` | `CapacityService` |
 | `app.services.review_evidence` | `assignment_observation`, `requirements_for`, `resolve` |
 | `app.services.review_provenance` | `different_publisher_required`, `execution_profile_history`, `historical_profile`, `review_history` |
+| `app.services.routing_calibration_contract_service` | `approved_calibration_contract_count` |
 | `app.services.routing_qualification_key_service` | `require_known_qualification_keys`, `active_qualification_keys` |
 | `app.services.task_brief_service` | `brief_definition_blockers` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
@@ -81,7 +82,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (30) |
-| Outbound | `backend` (25) |
+| Outbound | `backend` (26) |
 
 ### External packages
 
@@ -89,7 +90,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 53 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 54 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -1,6 +1,6 @@
 # AgentModelCatalogService
 
-**Location:** `backend/app/services/agent_model_catalog_service.py:88`
+**Location:** `backend/app/services/agent_model_catalog_service.py:90`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md)
@@ -117,4 +117,4 @@ flowchart LR
 | `create_agent_model_binding` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
 | `create_agent_model_catalog_entry` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
 
-> References: showing 12 of 27 logical references; 15 omitted by the 12-row generated summary limit.
+> References: showing 12 of 28 logical references; 16 omitted by the 12-row generated summary limit.

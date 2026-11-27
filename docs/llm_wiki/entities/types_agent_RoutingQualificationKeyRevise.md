@@ -1,6 +1,6 @@
 # RoutingQualificationKeyRevise
 
-**Location:** `frontend/src/types/agent.ts:367`
+**Location:** `frontend/src/types/agent.ts:369`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

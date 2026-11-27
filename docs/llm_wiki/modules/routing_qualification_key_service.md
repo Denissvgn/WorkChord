@@ -18,12 +18,13 @@ key beside the built-in routing skill keys, which stay fixed in code.
 | `__future__` | `annotations` |
 | `app.authority` | `internal_authority` |
 | `app.models.agent` | `AgentActor`, `AgentModelCatalogEntry`, `TaskEvent`, `TaskRoutingAssessment` |
+| `app.models.routing_calibration` | `RoutingCalibrationContract` |
 | `app.models.routing_qualification` | `RoutingQualificationKey`, `RoutingQualificationKeyRevision` |
 | `app.models.task` | `Task` |
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_BOUNDED_LIST_ITEMS` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.agent_routing` | `AgentModelMutationReceipt` |
-| `app.schemas.routing_qualification` | `MAX_QUALIFICATION_KEY_USAGE_ITEMS`, `QualificationKeyCatalogReference`, `RoutingQualificationKeyDeclare`, `RoutingQualificationKeyDetail`, `RoutingQualificationKeyRegistryResponse`, `RoutingQualificationKeyResponse`, `RoutingQualificationKeyRetire`, `RoutingQualificationKeyRevise`, `RoutingQualificationKeyRevisionResponse`, `RoutingQualificationKeyUsage` |
+| `app.schemas.routing_qualification` | `MAX_QUALIFICATION_KEY_USAGE_ITEMS`, `QualificationKeyCalibrationReference`, `QualificationKeyCatalogReference`, `RoutingQualificationKeyDeclare`, `RoutingQualificationKeyDetail`, `RoutingQualificationKeyRegistryResponse`, `RoutingQualificationKeyResponse`, `RoutingQualificationKeyRetire`, `RoutingQualificationKeyRevise`, `RoutingQualificationKeyRevisionResponse`, `RoutingQualificationKeyUsage` |
 | `app.services.agent_model_catalog_service` | `AgentModelCatalogService`, `AgentModelConflictError`, `_MutationResult` |
 | `app.services.agent_routing_policy` | `ROUTING_POLICY_VERSION`, `ROUTING_SKILL_KEYS`, `require_known_routing_keys` |
 | `app.services.agent_service` | `require_scope` |
@@ -52,8 +53,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (5) |
-| Outbound | `backend` (12) |
+| Inbound | `backend` (7) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -61,13 +62,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [RoutingQualificationKeyService](../entities/RoutingQualificationKeyService.md) | 133 | — | Read the registry and run its deployment-operator commands. |
+| [RoutingQualificationKeyService](../entities/RoutingQualificationKeyService.md) | 135 | — | Read the registry and run its deployment-operator commands. |
 
 ## Functions
 

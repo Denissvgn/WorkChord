@@ -24,10 +24,13 @@ _Auto-generated from `RoutingKey` in `backend/app/schemas/agent_routing.py`._
 ```mermaid
 flowchart LR
     n0["RoutingKey (backend/app/schemas/agent_routing.py)"]
-    n1["backend/app/schemas/routing_qualification.py"]
+    n1["backend/app/schemas/routing_calibration.py"]
+    n2["backend/app/schemas/routing_qualification.py"]
     n1 --> n0
+    n2 --> n0
     click n0 "../modules/agent_routing.md"
-    click n1 "../modules/schemas_routing_qualification.md"
+    click n1 "../modules/schemas_routing_calibration.md"
+    click n2 "../modules/schemas_routing_qualification.md"
 ```
 
 ### Summary
@@ -40,4 +43,5 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `routing_calibration` | import | [schemas_routing_calibration](../modules/schemas_routing_calibration.md) | — |
 | `routing_qualification` | import | [schemas_routing_qualification](../modules/schemas_routing_qualification.md) | — |

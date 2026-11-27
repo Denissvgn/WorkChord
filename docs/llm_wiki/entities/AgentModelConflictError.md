@@ -94,4 +94,4 @@ flowchart LR
 | `reconcile_execution` | call | [execution_reconciliation](../modules/execution_reconciliation.md) | 2 |
 | `reconcile_window` | call | [planning_window_reconciliation](../modules/planning_window_reconciliation.md) | 2 |
 
-> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
+> References: showing 12 of 24 logical references; 12 omitted by the 12-row generated summary limit.

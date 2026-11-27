@@ -1,6 +1,6 @@
 # RequiredModelEnvelope
 
-**Location:** `backend/app/schemas/agent_routing.py:578`
+**Location:** `backend/app/schemas/agent_routing.py:580`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)

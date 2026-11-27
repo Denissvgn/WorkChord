@@ -1,13 +1,13 @@
 # RoutingQualificationKeyUsage
 
-**Location:** `backend/app/schemas/routing_qualification.py:132`
+**Location:** `backend/app/schemas/routing_qualification.py:139`
 **Kind:** Pydantic model
 **Bases:** `_RegistryModel`
 **Module:** [schemas_routing_qualification](../modules/schemas_routing_qualification.md)
 
 ## Description
 
-Catalog entries and tasks whose current routing assessment name the key.
+Catalog entries, calibration contracts and tasks whose current routing assessment name the key.
 
 ## Attributes
 
@@ -17,6 +17,8 @@ Catalog entries and tasks whose current routing assessment name the key.
 | `task_ids` | `list[int]` | `task_ids` | No | No | factory: `list` | max_length=unknown (MAX_QUALIFICATION_KEY_USAGE_ITEMS) | — | — |
 | `catalog_entries_omitted` | `int` | `catalog_entries_omitted` | No | No | `0` | ge=0 | — | — |
 | `task_ids_omitted` | `int` | `task_ids_omitted` | No | No | `0` | ge=0 | — | — |
+| `calibration_contracts` | `list[QualificationKeyCalibrationReference]` | `calibration_contracts` | No | No | factory: `list` | max_length=unknown (MAX_QUALIFICATION_KEY_USAGE_ITEMS) | — | — |
+| `calibration_contracts_omitted` | `int` | `calibration_contracts_omitted` | No | No | `0` | ge=0 | — | — |
 
 ## Methods
 
@@ -49,7 +51,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_routing_qualification](../modules/schemas_routing_qualification.md) | 1 | `catalog_entries`, `catalog_entries_omitted`, `task_ids`, `task_ids_omitted` |
+| [schemas_routing_qualification](../modules/schemas_routing_qualification.md) | 1 | `calibration_contracts`, `calibration_contracts_omitted`, `catalog_entries`, `catalog_entries_omitted`, `task_ids`, `task_ids_omitted` |
 
 ### Structure
 

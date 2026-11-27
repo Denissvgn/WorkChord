@@ -185,7 +185,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| apply_agent_profile_preset | AgentPlanningService.apply_profile_preset | 223 | `AgentPlanningService(db).apply_profile_preset(preset_key, actor, command=command)` |
+| apply_agent_profile_preset | AgentPlanningService.apply_profile_preset | 231 | `AgentPlanningService(db).apply_profile_preset(preset_key, actor, command=command)` |
 | AgentPlanningService.apply_profile_preset | AgentPlanningService._execute | 703 | `self._execute(actor=actor, scope='team:write', operation='planning.profile_preset.apply', target_type='team_member_profile', idempotency_target_id=0, command=command, request_payload=payload, mutate=mutate)` |
 | AgentPlanningService._execute | isinstance (backend/app/services/agen…ntPlanningService._execute) | 155 | `isinstance(scope, str)` |
 | AgentPlanningService._execute | require_scope | 156 | `require_scope(actor, scope)` |

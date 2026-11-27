@@ -1,6 +1,6 @@
 # RoutingQualificationKeyRegistryResponse
 
-**Location:** `backend/app/schemas/routing_qualification.py:160`
+**Location:** `backend/app/schemas/routing_qualification.py:174`
 **Kind:** Pydantic model
 **Bases:** `_RegistryModel`
 **Module:** [schemas_routing_qualification](../modules/schemas_routing_qualification.md)

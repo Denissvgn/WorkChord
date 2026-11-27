@@ -47,7 +47,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (11) |
+| Inbound | `backend` (13) |
 | Outbound | `backend` (7) |
 
 ### External packages
@@ -56,7 +56,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -64,4 +64,4 @@ flowchart LR
 |-------|------|-------|-------------|
 | [AgentModelConflictError](../entities/AgentModelConflictError.md) | 58 | `AgentConflictError` | Stable model-control conflict shared by REST and MCP. |
 | [_MutationResult](../entities/MutationResult.md) | 76 | — | — |
-| [AgentModelCatalogService](../entities/AgentModelCatalogService.md) | 88 | — | Expose secret-free reads and replay-safe admin model mutations. |
+| [AgentModelCatalogService](../entities/AgentModelCatalogService.md) | 90 | — | Expose secret-free reads and replay-safe admin model mutations. |

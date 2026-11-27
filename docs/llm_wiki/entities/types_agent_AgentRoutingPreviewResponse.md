@@ -1,6 +1,6 @@
 # AgentRoutingPreviewResponse
 
-**Location:** `frontend/src/types/agent.ts:558`
+**Location:** `frontend/src/types/agent.ts:560`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -16,6 +16,8 @@ _Auto-generated from `AgentRoutingPreviewResponse` in `frontend/src/types/agent.
 | `runtime_availability` | `'unknown'` | No | — | — |
 | `eligibility_basis` | `'task_policy_and_configuration'` | No | — | — |
 | `model_attestation` | `'not_independently_attested'` | No | — | — |
+| `calibration_contract` | `'none_approved' \| 'approved'` | No | — | — |
+| `approved_calibration_contracts` | `number` | No | — | — |
 | `preview_id` | `string` | Yes | — | — |
 | `preview_digest` | `string` | Yes | — | — |
 | `input_digest` | `string` | Yes | — | — |
@@ -67,7 +69,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_agent](../modules/types_agent.md) | 0 | `assessment_id`, `assessment_task_version`, `current_task_version`, `eligibility_basis`, `eligible_candidates`, `eligible_candidates_omitted`, `exclusions`, `exclusions_omitted`, `expires_at`, `generated_at`, `hard_blocker_codes`, `input_digest` |
+| [types_agent](../modules/types_agent.md) | 0 | `approved_calibration_contracts`, `assessment_id`, `assessment_task_version`, `calibration_contract`, `current_task_version`, `eligibility_basis`, `eligible_candidates`, `eligible_candidates_omitted`, `exclusions`, `exclusions_omitted`, `expires_at`, `generated_at` |
 
 ### References
 
