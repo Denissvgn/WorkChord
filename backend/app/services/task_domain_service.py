@@ -295,6 +295,12 @@ class TaskDomainService:
                     review_codes.append(getattr(exc, "code", "current_evidence_required"))
             for action_name, codes in (("begin_assigned_work", start_codes), ("submit_assigned_work", [] if live and authority.allows(task.project_id, "execute") and not task.canceled_at and not task.blocked_reason else ["live_execution_fence_required"]), ("review_assigned_work", review_codes)):
                 actions.append({"action": action_name, "allowed": not codes, "blockers": [{"code": code, "message": code.replace("_", " ")} for code in sorted(set(codes))]})
+        from app.refusal_next_steps import next_step_for
+        for item in actions:
+            for blocker in item.get("blockers", ()):
+                step = next_step_for(blocker.get("code"), task_id=task.id)
+                if step is not None:
+                    blocker["next_step"] = step
         return TaskActionsResponse(task_id=task.id, version=task.version,
             actions=actions,
             claim_generation=task.claim_generation, running_run_ids=[run.id for run in runs], live_assignment_ids=[item.id for item in assignments])

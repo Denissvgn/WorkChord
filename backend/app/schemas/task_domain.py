@@ -27,9 +27,20 @@ class TaskActionRequest(BaseModel):
         return self
 
 
+class RefusalNextStep(BaseModel):
+    """What a person or agent may do about a refusal, from the shared refusal catalogue."""
+
+    kind: str = Field(description="Stable key for the step, such as record_provenance or accept_as_owner.")
+    authority: str = Field(description="Who may take the step.")
+    message: str = Field(description="One sentence a person can act on.")
+    commands: dict[str, str] = Field(default_factory=dict, description="The REST route or MCP tool that takes the step.")
+    ui_action: str | None = Field(default=None, description="The task page form that takes the step, when there is one.")
+
+
 class TaskActionBlocker(BaseModel):
     code: str
     message: str
+    next_step: RefusalNextStep | None = None
 
 
 class TaskActionAvailability(BaseModel):

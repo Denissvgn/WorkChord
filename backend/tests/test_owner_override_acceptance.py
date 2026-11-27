@@ -224,3 +224,19 @@ async def test_override_grant_covers_only_its_task_revision_and_acceptance(deliv
             with pytest.raises(AuthorityError) as stale:
                 await service.require_review(task, accepting=True)
             assert stale.value.code == "verified_publisher_review_required"
+
+
+async def test_the_refusal_and_the_task_actions_name_the_owner_acceptance_next_step(managed_store):
+    factory, _, _, _ = managed_store
+    task_id, _, _ = await policy_scope(managed_store)
+    body = await acceptance_body(factory, task_id)
+    async with owner_client(managed_store) as owner:
+        refused = await owner.post(f"/api/tasks/{task_id}/review", json={**body, "verdict": "accept"})
+        step = refused.json()["detail"]["next_step"]
+        assert (step["kind"], step["ui_action"]) == ("accept_as_owner", "accept_as_owner")
+        assert step["commands"]["rest"] == "POST /api/tasks/{task_id}/owner-acceptance"
+
+        actions = (await owner.get(f"/api/tasks/{task_id}/actions")).json()["actions"]
+        blocker = next(item for item in actions if item["action"] == "accept_review")["blockers"][0]
+        assert blocker["code"] == "verified_publisher_review_required"
+        assert blocker["next_step"]["commands"]["rest"] == f"POST /api/tasks/{task_id}/owner-acceptance"

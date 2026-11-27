@@ -9,7 +9,9 @@ import { useTranslation } from 'react-i18next';
 import { taskService } from '../../services/taskService';
 import { iterationService } from '../../services/iterationService';
 import type { CriterionProgress, Task } from '../../types/task';
-import { getApiErrorMessage } from '../../utils/apiError';
+import { getApiErrorMessage, getApiNextStep } from '../../utils/apiError';
+import { RefusalNextStepNote } from './RefusalNextStepNote';
+import { TaskRecordProvenance } from './TaskRecordProvenance';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
@@ -204,7 +206,14 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         !allCriteriaPass && t('domain.acceptNeedsResults'),
         reviewEvidenceTooLong && t('domain.reviewEvidenceTooLong'),
     ].filter(Boolean);
-    const needsOwnerAcceptance = task.status === 'resolved' && Boolean(acceptAction?.blockers.some(blocker => blocker.code === VERIFIED_PUBLISHER_CODE));
+    // The next step of every refusal on this page, from the action blockers and from a refused command.
+    const reviewAction = actions.data?.actions.find(item => item.action === 'review');
+    const blockerSteps = [...(acceptAction?.blockers ?? []), ...(reviewAction?.blockers ?? [])].flatMap(blocker => blocker.next_step ? [blocker.next_step] : []);
+    const refusedStep = command.isError ? getApiNextStep(command.error) : null;
+    const shownSteps = [...blockerSteps, ...(refusedStep ? [refusedStep] : [])].filter((step, index, all) => all.findIndex(other => other.kind === step.kind) === index);
+    const offers = (uiAction: string) => shownSteps.some(step => step.ui_action === uiAction);
+    const needsOwnerAcceptance = task.status === 'resolved' && (Boolean(acceptAction?.blockers.some(blocker => blocker.code === VERIFIED_PUBLISHER_CODE)) || offers('accept_as_owner'));
+    const needsProvenance = task.status === 'resolved' && (needsOwnerAcceptance || offers('record_provenance'));
     const manualActions = ['start_manual', 'resolve_manual', 'block', 'unblock', 'cancel', 'reopen', 'commit', 'uncommit']
         .filter(item => !(offerDispatch && item === 'start_manual'))
         .filter(item => !(actingAsOperator && (item === 'start_manual' || item === 'resolve_manual')));
@@ -224,6 +233,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         {Boolean(contextError) && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(contextError, t('domain.reloadReview'))}</p>}
         {command.isError && <div role="alert" className="space-y-2 text-sm text-feedback-danger-foreground">
             <p>{getApiErrorMessage(command.error, t('domain.saveFailed'))}</p>
+            {refusedStep && task.status !== 'resolved' && <RefusalNextStepNote step={refusedStep} />}
             {['commit', 'uncommit'].includes(action) && <Button type="button" size="sm" variant="secondary" onClick={() => { void compareCommandContext().catch(setContextError); }}>{t('planningInput.reviewAgain')}</Button>}
             <Button type="button" variant="secondary" size="sm" onClick={onReload}>{t('domain.reloadReview')}</Button>
         </div>}
@@ -302,15 +312,20 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
                 <Button type="button" variant="secondary" disabled={!canReview || !reason.trim() || (reviewCriteria.length > 0 && !someCriterionFails) || reviewEvidenceTooLong} onClick={() => run('reject')}>{t('domain.requestRework')}</Button>
                 {acceptMissing.length > 0 && <p id={`${id}-accept-missing`} role="status" className="w-full text-sm text-content-secondary">{acceptMissing.join(' ')}</p>}
             </div>}
+            {task.status === 'resolved' && shownSteps.map(step => <RefusalNextStepNote key={step.kind} step={step} />)}
         </fieldset>
         {task.status === 'resolved' && pairedObserver && <p role="status" className="text-sm text-content-secondary">{t('domain.ownerAcceptObserver')}</p>}
         {needsOwnerAcceptance && <TaskOwnerAcceptance task={task} disabled={disabled || pending || criteriaDirty || staleDraft}
             disabledReasons={[disabled && t('domain.acceptFinishEditing'), pending && t('domain.acceptSaving'), staleDraft && t('domain.staleProgress'), criteriaDirty && t('domain.acceptSaveProgress')].filter((item): item is string => Boolean(item))} onPending={onPending}
             onUpdated={latest => { if (!isActive()) return; if (key) { try { sessionStorage.removeItem(key); } catch { /* Storage may be unavailable. */ } } onDirty(false); onUpdated(latest); }} />}
+        {needsProvenance && <TaskRecordProvenance task={task} disabled={disabled || pending || criteriaDirty || staleDraft}
+            disabledReasons={[disabled && t('domain.acceptFinishEditing'), pending && t('domain.acceptSaving'), staleDraft && t('domain.staleProgress'), criteriaDirty && t('domain.acceptSaveProgress')].filter((item): item is string => Boolean(item))} onPending={onPending}
+            onUpdated={latest => { if (!isActive()) return; onUpdated(latest); }} />}
         <details className="text-sm text-content-secondary">
             <summary className="cursor-pointer">{t('domain.unavailableActions')}</summary>
             <ul className="mt-2 space-y-2">{actions.data?.actions.filter(item => !item.allowed).map(item => <li key={item.action}>
                 <span className="font-medium">{t(`domain.action_${item.action}`)}</span>: {item.blockers.map(blocker => blocker.message).join(' ')}
+                {item.blockers.flatMap(blocker => blocker.next_step ? [blocker.next_step] : []).map(step => <RefusalNextStepNote key={step.kind} step={step} className="mt-1 space-y-1" />)}
             </li>)}</ul>
         </details>
     </section>;

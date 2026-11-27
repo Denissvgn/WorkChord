@@ -117,7 +117,9 @@ class AgentTeamSetupConflictError(AgentConflictError):
         super().__init__(message)
 
     def detail(self) -> dict[str, Any]:
-        return {"code": self.code, "message": self.message, **self.context}
+        from app.refusal_next_steps import with_next_step
+
+        return with_next_step({"code": self.code, "message": self.message, **self.context})
 
 
 CALLER_NOT_BOUND_BLOCKER = "caller_not_bound_to_topology"

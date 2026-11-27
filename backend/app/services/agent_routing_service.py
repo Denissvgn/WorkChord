@@ -129,11 +129,13 @@ class AgentRoutingConflictError(AgentConflictError):
     def detail(self) -> dict[str, Any]:
         """Return the client-safe structured conflict envelope."""
 
-        return {
+        from app.refusal_next_steps import with_next_step
+
+        return with_next_step({
             "code": self.code,
             "message": self.message,
             **self.context,
-        }
+        })
 
 
 @dataclass(frozen=True)
