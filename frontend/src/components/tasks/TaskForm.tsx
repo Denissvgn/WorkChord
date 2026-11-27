@@ -1043,7 +1043,8 @@ export const TaskForm = ({
                     {error}
                 </div>
             )}
-            {error && routingRefused && <RoutingCheckNotice check={routingRefused} assigneeName={teamMembers?.find(member => member.id === routingRefused.assignee_id)?.name ?? ''} />}
+            {error && routingRefused && <RoutingCheckNotice check={routingRefused} showSuggestion={false}
+                assigneeName={teamMembers?.find(member => member.id === routingRefused.assignee_id)?.name ?? t('taskReassign.theNewAssignee')} />}
             {pendingWrite && !createMutation.isPending && !updateMutation.isPending && !createTriageMutation.isPending && <div role="status" className="space-y-2 rounded-md border border-feedback-warning-border p-3 text-sm">
                 <p>{t('teamwork.uncertainTask')}</p>
                 <Button type="button" size="sm" variant="secondary" disabled={isSubmitting} onClick={() => void comparePendingWrite()}>{t('teamwork.reloadCurrentWork')}</Button>

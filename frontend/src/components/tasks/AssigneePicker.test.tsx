@@ -87,7 +87,9 @@ describe('assigning iteration capacity from the task form', () => {
         expect(alert).toHaveTextContent(/same publisher as the new assignee/);
         expect(alert).toHaveTextContent(/Reassign to/);
         expect(alert).not.toHaveTextContent('The task\'s routing conflicts.');
-        expect(await screen.findByRole('group', { name: 'Routing check' })).toBeVisible();
+        const notice = await screen.findByRole('group', { name: 'Routing check' });
+        expect(notice).toBeVisible();
+        expect(notice).not.toHaveTextContent('suggested routing');
     });
 
     it('keeps Owner editable only under More', async () => {

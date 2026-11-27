@@ -479,6 +479,7 @@ export const englishResources = {
                 noticeLabel: 'Routing check',
                 conflictTitle: 'The routing does not fit {{name}} under the project\'s review policy',
                 warningTitle: 'Routing notes for {{name}}',
+                theNewAssignee: 'the new assignee',
                 refuseHint: 'The project does not save a reassignment that leaves this conflict. Use the suggested routing.',
                 warnHint: 'The project allows saving the reassignment with this conflict, but the suggested routing avoids it.',
                 noSuggestion: 'No consistent reviewer could be suggested.',

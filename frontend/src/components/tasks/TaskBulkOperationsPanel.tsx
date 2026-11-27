@@ -188,7 +188,8 @@ export const TaskBulkOperationsPanel = ({
                 const rewritten = routingChangeItems([], check.results).map(item => item.taskId).sort().join();
                 // The server would now rewrite something other than what was shown: show the new list instead of saving.
                 if (shown !== rewritten) {
-                    return { ...currentDecision, items: routingChangeItems(needsRouting, check.results) } satisfies RoutingDecision;
+                    const modes = check.results.flatMap(result => result.routing_check ? [result.routing_check.conflict_mode] : []);
+                    return { ...currentDecision, items: routingChangeItems(needsRouting, check.results), canKeep: modes.length > 0 ? modes.every(mode => mode === 'warn') : currentDecision.canKeep } satisfies RoutingDecision;
                 }
             }
             return taskService.runBulkOperation({

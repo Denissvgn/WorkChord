@@ -18,7 +18,7 @@ const ChangeLines = ({ lines }: { lines: string[] }) => (
  * What a reassignment would do to the task's routing: the conflicts with the project's review
  * policy, the warnings, and what the suggested routing would change. Shown before anything is saved.
  */
-export const RoutingCheckNotice = ({ check, assigneeName }: { check: RoutingCheck; assigneeName: string }) => {
+export const RoutingCheckNotice = ({ check, assigneeName, showSuggestion = true }: { check: RoutingCheck; assigneeName: string; /** False where the suggestion cannot be applied, such as the task form. */ showSuggestion?: boolean }) => {
     const { t } = useTranslation();
     if (!check.structured || check.issues.length === 0) return null;
     const conflicts = routingConflicts(check);
@@ -34,14 +34,14 @@ export const RoutingCheckNotice = ({ check, assigneeName }: { check: RoutingChec
             <ul className="list-disc pl-5">
                 {[...conflicts, ...warnings].map((issue, index) => <li key={`${issue.code}-${index}`}>{issueText(t, issue)}</li>)}
             </ul>
-            {conflicts.length > 0 && (
+            {showSuggestion && conflicts.length > 0 && (
                 <p>
                     {check.suggestion
                         ? (refused ? t('taskReassign.refuseHint') : t('taskReassign.warnHint'))
                         : (refused ? t('taskReassign.refuseNoSuggestionHint') : t('taskReassign.warnNoSuggestionHint'))}
                 </p>
             )}
-            {check.suggestion && (
+            {showSuggestion && check.suggestion && (
                 <div>
                     <p className="font-medium">{t('taskReassign.suggestionChanges')}</p>
                     {changes.length > 0 ? <ChangeLines lines={changes} /> : <p>{t('taskReassign.suggestionNoChange')}</p>}
