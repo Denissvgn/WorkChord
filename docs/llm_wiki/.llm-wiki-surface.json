@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1840,
+      "entities": 1843,
       "flows": 631,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1181,
+      "modules": 1183,
       "workflows": 241
     },
     "dependency_architecture": 2,
-    "total": 3910
+    "total": 3915
   },
   "dependency_pages": {
     "count": 2,
@@ -1197,7 +1197,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 455,
+              "line": 456,
               "step": "record_review_evidence",
               "step_index": 2,
               "target": "db.add"
@@ -1224,7 +1224,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 336,
+              "line": 337,
               "step": "record_review_evidence",
               "target": "TypeAdapter(ReviewEvidenceCommand).validate_python"
             },
@@ -1275,7 +1275,7 @@
             "backend/app/models/agent.py",
             "backend/app/routers/agent_planning.py"
           ],
-          "step_count": 752,
+          "step_count": 755,
           "truncated": true
         }
       },
@@ -35547,7 +35547,7 @@
             "backend/app/models/agent.py",
             "backend/app/services/outbound_webhook_service.py"
           ],
-          "step_count": 1180,
+          "step_count": 1181,
           "truncated": true
         }
       },
@@ -49683,6 +49683,7 @@
         "entities/agent_routing_AgentRoutingPreviewCreate.md",
         "entities/agent_routing_AgentRoutingPreviewResponse.md",
         "entities/agent_routing_policy_AssessmentReasonCode.md",
+        "entities/agent_routing_policy_ModelEffort.md",
         "entities/agent_routing_policy_RoutingBlockerCode.md",
         "entities/agent_routing_RequiredModelEnvelope.md",
         "entities/agent_routing_TaskDifficultyAxes.md",
@@ -50626,6 +50627,7 @@
         "entities/RequestSourceTargetNotFoundError.md",
         "entities/RequestSourceUpdate.md",
         "entities/RequestSourceValidationError.md",
+        "entities/RequiredModelEffort.md",
         "entities/RequirementKind.md",
         "entities/RescheduleResult.md",
         "entities/ResolvedHandoffFact.md",
@@ -51263,6 +51265,7 @@
         "entities/types_agent_AssessmentReasonCode.md",
         "entities/types_agent_ModelAwareAgentTaskAssignmentCreate.md",
         "entities/types_agent_ModelAwareAgentTaskAssignmentUpdate.md",
+        "entities/types_agent_ModelEffort.md",
         "entities/types_agent_RequiredModelEnvelope.md",
         "entities/types_agent_RoutingBlockerCode.md",
         "entities/types_agent_TaskDifficultyAxes.md",
@@ -52173,6 +52176,7 @@
         "modules/20261126_0026_review_record_kind.md",
         "modules/20261126_0027_task_postponements.md",
         "modules/20261126_0028_team_runtime_identity.md",
+        "modules/20261126_0029_catalog_effort.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -53063,6 +53067,7 @@
         "modules/test_capacity_adjustments.md",
         "modules/test_capacity_contract.md",
         "modules/test_capacity_transfers.md",
+        "modules/test_catalog_effort_migration.md",
         "modules/test_check_markdown_links.md",
         "modules/test_ci_runtime.md",
         "modules/test_classify_change_scope.md",
@@ -53803,7 +53808,8 @@
         "modules/agent_routing.md",
         "modules/mcp_agent_tools.md",
         "modules/test_agent_routing_contract.md",
-        "modules/test_agent_routing_data.md"
+        "modules/test_agent_routing_data.md",
+        "modules/test_agent_routing_wave3_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_routing.py",
@@ -53834,7 +53840,8 @@
         "modules/agent_model_catalog_service.md",
         "modules/agent_routing.md",
         "modules/mcp_agent_tools.md",
-        "modules/test_agent_model_catalog_api.md"
+        "modules/test_agent_model_catalog_api.md",
+        "modules/test_agent_routing_wave3_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_routing.py",
@@ -53930,6 +53937,19 @@
       "role": "semantic",
       "source_path": "backend/app/services/agent_routing_policy.py",
       "title": "AssessmentReasonCode"
+    },
+    {
+      "canonical_path": "entities/agent_routing_policy_ModelEffort.md",
+      "id": "agent_routing_policy_ModelEffort",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/agent_routing_policy_ModelEffort",
+      "outgoing_internal_links": [
+        "modules/agent_routing.md",
+        "modules/agent_routing_policy.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/agent_routing_policy.py",
+      "title": "ModelEffort"
     },
     {
       "canonical_path": "entities/agent_routing_policy_RoutingBlockerCode.md",
@@ -66917,6 +66937,19 @@
       "title": "RequestSourceValidationError"
     },
     {
+      "canonical_path": "entities/RequiredModelEffort.md",
+      "id": "RequiredModelEffort",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RequiredModelEffort",
+      "outgoing_internal_links": [
+        "modules/TaskRoutingPanel.md",
+        "modules/types_agent.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/agent.ts",
+      "title": "RequiredModelEffort"
+    },
+    {
       "canonical_path": "entities/RequirementKind.md",
       "id": "RequirementKind",
       "kind": "entities",
@@ -75829,6 +75862,21 @@
       "title": "ModelAwareAgentTaskAssignmentUpdate"
     },
     {
+      "canonical_path": "entities/types_agent_ModelEffort.md",
+      "id": "types_agent_ModelEffort",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_agent_ModelEffort",
+      "outgoing_internal_links": [
+        "modules/AgentModelAdministration.md",
+        "modules/directoryModel.md",
+        "modules/directoryModel.test.md",
+        "modules/types_agent.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/agent.ts",
+      "title": "ModelEffort"
+    },
+    {
       "canonical_path": "entities/types_agent_RequiredModelEnvelope.md",
       "id": "types_agent_RequiredModelEnvelope",
       "kind": "entities",
@@ -79507,6 +79555,16 @@
       "title": "20261126_0028_team_runtime_identity Module"
     },
     {
+      "canonical_path": "modules/20261126_0029_catalog_effort.md",
+      "id": "20261126_0029_catalog_effort",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/20261126_0029_catalog_effort",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/app/migrations/versions/20261126_0029_catalog_effort.py",
+      "title": "20261126_0029_catalog_effort Module"
+    },
+    {
       "canonical_path": "modules/acceptance_artifacts.md",
       "id": "acceptance_artifacts",
       "kind": "modules",
@@ -79946,6 +80004,7 @@
       "mcp_uri": "llm-wiki://modules/agent_routing_policy",
       "outgoing_internal_links": [
         "entities/agent_routing_policy_AssessmentReasonCode.md",
+        "entities/agent_routing_policy_ModelEffort.md",
         "entities/agent_routing_policy_RoutingBlockerCode.md",
         "entities/AssignmentIntent.md",
         "entities/ContextTier.md",
@@ -94649,6 +94708,20 @@
       "title": "test_capacity_transfers Module"
     },
     {
+      "canonical_path": "modules/test_catalog_effort_migration.md",
+      "id": "test_catalog_effort_migration",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_catalog_effort_migration",
+      "outgoing_internal_links": [
+        "modules/models_agent.md",
+        "modules/test_catalog_effort_migration.md",
+        "modules/upgrade_service.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/migrations/test_catalog_effort_migration.py",
+      "title": "test_catalog_effort_migration Module"
+    },
+    {
       "canonical_path": "modules/test_check_markdown_links.md",
       "id": "test_check_markdown_links",
       "kind": "modules",
@@ -97304,6 +97377,7 @@
         "entities/ModelCostTier.md",
         "entities/ModelLatencyTier.md",
         "entities/ModelReasoningTier.md",
+        "entities/RequiredModelEffort.md",
         "entities/TaskDifficultyBand.md",
         "entities/TaskDifficultyScore.md",
         "entities/TaskReviewMode.md",
@@ -97347,6 +97421,7 @@
         "entities/types_agent_AssessmentReasonCode.md",
         "entities/types_agent_ModelAwareAgentTaskAssignmentCreate.md",
         "entities/types_agent_ModelAwareAgentTaskAssignmentUpdate.md",
+        "entities/types_agent_ModelEffort.md",
         "entities/types_agent_RequiredModelEnvelope.md",
         "entities/types_agent_RoutingBlockerCode.md",
         "entities/types_agent_TaskDifficultyAxes.md",
@@ -115068,6 +115143,7 @@
         "modules/20261126_0026_review_record_kind.md",
         "modules/20261126_0027_task_postponements.md",
         "modules/20261126_0028_team_runtime_identity.md",
+        "modules/20261126_0029_catalog_effort.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -115958,6 +116034,7 @@
         "modules/test_capacity_adjustments.md",
         "modules/test_capacity_contract.md",
         "modules/test_capacity_transfers.md",
+        "modules/test_catalog_effort_migration.md",
         "modules/test_check_markdown_links.md",
         "modules/test_ci_runtime.md",
         "modules/test_classify_change_scope.md",
@@ -116260,6 +116337,7 @@
         "modules/20261126_0026_review_record_kind.md",
         "modules/20261126_0027_task_postponements.md",
         "modules/20261126_0028_team_runtime_identity.md",
+        "modules/20261126_0029_catalog_effort.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -117150,6 +117228,7 @@
         "modules/test_capacity_adjustments.md",
         "modules/test_capacity_contract.md",
         "modules/test_capacity_transfers.md",
+        "modules/test_catalog_effort_migration.md",
         "modules/test_check_markdown_links.md",
         "modules/test_ci_runtime.md",
         "modules/test_classify_change_scope.md",
@@ -117419,5 +117498,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:54bffe6a930379a94a7994400594ab054fa233786c0e207c8def8960b11505cb"
+  "source_hash": "sha256:73df6475ee71dbc95278b9ed0fefed793182e93331676515cd8469a1a529e0b0"
 }

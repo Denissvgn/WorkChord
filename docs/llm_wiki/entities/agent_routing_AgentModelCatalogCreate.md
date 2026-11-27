@@ -1,6 +1,6 @@
 # AgentModelCatalogCreate
 
-**Location:** `backend/app/schemas/agent_routing.py:278`
+**Location:** `backend/app/schemas/agent_routing.py:284`
 **Kind:** Pydantic model
 **Bases:** `AgentModelCatalogFields`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -31,12 +31,14 @@ flowchart LR
     n4["AgentModelCatalogService.create_catalog (backend/app/services/agent_model_catalog_service.py)"]
     n5["backend/tests/test_agent_routing_contract.py"]
     n6["backend/tests/test_agent_routing_data.py"]
+    n7["backend/tests/test_agent_routing_wave3_contract.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/agent_routing.md"
     click n1 "../modules/agent_routing.md"
     click n2 "../modules/mcp_agent_tools.md"
@@ -44,6 +46,7 @@ flowchart LR
     click n4 "../modules/agent_model_catalog_service.md"
     click n5 "../modules/test_agent_routing_contract.md"
     click n6 "../modules/test_agent_routing_data.md"
+    click n7 "../modules/test_agent_routing_wave3_contract.md"
 ```
 
 ### Summary
@@ -67,3 +70,4 @@ flowchart LR
 | `AgentModelCatalogService.create_catalog` | type_reference | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | — |
 | `test_agent_routing_contract` | import | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) | — |
 | `test_agent_routing_data` | import | [test_agent_routing_data](../modules/test_agent_routing_data.md) | — |
+| `test_agent_routing_wave3_contract` | import | [test_agent_routing_wave3_contract](../modules/test_agent_routing_wave3_contract.md) | — |

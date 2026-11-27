@@ -19,6 +19,7 @@ Secret-free provider-neutral model capability declaration.
 | `publisher_key` | `Mapped[Optional[str]]` | `mapped_column(String(120))` | — |
 | `configured_model_alias` | `Mapped[str]` | `mapped_column(String(255), nullable=False)` | — |
 | `reasoning_tier` | `Mapped[int]` | `mapped_column(Integer, nullable=False)` | — |
+| `effort` | `Mapped[str]` | `mapped_column(String(20), default='unknown', server_default='unknown', nullable=False)` | — |
 | `context_tier` | `Mapped[str]` | `mapped_column(String(20), nullable=False)` | — |
 | `modality_tags` | `Mapped[list[Any]]` | `mapped_column(JSON, default=lambda: ['text'], nullable=False)` | — |
 | `cost_tier` | `Mapped[str]` | `mapped_column(String(20), nullable=False)` | — |
@@ -87,7 +88,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_agent](../modules/models_agent.md) | 0 | `bindings`, `configured_model_alias`, `context_tier`, `cost_tier`, `created_at`, `enabled`, `id`, `key`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags` |
+| [models_agent](../modules/models_agent.md) | 0 | `bindings`, `configured_model_alias`, `context_tier`, `cost_tier`, `created_at`, `effort`, `enabled`, `id`, `key`, `last_verified_at`, `latency_tier`, `local_first` |
 
 ### Structure
 

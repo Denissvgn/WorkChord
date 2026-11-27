@@ -1,6 +1,6 @@
 # AgentModelBinding
 
-**Location:** `backend/app/models/agent.py:213`
+**Location:** `backend/app/models/agent.py:220`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)
@@ -112,4 +112,4 @@ flowchart LR
 | `agent_routing_service` | import | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `AgentService.create_actor` | call | [agent_service](../modules/agent_service.md) | 1 |
 
-> References: showing 12 of 51 logical references; 39 omitted by the 12-row generated summary limit.
+> References: showing 12 of 52 logical references; 40 omitted by the 12-row generated summary limit.

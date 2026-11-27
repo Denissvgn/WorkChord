@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1840 | [Open section](#entities) |
-| Modules | 1181 | [Open section](#modules) |
+| Entities | 1843 | [Open section](#entities) |
+| Modules | 1183 | [Open section](#modules) |
 | Workflows | 241 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 631 | [Open section](#entry-point-flows) |
@@ -858,6 +858,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RequestSourceTargetNotFoundError](entities/RequestSourceTargetNotFoundError.md)
 - [RequestSourceUpdate](entities/RequestSourceUpdate.md)
 - [RequestSourceValidationError](entities/RequestSourceValidationError.md)
+- [RequiredModelEffort](entities/RequiredModelEffort.md)
 - [RequirementKind](entities/RequirementKind.md)
 - [RescheduleResult](entities/RescheduleResult.md)
 - [ResolvedHandoffFact](entities/ResolvedHandoffFact.md)
@@ -1317,6 +1318,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [agent_routing_TaskRoutingAssessmentMutationReceipt](entities/agent_routing_TaskRoutingAssessmentMutationReceipt.md)
 - [agent_routing_TaskRoutingAssessmentState](entities/agent_routing_TaskRoutingAssessmentState.md)
 - [agent_routing_policy_AssessmentReasonCode](entities/agent_routing_policy_AssessmentReasonCode.md)
+- [agent_routing_policy_ModelEffort](entities/agent_routing_policy_ModelEffort.md)
 - [agent_routing_policy_RoutingBlockerCode](entities/agent_routing_policy_RoutingBlockerCode.md)
 - [agent_team_setup_AgentTeamActionReceipt](entities/agent_team_setup_AgentTeamActionReceipt.md)
 - [agent_team_setup_AgentTeamApplyResponse](entities/agent_team_setup_AgentTeamApplyResponse.md)
@@ -1665,6 +1667,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_agent_AssessmentReasonCode](entities/types_agent_AssessmentReasonCode.md)
 - [types_agent_ModelAwareAgentTaskAssignmentCreate](entities/types_agent_ModelAwareAgentTaskAssignmentCreate.md)
 - [types_agent_ModelAwareAgentTaskAssignmentUpdate](entities/types_agent_ModelAwareAgentTaskAssignmentUpdate.md)
+- [types_agent_ModelEffort](entities/types_agent_ModelEffort.md)
 - [types_agent_RequiredModelEnvelope](entities/types_agent_RequiredModelEnvelope.md)
 - [types_agent_RoutingBlockerCode](entities/types_agent_RoutingBlockerCode.md)
 - [types_agent_TaskDifficultyAxes](entities/types_agent_TaskDifficultyAxes.md)
@@ -1895,6 +1898,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261126_0026_review_record_kind](modules/20261126_0026_review_record_kind.md) - Tell an owner's override acceptance apart from an ordinary review in review history.
 - [20261126_0027_task_postponements](modules/20261126_0027_task_postponements.md) - Record postponed tasks and the requirements that must hold before they resume.
 - [20261126_0028_team_runtime_identity](modules/20261126_0028_team_runtime_identity.md) - Record which runtime instance acknowledged each team member's handoff.
+- [20261126_0029_catalog_effort](modules/20261126_0029_catalog_effort.md) - Record the reasoning-effort setting of each model catalog entry.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AccountMenu](modules/AccountMenu.md) - `frontend/src/features/identity/AccountMenu.tsx`
 - [AccountMenu.test](modules/AccountMenu.test.md) - `frontend/src/features/identity/AccountMenu.test.tsx`
@@ -2819,6 +2823,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_capacity_adjustments](modules/test_capacity_adjustments.md) - Dated capacity adjustments change capacity on their dates only and leave issued work current.
 - [test_capacity_contract](modules/test_capacity_contract.md) - Executable checks for the approved PostgreSQL capacity contract.
 - [test_capacity_transfers](modules/test_capacity_transfers.md) - A temporary capacity transfer lends availability between rows of one person and returns it after its dates.
+- [test_catalog_effort_migration](modules/test_catalog_effort_migration.md) - Catalog effort upgrades a populated catalog to an explicit unknown value and is never dropped silently.
 - [test_check_markdown_links](modules/test_check_markdown_links.md) - The documentation job fails on relative links that point nowhere.
 - [test_ci_runtime](modules/test_ci_runtime.md) - Exercise cancellation, deadlines and durable command results with real processes.
 - [test_classify_change_scope](modules/test_classify_change_scope.md) - Documentation-only classification skips CI only for unchecked documentation.

@@ -1,6 +1,6 @@
 # AgentActorRosterItem
 
-**Location:** `frontend/src/types/agent.ts:303`
+**Location:** `frontend/src/types/agent.ts:309`
 **Kind:** Interface
 **Bases:** `AgentActor`
 **Module:** [types_agent](../modules/types_agent.md)
