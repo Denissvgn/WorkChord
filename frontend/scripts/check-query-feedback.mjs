@@ -115,7 +115,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/components/tasks/KanbanBoard/KanbanBoard.tsx': 'aaf1756ea0e0c4d0',
     'src/components/tasks/useSavedViewManager.tsx': '1bbeb39ebaf10ee3',
     'src/components/tasks/StatusChangeControl.tsx': '9999ffd7f79d6c9e',
-    'src/components/tasks/TaskBulkOperationsPanel.tsx': 'a926dc250ccf33d9',
+    'src/components/tasks/TaskBulkOperationsPanel.tsx': 'aebc9f91d07d7c60',
     'src/components/tasks/TaskDependencySelector.tsx': 'a95773dee19beda4',
     'src/components/tasks/TaskFiltersBar.tsx': '137fc349161949ce',
     'src/components/tasks/TaskForm.tsx': '403c71ebf453271e',

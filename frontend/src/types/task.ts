@@ -166,6 +166,8 @@ export interface Task {
     updated_at?: string | null;
     children: Task[];
     dependencies: number[];
+    /** Present on a write that changed the assignee or routing. */
+    routing_check?: RoutingCheck | null;
 }
 
 export interface TaskCreate {
@@ -197,6 +199,8 @@ export interface TaskCreate {
 
 export interface TaskUpdate extends Partial<TaskCreate> {
     status?: string;
+    /** `apply_suggestion` saves the consistent routing with an assignee change. */
+    routing_resolution?: RoutingResolution;
     /** Rendered task version used for optimistic concurrency. */
     expected_version?: number;
 }
@@ -345,6 +349,7 @@ export interface TaskBulkOperationResult {
     error?: string | null;
     task?: Task | null;
     assignee_recommendation?: AssigneeRecommendation | null;
+    routing_check?: RoutingCheck | null;
 }
 
 export interface TaskBulkOperationResponse {
@@ -447,6 +452,63 @@ export interface TaskBrief {
     acceptance_criteria: BriefCriterion[];
     verification: string;
     artifact_expectations: string;
+    /** First rung, escalation ladder and reviewer; the server keeps it when a brief write leaves it out. */
+    routing?: TaskRouting | null;
+}
+
+/** One model catalog entry that may execute a task or review its result. */
+export interface RoutingRung {
+    catalog_key: string;
+    harness?: string;
+    effort?: string | null;
+    publisher_key?: string | null;
+    configured_model_alias?: string | null;
+}
+
+export interface RoutingReviewer extends RoutingRung {
+    profile_id?: number | null;
+    instructions?: string;
+}
+
+export interface TaskRouting {
+    schema_version: 1;
+    first_rung?: RoutingRung | null;
+    escalation: RoutingRung[];
+    escalate_after_failed_runs: number;
+    after_last_rung?: string;
+    reviewer?: RoutingReviewer | null;
+    notes?: string;
+}
+
+export type RoutingConflictMode = 'refuse' | 'warn';
+export type RoutingResolution = 'check' | 'apply_suggestion';
+
+export interface RoutingIssue {
+    code: string;
+    severity: 'conflict' | 'warning';
+    field: 'first_rung' | 'escalation' | 'reviewer' | 'assignee' | 'routing';
+    message: string;
+    catalog_key?: string | null;
+    publisher_key?: string | null;
+}
+
+/** Whether a task's routing fits an assignee and the project's review policy, with a consistent replacement. */
+export interface RoutingCheck {
+    task_id?: number | null;
+    assignee_id?: number | null;
+    assignee_profile_id?: number | null;
+    assignee_publishers: string[];
+    assignee_catalog_keys: string[];
+    different_publisher_required: boolean;
+    conflict_mode: RoutingConflictMode;
+    structured: boolean;
+    text_routing: boolean;
+    consistent: boolean;
+    issues: RoutingIssue[];
+    routing?: TaskRouting | null;
+    suggestion?: TaskRouting | null;
+    suggested_reviewer?: RoutingReviewer | null;
+    applied: boolean;
 }
 
 export interface CriterionProgress {
