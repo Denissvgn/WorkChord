@@ -45,6 +45,8 @@ type RoutingChoice = 'apply_suggestion' | 'keep';
 /** A dry run that found tasks whose reviewer would no longer fit; nothing was written. */
 interface RoutingDecision { needsRouting: TaskBulkOperationResult[] }
 
+const isRoutingDecision = (value: unknown): value is RoutingDecision => Boolean(value) && typeof value === 'object' && 'needsRouting' in (value as object);
+
 class BulkRejected extends Error {
     readonly failures: { taskId: number; message: string }[];
     constructor(failures: { taskId: number; message: string }[]) { super('bulk-rejected'); this.failures = failures; }
@@ -163,10 +165,11 @@ export const TaskBulkOperationsPanel = ({
                 expected_versions: check.task_versions, expected_revisions: check.input_revisions,
             });
         },
-        meta: { success: () => t('feedback.bulkApplied', { count: selectedCount }) } satisfies MutationFeedbackMeta,
+        // Stopping at the reviewer list changes nothing, so it announces nothing.
+        meta: { success: (data) => isRoutingDecision(data) ? '' : t('feedback.bulkApplied', { count: selectedCount }) } satisfies MutationFeedbackMeta,
         onSuccess: async (data) => {
-            if (data && typeof data === 'object' && 'needsRouting' in data) {
-                setDecision((data as RoutingDecision).needsRouting);
+            if (isRoutingDecision(data)) {
+                setDecision(data.needsRouting);
                 return;
             }
             await Promise.all(['tasks', 'workload', 'gantt', 'projects', 'projectSummary', 'saved-view-dashboard-cards']

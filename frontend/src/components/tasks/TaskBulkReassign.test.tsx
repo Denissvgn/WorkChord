@@ -3,6 +3,7 @@ import { screen, waitFor, within } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { changeAppLanguage } from '../../i18n/i18n';
 import type { RoutingCheck, TaskBulkOperationRequest } from '../../types/task';
+import { MutationSuccessFeedback } from '../../features/MutationSuccessFeedback';
 import { TaskBulkOperationsPanel } from './TaskBulkOperationsPanel';
 
 const services = vi.hoisted(() => ({ runBulkOperation: vi.fn() }));
@@ -37,9 +38,10 @@ const server = (mode: 'refuse' | 'warn') => async (request: TaskBulkOperationReq
     };
 };
 
-const renderPanel = () => renderWithProviders(
-    <TaskBulkOperationsPanel iterationId={1} selectedTasks={selected} matchingCount={3} onSelectAll={vi.fn()} onClearSelection={vi.fn()} openAssign />,
-);
+const renderPanel = () => renderWithProviders(<>
+    <MutationSuccessFeedback />
+    <TaskBulkOperationsPanel iterationId={1} selectedTasks={selected} matchingCount={3} onSelectAll={vi.fn()} onClearSelection={vi.fn()} openAssign />
+</>);
 
 const apply = async (user: ReturnType<typeof renderPanel>['user'], assignee = 'Vendor Agent') => {
     const select = screen.getByRole('combobox', { name: 'Choose assignee' });
@@ -62,6 +64,8 @@ describe('bulk reassignment and reviewers', () => {
         await apply(user);
         const region = await screen.findByRole('region', { name: '2 tasks need a new reviewer' });
         expect(writes()).toHaveLength(0);
+        // Stopping at the list changed nothing, so nothing is announced as applied.
+        expect(screen.queryByText(/Applied to/)).not.toBeInTheDocument();
         expect(within(region).getByText('Task 1')).toBeVisible();
         expect(within(region).getByText('Task 3')).toBeVisible();
         expect(within(region).queryByText('Task 2')).not.toBeInTheDocument();
@@ -70,6 +74,7 @@ describe('bulk reassignment and reviewers', () => {
         await user.click(within(region).getByRole('button', { name: 'Reassign and use suggested reviewers' }));
         await waitFor(() => expect(writes()).toHaveLength(1));
         expect(writes()[0]).toMatchObject({ action: 'set_assignee', task_ids: [1, 2, 3], payload: { assignee_id: 9, routing_resolution: 'apply_suggestion' } });
+        expect(await screen.findByText('Applied to 3 tasks.')).toBeVisible();
         expect(services.runBulkOperation.mock.calls.map(call => [call[0].dry_run, call[0].payload.routing_resolution])).toEqual([[true, undefined], [true, 'apply_suggestion'], [false, 'apply_suggestion']]);
     });
 
