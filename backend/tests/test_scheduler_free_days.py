@@ -137,6 +137,18 @@ async def test_idle_days_name_the_constraint_that_binds(db_session, prerequisite
         assert gap.earliest_start is None and gap.waiting_on.task_id == prerequisite.id
 
 
+async def test_an_earliest_start_on_a_weekend_is_named_from_the_next_working_day(db_session):
+    iteration, members, tasks = await make_plan(db_session, 1, [0], [])
+    tasks[0].min_start_date = date(2026, 1, 17)  # a Saturday
+    await db_session.commit()
+    result = await SchedulerService(db_session).schedule_iteration(iteration.id)
+    assert tasks[0].start_date == date(2026, 1, 19)
+    (row,) = result.idle_days
+    (gap,) = row.gaps
+    assert (gap.start_date, gap.end_date) == (date(2026, 1, 5), date(2026, 1, 16))
+    assert gap.reason == "earliest_start" and gap.earliest_start == date(2026, 1, 17)
+
+
 async def test_free_days_after_the_iteration_end_are_reported_overdue(db_session):
     iteration, _, tasks = await make_plan(db_session, 1, [0, 0, 0], [], end=date(2026, 1, 5))
     tasks[0].min_start_date = date(2026, 1, 12)

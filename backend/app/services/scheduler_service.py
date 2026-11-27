@@ -1571,19 +1571,24 @@ class SchedulerService:
                              and (dep_task := task_map.get(dep.depends_on_id)) is not None
                              and dep_task.end_date is not None]
             prerequisite = max(prerequisites, key=lambda item: (item.end_date, -item.id), default=None)
-            after_prerequisite = None
-            if prerequisite is not None:
-                after_prerequisite = prerequisite.end_date + timedelta(days=1)
+            def first_working_day(day: date | None) -> date | None:
+                # Each bound is compared from the first day the row can work, so a weekend bound still binds.
+                if day is None:
+                    return None
                 for _ in range(366):
-                    if schedule.is_productive_day(after_prerequisite):
+                    if schedule.is_productive_day(day):
                         break
-                    after_prerequisite += timedelta(days=1)
+                    day += timedelta(days=1)
+                return day
+
+            after_prerequisite = first_working_day(
+                prerequisite.end_date + timedelta(days=1) if prerequisite is not None else None)
+            min_start = first_working_day(task.min_start_date)
 
             def reaches(bound: date | None) -> bool:
                 return bound is not None and bound >= task.start_date
 
-            if reaches(task.min_start_date) and not (
-                    reaches(after_prerequisite) and after_prerequisite >= task.min_start_date):
+            if reaches(min_start) and not (reaches(after_prerequisite) and after_prerequisite >= min_start):
                 reason = "earliest_start"
                 earliest_start = task.min_start_date
                 format_args["date"] = task.min_start_date.isoformat()
