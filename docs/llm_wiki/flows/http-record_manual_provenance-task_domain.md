@@ -192,7 +192,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| record_manual_provenance | domain_result | 368 | `domain_result(...)` |
+| record_manual_provenance | domain_result | 369 | `domain_result(...)` |
 | domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
@@ -200,7 +200,7 @@ flowchart LR
 | domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 59 | `str(exc)` |
 | domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| record_manual_provenance | ManualProvenanceService.record | 368 | `ManualProvenanceService(db).record(task_id, data)` |
+| record_manual_provenance | ManualProvenanceService.record | 369 | `ManualProvenanceService(db).record(task_id, data)` |
 | ManualProvenanceService.record | self.db.scalar (backend/app/services/manu…lProvenanceService.record) | 186 | `self.db.scalar(...)` |
 | ManualProvenanceService.record | select(…).where (backend/app/services/manu…lProvenanceService.record) | 186 | `select(Task).where(...)` |
 

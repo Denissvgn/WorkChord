@@ -96,6 +96,7 @@ class MetricMatchItem(BaseModel):
     id: int
     title: str
     status: str
+    displayed_state: str | None = None
     project_name: str | None
     iteration_name: str | None
 

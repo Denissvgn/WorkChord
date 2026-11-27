@@ -49,6 +49,10 @@ export interface TaskAgentReadiness {
 }
 
 export type TaskStatus = 'planned' | 'active' | 'resolved' | 'postponed' | 'closed';
+/** Withdrawn work: canceled, or superseded when another task delivers its work (a clean replacement included). */
+export type TaskTerminalState = 'canceled' | 'superseded';
+/** What a task is shown as: its stored status, or its terminal state. */
+export type TaskDisplayedState = TaskStatus | TaskTerminalState;
 export type ExternalLinkProvider = 'github' | 'gitlab' | 'figma' | 'sentry' | 'custom' | 'agdash' | string;
 
 export interface ExternalLink {
@@ -138,6 +142,12 @@ export interface Task {
     milestone?: TaskMilestone | null;
     assignee?: TaskAssignee | null;
     status: TaskStatus;
+    /** The stored status, or canceled / superseded for withdrawn work, which keeps the status it had. Show and count by this. */
+    displayed_state?: TaskDisplayedState;
+    /** The task that delivers this task's work instead, for superseded work. */
+    successor_task_id?: number | null;
+    /** How the successor delivers it: a clean replacement or a supersession. */
+    successor_kind?: 'replacement' | 'supersession' | null;
     start_date?: string | null;
     end_date?: string | null;
     actual_start_date?: string | null;
@@ -467,7 +477,7 @@ export interface TaskReference {
     acceptance_current?: boolean;
     project_name?: string | null; iteration_name?: string | null; blocked_reason?: string | null; canceled_at?: string | null;
     reviewer_name?: string | null;
-    id: number; title: string; version: number; status: TaskStatus;
+    id: number; title: string; version: number; status: TaskStatus; displayed_state?: TaskDisplayedState;
     project_id: number | null; iteration_id: number | null; parent_id: number | null; owner_profile_id: number | null;
 }
 export interface TaskReferencePage { items: TaskReference[]; has_more: boolean; next_after_id: number | null; limit: number }

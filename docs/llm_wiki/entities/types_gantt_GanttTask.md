@@ -30,6 +30,7 @@ _Auto-generated from `GanttTask` in `frontend/src/types/gantt.ts`._
 | `progress` | `number` | Yes | — | — |
 | `priority` | `number` | Yes | — | — |
 | `status` | `'planned' \| 'active' \| 'resolved' \| 'closed'` | Yes | — | — |
+| `displayed_state` | `'planned' \| 'active' \| 'resolved' \| 'closed' \| 'postponed' \| 'canceled' \| 'superseded'` | No | — | — |
 | `is_composite` | `boolean` | Yes | — | — |
 | `is_overdue` | `boolean` | Yes | — | — |
 | `is_delayed` | `boolean` | Yes | — | — |
@@ -104,7 +105,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_gantt](../modules/types_gantt.md) | 0 | `actual_end_date`, `actual_start_date`, `assignee`, `assignees`, `calculated_effort_days`, `children`, `dependencies`, `description`, `effort_days`, `effort_hours`, `end_date`, `has_inverted_dependency` |
+| [types_gantt](../modules/types_gantt.md) | 0 | `actual_end_date`, `actual_start_date`, `assignee`, `assignees`, `calculated_effort_days`, `children`, `dependencies`, `description`, `displayed_state`, `effort_days`, `effort_hours`, `end_date` |
 
 ### Structure
 

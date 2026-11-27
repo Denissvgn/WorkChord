@@ -85,7 +85,7 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [DB](../entities/routers_task_domain_DB.md) | Type alias | 27 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
 | [MetricMatchItem](../entities/MetricMatchItem.md) | Pydantic model | 95 | `BaseModel` | — |
-| [MetricMatchPage](../entities/routers_task_domain_MetricMatchPage.md) | Pydantic model | 103 | `BaseModel` | — |
+| [MetricMatchPage](../entities/routers_task_domain_MetricMatchPage.md) | Pydantic model | 104 | `BaseModel` | — |
 
 ## Functions
 

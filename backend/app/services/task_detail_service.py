@@ -36,7 +36,10 @@ class TaskDetailService:
     def references():
         from app.models.project import Project
         from app.models.iteration import Iteration
-        return select(Task.id, Task.title, Task.version, Task.status, Task.project_id, Task.iteration_id,
+        from app.services.task_display_state import displayed_state_expression
+        return select(Task.id, Task.title, Task.version, Task.status,
+            displayed_state_expression(id_column=Task.id, status_column=Task.status, canceled_at_column=Task.canceled_at).label("displayed_state"),
+            Task.project_id, Task.iteration_id,
             Task.parent_id, Task.owner_profile_id, Project.name.label("project_name"), Iteration.name.label("iteration_name"),
             Task.blocked_reason, Task.canceled_at,
             and_(Task.status == "closed", Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None),
@@ -75,9 +78,9 @@ class TaskDetailService:
         if backlog_only:
             statement = statement.where(Task.iteration_id.is_(None))
         if status is not None:
-            if status not in {"planned", "active", "resolved", "closed"}:
-                raise ValueError("Select a supported task status")
-            statement = statement.where(Task.status == status)
+            # The displayed state: canceled and superseded work no longer matches the status it had when withdrawn.
+            from app.services.task_display_state import task_state_clause, validate_state_filter
+            statement = statement.where(task_state_clause(validate_state_filter(status)))
         if roots_only and parent_id is not None:
             raise ValueError("Select roots or a parent, not both")
         if roots_only:

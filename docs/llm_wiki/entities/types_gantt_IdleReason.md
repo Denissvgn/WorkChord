@@ -1,6 +1,6 @@
 # IdleReason
 
-**Location:** `frontend/src/types/gantt.ts:119`
+**Location:** `frontend/src/types/gantt.ts:121`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

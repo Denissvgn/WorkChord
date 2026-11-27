@@ -1,6 +1,6 @@
 # WaitingOnTask
 
-**Location:** `frontend/src/types/gantt.ts:82`
+**Location:** `frontend/src/types/gantt.ts:84`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

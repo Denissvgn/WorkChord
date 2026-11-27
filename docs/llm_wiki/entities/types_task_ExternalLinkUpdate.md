@@ -1,6 +1,6 @@
 # ExternalLinkUpdate
 
-**Location:** `frontend/src/types/task.ts:82`
+**Location:** `frontend/src/types/task.ts:86`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

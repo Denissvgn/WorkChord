@@ -105,7 +105,7 @@ async def export_iteration(
 
         def process_task(task):
             nonlocal allocated_days, task_count
-            if not task.children and not task.is_summary and task.assignee and task.assignee.id == member.id and not task.is_deferred and task.status != "postponed":
+            if not task.children and not task.is_summary and task.assignee and task.assignee.id == member.id and not task.is_deferred and task.status != "postponed" and task.canceled_at is None:
                 if task.start_date and task.end_date:
                     # Count working days (simple approximation)
                     from datetime import timedelta

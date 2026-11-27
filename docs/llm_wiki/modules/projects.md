@@ -23,10 +23,11 @@ Project API router.
 | `app.services.language_service` | `backend_error_message`, `entity_deleted_message`, `entity_not_found_message`, `resolve_runtime_ui_language`, `scoped_entity_not_found_message` |
 | `app.services.project_service` | `ProjectService` |
 | `app.services.release_service` | `ReleaseService` |
+| `app.services.task_display_state` | `validate_state_filter` |
 | `app.services.task_service` | `TaskService` |
 | `fastapi` | `APIRouter`, `Depends`, `HTTPException`, `Query`, `status` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
-| `typing` | `Annotated`, `Any` |
+| `typing` | `Annotated`, `Any`, `Optional` |
 
 ## Local dependency map
 
@@ -47,7 +48,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (2) |
-| Outbound | `backend` (14) |
+| Outbound | `backend` (15) |
 
 ### External packages
 
@@ -55,7 +56,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -91,5 +92,5 @@ flowchart LR
 | `get_release` | *(async)* `(release_id: int, service: Annotated[ReleaseService, Depends(get_release_service)])` | `@router.get('/releases/{release_id}', response_model=ReleaseResponse)` | Get a release by ID. |
 | `update_release` | *(async)* `(release_id: int, data: ReleaseUpdateRequest, service: Annotated[ReleaseService, Depends(get_release_service)])` | `@router.put('/releases/{release_id}', response_model=ReleaseResponse)` | Update release metadata and task links. |
 | `delete_project` | *(async)* `(project_id: int, service: Annotated[ProjectService, Depends(get_project_service)], detach_tasks: bool = Query(False))` | `@router.delete('/projects/{project_id}', response_model=MessageResponse)` | Delete a project, optionally detaching linked tasks first. |
-| `get_project_tasks` | *(async)* `(project_id: int, service: Annotated[ProjectService, Depends(get_project_service)])` | `@router.get('/projects/{project_id}/tasks', response_model=list[TaskResponse])` | Get linked project task tree roots. |
+| `get_project_tasks` | *(async)* `(project_id: int, service: Annotated[ProjectService, Depends(get_project_service)], status_filter: Annotated[Optional[str], Query(alias='status', description='A displayed state: planned, active, resolved, closed, postponed, canceled or superseded. With it the response is a flat list of the tasks at any depth shown in that state, not the tree roots.')] = None)` | `@router.get('/projects/{project_id}/tasks', response_model=list[TaskResponse])` | Get linked project task tree roots, or the tasks shown in one state. |
 | `get_project_summary` | *(async)* `(project_id: int, service: Annotated[ProjectService, Depends(get_project_service)])` | `@router.get('/projects/{project_id}/summary', response_model=ProjectSummary)` | Get project summary metrics. |

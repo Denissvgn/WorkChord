@@ -27,6 +27,7 @@ Canonical inclusion follows complete same-scope ancestry. Incomplete or cyclic a
 | `app.models.project` | `Project` |
 | `app.models.task` | `Task`, `Task`, `Task`, `TaskDependency` |
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_PROJECT_TREE_TASKS` |
+| `app.services.task_display_state` | `displayed_state_expression`, `state_clause` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `datetime` | `datetime` |
 | `sqlalchemy` | `select`, `or_`, `exists`, `func`, `select`, `select`, `case`, `func`, `or_`, `and_`, `false`, `literal` |
@@ -50,8 +51,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (37) |
-| Outbound | `backend` (8) |
+| Inbound | `backend` (38) |
+| Outbound | `backend` (9) |
 
 ### External packages
 
@@ -59,7 +60,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 45 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 47 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

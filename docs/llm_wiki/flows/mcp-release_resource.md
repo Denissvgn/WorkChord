@@ -2,7 +2,7 @@
 
 **Entry point:** `release_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 15 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 16 more
 
 **Complete modules touched:**
 
@@ -22,6 +22,7 @@
 - [release_service](../modules/release_service.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_display_state](../modules/task_display_state.md)
 - [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
@@ -57,11 +58,11 @@ sequenceDiagram
     participant p21 as DeliveryDependencyService.reconcile
     participant p22 as DiscussionService.enqueue
     participant p23 as working_today
-    participant p24 as ReleaseService
-    participant p25 as _response
-    participant p26 as _structured_tool_error
-    participant p27 as ReleaseService._release_options
-    participant p28 as _current_agent_key
+    participant p24 as state_clause
+    participant p25 as displayed_state_expression
+    participant p26 as ReleaseService
+    participant p27 as _response
+    participant p28 as _structured_tool_error
     participant p29 as int (backend/app/mcp_server.py:release_resource)
     participant p30 as self.db.execute (backend/app/services/rele…:ReleaseService.get_by_id)
     p0->>p1: _json_resource
@@ -87,18 +88,18 @@ sequenceDiagram
     p11->>p21: DeliveryDependencyService.reconcile
     p11->>p22: DiscussionService.enqueue
     p10->>p23: working_today
-    p2->>p24: ReleaseService
-    p2->>p25: _response
-    p3->>p26: _structured_tool_error
-    p4->>p27: ReleaseService._release_options
-    p6->>p28: _current_agent_key
+    p10->>p24: state_clause
+    p10->>p25: displayed_state_expression
+    p2->>p26: ReleaseService
+    p2->>p27: _response
+    p3->>p28: _structured_tool_error
     p0-->>p29: int (backend/app/mcp_server.py:release_resource)(release_id)
     p4-->>p30: self.db.execute (backend/app/services/rele…:ReleaseService.get_by_id)(...)
 ```
 
-> Call sequence diagram shows 30 of 529 interactions; 499 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 548 interactions; 518 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 189 (188 omitted); unresolved 1 of 255 (254 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 194 (193 omitted); unresolved 1 of 263 (262 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -108,11 +109,11 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/maintenance.py:enforce_mcp_access` | 4 | [backend/app/maintenance.py](../modules/app_maintenance.md) | internal | 2 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 7 | - | external | 4 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 7 | - | unresolved | 3 |
+| `backend/app/mcp_server.py:_agent_context` | 16 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 3 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
-| `backend/app/mcp_server.py:_agent_context` | 16 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 2 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 80 groups; 72 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 87 groups; 79 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -125,9 +126,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 86; effect analysis evaluated: 58, partial: 3, unavailable: 25. Counts include steps omitted from the displayed trace.
+Source steps: 92; effect analysis evaluated: 64, partial: 3, unavailable: 25. Counts include steps omitted from the displayed trace.
 
-Collector observations for 61 source steps with known totals: observed: 277, emitted: 261, omitted: 16. Unavailable totals are excluded.
+Collector observations for 67 source steps with known totals: observed: 305, emitted: 289, omitted: 16. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

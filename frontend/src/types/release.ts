@@ -1,5 +1,5 @@
 import type { WorkMetrics } from './workMetrics';
-import type { TaskStatus } from './task';
+import type { TaskDisplayedState, TaskStatus } from './task';
 
 export type ReleaseStatus = 'planned' | 'building' | 'shipped' | 'canceled';
 
@@ -7,6 +7,7 @@ export interface ReleaseTaskSummary {
     id: number;
     title: string;
     status: TaskStatus | string;
+    displayed_state?: TaskDisplayedState | string;
     project_id?: number | null;
 }
 

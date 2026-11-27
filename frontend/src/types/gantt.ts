@@ -21,6 +21,8 @@ export interface GanttTask {
     progress: number;
     priority: number;
     status: 'planned' | 'active' | 'resolved' | 'closed';
+    /** The stored status, or canceled / superseded for withdrawn work, which keeps the status it had. */
+    displayed_state?: 'planned' | 'active' | 'resolved' | 'closed' | 'postponed' | 'canceled' | 'superseded';
     is_composite: boolean;
     is_overdue: boolean;
     is_delayed: boolean;  // start_date < today and status == PLANNED

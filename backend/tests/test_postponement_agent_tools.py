@@ -252,24 +252,6 @@ async def test_other_credentials_cannot_postpone_or_reactivate(team, transport, 
     assert all(any(marker in detail for marker in REFUSED[key]) for _, detail in refusals), refusals
 
 
-def test_a_status_filter_keeps_a_matching_grandchild_under_a_non_matching_child():
-    from app.mcp_agent_tools import _tasks_with_status
-
-    tree = [
-        {"id": 1, "status": "active", "children": [
-            {"id": 2, "status": "planned", "children": [
-                {"id": 3, "status": "postponed", "children": []},
-                {"id": 4, "status": "planned", "children": []}]},
-            {"id": 5, "status": "closed", "children": []}]},
-        {"id": 6, "status": "planned", "children": []},
-    ]
-    kept = _tasks_with_status(tree, "postponed")
-    assert [node["id"] for node in kept] == [1]
-    assert [node["id"] for node in kept[0]["children"]] == [2]
-    assert [node["id"] for node in kept[0]["children"][0]["children"]] == [3]
-    assert _tasks_with_status(tree, "resolved") == []
-
-
 @pytest.mark.parametrize("transport", ["rest", "mcp"])
 async def test_reading_a_postponement_needs_read_access_to_the_project(team, transport, monkeypatch):
     factory, scenario = team

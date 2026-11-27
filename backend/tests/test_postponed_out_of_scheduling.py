@@ -173,7 +173,7 @@ def test_leaf_metrics_count_postponed_apart_from_other_statuses():
     tasks = [Task(id=index, title=status, status=status, effort_days=1, effort_hours=8)
              for index, status in enumerate(("planned", "active", "resolved", "closed", "postponed"), start=1)]
     metrics = leaf_metrics(tasks)
-    assert metrics["tasks_by_status"] == {"planned": 1, "active": 1, "resolved": 1, "closed": 1, "postponed": 1}
+    assert metrics["tasks_by_status"] == {"planned": 1, "active": 1, "resolved": 1, "closed": 1, "postponed": 1, "canceled": 0, "superseded": 0}
     assert metrics["postponed_tasks"] == 1 and metrics["total_tasks"] == 5
     # Postponed effort is neither planned, remaining nor done: 4 planned days, 2 remaining, 2 done.
     assert metrics["total_effort_days"] == 4 and metrics["required_effort_days"] == 4
@@ -186,7 +186,7 @@ async def test_iteration_and_release_progress_count_postponed_separately(deliver
     async with factory() as db:
         iteration_id, postponed_id, planned_id, dependent_id = await _postponed_plan(db, scenario)
         metrics = await aggregate_metrics(db, iteration_id=iteration_id)
-        assert metrics["status_counts"] == {"planned": 3, "active": 0, "resolved": 0, "closed": 0, "postponed": 1}
+        assert metrics["status_counts"] == {"planned": 3, "active": 0, "resolved": 0, "closed": 0, "postponed": 1, "canceled": 0, "superseded": 0}
         assert metrics["postponed_tasks"] == 1 and metrics["total_tasks"] == 4
         # Its old dates are in the past, but postponed work is not overdue and does not set the finish.
         assert metrics["overdue_tasks"] == 0 and metrics["task_end_date"] is None
@@ -206,7 +206,7 @@ async def test_iteration_and_release_progress_count_postponed_separately(deliver
         await db.commit()
         loaded = await ReleaseService(db).get_by_id(release.id)
         assert loaded.postponed_tasks == 1 and loaded.status_counts == {
-            "planned": 1, "active": 0, "resolved": 0, "closed": 0, "postponed": 1}
+            "planned": 1, "active": 0, "resolved": 0, "closed": 0, "postponed": 1, "canceled": 0, "superseded": 0}
         assert loaded.target_overflow_tasks == 0
 
 

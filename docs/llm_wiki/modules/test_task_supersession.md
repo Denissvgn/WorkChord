@@ -49,6 +49,7 @@ An original superseded by work already closed or accepted: nothing reopens, and 
 flowchart LR
     n0["backend"]
     n1["backend/tests/test_task_supersession.py"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/test_task_supersession.md"
 ```
@@ -59,6 +60,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
+| Inbound | `backend` (1) |
 | Outbound | `backend` (24) |
 
 ### External packages
@@ -67,7 +69,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

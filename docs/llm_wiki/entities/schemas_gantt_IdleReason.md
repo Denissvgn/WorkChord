@@ -1,6 +1,6 @@
 # IdleReason
 
-**Location:** `backend/app/schemas/gantt.py:139`
+**Location:** `backend/app/schemas/gantt.py:141`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)

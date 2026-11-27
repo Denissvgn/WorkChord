@@ -201,6 +201,14 @@ The original's schedule and delivery dependents, the reactivation requirements o
 
 `GET /api/tasks/{task_id}/replacement` returns a supersession like a replacement, with `disposition: "supersession"`, `role: "successor"` for the successor, no recorded base commit, and no owner decision. Moved requirements are listed in `moved_dependencies` with kind `reactivation`. The original cannot be reviewed, accepted or reopened, and the same delete and restore protections apply. The successor cannot be canceled while it delivers a superseded task (`task_delivers_supersession`). A successor can supersede only one original.
 
+## Canceled and superseded work in counts and lists
+
+Canceled work keeps the status it had when it was canceled; the stored `status` never changes. So every task response also carries `displayed_state`: the stored status, or `canceled` for canceled work, or `superseded` for withdrawn work whose deliverable another task carries. A clean replacement is labelled `superseded` as well, with the replacement as its successor. For superseded work the response names the `successor_task_id` and `successor_kind` (`replacement` or `supersession`); both are null otherwise. `postponed` stays a status of its own.
+
+Counts report withdrawn work apart. Iteration, project, milestone, release and portfolio summaries carry `canceled_tasks` and `superseded_tasks`, and `status_counts` has `canceled` and `superseded` keys. Withdrawn leaves are outside `total_tasks` and every other status count, so they are never planned, active or resolved work, and they no longer count as deferred. `GET /api/tasks/metric-matches` opens either count with `metric=canceled` or `metric=superseded`. Delivery analytics report `superseded_leaf_tasks` beside `canceled_leaf_tasks`; within one window a task is not counted as both. The agent pipeline, its review stage and the ready-task listing skip withdrawn work.
+
+Status filters match the displayed state. `GET /api/tasks/lookup?task_status=` accepts `planned`, `active`, `resolved`, `closed`, `postponed`, `canceled` and `superseded`; a filter for a stored status no longer returns withdrawn work that kept that status. `GET /api/projects/{project_id}/tasks?status=` and the MCP tool `workspace_list_project_tasks` take the same values and then return a flat list of the matching tasks at any depth instead of the tree roots.
+
 ## Reviewing a plan import before it is applied
 
 The iteration import routes, `POST /api/iterations/import` (a new iteration) and `POST /api/iterations/{iteration_id}/import`, write a JSON plan file in one request and need the operator key. A planner can review the exact effect of a file first, without writing anything:

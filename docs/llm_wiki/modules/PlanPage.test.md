@@ -68,6 +68,7 @@ flowchart LR
     n7 --> n2
     n8 --> n9
     n8 --> n10
+    n9 --> n10
     n10 --> n11
     click n0 "../modules/scopeStore.md"
     click n1 "../modules/useWorkScope.md"
