@@ -1,6 +1,6 @@
 # KeptDatesTask
 
-**Location:** `backend/app/schemas/gantt.py:110`
+**Location:** `backend/app/schemas/gantt.py:123`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)
@@ -21,6 +21,7 @@ A planned task the scheduler could not place; it keeps the dates it already had.
 | `end_date` | `date` | `end_date` | Yes | No | — | — | — | — |
 | `date_rule` | `DateRule \| None` | `date_rule` | No | Yes | `None` | — | — | — |
 | `also` | `list[UnscheduledReason]` | `also` | No | No | `[]` | — | — | — |
+| `waiting_on` | `list[WaitingOnTask]` | `waiting_on` | No | No | factory: `list` | — | — | — |
 
 ## Methods
 
@@ -44,7 +45,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `also`, `date_rule`, `end_date`, `message`, `reason`, `start_date`, `task_id`, `task_title` |
+| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `also`, `date_rule`, `end_date`, `message`, `reason`, `start_date`, `task_id`, `task_title`, `waiting_on` |
 
 ### Structure
 

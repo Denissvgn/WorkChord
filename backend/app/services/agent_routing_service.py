@@ -1178,6 +1178,8 @@ class AgentRoutingService:
                     Task.iteration_id == iteration.id,
                     Task.assignee_id.is_not(None),
                     Task.is_deferred.is_(False),
+                    # Postponed work occupies no capacity until it is reactivated.
+                    Task.status != TaskStatus.POSTPONED.value,
                     Task.id != task.id,
                 )
                 .group_by(Task.assignee_id)

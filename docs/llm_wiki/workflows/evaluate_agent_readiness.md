@@ -10,10 +10,11 @@
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `time.utc_now`
 2. `services_work_metrics.effective_work_flags`
-3. `time.as_utc`
+3. `services_work_metrics.postponed_work_under`
 4. `time.as_utc`
-5. `task_brief_service.brief_definition_blockers`
-6. `schemas_task.TaskAgentReadiness`
+5. `time.as_utc`
+6. `task_brief_service.brief_definition_blockers`
+7. `schemas_task.TaskAgentReadiness`
 
 ## Touches
 

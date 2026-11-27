@@ -51,9 +51,9 @@ sequenceDiagram
     participant p7 as AgentRoutingService._lock_task
     participant p8 as _conflict (backend/app/services/review_evidence.py)
     participant p9 as select_reviewer
-    participant p10 as different_publisher_required
+    participant p10 as _conflict (backend/app/services/review_provenance.py)
     participant p11 as AgentRoutingService.lock_selection_inputs
-    participant p12 as _conflict (backend/app/services/review_provenance.py)
+    participant p12 as different_publisher_required
     participant p13 as canonical_routing_json_bytes
     participant p14 as review_history
     participant p15 as process_reactivation_checks
@@ -81,9 +81,9 @@ sequenceDiagram
     p1->>p7: AgentRoutingService._lock_task
     p1->>p8: _conflict (backend/app/services/review_evidence.py)
     p1->>p9: select_reviewer
-    p9->>p10: different_publisher_required
+    p9->>p10: _conflict (backend/app/services/review_provenance.py)
     p7->>p11: AgentRoutingService.lock_selection_inputs
-    p9->>p12: _conflict (backend/app/services/review_provenance.py)
+    p9->>p12: different_publisher_required
     p5->>p13: canonical_routing_json_bytes
     p9->>p14: review_history
     p6->>p15: process_reactivation_checks
@@ -104,7 +104,7 @@ sequenceDiagram
     p1-->>p30: TypeAdapter(…).validate_python(payload)
 ```
 
-> Call sequence diagram shows 30 of 787 interactions; 757 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 788 interactions; 758 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
 > Captured boundary calls: external 1 of 202 (201 omitted); unresolved 1 of 365 (364 omitted). These counts cover the captured static trace.
 
@@ -133,9 +133,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 221; effect analysis evaluated: 167, partial: 6, unavailable: 48. Counts include steps omitted from the displayed trace.
+Source steps: 222; effect analysis evaluated: 168, partial: 6, unavailable: 48. Counts include steps omitted from the displayed trace.
 
-Collector observations for 173 source steps with known totals: observed: 949, emitted: 921, omitted: 28. Unavailable totals are excluded.
+Collector observations for 174 source steps with known totals: observed: 952, emitted: 924, omitted: 28. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

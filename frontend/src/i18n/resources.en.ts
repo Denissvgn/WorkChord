@@ -1274,6 +1274,7 @@ export const englishResources = {
                         no_capacity: 'The assignee has no productive capacity. Adjust the allocation.',
                         prerequisites_pending: 'Delivery prerequisites are not accepted yet.',
                         predecessor_unscheduled: 'A prerequisite is not scheduled. Schedule it first.',
+                        predecessor_postponed: 'Waits for the postponed task {{tasks}}, which has no schedule until it is reactivated. Reactivate it or remove the dependency, then schedule again.',
                         deferred: 'Deferred, so left out of scheduling.',
                         blocked: 'Blocked, so left out of scheduling. Clear the block first.',
                         not_placed: 'Could not be placed. Check its constraint dates and dependencies.',

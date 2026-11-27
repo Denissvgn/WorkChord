@@ -76,7 +76,7 @@ export interface IterationSummary extends WorkMetrics {
     team_capacity_days: number;
     overdue_tasks_count: number;
     /** Leaf counts by status, from the same aggregate as the other counts. */
-    status_counts?: Partial<Record<'planned' | 'active' | 'resolved' | 'closed', number>>;
+    status_counts?: Partial<Record<'planned' | 'active' | 'resolved' | 'closed' | 'postponed', number>>;
     blocked_tasks?: number;
     remaining_effort_days?: number;
     unknown_estimate_tasks?: number;
