@@ -4375,3 +4375,24 @@ Refreshed against the 1.10.0 code. New and changed subjects: delivery prerequisi
 - Pages deprecated: 0
 - Semantic fields preserved: 7
 - Moved entities: none
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:421b9899bd253c3791d2e48269eb0497502220f389ce4183cf20e31d64db907f`
+- Pages created: 9
+- Pages updated: 264
+- Pages metadata-only: 5
+- Pages skipped (unchanged): 3602
+- Pages deprecated: 1
+- Semantic fields preserved: 9
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 4
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Generated surface pages retired: 1

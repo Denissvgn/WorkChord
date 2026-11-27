@@ -375,7 +375,7 @@ async def record_task_replacement(task_id: int, data: TaskReplacementCreate, db:
     return await domain_result(TaskReplacementService(db).record(task_id, data))
 
 
-from app.schemas.task_postponement import TaskPostponeRequest, TaskPostponementResponse, TaskReactivateRequest
+from app.schemas.task_postponement import OwnerDecisionRequest, TaskPostponeRequest, TaskPostponementResponse, TaskReactivateRequest
 
 
 @router.get("/tasks/{task_id}/postponement", response_model=TaskPostponementResponse)
@@ -401,3 +401,14 @@ async def reactivate_task(task_id: int, data: TaskReactivateRequest, db: DB):
     """Return postponed work to planned, or to resolved if it was postponed after resolution."""
     from app.services.task_postponement_service import TaskPostponementService
     return await domain_result(TaskPostponementService(db).reactivate(task_id, data))
+
+
+@router.post("/tasks/{task_id}/postponement/requirements/{requirement_id}/decision", response_model=TaskPostponementResponse)
+async def record_owner_decision(task_id: int, requirement_id: int, data: OwnerDecisionRequest, db: DB):
+    """Record the owner's decision for an owner_decision requirement of the task's open postponement.
+
+    Only the workspace owner can record it. When it is the last unmet requirement the
+    postponed work returns to its lifecycle at once.
+    """
+    from app.services.task_reactivation_service import ReactivationService
+    return await domain_result(ReactivationService(db).record_owner_decision(task_id, requirement_id, data))

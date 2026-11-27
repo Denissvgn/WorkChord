@@ -27,6 +27,12 @@ from app.utils.time import utc_now
 POSTPONED = TaskStatus.POSTPONED.value
 
 
+def is_accepted(task):
+    """Accepted work: closed and not canceled. A summary closes by roll-up once every leaf is accepted."""
+    return (task.status == TaskStatus.CLOSED.value and task.canceled_at is None
+            and (task.accepted_at is not None or bool(task.is_summary)))
+
+
 async def open_postponement(db, task_id, *, lock=False):
     """The task's open postponement, if any."""
     statement = select(TaskPostponement).where(TaskPostponement.task_id == task_id, TaskPostponement.reactivated_at.is_(None))
@@ -134,7 +140,32 @@ async def require_unreferenced(db, *, task_ids=(), triage_item_ids=()):
 def _requirement_response(row):
     return {"id": row.id, "position": row.position, "kind": row.kind, "task_id": row.target_task_id,
             "triage_item_id": row.target_triage_item_id, "on_date": row.on_date, "description": row.description,
-            "met_at": row.met_at}
+            "met": row.met_at is not None, "met_at": row.met_at}
+
+
+async def postponement_record(db, postponement):
+    """The postponement with each reactivation requirement and whether it is met."""
+    requirements = (await db.scalars(select(TaskReactivationRequirement).where(
+        TaskReactivationRequirement.postponement_id == postponement.id)
+        .order_by(TaskReactivationRequirement.position, TaskReactivationRequirement.id))).all()
+    released = postponement.released or {}
+    return {
+        "id": postponement.id, "task_id": postponement.task_id, "open": postponement.reactivated_at is None,
+        "from_status": postponement.from_status, "reason": postponement.reason,
+        "postponed_at": postponement.postponed_at,
+        "postponed_by_principal_id": postponement.postponed_by_principal_id,
+        "postponed_by_actor_id": postponement.postponed_by_actor_id,
+        "task_version": postponement.task_version,
+        "released": {key: released.get(key) for key in ("claim_actor_id", "claim_generation")}
+        | {key: list(released.get(key) or ()) for key in ("assignment_ids", "run_ids")},
+        "requirements": [_requirement_response(row) for row in requirements],
+        "reactivated_at": postponement.reactivated_at,
+        "reactivated_to_status": postponement.reactivated_to_status,
+        "reactivation_trigger": postponement.reactivation_trigger,
+        "reactivation_reason": postponement.reactivation_reason,
+        "reactivated_by_principal_id": postponement.reactivated_by_principal_id,
+        "reactivated_by_actor_id": postponement.reactivated_by_actor_id,
+    }
 
 
 class TaskPostponementService:
@@ -162,30 +193,7 @@ class TaskPostponementService:
         task = await tasks.get_by_id(task_id)
         if postponement is None:
             return {"task": tasks.task_to_response(task), "postponement": None}
-        requirements = (await self.db.scalars(select(TaskReactivationRequirement).where(
-            TaskReactivationRequirement.postponement_id == postponement.id)
-            .order_by(TaskReactivationRequirement.position, TaskReactivationRequirement.id))).all()
-        released = postponement.released or {}
-        return {
-            "task": tasks.task_to_response(task),
-            "postponement": {
-                "id": postponement.id, "task_id": postponement.task_id, "open": postponement.reactivated_at is None,
-                "from_status": postponement.from_status, "reason": postponement.reason,
-                "postponed_at": postponement.postponed_at,
-                "postponed_by_principal_id": postponement.postponed_by_principal_id,
-                "postponed_by_actor_id": postponement.postponed_by_actor_id,
-                "task_version": postponement.task_version,
-                "released": {key: released.get(key) for key in ("claim_actor_id", "claim_generation")}
-                | {key: list(released.get(key) or ()) for key in ("assignment_ids", "run_ids")},
-                "requirements": [_requirement_response(row) for row in requirements],
-                "reactivated_at": postponement.reactivated_at,
-                "reactivated_to_status": postponement.reactivated_to_status,
-                "reactivation_trigger": postponement.reactivation_trigger,
-                "reactivation_reason": postponement.reactivation_reason,
-                "reactivated_by_principal_id": postponement.reactivated_by_principal_id,
-                "reactivated_by_actor_id": postponement.reactivated_by_actor_id,
-            },
-        }
+        return {"task": tasks.task_to_response(task), "postponement": await postponement_record(self.db, postponement)}
 
     async def _locked_task(self, task_id, expected_version):
         from app.services.task_hierarchy_service import TaskTreeIntegrityError
@@ -258,24 +266,40 @@ class TaskPostponementService:
         if task.status != POSTPONED:
             raise PlanningConflict("task_not_postponed", "Only postponed work can be reactivated.")
         postponement = await open_postponement(self.db, task.id, lock=True)
-        # Work postponed without a record (an imported file, for example) returns to planned.
+        task = await self.resume(task, postponement, reason=data.reason, trigger=trigger, expected_version=data.expected_version)
+        await self.db.flush()
+        return await self.projection(task.id, postponement)
+
+    async def resume(self, task, postponement, *, reason, trigger, expected_version, automatic=False, event_extra=None):
+        """Move locked postponed work back to planned or resolved and close its postponement.
+
+        An automatic resume is the server's own decision once the recorded
+        requirements hold: it names no person and its audit rows are written as
+        the system. Work postponed without a record (an imported file, for
+        example) returns to planned.
+        """
         target = reactivation_status(postponement)
         task = await self.tasks.status_service.apply_postponement_transition(
-            task, target, reason=data.reason, expected_version=data.expected_version)
+            task, target, reason=reason, expected_version=expected_version, automatic=automatic)
         if postponement is not None:
-            from app.services.identity_service import acting_principal_id
-            authority = self.db.info.get("authority")
             postponement.reactivated_at = utc_now()
             postponement.reactivated_to_status = target
             postponement.reactivation_trigger = trigger
-            postponement.reactivation_reason = data.reason
-            postponement.reactivated_by_principal_id = await acting_principal_id(self.db)
-            postponement.reactivated_by_actor_id = getattr(authority, "actor_id", None)
+            postponement.reactivation_reason = reason
+            if not automatic:
+                from app.services.identity_service import acting_principal_id
+                authority = self.db.info.get("authority")
+                postponement.reactivated_by_principal_id = await acting_principal_id(self.db)
+                postponement.reactivated_by_actor_id = getattr(authority, "actor_id", None)
         await self.tasks.record_task_event(task.id, "task_reactivated", {
             "postponement_id": postponement.id if postponement is not None else None, "to_status": target,
-            "reason": data.reason, "trigger": trigger, "version": task.version})
-        await self.db.flush()
-        return await self.projection(task.id, postponement)
+            "reason": reason, "trigger": trigger, "version": task.version, **(event_extra or {})},
+            **({"actor_type": "auto"} if automatic else {}))
+        if target == "resolved":
+            # Resolved work again may be what other postponed work waits for.
+            from app.services.task_reactivation_service import request_reactivation_check
+            request_reactivation_check(self.db, task_id=task.id)
+        return task
 
     async def _requirements(self, task, items):
         """Validate each requirement against current facts; refuse one that can never or already holds."""
@@ -296,7 +320,7 @@ class TaskPostponementService:
                     raise ValueError(f"Task {item.task_id} is not found or inaccessible")
                 if target.canceled_at is not None:
                     raise ValueError(f"Task {item.task_id} is canceled and can never complete this requirement")
-                if item.kind == "predecessor_accepted" and target.status == TaskStatus.CLOSED.value and target.accepted_at is not None:
+                if item.kind == "predecessor_accepted" and is_accepted(target):
                     raise ValueError(f"Task {item.task_id} is already accepted")
                 if item.kind == "linked_resolved" and target.status in {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}:
                     raise ValueError(f"Task {item.task_id} is already resolved")

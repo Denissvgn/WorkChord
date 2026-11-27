@@ -2,7 +2,7 @@
 
 **Entry point:** `attest_my_retained_output` (`http`)
 **Source:** [routers_agent](../modules/routers_agent.md)
-**Modules touched:** [agent_planning_service](../modules/agent_planning_service.md), [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), and 23 more
+**Modules touched:** [agent_planning_service](../modules/agent_planning_service.md), [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), and 24 more
 
 **Complete modules touched:**
 
@@ -30,6 +30,7 @@
 - [schemas_agent](../modules/schemas_agent.md)
 - [snapshot_service](../modules/snapshot_service.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -50,25 +51,25 @@ sequenceDiagram
     participant p7 as _require_original_private_fence
     participant p8 as AgentWorkService._record_idempotency
     participant p9 as actor_has_scope
-    participant p10 as DeliveryDependencyService.reconcile
-    participant p11 as _unverified
-    participant p12 as source_receipt_id
-    participant p13 as DiscussionService.enqueue
-    participant p14 as _planning_proof
-    participant p15 as authority_stamp
-    participant p16 as actor_provenance
-    participant p17 as _authenticate_checkpoint
-    participant p18 as _authority_basis
-    participant p19 as parse_github_url
-    participant p20 as DeliveryDependencyService.validate_cycles
-    participant p21 as SnapshotService._task_to_export
-    participant p22 as DiscussionService.recipient_authorized
-    participant p23 as AgentRoutingService._profile_revision
-    participant p24 as TaskService.reserve_task_version
-    participant p25 as clear_execution_evidence
-    participant p26 as _snapshot_task
-    participant p27 as DeliveryDependencyService.graph
-    participant p28 as lock_iterations
+    participant p10 as process_reactivation_checks
+    participant p11 as DeliveryDependencyService.reconcile
+    participant p12 as _unverified
+    participant p13 as source_receipt_id
+    participant p14 as DiscussionService.enqueue
+    participant p15 as _planning_proof
+    participant p16 as authority_stamp
+    participant p17 as actor_provenance
+    participant p18 as _authenticate_checkpoint
+    participant p19 as _authority_basis
+    participant p20 as ReactivationService.evaluate_waiting
+    participant p21 as parse_github_url
+    participant p22 as DeliveryDependencyService.validate_cycles
+    participant p23 as SnapshotService._task_to_export
+    participant p24 as DiscussionService.recipient_authorized
+    participant p25 as AgentRoutingService._profile_revision
+    participant p26 as TaskService.reserve_task_version
+    participant p27 as clear_execution_evidence
+    participant p28 as _snapshot_task
     participant p29 as isinstance (backend/app/routers/agent.py:_handle_agent_error)
     participant p30 as data.model_dump
     p0->>p1: attest_retained_output
@@ -80,32 +81,32 @@ sequenceDiagram
     p1->>p7: _require_original_private_fence
     p1->>p8: AgentWorkService._record_idempotency
     p3->>p9: actor_has_scope
-    p4->>p10: DeliveryDependencyService.reconcile
-    p6->>p11: _unverified
-    p6->>p12: source_receipt_id
-    p4->>p13: DiscussionService.enqueue
-    p6->>p14: _planning_proof
-    p6->>p15: authority_stamp
-    p6->>p16: actor_provenance
-    p6->>p17: _authenticate_checkpoint
-    p15->>p18: _authority_basis
-    p17->>p19: parse_github_url
-    p10->>p20: DeliveryDependencyService.validate_cycles
-    p14->>p21: SnapshotService._task_to_export
-    p13->>p22: DiscussionService.recipient_authorized
-    p16->>p23: AgentRoutingService._profile_revision
-    p10->>p24: TaskService.reserve_task_version
-    p10->>p25: clear_execution_evidence
-    p14->>p26: _snapshot_task
-    p20->>p27: DeliveryDependencyService.graph
-    p24->>p28: lock_iterations
+    p4->>p10: process_reactivation_checks
+    p4->>p11: DeliveryDependencyService.reconcile
+    p6->>p12: _unverified
+    p6->>p13: source_receipt_id
+    p4->>p14: DiscussionService.enqueue
+    p6->>p15: _planning_proof
+    p6->>p16: authority_stamp
+    p6->>p17: actor_provenance
+    p6->>p18: _authenticate_checkpoint
+    p16->>p19: _authority_basis
+    p10->>p20: ReactivationService.evaluate_waiting
+    p18->>p21: parse_github_url
+    p11->>p22: DeliveryDependencyService.validate_cycles
+    p15->>p23: SnapshotService._task_to_export
+    p14->>p24: DiscussionService.recipient_authorized
+    p17->>p25: AgentRoutingService._profile_revision
+    p11->>p26: TaskService.reserve_task_version
+    p11->>p27: clear_execution_evidence
+    p15->>p28: _snapshot_task
     p2-->>p29: isinstance (backend/app/routers/agent.py:_handle_agent_error)(exc, AgentPermissionError)
     p1-->>p30: data.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 760 interactions; 730 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 793 interactions; 763 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 228 (227 omitted); unresolved 1 of 381 (380 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 233 (232 omitted); unresolved 1 of 399 (398 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -119,7 +120,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/agent_service.py:validate_idempotency_key` | 9 | - | unresolved | 1 |
 | `backend/app/commands.py:command_transaction` | 18 | [backend/app/commands.py](../modules/commands.md) | internal | 2 |
 | `backend/app/commands.py:current_command` | 19 | - | external | 2 |
-> Omission summary shows 8 of 151 groups; 143 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 162 groups; 154 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -132,9 +133,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 152; effect analysis evaluated: 109, partial: 5, unavailable: 38. Counts include steps omitted from the displayed trace.
+Source steps: 162; effect analysis evaluated: 118, partial: 5, unavailable: 39. Counts include steps omitted from the displayed trace.
 
-Collector observations for 114 source steps with known totals: observed: 597, emitted: 577, omitted: 20. Unavailable totals are excluded.
+Collector observations for 123 source steps with known totals: observed: 649, emitted: 629, omitted: 20. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

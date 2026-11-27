@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1843 | [Open section](#entities) |
-| Modules | 1183 | [Open section](#modules) |
-| Workflows | 241 | [Open section](#workflows) |
+| Entities | 1845 | [Open section](#entities) |
+| Modules | 1185 | [Open section](#modules) |
+| Workflows | 244 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 631 | [Open section](#entry-point-flows) |
+| Entry-point flows | 632 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -702,6 +702,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [OverviewTaskList](entities/OverviewTaskList.md)
 - [OverviewTaskThreadSource](entities/OverviewTaskThreadSource.md)
 - [OwnerAcceptanceWrite](entities/OwnerAcceptanceWrite.md)
+- [OwnerDecisionRequest](entities/OwnerDecisionRequest.md)
 - [OwnerLink](entities/OwnerLink.md)
 - [OwnershipSelection](entities/OwnershipSelection.md)
 - [OwnershipTransfer](entities/OwnershipTransfer.md)
@@ -816,6 +817,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RateLimitWindow](entities/RateLimitWindow.md)
 - [ReactivationRequirementInput](entities/ReactivationRequirementInput.md)
 - [ReactivationRequirementResponse](entities/ReactivationRequirementResponse.md)
+- [ReactivationService](entities/ReactivationService.md)
 - [Readiness](entities/Readiness.md)
 - [ReadyTopology](entities/ReadyTopology.md)
 - [ReasonCodeRule](entities/ReasonCodeRule.md)
@@ -2762,6 +2764,7 @@ Retained history; these declarations are absent from the selected source invento
 - [task_hierarchy_service](modules/task_hierarchy_service.md) - Read-only ownership of bounded task graph hydration and integrity checks.
 - [task_import_service](modules/task_import_service.md) - Task text import, export, and triage intake workflows.
 - [task_postponement_service](modules/task_postponement_service.md) - Postpone task work with a recorded reason and requirements, and reactivate it.
+- [task_reactivation_service](modules/task_reactivation_service.md) - Return postponed work to its lifecycle once every recorded requirement holds.
 - [task_recovery_service](modules/task_recovery_service.md) - Version allocation shared by scheduled and project-backlog recovery.
 - [task_replacement_service](modules/task_replacement_service.md) - Record and read an audited clean replacement of task work that cannot be attributed.
 - [task_service](modules/task_service.md) - Task service with business logic.
@@ -2943,6 +2946,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_task_pagination](modules/test_task_pagination.md) - Keyset coverage, mutation semantics and permission-bounded history reads.
 - [test_task_postponement](modules/test_task_postponement.md) - Postponed work stops natively, releases live execution under its fence, and resumes with its evidence intact.
 - [test_task_postponement_migration](modules/test_task_postponement_migration.md) - Task postponement migrates a populated database unchanged, and never loses postponed work on rollback.
+- [test_task_reactivation](modules/test_task_reactivation.md) - Postponed work returns to its lifecycle by itself once every recorded requirement holds.
 - [test_task_replacement](modules/test_task_replacement.md) - A clean replacement of unattributable work: audited, counted once, and held when it carries unknown work.
 - [test_task_replacement_migration](modules/test_task_replacement_migration.md) - Clean-replacement dispositions migrate reversibly and an existing disposition is never dropped silently.
 - [test_team_member_agent_connected](modules/test_team_member_agent_connected.md) - Team-member responses say whether an agent is connected, to every reader, without naming it.
@@ -3169,6 +3173,8 @@ Retained history; these declarations are absent from the selected source invento
 - [ProjectService_delete](workflows/ProjectService_delete.md) - entry: `project_service.ProjectService.delete`
 - [ProjectService_get_summary](workflows/ProjectService_get_summary.md) - entry: `project_service.ProjectService.get_summary`
 - [ProjectService_update](workflows/ProjectService_update.md) - entry: `project_service.ProjectService.update`
+- [ReactivationService__evaluate](workflows/ReactivationService__evaluate.md) - entry: `task_reactivation_service.ReactivationService._evaluate`
+- [ReactivationService_record_owner_decision](workflows/ReactivationService_record_owner_decision.md) - entry: `task_reactivation_service.ReactivationService.record_owner_decision`
 - [ReleaseService_create_for_project](workflows/ReleaseService_create_for_project.md) - entry: `release_service.ReleaseService.create_for_project`
 - [RequestSourceService_create_link](workflows/RequestSourceService_create_link.md) - entry: `request_source_service.RequestSourceService.create_link`
 - [RequestSourceService_unlink](workflows/RequestSourceService_unlink.md) - entry: `request_source_service.RequestSourceService.unlink`
@@ -3189,7 +3195,7 @@ Retained history; these declarations are absent from the selected source invento
 - [TaskImportService_bulk_update_tasks_from_text](workflows/TaskImportService_bulk_update_tasks_from_text.md) - entry: `task_import_service.TaskImportService.bulk_update_tasks_from_text`
 - [TaskImportService_import_tasks](workflows/TaskImportService_import_tasks.md) - entry: `task_import_service.TaskImportService.import_tasks`
 - [TaskPostponementService_postpone](workflows/TaskPostponementService_postpone.md) - entry: `task_postponement_service.TaskPostponementService.postpone`
-- [TaskPostponementService_reactivate](workflows/TaskPostponementService_reactivate.md) - entry: `task_postponement_service.TaskPostponementService.reactivate`
+- [TaskPostponementService_resume](workflows/TaskPostponementService_resume.md) - entry: `task_postponement_service.TaskPostponementService.resume`
 - [TaskReplacementService__move_dependents](workflows/TaskReplacementService__move_dependents.md) - entry: `task_replacement_service.TaskReplacementService._move_dependents`
 - [TaskReplacementService_record](workflows/TaskReplacementService_record.md) - entry: `task_replacement_service.TaskReplacementService.record`
 - [TaskService__lock_task_scope](workflows/TaskService__lock_task_scope.md) - entry: `task_service.TaskService._lock_task_scope`
@@ -3229,6 +3235,7 @@ Retained history; these declarations are absent from the selected source invento
 - [change_task_status](workflows/change_task_status.md) - entry: `tasks.change_task_status`
 - [check_supervised_selection](workflows/check_supervised_selection.md) - entry: `review_evidence.check_supervised_selection`
 - [choose_local_profile](workflows/choose_local_profile.md) - entry: `identity.choose_local_profile`
+- [command_transaction](workflows/command_transaction.md) - entry: `commands.command_transaction`
 - [convert_triage_item_to_backlog](workflows/convert_triage_item_to_backlog.md) - entry: `triage.convert_triage_item_to_backlog`
 - [convert_triage_to_backlog](workflows/convert_triage_to_backlog.md) - entry: `mcp_agent_tools.convert_triage_to_backlog`
 - [convert_triage_to_task](workflows/convert_triage_to_task.md) - entry: `mcp_agent_tools.convert_triage_to_task`
@@ -3606,6 +3613,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-record_maintenance_notice_receipt](flows/http-record_maintenance_notice_receipt.md) - entry: `record_maintenance_notice_receipt`
 - [http-record_manual_provenance-agent_planning](flows/http-record_manual_provenance-agent_planning.md) - entry: `record_manual_provenance`
 - [http-record_manual_provenance-task_domain](flows/http-record_manual_provenance-task_domain.md) - entry: `record_manual_provenance`
+- [http-record_owner_decision](flows/http-record_owner_decision.md) - entry: `record_owner_decision`
 - [http-record_runtime_observation](flows/http-record_runtime_observation.md) - entry: `record_runtime_observation`
 - [http-record_task_progress](flows/http-record_task_progress.md) - entry: `record_task_progress`
 - [http-record_task_replacement-agent_planning](flows/http-record_task_replacement-agent_planning.md) - entry: `record_task_replacement`

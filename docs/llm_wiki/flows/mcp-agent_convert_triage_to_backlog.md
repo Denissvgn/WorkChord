@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_convert_triage_to_backlog` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_readiness](../modules/agent_readiness.md), [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), and 27 more
+**Modules touched:** [agent_readiness](../modules/agent_readiness.md), [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), and 28 more
 
 **Complete modules touched:**
 
@@ -33,6 +33,7 @@
 - [source_link_policy](../modules/source_link_policy.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_context_revision_service](../modules/task_context_revision_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 - [triage_service](../modules/triage_service.md)
@@ -69,11 +70,11 @@ sequenceDiagram
     participant p21 as RequestSourceService.copy_triage_links_to_task
     participant p22 as TriageService._record_triage_event
     participant p23 as emit_outbound_webhook_event
-    participant p24 as OutboundWebhookService.safe_emit_event
-    participant p25 as working_today
-    participant p26 as ExternalLinkService.link_to_response
-    participant p27 as require_scope
-    participant p28 as ExternalLinkService.legacy_task_link_response
+    participant p24 as TriageService._request_reactivation_check
+    participant p25 as OutboundWebhookService.safe_emit_event
+    participant p26 as working_today
+    participant p27 as ExternalLinkService.link_to_response
+    participant p28 as require_scope
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -99,18 +100,18 @@ sequenceDiagram
     p4->>p21: RequestSourceService.copy_triage_links_to_task
     p4->>p22: TriageService._record_triage_event
     p4->>p23: emit_outbound_webhook_event
-    p23->>p24: OutboundWebhookService.safe_emit_event
-    p14->>p25: working_today
-    p20->>p26: ExternalLinkService.link_to_response
-    p12->>p27: require_scope
-    p20->>p28: ExternalLinkService.legacy_task_link_response
+    p4->>p24: TriageService._request_reactivation_check
+    p23->>p25: OutboundWebhookService.safe_emit_event
+    p14->>p26: working_today
+    p20->>p27: ExternalLinkService.link_to_response
+    p12->>p28: require_scope
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 584 interactions; 554 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 618 interactions; 588 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 141 (140 omitted); unresolved 1 of 257 (256 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 148 (147 omitted); unresolved 1 of 275 (274 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -124,7 +125,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 175 groups; 167 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 187 groups; 179 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -137,9 +138,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 187; effect analysis evaluated: 120, partial: 3, unavailable: 64. Counts include steps omitted from the displayed trace.
+Source steps: 196; effect analysis evaluated: 128, partial: 3, unavailable: 65. Counts include steps omitted from the displayed trace.
 
-Collector observations for 123 source steps with known totals: observed: 617, emitted: 598, omitted: 19. Unavailable totals are excluded.
+Collector observations for 131 source steps with known totals: observed: 661, emitted: 642, omitted: 19. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

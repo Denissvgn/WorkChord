@@ -2,7 +2,7 @@
 
 **Entry point:** `workspace_classify_triage_item` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 20 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 21 more
 
 **Complete modules touched:**
 
@@ -26,6 +26,7 @@
 - [schemas_triage](../modules/schemas_triage.md)
 - [system_settings_service](../modules/system_settings_service.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [text_similarity](../modules/text_similarity.md)
 - [time](../modules/time.md)
@@ -66,7 +67,7 @@ sequenceDiagram
     participant p25 as require_scope
     participant p26 as AgentService.authenticate
     participant p27 as require_identity_writes
-    participant p28 as DeliveryDependencyService.reconcile
+    participant p28 as process_reactivation_checks
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -96,14 +97,14 @@ sequenceDiagram
     p16->>p25: require_scope
     p14->>p26: AgentService.authenticate
     p18->>p27: require_identity_writes
-    p13->>p28: DeliveryDependencyService.reconcile
+    p13->>p28: process_reactivation_checks
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 502 interactions; 472 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 527 interactions; 497 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 133 (132 omitted); unresolved 1 of 202 (201 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 138 (137 omitted); unresolved 1 of 217 (216 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -117,7 +118,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 150 groups; 142 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 156 groups; 148 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -130,9 +131,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 168; effect analysis evaluated: 118, partial: 5, unavailable: 45. Counts include steps omitted from the displayed trace.
+Source steps: 173; effect analysis evaluated: 122, partial: 5, unavailable: 46. Counts include steps omitted from the displayed trace.
 
-Collector observations for 123 source steps with known totals: observed: 601, emitted: 584, omitted: 17. Unavailable totals are excluded.
+Collector observations for 127 source steps with known totals: observed: 625, emitted: 608, omitted: 17. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
