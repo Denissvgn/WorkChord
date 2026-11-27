@@ -1,6 +1,6 @@
 # Authority
 
-**Location:** `backend/app/authority.py:31`
+**Location:** `backend/app/authority.py:32`
 **Kind:** Class
 **Bases:** —
 **Module:** [authority](../modules/authority.md)

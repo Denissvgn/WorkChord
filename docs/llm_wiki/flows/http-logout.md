@@ -147,7 +147,7 @@ flowchart LR
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
 | logout | internal_authority | 431 | `internal_authority(db)` |
-| internal_authority | db.info.get | 113 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get | 114 | `db.info.get('authority_internal', False)` |
 | logout | db.get | 432 | `db.get(UserSession, authority.session_id)` |
 | logout | utc_now | 433 | `utc_now(data not statically known)` |
 | utc_now | datetime.now | 13 | `datetime.now(UTC)` |
@@ -161,7 +161,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `internal_authority` | `db.info.get` | 113 |
+| unresolved_call | `internal_authority` | `db.info.get` | 114 |
 | unresolved_call | `logout` | `db.get` | 432 |
 | external_call | `utc_now` | `datetime.now` | 13 |
 | unresolved_call | `logout` | `db.flush` | 435 |

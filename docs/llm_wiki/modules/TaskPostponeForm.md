@@ -69,6 +69,7 @@ flowchart LR
     n5 --> n9
     n5 --> n10
     n8 --> n9
+    n10 --> n9
     click n0 "../modules/Button.md"
     click n1 "../modules/Select.md"
     click n2 "../modules/Textarea.md"

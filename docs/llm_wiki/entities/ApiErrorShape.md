@@ -1,6 +1,6 @@
 # ApiErrorShape
 
-**Location:** `frontend/src/utils/apiError.ts:17`
+**Location:** `frontend/src/utils/apiError.ts:19`
 **Kind:** Interface
 **Bases:** —
 **Module:** [apiError](../modules/apiError.md)

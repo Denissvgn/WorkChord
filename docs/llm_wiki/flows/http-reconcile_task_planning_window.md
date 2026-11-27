@@ -229,8 +229,8 @@ flowchart LR
 | reconcile_window | _EVIDENCE_DIGEST.fullmatch | 319 | `_EVIDENCE_DIGEST.fullmatch(expected_evidence_digest)` |
 | reconcile_window | ValueError (backend/app/services/plan…ation.py:reconcile_window) | 321 | `ValueError(INVALID_EVIDENCE_DIGEST_MESSAGE)` |
 | reconcile_window | require_operator | 322 | `require_operator(db)` |
-| require_operator | db.info.get (backend/app/authority.py:require_operator) | 91 | `db.info.get('authority')` |
-| require_operator | AuthorityError | 93 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
+| require_operator | db.info.get (backend/app/authority.py:require_operator) | 92 | `db.info.get('authority')` |
+| require_operator | AuthorityError | 94 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
 | reconcile_window | is_admin_key_principal | 328 | `is_admin_key_principal(actor)` |
 | reconcile_window | actor_has_scope | 332 | `actor_has_scope(actor, 'admin')` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
@@ -251,7 +251,7 @@ flowchart LR
 | external_call | `reconcile_window` | `isinstance` | 318 |
 | unresolved_call | `reconcile_window` | `_EVIDENCE_DIGEST.fullmatch` | 319 |
 | external_call | `reconcile_window` | `ValueError` | 321 |
-| unresolved_call | `require_operator` | `db.info.get` | 91 |
+| unresolved_call | `require_operator` | `db.info.get` | 92 |
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | step_limit | `reconcile_task_planning_window` | `first 12 steps` | 0 |
 | truncated_flow | `reconcile_task_planning_window` | `depth limit` | 0 |

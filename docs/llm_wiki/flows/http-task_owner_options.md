@@ -168,12 +168,12 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | task_owner_options | require_project | 174 | `require_project(db, project_id)` |
-| require_project | db.info.get (backend/app/authority.py:require_project) | 81 | `db.info.get('authority')` |
-| require_project | get_settings | 83 | `get_settings(data not statically known)` |
+| require_project | db.info.get (backend/app/authority.py:require_project) | 82 | `db.info.get('authority')` |
+| require_project | get_settings | 84 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |
-| require_project | AuthorityError | 85 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
-| require_project | authority.allows | 86 | `authority.allows(project_id, action)` |
-| require_project | AuthorityError | 87 | `AuthorityError(data not statically known)` |
+| require_project | AuthorityError | 86 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
+| require_project | authority.allows | 87 | `authority.allows(project_id, action)` |
+| require_project | AuthorityError | 88 | `AuthorityError(data not statically known)` |
 | task_owner_options | select(…).where (backend/app/routers/task_…n.py:task_owner_options, 1) | 175 | `select(TeamMemberProfile.id, TeamMemberProfile.display_name.label('name')).where(..., ...)` |
 | task_owner_options | select | 175 | `select(TeamMemberProfile.id, TeamMemberProfile.display_name.label(...))` |
 | task_owner_options | TeamMemberProfile.display_name.label | 175 | `TeamMemberProfile.display_name.label('name')` |
@@ -187,8 +187,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_project` | `db.info.get` | 81 |
-| unresolved_call | `require_project` | `authority.allows` | 86 |
+| unresolved_call | `require_project` | `db.info.get` | 82 |
+| unresolved_call | `require_project` | `authority.allows` | 87 |
 | unresolved_call | `task_owner_options` | `select(TeamMemberProfile.id, TeamMemberProfile.display_name.label('name')).where` | 175 |
 | external_call | `task_owner_options` | `select` | 175 |
 | unresolved_call | `task_owner_options` | `TeamMemberProfile.display_name.label` | 175 |

@@ -6,9 +6,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1898 | [Open section](#entities) |
-| Modules | 1209 | [Open section](#modules) |
-| Workflows | 250 | [Open section](#workflows) |
+| Entities | 1902 | [Open section](#entities) |
+| Modules | 1214 | [Open section](#modules) |
+| Workflows | 251 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 643 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
@@ -622,11 +622,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [MaintenanceWindowService](entities/MaintenanceWindowService.md)
 - [ManagementSection](entities/ManagementSection.md)
 - [ManifestError](entities/ManifestError.md)
-- [ManualProvenanceExecutor](entities/ManualProvenanceExecutor.md)
 - [ManualProvenanceExecutorRecord](entities/ManualProvenanceExecutorRecord.md)
 - [ManualProvenanceResponse](entities/ManualProvenanceResponse.md)
 - [ManualProvenanceService](entities/ManualProvenanceService.md)
-- [ManualProvenanceWrite](entities/ManualProvenanceWrite.md)
 - [ManualPublicationHandoff](entities/ManualPublicationHandoff.md)
 - [MappedModelFactory](entities/MappedModelFactory.md)
 - [MasterProgressProps](entities/MasterProgressProps.md)
@@ -1377,6 +1375,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [language_service_AILanguageMode](entities/language_service_AILanguageMode.md)
 - [language_service_LanguageCode](entities/language_service_LanguageCode.md)
 - [legacyPaths.check.test_Case](entities/legacyPaths.check.test_Case.md)
+- [manual_provenance_ManualProvenanceExecutor](entities/manual_provenance_ManualProvenanceExecutor.md)
+- [manual_provenance_ManualProvenanceWrite](entities/manual_provenance_ManualProvenanceWrite.md)
 - [modelRouting_AssessmentReasonCode](entities/modelRouting_AssessmentReasonCode.md)
 - [models_agent_AgentActor](entities/models_agent_AgentActor.md)
 - [models_agent_AgentModelBinding](entities/models_agent_AgentModelBinding.md)
@@ -1610,6 +1610,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_task_brief_BriefCriterion](entities/schemas_task_brief_BriefCriterion.md)
 - [schemas_task_brief_CriterionProgress](entities/schemas_task_brief_CriterionProgress.md)
 - [schemas_task_brief_TaskBrief](entities/schemas_task_brief_TaskBrief.md)
+- [schemas_task_domain_RefusalNextStep](entities/schemas_task_domain_RefusalNextStep.md)
 - [schemas_task_domain_TaskActionAvailability](entities/schemas_task_domain_TaskActionAvailability.md)
 - [schemas_task_postponement_ReactivationRequirementInput](entities/schemas_task_postponement_ReactivationRequirementInput.md)
 - [schemas_task_postponement_TaskPostponementRecord](entities/schemas_task_postponement_TaskPostponementRecord.md)
@@ -1812,7 +1813,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_task_GitHubExternalLinkCreate](entities/types_task_GitHubExternalLinkCreate.md)
 - [types_task_GroundedAISuggestionResponse](entities/types_task_GroundedAISuggestionResponse.md)
 - [types_task_GroundedFact](entities/types_task_GroundedFact.md)
+- [types_task_ManualProvenanceExecutor](entities/types_task_ManualProvenanceExecutor.md)
+- [types_task_ManualProvenanceWrite](entities/types_task_ManualProvenanceWrite.md)
 - [types_task_ReactivationRequirementInput](entities/types_task_ReactivationRequirementInput.md)
+- [types_task_RefusalNextStep](entities/types_task_RefusalNextStep.md)
 - [types_task_SuggestedSubtask](entities/types_task_SuggestedSubtask.md)
 - [types_task_Task](entities/types_task_Task.md)
 - [types_task_TaskAISuggestRequest](entities/types_task_TaskAISuggestRequest.md)
@@ -2175,6 +2179,7 @@ Retained history; these declarations are absent from the selected source invento
 - [QuickCapture](modules/QuickCapture.md) - `frontend/src/components/tasks/QuickCapture.tsx`
 - [QuickCapture.test](modules/QuickCapture.test.md) - `frontend/src/components/tasks/QuickCapture.test.tsx`
 - [ReadOnlyFieldset](modules/ReadOnlyFieldset.md) - `frontend/src/components/settings/ReadOnlyFieldset.tsx`
+- [RefusalNextStepNote](modules/RefusalNextStepNote.md) - `frontend/src/components/tasks/RefusalNextStepNote.tsx`
 - [ReleaseForm](modules/ReleaseForm.md) - `frontend/src/components/releases/ReleaseForm.tsx`
 - [RequestSourceLinksPanel](modules/RequestSourceLinksPanel.md) - `frontend/src/components/requestSources/RequestSourceLinksPanel.tsx`
 - [RequestSourceLinksPanel.test](modules/RequestSourceLinksPanel.test.md) - `frontend/src/components/requestSources/RequestSourceLinksPanel.test.tsx`
@@ -2254,6 +2259,8 @@ Retained history; these declarations are absent from the selected source invento
 - [TaskReadView.dispatch.test](modules/TaskReadView.dispatch.test.md) - `frontend/src/components/tasks/TaskReadView.dispatch.test.tsx`
 - [TaskReadView.operatorKey.test](modules/TaskReadView.operatorKey.test.md) - `frontend/src/components/tasks/TaskReadView.operatorKey.test.tsx`
 - [TaskReadView.test](modules/TaskReadView.test.md) - `frontend/src/components/tasks/TaskReadView.test.tsx`
+- [TaskRecordProvenance](modules/TaskRecordProvenance.md) - `frontend/src/components/tasks/TaskRecordProvenance.tsx`
+- [TaskRefusalNextSteps.test](modules/TaskRefusalNextSteps.test.md) - `frontend/src/components/tasks/TaskRefusalNextSteps.test.tsx`
 - [TaskReviewHistory](modules/TaskReviewHistory.md) - `frontend/src/components/tasks/TaskReviewHistory.tsx`
 - [TaskReviewer](modules/TaskReviewer.md) - `frontend/src/components/tasks/TaskReviewer.tsx`
 - [TaskRoutingPanel](modules/TaskRoutingPanel.md) - `frontend/src/components/agent/TaskRoutingPanel.tsx`
@@ -2649,6 +2656,7 @@ Retained history; these declarations are absent from the selected source invento
 - [qualify](modules/qualify.md) - Freeze, assemble, sign, and verify PostgreSQL capacity qualification.
 - [query_limits](modules/query_limits.md) - Explicit response cardinality bounds for synchronous API surfaces.
 - [recovery](modules/recovery.md) - Transactional application recovery points and explicit schedule commitments.
+- [refusal_next_steps](modules/refusal_next_steps.md) - The legal next step for every verification and review refusal, kept in one place.
 - [releaseService](modules/releaseService.md) - `frontend/src/services/releaseService.ts`
 - [release_service](modules/release_service.md) - Release service for project-scoped shipping records.
 - [renderWithProviders](modules/renderWithProviders.md) - `frontend/src/test/renderWithProviders.tsx`
@@ -2975,6 +2983,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_project_working_timezone](modules/test_project_working_timezone.md) - Declared project working zones survive transport and drive local work dates.
 - [test_query_boundaries](modules/test_query_boundaries.md) - DBM-PERF-001 bounded graph and aggregate-summary tests.
 - [test_readiness_detail](modules/test_readiness_detail.md) - Managed readiness stays status-only unless the readiness-detail token matches.
+- [test_refusal_next_steps](modules/test_refusal_next_steps.md) - Every verification and review refusal names the legal next step, over REST, MCP and the task page.
 - [test_rehearsal_ownership](modules/test_rehearsal_ownership.md) - Isolation cannot adopt operator paths, names, architectures or unrelated resources.
 - [test_replacement_carried_provenance](modules/test_replacement_carried_provenance.md) - A replacement's carried contributors stay out of independent review, and their history walk is bounded.
 - [test_review_provenance](modules/test_review_provenance.md) - Exercise independent publisher review through the atomic work commands.
@@ -3142,6 +3151,7 @@ Retained history; these declarations are absent from the selected source invento
 - [AgentPlanningService__schedule_input_digest](workflows/AgentPlanningService__schedule_input_digest.md) - entry: `agent_planning_service.AgentPlanningService._schedule_input_digest`
 - [AgentRoutingService__build_preview](workflows/AgentRoutingService__build_preview.md) - entry: `agent_routing_service.AgentRoutingService._build_preview`
 - [AgentRoutingService__capacity_inputs](workflows/AgentRoutingService__capacity_inputs.md) - entry: `agent_routing_service.AgentRoutingService._capacity_inputs`
+- [AgentRoutingService__require_preview_rollout](workflows/AgentRoutingService__require_preview_rollout.md) - entry: `agent_routing_service.AgentRoutingService._require_preview_rollout`
 - [AgentRoutingService_create_assessment](workflows/AgentRoutingService_create_assessment.md) - entry: `agent_routing_service.AgentRoutingService.create_assessment`
 - [AgentRoutingService_preview_task_routing](workflows/AgentRoutingService_preview_task_routing.md) - entry: `agent_routing_service.AgentRoutingService.preview_task_routing`
 - [AgentRoutingService_validate_assignment_selection](workflows/AgentRoutingService_validate_assignment_selection.md) - entry: `agent_routing_service.AgentRoutingService.validate_assignment_selection`

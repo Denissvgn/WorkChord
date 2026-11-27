@@ -203,6 +203,8 @@ async def test_recorded_provenance_allows_an_independent_review_of_work_merged_o
         refused = await agent("agent_create_assignment", "/api/agent/assignments", pm_key, payload=selection_request,
                               receipt="unattributed-review", error="verification_publisher_unverifiable")
         assert "manual-provenance" in refused or "agent_record_manual_provenance" in refused
+        # Where the refusal names the record as its remedy, its next step is the record, not a refreshed assignment.
+        assert '"kind": "record_provenance"' in refused or '"kind":"record_provenance"' in refused
 
         body = provenance_body(current, executor)
         record_path = f"/api/agent/planning/tasks/{task.id}/manual-provenance"
@@ -324,6 +326,7 @@ async def test_no_verification_assignment_for_a_known_unverifiable_candidate(db_
     assert refused.value.code == "verification_candidate_unverifiable"
     assert refused.value.context["missing"] == [{"task_id": task_id, "facts": ["submitted_candidate"]}]
     assert "remedy" not in refused.value.context
+    assert refused.value.context["next_step"]["kind"] == "runs_submit_candidate"
     await db.rollback()
     assert not await db.scalar(select(AgentTaskAssignment.id).where(AgentTaskAssignment.task_id == task_id,
                                                                      AgentTaskAssignment.purpose == "verification"))
@@ -337,6 +340,8 @@ def test_a_candidate_less_refusal_names_only_a_remedy_that_can_help():
     assert unrecorded.value.context["missing"] == [{"task_id": 41, "facts": ["submitted_candidate", "manual_provenance"]}]
     assert unrecorded.value.context["remedy"]["rest"] == "POST /api/tasks/41/manual-provenance"
     assert unrecorded.value.context["remedy"]["mcp"] == "agent_record_manual_provenance"
+    assert unrecorded.value.context["next_step"]["kind"] == "record_provenance"
+    assert unrecorded.value.context["next_step"]["commands"]["rest"] == "POST /api/tasks/41/manual-provenance"
     # Manual execution taken from a stale provenance record: a fresh record helps.
     with pytest.raises(AgentRoutingConflictError) as stale_record:
         require_verifiable_candidate(task, {"candidate": None, "contributors": [],
@@ -346,11 +351,14 @@ def test_a_candidate_less_refusal_names_only_a_remedy_that_can_help():
     with pytest.raises(AgentRoutingConflictError) as manual:
         require_verifiable_candidate(task, {"candidate": None, "contributors": [],
                                             "manual_execution": {"principal_id": 3, "progress_record_id": 4}})
-    assert manual.value.context == {"missing": [{"task_id": 41, "facts": ["current_human_artifact"]}]}
+    assert manual.value.context["missing"] == [{"task_id": 41, "facts": ["current_human_artifact"]}]
+    # A record would be refused here, so the step is to resubmit the artifact, never to record.
+    assert manual.value.context["next_step"]["kind"] == "resubmit_artifact" and manual.value.context["next_step"]["ui_action"] is None
     assert "pull request" in manual.value.message and "compare URL" in manual.value.message
     with pytest.raises(AgentRoutingConflictError) as executed:
         require_verifiable_candidate(task, {"candidate": None, "contributors": [{"run_id": 5}]})
     assert "remedy" not in executed.value.context
+    assert executed.value.context["next_step"]["kind"] == "runs_submit_candidate"
     require_verifiable_candidate(task, {"candidate": {"digest": "a"}, "contributors": []})
     require_verifiable_candidate(task, None)
 

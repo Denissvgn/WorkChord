@@ -4566,3 +4566,23 @@ Refreshed against the 1.10.0 code. New and changed subjects: delivery prerequisi
 - Infrastructure moved: 0
 - Infrastructure removed: 0
 - Unsupported infrastructure YAML: 9
+
+## 2026-11-27
+
+### Wiki sync
+- Source: `.`
+- Generator version: `6.1.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3a5bac76f91a89ae1c9a3835b7f8461352fe8d6d94b6963d434dfbc1c6a4cc19`
+- Pages created: 10
+- Pages updated: 120
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3854
+- Pages deprecated: 0
+- Semantic fields preserved: 10
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 1
+- Dependency pages initialized: 0
+- Surface policy updated: no

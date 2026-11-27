@@ -17,7 +17,7 @@ _Auto-generated from `frontend/src/types/task.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `BriefCriterion`, `CascadeUpdateInfo`, `CriterionProgress`, `ExternalLink`, `ExternalLinkCreate`, `ExternalLinkProvider`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `GroundedAISuggestionResponse`, `GroundedFact`, `ReactivationRequirement`, `ReactivationRequirementInput`, `ReactivationRequirementKind`, `SuggestedSubtask`, `Task`, `TaskAISuggestRequest`, `TaskActionAvailability`, `TaskActions`, `TaskAgentReadiness`, `TaskAgentReadinessCriterion`, `TaskAssignee`, `TaskBatchUpdateItem`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskBatchUpdateResponseItem`, `TaskBrief`, `TaskBulkAction`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskBulkOperationResult`, `TaskBulkOutcome`, `TaskClaimedBy`, `TaskCommand`, `TaskCreate`, `TaskDetail`, `TaskDisplayedState`, `TaskFormalizeResponse`, `TaskImportDestination`, `TaskImproveDescriptionResponse`, `TaskMergeRequest`, `TaskMilestone`, `TaskMoveRequest`, `TaskPostponementRecord`, `TaskPostponementResponse`, `TaskProgress`, `TaskProject`, `TaskReference`, `TaskReferencePage`, `TaskReviewRecord`, `TaskStatus`, `TaskStatusChangeResponse`, `TaskStatusLog`, `TaskStatusStats`, `TaskTerminalState`, `TaskTextContext`, `TaskTimelineItem`, `TaskTimelineResponse`, `TaskUpdate`, `TaskVersionConflictDetail`, `TasksImportRequest`, `TasksImportResponse` |
+| Exports | `BriefCriterion`, `CascadeUpdateInfo`, `CriterionProgress`, `ExternalLink`, `ExternalLinkCreate`, `ExternalLinkProvider`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `GroundedAISuggestionResponse`, `GroundedFact`, `ManualProvenanceExecutor`, `ManualProvenanceWrite`, `ReactivationRequirement`, `ReactivationRequirementInput`, `ReactivationRequirementKind`, `RefusalNextStep`, `SuggestedSubtask`, `Task`, `TaskAISuggestRequest`, `TaskActionAvailability`, `TaskActions`, `TaskAgentReadiness`, `TaskAgentReadinessCriterion`, `TaskAssignee`, `TaskBatchUpdateItem`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskBatchUpdateResponseItem`, `TaskBrief`, `TaskBulkAction`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskBulkOperationResult`, `TaskBulkOutcome`, `TaskClaimedBy`, `TaskCommand`, `TaskCreate`, `TaskDetail`, `TaskDisplayedState`, `TaskFormalizeResponse`, `TaskImportDestination`, `TaskImproveDescriptionResponse`, `TaskMergeRequest`, `TaskMilestone`, `TaskMoveRequest`, `TaskPostponementRecord`, `TaskPostponementResponse`, `TaskProgress`, `TaskProject`, `TaskReference`, `TaskReferencePage`, `TaskReviewRecord`, `TaskStatus`, `TaskStatusChangeResponse`, `TaskStatusLog`, `TaskStatusStats`, `TaskTerminalState`, `TaskTextContext`, `TaskTimelineItem`, `TaskTimelineResponse`, `TaskUpdate`, `TaskVersionConflictDetail`, `TasksImportRequest`, `TasksImportResponse` |
 
 ## Local dependency map
 
@@ -39,10 +39,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (116) |
+| Inbound | `frontend` (120) |
 | Outbound | `frontend` (2) |
 
-> All 117 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 121 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -98,9 +98,12 @@ flowchart LR
 | [TaskPostponementRecord](../entities/types_task_TaskPostponementRecord.md) | Interface | 499 | — | — |
 | [TaskPostponementResponse](../entities/types_task_TaskPostponementResponse.md) | Interface | 505 | — | — |
 | [TaskReviewRecord](../entities/types_task_TaskReviewRecord.md) | Interface | 507 | — | One recorded review. `owner_override` is an owner's acceptance that set aside publisher independence. |
-| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Interface | 511 | — | — |
-| [TaskActions](../entities/TaskActions.md) | Interface | 512 | — | — |
-| [TaskCommand](../entities/TaskCommand.md) | Interface | 516 | — | — |
+| [RefusalNextStep](../entities/types_task_RefusalNextStep.md) | Interface | 512 | — | What a person or agent may do about a refusal, from the server's one refusal catalogue. |
+| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Interface | 517 | — | — |
+| [ManualProvenanceExecutor](../entities/types_task_ManualProvenanceExecutor.md) | Interface | 519 | — | The executor of work that was delivered outside recorded runs. |
+| [ManualProvenanceWrite](../entities/types_task_ManualProvenanceWrite.md) | Interface | 520 | — | — |
+| [TaskActions](../entities/TaskActions.md) | Interface | 524 | — | — |
+| [TaskCommand](../entities/TaskCommand.md) | Interface | 528 | — | — |
 | [TaskStatus](../entities/types_task_TaskStatus.md) | Type alias | 51 | `'planned' \| 'active' \| 'resolved' \| 'postponed' \| 'closed'` | — |
 | [TaskTerminalState](../entities/TaskTerminalState.md) | Type alias | 53 | `'canceled' \| 'superseded'` | Withdrawn work: canceled, or superseded when another task delivers its work (a clean replacement included). |
 | [TaskDisplayedState](../entities/TaskDisplayedState.md) | Type alias | 55 | `TaskStatus \| TaskTerminalState` | What a task is shown as: its stored status, or its terminal state. |

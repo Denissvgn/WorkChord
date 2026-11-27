@@ -36,8 +36,9 @@ flowchart LR
     n5["frontend/src/components/settings/QualificationKeysPanel.tsx"]
     n6["frontend/src/components/tasks/TaskPostponeForm.tsx"]
     n7["frontend/src/components/tasks/TaskPostponementPanel.tsx"]
-    n8["frontend/src/components/tasks/useSavedViewManager.tsx"]
-    n9["frontend/src/components/triage/CreateTriageDrawer.tsx"]
+    n8["frontend/src/components/tasks/TaskRecordProvenance.tsx"]
+    n9["frontend/src/components/tasks/useSavedViewManager.tsx"]
+    n10["frontend/src/components/triage/CreateTriageDrawer.tsx"]
     n1 --> n2
     n2 --> n0
     n3 --> n0
@@ -52,6 +53,8 @@ flowchart LR
     n8 --> n2
     n9 --> n0
     n9 --> n2
+    n10 --> n0
+    n10 --> n2
     click n0 "../modules/Input.md"
     click n1 "../modules/Select.test.md"
     click n2 "../modules/Textarea.md"
@@ -60,8 +63,9 @@ flowchart LR
     click n5 "../modules/QualificationKeysPanel.md"
     click n6 "../modules/TaskPostponeForm.md"
     click n7 "../modules/TaskPostponementPanel.md"
-    click n8 "../modules/useSavedViewManager.md"
-    click n9 "../modules/CreateTriageDrawer.md"
+    click n8 "../modules/TaskRecordProvenance.md"
+    click n9 "../modules/useSavedViewManager.md"
+    click n10 "../modules/CreateTriageDrawer.md"
 ```
 
 ### Internal neighbors
@@ -74,6 +78,7 @@ flowchart LR
 | Inbound | [QualificationKeysPanel](../modules/QualificationKeysPanel.md) |
 | Inbound | [TaskPostponeForm](../modules/TaskPostponeForm.md) |
 | Inbound | [TaskPostponementPanel](../modules/TaskPostponementPanel.md) |
+| Inbound | [TaskRecordProvenance](../modules/TaskRecordProvenance.md) |
 | Inbound | [useSavedViewManager](../modules/useSavedViewManager.md) |
 | Inbound | [CreateTriageDrawer](../modules/CreateTriageDrawer.md) |
 | Outbound | [Input](../modules/Input.md) |

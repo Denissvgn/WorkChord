@@ -1,3 +1,5 @@
+import type { RefusalNextStep } from '../types/task';
+
 export type ApiErrorKind = 'response' | 'network' | 'unknown';
 
 export interface ApiFieldError {
@@ -153,6 +155,22 @@ export const normalizeApiError = (error: unknown, fallback: string): NormalizedA
 export const getApiErrorMessage = (error: unknown, fallback: string) => (
     normalizeApiError(error, fallback).message
 );
+
+/** The next step a refusal names, from its structured envelope; null when it names none. */
+export const getApiNextStep = (error: unknown): RefusalNextStep | null => {
+    const data = asApiError(error).response?.data;
+    const detail = isRecord(data) && isRecord(data.detail) ? data.detail : data;
+    const step = isRecord(detail) ? detail.next_step : null;
+    if (!isRecord(step) || typeof step.kind !== 'string' || typeof step.message !== 'string' || !step.message.trim()) return null;
+    const commands = isRecord(step.commands)
+        ? Object.fromEntries(Object.entries(step.commands).filter((entry): entry is [string, string] => typeof entry[1] === 'string'))
+        : {};
+    return {
+        kind: step.kind, message: step.message, commands,
+        authority: typeof step.authority === 'string' ? step.authority : '',
+        ui_action: step.ui_action === 'record_provenance' || step.ui_action === 'accept_as_owner' ? step.ui_action : null,
+    };
+};
 
 export const getApiErrorStatus = (error: unknown) => (
     normalizedStatus(asApiError(error).response?.status)

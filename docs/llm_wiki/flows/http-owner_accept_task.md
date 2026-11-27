@@ -201,7 +201,7 @@ flowchart LR
 | domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | owner_accept_task | TaskBriefService.owner_accept | 279 | `TaskBriefService(db).owner_accept(task_id, data)` |
 | TaskBriefService.owner_accept | require_owner_override | 337 | `require_owner_override(self.db)` |
-| require_owner_override | db.info.get | 102 | `db.info.get('authority')` |
+| require_owner_override | db.info.get | 103 | `db.info.get('authority')` |
 
 ### Boundary effects
 
@@ -216,7 +216,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
 | external_call | `domain_result` | `HTTPException` | 61 |
-| unresolved_call | `require_owner_override` | `db.info.get` | 102 |
+| unresolved_call | `require_owner_override` | `db.info.get` | 103 |
 | step_limit | `owner_accept_task` | `first 12 steps` | 0 |
 
 ## Behavior

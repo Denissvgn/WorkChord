@@ -20,14 +20,16 @@ Commit and uncommit commands retain original source and selected-target aggregat
 | `../../services/planningInputService` | `planningInputService` | — | compiler-dependent |
 | `../../services/taskService` | `taskService` | — | compiler-dependent |
 | `../../types/iteration` | `Iteration` | Declaration | erased |
-| `../../types/task` | `CriterionProgress`, `Task` | Declaration | erased |
-| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../types/task` | `CriterionProgress`, `RefusalNextStep`, `Task` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage`, `getApiNextStep` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/Input` | `Input` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `./RefusalNextStepNote` | `RefusalNextStepNote` | — | compiler-dependent |
 | `./TaskOwnerAcceptance` | `TaskOwnerAcceptance`, `VERIFIED_PUBLISHER_CODE` | — | compiler-dependent |
 | `./TaskPostponeForm` | `TaskPostponeForm` | — | compiler-dependent |
 | `./TaskPostponementPanel` | `TaskPostponementPanel` | — | compiler-dependent |
+| `./TaskRecordProvenance` | `TaskRecordProvenance` | — | compiler-dependent |
 | `./TaskReviewHistory` | `TaskReviewHistory` | — | compiler-dependent |
 | `./TaskReviewer` | `TaskReviewer` | — | compiler-dependent |
 | `./useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
@@ -63,8 +65,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (5) |
-| Outbound | `frontend` (21) |
+| Inbound | `frontend` (6) |
+| Outbound | `frontend` (23) |
 
 ### External packages
 
@@ -72,7 +74,7 @@ flowchart LR
 |---|---:|---:|
 | typescript | 3 | 0 |
 
-> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

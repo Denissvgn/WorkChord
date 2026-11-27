@@ -1,6 +1,6 @@
 # TaskActionBlocker
 
-**Location:** `backend/app/schemas/task_domain.py:30`
+**Location:** `backend/app/schemas/task_domain.py:40`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task_domain](../modules/schemas_task_domain.md)
@@ -15,6 +15,7 @@ _Auto-generated from `TaskActionBlocker` in `backend/app/schemas/task_domain.py`
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `code` | `str` | `code` | Yes | No | — | — | — | — |
 | `message` | `str` | `message` | Yes | No | — | — | — | — |
+| `next_step` | `RefusalNextStep \| None` | `next_step` | No | Yes | `None` | — | — | — |
 
 ## Methods
 
@@ -35,7 +36,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task_domain](../modules/schemas_task_domain.md) | 0 | `code`, `message` |
+| [schemas_task_domain](../modules/schemas_task_domain.md) | 0 | `code`, `message`, `next_step` |
 
 ### Structure
 

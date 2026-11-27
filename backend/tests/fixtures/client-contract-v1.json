@@ -3941,6 +3941,53 @@
         "title": "ReasoningTier",
         "type": "integer"
       },
+      "RefusalNextStep": {
+        "description": "What a person or agent may do about a refusal, from the shared refusal catalogue.",
+        "properties": {
+          "authority": {
+            "description": "Who may take the step.",
+            "title": "Authority",
+            "type": "string"
+          },
+          "commands": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The REST route or MCP tool that takes the step.",
+            "title": "Commands",
+            "type": "object"
+          },
+          "kind": {
+            "description": "Stable key for the step, such as record_provenance or accept_as_owner.",
+            "title": "Kind",
+            "type": "string"
+          },
+          "message": {
+            "description": "One sentence a person can act on.",
+            "title": "Message",
+            "type": "string"
+          },
+          "ui_action": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The task page form that takes the step, when there is one.",
+            "title": "Ui Action"
+          }
+        },
+        "required": [
+          "kind",
+          "authority",
+          "message"
+        ],
+        "title": "RefusalNextStep",
+        "type": "object"
+      },
       "RoutingQualificationKeyDeclare": {
         "additionalProperties": false,
         "description": "Declare a new key, or bring back a retired one under the same name.",
@@ -4381,6 +4428,16 @@
           "message": {
             "title": "Message",
             "type": "string"
+          },
+          "next_step": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RefusalNextStep"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [

@@ -1,6 +1,6 @@
 # AgentTeamSetupService
 
-**Location:** `backend/app/services/agent_team_setup_service.py:229`
+**Location:** `backend/app/services/agent_team_setup_service.py:231`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_team_setup_service](../modules/agent_team_setup_service.md)

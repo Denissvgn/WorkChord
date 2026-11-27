@@ -112,4 +112,4 @@ flowchart LR
 | `CapacityAdjustmentService._refuse_reducing_issued_work` | call | [capacity_adjustments](../modules/capacity_adjustments.md) | 1 |
 | `CapacityService.invalidate_profile` | call | [capacity_service](../modules/capacity_service.md) | 2 |
 
-> References: showing 12 of 98 logical references; 86 omitted by the 12-row generated summary limit.
+> References: showing 12 of 99 logical references; 87 omitted by the 12-row generated summary limit.

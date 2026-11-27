@@ -57,7 +57,8 @@ class PlanningConflict(RuntimeError):
         super().__init__(message)
 
     def detail(self):
-        return {"code": self.code, "message": str(self)}
+        from app.refusal_next_steps import with_next_step
+        return with_next_step({"code": self.code, "message": str(self)})
 
 
 async def lock_planning(db, *, expected=None):

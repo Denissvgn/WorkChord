@@ -508,7 +508,19 @@ export interface TaskReviewRecord {
     id: number; task_version: number; brief_revision: number; artifact_revision: number; principal_id: number | null;
     verdict: 'accept' | 'reject' | string; kind: 'review' | 'owner_override'; reason: string; evidence: string; created_at: string;
 }
-export interface TaskActionAvailability { action: string; allowed: boolean; blockers: { code: string; message: string }[] }
+/** What a person or agent may do about a refusal, from the server's one refusal catalogue. */
+export interface RefusalNextStep {
+    kind: string; authority: string; message: string; commands: Record<string, string>;
+    /** The task page form that takes the step, when it has one. */
+    ui_action: 'record_provenance' | 'accept_as_owner' | null;
+}
+export interface TaskActionAvailability { action: string; allowed: boolean; blockers: { code: string; message: string; next_step?: RefusalNextStep | null }[] }
+/** The executor of work that was delivered outside recorded runs. */
+export interface ManualProvenanceExecutor { kind: 'human' | 'agent'; principal_id?: number; actor_id?: number; model_binding_id?: number }
+export interface ManualProvenanceWrite {
+    expected_version: number; artifact_revision: number; executor: ManualProvenanceExecutor; head_commit_url: string;
+    commit_urls: string[]; pr_url?: string; base_commit_url?: string; reason: string;
+}
 export interface TaskActions {
     task_id: number; version: number; actions: TaskActionAvailability[];
     claim_generation: number; running_run_ids: number[]; live_assignment_ids: number[];

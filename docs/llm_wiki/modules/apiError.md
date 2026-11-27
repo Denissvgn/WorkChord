@@ -6,20 +6,29 @@
 
 _Auto-generated from `frontend/src/utils/apiError.ts`._
 
+## Imports
+
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../types/task` | `RefusalNextStep` | Declaration | erased |
+
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
-| Exports | `ApiErrorKind`, `ApiFieldError`, `NormalizedApiError`, `getApiErrorMessage`, `getApiErrorStatus`, `getApiFieldErrors`, `normalizeApiError` |
+| Exports | `ApiErrorKind`, `ApiFieldError`, `NormalizedApiError`, `getApiErrorMessage`, `getApiErrorStatus`, `getApiFieldErrors`, `getApiNextStep`, `normalizeApiError` |
 
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
     n1["frontend/src/utils/apiError.ts"]
     n0 --> n1
+    n1 --> n0
     click n1 "../modules/apiError.md"
 ```
 
@@ -29,19 +38,20 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (72) |
+| Inbound | `frontend` (74) |
+| Outbound | `frontend` (1) |
 
-> All 72 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 75 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ApiFieldError](../entities/ApiFieldError.md) | Interface | 3 | — | — |
-| [NormalizedApiError](../entities/NormalizedApiError.md) | Interface | 8 | — | — |
-| [ApiErrorShape](../entities/ApiErrorShape.md) | Interface | 17 | — | — |
-| [ApiErrorKind](../entities/ApiErrorKind.md) | Type alias | 1 | `'response' \| 'network' \| 'unknown'` | — |
-| [UnknownRecord](../entities/UnknownRecord.md) | Type alias | 26 | `Record<string, unknown>` | — |
+| [ApiFieldError](../entities/ApiFieldError.md) | Interface | 5 | — | — |
+| [NormalizedApiError](../entities/NormalizedApiError.md) | Interface | 10 | — | — |
+| [ApiErrorShape](../entities/ApiErrorShape.md) | Interface | 19 | — | — |
+| [ApiErrorKind](../entities/ApiErrorKind.md) | Type alias | 3 | `'response' \| 'network' \| 'unknown'` | — |
+| [UnknownRecord](../entities/UnknownRecord.md) | Type alias | 28 | `Record<string, unknown>` | — |
 
 ## Functions
 
@@ -49,5 +59,6 @@ flowchart LR
 |----------|-----------|------------|-------------|
 | `normalizeApiError` | `(error: unknown, fallback: string) -> NormalizedApiError` | — | — |
 | `getApiErrorMessage` | `(error: unknown, fallback: string)` | — | — |
+| `getApiNextStep` | `(error: unknown) -> RefusalNextStep \| null` | — | The next step a refusal names, from its structured envelope; null when it names none. |
 | `getApiErrorStatus` | `(error: unknown)` | — | — |
 | `getApiFieldErrors` | `(error: unknown, fallback: string)` | — | — |
