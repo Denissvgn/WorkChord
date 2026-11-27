@@ -514,7 +514,8 @@ async def require_independent_profile(db, assignments, reviewer, reviewer_profil
     history = await execution_profile_history(db, assignments, task_id=task_id)
     if any(row.get("truncated") for row in history):
         _conflict("verification_independence_unverifiable", "The carried replacement history is too long or cyclic to prove independence.",
-                  step="carried_run_unattributed" if _carries_unattributed_run(history) else "history_too_long", task_id=task_id)
+                  # A truncated history always ends in a carried row with no attribution, which holds the replacement.
+                  step="carried_run_unattributed", task_id=task_id)
     if any(row.get("carried_from_task_id") and row["actor_id"] == reviewer.id for row in history):
         _conflict("verification_actor_not_independent", "An actor whose run this replacement carries cannot verify it.")
     profiles = {reviewer.profile_id, reviewer_profile_id} - {None}

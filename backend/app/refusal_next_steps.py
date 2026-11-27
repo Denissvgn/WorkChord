@@ -239,10 +239,6 @@ VARIANTS: dict[str, dict[str, Any]] = {
         "unrecorded_publisher", AUTHORITY_OWNER_OPERATOR,
         "No contributing run or execution records a model publisher, so independence cannot be shown. " + _ACCEPT_AS_OWNER_POLICY
         + " Otherwise redo the work so a run records its observed model.", _OWNER_ACCEPT_COMMANDS, UI_ACTION_ACCEPT_AS_OWNER),
-    "history_too_long": _step(
-        "owner_decides_independence", AUTHORITY_OWNER_OPERATOR,
-        "The history carried from replaced tasks is too long or cyclic to prove independence. " + _ACCEPT_AS_OWNER_POLICY
-        + " Otherwise replace the task with a fresh one.", _OWNER_ACCEPT_COMMANDS),
     "profile_evidence_missing": _step(
         "profile_evidence_missing", AUTHORITY_OWNER_OPERATOR,
         "A contributing run or the reviewer has no recorded profile, which a provenance record cannot add. Give the verifier a"
