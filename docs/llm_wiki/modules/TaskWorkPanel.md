@@ -26,6 +26,8 @@ Commit and uncommit commands retain original source and selected-target aggregat
 | `../common/Input` | `Input` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
 | `./TaskOwnerAcceptance` | `TaskOwnerAcceptance`, `VERIFIED_PUBLISHER_CODE` | — | compiler-dependent |
+| `./TaskPostponeForm` | `TaskPostponeForm` | — | compiler-dependent |
+| `./TaskPostponementPanel` | `TaskPostponementPanel` | — | compiler-dependent |
 | `./TaskReviewHistory` | `TaskReviewHistory` | — | compiler-dependent |
 | `./TaskReviewer` | `TaskReviewer` | — | compiler-dependent |
 | `./useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
@@ -61,8 +63,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (4) |
-| Outbound | `frontend` (19) |
+| Inbound | `frontend` (5) |
+| Outbound | `frontend` (21) |
 
 ### External packages
 
@@ -70,7 +72,7 @@ flowchart LR
 |---|---:|---:|
 | typescript | 3 | 0 |
 
-> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

@@ -17,7 +17,7 @@ _Auto-generated from `frontend/src/types/task.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `BriefCriterion`, `CascadeUpdateInfo`, `CriterionProgress`, `ExternalLink`, `ExternalLinkCreate`, `ExternalLinkProvider`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `GroundedAISuggestionResponse`, `GroundedFact`, `SuggestedSubtask`, `Task`, `TaskAISuggestRequest`, `TaskActionAvailability`, `TaskActions`, `TaskAgentReadiness`, `TaskAgentReadinessCriterion`, `TaskAssignee`, `TaskBatchUpdateItem`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskBatchUpdateResponseItem`, `TaskBrief`, `TaskBulkAction`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskBulkOperationResult`, `TaskBulkOutcome`, `TaskClaimedBy`, `TaskCommand`, `TaskCreate`, `TaskDetail`, `TaskFormalizeResponse`, `TaskImportDestination`, `TaskImproveDescriptionResponse`, `TaskMergeRequest`, `TaskMilestone`, `TaskMoveRequest`, `TaskProgress`, `TaskProject`, `TaskReference`, `TaskReferencePage`, `TaskReviewRecord`, `TaskStatus`, `TaskStatusChangeResponse`, `TaskStatusLog`, `TaskStatusStats`, `TaskTextContext`, `TaskTimelineItem`, `TaskTimelineResponse`, `TaskUpdate`, `TaskVersionConflictDetail`, `TasksImportRequest`, `TasksImportResponse` |
+| Exports | `BriefCriterion`, `CascadeUpdateInfo`, `CriterionProgress`, `ExternalLink`, `ExternalLinkCreate`, `ExternalLinkProvider`, `ExternalLinkUpdate`, `GitHubExternalLinkCreate`, `GroundedAISuggestionResponse`, `GroundedFact`, `ReactivationRequirement`, `ReactivationRequirementInput`, `ReactivationRequirementKind`, `SuggestedSubtask`, `Task`, `TaskAISuggestRequest`, `TaskActionAvailability`, `TaskActions`, `TaskAgentReadiness`, `TaskAgentReadinessCriterion`, `TaskAssignee`, `TaskBatchUpdateItem`, `TaskBatchUpdateRequest`, `TaskBatchUpdateResponse`, `TaskBatchUpdateResponseItem`, `TaskBrief`, `TaskBulkAction`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskBulkOperationResult`, `TaskBulkOutcome`, `TaskClaimedBy`, `TaskCommand`, `TaskCreate`, `TaskDetail`, `TaskFormalizeResponse`, `TaskImportDestination`, `TaskImproveDescriptionResponse`, `TaskMergeRequest`, `TaskMilestone`, `TaskMoveRequest`, `TaskPostponementRecord`, `TaskPostponementResponse`, `TaskProgress`, `TaskProject`, `TaskReference`, `TaskReferencePage`, `TaskReviewRecord`, `TaskStatus`, `TaskStatusChangeResponse`, `TaskStatusLog`, `TaskStatusStats`, `TaskTextContext`, `TaskTimelineItem`, `TaskTimelineResponse`, `TaskUpdate`, `TaskVersionConflictDetail`, `TasksImportRequest`, `TasksImportResponse` |
 
 ## Local dependency map
 
@@ -39,10 +39,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (112) |
+| Inbound | `frontend` (115) |
 | Outbound | `frontend` (2) |
 
-> All 113 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 116 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -93,12 +93,17 @@ flowchart LR
 | [TaskReference](../entities/types_task_TaskReference.md) | Interface | 466 | — | — |
 | [TaskReferencePage](../entities/types_task_TaskReferencePage.md) | Interface | 473 | — | — |
 | [TaskDetail](../entities/TaskDetail.md) | Interface | 474 | — | — |
-| [TaskReviewRecord](../entities/types_task_TaskReviewRecord.md) | Interface | 480 | — | One recorded review. `owner_override` is an owner's acceptance that set aside publisher independence. |
-| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Interface | 484 | — | — |
-| [TaskActions](../entities/TaskActions.md) | Interface | 485 | — | — |
-| [TaskCommand](../entities/TaskCommand.md) | Interface | 489 | — | — |
-| [TaskStatus](../entities/types_task_TaskStatus.md) | Type alias | 51 | `'planned' \| 'active' \| 'resolved' \| 'closed'` | — |
+| [ReactivationRequirementInput](../entities/types_task_ReactivationRequirementInput.md) | Interface | 482 | — | — |
+| [ReactivationRequirement](../entities/ReactivationRequirement.md) | Interface | 485 | — | — |
+| [TaskPostponementRecord](../entities/types_task_TaskPostponementRecord.md) | Interface | 489 | — | — |
+| [TaskPostponementResponse](../entities/types_task_TaskPostponementResponse.md) | Interface | 495 | — | — |
+| [TaskReviewRecord](../entities/types_task_TaskReviewRecord.md) | Interface | 497 | — | One recorded review. `owner_override` is an owner's acceptance that set aside publisher independence. |
+| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Interface | 501 | — | — |
+| [TaskActions](../entities/TaskActions.md) | Interface | 502 | — | — |
+| [TaskCommand](../entities/TaskCommand.md) | Interface | 506 | — | — |
+| [TaskStatus](../entities/types_task_TaskStatus.md) | Type alias | 51 | `'planned' \| 'active' \| 'resolved' \| 'postponed' \| 'closed'` | — |
 | [ExternalLinkProvider](../entities/types_task_ExternalLinkProvider.md) | Type alias | 52 | `'github' \| 'gitlab' \| 'figma' \| 'sentry' \| 'custom' \| 'agdash' \| string` | — |
 | [TaskImportDestination](../entities/types_task_TaskImportDestination.md) | Type alias | 285 | `'tasks' \| 'triage' \| 'auto'` | — |
 | [TaskBulkAction](../entities/types_task_TaskBulkAction.md) | Type alias | 314 | <pre><code>&#124; &#39;set&#95;assignee&#39;&#10;    &#124; &#39;clear&#95;assignee&#39;&#10;    &#124; &#39;auto&#95;assign&#39;&#10;    &#124; &#39;set&#95;project&#39;&#10;    &#124; &#39;clear&#95;project&#39;&#10;    &#124; &#39;set&#95;milestone&#39;&#10;    &#124; &#39;clear&#95;milestone&#39;&#10;    &#124; &#39;set&#95;priority&#39;&#10;    &#124; &#39;add&#95;labels&#39;&#10;    &#124; &#39;remove&#95;labels&#39;&#10;    &#124; &#39;set&#95;flags&#39;&#10;    &#124; &#39;change&#95;status&#39;&#10;    &#124; &#39;delete&#39;</code></pre> | — |
 | [TaskBulkOutcome](../entities/types_task_TaskBulkOutcome.md) | Type alias | 329 | `'updated' \| 'deleted' \| 'skipped' \| 'failed' \| 'would_update' \| 'would_delete'` | — |
+| [ReactivationRequirementKind](../entities/ReactivationRequirementKind.md) | Type alias | 481 | `'predecessor_accepted' \| 'date' \| 'owner_decision' \| 'linked_resolved'` | — |
