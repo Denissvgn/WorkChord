@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1845 | [Open section](#entities) |
-| Modules | 1185 | [Open section](#modules) |
+| Entities | 1847 | [Open section](#entities) |
+| Modules | 1187 | [Open section](#modules) |
 | Workflows | 244 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 632 | [Open section](#entry-point-flows) |
@@ -1468,6 +1468,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_gantt_SchedulingDecision](entities/schemas_gantt_SchedulingDecision.md)
 - [schemas_gantt_UnscheduledReason](entities/schemas_gantt_UnscheduledReason.md)
 - [schemas_gantt_UnscheduledTask](entities/schemas_gantt_UnscheduledTask.md)
+- [schemas_gantt_WaitingOnTask](entities/schemas_gantt_WaitingOnTask.md)
 - [schemas_gantt_WorkloadIssue](entities/schemas_gantt_WorkloadIssue.md)
 - [schemas_github_GitHubAutomationEventType](entities/schemas_github_GitHubAutomationEventType.md)
 - [schemas_github_GitHubAutomationOutcome](entities/schemas_github_GitHubAutomationOutcome.md)
@@ -1698,6 +1699,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_gantt_SchedulingDecision](entities/types_gantt_SchedulingDecision.md)
 - [types_gantt_UnscheduledReason](entities/types_gantt_UnscheduledReason.md)
 - [types_gantt_UnscheduledTask](entities/types_gantt_UnscheduledTask.md)
+- [types_gantt_WaitingOnTask](entities/types_gantt_WaitingOnTask.md)
 - [types_gantt_WorkloadAnalysis](entities/types_gantt_WorkloadAnalysis.md)
 - [types_gantt_WorkloadIssue](entities/types_gantt_WorkloadIssue.md)
 - [types_github_GitHubAutomationEventType](entities/types_github_GitHubAutomationEventType.md)
@@ -2895,6 +2897,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_postgresql_lifecycle](modules/test_postgresql_lifecycle.md) - Real-server smoke for create, migrate, exercise, and drop lifecycle.
 - [test_postgresql_migrations](modules/test_postgresql_migrations.md) - Real PostgreSQL migration, locking, and schema contract tests.
 - [test_postgresql_transfer](modules/test_postgresql_transfer.md) - Real PostgreSQL loader and fail-closed reconciliation tests.
+- [test_postponed_out_of_scheduling](modules/test_postponed_out_of_scheduling.md) - Postponed work keeps its last dates as history: it is never scheduled, counted, ready, dispatched or verified.
 - [test_process_roles](modules/test_process_roles.md) - DBM-WORK-001 command ownership and process-role tests.
 - [test_profile_capacity](modules/test_profile_capacity.md) - Shared person capacity, calendar arithmetic and private availability boundaries.
 - [test_profile_capacity_migrations](modules/test_profile_capacity_migrations.md) - Preserve legacy absence identities and report conflicting person calendars.
@@ -2997,6 +3000,7 @@ Retained history; these declarations are absent from the selected source invento
 - [types_team](modules/types_team.md) - `frontend/src/types/team.ts`
 - [types_template](modules/types_template.md) - `frontend/src/types/template.ts`
 - [types_triage](modules/types_triage.md) - `frontend/src/types/triage.ts`
+- [unscheduledReason](modules/unscheduledReason.md) - `frontend/src/components/gantt/unscheduledReason.ts`
 - [upgrade](modules/upgrade.md) - Operational database upgrade command.
 - [upgrade_service](modules/upgrade_service.md) - Database upgrade and schema-version helpers.
 - [url_policy](modules/url_policy.md) - Centralized outbound URL and host validation.

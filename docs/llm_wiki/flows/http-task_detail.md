@@ -92,9 +92,9 @@ sequenceDiagram
     p1-->>p30: self.db.scalar(...)
 ```
 
-> Call sequence diagram shows 30 of 258 interactions; 228 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 275 interactions; 245 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 78 (77 omitted); unresolved 1 of 112 (111 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 83 (82 omitted); unresolved 1 of 123 (122 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -108,7 +108,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/config.py:get_settings` | 24 | [backend/app/config.py](../modules/config.md) | internal | 1 |
 | `backend/app/authority.py:require_project` | 22 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
 | `backend/app/authority.py:internal_authority` | 30 | - | unresolved | 1 |
-> Omission summary shows 8 of 61 groups; 53 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 63 groups; 55 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -119,9 +119,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 69; effect analysis evaluated: 48, partial: 0, unavailable: 21. Counts include steps omitted from the displayed trace.
+Source steps: 70; effect analysis evaluated: 49, partial: 0, unavailable: 21. Counts include steps omitted from the displayed trace.
 
-Collector observations for 48 source steps with known totals: observed: 242, emitted: 242, omitted: 0. Unavailable totals are excluded.
+Collector observations for 49 source steps with known totals: observed: 253, emitted: 253, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -208,15 +208,15 @@ flowchart LR
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 59 | `str(exc)` |
 | domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | task_detail | TaskDetailService.detail | 227 | `TaskDetailService(db).detail(task_id, limit=limit, children_after_id=children_after_id, dependencies_after_id=dependencies_after_id)` |
-| TaskDetailService.detail | self.db.scalar | 153 | `self.db.scalar(...)` |
-| TaskDetailService.detail | select(…).where(…).options | 153 | `select(Task).where(Task.id == task_id).options(raiseload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...))` |
+| TaskDetailService.detail | self.db.scalar | 154 | `self.db.scalar(...)` |
+| TaskDetailService.detail | select(…).where(…).options | 154 | `select(Task).where(Task.id == task_id).options(raiseload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...))` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `seen.add` | `TaskDetailService.detail` | 172 |
-| mutation | `ancestors.append` | `TaskDetailService.detail` | 176 |
+| mutation | `seen.add` | `TaskDetailService.detail` | 173 |
+| mutation | `ancestors.append` | `TaskDetailService.detail` | 177 |
 
 ### Static analysis gaps
 
@@ -227,8 +227,8 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 57 |
 | external_call | `domain_result` | `HTTPException` | 59 |
 | external_call | `domain_result` | `HTTPException` | 61 |
-| unresolved_call | `TaskDetailService.detail` | `self.db.scalar` | 153 |
-| unresolved_call | `TaskDetailService.detail` | `select(Task).where(Task.id == task_id).options` | 153 |
+| unresolved_call | `TaskDetailService.detail` | `self.db.scalar` | 154 |
+| unresolved_call | `TaskDetailService.detail` | `select(Task).where(Task.id == task_id).options` | 154 |
 | step_limit | `task_detail` | `first 12 steps` | 0 |
 
 ## Behavior
