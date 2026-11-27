@@ -85,14 +85,21 @@ flowchart LR
 | [GanttMilestone](../entities/GanttMilestone.md) | Pydantic model | 23 | `BaseModel` | Milestone info for Gantt task editing. |
 | [GanttTask](../entities/schemas_gantt_GanttTask.md) | Pydantic model | 32 | `TaskMetricSignals` | Task representation for Gantt chart. |
 | [SchedulingDecision](../entities/schemas_gantt_SchedulingDecision.md) | Pydantic model | 66 | `BaseModel` | Explanation for a scheduling decision. |
-| [UnscheduledReason](../entities/schemas_gantt_UnscheduledReason.md) | Type alias | 75 | `Literal['no_assignee', 'assignee_not_in_iteration', 'no_estimate', 'no_capacity', 'prerequisites_pending', 'predecessor_unscheduled', 'deferred', 'blocked', 'not_placed']` | — |
-| [DateRule](../entities/schemas_gantt_DateRule.md) | Type alias | 88 | `Literal['dates_incomplete', 'dates_inverted', 'outside_iteration', 'before_min_start_date']` | — |
-| [UnscheduledTask](../entities/schemas_gantt_UnscheduledTask.md) | Pydantic model | 96 | `BaseModel` | A planned task the scheduler left without dates, and what would change that. |
-| [KeptDatesTask](../entities/schemas_gantt_KeptDatesTask.md) | Pydantic model | 110 | `BaseModel` | A planned task the scheduler could not place; it keeps the dates it already had. |
-| [WorkloadIssue](../entities/schemas_gantt_WorkloadIssue.md) | Pydantic model | 124 | `BaseModel` | Workload issue for a team member. |
-| [AssignmentSelectionRefresh](../entities/AssignmentSelectionRefresh.md) | Pydantic model | 131 | `BaseModel` | — |
-| [ScheduleResult](../entities/schemas_gantt_ScheduleResult.md) | Pydantic model | 140 | `BaseModel` | Result of scheduling operation. |
-| [GanttResponse](../entities/schemas_gantt_GanttResponse.md) | Pydantic model | 155 | `BaseModel` | Full Gantt chart response. |
-| [ScheduleApplyRequest](../entities/ScheduleApplyRequest.md) | Pydantic model | 168 | `BaseModel` | — |
-| [SchedulePreviewRequest](../entities/SchedulePreviewRequest.md) | Pydantic model | 174 | `BaseModel` | Sandbox edits to dry-run through the real scheduler. |
-| [SchedulePreviewResponse](../entities/schemas_gantt_SchedulePreviewResponse.md) | Pydantic model | 185 | `BaseModel` | Projected Gantt state after applying changes and rescheduling. |
+| [UnscheduledReason](../entities/schemas_gantt_UnscheduledReason.md) | Type alias | 75 | `Literal['no_assignee', 'assignee_not_in_iteration', 'no_estimate', 'no_capacity', 'prerequisites_pending', 'predecessor_unscheduled', 'predecessor_postponed', 'deferred', 'blocked', 'not_placed']` | — |
+| [DateRule](../entities/schemas_gantt_DateRule.md) | Type alias | 89 | `Literal['dates_incomplete', 'dates_inverted', 'outside_iteration', 'before_min_start_date']` | — |
+| [WaitingOnTask](../entities/schemas_gantt_WaitingOnTask.md) | Pydantic model | 97 | `BaseModel` | A postponed task a planned task waits on. |
+| [UnscheduledTask](../entities/schemas_gantt_UnscheduledTask.md) | Pydantic model | 107 | `BaseModel` | A planned task the scheduler left without dates, and what would change that. |
+| [KeptDatesTask](../entities/schemas_gantt_KeptDatesTask.md) | Pydantic model | 123 | `BaseModel` | A planned task the scheduler could not place; it keeps the dates it already had. |
+| [WorkloadIssue](../entities/schemas_gantt_WorkloadIssue.md) | Pydantic model | 139 | `BaseModel` | Workload issue for a team member. |
+| [AssignmentSelectionRefresh](../entities/AssignmentSelectionRefresh.md) | Pydantic model | 146 | `BaseModel` | — |
+| [ScheduleResult](../entities/schemas_gantt_ScheduleResult.md) | Pydantic model | 155 | `BaseModel` | Result of scheduling operation. |
+| [GanttResponse](../entities/schemas_gantt_GanttResponse.md) | Pydantic model | 170 | `BaseModel` | Full Gantt chart response. |
+| [ScheduleApplyRequest](../entities/ScheduleApplyRequest.md) | Pydantic model | 183 | `BaseModel` | — |
+| [SchedulePreviewRequest](../entities/SchedulePreviewRequest.md) | Pydantic model | 189 | `BaseModel` | Sandbox edits to dry-run through the real scheduler. |
+| [SchedulePreviewResponse](../entities/schemas_gantt_SchedulePreviewResponse.md) | Pydantic model | 200 | `BaseModel` | Projected Gantt state after applying changes and rescheduling. |
+
+## Functions
+
+| Function | Signature | Decorators | Description |
+|----------|-----------|------------|-------------|
+| `_no_waits` | `(tasks: list[WaitingOnTask]) -> bool` | — | — |

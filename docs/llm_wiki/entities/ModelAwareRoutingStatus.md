@@ -1,6 +1,6 @@
 # ModelAwareRoutingStatus
 
-**Location:** `frontend/src/types/agent.ts:136`
+**Location:** `frontend/src/types/agent.ts:139`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

@@ -1,7 +1,7 @@
 # AgentTeamStatusResponse
 
-**Location:** `backend/app/schemas/agent_team_setup.py:1038`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:1086`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 

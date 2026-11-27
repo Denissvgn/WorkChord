@@ -1,6 +1,6 @@
 # ScheduleResult
 
-**Location:** `frontend/src/types/gantt.ts:110`
+**Location:** `frontend/src/types/gantt.ts:119`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

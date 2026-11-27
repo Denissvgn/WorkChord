@@ -121,4 +121,4 @@ flowchart LR
 | `TaskImportService._triage_item_from_parsed_import` | call | [task_import_service](../modules/task_import_service.md) | 1 |
 | `TaskImportService._triage_item_from_parsed_import` | type_reference | [task_import_service](../modules/task_import_service.md) | — |
 
-> References: showing 12 of 41 logical references; 29 omitted by the 12-row generated summary limit.
+> References: showing 12 of 46 logical references; 34 omitted by the 12-row generated summary limit.

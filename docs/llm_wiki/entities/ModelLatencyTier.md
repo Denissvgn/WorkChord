@@ -1,6 +1,6 @@
 # ModelLatencyTier
 
-**Location:** `frontend/src/types/agent.ts:18`
+**Location:** `frontend/src/types/agent.ts:20`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

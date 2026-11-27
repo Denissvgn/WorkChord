@@ -1,6 +1,6 @@
 # TaskDifficultyScore
 
-**Location:** `frontend/src/types/agent.ts:19`
+**Location:** `frontend/src/types/agent.ts:21`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

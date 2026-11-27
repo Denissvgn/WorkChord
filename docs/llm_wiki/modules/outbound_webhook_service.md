@@ -54,7 +54,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (16) |
+| Inbound | `backend` (17) |
 | Outbound | `backend` (12) |
 
 ### External packages
@@ -63,16 +63,16 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [OutboundWebhookValidationError](../entities/OutboundWebhookValidationError.md) | 134 | `ValueError` | Raised when outbound webhook input is invalid. |
-| [OutboundWebhookNotFoundError](../entities/OutboundWebhookNotFoundError.md) | 138 | `LookupError` | Raised when an outbound webhook target or delivery cannot be found. |
-| [OutboundDeliveryAttemptError](../entities/OutboundDeliveryAttemptError.md) | 142 | `RuntimeError` | Classify a transport failure as retryable or terminal. |
-| [OutboundWebhookService](../entities/OutboundWebhookService.md) | 150 | — | Manage outbound webhook targets and deliver matching domain events. |
+| [OutboundWebhookValidationError](../entities/OutboundWebhookValidationError.md) | 135 | `ValueError` | Raised when outbound webhook input is invalid. |
+| [OutboundWebhookNotFoundError](../entities/OutboundWebhookNotFoundError.md) | 139 | `LookupError` | Raised when an outbound webhook target or delivery cannot be found. |
+| [OutboundDeliveryAttemptError](../entities/OutboundDeliveryAttemptError.md) | 143 | `RuntimeError` | Classify a transport failure as retryable or terminal. |
+| [OutboundWebhookService](../entities/OutboundWebhookService.md) | 151 | — | Manage outbound webhook targets and deliver matching domain events. |
 
 ## Functions
 

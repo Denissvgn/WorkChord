@@ -13,9 +13,10 @@
 5. `commands.commit_or_flush`
 6. `commands.commit_or_flush`
 7. `agent_team_setup.AgentTeamActionReceipt`
-8. `models_agent.AgentTeamTopologyMember`
-9. `commands.commit_or_flush`
-10. `agent_team_setup.AgentTeamActionReceipt`
+8. `models_agent.new_runtime_instance_id`
+9. `models_agent.AgentTeamTopologyMember`
+10. `commands.commit_or_flush`
+11. `agent_team_setup.AgentTeamActionReceipt`
 
 ## Touches
 

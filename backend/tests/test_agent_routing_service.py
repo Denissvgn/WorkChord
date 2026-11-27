@@ -20,7 +20,7 @@ from app.models.agent import (
     AgentTaskAssignment,
     TaskEvent,
 )
-from app.models.team_member import TeamMemberProfile, TeamMemberProfileSkill
+from app.models.team_member import TeamMember, TeamMemberProfile, TeamMemberProfileSkill
 from app.schemas.agent import (
     AgentTaskAssignmentCreate,
     AgentReviewVerdict,
@@ -73,7 +73,18 @@ None
 """
 
 
-def _assessment_command(*, task_version: int) -> TaskRoutingAssessmentCommand:
+def _assessment_command(
+    *, task_version: int, minimum_effort: str | None = None
+) -> TaskRoutingAssessmentCommand:
+    required_model = {
+        "minimum_reasoning_tier": 1,
+        "minimum_context_tier": "small",
+        "modality_tags": ["text"],
+        "tool_tags": [],
+        "data_policy_tags": [],
+    }
+    if minimum_effort is not None:
+        required_model["minimum_effort"] = minimum_effort
     return TaskRoutingAssessmentCommand(
         expected_task_version=task_version,
         band="routine",
@@ -85,13 +96,7 @@ def _assessment_command(*, task_version: int) -> TaskRoutingAssessmentCommand:
             "verification_burden": 1,
         },
         required_skill_levels={"backend-python": 3},
-        required_model={
-            "minimum_reasoning_tier": 1,
-            "minimum_context_tier": "small",
-            "modality_tags": ["text"],
-            "tool_tags": [],
-            "data_policy_tags": [],
-        },
+        required_model=required_model,
         review_mode="none",
         confidence=0.9,
         reason_codes=[],
@@ -477,6 +482,8 @@ async def _extra_worker(
     cost_tier: str,
     local_first: bool,
     reasoning_tier: int = 1,
+    effort: str = "unknown",
+    alias: str | None = None,
     profile=None,
 ):
     if profile is None:
@@ -488,8 +495,9 @@ async def _extra_worker(
     catalog = AgentModelCatalogEntry(
         key=key,
         provider="test-provider",
-        configured_model_alias=f"runtime-{key}",
+        configured_model_alias=alias or f"runtime-{key}",
         reasoning_tier=reasoning_tier,
+        effort=effort,
         context_tier="small",
         modality_tags=["text"],
         cost_tier=cost_tier,
@@ -577,6 +585,88 @@ async def test_local_first_preference_breaks_ties_but_never_overrides_a_gate(
     # The hard blocker still excludes the local-first entry.
     assert blocked_worker.id not in by_actor
     assert any(e.actor_id == blocked_worker.id and e.hard_blocker_codes for e in preview.exclusions)
+
+
+@pytest.mark.asyncio
+async def test_required_effort_gates_and_orders_entries_of_one_runtime_model(
+    db_session: AsyncSession,
+    profile_factory,
+    actor_factory,
+    team_member_factory,
+    task_factory,
+) -> None:
+    pm, unrecorded_worker, task, _, _ = await _routing_fixture(
+        db_session, profile_factory, actor_factory, team_member_factory, task_factory
+    )
+    shared_profile = await db_session.get(TeamMemberProfile, unrecorded_worker.profile_id)
+    workers = {}
+    for effort in ("low", "medium", "xhigh"):
+        worker, binding = await _extra_worker(
+            db_session,
+            profile_factory,
+            actor_factory,
+            team_member_factory,
+            key=f"shared-model-{effort}",
+            alias="runtime-shared-model",
+            cost_tier="medium",
+            local_first=False,
+            effort=effort,
+            profile=shared_profile,
+        )
+        workers[effort] = (worker, binding)
+    service = AgentRoutingService(db_session)
+    now = datetime(2026, 7, 22, 12, 0, tzinfo=UTC)
+
+    member = await db_session.get(TeamMember, task.assignee_id)
+
+    async def preview(minimum_effort: str | None, key: str):
+        # An assessment is immutable per task version, so each case gets a task.
+        task = await task_factory(
+            assignee=member,
+            description=_TASK_BRIEF,
+            effort_hours=8.0,
+            estimate_provenance="estimated",
+            tags=json.dumps(["agent", "cap:backend-python"]),
+            start_date=date(2026, 7, 20),
+            end_date=date(2026, 7, 24),
+        )
+        receipt = await service.create_assessment(
+            task.id,
+            pm,
+            _assessment_command(task_version=task.version, minimum_effort=minimum_effort),
+            _command_context(key),
+        )
+        return await service.preview_task_routing(
+            task.id,
+            pm,
+            AgentRoutingPreviewCreate(
+                purpose="execution",
+                assessment_id=receipt.assessment.id,
+                expected_task_version=task.version,
+            ),
+            now=now,
+        )
+
+    # No stated requirement: every entry stays eligible, the preview shows the
+    # recorded effort, and the unrecorded entry is still routable.
+    open_preview = await preview(None, "assessment-effort-none")
+    by_actor = {c.actor_id: c for c in open_preview.eligible_candidates}
+    assert {by_actor[w.id].effort for w, _ in workers.values()} == {"low", "medium", "xhigh"}
+    assert by_actor[unrecorded_worker.id].effort == "unknown"
+    assert len({c.adequacy_class for c in by_actor.values()}) == 1
+
+    # A stated requirement excludes lower and unrecorded efforts with a named blocker.
+    required = await preview("medium", "assessment-effort-medium")
+    eligible = {c.actor_id: c for c in required.eligible_candidates}
+    assert set(eligible) == {workers["medium"][0].id, workers["xhigh"][0].id}
+    excluded = {e.actor_id: e for e in required.exclusions}
+    for blocked in (workers["low"][0], unrecorded_worker):
+        assert "model_effort_insufficient" in excluded[blocked.id].hard_blocker_codes
+    assert excluded[workers["low"][0].id].effort == "low"
+    # The lowest setting that satisfies the requirement ranks first.
+    assert required.recommended_candidate.actor_id == workers["medium"][0].id
+    assert eligible[workers["xhigh"][0].id].adequacy_class == eligible[workers["medium"][0].id].adequacy_class + 2
+    assert "requires effort medium or higher" in eligible[workers["medium"][0].id].rationale
 
 
 @pytest.mark.asyncio

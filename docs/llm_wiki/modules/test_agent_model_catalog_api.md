@@ -96,3 +96,4 @@ flowchart LR
 | `test_mcp_assignment_and_begin_payloads_preserve_additive_legacy_union` | `() -> None` | `@pytest.mark.contract` | — |
 | `test_routing_conflicts_keep_structured_detail_across_rest_and_mcp` | `() -> None` | `@pytest.mark.contract` | — |
 | `test_catalog_local_first_defaults_false_and_round_trips` | *(async)* `(db_session: AsyncSession) -> None` | `@pytest.mark.sqlite`, `@pytest.mark.asyncio` | — |
+| `test_catalog_effort_defaults_unknown_round_trips_and_refuses_unknown_values` | *(async)* `(db_session: AsyncSession) -> None` | `@pytest.mark.sqlite`, `@pytest.mark.asyncio` | — |

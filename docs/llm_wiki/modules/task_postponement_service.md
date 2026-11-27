@@ -34,6 +34,7 @@ started and records no requirements.
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_domain_service` | `release_execution` |
 | `app.services.task_hierarchy_service` | `TaskTreeIntegrityError` |
+| `app.services.task_reactivation_service` | `request_reactivation_check` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.work_metrics` | `working_today` |
 | `app.utils.time` | `utc_now` |
@@ -57,8 +58,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (7) |
-| Outbound | `backend` (15) |
+| Inbound | `backend` (12) |
+| Outbound | `backend` (16) |
 
 ### External packages
 
@@ -66,18 +67,19 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskPostponementService](../entities/TaskPostponementService.md) | 140 | — | — |
+| [TaskPostponementService](../entities/TaskPostponementService.md) | 171 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `is_accepted` | `(task)` | — | Accepted work: closed and not canceled. A summary closes by roll-up once every leaf is accepted. |
 | `open_postponement` | *(async)* `(db, task_id, *, lock = False)` | — | The task's open postponement, if any. |
 | `latest_postponement` | *(async)* `(db, task_id)` | — | The open postponement, or else the most recent one. |
 | `reactivation_status` | `(postponement)` | — | Where reactivation returns the work: resolved stays resolved, all else is planned again. |
@@ -87,3 +89,4 @@ flowchart LR
 | `require_restore_compatible` | *(async)* `(db, rows, current)` | — | Refuse a snapshot restore that would move a task into or out of postponed. |
 | `require_unreferenced` | *(async)* `(db, *, task_ids = (), triage_item_ids = ())` | — | Refuse deleting work that an open postponement waits for. |
 | `_requirement_response` | `(row)` | — | — |
+| `postponement_record` | *(async)* `(db, postponement)` | — | The postponement with each reactivation requirement and whether it is met. |

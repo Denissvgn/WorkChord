@@ -12,7 +12,7 @@ Triage retains the legacy iteration-required conversion route and adds an explic
 
 | Source | Symbols |
 |--------|---------|
-| `app.commands` | `commit_or_flush` |
+| `app.commands` | `commit_or_flush`, `command_transaction`, `current_command` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.label` | `LabelGroup` |
 | `app.models.project` | `Project` |
@@ -26,6 +26,7 @@ Triage retains the legacy iteration-required conversion route and adds an explic
 | `app.services.outbound_webhook_service` | `emit_outbound_webhook_event` |
 | `app.services.request_source_service` | `RequestSourceService` |
 | `app.services.task_brief_service` | `brief_from_draft`, `render_brief`, `brief_from_draft` |
+| `app.services.task_reactivation_service` | `request_reactivation_check` |
 | `app.services.task_service` | `TaskService` |
 | `app.sql_semantics` | `portable_contains` |
 | `app.utils.source_link_policy` | `evaluate_source_link`, `normalize_source_link` |
@@ -56,8 +57,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (10) |
-| Outbound | `backend` (19) |
+| Inbound | `backend` (11) |
+| Outbound | `backend` (20) |
 
 ### External packages
 
@@ -65,7 +66,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

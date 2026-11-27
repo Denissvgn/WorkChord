@@ -157,15 +157,18 @@ def candidate_version(task):
     return window["from"] if window else task.version
 
 
-async def feature_free_acknowledgement(db, member):
-    """Return a member's acknowledgement digest as if it lacked only the planning-window feature.
+async def earlier_acknowledgements(db, member):
+    """Return digests of the acknowledgement as it was before a runtime adopted newer fields.
 
     A runtime can re-acknowledge after an upgrade solely to adopt
-    ``EXECUTION_PLANNING_WINDOW_FEATURE``. The stored bytes must reproduce the
-    current digest, and they must list that feature exactly once. Removing it
-    reproduces the previous acknowledgement only when every other field is
-    identical. Any other result is ``None``.
+    ``EXECUTION_PLANNING_WINDOW_FEATURE`` or the runtime instance identity (the
+    identity feature and ``runtime_instance_id``). The stored bytes must
+    reproduce the current digest. Removing what was adopted reproduces the
+    previous acknowledgement only when every other field is identical, so every
+    combination of removals is returned and the caller compares against it.
+    Any other result is an empty tuple.
     """
+    from app.agent_contract import RUNTIME_INSTANCE_IDENTITY_FEATURE
     from app.services.agent_team_setup_service import _digest
 
     encoded = await db.scalar(
@@ -177,17 +180,35 @@ async def feature_free_acknowledgement(db, member):
     try:
         current = json.loads(encoded)
         features = current["server_features"]
-        if (
-            not isinstance(features, list)
-            or features.count(EXECUTION_PLANNING_WINDOW_FEATURE) != 1
-            or _digest(current) != member.runtime_acknowledgement_digest
-        ):
-            return None
-        return _digest(
-            {**current, "server_features": [v for v in features if v != EXECUTION_PLANNING_WINDOW_FEATURE]}
-        )
+        if not isinstance(features, list) or _digest(current) != member.runtime_acknowledgement_digest:
+            return ()
+        window = features.count(EXECUTION_PLANNING_WINDOW_FEATURE)
+        identity = features.count(RUNTIME_INSTANCE_IDENTITY_FEATURE)
+        if window > 1 or identity > 1:
+            return ()
+        adoptable = []
+        if window:
+            adoptable.append("window")
+        if identity or "runtime_instance_id" in current:
+            adoptable.append("identity")
+        digests = []
+        for size in range(1, len(adoptable) + 1):
+            for removed in itertools.combinations(adoptable, size):
+                earlier = dict(current)
+                earlier["server_features"] = [
+                    value
+                    for value in features
+                    if not (
+                        ("window" in removed and value == EXECUTION_PLANNING_WINDOW_FEATURE)
+                        or ("identity" in removed and value == RUNTIME_INSTANCE_IDENTITY_FEATURE)
+                    )
+                ]
+                if "identity" in removed:
+                    earlier.pop("runtime_instance_id", None)
+                digests.append(_digest(earlier))
+        return tuple(digests)
     except (ValueError, TypeError, KeyError):
-        return None
+        return ()
 
 
 async def authority_stamp(db, task, assignment, *, lock=False, as_of=None):
@@ -200,7 +221,7 @@ async def authority_matches(db, task, assignment, expected, *, lock=False):
     """Compare a sealed stamp with current authority.
 
     The only tolerated difference is a member that has since re-acknowledged
-    solely to add the planning-window feature. Every other roster, topology
+    solely to add the planning-window feature or its runtime instance identity. Every other roster, topology
     revision, permission, binding, link or policy change still mismatches.
     """
     if not expected:
@@ -214,8 +235,7 @@ async def authority_matches(db, task, assignment, expected, *, lock=False):
     slot = members[0]._fields.index("runtime_acknowledgement_digest")
     choices = []
     for member in members:
-        earlier = await feature_free_acknowledgement(db, member)
-        choices.append((member[slot],) if earlier is None else (member[slot], earlier))
+        choices.append((member[slot], *await earlier_acknowledgements(db, member)))
     for combination in itertools.product(*choices):
         rows = [
             (*tuple(member)[:slot], value, *tuple(member)[slot + 1 :])
@@ -365,7 +385,7 @@ async def _authority_basis(db, task, assignment, *, lock=False, as_of=None):
                 return None
             historical_digest = ack.get("acknowledgement_digest")
             if historical_digest != member.runtime_acknowledgement_digest and (
-                historical_digest != await feature_free_acknowledgement(db, member)
+                historical_digest not in await earlier_acknowledgements(db, member)
             ):
                 return None
     bindings = (

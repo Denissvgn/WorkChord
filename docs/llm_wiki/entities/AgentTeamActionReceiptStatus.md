@@ -1,6 +1,6 @@
 # AgentTeamActionReceiptStatus
 
-**Location:** `frontend/src/components/team/AgentManifestWorkflow.tsx:133`
+**Location:** `frontend/src/components/team/AgentManifestWorkflow.tsx:134`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [AgentManifestWorkflow](../modules/AgentManifestWorkflow.md)

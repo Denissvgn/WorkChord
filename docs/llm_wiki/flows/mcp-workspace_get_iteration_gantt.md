@@ -2,7 +2,7 @@
 
 **Entry point:** `workspace_get_iteration_gantt` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), and 24 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), and 25 more
 
 **Complete modules touched:**
 
@@ -31,6 +31,7 @@
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_hierarchy_service](../modules/task_hierarchy_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [team_service](../modules/team_service.md)
 - [time](../modules/time.md)
@@ -65,12 +66,12 @@ sequenceDiagram
     participant p20 as AgentService.authenticate
     participant p21 as TaskService._task_graph_query
     participant p22 as require_identity_writes
-    participant p23 as task_signals
-    participant p24 as DeliveryDependencyService.reconcile
-    participant p25 as TaskService._load_iteration_tree
-    participant p26 as DiscussionService.enqueue
+    participant p23 as process_reactivation_checks
+    participant p24 as task_signals
+    participant p25 as DeliveryDependencyService.reconcile
+    participant p26 as TaskService._load_iteration_tree
     participant p27 as TeamService._attach_assignee_profiles
-    participant p28 as actor_has_scope
+    participant p28 as DiscussionService.enqueue
     participant p29 as LookupError
     participant p30 as func
     p0->>p1: _tool_call
@@ -95,19 +96,19 @@ sequenceDiagram
     p9->>p20: AgentService.authenticate
     p10->>p21: TaskService._task_graph_query
     p13->>p22: require_identity_writes
-    p16->>p23: task_signals
-    p8->>p24: DeliveryDependencyService.reconcile
-    p10->>p25: TaskService._load_iteration_tree
-    p8->>p26: DiscussionService.enqueue
+    p8->>p23: process_reactivation_checks
+    p16->>p24: task_signals
+    p8->>p25: DeliveryDependencyService.reconcile
+    p10->>p26: TaskService._load_iteration_tree
     p12->>p27: TeamService._attach_assignee_profiles
-    p19->>p28: actor_has_scope
+    p8->>p28: DiscussionService.enqueue
     p2-->>p29: LookupError('Iteration not found')
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 514 interactions; 484 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 539 interactions; 509 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 159 (158 omitted); unresolved 1 of 229 (228 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 164 (163 omitted); unresolved 1 of 244 (243 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -121,7 +122,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 134 groups; 126 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 140 groups; 132 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -134,9 +135,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 127; effect analysis evaluated: 78, partial: 2, unavailable: 47. Counts include steps omitted from the displayed trace.
+Source steps: 132; effect analysis evaluated: 82, partial: 2, unavailable: 48. Counts include steps omitted from the displayed trace.
 
-Collector observations for 80 source steps with known totals: observed: 370, emitted: 357, omitted: 13. Unavailable totals are excluded.
+Collector observations for 84 source steps with known totals: observed: 394, emitted: 381, omitted: 13. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -211,7 +212,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_get_iteration_gantt | _tool_call | 1915 | `_tool_call((...), ...)` |
+| workspace_get_iteration_gantt | _tool_call | 1967 | `_tool_call((...), ...)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |

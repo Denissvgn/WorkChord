@@ -1,6 +1,6 @@
 # ProjectPage
 
-**Location:** `backend/app/schemas/project.py:363`
+**Location:** `backend/app/schemas/project.py:365`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_project](../modules/schemas_project.md)

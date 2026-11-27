@@ -99,6 +99,7 @@ KNOWN_WEBHOOK_EVENT_TYPES = {
     "task.created",
     "task.deleted",
     "task.merged",
+    "task.reactivated",
     "task.resolved",
     "task.status_changed",
     "task.updated",

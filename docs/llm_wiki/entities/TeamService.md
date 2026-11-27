@@ -118,4 +118,4 @@ flowchart LR
 | `add_vacation` | type_reference | [routers_team](../modules/routers_team.md) | — |
 | `bind_team_member_profile_seed_key` | type_reference | [routers_team](../modules/routers_team.md) | — |
 
-> References: showing 12 of 67 logical references; 55 omitted by the 12-row generated summary limit.
+> References: showing 12 of 68 logical references; 56 omitted by the 12-row generated summary limit.

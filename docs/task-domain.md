@@ -65,6 +65,31 @@ Postponing work with a live claim, assignment or run releases them through the s
 
 `POST /api/tasks/{task_id}/reactivate` takes `{expected_version, reason}`. It returns resolved work to `resolved`, and planned or active work to `planned`, where it starts again through the usual commands. `GET /api/tasks/{task_id}/postponement` returns the open postponement, or the most recent one: who decided, when and why, the released execution, each requirement and, after reactivation, who reactivated the work, why and to which status. The actions endpoint reports `postpone` and `reactivate` availability. `GET /api/tasks/capabilities` lists `task-postponement-v1` when the server supports these commands.
 
+### Agent tools
+
+A PM agent postpones and reactivates work with the same commands and the same authority as the REST routes. The MCP tools are:
+
+- `agent_postpone_task(task_id, payload, idempotency_key, rationale, correlation_id)` with `{expected_version, reason, requirements, expected_claim_generation?, expected_running_run_ids?, expected_live_assignment_ids?}`, as for `POST /api/tasks/{task_id}/postpone`.
+- `agent_reactivate_task(task_id, payload, idempotency_key, rationale, correlation_id)` with `{expected_version, reason}`, as for `POST /api/tasks/{task_id}/reactivate`.
+- `agent_get_task_postponement(task_id)`, as for `GET /api/tasks/{task_id}/postponement`: the reason, who decided, the released execution, and each requirement with `met` and `met_at`.
+
+The two write tools are audited planning commands that need a task write scope (`tasks:write`, `planning:write` or `admin`), an idempotency key, a rationale and a correlation ID; a repeated key replays the receipt. The receipt's `result` is the same `{task, postponement}` body the REST routes return. They are refused for a worker or reviewer agent, for a credential without write scope, for read-only access, and for a PM of another team, with the REST routes' error codes (`postpone_decider_required`, `permission_denied`, or not found). The read tool needs read access to the task's project. Recording the owner decision is not an agent tool; only the workspace owner does it, through the REST route.
+
+`agent_list_ready_tasks` returns only planned work, so postponed work is never queued or claimable. `workspace_list_project_tasks` returns postponed tasks with `status: "postponed"`, and its optional `status` argument (`planned`, `active`, `resolved`, `closed` or `postponed`) keeps only the branches of the task tree that hold work in that status. The agent contract lists `agent-task-postponement-v1` and `GET /api/auth/me` lists `postponement-agent-tools-v1` when these tools exist.
+
+### Automatic reactivation
+
+Nobody has to watch for the requirements. When the last unmet requirement of an open postponement becomes true, the server reactivates the task itself, to `resolved` if it was postponed after resolution and to `planned` otherwise. The postponement closes with the trigger `requirements_met`, no person is recorded as reactivating it, and the task timeline's `task_reactivated` entry names the requirement that completed it and lists every requirement with when it was met. A `task.reactivated` webhook event carries the same record for subscribers, and the status change email to the iteration manager names the requirement.
+
+Each requirement kind is evaluated when its facts can change:
+
+- `predecessor_accepted`: when the named task is accepted.
+- `linked_resolved`: when the named task becomes resolved or accepted, or the named triage item is accepted, declined, marked a duplicate or converted. A snoozed item is not resolved.
+- `date`: on the periodic date check, once the day has come in the project's time zone (the iteration calendar's time zone for work outside a project). Only the worker process runs it, every 15 minutes: it does not run under `--once` or when `OUTBOUND_DELIVERY_WORKER_ENABLED=false`, and without it a date requirement is only noticed when another trigger evaluates the task. A check that finds nothing to change changes nothing, including the planning revision.
+- `owner_decision`: only when the workspace owner records it with `POST /api/tasks/{task_id}/postponement/requirements/{requirement_id}/decision`, which takes `{expected_version, decision}`. A project manager, a PM agent or an operator who is not the owner cannot record it, and nothing else satisfies it.
+
+A requirement stays met once it has been met. A closed summary task counts as an accepted predecessor. Snapshot and backlog restores are not triggers; the periodic check picks up anything they changed. Reactivating work to `resolved` with the command also evaluates the postponements that wait for it. Two triggers arriving together are serialized, so the task is reactivated once. The task detail (`GET /api/tasks/{task_id}/detail`) carries `postponement` for postponed work: the reason, and each requirement with `met` and `met_at`.
+
 Only these two commands move work into or out of `postponed`. A status change, a bulk status change or a task update that names `postponed` is refused, as is any other status change of postponed work. Canceled postponed work stays postponed; reopening it returns it to its open postponement. A summary task is postponed when all its leaves are postponed. Alongside other leaves, a postponed leaf counts as not started. An iteration or backlog restore that would move a task into or out of `postponed` is refused with `restore_conflicts_with_task_postponement`.
 
 ### Postponed or deferred
