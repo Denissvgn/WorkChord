@@ -5,6 +5,7 @@ export const TASK_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
     planned: ['active'],
     active: ['resolved'],
     resolved: ['active', 'closed'],
+    postponed: [],
     closed: [],
 };
 

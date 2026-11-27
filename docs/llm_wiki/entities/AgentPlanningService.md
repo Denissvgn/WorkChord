@@ -44,6 +44,9 @@ Composed planning mutations share one transaction and retain exact durable mutat
 | `withdraw_capacity_transfer` | *(async)* `(group_token: str, actor: AgentActor, data: CapacityTransferWithdrawal, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Return the lent capacity of every row of one transfer together. |
 | `record_task_replacement` | *(async)* `(task_id: int, actor: AgentActor, data: Any, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Replace an unaccepted task with a fresh one under a recorded owner decision. |
 | `record_manual_provenance` | *(async)* `(task_id: int, actor: AgentActor, data: Any, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Record who executed resolved work delivered outside recorded runs, and its exact candidate. |
+| `postpone_task` | *(async)* `(task_id: int, actor: AgentActor, data: Any, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Postpone a task through the same command, and the same decider rule, as the REST route. |
+| `reactivate_task` | *(async)* `(task_id: int, actor: AgentActor, data: Any, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Reactivate postponed work through the same command as the REST route. |
+| `_postponement_command` | *(async)* `(action: str, task_id: int, actor: AgentActor, data: Any, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | — |
 | `add_delivery_dependency` | *(async)* `(task_id: int, actor: AgentActor, data: Any, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Record a delivery prerequisite through the same command as the REST route. |
 | `retarget_delivery_dependency` | *(async)* `(task_id: int, edge_id: int, actor: AgentActor, data: Any, *, command: AgentPlanningCommandContext) -> AgentPlanningReceipt` | — | Change or clear a prerequisite's target branch through the same command as the REST route. |
 | `_iteration_tasks_for_update` | *(async)* `(iteration_id: int) -> list[Task]` | — | — |
@@ -106,7 +109,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_planning_service](../modules/agent_planning_service.md) | 37 | — |
+| [agent_planning_service](../modules/agent_planning_service.md) | 40 | — |
 
 ### References
 
@@ -125,4 +128,4 @@ flowchart LR
 | `create_planning_team_member` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `create_planning_vacation` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 55 logical references; 43 omitted by the 12-row generated summary limit.
+> References: showing 12 of 57 logical references; 45 omitted by the 12-row generated summary limit.

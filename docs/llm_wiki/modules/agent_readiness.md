@@ -38,7 +38,8 @@ flowchart LR
     n7["backend/app/services/work_metrics.py"]
     n8["backend/app/utils/time.py"]
     n9["backend/tests/test_postponed_out_of_scheduling.py"]
-    n10["backend/tests/test_unscheduled_tasks.py"]
+    n10["backend/tests/test_postponement_agent_tools.py"]
+    n11["backend/tests/test_unscheduled_tasks.py"]
     n0 --> n8
     n2 --> n0
     n2 --> n1
@@ -66,6 +67,10 @@ flowchart LR
     n9 --> n7
     n10 --> n0
     n10 --> n2
+    n10 --> n4
+    n10 --> n8
+    n11 --> n0
+    n11 --> n2
     click n0 "../modules/models_task.md"
     click n1 "../modules/schemas_task.md"
     click n2 "../modules/agent_readiness.md"
@@ -76,7 +81,8 @@ flowchart LR
     click n7 "../modules/services_work_metrics.md"
     click n8 "../modules/time.md"
     click n9 "../modules/test_postponed_out_of_scheduling.md"
-    click n10 "../modules/test_unscheduled_tasks.md"
+    click n10 "../modules/test_postponement_agent_tools.md"
+    click n11 "../modules/test_unscheduled_tasks.md"
 ```
 
 ### Internal neighbors
@@ -86,6 +92,7 @@ flowchart LR
 | Inbound | [agent_service](../modules/agent_service.md) |
 | Inbound | [task_service](../modules/task_service.md) |
 | Inbound | [test_postponed_out_of_scheduling](../modules/test_postponed_out_of_scheduling.md) |
+| Inbound | [test_postponement_agent_tools](../modules/test_postponement_agent_tools.md) |
 | Inbound | [test_unscheduled_tasks](../modules/test_unscheduled_tasks.md) |
 | Outbound | [models_task](../modules/models_task.md) |
 | Outbound | [schemas_task](../modules/schemas_task.md) |

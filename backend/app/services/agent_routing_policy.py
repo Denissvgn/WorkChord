@@ -241,6 +241,7 @@ class RoutingBlockerCode(StrEnum):
     MODEL_REASONING_TIER_INSUFFICIENT = "model_reasoning_tier_insufficient"
     MODEL_CONTEXT_TIER_INSUFFICIENT = "model_context_tier_insufficient"
     MODEL_EFFORT_INSUFFICIENT = "model_effort_insufficient"
+    MODEL_QUALIFICATION_MISSING = "model_qualification_missing"
     MODEL_MODALITY_MISSING = "model_modality_missing"
     MODEL_TOOL_MISSING = "model_tool_missing"
     MODEL_DATA_POLICY_MISSING = "model_data_policy_missing"
@@ -488,6 +489,41 @@ if not all(
     raise RuntimeError("Capability labels reference unknown routing skill keys")
 
 
+class UnknownRoutingKeyError(ValueError):
+    """A key is neither a built-in routing skill key nor a declared qualification key."""
+
+    def __init__(self, keys: Iterable[str]):
+        self.keys = tuple(sorted(set(keys)))
+        super().__init__(
+            "Unknown routing skill key: " + ", ".join(self.keys)
+        )
+
+
+def known_routing_keys(declared_keys: Iterable[str] = ()) -> frozenset[str]:
+    """Return the built-in routing skill keys plus a deployment's declared keys.
+
+    The built-in vocabulary never changes here; declared keys only extend the
+    set a catalog entry or task requirement may name.
+    """
+
+    return ROUTING_SKILL_KEYS | frozenset(
+        str(key).strip().lower() for key in declared_keys
+    )
+
+
+def require_known_routing_keys(
+    keys: Iterable[str],
+    declared_keys: Iterable[str] = (),
+) -> tuple[str, ...]:
+    """Return keys sorted, refusing any outside built-in plus declared keys."""
+
+    normalized = tuple(sorted({str(key).strip().lower() for key in keys}))
+    unknown = set(normalized).difference(known_routing_keys(declared_keys))
+    if unknown:
+        raise UnknownRoutingKeyError(unknown)
+    return normalized
+
+
 @dataclass(frozen=True)
 class ReasonCodeRule:
     """Minimum band/review requirements attached to one governed reason."""
@@ -670,6 +706,7 @@ class RoutingModelEnvelopeDecision:
     missing_modality_tags: tuple[str, ...] = ()
     missing_tool_tags: tuple[str, ...] = ()
     missing_data_policy_tags: tuple[str, ...] = ()
+    missing_qualification_keys: tuple[str, ...] = ()
 
     @property
     def eligible(self) -> bool:
@@ -926,6 +963,16 @@ def _required_effort(envelope: Mapping[str, Any] | Any) -> str | None:
     return value
 
 
+def _required_qualification_keys(envelope: Mapping[str, Any] | Any) -> Iterable[str]:
+    """Read the optional required qualification keys; absent states none."""
+
+    if isinstance(envelope, Mapping):
+        value = envelope.get("qualification_keys")
+    else:
+        value = getattr(envelope, "qualification_keys", None)
+    return value or ()
+
+
 def _normalized_tag_set(values: Iterable[str], *, label: str) -> frozenset[str]:
     normalized: set[str] = set()
     for raw_value in values:
@@ -1002,8 +1049,13 @@ def evaluate_model_envelope(
     actual_tool_tags: Iterable[str] = (),
     actual_data_policy_tags: Iterable[str] = (),
     actual_effort: str | None = None,
+    actual_qualification_keys: Iterable[str] = (),
 ) -> RoutingModelEnvelopeDecision:
-    """Evaluate one binding/catalog pair against a required model envelope."""
+    """Evaluate one binding/catalog pair against a required model envelope.
+
+    Required qualification keys are held by the catalog entry, so a key held
+    at one effort setting is a different entry from the same model at another.
+    """
 
     minimum_reasoning_tier = _envelope_value(
         required_model,
@@ -1033,6 +1085,14 @@ def evaluate_model_envelope(
     actual_data_policies = _normalized_tag_set(
         actual_data_policy_tags,
         label="Actual data policy",
+    )
+    required_qualifications = _normalized_tag_set(
+        _required_qualification_keys(required_model),
+        label="Required qualification key",
+    )
+    actual_qualifications = _normalized_tag_set(
+        actual_qualification_keys,
+        label="Actual qualification key",
     )
 
     blockers: list[str] = []
@@ -1072,6 +1132,12 @@ def evaluate_model_envelope(
     if not effort_adequate:
         blockers.append(RoutingBlockerCode.MODEL_EFFORT_INSUFFICIENT.value)
 
+    missing_qualifications = tuple(
+        sorted(required_qualifications - actual_qualifications)
+    )
+    if missing_qualifications:
+        blockers.append(RoutingBlockerCode.MODEL_QUALIFICATION_MISSING.value)
+
     missing_modalities = tuple(sorted(required_modalities - actual_modalities))
     missing_tools = tuple(sorted(required_tools - actual_tools))
     missing_data_policies = tuple(
@@ -1100,6 +1166,7 @@ def evaluate_model_envelope(
         missing_modality_tags=missing_modalities,
         missing_tool_tags=missing_tools,
         missing_data_policy_tags=missing_data_policies,
+        missing_qualification_keys=missing_qualifications,
     )
 
 

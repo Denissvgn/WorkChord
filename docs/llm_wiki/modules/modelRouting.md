@@ -29,30 +29,34 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 flowchart LR
     n0["frontend/src/components/agent/RoutingCandidateComparison.tsx"]
     n1["frontend/src/components/agent/TaskRoutingPanel.tsx"]
-    n2["frontend/src/components/team/AgentModelAdministration.tsx"]
-    n3["frontend/src/components/team/ConnectAgentSteps.tsx"]
-    n4["frontend/src/types/agent.ts"]
-    n5["frontend/src/utils/modelRouting.test.ts"]
-    n6["frontend/src/utils/modelRouting.ts"]
-    n0 --> n4
-    n0 --> n6
+    n2["frontend/src/components/settings/QualificationKeysPanel.tsx"]
+    n3["frontend/src/components/team/AgentModelAdministration.tsx"]
+    n4["frontend/src/components/team/ConnectAgentSteps.tsx"]
+    n5["frontend/src/types/agent.ts"]
+    n6["frontend/src/utils/modelRouting.test.ts"]
+    n7["frontend/src/utils/modelRouting.ts"]
+    n0 --> n5
+    n0 --> n7
     n1 --> n0
-    n1 --> n4
-    n1 --> n6
-    n2 --> n4
-    n2 --> n6
-    n3 --> n4
-    n3 --> n6
-    n5 --> n4
-    n5 --> n6
-    n6 --> n4
+    n1 --> n5
+    n1 --> n7
+    n2 --> n5
+    n2 --> n7
+    n3 --> n5
+    n3 --> n7
+    n4 --> n5
+    n4 --> n7
+    n6 --> n5
+    n6 --> n7
+    n7 --> n5
     click n0 "../modules/RoutingCandidateComparison.md"
     click n1 "../modules/TaskRoutingPanel.md"
-    click n2 "../modules/AgentModelAdministration.md"
-    click n3 "../modules/ConnectAgentSteps.md"
-    click n4 "../modules/types_agent.md"
-    click n5 "../modules/modelRouting.test.md"
-    click n6 "../modules/modelRouting.md"
+    click n2 "../modules/QualificationKeysPanel.md"
+    click n3 "../modules/AgentModelAdministration.md"
+    click n4 "../modules/ConnectAgentSteps.md"
+    click n5 "../modules/types_agent.md"
+    click n6 "../modules/modelRouting.test.md"
+    click n7 "../modules/modelRouting.md"
 ```
 
 ### Internal neighbors
@@ -61,6 +65,7 @@ flowchart LR
 |---|---|
 | Inbound | [RoutingCandidateComparison](../modules/RoutingCandidateComparison.md) |
 | Inbound | [TaskRoutingPanel](../modules/TaskRoutingPanel.md) |
+| Inbound | [QualificationKeysPanel](../modules/QualificationKeysPanel.md) |
 | Inbound | [AgentModelAdministration](../modules/AgentModelAdministration.md) |
 | Inbound | [ConnectAgentSteps](../modules/ConnectAgentSteps.md) |
 | Inbound | [modelRouting.test](../modules/modelRouting.test.md) |

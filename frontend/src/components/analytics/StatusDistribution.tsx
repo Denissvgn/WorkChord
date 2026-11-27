@@ -5,7 +5,7 @@ import { STATUS_TONE, toneSoftVar, toneVar } from '../ui/tone';
 import { formatCount, formatPercent } from '../../utils/workNumbers';
 import { MetricCount } from '../tasks/MetricCount';
 
-const ORDER: TaskStatus[] = ['planned', 'active', 'resolved', 'closed'];
+const ORDER: Exclude<TaskStatus, 'postponed'>[] = ['planned', 'active', 'resolved', 'closed'];
 
 /** How the iteration's tasks split by status, in the canonical status colours, with a table view. */
 export const StatusDistribution = ({ summary }: { summary: IterationSummary }) => {

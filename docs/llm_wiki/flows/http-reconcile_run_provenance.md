@@ -99,9 +99,9 @@ sequenceDiagram
     p2-->>p30: exc.detail (backend/app/routers/agent…og.py:_handle_model_error)
 ```
 
-> Call sequence diagram shows 30 of 489 interactions; 459 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 492 interactions; 462 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 123 (122 omitted); unresolved 1 of 277 (276 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 126 (125 omitted); unresolved 1 of 277 (276 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -130,7 +130,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 90; effect analysis evaluated: 67, partial: 3, unavailable: 20. Counts include steps omitted from the displayed trace.
 
-Collector observations for 70 source steps with known totals: observed: 418, emitted: 410, omitted: 8. Unavailable totals are excluded.
+Collector observations for 70 source steps with known totals: observed: 420, emitted: 410, omitted: 10. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -207,7 +207,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| reconcile_run_provenance | reconcile_execution_request | 105 | `reconcile_execution_request(db, actor, run_id, apply=apply, expected_evidence_digest=expected_evidence_digest, archived_acknowledgement=archived_acknowledgement, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| reconcile_run_provenance | reconcile_execution_request | 113 | `reconcile_execution_request(db, actor, run_id, apply=apply, expected_evidence_digest=expected_evidence_digest, archived_acknowledgement=archived_acknowledgement, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 | reconcile_execution_request | require_operator | 467 | `require_operator(db)` |
 | require_operator | db.info.get (backend/app/authority.py:require_operator) | 91 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 93 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |

@@ -65,6 +65,18 @@ Postponing work with a live claim, assignment or run releases them through the s
 
 `POST /api/tasks/{task_id}/reactivate` takes `{expected_version, reason}`. It returns resolved work to `resolved`, and planned or active work to `planned`, where it starts again through the usual commands. `GET /api/tasks/{task_id}/postponement` returns the open postponement, or the most recent one: who decided, when and why, the released execution, each requirement and, after reactivation, who reactivated the work, why and to which status. The actions endpoint reports `postpone` and `reactivate` availability. `GET /api/tasks/capabilities` lists `task-postponement-v1` when the server supports these commands.
 
+### Agent tools
+
+A PM agent postpones and reactivates work with the same commands and the same authority as the REST routes. The MCP tools are:
+
+- `agent_postpone_task(task_id, payload, idempotency_key, rationale, correlation_id)` with `{expected_version, reason, requirements, expected_claim_generation?, expected_running_run_ids?, expected_live_assignment_ids?}`, as for `POST /api/tasks/{task_id}/postpone`.
+- `agent_reactivate_task(task_id, payload, idempotency_key, rationale, correlation_id)` with `{expected_version, reason}`, as for `POST /api/tasks/{task_id}/reactivate`.
+- `agent_get_task_postponement(task_id)`, as for `GET /api/tasks/{task_id}/postponement`: the reason, who decided, the released execution, and each requirement with `met` and `met_at`.
+
+The two write tools are audited planning commands that need a task write scope (`tasks:write`, `planning:write` or `admin`), an idempotency key, a rationale and a correlation ID; a repeated key replays the receipt. The receipt's `result` is the same `{task, postponement}` body the REST routes return. They are refused for a worker or reviewer agent, for a credential without write scope, for read-only access, and for a PM of another team, with the REST routes' error codes (`postpone_decider_required`, `permission_denied`, or not found). The read tool needs read access to the task's project. Recording the owner decision is not an agent tool; only the workspace owner does it, through the REST route.
+
+`agent_list_ready_tasks` returns only planned work, so postponed work is never queued or claimable. `workspace_list_project_tasks` returns postponed tasks with `status: "postponed"`, and its optional `status` argument (`planned`, `active`, `resolved`, `closed` or `postponed`) keeps only the branches of the task tree that hold work in that status. The agent contract lists `agent-task-postponement-v1` and `GET /api/auth/me` lists `postponement-agent-tools-v1` when these tools exist.
+
 ### Automatic reactivation
 
 Nobody has to watch for the requirements. When the last unmet requirement of an open postponement becomes true, the server reactivates the task itself, to `resolved` if it was postponed after resolution and to `planned` otherwise. The postponement closes with the trigger `requirements_met`, no person is recorded as reactivating it, and the task timeline's `task_reactivated` entry names the requirement that completed it and lists every requirement with when it was met. A `task.reactivated` webhook event carries the same record for subscribers, and the status change email to the iteration manager names the requirement.
@@ -176,6 +188,59 @@ The original must be unaccepted leaf work without live execution, and the replac
 Only the replacement can be accepted. The original cannot be reviewed, accepted or reopened. The replacement is reviewed on its own runs plus every carried run, so a replacement that carries commits from an unattributed run stays held: verification assignment fails with `replacement_contribution_unattributed`, and acceptance is refused under any review policy. A carried run with attribution is an ordinary contributor, and its commits count as attributed in the candidate check. Under any review policy, the actor and profile that executed a carried run cannot verify the replacement. A replacement whose own work later proves unattributable can itself be replaced; runs carried from it bring along whatever it carried in turn.
 
 `GET /api/tasks/{task_id}/replacement`, `GET /api/agent/planning/tasks/{task_id}/replacement` or `agent_get_task_replacement` returns the disposition for either task: who decided, when and why, the owner decision, the review policy at the decision and now, the original's attempts with their missing attribution, the replacement's recorded base and current submitted candidate and contributors, the carried contributions, the moved dependents and releases, and whether the deliverable is clean or held. A task that takes part in a disposition cannot be deleted. An iteration or backlog restore that would change such a task's canceled state or status, or any dependency that touches one, is refused with `restore_conflicts_with_task_replacement`; restore a snapshot taken after the replacement instead.
+
+### Superseding work that another task already delivered
+
+When the original's deliverable was already delivered as another task, record a supersession instead of reopening and closing the original. Send `POST /api/tasks/{original_id}/supersession` with `{successor_task_id, expected_original_version, expected_successor_version, reason}`. The project's PM actor, a project owner or manager, or a workspace operator may decide; `reason` says why the successor delivers the original's work.
+
+The successor must be a closed or accepted leaf task in the same project that is not canceled and takes part in no other disposition. A successor in another project is refused with `replacement_scope_mismatch`, and work that is not closed with `supersession_successor_not_delivered`. The original must be leaf work without live execution that is not currently accepted (`replacement_original_accepted`); it may already be canceled.
+
+Neither task is reopened or re-executed. The original keeps its progress, attempts and history, and its status unless it was postponed. If it was not already canceled it is withdrawn as superseded work; a cancel reason it already had stays as it was. A postponed original has nothing left to wait for: its open postponement is closed with the trigger `supersession`, returning it to planned (or to resolved, if it was postponed after resolution) before it is withdrawn, and the timeline records `postponement_closed`.
+
+The original's schedule and delivery dependents, the reactivation requirements of open postponements that name it, and its membership of planned, building and shipped releases move to the successor. A dependent that already waits on the successor keeps one edge (`merged`), and an edge from the successor to the original is dropped (`removed`). A schedule edge cannot cross iterations, so when the successor is in another iteration a schedule dependent instead gets a delivery prerequisite on the successor (`converted`): the successor is already closed, so the ordering is met, and the dependent waits for the successor's acceptance. Moving a requirement of another project's postponed task needs manage permission on that project, as postponing it does; moving a dependent in another project needs edit permission on it. The original stays listed in its releases for audit, but as withdrawn work it no longer counts, so delivery metrics and release counts include the deliverable once, through the successor. A milestone, or a summary task, counts the successor in place of a superseded original, even when the successor belongs to another milestone. The original's version changes; the successor, the dependents and the postponed tasks keep theirs. The timeline records `task_superseded` on the original, `task_supersession_recorded` on the successor and `dependency_replaced` on each task whose dependency or requirement moved.
+
+`GET /api/tasks/{task_id}/replacement` returns a supersession like a replacement, with `disposition: "supersession"`, `role: "successor"` for the successor, no recorded base commit, and no owner decision. Moved requirements are listed in `moved_dependencies` with kind `reactivation`. The original cannot be reviewed, accepted or reopened, and the same delete and restore protections apply. The successor cannot be canceled while it delivers a superseded task (`task_delivers_supersession`). A successor can supersede only one original.
+
+## Reviewing a plan import before it is applied
+
+The iteration import routes, `POST /api/iterations/import` (a new iteration) and `POST /api/iterations/{iteration_id}/import`, write a JSON plan file in one request and need the operator key. A planner can review the exact effect of a file first, without writing anything:
+
+- REST: `POST /api/agent/planning/iterations/{iteration_id}/import/dry-run`, or `POST /api/agent/planning/iterations/import/dry-run` for a file that creates a new iteration, with the file as the multipart field `file` and an agent key that has `planning:write`.
+- MCP: `agent_preview_iteration_import` with `import_data` (the file's JSON object) and, for an existing iteration, `iteration_id`.
+
+The caller must be able to plan work in the target iteration's project and in every project the file names, and to read every iteration the import reserves (iterations that share a team member's profile included). Otherwise the request is refused with HTTP 403, or 404 when the iteration is not visible to the caller. The caller must also be able to read every existing team member profile the import refers to, whether by `profile_id`, `owner_profile_id` or a matching name or email. A caller can read a profile when it is a workspace member, when the profile is its own, or when the profile belongs to a team member of an iteration it can read. If the caller cannot read a profile, the request is refused with HTTP 403 and `incomplete_authorized_graph`.
+
+- An explicit id that does not exist is refused the same way, so ids reveal nothing.
+- A name or email that matches no profile is not refused: the import would create a new profile, and the dry run shows it as `new-profile-1`. Whether such a name already exists in a directory the caller cannot read therefore remains observable, although the profile itself is never shown.
+
+A `profile_id` or `owner_profile_id` that is not an integer, or a `dependencies`, `dependency_external_keys` or `vacations` field that is not a list, is refused with HTTP 422 and `import_file_invalid`. Nothing is written.
+
+While the import runs, the dry run holds the workspace-wide planning reservation, so it is bounded. Each of these is refused with HTTP 409 before any reservation is taken:
+
+- `import_dry_run_too_large`: the file has more than 100 tasks (children included), more than 5 levels of subtasks, more than 200 dependency references, more than 50 team members or more than 100 vacations. Review a larger plan in smaller files.
+- `import_iteration_tree_too_large`: the iteration would hold more than 2,500 tasks after the import.
+- `import_dry_run_busy`: another dry run is running on the same server process. Try again shortly.
+
+A dry run that does not finish within 5 seconds is stopped, rolled back and refused with HTTP 409 and `import_dry_run_too_slow`. The caps keep typical files within this budget but do not guarantee it.
+
+- **Large target:** a large target iteration lowers the practical file size. For example, a 100-task chained file into an iteration of about 900 tasks exceeds the budget; review such a plan in smaller files.
+- **Waiting counts:** time spent waiting for the planning reservation behind another command counts toward the budget. If the reservation was busy, try again.
+
+The dry run runs the import itself in a transaction that is always rolled back, as the operator would run it, and returns:
+
+- `changes`: the tasks, dependencies, links (task source fields and external links), dates, team members and profiles the import creates, changes or removes, and the iteration it creates for a new-iteration file. A row the import creates has a stable reference such as `new-task-1`, `new-member-1` or `new-profile-1`, used wherever another row points at it (a parent, an assignee, a dependency); existing rows keep their ids. Changed rows list each field with its `from` and `to` values. Each entry of `dates` names a task, a date field and its old and new value.
+- `summary`: counts per section.
+- `expected_revisions` and `file_sha256`: the revision of every iteration the import reserves and the digest of the file's canonical JSON, as `import-context` reports them.
+- `review_digest`: binds the file, those revisions and the exact change set. It is an integrity binding, not proof that anyone reviewed the changes: anyone who holds the file and can run the dry run obtains the same digest.
+- `written`: always `false`.
+
+To apply exactly what was reviewed, the operator sends the same file to the same import route with the multipart field `review_digest`. The write runs the import, compares the result with the review, and is refused, with nothing written, with HTTP 409 and one of these codes:
+
+- `import_review_file_changed`: the file differs from the reviewed one.
+- `import_review_target_changed`: an iteration the import reserves changed since the review, for example a task edited concurrently.
+- `import_review_changes_differ`: the import would now make a different change set than the one reviewed.
+
+A malformed digest is refused with HTTP 422 and `import_review_digest_invalid`. After a refusal, run the dry run again and review the new changes. A write without `review_digest` behaves as before. The write keeps its operator authority; the dry run grants no new way to write.
 
 ## External links
 

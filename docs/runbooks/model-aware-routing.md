@@ -202,6 +202,88 @@ the effort, and the preview rationale names the requirement. Changing an
 entry's effort revises the entry, so live assignments that depend on it follow
 the usual reconciliation.
 
+## Declaring qualification keys
+
+Routing accepts a fixed list of built-in skill keys, such as `backend-python`
+or `security-review`. A deployment that qualifies models for its own task
+classes declares further keys in its qualification key registry instead of
+encoding them in tool tags, which only describe the tools a binding can use.
+The built-in keys never change and cannot be declared, revised or retired.
+
+An operator owns the registry. Changes use the same deployment-operator gate
+as the model catalog: the operator's admin key, or, where the workspace's
+authority mode lets an agent change deployment settings (trusted-local mode,
+or an agent with an operator membership), an agent key whose actor holds the
+`admin` scope. Each change also needs the usual idempotency key, reason and
+correlation ID. Reading the registry needs `planning:read` or `admin`. Each change
+adds a revision that keeps the key's label, description, state, the reason and
+who made the change, and records an `agent.routing_qualification_key_changed`
+audit event. A key name is lowercase letters, digits, dots, dashes and
+underscores, and it never changes after it is declared.
+
+- **Declare** a key with a label and an optional description. Declaring a
+  retired key again brings it back as its next revision.
+- **Revise** an active key's label or description, with its current revision.
+- **Retire** an active key with its current revision. Retiring is refused with
+  `routing_qualification_key_in_use` while a catalog entry holds the key,
+  including a disabled entry, or an open task's current routing assessment
+  requires it. Every reference counts, but the refusal names only the tasks
+  the caller can see and counts the rest in `task_ids_omitted`; remove the
+  key from them first. A retired key is refused wherever an unknown key is,
+  and a preview names a retired key in the exclusion rationale of a task that
+  still requires it.
+
+Settings has a **Qualification keys** section that lists the built-in keys
+and the declared ones, declares, revises and retires keys with a reason, and
+shows each key's history and what names it.
+
+A catalog entry holds keys in its `qualification_keys` field, set when the
+entry is created or updated through the API or the model catalog form. A
+held key means the model qualified for that class at the entry's `effort`
+setting; nothing is read from a key's name, so do not add an effort suffix.
+Changing an entry's `configured_model_alias`, `provider`, `reasoning_tier`
+or `effort` clears its keys unless the same update restates them, and the
+audit event lists the keys it cleared, because evidence for one model run
+does not carry over to another. The model catalog form warns before such a
+change clears keys and offers "Keep these keys" to restate them. A model run at two efforts is two
+entries, each holding the keys it qualified for. Existing entries upgrade with
+no keys and nothing is copied from tool tags; the upgrade works on a populated
+catalog and keeps every binding. The database refuses a downgrade while any
+key is declared or held by an entry: the registry keeps its audited history
+and has no delete, so a deployment that has declared a key cannot downgrade
+past this revision.
+
+A task names required keys in the optional `required_model.qualification_keys`
+field of its routing assessment. Each key must be built in or declared and
+active; any other key is refused with `Unknown routing skill key: <key>`, the
+same error routing gives for an unknown skill key, and an assessment that
+omits the field states no requirement and is stored exactly as before.
+Routing treats a required key as a hard gate on the candidate's catalog
+entry: an entry that lacks one is excluded with the
+`model_qualification_missing` blocker, and the exclusion lists the keys in
+`missing_qualification_keys`. An eligible candidate lists the required keys it
+holds in `qualification_keys`, and its rationale names them. A held key that
+the task does not require changes neither eligibility nor rank.
+
+### API reference
+
+| Method and path | Purpose |
+| --- | --- |
+| `GET /api/agent/routing-qualification-keys?include_retired=false` | The built-in keys (`builtin_keys`) and the declared keys (`keys`), active only unless `include_retired=true`. |
+| `GET /api/agent/routing-qualification-keys/{key}` | One declared key with its `revisions` and its `usage` as visible to the caller: `catalog_entries` and the open `task_ids` in the caller's project scope, bounded, with omitted counts. |
+| `POST /api/agent/routing-qualification-keys` | Declare `{key, label, description?}`. Returns `201` with a model mutation receipt whose `target_type` is `routing_qualification_key`. |
+| `PATCH /api/agent/routing-qualification-keys/{key}` | Revise `{expected_revision, label?, description?}`. |
+| `POST /api/agent/routing-qualification-keys/{key}/retire` | Retire `{expected_revision}`. |
+
+Every write takes the `Idempotency-Key`, `X-Agent-Rationale` and
+`X-Correlation-ID` headers; the rationale becomes the revision's reason.
+Conflicts return `409` with a `code`: `routing_qualification_key_exists`,
+`routing_qualification_key_builtin`, `routing_qualification_key_retired`,
+`routing_qualification_key_revision_conflict` (with `current_revision`),
+`routing_qualification_key_no_change` or `routing_qualification_key_in_use`.
+A catalog write or routing assessment that names an unknown or retired key
+returns `422` with `Unknown routing skill key: <key>`.
+
 ## Supervised rework in shadow mode
 
 After an independent reviewer requests changes, read the original worker's

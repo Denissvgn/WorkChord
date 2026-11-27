@@ -2,37 +2,31 @@
 
 **Entry point:** `import_iteration` (`http`)
 **Source:** [export](../modules/export.md)
-**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_team_setup_service](../modules/agent_team_setup_service.md), and 33 more
+**Modules touched:** [allocation_removal](../modules/allocation_removal.md), [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), [capacity_transfers](../modules/capacity_transfers.md), and 26 more
 
 **Complete modules touched:**
 
-- [agent_routing_policy](../modules/agent_routing_policy.md)
-- [agent_routing_service](../modules/agent_routing_service.md)
-- [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [allocation_removal](../modules/allocation_removal.md)
 - [authority](../modules/authority.md)
 - [calendar_rules](../modules/calendar_rules.md)
-- [calendar_service](../modules/calendar_service.md)
 - [capacity_transfers](../modules/capacity_transfers.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
 - [execution_planning_window](../modules/execution_planning_window.md)
-- [execution_reconciliation](../modules/execution_reconciliation.md)
 - [export](../modules/export.md)
-- [identity_service](../modules/identity_service.md)
 - [import_parser](../modules/import_parser.md)
+- [import_planning_service](../modules/import_planning_service.md)
+- [import_review_service](../modules/import_review_service.md)
 - [iteration_service](../modules/iteration_service.md)
 - [models_agent](../modules/models_agent.md)
-- [models_calendar](../modules/models_calendar.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
 - [models_task](../modules/models_task.md)
 - [mutation_versions](../modules/mutation_versions.md)
 - [planning_input_context](../modules/planning_input_context.md)
-- [review_provenance](../modules/review_provenance.md)
 - [schemas_common](../modules/schemas_common.md)
-- [schemas_task](../modules/schemas_task.md)
+- [schemas_iteration](../modules/schemas_iteration.md)
 - [schemas_team](../modules/schemas_team.md)
 - [snapshot_service](../modules/snapshot_service.md)
 - [sql_semantics](../modules/sql_semantics.md)
@@ -52,70 +46,70 @@
 sequenceDiagram
     participant p0 as import_iteration
     participant p1 as _validate_import_data
-    participant p2 as command_transaction
-    participant p3 as planning_input_reservation
-    participant p4 as _process_import
-    participant p5 as _read_json_upload
-    participant p6 as IterationService
-    participant p7 as IterationService.get_by_id
-    participant p8 as affected_iteration_ids
-    participant p9 as inspect_allocation_history
-    participant p10 as transfer_iteration_ids
-    participant p11 as process_reactivation_checks
-    participant p12 as DeliveryDependencyService.reconcile
-    participant p13 as DiscussionService.enqueue
-    participant p14 as _import_task
-    participant p15 as is_unused_allocation
-    participant p16 as reserve_iteration_annuals
-    participant p17 as task_context
-    participant p18 as current_window
-    participant p19 as make_window
-    participant p20 as seal_authority
-    participant p21 as TaskService.record_task_event
-    participant p22 as transfer_member_ids
-    participant p23 as assignment_context
-    participant p24 as original_ownership
-    participant p25 as _import_task_record
-    participant p26 as ReactivationService.evaluate_waiting
-    participant p27 as authority_stamp
-    participant p28 as _direct_reference
+    participant p2 as apply_reviewed_import
+    participant p3 as _read_json_upload
+    participant p4 as IterationService
+    participant p5 as IterationService.get_by_id
+    participant p6 as write_iteration_import
+    participant p7 as import_scope_revisions
+    participant p8 as target_sha256
+    participant p9 as run_import_with_changes
+    participant p10 as changes_sha256
+    participant p11 as affected_iteration_ids
+    participant p12 as _sha256
+    participant p13 as write_new_iteration_import
+    participant p14 as capture_import_state
+    participant p15 as diff_import_state
+    participant p16 as command_transaction
+    participant p17 as planning_input_reservation
+    participant p18 as get_settings
+    participant p19 as require_operator
+    participant p20 as require_project
+    participant p21 as _process_import
+    participant p22 as prospective_member_profiles
+    participant p23 as _sort_key
+    participant p24 as inspect_allocation_history
+    participant p25 as lock_planning
+    participant p26 as transfer_iteration_ids
+    participant p27 as process_reactivation_checks
+    participant p28 as DeliveryDependencyService.reconcile
     participant p29 as HTTPException (backend/app/routers/export.py:import_iteration)
     participant p30 as file.read
     p0->>p1: _validate_import_data
-    p0->>p2: command_transaction
-    p0->>p3: planning_input_reservation
-    p0->>p4: _process_import
-    p0->>p5: _read_json_upload
-    p0->>p6: IterationService
-    p0->>p7: IterationService.get_by_id
-    p3->>p8: affected_iteration_ids
-    p3->>p9: inspect_allocation_history
-    p3->>p10: transfer_iteration_ids
-    p2->>p11: process_reactivation_checks
-    p2->>p12: DeliveryDependencyService.reconcile
-    p2->>p13: DiscussionService.enqueue
-    p4->>p14: _import_task
-    p3->>p15: is_unused_allocation
-    p3->>p16: reserve_iteration_annuals
-    p3->>p17: task_context
-    p3->>p18: current_window
-    p3->>p19: make_window
-    p3->>p20: seal_authority
-    p3->>p21: TaskService.record_task_event
-    p10->>p22: transfer_member_ids
-    p19->>p23: assignment_context
-    p20->>p24: original_ownership
-    p14->>p25: _import_task_record
-    p11->>p26: ReactivationService.evaluate_waiting
-    p20->>p27: authority_stamp
-    p9->>p28: _direct_reference
+    p0->>p2: apply_reviewed_import
+    p0->>p3: _read_json_upload
+    p0->>p4: IterationService
+    p0->>p5: IterationService.get_by_id
+    p0->>p6: write_iteration_import
+    p2->>p7: import_scope_revisions
+    p2->>p8: target_sha256
+    p2->>p9: run_import_with_changes
+    p2->>p10: changes_sha256
+    p7->>p11: affected_iteration_ids
+    p8->>p12: _sha256
+    p9->>p13: write_new_iteration_import
+    p9->>p14: capture_import_state
+    p9->>p15: diff_import_state
+    p13->>p16: command_transaction
+    p13->>p17: planning_input_reservation
+    p11->>p18: get_settings
+    p11->>p19: require_operator
+    p11->>p20: require_project
+    p13->>p21: _process_import
+    p11->>p22: prospective_member_profiles
+    p15->>p23: _sort_key
+    p17->>p24: inspect_allocation_history
+    p17->>p25: lock_planning
+    p17->>p26: transfer_iteration_ids
+    p16->>p27: process_reactivation_checks
+    p16->>p28: DeliveryDependencyService.reconcile
     p0-->>p29: HTTPException (backend/app/routers/export.py:import_iteration)(status_code=status.HTTP_404_NOT_FOUND, detail=...)
-    p5-->>p30: file.read(...)
+    p3-->>p30: file.read(...)
 ```
 
-> Call sequence diagram shows 30 of 1197 interactions; 1167 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 805 interactions; 775 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 356 (355 omitted); unresolved 1 of 609 (608 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 244 (243 omitted); unresolved 1 of 374 (373 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -129,7 +123,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/routers/export.py:_validate_import_data` | 22 | - | external | 9 |
 | `backend/app/routers/export.py:_validate_import_data` | 22 | [backend/app/routers/export.py](../modules/export.md) | internal | 1 |
 | `backend/app/routers/export.py:_validate_import_task_tree` | 26 | - | unresolved | 3 |
-> Omission summary shows 8 of 264 groups; 256 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 174 groups; 166 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -142,9 +136,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 233; effect analysis evaluated: 160, partial: 9, unavailable: 64. Counts include steps omitted from the displayed trace.
+Source steps: 188; effect analysis evaluated: 120, partial: 8, unavailable: 60. Counts include steps omitted from the displayed trace.
 
-Collector observations for 169 source steps with known totals: observed: 854, emitted: 818, omitted: 36. Unavailable totals are excluded.
+Collector observations for 128 source steps with known totals: observed: 687, emitted: 655, omitted: 32. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -152,12 +146,12 @@ Collector observations for 169 source steps with known totals: observed: 854, em
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
-| `import_iteration` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `import_iteration` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
 | `_read_json_upload` | `available` | `evaluated` | `available` | `8` | `8` | `0` |
 | `file.read` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `len (backend/app/routers/export.py:_read_json_upload)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `HTTPException (backend/app/routers/export.py:_read_json_upload)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `json.loads (backend/app/routers/export.py:_read_json_upload)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `json.loads` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `content.decode` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `HTTPException (backend/app/routers/export.py:_read_json_upload)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `str (backend/app/routers/export.py:_read_json_upload)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
@@ -172,7 +166,7 @@ flowchart LR
     s3["3. file.read"]
     s4["4. len (backend/app/routers/export.py:_read_json_upload)"]
     s5["5. HTTPException (backend/app/routers/export.py:_read_json_upload)"]
-    s6["6. json.loads (backend/app/routers/export.py:_read_json_upload)"]
+    s6["6. json.loads"]
     s7["7. content.decode"]
     s8["8. HTTPException (backend/app/routers/export.py:_read_json_upload)"]
     s9["9. str (backend/app/routers/export.py:_read_json_upload)"]
@@ -183,7 +177,7 @@ flowchart LR
     s2 -. "file.read(...)" .-> s3
     s2 -. "len (backend/app/routers/export.py:_read_json_upload)(content)" .-> s4
     s2 -. "HTTPException (backend/app/routers/export.py:_read_json_upload)(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail='Import file is too large')" .-> s5
-    s2 -. "json.loads (backend/app/routers/export.py:_read_json_upload)(content.decode(...))" .-> s6
+    s2 -. "json.loads(content.decode(...))" .-> s6
     s2 -. "content.decode('utf-8')" .-> s7
     s2 -. "HTTPException (backend/app/routers/export.py:_read_json_upload)(status_code=status.HTTP_400_BAD_REQUEST, detail=...)" .-> s8
     s2 -. "str (backend/app/routers/export.py:_read_json_upload)(e)" .-> s9
@@ -199,12 +193,12 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `import_iteration` | `iteration_id: int`, `file: Annotated[UploadFile, File(...)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]` | `status`, `status` | - | `...` |
+| `import_iteration` | `iteration_id: int`, `file: Annotated[UploadFile, File(...)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]`, `review_digest: Annotated[str \| None, Form()]` | `status` | - | `...`, `...` |
 | `_read_json_upload` | `file: UploadFile` | `MAX_JSON_IMPORT_BYTES`, `MAX_JSON_IMPORT_BYTES`, `status`, `json`, `status`, `status` | - | `data` |
 | `file.read` | - | - | - | - |
 | `len (backend/app/routers/export.py:_read_json_upload)` | - | - | - | - |
 | `HTTPException (backend/app/routers/export.py:_read_json_upload)` | - | - | - | - |
-| `json.loads (backend/app/routers/export.py:_read_json_upload)` | - | - | - | - |
+| `json.loads` | - | - | - | - |
 | `content.decode` | - | - | - | - |
 | `HTTPException (backend/app/routers/export.py:_read_json_upload)` | - | - | - | - |
 | `str (backend/app/routers/export.py:_read_json_upload)` | - | - | - | - |
@@ -216,17 +210,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| import_iteration | _read_json_upload | 419 | `_read_json_upload(file)` |
+| import_iteration | _read_json_upload | 441 | `_read_json_upload(file)` |
 | _read_json_upload | file.read | 38 | `file.read(...)` |
 | _read_json_upload | len (backend/app/routers/export.py:_read_json_upload) | 39 | `len(content)` |
 | _read_json_upload | HTTPException (backend/app/routers/export.py:_read_json_upload) | 40 | `HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail='Import file is too large')` |
-| _read_json_upload | json.loads (backend/app/routers/export.py:_read_json_upload) | 45 | `json.loads(content.decode(...))` |
+| _read_json_upload | json.loads | 45 | `json.loads(content.decode(...))` |
 | _read_json_upload | content.decode | 45 | `content.decode('utf-8')` |
 | _read_json_upload | HTTPException (backend/app/routers/export.py:_read_json_upload) | 47 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=...)` |
 | _read_json_upload | str (backend/app/routers/export.py:_read_json_upload) | 49 | `str(e)` |
 | _read_json_upload | isinstance (backend/app/routers/export.py:_read_json_upload) | 51 | `isinstance(data, dict)` |
 | _read_json_upload | HTTPException (backend/app/routers/export.py:_read_json_upload) | 52 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Import file must contain a JSON object')` |
-| import_iteration | IterationService | 421 | `IterationService(db)` |
+| import_iteration | IterationService | 443 | `IterationService(db)` |
 
 ### Boundary effects
 

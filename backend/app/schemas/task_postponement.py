@@ -148,7 +148,8 @@ class TaskPostponementRecord(BaseModel):
     reactivated_at: datetime | None = None
     reactivated_to_status: Literal["planned", "resolved"] | None = None
     reactivation_trigger: str | None = Field(
-        default=None, description="'command' for an explicit reactivation, 'requirements_met' when the last requirement was met.")
+        default=None, description="'command' for an explicit reactivation, 'requirements_met' when the last requirement was met, "
+                                  "'supersession' when the postponed task was superseded by delivered work.")
     reactivation_reason: str | None = None
     reactivated_by_principal_id: int | None = None
     reactivated_by_actor_id: int | None = None

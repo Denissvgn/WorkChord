@@ -38,6 +38,26 @@ class TaskReplacementCreate(BaseModel):
         return sorted(value)
 
 
+class TaskSupersessionCreate(BaseModel):
+    """Record that work already closed or accepted delivered this original's deliverable."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    successor_task_id: int = Field(..., ge=1, description="Closed or accepted leaf task in the same project.")
+    expected_original_version: int = Field(..., ge=1)
+    expected_successor_version: int = Field(..., ge=1)
+    reason: str = Field(..., min_length=1, max_length=4000,
+                        description="Why the successor delivers the original's work.")
+
+    @field_validator("reason")
+    @classmethod
+    def _stripped(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("A non-empty value is required")
+        return value
+
+
 class ReplacementContributor(BaseModel):
     """One recorded attempt with exactly the attribution the server holds for it."""
 
@@ -53,7 +73,7 @@ class ReplacementContributor(BaseModel):
 
 class ReplacementDecision(BaseModel):
     reason: str
-    owner_decision: str
+    owner_decision: str | None = None
     decided_at: datetime
     decided_by_principal_id: int | None = None
     decided_by_actor_id: int | None = None
@@ -66,8 +86,8 @@ class ReplacementReviewPolicy(BaseModel):
 
 class ReplacementMovedDependency(BaseModel):
     task_id: int
-    kind: Literal["schedule", "delivery"]
-    action: Literal["moved", "merged", "removed"]
+    kind: Literal["schedule", "delivery", "reactivation"]
+    action: Literal["moved", "merged", "removed", "converted"]
 
 
 class ReplacementOriginal(BaseModel):
@@ -92,7 +112,7 @@ class ReplacementTask(BaseModel):
     task_id: int
     status: str
     accepted: bool
-    recorded_base_commit_url: str
+    recorded_base_commit_url: str | None = None
     candidate: ReplacementCandidate | None = None
     contributors: list[ReplacementContributor]
 
@@ -109,7 +129,8 @@ class ReplacementAcceptance(BaseModel):
 class TaskReplacementResponse(BaseModel):
     id: int
     project_id: int
-    role: Literal["original", "replacement"]
+    disposition: Literal["replacement", "supersession"]
+    role: Literal["original", "replacement", "successor"]
     original_task_id: int
     replacement_task_id: int
     decision: ReplacementDecision

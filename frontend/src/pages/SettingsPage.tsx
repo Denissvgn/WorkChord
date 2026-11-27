@@ -4,6 +4,7 @@ import type { KeyboardEvent, ReactNode } from 'react';
 import {
     Activity,
     ArrowRight,
+    BadgeCheck,
     Building2,
     CalendarClock,
     CalendarDays,
@@ -40,6 +41,7 @@ import { AgentAccessPanel } from '../components/settings/AgentAccessPanel';
 import { AccessKeysSummary } from '../components/settings/AccessKeysSummary';
 import { ConnectedReadersPanel } from '../components/settings/ConnectedReadersPanel';
 import { SystemHealthPanel } from '../components/settings/SystemHealthPanel';
+import { QualificationKeysPanel } from '../components/settings/QualificationKeysPanel';
 import { SharedUnlockContext } from '../components/settings/sharedUnlock';
 import { ReadOnlyFieldset } from '../components/settings/ReadOnlyFieldset';
 import { SETTINGS_FIELD_LABEL_KEYS } from '../components/settings/settingsFieldLabels';
@@ -122,6 +124,7 @@ const SETTINGS_GROUPS: SettingsGroup[] = [
             section('webhooks', 'webhooks', Webhook, 'workspace', true),
             section('web_intake', 'webIntake', Inbox, 'workspace', true),
             section('ai_provider', 'aiProvider', Sparkles, 'workspace', true),
+            section('qualification_keys', 'qualificationKeys', BadgeCheck, 'workspace', true),
         ],
     },
     {
@@ -439,6 +442,13 @@ const SettingsPage = () => {
                             </Link>
                         </p>
                     </div>
+                );
+            case 'qualification_keys':
+                // The registry is read and changed with a key, so a keyless reader sees the gate.
+                return (
+                    <AdminAccessGate showPanel={false}>
+                        <QualificationKeysPanel />
+                    </AdminAccessGate>
                 );
             case 'access':
                 return (

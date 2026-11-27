@@ -1,6 +1,6 @@
 # ModelAwareRoutingTopologyReadiness
 
-**Location:** `frontend/src/types/agent.ts:130`
+**Location:** `frontend/src/types/agent.ts:131`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

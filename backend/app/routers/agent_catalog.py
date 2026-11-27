@@ -30,6 +30,13 @@ from app.schemas.agent_routing import (
     AgentModelCatalogUpdate,
     AgentModelMutationReceipt,
 )
+from app.schemas.routing_qualification import (
+    RoutingQualificationKeyDeclare,
+    RoutingQualificationKeyDetail,
+    RoutingQualificationKeyRegistryResponse,
+    RoutingQualificationKeyRetire,
+    RoutingQualificationKeyRevise,
+)
 from app.schemas.team import TeamMemberProfileResponse
 from app.services.agent_model_catalog_service import (
     AgentModelCatalogService,
@@ -37,6 +44,7 @@ from app.services.agent_model_catalog_service import (
 )
 from app.services.agent_planning_service import AgentPlanningService
 from app.services.agent_profile_catalog_service import AgentProfileCatalogService
+from app.services.routing_qualification_key_service import RoutingQualificationKeyService
 from app.security import ADMIN_API_KEY_HEADER, admin_api_key_is_valid
 from app.services.agent_service import AgentService, actor_has_scope
 
@@ -476,5 +484,128 @@ async def disable_agent_model_binding(
             data,
             command=command,
         )
+    except Exception as exc:
+        _handle_model_error(exc)
+
+
+async def get_routing_qualification_key_service(
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+) -> RoutingQualificationKeyService:
+    """Return the request-scoped qualification key registry."""
+
+    return RoutingQualificationKeyService(db)
+
+
+@router.get(
+    "/agent/routing-qualification-keys",
+    response_model=RoutingQualificationKeyRegistryResponse,
+)
+async def list_routing_qualification_keys(
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
+    service: Annotated[
+        RoutingQualificationKeyService,
+        Depends(get_routing_qualification_key_service),
+    ],
+    include_retired: Annotated[bool, Query()] = False,
+):
+    """Return the built-in routing keys and the deployment's declared keys."""
+
+    try:
+        return await service.list_registry(actor, include_retired=include_retired)
+    except Exception as exc:
+        _handle_model_error(exc)
+
+
+@router.get(
+    "/agent/routing-qualification-keys/{key}",
+    response_model=RoutingQualificationKeyDetail,
+)
+async def get_routing_qualification_key(
+    key: str,
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
+    service: Annotated[
+        RoutingQualificationKeyService,
+        Depends(get_routing_qualification_key_service),
+    ],
+):
+    """Return one declared key with its revisions and the entries and tasks naming it."""
+
+    try:
+        return await service.get_key(actor, key)
+    except Exception as exc:
+        _handle_model_error(exc)
+
+
+@router.post(
+    "/agent/routing-qualification-keys",
+    response_model=AgentModelMutationReceipt,
+    status_code=status.HTTP_201_CREATED,
+)
+async def declare_routing_qualification_key(
+    data: RoutingQualificationKeyDeclare,
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
+    service: Annotated[
+        RoutingQualificationKeyService,
+        Depends(get_routing_qualification_key_service),
+    ],
+    command: Annotated[
+        AgentPlanningCommandContext,
+        Depends(get_agent_planning_command_context),
+    ],
+):
+    """Declare a qualification key, or declare a retired one again, as the operator."""
+
+    try:
+        return await service.declare(actor, data, command=command)
+    except Exception as exc:
+        _handle_model_error(exc)
+
+
+@router.patch(
+    "/agent/routing-qualification-keys/{key}",
+    response_model=AgentModelMutationReceipt,
+)
+async def revise_routing_qualification_key(
+    key: str,
+    data: RoutingQualificationKeyRevise,
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
+    service: Annotated[
+        RoutingQualificationKeyService,
+        Depends(get_routing_qualification_key_service),
+    ],
+    command: Annotated[
+        AgentPlanningCommandContext,
+        Depends(get_agent_planning_command_context),
+    ],
+):
+    """Optimistically revise an active key's label or description."""
+
+    try:
+        return await service.revise(key, actor, data, command=command)
+    except Exception as exc:
+        _handle_model_error(exc)
+
+
+@router.post(
+    "/agent/routing-qualification-keys/{key}/retire",
+    response_model=AgentModelMutationReceipt,
+)
+async def retire_routing_qualification_key(
+    key: str,
+    data: RoutingQualificationKeyRetire,
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
+    service: Annotated[
+        RoutingQualificationKeyService,
+        Depends(get_routing_qualification_key_service),
+    ],
+    command: Annotated[
+        AgentPlanningCommandContext,
+        Depends(get_agent_planning_command_context),
+    ],
+):
+    """Retire a key; refused while a catalog entry or open task requirement names it."""
+
+    try:
+        return await service.retire(key, actor, data, command=command)
     except Exception as exc:
         _handle_model_error(exc)

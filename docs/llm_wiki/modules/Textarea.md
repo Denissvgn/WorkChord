@@ -33,8 +33,11 @@ flowchart LR
     n2["frontend/src/components/common/Textarea.tsx"]
     n3["frontend/src/components/projects/InitiativeForm.tsx"]
     n4["frontend/src/components/projects/ProjectForm.tsx"]
-    n5["frontend/src/components/tasks/useSavedViewManager.tsx"]
-    n6["frontend/src/components/triage/CreateTriageDrawer.tsx"]
+    n5["frontend/src/components/settings/QualificationKeysPanel.tsx"]
+    n6["frontend/src/components/tasks/TaskPostponeForm.tsx"]
+    n7["frontend/src/components/tasks/TaskPostponementPanel.tsx"]
+    n8["frontend/src/components/tasks/useSavedViewManager.tsx"]
+    n9["frontend/src/components/triage/CreateTriageDrawer.tsx"]
     n1 --> n2
     n2 --> n0
     n3 --> n0
@@ -43,15 +46,22 @@ flowchart LR
     n4 --> n2
     n5 --> n0
     n5 --> n2
-    n6 --> n0
     n6 --> n2
+    n7 --> n2
+    n8 --> n0
+    n8 --> n2
+    n9 --> n0
+    n9 --> n2
     click n0 "../modules/Input.md"
     click n1 "../modules/Select.test.md"
     click n2 "../modules/Textarea.md"
     click n3 "../modules/InitiativeForm.md"
     click n4 "../modules/ProjectForm.md"
-    click n5 "../modules/useSavedViewManager.md"
-    click n6 "../modules/CreateTriageDrawer.md"
+    click n5 "../modules/QualificationKeysPanel.md"
+    click n6 "../modules/TaskPostponeForm.md"
+    click n7 "../modules/TaskPostponementPanel.md"
+    click n8 "../modules/useSavedViewManager.md"
+    click n9 "../modules/CreateTriageDrawer.md"
 ```
 
 ### Internal neighbors
@@ -61,6 +71,9 @@ flowchart LR
 | Inbound | [Select.test](../modules/Select.test.md) |
 | Inbound | [InitiativeForm](../modules/InitiativeForm.md) |
 | Inbound | [ProjectForm](../modules/ProjectForm.md) |
+| Inbound | [QualificationKeysPanel](../modules/QualificationKeysPanel.md) |
+| Inbound | [TaskPostponeForm](../modules/TaskPostponeForm.md) |
+| Inbound | [TaskPostponementPanel](../modules/TaskPostponementPanel.md) |
 | Inbound | [useSavedViewManager](../modules/useSavedViewManager.md) |
 | Inbound | [CreateTriageDrawer](../modules/CreateTriageDrawer.md) |
 | Outbound | [Input](../modules/Input.md) |

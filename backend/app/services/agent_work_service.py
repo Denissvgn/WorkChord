@@ -271,12 +271,39 @@ class AgentWorkService:
 
         return self._require_enforced_rollout(self.rollout_service)
 
-    async def _require_enforced_routing_for_actor(self, actor: AgentActor):
-        """Require enforcement using the actor's authoritative topology."""
+    async def _verification_rollout(
+        self, actor: AgentActor, verifier_actor_id: int, project_id: int | None,
+    ) -> tuple[AgentRoutingRolloutService, dict]:
+        """Rollout for verification work, judged by the verifier's presence (not cached) with refusal detail."""
 
-        return self._require_enforced_rollout(
-            await self._resolve_rollout(actor)
-        )
+        if self._rollout_service_explicit or self.db is None:
+            return self.rollout_service, {}
+        from app.services.agent_team_setup_service import AgentTeamSetupService
+
+        readiness, detail = await AgentTeamSetupService(self.db).readiness_gate(
+            actor, verifier_actor_id=verifier_actor_id, project_id=project_id)
+        if readiness.status == AgentRoutingTopologyReadinessStatus.UNAVAILABLE:
+            return self.rollout_service, {}
+        return AgentRoutingRolloutService(topology_readiness=readiness), detail
+
+    async def _require_enforced_routing_for_actor(
+        self, actor: AgentActor, *, verifier_actor_id: int | None = None, project_id: int | None = None,
+    ):
+        """Require enforcement using the actor's authoritative topology.
+
+        Verification work passes its verifier, so only that verifier's presence is required.
+        """
+
+        if verifier_actor_id is None:
+            return self._require_enforced_rollout(await self._resolve_rollout(actor))
+        from app.services.agent_routing_service import AgentRoutingConflictError
+
+        rollout, detail = await self._verification_rollout(actor, verifier_actor_id, project_id)
+        try:
+            return self._require_enforced_rollout(rollout)
+        except AgentRoutingConflictError as exc:
+            exc.context.update({k: v for k, v in detail.items() if k not in {"topology_key", "topology_revision"}})
+            raise
 
     @staticmethod
     def _require_supervised_rollout(
@@ -1475,7 +1502,9 @@ class AgentWorkService:
                 return response
             raise AgentConflictError("Idempotent assignment receipt is unavailable")
         if isinstance(data, ModelAwareAgentTaskAssignmentCreate):
-            await self._require_enforced_routing_for_actor(principal)
+            await self._require_enforced_routing_for_actor(
+                principal, verifier_actor_id=data.actor_id if data.purpose == "verification" else None,
+                project_id=task.project_id if task is not None else None)
         else:
             await self._require_supervised_routing_for_actor(principal)
 
@@ -1760,7 +1789,9 @@ class AgentWorkService:
         rollout_status = (await self._resolve_rollout(principal)).status()
         if isinstance(data, ModelAwareAgentTaskAssignmentUpdate):
             rollout_status = await self._require_enforced_routing_for_actor(
-                principal
+                principal,
+                verifier_actor_id=(data.actor_id or assignment.actor_id) if assignment.purpose == "verification" else None,
+                project_id=task.project_id,
             )
         if assignment.state != "queued":
             raise AgentConflictError("Only queued assignments can be changed by PM control")
@@ -3182,7 +3213,7 @@ class AgentWorkService:
             raise AgentConflictError("Idempotent verification receipt is unavailable")
         if (
             self._is_model_aware_assignment(assignment)
-            and (await self._resolve_rollout(actor)).status().effective_mode
+            and (await self._verification_rollout(actor, assignment.actor_id, task.project_id))[0].status().effective_mode
             != AgentRoutingRolloutMode.ENFORCED
         ):
             from app.services.agent_routing_service import (
@@ -4505,6 +4536,14 @@ class AgentWorkService:
                 self._validate_assignment_actor(verifier, "verification")
             except ValueError:
                 blockers.append("assignment_actor_ineligible")
+            if (
+                verifier is not None
+                and self._is_model_aware_assignment(assignment)
+                and (await self._verification_rollout(verifier, verifier.id, task.project_id))[0].status().effective_mode
+                != AgentRoutingRolloutMode.ENFORCED
+            ):
+                # Judged as the verdict is: by the verifier's presence, not the whole team's.
+                blockers.append("model_aware_assignment_inactive")
             if task.status != TaskStatus.RESOLVED.value:
                 blockers.append("task_status_resolved_required")
             if assignment.not_before is not None and as_utc(assignment.not_before) > as_utc(now):

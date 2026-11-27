@@ -339,6 +339,14 @@
             "description": "Operator-verified canonical model publisher, independent of serving provider.",
             "title": "Publisher Key"
           },
+          "qualification_keys": {
+            "description": "Built-in or declared qualification keys this entry holds at its effort setting.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Qualification Keys",
+            "type": "array"
+          },
           "reasoning_tier": {
             "$ref": "#/components/schemas/ReasoningTier"
           },
@@ -472,6 +480,14 @@
             ],
             "description": "Operator-verified canonical model publisher, independent of serving provider.",
             "title": "Publisher Key"
+          },
+          "qualification_keys": {
+            "description": "Built-in or declared qualification keys this entry holds at its effort setting.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Qualification Keys",
+            "type": "array"
           },
           "reasoning_tier": {
             "$ref": "#/components/schemas/ReasoningTier"
@@ -641,6 +657,21 @@
             ],
             "title": "Publisher Key"
           },
+          "qualification_keys": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Replaces the entry's qualification keys. An effort change without this field clears them.",
+            "title": "Qualification Keys"
+          },
           "reasoning_tier": {
             "anyOf": [
               {
@@ -735,7 +766,8 @@
           "target_type": {
             "enum": [
               "model_catalog",
-              "model_binding"
+              "model_binding",
+              "routing_qualification_key"
             ],
             "title": "Target Type",
             "type": "string"
@@ -761,6 +793,17 @@
             "contentMediaType": "application/octet-stream",
             "title": "File",
             "type": "string"
+          },
+          "review_digest": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Review Digest"
           }
         },
         "required": [
@@ -775,6 +818,17 @@
             "contentMediaType": "application/octet-stream",
             "title": "File",
             "type": "string"
+          },
+          "review_digest": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Review Digest"
           }
         },
         "required": [
@@ -3719,6 +3773,31 @@
         "title": "ProjectTargetDateRisk",
         "type": "string"
       },
+      "QualificationKeyCatalogReference": {
+        "additionalProperties": false,
+        "description": "A catalog entry that holds the key.",
+        "properties": {
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "enabled"
+        ],
+        "title": "QualificationKeyCatalogReference",
+        "type": "object"
+      },
       "ReactivationRequirementResponse": {
         "properties": {
           "description": {
@@ -3823,6 +3902,412 @@
         ],
         "title": "ReasoningTier",
         "type": "integer"
+      },
+      "RoutingQualificationKeyDeclare": {
+        "additionalProperties": false,
+        "description": "Declare a new key, or bring back a retired one under the same name.",
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "key": {
+            "maxLength": 120,
+            "minLength": 1,
+            "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "label"
+        ],
+        "title": "RoutingQualificationKeyDeclare",
+        "type": "object"
+      },
+      "RoutingQualificationKeyDetail": {
+        "additionalProperties": false,
+        "description": "One key with its revision history and current usage.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "retired_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retired At"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "revisions": {
+            "items": {
+              "$ref": "#/components/schemas/RoutingQualificationKeyRevisionResponse"
+            },
+            "title": "Revisions",
+            "type": "array"
+          },
+          "state": {
+            "enum": [
+              "active",
+              "retired"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/RoutingQualificationKeyUsage"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "label",
+          "state",
+          "revision",
+          "created_at",
+          "updated_at",
+          "usage"
+        ],
+        "title": "RoutingQualificationKeyDetail",
+        "type": "object"
+      },
+      "RoutingQualificationKeyRegistryResponse": {
+        "additionalProperties": false,
+        "description": "The built-in keys routing always accepts, and the deployment's declared keys.",
+        "properties": {
+          "builtin_keys": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Builtin Keys",
+            "type": "array"
+          },
+          "keys": {
+            "items": {
+              "$ref": "#/components/schemas/RoutingQualificationKeyResponse"
+            },
+            "title": "Keys",
+            "type": "array"
+          }
+        },
+        "required": [
+          "builtin_keys",
+          "keys"
+        ],
+        "title": "RoutingQualificationKeyRegistryResponse",
+        "type": "object"
+      },
+      "RoutingQualificationKeyResponse": {
+        "additionalProperties": false,
+        "description": "The current state of one declared key.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "retired_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retired At"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "state": {
+            "enum": [
+              "active",
+              "retired"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "label",
+          "state",
+          "revision",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "RoutingQualificationKeyResponse",
+        "type": "object"
+      },
+      "RoutingQualificationKeyRetire": {
+        "additionalProperties": false,
+        "description": "Retire an active key that no catalog entry or current task requirement names.",
+        "properties": {
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "expected_revision"
+        ],
+        "title": "RoutingQualificationKeyRetire",
+        "type": "object"
+      },
+      "RoutingQualificationKeyRevise": {
+        "additionalProperties": false,
+        "description": "Change an active key's label or description; the key itself never changes.",
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          }
+        },
+        "required": [
+          "expected_revision"
+        ],
+        "title": "RoutingQualificationKeyRevise",
+        "type": "object"
+      },
+      "RoutingQualificationKeyRevisionResponse": {
+        "additionalProperties": false,
+        "description": "One append-only change to a declared key, with its reason.",
+        "properties": {
+          "action": {
+            "enum": [
+              "declare",
+              "revise",
+              "retire"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "actor_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor Id"
+          },
+          "actor_type": {
+            "title": "Actor Type",
+            "type": "string"
+          },
+          "correlation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correlation Id"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "state": {
+            "enum": [
+              "active",
+              "retired"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "revision",
+          "action",
+          "state",
+          "label",
+          "reason",
+          "actor_type",
+          "created_at"
+        ],
+        "title": "RoutingQualificationKeyRevisionResponse",
+        "type": "object"
+      },
+      "RoutingQualificationKeyUsage": {
+        "additionalProperties": false,
+        "description": "Catalog entries and tasks whose current routing assessment name the key.",
+        "properties": {
+          "catalog_entries": {
+            "items": {
+              "$ref": "#/components/schemas/QualificationKeyCatalogReference"
+            },
+            "maxItems": 50,
+            "title": "Catalog Entries",
+            "type": "array"
+          },
+          "catalog_entries_omitted": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Catalog Entries Omitted",
+            "type": "integer"
+          },
+          "task_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 50,
+            "title": "Task Ids",
+            "type": "array"
+          },
+          "task_ids_omitted": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Task Ids Omitted",
+            "type": "integer"
+          }
+        },
+        "title": "RoutingQualificationKeyUsage",
+        "type": "object"
       },
       "TaskActionAvailability": {
         "properties": {
@@ -4696,7 +5181,7 @@
                 "type": "null"
               }
             ],
-            "description": "'command' for an explicit reactivation, 'requirements_met' when the last requirement was met.",
+            "description": "'command' for an explicit reactivation, 'requirements_met' when the last requirement was met, 'supersession' when the postponed task was superseded by delivered work.",
             "title": "Reactivation Trigger"
           },
           "reason": {
@@ -8747,6 +9232,480 @@
         ]
       }
     },
+    "/api/agent/routing-qualification-keys": {
+      "get": {
+        "description": "Return the built-in routing keys and the deployment's declared keys.",
+        "operationId": "list_routing_qualification_keys_api_agent_routing_qualification_keys_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "include_retired",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Retired",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoutingQualificationKeyRegistryResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Routing Qualification Keys",
+        "tags": [
+          "Agent Catalog"
+        ]
+      },
+      "post": {
+        "description": "Declare a qualification key, or declare a retired one again, as the operator.",
+        "operationId": "declare_routing_qualification_key_api_agent_routing_qualification_keys_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Rationale",
+            "required": true,
+            "schema": {
+              "title": "X-Agent-Rationale",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Correlation-ID",
+            "required": true,
+            "schema": {
+              "title": "X-Correlation-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoutingQualificationKeyDeclare"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Declare Routing Qualification Key",
+        "tags": [
+          "Agent Catalog"
+        ]
+      }
+    },
+    "/api/agent/routing-qualification-keys/{key}": {
+      "get": {
+        "description": "Return one declared key with its revisions and the entries and tasks naming it.",
+        "operationId": "get_routing_qualification_key_api_agent_routing_qualification_keys__key__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoutingQualificationKeyDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Routing Qualification Key",
+        "tags": [
+          "Agent Catalog"
+        ]
+      },
+      "patch": {
+        "description": "Optimistically revise an active key's label or description.",
+        "operationId": "revise_routing_qualification_key_api_agent_routing_qualification_keys__key__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Rationale",
+            "required": true,
+            "schema": {
+              "title": "X-Agent-Rationale",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Correlation-ID",
+            "required": true,
+            "schema": {
+              "title": "X-Correlation-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoutingQualificationKeyRevise"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Revise Routing Qualification Key",
+        "tags": [
+          "Agent Catalog"
+        ]
+      }
+    },
+    "/api/agent/routing-qualification-keys/{key}/retire": {
+      "post": {
+        "description": "Retire a key; refused while a catalog entry or open task requirement names it.",
+        "operationId": "retire_routing_qualification_key_api_agent_routing_qualification_keys__key__retire_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Rationale",
+            "required": true,
+            "schema": {
+              "title": "X-Agent-Rationale",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Correlation-ID",
+            "required": true,
+            "schema": {
+              "title": "X-Correlation-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoutingQualificationKeyRetire"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Retire Routing Qualification Key",
+        "tags": [
+          "Agent Catalog"
+        ]
+      }
+    },
     "/api/auth/logout": {
       "post": {
         "operationId": "logout_api_auth_logout_post",
@@ -9122,7 +10081,7 @@
     },
     "/api/iterations/import": {
       "post": {
-        "description": "Import a new iteration from JSON export file.",
+        "description": "Import a new iteration from JSON export file.\n\nWith ``review_digest`` from a plan-import dry run, the write applies only the\nreviewed change set and is refused when the file or its target changed.",
         "operationId": "import_new_iteration_api_iterations_import_post",
         "parameters": [
           {
@@ -9327,7 +10286,7 @@
     },
     "/api/iterations/{iteration_id}/import": {
       "post": {
-        "description": "Import tasks and team members into an iteration from JSON file.",
+        "description": "Import tasks and team members into an iteration from JSON file.\n\nWith ``review_digest`` from a plan-import dry run, the write applies only the\nreviewed change set and is refused when the file or its target changed.",
         "operationId": "import_iteration_api_iterations__iteration_id__import_post",
         "parameters": [
           {

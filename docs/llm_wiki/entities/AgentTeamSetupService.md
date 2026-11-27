@@ -1,6 +1,6 @@
 # AgentTeamSetupService
 
-**Location:** `backend/app/services/agent_team_setup_service.py:186`
+**Location:** `backend/app/services/agent_team_setup_service.py:229`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_team_setup_service](../modules/agent_team_setup_service.md)
@@ -71,6 +71,9 @@ Uses the bundle service's deployed, integrity-validated catalog for role-package
 | `acknowledge_runtime` | *(async)* `(api_key: str, acknowledgement: AgentTeamRuntimeAcknowledgement) -> AgentTeamRuntimeAcknowledgementResponse` | — | Accept only the exact restricted onboarding handoff acknowledgement. |
 | `membership_boundary` | *(async)* `(actor_id: int) -> AgentTeamMembershipBoundary \| None` | — | Return the live, drift-aware topology boundary for one bound actor. |
 | `require_dispatch_member` | *(async)* `(principal: AgentActor, target_actor_id: int) -> AgentTeamMembershipBoundary \| None` | — | Fail closed when a bound caller selects outside its active roster. |
+| `_project_allows` | `(project_id: int \| None, action: str) -> bool` | — | Whether the caller's authority covers the project, without raising. |
+| `_whole_team_readiness` | `(boundary: AgentTeamMembershipBoundary) -> AgentRoutingTopologyReadiness` | `@staticmethod` | — |
+| `readiness_gate` | *(async)* `(principal: AgentActor, *, verifier_actor_id: int \| None = None, project_id: int \| None = None, action: str = 'manage', observed_boundaries: dict[int, AgentTeamMembershipBoundary \| None] \| None = None) -> tuple[AgentRoutingTopologyReadiness, dict[str, Any]]` | — | Judge routing readiness and say who is missing when it is not met. |
 | `routing_readiness` | *(async)* `(actor: AgentActor, *, observed_boundaries: dict[int, AgentTeamMembershipBoundary \| None] \| None = None) -> AgentRoutingTopologyReadiness` | — | Project authoritative setup state into the rollout readiness hook. |
 
 ## Relationships
@@ -119,7 +122,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_team_setup_service](../modules/agent_team_setup_service.md) | 53 | — |
+| [agent_team_setup_service](../modules/agent_team_setup_service.md) | 56 | — |
 
 ### References
 
@@ -138,4 +141,4 @@ flowchart LR
 | `get_agent_team_starting_points` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `get_agent_team_topology` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 
-> References: showing 12 of 55 logical references; 43 omitted by the 12-row generated summary limit.
+> References: showing 12 of 59 logical references; 47 omitted by the 12-row generated summary limit.
