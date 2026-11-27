@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1847,
+      "entities": 1854,
       "flows": 632,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1187,
+      "modules": 1190,
       "workflows": 244
     },
     "dependency_architecture": 2,
-    "total": 3927
+    "total": 3937
   },
   "dependency_pages": {
     "count": 2,
@@ -50847,7 +50847,8 @@
         "entities/Queue.md",
         "entities/QuickCaptureTarget.md",
         "entities/RateLimitWindow.md",
-        "entities/ReactivationRequirementInput.md",
+        "entities/ReactivationRequirement.md",
+        "entities/ReactivationRequirementKind.md",
         "entities/ReactivationRequirementResponse.md",
         "entities/ReactivationService.md",
         "entities/Readiness.md",
@@ -50945,10 +50946,10 @@
         "entities/RoutingSelectionValidation.md",
         "entities/RoutingSkillDecision.md",
         "entities/RoutingTrustLineage.md",
-        "entities/Row.md",
         "entities/RowContext.md",
         "entities/RowHours.md",
         "entities/RowItem.md",
+        "entities/RowKind.md",
         "entities/RowLoad.md",
         "entities/RowTarget.md",
         "entities/Rule.md",
@@ -50972,6 +50973,7 @@
         "entities/SameReceiptSink.md",
         "entities/SampleKind.md",
         "entities/SampleManifest.md",
+        "entities/sampleProject.test_Row.md",
         "entities/SampleRecord.md",
         "entities/SampleState.md",
         "entities/SampleWindowUnavailableError.md",
@@ -51137,6 +51139,9 @@
         "entities/schemas_task_brief_TaskBrief.md",
         "entities/schemas_task_CascadeUpdateInfo.md",
         "entities/schemas_task_domain_TaskActionAvailability.md",
+        "entities/schemas_task_postponement_ReactivationRequirementInput.md",
+        "entities/schemas_task_postponement_TaskPostponementRecord.md",
+        "entities/schemas_task_postponement_TaskPostponementResponse.md",
         "entities/schemas_task_TaskAgentReadiness.md",
         "entities/schemas_task_TaskAgentReadinessCriterion.md",
         "entities/schemas_task_TaskAssignee.md",
@@ -51367,9 +51372,8 @@
         "entities/TaskMetricSignals.md",
         "entities/TaskMode.md",
         "entities/TaskOrderRequest.md",
+        "entities/TaskPostponeForm_Row.md",
         "entities/TaskPostponement.md",
-        "entities/TaskPostponementRecord.md",
-        "entities/TaskPostponementResponse.md",
         "entities/TaskPostponementService.md",
         "entities/TaskPostponeRequest.md",
         "entities/TaskProgress.md",
@@ -51632,6 +51636,7 @@
         "entities/types_task_GitHubExternalLinkCreate.md",
         "entities/types_task_GroundedAISuggestionResponse.md",
         "entities/types_task_GroundedFact.md",
+        "entities/types_task_ReactivationRequirementInput.md",
         "entities/types_task_SuggestedSubtask.md",
         "entities/types_task_Task.md",
         "entities/types_task_TaskActionAvailability.md",
@@ -51654,6 +51659,8 @@
         "entities/types_task_TaskImportDestination.md",
         "entities/types_task_TaskMilestone.md",
         "entities/types_task_TaskMoveRequest.md",
+        "entities/types_task_TaskPostponementRecord.md",
+        "entities/types_task_TaskPostponementResponse.md",
         "entities/types_task_TaskProject.md",
         "entities/types_task_TaskReference.md",
         "entities/types_task_TaskReferencePage.md",
@@ -53240,6 +53247,9 @@
         "modules/TaskMergeDialog.md",
         "modules/TaskOwnerAcceptance.md",
         "modules/TaskOwnerAcceptance.test.md",
+        "modules/TaskPostponeForm.md",
+        "modules/TaskPostponement.test.md",
+        "modules/TaskPostponementPanel.md",
         "modules/TaskReadView.brief.test.md",
         "modules/TaskReadView.dispatch.test.md",
         "modules/TaskReadView.md",
@@ -66563,16 +66573,30 @@
       "title": "_RateLimitWindow"
     },
     {
-      "canonical_path": "entities/ReactivationRequirementInput.md",
-      "id": "ReactivationRequirementInput",
+      "canonical_path": "entities/ReactivationRequirement.md",
+      "id": "ReactivationRequirement",
       "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/ReactivationRequirementInput",
+      "mcp_uri": "llm-wiki://entities/ReactivationRequirement",
       "outgoing_internal_links": [
-        "modules/schemas_task_postponement.md"
+        "modules/TaskPostponementPanel.md",
+        "modules/types_task.md"
       ],
       "role": "semantic",
-      "source_path": "backend/app/schemas/task_postponement.py",
-      "title": "ReactivationRequirementInput"
+      "source_path": "frontend/src/types/task.ts",
+      "title": "ReactivationRequirement"
+    },
+    {
+      "canonical_path": "entities/ReactivationRequirementKind.md",
+      "id": "ReactivationRequirementKind",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/ReactivationRequirementKind",
+      "outgoing_internal_links": [
+        "modules/TaskPostponeForm.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/task.ts",
+      "title": "ReactivationRequirementKind"
     },
     {
       "canonical_path": "entities/ReactivationRequirementResponse.md",
@@ -67837,18 +67861,6 @@
       "title": "RoutingTrustLineage"
     },
     {
-      "canonical_path": "entities/Row.md",
-      "id": "Row",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/Row",
-      "outgoing_internal_links": [
-        "modules/sampleProject.test.md"
-      ],
-      "role": "semantic",
-      "source_path": "frontend/src/features/firstRun/sampleProject.test.tsx",
-      "title": "Row"
-    },
-    {
       "canonical_path": "entities/RowContext.md",
       "id": "RowContext",
       "kind": "entities",
@@ -67883,6 +67895,18 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskList.tsx",
       "title": "RowItem"
+    },
+    {
+      "canonical_path": "entities/RowKind.md",
+      "id": "RowKind",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RowKind",
+      "outgoing_internal_links": [
+        "modules/TaskPostponeForm.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskPostponeForm.tsx",
+      "title": "RowKind"
     },
     {
       "canonical_path": "entities/RowLoad.md",
@@ -68181,6 +68205,18 @@
       "role": "semantic",
       "source_path": "frontend/src/features/firstRun/sampleProject.ts",
       "title": "SampleManifest"
+    },
+    {
+      "canonical_path": "entities/sampleProject.test_Row.md",
+      "id": "sampleProject.test_Row",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/sampleProject.test_Row",
+      "outgoing_internal_links": [
+        "modules/sampleProject.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/firstRun/sampleProject.test.tsx",
+      "title": "Row"
     },
     {
       "canonical_path": "entities/SampleRecord.md",
@@ -70520,6 +70556,44 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/task_domain.py",
       "title": "TaskActionAvailability"
+    },
+    {
+      "canonical_path": "entities/schemas_task_postponement_ReactivationRequirementInput.md",
+      "id": "schemas_task_postponement_ReactivationRequirementInput",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/schemas_task_postponement_ReactivationRequirementInput",
+      "outgoing_internal_links": [
+        "modules/schemas_task_postponement.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/task_postponement.py",
+      "title": "ReactivationRequirementInput"
+    },
+    {
+      "canonical_path": "entities/schemas_task_postponement_TaskPostponementRecord.md",
+      "id": "schemas_task_postponement_TaskPostponementRecord",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/schemas_task_postponement_TaskPostponementRecord",
+      "outgoing_internal_links": [
+        "modules/schemas_task_postponement.md",
+        "modules/task_detail.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/task_postponement.py",
+      "title": "TaskPostponementRecord"
+    },
+    {
+      "canonical_path": "entities/schemas_task_postponement_TaskPostponementResponse.md",
+      "id": "schemas_task_postponement_TaskPostponementResponse",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/schemas_task_postponement_TaskPostponementResponse",
+      "outgoing_internal_links": [
+        "modules/routers_task_domain.md",
+        "modules/schemas_task_postponement.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/task_postponement.py",
+      "title": "TaskPostponementResponse"
     },
     {
       "canonical_path": "entities/schemas_task_TaskAgentReadiness.md",
@@ -72960,6 +73034,7 @@
       "mcp_uri": "llm-wiki://entities/TaskActions",
       "outgoing_internal_links": [
         "modules/TaskEditorDrawer.flow.test.md",
+        "modules/TaskPostponeForm.md",
         "modules/taskService.md",
         "modules/types_task.md"
       ],
@@ -73757,6 +73832,18 @@
       "title": "TaskOrderRequest"
     },
     {
+      "canonical_path": "entities/TaskPostponeForm_Row.md",
+      "id": "TaskPostponeForm_Row",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TaskPostponeForm_Row",
+      "outgoing_internal_links": [
+        "modules/TaskPostponeForm.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskPostponeForm.tsx",
+      "title": "Row"
+    },
+    {
       "canonical_path": "entities/TaskPostponement.md",
       "id": "TaskPostponement",
       "kind": "entities",
@@ -73774,32 +73861,6 @@
       "role": "semantic",
       "source_path": "backend/app/models/task_postponement.py",
       "title": "TaskPostponement"
-    },
-    {
-      "canonical_path": "entities/TaskPostponementRecord.md",
-      "id": "TaskPostponementRecord",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TaskPostponementRecord",
-      "outgoing_internal_links": [
-        "modules/schemas_task_postponement.md",
-        "modules/task_detail.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/task_postponement.py",
-      "title": "TaskPostponementRecord"
-    },
-    {
-      "canonical_path": "entities/TaskPostponementResponse.md",
-      "id": "TaskPostponementResponse",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/TaskPostponementResponse",
-      "outgoing_internal_links": [
-        "modules/routers_task_domain.md",
-        "modules/schemas_task_postponement.md"
-      ],
-      "role": "semantic",
-      "source_path": "backend/app/schemas/task_postponement.py",
-      "title": "TaskPostponementResponse"
     },
     {
       "canonical_path": "entities/TaskPostponementService.md",
@@ -77552,6 +77613,20 @@
       "title": "GroundedFact"
     },
     {
+      "canonical_path": "entities/types_task_ReactivationRequirementInput.md",
+      "id": "types_task_ReactivationRequirementInput",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_task_ReactivationRequirementInput",
+      "outgoing_internal_links": [
+        "modules/TaskPostponeForm.md",
+        "modules/taskService.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/task.ts",
+      "title": "ReactivationRequirementInput"
+    },
+    {
       "canonical_path": "entities/types_task_SuggestedSubtask.md",
       "id": "types_task_SuggestedSubtask",
       "kind": "entities",
@@ -77854,6 +77929,32 @@
       "role": "semantic",
       "source_path": "frontend/src/types/task.ts",
       "title": "TaskMoveRequest"
+    },
+    {
+      "canonical_path": "entities/types_task_TaskPostponementRecord.md",
+      "id": "types_task_TaskPostponementRecord",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_task_TaskPostponementRecord",
+      "outgoing_internal_links": [
+        "modules/TaskPostponement.test.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/task.ts",
+      "title": "TaskPostponementRecord"
+    },
+    {
+      "canonical_path": "entities/types_task_TaskPostponementResponse.md",
+      "id": "types_task_TaskPostponementResponse",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_task_TaskPostponementResponse",
+      "outgoing_internal_links": [
+        "modules/taskService.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/task.ts",
+      "title": "TaskPostponementResponse"
     },
     {
       "canonical_path": "entities/types_task_TaskProject.md",
@@ -79506,10 +79607,10 @@
         "modules/GetStartedPanel.test.md",
         "modules/GitHubReconciliationPanel.test.md",
         "modules/identityContext.md",
-        "modules/IdentityProvider.md",
         "modules/identityService.md",
         "modules/sampleProject.test.md",
         "modules/TaskOwnerAcceptance.test.md",
+        "modules/TaskPostponement.test.md",
         "modules/TaskReadView.operatorKey.test.md"
       ],
       "role": "semantic",
@@ -86592,6 +86693,7 @@
         "modules/mutationFeedback.test.md",
         "modules/MutationSuccessFeedback.md",
         "modules/TaskOwnerAcceptance.test.md",
+        "modules/TaskPostponement.test.md",
         "modules/TemplateLabelSettings.test.md",
         "modules/toast.md"
       ],
@@ -89866,7 +89968,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/sampleProject.test",
       "outgoing_internal_links": [
-        "entities/Row.md",
+        "entities/sampleProject.test_Row.md",
         "modules/sampleProject.test.md"
       ],
       "role": "semantic",
@@ -91083,11 +91185,11 @@
       "outgoing_internal_links": [
         "entities/OwnerDecisionRequest.md",
         "entities/PostponementRelease.md",
-        "entities/ReactivationRequirementInput.md",
         "entities/ReactivationRequirementResponse.md",
         "entities/RequirementKind.md",
-        "entities/TaskPostponementRecord.md",
-        "entities/TaskPostponementResponse.md",
+        "entities/schemas_task_postponement_ReactivationRequirementInput.md",
+        "entities/schemas_task_postponement_TaskPostponementRecord.md",
+        "entities/schemas_task_postponement_TaskPostponementResponse.md",
         "entities/TaskPostponeRequest.md",
         "entities/TaskReactivateRequest.md",
         "modules/routers_task_domain.md",
@@ -93414,6 +93516,72 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskOwnerAcceptance.test.tsx",
       "title": "TaskOwnerAcceptance.test Module"
+    },
+    {
+      "canonical_path": "modules/TaskPostponeForm.md",
+      "id": "TaskPostponeForm",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskPostponeForm",
+      "outgoing_internal_links": [
+        "entities/RowKind.md",
+        "entities/TaskPostponeForm_Row.md",
+        "modules/apiError.md",
+        "modules/Button.md",
+        "modules/mutationFeedback.md",
+        "modules/QueryState.md",
+        "modules/Select.md",
+        "modules/TaskPostponeForm.md",
+        "modules/taskService.md",
+        "modules/TaskWorkPanel.md",
+        "modules/Textarea.md",
+        "modules/types_task.md",
+        "modules/useDraftDismissal.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskPostponeForm.tsx",
+      "title": "TaskPostponeForm Module"
+    },
+    {
+      "canonical_path": "modules/TaskPostponement.test.md",
+      "id": "TaskPostponement.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskPostponement.test",
+      "outgoing_internal_links": [
+        "modules/i18n.md",
+        "modules/identityContext.md",
+        "modules/identityService.md",
+        "modules/MutationSuccessFeedback.md",
+        "modules/renderWithProviders.md",
+        "modules/TaskPostponement.test.md",
+        "modules/TaskWorkPanel.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskPostponement.test.tsx",
+      "title": "TaskPostponement.test Module"
+    },
+    {
+      "canonical_path": "modules/TaskPostponementPanel.md",
+      "id": "TaskPostponementPanel",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskPostponementPanel",
+      "outgoing_internal_links": [
+        "modules/apiError.md",
+        "modules/Button.md",
+        "modules/formatDate.md",
+        "modules/identityContext.md",
+        "modules/mutationFeedback.md",
+        "modules/QueryState.md",
+        "modules/TaskPostponementPanel.md",
+        "modules/taskService.md",
+        "modules/TaskWorkPanel.md",
+        "modules/Textarea.md",
+        "modules/types_task.md",
+        "modules/useDraftDismissal.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskPostponementPanel.tsx",
+      "title": "TaskPostponementPanel Module"
     },
     {
       "canonical_path": "modules/TaskReadView.brief.test.md",
@@ -97128,6 +97296,8 @@
         "modules/Input.md",
         "modules/ProjectForm.md",
         "modules/Select.test.md",
+        "modules/TaskPostponeForm.md",
+        "modules/TaskPostponementPanel.md",
         "modules/Textarea.md",
         "modules/useSavedViewManager.md"
       ],
@@ -98011,6 +98181,8 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/types_task",
       "outgoing_internal_links": [
+        "entities/ReactivationRequirement.md",
+        "entities/ReactivationRequirementKind.md",
         "entities/TaskActions.md",
         "entities/TaskCommand.md",
         "entities/TaskDetail.md",
@@ -98029,6 +98201,7 @@
         "entities/types_task_GitHubExternalLinkCreate.md",
         "entities/types_task_GroundedAISuggestionResponse.md",
         "entities/types_task_GroundedFact.md",
+        "entities/types_task_ReactivationRequirementInput.md",
         "entities/types_task_SuggestedSubtask.md",
         "entities/types_task_Task.md",
         "entities/types_task_TaskActionAvailability.md",
@@ -98051,6 +98224,8 @@
         "entities/types_task_TaskImportDestination.md",
         "entities/types_task_TaskMilestone.md",
         "entities/types_task_TaskMoveRequest.md",
+        "entities/types_task_TaskPostponementRecord.md",
+        "entities/types_task_TaskPostponementResponse.md",
         "entities/types_task_TaskProject.md",
         "entities/types_task_TaskReference.md",
         "entities/types_task_TaskReferencePage.md",
@@ -116578,6 +116753,9 @@
         "modules/TaskMergeDialog.md",
         "modules/TaskOwnerAcceptance.md",
         "modules/TaskOwnerAcceptance.test.md",
+        "modules/TaskPostponeForm.md",
+        "modules/TaskPostponement.test.md",
+        "modules/TaskPostponementPanel.md",
         "modules/TaskReadView.brief.test.md",
         "modules/TaskReadView.dispatch.test.md",
         "modules/TaskReadView.md",
@@ -117776,6 +117954,9 @@
         "modules/TaskMergeDialog.md",
         "modules/TaskOwnerAcceptance.md",
         "modules/TaskOwnerAcceptance.test.md",
+        "modules/TaskPostponeForm.md",
+        "modules/TaskPostponement.test.md",
+        "modules/TaskPostponementPanel.md",
         "modules/TaskReadView.brief.test.md",
         "modules/TaskReadView.dispatch.test.md",
         "modules/TaskReadView.md",
@@ -118152,5 +118333,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:f6fbc8ad60783af683d193bf16fdbee82a38cf199d310655fcb8a8f1e1f2b6bb"
+  "source_hash": "sha256:d8172803f784f140fe13c9f70e16edbdd48092e233df22b229db44644c8f2fab"
 }

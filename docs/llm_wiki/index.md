@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1847 | [Open section](#entities) |
-| Modules | 1187 | [Open section](#modules) |
+| Entities | 1854 | [Open section](#entities) |
+| Modules | 1190 | [Open section](#modules) |
 | Workflows | 244 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 632 | [Open section](#entry-point-flows) |
@@ -815,7 +815,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [Queue](entities/Queue.md)
 - [QuickCaptureTarget](entities/QuickCaptureTarget.md)
 - [RateLimitWindow](entities/RateLimitWindow.md)
-- [ReactivationRequirementInput](entities/ReactivationRequirementInput.md)
+- [ReactivationRequirement](entities/ReactivationRequirement.md)
+- [ReactivationRequirementKind](entities/ReactivationRequirementKind.md)
 - [ReactivationRequirementResponse](entities/ReactivationRequirementResponse.md)
 - [ReactivationService](entities/ReactivationService.md)
 - [Readiness](entities/Readiness.md)
@@ -902,10 +903,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RoutingSelectionValidation](entities/RoutingSelectionValidation.md)
 - [RoutingSkillDecision](entities/RoutingSkillDecision.md)
 - [RoutingTrustLineage](entities/RoutingTrustLineage.md)
-- [Row](entities/Row.md)
 - [RowContext](entities/RowContext.md)
 - [RowHours](entities/RowHours.md)
 - [RowItem](entities/RowItem.md)
+- [RowKind](entities/RowKind.md)
 - [RowLoad](entities/RowLoad.md)
 - [RowTarget](entities/RowTarget.md)
 - [Rule](entities/Rule.md)
@@ -1112,10 +1113,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskMetricSignals](entities/TaskMetricSignals.md)
 - [TaskMode](entities/TaskMode.md)
 - [TaskOrderRequest](entities/TaskOrderRequest.md)
+- [TaskPostponeForm_Row](entities/TaskPostponeForm_Row.md)
 - [TaskPostponeRequest](entities/TaskPostponeRequest.md)
 - [TaskPostponement](entities/TaskPostponement.md)
-- [TaskPostponementRecord](entities/TaskPostponementRecord.md)
-- [TaskPostponementResponse](entities/TaskPostponementResponse.md)
 - [TaskPostponementService](entities/TaskPostponementService.md)
 - [TaskProgress](entities/TaskProgress.md)
 - [TaskProgressRecord](entities/TaskProgressRecord.md)
@@ -1418,6 +1418,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [routers_identity_Database](entities/routers_identity_Database.md)
 - [routers_task_domain_DB](entities/routers_task_domain_DB.md)
 - [routers_task_domain_MetricMatchPage](entities/routers_task_domain_MetricMatchPage.md)
+- [sampleProject.test_Row](entities/sampleProject.test_Row.md)
 - [savedView_SavedView](entities/savedView_SavedView.md)
 - [savedView_SavedViewCreate](entities/savedView_SavedViewCreate.md)
 - [savedView_SavedViewScope](entities/savedView_SavedViewScope.md)
@@ -1575,6 +1576,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_task_brief_CriterionProgress](entities/schemas_task_brief_CriterionProgress.md)
 - [schemas_task_brief_TaskBrief](entities/schemas_task_brief_TaskBrief.md)
 - [schemas_task_domain_TaskActionAvailability](entities/schemas_task_domain_TaskActionAvailability.md)
+- [schemas_task_postponement_ReactivationRequirementInput](entities/schemas_task_postponement_ReactivationRequirementInput.md)
+- [schemas_task_postponement_TaskPostponementRecord](entities/schemas_task_postponement_TaskPostponementRecord.md)
+- [schemas_task_postponement_TaskPostponementResponse](entities/schemas_task_postponement_TaskPostponementResponse.md)
 - [schemas_team_MemberCapacity](entities/schemas_team_MemberCapacity.md)
 - [schemas_team_MemberWorkload](entities/schemas_team_MemberWorkload.md)
 - [schemas_team_TeamMemberCreate](entities/schemas_team_TeamMemberCreate.md)
@@ -1764,6 +1768,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_task_GitHubExternalLinkCreate](entities/types_task_GitHubExternalLinkCreate.md)
 - [types_task_GroundedAISuggestionResponse](entities/types_task_GroundedAISuggestionResponse.md)
 - [types_task_GroundedFact](entities/types_task_GroundedFact.md)
+- [types_task_ReactivationRequirementInput](entities/types_task_ReactivationRequirementInput.md)
 - [types_task_SuggestedSubtask](entities/types_task_SuggestedSubtask.md)
 - [types_task_Task](entities/types_task_Task.md)
 - [types_task_TaskAISuggestRequest](entities/types_task_TaskAISuggestRequest.md)
@@ -1786,6 +1791,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_task_TaskImportDestination](entities/types_task_TaskImportDestination.md)
 - [types_task_TaskMilestone](entities/types_task_TaskMilestone.md)
 - [types_task_TaskMoveRequest](entities/types_task_TaskMoveRequest.md)
+- [types_task_TaskPostponementRecord](entities/types_task_TaskPostponementRecord.md)
+- [types_task_TaskPostponementResponse](entities/types_task_TaskPostponementResponse.md)
 - [types_task_TaskProject](entities/types_task_TaskProject.md)
 - [types_task_TaskReference](entities/types_task_TaskReference.md)
 - [types_task_TaskReferencePage](entities/types_task_TaskReferencePage.md)
@@ -2191,6 +2198,9 @@ Retained history; these declarations are absent from the selected source invento
 - [TaskMergeDialog](modules/TaskMergeDialog.md) - `frontend/src/components/tasks/TaskMergeDialog.tsx`
 - [TaskOwnerAcceptance](modules/TaskOwnerAcceptance.md) - `frontend/src/components/tasks/TaskOwnerAcceptance.tsx`
 - [TaskOwnerAcceptance.test](modules/TaskOwnerAcceptance.test.md) - `frontend/src/components/tasks/TaskOwnerAcceptance.test.tsx`
+- [TaskPostponeForm](modules/TaskPostponeForm.md) - `frontend/src/components/tasks/TaskPostponeForm.tsx`
+- [TaskPostponement.test](modules/TaskPostponement.test.md) - `frontend/src/components/tasks/TaskPostponement.test.tsx`
+- [TaskPostponementPanel](modules/TaskPostponementPanel.md) - `frontend/src/components/tasks/TaskPostponementPanel.tsx`
 - [TaskReadView](modules/TaskReadView.md) - `frontend/src/components/tasks/TaskReadView.tsx`
 - [TaskReadView.brief.test](modules/TaskReadView.brief.test.md) - `frontend/src/components/tasks/TaskReadView.brief.test.tsx`
 - [TaskReadView.dispatch.test](modules/TaskReadView.dispatch.test.md) - `frontend/src/components/tasks/TaskReadView.dispatch.test.tsx`

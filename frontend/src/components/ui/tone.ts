@@ -54,12 +54,13 @@ export const STATUS_TONE: Record<TaskStatus, PillTone> = {
     planned: 'gray',
     active: 'blue',
     resolved: 'green',
+    postponed: 'yellow',
     closed: 'purple',
 };
 
 export const statusTextClassName: Record<TaskStatus, string> = {
     planned: 'text-status-planned-foreground', active: 'text-status-active-foreground',
-    resolved: 'text-status-resolved-foreground', closed: 'text-status-closed-foreground',
+    resolved: 'text-status-resolved-foreground', postponed: 'text-feedback-warning-foreground', closed: 'text-status-closed-foreground',
 };
 
 /**

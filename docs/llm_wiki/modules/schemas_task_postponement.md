@@ -66,14 +66,14 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [RequirementKind](../entities/RequirementKind.md) | Type alias | 10 | `Literal['predecessor_accepted', 'date', 'owner_decision', 'linked_resolved']` | — |
-| [ReactivationRequirementInput](../entities/ReactivationRequirementInput.md) | Pydantic model | 24 | `BaseModel` | One condition that must hold before postponed work resumes. |
+| [ReactivationRequirementInput](../entities/schemas_task_postponement_ReactivationRequirementInput.md) | Pydantic model | 24 | `BaseModel` | One condition that must hold before postponed work resumes. |
 | [TaskPostponeRequest](../entities/TaskPostponeRequest.md) | Pydantic model | 60 | `BaseModel` | Stop planned, active or resolved work until its reactivation requirements are met. |
 | [TaskReactivateRequest](../entities/TaskReactivateRequest.md) | Pydantic model | 83 | `BaseModel` | Return postponed work to planned, or to resolved when it was postponed after resolution. |
 | [OwnerDecisionRequest](../entities/OwnerDecisionRequest.md) | Pydantic model | 97 | `BaseModel` | Record that the owner made the decision an owner_decision requirement waits for. |
 | [ReactivationRequirementResponse](../entities/ReactivationRequirementResponse.md) | Pydantic model | 115 | `BaseModel` | — |
 | [PostponementRelease](../entities/PostponementRelease.md) | Pydantic model | 127 | `BaseModel` | Execution ownership the postponement ended through the fenced release. |
-| [TaskPostponementRecord](../entities/TaskPostponementRecord.md) | Pydantic model | 136 | `BaseModel` | — |
-| [TaskPostponementResponse](../entities/TaskPostponementResponse.md) | Pydantic model | 157 | `BaseModel` | — |
+| [TaskPostponementRecord](../entities/schemas_task_postponement_TaskPostponementRecord.md) | Pydantic model | 136 | `BaseModel` | — |
+| [TaskPostponementResponse](../entities/schemas_task_postponement_TaskPostponementResponse.md) | Pydantic model | 157 | `BaseModel` | — |
 
 ## Functions
 
