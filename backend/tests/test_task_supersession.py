@@ -534,8 +534,8 @@ async def test_the_successor_of_a_supersession_cannot_be_canceled_but_a_fresh_re
         assert refused.status_code == 409 and "task_delivers_supersession" in refused.text, refused.text
 
 
-async def test_a_supersession_chain_beyond_the_bound_reads_as_not_delivered_and_warns(delivery_store, monkeypatch, caplog):
-    import logging
+async def test_a_supersession_chain_beyond_the_bound_reads_as_not_delivered_and_warns(delivery_store, monkeypatch):
+    from unittest.mock import Mock
     from app.services import task_replacement_service
     from app.services.task_replacement_service import delivering_leaves
     factory, scenario, _ = delivery_store
@@ -550,6 +550,10 @@ async def test_a_supersession_chain_beyond_the_bound_reads_as_not_delivered_and_
         await db.commit()
         assert [task.id for task in await delivering_leaves(db, [first])] == [third.id]
         monkeypatch.setattr(task_replacement_service, "MAX_SUPERSESSION_CHAIN", 1)
-        with caplog.at_level(logging.WARNING, logger="app.services.task_replacement_service"):
-            assert await delivering_leaves(db, [first]) == []
-        assert any("exceeds 1 links" in record.getMessage() for record in caplog.records)
+        # Assert on the module logger itself: other suites reconfigure logging handlers and propagation.
+        logger = Mock()
+        monkeypatch.setattr(task_replacement_service, "logger", logger)
+        assert await delivering_leaves(db, [first]) == []
+        logger.warning.assert_called_once()
+        message, *args = logger.warning.call_args.args
+        assert "exceeds %s links" in message and args == [[first.id], 1]
