@@ -46,7 +46,7 @@ A capacity allocation removal reserves the shared planning input and affected it
 | `sqlalchemy.dialects.sqlite` | `insert` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `sqlalchemy.orm.attributes` | `set_committed_value` |
-| `typing` | `Literal` |
+| `typing` | `Any`, `Literal` |
 
 ## Local dependency map
 
@@ -66,7 +66,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (117) |
+| Inbound | `backend` (118) |
 | Outbound | `backend` (19) |
 
 ### External packages
@@ -75,16 +75,16 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 127 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 128 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [CommandState](../entities/CommandState.md) | 13 | — | — |
-| [AggregateVersionConflict](../entities/AggregateVersionConflict.md) | 38 | `RuntimeError` | — |
-| [HierarchyScopeError](../entities/HierarchyScopeError.md) | 49 | `RuntimeError` | — |
-| [PlanningConflict](../entities/PlanningConflict.md) | 54 | `RuntimeError` | — |
+| [AggregateVersionConflict](../entities/AggregateVersionConflict.md) | 40 | `RuntimeError` | — |
+| [HierarchyScopeError](../entities/HierarchyScopeError.md) | 51 | `RuntimeError` | — |
+| [PlanningConflict](../entities/PlanningConflict.md) | 56 | `RuntimeError` | — |
 
 ## Functions
 

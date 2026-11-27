@@ -1,6 +1,6 @@
 # ProjectMilestone
 
-**Location:** `backend/app/models/project.py:249`
+**Location:** `backend/app/models/project.py:254`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_project](../modules/models_project.md)

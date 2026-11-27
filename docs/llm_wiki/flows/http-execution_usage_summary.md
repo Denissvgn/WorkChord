@@ -194,15 +194,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| execution_usage_summary | domain_result | 90 | `domain_result(...)` |
-| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 59 | `str(exc)` |
-| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| execution_usage_summary | ExecutionUsageService.summary | 90 | `ExecutionUsageService(db).summary(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days, budget_amount=budget_amount, budget_currency=budget_currency, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)` |
+| execution_usage_summary | domain_result | 91 | `domain_result(...)` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| execution_usage_summary | ExecutionUsageService.summary | 91 | `ExecutionUsageService(db).summary(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days, budget_amount=budget_amount, budget_currency=budget_currency, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)` |
 | ExecutionUsageService.summary | ValueError (backend/app/services/exec…utionUsageService.summary) | 158 | `ValueError('Observation window must be between 1 and 366 elapsed days')` |
 | ExecutionUsageService.summary | validate_report_scope | 159 | `validate_report_scope(project_id, iteration_id, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)` |
 
@@ -217,11 +217,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 55 |
-| unresolved_call | `domain_result` | `exc.detail` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| external_call | `domain_result` | `HTTPException` | 61 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
 | external_call | `ExecutionUsageService.summary` | `ValueError` | 158 |
 | step_limit | `execution_usage_summary` | `first 12 steps` | 0 |
 

@@ -2,6 +2,7 @@
 
 from app.schemas.work_metrics import TaskMetricSignals
 from app.schemas.task_brief import TaskBrief
+from app.schemas.task_routing import RoutingCheck, RoutingResolution
 from datetime import date, datetime
 from enum import Enum
 from typing import Any, Literal, Optional
@@ -92,6 +93,9 @@ class TaskUpdate(BaseModel):
     external_key: Optional[str] = Field(default=None, max_length=255)
     source: Optional[str] = Field(default=None, max_length=100)
     source_url: Optional[str] = Field(default=None, max_length=1000)
+    routing_resolution: RoutingResolution = Field(default="check", description=(
+        "How an assignee or routing change treats the brief's structured routing: check it against the assignee and the "
+        "project's review policy (refused or warned as the project is configured), or save the suggested consistent routing."))
 
     @field_validator("source_url")
     @classmethod
@@ -270,6 +274,9 @@ class TaskResponse(TaskMetricSignals):
     updated_at: Optional[datetime] = None
     children: list["TaskResponse"] = []
     dependencies: list[int] = []
+    routing_check: Optional[RoutingCheck] = Field(default=None, description=(
+        "Present on a write that changed the assignee or routing: whether the routing is consistent, its issues "
+        "and a consistent replacement with a suggested reviewer."))
 
     class Config:
         from_attributes = True
@@ -329,6 +336,7 @@ class TaskBulkOperationResult(BaseModel):
     error: Optional[str] = None
     task: Optional[TaskResponse] = None
     assignee_recommendation: Optional[AssigneeRecommendationResponse] = None
+    routing_check: Optional[RoutingCheck] = None
 
 
 class TaskBulkOperationResponse(BaseModel):

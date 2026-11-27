@@ -1,6 +1,6 @@
 # TaskBulkOperationService
 
-**Location:** `backend/app/services/task_bulk_operation_service.py:33`
+**Location:** `backend/app/services/task_bulk_operation_service.py:34`
 **Kind:** Class
 **Bases:** —
 **Module:** [task_bulk_operation_service](../modules/task_bulk_operation_service.md)
@@ -22,6 +22,7 @@ Validate, preview, and apply selected-task bulk operations.
 | `_run_for_task` | *(async)* `(task: Task, data: TaskBulkOperationRequest, iteration_end_date: Optional[Any], ui_language) -> TaskBulkOperationResult` | — | — |
 | `_delete_task` | *(async)* `(task: Task, dry_run: bool, ui_language) -> TaskBulkOperationResult` | — | — |
 | `_build_update` | *(async)* `(task: Task, data: TaskBulkOperationRequest, ui_language) -> tuple[TaskUpdate, dict[str, Any], Optional[AssigneeRecommendationResponse], list[str]]` | — | — |
+| `_preview_routing` | *(async)* `(task: Task, assignee_id: Optional[int], resolution: str)` | — | The routing check the reassignment will meet, and the routing applying the suggestion would leave. |
 | `_validate_update` | *(async)* `(task: Task, update: TaskUpdate) -> None` | — | — |
 | `_changes_for_update` | `(task: Task, update: TaskUpdate) -> dict[str, Any]` | — | — |
 | `_auto_assignee_for_task` | *(async)* `(task: Task, payload: dict[str, Any]) -> tuple[Optional[int], Optional[AssigneeRecommendationResponse], list[str]]` | — | — |
@@ -55,7 +56,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [task_bulk_operation_service](../modules/task_bulk_operation_service.md) | 18 | — |
+| [task_bulk_operation_service](../modules/task_bulk_operation_service.md) | 19 | — |
 
 ### References
 

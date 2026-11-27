@@ -39,6 +39,7 @@ the same audited command and read-model paths.
 | `app.schemas.task_domain` | `TaskActionRequest` |
 | `app.schemas.task_postponement` | `TaskPostponementResponse`, `TaskPostponeRequest`, `TaskReactivateRequest` |
 | `app.schemas.task_replacement` | `TaskReplacementResponse`, `TaskReplacementCreate` |
+| `app.schemas.task_routing` | `RoutingConvert` |
 | `app.schemas.team` | `MemberCapacity`, `MemberWorkload`, `TeamMemberProfileResponse`, `TeamMemberProfileCreate`, `TeamMemberProfileUpdate`, `TeamMemberCreate`, `TeamMemberResponse`, `TeamMemberUpdate`, `VacationCreate`, `VacationResponse`, `VacationUpdate`, `CapacityAdjustmentCommand`, `CapacityAdjustmentResult`, `CapacityAdjustmentCommand`, `CapacityTransferCommand`, `CapacityTransferResult`, `CapacityTransferCommand`, `CapacityTransferResult`, `CapacityTransferWithdrawal`, `CapacityTransferWithdrawal` |
 | `app.schemas.template` | `TemplateType`, `WorkTemplateResponse` |
 | `app.schemas.triage` | `TriageActionRequest`, `TriageClassificationSuggestionResponse`, `TriageConvertToTaskRequest`, `TriageConvertToTaskResponse`, `TriageDuplicateRequest`, `TriageItemCreate`, `TriageItemResponse`, `TriageItemStatus`, `TriageItemUpdate`, `TriageSnoozeRequest`, `TriageSourceLinkOutcome`, `TriageTaskDraftRequest`, `TriageConvertToBacklogRequest` |
@@ -68,7 +69,7 @@ the same audited command and read-model paths.
 | `app.services.request_source_service` | `RequestSourceConflictError`, `RequestSourceService` |
 | `app.services.saved_view_service` | `SavedViewService` |
 | `app.services.system_settings_service` | `RuntimeSettingsService` |
-| `app.services.task_brief_service` | `TaskBriefService` |
+| `app.services.task_brief_service` | `TaskBriefService`, `TaskBriefService`, `TaskBriefService` |
 | `app.services.task_context_revision_service` | `TaskContextVersionConflictError`, `lock_task_context` |
 | `app.services.task_detail_service` | `TaskDetailService` |
 | `app.services.task_display_state` | `validate_state_filter` |
@@ -112,8 +113,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (21) |
-| Outbound | `backend` (66) |
+| Inbound | `backend` (22) |
+| Outbound | `backend` (67) |
 
 ### External packages
 
@@ -121,7 +122,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 87 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 89 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -296,4 +297,6 @@ flowchart LR
 | `apply_task_command` | *(async)* `(db, actor, task_id, payload)` | — | Apply the same guarded domain command exposed over REST. |
 | `create_project_backlog_task` | *(async)* `(db, actor, project_id, payload)` | — | Capture durable project work without scheduling or capacity fabrication. |
 | `write_task_brief` | *(async)* `(db, actor, task_id, payload)` | — | Write canonical fields using the shared task context version. |
+| `check_task_routing` | *(async)* `(db, actor, task_id, assignee_id = None)` | — | Check a brief's structured routing against the current or a proposed assignee. |
+| `convert_task_routing` | *(async)* `(db, actor, task_id, payload)` | — | Preview or apply moving a brief's free-text routing into structured routing. |
 | `convert_triage_to_backlog` | *(async)* `(db, actor, triage_item_id, payload)` | — | Use an explicit project backlog destination while preserving legacy conversion. |

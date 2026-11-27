@@ -200,7 +200,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_preview_capacity_transfer_withdrawal | _tool_call | 1629 | `_tool_call('team:write', ..., preview=True)` |
+| agent_preview_capacity_transfer_withdrawal | _tool_call | 1639 | `_tool_call('team:write', ..., preview=True)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |

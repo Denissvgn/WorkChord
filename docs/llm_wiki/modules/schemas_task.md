@@ -14,6 +14,7 @@ Task schemas.
 |--------|---------|
 | `app.schemas.external_link` | `ExternalLinkResponse` |
 | `app.schemas.task_brief` | `TaskBrief` |
+| `app.schemas.task_routing` | `RoutingCheck`, `RoutingResolution` |
 | `app.schemas.team` | `AssigneeRecommendationResponse` |
 | `app.schemas.work_metrics` | `TaskMetricSignals` |
 | `app.utils.source_link_policy` | `SourceLinkRefused`, `normalize_source_link` |
@@ -44,7 +45,7 @@ flowchart LR
 |---|---|
 | Inbound | `backend` (42) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (5) |
+| Outbound | `backend` (6) |
 
 ### External packages
 
@@ -52,46 +53,46 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 48 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 49 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskStatus](../entities/schemas_task_TaskStatus.md) | Enum | 27 | `str`, `Enum` | Task status enumeration for work tracking. |
-| [TaskCreate](../entities/schemas_task_TaskCreate.md) | Pydantic model | 38 | `BaseModel` | Schema for creating a task. |
-| [TaskUpdate](../entities/schemas_task_TaskUpdate.md) | Pydantic model | 70 | `BaseModel` | Schema for updating a task. |
-| [TaskDependencyCreate](../entities/TaskDependencyCreate.md) | Pydantic model | 102 | `BaseModel` | Schema for creating a task dependency. |
-| [TaskReorder](../entities/TaskReorder.md) | Pydantic model | 108 | `BaseModel` | Schema for reordering tasks. |
-| [TaskMoveRequest](../entities/schemas_task_TaskMoveRequest.md) | Pydantic model | 117 | `BaseModel` | Schema for moving a task subtree to another iteration. |
-| [TaskAssignee](../entities/schemas_task_TaskAssignee.md) | Pydantic model | 126 | `BaseModel` | Brief assignee info for task. |
-| [TaskClaimedBy](../entities/schemas_task_TaskClaimedBy.md) | Pydantic model | 139 | `BaseModel` | Brief agent info for task claim state. |
-| [TaskProject](../entities/schemas_task_TaskProject.md) | Pydantic model | 149 | `BaseModel` | Brief project info for task. |
-| [TaskMilestone](../entities/schemas_task_TaskMilestone.md) | Pydantic model | 160 | `BaseModel` | Brief milestone info for task. |
-| [TaskAgentReadinessCriterion](../entities/schemas_task_TaskAgentReadinessCriterion.md) | Pydantic model | 172 | `BaseModel` | One deterministic criterion used for agent-readiness evaluation. |
-| [TaskAgentReadiness](../entities/schemas_task_TaskAgentReadiness.md) | Pydantic model | 180 | `BaseModel` | Computed advisory readiness for agent execution. |
-| [TaskResponse](../entities/TaskResponse.md) | Pydantic model | 191 | `TaskMetricSignals` | Schema for task response. |
-| [TaskMerge](../entities/TaskMerge.md) | Pydantic model | 278 | `BaseModel` | Request schema for merging tasks under a new parent. |
-| [TaskUnmerge](../entities/TaskUnmerge.md) | Pydantic model | 287 | `BaseModel` | Request schema for unmerging a parent task. |
-| [TaskBulkAction](../entities/schemas_task_TaskBulkAction.md) | Type alias | 294 | `Literal['set_assignee', 'clear_assignee', 'auto_assign', 'set_project', 'clear_project', 'set_milestone', 'clear_milestone', 'set_priority', 'add_labels', 'remove_labels', 'set_flags', 'change_status', 'delete']` | — |
-| [TaskBulkOutcome](../entities/schemas_task_TaskBulkOutcome.md) | Type alias | 310 | `Literal['updated', 'deleted', 'skipped', 'failed', 'would_update', 'would_delete']` | — |
-| [TaskBulkOperationRequest](../entities/schemas_task_TaskBulkOperationRequest.md) | Pydantic model | 313 | `BaseModel` | Request schema for selected-task bulk operations. |
-| [TaskBulkOperationResult](../entities/schemas_task_TaskBulkOperationResult.md) | Pydantic model | 323 | `BaseModel` | Per-task result returned by a selected-task bulk operation. |
-| [TaskBulkOperationResponse](../entities/schemas_task_TaskBulkOperationResponse.md) | Pydantic model | 334 | `BaseModel` | Response for selected-task bulk operations. |
-| [TaskImportDestination](../entities/schemas_task_TaskImportDestination.md) | Type alias | 345 | `Literal['tasks', 'triage', 'auto']` | — |
-| [TasksImportRequest](../entities/schemas_task_TasksImportRequest.md) | Pydantic model | 348 | `BaseModel` | Request for importing tasks from text. |
-| [TaskTextContext](../entities/schemas_task_TaskTextContext.md) | Pydantic model | 363 | `BaseModel` | One text editing base and its observed iteration revision. |
-| [TaskImportTriageItemResponse](../entities/TaskImportTriageItemResponse.md) | Pydantic model | 370 | `BaseModel` | Triage item shape returned by task import endpoints. |
-| [TasksImportResponse](../entities/schemas_task_TasksImportResponse.md) | Pydantic model | 395 | `BaseModel` | Response for task import. |
-| [TaskStatusChange](../entities/TaskStatusChange.md) | Pydantic model | 404 | `BaseModel` | Request for changing task status. |
-| [TaskStatusLogResponse](../entities/TaskStatusLogResponse.md) | Pydantic model | 411 | `BaseModel` | Response for task status log entry. |
-| [TaskStatusStats](../entities/schemas_task_TaskStatusStats.md) | Pydantic model | 424 | `BaseModel` | Response for status transition statistics (aggregated). |
-| [CascadeUpdateInfo](../entities/schemas_task_CascadeUpdateInfo.md) | Pydantic model | 431 | `BaseModel` | Information about cascading date updates. |
-| [TaskStatusChangeResponse](../entities/schemas_task_TaskStatusChangeResponse.md) | Pydantic model | 441 | `BaseModel` | Response for status change with cascade info. |
-| [TaskBatchUpdateItem](../entities/schemas_task_TaskBatchUpdateItem.md) | Pydantic model | 448 | `BaseModel` | Schema for a single task update item in a batch. |
-| [TaskBatchUpdateRequest](../entities/schemas_task_TaskBatchUpdateRequest.md) | Pydantic model | 456 | `BaseModel` | Schema for updating multiple tasks in a single request. |
-| [TaskBatchUpdateResponseItem](../entities/schemas_task_TaskBatchUpdateResponseItem.md) | Pydantic model | 463 | `BaseModel` | Schema for a single task update response inside a batch response. |
-| [TaskBatchUpdateResponse](../entities/schemas_task_TaskBatchUpdateResponse.md) | Pydantic model | 470 | `BaseModel` | Response schema for a batch task update. |
+| [TaskStatus](../entities/schemas_task_TaskStatus.md) | Enum | 28 | `str`, `Enum` | Task status enumeration for work tracking. |
+| [TaskCreate](../entities/schemas_task_TaskCreate.md) | Pydantic model | 39 | `BaseModel` | Schema for creating a task. |
+| [TaskUpdate](../entities/schemas_task_TaskUpdate.md) | Pydantic model | 71 | `BaseModel` | Schema for updating a task. |
+| [TaskDependencyCreate](../entities/TaskDependencyCreate.md) | Pydantic model | 106 | `BaseModel` | Schema for creating a task dependency. |
+| [TaskReorder](../entities/TaskReorder.md) | Pydantic model | 112 | `BaseModel` | Schema for reordering tasks. |
+| [TaskMoveRequest](../entities/schemas_task_TaskMoveRequest.md) | Pydantic model | 121 | `BaseModel` | Schema for moving a task subtree to another iteration. |
+| [TaskAssignee](../entities/schemas_task_TaskAssignee.md) | Pydantic model | 130 | `BaseModel` | Brief assignee info for task. |
+| [TaskClaimedBy](../entities/schemas_task_TaskClaimedBy.md) | Pydantic model | 143 | `BaseModel` | Brief agent info for task claim state. |
+| [TaskProject](../entities/schemas_task_TaskProject.md) | Pydantic model | 153 | `BaseModel` | Brief project info for task. |
+| [TaskMilestone](../entities/schemas_task_TaskMilestone.md) | Pydantic model | 164 | `BaseModel` | Brief milestone info for task. |
+| [TaskAgentReadinessCriterion](../entities/schemas_task_TaskAgentReadinessCriterion.md) | Pydantic model | 176 | `BaseModel` | One deterministic criterion used for agent-readiness evaluation. |
+| [TaskAgentReadiness](../entities/schemas_task_TaskAgentReadiness.md) | Pydantic model | 184 | `BaseModel` | Computed advisory readiness for agent execution. |
+| [TaskResponse](../entities/TaskResponse.md) | Pydantic model | 195 | `TaskMetricSignals` | Schema for task response. |
+| [TaskMerge](../entities/TaskMerge.md) | Pydantic model | 285 | `BaseModel` | Request schema for merging tasks under a new parent. |
+| [TaskUnmerge](../entities/TaskUnmerge.md) | Pydantic model | 294 | `BaseModel` | Request schema for unmerging a parent task. |
+| [TaskBulkAction](../entities/schemas_task_TaskBulkAction.md) | Type alias | 301 | `Literal['set_assignee', 'clear_assignee', 'auto_assign', 'set_project', 'clear_project', 'set_milestone', 'clear_milestone', 'set_priority', 'add_labels', 'remove_labels', 'set_flags', 'change_status', 'delete']` | — |
+| [TaskBulkOutcome](../entities/schemas_task_TaskBulkOutcome.md) | Type alias | 317 | `Literal['updated', 'deleted', 'skipped', 'failed', 'would_update', 'would_delete']` | — |
+| [TaskBulkOperationRequest](../entities/schemas_task_TaskBulkOperationRequest.md) | Pydantic model | 320 | `BaseModel` | Request schema for selected-task bulk operations. |
+| [TaskBulkOperationResult](../entities/schemas_task_TaskBulkOperationResult.md) | Pydantic model | 330 | `BaseModel` | Per-task result returned by a selected-task bulk operation. |
+| [TaskBulkOperationResponse](../entities/schemas_task_TaskBulkOperationResponse.md) | Pydantic model | 342 | `BaseModel` | Response for selected-task bulk operations. |
+| [TaskImportDestination](../entities/schemas_task_TaskImportDestination.md) | Type alias | 353 | `Literal['tasks', 'triage', 'auto']` | — |
+| [TasksImportRequest](../entities/schemas_task_TasksImportRequest.md) | Pydantic model | 356 | `BaseModel` | Request for importing tasks from text. |
+| [TaskTextContext](../entities/schemas_task_TaskTextContext.md) | Pydantic model | 371 | `BaseModel` | One text editing base and its observed iteration revision. |
+| [TaskImportTriageItemResponse](../entities/TaskImportTriageItemResponse.md) | Pydantic model | 378 | `BaseModel` | Triage item shape returned by task import endpoints. |
+| [TasksImportResponse](../entities/schemas_task_TasksImportResponse.md) | Pydantic model | 403 | `BaseModel` | Response for task import. |
+| [TaskStatusChange](../entities/TaskStatusChange.md) | Pydantic model | 412 | `BaseModel` | Request for changing task status. |
+| [TaskStatusLogResponse](../entities/TaskStatusLogResponse.md) | Pydantic model | 419 | `BaseModel` | Response for task status log entry. |
+| [TaskStatusStats](../entities/schemas_task_TaskStatusStats.md) | Pydantic model | 432 | `BaseModel` | Response for status transition statistics (aggregated). |
+| [CascadeUpdateInfo](../entities/schemas_task_CascadeUpdateInfo.md) | Pydantic model | 439 | `BaseModel` | Information about cascading date updates. |
+| [TaskStatusChangeResponse](../entities/schemas_task_TaskStatusChangeResponse.md) | Pydantic model | 449 | `BaseModel` | Response for status change with cascade info. |
+| [TaskBatchUpdateItem](../entities/schemas_task_TaskBatchUpdateItem.md) | Pydantic model | 456 | `BaseModel` | Schema for a single task update item in a batch. |
+| [TaskBatchUpdateRequest](../entities/schemas_task_TaskBatchUpdateRequest.md) | Pydantic model | 464 | `BaseModel` | Schema for updating multiple tasks in a single request. |
+| [TaskBatchUpdateResponseItem](../entities/schemas_task_TaskBatchUpdateResponseItem.md) | Pydantic model | 471 | `BaseModel` | Schema for a single task update response inside a batch response. |
+| [TaskBatchUpdateResponse](../entities/schemas_task_TaskBatchUpdateResponse.md) | Pydantic model | 478 | `BaseModel` | Response schema for a batch task update. |
 
 ## Functions
 

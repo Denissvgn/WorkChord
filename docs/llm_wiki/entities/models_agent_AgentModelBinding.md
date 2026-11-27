@@ -112,4 +112,4 @@ flowchart LR
 | `agent_routing_service` | import | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `AgentService.create_actor` | call | [agent_service](../modules/agent_service.md) | 1 |
 
-> References: showing 12 of 53 logical references; 41 omitted by the 12-row generated summary limit.
+> References: showing 12 of 55 logical references; 43 omitted by the 12-row generated summary limit.

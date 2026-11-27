@@ -144,8 +144,8 @@ flowchart LR
 | local_work_profile | db.get | 60 | `db.get(TeamMemberProfile, profile_id)` |
 | choose_local_profile | AuthorityError | 207 | `AuthorityError('profile_not_found', 'Choose an existing person profile.', 404)` |
 | choose_local_profile | commit_or_flush | 209 | `commit_or_flush(db)` |
-| commit_or_flush | current_command | 93 | `current_command(db)` |
-| current_command | getattr | 87 | `getattr(db, 'info', None)` |
+| commit_or_flush | current_command | 95 | `current_command(db)` |
+| current_command | getattr | 89 | `getattr(db, 'info', None)` |
 
 ### Boundary effects
 
@@ -157,7 +157,7 @@ flowchart LR
 |---|---|---|---:|
 | unresolved_call | `internal_authority` | `db.info.get` | 114 |
 | unresolved_call | `local_work_profile` | `db.get` | 60 |
-| external_call | `current_command` | `getattr` | 87 |
+| external_call | `current_command` | `getattr` | 89 |
 | step_limit | `choose_local_profile` | `first 12 steps` | 0 |
 
 ## Behavior

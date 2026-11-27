@@ -110,4 +110,4 @@ flowchart LR
 | `AgentRoutingService._profile_revision` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `agent_service` | import | [agent_service](../modules/agent_service.md) | — |
 
-> References: showing 12 of 106 logical references; 94 omitted by the 12-row generated summary limit.
+> References: showing 12 of 108 logical references; 96 omitted by the 12-row generated summary limit.

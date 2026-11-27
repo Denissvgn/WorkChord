@@ -101,9 +101,9 @@ sequenceDiagram
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 550 interactions; 520 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 551 interactions; 521 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 164 (163 omitted); unresolved 1 of 242 (241 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 164 (163 omitted); unresolved 1 of 243 (242 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -207,7 +207,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_list_project_tasks | _tool_call | 2164 | `_tool_call('tasks:read', ...)` |
+| workspace_list_project_tasks | _tool_call | 2174 | `_tool_call('tasks:read', ...)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |

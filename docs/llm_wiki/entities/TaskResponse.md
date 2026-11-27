@@ -1,6 +1,6 @@
 # TaskResponse
 
-**Location:** `backend/app/schemas/task.py:191`
+**Location:** `backend/app/schemas/task.py:195`
 **Kind:** Pydantic model
 **Bases:** `TaskMetricSignals`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -88,6 +88,7 @@ Schema for task response.
 | `updated_at` | `Optional[datetime]` | `updated_at` | No | Yes | `None` | — | — | — |
 | `children` | `list['TaskResponse']` | `children` | No | No | `[]` | — | — | — |
 | `dependencies` | `list[int]` | `dependencies` | No | No | `[]` | — | — | — |
+| `routing_check` | `Optional[RoutingCheck]` | `routing_check` | No | Yes | `None` | — | — | Present on a write that changed the assignee or routing: whether the routing is consistent, its issues and a consistent replacement with a suggested reviewer. |
 
 ## Methods
 

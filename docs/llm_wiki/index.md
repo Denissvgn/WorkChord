@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1923 | [Open section](#entities) |
-| Modules | 1220 | [Open section](#modules) |
-| Workflows | 252 | [Open section](#workflows) |
+| Entities | 1936 | [Open section](#entities) |
+| Modules | 1225 | [Open section](#modules) |
+| Workflows | 254 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 648 | [Open section](#entry-point-flows) |
+| Entry-point flows | 652 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -203,6 +203,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AptPreparation](entities/AptPreparation.md)
 - [AssessmentDraft](entities/AssessmentDraft.md)
 - [AssignedWorker](entities/AssignedWorker.md)
+- [AssigneeModels](entities/AssigneeModels.md)
 - [AssigneeRecommendation](entities/AssigneeRecommendation.md)
 - [AssigneeRecommendationResponse](entities/AssigneeRecommendationResponse.md)
 - [AssigneeRecommendationService](entities/AssigneeRecommendationService.md)
@@ -453,6 +454,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ExternalLinkResponse](entities/ExternalLinkResponse.md)
 - [ExternalLinkService](entities/ExternalLinkService.md)
 - [ExternalLinkValidationError](entities/ExternalLinkValidationError.md)
+- [Facts](entities/Facts.md)
 - [FailingForOneMemberSink](entities/FailingForOneMemberSink.md)
 - [FailingOnceCredentialSink](entities/FailingOnceCredentialSink.md)
 - [FailingSession](entities/FailingSession.md)
@@ -888,6 +890,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ResolvedHandoffFact](entities/ResolvedHandoffFact.md)
 - [ResolvedStatusEvidence](entities/ResolvedStatusEvidence.md)
 - [ResolvedVerifierLease](entities/ResolvedVerifierLease.md)
+- [Resolver](entities/Resolver.md)
 - [RetentionState](entities/RetentionState.md)
 - [ReviewEvidenceCommand](entities/ReviewEvidenceCommand.md)
 - [ReviewEvidenceIssue](entities/ReviewEvidenceIssue.md)
@@ -922,11 +925,17 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RoutingCalibrationContractTerms](entities/RoutingCalibrationContractTerms.md)
 - [RoutingCandidateComparisonProps](entities/RoutingCandidateComparisonProps.md)
 - [RoutingCandidateSummary](entities/RoutingCandidateSummary.md)
+- [RoutingCheck](entities/RoutingCheck.md)
+- [RoutingConflictMode](entities/RoutingConflictMode.md)
+- [RoutingConsistencyConflict](entities/RoutingConsistencyConflict.md)
 - [RoutingContractModel](entities/RoutingContractModel.md)
+- [RoutingConvert](entities/RoutingConvert.md)
+- [RoutingConvertResponse](entities/RoutingConvertResponse.md)
 - [RoutingDecisionSnapshot](entities/RoutingDecisionSnapshot.md)
 - [RoutingDigest](entities/RoutingDigest.md)
 - [RoutingEligibilityDecision](entities/RoutingEligibilityDecision.md)
 - [RoutingExclusionSummary](entities/RoutingExclusionSummary.md)
+- [RoutingIssue](entities/RoutingIssue.md)
 - [RoutingKey](entities/RoutingKey.md)
 - [RoutingModelEnvelopeDecision](entities/RoutingModelEnvelopeDecision.md)
 - [RoutingOperationalEvent](entities/RoutingOperationalEvent.md)
@@ -939,6 +948,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RoutingQualificationKeyRevisionResponse](entities/RoutingQualificationKeyRevisionResponse.md)
 - [RoutingQualificationKeyService](entities/RoutingQualificationKeyService.md)
 - [RoutingQualificationKeyState](entities/RoutingQualificationKeyState.md)
+- [RoutingResolution](entities/RoutingResolution.md)
+- [RoutingReviewer](entities/RoutingReviewer.md)
+- [RoutingRung](entities/RoutingRung.md)
 - [RoutingSelectionValidation](entities/RoutingSelectionValidation.md)
 - [RoutingSkillDecision](entities/RoutingSkillDecision.md)
 - [RoutingTermsRefusedError](entities/RoutingTermsRefusedError.md)
@@ -1172,6 +1184,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskReviewMode](entities/TaskReviewMode.md)
 - [TaskReviewResponse](entities/TaskReviewResponse.md)
 - [TaskReviewWrite](entities/TaskReviewWrite.md)
+- [TaskRouting](entities/TaskRouting.md)
 - [TaskRoutingAssessmentCreate](entities/TaskRoutingAssessmentCreate.md)
 - [TaskRoutingAssessmentFields](entities/TaskRoutingAssessmentFields.md)
 - [TaskRoutingAssessmentHistory](entities/TaskRoutingAssessmentHistory.md)
@@ -1982,6 +1995,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261127_0030_task_supersession](modules/20261127_0030_task_supersession.md) - Record a supersession: an original whose deliverable was already closed or accepted as another task.
 - [20261127_0031_routing_qualification_keys](modules/20261127_0031_routing_qualification_keys.md) - Keep a deployment's declared qualification keys and let catalog entries hold them.
 - [20261127_0032_routing_calibration_contracts](modules/20261127_0032_routing_calibration_contracts.md) - Keep the deployment's calibration contracts and their append-only revisions.
+- [20261127_0033_project_routing_conflict_mode](modules/20261127_0033_project_routing_conflict_mode.md) - Let a project refuse or only warn about task routing that conflicts with its review policy.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AccountMenu](modules/AccountMenu.md) - `frontend/src/features/identity/AccountMenu.tsx`
 - [AccountMenu.test](modules/AccountMenu.test.md) - `frontend/src/features/identity/AccountMenu.test.tsx`
@@ -2866,6 +2880,8 @@ Retained history; these declarations are absent from the selected source invento
 - [task_reactivation_service](modules/task_reactivation_service.md) - Return postponed work to its lifecycle once every recorded requirement holds.
 - [task_recovery_service](modules/task_recovery_service.md) - Version allocation shared by scheduled and project-backlog recovery.
 - [task_replacement_service](modules/task_replacement_service.md) - Record and read an audited disposition that names the task delivering another task's work.
+- [task_routing](modules/task_routing.md) - Structured routing of one task: its first rung, escalation ladder and reviewer.
+- [task_routing_service](modules/task_routing_service.md) - Keep a task's structured routing consistent with its assignee and the project's review policy.
 - [task_service](modules/task_service.md) - Task service with business logic.
 - [task_status_log](modules/task_status_log.md) - Task status log model for audit trail.
 - [task_status_service](modules/task_status_service.md) - Task status transitions, roll-up reconciliation, and status reporting.
@@ -3005,6 +3021,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_project_identity](modules/test_project_identity.md) - Project allocation floors, dependent preservation and transactional rebuilds.
 - [test_project_identity_scope](modules/test_project_identity_scope.md) - Ambiguous legacy identities stop before writes and never expose private records.
 - [test_project_review_policy](modules/test_project_review_policy.md) - Project editors can round-trip the current policy. Changes need an operator.
+- [test_project_routing_conflict_mode_migration](modules/test_project_routing_conflict_mode_migration.md) - Existing projects start refusing inconsistent routing, and the setting round-trips a downgrade.
 - [test_project_working_timezone](modules/test_project_working_timezone.md) - Declared project working zones survive transport and drive local work dates.
 - [test_query_boundaries](modules/test_query_boundaries.md) - DBM-PERF-001 bounded graph and aggregate-summary tests.
 - [test_readiness_detail](modules/test_readiness_detail.md) - Managed readiness stays status-only unless the readiness-detail token matches.
@@ -3057,6 +3074,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_task_reactivation](modules/test_task_reactivation.md) - Postponed work returns to its lifecycle by itself once every recorded requirement holds.
 - [test_task_replacement](modules/test_task_replacement.md) - A clean replacement of unattributable work: audited, counted once, and held when it carries unknown work.
 - [test_task_replacement_migration](modules/test_task_replacement_migration.md) - Clean-replacement dispositions migrate reversibly and an existing disposition is never dropped silently.
+- [test_task_routing_consistency](modules/test_task_routing_consistency.md) - A task's first rung, escalation and reviewer stay consistent with its assignee and review policy.
 - [test_task_supersession](modules/test_task_supersession.md) - An original superseded by work already closed or accepted: nothing reopens, and the deliverable counts once.
 - [test_task_supersession_migration](modules/test_task_supersession_migration.md) - Supersession dispositions migrate reversibly; existing replacements keep their basis and none is dropped silently.
 - [test_team_member_agent_connected](modules/test_team_member_agent_connected.md) - Team-member responses say whether an agent is connected, to every reader, without naming it.
@@ -3301,8 +3319,10 @@ Retained history; these declarations are absent from the selected source invento
 - [SnapshotService_build_snapshot_data](workflows/SnapshotService_build_snapshot_data.md) - entry: `snapshot_service.SnapshotService.build_snapshot_data`
 - [SnapshotService_create_snapshot](workflows/SnapshotService_create_snapshot.md) - entry: `snapshot_service.SnapshotService.create_snapshot`
 - [SnapshotService_restore](workflows/SnapshotService_restore.md) - entry: `snapshot_service.SnapshotService.restore`
+- [TaskBriefService_apply_brief](workflows/TaskBriefService_apply_brief.md) - entry: `task_brief_service.TaskBriefService.apply_brief`
 - [TaskBriefService_record_review](workflows/TaskBriefService_record_review.md) - entry: `task_brief_service.TaskBriefService.record_review`
 - [TaskBriefService_require_review](workflows/TaskBriefService_require_review.md) - entry: `task_brief_service.TaskBriefService.require_review`
+- [TaskBulkOperationService__run_for_task](workflows/TaskBulkOperationService__run_for_task.md) - entry: `task_bulk_operation_service.TaskBulkOperationService._run_for_task`
 - [TaskBulkOperationService_run](workflows/TaskBulkOperationService_run.md) - entry: `task_bulk_operation_service.TaskBulkOperationService.run`
 - [TaskDetailService_detail](workflows/TaskDetailService_detail.md) - entry: `task_detail_service.TaskDetailService.detail`
 - [TaskDetailService_lookup](workflows/TaskDetailService_lookup.md) - entry: `task_detail_service.TaskDetailService.lookup`
@@ -3464,6 +3484,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-cancel_maintenance_window](flows/http-cancel_maintenance_window.md) - entry: `cancel_maintenance_window`
 - [http-capabilities](flows/http-capabilities.md) - entry: `capabilities`
 - [http-change_task_status](flows/http-change_task_status.md) - entry: `change_task_status`
+- [http-check_task_routing](flows/http-check_task_routing.md) - entry: `check_task_routing`
 - [http-choose_local_profile](flows/http-choose_local_profile.md) - entry: `choose_local_profile`
 - [http-claim_task](flows/http-claim_task.md) - entry: `claim_task`
 - [http-classify_planning_triage_item](flows/http-classify_planning_triage_item.md) - entry: `classify_planning_triage_item`
@@ -3474,6 +3495,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-configuration](flows/http-configuration.md) - entry: `configuration`
 - [http-convert_planning_triage_item_to_task](flows/http-convert_planning_triage_item_to_task.md) - entry: `convert_planning_triage_item_to_task`
 - [http-convert_task_brief](flows/http-convert_task_brief.md) - entry: `convert_task_brief`
+- [http-convert_task_routing](flows/http-convert_task_routing.md) - entry: `convert_task_routing`
 - [http-convert_triage_item_to_backlog](flows/http-convert_triage_item_to_backlog.md) - entry: `convert_triage_item_to_backlog`
 - [http-convert_triage_item_to_task](flows/http-convert_triage_item_to_task.md) - entry: `convert_triage_item_to_task`
 - [http-correct_entry](flows/http-correct_entry.md) - entry: `correct_entry`
@@ -3869,6 +3891,7 @@ Retained history; these declarations are absent from the selected source invento
 - [mcp-agent_begin_my_work](flows/mcp-agent_begin_my_work.md) - entry: `agent_begin_my_work`
 - [mcp-agent_capabilities_resource](flows/mcp-agent_capabilities_resource.md) - entry: `agent_capabilities_resource`
 - [mcp-agent_claim_task](flows/mcp-agent_claim_task.md) - entry: `agent_claim_task`
+- [mcp-agent_convert_task_routing](flows/mcp-agent_convert_task_routing.md) - entry: `agent_convert_task_routing`
 - [mcp-agent_convert_triage_to_backlog](flows/mcp-agent_convert_triage_to_backlog.md) - entry: `agent_convert_triage_to_backlog`
 - [mcp-agent_create_assignment](flows/mcp-agent_create_assignment.md) - entry: `agent_create_assignment`
 - [mcp-agent_create_backlog_task](flows/mcp-agent_create_backlog_task.md) - entry: `agent_create_backlog_task`
@@ -3907,6 +3930,7 @@ Retained history; these declarations are absent from the selected source invento
 - [mcp-agent_get_task_postponement](flows/mcp-agent_get_task_postponement.md) - entry: `agent_get_task_postponement`
 - [mcp-agent_get_task_replacement](flows/mcp-agent_get_task_replacement.md) - entry: `agent_get_task_replacement`
 - [mcp-agent_get_task_routing_assessment](flows/mcp-agent_get_task_routing_assessment.md) - entry: `agent_get_task_routing_assessment`
+- [mcp-agent_get_task_routing_check](flows/mcp-agent_get_task_routing_check.md) - entry: `agent_get_task_routing_check`
 - [mcp-agent_get_team_setup_status](flows/mcp-agent_get_team_setup_status.md) - entry: `agent_get_team_setup_status`
 - [mcp-agent_get_team_topology](flows/mcp-agent_get_team_topology.md) - entry: `agent_get_team_topology`
 - [mcp-agent_list_actor_roster](flows/mcp-agent_list_actor_roster.md) - entry: `agent_list_actor_roster`
