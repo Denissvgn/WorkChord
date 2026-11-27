@@ -221,6 +221,15 @@ async def test_an_mcp_retry_with_the_same_key_replays_the_receipt(team, monkeypa
     assert await _state(factory, task_id) == ("postponed", version + 1)
 
 
+REFUSED = {
+    OTHER_PM_KEY: ("not_found", "inaccessible"),
+    VIEWER_KEY: ("permission_denied",),
+    READER_KEY: ("scope",),
+    WORKER_KEY: ("postpone_decider_required",),
+    VERIFIER_KEY: ("postpone_decider_required",),
+}
+
+
 @pytest.mark.parametrize("transport", ["rest", "mcp"])
 @pytest.mark.parametrize("key", [OTHER_PM_KEY, VIEWER_KEY, READER_KEY, WORKER_KEY, VERIFIER_KEY])
 async def test_other_credentials_cannot_postpone_or_reactivate(team, transport, key, monkeypatch):
@@ -240,8 +249,25 @@ async def test_other_credentials_cannot_postpone_or_reactivate(team, transport, 
         assert not ok, detail
     assert await _state(factory, planned) == ("planned", planned_version)
     assert await _state(factory, held) == ("postponed", postponed_version)
-    if key in {WORKER_KEY, VERIFIER_KEY}:
-        assert all("postpone_decider_required" in detail for _, detail in refusals), refusals
+    assert all(any(marker in detail for marker in REFUSED[key]) for _, detail in refusals), refusals
+
+
+def test_a_status_filter_keeps_a_matching_grandchild_under_a_non_matching_child():
+    from app.mcp_agent_tools import _tasks_with_status
+
+    tree = [
+        {"id": 1, "status": "active", "children": [
+            {"id": 2, "status": "planned", "children": [
+                {"id": 3, "status": "postponed", "children": []},
+                {"id": 4, "status": "planned", "children": []}]},
+            {"id": 5, "status": "closed", "children": []}]},
+        {"id": 6, "status": "planned", "children": []},
+    ]
+    kept = _tasks_with_status(tree, "postponed")
+    assert [node["id"] for node in kept] == [1]
+    assert [node["id"] for node in kept[0]["children"]] == [2]
+    assert [node["id"] for node in kept[0]["children"][0]["children"]] == [3]
+    assert _tasks_with_status(tree, "resolved") == []
 
 
 @pytest.mark.parametrize("transport", ["rest", "mcp"])
