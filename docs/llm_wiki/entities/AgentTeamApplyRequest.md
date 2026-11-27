@@ -1,7 +1,7 @@
 # AgentTeamApplyRequest
 
-**Location:** `backend/app/schemas/agent_team_setup.py:823`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:824`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 

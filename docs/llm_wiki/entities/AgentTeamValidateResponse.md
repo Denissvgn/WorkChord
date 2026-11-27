@@ -1,7 +1,7 @@
 # AgentTeamValidateResponse
 
-**Location:** `backend/app/schemas/agent_team_setup.py:807`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:808`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 
@@ -11,13 +11,13 @@ _Auto-generated from `AgentTeamValidateResponse` in `backend/app/schemas/agent_t
 
 ## Attributes
 
-| Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
-|------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `schema_version` | `Literal['agent-team-validation-v1']` | `schema_version` | No | No | `'agent-team-validation-v1'` | — | — | — |
-| `valid` | `bool` | `valid` | Yes | No | — | — | — | — |
-| `manifest_digest` | `str` | `manifest_digest` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
-| `normalized_manifest` | `AgentTeamMaster` | `normalized_manifest` | Yes | No | — | — | — | — |
-| `blocker_codes` | `tuple[str, ...]` | `blocker_codes` | No | No | `()` | max_length=unknown (MAX_AGENT_TEAM_BLOCKERS) | — | — |
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `schema_version` | `Literal['agent-team-validation-v1']` | `'agent-team-validation-v1'` | — |
+| `valid` | `bool` | *required* | — |
+| `manifest_digest` | `str` | *required* | — |
+| `normalized_manifest` | `AgentTeamMaster` | *required* | — |
+| `blocker_codes` | `tuple[str, ...]` | `()` | — |
 
 ## Methods
 

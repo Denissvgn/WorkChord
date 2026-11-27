@@ -1,6 +1,6 @@
 # AgentModelCatalogEntry
 
-**Location:** `backend/app/models/agent.py:129`
+**Location:** `backend/app/models/agent.py:135`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)

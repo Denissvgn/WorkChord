@@ -1,7 +1,7 @@
 # AgentTeamSkillPackage
 
-**Location:** `backend/app/schemas/agent_team_setup.py:186`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:187`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 
@@ -11,11 +11,11 @@ Exact immutable role-package identity expected by one runtime.
 
 ## Attributes
 
-| Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
-|------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `str` | `name` | Yes | No | — | pattern=unknown (STABLE_KEY_PATTERN) | — | — |
-| `version` | `str` | `version` | Yes | No | — | pattern=unknown (SEMVER_PATTERN) | — | — |
-| `sha256` | `str` | `sha256` | Yes | No | — | pattern=unknown (SHA256_PATTERN) | — | — |
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `name` | `str` | *required* | — |
+| `version` | `str` | *required* | — |
+| `sha256` | `str` | *required* | — |
 
 ## Methods
 

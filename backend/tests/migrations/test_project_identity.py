@@ -159,6 +159,17 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         assert after_catalog.pop("task_reactivation_requirements")["checks"] == [
             "ck_task_reactivation_requirements_date", "ck_task_reactivation_requirements_decision",
             "ck_task_reactivation_requirements_kind", "ck_task_reactivation_requirements_target"]
+        # A later revision records which runtime instance acknowledged each team member's handoff.
+        members = after_catalog["agent_team_topology_members"]["columns"]
+        for column in (
+            "issued_runtime_instance_id",
+            "acknowledged_runtime_instance_id",
+            "previous_runtime_instance_id",
+            "rejected_runtime_instance_id",
+        ):
+            assert members.pop(column) == {"type": {"family": "text"}, "nullable": True}
+        for column in ("runtime_identity_changed_at", "rejected_runtime_instance_at"):
+            assert members.pop(column)["nullable"] is True
         assert after_catalog == before_catalog
         with engine.begin() as db:
             assert "AUTOINCREMENT" in db.scalar(text("SELECT sql FROM sqlite_master WHERE name='projects'"))
