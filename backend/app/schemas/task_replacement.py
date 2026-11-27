@@ -87,7 +87,7 @@ class ReplacementReviewPolicy(BaseModel):
 class ReplacementMovedDependency(BaseModel):
     task_id: int
     kind: Literal["schedule", "delivery", "reactivation"]
-    action: Literal["moved", "merged", "removed"]
+    action: Literal["moved", "merged", "removed", "converted"]
 
 
 class ReplacementOriginal(BaseModel):
@@ -130,7 +130,7 @@ class TaskReplacementResponse(BaseModel):
     id: int
     project_id: int
     disposition: Literal["replacement", "supersession"]
-    role: Literal["original", "replacement"]
+    role: Literal["original", "replacement", "successor"]
     original_task_id: int
     replacement_task_id: int
     decision: ReplacementDecision

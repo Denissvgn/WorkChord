@@ -13,7 +13,7 @@ from app.models.task import Task
 from app.models.task_replacement import TaskReplacement
 from app.services.upgrade_service import alembic_config
 
-MIGRATION = importlib.import_module("app.migrations.versions.20261127_0031_task_supersession")
+MIGRATION = importlib.import_module("app.migrations.versions.20261127_0030_task_supersession")
 PREVIOUS, CURRENT = MIGRATION.down_revision, MIGRATION.revision
 
 

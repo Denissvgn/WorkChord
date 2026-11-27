@@ -111,7 +111,7 @@ async def test_supersession_moves_dependents_releases_and_requirements_and_count
                                   json=_supersede(SimpleNamespace(id=s.original.id, version=s.original.version + 1), s.successor))
         assert again.status_code == 409, again.text
         read = await client.get(f"/api/tasks/{s.successor.id}/replacement")
-        assert read.status_code == 200 and read.json()["role"] == "replacement"
+        assert read.status_code == 200 and read.json()["role"] == "successor"
     assert view["disposition"] == "supersession" and view["role"] == "original"
     assert (view["original_task_id"], view["replacement_task_id"]) == (s.original.id, s.successor.id)
     assert view["decision"]["reason"] == REASON and view["decision"]["owner_decision"] is None
@@ -272,3 +272,253 @@ async def test_only_a_project_manager_or_pm_actor_supersedes(delivery_store, kin
         else:
             with pytest.raises(AuthorityError):
                 await service.supersede(original.id, data)
+
+
+def _frozen(*tasks):
+    return [SimpleNamespace(id=task.id, version=task.version) for task in tasks]
+
+
+async def _refused(factory, original, successor, *, expected=PlanningConflict, **overrides):
+    with pytest.raises(expected) as refused:
+        await _with_service(factory, lambda service: service.supersede(
+            original.id, TaskSupersessionCreate(**_supersede(original, successor, **overrides))))
+    async with factory() as db:
+        # A refused command changes nothing: no disposition, and the original is not withdrawn.
+        assert await db.scalar(select(TaskReplacement.id).where(TaskReplacement.original_task_id == original.id)) is None
+        kept = await db.get(Task, original.id)
+        assert kept.version == original.version and kept.canceled_at is None
+    return refused.value
+
+
+@pytest.mark.parametrize("successor_state", ["accepted", "closed"])
+async def test_a_milestone_whose_only_leaf_was_superseded_counts_the_successor(delivery_store, successor_state):
+    from app.models.project import ProjectMilestone
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        milestone = ProjectMilestone(project_id=scenario.projects[0], name="Importer milestone", status="completed")
+        db.add(milestone)
+        await db.flush()
+        original = Task(title="Only leaf of the milestone", project_id=scenario.projects[0],
+                        iteration_id=scenario.iterations[0], milestone_id=milestone.id, status="resolved")
+        dependent = Task(title="Waits on the milestone", project_id=scenario.projects[0],
+                         iteration_id=scenario.iterations[0], status="planned")
+        db.add_all([original, dependent])
+        await db.flush()
+        # The successor lives in no milestone at all.
+        successor = await db.get(Task, scenario.tasks["closed_urgent"])
+        if successor_state == "accepted":
+            await _accept(db, successor)
+        db.add(DeliveryDependency(task_id=dependent.id, prerequisite_milestone_id=milestone.id))
+        await db.commit()
+        dependent_id = dependent.id
+        original, successor = _frozen(original, successor)
+        assert not await DeliveryDependencyService(db).ready(dependent_id)
+    await _with_service(factory, lambda service: service.supersede(
+        original.id, TaskSupersessionCreate(**_supersede(original, successor))))
+    async with factory() as db:
+        assert await DeliveryDependencyService(db).ready(dependent_id) is (successor_state == "accepted")
+
+
+async def test_a_schedule_dependent_follows_a_successor_in_another_iteration_as_a_delivery_prerequisite(delivery_store):
+    from app.models.iteration import Iteration
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first = await db.get(Iteration, scenario.iterations[0])
+        later = Iteration(name="February delivery", start_date=first.end_date + timedelta(days=3),
+                          end_date=first.end_date + timedelta(days=30), calendar_id=first.calendar_id,
+                          project_id=scenario.projects[0])
+        db.add(later)
+        await db.flush()
+        original = await db.get(Task, scenario.tasks["resolved"])
+        successor = Task(title="Importer, delivered next iteration", project_id=scenario.projects[0],
+                         iteration_id=later.id, status="closed")
+        db.add(successor)
+        await db.flush()
+        await _accept(db, successor)
+        converted, merged = (Task(title=title, project_id=scenario.projects[0], iteration_id=first.id, status="planned")
+                             for title in ("Follows the importer", "Already waits on the successor"))
+        db.add_all([converted, merged])
+        await db.flush()
+        db.add_all([TaskDependency(task_id=converted.id, depends_on_id=original.id),
+                    TaskDependency(task_id=merged.id, depends_on_id=original.id),
+                    DeliveryDependency(task_id=merged.id, prerequisite_task_id=successor.id)])
+        await db.commit()
+        ids = SimpleNamespace(converted=converted.id, merged=merged.id)
+        original, successor = _frozen(original, successor)
+    view = await _with_service(factory, lambda service: service.supersede(
+        original.id, TaskSupersessionCreate(**_supersede(original, successor))))
+    assert sorted((item["task_id"], item["kind"], item["action"]) for item in view["moved_dependencies"]) == sorted([
+        (ids.converted, "schedule", "converted"), (ids.merged, "schedule", "merged")])
+    async with factory() as db:
+        assert (await db.scalars(select(TaskDependency).where(TaskDependency.depends_on_id == original.id))).all() == []
+        for task_id in (ids.converted, ids.merged):
+            edges = (await db.scalars(select(DeliveryDependency.prerequisite_task_id).where(
+                DeliveryDependency.task_id == task_id))).all()
+            assert edges == [successor.id]
+            assert await DeliveryDependencyService(db).ready(task_id)
+        events = (await db.scalars(select(TaskEvent).where(TaskEvent.task_id == ids.converted,
+                                                           TaskEvent.event_type == "dependency_replaced"))).all()
+        assert len(events) == 1 and '"converted"' in events[0].payload
+
+
+async def test_edges_to_the_successor_merge_and_its_own_edges_to_the_original_are_removed(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        original, successor = await db.get(Task, scenario.tasks["resolved"]), await db.get(Task, scenario.tasks["closed_urgent"])
+        dependent = Task(title="Waits on both", project_id=scenario.projects[0], iteration_id=scenario.iterations[0],
+                         status="planned")
+        db.add(dependent)
+        await db.flush()
+        db.add_all([TaskDependency(task_id=dependent.id, depends_on_id=original.id),
+                    TaskDependency(task_id=dependent.id, depends_on_id=successor.id),
+                    DeliveryDependency(task_id=dependent.id, prerequisite_task_id=original.id),
+                    DeliveryDependency(task_id=dependent.id, prerequisite_task_id=successor.id),
+                    TaskDependency(task_id=successor.id, depends_on_id=original.id),
+                    DeliveryDependency(task_id=successor.id, prerequisite_task_id=original.id)])
+        waiting, requirement = await _postponed(db, scenario.projects[0], scenario.iterations[0], original.id)
+        twin = TaskReactivationRequirement(postponement_id=requirement.postponement_id, task_id=waiting.id, position=1,
+                                           kind="predecessor_accepted", target_task_id=successor.id)
+        db.add(twin)
+        await db.commit()
+        ids = SimpleNamespace(dependent=dependent.id, waiting=waiting.id, requirement=requirement.id, twin=twin.id)
+        original, successor = _frozen(original, successor)
+    view = await _with_service(factory, lambda service: service.supersede(
+        original.id, TaskSupersessionCreate(**_supersede(original, successor))))
+    assert sorted((item["task_id"], item["kind"], item["action"]) for item in view["moved_dependencies"]) == sorted([
+        (ids.dependent, "schedule", "merged"), (ids.dependent, "delivery", "merged"),
+        (successor.id, "schedule", "removed"), (successor.id, "delivery", "removed"),
+        (ids.waiting, "reactivation", "merged")])
+    async with factory() as db:
+        assert (await db.scalars(select(TaskDependency.depends_on_id).where(
+            TaskDependency.task_id == ids.dependent))).all() == [successor.id]
+        assert (await db.scalars(select(DeliveryDependency.prerequisite_task_id).where(
+            DeliveryDependency.task_id == ids.dependent))).all() == [successor.id]
+        assert (await db.scalars(select(TaskDependency).where(TaskDependency.task_id == successor.id))).all() == []
+        assert (await db.scalars(select(DeliveryDependency).where(DeliveryDependency.task_id == successor.id))).all() == []
+        assert await db.get(TaskReactivationRequirement, ids.requirement) is None
+        assert (await db.get(TaskReactivationRequirement, ids.twin)).target_task_id == successor.id
+
+
+async def test_a_dependency_cycle_is_refused_and_rolls_back(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        original, successor = await db.get(Task, scenario.tasks["resolved"]), await db.get(Task, scenario.tasks["closed_urgent"])
+        dependent = Task(title="Depends on the original", project_id=scenario.projects[0],
+                         iteration_id=scenario.iterations[0], status="planned")
+        db.add(dependent)
+        await db.flush()
+        # The successor already depends on the original's dependent, so moving the edge would close a loop.
+        db.add_all([DeliveryDependency(task_id=dependent.id, prerequisite_task_id=original.id),
+                    DeliveryDependency(task_id=successor.id, prerequisite_task_id=dependent.id)])
+        await db.commit()
+        dependent_id = dependent.id
+        original, successor = _frozen(original, successor)
+    assert (await _refused(factory, original, successor)).code == "replacement_dependency_cycle"
+    async with factory() as db:
+        assert await db.scalar(select(DeliveryDependency.prerequisite_task_id).where(
+            DeliveryDependency.task_id == dependent_id)) == original.id
+
+
+async def test_supersession_refuses_stale_live_summary_and_unauthorized_moves(delivery_store):
+    from app.models.agent import AgentTaskAssignment
+    from app.services.task_service import TaskVersionConflictError
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        resolved, active, closed, parent = [await db.get(Task, scenario.tasks[key])
+                                            for key in ("resolved", "active", "closed_urgent", "parent")]
+        db.add(AgentTaskAssignment(task_id=active.id, actor_id=scenario.actors[0], purpose="execution",
+                                   queue_class="normal", state="queued", task_version=active.version,
+                                   routing_snapshot="{}"))
+        # A dependent in another project, which a manager of the first project cannot edit.
+        db.add(DeliveryDependency(task_id=scenario.tasks["other_project"], prerequisite_task_id=resolved.id))
+        await db.commit()
+        resolved, active, closed, parent = _frozen(resolved, active, closed, parent)
+    await _refused(factory, resolved, closed, expected=TaskVersionConflictError,
+                   expected_successor_version=closed.version + 1)
+    assert (await _refused(factory, active, closed)).code == "replacement_original_execution_live"
+    assert (await _refused(factory, parent, closed)).code == "replacement_leaf_required"
+    assert (await _refused(factory, resolved, parent)).code == "replacement_leaf_required"
+
+    async def as_manager(service):
+        service.db.info["authority"] = Authority(None, "human", projects={scenario.projects[0]: "manager"})
+        return await service.supersede(resolved.id, TaskSupersessionCreate(**_supersede(resolved, closed)))
+
+    await _refused_with(factory, as_manager, resolved, AuthorityError)
+    async with factory() as db:
+        assert await db.scalar(select(DeliveryDependency.prerequisite_task_id).where(
+            DeliveryDependency.task_id == scenario.tasks["other_project"])) == resolved.id
+
+
+async def _refused_with(factory, call, original, expected):
+    with pytest.raises(expected):
+        await _with_service(factory, call)
+    async with factory() as db:
+        assert await db.scalar(select(TaskReplacement.id).where(TaskReplacement.original_task_id == original.id)) is None
+        assert (await db.get(Task, original.id)).version == original.version
+
+
+async def test_a_worker_agent_cannot_supersede_over_rest(delivery_store, monkeypatch):
+    from app.config import get_settings
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", "trusted_local")
+    get_settings.cache_clear()
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        original, successor = _frozen(await db.get(Task, scenario.tasks["resolved"]),
+                                      await db.get(Task, scenario.tasks["closed_urgent"]))
+    try:
+        async with _client() as client:
+            refused = await client.post(f"/api/tasks/{original.id}/supersession", json=_supersede(original, successor),
+                                        headers={"X-Agent-API-Key": scenario.actor_keys[0]})
+        assert refused.status_code == 403, refused.text
+    finally:
+        get_settings.cache_clear()
+    async with factory() as db:
+        assert await db.scalar(select(TaskReplacement.id)) is None
+
+
+async def test_a_postponed_original_has_its_postponement_closed(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        original = await db.get(Task, scenario.tasks["resolved"])
+        original.status = "postponed"
+        postponement = TaskPostponement(task_id=original.id, from_status="resolved", reason="Waiting on a vendor",
+                                        task_version=original.version, released={})
+        db.add(postponement)
+        await db.commit()
+        postponement_id = postponement.id
+        original, successor = _frozen(original, await db.get(Task, scenario.tasks["closed_urgent"]))
+    view = await _with_service(factory, lambda service: service.supersede(
+        original.id, TaskSupersessionCreate(**_supersede(original, successor))))
+    assert view["original"]["status_at_decision"] == "postponed"
+    async with factory() as db:
+        kept = await db.get(Task, original.id)
+        assert kept.status == "resolved" and kept.canceled_at is not None
+        closed = await db.get(TaskPostponement, postponement_id)
+        assert closed.reactivated_at is not None and closed.reactivated_to_status == "resolved"
+        assert closed.reactivation_trigger == "supersession" and f"task {successor.id}" in closed.reactivation_reason
+        events = {row.event_type for row in (await db.scalars(select(TaskEvent).where(TaskEvent.task_id == kept.id))).all()}
+        assert {"postponement_closed", "task_superseded"} <= events
+
+
+async def test_the_successor_of_a_supersession_cannot_be_canceled_but_a_fresh_replacement_can(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        original, successor, fresh_original, fresh = _frozen(*[await db.get(Task, scenario.tasks[key]) for key in (
+            "resolved", "closed_urgent", "active", "planned")])
+    await _with_service(factory, lambda service: service.supersede(
+        original.id, TaskSupersessionCreate(**_supersede(original, successor))))
+    data = TaskReplacementCreate(replacement_task_id=fresh.id, expected_original_version=fresh_original.version,
+                                 expected_replacement_version=fresh.version, reason="Unknown publisher",
+                                 owner_decision="Owner approved", carried_run_ids=[],
+                                 base_commit_url="https://github.com/example/project/commit/" + "0" * 40)
+    await _with_service(factory, lambda service: service.record(fresh_original.id, data))
+    async with factory() as db:
+        actions = {item.action: item for item in (await TaskDomainService(db).allowed_actions(successor.id)).actions}
+        assert not actions["cancel"].allowed
+        assert "task_delivers_supersession" in {blocker.code for blocker in actions["cancel"].blockers}
+        actions = {item.action: item for item in (await TaskDomainService(db).allowed_actions(fresh.id)).actions}
+        assert "task_delivers_supersession" not in {blocker.code for blocker in actions["cancel"].blockers}
+    async with _client() as client:
+        refused = await client.post(f"/api/tasks/{successor.id}/commands", json={
+            "action": "cancel", "expected_version": successor.version, "reason": "No longer needed"})
+        assert refused.status_code == 409 and "task_delivers_supersession" in refused.text, refused.text

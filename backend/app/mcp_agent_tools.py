@@ -1241,7 +1241,7 @@ async def get_task_replacement(
     actor: AgentActor,
     task_id: int,
 ) -> dict[str, Any]:
-    """MCP handler: read the clean-replacement disposition a task takes part in."""
+    """MCP handler: read the replacement or supersession disposition a task takes part in."""
     from app.schemas.task_replacement import TaskReplacementResponse
     from app.services.agent_service import require_scope
     from app.services.task_replacement_service import TaskReplacementService

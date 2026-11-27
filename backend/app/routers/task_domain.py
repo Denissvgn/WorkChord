@@ -330,7 +330,7 @@ from app.schemas.task_replacement import TaskReplacementCreate, TaskReplacementR
 
 @router.get("/tasks/{task_id}/replacement", response_model=TaskReplacementResponse)
 async def task_replacement(task_id: int, db: DB):
-    """Read the clean-replacement disposition this task takes part in, as original or replacement."""
+    """Read the replacement or supersession disposition this task takes part in, as original, replacement or successor."""
     from app.services.task_replacement_service import TaskReplacementService
     return await domain_result(TaskReplacementService(db).get(task_id))
 

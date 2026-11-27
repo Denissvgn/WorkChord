@@ -55,6 +55,41 @@ async def replacing(db, task_id):
         return await db.scalar(select(TaskReplacement).where(TaskReplacement.replacement_task_id == task_id))
 
 
+MAX_SUPERSESSION_CHAIN = 32
+
+
+async def delivering_leaves(db, leaves):
+    """The leaves whose acceptance decides a scope's delivery, each deliverable counted once.
+
+    A replaced original is dropped: its fresh replacement delivers the same
+    milestone and is a leaf of the scope itself. A superseded original is
+    represented by its successor, which may live in another milestone or
+    iteration, followed through any later disposition of that successor. A chain
+    longer than the bound fails closed: the scope reads as not delivered.
+    """
+    chosen, visited, frontier = {}, set(), [leaf for leaf in leaves]
+    for _ in range(MAX_SUPERSESSION_CHAIN):
+        frontier = [task for task in frontier if task.id not in visited]
+        if not frontier:
+            return list(chosen.values())
+        visited.update(task.id for task in frontier)
+        with internal_authority(db):
+            relations = {row.original_task_id: row for row in (await db.scalars(select(TaskReplacement).where(
+                TaskReplacement.original_task_id.in_([task.id for task in frontier])))).all()}
+        successors = []
+        for task in frontier:
+            relation = relations.get(task.id)
+            if relation is None:
+                chosen.setdefault(task.id, task)
+            elif relation.disposition == SUPERSESSION:
+                successors.append(relation.replacement_task_id)
+        if not successors:
+            return list(chosen.values())
+        with internal_authority(db):
+            frontier = list((await db.scalars(select(Task).where(Task.id.in_(successors)))).all())
+    return []
+
+
 async def relation_for(db, task_id):
     """The disposition to show for this task; a replacement that was itself replaced shows as replaced."""
     return await replaced_by(db, task_id) or await replacing(db, task_id)
@@ -221,7 +256,8 @@ class TaskReplacementService:
         snapshot = relation.original_snapshot or {}
         return {
             "id": relation.id, "project_id": relation.project_id, "disposition": relation.disposition,
-            "role": "original" if task_id == original.id else "replacement",
+            "role": "original" if task_id == original.id else
+                    "successor" if relation.disposition == SUPERSESSION else "replacement",
             "original_task_id": original.id, "replacement_task_id": replacement.id,
             "decision": {"reason": relation.reason, "owner_decision": relation.owner_decision,
                          "decided_at": relation.decided_at, "decided_by_principal_id": relation.decided_by_principal_id,
@@ -346,7 +382,7 @@ class TaskReplacementService:
         await self._require_supersedable(original, successor)
         from app.services.snapshot_service import SnapshotService
         await SnapshotService(self.db).create_snapshot(original.iteration_id, "before_task_supersession")
-        moved = await self._move_dependents(original, successor)
+        moved = await self._move_dependents(original, successor, delivered=True)
         moved += await self._move_requirements(original, successor)
         releases = await self._move_releases(original, successor, statuses=SUPERSESSION_RELEASE_STATUSES)
         from app.services.identity_service import acting_principal_id
@@ -368,9 +404,11 @@ class TaskReplacementService:
             decided_by_principal_id=principal_id, decided_by_actor_id=getattr(authority, "actor_id", None),
             decided_at=utc_now())
         self.db.add(relation)
-        await self.tasks.reserve_task_version(original, data.expected_original_version)
+        closed = await self._close_postponement(original, successor, data)
+        if closed is None:
+            await self.tasks.reserve_task_version(original, data.expected_original_version)
         if original.canceled_at is None:
-            # Withdrawn, not reopened: status, progress and execution history stay as they were.
+            # Withdrawn, not reopened: progress and execution history stay as they were.
             original.canceled_at = utc_now()
             original.canceled_reason = f"Superseded by task {successor.id}: {data.reason}"
             original.canceled_by_principal_id = principal_id
@@ -384,6 +422,36 @@ class TaskReplacementService:
                 "original_task_id": original.id, "replacement_task_id": successor.id, **item})
         await self.db.flush()
         return await self.projection(relation, original.id)
+
+    async def _close_postponement(self, original, successor, data):
+        """End a postponed original's open postponement: its work is delivered, so nothing is left to wait for.
+
+        The postponement closes the way reactivation would, returning the original
+        to planned (or resolved, if it was postponed after resolution) under the
+        trigger ``supersession``; the original is then withdrawn as superseded, so
+        it never returns to work. Returns the closed postponement, or None when
+        the original was not postponed.
+        """
+        from app.services.task_postponement_service import POSTPONED, open_postponement, reactivation_status
+        if original.status != POSTPONED:
+            return None
+        postponement = await open_postponement(self.db, original.id, lock=True)
+        target = reactivation_status(postponement)
+        reason = f"Superseded by task {successor.id}: {data.reason}"
+        await self.tasks.status_service.apply_postponement_transition(
+            original, target, reason=reason, expected_version=data.expected_original_version)
+        if postponement is not None:
+            from app.services.identity_service import acting_principal_id
+            postponement.reactivated_at = utc_now()
+            postponement.reactivated_to_status = target
+            postponement.reactivation_trigger = SUPERSESSION
+            postponement.reactivation_reason = reason
+            postponement.reactivated_by_principal_id = await acting_principal_id(self.db)
+            postponement.reactivated_by_actor_id = getattr(self.db.info.get("authority"), "actor_id", None)
+        await self.tasks.record_task_event(original.id, "postponement_closed", {
+            "postponement_id": postponement.id if postponement is not None else None, "to_status": target,
+            "trigger": SUPERSESSION, "successor_task_id": successor.id, "reason": reason, "version": original.version})
+        return postponement or target
 
     async def _require_unused(self, original, replacement):
         # A replacement whose own work later proves unattributable can itself be replaced.
@@ -429,11 +497,14 @@ class TaskReplacementService:
             raise PlanningConflict("replacement_not_fresh",
                                    "The replacement must be planned work with no attempts, assignments or acceptance.")
 
-    async def _move_dependents(self, original, replacement):
+    async def _move_dependents(self, original, replacement, *, delivered=False):
         """Point each dependent at the replacement; prerequisite identity, not dependent work, changes.
 
         A dependent keeps its version, so work already issued for it stays valid,
-        and its downstream evidence is not invalidated by this re-pointing.
+        and its downstream evidence is not invalidated by this re-pointing. With
+        ``delivered`` (a supersession), a schedule dependent of an original whose
+        successor is in another iteration gets a delivery prerequisite on the
+        successor instead of a schedule edge (action ``converted``).
         """
         moved = []
         self.db.info["delivery_reconciling"] = True
@@ -453,6 +524,18 @@ class TaskReplacementService:
                     if edge.task_id == replacement.id or duplicate is not None:
                         await self.db.delete(edge)
                         action = "removed" if edge.task_id == replacement.id else "merged"
+                    elif kind == "schedule" and replacement.iteration_id != original.iteration_id and delivered:
+                        # A schedule edge cannot cross iterations. The successor is already
+                        # closed, so its ordering is met; what the dependent still needs is
+                        # the successor's acceptance, which a delivery prerequisite states.
+                        await self.db.delete(edge)
+                        existing = await self.db.scalar(select(DeliveryDependency.id).where(
+                            DeliveryDependency.task_id == edge.task_id,
+                            DeliveryDependency.prerequisite_task_id == replacement.id).limit(1))
+                        if existing is None:
+                            self.db.add(DeliveryDependency(task_id=edge.task_id, prerequisite_task_id=replacement.id))
+                        await self.db.flush()
+                        action = "converted" if existing is None else "merged"
                     else:
                         if kind == "schedule" and replacement.iteration_id != original.iteration_id:
                             raise PlanningConflict("replacement_scope_mismatch",
@@ -492,8 +575,10 @@ class TaskReplacementService:
             scopes = dict((await self.db.execute(select(Task.id, Task.project_id).where(
                 Task.id.in_([row.task_id for row in rows])))).all())
         for row in rows:
-            # Like a dependent, a postponed task in another project must follow too.
-            require_project(self.db, scopes.get(row.task_id), "edit")
+            # A postponed task in another project must follow too. Changing what a
+            # postponement waits for is a postponement decision, so it needs the same
+            # manage permission as postponing that task.
+            require_project(self.db, scopes.get(row.task_id), "manage")
             with internal_authority(self.db):
                 duplicate = await self.db.scalar(select(requirement.id).where(
                     requirement.postponement_id == row.postponement_id, requirement.kind == row.kind,
