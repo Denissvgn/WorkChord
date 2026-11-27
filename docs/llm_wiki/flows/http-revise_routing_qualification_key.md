@@ -178,4 +178,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `revise_routing_qualification_key` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Operator command that changes an active key's label or description under an expected revision; the key itself never changes. It is replay-safe, adds a revision row and an audit event, and is refused if another command changed the key first.

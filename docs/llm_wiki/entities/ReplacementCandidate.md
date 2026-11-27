@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `ReplacementCandidate` in `backend/app/schemas/task_replacement.py`._
+The delivered candidate of a replacement task: its base commit, head commit, pull request and digest, as recorded for review.
 
 ## Attributes
 

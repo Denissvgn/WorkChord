@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `ReactivationService` in `backend/app/services/task_reactivation_service.py`._
+Returns postponed work to its lifecycle once every recorded requirement holds. Requirements are evaluated whenever the facts they depend on can change: a task is resolved or accepted, a triage item is resolved, the owner records a decision, and on the periodic date check that also finishes any evaluation that could not complete earlier. Each evaluation takes the shared planning lock before the postponement row, so concurrent triggers serialize and the task is reactivated exactly once. Owner decisions are never inferred; only the workspace owner records them.
 
 ## Attributes
 

@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `ReplacementMovedDependency` in `backend/app/schemas/task_replacement.py`._
+One thing the disposition moved from the original task to its replacement or successor: a schedule dependency, a delivery prerequisite or a reactivation requirement, and whether it was moved, merged, removed or converted.
 
 ## Attributes
 

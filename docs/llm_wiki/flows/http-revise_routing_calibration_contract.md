@@ -178,4 +178,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `revise_routing_calibration_contract` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Operator command that submits complete new terms as the next revision under an expected revision. Any earlier approval lapses and the contract returns to submitted until the new terms are approved. Replay-safe, with a revision row and an audit event.

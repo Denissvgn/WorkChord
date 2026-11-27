@@ -178,4 +178,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `list_routing_calibration_contracts` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Read-only. Returns every calibration contract and whether any is approved.

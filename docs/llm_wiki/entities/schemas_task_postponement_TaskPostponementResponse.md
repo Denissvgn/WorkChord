@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `TaskPostponementResponse` in `backend/app/schemas/task_postponement.py`._
+A task together with its open or most recent postponement. The postponement is absent only for work that was reactivated from a postponed state that never had a record.
 
 ## Attributes
 

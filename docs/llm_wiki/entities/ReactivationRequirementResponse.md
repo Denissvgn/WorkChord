@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `ReactivationRequirementResponse` in `backend/app/schemas/task_postponement.py`._
+One condition a postponed task waits on, as returned to clients: its kind and target (a task, a triage item, a date or an owner decision), its position, and whether it is met and when. A met requirement stays met even if its target later changes.
 
 ## Attributes
 

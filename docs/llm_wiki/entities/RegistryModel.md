@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `_RegistryModel` in `backend/app/schemas/routing_qualification.py`._
+Shared base for the qualification key registry schemas. It forbids unknown fields and reads from ORM rows.
 
 ## Model Configuration
 

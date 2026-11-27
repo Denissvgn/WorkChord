@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `ReplacementTask` in `backend/app/schemas/task_replacement.py`._
+The replacement or successor task of a disposition: its status, whether it is accepted, the base commit recorded for it, its candidate, and every contributor, including contributions carried over from the original.
 
 ## Attributes
 

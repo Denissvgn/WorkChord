@@ -230,4 +230,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `agent_get_task_postponement` and is classified as `mcp`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Read-only. Returns the task with its open postponement, or its most recent one when it has been reactivated, including each reactivation requirement and whether it is met. A task that was never postponed has none and is reported as not found.

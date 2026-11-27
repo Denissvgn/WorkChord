@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `ImportProfileRows` in `backend/app/schemas/import_review.py`._
+Profiles a plan import would create, as shown in the dry-run change set.
 
 ## Attributes
 

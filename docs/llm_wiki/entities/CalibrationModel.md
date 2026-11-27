@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `_CalibrationModel` in `backend/app/schemas/routing_calibration.py`._
+Shared base for the calibration contract schemas. It forbids unknown fields and reads from ORM rows, so a contract's terms are exactly what was submitted.
 
 ## Model Configuration
 

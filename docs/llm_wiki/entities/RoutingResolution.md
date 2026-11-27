@@ -8,7 +8,7 @@
 
 ## Description
 
-_Auto-generated from `RoutingResolution` in `backend/app/schemas/task_routing.py`._
+How a caller resolves routing inconsistency on a task change: `check` only evaluates and enforces the project's conflict mode, `apply_suggestion` also saves the consistent routing the check proposes.
 
 ## Attributes
 

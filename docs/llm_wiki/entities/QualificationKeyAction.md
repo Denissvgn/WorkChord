@@ -8,7 +8,7 @@
 
 ## Description
 
-_Auto-generated from `QualificationKeyAction` in `backend/app/schemas/routing_qualification.py`._
+The commands that change the qualification key registry: `declare` adds a key or brings a retired one back, `revise` edits an active key's label or description, and `retire` takes it out of use.
 
 ## Attributes
 

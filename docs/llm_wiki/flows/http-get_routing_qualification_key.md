@@ -178,4 +178,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `get_routing_qualification_key` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Read-only. Returns one declared key with every revision it has had and the catalog entries, calibration contracts and tasks that name it, bounded in size.

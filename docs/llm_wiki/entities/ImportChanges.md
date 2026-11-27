@@ -7,7 +7,7 @@
 
 ## Description
 
-_Auto-generated from `ImportChanges` in `backend/app/schemas/import_review.py`._
+The full change set of a plan-import dry run, grouped by what the import touches: the target iteration, tasks, dependencies, links, dates, team members and profiles. It is computed by diffing the target before and after the real import writer runs in a rolled-back command, so the review shows what the write would do.
 
 ## Attributes
 
