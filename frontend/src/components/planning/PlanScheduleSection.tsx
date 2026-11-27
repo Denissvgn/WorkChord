@@ -108,6 +108,8 @@ export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iteratio
     const unscheduled = (result?.unscheduled ?? []).filter(task => task.reason !== 'deferred' && !deferred.has(task.task_id));
     // Tasks the run could not place keep the dates they had; the screen says so instead of implying a calculation.
     const keptDates = (result?.kept_dates ?? []).filter(task => !deferred.has(task.task_id));
+    // Days an assignee waits with nothing to do, each with the task that follows them.
+    const idleDays = result?.idle_days ?? [];
     const showResult = preview !== null || done || Boolean(result);
     return <div className="space-y-4">
         <p className="text-sm text-content-secondary">{t('planSchedule.datesAreCalculated')}</p>
@@ -155,6 +157,18 @@ export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iteratio
                     {' · '}{t('planSchedule.keptDatesRange', { start: formatDate(task.start_date, i18n.language), end: formatDate(task.end_date, i18n.language) })}
                     <p>{unscheduledReasonText(t, task)}</p>
                     {task.date_rule && <p className="text-feedback-warning-foreground">{t(`planSchedule.dateRules.${task.date_rule}`, { defaultValue: task.message })}</p>}
+                </li>)}</ul>
+            </section>}
+            {idleDays.length > 0 && <section aria-label={t('planSchedule.idleDays')} className="space-y-2">
+                <h3 className="text-sm font-semibold">{t('planSchedule.idleDays')}</h3>
+                <p className="text-sm text-content-secondary">{t('planSchedule.idleDaysHelp')}</p>
+                <ul className="plan-schedule-reasons">{idleDays.map(row => <li key={row.member_id}>
+                    <strong>{row.member_name}</strong>{' · '}{t('planSchedule.idleDaysCount', { count: row.idle_working_days })}
+                    <ul>{row.gaps.map(gap => <li key={gap.start_date}>
+                        {t('planSchedule.idleGap', { start: formatDate(gap.start_date, i18n.language), end: formatDate(gap.end_date, i18n.language), count: gap.working_days })}{' '}
+                        <Link className="underline" to={scopeLink(withPlanReturn('/tasks', 'schedule', { task: String(gap.task_id) }))}>{gap.task_title}</Link>
+                        {'. '}{t(`planSchedule.idleReasons.${gap.reason}`, { task: gap.waiting_on?.task_title ?? '', defaultValue: gap.message })}
+                    </li>)}</ul>
                 </li>)}</ul>
             </section>}
         </>}
