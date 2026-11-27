@@ -375,6 +375,21 @@ async def record_task_replacement(task_id: int, data: TaskReplacementCreate, db:
     return await domain_result(TaskReplacementService(db).record(task_id, data))
 
 
+from app.schemas.task_replacement import TaskSupersessionCreate
+
+
+@router.post("/tasks/{task_id}/supersession", response_model=TaskReplacementResponse, status_code=201)
+async def record_task_supersession(task_id: int, data: TaskSupersessionCreate, db: DB):
+    """Record that a closed or accepted task already delivered this task's work; neither task is reopened.
+
+    Only a project owner or manager, an operator, or the project's PM agent may decide. Dependents, delivery
+    prerequisites, release membership and open reactivation requirements move from this task to the successor,
+    and the deliverable counts once.
+    """
+    from app.services.task_replacement_service import TaskReplacementService
+    return await domain_result(TaskReplacementService(db).supersede(task_id, data))
+
+
 from app.schemas.task_postponement import TaskPostponeRequest, TaskPostponementResponse, TaskReactivateRequest
 
 
