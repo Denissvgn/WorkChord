@@ -85,9 +85,9 @@ sequenceDiagram
     p1-->>p29: self.db.get (backend/app/services/exec…utionUsageService.summary)(Project, project_id)
 ```
 
-> Call sequence diagram shows 30 of 301 interactions; 271 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 306 interactions; 276 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 4 of 113 (109 omitted); unresolved 2 of 136 (134 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 4 of 117 (113 omitted); unresolved 2 of 137 (135 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -114,7 +114,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 53; effect analysis evaluated: 35, partial: 3, unavailable: 15. Counts include steps omitted from the displayed trace.
 
-Collector observations for 38 source steps with known totals: observed: 225, emitted: 206, omitted: 19. Unavailable totals are excluded.
+Collector observations for 38 source steps with known totals: observed: 226, emitted: 207, omitted: 19. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -194,15 +194,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| execution_usage_summary | domain_result | 90 | `domain_result(...)` |
-| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 59 | `str(exc)` |
-| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| execution_usage_summary | ExecutionUsageService.summary | 90 | `ExecutionUsageService(db).summary(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days, budget_amount=budget_amount, budget_currency=budget_currency, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)` |
+| execution_usage_summary | domain_result | 91 | `domain_result(...)` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| execution_usage_summary | ExecutionUsageService.summary | 91 | `ExecutionUsageService(db).summary(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days, budget_amount=budget_amount, budget_currency=budget_currency, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)` |
 | ExecutionUsageService.summary | ValueError (backend/app/services/exec…utionUsageService.summary) | 158 | `ValueError('Observation window must be between 1 and 366 elapsed days')` |
 | ExecutionUsageService.summary | validate_report_scope | 159 | `validate_report_scope(project_id, iteration_id, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)` |
 
@@ -217,11 +217,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 55 |
-| unresolved_call | `domain_result` | `exc.detail` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| external_call | `domain_result` | `HTTPException` | 61 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
 | external_call | `ExecutionUsageService.summary` | `ValueError` | 158 |
 | step_limit | `execution_usage_summary` | `first 12 steps` | 0 |
 

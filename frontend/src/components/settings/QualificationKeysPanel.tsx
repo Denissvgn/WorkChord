@@ -31,6 +31,8 @@ interface InUseDetail {
     task_ids?: number[];
     catalog_entries_omitted?: number;
     task_ids_omitted?: number;
+    calibration_contracts?: { key: string }[];
+    calibration_contracts_omitted?: number;
 }
 
 /** A list of names, with how many more the bounded or scoped response left out. */
@@ -90,6 +92,7 @@ export const QualificationKeysPanel = () => {
             const more = (count: number) => t('qualificationKeys.andMore', { count });
             setDialogError(t('qualificationKeys.inUse', {
                 entries: namedWithOmitted((inUse.catalog_entries ?? []).map(entry => entry.key), inUse.catalog_entries_omitted, more),
+                contracts: namedWithOmitted((inUse.calibration_contracts ?? []).map(contract => contract.key), inUse.calibration_contracts_omitted, more),
                 tasks: namedWithOmitted((inUse.task_ids ?? []).map(id => `#${id}`), inUse.task_ids_omitted, more),
             }));
             return;
@@ -271,12 +274,13 @@ export const QualificationKeysPanel = () => {
                                     </ol>
                                     <div>
                                         <p className="mb-1 text-xs font-medium text-content-secondary">{t('qualificationKeys.usage')}</p>
-                                        {historyQuery.data.usage.catalog_entries.length === 0 && historyQuery.data.usage.task_ids.length === 0 ? (
+                                        {historyQuery.data.usage.catalog_entries.length === 0 && historyQuery.data.usage.task_ids.length === 0 && (historyQuery.data.usage.calibration_contracts ?? []).length === 0 ? (
                                             <p className="text-sm text-content-tertiary">{t('qualificationKeys.noUsage')}</p>
                                         ) : (
                                             <dl className="space-y-1 text-sm">
                                                 <div><dt className="inline text-content-tertiary">{t('qualificationKeys.usageCatalog')}: </dt><dd className="inline">{historyQuery.data.usage.catalog_entries.map(entry => entry.key).join(', ') || '—'}</dd></div>
                                                 <div><dt className="inline text-content-tertiary">{t('qualificationKeys.usageTasks')}: </dt><dd className="inline">{historyQuery.data.usage.task_ids.map(id => `#${id}`).join(', ') || '—'}</dd></div>
+                                                <div><dt className="inline text-content-tertiary">{t('qualificationKeys.usageContracts')}: </dt><dd className="inline">{(historyQuery.data.usage.calibration_contracts ?? []).map(contract => contract.key).join(', ') || '—'}</dd></div>
                                             </dl>
                                         )}
                                     </div>

@@ -1,6 +1,6 @@
 # ProjectMilestoneResponse
 
-**Location:** `backend/app/schemas/project.py:219`
+**Location:** `backend/app/schemas/project.py:222`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_project](../modules/schemas_project.md)

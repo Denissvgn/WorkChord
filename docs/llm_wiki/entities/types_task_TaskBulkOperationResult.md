@@ -1,6 +1,6 @@
 # TaskBulkOperationResult
 
-**Location:** `frontend/src/types/task.ts:340`
+**Location:** `frontend/src/types/task.ts:350`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

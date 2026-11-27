@@ -49,9 +49,9 @@ Work discovery, fencing and recovery read the same live assignment and run state
 | `app.services.agent_routing_observability` | `RoutingOperationalEvent`, `opaque_value_digest`, `record_routing_operational_event` |
 | `app.services.agent_routing_policy` | `MODEL_FAILURE_CATEGORIES`, `ROUTING_DECISION_AUTHORITY`, `ROUTING_DECISION_LINEAGE_FIELDS`, `ROUTING_LINEAGE_AUTHORITY`, `ROUTING_POLICY_VERSION`, `canonical_routing_json_bytes`, `evaluate_actor_authorization`, `normalize_model_failure_category`, `validate_routing_packet_size` |
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutError`, `AgentRoutingRolloutMode`, `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
-| `app.services.agent_routing_service` | `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingService`, `AgentRoutingService`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError` |
+| `app.services.agent_routing_service` | `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingService`, `AgentRoutingService`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key`, `AgentService` |
-| `app.services.agent_team_setup_service` | `AgentTeamMembershipBoundary`, `AgentTeamSetupService`, `AgentTeamSetupService`, `AgentTeamSetupConflictError`, `AgentTeamSetupService` |
+| `app.services.agent_team_setup_service` | `AgentTeamMembershipBoundary`, `AgentTeamSetupService`, `AgentTeamSetupService`, `AgentTeamSetupService`, `AgentTeamSetupConflictError`, `AgentTeamSetupService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService`, `DeliveryDependencyService` |
 | `app.services.execution_planning_window` | `LIVE_ASSIGNMENT_STATES`, `LIVE_RUN_STATE`, `assignment_matches`, `require_window_authority`, `window_authority_matches` |
 | `app.services.external_link_service` | `ExternalLinkService` |
@@ -97,7 +97,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (34) |
+| Inbound | `backend` (35) |
 | Outbound | `backend` (36) |
 
 ### External packages
@@ -106,7 +106,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 67 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 68 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

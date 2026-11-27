@@ -90,5 +90,7 @@ class AgentScheduleResult(BaseModel):
     unscheduled: list[dict[str, Any]] = Field(default_factory=list)
     # Planned leaf tasks the scheduler could not place that keep the dates they already had.
     kept_dates: list[dict[str, Any]] = Field(default_factory=list, exclude_if=lambda rows: not rows)
+    # Each assignee's remaining idle working days before its last work, with the task that follows them.
+    idle_days: list[dict[str, Any]] = Field(default_factory=list, exclude_if=lambda rows: not rows)
     input_digest: str = Field(..., min_length=64, max_length=64)
     task_states: list[AgentScheduleTaskState] = Field(default_factory=list)

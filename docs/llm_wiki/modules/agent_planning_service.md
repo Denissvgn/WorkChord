@@ -34,6 +34,7 @@ Preview and apply use the observed iteration revision in the forecast digest. A 
 | `app.schemas.manual_provenance` | `ManualProvenanceResponse` |
 | `app.schemas.project` | `ProjectCreate`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneResponse`, `ProjectMilestoneUpdate`, `ProjectResponse`, `ProjectUpdate` |
 | `app.schemas.task` | `TaskCreate`, `TaskResponse`, `TaskUpdate` |
+| `app.schemas.task_postponement` | `TaskPostponementResponse` |
 | `app.schemas.task_replacement` | `TaskReplacementResponse` |
 | `app.schemas.team` | `CapacityAdjustmentCommand`, `CapacityAdjustmentResult`, `CapacityTransferCommand`, `CapacityTransferResult`, `CapacityTransferWithdrawal`, `TeamMemberCreate`, `TeamMemberProfileCreate`, `TeamMemberProfileResponse`, `TeamMemberProfileUpdate`, `TeamMemberResponse`, `TeamMemberUpdate`, `VacationCreate`, `VacationResponse`, `VacationUpdate` |
 | `app.services.agent_profile_catalog_service` | `AgentProfileCatalogService` |
@@ -47,6 +48,7 @@ Preview and apply use the observed iteration revision in the forecast digest. A 
 | `app.services.manual_provenance_service` | `ManualProvenanceService` |
 | `app.services.project_service` | `ProjectService` |
 | `app.services.scheduler_service` | `SchedulerService` |
+| `app.services.task_postponement_service` | `TaskPostponementService` |
 | `app.services.task_replacement_service` | `TaskReplacementService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.team_service` | `TeamService` |
@@ -79,7 +81,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (10) |
-| Outbound | `backend` (29) |
+| Outbound | `backend` (31) |
 
 ### External packages
 
@@ -87,7 +89,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 39 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 41 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

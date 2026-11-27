@@ -987,6 +987,57 @@ class AgentPlanningService:
             if authority is not None:
                 self.db.info["authority"] = authority
 
+    async def postpone_task(
+        self,
+        task_id: int,
+        actor: AgentActor,
+        data: Any,
+        *,
+        command: AgentPlanningCommandContext,
+    ) -> AgentPlanningReceipt:
+        """Postpone a task through the same command, and the same decider rule, as the REST route."""
+        return await self._postponement_command("postpone", task_id, actor, data, command)
+
+    async def reactivate_task(
+        self,
+        task_id: int,
+        actor: AgentActor,
+        data: Any,
+        *,
+        command: AgentPlanningCommandContext,
+    ) -> AgentPlanningReceipt:
+        """Reactivate postponed work through the same command as the REST route."""
+        return await self._postponement_command("reactivate", task_id, actor, data, command)
+
+    async def _postponement_command(
+        self,
+        action: str,
+        task_id: int,
+        actor: AgentActor,
+        data: Any,
+        command: AgentPlanningCommandContext,
+    ) -> AgentPlanningReceipt:
+        from app.schemas.task_postponement import TaskPostponementResponse
+        from app.services.task_postponement_service import TaskPostponementService
+
+        payload = {"task_id": task_id, "data": data.model_dump(mode="json")}
+
+        async def mutate() -> MutationResult:
+            service = TaskPostponementService(self.db)
+            result = await getattr(service, action)(task_id, data, commit=False)
+            return task_id, TaskPostponementResponse.model_validate(result).model_dump(mode="json")
+
+        return await self._execute(
+            actor=actor,
+            scope=AGENT_TASK_WRITE_SCOPES,
+            operation=f"planning.task.{action}",
+            target_type="task",
+            idempotency_target_id=task_id,
+            command=command,
+            request_payload=payload,
+            mutate=mutate,
+        )
+
     async def add_delivery_dependency(
         self,
         task_id: int,
@@ -1385,6 +1436,9 @@ class AgentPlanningService:
             ],
             kept_dates=[
                 item.model_dump(mode="json") for item in schedule.kept_dates
+            ],
+            idle_days=[
+                item.model_dump(mode="json") for item in schedule.idle_days
             ],
             input_digest=input_digest,
             task_states=AgentPlanningService._schedule_task_states(tasks),

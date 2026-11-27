@@ -73,7 +73,7 @@ flowchart LR
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [TaskReference](../entities/task_detail_TaskReference.md) | 10 | `BaseModel` | — |
-| [TaskReferencePage](../entities/task_detail_TaskReferencePage.md) | 29 | `BaseModel` | — |
-| [TaskDetailResponse](../entities/TaskDetailResponse.md) | 37 | `BaseModel` | — |
-| [HumanWorkReference](../entities/HumanWorkReference.md) | 49 | `TaskReference` | — |
-| [HumanWorkResponse](../entities/HumanWorkResponse.md) | 53 | `BaseModel` | — |
+| [TaskReferencePage](../entities/task_detail_TaskReferencePage.md) | 31 | `BaseModel` | — |
+| [TaskDetailResponse](../entities/TaskDetailResponse.md) | 39 | `BaseModel` | — |
+| [HumanWorkReference](../entities/HumanWorkReference.md) | 51 | `TaskReference` | — |
+| [HumanWorkResponse](../entities/HumanWorkResponse.md) | 55 | `BaseModel` | — |

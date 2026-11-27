@@ -179,13 +179,13 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | list_task_comments | domain_result | 39 | `domain_result(...)` |
-| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 59 | `str(exc)` |
-| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | list_task_comments | DiscussionService.list | 39 | `DiscussionService(db).list(task_id, after_id=after_id, limit=limit)` |
 | DiscussionService.list | DiscussionService.task | 105 | `self.task(task_id)` |
 | DiscussionService.task | self.db.scalar | 54 | `self.db.scalar(...)` |
@@ -198,11 +198,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 55 |
-| unresolved_call | `domain_result` | `exc.detail` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| external_call | `domain_result` | `HTTPException` | 61 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
 | unresolved_call | `DiscussionService.task` | `self.db.scalar` | 54 |
 | step_limit | `list_task_comments` | `first 12 steps` | 0 |
 

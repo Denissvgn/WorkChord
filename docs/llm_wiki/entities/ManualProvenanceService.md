@@ -1,6 +1,6 @@
 # ManualProvenanceService
 
-**Location:** `backend/app/services/manual_provenance_service.py:170`
+**Location:** `backend/app/services/manual_provenance_service.py:200`
 **Kind:** Class
 **Bases:** —
 **Module:** [manual_provenance_service](../modules/manual_provenance_service.md)
@@ -38,16 +38,16 @@ flowchart LR
     n0["ManualProvenanceService (backend/app/services/manual_provenance_service.py)"]
     n1["record_manual_provenance (backend/app/routers/task_domain.py)"]
     n2["backend/app/services/agent_planning_service.py"]
-    n3["test_a_pm_agent_cannot_attest_a_human_executor (backend/tests/test_manual_provenance_record.py)"]
-    n4["test_a_record_cannot_contradict_the_recorded_executor (backend/tests/test_manual_provenance_record.py)"]
-    n5["test_a_stale_human_record_points_at_a_fresh_record (backend/tests/test_manual_provenance_record.py)"]
-    n6["test_an_agent_recorder_counts_under_every_enabled_binding (backend/tests/test_manual_provenance_record.py)"]
-    n7["test_only_an_accountable_owner_or_pm_may_record (backend/tests/test_manual_provenance_record.py)"]
-    n8["test_record_refuses_a_candidate_the_verdict_could_never_pass (backend/tests/test_manual_provenance_record.py)"]
-    n9["test_record_refuses_an_executor_from_another_project (backend/tests/test_manual_provenance_record.py)"]
-    n10["test_record_refuses_once_review_could_no_longer_read_every_record (backend/tests/test_manual_provenance_record.py)"]
-    n11["test_record_refuses_unresolved_stale_executed_and_unattributable_work (backend/tests/test_manual_provenance_record.py)"]
-    n12["test_record_reports_unreadable_or_missing_github_answers_as_unverifiable (backend/tests/test_manual_provenance_record.py)"]
+    n3["provenance_blockers (backend/app/services/manual_provenance_service.py)"]
+    n4["test_a_pm_agent_cannot_attest_a_human_executor (backend/tests/test_manual_provenance_record.py)"]
+    n5["test_a_record_cannot_contradict_the_recorded_executor (backend/tests/test_manual_provenance_record.py)"]
+    n6["test_a_stale_human_record_points_at_a_fresh_record (backend/tests/test_manual_provenance_record.py)"]
+    n7["test_an_agent_recorder_counts_under_every_enabled_binding (backend/tests/test_manual_provenance_record.py)"]
+    n8["test_only_an_accountable_owner_or_pm_may_record (backend/tests/test_manual_provenance_record.py)"]
+    n9["test_record_refuses_a_candidate_the_verdict_could_never_pass (backend/tests/test_manual_provenance_record.py)"]
+    n10["test_record_refuses_an_executor_from_another_project (backend/tests/test_manual_provenance_record.py)"]
+    n11["test_record_refuses_once_review_could_no_longer_read_every_record (backend/tests/test_manual_provenance_record.py)"]
+    n12["test_record_refuses_unresolved_stale_executed_and_unattributable_work (backend/tests/test_manual_provenance_record.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -63,7 +63,7 @@ flowchart LR
     click n0 "../modules/manual_provenance_service.md"
     click n1 "../modules/routers_task_domain.md"
     click n2 "../modules/agent_planning_service.md"
-    click n3 "../modules/test_manual_provenance_record.md"
+    click n3 "../modules/manual_provenance_service.md"
     click n4 "../modules/test_manual_provenance_record.md"
     click n5 "../modules/test_manual_provenance_record.md"
     click n6 "../modules/test_manual_provenance_record.md"
@@ -87,6 +87,7 @@ flowchart LR
 |---|---|---|---:|
 | `record_manual_provenance` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |
 | `agent_planning_service` | import | [agent_planning_service](../modules/agent_planning_service.md) | — |
+| `provenance_blockers` | call | [manual_provenance_service](../modules/manual_provenance_service.md) | 1 |
 | `test_a_pm_agent_cannot_attest_a_human_executor` | call | [test_manual_provenance_record](../modules/test_manual_provenance_record.md) | 1 |
 | `test_a_record_cannot_contradict_the_recorded_executor` | call | [test_manual_provenance_record](../modules/test_manual_provenance_record.md) | 4 |
 | `test_a_stale_human_record_points_at_a_fresh_record` | call | [test_manual_provenance_record](../modules/test_manual_provenance_record.md) | 1 |
@@ -96,6 +97,5 @@ flowchart LR
 | `test_record_refuses_an_executor_from_another_project` | call | [test_manual_provenance_record](../modules/test_manual_provenance_record.md) | 2 |
 | `test_record_refuses_once_review_could_no_longer_read_every_record` | call | [test_manual_provenance_record](../modules/test_manual_provenance_record.md) | 1 |
 | `test_record_refuses_unresolved_stale_executed_and_unattributable_work` | call | [test_manual_provenance_record](../modules/test_manual_provenance_record.md) | 3 |
-| `test_record_reports_unreadable_or_missing_github_answers_as_unverifiable` | call | [test_manual_provenance_record](../modules/test_manual_provenance_record.md) | 1 |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

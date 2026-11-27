@@ -16,6 +16,7 @@ _Auto-generated from `ReleaseTaskSummary` in `frontend/src/types/release.ts`._
 | `id` | `number` | Yes | — | — |
 | `title` | `string` | Yes | — | — |
 | `status` | `TaskStatus \| string` | Yes | — | — |
+| `displayed_state` | `TaskDisplayedState \| string` | No | — | — |
 | `project_id` | `number \| null` | No | — | — |
 
 ## Methods
@@ -38,7 +39,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_release](../modules/types_release.md) | 0 | `id`, `project_id`, `status`, `title` |
+| [types_release](../modules/types_release.md) | 0 | `displayed_state`, `id`, `project_id`, `status`, `title` |
 
 ### References
 

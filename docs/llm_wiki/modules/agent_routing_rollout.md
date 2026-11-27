@@ -33,6 +33,7 @@ flowchart LR
     n7["backend/tests/conftest.py"]
     n8["backend/tests/test_agent_routing_rollout.py"]
     n9["backend/tests/test_agent_routing_service.py"]
+    n10["backend/tests/test_refusal_next_steps.py"]
     n1 --> n0
     n1 --> n3
     n1 --> n4
@@ -63,6 +64,9 @@ flowchart LR
     n9 --> n3
     n9 --> n4
     n9 --> n6
+    n10 --> n3
+    n10 --> n4
+    n10 --> n5
     click n0 "../modules/config.md"
     click n1 "../modules/mcp_agent_tools.md"
     click n2 "../modules/routers_agent.md"
@@ -73,6 +77,7 @@ flowchart LR
     click n7 "../modules/conftest.md"
     click n8 "../modules/test_agent_routing_rollout.md"
     click n9 "../modules/test_agent_routing_service.md"
+    click n10 "../modules/test_refusal_next_steps.md"
 ```
 
 ### Internal neighbors
@@ -87,6 +92,7 @@ flowchart LR
 | Inbound | [conftest](../modules/conftest.md) |
 | Inbound | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) |
 | Inbound | [test_agent_routing_service](../modules/test_agent_routing_service.md) |
+| Inbound | [test_refusal_next_steps](../modules/test_refusal_next_steps.md) |
 | Outbound | [config](../modules/config.md) |
 
 ## Classes

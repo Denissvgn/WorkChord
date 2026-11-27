@@ -2,7 +2,7 @@
 
 **Entry point:** `convert_task_brief` (`http`)
 **Source:** [routers_task_domain](../modules/routers_task_domain.md)
-**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 10 more
+**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 13 more
 
 **Complete modules touched:**
 
@@ -15,10 +15,13 @@
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
 - [models_task_brief](../modules/models_task_brief.md)
 - [mutation_versions](../modules/mutation_versions.md)
+- [review_provenance](../modules/review_provenance.md)
 - [routers_task_domain](../modules/routers_task_domain.md)
 - [snapshot_service](../modules/snapshot_service.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_reactivation_service](../modules/task_reactivation_service.md)
+- [task_routing](../modules/task_routing.md)
+- [task_routing_service](../modules/task_routing_service.md)
 - [task_service](../modules/task_service.md)
 
 ## Call sequence
@@ -37,26 +40,26 @@ sequenceDiagram
     participant p6 as TaskBriefService.apply_brief
     participant p7 as require_project
     participant p8 as process_reactivation_checks
-    participant p9 as DeliveryDependencyService.reconcile
-    participant p10 as DiscussionService.enqueue
-    participant p11 as ReactivationService.evaluate_waiting
-    participant p12 as DeliveryDependencyService.validate_cycles
-    participant p13 as DiscussionService.recipient_authorized
-    participant p14 as TaskService.reserve_task_version
-    participant p15 as clear_execution_evidence
-    participant p16 as DeliveryDependencyService.graph
-    participant p17 as lock_iterations
-    participant p18 as IdentityService.context
-    participant p19 as ReactivationService._evaluate_isolated
-    participant p20 as import_legacy_brief
-    participant p21 as current_command
-    participant p22 as CommandState
-    participant p23 as SnapshotService
-    participant p24 as DeliveryDependencyService
-    participant p25 as DiscussionService
-    participant p26 as render_brief
-    participant p27 as clear_acceptance
-    participant p28 as TaskBriefRevision
+    participant p9 as resolve_routing
+    participant p10 as DeliveryDependencyService.reconcile
+    participant p11 as DiscussionService.enqueue
+    participant p12 as render_brief
+    participant p13 as enforce_routing
+    participant p14 as check_routing
+    participant p15 as ReactivationService.evaluate_waiting
+    participant p16 as render_routing
+    participant p17 as _remember
+    participant p18 as DeliveryDependencyService.validate_cycles
+    participant p19 as DiscussionService.recipient_authorized
+    participant p20 as TaskService.reserve_task_version
+    participant p21 as clear_execution_evidence
+    participant p22 as DeliveryDependencyService.graph
+    participant p23 as lock_iterations
+    participant p24 as project_policy
+    participant p25 as IdentityService.context
+    participant p26 as assignee_models
+    participant p27 as ReactivationService._evaluate_isolated
+    participant p28 as _contributor_publishers
     participant p29 as HTTPException
     participant p30 as self.tasks.get_by_id (backend/app/services/task…skBriefService.conversion)
     p0->>p1: TaskBriefService.conversion
@@ -67,33 +70,33 @@ sequenceDiagram
     p1->>p6: TaskBriefService.apply_brief
     p6->>p7: require_project
     p4->>p8: process_reactivation_checks
-    p4->>p9: DeliveryDependencyService.reconcile
-    p4->>p10: DiscussionService.enqueue
-    p8->>p11: ReactivationService.evaluate_waiting
-    p9->>p12: DeliveryDependencyService.validate_cycles
-    p10->>p13: DiscussionService.recipient_authorized
-    p9->>p14: TaskService.reserve_task_version
-    p9->>p15: clear_execution_evidence
-    p12->>p16: DeliveryDependencyService.graph
-    p14->>p17: lock_iterations
-    p13->>p18: IdentityService.context
-    p11->>p19: ReactivationService._evaluate_isolated
-    p1->>p20: import_legacy_brief
-    p4->>p21: current_command
-    p4->>p22: CommandState
-    p5->>p23: SnapshotService
-    p4->>p24: DeliveryDependencyService
-    p4->>p25: DiscussionService
-    p6->>p26: render_brief
-    p6->>p27: clear_acceptance
-    p6->>p28: TaskBriefRevision
+    p6->>p9: resolve_routing
+    p4->>p10: DeliveryDependencyService.reconcile
+    p4->>p11: DiscussionService.enqueue
+    p6->>p12: render_brief
+    p6->>p13: enforce_routing
+    p13->>p14: check_routing
+    p8->>p15: ReactivationService.evaluate_waiting
+    p12->>p16: render_routing
+    p13->>p17: _remember
+    p10->>p18: DeliveryDependencyService.validate_cycles
+    p11->>p19: DiscussionService.recipient_authorized
+    p10->>p20: TaskService.reserve_task_version
+    p10->>p21: clear_execution_evidence
+    p18->>p22: DeliveryDependencyService.graph
+    p20->>p23: lock_iterations
+    p14->>p24: project_policy
+    p19->>p25: IdentityService.context
+    p14->>p26: assignee_models
+    p15->>p27: ReactivationService._evaluate_isolated
+    p14->>p28: _contributor_publishers
     p2-->>p29: HTTPException(409, detail=exc.detail(...))
     p1-->>p30: self.tasks.get_by_id (backend/app/services/task…skBriefService.conversion)(task_id)
 ```
 
-> Call sequence diagram shows 30 of 351 interactions; 321 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 569 interactions; 539 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 88 (87 omitted); unresolved 1 of 193 (192 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 115 (114 omitted); unresolved 1 of 329 (328 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -103,11 +106,11 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/routers/task_domain.py:domain_result` | 2 | - | external | 5 |
 | `backend/app/services/task_brief_service.py:TaskBriefService.conversion` | 10 | - | external | 1 |
 | `backend/app/services/task_brief_service.py:TaskBriefService.conversion` | 10 | - | unresolved | 2 |
+| `backend/app/services/task_brief_service.py:TaskBriefService.conversion` | 10 | [backend/app/services/task_brief_service.py](../modules/task_brief_service.md) | internal | 2 |
 | `backend/app/services/task_brief_service.py:import_legacy_brief` | 14 | - | external | 10 |
 | `backend/app/services/task_brief_service.py:import_legacy_brief` | 14 | - | unresolved | 23 |
-| `backend/app/commands.py:current_command` | 49 | - | external | 2 |
-| `backend/app/commands.py:current_command` | 49 | - | unresolved | 1 |
-> Omission summary shows 8 of 68 groups; 60 further groups are not expanded here. Counts above include all omitted interactions.
+| `backend/app/commands.py:command_transaction` | 48 | [backend/app/commands.py](../modules/commands.md) | internal | 2 |
+> Omission summary shows 8 of 111 groups; 103 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -120,9 +123,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 71; effect analysis evaluated: 47, partial: 1, unavailable: 23. Counts include steps omitted from the displayed trace.
+Source steps: 126; effect analysis evaluated: 87, partial: 4, unavailable: 35. Counts include steps omitted from the displayed trace.
 
-Collector observations for 48 source steps with known totals: observed: 272, emitted: 271, omitted: 1. Unavailable totals are excluded.
+Collector observations for 91 source steps with known totals: observed: 532, emitted: 522, omitted: 10. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -194,17 +197,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| convert_task_brief | domain_result | 257 | `domain_result(...)` |
-| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 59 | `str(exc)` |
-| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| convert_task_brief | TaskBriefService.conversion | 257 | `TaskBriefService(db).conversion(task_id, data)` |
-| TaskBriefService.conversion | self.tasks.get_by_id (backend/app/services/task…skBriefService.conversion) | 212 | `self.tasks.get_by_id(task_id)` |
-| TaskBriefService.conversion | ValueError (backend/app/services/task…skBriefService.conversion) | 214 | `ValueError('Task not found or inaccessible')` |
+| convert_task_brief | domain_result | 259 | `domain_result(...)` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| convert_task_brief | TaskBriefService.conversion | 259 | `TaskBriefService(db).conversion(task_id, data)` |
+| TaskBriefService.conversion | self.tasks.get_by_id (backend/app/services/task…skBriefService.conversion) | 313 | `self.tasks.get_by_id(task_id)` |
+| TaskBriefService.conversion | ValueError (backend/app/services/task…skBriefService.conversion) | 315 | `ValueError('Task not found or inaccessible')` |
 
 ### Boundary effects
 
@@ -214,13 +217,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 55 |
-| unresolved_call | `domain_result` | `exc.detail` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| external_call | `domain_result` | `HTTPException` | 61 |
-| unresolved_call | `TaskBriefService.conversion` | `self.tasks.get_by_id` | 212 |
-| external_call | `TaskBriefService.conversion` | `ValueError` | 214 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
+| unresolved_call | `TaskBriefService.conversion` | `self.tasks.get_by_id` | 313 |
+| external_call | `TaskBriefService.conversion` | `ValueError` | 315 |
 | step_limit | `convert_task_brief` | `first 12 steps` | 0 |
 | truncated_flow | `convert_task_brief` | `depth limit` | 0 |
 

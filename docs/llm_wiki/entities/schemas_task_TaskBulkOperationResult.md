@@ -1,6 +1,6 @@
 # TaskBulkOperationResult
 
-**Location:** `backend/app/schemas/task.py:314`
+**Location:** `backend/app/schemas/task.py:330`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -20,6 +20,7 @@ Per-task result returned by a selected-task bulk operation.
 | `error` | `Optional[str]` | `error` | No | Yes | `None` | — | — | — |
 | `task` | `Optional[TaskResponse]` | `task` | No | Yes | `None` | — | — | — |
 | `assignee_recommendation` | `Optional[AssigneeRecommendationResponse]` | `assignee_recommendation` | No | Yes | `None` | — | — | — |
+| `routing_check` | `Optional[RoutingCheck]` | `routing_check` | No | Yes | `None` | — | — | — |
 
 ## Methods
 
@@ -52,7 +53,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 0 | `assignee_recommendation`, `changes`, `error`, `outcome`, `task`, `task_id`, `warnings` |
+| [schemas_task](../modules/schemas_task.md) | 0 | `assignee_recommendation`, `changes`, `error`, `outcome`, `routing_check`, `task`, `task_id`, `warnings` |
 
 ### Structure
 
@@ -69,4 +70,4 @@ flowchart LR
 | `TaskBulkOperationService._delete_task` | type_reference | [task_bulk_operation_service](../modules/task_bulk_operation_service.md) | — |
 | `TaskBulkOperationService._run_for_task` | call | [task_bulk_operation_service](../modules/task_bulk_operation_service.md) | 3 |
 | `TaskBulkOperationService._run_for_task` | type_reference | [task_bulk_operation_service](../modules/task_bulk_operation_service.md) | — |
-| `TaskBulkOperationService.run` | call | [task_bulk_operation_service](../modules/task_bulk_operation_service.md) | 3 |
+| `TaskBulkOperationService.run` | call | [task_bulk_operation_service](../modules/task_bulk_operation_service.md) | 4 |

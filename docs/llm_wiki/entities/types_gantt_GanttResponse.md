@@ -1,6 +1,6 @@
 # GanttResponse
 
-**Location:** `frontend/src/types/gantt.ts:67`
+**Location:** `frontend/src/types/gantt.ts:69`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

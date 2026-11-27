@@ -126,3 +126,12 @@ describe('one "needs an assignee" rule', () => {
         expect(isAgentWorkingWithoutCapacity({ ...agentHeld, assignee: { id: 2, name: 'Sam' } })).toBe(false);
     });
 });
+
+describe('Withdrawn work in planning gaps', () => {
+    it('is no planning leaf, so it is never a scheduling gap', () => {
+        const canceled = taskFixture({ assignee: null, canceled_at: '2026-01-01T00:00:00Z' });
+        expect(isPlanningLeafTask(canceled)).toBe(false);
+        expect(taskMatchesPlanningIssue(canceled, 'unassigned')).toBe(false);
+        expect(isPlanningLeafTask(taskFixture())).toBe(true);
+    });
+});

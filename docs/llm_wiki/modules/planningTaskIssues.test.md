@@ -18,7 +18,7 @@ _Auto-generated from `frontend/src/features/planningMasters/planningTaskIssues.t
 
 | Signal | Values |
 |--------|--------|
-| Module calls | `describe`, `describe` |
+| Module calls | `describe`, `describe`, `describe` |
 
 ## Local dependency map
 

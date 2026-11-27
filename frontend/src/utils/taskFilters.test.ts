@@ -147,3 +147,12 @@ describe('search narrows the task list', () => {
         expect(filterTaskBySearch(parent, 'payroll')).toBeNull();
     });
 });
+
+describe('Status filter and withdrawn work', () => {
+    it('matches the displayed state, not the status the task kept', () => {
+        const canceled = taskFixture({ status: 'resolved', displayed_state: 'canceled', canceled_at: '2026-01-01T00:00:00Z' });
+        expect(taskMatchesFilters(canceled, { ...defaultFilters, status: 'resolved' })).toBe(false);
+        expect(taskMatchesFilters(canceled, { ...defaultFilters, status: 'canceled' as never })).toBe(true);
+        expect(taskMatchesFilters(taskFixture({ status: 'resolved' }), { ...defaultFilters, status: 'resolved' })).toBe(true);
+    });
+});

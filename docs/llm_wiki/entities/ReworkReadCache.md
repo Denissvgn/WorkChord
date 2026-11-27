@@ -1,6 +1,6 @@
 # ReworkReadCache
 
-**Location:** `backend/app/services/review_provenance.py:50`
+**Location:** `backend/app/services/review_provenance.py:60`
 **Kind:** Class
 **Bases:** —
 **Module:** [review_provenance](../modules/review_provenance.md)

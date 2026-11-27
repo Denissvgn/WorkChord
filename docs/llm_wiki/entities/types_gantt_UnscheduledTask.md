@@ -1,6 +1,6 @@
 # UnscheduledTask
 
-**Location:** `frontend/src/types/gantt.ts:90`
+**Location:** `frontend/src/types/gantt.ts:92`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

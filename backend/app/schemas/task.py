@@ -235,6 +235,15 @@ class TaskResponse(TaskMetricSignals):
     milestone: Optional[TaskMilestone] = None
     assignee: Optional[TaskAssignee] = None
     status: str
+    displayed_state: Optional[str] = Field(
+        default=None,
+        description="The state to show: the stored status, or canceled / superseded for withdrawn work. "
+                    "Canceled work keeps the status it had when it was canceled; read this instead of status to count or show it.",
+    )
+    successor_task_id: Optional[int] = Field(
+        default=None, description="The task that delivers this task's work instead, for superseded work.")
+    successor_kind: Optional[Literal["replacement", "supersession"]] = Field(
+        default=None, description="How the successor delivers it: a clean replacement or an earlier supersession.")
     start_date: Optional[date]
     end_date: Optional[date]
     actual_start_date: Optional[date] = None  # When status changed to ACTIVE

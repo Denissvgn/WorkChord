@@ -41,6 +41,7 @@ flowchart LR
     n1 --> n2
     n1 --> n3
     n1 --> n4
+    n3 --> n4
     click n0 "../modules/overviewSignals.test.md"
     click n1 "../modules/overviewSignals.md"
     click n2 "../modules/taskViewParams.md"

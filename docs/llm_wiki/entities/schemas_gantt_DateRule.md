@@ -1,6 +1,6 @@
 # DateRule
 
-**Location:** `backend/app/schemas/gantt.py:89`
+**Location:** `backend/app/schemas/gantt.py:91`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)

@@ -21,7 +21,7 @@ Project model.
 | `app.utils.time` | `UTCDateTime`, `utc_now` |
 | `datetime` | `date`, `datetime` |
 | `enum` | `Enum` |
-| `sqlalchemy` | `Boolean`, `CheckConstraint`, `Date`, `ForeignKey`, `Index`, `Integer`, `JSON`, `String`, `Text`, `false` |
+| `sqlalchemy` | `Boolean`, `CheckConstraint`, `Date`, `ForeignKey`, `Index`, `Integer`, `JSON`, `String`, `Text`, `event`, `false` |
 | `sqlalchemy.orm` | `Mapped`, `mapped_column`, `relationship` |
 | `typing` | `TYPE_CHECKING`, `Optional` |
 
@@ -45,7 +45,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (84) |
+| Inbound | `backend` (91) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (9) |
 
@@ -55,7 +55,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 87 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 94 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -66,5 +66,11 @@ flowchart LR
 | [ProjectMilestoneStatus](../entities/models_project_ProjectMilestoneStatus.md) | Enum | 40 | `str`, `Enum` | Explicit lifecycle status for a project milestone. |
 | [Initiative](../entities/models_project_Initiative.md) | Class | 48 | `Base` | Strategic goal that groups related projects on the roadmap. |
 | [Project](../entities/models_project_Project.md) | Class | 103 | `Base` | Outcome-oriented planning container above tasks and iterations. |
-| [ProjectUpdateEntry](../entities/models_project_ProjectUpdateEntry.md) | Class | 192 | `Base` | Append-only structured status update for a project. |
-| [ProjectMilestone](../entities/models_project_ProjectMilestone.md) | Class | 249 | `Base` | Manually ordered milestone for a single project roadmap. |
+| [ProjectUpdateEntry](../entities/models_project_ProjectUpdateEntry.md) | Class | 197 | `Base` | Append-only structured status update for a project. |
+| [ProjectMilestone](../entities/models_project_ProjectMilestone.md) | Class | 254 | `Base` | Manually ordered milestone for a single project roadmap. |
+
+## Functions
+
+| Function | Signature | Decorators | Description |
+|----------|-----------|------------|-------------|
+| `_default_routing_conflict_mode` | `(target, args, kwargs)` | `@event.listens_for(Project, 'init')` | — |

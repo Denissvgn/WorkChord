@@ -67,6 +67,7 @@ flowchart LR
     n6 --> n11
     n8 --> n3
     n9 --> n11
+    n10 --> n11
     click n0 "../modules/CommandMenu.md"
     click n1 "../modules/getStartedVisibility.md"
     click n2 "../modules/scopeStore.md"

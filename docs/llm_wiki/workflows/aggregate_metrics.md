@@ -1,7 +1,7 @@
 # aggregate_metrics
 
 **Entry point:** `work_metrics.aggregate_metrics`
-**Modules involved:** [authority](../modules/authority.md), [commands](../modules/commands.md), [services_work_metrics](../modules/services_work_metrics.md), [time](../modules/time.md)
+**Modules involved:** [authority](../modules/authority.md), [commands](../modules/commands.md), [services_work_metrics](../modules/services_work_metrics.md), [task_display_state](../modules/task_display_state.md), [time](../modules/time.md)
 
 > Aggregate all authorized leaves in SQL, including inherited scheduling facets.
 
@@ -13,13 +13,16 @@ same predicate, so a count and the list it opens always agree.
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `time.utc_now`
 2. `authority._scope_conditions`
-3. `commands.HierarchyScopeError`
+3. `task_display_state.state_clause`
+4. `task_display_state.displayed_state_expression`
+5. `commands.HierarchyScopeError`
 
 ## Touches
 
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
+- [task_display_state](../modules/task_display_state.md)
 - [time](../modules/time.md)
 
 ## Behavior

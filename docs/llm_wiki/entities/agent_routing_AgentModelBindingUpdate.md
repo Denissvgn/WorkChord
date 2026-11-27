@@ -1,6 +1,6 @@
 # AgentModelBindingUpdate
 
-**Location:** `backend/app/schemas/agent_routing.py:424`
+**Location:** `backend/app/schemas/agent_routing.py:459`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)

@@ -224,3 +224,53 @@ async def test_override_grant_covers_only_its_task_revision_and_acceptance(deliv
             with pytest.raises(AuthorityError) as stale:
                 await service.require_review(task, accepting=True)
             assert stale.value.code == "verified_publisher_review_required"
+
+
+async def test_the_refusal_and_the_task_actions_name_the_owner_acceptance_next_step(managed_store):
+    factory, _, _, _ = managed_store
+    task_id, _, _ = await policy_scope(managed_store)
+    body = await acceptance_body(factory, task_id)
+    async with owner_client(managed_store) as owner:
+        refused = await owner.post(f"/api/tasks/{task_id}/review", json={**body, "verdict": "accept"})
+        step = refused.json()["detail"]["next_step"]
+        assert (step["kind"], step["ui_action"]) == ("accept_as_owner", "accept_as_owner")
+        assert step["commands"]["rest"] == "POST /api/tasks/{task_id}/owner-acceptance"
+
+        actions = (await owner.get(f"/api/tasks/{task_id}/actions")).json()["actions"]
+        blocker = next(item for item in actions if item["action"] == "accept_review")["blockers"][0]
+        assert blocker["code"] == "verified_publisher_review_required"
+        assert blocker["next_step"]["commands"]["rest"] == f"POST /api/tasks/{task_id}/owner-acceptance"
+
+
+async def test_the_actions_say_whether_a_provenance_record_would_be_accepted(managed_store):
+    factory, _, _, _ = managed_store
+    task_id, _, _ = await policy_scope(managed_store)
+    async with owner_client(managed_store) as owner:
+        record = lambda result: next(item for item in result["actions"] if item["action"] == "record_provenance")
+        allowed = record((await owner.get(f"/api/tasks/{task_id}/actions")).json())
+        assert allowed["allowed"] is True and allowed["blockers"] == []
+    async with factory() as db:
+        db.add(TaskEvent(task_id=task_id, event_type="agent.work_submitted", payload="{}"))
+        await db.commit()
+    async with owner_client(managed_store) as owner:
+        refused = record((await owner.get(f"/api/tasks/{task_id}/actions")).json())
+        assert refused["allowed"] is False
+        assert [item["code"] for item in refused["blockers"]] == ["manual_provenance_execution_recorded"]
+        assert refused["blockers"][0]["next_step"]["kind"] == "reconcile_recorded_execution"
+    async with client(**{"X-Admin-API-Key": "managed-operator-fixture"}) as operator_key:
+        denied = record((await operator_key.get(f"/api/tasks/{task_id}/actions")).json())
+        assert denied["allowed"] is False and denied["blockers"][0]["code"] == "provenance_recorder_required"
+
+
+async def test_the_actions_refuse_a_provenance_record_past_the_record_limit(managed_store):
+    from app.services.manual_provenance_service import MAX_RECORDS
+    factory, _, _, _ = managed_store
+    task_id, _, _ = await policy_scope(managed_store)
+    async with factory() as db:
+        db.add_all([TaskEvent(task_id=task_id, event_type="manual_provenance_recorded", payload="{}") for _ in range(MAX_RECORDS)])
+        await db.commit()
+    async with owner_client(managed_store) as owner:
+        record = next(item for item in (await owner.get(f"/api/tasks/{task_id}/actions")).json()["actions"]
+                      if item["action"] == "record_provenance")
+        assert record["allowed"] is False
+        assert [item["code"] for item in record["blockers"]] == ["manual_provenance_record_limit"]

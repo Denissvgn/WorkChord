@@ -197,10 +197,10 @@ flowchart LR
 | get_task_timeline | select (backend/app/routers/tasks.py:get_task_timeline) | 1009 | `select(Task.id)` |
 | get_task_timeline | HTTPException | 1011 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 | get_task_timeline | AgentService.get_task_timeline | 1016 | `agent_service.get_task_timeline(task_id)` |
-| AgentService.get_task_timeline | self.db.scalar (backend/app/services/agen…Service.get_task_timeline) | 1473 | `self.db.scalar(...)` |
-| AgentService.get_task_timeline | select(…).where (backend/app/services/agen…Service.get_task_timeline) | 1473 | `select(Task.id).where(...)` |
-| AgentService.get_task_timeline | select (backend/app/services/agen…Service.get_task_timeline) | 1473 | `select(Task.id)` |
-| AgentService.get_task_timeline | TaskTimelineService.page | 1475 | `TaskTimelineService(self.db, self).page(task_id, limit=MAX_BOUNDED_LIST_ITEMS)` |
+| AgentService.get_task_timeline | self.db.scalar (backend/app/services/agen…Service.get_task_timeline) | 1474 | `self.db.scalar(...)` |
+| AgentService.get_task_timeline | select(…).where (backend/app/services/agen…Service.get_task_timeline) | 1474 | `select(Task.id).where(...)` |
+| AgentService.get_task_timeline | select (backend/app/services/agen…Service.get_task_timeline) | 1474 | `select(Task.id)` |
+| AgentService.get_task_timeline | TaskTimelineService.page | 1476 | `TaskTimelineService(self.db, self).page(task_id, limit=MAX_BOUNDED_LIST_ITEMS)` |
 | TaskTimelineService.page | ValueError (backend/app/services/task…:TaskTimelineService.page) | 45 | `ValueError('Use a timeline page limit from 1 to 500')` |
 
 ### Boundary effects
@@ -218,9 +218,9 @@ flowchart LR
 | unresolved_call | `get_task_timeline` | `select(Task.id).where` | 1009 |
 | external_call | `get_task_timeline` | `select` | 1009 |
 | external_call | `get_task_timeline` | `HTTPException` | 1011 |
-| unresolved_call | `AgentService.get_task_timeline` | `self.db.scalar` | 1473 |
-| unresolved_call | `AgentService.get_task_timeline` | `select(Task.id).where` | 1473 |
-| external_call | `AgentService.get_task_timeline` | `select` | 1473 |
+| unresolved_call | `AgentService.get_task_timeline` | `self.db.scalar` | 1474 |
+| unresolved_call | `AgentService.get_task_timeline` | `select(Task.id).where` | 1474 |
+| external_call | `AgentService.get_task_timeline` | `select` | 1474 |
 | external_call | `TaskTimelineService.page` | `ValueError` | 45 |
 | step_limit | `get_task_timeline` | `first 12 steps` | 0 |
 

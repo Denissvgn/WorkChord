@@ -1,6 +1,6 @@
 # HumanWorkReference
 
-**Location:** `backend/app/schemas/task_detail.py:49`
+**Location:** `backend/app/schemas/task_detail.py:51`
 **Kind:** Pydantic model
 **Bases:** `TaskReference`
 **Module:** [task_detail](../modules/task_detail.md)

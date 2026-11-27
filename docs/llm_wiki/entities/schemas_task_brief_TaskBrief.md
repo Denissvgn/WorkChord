@@ -1,6 +1,6 @@
 # TaskBrief
 
-**Location:** `backend/app/schemas/task_brief.py:25`
+**Location:** `backend/app/schemas/task_brief.py:27`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task_brief](../modules/schemas_task_brief.md)
@@ -33,6 +33,7 @@ _Auto-generated from `TaskBrief` in `backend/app/schemas/task_brief.py`._
 | `acceptance_criteria` | `list[BriefCriterion]` | `acceptance_criteria` | No | No | factory: `list` | max_length=100 | — | — |
 | `verification` | `str` | `verification` | No | No | `''` | max_length=12000 | — | — |
 | `artifact_expectations` | `str` | `artifact_expectations` | No | No | `''` | max_length=12000 | — | — |
+| `routing` | `TaskRouting \| None` | `routing` | No | Yes | `None` | — | — | First rung, escalation and reviewer as catalog entries; the brief text renders a Routing section from it. |
 
 ## Methods
 
@@ -52,12 +53,12 @@ flowchart LR
     n4["backend/app/schemas/template.py"]
     n5["TriageItemResponse.brief (backend/app/schemas/triage.py)"]
     n6["brief_from_draft (backend/app/services/task_brief_service.py)"]
-    n7["import_legacy_brief (backend/app/services/task_brief_service.py)"]
-    n8["render_brief (backend/app/services/task_brief_service.py)"]
-    n9["TaskBriefService.apply_brief (backend/app/services/task_brief_service.py)"]
-    n10["seed_work (backend/tests/test_agent_runtime_recovery.py)"]
-    n11["test_worker_context_identifies_authoritative_brief (backend/tests/test_agent_work_routing_lineage.py)"]
-    n12["test_a_brief_change_still_makes_acceptance_stale (backend/tests/test_delivery_merge_prerequisites.py)"]
+    n7["brief_payload (backend/app/services/task_brief_service.py)"]
+    n8["import_legacy_brief (backend/app/services/task_brief_service.py)"]
+    n9["render_brief (backend/app/services/task_brief_service.py)"]
+    n10["TaskBriefService.apply_brief (backend/app/services/task_brief_service.py)"]
+    n11["backend/app/services/task_routing_service.py"]
+    n12["seed_work (backend/tests/test_agent_runtime_recovery.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -79,16 +80,16 @@ flowchart LR
     click n7 "../modules/task_brief_service.md"
     click n8 "../modules/task_brief_service.md"
     click n9 "../modules/task_brief_service.md"
-    click n10 "../modules/test_agent_runtime_recovery.md"
-    click n11 "../modules/test_agent_work_routing_lineage.md"
-    click n12 "../modules/test_delivery_merge_prerequisites.md"
+    click n10 "../modules/task_brief_service.md"
+    click n11 "../modules/task_routing_service.md"
+    click n12 "../modules/test_agent_runtime_recovery.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task_brief](../modules/schemas_task_brief.md) | 1 | `acceptance_criteria`, `artifact_expectations`, `context`, `exclusions`, `goal`, `schema_version`, `scope`, `verification` |
+| [schemas_task_brief](../modules/schemas_task_brief.md) | 1 | `acceptance_criteria`, `artifact_expectations`, `context`, `exclusions`, `goal`, `routing`, `schema_version`, `scope`, `verification` |
 
 ### Structure
 
@@ -106,11 +107,11 @@ flowchart LR
 | `TriageItemResponse.brief` | type_reference | [schemas_triage](../modules/schemas_triage.md) | — |
 | `brief_from_draft` | call | [task_brief_service](../modules/task_brief_service.md) | 1 |
 | `brief_from_draft` | type_reference | [task_brief_service](../modules/task_brief_service.md) | — |
+| `brief_payload` | type_reference | [task_brief_service](../modules/task_brief_service.md) | — |
 | `import_legacy_brief` | type_reference | [task_brief_service](../modules/task_brief_service.md) | — |
 | `render_brief` | type_reference | [task_brief_service](../modules/task_brief_service.md) | — |
 | `TaskBriefService.apply_brief` | type_reference | [task_brief_service](../modules/task_brief_service.md) | — |
+| `task_routing_service` | import | [task_routing_service](../modules/task_routing_service.md) | — |
 | `seed_work` | call | [test_agent_runtime_recovery](../modules/test_agent_runtime_recovery.md) | 1 |
-| `test_worker_context_identifies_authoritative_brief` | call | [test_agent_work_routing_lineage](../modules/test_agent_work_routing_lineage.md) | 1 |
-| `test_a_brief_change_still_makes_acceptance_stale` | call | [test_delivery_merge_prerequisites](../modules/test_delivery_merge_prerequisites.md) | 1 |
 
-> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.
+> References: showing 12 of 28 logical references; 16 omitted by the 12-row generated summary limit.

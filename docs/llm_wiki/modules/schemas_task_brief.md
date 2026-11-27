@@ -10,6 +10,7 @@ Canonical brief inputs and separate execution evidence/review contracts.
 
 | Source | Symbols |
 |--------|---------|
+| `app.schemas.task_routing` | `TaskRouting` |
 | `app.utils.url_policy` | `normalize_stored_display_url` |
 | `datetime` | `datetime` |
 | `pydantic` | `BaseModel`, `ConfigDict`, `Field`, `field_validator`, `model_validator` |
@@ -36,9 +37,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (20) |
+| Inbound | `backend` (21) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (1) |
+| Outbound | `backend` (2) |
 
 ### External packages
 
@@ -46,19 +47,19 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [BriefCriterion](../entities/schemas_task_brief_BriefCriterion.md) | 10 | `BaseModel` | — |
-| [TaskBrief](../entities/schemas_task_brief_TaskBrief.md) | 25 | `BaseModel` | — |
-| [BriefWrite](../entities/BriefWrite.md) | 44 | `BaseModel` | — |
-| [BriefConvert](../entities/BriefConvert.md) | 50 | `BaseModel` | — |
-| [CriterionProgress](../entities/schemas_task_brief_CriterionProgress.md) | 56 | `BaseModel` | — |
-| [ProgressWrite](../entities/ProgressWrite.md) | 64 | `BaseModel` | — |
-| [TaskReviewWrite](../entities/TaskReviewWrite.md) | 80 | `BaseModel` | — |
-| [OwnerAcceptanceWrite](../entities/OwnerAcceptanceWrite.md) | 90 | `BaseModel` | An owner's acceptance of one resolved task without a verified review publisher. |
-| [TaskReviewResponse](../entities/TaskReviewResponse.md) | 107 | `BaseModel` | — |
-| [CurrentTaskReviewResponse](../entities/CurrentTaskReviewResponse.md) | 122 | `BaseModel` | — |
+| [BriefCriterion](../entities/schemas_task_brief_BriefCriterion.md) | 12 | `BaseModel` | — |
+| [TaskBrief](../entities/schemas_task_brief_TaskBrief.md) | 27 | `BaseModel` | — |
+| [BriefWrite](../entities/BriefWrite.md) | 48 | `BaseModel` | — |
+| [BriefConvert](../entities/BriefConvert.md) | 54 | `BaseModel` | — |
+| [CriterionProgress](../entities/schemas_task_brief_CriterionProgress.md) | 60 | `BaseModel` | — |
+| [ProgressWrite](../entities/ProgressWrite.md) | 68 | `BaseModel` | — |
+| [TaskReviewWrite](../entities/TaskReviewWrite.md) | 84 | `BaseModel` | — |
+| [OwnerAcceptanceWrite](../entities/OwnerAcceptanceWrite.md) | 94 | `BaseModel` | An owner's acceptance of one resolved task without a verified review publisher. |
+| [TaskReviewResponse](../entities/TaskReviewResponse.md) | 111 | `BaseModel` | — |
+| [CurrentTaskReviewResponse](../entities/CurrentTaskReviewResponse.md) | 126 | `BaseModel` | — |

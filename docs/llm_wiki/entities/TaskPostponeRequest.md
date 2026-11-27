@@ -49,18 +49,18 @@ current claim generation, running run IDs and live assignment IDs from
 flowchart LR
     n0["TaskPostponeRequest (backend/app/schemas/task_postponement.py)"]
     n1["BaseModel"]
-    n2["postpone_task (backend/app/routers/task_domain.py)"]
-    n3["test_cancel_and_reopen_keep_the_open_postponement (backend/tests/test_task_postponement.py)"]
-    n4["test_deferred_and_postponed_are_independent (backend/tests/test_task_postponement.py)"]
-    n5["test_only_a_pm_project_manager_or_operator_decides (backend/tests/test_task_postponement.py)"]
-    n6["test_other_moves_into_or_out_of_postponed_are_refused (backend/tests/test_task_postponement.py)"]
-    n7["test_reactivation_returns_work_with_brief_progress_evidence_and_provenance_intact (backend/tests/test_task_postponement.py)"]
-    n8["test_requirements_must_be_possible_and_not_already_met (backend/tests/test_task_postponement.py)"]
-    n9["test_snapshot_restore_cannot_move_work_into_or_out_of_postponed (backend/tests/test_task_postponement.py)"]
-    n10["test_summary_rolls_up_postponed_leaves (backend/tests/test_task_postponement.py)"]
-    n11["test_work_an_open_postponement_waits_for_cannot_be_deleted (backend/tests/test_task_postponement.py)"]
-    n12["_postpone_task (backend/tests/test_task_reactivation.py)"]
-    n13["test_a_closed_summary_counts_as_an_accepted_predecessor (backend/tests/test_task_reactivation.py)"]
+    n2["backend/app/mcp_agent_tools.py"]
+    n3["postpone_task (backend/app/routers/task_domain.py)"]
+    n4["test_cancel_and_reopen_keep_the_open_postponement (backend/tests/test_task_postponement.py)"]
+    n5["test_deferred_and_postponed_are_independent (backend/tests/test_task_postponement.py)"]
+    n6["test_only_a_pm_project_manager_or_operator_decides (backend/tests/test_task_postponement.py)"]
+    n7["test_other_moves_into_or_out_of_postponed_are_refused (backend/tests/test_task_postponement.py)"]
+    n8["test_reactivation_returns_work_with_brief_progress_evidence_and_provenance_intact (backend/tests/test_task_postponement.py)"]
+    n9["test_requirements_must_be_possible_and_not_already_met (backend/tests/test_task_postponement.py)"]
+    n10["test_snapshot_restore_cannot_move_work_into_or_out_of_postponed (backend/tests/test_task_postponement.py)"]
+    n11["test_summary_rolls_up_postponed_leaves (backend/tests/test_task_postponement.py)"]
+    n12["test_work_an_open_postponement_waits_for_cannot_be_deleted (backend/tests/test_task_postponement.py)"]
+    n13["_postpone_task (backend/tests/test_task_reactivation.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -75,8 +75,8 @@ flowchart LR
     n12 --> n0
     n13 --> n0
     click n0 "../modules/schemas_task_postponement.md"
-    click n2 "../modules/routers_task_domain.md"
-    click n3 "../modules/test_task_postponement.md"
+    click n2 "../modules/mcp_agent_tools.md"
+    click n3 "../modules/routers_task_domain.md"
     click n4 "../modules/test_task_postponement.md"
     click n5 "../modules/test_task_postponement.md"
     click n6 "../modules/test_task_postponement.md"
@@ -85,7 +85,7 @@ flowchart LR
     click n9 "../modules/test_task_postponement.md"
     click n10 "../modules/test_task_postponement.md"
     click n11 "../modules/test_task_postponement.md"
-    click n12 "../modules/test_task_reactivation.md"
+    click n12 "../modules/test_task_postponement.md"
     click n13 "../modules/test_task_reactivation.md"
 ```
 
@@ -105,6 +105,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `mcp_agent_tools` | import | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `postpone_task` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `test_cancel_and_reopen_keep_the_open_postponement` | call | [test_task_postponement](../modules/test_task_postponement.md) | 1 |
 | `test_deferred_and_postponed_are_independent` | call | [test_task_postponement](../modules/test_task_postponement.md) | 1 |
@@ -116,4 +117,5 @@ flowchart LR
 | `test_summary_rolls_up_postponed_leaves` | call | [test_task_postponement](../modules/test_task_postponement.md) | 1 |
 | `test_work_an_open_postponement_waits_for_cannot_be_deleted` | call | [test_task_postponement](../modules/test_task_postponement.md) | 2 |
 | `_postpone_task` | call | [test_task_reactivation](../modules/test_task_reactivation.md) | 1 |
-| `test_a_closed_summary_counts_as_an_accepted_predecessor` | call | [test_task_reactivation](../modules/test_task_reactivation.md) | 1 |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

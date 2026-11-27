@@ -1,6 +1,6 @@
 # AgentPipeline
 
-**Location:** `frontend/src/types/agent.ts:647`
+**Location:** `frontend/src/types/agent.ts:721`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

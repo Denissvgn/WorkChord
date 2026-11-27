@@ -68,10 +68,10 @@ sequenceDiagram
     participant p22 as ReactivationService.evaluate_waiting
     participant p23 as TaskTimelineService.page
     participant p24 as AgentWorkService._decode_page_cursor
-    participant p25 as window_authority_matches
-    participant p26 as AgentWorkService._started_blockers
-    participant p27 as AgentWorkService._start_blockers
-    participant p28 as DeliveryDependencyService.validate_cycles
+    participant p25 as AgentWorkService._is_model_aware_assignment
+    participant p26 as AgentWorkService._verification_rollout
+    participant p27 as window_authority_matches
+    participant p28 as AgentWorkService._started_blockers
     participant p29 as print
     participant p30 as <dynamic>
     p0->>p1: execute
@@ -98,17 +98,17 @@ sequenceDiagram
     p7->>p22: ReactivationService.evaluate_waiting
     p18->>p23: TaskTimelineService.page
     p14->>p24: AgentWorkService._decode_page_cursor
-    p11->>p25: window_authority_matches
-    p12->>p26: AgentWorkService._started_blockers
-    p12->>p27: AgentWorkService._start_blockers
-    p8->>p28: DeliveryDependencyService.validate_cycles
+    p12->>p25: AgentWorkService._is_model_aware_assignment
+    p12->>p26: AgentWorkService._verification_rollout
+    p11->>p27: window_authority_matches
+    p12->>p28: AgentWorkService._started_blockers
     p0-->>p29: print(json.dumps(...))
     p1-->>p30: <dynamic>
 ```
 
-> Call sequence diagram shows 30 of 927 interactions; 897 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 953 interactions; 923 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 247 (246 omitted); unresolved 1 of 454 (453 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 252 (251 omitted); unresolved 1 of 456 (455 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -122,7 +122,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/commands.py:command_transaction` | 9 | - | external | 4 |
 | `backend/app/commands.py:command_transaction` | 9 | - | unresolved | 13 |
 | `backend/app/services/task_reactivation_service.py:process_reactivation_checks` | 19 | [backend/app/services/task_reactivation_service.py](../modules/task_reactivation_service.md) | internal | 1 |
-> Omission summary shows 8 of 208 groups; 200 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 215 groups; 207 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -135,9 +135,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 227; effect analysis evaluated: 164, partial: 7, unavailable: 56. Counts include steps omitted from the displayed trace.
+Source steps: 246; effect analysis evaluated: 181, partial: 7, unavailable: 58. Counts include steps omitted from the displayed trace.
 
-Collector observations for 171 source steps with known totals: observed: 1061, emitted: 990, omitted: 71. Unavailable totals are excluded.
+Collector observations for 188 source steps with known totals: observed: 1146, emitted: 1075, omitted: 71. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -231,18 +231,18 @@ flowchart LR
 | execute | <dynamic> | 28 | `<dynamic>(data not statically known)` |
 | execute | async_sessionmaker | 28 | `async_sessionmaker(engine, expire_on_commit=False)` |
 | execute | command_transaction | 29 | `command_transaction(db)` |
-| command_transaction | current_command | 100 | `current_command(db)` |
-| current_command | getattr (backend/app/commands.py:current_command) | 86 | `getattr(db, 'info', None)` |
-| current_command | isinstance (backend/app/commands.py:current_command) | 87 | `isinstance(info, dict)` |
+| command_transaction | current_command | 103 | `current_command(db)` |
+| current_command | getattr (backend/app/commands.py:current_command) | 89 | `getattr(db, 'info', None)` |
+| current_command | isinstance (backend/app/commands.py:current_command) | 90 | `isinstance(info, dict)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.info.pop` | `command_transaction` | 124 |
-| mutation | `db.info.pop` | `command_transaction` | 137 |
-| mutation | `db.info.pop` | `command_transaction` | 138 |
+| mutation | `db.info.pop` | `command_transaction` | 127 |
 | mutation | `db.info.pop` | `command_transaction` | 140 |
+| mutation | `db.info.pop` | `command_transaction` | 141 |
+| mutation | `db.info.pop` | `command_transaction` | 143 |
 
 ### Static analysis gaps
 
@@ -254,8 +254,8 @@ flowchart LR
 | external_call | `execute` | `create_async_engine` | 22 |
 | unresolved_call | `execute` | `<dynamic>` | 28 |
 | external_call | `execute` | `async_sessionmaker` | 28 |
-| external_call | `current_command` | `getattr` | 86 |
-| external_call | `current_command` | `isinstance` | 87 |
+| external_call | `current_command` | `getattr` | 89 |
+| external_call | `current_command` | `isinstance` | 90 |
 | step_limit | `__main__` | `first 12 steps` | 0 |
 | truncated_flow | `__main__` | `depth limit` | 0 |
 

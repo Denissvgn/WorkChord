@@ -1,6 +1,6 @@
 # ProjectPortfolioSummary
 
-**Location:** `backend/app/schemas/project.py:306`
+**Location:** `backend/app/schemas/project.py:312`
 **Kind:** Pydantic model
 **Bases:** `WorkMetricSummary`
 **Module:** [schemas_project](../modules/schemas_project.md)

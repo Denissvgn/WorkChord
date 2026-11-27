@@ -77,9 +77,9 @@ sequenceDiagram
     p1-->>p21: ValueError (backend/app/services/deli…veryMetricsService.report)('Iteration not found or inaccessible')
 ```
 
-> Call sequence diagram shows 30 of 186 interactions; 156 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 191 interactions; 161 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 9 of 66 (57 omitted); unresolved 3 of 85 (82 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 9 of 70 (61 omitted); unresolved 3 of 86 (83 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -90,7 +90,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/authority.py:require_project` | 17 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
 | `backend/app/utils/time.py:as_utc` | 28 | - | unresolved | 2 |
 | `backend/app/utils/time.py:utc_now` | 31 | - | external | 1 |
-| `backend/app/services/delivery_metrics_service.py:DeliveryMetricsService.report` | 10 | - | external | 20 |
+| `backend/app/services/delivery_metrics_service.py:DeliveryMetricsService.report` | 10 | - | external | 22 |
 | `backend/app/services/delivery_metrics_service.py:DeliveryMetricsService.report` | 10 | - | unresolved | 41 |
 | `backend/app/services/delivery_metrics_service.py:DeliveryMetricsService._window_observations` | 52 | - | unresolved | 29 |
 > Omission summary shows 8 of 19 groups; 11 further groups are not expanded here. Counts above include all omitted interactions.
@@ -106,7 +106,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 36; effect analysis evaluated: 23, partial: 1, unavailable: 12. Counts include steps omitted from the displayed trace.
 
-Collector observations for 24 source steps with known totals: observed: 136, emitted: 126, omitted: 10. Unavailable totals are excluded.
+Collector observations for 24 source steps with known totals: observed: 137, emitted: 127, omitted: 10. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -189,35 +189,35 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| delivery_metrics | domain_result | 78 | `domain_result(...)` |
-| domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 59 | `str(exc)` |
-| domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| delivery_metrics | DeliveryMetricsService.report | 78 | `DeliveryMetricsService(db).report(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)` |
-| DeliveryMetricsService.report | validate_report_scope | 157 | `validate_report_scope(project_id, iteration_id, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)` |
+| delivery_metrics | domain_result | 79 | `domain_result(...)` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| delivery_metrics | DeliveryMetricsService.report | 79 | `DeliveryMetricsService(db).report(project_id=project_id, iteration_id=iteration_id, lookback_days=lookback_days, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)` |
+| DeliveryMetricsService.report | validate_report_scope | 163 | `validate_report_scope(project_id, iteration_id, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)` |
 | validate_report_scope | ValueError (backend/app/services/deli….py:validate_report_scope) | 25 | `ValueError('Workspace backlog requires all projects')` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `recovery.append` | `DeliveryMetricsService.report` | 208 |
-| mutation | `review.sort` | `DeliveryMetricsService.report` | 211 |
-| mutation | `recovery.sort` | `DeliveryMetricsService.report` | 212 |
+| mutation | `recovery.append` | `DeliveryMetricsService.report` | 218 |
+| mutation | `review.sort` | `DeliveryMetricsService.report` | 221 |
+| mutation | `recovery.sort` | `DeliveryMetricsService.report` | 222 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 55 |
-| unresolved_call | `domain_result` | `exc.detail` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| external_call | `domain_result` | `HTTPException` | 61 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
 | external_call | `validate_report_scope` | `ValueError` | 25 |
 | step_limit | `delivery_metrics` | `first 12 steps` | 0 |
 

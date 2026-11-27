@@ -48,7 +48,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (147) |
+| Inbound | `backend` (159) |
 | Inbound | `scripts` (3) |
 | Outbound | `backend` (9) |
 
@@ -58,7 +58,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 153 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 165 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -66,4 +66,4 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [TaskStatus](../entities/models_task_TaskStatus.md) | Enum | 30 | `str`, `Enum` | Task status enumeration for work tracking. |
 | [Task](../entities/models_task_Task.md) | Class | 49 | `Base` | Task model with tree structure and dependencies. |
-| [TaskDependency](../entities/TaskDependency.md) | Class | 262 | `Base` | Task dependency relationship (including cross-parent subtask dependencies). |
+| [TaskDependency](../entities/TaskDependency.md) | Class | 282 | `Base` | Task dependency relationship (including cross-parent subtask dependencies). |

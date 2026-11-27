@@ -1,5 +1,5 @@
 """Project API router."""
-from typing import Annotated, Any
+from typing import Annotated, Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -515,10 +515,19 @@ async def delete_project(
 @router.get("/projects/{project_id}/tasks", response_model=list[TaskResponse])
 async def get_project_tasks(
     project_id: int,
-    service: Annotated[ProjectService, Depends(get_project_service)]
+    service: Annotated[ProjectService, Depends(get_project_service)],
+    status_filter: Annotated[Optional[str], Query(
+        alias="status", description="A displayed state: planned, active, resolved, closed, postponed, canceled or superseded. "
+        "With it the response is a flat list of the tasks at any depth shown in that state, not the tree roots.")] = None,
 ):
-    """Get linked project task tree roots."""
-    tasks = await service.get_tasks(project_id)
+    """Get linked project task tree roots, or the tasks shown in one state."""
+    if status_filter is not None:
+        from app.services.task_display_state import validate_state_filter
+        try:
+            validate_state_filter(status_filter)
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=[{"type": "value_error", "loc": ["query", "status"], "msg": str(exc)}]) from exc
+    tasks = await service.get_tasks(project_id, status_filter)
     if tasks is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

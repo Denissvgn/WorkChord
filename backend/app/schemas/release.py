@@ -25,6 +25,8 @@ class ReleaseTaskSummary(BaseModel):
     id: int
     title: str
     status: str
+    # The stored status, or canceled / superseded for withdrawn work (which keeps its old stored status).
+    displayed_state: Optional[str] = None
     project_id: Optional[int] = None
 
 

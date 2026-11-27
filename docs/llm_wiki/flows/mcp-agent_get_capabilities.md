@@ -48,25 +48,25 @@ sequenceDiagram
     participant p7 as domain_capabilities
     participant p8 as get_agent_skill_catalog
     participant p9 as get_settings
-    participant p10 as AgentTeamSetupService.membership_boundary
-    participant p11 as AgentRoutingTopologyReadiness.unavailable
-    participant p12 as _agent_skill_bundle_service
-    participant p13 as command_transaction
-    participant p14 as _authenticate_agent_key
-    participant p15 as AgentRoutingTopologyReadiness.ready
-    participant p16 as _require_scope_requirement
-    participant p17 as AgentRoutingTopologyReadiness.not_ready
-    participant p18 as IdentityService.actor_context
-    participant p19 as require_scope
-    participant p20 as AgentService.authenticate
-    participant p21 as require_identity_writes
-    participant p22 as process_reactivation_checks
-    participant p23 as AgentTeamSetupService._status_for_topology
-    participant p24 as DeliveryDependencyService.reconcile
+    participant p10 as AgentTeamSetupService.readiness_gate
+    participant p11 as _agent_skill_bundle_service
+    participant p12 as command_transaction
+    participant p13 as _authenticate_agent_key
+    participant p14 as _require_scope_requirement
+    participant p15 as IdentityService.actor_context
+    participant p16 as AgentTeamSetupService.membership_boundary
+    participant p17 as require_scope
+    participant p18 as AgentTeamSetupService._whole_team_readiness
+    participant p19 as AgentService.authenticate
+    participant p20 as require_identity_writes
+    participant p21 as process_reactivation_checks
+    participant p22 as AgentTeamSetupService._project_allows
+    participant p23 as DeliveryDependencyService.reconcile
+    participant p24 as AgentRoutingTopologyReadiness.unavailable
     participant p25 as DiscussionService.enqueue
     participant p26 as actor_has_scope
-    participant p27 as ReactivationService.evaluate_waiting
-    participant p28 as commit_or_flush
+    participant p27 as AgentRoutingTopologyReadiness.ready
+    participant p28 as AgentRoutingTopologyReadiness.not_ready
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -78,32 +78,32 @@ sequenceDiagram
     p2->>p7: domain_capabilities
     p2->>p8: get_agent_skill_catalog
     p3->>p9: get_settings
-    p6->>p10: AgentTeamSetupService.membership_boundary
-    p6->>p11: AgentRoutingTopologyReadiness.unavailable
-    p8->>p12: _agent_skill_bundle_service
-    p5->>p13: command_transaction
-    p5->>p14: _authenticate_agent_key
-    p6->>p15: AgentRoutingTopologyReadiness.ready
-    p5->>p16: _require_scope_requirement
-    p6->>p17: AgentRoutingTopologyReadiness.not_ready
-    p5->>p18: IdentityService.actor_context
-    p16->>p19: require_scope
-    p14->>p20: AgentService.authenticate
-    p18->>p21: require_identity_writes
-    p13->>p22: process_reactivation_checks
-    p10->>p23: AgentTeamSetupService._status_for_topology
-    p13->>p24: DeliveryDependencyService.reconcile
-    p13->>p25: DiscussionService.enqueue
-    p19->>p26: actor_has_scope
-    p22->>p27: ReactivationService.evaluate_waiting
-    p20->>p28: commit_or_flush
+    p6->>p10: AgentTeamSetupService.readiness_gate
+    p8->>p11: _agent_skill_bundle_service
+    p5->>p12: command_transaction
+    p5->>p13: _authenticate_agent_key
+    p5->>p14: _require_scope_requirement
+    p5->>p15: IdentityService.actor_context
+    p10->>p16: AgentTeamSetupService.membership_boundary
+    p14->>p17: require_scope
+    p10->>p18: AgentTeamSetupService._whole_team_readiness
+    p13->>p19: AgentService.authenticate
+    p15->>p20: require_identity_writes
+    p12->>p21: process_reactivation_checks
+    p10->>p22: AgentTeamSetupService._project_allows
+    p12->>p23: DeliveryDependencyService.reconcile
+    p10->>p24: AgentRoutingTopologyReadiness.unavailable
+    p12->>p25: DiscussionService.enqueue
+    p17->>p26: actor_has_scope
+    p18->>p27: AgentRoutingTopologyReadiness.ready
+    p18->>p28: AgentRoutingTopologyReadiness.not_ready
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 529 interactions; 499 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 525 interactions; 495 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 148 (147 omitted); unresolved 1 of 231 (230 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 146 (145 omitted); unresolved 1 of 222 (221 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -117,7 +117,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 133 groups; 125 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 127 groups; 119 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -130,9 +130,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 151; effect analysis evaluated: 93, partial: 4, unavailable: 54. Counts include steps omitted from the displayed trace.
+Source steps: 158; effect analysis evaluated: 103, partial: 3, unavailable: 52. Counts include steps omitted from the displayed trace.
 
-Collector observations for 97 source steps with known totals: observed: 482, emitted: 441, omitted: 41. Unavailable totals are excluded.
+Collector observations for 106 source steps with known totals: observed: 488, emitted: 461, omitted: 27. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

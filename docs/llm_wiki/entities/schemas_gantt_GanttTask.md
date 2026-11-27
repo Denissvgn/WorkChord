@@ -1,7 +1,7 @@
 # GanttTask
 
 **Location:** `backend/app/schemas/gantt.py:32`
-**Kind:** Class
+**Kind:** Pydantic model
 **Bases:** `TaskMetricSignals`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)
 
@@ -24,6 +24,7 @@ Task representation for Gantt chart.
 | `min_start_date` | `Optional[date]` | `min_start_date` | No | Yes | `None` | — | — | — |
 | `max_end_date` | `Optional[date]` | `max_end_date` | No | Yes | `None` | — | — | — |
 | `status` | `Optional[str]` | `status` | No | Yes | `None` | — | — | — |
+| `displayed_state` | `Optional[str]` | `displayed_state` | No | Yes | `None` | — | — | — |
 | `milestone` | `Optional[GanttMilestone]` | `milestone` | No | Yes | `None` | — | — | — |
 | `assignee` | `Optional[GanttAssignee]` | `assignee` | No | Yes | `None` | — | — | — |
 | `assignees` | `list[GanttAssignee]` | `assignees` | No | No | `[]` | — | — | — |
@@ -69,7 +70,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `actual_end_date`, `actual_start_date`, `assignee`, `assignees`, `calculated_effort_days`, `children`, `dependencies`, `effort_days`, `effort_hours`, `end_date`, `has_inverted_dependency`, `id` |
+| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `actual_end_date`, `actual_start_date`, `assignee`, `assignees`, `calculated_effort_days`, `children`, `dependencies`, `displayed_state`, `effort_days`, `effort_hours`, `end_date`, `has_inverted_dependency` |
 
 ### Structure
 

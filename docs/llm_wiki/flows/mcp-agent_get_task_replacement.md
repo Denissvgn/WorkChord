@@ -125,9 +125,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 108; effect analysis evaluated: 77, partial: 2, unavailable: 29. Counts include steps omitted from the displayed trace.
+Source steps: 108; effect analysis evaluated: 76, partial: 3, unavailable: 29. Counts include steps omitted from the displayed trace.
 
-Collector observations for 79 source steps with known totals: observed: 350, emitted: 337, omitted: 13. Unavailable totals are excluded.
+Collector observations for 79 source steps with known totals: observed: 351, emitted: 337, omitted: 14. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -202,7 +202,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_get_task_replacement | _tool_call | 1660 | `_tool_call('planning:read', ...)` |
+| agent_get_task_replacement | _tool_call | 1670 | `_tool_call('planning:read', ...)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |

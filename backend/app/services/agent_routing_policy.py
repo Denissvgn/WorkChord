@@ -489,7 +489,14 @@ if not all(
     raise RuntimeError("Capability labels reference unknown routing skill keys")
 
 
-class UnknownRoutingKeyError(ValueError):
+class RoutingTermsRefusedError(ValueError):
+    """Routing terms that pass request validation but name something the server refuses.
+
+    REST maps it to the same 422 response request validation gives.
+    """
+
+
+class UnknownRoutingKeyError(RoutingTermsRefusedError):
     """A key is neither a built-in routing skill key nor a declared qualification key."""
 
     def __init__(self, keys: Iterable[str]):
