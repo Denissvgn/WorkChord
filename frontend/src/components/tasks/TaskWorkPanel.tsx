@@ -20,6 +20,9 @@ import { TaskReviewHistory } from './TaskReviewHistory';
 import { TaskOwnerAcceptance, VERIFIED_PUBLISHER_CODE } from './TaskOwnerAcceptance';
 import { TaskPostponeForm } from './TaskPostponeForm';
 import { TaskPostponementPanel } from './TaskPostponementPanel';
+import { TaskSupersedeForm } from './TaskSupersedeForm';
+import { useProjectManageAccess } from '../../features/identity/useProjectEditAccess';
+import { stateOf } from '../../utils/taskState';
 import { useTaskReviewer } from './useTaskReviewer';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
@@ -211,6 +214,11 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         reviewEvidenceTooLong && t('domain.reviewEvidenceTooLong'),
     ].filter(Boolean);
     const canPostpone = Boolean(actions.data?.actions.find(item => item.action === 'postpone')?.allowed);
+    // Supersede is offered to a project manager or operator when the task can still be superseded; the server decides.
+    const supersedeAction = actions.data?.actions.find(item => item.action === 'supersede');
+    const hasManageAccess = useProjectManageAccess(task.project_id);
+    const canSupersede = actions.isSuccess && (supersedeAction ? supersedeAction.allowed : hasManageAccess) && task.project_id != null
+        && stateOf(task) !== 'superseded' && !task.accepted_at && !task.is_composite;
     const canReactivate = Boolean(actions.data?.actions.find(item => item.action === 'reactivate')?.allowed);
     // The next step of every refusal on this page, from the action blockers and from a refused command.
     const reviewAction = actions.data?.actions.find(item => item.action === 'review');
@@ -337,6 +345,12 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
             return task.status === 'postponed'
                 ? <TaskPostponementPanel task={task} canReactivate={canReactivate} disabled={outside.length > 0} disabledReasons={outside} onPending={onPending} onUpdated={finished} />
                 : <TaskPostponeForm task={task} actions={actions.data} disabled={outside.length > 0} disabledReasons={outside} onPending={onPending} onUpdated={finished} />;
+        })()}
+        {canSupersede && (() => {
+            const outside = [disabled && t('domain.acceptFinishEditing'), pending && t('domain.acceptSaving'), staleDraft && t('domain.staleProgress'), criteriaDirty && t('domain.acceptSaveProgress')]
+                .filter((item): item is string => Boolean(item));
+            const finished = (latest: Task) => { if (!isActive()) return; if (key) { try { sessionStorage.removeItem(key); } catch { /* Storage may be unavailable. */ } } onDirty(false); onUpdated(latest); };
+            return <TaskSupersedeForm task={task} disabled={outside.length > 0} disabledReasons={outside} onPending={onPending} onUpdated={finished} />;
         })()}
         <details className="text-sm text-content-secondary">
             <summary className="cursor-pointer">{t('domain.unavailableActions')}</summary>

@@ -18,7 +18,8 @@ import type {
     ReleaseUpdateRequest,
 } from '../../types/release';
 import { QueryErrorState } from '../feedback/QueryState';
-import { pillToneClassName, STATUS_TONE } from '../ui/tone';
+import { pillToneClassName, STATE_TONE } from '../ui/tone';
+import { stateOf } from '../../utils/taskState';
 import { feedbackMessage } from '../../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
@@ -323,8 +324,8 @@ export const ReleaseForm = ({
                                     className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
                                 />
                                 <span className="min-w-0 flex-1 truncate text-content-primary">{task.title}</span>
-                                <span className={clsx('rounded-full px-2 py-0.5 text-xs', pillToneClassName[STATUS_TONE[task.status]])}>
-                                    {t(`statuses.${task.status}`)}
+                                <span className={clsx('rounded-full px-2 py-0.5 text-xs', pillToneClassName[STATE_TONE[stateOf(task)]])}>
+                                    {t(`statuses.${stateOf(task)}`)}
                                 </span>
                             </label>
                         ))}

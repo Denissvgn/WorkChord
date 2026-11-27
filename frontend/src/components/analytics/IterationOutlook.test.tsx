@@ -79,7 +79,7 @@ describe('iteration outlook on Analytics', () => {
 
     it('splits tasks by status with counts and a table view, accepted shown separately', () => {
         renderWithProviders(<StatusDistribution summary={summary()} />);
-        expect(screen.getByRole('img', { name: 'Planned 4, Active 2, Resolved 1, Closed 3' })).toBeInTheDocument();
+        expect(screen.getByRole('img', { name: 'Planned 4, Active 2, Resolved 1, Closed 3, Postponed 0' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: '2 accepted' })).toBeInTheDocument();
         expect(screen.getByRole('rowheader', { name: 'Accepted (of closed)' })).toBeInTheDocument();
     });

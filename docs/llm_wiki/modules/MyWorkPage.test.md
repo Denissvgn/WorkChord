@@ -13,7 +13,7 @@ _Auto-generated from `frontend/src/pages/MyWorkPage.test.tsx`._
 | `../components/tasks/taskDraftStorage` | `writeTaskDraft` | — | compiler-dependent |
 | `../components/tasks/taskEditorContract` | `buildTaskEditorDefaults` | — | compiler-dependent |
 | `../features/identity/identityContext` | `IdentityContext` | — | compiler-dependent |
-| `../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../i18n/i18n` | `i18n`, `ensureLanguageResources` | — | compiler-dependent |
 | `../test/fixtures/taskDetail` | `taskDetailResponse` | — | compiler-dependent |
 | `../test/pageChrome` | `expectPageChrome` | — | compiler-dependent |
 | `../test/renderWithProviders` | `createTestQueryClient`, `renderWithProviders` | — | compiler-dependent |
@@ -28,7 +28,7 @@ _Auto-generated from `frontend/src/pages/MyWorkPage.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `api`, `signedInIdentity` |
-| Module calls | `api = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `it`, `it`, `it`, `it`, `it.each(['active', 'review', 'inbox'])`, `describe`, `describe`, `it.each(['active', 'queued', 'blocked', 'awaiting_review', 'review'])`, `it`, `it.each(['active', 'inbox'])` |
+| Module calls | `api = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `it`, `it`, `it`, `it`, `it.each(['active', 'review', 'inbox'])`, `describe`, `describe`, `it.each(['active', 'queued', 'blocked', 'awaiting_review', 'review'])`, `it`, `it.each(['active', 'inbox'])`, `it`, `it`, `it` |
 
 ## Local dependency map
 

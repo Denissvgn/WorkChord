@@ -145,9 +145,10 @@ async def metric_matches(db: DB, metric: str = Query(max_length=40), project_id:
 @router.get("/tasks/lookup", response_model=TaskReferencePage)
 async def lookup_tasks(db: DB, project_id: int | None = None, iteration_id: int | None = None, q: str | None = Query(default=None, max_length=200), backlog_only: bool = False,
                        limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0),
-                       task_status: str | None = None, parent_id: int | None = Query(default=None, ge=1), roots_only: bool = False):
+                       task_status: str | None = None, parent_id: int | None = Query(default=None, ge=1), roots_only: bool = False,
+                       leaf_only: bool = Query(default=False, description="Only tasks that are not a parent or summary of other tasks.")):
     return await domain_result(TaskDetailService(db).lookup(project_id=project_id, iteration_id=iteration_id, query=q, backlog_only=backlog_only, limit=limit, after_id=after_id,
-        status=task_status, parent_id=parent_id, roots_only=roots_only))
+        status=task_status, parent_id=parent_id, roots_only=roots_only, leaf_only=leaf_only))
 
 
 @router.get("/tasks/capabilities")

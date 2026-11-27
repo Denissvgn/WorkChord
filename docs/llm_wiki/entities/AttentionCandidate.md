@@ -1,6 +1,6 @@
 # AttentionCandidate
 
-**Location:** `frontend/src/features/overview/overviewSignals.ts:227`
+**Location:** `frontend/src/features/overview/overviewSignals.ts:228`
 **Kind:** Interface
 **Bases:** —
 **Module:** [overviewSignals](../modules/overviewSignals.md)

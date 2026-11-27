@@ -198,7 +198,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| convert_task_routing | domain_result | 272 | `domain_result(...)` |
+| convert_task_routing | domain_result | 273 | `domain_result(...)` |
 | domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
@@ -206,7 +206,7 @@ flowchart LR
 | domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 60 | `str(exc)` |
 | domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| convert_task_routing | TaskBriefService.routing_conversion | 272 | `TaskBriefService(db).routing_conversion(task_id, data)` |
+| convert_task_routing | TaskBriefService.routing_conversion | 273 | `TaskBriefService(db).routing_conversion(task_id, data)` |
 | TaskBriefService.routing_conversion | self.tasks.get_by_id (backend/app/services/task…ervice.routing_conversion) | 344 | `self.tasks.get_by_id(task_id)` |
 | TaskBriefService.routing_conversion | LookupError | 346 | `LookupError('Task not found or inaccessible')` |
 

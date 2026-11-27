@@ -1,4 +1,4 @@
-import type { TaskStatus } from '../../types/task';
+import type { TaskDisplayedState, TaskStatus } from '../../types/task';
 
 export type PillTone = 'gray' | 'blue' | 'green' | 'yellow' | 'red' | 'purple' | 'indigo';
 
@@ -70,6 +70,15 @@ export const statusTextClassName: Record<TaskStatus, string> = {
 export const priorityChipClassName = (priority: number) => (priority <= 3
     ? 'border border-border-strong bg-surface-card font-semibold text-content-primary'
     : 'border border-border bg-surface-subtle text-content-secondary');
+
+/** Tones for what a task is shown as: its status, or canceled / superseded for withdrawn work. */
+export const STATE_TONE: Record<TaskDisplayedState, PillTone> = { ...STATUS_TONE, canceled: 'red', superseded: 'indigo' };
+
+export const stateTextClassName: Record<TaskDisplayedState, string> = {
+    ...statusTextClassName, canceled: 'text-feedback-danger-foreground', superseded: 'text-feedback-indigo-foreground',
+};
+
+export const isDisplayedState = (value: string): value is TaskDisplayedState => value in STATE_TONE;
 
 export const isTaskStatus = (value: string): value is TaskStatus => value in STATUS_TONE;
 

@@ -1,6 +1,6 @@
 # ReleaseFormProps
 
-**Location:** `frontend/src/components/releases/ReleaseForm.tsx:26`
+**Location:** `frontend/src/components/releases/ReleaseForm.tsx:27`
 **Kind:** Interface
 **Bases:** —
 **Module:** [ReleaseForm](../modules/ReleaseForm.md)

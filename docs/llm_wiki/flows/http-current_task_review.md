@@ -200,7 +200,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| current_task_review | domain_result | 305 | `domain_result(...)` |
+| current_task_review | domain_result | 306 | `domain_result(...)` |
 | domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
@@ -208,16 +208,16 @@ flowchart LR
 | domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 60 | `str(exc)` |
 | domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| current_task_review | TaskDetailService.detail | 305 | `TaskDetailService(db).detail(task_id, limit=1)` |
-| TaskDetailService.detail | self.db.scalar | 157 | `self.db.scalar(...)` |
-| TaskDetailService.detail | select(…).where(…).options | 157 | `select(Task).where(Task.id == task_id).options(raiseload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...))` |
+| current_task_review | TaskDetailService.detail | 306 | `TaskDetailService(db).detail(task_id, limit=1)` |
+| TaskDetailService.detail | self.db.scalar | 178 | `self.db.scalar(...)` |
+| TaskDetailService.detail | select(…).where(…).options | 178 | `select(Task).where(Task.id == task_id).options(raiseload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...))` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `seen.add` | `TaskDetailService.detail` | 176 |
-| mutation | `ancestors.append` | `TaskDetailService.detail` | 180 |
+| mutation | `seen.add` | `TaskDetailService.detail` | 197 |
+| mutation | `ancestors.append` | `TaskDetailService.detail` | 201 |
 
 ### Static analysis gaps
 
@@ -228,8 +228,8 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 58 |
 | external_call | `domain_result` | `HTTPException` | 60 |
 | external_call | `domain_result` | `HTTPException` | 62 |
-| unresolved_call | `TaskDetailService.detail` | `self.db.scalar` | 157 |
-| unresolved_call | `TaskDetailService.detail` | `select(Task).where(Task.id == task_id).options` | 157 |
+| unresolved_call | `TaskDetailService.detail` | `self.db.scalar` | 178 |
+| unresolved_call | `TaskDetailService.detail` | `select(Task).where(Task.id == task_id).options` | 178 |
 | step_limit | `current_task_review` | `first 12 steps` | 0 |
 
 ## Behavior

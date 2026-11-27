@@ -41,13 +41,13 @@ flowchart LR
     n3["frontend/src/components/settings/ConnectedReadersPanel.test.tsx"]
     n4["frontend/src/components/tasks/DeliveryDependencies.test.tsx"]
     n5["frontend/src/components/tasks/GitHubReconciliationPanel.test.tsx"]
-    n6["frontend/src/components/tasks/TaskOwnerAcceptance.test.tsx"]
-    n7["frontend/src/components/tasks/TaskPostponement.test.tsx"]
-    n8["frontend/src/components/tasks/TaskReadView.operatorKey.test.tsx"]
-    n9["frontend/src/components/tasks/TaskRefusalNextSteps.test.tsx"]
-    n10["frontend/src/features/firstRun/GetStartedFlow.test.tsx"]
-    n11["frontend/src/features/firstRun/GetStartedPanel.test.tsx"]
-    n12["frontend/src/features/firstRun/sampleProject.test.tsx"]
+    n6["frontend/src/components/tasks/StoppedWork.test.tsx"]
+    n7["frontend/src/components/tasks/TaskOwnerAcceptance.test.tsx"]
+    n8["frontend/src/components/tasks/TaskPostponement.test.tsx"]
+    n9["frontend/src/components/tasks/TaskReadView.operatorKey.test.tsx"]
+    n10["frontend/src/components/tasks/TaskRefusalNextSteps.test.tsx"]
+    n11["frontend/src/features/firstRun/GetStartedFlow.test.tsx"]
+    n12["frontend/src/features/firstRun/GetStartedPanel.test.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -66,13 +66,13 @@ flowchart LR
     click n3 "../modules/ConnectedReadersPanel.test.md"
     click n4 "../modules/DeliveryDependencies.test.md"
     click n5 "../modules/GitHubReconciliationPanel.test.md"
-    click n6 "../modules/TaskOwnerAcceptance.test.md"
-    click n7 "../modules/TaskPostponement.test.md"
-    click n8 "../modules/TaskReadView.operatorKey.test.md"
-    click n9 "../modules/TaskRefusalNextSteps.test.md"
-    click n10 "../modules/GetStartedFlow.test.md"
-    click n11 "../modules/GetStartedPanel.test.md"
-    click n12 "../modules/sampleProject.test.md"
+    click n6 "../modules/StoppedWork.test.md"
+    click n7 "../modules/TaskOwnerAcceptance.test.md"
+    click n8 "../modules/TaskPostponement.test.md"
+    click n9 "../modules/TaskReadView.operatorKey.test.md"
+    click n10 "../modules/TaskRefusalNextSteps.test.md"
+    click n11 "../modules/GetStartedFlow.test.md"
+    click n12 "../modules/GetStartedPanel.test.md"
 ```
 
 ### Summary
@@ -90,12 +90,12 @@ flowchart LR
 | `ConnectedReadersPanel.test` | import | [ConnectedReadersPanel.test](../modules/ConnectedReadersPanel.test.md) | — |
 | `DeliveryDependencies.test` | import | [DeliveryDependencies.test](../modules/DeliveryDependencies.test.md) | — |
 | `GitHubReconciliationPanel.test` | import | [GitHubReconciliationPanel.test](../modules/GitHubReconciliationPanel.test.md) | — |
+| `StoppedWork.test` | import | [StoppedWork.test](../modules/StoppedWork.test.md) | — |
 | `TaskOwnerAcceptance.test` | import | [TaskOwnerAcceptance.test](../modules/TaskOwnerAcceptance.test.md) | — |
 | `TaskPostponement.test` | import | [TaskPostponement.test](../modules/TaskPostponement.test.md) | — |
 | `TaskReadView.operatorKey.test` | import | [TaskReadView.operatorKey.test](../modules/TaskReadView.operatorKey.test.md) | — |
 | `TaskRefusalNextSteps.test` | import | [TaskRefusalNextSteps.test](../modules/TaskRefusalNextSteps.test.md) | — |
 | `GetStartedFlow.test` | import | [GetStartedFlow.test](../modules/GetStartedFlow.test.md) | — |
 | `GetStartedPanel.test` | import | [GetStartedPanel.test](../modules/GetStartedPanel.test.md) | — |
-| `sampleProject.test` | import | [sampleProject.test](../modules/sampleProject.test.md) | — |
 
-> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

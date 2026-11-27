@@ -1,4 +1,5 @@
 import type { TaskFilters } from '../../components/tasks/TaskFiltersBar';
+import { isStoppedState, stateOf } from '../../utils/taskState';
 import type { AgentPipeline } from '../../types/agent';
 import type { Iteration } from '../../types/iteration';
 import type { Task, TaskReference } from '../../types/task';
@@ -210,7 +211,7 @@ const dueTime = (task: Task) => (task.end_date ? parseDay(task.end_date) ?? Numb
 
 /** The next open tasks to work on, highest delivery risk first, then by due date and priority. */
 export const selectWorkNow = (roots: Task[], limit = 5) => {
-    const open = selectVisibleWork(roots).leaves.filter(task => !DONE_STATUSES.has(task.status) && !task.is_deferred);
+    const open = selectVisibleWork(roots).leaves.filter(task => !DONE_STATUSES.has(task.status) && !task.is_deferred && !isStoppedState(stateOf(task)));
     const ranked = [...open].sort((left, right) => (
         workNowRank(left) - workNowRank(right)
         || dueTime(left) - dueTime(right)

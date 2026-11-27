@@ -1,16 +1,17 @@
 import { useId, useState } from 'react';
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
-import { CheckCircle2, Circle, CornerDownRight } from 'lucide-react';
+import { ArrowRightCircle, CheckCircle2, Circle, CornerDownRight, PauseCircle, XCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { OverflowMenu } from '../ui/OverflowMenu';
 import type { OverflowMenuItem } from '../ui/OverflowMenu';
-import { statusTextClassName } from '../ui/tone';
+import { pillToneClassName, STATE_TONE, stateTextClassName } from '../ui/tone';
+import { isEndedState, isStoppedState } from '../../utils/taskState';
 import { canTransition, TASK_TRANSITIONS } from '../../features/taskTransitions';
 import { isDone } from './taskStateChip';
 import type { AgentDispatchState } from '../../features/agentDispatch';
 import type { TaskStateChip } from './taskStateChip';
-import type { TaskStatus } from '../../types/task';
+import type { TaskDisplayedState, TaskStatus } from '../../types/task';
 import { AgentDispatchLine, AssigneeKindIcon, EffortValue, TaskStateChipBadge } from './taskRowParts';
 import { AssigneeSelect } from './AssigneeSelect';
 
@@ -23,6 +24,10 @@ export interface TaskRowProps {
     /** Text shown as the title when it differs from the plain title, such as "#12 · Title". */
     titleText?: string;
     status: TaskStatus;
+    /** What the task is shown as when that is not its status: postponed, canceled or superseded work. */
+    state?: TaskDisplayedState;
+    /** For superseded work, the task that delivers it instead, and how to open it. */
+    successor?: { id: number; onOpen: () => void } | null;
     /** Composite tasks take their status from their children, so it is not changed here. */
     statusLocked?: boolean;
     priority?: number | null;
@@ -76,7 +81,7 @@ export interface TaskRowProps {
  * the menu appear on hover and focus.
  */
 export const TaskRow = ({
-    id, title, titleText, status, statusLocked = false, priority, chip, meta, reasons, assignee, assigneeOptions, onAssign, effort,
+    id, title, titleText, status, state: shownState, successor, statusLocked = false, priority, chip, meta, reasons, assignee, assigneeOptions, onAssign, effort,
     level = 0, lead, handle, revealed = false, onOpen, onStatusChange, menuItems, selected = false, onToggleSelect, selectDisabledReason, dispatch, reviewer,
     overdue = false, deferred = false, className,
 }: TaskRowProps) => {
@@ -86,9 +91,15 @@ export const TaskRow = ({
     const selectReasonId = useId();
     // The checkbox is always shown, so selecting never means hunting for it; the menu stays on hover and focus.
     const menuShown = hovered || focused || revealed;
-    const statusName = t(`statuses.${status}`, { defaultValue: status });
-    const transitions = statusLocked ? [] : TASK_TRANSITIONS[status] ?? [];
-    const statusIcon = isDone(status) ? <CheckCircle2 aria-hidden="true" className="h-4 w-4" /> : <Circle aria-hidden="true" className="h-4 w-4" />;
+    const state = shownState ?? status;
+    const stopped = isStoppedState(state);
+    const statusName = t(`statuses.${state}`, { defaultValue: state });
+    const transitions = statusLocked || stopped ? [] : TASK_TRANSITIONS[status] ?? [];
+    // Each stopped state has its own icon and a written label, so the state never rests on colour alone.
+    const statusIcon = state === 'postponed' ? <PauseCircle aria-hidden="true" className="h-4 w-4" />
+        : state === 'canceled' ? <XCircle aria-hidden="true" className="h-4 w-4" />
+            : state === 'superseded' ? <ArrowRightCircle aria-hidden="true" className="h-4 w-4" />
+                : isDone(status) ? <CheckCircle2 aria-hidden="true" className="h-4 w-4" /> : <Circle aria-hidden="true" className="h-4 w-4" />;
     const assigneeKind = assigneeOptions?.find(option => option.id === assignee?.id)?.kind ?? assignee?.kind ?? undefined;
     const assigneeName = assignee?.name ?? t('common.unassigned');
     const options = assignee && assignee.id !== undefined && !assigneeOptions?.some(option => option.id === assignee.id)
@@ -140,7 +151,7 @@ export const TaskRow = ({
                     align="start"
                     label={`${t('taskList.taskStatus', { status: statusName })}: ${title}`}
                     className="shrink-0"
-                    triggerClassName={statusTextClassName[status]}
+                    triggerClassName={stateTextClassName[state]}
                     triggerVariant="ghost"
                     triggerSize="sm"
                     triggerIconOnly
@@ -151,7 +162,7 @@ export const TaskRow = ({
                     }))}
                 />
             ) : (
-                <span className={clsx('flex h-8 w-8 shrink-0 items-center justify-center', statusTextClassName[status])}
+                <span className={clsx('flex h-8 w-8 shrink-0 items-center justify-center', stateTextClassName[state])}
                     title={t('taskList.taskStatus', { status: statusName })}>
                     {statusIcon}
                     <span className="sr-only">{t('taskList.taskStatus', { status: statusName })}</span>
@@ -171,11 +182,16 @@ export const TaskRow = ({
                 title={title}
                 className={clsx(
                     'min-w-0 flex-1 truncate text-left font-medium hover:text-action hover:underline focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus',
-                    status === 'closed' && 'text-content-secondary line-through',
+                    (status === 'closed' || isEndedState(state)) && 'text-content-secondary line-through',
                 )}
              variant="plain">
                 {titleText ?? title}
             </Button>
+
+            {stopped && <span data-task-state={state} className={clsx('shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold', pillToneClassName[STATE_TONE[state]])}>{statusName}</span>}
+            {state === 'superseded' && successor && (
+                <Button type="button" variant="ghost" size="sm" className="shrink-0" onClick={successor.onOpen}>{t('stoppedWork.supersededBy', { id: successor.id })}</Button>
+            )}
 
             {meta && <span className="hidden min-w-0 max-w-[16rem] shrink truncate text-xs text-content-secondary lg:block">{meta}</span>}
 

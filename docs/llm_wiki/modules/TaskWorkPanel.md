@@ -12,6 +12,7 @@ Commit and uncommit commands retain original source and selected-target aggregat
 |--------|---------|-----------|------------------|
 | `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
+| `../../features/identity/useProjectEditAccess` | `useProjectManageAccess` | — | compiler-dependent |
 | `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
 | `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
@@ -22,6 +23,7 @@ Commit and uncommit commands retain original source and selected-target aggregat
 | `../../types/iteration` | `Iteration` | Declaration | erased |
 | `../../types/task` | `CriterionProgress`, `RefusalNextStep`, `Task` | Declaration | erased |
 | `../../utils/apiError` | `getApiErrorMessage`, `getApiNextStep` | — | compiler-dependent |
+| `../../utils/taskState` | `stateOf` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/Input` | `Input` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
@@ -32,6 +34,7 @@ Commit and uncommit commands retain original source and selected-target aggregat
 | `./TaskRecordProvenance` | `TaskRecordProvenance` | — | compiler-dependent |
 | `./TaskReviewHistory` | `TaskReviewHistory` | — | compiler-dependent |
 | `./TaskReviewer` | `TaskReviewer` | — | compiler-dependent |
+| `./TaskSupersedeForm` | `TaskSupersedeForm` | — | compiler-dependent |
 | `./useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
 | `./useTaskReviewer` | `useTaskReviewer` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery` | — | compiler-dependent |
@@ -65,8 +68,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (6) |
-| Outbound | `frontend` (23) |
+| Inbound | `frontend` (7) |
+| Outbound | `frontend` (26) |
 
 ### External packages
 
@@ -74,7 +77,7 @@ flowchart LR
 |---|---:|---:|
 | typescript | 3 | 0 |
 
-> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 33 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

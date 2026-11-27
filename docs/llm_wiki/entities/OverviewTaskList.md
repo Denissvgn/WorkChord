@@ -1,6 +1,6 @@
 # OverviewTaskList
 
-**Location:** `frontend/src/features/overview/overviewSignals.ts:23`
+**Location:** `frontend/src/features/overview/overviewSignals.ts:24`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [overviewSignals](../modules/overviewSignals.md)
