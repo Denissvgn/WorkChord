@@ -136,7 +136,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| backlog_snapshots | BacklogSnapshotService.list | 334 | `BacklogSnapshotService(db).list(project_id)` |
+| backlog_snapshots | BacklogSnapshotService.list | 335 | `BacklogSnapshotService(db).list(project_id)` |
 | BacklogSnapshotService.list | require_project | 55 | `require_project(self.db, project_id)` |
 | require_project | db.info.get | 82 | `db.info.get('authority')` |
 | require_project | get_settings | 84 | `get_settings(data not statically known)` |

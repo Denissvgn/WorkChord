@@ -15,6 +15,7 @@ The work queues distinguish active, queued, blocked and awaiting-review tasks. I
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../components/common/Button` | `Button` | — | compiler-dependent |
+| `../components/common/Select` | `Select` | — | compiler-dependent |
 | `../components/feedback/LiveWindowStatus` | `LiveWindowStatus` | — | compiler-dependent |
 | `../components/feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `../components/notifications/NotificationsPanel` | `NotificationsPanel` | — | compiler-dependent |
@@ -42,6 +43,7 @@ The work queues distinguish active, queued, blocked and awaiting-review tasks. I
 | `../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
 | `../types/task` | `TaskReference`, `TaskReferencePage` | Declaration | erased |
 | `../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../utils/taskState` | `ALL_STATES`, `isStoppedState`, `stateOf` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation` | — | compiler-dependent |
 | `react` | `useCallback`, `useMemo`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
@@ -75,7 +77,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (27) |
+| Outbound | `frontend` (29) |
 
 ### External packages
 
@@ -83,11 +85,11 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [WorkPage](../entities/WorkPage.md) | Interface | 37 | — | — |
-| [Queue](../entities/Queue.md) | Type alias | 36 | `typeof QUEUES[number]` | — |
+| [WorkPage](../entities/WorkPage.md) | Interface | 39 | — | — |
+| [Queue](../entities/Queue.md) | Type alias | 38 | `typeof QUEUES[number]` | — |

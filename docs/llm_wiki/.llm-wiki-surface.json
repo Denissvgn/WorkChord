@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1947,
+      "entities": 1949,
       "flows": 652,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1232,
+      "modules": 1238,
       "workflows": 254
     },
     "dependency_architecture": 2,
-    "total": 4102
+    "total": 4110
   },
   "dependency_pages": {
     "count": 2,
@@ -4227,7 +4227,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 235,
+              "line": 236,
               "step": "create_backlog_task",
               "target": "HTTPException"
             },
@@ -4263,7 +4263,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 236,
+              "line": 237,
               "step": "create_backlog_task",
               "target": "TaskService(db).create"
             },
@@ -6764,7 +6764,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 176,
+              "line": 197,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "seen.add"
@@ -6772,7 +6772,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 180,
+              "line": 201,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "ancestors.append"
@@ -6811,13 +6811,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 178,
               "step": "TaskDetailService.detail",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 178,
               "step": "TaskDetailService.detail",
               "target": "select(Task).where(Task.id == task_id).options"
             },
@@ -14834,11 +14834,20 @@
       },
       "evidence": {
         "data_flow": {
-          "boundary_effects": [],
+          "boundary_effects": [
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 159,
+              "step": "TaskDetailService.my_work",
+              "step_index": 2,
+              "target": "stopped.append"
+            }
+          ],
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 111,
+              "line": 118,
               "step": "TaskDetailService.my_work",
               "target": "self.db.info.get"
             },
@@ -14856,27 +14865,33 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 124,
+              "line": 132,
               "step": "TaskDetailService.my_work",
               "target": "select(TeamMember.id).where"
             },
             {
               "kind": "external_call",
-              "line": 124,
+              "line": 132,
               "step": "TaskDetailService.my_work",
               "target": "select"
             },
             {
-              "kind": "unresolved_call",
-              "line": 125,
+              "kind": "external_call",
+              "line": 133,
               "step": "TaskDetailService.my_work",
-              "target": "self.references().where"
+              "target": "or_"
             },
             {
               "kind": "unresolved_call",
-              "line": 40,
-              "step": "TaskDetailService.references",
-              "target": "select(Task.id, Task.title, Task.version, Task.status, displayed_state_expression(id_column=Task.id, status_column=Task.status, canceled_at_column=Task.canceled_at).label('displayed_state'), Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin"
+              "line": 133,
+              "step": "TaskDetailService.my_work",
+              "target": "Task.assignee_id.in_"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 135,
+              "step": "TaskDetailService.my_work",
+              "target": "self.references().where"
             },
             {
               "kind": "step_limit",
@@ -14932,7 +14947,7 @@
             "backend/app/refusal_next_steps.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 885,
+          "step_count": 903,
           "truncated": true
         }
       },
@@ -18907,7 +18922,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 40,
+              "line": 44,
               "step": "TaskDetailService.references",
               "target": "select(Task.id, Task.title, Task.version, Task.status, displayed_state_expression(id_column=Task.id, status_column=Task.status, canceled_at_column=Task.canceled_at).label('displayed_state'), Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin"
             },
@@ -18933,7 +18948,7 @@
             "backend/app/sql_semantics.py",
             "backend/app/schemas/task_detail.py"
           ],
-          "step_count": 100,
+          "step_count": 106,
           "truncated": false
         }
       },
@@ -20419,7 +20434,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 426,
+              "line": 427,
               "step": "postpone_task",
               "target": "TaskPostponementService(db).postpone"
             }
@@ -21079,7 +21094,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 433,
+              "line": 434,
               "step": "reactivate_task",
               "target": "TaskPostponementService(db).reactivate"
             }
@@ -22133,7 +22148,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 444,
+              "line": 445,
               "step": "record_owner_decision",
               "target": "ReactivationService(db).record_owner_decision"
             }
@@ -22287,7 +22302,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 277,
+              "line": 278,
               "step": "record_task_progress",
               "target": "TaskBriefService(db).write_progress"
             },
@@ -22456,7 +22471,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 390,
+              "line": 391,
               "step": "record_task_replacement",
               "target": "TaskReplacementService(db).record"
             }
@@ -22522,7 +22537,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 405,
+              "line": 406,
               "step": "record_task_supersession",
               "target": "TaskReplacementService(db).supersede"
             }
@@ -23557,7 +23572,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 340,
+              "line": 341,
               "step": "restore_backlog",
               "target": "BacklogSnapshotService(db).restore"
             }
@@ -24010,7 +24025,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 283,
+              "line": 284,
               "step": "review_task",
               "target": "TaskBriefService(db).review"
             },
@@ -25774,55 +25789,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 314,
+              "line": 315,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 314,
+              "line": 315,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 314,
+              "line": 315,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 315,
+              "line": 316,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 316,
+              "line": 317,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 316,
+              "line": 317,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 316,
+              "line": 317,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 316,
+              "line": 317,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 316,
+              "line": 317,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -25964,7 +25979,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 247,
+              "line": 248,
               "step": "task_command",
               "target": "TaskDomainService(db).command"
             },
@@ -26090,7 +26105,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 176,
+              "line": 197,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "seen.add"
@@ -26098,7 +26113,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 180,
+              "line": 201,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "ancestors.append"
@@ -26137,13 +26152,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 178,
               "step": "TaskDetailService.detail",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 178,
               "step": "TaskDetailService.detail",
               "target": "select(Task).where(Task.id == task_id).options"
             },
@@ -26449,43 +26464,43 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 192,
+              "line": 193,
               "step": "task_migration_diagnostics",
               "target": "(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings().all"
             },
             {
               "kind": "unresolved_call",
-              "line": 192,
+              "line": 193,
               "step": "task_migration_diagnostics",
               "target": "(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings"
             },
             {
               "kind": "unresolved_call",
-              "line": 192,
+              "line": 193,
               "step": "task_migration_diagnostics",
               "target": "db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 192,
+              "line": 193,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 192,
+              "line": 193,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 192,
+              "line": 193,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where"
             },
             {
               "kind": "external_call",
-              "line": 192,
+              "line": 193,
               "step": "task_migration_diagnostics",
               "target": "select"
             },
@@ -26539,25 +26554,25 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 176,
+              "line": 177,
               "step": "task_owner_options",
               "target": "select(TeamMemberProfile.id, TeamMemberProfile.display_name.label('name')).where"
             },
             {
               "kind": "external_call",
-              "line": 176,
+              "line": 177,
               "step": "task_owner_options",
               "target": "select"
             },
             {
               "kind": "unresolved_call",
-              "line": 176,
+              "line": 177,
               "step": "task_owner_options",
               "target": "TeamMemberProfile.display_name.label"
             },
             {
               "kind": "unresolved_call",
-              "line": 177,
+              "line": 178,
               "step": "task_owner_options",
               "target": "db.info.get"
             },
@@ -26680,55 +26695,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 314,
+              "line": 315,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 314,
+              "line": 315,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 314,
+              "line": 315,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 315,
+              "line": 316,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 316,
+              "line": 317,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 316,
+              "line": 317,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 316,
+              "line": 317,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 316,
+              "line": 317,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 316,
+              "line": 317,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -26858,37 +26873,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 202,
+              "line": 203,
               "step": "task_review_queue",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 204,
+              "line": 205,
               "step": "task_review_queue",
               "target": "service.references().where"
             },
             {
               "kind": "unresolved_call",
-              "line": 204,
+              "line": 205,
               "step": "task_review_queue",
               "target": "service.references"
             },
             {
               "kind": "unresolved_call",
-              "line": 204,
+              "line": 205,
               "step": "task_review_queue",
               "target": "Task.canceled_at.is_"
             },
             {
               "kind": "unresolved_call",
-              "line": 204,
+              "line": 205,
               "step": "task_review_queue",
               "target": "Task.is_summary.is_"
             },
             {
               "kind": "external_call",
-              "line": 206,
+              "line": 207,
               "step": "task_review_queue",
               "target": "HTTPException"
             },
@@ -26939,7 +26954,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 176,
+              "line": 197,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "seen.add"
@@ -26947,7 +26962,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 180,
+              "line": 201,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "ancestors.append"
@@ -26986,13 +27001,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 178,
               "step": "TaskDetailService.detail",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 157,
+              "line": 178,
               "step": "TaskDetailService.detail",
               "target": "select(Task).where(Task.id == task_id).options"
             },
@@ -30300,7 +30315,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 253,
+              "line": 254,
               "step": "write_task_brief",
               "target": "TaskBriefService(db).write"
             },
@@ -52298,6 +52313,7 @@
         "entities/KanbanBoardProps.md",
         "entities/KanbanCardProps.md",
         "entities/KanbanColumnProps.md",
+        "entities/KanbanStoppedLaneProps.md",
         "entities/KnownDeliveryDiscrepancy.md",
         "entities/LabelConflictError.md",
         "entities/LabelFormState.md",
@@ -53096,6 +53112,7 @@
         "entities/StatusTone.md",
         "entities/StepState.md",
         "entities/StopMode.md",
+        "entities/StoppedState.md",
         "entities/StrictBundleModel.md",
         "entities/StrictContractModel.md",
         "entities/Subscription.md",
@@ -54642,10 +54659,12 @@
         "modules/iterationStore.md",
         "modules/iterationStore.test.md",
         "modules/KanbanBoard.md",
+        "modules/KanbanBoard.stopped.test.md",
         "modules/KanbanBoard.test.md",
         "modules/KanbanCard.md",
         "modules/KanbanColumn.md",
         "modules/KanbanColumn.test.md",
+        "modules/KanbanStoppedLane.md",
         "modules/label_service.md",
         "modules/LabelChip.md",
         "modules/labels.md",
@@ -55063,6 +55082,8 @@
         "modules/statusScopes.test.md",
         "modules/StatusSegmentStrip.md",
         "modules/StickyRail.md",
+        "modules/StoppedWork.test.md",
+        "modules/StoppedWorkCounts.test.md",
         "modules/support___init__.md",
         "modules/support_database.md",
         "modules/surfaces.ru.md",
@@ -55157,7 +55178,9 @@
         "modules/TasksPage.pipeline.test.md",
         "modules/TasksPage.test.md",
         "modules/TasksPage.toolbar.test.md",
+        "modules/taskState.md",
         "modules/taskStateChip.md",
+        "modules/TaskSupersedeForm.md",
         "modules/TaskTextEditorModal.md",
         "modules/TaskTextEditorModal.test.md",
         "modules/TaskTimelinePanel.md",
@@ -64312,6 +64335,18 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx",
       "title": "KanbanColumnProps"
+    },
+    {
+      "canonical_path": "entities/KanbanStoppedLaneProps.md",
+      "id": "KanbanStoppedLaneProps",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/KanbanStoppedLaneProps",
+      "outgoing_internal_links": [
+        "modules/KanbanStoppedLane.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/KanbanBoard/KanbanStoppedLane.tsx",
+      "title": "KanbanStoppedLaneProps"
     },
     {
       "canonical_path": "entities/KnownDeliveryDiscrepancy.md",
@@ -75393,6 +75428,18 @@
       "title": "StopMode"
     },
     {
+      "canonical_path": "entities/StoppedState.md",
+      "id": "StoppedState",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/StoppedState",
+      "outgoing_internal_links": [
+        "modules/taskState.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/utils/taskState.ts",
+      "title": "StoppedState"
+    },
+    {
       "canonical_path": "entities/StrictBundleModel.md",
       "id": "StrictBundleModel",
       "kind": "entities",
@@ -76213,6 +76260,12 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/TaskDisplayedState",
       "outgoing_internal_links": [
+        "modules/ProjectTasksTab.md",
+        "modules/StatusDistribution.md",
+        "modules/TaskList.md",
+        "modules/TaskRow.md",
+        "modules/taskState.md",
+        "modules/tone.md",
         "modules/types_iteration.md",
         "modules/types_release.md",
         "modules/types_task.md"
@@ -76423,12 +76476,12 @@
         "modules/KanbanBoard.md",
         "modules/overviewSignals.md",
         "modules/PipelineView.md",
+        "modules/StoppedWork.test.md",
         "modules/TaskFiltersBar.md",
         "modules/TaskFiltersBar.test.md",
         "modules/TaskList.md",
         "modules/TaskList.test.md",
         "modules/taskViewParams.md",
-        "modules/taskViewState.md",
         "modules/useSavedViewManager.md"
       ],
       "role": "semantic",
@@ -79961,6 +80014,7 @@
         "modules/planningLinks.test.md",
         "modules/planProgressPlacement.test.md",
         "modules/StatusDistribution.md",
+        "modules/StoppedWorkCounts.test.md",
         "modules/types_iteration.md",
         "modules/workMetrics.md"
       ],
@@ -81194,10 +81248,10 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/types_task_TaskStatus",
       "outgoing_internal_links": [
+        "modules/agentDispatch.md",
         "modules/GitHubSettingsPanel.md",
         "modules/KanbanBoard.md",
         "modules/StatusChangeControl.md",
-        "modules/StatusDistribution.md",
         "modules/TaskBulkOperationsPanel.md",
         "modules/taskEditorContract.md",
         "modules/TaskList.md",
@@ -82767,7 +82821,7 @@
         "modules/GetStartedPanel.test.md",
         "modules/GitHubReconciliationPanel.test.md",
         "modules/identityService.md",
-        "modules/sampleProject.test.md",
+        "modules/StoppedWork.test.md",
         "modules/TaskOwnerAcceptance.test.md",
         "modules/TaskPostponement.test.md",
         "modules/TaskReadView.operatorKey.test.md",
@@ -84904,18 +84958,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/BacklogPanel",
       "outgoing_internal_links": [
-        "modules/BacklogPanel.md",
-        "modules/Button.md",
-        "modules/GuardedTaskDrawer.md",
-        "modules/LiveWindowStatus.md",
-        "modules/projectService.md",
-        "modules/QueryState.md",
-        "modules/Select.md",
-        "modules/taskService.md",
-        "modules/TasksPage.md",
-        "modules/useLiveWindow.md",
-        "modules/useScopeLink.md",
-        "modules/useWorkScope.md"
+        "modules/BacklogPanel.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/BacklogPanel.tsx",
@@ -88484,6 +88527,23 @@
       "title": "KanbanBoard Module"
     },
     {
+      "canonical_path": "modules/KanbanBoard.stopped.test.md",
+      "id": "KanbanBoard.stopped.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/KanbanBoard.stopped.test",
+      "outgoing_internal_links": [
+        "modules/i18n.md",
+        "modules/KanbanBoard.md",
+        "modules/KanbanBoard.stopped.test.md",
+        "modules/renderWithProviders.md",
+        "modules/taskFilterDefaults.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/KanbanBoard/KanbanBoard.stopped.test.tsx",
+      "title": "KanbanBoard.stopped.test Module"
+    },
+    {
       "canonical_path": "modules/KanbanBoard.test.md",
       "id": "KanbanBoard.test",
       "kind": "modules",
@@ -88550,6 +88610,24 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/KanbanBoard/KanbanColumn.test.tsx",
       "title": "KanbanColumn.test Module"
+    },
+    {
+      "canonical_path": "modules/KanbanStoppedLane.md",
+      "id": "KanbanStoppedLane",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/KanbanStoppedLane",
+      "outgoing_internal_links": [
+        "entities/KanbanStoppedLaneProps.md",
+        "modules/Button.md",
+        "modules/KanbanBoard.md",
+        "modules/KanbanStoppedLane.md",
+        "modules/taskState.md",
+        "modules/tone.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/KanbanBoard/KanbanStoppedLane.tsx",
+      "title": "KanbanStoppedLane Module"
     },
     {
       "canonical_path": "modules/label_service.md",
@@ -89970,6 +90048,7 @@
         "modules/mutationFeedback.md",
         "modules/mutationFeedback.test.md",
         "modules/MutationSuccessFeedback.md",
+        "modules/StoppedWork.test.md",
         "modules/TaskBulkReassign.test.md",
         "modules/TaskOwnerAcceptance.test.md",
         "modules/TaskPostponement.test.md",
@@ -90237,6 +90316,7 @@
         "modules/OnTrackSummary.md",
         "modules/planningLinks.test.md",
         "modules/planningReturn.md",
+        "modules/StoppedWorkCounts.test.md",
         "modules/types_iteration.md",
         "modules/useScopeLink.md",
         "modules/workNumbers.md"
@@ -90499,18 +90579,7 @@
         "entities/OverviewCountList.md",
         "entities/OverviewTaskList.md",
         "entities/PipelineStage.md",
-        "modules/OverviewPage.md",
-        "modules/overviewSignals.md",
-        "modules/overviewSignals.test.md",
-        "modules/PipelineView.md",
-        "modules/taskFilterDefaults.md",
-        "modules/TaskFiltersBar.md",
-        "modules/taskViewParams.md",
-        "modules/types_agent.md",
-        "modules/types_iteration.md",
-        "modules/types_task.md",
-        "modules/visibleWork.md",
-        "modules/workScope.md"
+        "modules/overviewSignals.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/features/overview/overviewSignals.ts",
@@ -90624,6 +90693,7 @@
         "modules/Select.md",
         "modules/TaskList.md",
         "modules/taskService.md",
+        "modules/taskState.md",
         "modules/useLiveWindow.md"
       ],
       "role": "semantic",
@@ -92108,6 +92178,7 @@
         "modules/ProjectTasksTab.md",
         "modules/ProjectTaskTree.md",
         "modules/ProjectTaskTree.test.md",
+        "modules/taskState.md",
         "modules/tone.md",
         "modules/types_task.md",
         "modules/useScopeLink.md"
@@ -95845,17 +95916,7 @@
       "mcp_uri": "llm-wiki://modules/StatusChangeControl",
       "outgoing_internal_links": [
         "entities/StatusChangeControlProps.md",
-        "modules/Button.md",
-        "modules/formatDate.md",
-        "modules/Modal.md",
-        "modules/mutationFeedback.md",
-        "modules/QueryState.md",
-        "modules/StatusChangeControl.md",
-        "modules/TaskForm.md",
-        "modules/taskService.md",
-        "modules/taskTransitions.md",
-        "modules/tone.md",
-        "modules/types_task.md"
+        "modules/StatusChangeControl.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/StatusChangeControl.tsx",
@@ -95871,6 +95932,7 @@
         "modules/IterationOutlook.test.md",
         "modules/MetricCount.md",
         "modules/StatusDistribution.md",
+        "modules/StoppedWorkCounts.test.md",
         "modules/tone.md",
         "modules/types_iteration.md",
         "modules/types_task.md",
@@ -95953,6 +96015,37 @@
       "role": "semantic",
       "source_path": "frontend/src/components/ui/StickyRail.tsx",
       "title": "StickyRail Module"
+    },
+    {
+      "canonical_path": "modules/StoppedWork.test.md",
+      "id": "StoppedWork.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/StoppedWork.test",
+      "outgoing_internal_links": [
+        "modules/StoppedWork.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/StoppedWork.test.tsx",
+      "title": "StoppedWork.test Module"
+    },
+    {
+      "canonical_path": "modules/StoppedWorkCounts.test.md",
+      "id": "StoppedWorkCounts.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/StoppedWorkCounts.test",
+      "outgoing_internal_links": [
+        "modules/i18n.md",
+        "modules/OnTrackSummary.md",
+        "modules/renderWithProviders.md",
+        "modules/StatusDistribution.md",
+        "modules/StoppedWorkCounts.test.md",
+        "modules/taskService.md",
+        "modules/types_iteration.md",
+        "modules/WorkMetricsLine.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/analytics/StoppedWorkCounts.test.tsx",
+      "title": "StoppedWorkCounts.test Module"
     },
     {
       "canonical_path": "modules/support___init__.md",
@@ -96870,6 +96963,7 @@
         "modules/KanbanBoard.md",
         "modules/PipelineView.md",
         "modules/planningTaskIssues.md",
+        "modules/StoppedWork.test.md",
         "modules/taskFilters.md",
         "modules/taskFilters.test.md",
         "modules/TaskFiltersBar.md",
@@ -97443,6 +97537,7 @@
       "outgoing_internal_links": [
         "modules/CommandMenu.md",
         "modules/taskSearchResults.md",
+        "modules/taskState.md",
         "modules/types_task.md"
       ],
       "role": "semantic",
@@ -97566,6 +97661,19 @@
       "title": "TasksPage.toolbar.test Module"
     },
     {
+      "canonical_path": "modules/taskState.md",
+      "id": "taskState",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/taskState",
+      "outgoing_internal_links": [
+        "entities/StoppedState.md",
+        "modules/taskState.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/utils/taskState.ts",
+      "title": "taskState Module"
+    },
+    {
       "canonical_path": "modules/taskStateChip.md",
       "id": "taskStateChip",
       "kind": "modules",
@@ -97575,15 +97683,29 @@
         "modules/KanbanCard.md",
         "modules/MyWorkPage.md",
         "modules/ProjectTaskTree.md",
+        "modules/StoppedWork.test.md",
         "modules/TaskList.md",
         "modules/TaskRow.md",
         "modules/taskRowParts.md",
+        "modules/taskState.md",
         "modules/taskStateChip.md",
         "modules/types_task.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/taskStateChip.ts",
       "title": "taskStateChip Module"
+    },
+    {
+      "canonical_path": "modules/TaskSupersedeForm.md",
+      "id": "TaskSupersedeForm",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskSupersedeForm",
+      "outgoing_internal_links": [
+        "modules/TaskSupersedeForm.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskSupersedeForm.tsx",
+      "title": "TaskSupersedeForm Module"
     },
     {
       "canonical_path": "modules/TaskTextEditorModal.md",
@@ -101126,6 +101248,7 @@
         "modules/TaskPostponeForm.md",
         "modules/TaskPostponementPanel.md",
         "modules/TaskRecordProvenance.md",
+        "modules/TaskSupersedeForm.md",
         "modules/Textarea.md",
         "modules/useSavedViewManager.md"
       ],
@@ -102639,6 +102762,7 @@
         "modules/DeliveryDependencies.md",
         "modules/GitHubReconciliationPanel.md",
         "modules/identityContext.md",
+        "modules/TaskWorkPanel.md",
         "modules/useProjectEditAccess.md"
       ],
       "role": "semantic",
@@ -103165,6 +103289,7 @@
         "modules/MetricCount.md",
         "modules/MetricCount.test.md",
         "modules/ProjectReleaseDetailPage.md",
+        "modules/StoppedWorkCounts.test.md",
         "modules/taskService.md",
         "modules/workMetrics.md",
         "modules/WorkMetricsLine.md",
@@ -120733,10 +120858,12 @@
         "modules/iterationStore.md",
         "modules/iterationStore.test.md",
         "modules/KanbanBoard.md",
+        "modules/KanbanBoard.stopped.test.md",
         "modules/KanbanBoard.test.md",
         "modules/KanbanCard.md",
         "modules/KanbanColumn.md",
         "modules/KanbanColumn.test.md",
+        "modules/KanbanStoppedLane.md",
         "modules/label_service.md",
         "modules/LabelChip.md",
         "modules/labels.md",
@@ -121154,6 +121281,8 @@
         "modules/statusScopes.test.md",
         "modules/StatusSegmentStrip.md",
         "modules/StickyRail.md",
+        "modules/StoppedWork.test.md",
+        "modules/StoppedWorkCounts.test.md",
         "modules/support___init__.md",
         "modules/support_database.md",
         "modules/surfaces.ru.md",
@@ -121248,7 +121377,9 @@
         "modules/TasksPage.pipeline.test.md",
         "modules/TasksPage.test.md",
         "modules/TasksPage.toolbar.test.md",
+        "modules/taskState.md",
         "modules/taskStateChip.md",
+        "modules/TaskSupersedeForm.md",
         "modules/TaskTextEditorModal.md",
         "modules/TaskTextEditorModal.test.md",
         "modules/TaskTimelinePanel.md",
@@ -121976,10 +122107,12 @@
         "modules/iterationStore.md",
         "modules/iterationStore.test.md",
         "modules/KanbanBoard.md",
+        "modules/KanbanBoard.stopped.test.md",
         "modules/KanbanBoard.test.md",
         "modules/KanbanCard.md",
         "modules/KanbanColumn.md",
         "modules/KanbanColumn.test.md",
+        "modules/KanbanStoppedLane.md",
         "modules/label_service.md",
         "modules/LabelChip.md",
         "modules/labels.md",
@@ -122397,6 +122530,8 @@
         "modules/statusScopes.test.md",
         "modules/StatusSegmentStrip.md",
         "modules/StickyRail.md",
+        "modules/StoppedWork.test.md",
+        "modules/StoppedWorkCounts.test.md",
         "modules/support___init__.md",
         "modules/support_database.md",
         "modules/surfaces.ru.md",
@@ -122491,7 +122626,9 @@
         "modules/TasksPage.pipeline.test.md",
         "modules/TasksPage.test.md",
         "modules/TasksPage.toolbar.test.md",
+        "modules/taskState.md",
         "modules/taskStateChip.md",
+        "modules/TaskSupersedeForm.md",
         "modules/TaskTextEditorModal.md",
         "modules/TaskTextEditorModal.test.md",
         "modules/TaskTimelinePanel.md",
@@ -122859,5 +122996,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:b3e3b5cd62c99e9321954d2b67a52de17ff21b5d9e1df0676e02aeed4c8526c6"
+  "source_hash": "sha256:ec2dced283de9187302d167eb6be43b74b6494618c186a5f98283b0d6339a0d3"
 }

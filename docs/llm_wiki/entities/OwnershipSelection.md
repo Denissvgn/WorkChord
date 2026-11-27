@@ -1,6 +1,6 @@
 # OwnershipSelection
 
-**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx:74`
+**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx:76`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [KanbanBoard](../modules/KanbanBoard.md)

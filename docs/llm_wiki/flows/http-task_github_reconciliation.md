@@ -187,7 +187,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_github_reconciliation | domain_result | 360 | `domain_result(...)` |
+| task_github_reconciliation | domain_result | 361 | `domain_result(...)` |
 | domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
@@ -195,7 +195,7 @@ flowchart LR
 | domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 60 | `str(exc)` |
 | domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_github_reconciliation | GitHubReconciliationService.view | 360 | `GitHubReconciliationService(db).view(task_id)` |
+| task_github_reconciliation | GitHubReconciliationService.view | 361 | `GitHubReconciliationService(db).view(task_id)` |
 | GitHubReconciliationService.view | GitHubReconciliationService._task | 104 | `self._task(task_id, 'read')` |
 | GitHubReconciliationService._task | self.db.scalar | 79 | `self.db.scalar(...)` |
 

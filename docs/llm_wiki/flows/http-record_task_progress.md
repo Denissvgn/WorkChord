@@ -192,7 +192,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| record_task_progress | domain_result | 277 | `domain_result(...)` |
+| record_task_progress | domain_result | 278 | `domain_result(...)` |
 | domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
@@ -200,9 +200,9 @@ flowchart LR
 | domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 60 | `str(exc)` |
 | domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| record_task_progress | TaskBriefService(…).write_progress | 277 | `TaskBriefService(db).write_progress(task_id, data)` |
-| record_task_progress | TaskBriefService | 277 | `TaskBriefService(db)` |
-| record_task_progress | TaskService.task_to_response | 278 | `TaskService(db).task_to_response(task)` |
+| record_task_progress | TaskBriefService(…).write_progress | 278 | `TaskBriefService(db).write_progress(task_id, data)` |
+| record_task_progress | TaskBriefService | 278 | `TaskBriefService(db)` |
+| record_task_progress | TaskService.task_to_response | 279 | `TaskService(db).task_to_response(task)` |
 
 ### Boundary effects
 
@@ -219,7 +219,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 58 |
 | external_call | `domain_result` | `HTTPException` | 60 |
 | external_call | `domain_result` | `HTTPException` | 62 |
-| unresolved_call | `record_task_progress` | `TaskBriefService(db).write_progress` | 277 |
+| unresolved_call | `record_task_progress` | `TaskBriefService(db).write_progress` | 278 |
 | step_limit | `record_task_progress` | `first 12 steps` | 0 |
 
 ## Behavior

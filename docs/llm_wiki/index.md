@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1947 | [Open section](#entities) |
-| Modules | 1232 | [Open section](#modules) |
+| Entities | 1949 | [Open section](#entities) |
+| Modules | 1238 | [Open section](#modules) |
 | Workflows | 254 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 652 | [Open section](#entry-point-flows) |
@@ -591,6 +591,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [KanbanBoardProps](entities/KanbanBoardProps.md)
 - [KanbanCardProps](entities/KanbanCardProps.md)
 - [KanbanColumnProps](entities/KanbanColumnProps.md)
+- [KanbanStoppedLaneProps](entities/KanbanStoppedLaneProps.md)
 - [KnownDeliveryDiscrepancy](entities/KnownDeliveryDiscrepancy.md)
 - [LLMCallResult](entities/LLMCallResult.md)
 - [LLMForm](entities/LLMForm.md)
@@ -1094,6 +1095,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [StatusSegment](entities/StatusSegment.md)
 - [StatusTone](entities/StatusTone.md)
 - [StopMode](entities/StopMode.md)
+- [StoppedState](entities/StoppedState.md)
 - [StrictBundleModel](entities/StrictBundleModel.md)
 - [StrictContractModel](entities/StrictContractModel.md)
 - [Subscription](entities/Subscription.md)
@@ -2127,10 +2129,12 @@ Retained history; these declarations are absent from the selected source invento
 - [IterationList](modules/IterationList.md) - `frontend/src/components/iteration/IterationList.tsx`
 - [IterationOutlook.test](modules/IterationOutlook.test.md) - `frontend/src/components/analytics/IterationOutlook.test.tsx`
 - [KanbanBoard](modules/KanbanBoard.md) - `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx`
+- [KanbanBoard.stopped.test](modules/KanbanBoard.stopped.test.md) - `frontend/src/components/tasks/KanbanBoard/KanbanBoard.stopped.test.tsx`
 - [KanbanBoard.test](modules/KanbanBoard.test.md) - `frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx`
 - [KanbanCard](modules/KanbanCard.md) - `frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx`
 - [KanbanColumn](modules/KanbanColumn.md) - `frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx`
 - [KanbanColumn.test](modules/KanbanColumn.test.md) - `frontend/src/components/tasks/KanbanBoard/KanbanColumn.test.tsx`
+- [KanbanStoppedLane](modules/KanbanStoppedLane.md) - `frontend/src/components/tasks/KanbanBoard/KanbanStoppedLane.tsx`
 - [LabelChip](modules/LabelChip.md) - `frontend/src/components/labels/LabelChip.tsx`
 - [LabelSelector](modules/LabelSelector.md) - `frontend/src/components/labels/LabelSelector.tsx`
 - [LandingPage](modules/LandingPage.md) - `frontend/src/pages/LandingPage.tsx`
@@ -2270,6 +2274,8 @@ Retained history; these declarations are absent from the selected source invento
 - [StatusPill](modules/StatusPill.md) - `frontend/src/components/triage/StatusPill.tsx`
 - [StatusSegmentStrip](modules/StatusSegmentStrip.md) - `frontend/src/components/ui/StatusSegmentStrip.tsx`
 - [StickyRail](modules/StickyRail.md) - `frontend/src/components/ui/StickyRail.tsx`
+- [StoppedWork.test](modules/StoppedWork.test.md) - `frontend/src/components/tasks/StoppedWork.test.tsx`
+- [StoppedWorkCounts.test](modules/StoppedWorkCounts.test.md) - `frontend/src/components/analytics/StoppedWorkCounts.test.tsx`
 - [SystemHealthPanel](modules/SystemHealthPanel.md) - `frontend/src/components/settings/SystemHealthPanel.tsx`
 - [SystemLanguageProvider](modules/SystemLanguageProvider.md) - `frontend/src/i18n/SystemLanguageProvider.tsx`
 - [TaskAgentReadinessBadge](modules/TaskAgentReadinessBadge.md) - `frontend/src/components/tasks/TaskAgentReadinessBadge.tsx`
@@ -2320,6 +2326,7 @@ Retained history; these declarations are absent from the selected source invento
 - [TaskRow](modules/TaskRow.md) - `frontend/src/components/tasks/TaskRow.tsx`
 - [TaskRow.test](modules/TaskRow.test.md) - `frontend/src/components/tasks/TaskRow.test.tsx`
 - [TaskSelectionBar](modules/TaskSelectionBar.md) - `frontend/src/components/tasks/TaskSelectionBar.tsx`
+- [TaskSupersedeForm](modules/TaskSupersedeForm.md) - `frontend/src/components/tasks/TaskSupersedeForm.tsx`
 - [TaskTextEditorModal](modules/TaskTextEditorModal.md) - `frontend/src/components/tasks/TaskTextEditorModal.tsx`
 - [TaskTextEditorModal.test](modules/TaskTextEditorModal.test.md) - `frontend/src/components/tasks/TaskTextEditorModal.test.tsx`
 - [TaskTimelinePanel](modules/TaskTimelinePanel.md) - `frontend/src/components/tasks/TaskTimelinePanel.tsx`
@@ -2878,6 +2885,7 @@ Retained history; these declarations are absent from the selected source invento
 - [taskRowValues](modules/taskRowValues.md) - `frontend/src/components/tasks/taskRowValues.ts`
 - [taskSearchResults](modules/taskSearchResults.md) - `frontend/src/components/tasks/taskSearchResults.ts`
 - [taskService](modules/taskService.md) - `frontend/src/services/taskService.ts`
+- [taskState](modules/taskState.md) - `frontend/src/utils/taskState.ts`
 - [taskStateChip](modules/taskStateChip.md) - `frontend/src/components/tasks/taskStateChip.ts`
 - [taskTransitions](modules/taskTransitions.md) - `frontend/src/features/taskTransitions.ts`
 - [taskTransitions.test](modules/taskTransitions.test.md) - `frontend/src/features/taskTransitions.test.ts`

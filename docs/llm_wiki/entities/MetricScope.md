@@ -1,6 +1,6 @@
 # MetricScope
 
-**Location:** `frontend/src/services/taskService.ts:285`
+**Location:** `frontend/src/services/taskService.ts:288`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [taskService](../modules/taskService.md)

@@ -1,6 +1,6 @@
 # RowContext
 
-**Location:** `frontend/src/components/tasks/TaskList.tsx:607`
+**Location:** `frontend/src/components/tasks/TaskList.tsx:609`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskList](../modules/TaskList.md)
@@ -14,6 +14,7 @@ What every row of the list shares: selection, hierarchy state and inline edits.
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `onOpen` | `(task: Task) => void` | Yes | — | — |
+| `onOpenSuccessor` | `(taskId: number) => void` | Yes | — | — |
 | `onAddSubtask` | `(id: number) => void` | Yes | — | — |
 | `onDelete` | `(task: Task) => void` | Yes | — | — |
 | `onUnmerge` | `(taskId: number) => void` | Yes | — | — |
