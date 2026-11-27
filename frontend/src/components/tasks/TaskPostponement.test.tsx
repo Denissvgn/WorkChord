@@ -10,7 +10,7 @@ import { TaskWorkPanel } from './TaskWorkPanel';
 
 const service = vi.hoisted(() => ({
     actions: vi.fn(), progress: vi.fn(), command: vi.fn(), review: vi.fn(), getDetail: vi.fn(), ownerAccept: vi.fn(), reviews: vi.fn(),
-    lookup: vi.fn(), postponement: vi.fn(), postpone: vi.fn(), reactivate: vi.fn(), recordOwnerDecision: vi.fn(),
+    lookup: vi.fn(), postpone: vi.fn(), reactivate: vi.fn(), recordOwnerDecision: vi.fn(),
 }));
 vi.mock('../../services/taskService', () => ({ taskService: service }));
 vi.mock('../../services/iterationService', () => ({ iterationService: { getAll: vi.fn().mockResolvedValue([]) } }));
@@ -100,7 +100,8 @@ describe('postponing a task', () => {
         const open = await screen.findByRole('button', { name: 'Postpone…' });
         open.focus();
         await user.keyboard('{Enter}');
-        await user.type(screen.getByRole('textbox', { name: /Why is this work being postponed/ }), 'Waiting on the vendor');
+        expect(screen.getByRole('textbox', { name: /Why is this work being postponed/ })).toHaveFocus();
+        await user.keyboard('Waiting on the vendor');
         // First requirement: a predecessor task chosen from a search.
         await user.type(screen.getByRole('textbox', { name: 'Find the task' }), 'vendor');
         const picker = await screen.findByRole('combobox', { name: 'Task' });
@@ -154,10 +155,24 @@ describe('postponing a task', () => {
     });
 });
 
+describe('closing the postpone form', () => {
+    it('returns focus to Postpone and clears the draft on discard', async () => {
+        service.actions.mockResolvedValue(allowed('postpone'));
+        const { user } = renderPanel(base);
+        await user.click(await screen.findByRole('button', { name: 'Postpone…' }));
+        await user.keyboard('Half written');
+        await user.click(screen.getByRole('button', { name: 'Discard' }));
+        const open = screen.getByRole('button', { name: 'Postpone…' });
+        expect(open).toHaveFocus();
+        await user.click(open);
+        expect(screen.getByRole('textbox', { name: /Why is this work being postponed/ })).toHaveValue('');
+    });
+});
+
 describe('a postponed task', () => {
     beforeEach(() => {
         service.actions.mockResolvedValue(allowed('reactivate'));
-        service.postponement.mockResolvedValue({ task: postponed, postponement: record() });
+        service.getDetail.mockResolvedValue({ task: postponed, reviewer_name: null, postponement: record() });
     });
 
     it('shows the reason and each requirement as met or not met', async () => {
@@ -215,16 +230,34 @@ describe('a postponed task', () => {
     it.each([
         ['a project manager who is not the workspace owner', identity({ workspace_role: 'member' })],
         ['a paired observer', identity({ access: 'observe' })],
-        ['a browser with no signed-in person', identity({ principal: null, mode: 'trusted_local' })],
+        ['a trusted-local paired observer', identity({ principal: null, mode: 'trusted_local', access: 'observe' })],
     ])('does not offer the owner decision to %s', async (_name, who) => {
         renderPanel(postponed, who);
         await screen.findByText('Waiting on the vendor');
         expect(screen.queryByRole('button', { name: 'Record decision' })).not.toBeInTheDocument();
-        expect(screen.getByText('Only a signed-in workspace owner can record this decision.')).toBeInTheDocument();
+        expect(screen.getByText('Only the workspace owner can record this decision.')).toBeInTheDocument();
+    });
+
+    it('lets a trusted-local browser record the owner decision, and shows a met requirement at the same version', async () => {
+        const met = record({ requirements: record().requirements.map(item => item.id === 12 ? { ...item, met: true, met_at: '2026-11-27T09:00:00Z' } : item) });
+        service.recordOwnerDecision.mockImplementation(async () => { service.getDetail.mockResolvedValue({ task: postponed, reviewer_name: null, postponement: met }); return { task: postponed, postponement: met }; });
+        const { user } = renderPanel(postponed, identity({ principal: null, mode: 'trusted_local', workspace_role: null }));
+        await user.type(await screen.findByRole('textbox', { name: /What the owner decided/ }), 'Vendor A');
+        await user.click(screen.getByRole('button', { name: 'Record decision' }));
+        await waitFor(() => expect(service.recordOwnerDecision).toHaveBeenCalled());
+        await waitFor(() => expect(screen.getByText(/The owner decides: Pick the vendor/).closest('li')).toHaveTextContent('Met:'));
+        expect(screen.queryByRole('button', { name: 'Record decision' })).not.toBeInTheDocument();
+    });
+
+    it('still offers Reactivate when no postponement record exists', async () => {
+        service.getDetail.mockResolvedValue({ task: postponed, reviewer_name: null, postponement: null });
+        renderPanel(postponed);
+        expect(await screen.findByText('No reason or requirements were recorded for this postponement.')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Reactivate' })).toBeInTheDocument();
     });
 
     it('names a deleted requirement target without breaking', async () => {
-        service.postponement.mockResolvedValue({ task: postponed, postponement: record({ requirements: [
+        service.getDetail.mockResolvedValue({ task: postponed, reviewer_name: null, postponement: record({ requirements: [
             { id: 10, position: 0, kind: 'predecessor_accepted', task_id: null, triage_item_id: null, on_date: null, description: null, met: false, met_at: null }] }) });
         renderPanel(postponed);
         expect(await screen.findByText(/A task or triage item that was deleted/)).toBeInTheDocument();

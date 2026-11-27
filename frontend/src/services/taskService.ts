@@ -42,7 +42,6 @@ export const taskService = {
         return page;
     },
     actions: async (taskId: number) => (await api.get<TaskActions>(`/tasks/${taskId}/actions`)).data,
-    postponement: async (taskId: number) => (await api.get<TaskPostponementResponse>(`/tasks/${taskId}/postponement`)).data,
     postpone: async (taskId: number, data: { expected_version: number; reason: string; requirements: ReactivationRequirementInput[];
         expected_claim_generation?: number; expected_running_run_ids?: number[]; expected_live_assignment_ids?: number[] }) => (await api.post<TaskPostponementResponse>(`/tasks/${taskId}/postpone`, data)).data,
     reactivate: async (taskId: number, data: { expected_version: number; reason: string }) => (await api.post<TaskPostponementResponse>(`/tasks/${taskId}/reactivate`, data)).data,

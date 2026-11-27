@@ -1,5 +1,5 @@
 import { useId, useState } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { taskService } from '../../services/taskService';
@@ -12,6 +12,9 @@ import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { useIdentity } from '../../features/identity/identityContext';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 import { useActiveMount } from './useDraftDismissal';
+
+/** A live root, so a met requirement that does not change the task's version still refreshes. */
+const postponementKey = (taskId: number) => ['taskActions', taskId, 'postponement'];
 
 const requirementText = (t: TFunction, language: string, item: ReactivationRequirement) => {
     if (item.kind === 'date') return t('domain.reqText_date', { date: item.on_date ? formatDate(item.on_date, language) : '' });
@@ -28,11 +31,12 @@ const OwnerDecision = ({ task, requirement, disabled, onPending, onUpdated }: {
     const id = useId();
     const isActive = useActiveMount();
     const [decision, setDecision] = useState('');
+    const queryClient = useQueryClient();
     // feedback-policy: mutation pending,inline
     const record = useMutation({
         meta: { success: t('feedback.decisionRecorded', { name: task.title }) } satisfies MutationFeedbackMeta,
         mutationFn: () => taskService.recordOwnerDecision(task.id, requirement.id, { expected_version: task.version, decision: decision.trim() }),
-        onSuccess: response => { setDecision(''); onUpdated(response.task); },
+        onSuccess: response => { setDecision(''); queryClient.setQueryData(postponementKey(task.id), response.postponement); void queryClient.invalidateQueries({ queryKey: ['taskActions'] }); onUpdated(response.task); },
         onSettled: () => { if (isActive()) onPending(false); },
         // feedback-policy: mutation pending,inline
     });
@@ -60,22 +64,26 @@ export const TaskPostponementPanel = ({ task, canReactivate, disabled, disabledR
     const identity = useIdentity()?.identity;
     const [reason, setReason] = useState('');
     // feedback-policy: query loading,error,retry,empty
-    const postponement = useQuery({ queryKey: ['taskPostponement', task.id, task.version], queryFn: () => taskService.postponement(task.id) });
+    const postponement = useQuery({ queryKey: postponementKey(task.id), queryFn: async () => (await taskService.getDetail(task.id, { limit: 1 })).postponement ?? null });
+    const queryClient = useQueryClient();
     // feedback-policy: mutation pending,inline
     const reactivate = useMutation({
         meta: { success: t('feedback.reactivated', { name: task.title }) } satisfies MutationFeedbackMeta,
         mutationFn: () => taskService.reactivate(task.id, { expected_version: task.version, reason: reason.trim() }),
-        onSuccess: response => { setReason(''); onUpdated(response.task); },
+        onSuccess: response => { setReason(''); queryClient.setQueryData(postponementKey(task.id), response.postponement); onUpdated(response.task); },
         onSettled: () => { if (isActive()) onPending(false); },
         // feedback-policy: mutation pending,inline
     });
-    const record = postponement.data?.postponement;
-    const isOwner = identity?.principal?.kind === 'human' && identity.access !== 'observe' && identity.workspace_role === 'owner';
+    const record = postponement.data ?? null;
+    // The server lets the workspace owner, and a trusted-local browser with no signed-in person, record the decision.
+    const isOwner = identity !== undefined && identity !== null && identity.access !== 'observe'
+        && (identity.principal?.kind === 'human' && identity.workspace_role === 'owner' || identity.mode === 'trusted_local' && !identity.principal);
     const missing = [...disabledReasons, !reason.trim() && t('domain.reactivateNeedsReason')].filter(Boolean);
     return <section className="space-y-3 border-t border-border pt-3" aria-labelledby={`${id}-heading`}>
         <h4 id={`${id}-heading`} className="font-medium text-content-primary">{t('domain.postponedHeading')}</h4>
         {postponement.isLoading && <QueryLoadingState className="min-h-12" />}
         {postponement.isError && <QueryErrorState error={postponement.error} fallback={t('domain.postponementFailed')} onRetry={() => void postponement.refetch()} />}
+        {postponement.isSuccess && !record && <p role="status" className="text-sm text-content-secondary">{t('domain.postponementNoRecord')}</p>}
         {record && <div className="space-y-3 text-sm">
             <p className="text-content-secondary">{t('domain.postponedSince', { date: formatDate(record.postponed_at, i18n.language) })}</p>
             <div><p className="font-medium text-content-primary">{t('domain.postponedReason')}</p><p className="whitespace-pre-wrap">{record.reason}</p></div>

@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { taskService } from '../../services/taskService';
@@ -63,6 +63,14 @@ export const TaskPostponeForm = ({ task, actions, disabled, disabledReasons = []
     const id = useId();
     const isActive = useActiveMount();
     const [open, setOpen] = useState(false);
+    const reasonRef = useRef<HTMLTextAreaElement>(null);
+    const openRef = useRef<HTMLButtonElement>(null);
+    const wasOpen = useRef(false);
+    // The button that opens the form unmounts with it, so focus follows the form and returns on discard.
+    useEffect(() => {
+        if (open) reasonRef.current?.focus(); else if (wasOpen.current) openRef.current?.focus();
+        wasOpen.current = open;
+    }, [open]);
     const [reason, setReason] = useState('');
     const [nextKey, setNextKey] = useState(2);
     const [rows, setRows] = useState<Row[]>([emptyRow(1)]);
@@ -87,9 +95,9 @@ export const TaskPostponeForm = ({ task, actions, disabled, disabledReasons = []
     return <section className="space-y-3 border-t border-border pt-3" aria-labelledby={`${id}-heading`}>
         <h4 id={`${id}-heading`} className="font-medium text-content-primary">{t('domain.postponeHeading')}</h4>
         <p className="text-sm text-content-secondary">{t('domain.postponeHelp')}</p>
-        {!open && <Button type="button" variant="secondary" disabled={disabled} onClick={() => setOpen(true)}>{t('domain.postponeOpen')}</Button>}
+        {!open && <Button ref={openRef} type="button" variant="secondary" disabled={disabled} onClick={() => setOpen(true)}>{t('domain.postponeOpen')}</Button>}
         {open && <form className="space-y-4" onSubmit={event => { event.preventDefault(); if (!disabled && missing.length === 0) { onPending(true); postpone.mutate(); } }}>
-            <Textarea label={t('domain.postponeReason')} required value={reason} maxLength={2000} disabled={postpone.isPending}
+            <Textarea ref={reasonRef} label={t('domain.postponeReason')} required value={reason} maxLength={2000} disabled={postpone.isPending}
                 onChange={event => setReason(event.target.value)} />
             <div className="space-y-3">
                 {rows.map((row, index) => <fieldset key={row.key} disabled={postpone.isPending} className="space-y-2 rounded-md border border-border p-3">
@@ -129,7 +137,7 @@ export const TaskPostponeForm = ({ task, actions, disabled, disabledReasons = []
             {postpone.isError && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(postpone.error, t('domain.postponeFailed'))}</p>}
             <div className="flex flex-wrap items-center gap-2">
                 <Button type="submit" isLoading={postpone.isPending} disabled={disabled || missing.length > 0} aria-describedby={missing.length ? `${id}-missing` : undefined}>{t('domain.postponeConfirm')}</Button>
-                <Button type="button" variant="ghost" disabled={postpone.isPending} onClick={() => { setOpen(false); postpone.reset(); }}>{t('domain.postponeCancel')}</Button>
+                <Button type="button" variant="ghost" disabled={postpone.isPending} onClick={() => { setOpen(false); setReason(''); setRows([emptyRow(1)]); postpone.reset(); }}>{t('domain.postponeCancel')}</Button>
                 {missing.length > 0 && <p id={`${id}-missing`} className="w-full text-sm text-content-secondary">{missing.join(' ')}</p>}
             </div>
         </form>}
