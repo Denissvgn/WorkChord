@@ -38,7 +38,8 @@ Creating a project with independent-publisher review enabled requires a workspac
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService`, `DeliveryDependencyService` |
 | `app.services.outbound_webhook_service` | `emit_outbound_webhook_event` |
 | `app.services.request_source_service` | `RequestSourceService` |
-| `app.services.task_service` | `TaskService` |
+| `app.services.task_display_state` | `task_state_clause`, `validate_state_filter` |
+| `app.services.task_service` | `TaskService`, `TaskService` |
 | `app.services.work_metrics` | `working_today`, `aggregate_metrics`, `aggregate_metrics`, `aggregate_metrics` |
 | `app.sql_semantics` | `portable_case_insensitive_equal` |
 | `app.utils.time` | `as_utc`, `utc_now` |
@@ -68,9 +69,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (14) |
+| Inbound | `backend` (15) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (20) |
+| Outbound | `backend` (21) |
 
 ### External packages
 
@@ -78,7 +79,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 37 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

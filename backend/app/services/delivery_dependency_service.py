@@ -126,9 +126,14 @@ class DeliveryDependencyService:
             # A submitted task waits on the independent reviewer. A closed task has no status transitions
             # and verification needs a submitted task, so one whose acceptance no longer matches its
             # version can only be reopened, which is the project manager's audited command.
-            owner = "pm" if canceled or target.status == "closed" else "reviewer" if target.status == "resolved" else "worker"
+            postponed = not canceled and target.status == "postponed"
+            owner = "pm" if canceled or postponed or target.status == "closed" else "reviewer" if target.status == "resolved" else "worker"
             if canceled:
                 action = f"{label} was canceled; record a replacement task for it."
+            elif postponed:
+                # Postponed work is stopped by a recorded decision; nothing moves until it is reactivated.
+                action = (f"Waiting on postponed {label} '{target.title}'. Reactivate it when its reactivation "
+                          f"requirements are met; it must then be accepted and merged on {branch}.")
             elif target.status == "closed":
                 action = (f"Reopen {label}; its acceptance no longer matches its current version. It must be resubmitted "
                     f"and accepted again by the independent reviewer, and its code merged on {branch}.")
@@ -163,12 +168,10 @@ class DeliveryDependencyService:
         else:
             query = select(Task).where(Task.milestone_id == target.id, Task.is_summary.is_(False))
         leaves = (await self.db.scalars(query)).all()
-        from app.models.task_replacement import TaskReplacement
-        with internal_authority(self.db):
-            replaced = set((await self.db.scalars(select(TaskReplacement.original_task_id).where(
-                TaskReplacement.original_task_id.in_([leaf.id for leaf in leaves])))).all())
-        # A replaced original's deliverable is counted once, through its replacement.
-        leaves = [leaf for leaf in leaves if leaf.id not in replaced]
+        from app.services.task_replacement_service import delivering_leaves
+        # A replaced original's deliverable is counted once, through its replacement; a
+        # superseded original counts its successor in its place, wherever that successor lives.
+        leaves = await delivering_leaves(self.db, leaves)
         return bool(leaves) and all([await self._accepted("task", leaf) for leaf in leaves])
 
     async def ready(self, task_id):

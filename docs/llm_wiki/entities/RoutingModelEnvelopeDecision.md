@@ -1,6 +1,6 @@
 # RoutingModelEnvelopeDecision
 
-**Location:** `backend/app/services/agent_routing_policy.py:639`
+**Location:** `backend/app/services/agent_routing_policy.py:701`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_routing_policy](../modules/agent_routing_policy.md)
@@ -20,6 +20,7 @@ Deterministic binding/catalog capability evidence for one candidate.
 | `missing_modality_tags` | `tuple[str, ...]` | `()` | — |
 | `missing_tool_tags` | `tuple[str, ...]` | `()` | — |
 | `missing_data_policy_tags` | `tuple[str, ...]` | `()` | — |
+| `missing_qualification_keys` | `tuple[str, ...]` | `()` | — |
 
 ## Methods
 
@@ -43,7 +44,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing_policy](../modules/agent_routing_policy.md) | 1 | `adequacy_class`, `hard_blocker_codes`, `missing_data_policy_tags`, `missing_modality_tags`, `missing_tool_tags` |
+| [agent_routing_policy](../modules/agent_routing_policy.md) | 1 | `adequacy_class`, `hard_blocker_codes`, `missing_data_policy_tags`, `missing_modality_tags`, `missing_qualification_keys`, `missing_tool_tags` |
 
 ### References
 

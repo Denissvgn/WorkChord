@@ -1,6 +1,6 @@
 # TaskRoutingAssessment
 
-**Location:** `backend/app/models/agent.py:760`
+**Location:** `backend/app/models/agent.py:771`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)
@@ -116,4 +116,4 @@ flowchart LR
 | `AgentRoutingService.list_assessments` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `review_evidence` | import | [services_review_evidence](../modules/services_review_evidence.md) | — |
 
-> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.
+> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.

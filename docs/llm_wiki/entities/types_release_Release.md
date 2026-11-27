@@ -1,6 +1,6 @@
 # Release
 
-**Location:** `frontend/src/types/release.ts:13`
+**Location:** `frontend/src/types/release.ts:14`
 **Kind:** Interface
 **Bases:** `WorkMetrics`
 **Module:** [types_release](../modules/types_release.md)

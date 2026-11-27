@@ -58,6 +58,9 @@ Schema for task response.
 | `milestone` | `Optional[TaskMilestone]` | `milestone` | No | Yes | `None` | — | — | — |
 | `assignee` | `Optional[TaskAssignee]` | `assignee` | No | Yes | `None` | — | — | — |
 | `status` | `str` | `status` | Yes | No | — | — | — | — |
+| `displayed_state` | `Optional[str]` | `displayed_state` | No | Yes | `None` | — | — | The state to show: the stored status, or canceled / superseded for withdrawn work. Canceled work keeps the status it had when it was canceled; read this instead of status to count or show it. |
+| `successor_task_id` | `Optional[int]` | `successor_task_id` | No | Yes | `None` | — | — | The task that delivers this task's work instead, for superseded work. |
+| `successor_kind` | `Optional[Literal['replacement', 'supersession']]` | `successor_kind` | No | Yes | `None` | — | — | How the successor delivers it: a clean replacement or an earlier supersession. |
 | `start_date` | `Optional[date]` | `start_date` | Yes | Yes | — | — | — | — |
 | `end_date` | `Optional[date]` | `end_date` | Yes | Yes | — | — | — | — |
 | `actual_start_date` | `Optional[date]` | `actual_start_date` | No | Yes | `None` | — | — | — |

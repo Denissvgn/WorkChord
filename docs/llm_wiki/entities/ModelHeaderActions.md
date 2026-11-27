@@ -1,6 +1,6 @@
 # ModelHeaderActions
 
-**Location:** `frontend/src/components/team/AgentModelAdministration.tsx:128`
+**Location:** `frontend/src/components/team/AgentModelAdministration.tsx:161`
 **Kind:** Interface
 **Bases:** —
 **Module:** [AgentModelAdministration](../modules/AgentModelAdministration.md)

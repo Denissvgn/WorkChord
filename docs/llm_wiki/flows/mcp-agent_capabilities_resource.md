@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_capabilities_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 20 more
+**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 21 more
 
 **Complete modules touched:**
 
@@ -27,6 +27,7 @@
 - [schemas_agent](../modules/schemas_agent.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_domain_service](../modules/task_domain_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -46,26 +47,26 @@ sequenceDiagram
     participant p6 as domain_capabilities
     participant p7 as get_agent_skill_catalog
     participant p8 as enforce_mcp_access
-    participant p9 as AgentTeamSetupService.membership_boundary
+    participant p9 as AgentTeamSetupService.readiness_gate
     participant p10 as _agent_context
-    participant p11 as AgentRoutingTopologyReadiness.unavailable
-    participant p12 as _agent_skill_bundle_service
-    participant p13 as AgentRoutingTopologyReadiness.ready
-    participant p14 as AgentRoutingTopologyReadiness.not_ready
-    participant p15 as get_settings
-    participant p16 as command_transaction
-    participant p17 as _authenticate_agent_key
-    participant p18 as _require_scope_requirement
-    participant p19 as IdentityService.actor_context
-    participant p20 as AgentTeamSetupService._status_for_topology
-    participant p21 as require_scope
-    participant p22 as AgentService.authenticate
-    participant p23 as require_identity_writes
-    participant p24 as DeliveryDependencyService.reconcile
-    participant p25 as IdentityService.context
-    participant p26 as DiscussionService.enqueue
-    participant p27 as _member_contract_outdated
-    participant p28 as AgentTeamSetupService._handoff
+    participant p11 as _agent_skill_bundle_service
+    participant p12 as get_settings
+    participant p13 as AgentTeamSetupService.membership_boundary
+    participant p14 as AgentTeamSetupService._whole_team_readiness
+    participant p15 as command_transaction
+    participant p16 as _authenticate_agent_key
+    participant p17 as _require_scope_requirement
+    participant p18 as IdentityService.actor_context
+    participant p19 as AgentTeamSetupService._project_allows
+    participant p20 as AgentRoutingTopologyReadiness.unavailable
+    participant p21 as AgentRoutingTopologyReadiness.ready
+    participant p22 as require_scope
+    participant p23 as AgentRoutingTopologyReadiness.not_ready
+    participant p24 as AgentService.authenticate
+    participant p25 as require_identity_writes
+    participant p26 as process_reactivation_checks
+    participant p27 as AgentTeamSetupService._status_for_topology
+    participant p28 as IdentityService.context
     participant p29 as json.dumps (backend/app/mcp_server.py:_json_resource)
     participant p30 as (…).status
     p0->>p1: _json_resource
@@ -76,33 +77,33 @@ sequenceDiagram
     p2->>p6: domain_capabilities
     p2->>p7: get_agent_skill_catalog
     p3->>p8: enforce_mcp_access
-    p5->>p9: AgentTeamSetupService.membership_boundary
+    p5->>p9: AgentTeamSetupService.readiness_gate
     p3->>p10: _agent_context
-    p5->>p11: AgentRoutingTopologyReadiness.unavailable
-    p7->>p12: _agent_skill_bundle_service
-    p5->>p13: AgentRoutingTopologyReadiness.ready
-    p5->>p14: AgentRoutingTopologyReadiness.not_ready
-    p8->>p15: get_settings
-    p10->>p16: command_transaction
-    p10->>p17: _authenticate_agent_key
-    p10->>p18: _require_scope_requirement
-    p10->>p19: IdentityService.actor_context
-    p9->>p20: AgentTeamSetupService._status_for_topology
-    p18->>p21: require_scope
-    p17->>p22: AgentService.authenticate
-    p19->>p23: require_identity_writes
-    p16->>p24: DeliveryDependencyService.reconcile
-    p19->>p25: IdentityService.context
-    p16->>p26: DiscussionService.enqueue
-    p20->>p27: _member_contract_outdated
-    p20->>p28: AgentTeamSetupService._handoff
+    p7->>p11: _agent_skill_bundle_service
+    p8->>p12: get_settings
+    p9->>p13: AgentTeamSetupService.membership_boundary
+    p9->>p14: AgentTeamSetupService._whole_team_readiness
+    p10->>p15: command_transaction
+    p10->>p16: _authenticate_agent_key
+    p10->>p17: _require_scope_requirement
+    p10->>p18: IdentityService.actor_context
+    p9->>p19: AgentTeamSetupService._project_allows
+    p9->>p20: AgentRoutingTopologyReadiness.unavailable
+    p14->>p21: AgentRoutingTopologyReadiness.ready
+    p17->>p22: require_scope
+    p14->>p23: AgentRoutingTopologyReadiness.not_ready
+    p16->>p24: AgentService.authenticate
+    p18->>p25: require_identity_writes
+    p15->>p26: process_reactivation_checks
+    p13->>p27: AgentTeamSetupService._status_for_topology
+    p18->>p28: IdentityService.context
     p1-->>p29: json.dumps (backend/app/mcp_server.py:_json_resource)(value, ensure_ascii=False, default=str)
     p2-->>p30: (…).status
 ```
 
-> Call sequence diagram shows 30 of 464 interactions; 434 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 468 interactions; 438 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 140 (139 omitted); unresolved 1 of 190 (189 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 139 (138 omitted); unresolved 1 of 185 (184 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -116,7 +117,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 112 groups; 104 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 107 groups; 99 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -129,9 +130,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 135; effect analysis evaluated: 81, partial: 4, unavailable: 50. Counts include steps omitted from the displayed trace.
+Source steps: 145; effect analysis evaluated: 93, partial: 3, unavailable: 49. Counts include steps omitted from the displayed trace.
 
-Collector observations for 85 source steps with known totals: observed: 424, emitted: 383, omitted: 41. Unavailable totals are excluded.
+Collector observations for 96 source steps with known totals: observed: 445, emitted: 418, omitted: 27. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -207,7 +208,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_capabilities_resource | _json_resource | 2554 | `_json_resource(None, ...)` |
+| agent_capabilities_resource | _json_resource | 2629 | `_json_resource(None, ...)` |
 | _json_resource | _tool_call | 367 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

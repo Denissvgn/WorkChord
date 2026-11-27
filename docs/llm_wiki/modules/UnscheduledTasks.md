@@ -11,6 +11,7 @@ _Auto-generated from `frontend/src/components/gantt/UnscheduledTasks.tsx`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../types/gantt` | `UnscheduledTask` | Declaration | erased |
+| `./unscheduledReason` | `unscheduledReasonText` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
@@ -26,14 +27,18 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/gantt/UnscheduledTasks.test.tsx"]
-    n1["frontend/src/components/gantt/UnscheduledTasks.tsx"]
-    n2["frontend/src/types/gantt.ts"]
-    n0 --> n1
+    n0["frontend/src/components/gantt/unscheduledReason.ts"]
+    n1["frontend/src/components/gantt/UnscheduledTasks.test.tsx"]
+    n2["frontend/src/components/gantt/UnscheduledTasks.tsx"]
+    n3["frontend/src/types/gantt.ts"]
+    n0 --> n3
     n1 --> n2
-    click n0 "../modules/UnscheduledTasks.test.md"
-    click n1 "../modules/UnscheduledTasks.md"
-    click n2 "../modules/types_gantt.md"
+    n2 --> n0
+    n2 --> n3
+    click n0 "../modules/unscheduledReason.md"
+    click n1 "../modules/UnscheduledTasks.test.md"
+    click n2 "../modules/UnscheduledTasks.md"
+    click n3 "../modules/types_gantt.md"
 ```
 
 ### Internal neighbors
@@ -41,6 +46,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [UnscheduledTasks.test](../modules/UnscheduledTasks.test.md) |
+| Outbound | [unscheduledReason](../modules/unscheduledReason.md) |
 | Outbound | [types_gantt](../modules/types_gantt.md) |
 
 ### External packages

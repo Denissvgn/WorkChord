@@ -44,9 +44,9 @@ flowchart LR
     n4["AgentRoutingTopologyReadiness.unavailable (backend/app/services/agent_routing_rollout.py)"]
     n5["reset_agent_routing_topology_readiness (backend/app/services/agent_routing_rollout.py)"]
     n6["set_agent_routing_topology_readiness (backend/app/services/agent_routing_rollout.py)"]
-    n7["AgentTeamSetupService.routing_readiness (backend/app/services/agent_team_setup_service.py)"]
-    n8["backend/tests/conftest.py"]
-    n9["test_topology_readiness_contract_is_versioned_bounded_and_fail_closed (backend/tests/test_agent_routing_rollout.py)"]
+    n7["AgentTeamSetupService._whole_team_readiness (backend/app/services/agent_team_setup_service.py)"]
+    n8["AgentTeamSetupService.readiness_gate (backend/app/services/agent_team_setup_service.py)"]
+    n9["AgentTeamSetupService.routing_readiness (backend/app/services/agent_team_setup_service.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -64,8 +64,8 @@ flowchart LR
     click n5 "../modules/agent_routing_rollout.md"
     click n6 "../modules/agent_routing_rollout.md"
     click n7 "../modules/agent_team_setup_service.md"
-    click n8 "../modules/conftest.md"
-    click n9 "../modules/test_agent_routing_rollout.md"
+    click n8 "../modules/agent_team_setup_service.md"
+    click n9 "../modules/agent_team_setup_service.md"
 ```
 
 ### Summary
@@ -87,8 +87,8 @@ flowchart LR
 | `AgentRoutingTopologyReadiness.unavailable` | type_reference | [agent_routing_rollout](../modules/agent_routing_rollout.md) | — |
 | `reset_agent_routing_topology_readiness` | type_reference | [agent_routing_rollout](../modules/agent_routing_rollout.md) | — |
 | `set_agent_routing_topology_readiness` | type_reference | [agent_routing_rollout](../modules/agent_routing_rollout.md) | — |
+| `AgentTeamSetupService._whole_team_readiness` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
+| `AgentTeamSetupService.readiness_gate` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService.routing_readiness` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
-| `conftest` | import | [conftest](../modules/conftest.md) | — |
-| `test_topology_readiness_contract_is_versioned_bounded_and_fail_closed` | call | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) | 1 |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.

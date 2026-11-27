@@ -106,7 +106,7 @@ export const TeamDirectory = ({ drawer, onDrawerChange, onEmptyChange, drawerFal
     // Every model and connection cell is drawn from an AgentStatus, which is Unknown unless the roster was read.
     const modelText = (status: AgentStatus) => (
         status.model === undefined ? t('teamPage.unknown')
-            : status.model ? modelName(status.model) : <span className="text-content-secondary">{t('teamPage.noModel')}</span>
+            : status.model ? modelName(status.model, effort => t(`modelAdministration.effort_${effort}`)) : <span className="text-content-secondary">{t('teamPage.noModel')}</span>
     );
     const connectionPill = (status: AgentStatus) => (
         <Pill tone={CONNECTION_TONE[status.connection]}>{t(`teamPage.connection.${status.connection}`)}</Pill>

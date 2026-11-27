@@ -36,8 +36,7 @@ flowchart LR
     n6["AgentWorkService._require_enforced_rollout (backend/app/services/agent_work_service.py)"]
     n7["AgentWorkService._require_supervised_rollout (backend/app/services/agent_work_service.py)"]
     n8["AgentWorkService._resolve_rollout (backend/app/services/agent_work_service.py)"]
-    n9["test_feature_off_rollback_preserves_representative_routing_history (backend/tests/test_agent_routing_rollout.py)"]
-    n10["test_inactive_rollout_blocks_queued_model_aware_verification_review (backend/tests/test_agent_routing_rollout.py)"]
+    n9["AgentWorkService._verification_rollout (backend/app/services/agent_work_service.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -47,7 +46,6 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
-    n10 --> n0
     click n0 "../modules/agent_routing_rollout.md"
     click n1 "../modules/mcp_agent_tools.md"
     click n2 "../modules/routers_agent.md"
@@ -57,8 +55,7 @@ flowchart LR
     click n6 "../modules/agent_work_service.md"
     click n7 "../modules/agent_work_service.md"
     click n8 "../modules/agent_work_service.md"
-    click n9 "../modules/test_agent_routing_rollout.md"
-    click n10 "../modules/test_agent_routing_rollout.md"
+    click n9 "../modules/agent_work_service.md"
 ```
 
 ### Summary
@@ -81,7 +78,7 @@ flowchart LR
 | `AgentWorkService._require_supervised_rollout` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `AgentWorkService._resolve_rollout` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 | `AgentWorkService._resolve_rollout` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
-| `test_feature_off_rollback_preserves_representative_routing_history` | call | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) | 2 |
-| `test_inactive_rollout_blocks_queued_model_aware_verification_review` | call | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) | 1 |
+| `AgentWorkService._verification_rollout` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
+| `AgentWorkService._verification_rollout` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 
-> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

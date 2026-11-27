@@ -19,11 +19,13 @@ Secret-free provider-neutral model capability declaration.
 | `publisher_key` | `Mapped[Optional[str]]` | `mapped_column(String(120))` | — |
 | `configured_model_alias` | `Mapped[str]` | `mapped_column(String(255), nullable=False)` | — |
 | `reasoning_tier` | `Mapped[int]` | `mapped_column(Integer, nullable=False)` | — |
+| `effort` | `Mapped[str]` | `mapped_column(String(20), default='unknown', server_default='unknown', nullable=False)` | — |
 | `context_tier` | `Mapped[str]` | `mapped_column(String(20), nullable=False)` | — |
 | `modality_tags` | `Mapped[list[Any]]` | `mapped_column(JSON, default=lambda: ['text'], nullable=False)` | — |
 | `cost_tier` | `Mapped[str]` | `mapped_column(String(20), nullable=False)` | — |
 | `local_first` | `Mapped[bool]` | `mapped_column(Boolean, default=False, server_default=false(), nullable=False)` | — |
 | `latency_tier` | `Mapped[str]` | `mapped_column(String(20), nullable=False)` | — |
+| `qualification_keys` | `Mapped[list[Any]]` | `mapped_column(JSON, default=list, server_default=text("'[]'"), nullable=False)` | — |
 | `enabled` | `Mapped[bool]` | `mapped_column(Boolean, default=True, nullable=False)` | — |
 | `revision` | `Mapped[int]` | `mapped_column(Integer, default=1, nullable=False)` | — |
 | `last_verified_at` | `Mapped[Optional[datetime]]` | `mapped_column(UTCDateTime(), nullable=True)` | — |
@@ -52,8 +54,8 @@ flowchart LR
     n9["backend/app/services/manual_provenance_service.py"]
     n10["backend/app/services/review_evidence.py"]
     n11["backend/app/services/review_provenance.py"]
-    n12["test_actor_provisioning_creates_binding_and_audit_atomically (backend/tests/test_agent_model_catalog_api.py)"]
-    n13["test_binding_and_preset_routes_preserve_credential_permissions (backend/tests/test_agent_model_catalog_api.py)"]
+    n12["RoutingQualificationKeyService._bounded_usage (backend/app/services/routing_qualification_key_service.py)"]
+    n13["RoutingQualificationKeyService._references (backend/app/services/routing_qualification_key_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -79,15 +81,15 @@ flowchart LR
     click n9 "../modules/manual_provenance_service.md"
     click n10 "../modules/services_review_evidence.md"
     click n11 "../modules/review_provenance.md"
-    click n12 "../modules/test_agent_model_catalog_api.md"
-    click n13 "../modules/test_agent_model_catalog_api.md"
+    click n12 "../modules/routing_qualification_key_service.md"
+    click n13 "../modules/routing_qualification_key_service.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_agent](../modules/models_agent.md) | 0 | `bindings`, `configured_model_alias`, `context_tier`, `cost_tier`, `created_at`, `enabled`, `id`, `key`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags` |
+| [models_agent](../modules/models_agent.md) | 0 | `bindings`, `configured_model_alias`, `context_tier`, `cost_tier`, `created_at`, `effort`, `enabled`, `id`, `key`, `last_verified_at`, `latency_tier`, `local_first` |
 
 ### Structure
 
@@ -109,7 +111,7 @@ flowchart LR
 | `manual_provenance_service` | import | [manual_provenance_service](../modules/manual_provenance_service.md) | — |
 | `review_evidence` | import | [services_review_evidence](../modules/services_review_evidence.md) | — |
 | `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |
-| `test_actor_provisioning_creates_binding_and_audit_atomically` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 1 |
-| `test_binding_and_preset_routes_preserve_credential_permissions` | call | [test_agent_model_catalog_api](../modules/test_agent_model_catalog_api.md) | 2 |
+| `RoutingQualificationKeyService._bounded_usage` | type_reference | [routing_qualification_key_service](../modules/routing_qualification_key_service.md) | — |
+| `RoutingQualificationKeyService._references` | type_reference | [routing_qualification_key_service](../modules/routing_qualification_key_service.md) | — |
 
-> References: showing 12 of 54 logical references; 42 omitted by the 12-row generated summary limit.
+> References: showing 12 of 57 logical references; 45 omitted by the 12-row generated summary limit.

@@ -51,6 +51,7 @@ from app.schemas.agent_routing import (
     TaskRoutingAssessmentState,
 )
 from app.services.agent_routing_policy import (
+    ROUTING_SKILL_KEYS,
     MAX_ROUTING_CANDIDATES,
     MAX_ROUTING_EXCLUSIONS,
     MAX_ROUTING_PACKET_BYTES,
@@ -207,6 +208,18 @@ def _json_projection(value: Any) -> Any:
 
 
 RoutingRowFocus = Callable[[Any], bool] | None
+
+
+def _retired_key_note(missing: Sequence[str], retired: Sequence[str]) -> str:
+    """Name the missing required keys that are retired and can no longer be held."""
+
+    names = [key for key in missing if key in retired]
+    if not names:
+        return ""
+    return (
+        f" Required qualification keys {', '.join(names)} are retired, so no "
+        "catalog entry can hold them; reassess the task."
+    )
 
 
 def _routing_row_focus(
@@ -632,6 +645,15 @@ class AgentRoutingService:
                 raise TaskVersionConflictError(
                     data.expected_task_version,
                     self.task_service._metadata_from_task(task),
+                )
+            if data.required_model.qualification_keys:
+                from app.services.routing_qualification_key_service import (
+                    require_known_qualification_keys,
+                )
+
+                await require_known_qualification_keys(
+                    self.db,
+                    data.required_model.qualification_keys,
                 )
             if data.confidence < MIN_ROUTING_ASSESSMENT_CONFIDENCE:
                 raise ValueError(
@@ -1194,6 +1216,9 @@ class AgentRoutingService:
                     Task.iteration_id == iteration.id,
                     Task.assignee_id.is_not(None),
                     Task.is_deferred.is_(False),
+                    Task.canceled_at.is_(None),
+                    # Postponed work occupies no capacity until it is reactivated.
+                    Task.status != TaskStatus.POSTPONED.value,
                     Task.id != task.id,
                 )
                 .group_by(Task.assignee_id)
@@ -1466,6 +1491,10 @@ class AgentRoutingService:
                                     "reasoning_tier": (
                                         binding.model_catalog.reasoning_tier
                                     ),
+                                    "effort": binding.model_catalog.effort,
+                                    "qualification_keys": sorted(
+                                        binding.model_catalog.qualification_keys or []
+                                    ),
                                     "context_tier": binding.model_catalog.context_tier,
                                     "modality_tags": sorted(
                                         binding.model_catalog.modality_tags or []
@@ -1600,6 +1629,27 @@ class AgentRoutingService:
                 assessment_id=assessment.id,
                 confidence=assessment.confidence,
                 minimum_confidence=MIN_ROUTING_ASSESSMENT_CONFIDENCE,
+            )
+        # A candidate's catalog entry must hold every required qualification key.
+        required_qualification_keys = tuple(sorted(
+            (assessment.required_model or {}).get("qualification_keys") or ()
+        ))
+        # A required key retired since the assessment can never be held again,
+        # so exclusions name it instead of leaving a silent dead end.
+        retired_qualification_keys: tuple[str, ...] = ()
+        if required_qualification_keys:
+            from app.services.routing_qualification_key_service import (
+                active_qualification_keys,
+            )
+
+            active = await active_qualification_keys(
+                self.db,
+                [key for key in required_qualification_keys if key not in ROUTING_SKILL_KEYS],
+            )
+            retired_qualification_keys = tuple(
+                key
+                for key in required_qualification_keys
+                if key not in ROUTING_SKILL_KEYS and key not in active
             )
 
         (
@@ -1924,6 +1974,12 @@ class AgentRoutingService:
                     ),
                     actual_tool_tags=binding.tool_tags or (),
                     actual_data_policy_tags=binding.data_policy_tags or (),
+                    actual_effort=catalog.effort if catalog is not None else None,
+                    actual_qualification_keys=(
+                        catalog.qualification_keys or ()
+                        if catalog is not None
+                        else ()
+                    ),
                 )
                 publisher_blockers = history.publisher_blockers(catalog.publisher_key if catalog else None) if strict_review else []
                 blockers = sorted(set((*actor_blockers, *model.hard_blocker_codes, *publisher_blockers)))
@@ -1971,6 +2027,7 @@ class AgentRoutingService:
                     "reasoning_tier": (
                         catalog.reasoning_tier if catalog else None
                     ),
+                    "effort": catalog.effort if catalog else None,
                     "context_tier": catalog.context_tier if catalog else None,
                     "cost_tier": catalog.cost_tier if catalog else None,
                     "local_first": bool(catalog.local_first) if catalog else None,
@@ -2034,6 +2091,9 @@ class AgentRoutingService:
                                 "data_policy_tags": sorted(
                                     binding.data_policy_tags or []
                                 ),
+                                "qualification_keys": list(
+                                    required_qualification_keys
+                                ),
                                 "eligible": True,
                                 "hard_blocker_codes": [],
                                 "adequacy_class": model.adequacy_class,
@@ -2066,14 +2126,22 @@ class AgentRoutingService:
                             "missing_data_policy_tags": list(
                                 model.missing_data_policy_tags
                             ),
+                            "missing_qualification_keys": list(
+                                model.missing_qualification_keys
+                            ),
                             "rationale": (
                                 "Excluded by one or more deterministic hard "
                                 "routing gates."
+                                + _retired_key_note(
+                                    model.missing_qualification_keys,
+                                    retired_qualification_keys,
+                                )
                             ),
                         }
                     )
 
         eligible_rows.sort(key=lambda item: item[0])
+        required_effort = (assessment.required_model or {}).get("minimum_effort")
         ranked_candidates: list[AgentRoutingCandidate] = []
         for rank, (_, values) in enumerate(eligible_rows, start=1):
             values["rank"] = rank
@@ -2087,6 +2155,18 @@ class AgentRoutingService:
                     "preferred over a hosted model of equal adequacy. "
                     "Otherwise ordered by adequacy, local-first preference, "
                     "cost, queue, schedule, latency, actor, and binding."
+                )
+            if required_effort is not None:
+                values["rationale"] += (
+                    f" The task requires effort {required_effort} or higher; "
+                    f"this model runs at {values['effort']}, and effort above "
+                    "the requirement counts toward adequacy."
+                )
+            if required_qualification_keys:
+                values["rationale"] += (
+                    " The task requires qualification keys "
+                    f"{', '.join(required_qualification_keys)}; this catalog "
+                    "entry holds them at its effort setting."
                 )
             ranked_candidates.append(AgentRoutingCandidate.model_validate(values))
         exclusions = [
@@ -2836,6 +2916,7 @@ class AgentRoutingService:
             configured_model_alias=selected.configured_model_alias,
             selected_reasoning_tier=selected.reasoning_tier,
             selected_context_tier=selected.context_tier,
+            selected_effort=selected.effort,
             resolved_model=None,
             review_mode=assessment.review_mode,
             reviewer_profile_id=effective_reviewer_profile_id,

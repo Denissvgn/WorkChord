@@ -36,7 +36,7 @@ flowchart LR
     n5["DeliveryDependencyService.add (backend/app/services/delivery_dependency_service.py)"]
     n6["backend/app/services/project_service.py"]
     n7["backend/app/services/snapshot_service.py"]
-    n8["backend/app/services/task_replacement_service.py"]
+    n8["TaskReplacementService._move_dependents (backend/app/services/task_replacement_service.py)"]
     n9["backend/app/services/task_service.py"]
     n10["_source_artifacts (backend/tests/database_migration/test_postgresql_transfer.py)"]
     n11["backend/tests/migrations/test_delivery_target_branch_migration.py"]
@@ -93,11 +93,11 @@ flowchart LR
 | `DeliveryDependencyService.add` | call | [delivery_dependency_service](../modules/delivery_dependency_service.md) | 1 |
 | `project_service` | import | [project_service](../modules/project_service.md) | — |
 | `snapshot_service` | import | [snapshot_service](../modules/snapshot_service.md) | — |
-| `task_replacement_service` | import | [task_replacement_service](../modules/task_replacement_service.md) | — |
+| `TaskReplacementService._move_dependents` | call | [task_replacement_service](../modules/task_replacement_service.md) | 1 |
 | `task_service` | import | [task_service](../modules/task_service.md) | — |
 | `_source_artifacts` | call | [test_postgresql_transfer](../modules/test_postgresql_transfer.md) | 2 |
 | `test_delivery_target_branch_migration` | import | [test_delivery_target_branch_migration](../modules/test_delivery_target_branch_migration.md) | — |
 | `test_delivery_dependencies` | import | [test_delivery_dependencies](../modules/test_delivery_dependencies.md) | — |
 | `test_delivery_prerequisite_tools` | import | [test_delivery_prerequisite_tools](../modules/test_delivery_prerequisite_tools.md) | — |
 
-> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

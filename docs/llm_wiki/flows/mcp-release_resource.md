@@ -2,7 +2,7 @@
 
 **Entry point:** `release_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 14 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 16 more
 
 **Complete modules touched:**
 
@@ -22,6 +22,8 @@
 - [release_service](../modules/release_service.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_display_state](../modules/task_display_state.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -51,16 +53,16 @@ sequenceDiagram
     participant p16 as require_scope
     participant p17 as AgentService.authenticate
     participant p18 as require_identity_writes
-    participant p19 as DeliveryDependencyService.reconcile
+    participant p19 as process_reactivation_checks
     participant p20 as IdentityService.context
-    participant p21 as DiscussionService.enqueue
-    participant p22 as working_today
-    participant p23 as ReleaseService
-    participant p24 as _response
-    participant p25 as _structured_tool_error
-    participant p26 as ReleaseService._release_options
-    participant p27 as _current_agent_key
-    participant p28 as scope_requirement_is_mutating
+    participant p21 as DeliveryDependencyService.reconcile
+    participant p22 as DiscussionService.enqueue
+    participant p23 as working_today
+    participant p24 as state_clause
+    participant p25 as displayed_state_expression
+    participant p26 as ReleaseService
+    participant p27 as _response
+    participant p28 as _structured_tool_error
     participant p29 as int (backend/app/mcp_server.py:release_resource)
     participant p30 as self.db.execute (backend/app/services/rele…:ReleaseService.get_by_id)
     p0->>p1: _json_resource
@@ -81,37 +83,37 @@ sequenceDiagram
     p13->>p16: require_scope
     p12->>p17: AgentService.authenticate
     p14->>p18: require_identity_writes
-    p11->>p19: DeliveryDependencyService.reconcile
+    p11->>p19: process_reactivation_checks
     p14->>p20: IdentityService.context
-    p11->>p21: DiscussionService.enqueue
-    p10->>p22: working_today
-    p2->>p23: ReleaseService
-    p2->>p24: _response
-    p3->>p25: _structured_tool_error
-    p4->>p26: ReleaseService._release_options
-    p6->>p27: _current_agent_key
-    p5->>p28: scope_requirement_is_mutating
+    p11->>p21: DeliveryDependencyService.reconcile
+    p11->>p22: DiscussionService.enqueue
+    p10->>p23: working_today
+    p10->>p24: state_clause
+    p10->>p25: displayed_state_expression
+    p2->>p26: ReleaseService
+    p2->>p27: _response
+    p3->>p28: _structured_tool_error
     p0-->>p29: int (backend/app/mcp_server.py:release_resource)(release_id)
     p4-->>p30: self.db.execute (backend/app/services/rele…:ReleaseService.get_by_id)(...)
 ```
 
-> Call sequence diagram shows 30 of 517 interactions; 487 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 548 interactions; 518 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 185 (184 omitted); unresolved 1 of 250 (249 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 194 (193 omitted); unresolved 1 of 263 (262 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
 | `backend/app/config.py:get_settings` | 5 | [backend/app/config.py](../modules/config.md) | internal | 1 |
+| `backend/app/maintenance.py:enforce_mcp_access` | 4 | [backend/app/maintenance.py](../modules/app_maintenance.md) | internal | 2 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 7 | - | external | 4 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 7 | - | unresolved | 3 |
-| `backend/app/maintenance.py:enforce_mcp_access` | 4 | [backend/app/maintenance.py](../modules/app_maintenance.md) | internal | 1 |
+| `backend/app/mcp_server.py:_agent_context` | 16 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 3 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
-| `backend/app/mcp_server.py:_agent_context` | 16 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 2 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 77 groups; 69 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 87 groups; 79 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -124,9 +126,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 83; effect analysis evaluated: 56, partial: 3, unavailable: 24. Counts include steps omitted from the displayed trace.
+Source steps: 92; effect analysis evaluated: 64, partial: 3, unavailable: 25. Counts include steps omitted from the displayed trace.
 
-Collector observations for 59 source steps with known totals: observed: 259, emitted: 243, omitted: 16. Unavailable totals are excluded.
+Collector observations for 67 source steps with known totals: observed: 305, emitted: 289, omitted: 16. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -202,7 +204,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| release_resource | _json_resource | 2546 | `_json_resource('tasks:read', ...)` |
+| release_resource | _json_resource | 2621 | `_json_resource('tasks:read', ...)` |
 | _json_resource | _tool_call | 367 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

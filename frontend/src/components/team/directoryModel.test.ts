@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import type { AgentActorRosterItem, AgentModelBinding } from '../../types/agent';
+import type { AgentActorRosterItem, AgentModelBinding, ModelEffort } from '../../types/agent';
 import type { TeamMemberProfile } from '../../types/team';
-import { agentStatus, buildDirectory, statusKnown } from './directoryModel';
+import { agentStatus, buildDirectory, modelName, statusKnown } from './directoryModel';
 
 const NOW = Date.parse('2026-07-28T10:05:00Z');
 
@@ -17,7 +17,7 @@ const binding = (id: number, alias: string): AgentModelBinding => ({
     run_reference_count: 0, created_at: '', updated_at: '',
     model_catalog: {
         id, key: alias, provider: 'anthropic', configured_model_alias: alias, reasoning_tier: 3, context_tier: 'large',
-        modality_tags: [], cost_tier: 'medium', latency_tier: 'balanced', local_first: false, enabled: true, revision: 1,
+        modality_tags: [], cost_tier: 'medium', latency_tier: 'balanced', local_first: false, effort: 'unknown', enabled: true, revision: 1,
         last_verified_at: null, created_at: '', updated_at: '',
     },
 });
@@ -88,5 +88,16 @@ describe('team directory model', () => {
         expect(agentStatus([actor({})], 'loaded', NOW).connection).toBe('connected');
         expect(agentStatus([actor({})], 'unavailable', NOW)).toEqual({ model: undefined, connection: 'unknown' });
         expect(agentStatus([], 'loaded', NOW)).toEqual({ model: null, connection: 'not_connected' });
+    });
+
+    it('names two catalog entries for one runtime model by their recorded effort, in the label the caller gives', () => {
+        const withEffort = (effort: ModelEffort) => {
+            const base = binding(5, 'shared-runtime');
+            return { ...base, model_catalog: { ...base.model_catalog!, effort } };
+        };
+        const label = (effort: ModelEffort) => ({ high: 'Высокое', xhigh: 'Очень высокое' } as Record<string, string>)[effort] ?? effort;
+        expect(modelName(withEffort('high'), label)).toBe('shared-runtime (Высокое)');
+        expect(modelName(withEffort('xhigh'), label)).toBe('shared-runtime (Очень высокое)');
+        expect(modelName(withEffort('unknown'), label)).toBe('shared-runtime');
     });
 });

@@ -66,6 +66,7 @@ const catalogFixture = (
     modality_tags: ['text'],
     cost_tier: 'medium',
     local_first: false,
+    effort: 'unknown',
     latency_tier: 'balanced',
     enabled: true,
     revision: 3,
@@ -218,6 +219,92 @@ describe('AgentModelAdministration', () => {
         await user.type(within(dialog).getByLabelText('Change rationale'), 'Prefer the local model');
         await user.click(within(dialog).getByRole('button', { name: 'Save' }));
         await waitFor(() => expect(agentServiceMock.updateModelCatalogEntry).toHaveBeenCalledWith(11, expect.objectContaining({ local_first: true, expected_revision: 3 }), expect.objectContaining({ rationale: 'Prefer the local model' })));
+    });
+
+    it('records a catalog entry effort, shows it in the catalog and where a binding names the model', async () => {
+        const high = catalogFixture({ effort: 'high' });
+        agentServiceMock.getModelCatalog.mockResolvedValue([high]);
+        agentServiceMock.getModelBindings.mockResolvedValue([bindingFixture({ model_catalog: high })]);
+        const { user } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        await screen.findByRole('heading', { name: 'Model catalog' });
+
+        const [catalogTable, bindingTable] = screen.getAllByRole('table');
+        expect(within(catalogTable).getByRole('columnheader', { name: 'Effort' })).toBeVisible();
+        expect(within(catalogTable).getByRole('cell', { name: 'High' })).toBeVisible();
+        expect(within(bindingTable).getByText('Effort: High')).toBeVisible();
+
+        await user.click(screen.getByRole('button', { name: /Edit model catalog entry Balanced Code/i }));
+        const drawer = screen.getByRole('dialog', { name: /Edit catalog entry/i });
+        const effort = within(drawer).getByRole('combobox', { name: /Effort/ });
+        expect(effort).toHaveValue('high');
+        expect(within(effort).getAllByRole('option').map(option => option.getAttribute('value'))).toEqual(
+            ['unknown', 'low', 'medium', 'high', 'xhigh', 'max'],
+        );
+        await user.selectOptions(effort, 'xhigh');
+        await user.click(within(drawer).getByRole('button', { name: 'Save' }));
+        const dialog = screen.getByRole('dialog', { name: 'Audited change controls' });
+        await user.type(within(dialog).getByLabelText('Change rationale'), 'Record the effort');
+        await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(agentServiceMock.updateModelCatalogEntry).toHaveBeenCalledWith(11, expect.objectContaining({ effort: 'xhigh', expected_revision: 3 }), expect.objectContaining({ rationale: 'Record the effort' })));
+    });
+
+    it('shows held qualification keys and leaves unedited keys out of an effort change', async () => {
+        const qualified = catalogFixture({ effort: 'high', qualification_keys: ['backend-python', 'qualified.schema-review'] });
+        agentServiceMock.getModelCatalog.mockResolvedValue([qualified]);
+        agentServiceMock.getModelBindings.mockResolvedValue([bindingFixture({ model_catalog: qualified })]);
+        const { user } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        await screen.findByRole('heading', { name: 'Model catalog' });
+        const [catalogTable] = screen.getAllByRole('table');
+        expect(within(catalogTable).getByText('backend-python, qualified.schema-review')).toBeVisible();
+
+        const save = async (rationale: string) => {
+            await user.click(within(screen.getByRole('dialog', { name: /Edit catalog entry/i })).getByRole('button', { name: 'Save' }));
+            const dialog = screen.getByRole('dialog', { name: 'Audited change controls' });
+            await user.type(within(dialog).getByLabelText('Change rationale'), rationale);
+            await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+        };
+        await user.click(screen.getByRole('button', { name: /Edit model catalog entry Balanced Code/i }));
+        let drawer = screen.getByRole('dialog', { name: /Edit catalog entry/i });
+        expect(within(drawer).getByLabelText('Qualification keys')).toHaveValue('backend-python, qualified.schema-review');
+        await user.selectOptions(within(drawer).getByRole('combobox', { name: /Effort/ }), 'medium');
+        await save('Run at medium effort');
+        await waitFor(() => expect(agentServiceMock.updateModelCatalogEntry).toHaveBeenCalledTimes(1));
+        expect(agentServiceMock.updateModelCatalogEntry.mock.calls[0][1]).not.toHaveProperty('qualification_keys');
+
+        await user.click(screen.getByRole('button', { name: /Edit model catalog entry Balanced Code/i }));
+        drawer = screen.getByRole('dialog', { name: /Edit catalog entry/i });
+        const keys = within(drawer).getByLabelText('Qualification keys');
+        await user.clear(keys);
+        await user.type(keys, 'qualified.schema-review');
+        await save('Keep the schema review qualification');
+        await waitFor(() => expect(agentServiceMock.updateModelCatalogEntry).toHaveBeenCalledTimes(2));
+        expect(agentServiceMock.updateModelCatalogEntry.mock.calls[1][1]).toEqual(expect.objectContaining({ qualification_keys: ['qualified.schema-review'] }));
+    });
+
+    it('warns before a change of model run clears the keys and restates them when kept', async () => {
+        const qualified = catalogFixture({ effort: 'high', qualification_keys: ['qualified.schema-review'] });
+        agentServiceMock.getModelCatalog.mockResolvedValue([qualified]);
+        agentServiceMock.getModelBindings.mockResolvedValue([bindingFixture({ model_catalog: qualified })]);
+        const { user } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        await screen.findByRole('heading', { name: 'Model catalog' });
+        await user.click(screen.getByRole('button', { name: /Edit model catalog entry Balanced Code/i }));
+        const drawer = screen.getByRole('dialog', { name: /Edit catalog entry/i });
+        expect(within(drawer).queryByText(/will be cleared/)).not.toBeInTheDocument();
+
+        const alias = within(drawer).getByRole('textbox', { name: /Configured model alias/ });
+        await user.type(alias, '-v2');
+        expect(within(drawer).getByText('This change makes the entry a different model run, so its qualification keys (qualified.schema-review) will be cleared.')).toBeVisible();
+        await user.click(within(drawer).getByRole('checkbox', { name: 'Keep these keys' }));
+        expect(within(drawer).getByText('The qualification keys (qualified.schema-review) will be restated with this change.')).toBeVisible();
+        await user.click(within(drawer).getByRole('button', { name: 'Save' }));
+        const dialog = screen.getByRole('dialog', { name: 'Audited change controls' });
+        await user.type(within(dialog).getByLabelText('Change rationale'), 'Same model under a new alias');
+        await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(agentServiceMock.updateModelCatalogEntry).toHaveBeenCalledTimes(1));
+        expect(agentServiceMock.updateModelCatalogEntry.mock.calls[0][1]).toEqual(expect.objectContaining({
+            configured_model_alias: expect.stringMatching(/-v2$/),
+            qualification_keys: ['qualified.schema-review'],
+        }));
     });
 
     it('loads catalog and bindings and creates a binding with only the saved admin key', async () => {

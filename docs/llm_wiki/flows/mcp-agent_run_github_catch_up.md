@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_run_github_catch_up` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 15 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 16 more
 
 **Complete modules touched:**
 
@@ -22,6 +22,7 @@
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
 - [system_settings_service](../modules/system_settings_service.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_replacement_service](../modules/task_replacement_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
@@ -52,16 +53,16 @@ sequenceDiagram
     participant p16 as AgentService.authenticate
     participant p17 as require_identity_writes
     participant p18 as require_project
-    participant p19 as DeliveryDependencyService.reconcile
-    participant p20 as DiscussionService.enqueue
+    participant p19 as process_reactivation_checks
+    participant p20 as DeliveryDependencyService.reconcile
     participant p21 as relation_for
-    participant p22 as GitHubReconciliationService._pull
-    participant p23 as actor_has_scope
-    participant p24 as RuntimeSettingsService.resolve
-    participant p25 as replaced_by
-    participant p26 as replacing
-    participant p27 as GitHubReconciliationService._submissions
-    participant p28 as commit_or_flush
+    participant p22 as DiscussionService.enqueue
+    participant p23 as GitHubReconciliationService._pull
+    participant p24 as actor_has_scope
+    participant p25 as RuntimeSettingsService.resolve
+    participant p26 as replaced_by
+    participant p27 as replacing
+    participant p28 as GitHubReconciliationService._submissions
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -82,23 +83,23 @@ sequenceDiagram
     p10->>p16: AgentService.authenticate
     p13->>p17: require_identity_writes
     p7->>p18: require_project
-    p9->>p19: DeliveryDependencyService.reconcile
-    p9->>p20: DiscussionService.enqueue
+    p9->>p19: process_reactivation_checks
+    p9->>p20: DeliveryDependencyService.reconcile
     p12->>p21: relation_for
-    p12->>p22: GitHubReconciliationService._pull
-    p15->>p23: actor_has_scope
-    p14->>p24: RuntimeSettingsService.resolve
-    p21->>p25: replaced_by
-    p21->>p26: replacing
-    p22->>p27: GitHubReconciliationService._submissions
-    p16->>p28: commit_or_flush
+    p9->>p22: DiscussionService.enqueue
+    p12->>p23: GitHubReconciliationService._pull
+    p15->>p24: actor_has_scope
+    p14->>p25: RuntimeSettingsService.resolve
+    p21->>p26: replaced_by
+    p21->>p27: replacing
+    p23->>p28: GitHubReconciliationService._submissions
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 372 interactions; 342 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 397 interactions; 367 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 85 (84 omitted); unresolved 1 of 172 (171 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 90 (89 omitted); unresolved 1 of 187 (186 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -112,7 +113,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 109 groups; 101 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 116 groups; 108 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -125,9 +126,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 116; effect analysis evaluated: 84, partial: 3, unavailable: 29. Counts include steps omitted from the displayed trace.
+Source steps: 121; effect analysis evaluated: 88, partial: 3, unavailable: 30. Counts include steps omitted from the displayed trace.
 
-Collector observations for 87 source steps with known totals: observed: 402, emitted: 384, omitted: 18. Unavailable totals are excluded.
+Collector observations for 91 source steps with known totals: observed: 426, emitted: 408, omitted: 18. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -202,7 +203,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_run_github_catch_up | _tool_call | 1720 | `_tool_call(AGENT_TASK_WRITE_SCOPES, ...)` |
+| agent_run_github_catch_up | _tool_call | 1772 | `_tool_call(AGENT_TASK_WRITE_SCOPES, ...)` |
 | _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 528 | `Settings(data not statically known)` |

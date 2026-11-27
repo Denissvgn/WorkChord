@@ -1,6 +1,6 @@
 # AgentModelCatalogUpdate
 
-**Location:** `frontend/src/types/agent.ts:222`
+**Location:** `frontend/src/types/agent.ts:231`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -17,11 +17,13 @@ _Auto-generated from `AgentModelCatalogUpdate` in `frontend/src/types/agent.ts`.
 | `provider` | `string` | No | — | — |
 | `configured_model_alias` | `string` | No | — | — |
 | `reasoning_tier` | `ModelReasoningTier` | No | — | — |
+| `effort` | `ModelEffort` | No | — | — |
 | `context_tier` | `ModelContextTier` | No | — | — |
 | `modality_tags` | `string[]` | No | — | — |
 | `cost_tier` | `ModelCostTier` | No | — | — |
 | `local_first` | `boolean` | No | — | — |
 | `latency_tier` | `ModelLatencyTier` | No | — | — |
+| `qualification_keys` | `string[]` | No | — | — |
 | `enabled` | `true` | No | — | — |
 | `last_verified_at` | `string \| null` | No | — | — |
 | `reconcile_live_assignments` | `boolean` | No | — | — |
@@ -46,7 +48,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_agent](../modules/types_agent.md) | 0 | `configured_model_alias`, `context_tier`, `cost_tier`, `enabled`, `expected_revision`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags`, `provider`, `reasoning_tier`, `reconcile_live_assignments` |
+| [types_agent](../modules/types_agent.md) | 0 | `configured_model_alias`, `context_tier`, `cost_tier`, `effort`, `enabled`, `expected_revision`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags`, `provider`, `qualification_keys` |
 
 ### References
 

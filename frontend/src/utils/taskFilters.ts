@@ -106,7 +106,8 @@ export const taskMatchesFilters = (
     }
 
     // Check status
-    if (filters.status !== null && task.status !== filters.status) {
+    // Withdrawn work matches its displayed state, not the status it kept.
+    if (filters.status !== null && (task.displayed_state ?? task.status) !== filters.status) {
         return false;
     }
 

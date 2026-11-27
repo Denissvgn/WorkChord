@@ -1,6 +1,6 @@
 # UnscheduledTask
 
-**Location:** `backend/app/schemas/gantt.py:96`
+**Location:** `backend/app/schemas/gantt.py:109`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)
@@ -20,6 +20,7 @@ A planned task the scheduler left without dates, and what would change that.
 | `dates_cleared` | `bool` | `dates_cleared` | No | No | `False` | — | — | — |
 | `date_rule` | `DateRule \| None` | `date_rule` | No | Yes | `None` | — | — | — |
 | `also` | `list[UnscheduledReason]` | `also` | No | No | `[]` | — | — | — |
+| `waiting_on` | `list[WaitingOnTask]` | `waiting_on` | No | No | factory: `list` | — | — | — |
 
 ## Methods
 
@@ -43,7 +44,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `also`, `date_rule`, `dates_cleared`, `message`, `reason`, `task_id`, `task_title` |
+| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `also`, `date_rule`, `dates_cleared`, `message`, `reason`, `task_id`, `task_title`, `waiting_on` |
 
 ### Structure
 

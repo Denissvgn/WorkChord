@@ -1,6 +1,6 @@
 # AgentTeamValidation
 
-**Location:** `frontend/src/types/agent.ts:714`
+**Location:** `frontend/src/types/agent.ts:793`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

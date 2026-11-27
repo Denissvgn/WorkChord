@@ -1,7 +1,7 @@
 # worker_flow
 
 **Entry point:** `worker._run`
-**Modules involved:** [app_database](../modules/app_database.md), [config](../modules/config.md), [outbound_webhook_service](../modules/outbound_webhook_service.md), [worker](../modules/worker.md)
+**Modules involved:** [app_database](../modules/app_database.md), [config](../modules/config.md), [outbound_webhook_service](../modules/outbound_webhook_service.md), [task_reactivation_service](../modules/task_reactivation_service.md), [worker](../modules/worker.md)
 
 ## Sequence
 
@@ -10,13 +10,15 @@
 2. `app_database.init_db`
 3. `outbound_webhook_service.run_due_outbound_delivery_jobs`
 4. `outbound_webhook_service.outbound_delivery_worker_loop`
-5. `app_database.close_database`
+5. `task_reactivation_service.postponement_check_loop`
+6. `app_database.close_database`
 
 ## Touches
 
 - [app_database](../modules/app_database.md)
 - [config](../modules/config.md)
 - [outbound_webhook_service](../modules/outbound_webhook_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [worker](../modules/worker.md)
 
 ## Behavior

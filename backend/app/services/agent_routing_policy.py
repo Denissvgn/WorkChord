@@ -68,6 +68,7 @@ ROUTING_DECISION_LINEAGE_FIELDS = (
     "configured_model_alias",
     "selected_reasoning_tier",
     "selected_context_tier",
+    "selected_effort",
     "review_mode",
     "reviewer_profile_id",
     "routing_preview_id",
@@ -112,6 +113,21 @@ class ContextTier(StrEnum):
     SMALL = "small"
     MEDIUM = "medium"
     LARGE = "large"
+
+
+class ModelEffort(StrEnum):
+    """Reasoning-effort setting a catalog entry runs at.
+
+    ``unknown`` is the explicit value for an entry whose setting is not
+    recorded; it is not ordered and can never satisfy a stated requirement.
+    """
+
+    UNKNOWN = "unknown"
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    XHIGH = "xhigh"
+    MAX = "max"
 
 
 class CostTier(StrEnum):
@@ -224,6 +240,8 @@ class RoutingBlockerCode(StrEnum):
     MODEL_CATALOG_DISABLED = "model_catalog_disabled"
     MODEL_REASONING_TIER_INSUFFICIENT = "model_reasoning_tier_insufficient"
     MODEL_CONTEXT_TIER_INSUFFICIENT = "model_context_tier_insufficient"
+    MODEL_EFFORT_INSUFFICIENT = "model_effort_insufficient"
+    MODEL_QUALIFICATION_MISSING = "model_qualification_missing"
     MODEL_MODALITY_MISSING = "model_modality_missing"
     MODEL_TOOL_MISSING = "model_tool_missing"
     MODEL_DATA_POLICY_MISSING = "model_data_policy_missing"
@@ -264,6 +282,15 @@ CONTEXT_TIER_ORDER = MappingProxyType(
         ContextTier.SMALL.value: 1,
         ContextTier.MEDIUM.value: 2,
         ContextTier.LARGE.value: 3,
+    }
+)
+EFFORT_ORDER = MappingProxyType(
+    {
+        ModelEffort.LOW.value: 1,
+        ModelEffort.MEDIUM.value: 2,
+        ModelEffort.HIGH.value: 3,
+        ModelEffort.XHIGH.value: 4,
+        ModelEffort.MAX.value: 5,
     }
 )
 COST_TIER_ORDER = MappingProxyType(
@@ -462,6 +489,41 @@ if not all(
     raise RuntimeError("Capability labels reference unknown routing skill keys")
 
 
+class UnknownRoutingKeyError(ValueError):
+    """A key is neither a built-in routing skill key nor a declared qualification key."""
+
+    def __init__(self, keys: Iterable[str]):
+        self.keys = tuple(sorted(set(keys)))
+        super().__init__(
+            "Unknown routing skill key: " + ", ".join(self.keys)
+        )
+
+
+def known_routing_keys(declared_keys: Iterable[str] = ()) -> frozenset[str]:
+    """Return the built-in routing skill keys plus a deployment's declared keys.
+
+    The built-in vocabulary never changes here; declared keys only extend the
+    set a catalog entry or task requirement may name.
+    """
+
+    return ROUTING_SKILL_KEYS | frozenset(
+        str(key).strip().lower() for key in declared_keys
+    )
+
+
+def require_known_routing_keys(
+    keys: Iterable[str],
+    declared_keys: Iterable[str] = (),
+) -> tuple[str, ...]:
+    """Return keys sorted, refusing any outside built-in plus declared keys."""
+
+    normalized = tuple(sorted({str(key).strip().lower() for key in keys}))
+    unknown = set(normalized).difference(known_routing_keys(declared_keys))
+    if unknown:
+        raise UnknownRoutingKeyError(unknown)
+    return normalized
+
+
 @dataclass(frozen=True)
 class ReasonCodeRule:
     """Minimum band/review requirements attached to one governed reason."""
@@ -644,6 +706,7 @@ class RoutingModelEnvelopeDecision:
     missing_modality_tags: tuple[str, ...] = ()
     missing_tool_tags: tuple[str, ...] = ()
     missing_data_policy_tags: tuple[str, ...] = ()
+    missing_qualification_keys: tuple[str, ...] = ()
 
     @property
     def eligible(self) -> bool:
@@ -752,6 +815,19 @@ def context_tier_meets(actual: str, minimum: str) -> bool:
         return CONTEXT_TIER_ORDER[str(actual)] >= CONTEXT_TIER_ORDER[str(minimum)]
     except KeyError as exc:
         raise ValueError("Unknown context tier") from exc
+
+
+def effort_meets(actual: str | None, minimum: str) -> bool:
+    """Return whether a catalog effort setting meets a required effort.
+
+    An unknown or missing setting never meets a stated requirement.
+    """
+
+    try:
+        required = EFFORT_ORDER[str(minimum)]
+    except KeyError as exc:
+        raise ValueError("Unknown required effort") from exc
+    return actual is not None and EFFORT_ORDER.get(str(actual), 0) >= required
 
 
 def routing_skills_for_capability_labels(labels: Iterable[str]) -> tuple[str, ...]:
@@ -872,6 +948,31 @@ def _envelope_value(envelope: Mapping[str, Any] | Any, key: str) -> Any:
         ) from exc
 
 
+def _required_effort(envelope: Mapping[str, Any] | Any) -> str | None:
+    """Read the optional required effort; absent or null states no requirement."""
+
+    if isinstance(envelope, Mapping):
+        value = envelope.get("minimum_effort")
+    else:
+        value = getattr(envelope, "minimum_effort", None)
+    if value is None:
+        return None
+    value = str(getattr(value, "value", value))
+    if value not in EFFORT_ORDER:
+        raise ValueError("Required effort must be a governed effort level")
+    return value
+
+
+def _required_qualification_keys(envelope: Mapping[str, Any] | Any) -> Iterable[str]:
+    """Read the optional required qualification keys; absent states none."""
+
+    if isinstance(envelope, Mapping):
+        value = envelope.get("qualification_keys")
+    else:
+        value = getattr(envelope, "qualification_keys", None)
+    return value or ()
+
+
 def _normalized_tag_set(values: Iterable[str], *, label: str) -> frozenset[str]:
     normalized: set[str] = set()
     for raw_value in values:
@@ -890,8 +991,14 @@ def model_adequacy_class(
     actual_reasoning_tier: int,
     minimum_context_tier: str,
     actual_context_tier: str,
+    minimum_effort: str | None = None,
+    actual_effort: str | None = None,
 ) -> int:
-    """Return deterministic excess capability steps for an adequate model."""
+    """Return deterministic excess capability steps for an adequate model.
+
+    Excess effort counts only when the task states a required effort, so a
+    stated requirement prefers the lowest setting that satisfies it.
+    """
 
     for label, value in (
         ("minimum_reasoning_tier", minimum_reasoning_tier),
@@ -912,11 +1019,19 @@ def model_adequacy_class(
         raise ValueError("Actual reasoning tier is below the required minimum")
     if actual_context_order < minimum_context_order:
         raise ValueError("Actual context tier is below the required minimum")
+    effort_excess = 0
+    if minimum_effort is not None:
+        if not effort_meets(actual_effort, minimum_effort):
+            raise ValueError("Actual effort is below the required minimum")
+        effort_excess = (
+            EFFORT_ORDER[str(actual_effort)] - EFFORT_ORDER[str(minimum_effort)]
+        )
     return (
         actual_reasoning_tier
         - minimum_reasoning_tier
         + actual_context_order
         - minimum_context_order
+        + effort_excess
     )
 
 
@@ -933,8 +1048,14 @@ def evaluate_model_envelope(
     actual_modality_tags: Iterable[str] = (),
     actual_tool_tags: Iterable[str] = (),
     actual_data_policy_tags: Iterable[str] = (),
+    actual_effort: str | None = None,
+    actual_qualification_keys: Iterable[str] = (),
 ) -> RoutingModelEnvelopeDecision:
-    """Evaluate one binding/catalog pair against a required model envelope."""
+    """Evaluate one binding/catalog pair against a required model envelope.
+
+    Required qualification keys are held by the catalog entry, so a key held
+    at one effort setting is a different entry from the same model at another.
+    """
 
     minimum_reasoning_tier = _envelope_value(
         required_model,
@@ -943,6 +1064,7 @@ def evaluate_model_envelope(
     minimum_context_tier = str(
         _envelope_value(required_model, "minimum_context_tier")
     )
+    minimum_effort = _required_effort(required_model)
     required_modalities = _normalized_tag_set(
         _envelope_value(required_model, "modality_tags"),
         label="Required modality",
@@ -963,6 +1085,14 @@ def evaluate_model_envelope(
     actual_data_policies = _normalized_tag_set(
         actual_data_policy_tags,
         label="Actual data policy",
+    )
+    required_qualifications = _normalized_tag_set(
+        _required_qualification_keys(required_model),
+        label="Required qualification key",
+    )
+    actual_qualifications = _normalized_tag_set(
+        actual_qualification_keys,
+        label="Actual qualification key",
     )
 
     blockers: list[str] = []
@@ -996,6 +1126,18 @@ def evaluate_model_envelope(
             RoutingBlockerCode.MODEL_CONTEXT_TIER_INSUFFICIENT.value
         )
 
+    effort_adequate = minimum_effort is None or effort_meets(
+        actual_effort, minimum_effort
+    )
+    if not effort_adequate:
+        blockers.append(RoutingBlockerCode.MODEL_EFFORT_INSUFFICIENT.value)
+
+    missing_qualifications = tuple(
+        sorted(required_qualifications - actual_qualifications)
+    )
+    if missing_qualifications:
+        blockers.append(RoutingBlockerCode.MODEL_QUALIFICATION_MISSING.value)
+
     missing_modalities = tuple(sorted(required_modalities - actual_modalities))
     missing_tools = tuple(sorted(required_tools - actual_tools))
     missing_data_policies = tuple(
@@ -1009,12 +1151,14 @@ def evaluate_model_envelope(
         blockers.append(RoutingBlockerCode.MODEL_DATA_POLICY_MISSING.value)
 
     adequacy_class: int | None = None
-    if reasoning_adequate and context_adequate:
+    if reasoning_adequate and context_adequate and effort_adequate:
         adequacy_class = model_adequacy_class(
             minimum_reasoning_tier=minimum_reasoning_tier,
             actual_reasoning_tier=actual_reasoning_tier,
             minimum_context_tier=minimum_context_tier,
             actual_context_tier=actual_context_tier,
+            minimum_effort=minimum_effort,
+            actual_effort=actual_effort,
         )
     return RoutingModelEnvelopeDecision(
         hard_blocker_codes=tuple(dict.fromkeys(blockers)),
@@ -1022,6 +1166,7 @@ def evaluate_model_envelope(
         missing_modality_tags=missing_modalities,
         missing_tool_tags=missing_tools,
         missing_data_policy_tags=missing_data_policies,
+        missing_qualification_keys=missing_qualifications,
     )
 
 

@@ -1515,6 +1515,11 @@ class AgentWorkService:
                 data.expected_task_version,
                 self.task_service._metadata_from_task(task),
             )
+        if task.status == TaskStatus.POSTPONED.value:
+            # Postponed work is stopped: no worker or verifier is assigned until it is reactivated.
+            raise AgentConflictError(
+                f"Task {task.id} is postponed; reactivate it before assigning {data.purpose} work"
+            )
         locked_actors = await self._lock_actors((data.actor_id,))
         target = locked_actors.get(data.actor_id)
         if target is None:
@@ -4453,6 +4458,8 @@ class AgentWorkService:
         )
         if task.status != expected_status:
             blockers.append(f"task_status_{expected_status}_required")
+        if task.status == TaskStatus.POSTPONED.value:
+            blockers.append("task_postponed")
         from app.services.work_metrics import effective_work_flags
         if effective_work_flags(task)["effective_is_deferred"] or task.canceled_at or task.blocked_reason:
             blockers.append("task_deferred")

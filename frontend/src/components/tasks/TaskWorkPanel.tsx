@@ -18,6 +18,8 @@ import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { TaskReviewer } from './TaskReviewer';
 import { TaskReviewHistory } from './TaskReviewHistory';
 import { TaskOwnerAcceptance, VERIFIED_PUBLISHER_CODE } from './TaskOwnerAcceptance';
+import { TaskPostponeForm } from './TaskPostponeForm';
+import { TaskPostponementPanel } from './TaskPostponementPanel';
 import { useTaskReviewer } from './useTaskReviewer';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
@@ -208,6 +210,8 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         !allCriteriaPass && t('domain.acceptNeedsResults'),
         reviewEvidenceTooLong && t('domain.reviewEvidenceTooLong'),
     ].filter(Boolean);
+    const canPostpone = Boolean(actions.data?.actions.find(item => item.action === 'postpone')?.allowed);
+    const canReactivate = Boolean(actions.data?.actions.find(item => item.action === 'reactivate')?.allowed);
     // The next step of every refusal on this page, from the action blockers and from a refused command.
     const reviewAction = actions.data?.actions.find(item => item.action === 'review');
     const blockerSteps = [...(acceptAction?.blockers ?? []), ...(reviewAction?.blockers ?? [])].flatMap(blocker => blocker.next_step ? [blocker.next_step] : []);
@@ -326,6 +330,14 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         {needsProvenance && <TaskRecordProvenance task={task} disabled={disabled || pending || criteriaDirty || staleDraft}
             disabledReasons={[disabled && t('domain.acceptFinishEditing'), pending && t('domain.acceptSaving'), staleDraft && t('domain.staleProgress'), criteriaDirty && t('domain.acceptSaveProgress')].filter((item): item is string => Boolean(item))} onPending={onPending}
             onUpdated={latest => { if (!isActive()) return; onUpdated(latest); }} />}
+        {(canPostpone || task.status === 'postponed') && (() => {
+            const outside = [disabled && t('domain.acceptFinishEditing'), pending && t('domain.acceptSaving'), staleDraft && t('domain.staleProgress'), criteriaDirty && t('domain.acceptSaveProgress')]
+                .filter((item): item is string => Boolean(item));
+            const finished = (latest: Task) => { if (!isActive()) return; if (key) { try { sessionStorage.removeItem(key); } catch { /* Storage may be unavailable. */ } } onDirty(false); onUpdated(latest); };
+            return task.status === 'postponed'
+                ? <TaskPostponementPanel task={task} canReactivate={canReactivate} disabled={outside.length > 0} disabledReasons={outside} onPending={onPending} onUpdated={finished} />
+                : <TaskPostponeForm task={task} actions={actions.data} disabled={outside.length > 0} disabledReasons={outside} onPending={onPending} onUpdated={finished} />;
+        })()}
         <details className="text-sm text-content-secondary">
             <summary className="cursor-pointer">{t('domain.unavailableActions')}</summary>
             <ul className="mt-2 space-y-2">{actions.data?.actions.filter(item => !item.allowed && item.action !== 'record_provenance').map(item => <li key={item.action}>

@@ -1009,6 +1009,8 @@ async def _submission_candidate(db, task, submitted_run, source):
 
 
 async def select_reviewer(db, task, assignments, reviewer, *, binding_id=None, reviewer_profile_id=None, review_evidence_id=None):
+    if task.status == "postponed":
+        _conflict("task_postponed", "Postponed work cannot be verified. Reactivate it first.")
     if not await different_publisher_required(db, task.project_id):
         if review_evidence_id is not None:
             _conflict("verification_evidence_unavailable", "Scoped evidence requires independent verification.")

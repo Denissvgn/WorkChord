@@ -34,6 +34,7 @@ A capacity allocation removal reserves the shared planning input and affected it
 | `app.services.execution_planning_window` | `current_window`, `extension_input`, `live_assignments`, `make_window`, `seal_authority`, `task_context` |
 | `app.services.planning_input_context` | `affected_iteration_ids` |
 | `app.services.snapshot_service` | `SnapshotService` |
+| `app.services.task_reactivation_service` | `process_reactivation_checks` |
 | `app.services.task_service` | `TaskService` |
 | `contextlib` | `asynccontextmanager` |
 | `dataclasses` | `dataclass`, `field` |
@@ -64,8 +65,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (111) |
-| Outbound | `backend` (17) |
+| Inbound | `backend` (116) |
+| Outbound | `backend` (18) |
 
 ### External packages
 
@@ -73,7 +74,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 120 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 125 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

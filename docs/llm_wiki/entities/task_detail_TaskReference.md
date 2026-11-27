@@ -1,6 +1,6 @@
 # TaskReference
 
-**Location:** `backend/app/schemas/task_detail.py:9`
+**Location:** `backend/app/schemas/task_detail.py:10`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [task_detail](../modules/task_detail.md)
@@ -23,6 +23,7 @@ _Auto-generated from `TaskReference` in `backend/app/schemas/task_detail.py`._
 | `title` | `str` | `title` | Yes | No | — | — | — | — |
 | `version` | `int` | `version` | Yes | No | — | — | — | — |
 | `status` | `str` | `status` | Yes | No | — | — | — | — |
+| `displayed_state` | `str \| None` | `displayed_state` | No | Yes | `None` | — | — | — |
 | `project_id` | `int \| None` | `project_id` | Yes | Yes | — | — | — | — |
 | `iteration_id` | `int \| None` | `iteration_id` | Yes | Yes | — | — | — | — |
 | `parent_id` | `int \| None` | `parent_id` | Yes | Yes | — | — | — | — |
@@ -62,7 +63,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [task_detail](../modules/task_detail.md) | 0 | `acceptance_current`, `blocked_reason`, `canceled_at`, `id`, `iteration_id`, `iteration_name`, `owner_profile_id`, `parent_id`, `project_id`, `project_name`, `reviewer_name`, `status` |
+| [task_detail](../modules/task_detail.md) | 0 | `acceptance_current`, `blocked_reason`, `canceled_at`, `displayed_state`, `id`, `iteration_id`, `iteration_name`, `owner_profile_id`, `parent_id`, `project_id`, `project_name`, `reviewer_name` |
 
 ### Structure
 

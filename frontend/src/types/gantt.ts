@@ -21,6 +21,8 @@ export interface GanttTask {
     progress: number;
     priority: number;
     status: 'planned' | 'active' | 'resolved' | 'closed';
+    /** The stored status, or canceled / superseded for withdrawn work, which keeps the status it had. */
+    displayed_state?: 'planned' | 'active' | 'resolved' | 'closed' | 'postponed' | 'canceled' | 'superseded';
     is_composite: boolean;
     is_overdue: boolean;
     is_delayed: boolean;  // start_date < today and status == PLANNED
@@ -76,7 +78,13 @@ export interface GanttResponse {
 }
 
 export type UnscheduledReason = 'no_assignee' | 'assignee_not_in_iteration' | 'no_estimate' | 'no_capacity'
-    | 'prerequisites_pending' | 'predecessor_unscheduled' | 'deferred' | 'blocked' | 'not_placed';
+    | 'prerequisites_pending' | 'predecessor_unscheduled' | 'predecessor_postponed' | 'deferred' | 'blocked' | 'not_placed';
+
+/** A task a planned task waits on: postponed work, or the prerequisite behind idle days. */
+export interface WaitingOnTask {
+    task_id: number;
+    task_title: string;
+}
 
 export type DateRule = 'dates_incomplete' | 'dates_inverted' | 'outside_iteration' | 'before_min_start_date';
 
@@ -92,6 +100,8 @@ export interface UnscheduledTask {
     date_rule?: DateRule;
     /** Causes of its own that keep it undated once the main reason is resolved. */
     also?: UnscheduledReason[];
+    /** The postponed work it waits on, for reason predecessor_postponed. */
+    waiting_on?: WaitingOnTask[];
 }
 
 /** A planned task the scheduler could not place; it keeps the dates it already had. */
@@ -105,6 +115,33 @@ export interface KeptDatesTask {
     /** The rule the kept dates break, when they break one. */
     date_rule?: DateRule;
     also?: UnscheduledReason[];
+    waiting_on?: WaitingOnTask[];
+}
+
+export type IdleReason = 'waits_for_prerequisite' | 'earliest_start' | 'fixed_dates' | 'uninterrupted_slot';
+
+/** Working days an assignee is left idle before the task that follows them on the row. */
+export interface IdleGap {
+    start_date: string;
+    end_date: string;
+    working_days: number;
+    /** The task that starts after these days, and why it starts no earlier. */
+    task_id: number;
+    task_title: string;
+    reason: IdleReason;
+    /** The prerequisite it waits for, for reason waits_for_prerequisite. */
+    waiting_on?: WaitingOnTask;
+    /** The earliest start date that holds it, for reason earliest_start. */
+    earliest_start?: string;
+    message: string;
+}
+
+/** An assignee's working days left idle inside the scheduled span, before the row's last work. */
+export interface AssigneeIdleDays {
+    member_id: number;
+    member_name: string;
+    idle_working_days: number;
+    gaps: IdleGap[];
 }
 
 export interface ScheduleResult {
@@ -116,6 +153,7 @@ export interface ScheduleResult {
     workload_issues: WorkloadIssue[];
     unscheduled?: UnscheduledTask[];
     kept_dates?: KeptDatesTask[];
+    idle_days?: AssigneeIdleDays[];
 }
 
 /** Server dry-run of sandbox edits through the real scheduler (nothing persisted). */

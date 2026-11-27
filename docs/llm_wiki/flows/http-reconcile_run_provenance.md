@@ -2,7 +2,7 @@
 
 **Entry point:** `reconcile_run_provenance` (`http`)
 **Source:** [agent_catalog](../modules/agent_catalog.md)
-**Modules touched:** [agent_catalog](../modules/agent_catalog.md), [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_service](../modules/agent_service.md), and 18 more
+**Modules touched:** [agent_catalog](../modules/agent_catalog.md), [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_service](../modules/agent_service.md), and 19 more
 
 **Complete modules touched:**
 
@@ -25,6 +25,7 @@
 - [routers_agent_planning](../modules/routers_agent_planning.md)
 - [schemas_agent_planning](../modules/schemas_agent_planning.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -45,25 +46,25 @@ sequenceDiagram
     participant p7 as _digest
     participant p8 as _observations
     participant p9 as _canonical_json
-    participant p10 as DeliveryDependencyService.reconcile
-    participant p11 as DiscussionService.enqueue
-    participant p12 as _ack_at_begin
-    participant p13 as _model_at_begin
-    participant p14 as recover_terminal_observation
-    participant p15 as ensure_agent_team_secret_free
-    participant p16 as _actor_binding_ids
-    participant p17 as _latest_configuration
-    participant p18 as DeliveryDependencyService.validate_cycles
-    participant p19 as DiscussionService.recipient_authorized
-    participant p20 as no_output_corroborated
-    participant p21 as TaskService.reserve_task_version
-    participant p22 as clear_execution_evidence
-    participant p23 as is_admin_key_principal
-    participant p24 as AuthorityError
-    participant p25 as AgentPlanningCommandContext
-    participant p26 as _handle_agent_error
-    participant p27 as actor_scopes
-    participant p28 as AgentModelConflictError
+    participant p10 as process_reactivation_checks
+    participant p11 as DeliveryDependencyService.reconcile
+    participant p12 as DiscussionService.enqueue
+    participant p13 as _ack_at_begin
+    participant p14 as _model_at_begin
+    participant p15 as recover_terminal_observation
+    participant p16 as ensure_agent_team_secret_free
+    participant p17 as ReactivationService.evaluate_waiting
+    participant p18 as _actor_binding_ids
+    participant p19 as _latest_configuration
+    participant p20 as DeliveryDependencyService.validate_cycles
+    participant p21 as DiscussionService.recipient_authorized
+    participant p22 as no_output_corroborated
+    participant p23 as TaskService.reserve_task_version
+    participant p24 as clear_execution_evidence
+    participant p25 as is_admin_key_principal
+    participant p26 as AuthorityError
+    participant p27 as AgentPlanningCommandContext
+    participant p28 as _handle_agent_error
     participant p29 as HTTPException (backend/app/routers/agent…:reconcile_run_provenance)
     participant p30 as exc.detail (backend/app/routers/agent…og.py:_handle_model_error)
     p0->>p1: reconcile_execution_request
@@ -75,32 +76,32 @@ sequenceDiagram
     p5->>p7: _digest
     p5->>p8: _observations
     p7->>p9: _canonical_json
-    p6->>p10: DeliveryDependencyService.reconcile
-    p6->>p11: DiscussionService.enqueue
-    p8->>p12: _ack_at_begin
-    p8->>p13: _model_at_begin
-    p8->>p14: recover_terminal_observation
-    p9->>p15: ensure_agent_team_secret_free
-    p13->>p16: _actor_binding_ids
-    p13->>p17: _latest_configuration
-    p10->>p18: DeliveryDependencyService.validate_cycles
-    p11->>p19: DiscussionService.recipient_authorized
-    p14->>p20: no_output_corroborated
-    p10->>p21: TaskService.reserve_task_version
-    p10->>p22: clear_execution_evidence
-    p1->>p23: is_admin_key_principal
-    p1->>p24: AuthorityError
-    p1->>p25: AgentPlanningCommandContext
-    p2->>p26: _handle_agent_error
-    p4->>p27: actor_scopes
-    p5->>p28: AgentModelConflictError
+    p6->>p10: process_reactivation_checks
+    p6->>p11: DeliveryDependencyService.reconcile
+    p6->>p12: DiscussionService.enqueue
+    p8->>p13: _ack_at_begin
+    p8->>p14: _model_at_begin
+    p8->>p15: recover_terminal_observation
+    p9->>p16: ensure_agent_team_secret_free
+    p10->>p17: ReactivationService.evaluate_waiting
+    p14->>p18: _actor_binding_ids
+    p14->>p19: _latest_configuration
+    p11->>p20: DeliveryDependencyService.validate_cycles
+    p12->>p21: DiscussionService.recipient_authorized
+    p15->>p22: no_output_corroborated
+    p11->>p23: TaskService.reserve_task_version
+    p11->>p24: clear_execution_evidence
+    p1->>p25: is_admin_key_principal
+    p1->>p26: AuthorityError
+    p1->>p27: AgentPlanningCommandContext
+    p2->>p28: _handle_agent_error
     p0-->>p29: HTTPException (backend/app/routers/agent…:reconcile_run_provenance)(status_code=422, detail=str(...))
     p2-->>p30: exc.detail (backend/app/routers/agent…og.py:_handle_model_error)
 ```
 
-> Call sequence diagram shows 30 of 464 interactions; 434 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 492 interactions; 462 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 118 (117 omitted); unresolved 1 of 262 (261 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 126 (125 omitted); unresolved 1 of 277 (276 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -108,13 +109,13 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | --- | --- | --- | --- | --- |
 | `backend/app/authority.py:require_operator` | 3 | - | unresolved | 1 |
 | `backend/app/authority.py:require_operator` | 3 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
+| `backend/app/services/agent_service.py:actor_has_scope` | 7 | [backend/app/services/agent_service.py](../modules/agent_service.md) | internal | 1 |
 | `backend/app/services/agent_service.py:actor_scopes` | 8 | - | external | 2 |
 | `backend/app/services/execution_reconciliation.py:reconcile_execution_request` | 2 | - | external | 1 |
 | `backend/app/services/execution_reconciliation.py:reconcile_execution_request` | 2 | - | unresolved | 2 |
 | `backend/app/services/execution_reconciliation.py:reconcile_execution` | 16 | [backend/app/authority.py](../modules/authority.md) | internal | 2 |
 | `backend/app/services/execution_reconciliation.py:reconcile_execution` | 16 | - | external | 9 |
-| `backend/app/commands.py:command_transaction` | 21 | [backend/app/commands.py](../modules/commands.md) | internal | 2 |
-> Omission summary shows 8 of 79 groups; 71 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 86 groups; 78 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -127,9 +128,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 85; effect analysis evaluated: 63, partial: 3, unavailable: 19. Counts include steps omitted from the displayed trace.
+Source steps: 90; effect analysis evaluated: 67, partial: 3, unavailable: 20. Counts include steps omitted from the displayed trace.
 
-Collector observations for 66 source steps with known totals: observed: 394, emitted: 386, omitted: 8. Unavailable totals are excluded.
+Collector observations for 70 source steps with known totals: observed: 420, emitted: 410, omitted: 10. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -206,7 +207,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| reconcile_run_provenance | reconcile_execution_request | 105 | `reconcile_execution_request(db, actor, run_id, apply=apply, expected_evidence_digest=expected_evidence_digest, archived_acknowledgement=archived_acknowledgement, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| reconcile_run_provenance | reconcile_execution_request | 113 | `reconcile_execution_request(db, actor, run_id, apply=apply, expected_evidence_digest=expected_evidence_digest, archived_acknowledgement=archived_acknowledgement, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 | reconcile_execution_request | require_operator | 467 | `require_operator(db)` |
 | require_operator | db.info.get (backend/app/authority.py:require_operator) | 91 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 93 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |

@@ -41,36 +41,40 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (25) |
+| Inbound | `backend` (28) |
 
-> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ReasoningTier](../entities/ReasoningTier.md) | Enum | 101 | `IntEnum` | Closed provider-neutral reasoning capability tiers. |
-| [ContextTier](../entities/ContextTier.md) | Enum | 109 | `StrEnum` | Closed context-capacity tiers ordered by increasing capacity. |
-| [CostTier](../entities/CostTier.md) | Enum | 117 | `StrEnum` | Closed relative cost tiers; exact prices are deliberately excluded. |
-| [LatencyTier](../entities/LatencyTier.md) | Enum | 125 | `StrEnum` | Closed relative latency tiers. |
-| [DifficultyAxis](../entities/DifficultyAxis.md) | Enum | 133 | `StrEnum` | The five governed task-difficulty axes. |
-| [DifficultyBand](../entities/DifficultyBand.md) | Enum | 143 | `StrEnum` | Derived task-difficulty bands. |
-| [ReviewMode](../entities/ReviewMode.md) | Enum | 151 | `StrEnum` | Closed review modes ordered by increasing independence requirements. |
-| [AssessmentReasonCode](../entities/agent_routing_policy_AssessmentReasonCode.md) | Enum | 160 | `StrEnum` | Governed reasons that may raise the derived band or review floor. |
-| [AssignmentIntent](../entities/AssignmentIntent.md) | Enum | 177 | `StrEnum` | Normalized assignment intents derived from purpose and queue class. |
-| [RoutingBlockerCode](../entities/agent_routing_policy_RoutingBlockerCode.md) | Enum | 186 | `StrEnum` | Stable hard blockers shared by preview and assignment enforcement. |
-| [ReasonCodeRule](../entities/ReasonCodeRule.md) | Class | 466 | — | Minimum band/review requirements attached to one governed reason. |
-| [RoutingProfileEvidence](../entities/RoutingProfileEvidence.md) | Class | 539 | — | Secret-free profile evidence used by compatibility decisions. |
-| [RoutingEligibilityDecision](../entities/RoutingEligibilityDecision.md) | Class | 551 | — | Separated authority/compatibility evidence for one candidate. |
-| [RoutingSkillDecision](../entities/RoutingSkillDecision.md) | Class | 624 | — | Deterministic required-skill evidence for one profile. |
-| [RoutingModelEnvelopeDecision](../entities/RoutingModelEnvelopeDecision.md) | Class | 639 | — | Deterministic binding/catalog capability evidence for one candidate. |
-| [RoutingPacketSizeError](../entities/RoutingPacketSizeError.md) | Class | 1147 | `ValueError` | The canonical UTF-8 representation exceeds its routing boundary. |
+| [ReasoningTier](../entities/ReasoningTier.md) | Enum | 102 | `IntEnum` | Closed provider-neutral reasoning capability tiers. |
+| [ContextTier](../entities/ContextTier.md) | Enum | 110 | `StrEnum` | Closed context-capacity tiers ordered by increasing capacity. |
+| [ModelEffort](../entities/agent_routing_policy_ModelEffort.md) | Enum | 118 | `StrEnum` | Reasoning-effort setting a catalog entry runs at. |
+| [CostTier](../entities/CostTier.md) | Enum | 133 | `StrEnum` | Closed relative cost tiers; exact prices are deliberately excluded. |
+| [LatencyTier](../entities/LatencyTier.md) | Enum | 141 | `StrEnum` | Closed relative latency tiers. |
+| [DifficultyAxis](../entities/DifficultyAxis.md) | Enum | 149 | `StrEnum` | The five governed task-difficulty axes. |
+| [DifficultyBand](../entities/DifficultyBand.md) | Enum | 159 | `StrEnum` | Derived task-difficulty bands. |
+| [ReviewMode](../entities/ReviewMode.md) | Enum | 167 | `StrEnum` | Closed review modes ordered by increasing independence requirements. |
+| [AssessmentReasonCode](../entities/agent_routing_policy_AssessmentReasonCode.md) | Enum | 176 | `StrEnum` | Governed reasons that may raise the derived band or review floor. |
+| [AssignmentIntent](../entities/AssignmentIntent.md) | Enum | 193 | `StrEnum` | Normalized assignment intents derived from purpose and queue class. |
+| [RoutingBlockerCode](../entities/agent_routing_policy_RoutingBlockerCode.md) | Enum | 202 | `StrEnum` | Stable hard blockers shared by preview and assignment enforcement. |
+| [UnknownRoutingKeyError](../entities/UnknownRoutingKeyError.md) | Class | 492 | `ValueError` | A key is neither a built-in routing skill key nor a declared qualification key. |
+| [ReasonCodeRule](../entities/ReasonCodeRule.md) | Class | 528 | — | Minimum band/review requirements attached to one governed reason. |
+| [RoutingProfileEvidence](../entities/RoutingProfileEvidence.md) | Class | 601 | — | Secret-free profile evidence used by compatibility decisions. |
+| [RoutingEligibilityDecision](../entities/RoutingEligibilityDecision.md) | Class | 613 | — | Separated authority/compatibility evidence for one candidate. |
+| [RoutingSkillDecision](../entities/RoutingSkillDecision.md) | Class | 686 | — | Deterministic required-skill evidence for one profile. |
+| [RoutingModelEnvelopeDecision](../entities/RoutingModelEnvelopeDecision.md) | Class | 701 | — | Deterministic binding/catalog capability evidence for one candidate. |
+| [RoutingPacketSizeError](../entities/RoutingPacketSizeError.md) | Class | 1292 | `ValueError` | The canonical UTF-8 representation exceeds its routing boundary. |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `normalize_model_failure_category` | `(value: Any) -> str` | — | Project untrusted failure evidence into the closed escalation taxonomy. |
+| `known_routing_keys` | `(declared_keys: Iterable[str] = ()) -> frozenset[str]` | — | Return the built-in routing skill keys plus a deployment's declared keys. |
+| `require_known_routing_keys` | `(keys: Iterable[str], declared_keys: Iterable[str] = ()) -> tuple[str, ...]` | — | Return keys sorted, refusing any outside built-in plus declared keys. |
 | `_axis_values` | `(axes: Mapping[str, Any] \| Any) -> dict[str, int]` | — | — |
 | `_reason_values` | `(reason_codes: Iterable[str]) -> tuple[str, ...]` | — | — |
 | `derive_difficulty_band` | `(axes: Mapping[str, Any] \| Any, reason_codes: Iterable[str] = ()) -> str` | — | Derive the only valid band without averaging decisive axes. |
@@ -78,13 +82,16 @@ flowchart LR
 | `review_mode_meets` | `(actual: str, minimum: str) -> bool` | — | Return whether one closed review mode meets the required floor. |
 | `assessment_confidence_meets_minimum` | `(confidence: float) -> bool` | — | Return whether an authoritative assessment meets the frozen v1 floor. |
 | `context_tier_meets` | `(actual: str, minimum: str) -> bool` | — | Return whether an actual context tier meets a required tier. |
+| `effort_meets` | `(actual: str \| None, minimum: str) -> bool` | — | Return whether a catalog effort setting meets a required effort. |
 | `routing_skills_for_capability_labels` | `(labels: Iterable[str]) -> tuple[str, ...]` | — | Return explicit skill choices for known coarse readiness labels. |
 | `_normalized_skill_levels` | `(levels: Mapping[str, int], *, label: str, governed_keys_only: bool) -> dict[str, int]` | — | — |
 | `evaluate_required_skills` | `(*, required_skill_levels: Mapping[str, int], actual_skill_levels: Mapping[str, int], weakness_keys: Iterable[str] = ()) -> RoutingSkillDecision` | — | Evaluate precise governed skill requirements without prose inference. |
 | `_envelope_value` | `(envelope: Mapping[str, Any] \| Any, key: str) -> Any` | — | — |
+| `_required_effort` | `(envelope: Mapping[str, Any] \| Any) -> str \| None` | — | Read the optional required effort; absent or null states no requirement. |
+| `_required_qualification_keys` | `(envelope: Mapping[str, Any] \| Any) -> Iterable[str]` | — | Read the optional required qualification keys; absent states none. |
 | `_normalized_tag_set` | `(values: Iterable[str], *, label: str) -> frozenset[str]` | — | — |
-| `model_adequacy_class` | `(*, minimum_reasoning_tier: int, actual_reasoning_tier: int, minimum_context_tier: str, actual_context_tier: str) -> int` | — | Return deterministic excess capability steps for an adequate model. |
-| `evaluate_model_envelope` | `(required_model: Mapping[str, Any] \| Any, *, binding_present: bool = True, binding_enabled: bool = True, binding_revision_current: bool = True, catalog_present: bool = True, catalog_enabled: bool = True, actual_reasoning_tier: int \| None, actual_context_tier: str \| None, actual_modality_tags: Iterable[str] = (), actual_tool_tags: Iterable[str] = (), actual_data_policy_tags: Iterable[str] = ()) -> RoutingModelEnvelopeDecision` | — | Evaluate one binding/catalog pair against a required model envelope. |
+| `model_adequacy_class` | `(*, minimum_reasoning_tier: int, actual_reasoning_tier: int, minimum_context_tier: str, actual_context_tier: str, minimum_effort: str \| None = None, actual_effort: str \| None = None) -> int` | — | Return deterministic excess capability steps for an adequate model. |
+| `evaluate_model_envelope` | `(required_model: Mapping[str, Any] \| Any, *, binding_present: bool = True, binding_enabled: bool = True, binding_revision_current: bool = True, catalog_present: bool = True, catalog_enabled: bool = True, actual_reasoning_tier: int \| None, actual_context_tier: str \| None, actual_modality_tags: Iterable[str] = (), actual_tool_tags: Iterable[str] = (), actual_data_policy_tags: Iterable[str] = (), actual_effort: str \| None = None, actual_qualification_keys: Iterable[str] = ()) -> RoutingModelEnvelopeDecision` | — | Evaluate one binding/catalog pair against a required model envelope. |
 | `routing_candidate_rank_key` | `(*, adequacy_class: int, cost_tier: str, queue_depth: int, schedule_delay_days: float, latency_tier: str, actor_id: int, binding_id: int, local_first: bool = False) -> tuple[int, int, int, int, float, int, int, int]` | — | Freeze v1 ranking after all hard eligibility gates have passed. |
 | `_validate_json_native` | `(value: Any, *, ancestors: set[int] \| None = None, depth: int = 0) -> None` | — | Reject values whose JSON representation would be lossy or unstable. |
 | `canonical_routing_json_bytes` | `(value: Any) -> bytes` | — | Serialize JSON-native normalized routing evidence as stable UTF-8. |

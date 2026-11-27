@@ -1,6 +1,6 @@
 # AgentActor
 
-**Location:** `frontend/src/types/agent.ts:100`
+**Location:** `frontend/src/types/agent.ts:104`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

@@ -1,6 +1,6 @@
 # TaskDifficultyAxes
 
-**Location:** `frontend/src/types/agent.ts:313`
+**Location:** `frontend/src/types/agent.ts:383`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

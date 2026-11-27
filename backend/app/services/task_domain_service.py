@@ -248,6 +248,14 @@ class TaskDomainService:
             reopen["allowed"] = False
             reopen["blockers"].append({"code": "task_replaced",
                                        "message": f"Task {relation.replacement_task_id} delivers this work instead."})
+        from app.services.task_replacement_service import SUPERSESSION, replacing
+        delivering = await replacing(self.db, task.id)
+        if delivering is not None and delivering.disposition == SUPERSESSION:
+            # Canceling the successor would leave the superseded original's deliverable counted nowhere.
+            cancel = next(item for item in actions if item["action"] == "cancel")
+            cancel["allowed"] = False
+            cancel["blockers"].append({"code": "task_delivers_supersession",
+                                       "message": f"This task delivers superseded task {delivering.original_task_id}."})
         authority = self.db.info.get("authority")
         review_action = next(item for item in actions if item["action"] == "review")
         import copy

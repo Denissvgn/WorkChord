@@ -1,6 +1,6 @@
 # AgentCommandMetadata
 
-**Location:** `frontend/src/types/agent.ts:94`
+**Location:** `frontend/src/types/agent.ts:98`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

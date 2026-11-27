@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/components/team/directoryModel.ts`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `../../types/agent` | `AgentActorRosterItem`, `AgentModelBinding` | Declaration | erased |
+| `../../types/agent` | `AgentActorRosterItem`, `AgentModelBinding`, `ModelEffort` | Declaration | erased |
 | `../../types/team` | `TeamMemberProfile`, `TeamMemberProfileSkill` | Declaration | erased |
 
 ## Module Signals
@@ -90,7 +90,7 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `modelName` | `(binding: AgentModelBinding)` | — | — |
+| `modelName` | `(binding: AgentModelBinding, effortLabel: (effort: ModelEffort) => string)` | — | Two catalog entries for one runtime model differ only by effort, so a recorded effort is part of the |
 | `actorName` | `(actor: AgentActorRosterItem)` | — | — |
 | `agentStatus` | `(actors: AgentActorRosterItem[], rosterState: RosterState, now: number) -> AgentStatus` | — | The only place a model or connection is read from roster data. It says Unknown whenever the roster |
 | `statusKnown` | `(status: AgentStatus \| null) -> status is AgentStatus` | — | True when a status was read from the roster rather than left Unknown. |

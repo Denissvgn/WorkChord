@@ -1,6 +1,6 @@
 # ListedTask
 
-**Location:** `frontend/src/components/planning/PlanScheduleSection.tsx:21`
+**Location:** `frontend/src/components/planning/PlanScheduleSection.tsx:22`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PlanScheduleSection](../modules/PlanScheduleSection.md)

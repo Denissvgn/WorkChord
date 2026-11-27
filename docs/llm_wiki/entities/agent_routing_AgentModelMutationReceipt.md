@@ -1,6 +1,6 @@
 # AgentModelMutationReceipt
 
-**Location:** `backend/app/schemas/agent_routing.py:496`
+**Location:** `backend/app/schemas/agent_routing.py:539`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -18,7 +18,7 @@ receipt is returned once and not stored for replay.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `operation` | `str` | `operation` | Yes | No | — | max_length=100; min_length=1 | — | — |
 | `actor_id` | `int \| None` | `actor_id` | Yes | Yes | — | ge=1 | — | — |
-| `target_type` | `Literal['model_catalog', 'model_binding']` | `target_type` | Yes | No | — | — | — | — |
+| `target_type` | `Literal['model_catalog', 'model_binding', 'routing_qualification_key']` | `target_type` | Yes | No | — | — | — | — |
 | `target_id` | `int` | `target_id` | Yes | No | — | ge=1 | — | — |
 | `idempotency_key` | `str` | `idempotency_key` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `rationale` | `str` | `rationale` | Yes | No | — | max_length=2000; min_length=1 | — | — |
@@ -41,15 +41,15 @@ flowchart LR
     n1["RoutingContractModel (backend/app/schemas/agent_routing.py)"]
     n2["create_agent_model_binding (backend/app/routers/agent_catalog.py)"]
     n3["create_agent_model_catalog_entry (backend/app/routers/agent_catalog.py)"]
-    n4["disable_agent_model_binding (backend/app/routers/agent_catalog.py)"]
-    n5["disable_agent_model_catalog_entry (backend/app/routers/agent_catalog.py)"]
-    n6["update_agent_model_binding (backend/app/routers/agent_catalog.py)"]
-    n7["update_agent_model_catalog_entry (backend/app/routers/agent_catalog.py)"]
-    n8["AgentModelCatalogService._execute (backend/app/services/agent_model_catalog_service.py)"]
-    n9["AgentModelCatalogService._replay (backend/app/services/agent_model_catalog_service.py)"]
-    n10["AgentModelCatalogService.create_binding (backend/app/services/agent_model_catalog_service.py)"]
-    n11["AgentModelCatalogService.create_catalog (backend/app/services/agent_model_catalog_service.py)"]
-    n12["AgentModelCatalogService.disable_binding (backend/app/services/agent_model_catalog_service.py)"]
+    n4["declare_routing_qualification_key (backend/app/routers/agent_catalog.py)"]
+    n5["disable_agent_model_binding (backend/app/routers/agent_catalog.py)"]
+    n6["disable_agent_model_catalog_entry (backend/app/routers/agent_catalog.py)"]
+    n7["retire_routing_qualification_key (backend/app/routers/agent_catalog.py)"]
+    n8["revise_routing_qualification_key (backend/app/routers/agent_catalog.py)"]
+    n9["update_agent_model_binding (backend/app/routers/agent_catalog.py)"]
+    n10["update_agent_model_catalog_entry (backend/app/routers/agent_catalog.py)"]
+    n11["AgentModelCatalogService._execute (backend/app/services/agent_model_catalog_service.py)"]
+    n12["AgentModelCatalogService._replay (backend/app/services/agent_model_catalog_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -70,9 +70,9 @@ flowchart LR
     click n5 "../modules/agent_catalog.md"
     click n6 "../modules/agent_catalog.md"
     click n7 "../modules/agent_catalog.md"
-    click n8 "../modules/agent_model_catalog_service.md"
-    click n9 "../modules/agent_model_catalog_service.md"
-    click n10 "../modules/agent_model_catalog_service.md"
+    click n8 "../modules/agent_catalog.md"
+    click n9 "../modules/agent_catalog.md"
+    click n10 "../modules/agent_catalog.md"
     click n11 "../modules/agent_model_catalog_service.md"
     click n12 "../modules/agent_model_catalog_service.md"
 ```
@@ -95,15 +95,15 @@ flowchart LR
 |---|---|---|---:|
 | `create_agent_model_binding` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
 | `create_agent_model_catalog_entry` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
+| `declare_routing_qualification_key` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
 | `disable_agent_model_binding` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
 | `disable_agent_model_catalog_entry` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
+| `retire_routing_qualification_key` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
+| `revise_routing_qualification_key` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
 | `update_agent_model_binding` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
 | `update_agent_model_catalog_entry` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
 | `AgentModelCatalogService._execute` | call | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | 1 |
 | `AgentModelCatalogService._execute` | type_reference | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | — |
 | `AgentModelCatalogService._replay` | type_reference | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | — |
-| `AgentModelCatalogService.create_binding` | type_reference | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | — |
-| `AgentModelCatalogService.create_catalog` | type_reference | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | — |
-| `AgentModelCatalogService.disable_binding` | type_reference | [agent_model_catalog_service](../modules/agent_model_catalog_service.md) | — |
 
-> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.
+> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.

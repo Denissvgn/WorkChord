@@ -1,6 +1,6 @@
 # AgentModelCatalogFields
 
-**Location:** `backend/app/schemas/agent_routing.py:229`
+**Location:** `backend/app/schemas/agent_routing.py:247`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -13,6 +13,7 @@ Secret-free provider-neutral model catalog fields.
 
 | Method | Scope | Fields | Mode | Options |
 |--------|-------|--------|------|---------|
+| `validate_qualification_keys` | field | qualification_keys | before | — |
 | `normalize_catalog_key` | field | key | before | — |
 | `require_integer_reasoning_tier` | field | reasoning_tier | before | — |
 | `strip_nonempty_text` | field | provider, configured_model_alias | after | — |
@@ -27,11 +28,13 @@ Secret-free provider-neutral model catalog fields.
 | `publisher_key` | `RoutingKey \| None` | `publisher_key` | No | Yes | `None` | — | — | Operator-verified canonical model publisher, independent of serving provider. |
 | `configured_model_alias` | `str` | `configured_model_alias` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `reasoning_tier` | `ReasoningTier` | `reasoning_tier` | Yes | No | — | — | — | — |
+| `effort` | `ModelEffortSetting` | `effort` | No | No | `ModelEffort.UNKNOWN` | — | — | Reasoning-effort setting this entry runs at; unknown when not recorded. |
 | `context_tier` | `ModelContextTier` | `context_tier` | Yes | No | — | — | — | — |
 | `modality_tags` | `list[str]` | `modality_tags` | No | No | factory: `lambda: ['text']` | — | — | — |
 | `cost_tier` | `ModelCostTier` | `cost_tier` | Yes | No | — | — | — | — |
 | `local_first` | `bool` | `local_first` | No | No | `False` | — | — | Prefer this free or local model over a hosted one of equal adequacy; never overrides a gate. |
 | `latency_tier` | `ModelLatencyTier` | `latency_tier` | Yes | No | — | — | — | — |
+| `qualification_keys` | `list[str]` | `qualification_keys` | No | No | factory: `list` | — | — | Built-in or declared qualification keys this entry holds at its effort setting. |
 | `enabled` | `bool` | `enabled` | No | No | `True` | — | — | — |
 | `revision` | `PositiveRevision` | `revision` | No | No | `1` | — | — | — |
 | `last_verified_at` | `datetime \| None` | `last_verified_at` | No | Yes | `None` | — | — | — |
@@ -40,6 +43,7 @@ Secret-free provider-neutral model catalog fields.
 
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
+| `validate_qualification_keys` | `(value: Any) -> Any` | `@field_validator('qualification_keys', mode='before')`, `@classmethod` | — |
 | `normalize_catalog_key` | `(value: Any) -> Any` | `@field_validator('key', mode='before')`, `@classmethod` | — |
 | `require_integer_reasoning_tier` | `(value: Any) -> Any` | `@field_validator('reasoning_tier', mode='before')`, `@classmethod` | — |
 | `strip_nonempty_text` | `(value: str) -> str` | `@field_validator('provider', 'configured_model_alias')`, `@classmethod` | — |
@@ -67,7 +71,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing](../modules/agent_routing.md) | 4 | `configured_model_alias`, `context_tier`, `cost_tier`, `enabled`, `key`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags`, `provider`, `publisher_key`, `reasoning_tier` |
+| [agent_routing](../modules/agent_routing.md) | 5 | `configured_model_alias`, `context_tier`, `cost_tier`, `effort`, `enabled`, `key`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags`, `provider`, `publisher_key` |
 
 ### Structure
 

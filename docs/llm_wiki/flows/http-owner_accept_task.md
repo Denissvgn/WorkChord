@@ -90,9 +90,9 @@ sequenceDiagram
     p3-->>p30: exc.detail
 ```
 
-> Call sequence diagram shows 30 of 160 interactions; 130 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 179 interactions; 149 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 49 (48 omitted); unresolved 1 of 59 (58 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 54 (53 omitted); unresolved 1 of 72 (71 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -106,7 +106,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_brief_service.py:TaskBriefService._owner_accept` | 17 | [backend/app/commands.py](../modules/commands.md) | internal | 1 |
 | `backend/app/commands.py:current_command` | 18 | - | external | 2 |
 | `backend/app/commands.py:current_command` | 18 | - | unresolved | 1 |
-> Omission summary shows 8 of 46 groups; 38 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 48 groups; 40 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -117,9 +117,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 53; effect analysis evaluated: 36, partial: 0, unavailable: 17. Counts include steps omitted from the displayed trace.
+Source steps: 54; effect analysis evaluated: 37, partial: 0, unavailable: 17. Counts include steps omitted from the displayed trace.
 
-Collector observations for 36 source steps with known totals: observed: 187, emitted: 187, omitted: 0. Unavailable totals are excluded.
+Collector observations for 37 source steps with known totals: observed: 198, emitted: 198, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -191,7 +191,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| owner_accept_task | domain_result | 278 | `domain_result(...)` |
+| owner_accept_task | domain_result | 279 | `domain_result(...)` |
 | domain_result | HTTPException | 55 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 55 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail=str(...))` |
@@ -199,7 +199,7 @@ flowchart LR
 | domain_result | HTTPException | 59 | `HTTPException(422, detail=[...])` |
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 59 | `str(exc)` |
 | domain_result | HTTPException | 61 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| owner_accept_task | TaskBriefService.owner_accept | 278 | `TaskBriefService(db).owner_accept(task_id, data)` |
+| owner_accept_task | TaskBriefService.owner_accept | 279 | `TaskBriefService(db).owner_accept(task_id, data)` |
 | TaskBriefService.owner_accept | require_owner_override | 337 | `require_owner_override(self.db)` |
 | require_owner_override | db.info.get | 102 | `db.info.get('authority')` |
 

@@ -72,8 +72,8 @@ flowchart LR
 | [ProjectMilestoneDeleteResponse](../entities/schemas_project_ProjectMilestoneDeleteResponse.md) | Pydantic model | 241 | `BaseModel` | Response returned after deleting a project milestone. |
 | [ProjectMilestoneSummary](../entities/schemas_project_ProjectMilestoneSummary.md) | Pydantic model | 248 | `BaseModel` | Compact milestone identity for project task grouping. |
 | [ProjectMilestoneTaskGroup](../entities/schemas_project_ProjectMilestoneTaskGroup.md) | Pydantic model | 258 | `WorkMetricSummary` | Task progress metrics grouped under one milestone or unassigned work. |
-| [ProjectResponse](../entities/ProjectResponse.md) | Pydantic model | 278 | `BaseModel` | Schema for project response. |
-| [ProjectPortfolioSummary](../entities/schemas_project_ProjectPortfolioSummary.md) | Pydantic model | 305 | `WorkMetricSummary` | Compact project signals for portfolio tables. |
-| [ProjectSummary](../entities/schemas_project_ProjectSummary.md) | Pydantic model | 317 | `WorkMetricSummary` | Summary statistics for a project. |
-| [ProjectPage](../entities/ProjectPage.md) | Pydantic model | 363 | `BaseModel` | — |
-| [ProjectPortfolioPage](../entities/ProjectPortfolioPage.md) | Pydantic model | 371 | `BaseModel` | — |
+| [ProjectResponse](../entities/ProjectResponse.md) | Pydantic model | 281 | `BaseModel` | Schema for project response. |
+| [ProjectPortfolioSummary](../entities/schemas_project_ProjectPortfolioSummary.md) | Pydantic model | 308 | `WorkMetricSummary` | Compact project signals for portfolio tables. |
+| [ProjectSummary](../entities/schemas_project_ProjectSummary.md) | Pydantic model | 320 | `WorkMetricSummary` | Summary statistics for a project. |
+| [ProjectPage](../entities/ProjectPage.md) | Pydantic model | 369 | `BaseModel` | — |
+| [ProjectPortfolioPage](../entities/ProjectPortfolioPage.md) | Pydantic model | 377 | `BaseModel` | — |

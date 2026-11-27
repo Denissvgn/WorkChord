@@ -43,7 +43,7 @@ def summarize_observations(rows, start, end):
     for row in rows:
         if as_utc(row.observed_at) <= end:
             grouped[row.original_task_id].append(row)
-    accepted, cancellations = set(), set()
+    accepted, cancellations, superseded = set(), set(), set()
     acceptance_events = rejection_events = reopened = unknown_acceptance = owner_overrides = 0
     leads, cycles, reviews = [], [], []
     lead_unknown = cycle_unknown = review_unknown = 0
@@ -70,7 +70,12 @@ def summarize_observations(rows, start, end):
             elif row.kind == "restored":
                 active = resolved = None
                 pending = True
-            elif row.kind in {"removed", "structural", "replaced"}:
+            elif row.kind == "replaced":
+                # Withdrawn because another task delivers its work: counted as superseded, never as canceled.
+                pending = False
+                if in_window:
+                    superseded.add(task_id)
+            elif row.kind in {"removed", "structural"}:
                 pending = False
             elif row.kind == "canceled":
                 pending = False
@@ -102,7 +107,8 @@ def summarize_observations(rows, start, end):
         review_censored += int(pending and resolved is not None)
     return dict(accepted_leaf_tasks=len(accepted), acceptance_events=acceptance_events,
         owner_override_acceptance_events=owner_overrides,
-        rejection_events=rejection_events, canceled_leaf_tasks=len(cancellations), reopened_events=reopened,
+        rejection_events=rejection_events, canceled_leaf_tasks=len(cancellations - superseded),
+        superseded_leaf_tasks=len(superseded), reopened_events=reopened,
         lead_time=_samples(leads, censored=lead_censored, unknown=lead_unknown),
         cycle_time=_samples(cycles, censored=cycle_censored, unknown=cycle_unknown),
         review_delay=_samples(reviews, censored=review_censored, unknown=review_unknown),
@@ -192,7 +198,11 @@ class DeliveryMetricsService:
             .distinct())).all())
         result["coverage"].update(history_selection="window_with_episode_seeds",
             pre_window_seed_count=sum(as_utc(row.observed_at) < start for row in rows), current_leaf_tasks=len(leaves), current_leaves_without_capture=sum(task.id not in recorded for task in leaves),
-            legacy_closed_acceptance_unknown=sum(task.status == "closed" and task.accepted_version is None for task in leaves))
+            # Withdrawn leaves are counted apart: their stored status says nothing about delivery.
+            current_canceled_leaf_tasks=sum(task.displayed_state == "canceled" for task in leaves),
+            current_superseded_leaf_tasks=sum(task.displayed_state == "superseded" for task in leaves),
+            legacy_closed_acceptance_unknown=sum(task.status == "closed" and task.accepted_version is None and task.canceled_at is None
+                                                 for task in leaves))
         review = [DeliveryQueueItem(task_id=task.id, title=task.title, reason="awaiting_review",
             age_seconds=max(0, (end - as_utc(task.resolved_at)).total_seconds()) if task.resolved_at else None)
             for task in leaves if task.status == "resolved" and not task.canceled_at]
