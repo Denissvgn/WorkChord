@@ -4658,7 +4658,7 @@
                 "type": "null"
               }
             ],
-            "description": "'command' for an explicit reactivation, 'requirements_met' when the last requirement was met.",
+            "description": "'command' for an explicit reactivation, 'requirements_met' when the last requirement was met, 'supersession' when the postponed task was superseded by delivered work.",
             "title": "Reactivation Trigger"
           },
           "reason": {

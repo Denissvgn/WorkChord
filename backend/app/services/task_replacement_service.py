@@ -16,6 +16,8 @@ prerequisites, release membership and the reactivation requirements that name it
 move to the successor, so the deliverable counts once.
 """
 
+import logging
+
 from sqlalchemy import insert, select
 
 from app.authority import AuthorityError, internal_authority, require_project
@@ -30,6 +32,8 @@ from app.models.task_replacement import TaskReplacement
 from app.query_limits import CollectionLimitExceededError, MAX_BOUNDED_LIST_ITEMS
 from app.utils.github_links import GitHubLinkError, parse_github_url
 from app.utils.time import utc_now
+
+logger = logging.getLogger(__name__)
 
 HOLD_UNATTRIBUTED = "carried_contribution_unattributed"
 REPLACEMENT, SUPERSESSION = "replacement", "supersession"
@@ -87,6 +91,8 @@ async def delivering_leaves(db, leaves):
             return list(chosen.values())
         with internal_authority(db):
             frontier = list((await db.scalars(select(Task).where(Task.id.in_(successors)))).all())
+    logger.warning("Supersession chain from tasks %s exceeds %s links; the scope reads as not delivered",
+                   sorted(leaf.id for leaf in leaves), MAX_SUPERSESSION_CHAIN)
     return []
 
 
@@ -384,6 +390,11 @@ class TaskReplacementService:
         await SnapshotService(self.db).create_snapshot(original.iteration_id, "before_task_supersession")
         moved = await self._move_dependents(original, successor, delivered=True)
         moved += await self._move_requirements(original, successor)
+        if any(item["kind"] == "reactivation" for item in moved):
+            # A moved requirement may now name work that is already accepted or resolved;
+            # evaluate the waiting postponements at the end of this command.
+            from app.services.task_reactivation_service import request_reactivation_check
+            request_reactivation_check(self.db, task_id=successor.id)
         releases = await self._move_releases(original, successor, statuses=SUPERSESSION_RELEASE_STATUSES)
         from app.services.identity_service import acting_principal_id
         authority = self.db.info.get("authority")

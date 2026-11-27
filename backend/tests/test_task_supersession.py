@@ -141,7 +141,17 @@ async def test_supersession_moves_dependents_releases_and_requirements_and_count
         assert (await db.get(TaskReactivationRequirement, s.requirement)).target_task_id == successor.id
         # A reactivated postponement is history and keeps naming the original.
         assert (await db.get(TaskReactivationRequirement, s.history_requirement)).target_task_id == original.id
-        assert (await db.get(Task, s.waiting.id)).version == s.waiting.version
+        # The moved requirement is evaluated in the same command: an accepted successor
+        # meets it and reactivates the waiting task; a closed, unaccepted one does not.
+        waiting = await db.get(Task, s.waiting.id)
+        requirement = await db.get(TaskReactivationRequirement, s.requirement)
+        postponement = await db.get(TaskPostponement, requirement.postponement_id)
+        if successor_state == "accepted":
+            assert waiting.status == "planned" and requirement.met_at is not None
+            assert postponement.reactivation_trigger == "requirements_met"
+        else:
+            assert waiting.status == "postponed" and waiting.version == s.waiting.version
+            assert requirement.met_at is None and postponement.reactivated_at is None
         members = {}
         for release_id, task_id in (await db.execute(select(release_tasks.c.release_id, release_tasks.c.task_id))).all():
             members.setdefault(release_id, []).append(task_id)
@@ -522,3 +532,24 @@ async def test_the_successor_of_a_supersession_cannot_be_canceled_but_a_fresh_re
         refused = await client.post(f"/api/tasks/{successor.id}/commands", json={
             "action": "cancel", "expected_version": successor.version, "reason": "No longer needed"})
         assert refused.status_code == 409 and "task_delivers_supersession" in refused.text, refused.text
+
+
+async def test_a_supersession_chain_beyond_the_bound_reads_as_not_delivered_and_warns(delivery_store, monkeypatch, caplog):
+    import logging
+    from app.services import task_replacement_service
+    from app.services.task_replacement_service import delivering_leaves
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        first, second, third = [await db.get(Task, scenario.tasks[key]) for key in ("resolved", "closed_urgent", "closed_low")]
+        await _accept(db, third)
+        for original, successor in ((first, second), (second, third)):
+            db.add(TaskReplacement(project_id=scenario.projects[0], original_task_id=original.id,
+                                   replacement_task_id=successor.id, disposition="supersession", reason=REASON,
+                                   carried_run_ids=[], moved_dependencies=[], moved_release_ids=[],
+                                   original_snapshot={}, review_policy={}, decided_at=utc_now()))
+        await db.commit()
+        assert [task.id for task in await delivering_leaves(db, [first])] == [third.id]
+        monkeypatch.setattr(task_replacement_service, "MAX_SUPERSESSION_CHAIN", 1)
+        with caplog.at_level(logging.WARNING, logger="app.services.task_replacement_service"):
+            assert await delivering_leaves(db, [first]) == []
+        assert any("exceeds 1 links" in record.getMessage() for record in caplog.records)
