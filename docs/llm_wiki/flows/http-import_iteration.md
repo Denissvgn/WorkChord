@@ -242,4 +242,4 @@ flowchart LR
 
 ## Behavior
 
-Imports a JSON plan file. When the request carries the `review_digest` of a plan-import dry run, the write runs the same writer, recomputes the file hash, the target revisions and the change set, and applies only if all three still match the reviewed digest; otherwise it is refused and rolled back. Without a digest it applies the file as before.
+Imports a JSON plan file. When the request carries the `review_digest` of a plan-import dry run, the write runs the same writer, recomputes the file hash, the target revisions and the change set, and applies only if all three still match the reviewed digest; otherwise it is refused and rolled back. Without a digest the file is applied directly.

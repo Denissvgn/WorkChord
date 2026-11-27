@@ -178,4 +178,4 @@ flowchart LR
 
 ## Behavior
 
-Operator command that retires a key. It is refused while a catalog entry or an open task requirement still names the key, and the refusal reports that usage. A retired key can no longer be named and can later be declared again. The command is replay-safe and records a revision row and an audit event.
+Operator command that retires a key. It is refused while a catalog entry, a calibration contract or an open task requirement still names the key, and the refusal reports that usage. A retired key can no longer be named and can later be declared again. The command is replay-safe and records a revision row and an audit event.

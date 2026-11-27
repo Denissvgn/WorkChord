@@ -7,7 +7,7 @@
 
 ## Description
 
-Records who executed resolved work that was delivered outside recorded runs, together with the exact commits, pull request or base commit of the delivered candidate. A record is an append-only task event written by an accountable owner, operator, project manager or the project's PM agent; the candidate is checked against GitHub before any lock is taken. Recording never reopens, resolves or accepts the task. Review reads these records so a manually delivered task still has attributable contributors and a candidate to verify, and a verifier must differ from each recorded executor and agent recorder.
+Records who executed resolved work that was delivered outside recorded runs, together with the exact commits, pull request or base commit of the delivered candidate. A record is an append-only task event written by an accountable owner, operator, project manager or the project's PM agent; the candidate is checked against GitHub before any lock is taken. Recording never reopens, resolves or accepts the task. Review reads these records so a manually delivered task still has attributable contributors and a candidate to verify, and, under the project's different-review-publisher policy, a verifier must differ from each recorded executor and agent recorder.
 
 ## Attributes
 

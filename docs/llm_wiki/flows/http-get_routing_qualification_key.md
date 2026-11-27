@@ -178,4 +178,4 @@ flowchart LR
 
 ## Behavior
 
-Read-only. Returns one declared key with every revision it has had and the catalog entries and tasks that name it, bounded in size.
+Read-only. Returns one declared key with every revision it has had and the catalog entries, calibration contracts and tasks that name it, bounded in size.
