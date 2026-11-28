@@ -18,7 +18,7 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1956,
+      "entities": 1957,
       "flows": 654,
       "guides": 0,
       "index": 1,
@@ -29,7 +29,7 @@
       "workflows": 254
     },
     "dependency_architecture": 2,
-    "total": 4121
+    "total": 4122
   },
   "dependency_pages": {
     "count": 2,
@@ -50392,7 +50392,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 505,
+              "line": 657,
               "step": "main",
               "step_index": 1,
               "target": "os.environ.get"
@@ -50400,7 +50400,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 506,
+              "line": 658,
               "step": "main",
               "step_index": 1,
               "target": "os.environ.get"
@@ -50408,7 +50408,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 510,
+              "line": 667,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -50417,31 +50417,31 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 504,
+              "line": 656,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "external_call",
-              "line": 504,
+              "line": 656,
               "step": "main",
               "target": "__doc__.splitlines"
             },
             {
               "kind": "unresolved_call",
-              "line": 507,
+              "line": 659,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 508,
+              "line": 660,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 509,
+              "line": 666,
               "step": "main",
               "target": "parser.parse_args"
             },
@@ -50461,7 +50461,7 @@
           "modules_touched": [
             "scripts/ci/select_backend_tests.py"
           ],
-          "step_count": 193,
+          "step_count": 144,
           "truncated": false
         }
       },
@@ -51210,7 +51210,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 294,
+              "line": 430,
               "step": "__main__",
               "target": "unittest.main"
             }
@@ -52798,6 +52798,7 @@
         "entities/ReplacementReviewPolicy.md",
         "entities/ReplacementTask.md",
         "entities/ReplicaMembershipObservation.md",
+        "entities/Repository.md",
         "entities/RepositoryCase.md",
         "entities/requestSource_RequestSource.md",
         "entities/requestSource_RequestSourceCreate.md",
@@ -69490,6 +69491,18 @@
       "role": "semantic",
       "source_path": "backend/app/autonomy/providers.py",
       "title": "ReplicaMembershipObservation"
+    },
+    {
+      "canonical_path": "entities/Repository.md",
+      "id": "Repository",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/Repository",
+      "outgoing_internal_links": [
+        "modules/select_backend_tests.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/select_backend_tests.py",
+      "title": "Repository"
     },
     {
       "canonical_path": "entities/RepositoryCase.md",
@@ -95421,6 +95434,7 @@
       "mcp_uri": "llm-wiki://modules/select_backend_tests",
       "outgoing_internal_links": [
         "entities/FullSuite.md",
+        "entities/Repository.md",
         "entities/WikiGraph.md"
       ],
       "role": "semantic",
@@ -123273,5 +123287,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:070f78405c9fd1be1ca398fcc9b672f055acc551f6bb37871e6ac35fb21e0f7f"
+  "source_hash": "sha256:2425ad6fdfcd4fd7f8ea21e1df6efadd0a0dc257bf2064ab8d0130e50d5c10d8"
 }

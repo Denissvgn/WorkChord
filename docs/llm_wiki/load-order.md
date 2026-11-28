@@ -1672,7 +1672,7 @@ TypeScript binding imports are possible startup constraints: their emission depe
 | [check_markdown_links](modules/check_markdown_links.md) | `LINK_PATTERN = re.compile` |
 | [check_postgresql_documentation](modules/check_postgresql_documentation.md) | `LINK_PATTERN = re.compile`, `SHELL_FENCE_PATTERN = re.compile`, `LIVE_SQLITE_COPY_PATTERN = re.compile` |
 | [classify_change_scope](modules/classify_change_scope.md) | `CLASSIFIED_EVENTS = frozenset` |
-| [select_backend_tests](modules/select_backend_tests.md) | `WIKI_DIR = PurePosixPath`, `TEST_ROOT = PurePosixPath`, `SHARED_FILES = frozenset`, `SHARED_NAMES = frozenset` |
+| [select_backend_tests](modules/select_backend_tests.md) | `WIKI_DIR = PurePosixPath`, `TEST_ROOT = PurePosixPath`, `SHARED_FILES = frozenset`, `SHARED_NAMES = frozenset`, `ROOT_PACKAGES = frozenset`, `GENERIC_NAMES = frozenset`, `_TOKEN = re.compile` |
 | [serve_disposable_oidc](modules/serve_disposable_oidc.md) | `url = assert_safe_test_database_url`, `issuer = os.environ.get`, `key = rsa.generate_private_key`, `jwk = json.loads`, `jwk['kid'] = 'disposable-key'`, `app = FastAPI` |
 | [test_apt_runtime](modules/test_apt_runtime.md) | `sys.path.insert` |
 | [test_check_markdown_links](modules/test_check_markdown_links.md) | `sys.path.insert` |

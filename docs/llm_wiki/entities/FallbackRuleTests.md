@@ -1,6 +1,6 @@
 # FallbackRuleTests
 
-**Location:** `scripts/ci/tests/test_select_backend_tests.py:73`
+**Location:** `scripts/ci/tests/test_select_backend_tests.py:102`
 **Kind:** Class
 **Bases:** `RepositoryCase`
 **Module:** [test_select_backend_tests](../modules/test_select_backend_tests.md)
@@ -26,6 +26,14 @@ _Auto-generated from `FallbackRuleTests` in `scripts/ci/tests/test_select_backen
 | `test_unknown_commit_selects_full` | `() -> None` | — | — |
 | `test_test_data_change_selects_full` | `() -> None` | — | — |
 | `test_unparseable_module_selects_full` | `() -> None` | — | — |
+| `test_deleted_module_selects_full` | `() -> None` | — | — |
+| `test_renamed_module_selects_full` | `() -> None` | — | — |
+| `test_test_support_helper_is_shared_ground` | `() -> None` | — | — |
+| `test_agent_skill_sources_and_build_script_are_shared_ground` | `() -> None` | — | — |
+| `test_non_python_file_in_application_selects_full` | `() -> None` | — | — |
+| `test_checkout_not_at_head_selects_full` | `() -> None` | — | — |
+| `test_selection_covering_every_test_is_full` | `() -> None` | — | — |
+| `test_full_mode_lists_only_existing_smoke_tests` | `() -> None` | — | — |
 
 ## Relationships
 
@@ -43,7 +51,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [test_select_backend_tests](../modules/test_select_backend_tests.md) | 9 | — |
+| [test_select_backend_tests](../modules/test_select_backend_tests.md) | 17 | — |
 
 ### Structure
 

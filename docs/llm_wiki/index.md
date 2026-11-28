@@ -6,7 +6,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1956 | [Open section](#entities) |
+| Entities | 1957 | [Open section](#entities) |
 | Modules | 1240 | [Open section](#modules) |
 | Workflows | 254 | [Open section](#workflows) |
 | Guides | 0 | No pages |
@@ -877,6 +877,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ReplacementReviewPolicy](entities/ReplacementReviewPolicy.md)
 - [ReplacementTask](entities/ReplacementTask.md)
 - [ReplicaMembershipObservation](entities/ReplicaMembershipObservation.md)
+- [Repository](entities/Repository.md)
 - [RepositoryCase](entities/RepositoryCase.md)
 - [RequestSourceConflictError](entities/RequestSourceConflictError.md)
 - [RequestSourceLinkCreateRequest](entities/RequestSourceLinkCreateRequest.md)

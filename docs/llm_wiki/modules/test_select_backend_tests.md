@@ -10,6 +10,7 @@ Backend test selection falls back to the full suite on any doubt.
 
 | Source | Symbols |
 |--------|---------|
+| `ast` | `ast` |
 | `json` | `json` |
 | `pathlib` | `Path` |
 | `select_backend_tests` | `selector` |
@@ -33,11 +34,11 @@ Backend test selection falls back to the full suite on any doubt.
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [RepositoryCase](../entities/RepositoryCase.md) | 50 | `unittest.TestCase` | — |
-| [FallbackRuleTests](../entities/FallbackRuleTests.md) | 73 | `RepositoryCase` | — |
-| [StaticSelectionTests](../entities/StaticSelectionTests.md) | 127 | `RepositoryCase` | — |
-| [FakeWiki](../entities/FakeWiki.md) | 166 | — | Stands in for llm-wiki: impact and incoming imports from fixed data. |
-| [WikiSelectionTests](../entities/WikiSelectionTests.md) | 211 | `RepositoryCase` | — |
+| [RepositoryCase](../entities/RepositoryCase.md) | 79 | `unittest.TestCase` | — |
+| [FallbackRuleTests](../entities/FallbackRuleTests.md) | 102 | `RepositoryCase` | — |
+| [StaticSelectionTests](../entities/StaticSelectionTests.md) | 191 | `RepositoryCase` | — |
+| [FakeWiki](../entities/FakeWiki.md) | 302 | — | Stands in for llm-wiki: impact and incoming imports from fixed data. |
+| [WikiSelectionTests](../entities/WikiSelectionTests.md) | 347 | `RepositoryCase` | — |
 
 ## Functions
 
