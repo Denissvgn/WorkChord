@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1949 | [Open section](#entities) |
-| Modules | 1238 | [Open section](#modules) |
+| Entities | 1957 | [Open section](#entities) |
+| Modules | 1240 | [Open section](#modules) |
 | Workflows | 254 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 652 | [Open section](#entry-point-flows) |
+| Entry-point flows | 654 | [Open section](#entry-point-flows) |
 | Infrastructure | 13 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -464,6 +464,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [FakeRemoteSigner](entities/FakeRemoteSigner.md)
 - [FakeRevocationResolver](entities/FakeRevocationResolver.md)
 - [FakeTrustResolver](entities/FakeTrustResolver.md)
+- [FakeWiki](entities/FakeWiki.md)
+- [FallbackRuleTests](entities/FallbackRuleTests.md)
 - [FeedbackAction](entities/FeedbackAction.md)
 - [FeedbackKind](entities/FeedbackKind.md)
 - [FetchedPullRequest](entities/FetchedPullRequest.md)
@@ -490,6 +492,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [FrontendTemplateService](entities/FrontendTemplateService.md)
 - [FrontendTriageService](entities/FrontendTriageService.md)
 - [FrozenClock](entities/FrozenClock.md)
+- [FullSuite](entities/FullSuite.md)
 - [GanttAssignee](entities/GanttAssignee.md)
 - [GanttBarInputChanges](entities/GanttBarInputChanges.md)
 - [GanttBarInputsProps](entities/GanttBarInputsProps.md)
@@ -874,6 +877,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ReplacementReviewPolicy](entities/ReplacementReviewPolicy.md)
 - [ReplacementTask](entities/ReplacementTask.md)
 - [ReplicaMembershipObservation](entities/ReplicaMembershipObservation.md)
+- [Repository](entities/Repository.md)
+- [RepositoryCase](entities/RepositoryCase.md)
 - [RequestSourceConflictError](entities/RequestSourceConflictError.md)
 - [RequestSourceLinkCreateRequest](entities/RequestSourceLinkCreateRequest.md)
 - [RequestSourceLinkResponse](entities/RequestSourceLinkResponse.md)
@@ -1087,6 +1092,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [SourceLinkRefused](entities/SourceLinkRefused.md)
 - [SourceState](entities/SourceState.md)
 - [SqlStateFailure](entities/SqlStateFailure.md)
+- [StaticSelectionTests](entities/StaticSelectionTests.md)
 - [StatusAmendmentLedger](entities/StatusAmendmentLedger.md)
 - [StatusChangeControlProps](entities/StatusChangeControlProps.md)
 - [StatusEvidenceReference](entities/StatusEvidenceReference.md)
@@ -1337,7 +1343,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [WebIntakeRuntimeSettingsResponse](entities/WebIntakeRuntimeSettingsResponse.md)
 - [WebIntakeService](entities/WebIntakeService.md)
 - [WebIntakeUnauthorizedError](entities/WebIntakeUnauthorizedError.md)
+- [WikiGraph](entities/WikiGraph.md)
 - [WikiLockRootPreflight](entities/WikiLockRootPreflight.md)
+- [WikiSelectionTests](entities/WikiSelectionTests.md)
 - [WindowPreset](entities/WindowPreset.md)
 - [WorkChordException](entities/WorkChordException.md)
 - [WorkMetricName](entities/WorkMetricName.md)
@@ -2833,6 +2841,7 @@ Retained history; these declarations are absent from the selected source invento
 - [seedDisplay](modules/seedDisplay.md) - `frontend/src/i18n/seedDisplay.ts`
 - [seedDisplay.test](modules/seedDisplay.test.md) - `frontend/src/i18n/seedDisplay.test.ts`
 - [seed_adoption_env](modules/seed_adoption_env.md) - Seed the self-hosted server environment file from a running instance's file.
+- [select_backend_tests](modules/select_backend_tests.md) - Select the backend test files a pull request change can affect (shadow mode).
 - [serve_disposable_api](modules/serve_disposable_api.md) - Start the real HTTP application only against a safety-fenced temporary database.
 - [serve_disposable_oidc](modules/serve_disposable_oidc.md) - Synthetic OIDC issuer confined to the disposable browser network and database.
 - [server_features](modules/server_features.md) - Server features a client can detect before it holds a credential.
@@ -3079,6 +3088,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_scheduler_free_days](modules/test_scheduler_free_days.md) - Ready lower-ranked work uses an assignee's free days before higher-ranked work that waits.
 - [test_schema_behavior](modules/test_schema_behavior.md) - Dual-dialect Boolean/JSON/time/constraint/RETURNING behavior matrix.
 - [test_scoped_review_evidence](modules/test_scoped_review_evidence.md) - Only the named independent reviewer can consume current, operator-attested review material.
+- [test_select_backend_tests](modules/test_select_backend_tests.md) - Backend test selection falls back to the full suite on any doubt.
 - [test_server_acceptance](modules/test_server_acceptance.md) - Self-hosted server acceptance contract and adapter tests.
 - [test_server_features](modules/test_server_features.md) - The public feature list names only features this server has.
 - [test_settings_read_access](modules/test_settings_read_access.md) - People without the admin key read settings and the pipeline; changes keep the key.
@@ -4121,6 +4131,7 @@ Retained history; these declarations are absent from the selected source invento
 - [process-seal](flows/process-seal.md) - entry: `main`
 - [process-seed](flows/process-seed.md) - entry: `main`
 - [process-seed_adoption_env](flows/process-seed_adoption_env.md) - entry: `main`
+- [process-select_backend_tests](flows/process-select_backend_tests.md) - entry: `main`
 - [process-serve_disposable_api](flows/process-serve_disposable_api.md) - entry: `main`
 - [process-serve_disposable_oidc](flows/process-serve_disposable_oidc.md) - entry: `__main__`
 - [process-server_acceptance](flows/process-server_acceptance.md) - entry: `main`
@@ -4130,6 +4141,7 @@ Retained history; these declarations are absent from the selected source invento
 - [process-test_ci_runtime](flows/process-test_ci_runtime.md) - entry: `__main__`
 - [process-test_classify_change_scope](flows/process-test_classify_change_scope.md) - entry: `__main__`
 - [process-test_native_runtimes](flows/process-test_native_runtimes.md) - entry: `__main__`
+- [process-test_select_backend_tests](flows/process-test_select_backend_tests.md) - entry: `__main__`
 - [process-test_wiki_lock_root_preflight](flows/process-test_wiki_lock_root_preflight.md) - entry: `__main__`
 - [process-upgrade](flows/process-upgrade.md) - entry: `main`
 - [process-wiki_lock_root_preflight](flows/process-wiki_lock_root_preflight.md) - entry: `main`
