@@ -39,7 +39,7 @@ Selection, in order:
      module name. This covers ``runpy.run_path``, ``importlib`` loading by
      path, ``subprocess`` and ``python -m`` calls. A non-Python path also
      matches files that mention one of its directories (two or more
-     components).
+     components). Deleted non-Python paths are traced the same way.
 
    Test files reached this way are selected.
 5. The always-run set is added. When the result covers every backend test,
@@ -135,7 +135,8 @@ ROOT_PACKAGES = frozenset(package for _, package in PYTHON_ROOTS)
 GENERIC_NAMES = frozenset({"__init__.py", "__main__.py", "conftest.py"})
 
 # Path-like or dotted words in source text: quoted paths, dotted modules.
-_TOKEN = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.\-/]*")
+# A leading dot is kept (``.env.example``, ``.claude-plugin/plugin.json``).
+_TOKEN = re.compile(r"\.?[A-Za-z0-9_][A-Za-z0-9_.\-/]*")
 
 
 class FullSuite(Exception):
@@ -271,23 +272,27 @@ def _tokens(text: str) -> set[str]:
 
     ``"scripts/ci/x.py"`` yields every contiguous run of its components
     (``scripts/ci``, ``ci/x.py``, ``x.py`` ...); ``app.cli.closeout`` yields
-    its dotted prefixes.
+    its dotted prefixes. A word with a leading dot also yields itself without
+    the dot.
     """
     found: set[str] = set()
     for raw in set(_TOKEN.findall(text)):
-        token = raw.rstrip("./-")
-        if not token:
-            continue
-        found.add(token)
-        if "/" in token:
-            parts = [part for part in token.split("/") if part]
-            for start in range(len(parts)):
-                for end in range(start + 1, len(parts) + 1):
-                    found.add("/".join(parts[start:end]))
-        elif "." in token:
-            parts = token.split(".")
-            for end in range(1, len(parts)):
-                found.add(".".join(parts[:end]))
+        stripped = raw.rstrip("./-")
+        for token in {stripped, stripped.lstrip(".")}:
+            if not token:
+                continue
+            found.add(token)
+            if "/" in token:
+                parts = [part for part in token.split("/") if part and part != "."]
+                for start in range(len(parts)):
+                    for end in range(start + 1, len(parts) + 1):
+                        found.add("/".join(parts[start:end]))
+            elif "." in token.lstrip("."):
+                parts = token.split(".")
+                for end in range(1, len(parts)):
+                    prefix = ".".join(parts[:end])
+                    if prefix.strip("."):
+                        found.add(prefix)
     return found
 
 
@@ -368,7 +373,9 @@ class Repository:
             ("/".join(parts[start:]),) for start in range(len(parts) - 1)
         ]
         if pure.name not in GENERIC_NAMES:
-            if pure.name in self.unique_names:
+            # A root-level file has no parent to pair with: its bare name is
+            # the only way a script refers to it (``Path("README.md")``).
+            if pure.name in self.unique_names or len(parts) == 1:
                 groups.append((pure.name,))
             elif len(parts) >= 2:
                 groups.append((pure.name, parts[-2]))
@@ -583,7 +590,9 @@ def selection_for(repository: Repository, changes: dict[str, str]) -> tuple[set[
     present = [path for path, status in changes.items() if status != "D"]
     direct = {path for path in present if is_test_file(path)}
     python = [path for path in present if module_name(path)]
-    other = [path for path in present if not module_name(path)]
+    # Deleted non-Python files are traced too: a script that still reads one
+    # now fails.
+    other = [path for path in changes if not module_name(path)]
     graph = {path for path in repository.affected(python) if is_test_file(path)}
     referenced = {path for path in repository.affected(other) if is_test_file(path)}
     sources = {

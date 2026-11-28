@@ -65,6 +65,12 @@ BASE_FILES = {
     "backend/app/routers/v2/__init__.py": "",
     "backend/app/routers/v2/items.py": "from ...services.alpha import alpha\n",
     "backend/tests/test_items.py": "from app.routers.v2 import items\n",
+    # a script that reads root-level files by bare name, run by a test
+    "README.md": "readme\n",
+    "docs/README.md": "docs readme\n",
+    ".env.example": "X=1\n",
+    "scripts/tools/check_docs.py": "from pathlib import Path\nFILES = [Path('README.md'), Path('.env.example')]\n",
+    "backend/tests/test_check_docs.py": "SCRIPT = 'scripts/tools/check_docs.py'\n",
     # a test that imports another test module
     "backend/tests/test_reuses_gamma.py": "from tests.test_gamma import gamma\n",
 }
@@ -261,6 +267,26 @@ class StaticSelectionTests(RepositoryCase):
         ):
             with self.subTest(path=path):
                 self.assertIn(path, selector.SMOKE_TESTS)
+
+    def test_root_level_files_read_by_bare_name_are_traced(self) -> None:
+        # README.md is not unique in the repository; .env.example starts with a dot
+        for path in ("README.md", ".env.example"):
+            with self.subTest(path=path):
+                _git(self.root, "checkout", "-q", "--detach", self.base)
+                result = self.select(self.change({path: "changed\n"}), engine="ast")
+                self.assertEqual(result["mode"], "selected", result)
+                self.assertIn("backend/tests/test_check_docs.py", result["tests"])
+
+    def test_dot_leading_directory_components_are_tokens(self) -> None:
+        tokens = selector._tokens("P = 'adapters/x/.claude-plugin/plugin.json'\nE = './.env.example'\n")
+        self.assertIn(".claude-plugin/plugin.json", tokens)
+        self.assertIn(".env.example", tokens)
+
+    def test_deleted_non_python_file_selects_tests_that_name_it(self) -> None:
+        (self.root / "docs/guide.md").unlink()
+        result = self.select(self.change({}), engine="ast")
+        self.assertEqual(result["mode"], "selected", result)
+        self.assertEqual(result["sources"]["references"], ["backend/tests/test_docs.py"])
 
     def test_cli_prints_json(self) -> None:
         head = self.change({"docs/other.md": "new\n"})
