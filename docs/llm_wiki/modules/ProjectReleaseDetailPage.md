@@ -24,6 +24,7 @@ _Auto-generated from `frontend/src/pages/ProjectReleaseDetailPage.tsx`._
 | `../types/release` | `Release`, `ReleaseStatus`, `ReleaseTaskSummary` | Declaration | erased |
 | `../utils/apiError` | `getApiErrorMessage`, `getApiErrorStatus` | — | compiler-dependent |
 | `../utils/formatDate` | `formatDate`, `formatDateTime` | — | compiler-dependent |
+| `../utils/taskState` | `isEndedState` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
 | `lucide-react` | `CalendarDays`, `CheckCircle2`, `Clock`, `Edit`, `Package`, `Tag` | — | compiler-dependent |
@@ -59,7 +60,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (14) |
+| Outbound | `frontend` (15) |
 
 ### External packages
 
@@ -67,4 +68,4 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

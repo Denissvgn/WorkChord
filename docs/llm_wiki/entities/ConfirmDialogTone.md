@@ -7,7 +7,7 @@
 **Target:**
 
 ```typescript
-'danger' | 'warning'
+'danger' | 'warning' | 'neutral'
 ```
 
 ## Description
