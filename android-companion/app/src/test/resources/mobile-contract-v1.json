@@ -1,6 +1,6 @@
 {
   "contract": {
-    "api_version": "1.10.0",
+    "api_version": "1.11.0",
     "components": {
       "schemas": {
         "AgentModelBindingCreate": {
