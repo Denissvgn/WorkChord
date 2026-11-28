@@ -1216,36 +1216,38 @@ TypeScript binding imports are possible startup constraints: their emission depe
 1206. [postgres_runtime](modules/postgres_runtime.md)
 1207. [run_android_checks](modules/run_android_checks.md)
 1208. [run_disposable_checks](modules/run_disposable_checks.md)
-1209. [serve_disposable_api](modules/serve_disposable_api.md)
-1210. [serve_disposable_oidc](modules/serve_disposable_oidc.md)
-1211. [test_apt_runtime](modules/test_apt_runtime.md)
-1212. [test_check_markdown_links](modules/test_check_markdown_links.md)
-1213. [test_ci_runtime](modules/test_ci_runtime.md)
-1214. [test_classify_change_scope](modules/test_classify_change_scope.md)
-1215. [test_native_runtimes](modules/test_native_runtimes.md)
-1216. [test_wiki_lock_root_preflight](modules/test_wiki_lock_root_preflight.md)
-1217. [wiki_lock_root_preflight](modules/wiki_lock_root_preflight.md)
-1218. [generate_agent_team_contract](modules/generate_agent_team_contract.md)
-1219. [generate_agent_team_report_contract](modules/generate_agent_team_report_contract.md)
-1220. [generate_client_contract](modules/generate_client_contract.md)
-1221. [generate_mobile_contract_fixtures](modules/generate_mobile_contract_fixtures.md)
-1222. [load_common](modules/load_common.md)
-1223. [collect](modules/collect.md)
-1224. [result](modules/result.md)
-1225. [compare](modules/compare.md)
-1226. [finalize](modules/finalize.md)
-1227. [qualify](modules/qualify.md)
-1228. [resilience](modules/resilience.md)
-1229. [run](modules/run.md)
-1230. [seal](modules/seal.md)
-1231. [seed](modules/seed.md)
-1232. [source_binding](modules/source_binding.md)
-1233. [local_baseline](modules/local_baseline.md)
-1234. [service_worksets](modules/service_worksets.md)
-1235. [export_acceptance_artifacts](modules/export_acceptance_artifacts.md)
-1236. [isolated_rehearsal](modules/isolated_rehearsal.md)
-1237. [seed_adoption_env](modules/seed_adoption_env.md)
-1238. [write_deployment_record](modules/write_deployment_record.md)
+1209. [select_backend_tests](modules/select_backend_tests.md)
+1210. [serve_disposable_api](modules/serve_disposable_api.md)
+1211. [serve_disposable_oidc](modules/serve_disposable_oidc.md)
+1212. [test_apt_runtime](modules/test_apt_runtime.md)
+1213. [test_check_markdown_links](modules/test_check_markdown_links.md)
+1214. [test_ci_runtime](modules/test_ci_runtime.md)
+1215. [test_classify_change_scope](modules/test_classify_change_scope.md)
+1216. [test_native_runtimes](modules/test_native_runtimes.md)
+1217. [test_select_backend_tests](modules/test_select_backend_tests.md)
+1218. [test_wiki_lock_root_preflight](modules/test_wiki_lock_root_preflight.md)
+1219. [wiki_lock_root_preflight](modules/wiki_lock_root_preflight.md)
+1220. [generate_agent_team_contract](modules/generate_agent_team_contract.md)
+1221. [generate_agent_team_report_contract](modules/generate_agent_team_report_contract.md)
+1222. [generate_client_contract](modules/generate_client_contract.md)
+1223. [generate_mobile_contract_fixtures](modules/generate_mobile_contract_fixtures.md)
+1224. [load_common](modules/load_common.md)
+1225. [collect](modules/collect.md)
+1226. [result](modules/result.md)
+1227. [compare](modules/compare.md)
+1228. [finalize](modules/finalize.md)
+1229. [qualify](modules/qualify.md)
+1230. [resilience](modules/resilience.md)
+1231. [run](modules/run.md)
+1232. [seal](modules/seal.md)
+1233. [seed](modules/seed.md)
+1234. [source_binding](modules/source_binding.md)
+1235. [local_baseline](modules/local_baseline.md)
+1236. [service_worksets](modules/service_worksets.md)
+1237. [export_acceptance_artifacts](modules/export_acceptance_artifacts.md)
+1238. [isolated_rehearsal](modules/isolated_rehearsal.md)
+1239. [seed_adoption_env](modules/seed_adoption_env.md)
+1240. [write_deployment_record](modules/write_deployment_record.md)
 
 ## Module-level side effects
 
@@ -1670,12 +1672,14 @@ TypeScript binding imports are possible startup constraints: their emission depe
 | [check_markdown_links](modules/check_markdown_links.md) | `LINK_PATTERN = re.compile` |
 | [check_postgresql_documentation](modules/check_postgresql_documentation.md) | `LINK_PATTERN = re.compile`, `SHELL_FENCE_PATTERN = re.compile`, `LIVE_SQLITE_COPY_PATTERN = re.compile` |
 | [classify_change_scope](modules/classify_change_scope.md) | `CLASSIFIED_EVENTS = frozenset` |
+| [select_backend_tests](modules/select_backend_tests.md) | `WIKI_DIR = PurePosixPath`, `TEST_ROOT = PurePosixPath`, `SHARED_FILES = frozenset`, `SHARED_NAMES = frozenset` |
 | [serve_disposable_oidc](modules/serve_disposable_oidc.md) | `url = assert_safe_test_database_url`, `issuer = os.environ.get`, `key = rsa.generate_private_key`, `jwk = json.loads`, `jwk['kid'] = 'disposable-key'`, `app = FastAPI` |
 | [test_apt_runtime](modules/test_apt_runtime.md) | `sys.path.insert` |
 | [test_check_markdown_links](modules/test_check_markdown_links.md) | `sys.path.insert` |
 | [test_ci_runtime](modules/test_ci_runtime.md) | `sys.path.insert` |
 | [test_classify_change_scope](modules/test_classify_change_scope.md) | `sys.path.insert` |
 | [test_native_runtimes](modules/test_native_runtimes.md) | `sys.path.insert` |
+| [test_select_backend_tests](modules/test_select_backend_tests.md) | `sys.path.insert` |
 | [test_wiki_lock_root_preflight](modules/test_wiki_lock_root_preflight.md) | `sys.path.insert` |
 | [wiki_lock_root_preflight](modules/wiki_lock_root_preflight.md) | `WIKI_DIRECTORY = Path` |
 | [collect](modules/collect.md) | `sys.path.insert` |

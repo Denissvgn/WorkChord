@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1949,
-      "flows": 652,
+      "entities": 1956,
+      "flows": 654,
       "guides": 0,
       "index": 1,
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1238,
+      "modules": 1240,
       "workflows": 254
     },
     "dependency_architecture": 2,
-    "total": 4110
+    "total": 4121
   },
   "dependency_pages": {
     "count": 2,
@@ -50382,6 +50382,96 @@
       "category": "process",
       "detector": "builtin",
       "entry_point": {
+        "label": "select_backend_tests",
+        "source_path": "scripts/ci/select_backend_tests.py",
+        "symbol": "main"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 505,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 506,
+              "step": "main",
+              "step_index": 1,
+              "target": "os.environ.get"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 510,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            }
+          ],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 504,
+              "step": "main",
+              "target": "argparse.ArgumentParser"
+            },
+            {
+              "kind": "external_call",
+              "line": 504,
+              "step": "main",
+              "target": "__doc__.splitlines"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 507,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 508,
+              "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 509,
+              "step": "main",
+              "target": "parser.parse_args"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "main",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/ci/select_backend_tests.py"
+          ],
+          "step_count": 193,
+          "truncated": false
+        }
+      },
+      "id": "process-select_backend_tests",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
         "label": "serve_disposable_api",
         "source_path": "scripts/ci/serve_disposable_api.py",
         "symbol": "main"
@@ -51104,6 +51194,41 @@
         }
       },
       "id": "process-test_native_runtimes",
+      "language": "python"
+    },
+    {
+      "category": "process",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "test_select_backend_tests",
+        "source_path": "scripts/ci/tests/test_select_backend_tests.py",
+        "symbol": "__main__"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 294,
+              "step": "__main__",
+              "target": "unittest.main"
+            }
+          ],
+          "generated": true,
+          "step_count": 2,
+          "transfer_count": 1,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "scripts/ci/tests/test_select_backend_tests.py"
+          ],
+          "step_count": 2,
+          "truncated": false
+        }
+      },
+      "id": "process-test_select_backend_tests",
       "language": "python"
     },
     {
@@ -52183,6 +52308,8 @@
         "entities/FakeRemoteSigner.md",
         "entities/FakeRevocationResolver.md",
         "entities/FakeTrustResolver.md",
+        "entities/FakeWiki.md",
+        "entities/FallbackRuleTests.md",
         "entities/FeedbackAction.md",
         "entities/FeedbackKind.md",
         "entities/FetchedPullRequest.md",
@@ -52209,6 +52336,7 @@
         "entities/FrontendTemplateService.md",
         "entities/FrontendTriageService.md",
         "entities/FrozenClock.md",
+        "entities/FullSuite.md",
         "entities/GanttAssignee.md",
         "entities/GanttBarInputChanges.md",
         "entities/GanttBarInputsProps.md",
@@ -52670,6 +52798,7 @@
         "entities/ReplacementReviewPolicy.md",
         "entities/ReplacementTask.md",
         "entities/ReplicaMembershipObservation.md",
+        "entities/RepositoryCase.md",
         "entities/requestSource_RequestSource.md",
         "entities/requestSource_RequestSourceCreate.md",
         "entities/requestSource_RequestSourceLink.md",
@@ -53103,6 +53232,7 @@
         "entities/SourceLinkRefused.md",
         "entities/SourceState.md",
         "entities/SqlStateFailure.md",
+        "entities/StaticSelectionTests.md",
         "entities/StatusAmendmentLedger.md",
         "entities/StatusChangeControlProps.md",
         "entities/StatusEvidenceReference.md",
@@ -53606,7 +53736,9 @@
         "entities/WebIntakeRuntimeSettingsResponse.md",
         "entities/WebIntakeService.md",
         "entities/WebIntakeUnauthorizedError.md",
+        "entities/WikiGraph.md",
         "entities/WikiLockRootPreflight.md",
+        "entities/WikiSelectionTests.md",
         "entities/WindowPreset.md",
         "entities/WorkChordException.md",
         "entities/WorkflowContracts.md",
@@ -54274,6 +54406,7 @@
         "flows/process-seal.md",
         "flows/process-seed.md",
         "flows/process-seed_adoption_env.md",
+        "flows/process-select_backend_tests.md",
         "flows/process-serve_disposable_api.md",
         "flows/process-serve_disposable_oidc.md",
         "flows/process-server_acceptance.md",
@@ -54283,6 +54416,7 @@
         "flows/process-test_ci_runtime.md",
         "flows/process-test_classify_change_scope.md",
         "flows/process-test_native_runtimes.md",
+        "flows/process-test_select_backend_tests.md",
         "flows/process-test_wiki_lock_root_preflight.md",
         "flows/process-upgrade.md",
         "flows/process-wiki_lock_root_preflight.md",
@@ -55031,6 +55165,7 @@
         "modules/SegmentedControl.md",
         "modules/Select.md",
         "modules/Select.test.md",
+        "modules/select_backend_tests.md",
         "modules/serve_disposable_api.md",
         "modules/serve_disposable_oidc.md",
         "modules/server_features.md",
@@ -55373,6 +55508,7 @@
         "modules/test_scheduler_free_days.md",
         "modules/test_schema_behavior.md",
         "modules/test_scoped_review_evidence.md",
+        "modules/test_select_backend_tests.md",
         "modules/test_server_acceptance.md",
         "modules/test_server_features.md",
         "modules/test_settings_read_access.md",
@@ -62639,6 +62775,30 @@
       "title": "FakeTrustResolver"
     },
     {
+      "canonical_path": "entities/FakeWiki.md",
+      "id": "FakeWiki",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/FakeWiki",
+      "outgoing_internal_links": [
+        "modules/test_select_backend_tests.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_select_backend_tests.py",
+      "title": "FakeWiki"
+    },
+    {
+      "canonical_path": "entities/FallbackRuleTests.md",
+      "id": "FallbackRuleTests",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/FallbackRuleTests",
+      "outgoing_internal_links": [
+        "modules/test_select_backend_tests.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_select_backend_tests.py",
+      "title": "FallbackRuleTests"
+    },
+    {
       "canonical_path": "entities/FeedbackAction.md",
       "id": "FeedbackAction",
       "kind": "entities",
@@ -62966,6 +63126,18 @@
       "role": "semantic",
       "source_path": "backend/tests/support/faults.py",
       "title": "FrozenClock"
+    },
+    {
+      "canonical_path": "entities/FullSuite.md",
+      "id": "FullSuite",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/FullSuite",
+      "outgoing_internal_links": [
+        "modules/select_backend_tests.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/select_backend_tests.py",
+      "title": "FullSuite"
     },
     {
       "canonical_path": "entities/GanttAssignee.md",
@@ -69320,6 +69492,18 @@
       "title": "ReplicaMembershipObservation"
     },
     {
+      "canonical_path": "entities/RepositoryCase.md",
+      "id": "RepositoryCase",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RepositoryCase",
+      "outgoing_internal_links": [
+        "modules/test_select_backend_tests.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_select_backend_tests.py",
+      "title": "RepositoryCase"
+    },
+    {
       "canonical_path": "entities/requestSource_RequestSource.md",
       "id": "requestSource_RequestSource",
       "kind": "entities",
@@ -75313,6 +75497,18 @@
       "role": "semantic",
       "source_path": "backend/tests/database/test_runtime_policy.py",
       "title": "SqlStateFailure"
+    },
+    {
+      "canonical_path": "entities/StaticSelectionTests.md",
+      "id": "StaticSelectionTests",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/StaticSelectionTests",
+      "outgoing_internal_links": [
+        "modules/test_select_backend_tests.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_select_backend_tests.py",
+      "title": "StaticSelectionTests"
     },
     {
       "canonical_path": "entities/StatusAmendmentLedger.md",
@@ -82493,6 +82689,18 @@
       "title": "WebIntakeUnauthorizedError"
     },
     {
+      "canonical_path": "entities/WikiGraph.md",
+      "id": "WikiGraph",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/WikiGraph",
+      "outgoing_internal_links": [
+        "modules/select_backend_tests.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/select_backend_tests.py",
+      "title": "WikiGraph"
+    },
+    {
       "canonical_path": "entities/WikiLockRootPreflight.md",
       "id": "WikiLockRootPreflight",
       "kind": "entities",
@@ -82503,6 +82711,18 @@
       "role": "semantic",
       "source_path": "scripts/ci/tests/test_wiki_lock_root_preflight.py",
       "title": "WikiLockRootPreflight"
+    },
+    {
+      "canonical_path": "entities/WikiSelectionTests.md",
+      "id": "WikiSelectionTests",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/WikiSelectionTests",
+      "outgoing_internal_links": [
+        "modules/test_select_backend_tests.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_select_backend_tests.py",
+      "title": "WikiSelectionTests"
     },
     {
       "canonical_path": "entities/WindowPreset.md",
@@ -95195,6 +95415,19 @@
       "title": "Select.test Module"
     },
     {
+      "canonical_path": "modules/select_backend_tests.md",
+      "id": "select_backend_tests",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/select_backend_tests",
+      "outgoing_internal_links": [
+        "entities/FullSuite.md",
+        "entities/WikiGraph.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/select_backend_tests.py",
+      "title": "select_backend_tests Module"
+    },
+    {
       "canonical_path": "modules/serve_disposable_api.md",
       "id": "serve_disposable_api",
       "kind": "modules",
@@ -100583,6 +100816,22 @@
       "role": "semantic",
       "source_path": "backend/tests/test_scoped_review_evidence.py",
       "title": "test_scoped_review_evidence Module"
+    },
+    {
+      "canonical_path": "modules/test_select_backend_tests.md",
+      "id": "test_select_backend_tests",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_select_backend_tests",
+      "outgoing_internal_links": [
+        "entities/FakeWiki.md",
+        "entities/FallbackRuleTests.md",
+        "entities/RepositoryCase.md",
+        "entities/StaticSelectionTests.md",
+        "entities/WikiSelectionTests.md"
+      ],
+      "role": "semantic",
+      "source_path": "scripts/ci/tests/test_select_backend_tests.py",
+      "title": "test_select_backend_tests Module"
     },
     {
       "canonical_path": "modules/test_server_acceptance.md",
@@ -120104,6 +120353,18 @@
       "title": "seed_adoption_env"
     },
     {
+      "canonical_path": "flows/process-select_backend_tests.md",
+      "id": "process-select_backend_tests",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-select_backend_tests",
+      "outgoing_internal_links": [
+        "modules/select_backend_tests.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/ci/select_backend_tests.py",
+      "title": "select_backend_tests"
+    },
+    {
       "canonical_path": "flows/process-serve_disposable_api.md",
       "id": "process-serve_disposable_api",
       "kind": "flows",
@@ -120267,6 +120528,18 @@
       "role": "mixed",
       "source_path": "scripts/ci/tests/test_native_runtimes.py",
       "title": "test_native_runtimes"
+    },
+    {
+      "canonical_path": "flows/process-test_select_backend_tests.md",
+      "id": "process-test_select_backend_tests",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/process-test_select_backend_tests",
+      "outgoing_internal_links": [
+        "modules/test_select_backend_tests.md"
+      ],
+      "role": "mixed",
+      "source_path": "scripts/ci/tests/test_select_backend_tests.py",
+      "title": "test_select_backend_tests"
     },
     {
       "canonical_path": "flows/process-test_wiki_lock_root_preflight.md",
@@ -121230,6 +121503,7 @@
         "modules/SegmentedControl.md",
         "modules/Select.md",
         "modules/Select.test.md",
+        "modules/select_backend_tests.md",
         "modules/serve_disposable_api.md",
         "modules/serve_disposable_oidc.md",
         "modules/server_features.md",
@@ -121572,6 +121846,7 @@
         "modules/test_scheduler_free_days.md",
         "modules/test_schema_behavior.md",
         "modules/test_scoped_review_evidence.md",
+        "modules/test_select_backend_tests.md",
         "modules/test_server_acceptance.md",
         "modules/test_server_features.md",
         "modules/test_settings_read_access.md",
@@ -122479,6 +122754,7 @@
         "modules/SegmentedControl.md",
         "modules/Select.md",
         "modules/Select.test.md",
+        "modules/select_backend_tests.md",
         "modules/serve_disposable_api.md",
         "modules/serve_disposable_oidc.md",
         "modules/server_features.md",
@@ -122821,6 +123097,7 @@
         "modules/test_scheduler_free_days.md",
         "modules/test_schema_behavior.md",
         "modules/test_scoped_review_evidence.md",
+        "modules/test_select_backend_tests.md",
         "modules/test_server_acceptance.md",
         "modules/test_server_features.md",
         "modules/test_settings_read_access.md",
@@ -122996,5 +123273,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:ec2dced283de9187302d167eb6be43b74b6494618c186a5f98283b0d6339a0d3"
+  "source_hash": "sha256:070f78405c9fd1be1ca398fcc9b672f055acc551f6bb37871e6ac35fb21e0f7f"
 }
