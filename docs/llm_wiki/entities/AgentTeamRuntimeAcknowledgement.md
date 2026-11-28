@@ -1,7 +1,7 @@
 # AgentTeamRuntimeAcknowledgement
 
-**Location:** `backend/app/schemas/agent_team_setup.py:891`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:892`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 
@@ -31,11 +31,13 @@ Revision-bound runtime self-report for an exact actor, role package, profile, bi
 | `model_binding_revisions` | `dict[str, int]` | `model_binding_revisions` | Yes | No | — | max_length=16; min_length=1 | — | — |
 | `server_features` | `tuple[str, ...]` | `server_features` | Yes | No | — | max_length=64; min_length=1 | — | — |
 | `supported_assignment_modes` | `tuple[str, ...]` | `supported_assignment_modes` | Yes | No | — | max_length=4; min_length=1 | — | — |
+| `runtime_instance_id` | `str \| None` | `runtime_instance_id` | No | Yes | `None` | pattern=unknown (RUNTIME_INSTANCE_ID_PATTERN) | — | — |
 
 ## Methods
 
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
+| `stored_content` | `() -> dict[str, Any]` | — | What is digested and stored: no previous-digest pointer, and no empty identity. |
 | `normalize_ack_sequences` | `(value: tuple[str, ...], info: Any) -> tuple[str, ...]` | `@field_validator('server_features', 'supported_assignment_modes')`, `@classmethod` | — |
 | `validate_binding_revisions` | `(value: dict[str, int]) -> dict[str, int]` | `@field_validator('model_binding_revisions')`, `@classmethod` | — |
 
@@ -50,11 +52,12 @@ flowchart LR
     n3["reconcile_run_provenance (backend/app/routers/agent_catalog.py)"]
     n4["AgentTeamSetupService.acknowledge_runtime (backend/app/services/agent_team_setup_service.py)"]
     n5["backend/app/services/execution_reconciliation.py"]
-    n6["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
-    n7["acknowledge_member (backend/tests/test_agent_team_setup_qualification.py)"]
-    n8["test_setup_scenario_03_runtime_handoff_failure_resumes_in_place (backend/tests/test_agent_team_setup_qualification.py)"]
-    n9["acknowledgement_for (backend/tests/test_agent_team_setup_stored_contract.py)"]
-    n10["backend/tests/test_execution_planning_window.py"]
+    n6["acknowledge_over_http (backend/tests/test_agent_team_runtime_identity.py)"]
+    n7["acknowledgement_for (backend/tests/test_agent_team_runtime_identity.py)"]
+    n8["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
+    n9["acknowledge_member (backend/tests/test_agent_team_setup_qualification.py)"]
+    n10["test_setup_scenario_03_runtime_handoff_failure_resumes_in_place (backend/tests/test_agent_team_setup_qualification.py)"]
+    n11["acknowledgement_for (backend/tests/test_agent_team_setup_stored_contract.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -65,24 +68,26 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
     click n0 "../modules/agent_team_setup.md"
     click n1 "../modules/agent_team_setup.md"
     click n2 "../modules/routers_agent.md"
     click n3 "../modules/agent_catalog.md"
     click n4 "../modules/agent_team_setup_service.md"
     click n5 "../modules/execution_reconciliation.md"
-    click n6 "../modules/test_agent_team_setup.md"
-    click n7 "../modules/test_agent_team_setup_qualification.md"
-    click n8 "../modules/test_agent_team_setup_qualification.md"
-    click n9 "../modules/test_agent_team_setup_stored_contract.md"
-    click n10 "../modules/test_execution_planning_window.md"
+    click n6 "../modules/test_agent_team_runtime_identity.md"
+    click n7 "../modules/test_agent_team_runtime_identity.md"
+    click n8 "../modules/test_agent_team_setup.md"
+    click n9 "../modules/test_agent_team_setup_qualification.md"
+    click n10 "../modules/test_agent_team_setup_qualification.md"
+    click n11 "../modules/test_agent_team_setup_stored_contract.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_team_setup](../modules/agent_team_setup.md) | 2 | `actor_key`, `expected_previous_acknowledgement_digest`, `model_binding_revisions`, `profile_revision`, `role`, `schema_version`, `server_features`, `skill_package`, `supported_assignment_modes`, `topology_key`, `topology_revision` |
+| [agent_team_setup](../modules/agent_team_setup.md) | 3 | `actor_key`, `expected_previous_acknowledgement_digest`, `model_binding_revisions`, `profile_revision`, `role`, `runtime_instance_id`, `schema_version`, `server_features`, `skill_package`, `supported_assignment_modes`, `topology_key`, `topology_revision` |
 
 ### Structure
 
@@ -98,9 +103,13 @@ flowchart LR
 | `reconcile_run_provenance` | type_reference | [agent_catalog](../modules/agent_catalog.md) | — |
 | `AgentTeamSetupService.acknowledge_runtime` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `execution_reconciliation` | import | [execution_reconciliation](../modules/execution_reconciliation.md) | — |
+| `acknowledge_over_http` | type_reference | [test_agent_team_runtime_identity](../modules/test_agent_team_runtime_identity.md) | — |
+| `acknowledgement_for` | call | [test_agent_team_runtime_identity](../modules/test_agent_team_runtime_identity.md) | 1 |
+| `acknowledgement_for` | type_reference | [test_agent_team_runtime_identity](../modules/test_agent_team_runtime_identity.md) | — |
 | `test_fresh_apply_replay_onboarding_and_runtime_readiness` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 2 |
 | `acknowledge_member` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |
 | `test_setup_scenario_03_runtime_handoff_failure_resumes_in_place` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |
 | `acknowledgement_for` | call | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | 1 |
 | `acknowledgement_for` | type_reference | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | — |
-| `test_execution_planning_window` | import | [test_execution_planning_window](../modules/test_execution_planning_window.md) | — |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

@@ -37,6 +37,7 @@ Generic task events reserve the review evidence issue and revocation names for t
 | `app.services.agent_readiness` | `evaluate_agent_readiness` |
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService`, `BacklogSnapshotService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
+| `app.services.execution_planning_window` | `current_window`, `execution_context`, `fence_planning_only_edit`, `is_planning_only_change`, `live_assignments` |
 | `app.services.external_link_service` | `ExternalLinkService` |
 | `app.services.language_service` | `automatic_child_status_reason`, `incomplete_dependency_message`, `resolve_runtime_ui_language`, `task_requires_schedule_message` |
 | `app.services.outbound_webhook_service` | `emit_outbound_webhook_event` |
@@ -46,6 +47,8 @@ Generic task events reserve the review evidence issue and revocation names for t
 | `app.services.task_domain_service` | `require_owner`, `normalize_effort`, `require_owner`, `nominal_day_hours`, `normalize_effort`, `require_owner`, `require_owner`, `nominal_day_hours` |
 | `app.services.task_hierarchy_service` | `TaskHierarchyService`, `TaskTreeIntegrityError` |
 | `app.services.task_import_service` | `TaskImportService` |
+| `app.services.task_postponement_service` | `require_unreferenced`, `require_unreferenced` |
+| `app.services.task_routing_service` | `enforce_routing` |
 | `app.services.task_status_service` | `TaskStatusService` |
 | `app.services.work_metrics` | `task_signals`, `task_signals` |
 | `datetime` | `date` |
@@ -75,9 +78,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (69) |
+| Inbound | `backend` (76) |
 | Inbound | `scripts` (2) |
-| Outbound | `backend` (28) |
+| Outbound | `backend` (31) |
 
 ### External packages
 
@@ -85,7 +88,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 91 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 100 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -16,6 +16,7 @@ _Auto-generated from `frontend/src/components/tasks/PagedTaskBrowser.tsx`._
 | `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` | — | compiler-dependent |
 | `../../features/useLiveWindow` | `useLiveWindow` | — | compiler-dependent |
 | `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../../utils/taskState` | `stateOf` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
 | `react` | `useState` | — | compiler-dependent |
@@ -43,12 +44,14 @@ flowchart LR
     n7["frontend/src/components/tasks/TaskList.tsx"]
     n8["frontend/src/features/useLiveWindow.ts"]
     n9["frontend/src/services/taskService.ts"]
+    n10["frontend/src/utils/taskState.ts"]
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n4 --> n3
     n4 --> n6
     n4 --> n9
+    n4 --> n10
     n5 --> n6
     n6 --> n0
     n6 --> n1
@@ -56,10 +59,12 @@ flowchart LR
     n6 --> n3
     n6 --> n8
     n6 --> n9
+    n6 --> n10
     n7 --> n0
     n7 --> n3
     n7 --> n6
     n7 --> n9
+    n7 --> n10
     click n0 "../modules/Button.md"
     click n1 "../modules/Select.md"
     click n2 "../modules/LiveWindowStatus.md"
@@ -70,6 +75,7 @@ flowchart LR
     click n7 "../modules/TaskList.md"
     click n8 "../modules/useLiveWindow.md"
     click n9 "../modules/taskService.md"
+    click n10 "../modules/taskState.md"
 ```
 
 ### Internal neighbors
@@ -85,6 +91,7 @@ flowchart LR
 | Outbound | [QueryState](../modules/QueryState.md) |
 | Outbound | [useLiveWindow](../modules/useLiveWindow.md) |
 | Outbound | [taskService](../modules/taskService.md) |
+| Outbound | [taskState](../modules/taskState.md) |
 
 ### External packages
 

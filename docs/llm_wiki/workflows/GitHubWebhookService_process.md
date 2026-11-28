@@ -16,11 +16,12 @@
 6. `outbound_webhook_service.emit_outbound_webhook_event`
 7. `commands.commit_or_flush`
 8. `schemas_github.GitHubWebhookResponse`
-9. `commands.commit_or_flush`
-10. `schemas_github.GitHubWebhookResponse`
-11. `outbound_webhook_service.emit_outbound_webhook_event`
-12. `commands.commit_or_flush`
-13. `schemas_github.GitHubWebhookResponse`
+9. `schemas_github.GitHubWebhookResponse`
+10. `commands.commit_or_flush`
+11. `schemas_github.GitHubWebhookResponse`
+12. `outbound_webhook_service.emit_outbound_webhook_event`
+13. `commands.commit_or_flush`
+14. `schemas_github.GitHubWebhookResponse`
 
 ## Touches
 

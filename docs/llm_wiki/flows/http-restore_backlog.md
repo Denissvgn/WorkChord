@@ -112,16 +112,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| restore_backlog | domain_result | 313 | `domain_result(...)` |
-| domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 55 | `str(exc)` |
-| domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| restore_backlog | BacklogSnapshotService(…).restore | 313 | `BacklogSnapshotService(db).restore(project_id, snapshot_id, data.expected_versions, reason=data.reason)` |
-| restore_backlog | BacklogSnapshotService | 313 | `BacklogSnapshotService(db)` |
+| restore_backlog | domain_result | 341 | `domain_result(...)` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| restore_backlog | BacklogSnapshotService(…).restore | 341 | `BacklogSnapshotService(db).restore(project_id, snapshot_id, data.expected_versions, reason=data.reason)` |
+| restore_backlog | BacklogSnapshotService | 341 | `BacklogSnapshotService(db)` |
 
 ### Boundary effects
 
@@ -131,12 +131,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 53 |
-| unresolved_call | `domain_result` | `exc.detail` | 53 |
-| external_call | `domain_result` | `HTTPException` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| unresolved_call | `restore_backlog` | `BacklogSnapshotService(db).restore` | 313 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
+| unresolved_call | `restore_backlog` | `BacklogSnapshotService(db).restore` | 341 |
 
 ## Behavior
 

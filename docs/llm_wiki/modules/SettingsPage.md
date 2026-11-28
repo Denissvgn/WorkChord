@@ -21,6 +21,7 @@ _Auto-generated from `frontend/src/pages/SettingsPage.tsx`._
 | `../components/settings/GitHubSettingsPanel` | `GitHubSettingsPanel` | — | compiler-dependent |
 | `../components/settings/InterfaceLanguageSettings` | `InterfaceLanguageSettings` | — | compiler-dependent |
 | `../components/settings/OutboundWebhooksPanel` | `OutboundWebhooksPanel` | — | compiler-dependent |
+| `../components/settings/QualificationKeysPanel` | `QualificationKeysPanel` | — | compiler-dependent |
 | `../components/settings/ReadOnlyFieldset` | `ReadOnlyFieldset` | — | compiler-dependent |
 | `../components/settings/RuntimeConfigSettings` | `RuntimeConfigSettings` | — | compiler-dependent |
 | `../components/settings/SchedulingRulesSettings` | `SchedulingRulesSettings` | — | compiler-dependent |
@@ -35,7 +36,7 @@ _Auto-generated from `frontend/src/pages/SettingsPage.tsx`._
 | `../hooks/useSingleKeyShortcutPreference` | `useSingleKeyShortcutPreference` | — | compiler-dependent |
 | `../store/themeStore` | `useThemeStore` | — | compiler-dependent |
 | `lucide-react` | `LucideIcon` | Declaration | erased |
-| `lucide-react` | `Activity`, `ArrowRight`, `Building2`, `CalendarClock`, `CalendarDays`, `Check`, `Github`, `Globe2`, `Inbox`, `KeyRound`, `Keyboard`, `LockKeyhole`, `Mail`, `Monitor`, `Palette`, `Search`, `ServerCog`, `Sparkles`, `Tags`, `Webhook` | — | compiler-dependent |
+| `lucide-react` | `Activity`, `ArrowRight`, `BadgeCheck`, `Building2`, `CalendarClock`, `CalendarDays`, `Check`, `Github`, `Globe2`, `Inbox`, `KeyRound`, `Keyboard`, `LockKeyhole`, `Mail`, `Monitor`, `Palette`, `Search`, `ServerCog`, `Sparkles`, `Tags`, `Webhook` | — | compiler-dependent |
 | `react` | `KeyboardEvent`, `ReactNode` | Declaration | erased |
 | `react` | `useEffect`, `useId`, `useMemo`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
@@ -70,7 +71,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (5) |
-| Outbound | `frontend` (23) |
+| Outbound | `frontend` (24) |
 
 ### External packages
 
@@ -78,14 +79,14 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SavedInPart](../entities/SavedInPart.md) | Interface | 57 | — | One part of a section whose parts are kept in different places. |
-| [SettingsSection](../entities/SettingsSection.md) | Interface | 63 | — | — |
-| [SettingsGroup](../entities/SettingsGroup.md) | Interface | 75 | — | — |
-| [SettingsGroupId](../entities/SettingsGroupId.md) | Type alias | 53 | `'myPreferences' \| 'workspace' \| 'connections' \| 'accessSystem'` | — |
-| [SavedIn](../entities/SavedIn.md) | Type alias | 55 | `'browser' \| 'workspace'` | Where a section's values are kept: in this browser only, or on the server for everyone. |
+| [SavedInPart](../entities/SavedInPart.md) | Interface | 59 | — | One part of a section whose parts are kept in different places. |
+| [SettingsSection](../entities/SettingsSection.md) | Interface | 65 | — | — |
+| [SettingsGroup](../entities/SettingsGroup.md) | Interface | 77 | — | — |
+| [SettingsGroupId](../entities/SettingsGroupId.md) | Type alias | 55 | `'myPreferences' \| 'workspace' \| 'connections' \| 'accessSystem'` | — |
+| [SavedIn](../entities/SavedIn.md) | Type alias | 57 | `'browser' \| 'workspace'` | Where a section's values are kept: in this browser only, or on the server for everyone. |

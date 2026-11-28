@@ -1,6 +1,6 @@
 # Task
 
-**Location:** `backend/app/models/task.py:45`
+**Location:** `backend/app/models/task.py:49`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_task](../modules/models_task.md)
@@ -103,6 +103,7 @@ A durable work item has either iteration scope or explicit project backlog scope
 | `effort_days` | `() -> float \| None` | `@hybrid_property` | — |
 | `_set_effort_days` | `(value: float \| None) -> None` | `@effort_days.inplace.setter` | — |
 | `_effort_days_expression` | `()` | `@effort_days.inplace.expression`, `@classmethod` | — |
+| `displayed_state` | `() -> str` | `@property` | The state to show: the stored status, or the terminal state of withdrawn work. |
 
 ## Relationships
 
@@ -143,7 +144,7 @@ flowchart LR
     click n4 "../modules/http_authority.md"
     click n5 "../modules/models___init__.md"
     click n6 "../modules/models_agent.md"
-    click n7 "../modules/delivery_dependency.md"
+    click n7 "../modules/models_delivery_dependency.md"
     click n8 "../modules/delivery_observation.md"
     click n9 "../modules/models_discussion.md"
     click n10 "../modules/models_iteration.md"
@@ -156,7 +157,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_task](../modules/models_task.md) | 3 | `_legacy_effort_days`, `accepted_at`, `accepted_by_principal_id`, `accepted_version`, `actual_end_date`, `actual_start_date`, `agent_assignments`, `agent_runs`, `artifact_revision`, `assignee`, `assignee_id`, `baseline_end_date` |
+| [models_task](../modules/models_task.md) | 4 | `_legacy_effort_days`, `accepted_at`, `accepted_by_principal_id`, `accepted_version`, `actual_end_date`, `actual_start_date`, `agent_assignments`, `agent_runs`, `artifact_revision`, `assignee`, `assignee_id`, `baseline_end_date` |
 
 ### Structure
 
@@ -173,7 +174,7 @@ flowchart LR
 | `http_authority` | import | [http_authority](../modules/http_authority.md) | — |
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `agent` | import | [models_agent](../modules/models_agent.md) | — |
-| `delivery_dependency` | import | [delivery_dependency](../modules/delivery_dependency.md) | — |
+| `delivery_dependency` | import | [models_delivery_dependency](../modules/models_delivery_dependency.md) | — |
 | `delivery_observation` | import | [delivery_observation](../modules/delivery_observation.md) | — |
 | `discussion` | import | [models_discussion](../modules/models_discussion.md) | — |
 | `iteration` | import | [models_iteration](../modules/models_iteration.md) | — |
@@ -181,4 +182,4 @@ flowchart LR
 | `recovery` | import | [recovery](../modules/recovery.md) | — |
 | `release` | import | [models_release](../modules/models_release.md) | — |
 
-> References: showing 12 of 345 logical references; 333 omitted by the 12-row generated summary limit.
+> References: showing 12 of 411 logical references; 399 omitted by the 12-row generated summary limit.

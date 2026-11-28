@@ -1,6 +1,6 @@
 """Dependency-ready scheduling across capacity rows and configured passes."""
 
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 import random
 from time import perf_counter
 from types import SimpleNamespace
@@ -109,7 +109,7 @@ async def test_generated_plan_has_no_dependency_or_capacity_overlap(db_session):
 
 
 @pytest.mark.parametrize("cause", ["unassigned", "no_estimate", "blocked", "deferred", "active"])
-async def test_undated_predecessor_leaves_dependents_undated_and_named(db_session, cause):
+async def test_undated_predecessor_leaves_dependents_unplaced_with_their_dates_and_named(db_session, cause):
     iteration, _, tasks = await make_plan(db_session, 2, [0, 1, 0], [(0, 1), (1, 2)])
     predecessor = tasks[0]
     if cause == "unassigned":
@@ -126,10 +126,11 @@ async def test_undated_predecessor_leaves_dependents_undated_and_named(db_sessio
         task.start_date = task.end_date = date(2026, 1, 5)
     await db_session.commit()
     result = await SchedulerService(db_session).schedule_iteration(iteration.id)
-    unscheduled = {item.task_id: item for item in result.unscheduled}
+    kept = {item.task_id: item for item in result.kept_dates}
     for index in [1, 2]:
-        assert tasks[index].start_date is None and tasks[index].end_date is None
-        item = unscheduled[tasks[index].id]
+        assert tasks[index].start_date == tasks[index].end_date == date(2026, 1, 5)
+        item = kept[tasks[index].id]
+        assert item.start_date == item.end_date == date(2026, 1, 5)
         assert item.reason == "predecessor_unscheduled"
         assert tasks[index - 1].title in item.message
         assert any(decision.task_id == tasks[index].id and tasks[index - 1].title in decision.reason
@@ -174,19 +175,31 @@ async def test_ready_tasks_keep_pass_priority_and_cross_pass_dependencies(db_ses
     await SchedulerService(db_session).schedule_iteration(iteration.id)
     assert tasks[2].end_date < tasks[0].start_date
     assert_dependency_dates(tasks, [(0, 1)])
-    assert tasks[1].end_date < tasks[3].start_date
+    # The deadline task starts the day after its prerequisite; the lower-ranked task on its row
+    # uses the free day before it instead of waiting behind it.
+    assert tasks[1].start_date == tasks[0].end_date + timedelta(days=1)
+    assert tasks[3].end_date < tasks[1].start_date
     assert tasks[1].end_date <= tasks[1].max_end_date
 
 
-async def test_row_stays_serial_after_iteration_overflow(db_session):
+@pytest.mark.parametrize("fits_before", [True, False])
+async def test_row_stays_serial_after_iteration_overflow(db_session, fits_before):
     iteration, _, tasks = await make_plan(db_session, 1, [0, 0, 0], [], end=date(2026, 1, 5))
     tasks[0].min_start_date = date(2026, 1, 12)
     tasks[0].max_end_date = date(2026, 1, 14)
     tasks[0].effort_hours = 16
+    if not fits_before:
+        tasks[1].effort_hours = tasks[2].effort_hours = 48
     await db_session.commit()
     await SchedulerService(db_session).schedule_iteration(iteration.id)
-    assert tasks[1].start_date > tasks[0].end_date
-    assert tasks[2].start_date > tasks[1].end_date
+    assert (tasks[0].start_date, tasks[0].end_date) == (date(2026, 1, 12), date(2026, 1, 13))
+    if fits_before:
+        # Work that fits completely in the free days before the waiting task uses them.
+        assert tasks[1].start_date < tasks[2].start_date < tasks[0].start_date
+    else:
+        # Otherwise it follows the row's last task, even beyond the iteration.
+        assert tasks[1].start_date > tasks[0].end_date
+        assert tasks[2].start_date > tasks[1].end_date
     assert_serial_rows(tasks)
 
 

@@ -45,16 +45,16 @@ sequenceDiagram
     participant p18 as utc_now
     participant p19 as effective_work_flags
     participant p20 as _dependency_task
-    participant p21 as as_utc
-    participant p22 as brief_definition_blockers
-    participant p23 as _description_is_actionable
-    participant p24 as TaskAgentReadiness
-    participant p25 as ExternalLinkResponse
-    participant p26 as TaskAgentReadinessCriterion
-    participant p27 as HTTPException (backend/app/routers/task_…in.py:create_backlog_task)
-    participant p28 as TaskService(…).create
-    participant p29 as data.model_copy
-    participant p30 as HTTPException (backend/app/routers/task_domain.py:domain_result)
+    participant p21 as postponed_work_under
+    participant p22 as as_utc
+    participant p23 as brief_definition_blockers
+    participant p24 as _description_is_actionable
+    participant p25 as TaskAgentReadiness
+    participant p26 as ExternalLinkResponse
+    participant p27 as TaskAgentReadinessCriterion
+    participant p28 as HTTPException (backend/app/routers/task_…in.py:create_backlog_task)
+    participant p29 as TaskService(…).create
+    participant p30 as data.model_copy
     p0->>p1: TaskService.task_to_response
     p0->>p2: domain_result
     p0->>p3: TaskService
@@ -75,35 +75,35 @@ sequenceDiagram
     p5->>p18: utc_now
     p4->>p19: effective_work_flags
     p5->>p20: _dependency_task
-    p5->>p21: as_utc
-    p5->>p22: brief_definition_blockers
-    p5->>p23: _description_is_actionable
-    p5->>p24: TaskAgentReadiness
-    p8->>p25: ExternalLinkResponse
-    p10->>p26: TaskAgentReadinessCriterion
-    p0-->>p27: HTTPException (backend/app/routers/task_…in.py:create_backlog_task)(422, detail=[...])
-    p0-->>p28: TaskService(…).create(None, data.model_copy(...))
-    p0-->>p29: data.model_copy(update={...})
-    p2-->>p30: HTTPException (backend/app/routers/task_domain.py:domain_result)(409, detail=exc.detail(...))
+    p5->>p21: postponed_work_under
+    p5->>p22: as_utc
+    p5->>p23: brief_definition_blockers
+    p5->>p24: _description_is_actionable
+    p5->>p25: TaskAgentReadiness
+    p8->>p26: ExternalLinkResponse
+    p10->>p27: TaskAgentReadinessCriterion
+    p0-->>p28: HTTPException (backend/app/routers/task_…in.py:create_backlog_task)(422, detail=[...])
+    p0-->>p29: TaskService(…).create(None, data.model_copy(...))
+    p0-->>p30: data.model_copy(update={...})
 ```
 
-> Call sequence diagram shows 30 of 131 interactions; 101 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 151 interactions; 121 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 2 of 44 (42 omitted); unresolved 2 of 46 (44 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 49 (48 omitted); unresolved 2 of 60 (58 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
+| `backend/app/routers/task_domain.py:domain_result` | 3 | - | external | 6 |
 | `backend/app/routers/task_domain.py:domain_result` | 3 | - | unresolved | 1 |
-| `backend/app/routers/task_domain.py:domain_result` | 3 | - | external | 5 |
 | `backend/app/commands.py:current_command` | 15 | - | external | 2 |
 | `backend/app/commands.py:current_command` | 15 | - | unresolved | 1 |
-| `backend/app/services/task_service.py:TaskService.task_to_response` | 14 | - | unresolved | 7 |
+| `backend/app/services/task_service.py:TaskService.task_to_response` | 14 | - | unresolved | 10 |
 | `backend/app/services/task_service.py:TaskService.task_to_response` | 14 | - | external | 5 |
 | `backend/app/services/work_metrics.py:working_today` | 24 | - | unresolved | 2 |
 | `backend/app/services/work_metrics.py:working_today` | 24 | [backend/app/utils/time.py](../modules/time.md) | internal | 2 |
-> Omission summary shows 8 of 31 groups; 23 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 33 groups; 25 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -114,9 +114,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 42; effect analysis evaluated: 29, partial: 0, unavailable: 13. Counts include steps omitted from the displayed trace.
+Source steps: 43; effect analysis evaluated: 30, partial: 0, unavailable: 13. Counts include steps omitted from the displayed trace.
 
-Collector observations for 29 source steps with known totals: observed: 158, emitted: 158, omitted: 0. Unavailable totals are excluded.
+Collector observations for 30 source steps with known totals: observed: 169, emitted: 169, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -187,17 +187,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_backlog_task | HTTPException (backend/app/routers/task_…in.py:create_backlog_task) | 231 | `HTTPException(422, detail=[...])` |
-| create_backlog_task | domain_result | 232 | `domain_result(...)` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 53 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 55 | `HTTPException(404, detail=str(...))` |
-| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 55 | `str(exc)` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 57 | `HTTPException(422, detail=[...])` |
-| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 57 | `str(exc)` |
-| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| create_backlog_task | TaskService(…).create | 232 | `TaskService(db).create(None, data.model_copy(...))` |
-| create_backlog_task | TaskService | 232 | `TaskService(db)` |
+| create_backlog_task | HTTPException (backend/app/routers/task_…in.py:create_backlog_task) | 236 | `HTTPException(422, detail=[...])` |
+| create_backlog_task | domain_result | 237 | `domain_result(...)` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 58 | `str(exc)` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 60 | `str(exc)` |
+| domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| create_backlog_task | TaskService(…).create | 237 | `TaskService(db).create(None, data.model_copy(...))` |
+| create_backlog_task | TaskService | 237 | `TaskService(db)` |
 
 ### Boundary effects
 
@@ -207,13 +207,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `create_backlog_task` | `HTTPException` | 231 |
-| external_call | `domain_result` | `HTTPException` | 53 |
-| unresolved_call | `domain_result` | `exc.detail` | 53 |
-| external_call | `domain_result` | `HTTPException` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| unresolved_call | `create_backlog_task` | `TaskService(db).create` | 232 |
+| external_call | `create_backlog_task` | `HTTPException` | 236 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
+| unresolved_call | `create_backlog_task` | `TaskService(db).create` | 237 |
 | step_limit | `create_backlog_task` | `first 12 steps` | 0 |
 
 ## Behavior

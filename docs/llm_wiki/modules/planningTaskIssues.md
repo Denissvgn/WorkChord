@@ -51,7 +51,7 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [PlanningTaskIssue](../entities/PlanningTaskIssue.md) | Type alias | 18 | `typeof PLANNING_TASK_ISSUES[number]` | — |
-| [DeliveryFields](../entities/DeliveryFields.md) | Type alias | 56 | <pre><code>Pick&#60;Task&#44; &#39;is&#95;overdue&#39; &#124; &#39;is&#95;delayed&#39; &#124; &#39;is&#95;outside&#95;constraints&#39;&#62;&#10;    &#38; Partial&#60;Pick&#60;Task&#44; &#39;start&#95;date&#39; &#124; &#39;end&#95;date&#39; &#124; &#39;min&#95;start&#95;date&#39; &#124; &#39;max&#95;end&#95;date&#39;&#62;&#62;</code></pre> | — |
+| [DeliveryFields](../entities/DeliveryFields.md) | Type alias | 57 | <pre><code>Pick&#60;Task&#44; &#39;is&#95;overdue&#39; &#124; &#39;is&#95;delayed&#39; &#124; &#39;is&#95;outside&#95;constraints&#39;&#62;&#10;    &#38; Partial&#60;Pick&#60;Task&#44; &#39;start&#95;date&#39; &#124; &#39;end&#95;date&#39; &#124; &#39;min&#95;start&#95;date&#39; &#124; &#39;max&#95;end&#95;date&#39;&#62;&#62;</code></pre> | — |
 
 ## Functions
 

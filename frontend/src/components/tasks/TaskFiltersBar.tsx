@@ -136,6 +136,9 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange, agentFil
                 { value: 'active', label: t('taskFilters.statusActive') },
                 { value: 'resolved', label: t('taskFilters.statusResolved') },
                 { value: 'closed', label: t('taskFilters.statusClosed') },
+                { value: 'postponed', label: t('statuses.postponed') },
+                { value: 'canceled', label: t('statuses.canceled') },
+                { value: 'superseded', label: t('statuses.superseded') },
             ],
         },
         {

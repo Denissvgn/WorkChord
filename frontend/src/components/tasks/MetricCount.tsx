@@ -60,7 +60,7 @@ export const MetricCount = ({ metric, scope, title, children, className, total }
                                 #{item.id} · {item.title}
                             </Link>
                             <span className="text-xs text-content-secondary">
-                                {t(`statuses.${item.status}`, { defaultValue: item.status })}
+                                {t(`statuses.${item.displayed_state ?? item.status}`, { defaultValue: item.displayed_state ?? item.status })}
                                 {item.project_name && ` · ${item.project_name}`}
                                 {` · ${item.iteration_name ?? t('teamwork.backlog')}`}
                             </span>

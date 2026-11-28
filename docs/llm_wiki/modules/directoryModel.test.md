@@ -10,9 +10,9 @@ _Auto-generated from `frontend/src/components/team/directoryModel.test.ts`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `../../types/agent` | `AgentActorRosterItem`, `AgentModelBinding` | Declaration | erased |
+| `../../types/agent` | `AgentActorRosterItem`, `AgentModelBinding`, `ModelEffort` | Declaration | erased |
 | `../../types/team` | `TeamMemberProfile` | Declaration | erased |
-| `./directoryModel` | `agentStatus`, `buildDirectory`, `statusKnown` | — | compiler-dependent |
+| `./directoryModel` | `agentStatus`, `buildDirectory`, `modelName`, `statusKnown` | — | compiler-dependent |
 | `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals

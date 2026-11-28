@@ -28,11 +28,75 @@ The interface uses these names on tasks:
 
 Cancellation retains lifecycle history and invalidates agent execution ownership. Canceling an active claim requires the current claim generation, running run IDs and live assignment IDs returned by the actions endpoint. Reopening invalidates current acceptance. Agent execution continues through the assigned-work protocol with its current claim fence; manual execution is for humans.
 
+## Planning-only edits and issued work
+
+Every change to a task raises its version, and editing a summary task also raises the versions of its subtasks. An agent assignment is bound to the task version it was issued for. Normally a new version makes a queued or accepted assignment stale (`assignment_task_version_stale`), and the work comes back through recovery.
+
+A few fields only organize the plan and never change what the assignee or reviewer must do. These are the planning-only fields:
+
+| Field | Meaning |
+| --- | --- |
+| `milestone_id` | The project milestone the task counts toward. |
+
+If an edit changes only planning-only fields, a queued or accepted assignment on the task stays valid. So do assignments on the subtasks of an edited summary task. The run, the claim, routing (model-aware assignments included) and the recorded progress and evidence are all kept. The task still gets a new version, so editors must reload before writing again. The kept assignment still needs its original authenticated dispatch or begin receipt. Ownership, team, review policy and model bindings must also be unchanged. If any of these checks fails, the assignment goes stale as usual. It also goes stale if the same request or batch changes anything else about the task, including one of its delivery prerequisites. Each kept assignment adds a `task.execution_planning_window` event to its task's timeline, with `window_kind: "planning_only_edit"`, the changed `fields`, the edited task and the assignment IDs.
+
+Every other field is an execution input. These include the title, description and brief, assignee, waits-for dependencies, project, dates and date limits, effort, priority, labels, the deferred and optional flags, and source fields. An edit that changes any execution input still makes issued work stale, even if it also changes a milestone. To restart that work, use a recovery requeue.
+
 ## Deferred and optional work
 
 `is_deferred` and `is_optional` are scheduling policy fields inherited through a task's complete ancestry. Deferred leaves are excluded from active required work and ordinary queue/execution eligibility. Optional leaves remain distinguishable from required commitments. Structural parents do not add delivered work; canceled and deferred work do not increase required completion or acceptance denominators. Deferral retains identity, content and history. Use the current actions projection to determine which commands are available after policy or ownership changes.
 
 Scheduling day boundaries use the project's IANA timezone, with the availability calendar used for work without a project. An author's recorded-time work date remains an explicit local date with its separately selected timezone. Capacity reflects current shared calendars and absences; task recovery points restore their supported planning state while those shared inputs remain current.
+
+## Postponed work
+
+`postponed` is a task status. It stops planned, active or resolved leaf work by a recorded decision, without canceling it, and records what must be true before the work resumes. Only the project's PM actor, a project manager or a workspace operator can postpone or reactivate work.
+
+`POST /api/tasks/{task_id}/postpone` takes `{expected_version, reason, requirements}` and at least one requirement:
+
+- `{"kind": "predecessor_accepted", "task_id": ...}`: the named task is accepted.
+- `{"kind": "date", "on_date": "YYYY-MM-DD"}`: the day arrives in the task's working time zone. It must be after today.
+- `{"kind": "owner_decision", "description": ...}`: the owner records the described decision.
+- `{"kind": "linked_resolved", "task_id": ...}` or `{"kind": "linked_resolved", "triage_item_id": ...}`: the named task or triage item is resolved. A task is resolved when it is resolved or closed. A triage item is resolved when it is accepted, declined, marked as a duplicate or converted, which means any status except new and snoozed.
+
+A requirement that can never hold, such as a canceled task, or that already holds, such as an accepted predecessor, a resolved task or triage item, or a past date, is refused. Work named by a requirement of an open postponement cannot be deleted. A task delete, an iteration delete, an unmerge that deletes the parent, or a restore that would remove such a task is refused with `reactivation_requirement_referenced`. Reactivate the postponed task first. A task named only by an earlier, closed postponement can be deleted, and that history keeps the requirement with no target.
+
+Postponing work with a live claim, assignment or run releases them through the same fenced path as cancellation. Supply the `claim_generation`, `running_run_ids` and `live_assignment_ids` from `GET /api/tasks/{task_id}/actions` as `expected_claim_generation`, `expected_running_run_ids` and `expected_live_assignment_ids`. If ownership changed after that read, the command is refused with `execution_ownership_changed`. The release is recorded on the task timeline as `execution_released`. Agents must take new assignments after the work is reactivated. The task is not canceled, and its brief, progress, evidence, artifact trail, dates and execution provenance are kept. New evidence is not recorded while the work is postponed.
+
+`POST /api/tasks/{task_id}/reactivate` takes `{expected_version, reason}`. It returns resolved work to `resolved`, and planned or active work to `planned`, where it starts again through the usual commands. `GET /api/tasks/{task_id}/postponement` returns the open postponement, or the most recent one: who decided, when and why, the released execution, each requirement and, after reactivation, who reactivated the work, why and to which status. The actions endpoint reports `postpone` and `reactivate` availability. `GET /api/tasks/capabilities` lists `task-postponement-v1` when the server supports these commands.
+
+### Agent tools
+
+A PM agent postpones and reactivates work with the same commands and the same authority as the REST routes. The MCP tools are:
+
+- `agent_postpone_task(task_id, payload, idempotency_key, rationale, correlation_id)` with `{expected_version, reason, requirements, expected_claim_generation?, expected_running_run_ids?, expected_live_assignment_ids?}`, as for `POST /api/tasks/{task_id}/postpone`.
+- `agent_reactivate_task(task_id, payload, idempotency_key, rationale, correlation_id)` with `{expected_version, reason}`, as for `POST /api/tasks/{task_id}/reactivate`.
+- `agent_get_task_postponement(task_id)`, as for `GET /api/tasks/{task_id}/postponement`: the reason, who decided, the released execution, and each requirement with `met` and `met_at`.
+
+The two write tools are audited planning commands that need a task write scope (`tasks:write`, `planning:write` or `admin`), an idempotency key, a rationale and a correlation ID; a repeated key replays the receipt. The receipt's `result` is the same `{task, postponement}` body the REST routes return. They are refused for a worker or reviewer agent, for a credential without write scope, for read-only access, and for a PM of another team, with the REST routes' error codes (`postpone_decider_required`, `permission_denied`, or not found). The read tool needs read access to the task's project. Recording the owner decision is not an agent tool; only the workspace owner does it, through the REST route.
+
+`agent_list_ready_tasks` returns only planned work, so postponed work is never queued or claimable. `workspace_list_project_tasks` returns postponed tasks with `status: "postponed"`, and its optional `status` argument (`planned`, `active`, `resolved`, `closed` or `postponed`) keeps only the branches of the task tree that hold work in that status. The agent contract lists `agent-task-postponement-v1` and `GET /api/auth/me` lists `postponement-agent-tools-v1` when these tools exist.
+
+### Automatic reactivation
+
+Nobody has to watch for the requirements. When the last unmet requirement of an open postponement becomes true, the server reactivates the task itself, to `resolved` if it was postponed after resolution and to `planned` otherwise. The postponement closes with the trigger `requirements_met`, no person is recorded as reactivating it, and the task timeline's `task_reactivated` entry names the requirement that completed it and lists every requirement with when it was met. A `task.reactivated` webhook event carries the same record for subscribers, and the status change email to the iteration manager names the requirement.
+
+Each requirement kind is evaluated when its facts can change:
+
+- `predecessor_accepted`: when the named task is accepted.
+- `linked_resolved`: when the named task becomes resolved or accepted, or the named triage item is accepted, declined, marked a duplicate or converted. A snoozed item is not resolved.
+- `date`: on the periodic date check, once the day has come in the project's time zone (the iteration calendar's time zone for work outside a project). Only the worker process runs it, every 15 minutes: it does not run under `--once` or when `OUTBOUND_DELIVERY_WORKER_ENABLED=false`, and without it a date requirement is only noticed when another trigger evaluates the task. A check that finds nothing to change changes nothing, including the planning revision.
+- `owner_decision`: only when the workspace owner records it with `POST /api/tasks/{task_id}/postponement/requirements/{requirement_id}/decision`, which takes `{expected_version, decision}`. A project manager, a PM agent or an operator who is not the owner cannot record it, and nothing else satisfies it.
+
+A requirement stays met once it has been met. A closed summary task counts as an accepted predecessor. Snapshot and backlog restores are not triggers; the periodic check picks up anything they changed. Reactivating work to `resolved` with the command also evaluates the postponements that wait for it. Two triggers arriving together are serialized, so the task is reactivated once. The task detail (`GET /api/tasks/{task_id}/detail`) carries `postponement` for postponed work: the reason, and each requirement with `met` and `met_at`.
+
+Only these two commands move work into or out of `postponed`. A status change, a bulk status change or a task update that names `postponed` is refused, as is any other status change of postponed work. Canceled postponed work stays postponed; reopening it returns it to its open postponement. A summary task is postponed when all its leaves are postponed. Alongside other leaves, a postponed leaf counts as not started. An iteration or backlog restore that would move a task into or out of `postponed` is refused with `restore_conflicts_with_task_postponement`.
+
+### Postponed or deferred
+
+Use deferral for backlog work that should stay out of the schedule and not start yet, with no particular condition for its return. Deferral is a scheduling policy inherited through the task's ancestry. It does not change the task's status, it blocks only the start of planned work, and it records no reason or requirement.
+
+Use postponement when work must stop, including work that has already started or been resolved, until a known condition holds. Postponement changes the status, releases live agent execution and records the reason and the reactivation requirements. The two are independent: deferred work can be postponed, and removing deferral from postponed work leaves it postponed.
 
 ## Estimates
 
@@ -58,6 +122,77 @@ A template's structured brief takes precedence over its legacy description and c
 
 `POST /api/tasks/{task_id}/review` records an independent acceptance or rejection with the current task, brief and artifact revisions and a reason. A reviewer cannot accept work they executed or whose current progress evidence they authored. Existing privileged override policy requires explicit operator authority and a recorded reason. Ordinary task review cannot replace a work package's trusted verifier protocol; package verification is bound to its captured task, brief and artifact context. Historical verdicts remain available after later edits invalidate acceptance.
 
+Under `require_different_review_publisher`, ordinary acceptance needs a pass from an assigned agent verifier with a verified publisher, so a person's review is refused with `verified_publisher_review_required`. A signed-in workspace owner or operator can accept one resolved task anyway with `POST /api/tasks/{task_id}/owner-acceptance` and `{expected_version, brief_revision, artifact_revision, reason, evidence}`. The request needs the task's current version and brief and artifact revisions, and a non-empty `reason`. The project policy stays on: the override covers only that task at those revisions in that request, and every other task in the project still needs a verified publisher. All other acceptance checks still apply: current criterion evidence, delivery prerequisites, work-package verification and replacement holds. An owner who executed the work or authored its current evidence must also send `X-Review-Override: true`; the body `reason` is the reason recorded for it. On this path the header waives only that self-review rule, never criterion evidence or any other check. The admin API key and a trusted-local install with no signed-in person cannot use this path; sign in as an owner or operator first. The command refuses:
+
+- `owner_acceptance_required`: the caller is not a signed-in human workspace owner or operator. A project manager, a reviewer, an agent, the operator API key, a paired observer and a trusted-local browser with no signed-in person are all refused.
+- `override_reason_required` (or a validation error): the reason is missing or blank.
+- `owner_override_not_required`: the project does not require a different review publisher. Use an ordinary review instead.
+
+The acceptance is recorded as an owner override, never as an independent review. In `GET /api/tasks/{task_id}/reviews` and `/reviews/current` its `kind` is `owner_override`; ordinary reviews have `kind` `review`. The task timeline gets an `owner_acceptance_override` event with the reason. Every command audit row the request writes carries the reason and `owner_acceptance_override_task_ids`. In `GET /api/tasks/delivery-metrics`, `owner_override_acceptance_events` counts these acceptances separately. They are still included in `acceptance_events`.
+
+### Routing: first rung, escalation and reviewer
+
+A brief can carry `routing`: the `first_rung`, the `escalation` ladder, `escalate_after_failed_runs` (default 2), `after_last_rung`, the `reviewer` and free `notes`. Each rung and the reviewer name a model catalog entry by `catalog_key`; `harness` is a label for people. When the routing is saved, the server fills each entry's `effort`, `publisher_key` and `configured_model_alias` from the catalog and refuses an unknown or disabled entry. The reviewer may name the `profile_id` to pass as `reviewer_profile_id` at dispatch, and `instructions` for what the review checks. The derived Markdown gets a Routing section after Verification. A brief write that leaves out `routing` keeps the stored routing; `routing: null` removes it. Routing names who executes and reviews, not what is accepted. A change to the routing alone keeps the brief revision, criterion progress and every record bound to them, such as manual provenance. Like an assignee change, it moves the task version and clears acceptance, through the brief write as well as the task update. The description is rendered again, and the timeline gets a `brief_routing_changed` event with the previous and new routing. The brief revision therefore does not cover the Routing section's free text (`notes`, the reviewer's `instructions`, `after_last_rung`, `harness`); changes there are recorded only by `brief_routing_changed`. A change to any other brief field is an ordinary brief edit. A routing that names no first rung, escalation or reviewer, such as `{}`, is stored as no routing.
+
+The server checks the routing when the assignee or the routing changes, in `PUT /api/tasks/{task_id}`, task creation, the brief write, `/iterations/{id}/tasks/batch-update`, the agent planning patch and the `set_assignee`, `clear_assignee` and `auto_assign` bulk operations:
+
+- `first_rung_not_assignee_model` (conflict): the first rung is not a model bound to an active agent of the assignee row's profile.
+- `reviewer_shares_assignee_publisher` (conflict, under `require_different_review_publisher`): the reviewer's publisher is the assignee's, the first rung's, or that of a contributor review provenance already records for the task (runs and manual provenance records).
+- `reviewer_publisher_unknown` (conflict, under the policy): the reviewer's catalog entry has no publisher.
+- `reviewer_has_no_verifier` (conflict under the policy, otherwise a warning): no active verification profile other than the assignee's runs the reviewer's model.
+- `reviewer_profile_is_assignee_profile` (conflict): the reviewer profile is the assignee's profile.
+- `routing_removed` (conflict under the policy, otherwise a warning): the same change reassigns the task and removes its routing.
+- Warnings: `reviewer_shares_escalation_publisher`, `reviewer_missing`, `reviewer_profile_lacks_model`, `contributor_publishers_unknown`, `first_rung_missing`, `assignee_models_unknown`, `reviewer_is_first_rung`, `catalog_entry_unavailable`, and `routing_in_text` for a brief that names its routing only in text. With a suggestion, `suggested_first_rung_lower` and `suggested_first_rung_missing_qualifications` say what the new first rung gives up.
+
+Publishers are read from the current catalog entries, not from the values stored in the routing. The check does not model the owner acceptance override: a reviewer that conflicts with the policy is reported even though an owner could still accept the work by override.
+
+The project's `routing_conflict_mode` decides what a conflict does. `refuse` (the default) answers 409 `routing_inconsistent` with `routing_check` in the detail and changes nothing; `warn` saves the change. Either way the answer's `routing_check` holds the issues, a consistent `suggestion` and the `suggested_reviewer`. The suggestion moves the first rung to the assignee's default model, turns ladder rungs of the vendor the task leaves into step-ups of the new vendor, drops rungs whose catalog entry is disabled, and picks a reviewer that some verification profile runs; under the policy that reviewer comes from a publisher outside the assignee, the first rung and the recorded contributors. Send `routing_resolution: "apply_suggestion"` with the change, or in the bulk operation's `payload`, to save the suggestion with it. In a bulk preview, `routing_check.applied` marks the routing the change would save and `changes.routing` shows it; with an unchanged assignee, `apply_suggestion` repairs the routing in place. Changing `routing_conflict_mode` needs an operator, like the publisher policy.
+
+`GET /api/tasks/{task_id}/routing/check?assignee_id=` checks the current routing against the current or a proposed assignee without changing anything. `POST /api/tasks/{task_id}/routing/convert` with `{expected_version, apply, routing?}` moves routing named in the brief's context and verification into `routing`. It recognises "First rung: …", "Reviewer: … at … effort", "After two failed acceptance runs the task moves to …", "Independent review by …" and the inline "first rung … @ …; escalation … @ … -> …" form. A sentence is replaced only when the parenthesised key or the named model is exactly one enabled entry's key or alias, at the stated effort ("default" means an entry with unknown effort). Others stay in the text and are listed as `unresolved` until a supplied `routing` settles them. Only the line a sentence came from is tidied. A conversion that finds nothing leaves the brief untouched, and an empty routing is never stored. For a brief that already has routing, a later conversion fills only its empty parts or removes sentences that repeat it. Every replaced sentence is kept in `routing.source_text`, which is never rendered. A conversion edits the brief's text, so it is an ordinary brief edit: it creates a brief revision and clears current criterion progress. The preview's `resets_progress` is true when applying would clear progress the task has. MCP clients use `agent_get_task_routing_check` and `agent_convert_task_routing`.
+
+## Manual provenance for work resolved outside recorded runs
+
+Under `require_different_review_publisher`, a verifier needs to know who executed the work. Work that was implemented locally and merged as a pull request outside WorkChord runs, and then marked resolved, has no runs and no authenticated `start_manual`/`resolve_manual` history, so a verification assignment is refused with `verification_publisher_unverifiable`. Recording manual execution afterwards is not possible, because `start_manual` needs planned work. Record its provenance instead. The task stays resolved, and a normal independent review follows.
+
+Send `POST /api/tasks/{task_id}/manual-provenance`, `POST /api/agent/planning/tasks/{task_id}/manual-provenance` with the usual planning command headers, or the MCP tool `agent_record_manual_provenance`, with `{expected_version, artifact_revision, executor, head_commit_url, commit_urls, pr_url, base_commit_url, reason}`:
+
+- `executor` names who executed the work: `{"kind": "human", "principal_id": ...}` or `{"kind": "agent", "actor_id": ..., "model_binding_id": ...}`. A human's linked profile counts as theirs. An agent's profile, model binding and publisher are captured at the moment of the record. Without `model_binding_id`, the actor's enabled default binding is used. A named binding must belong to the actor, but it may since have been disabled, or its catalog entry retired, because the work may predate that; the catalog entry's publisher at the moment of the record is kept. An agent executor must belong to the task's project, through its project membership or an assignment on a task of that project; otherwise it is refused with `manual_provenance_executor_outside_project` before any binding detail is read. An agent whose binding has no publisher, or an actor without a profile, is refused with `manual_provenance_executor_unattributable`.
+- `head_commit_url` is the delivered head as an immutable GitHub commit. `commit_urls` lists every commit the executor contributed; the head is always included.
+- `pr_url` names the pull request that carries the head, or `base_commit_url` names the commit the work started from. One of them is required. A `pr_url` must already be the task's own evidence: one of its progress artifacts or a GitHub link on the task (`manual_provenance_pr_not_task_evidence`).
+- `artifact_revision` must be the task's current artifact revision, and `reason` says why the work ran outside recorded runs.
+
+Before anything is written, the candidate goes through the same GitHub check a verifier's pass uses. The record is refused with `manual_provenance_candidate_unverifiable` when the review could never pass. `attribution_gap` says why, and `offending_sha` names the commit when there is one:
+
+- `commit_attribution`: a commit of the pull request or range is not in `commit_urls`.
+- `coauthor_trailer`: a commit message has a `Co-authored-by:` trailer, so its other contributors stay unverifiable. Commits with co-author trailers cannot be attested this way. This includes commits from tools that add such trailers automatically.
+- `head_mismatch`: the pull request's head is not the declared head commit.
+- `github_unavailable`: GitHub could not be reached, answered with an HTTP error other than not found, or sent a response that is not JSON. Retry later.
+- `candidate_unverifiable`: GitHub does not show the declared commits as one verifiable candidate. This includes a pull request or commit GitHub reports as not found (check the URL and repository access) and a response that does not describe the candidate.
+
+Only a signed-in workspace owner or operator, a project manager, or the project's PM agent can record provenance. The operator API key, a trusted-local browser with no signed-in person, a paired observer, reviewers and other agents are refused with `provenance_recorder_required`. A human executor carries no publisher, so only a signed-in person can attest one; the PM agent is refused with `manual_provenance_human_recorder_required`. A PM agent recorder is itself counted as a contributor under the publisher of every enabled model binding it has, so each of those bindings must declare a publisher (`manual_provenance_recorder_unattributable`).
+
+The task must be resolved, uncanceled leaf work (`manual_provenance_requires_resolved_work`). It must have no agent runs, agent execution events, claims, live or fulfilled execution assignments, or authenticated manual execution of the current artifact (`manual_provenance_execution_recorded`); such execution supplies its own provenance. A record never contradicts authenticated manual execution (`manual_provenance_executor_conflict`). For a task in manual execution, only the person executing it can be named, or any human if no person is recorded. In scheduled mode, every status change records its caller, for example a manager resolving the task through the status route. That person is not evidence of execution, so any executor can be named. A task holds at most 50 records (`manual_provenance_record_limit`). Stale versions and revisions and malformed URLs are refused with 409 or 422.
+
+A record cannot be withdrawn or overridden by a later one. Its executor, and its agent recorder, stay contributors of the task. If a record names the wrong executor, record a clean replacement of the task (see below) and deliver the work there.
+
+The record does not change status, progress or evidence, and it does not reopen or accept the task. The task's version advances, the response returns the record, and the task timeline gets a `manual_provenance_recorded` event with the recorder, executor, commits and reason. Every command audit row of the request carries the reason.
+
+Every record keeps counting for review independence, also after a rejection and rework:
+
+- An agent executor is an ordinary contributor, and its recorded commits stay attributed to it. A verifier with the executor's actor, profile or publisher fails independence (`verification_publisher_not_independent` for the publisher).
+- A PM agent recorder is a contributor in the same way, so a verifier on the recorder's publisher fails too.
+- A human executor is reviewed like authenticated manual execution: the verifier must be a separate automation-enabled verification profile.
+
+Only the latest record supplies the review candidate, and only while the task has no runs and its brief and artifact revisions are unchanged.
+
+A verification assignment whose candidate is already known to be unverifiable is not created. It is refused with `verification_candidate_unverifiable`, and `missing` names the absent facts. The refusal names only a remedy that can help:
+
+- Without runs or authenticated manual execution, `remedy` points at the manual provenance command. This includes a task whose only human-executor record went stale after a brief or artifact change.
+- With authenticated manual execution, the refusal asks for exactly one pull request linked to the task, or a resubmitted artifact with a pull request or compare URL.
+- With runs, the runs must supply a submitted candidate.
+
+When manual execution is missing, the `verification_publisher_unverifiable` refusal includes the same `remedy`.
+
 ## Clean replacement of unattributable work
 
 Under `require_different_review_publisher`, every run of a task counts as a contributor, and a reviewer needs a known publisher that differs from every contributor's. A task whose runs were executed without a model binding therefore can never be accepted. When its work must be done again, the project's PM actor or a project manager or workspace operator records a clean replacement instead of rerunning the same task.
@@ -73,6 +208,67 @@ The original must be unaccepted leaf work without live execution, and the replac
 Only the replacement can be accepted. The original cannot be reviewed, accepted or reopened. The replacement is reviewed on its own runs plus every carried run, so a replacement that carries commits from an unattributed run stays held: verification assignment fails with `replacement_contribution_unattributed`, and acceptance is refused under any review policy. A carried run with attribution is an ordinary contributor, and its commits count as attributed in the candidate check. Under any review policy, the actor and profile that executed a carried run cannot verify the replacement. A replacement whose own work later proves unattributable can itself be replaced; runs carried from it bring along whatever it carried in turn.
 
 `GET /api/tasks/{task_id}/replacement`, `GET /api/agent/planning/tasks/{task_id}/replacement` or `agent_get_task_replacement` returns the disposition for either task: who decided, when and why, the owner decision, the review policy at the decision and now, the original's attempts with their missing attribution, the replacement's recorded base and current submitted candidate and contributors, the carried contributions, the moved dependents and releases, and whether the deliverable is clean or held. A task that takes part in a disposition cannot be deleted. An iteration or backlog restore that would change such a task's canceled state or status, or any dependency that touches one, is refused with `restore_conflicts_with_task_replacement`; restore a snapshot taken after the replacement instead.
+
+### Superseding work that another task already delivered
+
+When the original's deliverable was already delivered as another task, record a supersession instead of reopening and closing the original. Send `POST /api/tasks/{original_id}/supersession` with `{successor_task_id, expected_original_version, expected_successor_version, reason}`. The project's PM actor, a project owner or manager, or a workspace operator may decide; `reason` says why the successor delivers the original's work.
+
+The successor must be a closed or accepted leaf task in the same project that is not canceled and takes part in no other disposition. A successor in another project is refused with `replacement_scope_mismatch`, and work that is not closed with `supersession_successor_not_delivered`. The original must be leaf work without live execution that is not currently accepted (`replacement_original_accepted`); it may already be canceled.
+
+Neither task is reopened or re-executed. The original keeps its progress, attempts and history, and its status unless it was postponed. If it was not already canceled it is withdrawn as superseded work; a cancel reason it already had stays as it was. A postponed original has nothing left to wait for: its open postponement is closed with the trigger `supersession`, returning it to planned (or to resolved, if it was postponed after resolution) before it is withdrawn, and the timeline records `postponement_closed`.
+
+The original's schedule and delivery dependents, the reactivation requirements of open postponements that name it, and its membership of planned, building and shipped releases move to the successor. A dependent that already waits on the successor keeps one edge (`merged`), and an edge from the successor to the original is dropped (`removed`). A schedule edge cannot cross iterations, so when the successor is in another iteration a schedule dependent instead gets a delivery prerequisite on the successor (`converted`): the successor is already closed, so the ordering is met, and the dependent waits for the successor's acceptance. Moving a requirement of another project's postponed task needs manage permission on that project, as postponing it does; moving a dependent in another project needs edit permission on it. The original stays listed in its releases for audit, but as withdrawn work it no longer counts, so delivery metrics and release counts include the deliverable once, through the successor. A milestone, or a summary task, counts the successor in place of a superseded original, even when the successor belongs to another milestone. The original's version changes; the successor, the dependents and the postponed tasks keep theirs. The timeline records `task_superseded` on the original, `task_supersession_recorded` on the successor and `dependency_replaced` on each task whose dependency or requirement moved.
+
+`GET /api/tasks/{task_id}/replacement` returns a supersession like a replacement, with `disposition: "supersession"`, `role: "successor"` for the successor, no recorded base commit, and no owner decision. Moved requirements are listed in `moved_dependencies` with kind `reactivation`. The original cannot be reviewed, accepted or reopened, and the same delete and restore protections apply. The successor cannot be canceled while it delivers a superseded task (`task_delivers_supersession`). A successor can supersede only one original.
+
+## Canceled and superseded work in counts and lists
+
+Canceled work keeps the status it had when it was canceled; the stored `status` never changes. So every task response also carries `displayed_state`: the stored status, or `canceled` for canceled work, or `superseded` for withdrawn work whose deliverable another task carries. A clean replacement is labelled `superseded` as well, with the replacement as its successor. For superseded work the response names the `successor_task_id` and `successor_kind` (`replacement` or `supersession`); both are null otherwise. `postponed` stays a status of its own.
+
+Counts report withdrawn work apart. Iteration, project, milestone, release and portfolio summaries carry `canceled_tasks` and `superseded_tasks`, and `status_counts` has `canceled` and `superseded` keys. Withdrawn leaves are outside `total_tasks` and every other status count, so they are never planned, active or resolved work, and they no longer count as deferred. `GET /api/tasks/metric-matches` opens either count with `metric=canceled` or `metric=superseded`. Delivery analytics report `superseded_leaf_tasks` beside `canceled_leaf_tasks`; within one window a task is not counted as both. The agent pipeline, its review stage and the ready-task listing skip withdrawn work.
+
+Status filters match the displayed state. `GET /api/tasks/lookup?task_status=` accepts `planned`, `active`, `resolved`, `closed`, `postponed`, `canceled` and `superseded`; a filter for a stored status no longer returns withdrawn work that kept that status. `GET /api/projects/{project_id}/tasks?status=` and the MCP tool `workspace_list_project_tasks` take the same values and then return a flat list of the matching tasks at any depth instead of the tree roots.
+
+## Reviewing a plan import before it is applied
+
+The iteration import routes, `POST /api/iterations/import` (a new iteration) and `POST /api/iterations/{iteration_id}/import`, write a JSON plan file in one request and need the operator key. A planner can review the exact effect of a file first, without writing anything:
+
+- REST: `POST /api/agent/planning/iterations/{iteration_id}/import/dry-run`, or `POST /api/agent/planning/iterations/import/dry-run` for a file that creates a new iteration, with the file as the multipart field `file` and an agent key that has `planning:write`.
+- MCP: `agent_preview_iteration_import` with `import_data` (the file's JSON object) and, for an existing iteration, `iteration_id`.
+
+The caller must be able to plan work in the target iteration's project and in every project the file names, and to read every iteration the import reserves (iterations that share a team member's profile included). Otherwise the request is refused with HTTP 403, or 404 when the iteration is not visible to the caller. The caller must also be able to read every existing team member profile the import refers to, whether by `profile_id`, `owner_profile_id` or a matching name or email. A caller can read a profile when it is a workspace member, when the profile is its own, or when the profile belongs to a team member of an iteration it can read. If the caller cannot read a profile, the request is refused with HTTP 403 and `incomplete_authorized_graph`.
+
+- An explicit id that does not exist is refused the same way, so ids reveal nothing.
+- A name or email that matches no profile is not refused: the import would create a new profile, and the dry run shows it as `new-profile-1`. Whether such a name already exists in a directory the caller cannot read therefore remains observable, although the profile itself is never shown.
+
+A `profile_id` or `owner_profile_id` that is not an integer, or a `dependencies`, `dependency_external_keys` or `vacations` field that is not a list, is refused with HTTP 422 and `import_file_invalid`. Nothing is written.
+
+While the import runs, the dry run holds the workspace-wide planning reservation, so it is bounded. Each of these is refused with HTTP 409 before any reservation is taken:
+
+- `import_dry_run_too_large`: the file has more than 100 tasks (children included), more than 5 levels of subtasks, more than 200 dependency references, more than 50 team members or more than 100 vacations. Review a larger plan in smaller files.
+- `import_iteration_tree_too_large`: the iteration would hold more than 2,500 tasks after the import.
+- `import_dry_run_busy`: another dry run is running on the same server process. Try again shortly.
+
+A dry run that does not finish within 5 seconds is stopped, rolled back and refused with HTTP 409 and `import_dry_run_too_slow`. The caps keep typical files within this budget but do not guarantee it.
+
+- **Large target:** a large target iteration lowers the practical file size. For example, a 100-task chained file into an iteration of about 900 tasks exceeds the budget; review such a plan in smaller files.
+- **Waiting counts:** time spent waiting for the planning reservation behind another command counts toward the budget. If the reservation was busy, try again.
+
+The dry run runs the import itself in a transaction that is always rolled back, as the operator would run it, and returns:
+
+- `changes`: the tasks, dependencies, links (task source fields and external links), dates, team members and profiles the import creates, changes or removes, and the iteration it creates for a new-iteration file. A row the import creates has a stable reference such as `new-task-1`, `new-member-1` or `new-profile-1`, used wherever another row points at it (a parent, an assignee, a dependency); existing rows keep their ids. Changed rows list each field with its `from` and `to` values. Each entry of `dates` names a task, a date field and its old and new value.
+- `summary`: counts per section.
+- `expected_revisions` and `file_sha256`: the revision of every iteration the import reserves and the digest of the file's canonical JSON, as `import-context` reports them.
+- `review_digest`: binds the file, those revisions and the exact change set. It is an integrity binding, not proof that anyone reviewed the changes: anyone who holds the file and can run the dry run obtains the same digest.
+- `written`: always `false`.
+
+To apply exactly what was reviewed, the operator sends the same file to the same import route with the multipart field `review_digest`. The write runs the import, compares the result with the review, and is refused, with nothing written, with HTTP 409 and one of these codes:
+
+- `import_review_file_changed`: the file differs from the reviewed one.
+- `import_review_target_changed`: an iteration the import reserves changed since the review, for example a task edited concurrently.
+- `import_review_changes_differ`: the import would now make a different change set than the one reviewed.
+
+A malformed digest is refused with HTTP 422 and `import_review_digest_invalid`. After a refusal, run the dry run again and review the new changes. A write without `review_digest` behaves as before. The write keeps its operator authority; the dry run grants no new way to write.
 
 ## External links
 
@@ -95,5 +291,13 @@ Moving backlog work between projects requires edit permission in both projects. 
 `GET /api/tasks/capabilities` reports installed domain support and backfill readiness. REST and MCP share action and capability projections. Existing task update versions remain optional on supported legacy routes while `STRICT_MUTATION_VERSIONS=false`; strict mode requires observed versions and revisions. New explicit commands require their supplied versions in either mode. A supplied stale version is rejected in both modes. Compare retained intent with current state before applying again.
 
 The legacy `/api/triage/{triage_item_id}/convert-to-task` endpoint still requires `iteration_id`. Unscheduled conversion uses the explicit `/api/triage/{triage_item_id}/convert-to-backlog` endpoint and requires `project_id`.
+
+### Source links on requests and tasks
+
+Requests (triage items) and tasks share one source link policy. A source link is displayed, never fetched, and may be a public `http(s)` address, a path inside this instance such as `/tasks?project=6`, or an address of this same instance. This instance means a loopback host (`localhost`, `*.localhost`, `127.0.0.0/8`, `::1`, on any port) or the host and port of the optional `PUBLIC_BASE_URL` setting. An address of this instance is stored as its relative path, so it keeps working wherever the instance is opened. Private, link-local and reserved addresses, other schemes, protocol-relative paths and embedded credentials are refused.
+
+- Creating or editing a request through `POST /api/triage`, `PUT /api/triage/{triage_item_id}`, the controlled web intake, the agent planning routes or the MCP tools `workspace_create_triage_item` and `workspace_update_triage_item` returns a refused link as HTTP 400 (MCP: the tool error) with the named code `intake_source_link_not_allowed`. The body carries `field` (`source_url`), a `message` and a `next_step`. The Triage page shows the same text beside the Source URL field.
+- `convert-to-task` and `convert-to-backlog` (and their MCP and agent planning equivalents) never fail on the link. A link to this instance is carried to the task as a relative path; a refused link is left off the task. Either change is reported in the response under `source_link` as `{action: "rewritten" | "dropped", original, task_source_url, message}`; the field is absent when the link was carried over unchanged or there was none. The request keeps its original link.
+- Requests stored before this policy that hold such a link stay readable, editable (an unchanged link is accepted as stored) and convertible.
 
 Operators can inspect paginated backfill diagnostics at `/api/tasks/migration-diagnostics`. The migration preserves IDs and original values, and backfill completion markers allow completed rows to remain unchanged on resumption. SQLite rebuilds are transactional and verify foreign-key integrity before committing. Removing the expanded schema would lose backlog, ownership and review information; rollback requires a complete backup and the matching application image.

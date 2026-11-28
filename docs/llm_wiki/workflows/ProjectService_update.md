@@ -9,9 +9,10 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `authority.require_operator`
-2. `time.as_utc`
-3. `outbound_webhook_service.emit_outbound_webhook_event`
-4. `commands.commit_or_flush`
+2. `authority.require_operator`
+3. `time.as_utc`
+4. `outbound_webhook_service.emit_outbound_webhook_event`
+5. `commands.commit_or_flush`
 
 ## Touches
 

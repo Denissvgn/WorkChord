@@ -12,52 +12,58 @@
 ```mermaid
 sequenceDiagram
     participant p0 as update_agent_model_catalog_entry
-    participant p1 as service.update_catalog
-    participant p2 as _handle_model_error
+    participant p1 as _handle_model_error
+    participant p2 as _handle_agent_error
     participant p3 as isinstance (backend/app/routers/agent…log.py:_handle_model_error)
-    participant p4 as HTTPException (backend/app/routers/agent…log.py:_handle_model_error)
-    participant p5 as exc.detail (backend/app/routers/agent…log.py:_handle_model_error)
-    participant p6 as str (backend/app/routers/agent…log.py:_handle_model_error)
-    participant p7 as _handle_agent_error
+    participant p4 as service.update_catalog
+    participant p5 as HTTPException (backend/app/routers/agent…log.py:_handle_model_error)
+    participant p6 as exc.detail (backend/app/routers/agent…log.py:_handle_model_error)
+    participant p7 as str (backend/app/routers/agent…log.py:_handle_model_error)
     participant p8 as isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)
     participant p9 as HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)
     participant p10 as str (backend/app/routers/agent…ing.py:_handle_agent_error)
     participant p11 as exc.detail (backend/app/routers/agent…ing.py:_handle_agent_error)
-    p0-->>p1: service.update_catalog(catalog_id, actor, data, command=command)
-    p0->>p2: _handle_model_error
-    p2-->>p3: isinstance (backend/app/routers/agent…log.py:_handle_model_error)(exc, AgentModelConflictError)
-    p2-->>p4: HTTPException (backend/app/routers/agent…log.py:_handle_model_error)(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
-    p2-->>p5: exc.detail (backend/app/routers/agent…log.py:_handle_model_error)
-    p2-->>p3: isinstance (backend/app/routers/agent…log.py:_handle_model_error)(exc, LookupError)
-    p2-->>p4: HTTPException (backend/app/routers/agent…log.py:_handle_model_error)(status_code=status.HTTP_404_NOT_FOUND, detail={...})
-    p2-->>p6: str (backend/app/routers/agent…log.py:_handle_model_error)(exc)
-    p2->>p7: _handle_agent_error
-    p7-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, AgentPermissionError)
-    p7-->>p9: HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))
-    p7-->>p10: str (backend/app/routers/agent…ing.py:_handle_agent_error)(exc)
-    p7-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, AgentRoutingConflictError)
-    p7-->>p9: HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
-    p7-->>p11: exc.detail (backend/app/routers/agent…ing.py:_handle_agent_error)
-    p7-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, TaskVersionConflictError)
-    p7-->>p9: HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
-    p7-->>p11: exc.detail (backend/app/routers/agent…ing.py:_handle_agent_error)
-    p7-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, AgentConflictError)
-    p7-->>p9: HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)(status_code=status.HTTP_409_CONFLICT, detail=str(...))
-    p7-->>p10: str (backend/app/routers/agent…ing.py:_handle_agent_error)(exc)
-    p7-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, TriageConflictError)
-    p7-->>p9: HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)(status_code=status.HTTP_409_CONFLICT, detail=str(...))
-    p7-->>p10: str (backend/app/routers/agent…ing.py:_handle_agent_error)(exc)
-    p7-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, LookupError)
-    p7-->>p9: HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)(status_code=status.HTTP_404_NOT_FOUND, detail=str(...))
-    p7-->>p10: str (backend/app/routers/agent…ing.py:_handle_agent_error)(exc)
-    p7-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, ValueError)
-    p7-->>p9: HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))
-    p7-->>p10: str (backend/app/routers/agent…ing.py:_handle_agent_error)(exc)
+    p0->>p1: _handle_model_error
+    p1->>p2: _handle_agent_error
+    p1-->>p3: isinstance (backend/app/routers/agent…log.py:_handle_model_error)(exc, AgentModelConflictError)
+    p0-->>p4: service.update_catalog(catalog_id, actor, data, command=command)
+    p1-->>p5: HTTPException (backend/app/routers/agent…log.py:_handle_model_error)(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
+    p1-->>p6: exc.detail (backend/app/routers/agent…log.py:_handle_model_error)
+    p1-->>p3: isinstance (backend/app/routers/agent…log.py:_handle_model_error)(exc, LookupError)
+    p1-->>p5: HTTPException (backend/app/routers/agent…log.py:_handle_model_error)(status_code=status.HTTP_404_NOT_FOUND, detail={...})
+    p1-->>p7: str (backend/app/routers/agent…log.py:_handle_model_error)(exc)
+    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, AgentPermissionError)
+    p2-->>p9: HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))
+    p2-->>p10: str (backend/app/routers/agent…ing.py:_handle_agent_error)(exc)
+    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, AgentRoutingConflictError)
+    p2-->>p9: HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
+    p2-->>p11: exc.detail (backend/app/routers/agent…ing.py:_handle_agent_error)
+    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, TaskVersionConflictError)
+    p2-->>p9: HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
+    p2-->>p11: exc.detail (backend/app/routers/agent…ing.py:_handle_agent_error)
+    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, AgentConflictError)
+    p2-->>p9: HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)(status_code=status.HTTP_409_CONFLICT, detail=str(...))
+    p2-->>p10: str (backend/app/routers/agent…ing.py:_handle_agent_error)(exc)
+    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, TriageConflictError)
+    p2-->>p9: HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)(status_code=status.HTTP_409_CONFLICT, detail=str(...))
+    p2-->>p10: str (backend/app/routers/agent…ing.py:_handle_agent_error)(exc)
+    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, LookupError)
+    p2-->>p9: HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)(status_code=status.HTTP_404_NOT_FOUND, detail=str(...))
+    p2-->>p10: str (backend/app/routers/agent…ing.py:_handle_agent_error)(exc)
+    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, SourceLinkRefused)
+    p2-->>p9: HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)(status_code=status.HTTP_400_BAD_REQUEST, detail=exc.detail(...))
+    p2-->>p11: exc.detail (backend/app/routers/agent…ing.py:_handle_agent_error)
 ```
 
-> Call sequence diagram shows 30 of 30 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 36 interactions; 6 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 24 of 24 (0 omitted); unresolved 4 of 4 (0 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 23 of 29 (6 omitted); unresolved 5 of 5 (0 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/routers/agent_planning.py:_handle_agent_error` | 10 | - | external | 6 |
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -70,7 +76,7 @@ sequenceDiagram
 
 Source steps: 3; effect analysis evaluated: 2, partial: 1, unavailable: 0. Counts include steps omitted from the displayed trace.
 
-Collector observations for 3 source steps with known totals: observed: 23, emitted: 19, omitted: 4. Unavailable totals are excluded.
+Collector observations for 3 source steps with known totals: observed: 27, emitted: 19, omitted: 8. Unavailable totals are excluded.
 
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
 
@@ -85,7 +91,7 @@ Collector observations for 3 source steps with known totals: observed: 23, emitt
 | `isinstance (backend/app/routers/agent…log.py:_handle_model_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `HTTPException (backend/app/routers/agent…log.py:_handle_model_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `str (backend/app/routers/agent…log.py:_handle_model_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `_handle_agent_error` | `available` | `partial` | `available` | `13` | `9` | `4` |
+| `_handle_agent_error` | `available` | `partial` | `available` | `17` | `9` | `8` |
 | `isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 
@@ -140,17 +146,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_agent_model_catalog_entry | service.update_catalog | 313 | `service.update_catalog(catalog_id, actor, data, command=command)` |
-| update_agent_model_catalog_entry | _handle_model_error | 320 | `_handle_model_error(exc)` |
-| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 142 | `isinstance(exc, AgentModelConflictError)` |
-| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 143 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_model_error | exc.detail (backend/app/routers/agent…log.py:_handle_model_error) | 145 | `exc.detail(data not statically known)` |
-| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 147 | `isinstance(exc, LookupError)` |
-| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 148 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={...})` |
-| _handle_model_error | str (backend/app/routers/agent…log.py:_handle_model_error) | 152 | `str(exc)` |
-| _handle_model_error | _handle_agent_error | 155 | `_handle_agent_error(exc)` |
-| _handle_agent_error | isinstance (backend/app/routers/agent…ing.py:_handle_agent_error) | 107 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error) | 108 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
+| update_agent_model_catalog_entry | service.update_catalog | 329 | `service.update_catalog(catalog_id, actor, data, command=command)` |
+| update_agent_model_catalog_entry | _handle_model_error | 336 | `_handle_model_error(exc)` |
+| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 158 | `isinstance(exc, AgentModelConflictError)` |
+| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 159 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_model_error | exc.detail (backend/app/routers/agent…log.py:_handle_model_error) | 161 | `exc.detail(data not statically known)` |
+| _handle_model_error | isinstance (backend/app/routers/agent…log.py:_handle_model_error) | 163 | `isinstance(exc, LookupError)` |
+| _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 164 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={...})` |
+| _handle_model_error | str (backend/app/routers/agent…log.py:_handle_model_error) | 168 | `str(exc)` |
+| _handle_model_error | _handle_agent_error | 171 | `_handle_agent_error(exc)` |
+| _handle_agent_error | isinstance (backend/app/routers/agent…ing.py:_handle_agent_error) | 111 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error) | 112 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
 
 ### Boundary effects
 
@@ -160,14 +166,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `update_agent_model_catalog_entry` | `service.update_catalog` | 313 |
-| external_call | `_handle_model_error` | `isinstance` | 142 |
-| external_call | `_handle_model_error` | `HTTPException` | 143 |
-| unresolved_call | `_handle_model_error` | `exc.detail` | 145 |
-| external_call | `_handle_model_error` | `isinstance` | 147 |
-| external_call | `_handle_model_error` | `HTTPException` | 148 |
-| external_call | `_handle_agent_error` | `isinstance` | 107 |
-| external_call | `_handle_agent_error` | `HTTPException` | 108 |
+| unresolved_call | `update_agent_model_catalog_entry` | `service.update_catalog` | 329 |
+| external_call | `_handle_model_error` | `isinstance` | 158 |
+| external_call | `_handle_model_error` | `HTTPException` | 159 |
+| unresolved_call | `_handle_model_error` | `exc.detail` | 161 |
+| external_call | `_handle_model_error` | `isinstance` | 163 |
+| external_call | `_handle_model_error` | `HTTPException` | 164 |
+| external_call | `_handle_agent_error` | `isinstance` | 111 |
+| external_call | `_handle_agent_error` | `HTTPException` | 112 |
 | step_limit | `update_agent_model_catalog_entry` | `first 12 steps` | 0 |
 
 ## Behavior

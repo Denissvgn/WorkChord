@@ -1,6 +1,6 @@
 """The scheduler says which planned tasks it left without dates, and readiness says how to fix it."""
 
-from datetime import date
+from datetime import date, timedelta
 
 import httpx
 import pytest
@@ -120,13 +120,16 @@ async def test_schedule_omits_undated_deferred_work_on_apply(delivery_store):
 async def _ownerless_chain(db, scenario):
     """A task without a capacity owner, an owned dependent, an ownerless dependent and a dependent of that."""
     iteration_id = scenario.iterations[0]
-    saved = date(2026, 1, 5)
+    saved = date(2026, 1, 27)
     common = dict(status="planned", priority=3, iteration_id=iteration_id, project_id=scenario.projects[0],
                   effort_days=1, effort_hours=8, start_date=saved, end_date=saved)
     root = Task(title="Ownerless root", **common)
-    owned = Task(title="Owned dependent", assignee_id=scenario.capacity_rows[0], **common)
+    # Small efforts keep the owner's saved dates within one day's productive hours.
+    owner = {**common, "effort_hours": 2}
+    owned = Task(title="Owned dependent", assignee_id=scenario.capacity_rows[0], **owner)
     ownerless = Task(title="Ownerless dependent", **common)
-    tail = Task(title="Dependent of the ownerless dependent", assignee_id=scenario.capacity_rows[0], **common)
+    tail = Task(title="Dependent of the ownerless dependent", assignee_id=scenario.capacity_rows[0],
+                **{**owner, "start_date": date(2026, 1, 28), "end_date": date(2026, 1, 28)})
     db.add_all([root, owned, ownerless, tail])
     await db.flush()
     db.add_all([TaskDependency(task_id=owned.id, depends_on_id=root.id),
@@ -136,11 +139,14 @@ async def _ownerless_chain(db, scenario):
     return iteration_id, root.id, owned.id, ownerless.id, tail.id
 
 
-def _assert_chain_reported(unscheduled, root, owned, ownerless, tail):
-    by_id = {item["task_id"]: item for item in unscheduled}
+def _assert_chain_reported(kept_dates, root, owned, ownerless, tail):
+    by_id = {item["task_id"]: item for item in kept_dates}
+    assert set(by_id) == {root, owned, ownerless, tail}
     assert by_id[root]["reason"] == "no_assignee"
     for task_id in (root, owned, ownerless, tail):
-        assert by_id[task_id]["dates_cleared"] is True
+        day = "2026-01-28" if task_id == tail else "2026-01-27"
+        assert by_id[task_id]["start_date"] == by_id[task_id]["end_date"] == day
+        assert "were kept" in by_id[task_id]["message"]
     for task_id in (owned, ownerless, tail):
         assert by_id[task_id]["reason"] == "predecessor_unscheduled"
     assert by_id[owned]["also"] == []
@@ -152,14 +158,18 @@ def _assert_chain_reported(unscheduled, root, owned, ownerless, tail):
     assert "Ownerless dependent" in by_id[tail]["message"]
 
 
-async def test_schedule_names_ownerless_task_and_every_dependent_it_cleared(delivery_store):
+async def test_schedule_keeps_the_valid_dates_of_ownerless_task_and_every_dependent_it_cannot_place(delivery_store):
     factory, scenario, _ = delivery_store
     async with factory() as db:
         iteration_id, *ids = await _ownerless_chain(db, scenario)
         result = await SchedulerService(db).schedule_iteration(iteration_id)
-        _assert_chain_reported([item.model_dump() for item in result.unscheduled], *ids)
+        _assert_chain_reported([item.model_dump(mode="json") for item in result.kept_dates], *ids)
+        assert result.unscheduled == []
+        # The causes found only after placing (no assignee) explain themselves as decisions for kept tasks too.
+        explained = {decision.task_id for decision in result.decisions if decision.decision_type == "unavailable"}
+        assert {ids[0], ids[2]} <= explained
         rows = (await db.scalars(select(Task).where(Task.id.in_(ids)))).all()
-        assert all(row.start_date is None and row.end_date is None for row in rows)
+        assert all(row.start_date == row.end_date == date(2026, 1, 28 if row.id == ids[3] else 27) for row in rows)
 
 
 async def test_a_task_that_never_had_dates_is_not_reported_as_cleared(delivery_store):
@@ -186,7 +196,7 @@ async def _separate_shared_owner_iterations(db, scenario):
     await db.commit()
 
 
-async def test_rest_schedule_and_preview_responses_name_cleared_tasks(delivery_store, monkeypatch):
+async def test_rest_schedule_and_preview_responses_name_tasks_that_keep_their_dates(delivery_store, monkeypatch):
     # Forecasts start at the working date; pin it inside the seeded iteration.
     monkeypatch.setattr("app.services.work_metrics.working_today", lambda *_: date(2026, 1, 5))
     factory, scenario, _ = delivery_store
@@ -196,17 +206,17 @@ async def test_rest_schedule_and_preview_responses_name_cleared_tasks(delivery_s
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
         preview = await client.post(f"/api/iterations/{iteration_id}/schedule/preview", json={"changes": []})
         assert preview.status_code == 200, preview.text
-        _assert_chain_reported(preview.json()["schedule_result"]["unscheduled"], *ids)
+        _assert_chain_reported(preview.json()["schedule_result"]["kept_dates"], *ids)
         applied = await client.post(f"/api/iterations/{iteration_id}/schedule")
         assert applied.status_code == 200, applied.text
-        _assert_chain_reported(applied.json()["unscheduled"], *ids)
+        _assert_chain_reported(applied.json()["kept_dates"], *ids)
     async with factory() as db:
         rows = (await db.scalars(select(Task).where(Task.id.in_(ids)))).all()
         assert len(rows) == 4
-        assert all(row.start_date is None and row.end_date is None for row in rows)
+        assert all(row.start_date == row.end_date == date(2026, 1, 28 if row.id == ids[3] else 27) for row in rows)
 
 
-async def test_agent_schedule_preview_names_cleared_tasks(delivery_store):
+async def test_agent_schedule_preview_names_tasks_that_keep_their_dates(delivery_store):
     from app.models.agent import AgentActor
     from app.schemas.agent_planning import AgentPlanningCommandContext
     from app.services.agent_planning_service import AgentPlanningService
@@ -218,5 +228,155 @@ async def test_agent_schedule_preview_names_cleared_tasks(delivery_store):
         actor.scopes, actor.role = '["planning:write"]', "pm"
         await db.commit()
         receipt = await AgentPlanningService(db).preview_schedule(iteration_id, actor, command=AgentPlanningCommandContext(
-            idempotency_key="cleared-preview", rationale="See which tasks lose dates", correlation_id="cleared-preview"))
-        _assert_chain_reported(receipt.result["unscheduled"], *ids)
+            idempotency_key="kept-preview", rationale="See which tasks keep their dates", correlation_id="kept-preview"))
+        _assert_chain_reported(receipt.result["kept_dates"], *ids)
+
+
+async def _imported_plan_with_unplaceable_tasks(db, scenario):
+    """Imported dates on tasks the scheduler cannot place: valid ones, and one for each rule they can break."""
+    iteration = await db.get(Iteration, scenario.iterations[0])
+    common = dict(status="planned", priority=3, iteration_id=iteration.id, project_id=scenario.projects[0],
+                  effort_days=1, effort_hours=8)
+    inside = (date(2026, 1, 27), date(2026, 1, 28))
+    tasks = {
+        "valid": Task(title="Valid imported dates", start_date=inside[0], end_date=inside[1], **common),
+        "no_estimate": Task(title="Imported without estimate", assignee_id=scenario.capacity_rows[0],
+                            start_date=inside[0], end_date=inside[1], **{**common, "effort_days": None, "effort_hours": None}),
+        "inverted": Task(title="Inverted dates", start_date=inside[1], end_date=inside[0], **common),
+        "outside": Task(title="Dates after the iteration", start_date=iteration.end_date + timedelta(days=3),
+                        end_date=iteration.end_date + timedelta(days=4), **common),
+        "half": Task(title="Only a start date", start_date=inside[0], **common),
+        "too_early": Task(title="Starts before its earliest start", start_date=inside[0], end_date=inside[1],
+                          min_start_date=date(2026, 1, 29), **common),
+    }
+    db.add_all(tasks.values())
+    await db.commit()
+    return iteration.id, {key: task.id for key, task in tasks.items()}
+
+
+async def test_schedule_keeps_imported_dates_and_names_the_rule_they_break(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        iteration_id, ids = await _imported_plan_with_unplaceable_tasks(db, scenario)
+        result = await SchedulerService(db).schedule_iteration(iteration_id)
+        rows = {key: await db.get(Task, task_id, populate_existing=True) for key, task_id in ids.items()}
+        saved = {"valid": (date(2026, 1, 27), date(2026, 1, 28)), "no_estimate": (date(2026, 1, 27), date(2026, 1, 28)),
+                 "inverted": (date(2026, 1, 28), date(2026, 1, 27)),
+                 "outside": (date(2026, 2, 2), date(2026, 2, 3)), "too_early": (date(2026, 1, 27), date(2026, 1, 28))}
+
+    kept = {item.task_id: item for item in result.kept_dates}
+    assert kept[ids["valid"]].reason == "no_assignee" and kept[ids["valid"]].date_rule is None
+    assert kept[ids["no_estimate"]].reason == "no_estimate" and kept[ids["no_estimate"]].date_rule is None
+    # Dates that break a rule stay too: the run never leaves a task it cannot place without dates.
+    expected = {"inverted": "dates_inverted", "outside": "outside_iteration", "too_early": "before_min_start_date"}
+    for key, rule in expected.items():
+        item = kept[ids[key]]
+        assert item.date_rule == rule and f"rule {rule}" in item.message
+        assert (item.start_date, item.end_date) == saved[key]
+    for key, dates in saved.items():
+        assert (rows[key].start_date, rows[key].end_date) == dates
+
+    # Only a half-dated task has no period to keep: it is the one task whose dates the run removes.
+    removed = {item.task_id: item for item in result.unscheduled}
+    assert set(removed) == {ids["half"]}
+    assert removed[ids["half"]].date_rule == "dates_incomplete" and removed[ids["half"]].dates_cleared is True
+    assert "rule dates_incomplete" in removed[ids["half"]].message
+    assert rows["half"].start_date is None and rows["half"].end_date is None
+    assert ids["half"] not in kept
+
+
+async def test_kept_dates_say_when_they_start_before_the_planning_start_or_a_placed_prerequisite(delivery_store, monkeypatch):
+    monkeypatch.setattr("app.services.work_metrics.working_today", lambda *_: date(2026, 1, 20))
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        common = dict(status="planned", priority=3, iteration_id=scenario.iterations[0], project_id=scenario.projects[0],
+                      effort_days=1, effort_hours=2)
+        placed = Task(title="Placed prerequisite", assignee_id=scenario.capacity_rows[0], **common)
+        past = Task(title="Imported in the past", start_date=date(2026, 1, 6), end_date=date(2026, 1, 7), **common)
+        early = Task(title="Imported before its prerequisite", start_date=date(2026, 1, 21), end_date=date(2026, 1, 22), **common)
+        db.add_all([placed, past, early])
+        await db.flush()
+        db.add(TaskDependency(task_id=early.id, depends_on_id=placed.id))
+        await db.commit()
+        result = await SchedulerService(db).schedule_iteration(scenario.iterations[0])
+        placed_end = (await db.get(Task, placed.id)).end_date
+
+    kept = {item.task_id: item for item in result.kept_dates}
+    assert "start before the planning start (2026-01-20)" in kept[past.id].message
+    assert f"start on or before the end of its prerequisite 'Placed prerequisite' ({placed_end})" in kept[early.id].message
+    assert placed.id not in kept
+
+
+async def test_following_actual_dates_restores_a_half_dated_task_without_failing(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        common = dict(status="planned", priority=3, iteration_id=scenario.iterations[0], project_id=scenario.projects[0],
+                      effort_days=1, effort_hours=8)
+        half = Task(title="Half dated", start_date=date(2026, 1, 27), **common)
+        full = Task(title="Fully dated", start_date=date(2026, 1, 27), end_date=date(2026, 1, 28), **common)
+        db.add_all([half, full])
+        await db.commit()
+        result = await SchedulerService(db).schedule_iteration(
+            scenario.iterations[0], commit=False, follow_date=date(2026, 1, 12))
+        assert result.success
+        # Following actual dates restores every date and judges none; only a complete period is listed as kept.
+        assert (half.start_date, half.end_date) == (date(2026, 1, 27), None)
+        assert (full.start_date, full.end_date) == (date(2026, 1, 27), date(2026, 1, 28))
+        kept = {item.task_id: item for item in result.kept_dates}
+        assert half.id not in kept
+        assert kept[full.id].date_rule is None
+
+
+async def test_schedule_preview_and_apply_agree_on_an_imported_plan(delivery_store, monkeypatch):
+    monkeypatch.setattr("app.services.work_metrics.working_today", lambda *_: date(2026, 1, 5))
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        await _separate_shared_owner_iterations(db, scenario)
+        iteration_id, ids = await _imported_plan_with_unplaceable_tasks(db, scenario)
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        preview = await client.post(f"/api/iterations/{iteration_id}/schedule/preview", json={"changes": []})
+        assert preview.status_code == 200, preview.text
+        applied = await client.post(f"/api/iterations/{iteration_id}/schedule")
+        assert applied.status_code == 200, applied.text
+    previewed, result = preview.json(), applied.json()
+    for key in ("kept_dates", "unscheduled"):
+        assert previewed["schedule_result"][key] == result[key]
+        assert result[key], key
+    shown = {task["id"]: (task["start_date"], task["end_date"]) for task in previewed["tasks"]}
+    async with factory() as db:
+        rows = (await db.scalars(select(Task).where(Task.iteration_id == iteration_id))).all()
+        applied_dates = {row.id: (row.start_date, row.end_date) for row in rows}
+    for task_id, dates in shown.items():
+        applied_value = tuple(value.isoformat() if value else None for value in applied_dates[task_id])
+        assert tuple(value[:10] if value else None for value in dates) == applied_value
+    # A task the run could not place is never left without the dates it had, except one that had only one date.
+    undated = {task_id for task_id, dates in applied_dates.items() if dates == (None, None)}
+    assert undated & set(ids.values()) == {ids["half"]}
+    assert {item["task_id"] for item in result["unscheduled"]} == {ids["half"]}
+
+
+async def test_a_baseline_commit_does_not_commit_the_dates_it_kept(delivery_store, monkeypatch):
+    monkeypatch.setattr("app.services.work_metrics.working_today", lambda *_: date(2026, 1, 5))
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        await _separate_shared_owner_iterations(db, scenario)
+        day = date(2026, 1, 5)
+        common = dict(status="planned", priority=3, iteration_id=scenario.iterations[0], project_id=scenario.projects[0],
+                      effort_days=1, effort_hours=8, start_date=day, end_date=day)
+        root = Task(title="Ownerless root", **common)
+        kept = Task(title="Kept dependent", assignee_id=scenario.capacity_rows[0], **common)
+        db.add_all([root, kept])
+        await db.flush()
+        db.add(TaskDependency(task_id=kept.id, depends_on_id=root.id))
+        await db.commit()
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        applied = await client.post(f"/api/iterations/{scenario.iterations[0]}/schedule")
+        assert applied.status_code == 200, applied.text
+        assert {item["task_id"] for item in applied.json()["kept_dates"]} == {root.id, kept.id}
+    async with factory() as db:
+        for task_id in (root.id, kept.id):
+            row = await db.get(Task, task_id)
+            assert row.start_date == day and row.end_date == day
+            assert row.baseline_revision == 0 and row.baseline_start_date is None
+        placed = await db.get(Task, scenario.tasks["planned"])
+        assert placed.baseline_revision == 1

@@ -2,6 +2,7 @@
 
 from app.schemas.work_metrics import TaskMetricSignals
 from app.schemas.task_brief import TaskBrief
+from app.schemas.task_routing import RoutingCheck, RoutingResolution
 from datetime import date, datetime
 from enum import Enum
 from typing import Any, Literal, Optional
@@ -10,7 +11,7 @@ from pydantic import BaseModel, Field, field_validator
 
 from app.schemas.external_link import ExternalLinkResponse
 from app.schemas.team import AssigneeRecommendationResponse
-from app.utils.url_policy import URLPolicyError, normalize_stored_display_url
+from app.utils.source_link_policy import SourceLinkRefused, normalize_source_link
 
 MAX_TASK_TEXT_IMPORT_CHARS = 200_000
 
@@ -19,8 +20,8 @@ def _normalize_optional_url(value: Optional[str]) -> Optional[str]:
     if value is None or not str(value).strip():
         return None
     try:
-        return normalize_stored_display_url(value)
-    except URLPolicyError as exc:
+        return normalize_source_link(value)
+    except SourceLinkRefused as exc:
         raise ValueError(str(exc)) from exc
 
 
@@ -92,6 +93,9 @@ class TaskUpdate(BaseModel):
     external_key: Optional[str] = Field(default=None, max_length=255)
     source: Optional[str] = Field(default=None, max_length=100)
     source_url: Optional[str] = Field(default=None, max_length=1000)
+    routing_resolution: RoutingResolution = Field(default="check", description=(
+        "How an assignee or routing change treats the brief's structured routing: check it against the assignee and the "
+        "project's review policy (refused or warned as the project is configured), or save the suggested consistent routing."))
 
     @field_validator("source_url")
     @classmethod
@@ -231,6 +235,15 @@ class TaskResponse(TaskMetricSignals):
     milestone: Optional[TaskMilestone] = None
     assignee: Optional[TaskAssignee] = None
     status: str
+    displayed_state: Optional[str] = Field(
+        default=None,
+        description="The state to show: the stored status, or canceled / superseded for withdrawn work. "
+                    "Canceled work keeps the status it had when it was canceled; read this instead of status to count or show it.",
+    )
+    successor_task_id: Optional[int] = Field(
+        default=None, description="The task that delivers this task's work instead, for superseded work.")
+    successor_kind: Optional[Literal["replacement", "supersession"]] = Field(
+        default=None, description="How the successor delivers it: a clean replacement or an earlier supersession.")
     start_date: Optional[date]
     end_date: Optional[date]
     actual_start_date: Optional[date] = None  # When status changed to ACTIVE
@@ -261,6 +274,9 @@ class TaskResponse(TaskMetricSignals):
     updated_at: Optional[datetime] = None
     children: list["TaskResponse"] = []
     dependencies: list[int] = []
+    routing_check: Optional[RoutingCheck] = Field(default=None, description=(
+        "Present on a write that changed the assignee or routing: whether the routing is consistent, its issues "
+        "and a consistent replacement with a suggested reviewer."))
 
     class Config:
         from_attributes = True
@@ -320,6 +336,7 @@ class TaskBulkOperationResult(BaseModel):
     error: Optional[str] = None
     task: Optional[TaskResponse] = None
     assignee_recommendation: Optional[AssigneeRecommendationResponse] = None
+    routing_check: Optional[RoutingCheck] = None
 
 
 class TaskBulkOperationResponse(BaseModel):

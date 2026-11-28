@@ -31,14 +31,17 @@ What a task submitted against what GitHub shows now, and who acts next.
 flowchart LR
     n0["GitHubReconciliationResponse (backend/app/schemas/github.py)"]
     n1["BaseModel"]
-    n2["task_github_catch_up (backend/app/routers/task_domain.py)"]
-    n3["task_github_reconciliation (backend/app/routers/task_domain.py)"]
+    n2["backend/app/mcp_agent_tools.py"]
+    n3["task_github_catch_up (backend/app/routers/task_domain.py)"]
+    n4["task_github_reconciliation (backend/app/routers/task_domain.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
+    n4 --> n0
     click n0 "../modules/schemas_github.md"
-    click n2 "../modules/routers_task_domain.md"
+    click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_task_domain.md"
+    click n4 "../modules/routers_task_domain.md"
 ```
 
 ### Summary
@@ -57,5 +60,6 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `mcp_agent_tools` | import | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `task_github_catch_up` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `task_github_reconciliation` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |

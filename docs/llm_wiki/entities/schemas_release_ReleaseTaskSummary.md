@@ -22,6 +22,7 @@ Compact task identity embedded in release responses.
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `title` | `str` | `title` | Yes | No | — | — | — | — |
 | `status` | `str` | `status` | Yes | No | — | — | — | — |
+| `displayed_state` | `Optional[str]` | `displayed_state` | No | Yes | `None` | — | — | — |
 | `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
 
 ## Methods
@@ -46,7 +47,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_release](../modules/schemas_release.md) | 0 | `id`, `project_id`, `status`, `title` |
+| [schemas_release](../modules/schemas_release.md) | 0 | `displayed_state`, `id`, `project_id`, `status`, `title` |
 
 ### Structure
 

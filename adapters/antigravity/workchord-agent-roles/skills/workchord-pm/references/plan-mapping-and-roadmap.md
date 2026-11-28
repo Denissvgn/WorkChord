@@ -1,0 +1,221 @@
+# Plan Mapping and Roadmap
+
+Use this reference when the work already exists as a plan outside WorkChord, such as a plan document, a task index, or a generated task file, and you must load it so that people can read it on Projects, Roadmap view, the Plan page, Tasks, and Gantt. Use it also to check a plan that someone else loaded.
+
+## Contents
+
+- [Know what a loaded plan looks like](#know-what-a-loaded-plan-looks-like)
+- [Map each plan concept to a record](#map-each-plan-concept-to-a-record)
+- [Staff the iteration with the agents that do the work](#staff-the-iteration-with-the-agents-that-do-the-work)
+- [Choose the assignee of each task](#choose-the-assignee-of-each-task)
+- [Load in this order](#load-in-this-order)
+- [Map a prerequisite that needs merged code](#map-a-prerequisite-that-needs-merged-code)
+- [Keep the schedule calculated](#keep-the-schedule-calculated)
+- [Keep Projects, Roadmap view true](#keep-projects-roadmap-view-true)
+- [Check the plan before you report it](#check-the-plan-before-you-report-it)
+- [Shortcuts that leave the plan unreadable](#shortcuts-that-leave-the-plan-unreadable)
+- [When an operator imports the plan](#when-an-operator-imports-the-plan)
+
+## Know What a Loaded Plan Looks Like
+
+Loading tasks is one fifth of the job. A person judges the plan in five places, and each place reads different records:
+
+| Where people look | What they must see | Records that produce it |
+| --- | --- | --- |
+| Projects, Roadmap view | A dated bar for every project under its initiative, with milestone markers | Project `start_date` and `target_date`; milestone `target_date` |
+| Projects | Status that matches reality, a health value, an owner | Project `status`, `health`, `owner_profile_id`; project updates |
+| Plan | 6 of 6 checkpoints | Capacity rows, assigned leaves with effort, an applied schedule |
+| Tasks | An assignee on every planned leaf and a milestone on every task that belongs to one | `assignee_id`, `milestone_id` |
+| Gantt | A calculated bar for every planned leaf, and one sequence per assignee | Schedule preview and apply |
+
+A project with no dates and no dated milestone has no bar on Projects, Roadmap view, however many tasks it holds. A task without an assignee has no calculated dates, so Gantt cannot show when it happens.
+
+## Map Each Plan Concept to a Record
+
+Give every fact in the source plan one WorkChord record. A label may repeat a fact as a filter; it must never be the only place the fact lives, because people cannot group, date, assign, or schedule by a label.
+
+| Plan concept | WorkChord record | Not |
+| --- | --- | --- |
+| Programme or theme that spans projects | Initiative, linked through the project's `initiative_id` | A label or a title prefix |
+| Deliverable with an owner and a target | Project with `start_date`, `target_date`, `status`, and `owner_profile_id` | An iteration name |
+| Phase, stage, or intermediate outcome | Milestone record with a `target_date`, and `milestone_id` on its tasks | A `phase:*` or `milestone:*` label, or an ID prefix |
+| Shipping or rollout boundary | Release record | A milestone |
+| Period in which the work is done | Iteration with a calendar | A project date range |
+| The plan's own task ID | `external_key`; you may also prefix the title with it | The WorkChord task ID |
+| Task text | Typed `brief` | Description only |
+| Estimate | `effort_hours` | Start and end dates |
+| "B needs A first" (B may start once A is Implemented) | `depends_on` on B | Prose, sort order, or priority |
+| "B needs A's code on branch X first" (A Accepted and merged on X) | Delivery prerequisite on B with `target_branch` X | `depends_on`; it releases B at Implemented, before the code is on X |
+| "Not before this date", "no later than this date" | `min_start_date`, `max_end_date` | `start_date`, `end_date` |
+| The person, agent, or model that does the task | Capacity row in `assignee_id`, then an agent assignment at dispatch | A `model:*`, `agent:*`, or `owner:*` label |
+| Reviewer | The reviewer profile's capacity row, `reviewer_profile_id` on the execution assignment, then a verification assignment after submit | A sentence in the brief only |
+| Difficulty band or model tier | Routing assessment when the server advertises model-aware routing; otherwise the headed paragraph in the brief's `context` | A `band:*` or `effort:*` label |
+| Kind of work | The governed `agent` label plus one active `cap:*` label | A free-text class label only |
+| Dates written in the source plan | Nothing. The scheduler calculates dates. | `start_date`, `end_date` |
+
+When the source plan carries a real external date, record it as a constraint or as a milestone or project target, and name its source in the brief.
+
+## Staff the Iteration with the Agents That Do the Work
+
+An agent team is staffed like a team of people: each agent that carries work has a reusable profile, and that profile has one capacity row in the iteration.
+
+Three server rules decide the shape:
+
+- An agent is bound to at most one profile. An operator sets the binding; you read it on the agent roster.
+- An iteration holds at most one capacity row per profile.
+- The scheduler places one row's tasks one after another and places different rows side by side. An agent also works on one task at a time. So a row is an agent's queue, and Gantt grouped by assignee shows what each agent does next.
+
+When two agents share one profile, they share one row, and the schedule shows their work as one sequence. Ask the operator for a profile per agent when they must work side by side.
+
+1. Read the agent roster. List every enabled worker and reviewer with its profile binding. An agent without a profile cannot carry planned effort; ask the operator to bind it.
+2. Read each profile. An agent profile has kind `agent` or `hybrid`, automation enabled, and an assignment mode of `execution` for workers or `verification` for reviewers. Enforced model-aware routing refuses anything else with `profile_kind_human`, `profile_automation_disabled`, or `profile_assignment_mode_missing`.
+3. Create one capacity row per profile and pass its `profile_id`. A row created without `profile_id` is matched to a profile by email or name, and otherwise creates a new human profile that no agent is bound to.
+4. Set `availability_percent`, `operational_utilization`, and `professionalism_coefficient` from the team's policy. New rows reserve 20 percent for operations; keep that only when the agent really has other duties in this period.
+5. Add the reviewer profiles as rows too. Verification routing finds a reviewer's row by its profile, and review load is then visible beside the work.
+6. Add a row for every person who carries a task, such as a sign-off or a manual step.
+7. Read `plan-readiness` and require the `team` checkpoint to be `done`.
+
+## Choose the Assignee of Each Task
+
+Set `assignee_id` to the row of the profile whose agent you intend to dispatch. The server holds you to it later: an execution assignment's `team_member_id` must equal the task's assignee, and under enforced model-aware routing the dispatched agent's profile must equal the assignee row's profile. It reports a gap as `capacity_owner_missing` or `actor_capacity_profile_mismatch`.
+
+- When the source plan names a model or tier per task, find the agent bound to it and assign that agent's row. Do not keep the choice in a label.
+- When the plan names a ladder of fallbacks, assign the first rung. A later escalation is a reassignment to the next row followed by a new schedule preview.
+- When the plan names nobody, ask a person who should take the tasks. Group the leaves by capability label, read the assignee recommendations and each row's workload, propose a row per group, and assign only after the person answers. The question and its record are described in [Prepare the team for the plan](team-capacity-and-calendar.md#prepare-the-team-for-the-plan).
+- Assign a person's task to that person's row, without the `agent` label.
+
+Choose the reviewer in the same pass. The reviewer's profile must differ from the assignee's profile; enforced model-aware routing refuses the review otherwise with `verification_profile_not_independent`.
+
+Record the first rung, the escalation ladder and the reviewer as `brief.routing`, not only as prose. `first_rung`, `escalation[]` and `reviewer` each name a model catalog entry by `catalog_key` (optionally with `harness`); the reviewer may also carry `profile_id` and `instructions`. The server renders the Routing section of the brief from it. Pass `reviewer.profile_id` as `reviewer_profile_id` when you create the execution assignment. A routing-only change keeps the brief revision and the recorded evidence but clears acceptance.
+
+When you reassign a task, read `routing_check` in the answer. A first rung the assignee's agent does not run (`first_rung_not_assignee_model`) or a reviewer profile that is the assignee's own (`reviewer_profile_is_assignee_profile`) is a conflict whatever the project policy; a reviewer that shares the publisher of the assignee, of the first rung or of a recorded contributor, or that no verification profile runs, is a conflict only under `require_different_review_publisher`. A conflict is refused with `routing_inconsistent` (or saved with a warning when the project's `routing_conflict_mode` is `warn`). Send `routing_resolution: "apply_suggestion"` with the reassignment, single or bulk (`payload.routing_resolution`), to save the consistent routing the server suggests, or adjust the routing yourself. Use `agent_get_task_routing_check` with a proposed `assignee_id` to see the outcome first. For a brief that still names its routing in text, run `agent_convert_task_routing` with the current `expected_version` (required for the preview too) and `apply: false`, settle any `unresolved` sentence by passing `routing`, then send `apply: true`.
+
+## Load in This Order
+
+Each step is one audited command per record, in the order below. Derive each idempotency key from the plan's own ID for the record, so that a second run of the same load changes nothing.
+
+1. **Authority.** Confirm `planning:write` and `team:write`. Without `team:write` you cannot staff the iteration; stop and name the person who must.
+2. **Project.** Create or update it with `start_date`, `target_date`, `owner_profile_id`, and `initiative_id`. Select an existing initiative. The agent contract has no initiative command, so ask a person to create a missing one.
+3. **Milestones.** Create one record per phase or intermediate outcome, with the target date the plan commits to. Leave the date empty when the plan commits to none; step 9 fills it.
+4. **Iteration.** Select the annual work calendars covering its dates as described in [Configure Calendars and Iterations](team-capacity-and-calendar.md#configure-calendars-and-iterations). Start it on the day work may begin.
+5. **People and capacity.** Prepare the team: check the existing profiles, rows, and agents against the workers the plan names, add the missing ones, and ask a person who takes the tasks for which the plan names nobody. Read `plan-readiness` until `team` is `done`.
+6. **Tasks.** Create predecessors before the tasks that depend on them, because `depends_on` takes WorkChord task IDs. Send for each leaf: `title`, typed `brief`, `effort_hours`, `priority`, `assignee_id`, `milestone_id`, `project_id`, `depends_on`, `tags`, `external_key`, and `source`. Send `min_start_date` or `max_end_date` only for a real constraint. Send no `start_date` and no `end_date`.
+7. **Compare.** Re-read the iteration's tasks. Every plan ID appears once as an `external_key`, and the dependency edges equal the plan's. `depends_on` works inside one iteration; when a task waits for work in another iteration, or needs another task's code on a branch, record the delivery prerequisite with `agent_add_delivery_dependency` (see [Map a prerequisite that needs merged code](#map-a-prerequisite-that-needs-merged-code)).
+8. **Schedule.** Preview, read every `unscheduled` entry with its reason code, correct the input it names, and apply.
+9. **Roadmap.** Read the calculated end of each milestone's last task. Fill an empty milestone `target_date` with it. When a committed date is earlier than the calculated end, report the gap; do not move the commitment.
+10. **Check.** Run [Check the plan before you report it](#check-the-plan-before-you-report-it).
+11. **Dispatch.** Only now create agent assignments, with `team_member_id` equal to the task's assignee and `reviewer_profile_id` set. Give each agent's queue the order its row has on Gantt.
+12. **Report.** Publish a project update with the plan size, the calculated end, and the open risks.
+
+## Map a Prerequisite That Needs Merged Code
+
+`depends_on` is an ordering edge inside one iteration. It releases the dependent task when the predecessor is Implemented (`resolved`) or Accepted (`closed`). Implemented means the worker submitted; the pull request may still be open and the target branch unchanged. Use `depends_on` when the dependent task only needs the predecessor submitted. Projects that rely on it keep that behavior; nothing here changes it.
+
+When the dependent task's brief needs the predecessor's changed sources on a named branch, `depends_on` is the wrong edge, even inside one iteration. Record a **delivery prerequisite** instead, with the server's `delivery-dependencies-v1` feature:
+
+- The PM agent records it with `agent_add_delivery_dependency` (`POST /api/tasks/{task_id}/delivery-dependencies`), payload `{kind: "task", target_id: <predecessor task ID>, expected_version: <dependent task version>, target_branch: "<branch>"}`, plus an idempotency key, a rationale and a correlation ID. A person (project manager or workspace operator) can do the same on the task page. `agent_list_delivery_dependencies` (`GET /api/tasks/{task_id}/delivery-dependencies`) reads the edges with their IDs.
+- The PM agent changes or clears the branch of an existing edge with `agent_retarget_delivery_dependency` (`PATCH /api/tasks/{task_id}/delivery-dependencies/{edge_id}` with `{expected_version, target_branch}`; `null` keeps only the Accepted gate). A person does the same on the task page.
+- Without `target_branch`, the edge waits for the predecessor to be Accepted. With it, the edge also waits for a merge into that branch. `target_branch` applies to a leaf task prerequisite, not to a milestone or a summary task.
+- A merge never accepts a task. Acceptance stays with the independent reviewer's verdict; the merge is evidence read beside it.
+
+Read the hold on the pipeline (`GET /api/agent/pipeline`, `agent_get_pipeline`): each task there has `delivery_holds`, one entry per unsatisfied prerequisite with `reason`, `merge` (the observed pull requests and their target branches), and `hold` with `case`, `next_owner` and `next_action`. The task's execution context shows the same list, and its blocker codes name `delivery_prerequisite_unavailable`, plus `delivery_merge_not_observed` while the merge is the missing piece. Such a task waits in `assigned_waiting` and never appears in `start_ready` while a hold remains. Read these entries, not the iteration's dependency list alone, before you report a task start-ready.
+
+| Observed state of the predecessor | Reason | `hold.case` | Next owner |
+| --- | --- | --- | --- |
+| Implemented, pull request open or draft | `prerequisite_acceptance_required` | `open_pull_request` | `reviewer` reviews and accepts; the code must still merge into the branch |
+| Not yet submitted | `prerequisite_acceptance_required` | `not_accepted` | `worker` |
+| Accepted, no pull request observed, or never read from GitHub | `prerequisite_merge_not_observed` | `not_observed` | `pm`: link the pull request if missing, then run GitHub catch-up |
+| Accepted, pull request still open | `prerequisite_merge_not_observed` | `open_pull_request` | `pm`: have a person with merge rights merge it into the branch, then run catch-up |
+| Accepted, merged but the base branch or merge commit is not recorded | `prerequisite_merge_not_observed` | `merge_branch_unknown` | `pm`: run GitHub catch-up (`agent_run_github_catch_up`) on the predecessor to read the merge |
+| Accepted, merged into another recorded branch | `prerequisite_merge_not_observed` | `merged_on_other_branch` | `pm`: merge into the named branch, or change the edge's branch with `agent_retarget_delivery_dependency` |
+| Accepted, pull request closed unmerged | `prerequisite_merge_not_observed` | `closed_unmerged` | `pm`: reopen it, or record a task replacement |
+| Closed, but its acceptance no longer matches its current version | `prerequisite_acceptance_required` | `not_accepted` | `pm`: reopen it; it must be resubmitted and accepted again by the independent reviewer |
+| Canceled | `prerequisite_acceptance_required` | `not_accepted` | `pm`: record a replacement task |
+| Accepted, merged into the named branch with a merge commit | none | none | none: the task is released |
+
+Readiness reads stored pull request observations only and never calls GitHub. A missing observation therefore reads as not observed with next owner `pm`. To refresh one, the PM agent runs `agent_run_github_catch_up` (`POST /api/tasks/{predecessor_id}/github-reconciliation/catch-up`) on the predecessor; a person can run catch-up from the task page. `agent_get_github_reconciliation` (`GET /api/tasks/{predecessor_id}/github-reconciliation`) shows the same observations with the submitted commit, the observed head, checks, `differences`, and `next_owner`. The merge evidence you act on is an observed `merge_commit_sha` on the named target branch for a pull request linked to the predecessor task. A merge seen on GitHub does not release the task until the predecessor is also Accepted. An observation (catch-up or webhook) keeps the predecessor's acceptance when the observed head equals the latest submitted commit; a head pushed after acceptance, or a missing head, makes the acceptance stale; the PM reopens the task, and it must be resubmitted and accepted again by the independent reviewer.
+
+If the predecessor's work is withdrawn and rebuilt, record the replacement as described in [Replace unattributable work](verification-rework-and-recovery.md#replace-unattributable-work); delivery dependents move to the replacement, and the replacement's own pull request is the evidence.
+
+## Keep the Schedule Calculated
+
+The server refuses to begin work on a task with `schedule_missing` when the task has no dates. That is an answer from the plan, not an obstacle to remove: the task was never scheduled, usually because it has no assignee or no effort value. Fix the input and schedule. Do not write dates to clear it.
+
+The schedule you apply is a forecast. What keeps the order of the work is the dependency links and each agent's queue:
+
+- When the server advertises `schedule-follows-actuals-v1`, an agent begins a task as soon as its dependencies are done, whatever its calculated date. The server then moves that task to today and recalculates the planned work behind it, and does the same when the task is submitted. Agents that work faster than the estimates never wait for the calendar, and Gantt keeps showing what is true.
+- Record every real ordering rule as a dependency. An order that exists only in the dates is not enforced.
+- Record a real "not before" as `min_start_date` on the task or as the assignment's not-before time. The server holds such a task back with `min_start_future` or `not_before_future`.
+- On an older server, a task waits for its calculated start date (`scheduled_start_future`), and finishing early frees nothing. Tell the person who owns the plan; do not write dates to work around it.
+
+A calculation you run moves Planned leaves only. Tasks that are Active, Implemented, or Accepted keep their dates. Preview again after every change to an assignee, effort value, dependency, constraint, capacity row, or vacation.
+
+## Keep Projects, Roadmap view True
+
+Projects, Roadmap view reads project and milestone records, never tasks. Update them as the work moves:
+
+| Record | Set | When |
+| --- | --- | --- |
+| Project `status` | `planned` → `active` | The first task of the project starts |
+| Project `status` | `completed`, `paused`, or `canceled` | The outcome is accepted, on hold, or dropped |
+| Project `health` | `on_track`, `at_risk`, or `off_track` | With every project update; `unknown` is valid only before the first update |
+| Project `target_date` | The committed date | At planning; later only with the owner's recorded approval |
+| Milestone `status` | `active`, then `completed` | Its first task starts; its last task is Accepted |
+| Milestone `target_date` | The committed or calculated date | At planning, and after a schedule change that the owner accepted |
+
+Initiative owner, health, and target date belong to a person. Report an initiative that has none of them as a gap in your project update.
+
+## Check the Plan Before You Report It
+
+Read these values and put them in your report. A plan passes when every row holds.
+
+| Check | Read | Pass |
+| --- | --- | --- |
+| Roadmap bar | Project | `start_date` and `target_date` are set |
+| Project ownership | Project | `owner_profile_id` is set, and `status` matches the work |
+| Milestones | Project milestones | One record per plan phase, each with a `target_date` |
+| People and capacity | `plan-readiness` | `team` is `done`; every row has a profile |
+| Agent rows | Agent roster and iteration team | Every agent you will dispatch is bound to a profile that has a row |
+| Assignees | `plan-readiness` | `tasks_without_assignee` is `0` |
+| Estimates | `plan-readiness` | `tasks_without_effort` is `0` |
+| Milestone links | Tasks | Every task of a plan phase has that `milestone_id` |
+| Dependencies | Tasks | The edges equal the source plan's |
+| Schedule | Schedule preview | `unscheduled` is empty, or each entry has a recorded reason and owner |
+| Checkpoints | `plan-readiness` | 6 of 6. When `review` is `warn`, report 5 of 6 and name every risk it counts |
+| Gantt | Gantt | Every planned leaf has dates; no leaf is dated without an assignee |
+
+Report the result as numbers: tasks, assigned, scheduled, milestones, calculated end, and "n of 6". When a row fails, name it, the count, and the person who must act.
+
+## Shortcuts That Leave the Plan Unreadable
+
+Each of these makes a plan look loaded while people can read neither who does the work nor when:
+
+- **Loading tasks into an iteration that has no capacity rows.** Every task stays unassigned, and the plan stops at 2 of 6.
+- **Writing start and end dates so that tasks count as scheduled or ready.** The dates say nothing about capacity or order, and the next calculation clears them. Telling people not to press Schedule is a sign that the dates are not real.
+- **Giving every task the same start date so that agents may start at once.** Order then lives only outside WorkChord. Record the order as dependencies, assign rows, and schedule; agents start work whose dependencies are done, and the dates follow.
+- **Keeping phases, models, agents, or reviewers in labels.** People cannot group, date, or assign by them, and Projects, Roadmap view stays empty.
+- **Deleting an iteration and loading it again to change dates.** Task IDs, history, and assignments are lost. Change inputs and schedule.
+- **Leaving the project without dates, status, or owner** because the tasks are in. Projects, Roadmap view reads the project, not its tasks.
+- **Using the admin key or an application route** because the agent contract felt slow for a large plan. Load through the audited planning commands, or hand the import to an operator with a reviewed dry run as described below.
+
+## When an Operator Imports the Plan
+
+The iteration import routes take one plan document and require the admin key. They are an operator surface: never call them with an agent key, and never ask for the admin key. You still review the exact effect before an operator imports a plan, with a dry run under your planning scope:
+
+1. Call `agent_preview_iteration_import` with `import_data` (the file's JSON object) and `iteration_id` (omit it for a file that creates a new iteration). Over REST, use `POST /api/agent/planning/iterations/{id}/import/dry-run` or `POST /api/agent/planning/iterations/import/dry-run` with the file as multipart `file`. It needs `planning:write`, planning access to every project the file names and read access to every existing profile it refers to, and it writes nothing. A file may have at most 100 tasks, 5 levels of subtasks, 200 dependency references, 50 team members and 100 vacations, and the preview must finish within 5 seconds; split larger plans.
+2. Review `changes`: created, changed and removed tasks, dependencies, links, dates, team members and profiles. New rows are named `new-task-N`, `new-member-N` and `new-profile-N`.
+3. Hand the operator the unchanged file and the returned `review_digest`. The operator sends both to the import route (multipart fields `file` and `review_digest`). The write applies exactly the reviewed change set or is refused with `import_review_file_changed`, `import_review_target_changed` or `import_review_changes_differ`. After a refusal, run the preview again and review the new changes; never edit the digest or the file to make it pass.
+
+When an operator will import a document you prepare, the document must already describe a complete plan:
+
+- `team_members` holds one entry per capacity row, and each `name` equals the display name of an existing profile. The import matches rows to profiles by name; an unmatched name creates a new human profile.
+- Every leaf task has `assignee_name` equal to one of those names, `effort_hours`, a typed `brief`, `external_key`, `dependency_external_keys`, `tags`, and `milestone_id` of a milestone that already exists in the project.
+- No task has `start_date` or `end_date`.
+
+After the import:
+
+1. The new iteration's name starts with "Imported:". Ask the operator to rename it, or rename it yourself with the iteration update command.
+2. Re-read the iteration team. Confirm that each row links the intended profile.
+3. Preview and apply the schedule yourself, then run [Check the plan before you report it](#check-the-plan-before-you-report-it).
+
+A document with an empty `team_members` list produces a plan at 2 of 6. Return it to its author instead of repairing the result task by task.

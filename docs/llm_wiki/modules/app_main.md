@@ -31,6 +31,7 @@ _Auto-generated from `backend/app/main.py`._
 | `fastapi.exceptions` | `RequestValidationError` |
 | `fastapi.middleware.cors` | `CORSMiddleware` |
 | `fastapi.responses` | `JSONResponse`, `PlainTextResponse` |
+| `hmac` | `hmac` |
 | `sqlalchemy.exc` | `TimeoutError` |
 
 ## Local dependency map
@@ -53,7 +54,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (49) |
+| Inbound | `backend` (65) |
 | Inbound | `scripts` (4) |
 | Outbound | `backend` (49) |
 
@@ -63,7 +64,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 102 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 118 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -84,6 +85,7 @@ flowchart LR
 | `database_pool_timeout_error` | *(async)* `(request: Request, exc: SQLAlchemyTimeoutError) -> JSONResponse` | `@app.exception_handler(SQLAlchemyTimeoutError)` | Turn pool saturation into an observable retryable failure. |
 | `health_check` | *(async)* `()` | `@app.get('/health')` | Backward-compatible process liveness endpoint. |
 | `liveness_check` | *(async)* `()` | `@app.get('/health/live')` | Report only whether this process can service HTTP. |
+| `_readiness_detail_authorized` | `(request: Request, expected: str) -> bool` | — | Compare the optional readiness-detail token in constant time. |
 | `readiness_check` | *(async)* `(request: Request)` | `@app.get('/health/ready')` | Fail when the database is unavailable or not at packaged Alembic head. |
 | `build_identity` | *(async)* `()` | `@app.get('/.well-known/workchord-build.json')` | Expose non-secret immutable build identity for internal attestation. |
 | `metrics_endpoint` | *(async)* `()` | `@app.get('/metrics', response_class=PlainTextResponse)` | Export process/database qualification inputs without SQL or secrets. |

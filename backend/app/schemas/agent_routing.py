@@ -38,6 +38,7 @@ from app.services.agent_routing_policy import (
     LatencyTier,
     ROUTING_POLICY_VERSION,
     ROUTING_SKILL_KEYS,
+    ModelEffort,
     ReasoningTier,
     ReviewMode,
     RoutingBlockerCode,
@@ -81,6 +82,7 @@ RoutingDigest = Annotated[
 ]
 ModelContextTier = ContextTier
 ModelCostTier = CostTier
+ModelEffortSetting = ModelEffort
 ModelLatencyTier = LatencyTier
 TaskDifficultyBand = DifficultyBand
 TaskReviewMode = ReviewMode
@@ -121,6 +123,22 @@ def _normalize_routing_keys(
     if len(normalized) != len(set(normalized)):
         raise ValueError(f"{label} entries must be unique")
     return sorted(normalized)
+
+
+def _normalize_qualification_keys(value: Any, *, label: str) -> Any:
+    """Normalize qualification key names; whether each is known is checked later.
+
+    Built-in keys are fixed, but declared keys live in the deployment's
+    registry, so the service refuses a key outside both before it writes.
+    """
+
+    if not isinstance(value, list):
+        return value
+    return _normalize_routing_keys(
+        value,
+        label=label,
+        maximum_entries=MAX_ROUTING_TAGS,
+    )
 
 
 def _normalize_required_skill_levels(value: Any) -> Any:
@@ -234,13 +252,30 @@ class AgentModelCatalogFields(RoutingContractModel):
     publisher_key: RoutingKey | None = Field(default=None, description="Operator-verified canonical model publisher, independent of serving provider.")
     configured_model_alias: str = Field(..., min_length=1, max_length=255)
     reasoning_tier: ReasoningTier
+    effort: ModelEffortSetting = Field(
+        default=ModelEffort.UNKNOWN,
+        description="Reasoning-effort setting this entry runs at; unknown when not recorded.",
+    )
     context_tier: ModelContextTier
     modality_tags: list[str] = Field(default_factory=lambda: ["text"])
     cost_tier: ModelCostTier
+    local_first: bool = Field(
+        default=False,
+        description="Prefer this free or local model over a hosted one of equal adequacy; never overrides a gate.",
+    )
     latency_tier: ModelLatencyTier
+    qualification_keys: list[str] = Field(
+        default_factory=list,
+        description="Built-in or declared qualification keys this entry holds at its effort setting.",
+    )
     enabled: bool = True
     revision: PositiveRevision = 1
     last_verified_at: datetime | None = None
+
+    @field_validator("qualification_keys", mode="before")
+    @classmethod
+    def validate_qualification_keys(cls, value: Any) -> Any:
+        return _normalize_qualification_keys(value, label="qualification_keys")
 
     @field_validator("key", mode="before")
     @classmethod
@@ -289,13 +324,24 @@ class AgentModelCatalogUpdate(RoutingContractModel):
         max_length=255,
     )
     reasoning_tier: ReasoningTier | None = None
+    effort: ModelEffortSetting | None = None
     context_tier: ModelContextTier | None = None
     modality_tags: list[str] | None = None
     cost_tier: ModelCostTier | None = None
+    local_first: bool | None = None
     latency_tier: ModelLatencyTier | None = None
+    qualification_keys: list[str] | None = Field(
+        default=None,
+        description="Replaces the entry's qualification keys. An effort change without this field clears them.",
+    )
     enabled: Literal[True] | None = None
     last_verified_at: datetime | None = None
     reconcile_live_assignments: bool = False
+
+    @field_validator("qualification_keys", mode="before")
+    @classmethod
+    def validate_qualification_keys(cls, value: Any) -> Any:
+        return _normalize_qualification_keys(value, label="qualification_keys")
 
     @field_validator("reasoning_tier", mode="before")
     @classmethod
@@ -335,10 +381,13 @@ class AgentModelCatalogUpdate(RoutingContractModel):
             "provider",
             "configured_model_alias",
             "reasoning_tier",
+            "effort",
             "context_tier",
             "modality_tags",
             "cost_tier",
+            "local_first",
             "latency_tier",
+            "qualification_keys",
             "enabled",
         }
         invalid = sorted(
@@ -496,7 +545,9 @@ class AgentModelMutationReceipt(RoutingContractModel):
 
     operation: str = Field(..., min_length=1, max_length=100)
     actor_id: int | None = Field(..., ge=1)
-    target_type: Literal["model_catalog", "model_binding"]
+    target_type: Literal[
+        "model_catalog", "model_binding", "routing_qualification_key", "routing_calibration_contract"
+    ]
     target_id: int = Field(..., ge=1)
     idempotency_key: str = Field(..., min_length=1, max_length=255)
     rationale: str = Field(..., min_length=1, max_length=2_000)
@@ -531,16 +582,38 @@ class RequiredModelEnvelope(RoutingContractModel):
 
     minimum_reasoning_tier: ReasoningTier
     minimum_context_tier: ModelContextTier
+    minimum_effort: ModelEffortSetting | None = Field(
+        default=None,
+        description="Lowest effort setting a candidate model may run at; omitted when the task states no effort requirement.",
+        exclude_if=lambda value: value is None,
+    )
     modality_tags: list[str] = Field(default_factory=lambda: ["text"])
     tool_tags: list[str] = Field(default_factory=list)
     allow_source_only_review: bool = Field(default=False, strict=True, exclude_if=lambda value: not value)
     data_policy_tags: list[str] = Field(default_factory=list)
+    qualification_keys: list[str] = Field(
+        default_factory=list,
+        description="Built-in or declared qualification keys the candidate's catalog entry must hold; omitted when none are required.",
+        exclude_if=lambda value: not value,
+    )
+
+    @field_validator("qualification_keys", mode="before")
+    @classmethod
+    def validate_qualification_keys(cls, value: Any) -> Any:
+        return _normalize_qualification_keys(value, label="qualification_keys")
 
     @field_validator("minimum_reasoning_tier", mode="before")
     @classmethod
     def require_integer_reasoning_tier(cls, value: Any) -> Any:
         if isinstance(value, bool) or not isinstance(value, int):
             raise ValueError("minimum_reasoning_tier must be an integer")
+        return value
+
+    @field_validator("minimum_effort")
+    @classmethod
+    def require_ranked_effort(cls, value: ModelEffort | None) -> ModelEffort | None:
+        if value == ModelEffort.UNKNOWN:
+            raise ValueError("minimum_effort must name a ranked effort level, not unknown")
         return value
 
     @field_validator("modality_tags", "tool_tags", "data_policy_tags")
@@ -980,11 +1053,18 @@ class AgentRoutingCandidate(RoutingContractModel):
         max_length=0,
     )
     reasoning_tier: ReasoningTier
+    effort: ModelEffortSetting = ModelEffort.UNKNOWN
     context_tier: ModelContextTier
     modality_tags: list[str] = Field(default_factory=list)
     tool_tags: list[str] = Field(default_factory=list)
     data_policy_tags: list[str] = Field(default_factory=list)
+    qualification_keys: list[str] = Field(
+        default_factory=list,
+        description="Required qualification keys this candidate's catalog entry holds.",
+        exclude_if=lambda value: not value,
+    )
     cost_tier: ModelCostTier
+    local_first: bool = False
     latency_tier: ModelLatencyTier
     available_capacity_days: float = Field(..., ge=0)
     committed_effort_days: float = Field(..., ge=0)
@@ -1013,6 +1093,11 @@ class AgentRoutingCandidate(RoutingContractModel):
     @classmethod
     def validate_capability_tags(cls, value: list[str], info: Any) -> list[str]:
         return _normalize_tags(value, label=info.field_name)
+
+    @field_validator("qualification_keys", mode="before")
+    @classmethod
+    def validate_qualification_keys(cls, value: Any) -> Any:
+        return _normalize_qualification_keys(value, label="qualification_keys")
 
     @field_validator(
         "profile_revision",
@@ -1062,12 +1147,19 @@ class AgentRoutingExclusion(RoutingContractModel):
     insufficient_skill_keys: list[RoutingKey] = Field(default_factory=list)
     blocking_weakness_keys: list[RoutingKey] = Field(default_factory=list)
     reasoning_tier: ReasoningTier | None = None
+    effort: ModelEffortSetting | None = None
     context_tier: ModelContextTier | None = None
     cost_tier: ModelCostTier | None = None
+    local_first: bool | None = None
     latency_tier: ModelLatencyTier | None = None
     missing_modality_tags: list[str] = Field(default_factory=list)
     missing_tool_tags: list[str] = Field(default_factory=list)
     missing_data_policy_tags: list[str] = Field(default_factory=list)
+    missing_qualification_keys: list[str] = Field(
+        default_factory=list,
+        description="Required qualification keys this candidate's catalog entry does not hold.",
+        exclude_if=lambda value: not value,
+    )
     available_capacity_days: float | None = None
     committed_effort_days: float | None = Field(default=None, ge=0)
     workload_ratio: float | None = Field(default=None, ge=0)
@@ -1130,6 +1222,14 @@ class AgentRoutingExclusion(RoutingContractModel):
     def validate_missing_tags(cls, value: list[str], info: Any) -> list[str]:
         return _normalize_tags(value, label=info.field_name)
 
+    @field_validator("missing_qualification_keys", mode="before")
+    @classmethod
+    def validate_missing_qualification_keys(cls, value: Any) -> Any:
+        return _normalize_qualification_keys(
+            value,
+            label="missing_qualification_keys",
+        )
+
     @field_validator(
         "profile_revision",
         "configured_model_alias",
@@ -1153,6 +1253,21 @@ class AgentRoutingPreviewResponse(RoutingContractModel):
     runtime_availability: Literal["unknown"] = "unknown"
     eligibility_basis: Literal["task_policy_and_configuration","task_policy_configuration_and_review_evidence"] = "task_policy_and_configuration"
     model_attestation: Literal["not_independently_attested"] = "not_independently_attested"
+    calibration_contract: Literal["none_approved", "approved"] = Field(
+        default="none_approved",
+        description=(
+            "Whether the deployment has an approved calibration contract. Routing does not "
+            "consume performance history either way; the ranking is unchanged, and this "
+            "field and approved_calibration_contracts are not covered by preview_digest."
+        ),
+    )
+    approved_calibration_contracts: int = Field(
+        default=0,
+        strict=True,
+        ge=0,
+        description="How many calibration contracts are approved; omitted when none is.",
+        exclude_if=lambda value: not value,
+    )
     preview_id: str = Field(..., min_length=1, max_length=255)
     preview_digest: RoutingDigest
     input_digest: RoutingDigest
@@ -1226,6 +1341,10 @@ class AgentRoutingPreviewResponse(RoutingContractModel):
         if self.assessment_task_version != self.current_task_version:
             raise ValueError(
                 "Preview assessment version must match current_task_version"
+            )
+        if (self.calibration_contract == "approved") != (self.approved_calibration_contracts > 0):
+            raise ValueError(
+                "calibration_contract must be approved exactly when approved_calibration_contracts is positive"
             )
         ranks = [candidate.rank for candidate in self.eligible_candidates]
         if ranks != sorted(ranks) or len(ranks) != len(set(ranks)):
@@ -1395,6 +1514,11 @@ class RoutingDecisionSnapshot(RoutingContractModel):
     configured_model_alias: str = Field(..., min_length=1, max_length=255)
     selected_reasoning_tier: ReasoningTier
     selected_context_tier: ModelContextTier
+    selected_effort: ModelEffortSetting | None = Field(
+        default=None,
+        description="Effort setting of the selected catalog entry; absent on selections recorded before effort was tracked.",
+        exclude_if=lambda value: value is None,
+    )
     resolved_model: str | None = Field(default=None, min_length=1, max_length=255)
     review_mode: TaskReviewMode
     reviewer_profile_id: int | None = Field(default=None, strict=True, ge=1)

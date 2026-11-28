@@ -1,7 +1,7 @@
 # AgentTeamMemberStatus
 
-**Location:** `backend/app/schemas/agent_team_setup.py:982`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:1027`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 
@@ -28,6 +28,7 @@ Separates desired/configured identity, package acknowledgement, current or stale
 | `skill_package` | `AgentTeamSkillPackage` | `skill_package` | Yes | No | — | — | — | — |
 | `package_acknowledged` | `bool` | `package_acknowledged` | Yes | No | — | — | — | — |
 | `acknowledgement_state` | `Literal['missing', 'current', 'stale']` | `acknowledgement_state` | No | No | `'missing'` | — | — | — |
+| `runtime_identity` | `AgentTeamRuntimeIdentityStatus` | `runtime_identity` | No | No | factory: `AgentTeamRuntimeIdentityStatus` | — | — | — |
 | `model_attestation` | `Literal['not_independently_attested']` | `model_attestation` | No | No | `'not_independently_attested'` | — | — | — |
 | `credential_delivery_state` | `Literal['pending', 'delivered', 'uncertain', 'not_required']` | `credential_delivery_state` | Yes | No | — | — | — | — |
 | `connection_state` | `Literal['unobserved', 'observed', 'stale']` | `connection_state` | Yes | No | — | — | — | — |

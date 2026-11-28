@@ -13,6 +13,8 @@ export type AgentModelTrustState = 'matched' | 'mismatch' | 'unreported' | 'unve
 export type AgentModelMatchBasis = 'configured_alias' | 'catalog_key';
 
 export type ModelReasoningTier = 1 | 2 | 3;
+export type ModelEffort = 'unknown' | 'low' | 'medium' | 'high' | 'xhigh' | 'max';
+export type RequiredModelEffort = Exclude<ModelEffort, 'unknown'>;
 export type ModelContextTier = 'small' | 'medium' | 'large';
 export type ModelCostTier = 'low' | 'medium' | 'high';
 export type ModelLatencyTier = 'fast' | 'balanced' | 'slow';
@@ -69,6 +71,8 @@ export type RoutingBlockerCode =
     | 'model_catalog_disabled'
     | 'model_reasoning_tier_insufficient'
     | 'model_context_tier_insufficient'
+    | 'model_effort_insufficient'
+    | 'model_qualification_missing'
     | 'model_modality_missing'
     | 'model_tool_missing'
     | 'model_data_policy_missing'
@@ -192,10 +196,14 @@ export interface AgentModelCatalogEntry {
     provider: string;
     configured_model_alias: string;
     reasoning_tier: ModelReasoningTier;
+    effort: ModelEffort;
     context_tier: ModelContextTier;
     modality_tags: string[];
     cost_tier: ModelCostTier;
+    local_first: boolean;
     latency_tier: ModelLatencyTier;
+    /** Built-in or declared qualification keys the entry holds at its effort setting. */
+    qualification_keys?: string[];
     enabled: boolean;
     revision: number;
     last_verified_at: string | null;
@@ -208,10 +216,13 @@ export interface AgentModelCatalogCreate {
     provider: string;
     configured_model_alias: string;
     reasoning_tier: ModelReasoningTier;
+    effort?: ModelEffort;
     context_tier: ModelContextTier;
     modality_tags?: string[];
     cost_tier: ModelCostTier;
+    local_first?: boolean;
     latency_tier: ModelLatencyTier;
+    qualification_keys?: string[];
     enabled?: boolean;
     revision?: 1;
     last_verified_at?: string | null;
@@ -222,10 +233,14 @@ export interface AgentModelCatalogUpdate {
     provider?: string;
     configured_model_alias?: string;
     reasoning_tier?: ModelReasoningTier;
+    effort?: ModelEffort;
     context_tier?: ModelContextTier;
     modality_tags?: string[];
     cost_tier?: ModelCostTier;
+    local_first?: boolean;
     latency_tier?: ModelLatencyTier;
+    /** Replaces the keys; an effort change without this field clears them. */
+    qualification_keys?: string[];
     enabled?: true;
     last_verified_at?: string | null;
     reconcile_live_assignments?: boolean;
@@ -280,13 +295,13 @@ export interface AgentModelBindingDisable {
 }
 
 export interface AgentModelMutationReceipt<
-    TResult extends AgentModelCatalogEntry | AgentModelBinding =
+    TResult extends AgentModelCatalogEntry | AgentModelBinding | RoutingQualificationKey =
         AgentModelCatalogEntry | AgentModelBinding,
 > {
     operation: string;
     /** Null when the operator's admin key made the change. */
     actor_id: number | null;
-    target_type: 'model_catalog' | 'model_binding';
+    target_type: 'model_catalog' | 'model_binding' | 'routing_qualification_key' | 'routing_calibration_contract';
     target_id: number;
     idempotency_key: string;
     rationale: string;
@@ -295,6 +310,66 @@ export interface AgentModelMutationReceipt<
     invalidated_assignment_ids: number[];
     audit_event_ids: number[];
     result: TResult;
+}
+
+export type RoutingQualificationKeyState = 'active' | 'retired';
+
+/** A deployment-declared key that catalog entries and task requirements may name. */
+export interface RoutingQualificationKey {
+    id: number;
+    key: string;
+    label: string;
+    description: string | null;
+    state: RoutingQualificationKeyState;
+    revision: number;
+    created_at: string;
+    updated_at: string;
+    retired_at: string | null;
+}
+
+export interface RoutingQualificationKeyRevision {
+    revision: number;
+    action: 'declare' | 'revise' | 'retire';
+    state: RoutingQualificationKeyState;
+    label: string;
+    description: string | null;
+    reason: string;
+    actor_type: string;
+    actor_id: number | null;
+    correlation_id: string | null;
+    created_at: string;
+}
+
+export interface RoutingQualificationKeyUsage {
+    catalog_entries: { id: number; key: string; enabled: boolean }[];
+    task_ids: number[];
+    catalog_entries_omitted: number;
+    task_ids_omitted: number;
+    calibration_contracts?: { key: string; state: 'submitted' | 'approved' }[];
+    calibration_contracts_omitted?: number;
+}
+
+export interface RoutingQualificationKeyDetail extends RoutingQualificationKey {
+    revisions: RoutingQualificationKeyRevision[];
+    usage: RoutingQualificationKeyUsage;
+}
+
+export interface RoutingQualificationKeyRegistry {
+    /** Keys routing always accepts; they are fixed and never stored in the registry. */
+    builtin_keys: string[];
+    keys: RoutingQualificationKey[];
+}
+
+export interface RoutingQualificationKeyDeclare {
+    key: string;
+    label: string;
+    description?: string | null;
+}
+
+export interface RoutingQualificationKeyRevise {
+    expected_revision: number;
+    label?: string;
+    description?: string | null;
 }
 
 export interface AgentActorRosterItem extends AgentActor {
@@ -318,9 +393,12 @@ export interface TaskDifficultyAxes {
 export interface RequiredModelEnvelope {
     minimum_reasoning_tier: ModelReasoningTier;
     minimum_context_tier: ModelContextTier;
+    minimum_effort?: RequiredModelEffort | null;
     modality_tags: string[];
     tool_tags: string[];
     data_policy_tags: string[];
+    /** Keys the candidate's catalog entry must hold; omitted when none are required. */
+    qualification_keys?: string[];
 }
 
 export interface TaskRoutingAssessmentCommand {
@@ -411,11 +489,15 @@ export interface AgentRoutingCandidate {
     missing_skill_keys: string[];
     blocking_weakness_keys: string[];
     reasoning_tier: ModelReasoningTier;
+    effort: ModelEffort;
     context_tier: ModelContextTier;
     modality_tags: string[];
     tool_tags: string[];
     data_policy_tags: string[];
+    /** Required qualification keys this candidate's catalog entry holds; omitted when none are required. */
+    qualification_keys?: string[];
     cost_tier: ModelCostTier;
+    local_first: boolean;
     latency_tier: ModelLatencyTier;
     available_capacity_days: number;
     committed_effort_days: number;
@@ -453,12 +535,16 @@ export interface AgentRoutingExclusion {
     insufficient_skill_keys: string[];
     blocking_weakness_keys: string[];
     reasoning_tier: ModelReasoningTier | null;
+    effort: ModelEffort | null;
     context_tier: ModelContextTier | null;
     cost_tier: ModelCostTier | null;
+    local_first: boolean | null;
     latency_tier: ModelLatencyTier | null;
     missing_modality_tags: string[];
     missing_tool_tags: string[];
     missing_data_policy_tags: string[];
+    /** Required qualification keys the entry does not hold; omitted when none are missing. */
+    missing_qualification_keys?: string[];
     available_capacity_days: number | null;
     committed_effort_days: number | null;
     workload_ratio: number | null;
@@ -475,6 +561,8 @@ export interface AgentRoutingPreviewResponse {
     runtime_availability?: 'unknown';
     eligibility_basis?: 'task_policy_and_configuration';
     model_attestation?: 'not_independently_attested';
+    calibration_contract?: 'none_approved' | 'approved';
+    approved_calibration_contracts?: number;
     preview_id: string;
     preview_digest: string;
     input_digest: string;
@@ -794,8 +882,20 @@ export interface AgentTeamRuntimeHandoff {
     profile_revision: string;
     model_binding_revisions: Record<string, number>;
     supported_assignment_modes: string[];
+    runtime_instance_id: string;
     startup_instructions: string[];
     credential_ref: string;
+}
+
+/** Which runtime instance acknowledged a member's handoff; unknown for an acknowledgement made before the identity existed. */
+export interface AgentTeamRuntimeIdentityStatus {
+    state: 'unknown' | 'current' | 'changed' | 'stale';
+    expected_instance_id: string | null;
+    acknowledged_instance_id: string | null;
+    previous_instance_id: string | null;
+    changed_at: string | null;
+    refused_instance_id: string | null;
+    refused_at: string | null;
 }
 
 export interface AgentTeamMemberStatus {
@@ -814,6 +914,7 @@ export interface AgentTeamMemberStatus {
     skill_package: AgentTeamSkillPackage;
     package_acknowledged: boolean;
     acknowledgement_state?: 'missing' | 'current' | 'stale';
+    runtime_identity?: AgentTeamRuntimeIdentityStatus;
     model_attestation?: 'not_independently_attested';
     credential_delivery_state: 'pending' | 'delivered' | 'uncertain' | 'not_required';
     connection_state: 'unobserved' | 'observed' | 'stale';

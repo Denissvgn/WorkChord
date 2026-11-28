@@ -17,7 +17,7 @@ _Auto-generated from `frontend/src/pages/ProjectReleaseDetailPage.tsx`._
 | `../components/releases/ReleaseForm` | `ReleaseForm` | — | compiler-dependent |
 | `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` | — | compiler-dependent |
 | `../components/ui` | `PageHeader`, `PageLayout`, `SlideOverDrawer` | — | compiler-dependent |
-| `../components/ui/tone` | `isTaskStatus`, `pillToneClassName`, `STATUS_TONE`, `statusTextClassName`, `wcPillClass` | — | compiler-dependent |
+| `../components/ui/tone` | `isDisplayedState`, `pillToneClassName`, `STATE_TONE`, `stateTextClassName`, `wcPillClass` | — | compiler-dependent |
 | `../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../services/projectService` | `projectService` | — | compiler-dependent |
 | `../services/releaseService` | `releaseService` | — | compiler-dependent |

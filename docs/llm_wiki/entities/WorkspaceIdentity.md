@@ -39,15 +39,15 @@ flowchart LR
     n1["frontend/src/components/settings/AdminAccessGate.test.tsx"]
     n2["frontend/src/components/settings/AdminAccessPanel.test.tsx"]
     n3["frontend/src/components/settings/ConnectedReadersPanel.test.tsx"]
-    n4["frontend/src/components/tasks/TaskReadView.operatorKey.test.tsx"]
-    n5["frontend/src/features/firstRun/GetStartedFlow.test.tsx"]
-    n6["frontend/src/features/firstRun/GetStartedPanel.test.tsx"]
-    n7["frontend/src/features/firstRun/sampleProject.test.tsx"]
-    n8["frontend/src/features/identity/identityContext.ts"]
-    n9["frontend/src/features/identity/IdentityProvider.tsx"]
-    n10["frontend/src/pages/destinationEmptyStates.test.tsx"]
-    n11["frontend/src/pages/SettingsPage.labels.test.tsx"]
-    n12["frontend/src/pages/SettingsPage.readOnlyPanels.test.tsx"]
+    n4["frontend/src/components/tasks/DeliveryDependencies.test.tsx"]
+    n5["frontend/src/components/tasks/GitHubReconciliationPanel.test.tsx"]
+    n6["frontend/src/components/tasks/StoppedWork.test.tsx"]
+    n7["frontend/src/components/tasks/TaskOwnerAcceptance.test.tsx"]
+    n8["frontend/src/components/tasks/TaskPostponement.test.tsx"]
+    n9["frontend/src/components/tasks/TaskReadView.operatorKey.test.tsx"]
+    n10["frontend/src/components/tasks/TaskRefusalNextSteps.test.tsx"]
+    n11["frontend/src/features/firstRun/GetStartedFlow.test.tsx"]
+    n12["frontend/src/features/firstRun/GetStartedPanel.test.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -64,15 +64,15 @@ flowchart LR
     click n1 "../modules/AdminAccessGate.test.md"
     click n2 "../modules/AdminAccessPanel.test.md"
     click n3 "../modules/ConnectedReadersPanel.test.md"
-    click n4 "../modules/TaskReadView.operatorKey.test.md"
-    click n5 "../modules/GetStartedFlow.test.md"
-    click n6 "../modules/GetStartedPanel.test.md"
-    click n7 "../modules/sampleProject.test.md"
-    click n8 "../modules/identityContext.md"
-    click n9 "../modules/IdentityProvider.md"
-    click n10 "../modules/destinationEmptyStates.test.md"
-    click n11 "../modules/SettingsPage.labels.test.md"
-    click n12 "../modules/SettingsPage.readOnlyPanels.test.md"
+    click n4 "../modules/DeliveryDependencies.test.md"
+    click n5 "../modules/GitHubReconciliationPanel.test.md"
+    click n6 "../modules/StoppedWork.test.md"
+    click n7 "../modules/TaskOwnerAcceptance.test.md"
+    click n8 "../modules/TaskPostponement.test.md"
+    click n9 "../modules/TaskReadView.operatorKey.test.md"
+    click n10 "../modules/TaskRefusalNextSteps.test.md"
+    click n11 "../modules/GetStartedFlow.test.md"
+    click n12 "../modules/GetStartedPanel.test.md"
 ```
 
 ### Summary
@@ -88,14 +88,14 @@ flowchart LR
 | `AdminAccessGate.test` | import | [AdminAccessGate.test](../modules/AdminAccessGate.test.md) | — |
 | `AdminAccessPanel.test` | import | [AdminAccessPanel.test](../modules/AdminAccessPanel.test.md) | — |
 | `ConnectedReadersPanel.test` | import | [ConnectedReadersPanel.test](../modules/ConnectedReadersPanel.test.md) | — |
+| `DeliveryDependencies.test` | import | [DeliveryDependencies.test](../modules/DeliveryDependencies.test.md) | — |
+| `GitHubReconciliationPanel.test` | import | [GitHubReconciliationPanel.test](../modules/GitHubReconciliationPanel.test.md) | — |
+| `StoppedWork.test` | import | [StoppedWork.test](../modules/StoppedWork.test.md) | — |
+| `TaskOwnerAcceptance.test` | import | [TaskOwnerAcceptance.test](../modules/TaskOwnerAcceptance.test.md) | — |
+| `TaskPostponement.test` | import | [TaskPostponement.test](../modules/TaskPostponement.test.md) | — |
 | `TaskReadView.operatorKey.test` | import | [TaskReadView.operatorKey.test](../modules/TaskReadView.operatorKey.test.md) | — |
+| `TaskRefusalNextSteps.test` | import | [TaskRefusalNextSteps.test](../modules/TaskRefusalNextSteps.test.md) | — |
 | `GetStartedFlow.test` | import | [GetStartedFlow.test](../modules/GetStartedFlow.test.md) | — |
 | `GetStartedPanel.test` | import | [GetStartedPanel.test](../modules/GetStartedPanel.test.md) | — |
-| `sampleProject.test` | import | [sampleProject.test](../modules/sampleProject.test.md) | — |
-| `identityContext` | import | [identityContext](../modules/identityContext.md) | — |
-| `IdentityProvider` | import | [IdentityProvider](../modules/IdentityProvider.md) | — |
-| `destinationEmptyStates.test` | import | [destinationEmptyStates.test](../modules/destinationEmptyStates.test.md) | — |
-| `SettingsPage.labels.test` | import | [SettingsPage.labels.test](../modules/SettingsPage.labels.test.md) | — |
-| `SettingsPage.readOnlyPanels.test` | import | [SettingsPage.readOnlyPanels.test](../modules/SettingsPage.readOnlyPanels.test.md) | — |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

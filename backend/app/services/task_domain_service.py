@@ -57,7 +57,7 @@ async def domain_capabilities(db):
         pending = await db.scalar(select(Task.id).where(Task.domain_backfill_version < 1).limit(1))
     ready = pending is None
     return {"schema_version": 1, "ready": ready, "reason": None if ready else "domain_backfill_pending",
-        "features": ["task-actions-v1", "paged-worksets-v1", "project-backlog-v1", "human-ownership-v1", "nullable-effort-v1", "structured-brief-v1", "criterion-evidence-v1", "bounded-task-detail-v1", "profile-availability-v1", "delivery-dependencies-v1", "human-my-work-v1", "human-my-work-filters-v1", "task-discussion-v1", "delivery-metrics-v1"] if ready else [],
+        "features": ["task-actions-v1", "paged-worksets-v1", "project-backlog-v1", "human-ownership-v1", "nullable-effort-v1", "structured-brief-v1", "criterion-evidence-v1", "bounded-task-detail-v1", "profile-availability-v1", "delivery-dependencies-v1", "human-my-work-v1", "human-my-work-filters-v1", "task-discussion-v1", "delivery-metrics-v1", "task-postponement-v1"] if ready else [],
         "legacy_iteration_routes": True, "legacy_task_versions_required": get_settings().strict_mutation_versions,
         "aggregate_revisions_required": get_settings().strict_mutation_versions,
         "aggregate_revision_header": "X-Expected-Revisions",
@@ -155,6 +155,55 @@ def action_projection(task, authority, *, dependencies_complete=True, live_assig
     return output
 
 
+async def release_execution(db, task, reason, *, expected_claim_generation, expected_live_assignment_ids,
+                            expected_running_run_ids, event_type, purpose, only_when_live=False, extra=None):
+    """End a task's claim, live assignments and running runs under the caller's ownership fence.
+
+    The caller holds the task's scope lock. When anything is live, the caller must
+    supply the current claim generation and the exact running run and live
+    assignment IDs, so ownership that changed after the caller read it is never
+    ended blind. Each affected agent's queue revision advances, and each run ends
+    with its server-recorded profile. The release is recorded as ``event_type``.
+    With ``only_when_live`` nothing is changed or recorded when nothing is live,
+    and None is returned; otherwise the released IDs are returned.
+    """
+    domain = TaskDomainService(db)
+    hints, run_hints = await domain.ownership(task.id)
+    actor_ids = {item.actor_id for item in hints} | {run.actor_id for run in run_hints}
+    if task.claimed_by:
+        actor_ids.add(task.claimed_by)
+    actors = list((await db.scalars(select(AgentActor).where(AgentActor.id.in_(actor_ids)).order_by(AgentActor.id).with_for_update())).all())
+    assignments, runs = await domain.ownership(task.id, lock=True)
+    live = bool(assignments or runs or task.claimed_by is not None)
+    if live and (expected_claim_generation != task.claim_generation
+                 or sorted(expected_live_assignment_ids) != [item.id for item in assignments]
+                 or sorted(expected_running_run_ids) != [run.id for run in runs]):
+        raise AuthorityError("execution_ownership_changed", f"Reload current claims, runs and assignments before {purpose} active execution.", 409)
+    if only_when_live and not live:
+        return None
+    claim_actor_id = task.claimed_by
+    for actor in actors:
+        db.info.setdefault("domain_queue_actors", set()).add(actor.id)
+        actor.queue_revision += 1
+    for assignment in assignments:
+        assignment.state, assignment.reason = "cancelled", reason
+    for run in runs:
+        from app.services.review_provenance import (
+            different_publisher_required, mark_server_interruption, record_server_end_profile,
+        )
+        if ((run.execution_provenance or {}).get("different_publisher_required") or
+                await different_publisher_required(db, task.project_id)):
+            await mark_server_interruption(db, run)
+        await record_server_end_profile(db, run)
+        run.status, run.ended_at, run.error = "cancelled", utc_now(), reason
+    task.claimed_by = task.claim_id = task.claim_expires_at = None
+    task.claim_generation += 1
+    released = {"run_ids": [run.id for run in runs], "assignment_ids": [item.id for item in assignments],
+                "claim_generation": task.claim_generation}
+    await domain.tasks.record_task_event(task.id, event_type, {"reason": reason, **released, **(extra or {})})
+    return {**released, "claim_actor_id": claim_actor_id}
+
+
 class TaskDomainService:
     def __init__(self, db):
         self.db = db
@@ -199,6 +248,14 @@ class TaskDomainService:
             reopen["allowed"] = False
             reopen["blockers"].append({"code": "task_replaced",
                                        "message": f"Task {relation.replacement_task_id} delivers this work instead."})
+        from app.services.task_replacement_service import SUPERSESSION, replacing
+        delivering = await replacing(self.db, task.id)
+        if delivering is not None and delivering.disposition == SUPERSESSION:
+            # Canceling the successor would leave the superseded original's deliverable counted nowhere.
+            cancel = next(item for item in actions if item["action"] == "cancel")
+            cancel["allowed"] = False
+            cancel["blockers"].append({"code": "task_delivers_supersession",
+                                       "message": f"This task delivers superseded task {delivering.original_task_id}."})
         authority = self.db.info.get("authority")
         review_action = next(item for item in actions if item["action"] == "review")
         import copy
@@ -218,9 +275,13 @@ class TaskDomainService:
             progress_blockers.append({"code": "permission_denied", "message": "Execution permission is required to record evidence."})
         if authority is not None and authority.kind == "agent":
             progress_blockers.append({"code": "agent_protocol_required", "message": "Submit evidence through assigned work with its current fence."})
-        if task.canceled_at or task.status == "closed" or task.is_summary:
+        if task.canceled_at or task.status in {"closed", "postponed"} or task.is_summary:
             progress_blockers.append({"code": "open_leaf_required", "message": "Evidence requires open leaf work."})
         actions.append({"action": "record_progress", "allowed": not progress_blockers, "blockers": progress_blockers})
+        # Postpone and reactivate run through their own commands; postponing live work
+        # takes the claim generation, run and assignment IDs this response returns.
+        from app.services.task_postponement_service import postponement_actions
+        actions.extend(postponement_actions(task, authority))
         if authority is not None and authority.kind == "agent":
             from app.services.agent_work_service import AgentWorkService
             from app.utils.time import as_utc
@@ -242,6 +303,15 @@ class TaskDomainService:
                     review_codes.append(getattr(exc, "code", "current_evidence_required"))
             for action_name, codes in (("begin_assigned_work", start_codes), ("submit_assigned_work", [] if live and authority.allows(task.project_id, "execute") and not task.canceled_at and not task.blocked_reason else ["live_execution_fence_required"]), ("review_assigned_work", review_codes)):
                 actions.append({"action": action_name, "allowed": not codes, "blockers": [{"code": code, "message": code.replace("_", " ")} for code in sorted(set(codes))]})
+        from app.services.manual_provenance_service import provenance_blockers
+        provenance = await provenance_blockers(self.db, task)
+        actions.append({"action": "record_provenance", "allowed": not provenance, "blockers": provenance})
+        from app.refusal_next_steps import next_step_for
+        for item in actions:
+            for blocker in item.get("blockers", ()):
+                step = next_step_for(blocker.get("code"), task_id=task.id)
+                if step is not None:
+                    blocker["next_step"] = step
         return TaskActionsResponse(task_id=task.id, version=task.version,
             actions=actions,
             claim_generation=task.claim_generation, running_run_ids=[run.id for run in runs], live_assignment_ids=[item.id for item in assignments])
@@ -288,6 +358,14 @@ class TaskDomainService:
                 await self.tasks._require_unclaimed_structure([task.id])
                 old_status = task.status
                 task.canceled_at = task.canceled_reason = task.canceled_by_principal_id = None
+                if old_status == "postponed":
+                    # Canceled postponed work returns to its open postponement with its evidence
+                    # intact; only reactivation returns it to work.
+                    clear_acceptance(task)
+                    payload = {"reason": data.reason, "version": task.version}
+                    await self.tasks.record_task_event(task.id, "task_reopen", payload)
+                    await self.db.flush()
+                    return await self.tasks.get_by_id(task.id)
                 task.status = "active" if old_status in {"active", "resolved", "closed"} else "planned"
                 task.execution_mode = "manual" if getattr(self.db.info.get("authority"), "kind", "local") in {"human", "local"} else "scheduled"
                 clear_acceptance(task)
@@ -307,33 +385,10 @@ class TaskDomainService:
         return await self.tasks.get_by_id(task.id)
 
     async def _cancel_execution(self, task, data):
-        hints, run_hints = await self.ownership(task.id)
-        actor_ids = {item.actor_id for item in hints} | {run.actor_id for run in run_hints}
-        if task.claimed_by:
-            actor_ids.add(task.claimed_by)
-        actors = list((await self.db.scalars(select(AgentActor).where(AgentActor.id.in_(actor_ids)).order_by(AgentActor.id).with_for_update())).all())
-        assignments, runs = await self.ownership(task.id, lock=True)
-        if assignments or runs or task.claimed_by is not None:
-            if (data.expected_claim_generation != task.claim_generation or sorted(data.expected_live_assignment_ids) != [item.id for item in assignments]
-                    or sorted(data.expected_running_run_ids) != [run.id for run in runs]):
-                raise AuthorityError("execution_ownership_changed", "Reload current claims, runs and assignments before canceling active execution.", 409)
-        for actor in actors:
-            self.db.info.setdefault("domain_queue_actors", set()).add(actor.id)
-            actor.queue_revision += 1
-        for assignment in assignments:
-            assignment.state, assignment.reason = "cancelled", data.reason
-        for run in runs:
-            from app.services.review_provenance import (
-                different_publisher_required, mark_server_interruption, record_server_end_profile,
-            )
-            if ((run.execution_provenance or {}).get("different_publisher_required") or
-                    await different_publisher_required(self.db, task.project_id)):
-                await mark_server_interruption(self.db, run)
-            await record_server_end_profile(self.db, run)
-            run.status, run.ended_at, run.error = "cancelled", utc_now(), data.reason
-        task.claimed_by = task.claim_id = task.claim_expires_at = None
-        task.claim_generation += 1
-        await self.tasks.record_task_event(task.id, "execution_canceled", {"reason": data.reason, "run_ids": [run.id for run in runs], "assignment_ids": [item.id for item in assignments], "claim_generation": task.claim_generation})
+        await release_execution(self.db, task, data.reason, expected_claim_generation=data.expected_claim_generation,
+                                expected_live_assignment_ids=data.expected_live_assignment_ids,
+                                expected_running_run_ids=data.expected_running_run_ids,
+                                event_type="execution_canceled", purpose="canceling")
 
     async def _commitment(self, task, data):
         if data.action == "commit":

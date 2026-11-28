@@ -1,4 +1,5 @@
 """Agent integration and tracing models."""
+import secrets
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Optional
 
@@ -15,6 +16,7 @@ from sqlalchemy import (
     UniqueConstraint,
     event,
     exists,
+    false,
     text,
 )
 from sqlalchemy.orm import Mapped, column_property, mapped_column, relationship
@@ -22,6 +24,11 @@ from sqlalchemy.orm import Mapped, column_property, mapped_column, relationship
 from app.database import Base
 from app.models.team_member import TeamMemberProfile
 from app.utils.time import UTCDateTime, utc_now
+
+def new_runtime_instance_id() -> str:
+    """A server-random runtime identity: opaque, and not reproducible from anything a runtime holds."""
+    return "rti-" + secrets.token_hex(16)
+
 
 if TYPE_CHECKING:
     from app.models.project import ProjectUpdateEntry
@@ -135,6 +142,10 @@ class AgentModelCatalogEntry(Base):
             name="ck_agent_model_catalog_reasoning_tier",
         ),
         CheckConstraint(
+            "effort IN ('unknown', 'low', 'medium', 'high', 'xhigh', 'max')",
+            name="ck_agent_model_catalog_effort",
+        ),
+        CheckConstraint(
             "context_tier IN ('small', 'medium', 'large')",
             name="ck_agent_model_catalog_context_tier",
         ),
@@ -175,12 +186,22 @@ class AgentModelCatalogEntry(Base):
     publisher_key: Mapped[Optional[str]] = mapped_column(String(120))
     configured_model_alias: Mapped[str] = mapped_column(String(255), nullable=False)
     reasoning_tier: Mapped[int] = mapped_column(Integer, nullable=False)
+    effort: Mapped[str] = mapped_column(
+        String(20), default="unknown", server_default="unknown", nullable=False
+    )
     context_tier: Mapped[str] = mapped_column(String(20), nullable=False)
     modality_tags: Mapped[list[Any]] = mapped_column(
         JSON, default=lambda: ["text"], nullable=False
     )
     cost_tier: Mapped[str] = mapped_column(String(20), nullable=False)
+    local_first: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default=false(), nullable=False
+    )
     latency_tier: Mapped[str] = mapped_column(String(20), nullable=False)
+    # Built-in or declared qualification keys this entry holds at its effort setting.
+    qualification_keys: Mapped[list[Any]] = mapped_column(
+        JSON, default=list, server_default=text("'[]'"), nullable=False
+    )
     enabled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     revision: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
     last_verified_at: Mapped[Optional[datetime]] = mapped_column(
@@ -477,6 +498,33 @@ class AgentTeamTopologyMember(Base):
         nullable=True,
     )
     runtime_acknowledged_at: Mapped[Optional[datetime]] = mapped_column(
+        UTCDateTime(),
+        nullable=True,
+    )
+    # Random per issuance: set again whenever a credential delivery succeeds, so a replacement
+    # actor or a recovered credential hands the runtime a new identity.
+    issued_runtime_instance_id: Mapped[Optional[str]] = mapped_column(
+        String(64),
+        default=new_runtime_instance_id,
+        nullable=True,
+    )
+    acknowledged_runtime_instance_id: Mapped[Optional[str]] = mapped_column(
+        String(64),
+        nullable=True,
+    )
+    previous_runtime_instance_id: Mapped[Optional[str]] = mapped_column(
+        String(64),
+        nullable=True,
+    )
+    runtime_identity_changed_at: Mapped[Optional[datetime]] = mapped_column(
+        UTCDateTime(),
+        nullable=True,
+    )
+    rejected_runtime_instance_id: Mapped[Optional[str]] = mapped_column(
+        String(64),
+        nullable=True,
+    )
+    rejected_runtime_instance_at: Mapped[Optional[datetime]] = mapped_column(
         UTCDateTime(),
         nullable=True,
     )

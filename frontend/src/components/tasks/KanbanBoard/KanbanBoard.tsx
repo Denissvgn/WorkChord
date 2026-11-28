@@ -30,6 +30,8 @@ import type { TeamMemberProfile } from '../../../types/team';
 import { TaskEditorDrawer } from '../TaskEditorDrawer';
 import { WorkFreshness } from '../../feedback/WorkFreshness';
 import { KanbanColumn } from './KanbanColumn';
+import { KanbanStoppedLane } from './KanbanStoppedLane';
+import { isEndedState, isStoppedState, stateOf } from '../../../utils/taskState';
 import type { BoardCardContext } from './KanbanCard';
 import { KanbanCard } from './KanbanCard';
 import { createPortal } from 'react-dom';
@@ -226,6 +228,8 @@ export const KanbanBoard = ({ iterationId, filters, onCreateTask, hasActiveFilte
 
         const flatten = (list: Task[]) => {
             list.forEach(task => {
+                // Postponed, canceled and superseded work is never in a column: it has its own lane.
+                if (isStoppedState(stateOf(task))) return;
                 // Determine column
                 let colId: ColumnId = 'planned-unassigned';
                 if (task.status === 'planned') {
@@ -242,6 +246,8 @@ export const KanbanBoard = ({ iterationId, filters, onCreateTask, hasActiveFilte
         flatten(filteredTasks);
         return cols;
     }, [filteredTasks]);
+    const postponedTasks = useMemo(() => filteredTasks.filter(task => stateOf(task) === 'postponed'), [filteredTasks]);
+    const endedTasks = useMemo(() => filteredTasks.filter(task => isEndedState(stateOf(task))), [filteredTasks]);
 
     // Sensors
     const sensors = useSensors(
@@ -418,6 +424,12 @@ export const KanbanBoard = ({ iterationId, filters, onCreateTask, hasActiveFilte
                         />
                     ))}
                 </div>
+                <KanbanStoppedLane kind="postponed" tasks={postponedTasks} defaultOpen={filters?.status === 'postponed'}
+                    onOpen={(task, trigger) => { openTrigger.current = trigger ?? null; setOpenedTaskId(task.id); }}
+                    onOpenTask={taskId => setOpenedTaskId(taskId)} />
+                <KanbanStoppedLane kind="ended" tasks={endedTasks} defaultOpen={filters?.status === 'canceled' || filters?.status === 'superseded'}
+                    onOpen={(task, trigger) => { openTrigger.current = trigger ?? null; setOpenedTaskId(task.id); }}
+                    onOpenTask={taskId => setOpenedTaskId(taskId)} />
             </div>
 
             {createPortal(

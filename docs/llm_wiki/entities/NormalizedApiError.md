@@ -1,6 +1,6 @@
 # NormalizedApiError
 
-**Location:** `frontend/src/utils/apiError.ts:8`
+**Location:** `frontend/src/utils/apiError.ts:11`
 **Kind:** Interface
 **Bases:** —
 **Module:** [apiError](../modules/apiError.md)

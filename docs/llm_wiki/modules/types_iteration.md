@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/types/iteration.ts`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `./task` | `TaskDisplayedState` | Declaration | erased |
 | `./workMetrics` | `WorkMetrics` | Declaration | erased |
 
 ## Module Signals
@@ -38,22 +39,22 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (50) |
-| Outbound | `frontend` (1) |
+| Inbound | `frontend` (51) |
+| Outbound | `frontend` (2) |
 
-> All 51 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 53 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [IterationProject](../entities/IterationProject.md) | Interface | 2 | — | — |
-| [Iteration](../entities/types_iteration_Iteration.md) | Interface | 9 | — | — |
-| [IterationCreate](../entities/types_iteration_IterationCreate.md) | Interface | 25 | — | — |
-| [IterationUpdate](../entities/types_iteration_IterationUpdate.md) | Interface | 35 | — | — |
-| [IterationSeriesCreate](../entities/types_iteration_IterationSeriesCreate.md) | Interface | 49 | — | — |
-| [IterationSeriesResponse](../entities/types_iteration_IterationSeriesResponse.md) | Interface | 60 | — | — |
-| [IterationSummary](../entities/types_iteration_IterationSummary.md) | Interface | 64 | `WorkMetrics` | — |
-| [IterationPlanningReadinessSummary](../entities/types_iteration_IterationPlanningReadinessSummary.md) | Interface | 88 | — | — |
-| [PlanCheckpoint](../entities/types_iteration_PlanCheckpoint.md) | Interface | 121 | — | — |
-| [IterationSeriesStop](../entities/types_iteration_IterationSeriesStop.md) | Type alias | 45 | <pre><code>&#124; &#123; mode&#58; &#39;count&#39;&#59; count&#58; number &#125;&#10;    &#124; &#123; mode&#58; &#39;until&#95;date&#39;&#59; until&#95;date&#58; string &#125;</code></pre> | — |
+| [IterationProject](../entities/IterationProject.md) | Interface | 3 | — | — |
+| [Iteration](../entities/types_iteration_Iteration.md) | Interface | 10 | — | — |
+| [IterationCreate](../entities/types_iteration_IterationCreate.md) | Interface | 26 | — | — |
+| [IterationUpdate](../entities/types_iteration_IterationUpdate.md) | Interface | 36 | — | — |
+| [IterationSeriesCreate](../entities/types_iteration_IterationSeriesCreate.md) | Interface | 50 | — | — |
+| [IterationSeriesResponse](../entities/types_iteration_IterationSeriesResponse.md) | Interface | 61 | — | — |
+| [IterationSummary](../entities/types_iteration_IterationSummary.md) | Interface | 65 | `WorkMetrics` | — |
+| [IterationPlanningReadinessSummary](../entities/types_iteration_IterationPlanningReadinessSummary.md) | Interface | 89 | — | — |
+| [PlanCheckpoint](../entities/types_iteration_PlanCheckpoint.md) | Interface | 122 | — | — |
+| [IterationSeriesStop](../entities/types_iteration_IterationSeriesStop.md) | Type alias | 46 | <pre><code>&#124; &#123; mode&#58; &#39;count&#39;&#59; count&#58; number &#125;&#10;    &#124; &#123; mode&#58; &#39;until&#95;date&#39;&#59; until&#95;date&#58; string &#125;</code></pre> | — |

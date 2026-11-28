@@ -20,11 +20,12 @@ interface RoutingCandidateComparisonProps {
     selectionDisabled?: boolean;
 }
 
-const EvidenceList = ({ values }: { values: string[] }) => (
+/** `exact` shows each value as written, for operator-declared keys. */
+const EvidenceList = ({ values, exact = false }: { values: string[]; exact?: boolean }) => (
     <div className="flex flex-wrap gap-1">
         {values.map(value => (
             <span key={value} className="rounded-full border border-border bg-surface-card px-2 py-0.5 text-xs text-content-secondary">
-                {formatRoutingCode(value)}
+                {exact ? value : formatRoutingCode(value)}
             </span>
         ))}
     </div>
@@ -117,8 +118,8 @@ export const RoutingCandidateComparison = ({
                                             </span>
                                         </div>
                                         <dl className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
-                                            <div><dt className="text-content-tertiary">{t('taskRouting.modelEnvelope')}</dt><dd className="text-content-primary">{candidate.reasoning_tier} / {candidate.context_tier}</dd></div>
-                                            <div><dt className="text-content-tertiary">{t('taskRouting.costLatency')}</dt><dd className="text-content-primary">{candidate.cost_tier} / {candidate.latency_tier}</dd></div>
+                                            <div><dt className="text-content-tertiary">{t('taskRouting.modelEnvelope')}</dt><dd className="text-content-primary">{candidate.reasoning_tier} / {t(`modelAdministration.effort_${candidate.effort}`)} / {candidate.context_tier}</dd></div>
+                                            <div><dt className="text-content-tertiary">{t('taskRouting.costLatency')}</dt><dd className="text-content-primary">{candidate.cost_tier}{candidate.local_first ? ` (${t('modelAdministration.localFirst')})` : ''} / {candidate.latency_tier}</dd></div>
                                             <div><dt className="text-content-tertiary">{t('taskRouting.availableCapacity')}</dt><dd className="text-content-primary tnum">{candidate.available_capacity_days}</dd></div>
                                             <div><dt className="text-content-tertiary">{t('taskRouting.committedEffort')}</dt><dd className="text-content-primary tnum">{candidate.committed_effort_days}</dd></div>
                                             <div><dt className="text-content-tertiary">{t('taskRouting.queue')}</dt><dd className="text-content-primary tnum">{candidate.queued_assignments} / {candidate.accepted_assignments}</dd></div>
@@ -138,6 +139,12 @@ export const RoutingCandidateComparison = ({
                                                 <p className="mb-1 text-xs font-medium text-content-secondary">{t('taskRouting.toolsDataPolicy')}</p>
                                                 <EvidenceList values={[...candidate.tool_tags, ...candidate.data_policy_tags]} />
                                             </div>
+                                            {(candidate.qualification_keys?.length ?? 0) > 0 && (
+                                                <div>
+                                                    <p className="mb-1 text-xs font-medium text-content-secondary">{t('taskRouting.heldQualificationKeys')}</p>
+                                                    <EvidenceList values={candidate.qualification_keys ?? []} exact />
+                                                </div>
+                                            )}
                                         </div>
                                         <p className="mt-3 text-sm text-content-secondary">{candidate.rationale}</p>
                                     </div>
@@ -206,6 +213,12 @@ export const RoutingCandidateComparison = ({
                                         ]} />
                                     </div>
                                 )}
+                                {(exclusion.missing_qualification_keys?.length ?? 0) > 0 && (
+                                    <div className="mt-2">
+                                        <p className="mb-1 text-xs font-medium text-content-secondary">{t('taskRouting.missingQualificationKeys')}</p>
+                                        <EvidenceList values={exclusion.missing_qualification_keys ?? []} exact />
+                                    </div>
+                                )}
                                 {(exclusion.missing_modality_tags.length > 0 || exclusion.missing_tool_tags.length > 0 || exclusion.missing_data_policy_tags.length > 0) && (
                                     <div className="mt-2">
                                         <p className="mb-1 text-xs font-medium text-content-secondary">{t('taskRouting.missingCapabilities')}</p>
@@ -217,6 +230,10 @@ export const RoutingCandidateComparison = ({
                                     </div>
                                 )}
                                 <dl className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
+                                    <div>
+                                        <dt className="text-content-tertiary">{t('modelAdministration.effort')}</dt>
+                                        <dd className="text-content-primary">{exclusion.effort ? t(`modelAdministration.effort_${exclusion.effort}`) : t('common.unknown')}</dd>
+                                    </div>
                                     <div>
                                         <dt className="text-content-tertiary">{t('taskRouting.costLatency')}</dt>
                                         <dd className="text-content-primary">

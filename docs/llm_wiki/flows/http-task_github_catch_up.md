@@ -86,9 +86,9 @@ sequenceDiagram
     p2-->>p30: exc.detail
 ```
 
-> Call sequence diagram shows 30 of 163 interactions; 133 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 164 interactions; 134 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 30 (29 omitted); unresolved 1 of 69 (68 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 30 (29 omitted); unresolved 1 of 70 (69 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -190,17 +190,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_github_catch_up | domain_result | 340 | `domain_result(...)` |
-| domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
-| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 55 | `str(exc)` |
-| domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
-| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_github_catch_up | GitHubReconciliationService.catch_up | 340 | `GitHubReconciliationService(db).catch_up(task_id)` |
-| GitHubReconciliationService.catch_up | GitHubReconciliationService._task | 71 | `self._task(task_id, 'edit')` |
-| GitHubReconciliationService._task | self.db.scalar | 57 | `self.db.scalar(...)` |
+| task_github_catch_up | domain_result | 374 | `domain_result(...)` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str (backend/app/routers/task_domain.py:domain_result) | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| task_github_catch_up | GitHubReconciliationService.catch_up | 374 | `GitHubReconciliationService(db).catch_up(task_id)` |
+| GitHubReconciliationService.catch_up | GitHubReconciliationService._task | 93 | `self._task(task_id, 'edit')` |
+| GitHubReconciliationService._task | self.db.scalar | 79 | `self.db.scalar(...)` |
 
 ### Boundary effects
 
@@ -210,12 +210,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 53 |
-| unresolved_call | `domain_result` | `exc.detail` | 53 |
-| external_call | `domain_result` | `HTTPException` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| unresolved_call | `GitHubReconciliationService._task` | `self.db.scalar` | 57 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
+| unresolved_call | `GitHubReconciliationService._task` | `self.db.scalar` | 79 |
 | step_limit | `task_github_catch_up` | `first 12 steps` | 0 |
 | truncated_flow | `task_github_catch_up` | `depth limit` | 0 |
 

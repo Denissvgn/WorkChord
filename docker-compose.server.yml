@@ -52,6 +52,7 @@ services:
       MCP_ALLOWED_HOSTS: '${MCP_ALLOWED_HOSTS:-["localhost:*","127.0.0.1:*","[::1]:*"]}'
       MCP_ALLOWED_ORIGINS: '${MCP_ALLOWED_ORIGINS:-["http://localhost:*","http://127.0.0.1:*"]}'
       MCP_UNSAFE_ALLOW_PUBLIC_BINDING: "false"
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-}
       READINESS_DETAIL_TOKEN: ${WORKCHORD_READINESS_DETAIL_TOKEN:?Set WORKCHORD_READINESS_DETAIL_TOKEN}
     volumes:
       - workchord_server_data:/app/data

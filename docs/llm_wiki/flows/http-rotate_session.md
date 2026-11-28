@@ -193,7 +193,7 @@ flowchart LR
 | rotate_session (backend/app/routers/session.py) | rotate_session (backend/app/services/session_service.py) | 33 | `session_service.rotate_session(db, current_session, response)` |
 | rotate_session (backend/app/services/session_service.py) | require_identity_writes | 201 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
 | rotate_session (backend/app/services/session_service.py) | as_utc | 202 | `as_utc(session.expires_at)` |

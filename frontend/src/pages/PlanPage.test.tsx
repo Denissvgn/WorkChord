@@ -574,6 +574,46 @@ describe('work and blockers inside Plan', () => {
         expect(screen.getByTestId('location')).toHaveTextContent('/plan?step=blockers&project=1&iteration=1');
     });
 
+    it('lists the tasks that need a new reviewer in the preview and assigns them with the suggested reviewers in one step', async () => {
+        const tasks = workWorkspace([plannedTask(1), plannedTask(2)]);
+        const original = services.tasks.runBulkOperation.getMockImplementation()!;
+        const check = (taskId: number, applied: boolean) => ({
+            task_id: taskId, assignee_id: 1, assignee_publishers: ['gamma'], assignee_catalog_keys: [], different_publisher_required: true,
+            conflict_mode: 'refuse', structured: true, text_routing: false, consistent: applied, applied,
+            issues: applied ? [] : [{ code: 'reviewer_shares_assignee_publisher', severity: 'conflict', field: 'reviewer', message: 'Same publisher.' }],
+            routing: { schema_version: 1, escalation: [], escalate_after_failed_runs: 2, reviewer: { catalog_key: 'gamma-review', publisher_key: 'gamma' } },
+            suggestion: { schema_version: 1, escalation: [], escalate_after_failed_runs: 2, reviewer: { catalog_key: 'alpha-review', publisher_key: 'alpha' } },
+            suggested_reviewer: { catalog_key: 'alpha-review', publisher_key: 'alpha' },
+        });
+        services.tasks.runBulkOperation.mockImplementation(async request => {
+            const response = await original(request);
+            const resolved = request.payload?.routing_resolution === 'apply_suggestion';
+            response.results = response.results.map((result: { task_id: number; outcome: string }) => result.task_id !== 1 ? result
+                : resolved ? { ...result, changes: { routing: { old: check(1, false).routing, new: check(1, false).suggestion } }, routing_check: check(1, true) }
+                    : { ...result, outcome: 'failed', error: 'The routing conflicts', routing_check: check(1, false) });
+            response.failed_count = response.results.filter((result: { outcome: string }) => result.outcome === 'failed').length;
+            // Using the suggestion also rewrites the routing of a task that does not conflict.
+            if (resolved) response.results = response.results.map((result: { task_id: number }) => result.task_id === 2
+                ? { ...result, changes: { routing: { old: check(1, false).routing, new: check(1, false).suggestion } } } : result);
+            return response;
+        });
+        const { user } = renderPlan(BLOCKERS_ENTRY);
+        const preview = await screen.findByRole('button', { name: 'Preview assignments' });
+        await waitFor(() => expect(preview).toBeEnabled());
+        await user.click(preview);
+        const region = await screen.findByRole('region', { name: '2 tasks need a new reviewer' });
+        expect(within(region).getByText('Work item 1')).toBeVisible();
+        expect(within(region).getByText('Work item 2')).toBeVisible();
+        expect(within(region).getAllByText('Reviewer: gamma-review (gamma) → alpha-review (alpha)')).toHaveLength(2);
+        expect(screen.queryByRole('button', { name: 'Assign 2 tasks' })).not.toBeInTheDocument();
+        expect(services.tasks.runBulkOperation.mock.calls.every(call => call[0].dry_run)).toBe(true);
+        await user.click(screen.getByRole('button', { name: 'Assign 2 tasks and use the suggested routing' }));
+        await screen.findByText('2 tasks assigned.');
+        expect(tasks.every(task => task.assignee)).toBe(true);
+        const writes = services.tasks.runBulkOperation.mock.calls.map(call => call[0] as TaskBulkOperationRequest).filter(request => !request.dry_run);
+        expect(writes.every(request => request.payload?.routing_resolution === 'apply_suggestion')).toBe(true);
+    });
+
     it('uses planning-readiness counts and lists no finished, active, deferred or composite task', async () => {
         workWorkspace([plannedTask(1, { effort_days: null, effort_hours: null }),
             plannedTask(2, { title: 'Finished work', status: 'resolved', effort_days: null }),
@@ -786,6 +826,52 @@ describe('schedule and review inside Plan', () => {
         expect(await screen.findByText(message)).toBeVisible();
         expect(screen.getByRole('link', { name: 'Prepare release' })).toHaveAttribute('href', '/tasks?task=11&fromPlanStep=schedule&project=1&iteration=1');
         expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
+    });
+
+    it('lists the tasks the schedule could not place with the dates they keep and the rule their dates break', async () => {
+        const { preview } = scheduleWorkspace();
+        services.gantt.previewSchedule.mockResolvedValue({ ...preview, schedule_result: {
+            ...preview.schedule_result, kept_dates: [
+                { task_id: 11, task_title: 'Prepare release', reason: 'no_assignee', message: 'No assignee.', start_date: '2026-08-03', end_date: '2026-08-10' },
+                { task_id: 12, task_title: 'Late import', reason: 'no_estimate', message: 'No estimate.', start_date: '2026-09-20', end_date: '2026-09-21', date_rule: 'outside_iteration' },
+            ],
+        } });
+        const { user } = renderPlan();
+        await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
+        const section = await screen.findByRole('region', { name: 'Tasks that keep their saved dates' });
+        expect(within(section).getByRole('link', { name: 'Prepare release' })).toHaveAttribute('href', '/tasks?task=11&fromPlanStep=schedule&project=1&iteration=1');
+        expect(within(section).getByText('No assignee. Assign it to a capacity row in this iteration (a person or an agent profile), then schedule again.')).toBeVisible();
+        expect(within(section).getByText('The saved dates fall outside the iteration.')).toBeVisible();
+        const dated = within(section).getAllByRole('listitem');
+        expect(dated).toHaveLength(2);
+        expect(dated[0]).toHaveTextContent(/2026.* to .*2026/);
+    });
+
+    it('lists each assignee\'s idle working days with the task that waits after them', async () => {
+        const { preview } = scheduleWorkspace();
+        services.gantt.previewSchedule.mockResolvedValue({ ...preview, schedule_result: {
+            ...preview.schedule_result, idle_days: [{ member_id: 7, member_name: 'Ada', idle_working_days: 2, gaps: [{
+                start_date: '2026-08-06', end_date: '2026-08-07', working_days: 2, task_id: 11, task_title: 'Prepare release',
+                reason: 'waits_for_prerequisite', waiting_on: { task_id: 10, task_title: 'Build package' }, message: '2 working days idle.',
+            }] }, { member_id: 8, member_name: 'Grace', idle_working_days: 2, gaps: [{
+                start_date: '2026-08-03', end_date: '2026-08-03', working_days: 1, task_id: 12, task_title: 'Launch',
+                reason: 'earliest_start', earliest_start: '2026-08-04', message: '1 working day idle.',
+            }, {
+                start_date: '2026-08-10', end_date: '2026-08-10', working_days: 1, task_id: 13, task_title: 'Follow-up',
+                reason: 'waits_for_prerequisite', message: 'Server says it waits.',
+            }] }],
+        } });
+        const { user } = renderPlan();
+        await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
+        const section = await screen.findByRole('region', { name: 'Idle working days' });
+        expect(within(section).getByText(/It cannot start before its earliest start date, .*2026\./)).toBeVisible();
+        // Without the prerequisite's name the server's message is shown instead of a sentence with a blank.
+        expect(within(section).getByText(/Server says it waits\./)).toBeVisible();
+        expect(within(section).getByText('Ada')).toBeVisible();
+        expect(within(section).getAllByText(/2 idle working days/)).toHaveLength(2);
+        expect(within(section).getByRole('link', { name: 'Prepare release' })).toHaveAttribute('href', '/tasks?task=11&fromPlanStep=schedule&project=1&iteration=1');
+        expect(within(section).getByText(/It waits for its prerequisite Build package\./)).toBeVisible();
+        expect(within(section).getByText(/\(2 days\) before/)).toBeVisible();
     });
 
     it('says every task has dates after Apply schedule when the saved result lists no unscheduled tasks', async () => {

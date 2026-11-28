@@ -29,6 +29,7 @@ _Auto-generated from `frontend/src/components/team/AgentManifestWorkflow.tsx`._
 | `../../types/agent` | `AgentTeamApplyResponse`, `AgentTeamMaster`, `AgentTeamPlan`, `AgentTeamPlanAction`, `AgentTeamValidation` | Declaration | erased |
 | `../../utils/focusLifecycle` | `captureFocusOrigin`, `focusOwnedTarget` | — | compiler-dependent |
 | `../../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
+| `./RuntimeIdentity` | `RuntimeIdentity` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `axios` | `axios` | — | compiler-dependent |
 | `lucide-react` | `ChevronDown`, `CircleAlert`, `FileJson`, `KeyRound`, `LoaderCircle`, `RefreshCw`, `ShieldCheck` | — | compiler-dependent |
@@ -63,7 +64,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (17) |
+| Outbound | `frontend` (18) |
 
 ### External packages
 
@@ -71,13 +72,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [WorkflowFocusIntent](../entities/WorkflowFocusIntent.md) | Interface | 136 | — | — |
-| [StatusTone](../entities/StatusTone.md) | Type alias | 66 | `'done' \| 'warn' \| 'blocked' \| 'opt' \| 'accent'` | — |
-| [AgentTeamActionReceiptStatus](../entities/AgentTeamActionReceiptStatus.md) | Type alias | 133 | `AgentTeamApplyResponse['receipts'][number]['status']` | — |
-| [WorkflowFocusTarget](../entities/WorkflowFocusTarget.md) | Type alias | 134 | `'plan' \| 'receipt'` | — |
+| [WorkflowFocusIntent](../entities/WorkflowFocusIntent.md) | Interface | 137 | — | — |
+| [StatusTone](../entities/StatusTone.md) | Type alias | 67 | `'done' \| 'warn' \| 'blocked' \| 'opt' \| 'accent'` | — |
+| [AgentTeamActionReceiptStatus](../entities/AgentTeamActionReceiptStatus.md) | Type alias | 134 | `AgentTeamApplyResponse['receipts'][number]['status']` | — |
+| [WorkflowFocusTarget](../entities/WorkflowFocusTarget.md) | Type alias | 135 | `'plan' \| 'receipt'` | — |

@@ -1,11 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
+import { useLocation } from 'react-router-dom';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import type { Task, TaskActions, TaskDetail } from '../../types/task';
 import { emptyTaskBrief } from './taskEditorContract';
 import { TaskEditorDrawer } from './TaskEditorDrawer';
 
-const service = vi.hoisted(() => ({ getDetail: vi.fn(), getById: vi.fn(), actions: vi.fn(), command: vi.fn(), writeBrief: vi.fn(), progress: vi.fn(), review: vi.fn(), lookup: vi.fn() }));
+const service = vi.hoisted(() => ({ getDetail: vi.fn(), getById: vi.fn(), actions: vi.fn(), command: vi.fn(), writeBrief: vi.fn(), progress: vi.fn(), review: vi.fn(), lookup: vi.fn(), reviews: vi.fn().mockResolvedValue([]) }));
 vi.mock('../../services/taskService', () => ({ taskService: service }));
 vi.mock('../../services/iterationService', () => ({ iterationService: { getAll: vi.fn().mockResolvedValue([]) } }));
 vi.mock('../../features/identity/identityContext', () => ({ useIdentity: () => ({ identity: { mode: 'trusted_local', principal: null } }) }));
@@ -131,5 +132,18 @@ describe('task drawer start, submit and review', () => {
         expect(within(drawer()).queryByText('No acceptance criteria yet.')).not.toBeInTheDocument();
         expect(within(drawer()).getByRole('textbox', { name: /Reason for the action or review/ })).toHaveValue('Checked the checklist');
         expect(duplicateKeyWarnings()).toEqual([]);
+    });
+});
+
+describe('task drawer for superseded work', () => {
+    it('opens the successor from a page that is not Tasks: closes, then goes to the Tasks page with the successor', async () => {
+        const onClose = vi.fn();
+        const Where = () => <output data-testid="where">{useLocation().pathname + useLocation().search}</output>;
+        serve({ ...baseTask, displayed_state: 'superseded', successor_task_id: 77, successor_kind: 'supersession' } as unknown as Task);
+        const { user } = renderWithProviders(<><TaskEditorDrawer taskId={1} open onClose={onClose} /><Where /></>, { initialEntries: ['/gantt?iteration=3&task=1'] });
+        await user.click(await within(drawer()).findByRole('button', { name: 'Superseded by #77' }));
+        expect(onClose).toHaveBeenCalled();
+        expect(screen.getByTestId('where')).toHaveTextContent('/tasks');
+        expect(screen.getByTestId('where')).toHaveTextContent('task=77');
     });
 });

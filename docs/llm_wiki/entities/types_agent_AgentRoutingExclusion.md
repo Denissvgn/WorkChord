@@ -1,6 +1,6 @@
 # AgentRoutingExclusion
 
-**Location:** `frontend/src/types/agent.ts:435`
+**Location:** `frontend/src/types/agent.ts:517`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -33,12 +33,15 @@ _Auto-generated from `AgentRoutingExclusion` in `frontend/src/types/agent.ts`._
 | `insufficient_skill_keys` | `string[]` | Yes | — | — |
 | `blocking_weakness_keys` | `string[]` | Yes | — | — |
 | `reasoning_tier` | `ModelReasoningTier \| null` | Yes | — | — |
+| `effort` | `ModelEffort \| null` | Yes | — | — |
 | `context_tier` | `ModelContextTier \| null` | Yes | — | — |
 | `cost_tier` | `ModelCostTier \| null` | Yes | — | — |
+| `local_first` | `boolean \| null` | Yes | — | — |
 | `latency_tier` | `ModelLatencyTier \| null` | Yes | — | — |
 | `missing_modality_tags` | `string[]` | Yes | — | — |
 | `missing_tool_tags` | `string[]` | Yes | — | — |
 | `missing_data_policy_tags` | `string[]` | Yes | — | — |
+| `missing_qualification_keys` | `string[]` | No | — | — |
 | `available_capacity_days` | `number \| null` | Yes | — | — |
 | `committed_effort_days` | `number \| null` | Yes | — | — |
 | `workload_ratio` | `number \| null` | Yes | — | — |

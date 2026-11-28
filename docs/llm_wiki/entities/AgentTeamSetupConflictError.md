@@ -1,6 +1,6 @@
 # AgentTeamSetupConflictError
 
-**Location:** `backend/app/services/agent_team_setup_service.py:107`
+**Location:** `backend/app/services/agent_team_setup_service.py:110`
 **Kind:** Class
 **Bases:** `AgentConflictError`
 **Module:** [agent_team_setup_service](../modules/agent_team_setup_service.md)
@@ -34,11 +34,11 @@ flowchart LR
     n6["AgentTeamSetupService._apply_identity_replacement (backend/app/services/agent_team_setup_service.py)"]
     n7["AgentTeamSetupService._apply_replace_recovery (backend/app/services/agent_team_setup_service.py)"]
     n8["AgentTeamSetupService._catalog_entries (backend/app/services/agent_team_setup_service.py)"]
-    n9["AgentTeamSetupService._current_snapshot (backend/app/services/agent_team_setup_service.py)"]
-    n10["AgentTeamSetupService._ensure_topology_for_apply (backend/app/services/agent_team_setup_service.py)"]
-    n11["AgentTeamSetupService._execute_action (backend/app/services/agent_team_setup_service.py)"]
-    n12["AgentTeamSetupService._increment_ack_attempt (backend/app/services/agent_team_setup_service.py)"]
-    n13["AgentTeamSetupService._replay_apply (backend/app/services/agent_team_setup_service.py)"]
+    n9["AgentTeamSetupService._count_ack_attempt (backend/app/services/agent_team_setup_service.py)"]
+    n10["AgentTeamSetupService._current_snapshot (backend/app/services/agent_team_setup_service.py)"]
+    n11["AgentTeamSetupService._ensure_topology_for_apply (backend/app/services/agent_team_setup_service.py)"]
+    n12["AgentTeamSetupService._execute_action (backend/app/services/agent_team_setup_service.py)"]
+    n13["AgentTeamSetupService._refuse_foreign_runtime_instance (backend/app/services/agent_team_setup_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -91,10 +91,10 @@ flowchart LR
 | `AgentTeamSetupService._apply_identity_replacement` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 4 |
 | `AgentTeamSetupService._apply_replace_recovery` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 2 |
 | `AgentTeamSetupService._catalog_entries` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
+| `AgentTeamSetupService._count_ack_attempt` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 | `AgentTeamSetupService._current_snapshot` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 | `AgentTeamSetupService._ensure_topology_for_apply` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 2 |
 | `AgentTeamSetupService._execute_action` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 3 |
-| `AgentTeamSetupService._increment_ack_attempt` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
-| `AgentTeamSetupService._replay_apply` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
+| `AgentTeamSetupService._refuse_foreign_runtime_instance` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 
-> References: showing 12 of 26 logical references; 14 omitted by the 12-row generated summary limit.
+> References: showing 12 of 30 logical references; 18 omitted by the 12-row generated summary limit.

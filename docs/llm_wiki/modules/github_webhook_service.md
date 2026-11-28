@@ -17,6 +17,7 @@ GitHub webhook intake service.
 | `app.models.triage` | `TriageItem` |
 | `app.schemas.github` | `GitHubWebhookResponse` |
 | `app.schemas.triage` | `TriageItemCreate` |
+| `app.services.github_reconciliation_service` | `observed_head_keeps_acceptance` |
 | `app.services.github_status_automation_service` | `GitHubStatusAutomationService` |
 | `app.services.github_status_service` | `GitHubStatusService` |
 | `app.services.language_service` | `LanguageCode`, `localized`, `resolve_runtime_ui_language` |
@@ -51,8 +52,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (2) |
-| Outbound | `backend` (15) |
+| Inbound | `backend` (4) |
+| Outbound | `backend` (16) |
 
 ### External packages
 
@@ -60,7 +61,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

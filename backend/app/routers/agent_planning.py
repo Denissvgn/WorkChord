@@ -2,7 +2,7 @@
 
 from typing import Annotated, NoReturn
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Query, status
+from fastapi import APIRouter, Depends, File, Header, HTTPException, Query, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import mcp_agent_tools
@@ -51,8 +51,11 @@ from app.schemas.triage import (
     TriageItemUpdate,
     TriageSnoozeRequest,
 )
+from app.schemas.import_review import ImportDryRunResponse
 from app.schemas.task_replacement import TaskReplacementCreate, TaskReplacementResponse
+from app.schemas.manual_provenance import ManualProvenanceWrite
 from app.services.agent_planning_service import AgentPlanningService
+from app.services.agent_routing_policy import RoutingTermsRefusedError
 from app.services.agent_routing_service import (
     AgentRoutingConflictError,
     AgentRoutingService,
@@ -64,6 +67,7 @@ from app.services.agent_service import (
 )
 from app.services.task_service import TaskVersionConflictError
 from app.services.triage_service import TriageConflictError
+from app.utils.source_link_policy import SourceLinkRefused
 
 
 router = APIRouter()
@@ -116,6 +120,11 @@ def _handle_agent_error(exc: Exception) -> NoReturn:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc))
     if isinstance(exc, LookupError):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
+    if isinstance(exc, SourceLinkRefused):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=exc.detail())
+    if isinstance(exc, RoutingTermsRefusedError):
+        # The same refusal request validation gives, e.g. for a key outside the vocabulary.
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc))
     if isinstance(exc, ValueError):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
     raise exc
@@ -139,6 +148,37 @@ async def get_iteration_plan_readiness(
     if summary is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Iteration not found")
     return summary
+
+
+@router.post(
+    "/agent/planning/iterations/import/dry-run",
+    response_model=ImportDryRunResponse,
+)
+@router.post(
+    "/agent/planning/iterations/{iteration_id}/import/dry-run",
+    response_model=ImportDryRunResponse,
+)
+async def dry_run_iteration_import(
+    file: Annotated[UploadFile, File(...)],
+    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+    iteration_id: int | None = None,
+):
+    """Return the exact changes a JSON plan import would make; nothing is written."""
+    from app.routers.export import _read_json_upload, _validate_import_data
+    try:
+        require_scope(actor, "planning:write")
+    except Exception as exc:
+        _handle_agent_error(exc)
+    data = await _read_json_upload(file)
+    _validate_import_data(data)
+    from app.services.import_review_service import ImportFileInvalid
+    try:
+        return await mcp_agent_tools.preview_iteration_import(db, actor, iteration_id, data)
+    except ImportFileInvalid as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=exc.detail()) from exc
+    except Exception as exc:
+        _handle_agent_error(exc)
 
 
 @router.get(
@@ -378,7 +418,7 @@ async def get_task_replacement(
     actor: Annotated[AgentActor, Depends(get_agent_actor)],
     db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ):
-    """Read the clean-replacement disposition this task takes part in."""
+    """Read the replacement or supersession disposition this task takes part in."""
     try:
         return await mcp_agent_tools.get_task_replacement(db, actor, task_id)
     except Exception as exc:
@@ -400,6 +440,25 @@ async def record_task_replacement(
     """Replace an unaccepted task with a fresh one under a recorded owner decision."""
     try:
         return await service.record_task_replacement(task_id, actor, data, command=command)
+    except Exception as exc:
+        _handle_agent_error(exc)
+
+
+@router.post(
+    "/agent/planning/tasks/{task_id}/manual-provenance",
+    response_model=AgentPlanningReceipt,
+    status_code=status.HTTP_201_CREATED,
+)
+async def record_manual_provenance(
+    task_id: int,
+    data: ManualProvenanceWrite,
+    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    service: Annotated[AgentPlanningService, Depends(get_agent_planning_service)],
+    command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)],
+):
+    """Record who executed resolved work delivered outside recorded runs, and its exact candidate."""
+    try:
+        return await service.record_manual_provenance(task_id, actor, data, command=command)
     except Exception as exc:
         _handle_agent_error(exc)
 

@@ -1,6 +1,6 @@
 # TaskCreate
 
-**Location:** `backend/app/schemas/task.py:38`
+**Location:** `backend/app/schemas/task.py:39`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -126,4 +126,4 @@ flowchart LR
 | `AgentService.create_task` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `TaskService.create` | type_reference | [task_service](../modules/task_service.md) | — |
 
-> References: showing 12 of 60 logical references; 48 omitted by the 12-row generated summary limit.
+> References: showing 12 of 63 logical references; 51 omitted by the 12-row generated summary limit.

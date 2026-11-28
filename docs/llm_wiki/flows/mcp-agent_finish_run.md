@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_finish_run` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 13 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 14 more
 
 **Complete modules touched:**
 
@@ -21,6 +21,7 @@
 - [outbound_webhook_service](../modules/outbound_webhook_service.md)
 - [schemas_agent](../modules/schemas_agent.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -52,14 +53,14 @@ sequenceDiagram
     participant p18 as AgentService.authenticate
     participant p19 as require_identity_writes
     participant p20 as AgentService._validate_task_fence
-    participant p21 as DeliveryDependencyService.reconcile
-    participant p22 as DiscussionService.enqueue
-    participant p23 as actor_has_scope
-    participant p24 as OutboundWebhookService.enqueue_event
-    participant p25 as commit_or_flush
-    participant p26 as DeliveryDependencyService.validate_cycles
-    participant p27 as DiscussionService.recipient_authorized
-    participant p28 as TaskService.reserve_task_version
+    participant p21 as process_reactivation_checks
+    participant p22 as DeliveryDependencyService.reconcile
+    participant p23 as DiscussionService.enqueue
+    participant p24 as actor_has_scope
+    participant p25 as OutboundWebhookService.enqueue_event
+    participant p26 as ReactivationService.evaluate_waiting
+    participant p27 as commit_or_flush
+    participant p28 as DeliveryDependencyService.validate_cycles
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -82,21 +83,21 @@ sequenceDiagram
     p11->>p18: AgentService.authenticate
     p13->>p19: require_identity_writes
     p14->>p20: AgentService._validate_task_fence
-    p10->>p21: DeliveryDependencyService.reconcile
-    p10->>p22: DiscussionService.enqueue
-    p17->>p23: actor_has_scope
-    p16->>p24: OutboundWebhookService.enqueue_event
-    p18->>p25: commit_or_flush
-    p21->>p26: DeliveryDependencyService.validate_cycles
-    p22->>p27: DiscussionService.recipient_authorized
-    p21->>p28: TaskService.reserve_task_version
+    p10->>p21: process_reactivation_checks
+    p10->>p22: DeliveryDependencyService.reconcile
+    p10->>p23: DiscussionService.enqueue
+    p17->>p24: actor_has_scope
+    p16->>p25: OutboundWebhookService.enqueue_event
+    p21->>p26: ReactivationService.evaluate_waiting
+    p18->>p27: commit_or_flush
+    p22->>p28: DeliveryDependencyService.validate_cycles
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 293 interactions; 263 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 330 interactions; 300 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 73 (72 omitted); unresolved 1 of 114 (113 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 82 (81 omitted); unresolved 1 of 137 (136 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -110,7 +111,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 91 groups; 83 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 98 groups; 90 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -123,9 +124,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 107; effect analysis evaluated: 72, partial: 2, unavailable: 33. Counts include steps omitted from the displayed trace.
+Source steps: 112; effect analysis evaluated: 76, partial: 2, unavailable: 34. Counts include steps omitted from the displayed trace.
 
-Collector observations for 74 source steps with known totals: observed: 324, emitted: 312, omitted: 12. Unavailable totals are excluded.
+Collector observations for 78 source steps with known totals: observed: 353, emitted: 340, omitted: 13. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -200,10 +201,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_finish_run | _tool_call | 1311 | `_tool_call('runs:write', ...)` |
-| _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
+| agent_finish_run | _tool_call | 1324 | `_tool_call('runs:write', ...)` |
+| _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple | 100 | `tuple(required_scope)` |

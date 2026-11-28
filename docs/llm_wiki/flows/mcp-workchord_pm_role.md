@@ -2,7 +2,7 @@
 
 **Entry point:** `workchord_pm_role` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 10 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 11 more
 
 **Complete modules touched:**
 
@@ -18,6 +18,7 @@
 - [models_identity](../modules/models_identity.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -40,23 +41,23 @@ sequenceDiagram
     participant p9 as require_scope
     participant p10 as AgentService.authenticate
     participant p11 as require_identity_writes
-    participant p12 as DeliveryDependencyService.reconcile
-    participant p13 as DiscussionService.enqueue
-    participant p14 as actor_has_scope
-    participant p15 as commit_or_flush
-    participant p16 as DeliveryDependencyService.validate_cycles
-    participant p17 as DiscussionService.recipient_authorized
-    participant p18 as TaskService.reserve_task_version
-    participant p19 as clear_execution_evidence
-    participant p20 as _current_agent_key
-    participant p21 as MCPAuthError
-    participant p22 as _open_db_session
-    participant p23 as IdentityService
-    participant p24 as current_command
-    participant p25 as internal_authority
-    participant p26 as CommandState
-    participant p27 as AgentService
-    participant p28 as AgentPermissionError
+    participant p12 as process_reactivation_checks
+    participant p13 as DeliveryDependencyService.reconcile
+    participant p14 as DiscussionService.enqueue
+    participant p15 as actor_has_scope
+    participant p16 as ReactivationService.evaluate_waiting
+    participant p17 as commit_or_flush
+    participant p18 as DeliveryDependencyService.validate_cycles
+    participant p19 as DiscussionService.recipient_authorized
+    participant p20 as TaskService.reserve_task_version
+    participant p21 as clear_execution_evidence
+    participant p22 as _current_agent_key
+    participant p23 as MCPAuthError
+    participant p24 as _open_db_session
+    participant p25 as IdentityService
+    participant p26 as current_command
+    participant p27 as internal_authority
+    participant p28 as CommandState
     participant p29 as isinstance (backend/app/mcp_server.py…require_scope_requirement)
     participant p30 as _http_agent_key.get
     p0->>p1: _skill_bundle_prompt
@@ -70,30 +71,30 @@ sequenceDiagram
     p6->>p9: require_scope
     p5->>p10: AgentService.authenticate
     p7->>p11: require_identity_writes
-    p4->>p12: DeliveryDependencyService.reconcile
-    p4->>p13: DiscussionService.enqueue
-    p9->>p14: actor_has_scope
-    p10->>p15: commit_or_flush
-    p12->>p16: DeliveryDependencyService.validate_cycles
-    p13->>p17: DiscussionService.recipient_authorized
-    p12->>p18: TaskService.reserve_task_version
-    p12->>p19: clear_execution_evidence
-    p2->>p20: _current_agent_key
-    p2->>p21: MCPAuthError
-    p2->>p22: _open_db_session
-    p2->>p23: IdentityService
-    p4->>p24: current_command
-    p7->>p25: internal_authority
-    p4->>p26: CommandState
-    p5->>p27: AgentService
-    p6->>p28: AgentPermissionError
+    p4->>p12: process_reactivation_checks
+    p4->>p13: DeliveryDependencyService.reconcile
+    p4->>p14: DiscussionService.enqueue
+    p9->>p15: actor_has_scope
+    p12->>p16: ReactivationService.evaluate_waiting
+    p10->>p17: commit_or_flush
+    p13->>p18: DeliveryDependencyService.validate_cycles
+    p14->>p19: DiscussionService.recipient_authorized
+    p13->>p20: TaskService.reserve_task_version
+    p13->>p21: clear_execution_evidence
+    p2->>p22: _current_agent_key
+    p2->>p23: MCPAuthError
+    p2->>p24: _open_db_session
+    p2->>p25: IdentityService
+    p4->>p26: current_command
+    p7->>p27: internal_authority
+    p4->>p28: CommandState
     p6-->>p29: isinstance (backend/app/mcp_server.py…require_scope_requirement)(required, str)
-    p20-->>p30: _http_agent_key.get
+    p22-->>p30: _http_agent_key.get
 ```
 
-> Call sequence diagram shows 30 of 200 interactions; 170 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 235 interactions; 205 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 40 (39 omitted); unresolved 1 of 90 (89 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 48 (47 omitted); unresolved 1 of 112 (111 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -105,9 +106,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/commands.py:current_command` | 12 | - | external | 2 |
 | `backend/app/commands.py:current_command` | 12 | - | unresolved | 1 |
 | `backend/app/commands.py:command_transaction` | 11 | - | external | 4 |
-| `backend/app/commands.py:command_transaction` | 11 | - | unresolved | 12 |
-| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 23 | - | unresolved | 23 |
-> Omission summary shows 8 of 59 groups; 51 further groups are not expanded here. Counts above include all omitted interactions.
+| `backend/app/commands.py:command_transaction` | 11 | - | unresolved | 13 |
+| `backend/app/services/task_reactivation_service.py:process_reactivation_checks` | 21 | [backend/app/services/task_reactivation_service.py](../modules/task_reactivation_service.md) | internal | 1 |
+> Omission summary shows 8 of 66 groups; 58 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -120,9 +121,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 71; effect analysis evaluated: 48, partial: 0, unavailable: 23. Counts include steps omitted from the displayed trace.
+Source steps: 76; effect analysis evaluated: 52, partial: 0, unavailable: 24. Counts include steps omitted from the displayed trace.
 
-Collector observations for 48 source steps with known totals: observed: 174, emitted: 174, omitted: 0. Unavailable totals are excluded.
+Collector observations for 52 source steps with known totals: observed: 202, emitted: 202, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -214,34 +215,34 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workchord_pm_role | _skill_bundle_prompt | 2616 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended PM skill version, then read workchord://skill-bundles/workchord-pm/{version}/SKILL.md. Follow that controller skill and its referenced files; do not infer authority from profile capability matches.')` |
-| _skill_bundle_prompt | _agent_context | 370 | `_agent_context(_skill_bundle_scope_requirement(...))` |
-| _agent_context | _current_agent_key | 278 | `_current_agent_key(data not statically known)` |
-| _current_agent_key | _http_agent_key.get | 205 | `_http_agent_key.get(data not statically known)` |
-| _current_agent_key | os.getenv | 205 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
-| _agent_context | MCPAuthError | 280 | `MCPAuthError(...)` |
-| _agent_context | _open_db_session | 281 | `_open_db_session(data not statically known)` |
-| _open_db_session | _session_factory | 186 | `_session_factory(data not statically known)` |
-| _open_db_session | hasattr | 187 | `hasattr(session_context, '__aenter__')` |
-| _agent_context | command_transaction | 282 | `command_transaction(db, mode=...)` |
-| command_transaction | current_command | 93 | `current_command(db)` |
+| workchord_pm_role | _skill_bundle_prompt | 2796 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended PM skill version, then read workchord://skill-bundles/workchord-pm/{version}/SKILL.md. Follow that controller skill and its referenced files; do not infer authority from profile capability matches.')` |
+| _skill_bundle_prompt | _agent_context | 373 | `_agent_context(_skill_bundle_scope_requirement(...))` |
+| _agent_context | _current_agent_key | 279 | `_current_agent_key(data not statically known)` |
+| _current_agent_key | _http_agent_key.get | 206 | `_http_agent_key.get(data not statically known)` |
+| _current_agent_key | os.getenv | 206 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
+| _agent_context | MCPAuthError | 281 | `MCPAuthError(...)` |
+| _agent_context | _open_db_session | 282 | `_open_db_session(data not statically known)` |
+| _open_db_session | _session_factory | 187 | `_session_factory(data not statically known)` |
+| _open_db_session | hasattr | 188 | `hasattr(session_context, '__aenter__')` |
+| _agent_context | command_transaction | 283 | `command_transaction(db, mode=...)` |
+| command_transaction | current_command | 103 | `current_command(db)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| environment_read | `os.getenv` | `_current_agent_key` | 205 |
-| mutation | `db.info.pop` | `command_transaction` | 113 |
-| mutation | `db.info.pop` | `command_transaction` | 126 |
+| environment_read | `os.getenv` | `_current_agent_key` | 206 |
 | mutation | `db.info.pop` | `command_transaction` | 127 |
-| mutation | `db.info.pop` | `command_transaction` | 129 |
+| mutation | `db.info.pop` | `command_transaction` | 140 |
+| mutation | `db.info.pop` | `command_transaction` | 141 |
+| mutation | `db.info.pop` | `command_transaction` | 143 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `_open_db_session` | `_session_factory` | 186 |
-| external_call | `_open_db_session` | `hasattr` | 187 |
+| unresolved_call | `_open_db_session` | `_session_factory` | 187 |
+| external_call | `_open_db_session` | `hasattr` | 188 |
 | step_limit | `workchord_pm_role` | `first 12 steps` | 0 |
 | truncated_flow | `workchord_pm_role` | `depth limit` | 0 |
 

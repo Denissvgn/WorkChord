@@ -10,8 +10,8 @@ Focused policy and schema contracts for deterministic Wave 3 routing.
 
 | Source | Symbols |
 |--------|---------|
-| `app.schemas.agent_routing` | `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse`, `RoutingDecisionSnapshot`, `RoutingTrustLineage`, `TaskRoutingAssessmentCommand`, `TaskRoutingAssessmentListResponse`, `TaskRoutingAssessmentResponse`, `TaskRoutingAssessmentState` |
-| `app.services.agent_routing_policy` | `MAX_ROUTING_CANDIDATES`, `MAX_ROUTING_EXCLUSIONS`, `MIN_ROUTING_ASSESSMENT_CONFIDENCE`, `ROUTING_PREVIEW_TTL_SECONDS`, `RoutingBlockerCode`, `evaluate_model_envelope`, `evaluate_required_skills`, `routing_candidate_rank_key` |
+| `app.schemas.agent_routing` | `AgentModelCatalogCreate`, `AgentModelCatalogUpdate`, `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse`, `RoutingDecisionSnapshot`, `RoutingTrustLineage`, `TaskRoutingAssessmentCommand`, `TaskRoutingAssessmentListResponse`, `TaskRoutingAssessmentResponse`, `TaskRoutingAssessmentState` |
+| `app.services.agent_routing_policy` | `MAX_ROUTING_CANDIDATES`, `MAX_ROUTING_EXCLUSIONS`, `MIN_ROUTING_ASSESSMENT_CONFIDENCE`, `ROUTING_PREVIEW_TTL_SECONDS`, `RoutingBlockerCode`, `effort_meets`, `evaluate_model_envelope`, `evaluate_required_skills`, `routing_candidate_rank_key` |
 | `datetime` | `UTC`, `datetime`, `timedelta` |
 | `pydantic` | `ValidationError` |
 | `pytest` | `pytest` |
@@ -59,3 +59,9 @@ flowchart LR
 | `test_assessment_state_and_history_are_explicit_and_version_bound` | `() -> None` | `@pytest.mark.contract` | — |
 | `test_preview_contract_accepts_eligible_and_explicit_no_candidate_states` | `() -> None` | `@pytest.mark.contract` | — |
 | `test_routing_decision_snapshot_is_immutable_and_preserves_trust_lineage` | `() -> None` | `@pytest.mark.contract` | — |
+| `_rank` | `(**overrides)` | — | — |
+| `test_local_first_ranks_ahead_of_hosted_only_at_equal_adequacy` | `() -> None` | — | — |
+| `test_effort_requirement_gates_on_an_ordered_setting_and_never_on_unknown` | `() -> None` | — | — |
+| `test_effort_is_ignored_when_the_task_states_no_requirement` | `() -> None` | — | — |
+| `test_catalog_effort_defaults_to_unknown_and_refuses_values_outside_the_vocabulary` | `() -> None` | — | — |
+| `test_required_effort_is_optional_stored_only_when_stated_and_never_unknown` | `() -> None` | — | — |

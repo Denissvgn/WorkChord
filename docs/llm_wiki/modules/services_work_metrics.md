@@ -27,6 +27,7 @@ Canonical inclusion follows complete same-scope ancestry. Incomplete or cyclic a
 | `app.models.project` | `Project` |
 | `app.models.task` | `Task`, `Task`, `Task`, `TaskDependency` |
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_PROJECT_TREE_TASKS` |
+| `app.services.task_display_state` | `displayed_state_expression`, `state_clause` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `datetime` | `datetime` |
 | `sqlalchemy` | `select`, `or_`, `exists`, `func`, `select`, `select`, `case`, `func`, `or_`, `and_`, `false`, `literal` |
@@ -50,8 +51,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (32) |
-| Outbound | `backend` (8) |
+| Inbound | `backend` (38) |
+| Outbound | `backend` (9) |
 
 ### External packages
 
@@ -59,12 +60,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 47 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `postponed_work_under` | `(task)` | — | The postponed work a prerequisite stands for: itself, or the postponed leaves below a summary. |
 | `working_today` | `(timezone = 'UTC', now: datetime \| None = None)` | — | — |
 | `effective_work_flags` | `(task, *, by_id = None)` | — | Use complete ancestry for inherited work policy; unknown links fail closed. |
 | `task_signals` | `(task, *, iteration_end = None, project_target = None, timezone = 'UTC', now = None, composite = False, effective_flags = None)` | — | — |

@@ -34,7 +34,7 @@ const binding: AgentModelBinding = {
     run_reference_count: 0, created_at: '', updated_at: '',
     model_catalog: {
         id: 3, key: 'sonnet', provider: 'anthropic', configured_model_alias: 'claude-sonnet-5-5', reasoning_tier: 3,
-        context_tier: 'large', modality_tags: [], cost_tier: 'medium', latency_tier: 'balanced', enabled: true, revision: 1,
+        context_tier: 'large', modality_tags: [], cost_tier: 'medium', latency_tier: 'balanced', local_first: false, effort: 'unknown', enabled: true, revision: 1,
         last_verified_at: null, created_at: '', updated_at: '',
     },
 };
@@ -94,6 +94,22 @@ describe('Team page', () => {
         const idle = within(rowFor('Idle Agent'));
         expect(idle.getByText('Not connected')).toBeVisible();
         expect(idle.getByText('No model')).toBeVisible();
+    });
+
+    it('names a model by its recorded effort in the translated label, in the row and the drawer', async () => {
+        setAdminApiKey('operator-key');
+        const xhighBinding: AgentModelBinding = {
+            ...binding, model_catalog: { ...binding.model_catalog!, effort: 'xhigh' },
+        };
+        services.agent.getActorRoster.mockResolvedValue([actor({ eligible_model_bindings: [xhighBinding] })]);
+        const { user } = renderTeam();
+
+        await screen.findByRole('button', { name: 'Open Builder' });
+        await waitFor(() => expect(within(rowFor('Builder')).getByText('claude-sonnet-5-5 (Extra high)')).toBeVisible());
+        await user.click(screen.getByRole('button', { name: 'Open Builder' }));
+        const drawer = within(await screen.findByRole('dialog', { name: 'Builder' }));
+        expect(drawer.getAllByText('claude-sonnet-5-5 (Extra high)').length).toBeGreaterThan(0);
+        expect(screen.queryByText(/\(xhigh\)/)).not.toBeInTheDocument();
     });
 
     it('keeps every agent of a shared profile on its row and shows each one in the drawer', async () => {

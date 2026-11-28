@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_skill_catalog_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), and 12 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), and 13 more
 
 **Complete modules touched:**
 
@@ -20,6 +20,7 @@
 - [models_identity](../modules/models_identity.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -46,19 +47,19 @@ sequenceDiagram
     participant p13 as require_scope
     participant p14 as AgentService.authenticate
     participant p15 as require_identity_writes
-    participant p16 as DeliveryDependencyService.reconcile
+    participant p16 as process_reactivation_checks
     participant p17 as IdentityService.context
-    participant p18 as DiscussionService.enqueue
-    participant p19 as _skill_resource_error
-    participant p20 as AgentSkillBundleService
-    participant p21 as _structured_tool_error
-    participant p22 as _current_agent_key
-    participant p23 as scope_requirement_is_mutating
-    participant p24 as MCPAuthError
-    participant p25 as MaintenanceModeError
-    participant p26 as _open_db_session
-    participant p27 as IdentityService
-    participant p28 as Settings
+    participant p18 as DeliveryDependencyService.reconcile
+    participant p19 as DiscussionService.enqueue
+    participant p20 as _skill_resource_error
+    participant p21 as AgentSkillBundleService
+    participant p22 as _structured_tool_error
+    participant p23 as _current_agent_key
+    participant p24 as scope_requirement_is_mutating
+    participant p25 as MCPAuthError
+    participant p26 as MaintenanceModeError
+    participant p27 as _open_db_session
+    participant p28 as IdentityService
     participant p29 as json.dumps (backend/app/mcp_server.py:_json_resource)
     participant p30 as _agent_skill_bundle_service().catalog_payload
     p0->>p1: _json_resource
@@ -76,31 +77,32 @@ sequenceDiagram
     p11->>p13: require_scope
     p10->>p14: AgentService.authenticate
     p12->>p15: require_identity_writes
-    p9->>p16: DeliveryDependencyService.reconcile
+    p9->>p16: process_reactivation_checks
     p12->>p17: IdentityService.context
-    p9->>p18: DiscussionService.enqueue
-    p3->>p19: _skill_resource_error
-    p5->>p20: AgentSkillBundleService
-    p4->>p21: _structured_tool_error
-    p7->>p22: _current_agent_key
-    p6->>p23: scope_requirement_is_mutating
-    p7->>p24: MCPAuthError
-    p6->>p25: MaintenanceModeError
-    p7->>p26: _open_db_session
-    p7->>p27: IdentityService
-    p8->>p28: Settings
+    p9->>p18: DeliveryDependencyService.reconcile
+    p9->>p19: DiscussionService.enqueue
+    p3->>p20: _skill_resource_error
+    p5->>p21: AgentSkillBundleService
+    p4->>p22: _structured_tool_error
+    p7->>p23: _current_agent_key
+    p6->>p24: scope_requirement_is_mutating
+    p7->>p25: MCPAuthError
+    p6->>p26: MaintenanceModeError
+    p7->>p27: _open_db_session
+    p7->>p28: IdentityService
     p1-->>p29: json.dumps (backend/app/mcp_server.py:_json_resource)(value, ensure_ascii=False, default=str)
     p3-->>p30: _agent_skill_bundle_service().catalog_payload
 ```
 
-> Call sequence diagram shows 30 of 220 interactions; 190 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 239 interactions; 209 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 69 (68 omitted); unresolved 1 of 83 (82 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 75 (74 omitted); unresolved 1 of 93 (92 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
+| `backend/app/config.py:get_settings` | 5 | [backend/app/config.py](../modules/config.md) | internal | 1 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 7 | - | external | 4 |
 | `backend/app/maintenance.py:scope_requirement_is_mutating` | 7 | - | unresolved | 3 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
@@ -108,8 +110,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | external | 1 |
 | `backend/app/commands.py:command_transaction` | 24 | [backend/app/commands.py](../modules/commands.md) | internal | 2 |
-| `backend/app/commands.py:current_command` | 25 | - | external | 2 |
-> Omission summary shows 8 of 57 groups; 49 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 61 groups; 53 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -122,9 +123,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 69; effect analysis evaluated: 45, partial: 2, unavailable: 22. Counts include steps omitted from the displayed trace.
+Source steps: 72; effect analysis evaluated: 47, partial: 2, unavailable: 23. Counts include steps omitted from the displayed trace.
 
-Collector observations for 47 source steps with known totals: observed: 190, emitted: 178, omitted: 12. Unavailable totals are excluded.
+Collector observations for 49 source steps with known totals: observed: 210, emitted: 197, omitted: 13. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -200,11 +201,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_skill_catalog_resource | _json_resource | 2558 | `_json_resource(_skill_bundle_scope_requirement(...), ...)` |
-| _json_resource | _tool_call | 364 | `_tool_call(required_scope, func)` |
-| _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
+| agent_skill_catalog_resource | _json_resource | 2738 | `_json_resource(_skill_bundle_scope_requirement(...), ...)` |
+| _json_resource | _tool_call | 367 | `_tool_call(required_scope, func)` |
+| _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple | 100 | `tuple(required_scope)` |

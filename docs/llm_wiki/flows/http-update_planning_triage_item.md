@@ -86,9 +86,9 @@ sequenceDiagram
     p0-->>p30: data.model_dump (backend/app/routers/agent…date_planning_triage_item)(mode='json', exclude_unset=True)
 ```
 
-> Call sequence diagram shows 30 of 107 interactions; 77 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 113 interactions; 83 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 42 (41 omitted); unresolved 1 of 29 (28 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 47 (46 omitted); unresolved 1 of 30 (29 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -115,7 +115,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 37; effect analysis evaluated: 23, partial: 4, unavailable: 10. Counts include steps omitted from the displayed trace.
 
-Collector observations for 27 source steps with known totals: observed: 168, emitted: 161, omitted: 7. Unavailable totals are excluded.
+Collector observations for 27 source steps with known totals: observed: 172, emitted: 161, omitted: 11. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -193,16 +193,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_planning_triage_item | require_scope | 708 | `require_scope(actor, 'planning:write')` |
+| update_planning_triage_item | require_scope | 767 | `require_scope(actor, 'planning:write')` |
 | require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
-| update_planning_triage_item | update_triage_item | 709 | `mcp_agent_tools.update_triage_item(db, actor, triage_item_id, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| update_triage_item | _mutate_triage_item | 2647 | `_mutate_triage_item(db, actor, triage_item_id, operation='triage.update', idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id, data=TriageItemUpdate(...), service_method='update')` |
-| _mutate_triage_item | _triage_command_context | 417 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
-| _triage_command_context | validate_idempotency_key | 221 | `validate_idempotency_key(idempotency_key, required=True)` |
+| update_planning_triage_item | update_triage_item | 768 | `mcp_agent_tools.update_triage_item(db, actor, triage_item_id, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
+| update_triage_item | _mutate_triage_item | 2859 | `_mutate_triage_item(db, actor, triage_item_id, operation='triage.update', idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id, data=TriageItemUpdate(...), service_method='update')` |
+| _mutate_triage_item | _triage_command_context | 418 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| _triage_command_context | validate_idempotency_key | 222 | `validate_idempotency_key(idempotency_key, required=True)` |
 | validate_idempotency_key | ValueError (backend/app/services/agen…:validate_idempotency_key) | 123 | `ValueError('Idempotency-Key is required')` |
 
 ### Boundary effects

@@ -14,11 +14,12 @@ Triage API router.
 | `app.database` | `get_db` |
 | `app.routers.task_domain` | `domain_result` |
 | `app.schemas.team` | `AssigneeRecommendationResponse` |
-| `app.schemas.triage` | `TriageActionRequest`, `TriageClassificationSuggestionResponse`, `TriageConvertToTaskRequest`, `TriageConvertToBacklogRequest`, `TriageConvertToTaskResponse`, `TriageDuplicateRequest`, `TriageDuplicateSuggestionsResponse`, `TriageItemCreate`, `TriageItemResponse`, `TriageItemStatus`, `TriageItemUpdate`, `TriageSnoozeRequest`, `TriageTaskDraftRequest`, `TriageTaskDraftResponse` |
+| `app.schemas.triage` | `TriageActionRequest`, `TriageClassificationSuggestionResponse`, `TriageConvertToTaskRequest`, `TriageConvertToBacklogRequest`, `TriageConvertToTaskResponse`, `TriageDuplicateRequest`, `TriageDuplicateSuggestionsResponse`, `TriageItemCreate`, `TriageItemResponse`, `TriageItemStatus`, `TriageItemUpdate`, `TriageSourceLinkOutcome`, `TriageSnoozeRequest`, `TriageTaskDraftRequest`, `TriageTaskDraftResponse` |
 | `app.services.assignee_recommendation_service` | `AssigneeRecommendationService` |
 | `app.services.language_service` | `backend_error_message`, `entity_not_found_message`, `resolve_runtime_ui_language` |
 | `app.services.llm_service` | `LLMService` |
 | `app.services.triage_service` | `TriageConflictError`, `TriageDraftNotFoundError`, `TriageService` |
+| `app.utils.source_link_policy` | `SourceLinkRefused` |
 | `fastapi` | `APIRouter`, `Depends`, `HTTPException`, `Query`, `status` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `typing` | `Annotated`, `Optional` |
@@ -28,75 +29,29 @@ Triage API router.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/commands.py"]
-    n1["backend/app/database.py"]
-    n2["backend/app/main.py"]
-    n3["backend/app/routers/__init__.py"]
-    n4["backend/app/routers/task_domain.py"]
-    n5["backend/app/routers/triage.py"]
-    n6["backend/app/schemas/team.py"]
-    n7["backend/app/schemas/triage.py"]
-    n8["backend/app/services/assignee_recommendation_service.py"]
-    n9["backend/app/services/language_service.py"]
-    n10["backend/app/services/llm_service.py"]
-    n11["backend/app/services/triage_service.py"]
+    n0["backend"]
+    n1["backend/app/routers/triage.py"]
+    n0 --> n1
     n1 --> n0
-    n2 --> n0
-    n2 --> n1
-    n2 --> n4
-    n2 --> n5
-    n3 --> n5
-    n4 --> n1
-    n5 --> n0
-    n5 --> n1
-    n5 --> n4
-    n5 --> n6
-    n5 --> n7
-    n5 --> n8
-    n5 --> n9
-    n5 --> n10
-    n5 --> n11
-    n8 --> n6
-    n10 --> n7
-    n10 --> n9
-    n11 --> n0
-    n11 --> n7
-    n11 --> n10
-    click n0 "../modules/commands.md"
-    click n1 "../modules/app_database.md"
-    click n2 "../modules/app_main.md"
-    click n3 "../modules/routers___init__.md"
-    click n4 "../modules/routers_task_domain.md"
-    click n5 "../modules/routers_triage.md"
-    click n6 "../modules/schemas_team.md"
-    click n7 "../modules/schemas_triage.md"
-    click n8 "../modules/assignee_recommendation_service.md"
-    click n9 "../modules/language_service.md"
-    click n10 "../modules/llm_service.md"
-    click n11 "../modules/triage_service.md"
+    click n1 "../modules/routers_triage.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [app_main](../modules/app_main.md) |
-| Inbound | [routers___init__](../modules/routers___init__.md) |
-| Outbound | [commands](../modules/commands.md) |
-| Outbound | [app_database](../modules/app_database.md) |
-| Outbound | [routers_task_domain](../modules/routers_task_domain.md) |
-| Outbound | [schemas_team](../modules/schemas_team.md) |
-| Outbound | [schemas_triage](../modules/schemas_triage.md) |
-| Outbound | [assignee_recommendation_service](../modules/assignee_recommendation_service.md) |
-| Outbound | [language_service](../modules/language_service.md) |
-| Outbound | [llm_service](../modules/llm_service.md) |
-| Outbound | [triage_service](../modules/triage_service.md) |
+| Inbound | `backend` (2) |
+| Outbound | `backend` (10) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 2 | 0 |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

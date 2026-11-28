@@ -1,6 +1,6 @@
 # AgentModelCatalogEntry
 
-**Location:** `frontend/src/types/agent.ts:189`
+**Location:** `frontend/src/types/agent.ts:193`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -18,10 +18,13 @@ _Auto-generated from `AgentModelCatalogEntry` in `frontend/src/types/agent.ts`._
 | `provider` | `string` | Yes | — | — |
 | `configured_model_alias` | `string` | Yes | — | — |
 | `reasoning_tier` | `ModelReasoningTier` | Yes | — | — |
+| `effort` | `ModelEffort` | Yes | — | — |
 | `context_tier` | `ModelContextTier` | Yes | — | — |
 | `modality_tags` | `string[]` | Yes | — | — |
 | `cost_tier` | `ModelCostTier` | Yes | — | — |
+| `local_first` | `boolean` | Yes | — | — |
 | `latency_tier` | `ModelLatencyTier` | Yes | — | — |
+| `qualification_keys` | `string[]` | No | — | — |
 | `enabled` | `boolean` | Yes | — | — |
 | `revision` | `number` | Yes | — | — |
 | `last_verified_at` | `string \| null` | Yes | — | — |
@@ -69,7 +72,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_agent](../modules/types_agent.md) | 0 | `configured_model_alias`, `context_tier`, `cost_tier`, `created_at`, `enabled`, `id`, `key`, `last_verified_at`, `latency_tier`, `modality_tags`, `provider`, `reasoning_tier` |
+| [types_agent](../modules/types_agent.md) | 0 | `configured_model_alias`, `context_tier`, `cost_tier`, `created_at`, `effort`, `enabled`, `id`, `key`, `last_verified_at`, `latency_tier`, `local_first`, `modality_tags` |
 
 ### References
 

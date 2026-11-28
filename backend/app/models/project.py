@@ -3,7 +3,7 @@ from datetime import date, datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import Boolean, CheckConstraint, Date, ForeignKey, Index, Integer, JSON, String, Text, false
+from sqlalchemy import Boolean, CheckConstraint, Date, ForeignKey, Index, Integer, JSON, String, Text, event, false
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -103,12 +103,17 @@ class Initiative(Base):
 class Project(Base):
     """Outcome-oriented planning container above tasks and iterations."""
     __tablename__ = "projects"
-    __table_args__ = {"sqlite_autoincrement": True}
+    __table_args__ = (
+        CheckConstraint("routing_conflict_mode IN ('refuse', 'warn')", name="ck_projects_routing_conflict_mode"),
+        {"sqlite_autoincrement": True},
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     timezone: Mapped[str] = mapped_column(String(64), default="UTC", server_default="UTC", nullable=False)
     require_different_review_publisher: Mapped[bool] = mapped_column(Boolean, default=False, server_default=false(), nullable=False)
+    # Whether a task routing that conflicts with the review policy is refused or saved with a warning.
+    routing_conflict_mode: Mapped[str] = mapped_column(String(16), server_default="refuse", nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(
         String(50), default=ProjectStatus.PLANNED.value, nullable=False, index=True
@@ -290,3 +295,10 @@ class ProjectMilestone(Base):
 
     project: Mapped["Project"] = relationship("Project", back_populates="milestones")
     tasks: Mapped[list["Task"]] = relationship("Task", back_populates="milestone")
+
+
+@event.listens_for(Project, "init")
+def _default_routing_conflict_mode(target, args, kwargs):
+    # A Python-side default only for ORM construction: a column default would also be sent by
+    # Core inserts that older schema revisions, which lack the column, still run.
+    kwargs.setdefault("routing_conflict_mode", "refuse")

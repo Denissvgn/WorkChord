@@ -1,6 +1,6 @@
 # ReleaseFormState
 
-**Location:** `frontend/src/components/releases/ReleaseForm.tsx:38`
+**Location:** `frontend/src/components/releases/ReleaseForm.tsx:39`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [ReleaseForm](../modules/ReleaseForm.md)

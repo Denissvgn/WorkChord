@@ -98,17 +98,49 @@ class WorkflowContracts(unittest.TestCase):
         self.assertIn('--browser-only', script)
         self.assertNotIn('--full-backend', script)
         self.assertFalse(any('native-postgres' in step.get('uses', '') for step in delivery['steps']))
-        results = {name: {'result': 'success'} for name in gate['needs']}
+        # Android checks are deferred: automatic CI skips them; they run only on a manual dispatch.
+        self.assertEqual(client['jobs']['android']['if'], "github.event_name == 'workflow_dispatch' && inputs.android_checks")
+        self.assertFalse(client['on' if 'on' in client else True]['workflow_dispatch']['inputs']['android_checks']['default'])
         command = gate['steps'][0]['run']
         def evaluate(values):
             return subprocess.run(['bash', '-e', '-c', command], env={**os.environ, 'CHECK_RESULTS': json.dumps(values)}, capture_output=True).returncode
-        self.assertEqual(evaluate(results), 0)
-        for name in results:
+        full_jobs = {'packaging', 'backend', 'frontend', 'clients'}
+        self.assertEqual(set(gate['needs']), full_jobs | {'changes', 'docs'})
+        for job in full_jobs:
+            self.assertEqual(jobs[job]['if'], "needs.changes.outputs.docs_only != 'true'")
+        self.assertEqual(jobs['docs']['if'], "needs.changes.outputs.docs_only == 'true'")
+        def scope(docs_only):
+            return {'result': 'success', 'outputs': {'docs_only': 'true' if docs_only else 'false'}}
+        full = {'changes': scope(False), 'docs': {'result': 'skipped'}, **{name: {'result': 'success'} for name in full_jobs}}
+        docs = {'changes': scope(True), 'docs': {'result': 'success'}, **{name: {'result': 'skipped'} for name in full_jobs}}
+        self.assertEqual(evaluate(full), 0)
+        self.assertEqual(evaluate(docs), 0)
+        for name in full_jobs:
             for status in ('failure', 'cancelled', 'skipped'):
-                with self.subTest(name=name, status=status):
-                    changed = {**results, name: {'result': status}}
-                    self.assertNotEqual(evaluate(changed), 0)
+                with self.subTest(mode='full', name=name, status=status):
+                    self.assertNotEqual(evaluate({**full, name: {'result': status}}), 0)
+            with self.subTest(mode='docs', name=name, status='success'):
+                self.assertNotEqual(evaluate({**docs, name: {'result': 'success'}}), 0)
+        for status in ('failure', 'cancelled', 'skipped'):
+            with self.subTest(mode='docs', name='docs', status=status):
+                self.assertNotEqual(evaluate({**docs, 'docs': {'result': status}}), 0)
+        with self.subTest(mode='full', name='docs', status='success'):
+            self.assertNotEqual(evaluate({**full, 'docs': {'result': 'success'}}), 0)
+        for status in ('failure', 'cancelled', 'skipped'):
+            with self.subTest(name='changes', status=status):
+                self.assertNotEqual(evaluate({**full, 'changes': {'result': status, 'outputs': {}}}), 0)
         self.assertNotEqual(evaluate({}), 0)
+
+    def test_only_pull_request_runs_are_cancelled_by_newer_runs(self):
+        # A newer push to main must not cancel a full run of an earlier push;
+        # otherwise a documentation-only push could leave code unverified on main.
+        for name in ('ci.yml', 'client-baseline.yml'):
+            workflow = yaml.safe_load((REPO / '.github/workflows' / name).read_text())
+            self.assertEqual(
+                workflow['concurrency']['cancel-in-progress'],
+                "${{ github.event_name == 'pull_request' }}",
+                name,
+            )
 
     def test_runners_reserve_time_before_toolchain_setup(self):
         ci = yaml.safe_load((REPO / '.github/workflows/ci.yml').read_text())['jobs']

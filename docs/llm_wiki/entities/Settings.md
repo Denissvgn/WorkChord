@@ -118,6 +118,7 @@ Application settings.
 | `mcp_unsafe_allow_public_binding` | `bool` | `mcp_unsafe_allow_public_binding` | No | No | `False` | — | — | — |
 | `workchord_admin_api_key` | `str` | `workchord_admin_api_key` | No | No | `''` | — | — | — |
 | `workchord_auth_mode` | `Literal['managed', 'trusted_local']` | `workchord_auth_mode` | No | No | `'managed'` | — | — | — |
+| `readiness_detail_token` | `str` | `readiness_detail_token` | No | No | `''` | — | — | — |
 | `time_entries_enabled` | `bool` | `time_entries_enabled` | No | No | `False` | — | — | — |
 | `oidc_issuer_url` | `str` | `oidc_issuer_url` | No | No | `''` | — | — | — |
 | `oidc_client_id` | `str` | `oidc_client_id` | No | No | `''` | — | — | — |
@@ -132,6 +133,7 @@ Application settings.
 | `snapshot_retention_count` | `int` | `snapshot_retention_count` | No | No | `10` | — | — | — |
 | `snapshot_max_bytes` | `int` | `snapshot_max_bytes` | No | No | `8 * 1024 * 1024` | — | — | — |
 | `allow_private_egress_urls` | `bool` | `allow_private_egress_urls` | No | No | `False` | — | — | — |
+| `public_base_url` | `str` | `public_base_url` | No | No | `''` | — | — | — |
 | `trusted_proxy_ips` | `list[str]` | `trusted_proxy_ips` | No | No | `[]` | — | — | — |
 | `session_cookie_name` | `str` | `session_cookie_name` | No | No | `'workchord_session'` | — | — | — |
 | `session_cookie_secure` | `bool` | `session_cookie_secure` | No | No | `True` | — | — | — |

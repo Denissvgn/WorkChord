@@ -72,6 +72,7 @@ flowchart LR
     n8 --> n10
     n9 --> n10
     n10 --> n9
+    n11 --> n9
     click n0 "../modules/Button.md"
     click n1 "../modules/QuickCapture.test.md"
     click n2 "../modules/QuickCapture.md"

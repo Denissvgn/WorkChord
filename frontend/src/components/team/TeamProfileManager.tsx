@@ -183,7 +183,7 @@ const StatusList = ({ status, lastSeenAt }: { status: AgentStatus; lastSeenAt?: 
                 </>
             )}
             <dt className="text-content-secondary">{t('teamPage.columns.model')}</dt>
-            <dd>{status.model === undefined ? t('teamPage.unknown') : status.model ? modelName(status.model) : t('teamPage.noModel')}</dd>
+            <dd>{status.model === undefined ? t('teamPage.unknown') : status.model ? modelName(status.model, effort => t(`modelAdministration.effort_${effort}`)) : t('teamPage.noModel')}</dd>
         </dl>
     );
 };
@@ -199,7 +199,7 @@ const ActorBinding = ({ entry }: { entry: DirectoryActor }) => {
                 <ul className="space-y-1 text-sm" aria-label={t('teamProfiles.modelBinding')}>
                     {bindings.map(binding => (
                         <li key={binding.id} className="flex flex-wrap items-center gap-2">
-                            <span className="font-medium text-content-primary">{binding.model_catalog ? modelName(binding) : binding.model_catalog_key}</span>
+                            <span className="font-medium text-content-primary">{binding.model_catalog ? modelName(binding, effort => t(`modelAdministration.effort_${effort}`)) :binding.model_catalog_key}</span>
                             {binding.model_catalog && <span className="text-content-secondary">{binding.model_catalog.provider}</span>}
                             {binding.is_default && <span className="text-content-secondary">· {t('teamProfiles.defaultModel')}</span>}
                         </li>

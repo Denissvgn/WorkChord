@@ -2,7 +2,7 @@
 
 ## Choose the access mode
 
-`GET /api/auth/me` needs no credential. Besides the access mode and the caller's identity, it lists the server's `features`, so a client can choose what to use without comparing versions: `observer-sessions-v1`, `person-assignment-reads-v1`, `team-topology-read-v1`, `agdash-external-links-v1`, `harness-session-metadata-v1`, `runtime-observations-v1`, `person-run-reads-v1` and `delivery-prerequisite-retarget-v1`. A server without a feature does not list it.
+`GET /api/auth/me` needs no credential. Besides the access mode and the caller's identity, it lists the server's `features`, so a client can choose what to use without comparing versions: `observer-sessions-v1`, `person-assignment-reads-v1`, `team-topology-read-v1`, `agdash-external-links-v1`, `harness-session-metadata-v1`, `runtime-observations-v1`, `person-run-reads-v1`, `delivery-prerequisite-retarget-v1` and `postponement-agent-tools-v1`. A server without a feature does not list it.
 
 `WORKCHORD_AUTH_MODE=managed` is the default. Ordinary APIs require a verified human session, a native bearer session, or an enabled agent credential with the appropriate membership. Missing provider configuration shows a setup message and denies private API access.
 

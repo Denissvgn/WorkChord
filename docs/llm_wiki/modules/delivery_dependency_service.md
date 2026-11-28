@@ -15,10 +15,11 @@ Owns typed task/milestone delivery prerequisites, distinct from local schedule d
 | `app.models.delivery_dependency` | `DeliveryDependency` |
 | `app.models.project` | `ProjectMilestone` |
 | `app.models.task` | `Task`, `TaskDependency` |
-| `app.models.task_replacement` | `TaskReplacement`, `TaskReplacement` |
+| `app.models.task_replacement` | `TaskReplacement` |
 | `app.services.github_reconciliation_service` | `GitHubReconciliationService`, `pull_state` |
-| `app.services.task_brief_service` | `clear_execution_evidence`, `clear_execution_evidence`, `clear_execution_evidence` |
-| `app.services.task_service` | `TaskService`, `TaskService`, `TaskService`, `TaskService` |
+| `app.services.task_brief_service` | `clear_execution_evidence`, `clear_execution_evidence`, `clear_execution_evidence`, `clear_execution_evidence` |
+| `app.services.task_replacement_service` | `delivering_leaves` |
+| `app.services.task_service` | `TaskService`, `TaskService`, `TaskService`, `TaskService`, `TaskService` |
 | `collections` | `defaultdict`, `deque` |
 | `sqlalchemy` | `or_`, `select` |
 
@@ -40,8 +41,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (18) |
-| Outbound | `backend` (9) |
+| Inbound | `backend` (22) |
+| Outbound | `backend` (10) |
 
 ### External packages
 
@@ -49,7 +50,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

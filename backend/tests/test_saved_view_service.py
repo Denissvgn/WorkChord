@@ -61,6 +61,21 @@ def test_legacy_task_view_filters_keep_their_values_and_default_new_filters() ->
     assert filters["needsAttention"] is None
 
 
+@pytest.mark.parametrize("state", ["postponed", "canceled", "superseded"])
+def test_task_view_can_be_saved_filtered_by_a_stopped_state(state: str) -> None:
+    filters, is_valid, invalid_reason = service_without_database().normalize_filters(SavedViewType.TASKS, {"status": state})
+
+    assert is_valid is True, invalid_reason
+    assert filters["status"] == state
+
+
+def test_task_view_still_refuses_an_unknown_status() -> None:
+    _, is_valid, invalid_reason = service_without_database().normalize_filters(SavedViewType.TASKS, {"status": "paused"})
+
+    assert is_valid is False
+    assert "postponed, canceled, superseded" in (invalid_reason or "")
+
+
 def task_response(
     *,
     assignee: Any = None,

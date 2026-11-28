@@ -49,7 +49,7 @@ Require these sections or equivalent typed fields:
 | Acceptance criteria (`acceptance_criteria`) | Which independently checkable statements define success, and how is each checked? |
 | Verification approach (`verification`) | Which commands, checks, reviewer steps, and evidence are required? |
 | Dependencies and inputs (dependency links and `context`) | Which predecessor states or external inputs are required? |
-| Handoff and escalation (headed paragraph in `context`) | Who reviews, and what requires PM/human input? |
+| Handoff and escalation (headed paragraph in `context`; `brief.routing` when present) | Who reviews, and what requires PM/human input? Read the first rung, escalation ladder and reviewer from `brief.routing` when it is present; the Routing section of the description is rendered from it. |
 
 Do not begin if an omission can change implementation scope, safety, or the
 meaning of success. Emit or return exact missing-context reasons and request PM

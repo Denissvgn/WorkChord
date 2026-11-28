@@ -48,12 +48,15 @@ flowchart LR
     n1["BaseModel"]
     n2["backend/app/schemas/__init__.py"]
     n3["RequestSourceService._source_from_payload (backend/app/services/request_source_service.py)"]
+    n4["test_other_context_changes_still_make_acceptance_stale (backend/tests/test_delivery_merge_prerequisites.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
+    n4 --> n0
     click n0 "../modules/schemas_request_source.md"
     click n2 "../modules/schemas___init__.md"
     click n3 "../modules/request_source_service.md"
+    click n4 "../modules/test_delivery_merge_prerequisites.md"
 ```
 
 ### Summary
@@ -74,3 +77,4 @@ flowchart LR
 |---|---|---|---:|
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `RequestSourceService._source_from_payload` | type_reference | [request_source_service](../modules/request_source_service.md) | — |
+| `test_other_context_changes_still_make_acceptance_stale` | call | [test_delivery_merge_prerequisites](../modules/test_delivery_merge_prerequisites.md) | 1 |

@@ -1,6 +1,6 @@
 # AgentTeamSkillPackage
 
-**Location:** `frontend/src/types/agent.ts:671`
+**Location:** `frontend/src/types/agent.ts:759`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

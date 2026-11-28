@@ -1,6 +1,6 @@
 # HumanWorkResponse
 
-**Location:** `backend/app/schemas/task_detail.py:50`
+**Location:** `backend/app/schemas/task_detail.py:55`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [task_detail](../modules/task_detail.md)
@@ -15,6 +15,8 @@ Carries explicit human ownership state, categorized reference queues and live cu
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `state` | `str` | `state` | Yes | No | — | — | — | — |
 | `queues` | `dict[str, list[HumanWorkReference]]` | `queues` | Yes | No | — | — | — | — |
+| `stopped` | `list[HumanWorkReference]` | `stopped` | No | No | factory: `list` | — | — | — |
+| `stopped_has_more` | `bool` | `stopped_has_more` | No | No | `False` | — | — | — |
 | `has_more` | `bool` | `has_more` | Yes | No | — | — | — | — |
 | `next_after_id` | `int \| None` | `next_after_id` | Yes | Yes | — | — | — | — |
 
@@ -40,7 +42,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [task_detail](../modules/task_detail.md) | 0 | `has_more`, `next_after_id`, `queues`, `state` |
+| [task_detail](../modules/task_detail.md) | 0 | `has_more`, `next_after_id`, `queues`, `state`, `stopped`, `stopped_has_more` |
 
 ### Structure
 

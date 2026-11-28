@@ -1,7 +1,7 @@
 # AgentTeamSkillPackage
 
-**Location:** `backend/app/schemas/agent_team_setup.py:186`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:187`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 

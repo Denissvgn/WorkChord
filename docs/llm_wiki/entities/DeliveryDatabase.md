@@ -27,13 +27,16 @@ flowchart LR
     n1["add_delivery_dependency (backend/app/routers/delivery_dependencies.py)"]
     n2["list_delivery_dependencies (backend/app/routers/delivery_dependencies.py)"]
     n3["remove_delivery_dependency (backend/app/routers/delivery_dependencies.py)"]
+    n4["retarget_delivery_dependency (backend/app/routers/delivery_dependencies.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
+    n4 --> n0
     click n0 "../modules/delivery_dependencies.md"
     click n1 "../modules/delivery_dependencies.md"
     click n2 "../modules/delivery_dependencies.md"
     click n3 "../modules/delivery_dependencies.md"
+    click n4 "../modules/delivery_dependencies.md"
 ```
 
 ### Summary
@@ -49,3 +52,4 @@ flowchart LR
 | `add_delivery_dependency` | type_reference | [delivery_dependencies](../modules/delivery_dependencies.md) | — |
 | `list_delivery_dependencies` | type_reference | [delivery_dependencies](../modules/delivery_dependencies.md) | — |
 | `remove_delivery_dependency` | type_reference | [delivery_dependencies](../modules/delivery_dependencies.md) | — |
+| `retarget_delivery_dependency` | type_reference | [delivery_dependencies](../modules/delivery_dependencies.md) | — |

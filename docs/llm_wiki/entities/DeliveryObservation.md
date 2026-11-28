@@ -41,7 +41,9 @@ flowchart LR
     n5["report_store (backend/tests/test_analytics_scopes.py)"]
     n6["test_deleted_iteration_history_does_not_become_backlog (backend/tests/test_analytics_scopes.py)"]
     n7["test_pre_window_seeds_keep_scope_boundaries_and_unknown_histories (backend/tests/test_delivery_metrics.py)"]
-    n8["backend/tests/test_task_replacement.py"]
+    n8["backend/tests/test_task_postponement.py"]
+    n9["backend/tests/test_task_replacement.py"]
+    n10["backend/tests/test_task_supersession.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -50,6 +52,8 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
+    n10 --> n0
     click n0 "../modules/delivery_observation.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -58,7 +62,9 @@ flowchart LR
     click n5 "../modules/test_analytics_scopes.md"
     click n6 "../modules/test_analytics_scopes.md"
     click n7 "../modules/test_delivery_metrics.md"
-    click n8 "../modules/test_task_replacement.md"
+    click n8 "../modules/test_task_postponement.md"
+    click n9 "../modules/test_task_replacement.md"
+    click n10 "../modules/test_task_supersession.md"
 ```
 
 ### Summary
@@ -83,4 +89,6 @@ flowchart LR
 | `report_store` | call | [test_analytics_scopes](../modules/test_analytics_scopes.md) | 1 |
 | `test_deleted_iteration_history_does_not_become_backlog` | call | [test_analytics_scopes](../modules/test_analytics_scopes.md) | 1 |
 | `test_pre_window_seeds_keep_scope_boundaries_and_unknown_histories` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 3 |
+| `test_task_postponement` | import | [test_task_postponement](../modules/test_task_postponement.md) | — |
 | `test_task_replacement` | import | [test_task_replacement](../modules/test_task_replacement.md) | — |
+| `test_task_supersession` | import | [test_task_supersession](../modules/test_task_supersession.md) | — |

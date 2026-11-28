@@ -28,6 +28,11 @@ import type {
     AgentTeamValidation,
     ModelAwareAgentTaskAssignmentCreate,
     ModelAwareAgentTaskAssignmentUpdate,
+    RoutingQualificationKey,
+    RoutingQualificationKeyDeclare,
+    RoutingQualificationKeyDetail,
+    RoutingQualificationKeyRegistry,
+    RoutingQualificationKeyRevise,
     TaskRoutingAssessmentCommand,
     TaskRoutingAssessmentHistory,
     TaskRoutingAssessmentMutationReceipt,
@@ -203,6 +208,58 @@ export const agentService = {
         const response = await api.post<AgentModelMutationReceipt<AgentModelCatalogEntry>>(
             `/agent/model-catalog/${catalogId}/disable`,
             data,
+            { headers: commandHeaders(metadata) },
+        );
+        return response.data;
+    },
+
+    async getQualificationKeys(includeRetired = false): Promise<RoutingQualificationKeyRegistry> {
+        const response = await api.get<RoutingQualificationKeyRegistry>('/agent/routing-qualification-keys', {
+            params: { include_retired: includeRetired },
+        });
+        return response.data;
+    },
+
+    async getQualificationKey(key: string): Promise<RoutingQualificationKeyDetail> {
+        const response = await api.get<RoutingQualificationKeyDetail>(
+            `/agent/routing-qualification-keys/${encodeURIComponent(key)}`,
+        );
+        return response.data;
+    },
+
+    async declareQualificationKey(
+        data: RoutingQualificationKeyDeclare,
+        metadata: AgentCommandMetadata,
+    ): Promise<AgentModelMutationReceipt<RoutingQualificationKey>> {
+        const response = await api.post<AgentModelMutationReceipt<RoutingQualificationKey>>(
+            '/agent/routing-qualification-keys',
+            data,
+            { headers: commandHeaders(metadata) },
+        );
+        return response.data;
+    },
+
+    async reviseQualificationKey(
+        key: string,
+        data: RoutingQualificationKeyRevise,
+        metadata: AgentCommandMetadata,
+    ): Promise<AgentModelMutationReceipt<RoutingQualificationKey>> {
+        const response = await api.patch<AgentModelMutationReceipt<RoutingQualificationKey>>(
+            `/agent/routing-qualification-keys/${encodeURIComponent(key)}`,
+            data,
+            { headers: commandHeaders(metadata) },
+        );
+        return response.data;
+    },
+
+    async retireQualificationKey(
+        key: string,
+        expectedRevision: number,
+        metadata: AgentCommandMetadata,
+    ): Promise<AgentModelMutationReceipt<RoutingQualificationKey>> {
+        const response = await api.post<AgentModelMutationReceipt<RoutingQualificationKey>>(
+            `/agent/routing-qualification-keys/${encodeURIComponent(key)}/retire`,
+            { expected_revision: expectedRevision },
             { headers: commandHeaders(metadata) },
         );
         return response.data;

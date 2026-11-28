@@ -39,4 +39,5 @@ The deployment record names every image, the source and the deployment it replac
 | `test_record_refuses_a_project_without_containers` | `(tmp_path, monkeypatch)` | — | — |
 | `test_dirty_worktree_and_missing_tag_are_reported` | `(tmp_path, monkeypatch)` | — | — |
 | `test_seed_copies_durable_values_generates_new_identities_and_never_overwrites` | `(tmp_path, capsys)` | — | — |
+| `test_seed_migrates_an_existing_server_env_in_place` | `(tmp_path, capsys)` | — | — |
 | `test_seed_refuses_incomplete_old_files_and_unknown_settings` | `(tmp_path)` | — | — |

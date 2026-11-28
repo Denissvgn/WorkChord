@@ -20,6 +20,7 @@ CLIENT_PATHS = (
     "/api/triage/{triage_item_id}/convert-to-backlog", "/api/projects/{project_id}/backlog",
     "/api/tasks/{task_id}/actions", "/api/tasks/{task_id}/commands", "/api/tasks/{task_id}/brief",
     "/api/tasks/{task_id}/brief/convert", "/api/tasks/{task_id}/progress", "/api/tasks/{task_id}/review",
+    "/api/tasks/{task_id}/owner-acceptance", "/api/tasks/{task_id}/manual-provenance",
     "/api/tasks/{task_id}/detail", "/api/tasks/lookup", "/api/tasks/metric-matches",
     "/api/tasks/planning-inputs/{kind}/{resource_id}/context",
     "/api/tasks/planning-inputs/member/{resource_id}/context",
@@ -34,6 +35,10 @@ CLIENT_PATHS = (
     "/api/agent/model-catalog/{catalog_id}/disable",
     "/api/agent/model-bindings", "/api/agent/model-bindings/{binding_id}",
     "/api/agent/model-bindings/{binding_id}/disable", "/api/agent/profile-presets",
+    "/api/agent/routing-qualification-keys", "/api/agent/routing-qualification-keys/{key}",
+    "/api/agent/routing-qualification-keys/{key}/retire",
+    "/api/agent/routing-calibration-contracts", "/api/agent/routing-calibration-contracts/{key}",
+    "/api/agent/routing-calibration-contracts/{key}/approve",
 )
 DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "backend/tests/fixtures/client-contract-v1.json"
 

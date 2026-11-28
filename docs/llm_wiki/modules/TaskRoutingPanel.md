@@ -13,9 +13,9 @@ _Auto-generated from `frontend/src/components/agent/TaskRoutingPanel.tsx`._
 | `../../components/common/Select` | `Select` | — | compiler-dependent |
 | `../../hooks/useAgentAccess` | `useAgentAccess` | — | compiler-dependent |
 | `../../services/agentService` | `agentService` | — | compiler-dependent |
-| `../../types/agent` | `AgentAssignmentPurpose`, `AgentRoutingCandidate`, `AgentTaskAssignment`, `AssessmentReasonCode`, `ModelContextTier`, `ModelReasoningTier`, `TaskDifficultyAxes`, `TaskDifficultyScore`, `TaskReviewMode`, `TaskRoutingAssessment`, `TaskRoutingAssessmentCommand`, `TaskSkillLevel` | Declaration | erased |
-| `../../types/task` | `Task` | Declaration | erased |
-| `../../utils/apiError` | `normalizeApiError` | — | compiler-dependent |
+| `../../types/agent` | `AgentAssignmentPurpose`, `AgentRoutingCandidate`, `AgentTaskAssignment`, `AssessmentReasonCode`, `ModelContextTier`, `ModelReasoningTier`, `RequiredModelEffort`, `TaskDifficultyAxes`, `TaskDifficultyScore`, `TaskReviewMode`, `TaskRoutingAssessment`, `TaskRoutingAssessmentCommand`, `TaskSkillLevel` | Declaration | erased |
+| `../../types/task` | `RefusalNextStep`, `Task` | Declaration | erased |
+| `../../utils/apiError` | `getApiNextStep`, `normalizeApiError` | — | compiler-dependent |
 | `../../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
 | `../../utils/modelRouting` | `ASSESSMENT_REASON_CODES`, `createAgentCommandMetadata`, `deriveDifficultyBand`, `formatRoutingCode`, `minimumReviewMode`, `MODEL_AWARE_ROUTING_FEATURE`, `parseRoutingTags`, `reviewModeMeets` | — | compiler-dependent |
 | `../../utils/protectedQueries` | `protectedQueryRetry` | — | compiler-dependent |
@@ -25,6 +25,7 @@ _Auto-generated from `frontend/src/components/agent/TaskRoutingPanel.tsx`._
 | `../common/Input` | `Input`, `RequiredIndicator` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `../tasks/RefusalNextStepNote` | `RefusalNextStepNote` | — | compiler-dependent |
 | `./AssignedAgentsSummary` | `AssignedAgentsSummary` | — | compiler-dependent |
 | `./RoutingCandidateComparison` | `RoutingCandidateComparison` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
@@ -38,7 +39,7 @@ _Auto-generated from `frontend/src/components/agent/TaskRoutingPanel.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `TaskRoutingPanel` |
-| Constants | `DEFAULT_DRAFT`, `AXIS_KEYS`, `REVIEW_MODES`, `SKILL_CATALOG_READ_SCOPES`, `TEAM_ASSIGNMENT_READ_SCOPES` |
+| Constants | `DEFAULT_DRAFT`, `REQUIRED_EFFORT_LEVELS`, `AXIS_KEYS`, `REVIEW_MODES`, `SKILL_CATALOG_READ_SCOPES`, `TEAM_ASSIGNMENT_READ_SCOPES` |
 | Module calls | `SKILL_CATALOG_READ_SCOPES = Set`, `TEAM_ASSIGNMENT_READ_SCOPES = Set` |
 
 ## Local dependency map
@@ -62,7 +63,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (17) |
+| Outbound | `frontend` (18) |
 
 ### External packages
 
@@ -70,14 +71,14 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskRoutingPanelProps](../entities/TaskRoutingPanelProps.md) | Interface | 56 | — | — |
-| [AssessmentDraft](../entities/AssessmentDraft.md) | Interface | 61 | — | — |
+| [TaskRoutingPanelProps](../entities/TaskRoutingPanelProps.md) | Interface | 58 | — | — |
+| [AssessmentDraft](../entities/AssessmentDraft.md) | Interface | 63 | — | — |
 
 ## Functions
 

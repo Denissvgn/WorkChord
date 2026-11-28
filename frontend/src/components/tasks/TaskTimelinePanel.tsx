@@ -37,6 +37,7 @@ const itemLabels: Record<string, string> = {
     github_pr_closed: 'surfaces.taskTimeline.events.githubPrClosed',
     github_pr_merged: 'surfaces.taskTimeline.events.githubPrMerged',
     github_status_automation_failed: 'surfaces.taskTimeline.events.githubAutomationFailed',
+    owner_acceptance_override: 'surfaces.taskTimeline.events.ownerAcceptanceOverride',
     release_shipped: 'surfaces.taskTimeline.events.releaseShipped',
     'agent.progress': 'surfaces.taskTimeline.events.agentProgress',
     'agent.checkpoint': 'surfaces.taskTimeline.events.agentCheckpoint',
@@ -44,8 +45,10 @@ const itemLabels: Record<string, string> = {
 };
 
 // The first readable sentence an agent event carries, in the order agents are told to write them.
-const eventText = (payload: Record<string, unknown>): string | null => {
-    for (const field of ['summary', 'blocker', 'message', 'completed', 'next_step']) {
+const eventText = (payload: Record<string, unknown>, eventType?: string): string | null => {
+    // An owner override's recorded reason is its explanation; other events' reasons are not shown here.
+    const fields = eventType === 'owner_acceptance_override' ? ['reason'] : ['summary', 'blocker', 'message', 'completed', 'next_step'];
+    for (const field of fields) {
         const value = payload[field];
         if (typeof value === 'string' && value.trim()) return value;
     }
@@ -459,8 +462,8 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                         {item.payload?.local_profile_id != null && <span> · {t('identity.localNotVerified')}</span>}
                                         {item.trace_id && <span> - {item.trace_id}</span>}
                                     </div>
-                                    {eventText(item.payload) && (
-                                        <p className="text-xs text-content-primary mt-1">{eventText(item.payload)}</p>
+                                    {eventText(item.payload, item.title) && (
+                                        <p className="text-xs text-content-primary mt-1">{eventText(item.payload, item.title)}</p>
                                     )}
                                     {artifactLinks.length > 0 && (
                                         <div className="flex flex-wrap gap-1 mt-2">

@@ -197,6 +197,7 @@ async def store_team(
     *,
     key: str,
     sink: CapturingCredentialSink | None = None,
+    lossy: bool | None = None,
 ) -> tuple[AgentTeamSetupService, CapturingCredentialSink]:
     await initialize_control_plane(db)
     manifest = AgentTeamMaster.model_validate(payload)
@@ -218,7 +219,7 @@ async def store_team(
             )
         )
     await db.commit()
-    lossy = sink is not None
+    lossy = sink is not None if lossy is None else lossy
     sink = sink or CapturingCredentialSink()
     service = AgentTeamSetupService(db, credential_sink=sink)
     applied = await apply_every_action(

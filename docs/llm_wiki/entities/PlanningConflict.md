@@ -1,6 +1,6 @@
 # PlanningConflict
 
-**Location:** `backend/app/commands.py:47`
+**Location:** `backend/app/commands.py:56`
 **Kind:** Class
 **Bases:** `RuntimeError`
 **Module:** [commands](../modules/commands.md)
@@ -27,20 +27,23 @@ _Auto-generated from `PlanningConflict` in `backend/app/commands.py`._
 flowchart LR
     n0["PlanningConflict (backend/app/commands.py)"]
     n1["RuntimeError"]
-    n2["MissingCalendarYear (backend/app/services/scheduler_service.py)"]
-    n3["TimeEntryVersionConflict (backend/app/services/time_entry_service.py)"]
-    n4["lock_iterations (backend/app/commands.py)"]
-    n5["lock_planning (backend/app/commands.py)"]
-    n6["planning_input_reservation (backend/app/commands.py)"]
-    n7["planning_conflict (backend/app/main.py)"]
-    n8["backend/app/mcp_server.py"]
-    n9["backend/app/services/agent_planning_service.py"]
-    n10["is_unused_allocation (backend/app/services/allocation_removal.py)"]
-    n11["reserve_iteration_annuals (backend/app/services/calendar_rules.py)"]
-    n12["CalendarService.delete (backend/app/services/calendar_service.py)"]
-    n13["CapacityAdjustmentService._change (backend/app/services/capacity_adjustments.py)"]
-    n14["CapacityAdjustmentService._refuse_reducing_issued_work (backend/app/services/capacity_adjustments.py)"]
-    n15["CapacityService.invalidate_profile (backend/app/services/capacity_service.py)"]
+    n2["ImportReviewRefused (backend/app/services/import_review_service.py)"]
+    n3["ProvenanceConflict (backend/app/services/manual_provenance_service.py)"]
+    n4["MissingCalendarYear (backend/app/services/scheduler_service.py)"]
+    n5["RoutingConsistencyConflict (backend/app/services/task_routing_service.py)"]
+    n6["TimeEntryVersionConflict (backend/app/services/time_entry_service.py)"]
+    n7["lock_iterations (backend/app/commands.py)"]
+    n8["lock_planning (backend/app/commands.py)"]
+    n9["planning_input_reservation (backend/app/commands.py)"]
+    n10["planning_conflict (backend/app/main.py)"]
+    n11["backend/app/mcp_server.py"]
+    n12["backend/app/services/agent_planning_service.py"]
+    n13["is_unused_allocation (backend/app/services/allocation_removal.py)"]
+    n14["reserve_iteration_annuals (backend/app/services/calendar_rules.py)"]
+    n15["CalendarService.delete (backend/app/services/calendar_service.py)"]
+    n16["CapacityAdjustmentService._change (backend/app/services/capacity_adjustments.py)"]
+    n17["CapacityAdjustmentService._refuse_reducing_issued_work (backend/app/services/capacity_adjustments.py)"]
+    n18["CapacityService.invalidate_profile (backend/app/services/capacity_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -56,21 +59,27 @@ flowchart LR
     n13 --> n0
     n14 --> n0
     n15 --> n0
+    n16 --> n0
+    n17 --> n0
+    n18 --> n0
     click n0 "../modules/commands.md"
-    click n2 "../modules/scheduler_service.md"
-    click n3 "../modules/time_entry_service.md"
-    click n4 "../modules/commands.md"
-    click n5 "../modules/commands.md"
-    click n6 "../modules/commands.md"
-    click n7 "../modules/app_main.md"
-    click n8 "../modules/mcp_server.md"
-    click n9 "../modules/agent_planning_service.md"
-    click n10 "../modules/allocation_removal.md"
-    click n11 "../modules/calendar_rules.md"
-    click n12 "../modules/calendar_service.md"
-    click n13 "../modules/capacity_adjustments.md"
-    click n14 "../modules/capacity_adjustments.md"
-    click n15 "../modules/capacity_service.md"
+    click n2 "../modules/import_review_service.md"
+    click n3 "../modules/manual_provenance_service.md"
+    click n4 "../modules/scheduler_service.md"
+    click n5 "../modules/task_routing_service.md"
+    click n6 "../modules/time_entry_service.md"
+    click n7 "../modules/commands.md"
+    click n8 "../modules/commands.md"
+    click n9 "../modules/commands.md"
+    click n10 "../modules/app_main.md"
+    click n11 "../modules/mcp_server.md"
+    click n12 "../modules/agent_planning_service.md"
+    click n13 "../modules/allocation_removal.md"
+    click n14 "../modules/calendar_rules.md"
+    click n15 "../modules/calendar_service.md"
+    click n16 "../modules/capacity_adjustments.md"
+    click n17 "../modules/capacity_adjustments.md"
+    click n18 "../modules/capacity_service.md"
 ```
 
 ### Summary
@@ -84,7 +93,10 @@ flowchart LR
 | Kind | Entity | Module |
 |---|---|---|
 | Base | `RuntimeError` | — |
+| Subclass | `ImportReviewRefused` | [import_review_service](../modules/import_review_service.md) |
+| Subclass | `ProvenanceConflict` | [manual_provenance_service](../modules/manual_provenance_service.md) |
 | Subclass | `MissingCalendarYear` | [scheduler_service](../modules/scheduler_service.md) |
+| Subclass | `RoutingConsistencyConflict` | [task_routing_service](../modules/task_routing_service.md) |
 | Subclass | `TimeEntryVersionConflict` | [time_entry_service](../modules/time_entry_service.md) |
 
 ### References
@@ -104,4 +116,4 @@ flowchart LR
 | `CapacityAdjustmentService._refuse_reducing_issued_work` | call | [capacity_adjustments](../modules/capacity_adjustments.md) | 1 |
 | `CapacityService.invalidate_profile` | call | [capacity_service](../modules/capacity_service.md) | 2 |
 
-> References: showing 12 of 72 logical references; 60 omitted by the 12-row generated summary limit.
+> References: showing 12 of 100 logical references; 88 omitted by the 12-row generated summary limit.

@@ -1,6 +1,6 @@
 # ModelAwareRoutingMode
 
-**Location:** `frontend/src/types/agent.ts:116`
+**Location:** `frontend/src/types/agent.ts:120`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

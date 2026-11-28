@@ -30,12 +30,12 @@ sequenceDiagram
     participant p6 as AgentPlanningService._replay
     participant p7 as commit_or_flush
     participant p8 as actor_has_scope
-    participant p9 as validate_idempotency_key
-    participant p10 as AgentPlanningReceipt
-    participant p11 as AgentIdempotencyRecord
-    participant p12 as AgentPlanningService._request_hash
-    participant p13 as current_command
-    participant p14 as AgentPermissionError
+    participant p9 as AgentPermissionError
+    participant p10 as validate_idempotency_key
+    participant p11 as AgentPlanningReceipt
+    participant p12 as AgentIdempotencyRecord
+    participant p13 as AgentPlanningService._request_hash
+    participant p14 as current_command
     participant p15 as AgentConflictError
     participant p16 as actor_scopes
     participant p17 as isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)
@@ -51,12 +51,12 @@ sequenceDiagram
     p4->>p6: AgentPlanningService._replay
     p4->>p7: commit_or_flush
     p5->>p8: actor_has_scope
-    p4->>p9: validate_idempotency_key
-    p4->>p10: AgentPlanningReceipt
-    p4->>p11: AgentIdempotencyRecord
-    p4->>p12: AgentPlanningService._request_hash
-    p7->>p13: current_command
-    p5->>p14: AgentPermissionError
+    p4->>p9: AgentPermissionError
+    p4->>p10: validate_idempotency_key
+    p4->>p11: AgentPlanningReceipt
+    p4->>p12: AgentIdempotencyRecord
+    p4->>p13: AgentPlanningService._request_hash
+    p7->>p14: current_command
     p6->>p15: AgentConflictError
     p8->>p16: actor_scopes
     p3-->>p17: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, AgentPermissionError)
@@ -75,23 +75,23 @@ sequenceDiagram
     p3-->>p17: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, TriageConflictError)
 ```
 
-> Call sequence diagram shows 30 of 76 interactions; 46 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 87 interactions; 57 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 11 of 35 (24 omitted); unresolved 3 of 20 (17 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 11 of 42 (31 omitted); unresolved 3 of 22 (19 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
-| `backend/app/services/agent_service.py:actor_scopes` | 6 | - | external | 2 |
-| `backend/app/services/agent_service.py:validate_idempotency_key` | 10 | - | external | 6 |
-| `backend/app/services/agent_service.py:validate_idempotency_key` | 10 | - | unresolved | 1 |
-| `backend/app/services/agent_planning_service.py:AgentPlanningService._execute` | 3 | - | unresolved | 7 |
-| `backend/app/services/agent_planning_service.py:AgentPlanningService._replay` | 19 | - | unresolved | 4 |
-| `backend/app/services/agent_planning_service.py:AgentPlanningService._replay` | 19 | - | external | 3 |
-| `backend/app/services/agent_planning_service.py:AgentPlanningService._replay` | 19 | [backend/app/services/agent_planning_service.py](../modules/agent_planning_service.md) | internal | 1 |
-| `backend/app/services/agent_planning_service.py:AgentPlanningService._request_hash` | 24 | - | external | 2 |
-> Omission summary shows 8 of 16 groups; 8 further groups are not expanded here. Counts above include all omitted interactions.
+| `backend/app/services/agent_planning_service.py:AgentPlanningService._execute` | 3 | - | external | 3 |
+| `backend/app/services/agent_service.py:actor_scopes` | 7 | - | external | 2 |
+| `backend/app/services/agent_service.py:require_scope` | 5 | [backend/app/services/agent_service.py](../modules/agent_service.md) | internal | 1 |
+| `backend/app/services/agent_planning_service.py:AgentPlanningService._execute` | 3 | [backend/app/services/agent_service.py](../modules/agent_service.md) | internal | 1 |
+| `backend/app/services/agent_planning_service.py:AgentPlanningService._execute` | 3 | - | unresolved | 8 |
+| `backend/app/services/agent_service.py:validate_idempotency_key` | 15 | - | external | 6 |
+| `backend/app/services/agent_service.py:validate_idempotency_key` | 15 | - | unresolved | 1 |
+| `backend/app/services/agent_planning_service.py:AgentPlanningService._replay` | 24 | - | unresolved | 4 |
+> Omission summary shows 8 of 19 groups; 11 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -102,9 +102,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 22; effect analysis evaluated: 15, partial: 1, unavailable: 6. Counts include steps omitted from the displayed trace.
+Source steps: 24; effect analysis evaluated: 16, partial: 1, unavailable: 7. Counts include steps omitted from the displayed trace.
 
-Collector observations for 16 source steps with known totals: observed: 121, emitted: 117, omitted: 4. Unavailable totals are excluded.
+Collector observations for 17 source steps with known totals: observed: 128, emitted: 120, omitted: 8. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -115,51 +115,51 @@ Collector observations for 16 source steps with known totals: observed: 121, emi
 | `apply_agent_profile_preset` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
 | `AgentPlanningService.apply_profile_preset` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
 | `AgentPlanningService._execute` | `available` | `evaluated` | `available` | `20` | `20` | `0` |
+| `isinstance (backend/app/services/agen…ntPlanningService._execute)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `require_scope` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `actor_has_scope` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
 | `actor_scopes` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
 | `json.loads (backend/app/services/agent_service.py:actor_scopes)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `isinstance (backend/app/services/agent_service.py:actor_scopes)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `AgentPermissionError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
-| `validate_idempotency_key` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
-| `ValueError` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `value.strip` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `any (backend/app/services/agen…ntPlanningService._execute)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `actor_has_scope` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
 
 ```mermaid
 flowchart LR
     s1["1. apply_agent_profile_preset"]
     s2["2. AgentPlanningService.apply_profile_preset"]
     s3["3. AgentPlanningService._execute"]
-    s4["4. require_scope"]
-    s5["5. actor_has_scope"]
-    s6["6. actor_scopes"]
-    s7["7. json.loads (backend/app/services/agent_service.py:actor_scopes)"]
-    s8["8. isinstance (backend/app/services/agent_service.py:actor_scopes)"]
-    s9["9. AgentPermissionError"]
-    s10["10. validate_idempotency_key"]
-    s11["11. ValueError"]
-    s12["12. value.strip"]
+    s4["4. isinstance (backend/app/services/agen…ntPlanningService._execute)"]
+    s5["5. require_scope"]
+    s6["6. actor_has_scope"]
+    s7["7. actor_scopes"]
+    s8["8. json.loads (backend/app/services/agent_service.py:actor_scopes)"]
+    s9["9. isinstance (backend/app/services/agent_service.py:actor_scopes)"]
+    s10["10. AgentPermissionError"]
+    s11["11. any (backend/app/services/agen…ntPlanningService._execute)"]
+    s12["12. actor_has_scope"]
     s1 -->|"AgentPlanningService.apply_profile_preset(preset_key, actor, command=command)"| s2
     s2 -->|"AgentPlanningService._execute(…)"| s3
-    s3 -->|"require_scope(actor, scope)"| s4
-    s4 -->|"actor_has_scope(actor, scope)"| s5
-    s5 -->|"actor_scopes(actor)"| s6
-    s6 -. "json.loads (backend/app/services/agent_service.py:actor_scopes)(actor.scopes)" .-> s7
-    s6 -. "isinstance (backend/app/services/agent_service.py:actor_scopes)(scopes, list)" .-> s8
-    s4 -->|"AgentPermissionError(...)"| s9
-    s3 -->|"validate_idempotency_key(command.idempotency_key, required=True)"| s10
-    s10 -. "ValueError('Idempotency-Key is required')" .-> s11
-    s10 -. "value.strip(data not statically known)" .-> s12
+    s3 -. "isinstance (backend/app/services/agen…ntPlanningService._execute)(scope, str)" .-> s4
+    s3 -->|"require_scope(actor, scope)"| s5
+    s5 -->|"actor_has_scope(actor, scope)"| s6
+    s6 -->|"actor_scopes(actor)"| s7
+    s7 -. "json.loads (backend/app/services/agent_service.py:actor_scopes)(actor.scopes)" .-> s8
+    s7 -. "isinstance (backend/app/services/agent_service.py:actor_scopes)(scopes, list)" .-> s9
+    s5 -->|"AgentPermissionError(...)"| s10
+    s3 -. "any (backend/app/services/agen…ntPlanningService._execute)(...)" .-> s11
+    s3 -->|"actor_has_scope(actor, item)"| s12
     b0["mutation self.db.add"]
     s3 -. "mutation self.db.add" .-> b0
     click s1 "../modules/agent_catalog.md"
     click s2 "../modules/agent_planning_service.md"
     click s3 "../modules/agent_planning_service.md"
-    click s4 "../modules/agent_service.md"
     click s5 "../modules/agent_service.md"
     click s6 "../modules/agent_service.md"
-    click s9 "../modules/agent_service.md"
+    click s7 "../modules/agent_service.md"
     click s10 "../modules/agent_service.md"
+    click s12 "../modules/agent_service.md"
     classDef boundary stroke:#b45309,stroke-dasharray: 4 2
     class b0 boundary
 ```
@@ -170,47 +170,47 @@ flowchart LR
 |---|---|---|---|---|
 | `apply_agent_profile_preset` | `preset_key: str`, `actor: Annotated[AgentActor, Depends(get_agent_actor)]`, `db: Annotated[AsyncSession, Depends(get_db, scope='function')]`, `command: Annotated[AgentPlanningCommandContext, Depends(get_agent_planning_command_context)]` | - | - | `TeamMemberProfileResponse.model_validate(...)` |
 | `AgentPlanningService.apply_profile_preset` | `preset_key: str`, `actor: AgentActor`, `command: AgentPlanningCommandContext` | - | - | `...` |
-| `AgentPlanningService._execute` | `actor: AgentActor`, `scope: str`, `operation: str`, `target_type: str`, `idempotency_target_id: int`, `command: AgentPlanningCommandContext`, `request_payload: dict[str, Any]`, `mutate: Mutation` | `self.db.info`, `self.db`, `IntegrityError`, `AgentConflictError` | `audited_request[...]` | `replay`, `receipt`, `receipt`, `replay`, `replay`, `replay` |
+| `AgentPlanningService._execute` | `actor: AgentActor`, `scope: str \| tuple[str, ...]`, `operation: str`, `target_type: str`, `idempotency_target_id: int`, `command: AgentPlanningCommandContext`, `request_payload: dict[str, Any]`, `mutate: Mutation` | `self.db.info`, `self.db`, `IntegrityError`, `AgentConflictError` | `audited_request[...]` | `replay`, `receipt`, `receipt`, `replay`, `replay`, `replay` |
+| `isinstance (backend/app/services/agen…ntPlanningService._execute)` | - | - | - | - |
 | `require_scope` | `actor: AgentActor`, `scope: str` | - | - | - |
 | `actor_has_scope` | `actor: AgentActor`, `scope: str` | - | - | `...` |
 | `actor_scopes` | `actor: AgentActor` | `json` | - | `...` |
 | `json.loads (backend/app/services/agent_service.py:actor_scopes)` | - | - | - | - |
 | `isinstance (backend/app/services/agent_service.py:actor_scopes)` | - | - | - | - |
 | `AgentPermissionError` | - | - | - | - |
-| `validate_idempotency_key` | `value: Optional[str]`, `required: bool` | - | - | `None`, `value` |
-| `ValueError` | - | - | - | - |
-| `value.strip` | - | - | - | - |
+| `any (backend/app/services/agen…ntPlanningService._execute)` | - | - | - | - |
+| `actor_has_scope` | `actor: AgentActor`, `scope: str` | - | - | `...` |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| apply_agent_profile_preset | AgentPlanningService.apply_profile_preset | 215 | `AgentPlanningService(db).apply_profile_preset(preset_key, actor, command=command)` |
-| AgentPlanningService.apply_profile_preset | AgentPlanningService._execute | 696 | `self._execute(actor=actor, scope='team:write', operation='planning.profile_preset.apply', target_type='team_member_profile', idempotency_target_id=0, command=command, request_payload=payload, mutate=mutate)` |
-| AgentPlanningService._execute | require_scope | 152 | `require_scope(actor, scope)` |
+| apply_agent_profile_preset | AgentPlanningService.apply_profile_preset | 231 | `AgentPlanningService(db).apply_profile_preset(preset_key, actor, command=command)` |
+| AgentPlanningService.apply_profile_preset | AgentPlanningService._execute | 703 | `self._execute(actor=actor, scope='team:write', operation='planning.profile_preset.apply', target_type='team_member_profile', idempotency_target_id=0, command=command, request_payload=payload, mutate=mutate)` |
+| AgentPlanningService._execute | isinstance (backend/app/services/agen…ntPlanningService._execute) | 155 | `isinstance(scope, str)` |
+| AgentPlanningService._execute | require_scope | 156 | `require_scope(actor, scope)` |
 | require_scope | actor_has_scope | 113 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 114 | `AgentPermissionError(...)` |
-| AgentPlanningService._execute | validate_idempotency_key | 154 | `validate_idempotency_key(command.idempotency_key, required=True)` |
-| validate_idempotency_key | ValueError | 123 | `ValueError('Idempotency-Key is required')` |
-| validate_idempotency_key | value.strip | 127 | `value.strip(data not statically known)` |
+| AgentPlanningService._execute | any (backend/app/services/agen…ntPlanningService._execute) | 157 | `any(...)` |
+| AgentPlanningService._execute | actor_has_scope | 157 | `actor_has_scope(actor, item)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `self.db.add` | `AgentPlanningService._execute` | 196 |
+| mutation | `self.db.add` | `AgentPlanningService._execute` | 203 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
+| external_call | `AgentPlanningService._execute` | `isinstance` | 155 |
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | external_call | `actor_scopes` | `isinstance` | 90 |
-| external_call | `validate_idempotency_key` | `ValueError` | 123 |
-| unresolved_call | `validate_idempotency_key` | `value.strip` | 127 |
+| external_call | `AgentPlanningService._execute` | `any` | 157 |
 | step_limit | `apply_agent_profile_preset` | `first 12 steps` | 0 |
 
 ## Behavior

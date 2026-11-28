@@ -24,7 +24,8 @@ class AuthorityError(RuntimeError):
         super().__init__(message)
 
     def detail(self):
-        return {"code": self.code, "message": str(self)}
+        from app.refusal_next_steps import with_next_step
+        return with_next_step({"code": self.code, "message": str(self)})
 
 
 @dataclass(frozen=True)
@@ -91,6 +92,20 @@ def require_operator(db):
     authority = db.info.get("authority")
     if authority is None or not authority.operator:
         raise AuthorityError("operator_required", "Workspace operator permission is required.")
+
+
+def require_owner_override(db):
+    """Only a signed-in workspace owner or operator may set aside publisher independence.
+
+    An operator API key, an agent, a trusted-local browser and a paired observer are
+    not attributable to one accountable person, so none of them qualifies.
+    """
+    authority = db.info.get("authority")
+    if (authority is None or authority.kind != "human" or authority.principal_id is None
+            or authority.read_only or authority.workspace_role not in {"owner", "operator"}):
+        raise AuthorityError("owner_acceptance_required",
+            "Only a signed-in workspace owner or operator can accept work as an owner override.")
+    return authority
 
 
 @contextmanager
@@ -234,13 +249,16 @@ def _guard_bulk_project_review_policy(state):
         for row in parameters if isinstance(parameters, (list, tuple)) else [parameters]:
             if isinstance(row, dict):
                 pairs.extend(row.items())
+    # Each policy column with the value a non-operator may insert.
+    permitted = {column: False, "routing_conflict_mode": "refuse"}
     for key, value in pairs:
-        if getattr(key, "key", key) == column:
+        name = getattr(key, "key", key)
+        if name in permitted:
             # Existing-row changes and expression-valued inserts need the operator.
-            if state.is_update or getattr(value, "value", value) is not False:
-                raise AuthorityError("operator_required", "Changing the project's review publisher policy requires an operator.")
-    if column in (getattr(statement, "_select_names", None) or ()):
-        raise AuthorityError("operator_required", "Importing the project's review publisher policy requires an operator.")
+            if state.is_update or getattr(value, "value", value) != permitted[name] or not isinstance(getattr(value, "value", value), type(permitted[name])):
+                raise AuthorityError("operator_required", "Changing the project's review policy requires an operator.")
+    if set(permitted) & set(getattr(statement, "_select_names", None) or ()):
+        raise AuthorityError("operator_required", "Importing the project's review policy requires an operator.")
 
 
 def _check_bulk_write(state, authority):
@@ -367,6 +385,9 @@ def authorize_domain_writes(session, _flush_context, _instances):
             if (obj in session.new and obj.require_different_review_publisher
                     or obj not in session.new and "require_different_review_publisher" in changed):
                 raise AuthorityError("operator_required", "Changing the project's review publisher policy requires an operator.")
+            if (obj in session.new and obj.routing_conflict_mode not in (None, "refuse")
+                    or obj not in session.new and "routing_conflict_mode" in changed):
+                raise AuthorityError("operator_required", "Changing the project's routing conflict mode requires an operator.")
         if (table == "agent_actors" and obj in session.dirty and obj not in session.deleted
                 and changed <= {"queue_revision", "updated_at"}):
             if obj.id in session.info.get("domain_queue_actors", set()):
@@ -470,6 +491,12 @@ def authorize_domain_writes(session, _flush_context, _instances):
                 if obj.executed_by_principal_id is not None and obj.executed_by_principal_id == authority.principal_id:
                     if not authority.operator or not authority.review_override or not authority.reason:
                         raise AuthorityError("independent_review_required", "Use another reviewer or an explicit accountable operator override.")
+            command = session.info.get("command")
+            if (history.has_changes() and not rollup and command is not None
+                    and obj.id in command.postponement_transitions):
+                # Postponing and reactivating are planning decisions, authorized as manage
+                # whether the work returns to planned or to resolved.
+                action = "manage"
             if rollup and not authority.allows(project_id, action):
                 action = "execute" if authority.allows(project_id, "execute") else "review"
         if not owned_personal and not authority.allows(project_id, action):
@@ -505,9 +532,14 @@ def append_command_audit(session, _flush_context):
     live_scopes = set()
     for offset in range(0, len(scopes), 500):
         live_scopes.update(session.connection().execute(select(Project.id).where(Project.id.in_(scopes[offset:offset + 500]))).scalars())
+    command = session.info.get("command")
+    owner_overrides = sorted(command.owner_acceptance_tasks) if command is not None else []
     for obj, table, project_id, action, fields in pending:
         details = {"entity_id": getattr(obj, "id", None), "changed_fields": fields,
                    "review_override": authority.review_override}
+        if owner_overrides:
+            # Every write of this command belongs to an owner's override of publisher independence.
+            details["owner_acceptance_override_task_ids"] = owner_overrides
         live_project_id = project_id
         if project_id is not None and project_id not in live_scopes:
             live_project_id = None

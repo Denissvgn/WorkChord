@@ -115,10 +115,10 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/components/tasks/KanbanBoard/KanbanBoard.tsx': 'aaf1756ea0e0c4d0',
     'src/components/tasks/useSavedViewManager.tsx': '1bbeb39ebaf10ee3',
     'src/components/tasks/StatusChangeControl.tsx': '9999ffd7f79d6c9e',
-    'src/components/tasks/TaskBulkOperationsPanel.tsx': 'a926dc250ccf33d9',
+    'src/components/tasks/TaskBulkOperationsPanel.tsx': '79ac57ae469eda1a',
     'src/components/tasks/TaskDependencySelector.tsx': 'a95773dee19beda4',
     'src/components/tasks/TaskFiltersBar.tsx': '137fc349161949ce',
-    'src/components/tasks/TaskForm.tsx': '403c71ebf453271e',
+    'src/components/tasks/TaskForm.tsx': '7787640db6daab9f',
     'src/components/tasks/TaskList.tsx': '9a72cf5b61f1d183',
     'src/components/tasks/TaskTextEditorModal.tsx': '1a455f699d3e28df',
     'src/components/tasks/TaskTimelinePanel.tsx': 'd6c1a837cced1865',
@@ -144,7 +144,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/pages/ProjectReleaseDetailPage.tsx': '07032a5fd753dcc5',
     'src/pages/ProjectsPage.tsx': '3dc607312f108bd3',
     'src/pages/TasksPage.tsx': '826f718625e7f291',
-    'src/pages/TriagePage.tsx': '3a963b72695a2a31',
+    'src/pages/TriagePage.tsx': 'b626b02c7e45d11b',
 };
 
 const walkAst = (node, visit) => {

@@ -1,6 +1,6 @@
 # SavedInPart
 
-**Location:** `frontend/src/pages/SettingsPage.tsx:57`
+**Location:** `frontend/src/pages/SettingsPage.tsx:59`
 **Kind:** Interface
 **Bases:** —
 **Module:** [SettingsPage](../modules/SettingsPage.md)

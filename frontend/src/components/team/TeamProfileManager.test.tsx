@@ -49,7 +49,7 @@ const bindingFixture = (): AgentModelBinding => ({
     run_reference_count: 0, created_at: '', updated_at: '',
     model_catalog: {
         id: 3, key: 'sonnet', provider: 'anthropic', configured_model_alias: 'claude-sonnet-5-5', reasoning_tier: 3,
-        context_tier: 'large', modality_tags: [], cost_tier: 'medium', latency_tier: 'balanced', enabled: true, revision: 1,
+        context_tier: 'large', modality_tags: [], cost_tier: 'medium', latency_tier: 'balanced', local_first: false, effort: 'unknown', enabled: true, revision: 1,
         last_verified_at: null, created_at: '', updated_at: '',
     },
 });
@@ -368,7 +368,7 @@ describe('agent without a profile', () => {
                 schema_version: 'agent-team-runtime-handoff-v1', topology_key: 'team', topology_revision: 8, actor_key: 'codex-worker-1', actor_id: 9,
                 role: 'worker', server_url: 'https://workchord.example', required_server_features: [], skill_package: waitingSpec.skill_package,
                 profile_key: 'worker-profile', profile_revision: 'r1', model_binding_revisions: {}, supported_assignment_modes: ['execution'],
-                startup_instructions: [], credential_ref: 'private-sink/codex-worker-1',
+                startup_instructions: [], credential_ref: 'private-sink/codex-worker-1', runtime_instance_id: 'rti-00000000000000000000000000000002',
             },
         });
         const topology: AgentTeamMaster = {

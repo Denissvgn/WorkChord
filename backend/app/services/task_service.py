@@ -470,6 +470,15 @@ class TaskService:
             if task_id in command.tasks:
                 if expected_version is not None and expected_version not in {command.tasks[task_id], task.version}:
                     raise TaskVersionConflictError(expected_version, self._metadata_from_task(task))
+                window = task.execution_planning_window
+                if (
+                    isinstance(window, dict)
+                    and window.get("through") == task.version
+                    and not self.db.info.get("planning_only_reservation")
+                ):
+                    # The version is reserved once per command, so a window sealed
+                    # earlier in this command must not outlive any later change.
+                    task.execution_planning_window = None
                 return task.version
         if expected_version is None:
             from app.runtime_telemetry import metrics
@@ -776,9 +785,13 @@ class TaskService:
             raise ValueError("Summary work fields are derived from leaves; edit the relevant leaf tasks")
 
         self.ensure_expected_version(task, data.expected_version)
+        from app.services.execution_planning_window import current_window, execution_context
+        # The window and execution context before any field changes, for a planning-only edit.
+        planning_basis = (task.version, current_window(task), execution_context(task))
 
         update_data = data.model_dump(exclude_unset=True)
         expected_version = update_data.pop("expected_version", None)
+        routing_resolution = update_data.pop("routing_resolution", "check")
 
         # Dependency writes participate in the same scheduling aggregate as
         # serialized preview/apply. Acquire the aggregate root before any
@@ -903,9 +916,11 @@ class TaskService:
             raise ValueError("A canonical brief cannot be cleared; edit its fields instead")
         if task.brief is not None and "description" in update_data and update_data["description"] != render_brief(brief_input or task.brief):
             raise ValueError("This task has a canonical brief; reload and edit its structured fields")
+        previous_routing = (task.brief or {}).get("routing")
+        brief_revision_before = task.brief_revision
         if brief_input is not None:
-            if await TaskBriefService(self.db).apply_brief(task, data.brief):
-                changed_fields["brief_revision"] = {"old": task.brief_revision - 1, "new": task.brief_revision}
+            # The routing is checked below, once the assignee of this change is in place.
+            await TaskBriefService(self.db).apply_brief(task, data.brief, enforce=False)
             update_data.pop("description", None)
 
         # Convert tags list to JSON string
@@ -917,6 +932,18 @@ class TaskService:
             if old_value != value:
                 changed_fields[field] = {"old": old_value, "new": value}
                 setattr(task, field, value)
+
+        from app.services.task_routing_service import enforce_routing
+        assignee_changed = "assignee_id" in changed_fields
+        removed_routing = previous_routing is not None and (task.brief or {}).get("routing") is None
+        await enforce_routing(self.db, task, resolution=routing_resolution,
+                              changed=assignee_changed or (task.brief or {}).get("routing") != previous_routing,
+                              removed_routing=removed_routing and assignee_changed)
+        if task.brief_revision != brief_revision_before:
+            changed_fields["brief_revision"] = {"old": brief_revision_before, "new": task.brief_revision}
+        if (task.brief or {}).get("routing") != previous_routing:
+            # A routing-only change keeps the brief revision, so it is recorded as its own change.
+            changed_fields["routing"] = {"old": previous_routing, "new": (task.brief or {}).get("routing")}
 
         # Handle dependency updates
         if depends_on_ids is not None:
@@ -948,17 +975,44 @@ class TaskService:
                     "new": sorted(new_dep_ids),
                 }
 
+        from app.services.execution_planning_window import (
+            fence_planning_only_edit,
+            is_planning_only_change,
+            live_assignments,
+        )
+        planning_only = is_planning_only_change(changed_fields)
+        children = []
         if changed_fields and (task.is_summary or task.children):
             for child_id in sorted((await self._task_subtree_ids(task.id)) - {task.id}):
-                child = await self.db.get(Task, child_id)
+                children.append(await self.db.get(Task, child_id))
+        issued, fence_basis = {}, []
+        if planning_only:
+            # Lock issued work before reserving versions, as an iteration
+            # extension does, so the fence observes a stable assignment set.
+            issued = await live_assignments(self.db, [task.id, *(child.id for child in children)], lock=True)
+            fence_basis = [
+                (child, child.version, current_window(child), execution_context(child))
+                for child in children
+                if child.id in issued
+            ]
+            if task.id in issued:
+                fence_basis.append((task, *planning_basis))
+        # A repeated reservation inside one command keeps a sealed window only
+        # for a planning-only edit; see reserve_task_version.
+        self.db.info["planning_only_reservation"] = planning_only
+        try:
+            for child in children:
                 await self.reserve_task_version(child, child.version)
+            if changed_fields:
+                from app.services.task_brief_service import clear_acceptance, clear_execution_evidence
+                if {"title", "description", "depends_on", "project_id"}.intersection(changed_fields):
+                    clear_execution_evidence(task)
+                else:
+                    clear_acceptance(task)
+                await self.reserve_task_version(task, expected_version)
+        finally:
+            self.db.info.pop("planning_only_reservation", None)
         if changed_fields:
-            from app.services.task_brief_service import clear_acceptance, clear_execution_evidence
-            if {"title", "description", "depends_on", "project_id"}.intersection(changed_fields):
-                clear_execution_evidence(task)
-            else:
-                clear_acceptance(task)
-            await self.reserve_task_version(task, expected_version)
             await self.record_task_event(
                 task_id,
                 "task_updated",
@@ -970,6 +1024,28 @@ class TaskService:
                 correlation_id=correlation_id,
                 idempotency_key=idempotency_key,
             )
+        if fence_basis:
+            # A planning-only edit keeps sealed issued work valid; each fence is
+            # recorded on the timeline of the task whose assignment it keeps.
+            for fenced_task, window in await fence_planning_only_edit(
+                self.db, fence_basis, issued, edited_task_id=task.id, fields=changed_fields
+            ):
+                await self.record_task_event(
+                    fenced_task.id,
+                    "task.execution_planning_window",
+                    {
+                        "window_kind": window["kind"],
+                        "from": window["from"],
+                        "through": window["through"],
+                        "assignment_ids": sorted(map(int, window["assignments"])),
+                        **window["evidence"],
+                    },
+                    actor_type=actor_type,
+                    actor_id=actor_id,
+                    trace_id=trace_id,
+                    span_id=span_id,
+                    correlation_id=correlation_id,
+                )
 
         try:
             if changed_fields and task.parent_id is not None:
@@ -1022,6 +1098,8 @@ class TaskService:
         from sqlalchemy import delete
         subtree = await self._task_subtree_ids(task_id)
         await DeliveryDependencyService(self.db).require_unreferenced(subtree)
+        from app.services.task_postponement_service import require_unreferenced as require_unawaited
+        await require_unawaited(self.db, task_ids=subtree)
         await self.db.execute(delete(DeliveryDependency).where(DeliveryDependency.task_id.in_(subtree)))
         old_parent_id = task.parent_id
         # Create snapshot before deletion
@@ -1371,6 +1449,8 @@ class TaskService:
         from sqlalchemy.orm import attributes
         attributes.set_committed_value(parent, "children", [])
         if delete_parent:
+            from app.services.task_postponement_service import require_unreferenced as require_unawaited
+            await require_unawaited(self.db, task_ids=[parent.id])
             await self.db.delete(parent)
         else:
             await self.reserve_task_version(parent, parent.version)
@@ -1750,6 +1830,9 @@ class TaskService:
             milestone=milestone,
             assignee=assignee,
             status=task.status,
+            displayed_state=task.displayed_state,
+            successor_task_id=task.__dict__.get("successor_task_id") if task.canceled_at is not None else None,
+            successor_kind=task.__dict__.get("successor_kind") if task.canceled_at is not None else None,
             start_date=task.start_date,
             end_date=task.end_date,
             actual_start_date=task.actual_start_date,
@@ -1782,6 +1865,7 @@ class TaskService:
             updated_at=task.updated_at,
             children=children,
             dependencies=dependencies,
+            routing_check=command.routing_checks.get(task.id) if command is not None else None,
         )
 
     async def _get_next_root_sort_order(self, iteration_id: int) -> int:
@@ -1852,6 +1936,7 @@ class TaskService:
         TaskStatus.ACTIVE.value: [TaskStatus.RESOLVED.value],
         TaskStatus.RESOLVED.value: [TaskStatus.ACTIVE.value, TaskStatus.CLOSED.value],
         TaskStatus.CLOSED.value: [],
+        TaskStatus.POSTPONED.value: [],
     }
 
     @property

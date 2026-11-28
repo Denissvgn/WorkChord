@@ -25,69 +25,69 @@ sequenceDiagram
     participant p0 as readiness_check
     participant p1 as readiness_snapshot
     participant p2 as get_settings
-    participant p3 as head_revision
-    participant p4 as _queue_snapshot
-    participant p5 as maintenance_state
-    participant p6 as alembic_config
-    participant p7 as maintenance_configuration_fingerprint
-    participant p8 as database_configuration
-    participant p9 as parse_database_configuration
-    participant p10 as _postgresql_snapshot
-    participant p11 as database_runtime_summary
-    participant p12 as _resident_set_size_bytes
-    participant p13 as Settings
-    participant p14 as utc_now
-    participant p15 as UpgradeError
-    participant p16 as as_utc
-    participant p17 as migrations_dir
-    participant p18 as alembic_safe_url
-    participant p19 as _settings_value
-    participant p20 as DatabaseConfigurationError
-    participant p21 as DatabaseConfiguration
-    participant p22 as redact_database_url
-    participant p23 as _certificate_path
-    participant p24 as JSONResponse
-    participant p25 as async_session_maker
-    participant p26 as asyncio.timeout
-    participant p27 as db.execute (backend/app/observability.py:readiness_snapshot)
-    participant p28 as text (backend/app/observability.py:readiness_snapshot)
-    participant p29 as list (backend/app/observability.py:readiness_snapshot)
-    participant p30 as (…).scalars
+    participant p3 as _readiness_detail_authorized
+    participant p4 as head_revision
+    participant p5 as _queue_snapshot
+    participant p6 as maintenance_state
+    participant p7 as alembic_config
+    participant p8 as maintenance_configuration_fingerprint
+    participant p9 as database_configuration
+    participant p10 as parse_database_configuration
+    participant p11 as _postgresql_snapshot
+    participant p12 as database_runtime_summary
+    participant p13 as _resident_set_size_bytes
+    participant p14 as Settings
+    participant p15 as utc_now
+    participant p16 as UpgradeError
+    participant p17 as as_utc
+    participant p18 as migrations_dir
+    participant p19 as alembic_safe_url
+    participant p20 as _settings_value
+    participant p21 as DatabaseConfigurationError
+    participant p22 as DatabaseConfiguration
+    participant p23 as redact_database_url
+    participant p24 as _certificate_path
+    participant p25 as JSONResponse
+    participant p26 as request.headers.get
+    participant p27 as hmac.compare_digest
+    participant p28 as asyncio.timeout
+    participant p29 as presented.encode
+    participant p30 as async_session_maker
     p0->>p1: readiness_snapshot
     p0->>p2: get_settings
-    p1->>p3: head_revision
-    p1->>p4: _queue_snapshot
-    p1->>p5: maintenance_state
-    p3->>p6: alembic_config
-    p5->>p7: maintenance_configuration_fingerprint
-    p6->>p8: database_configuration
-    p8->>p9: parse_database_configuration
-    p1->>p10: _postgresql_snapshot
-    p1->>p11: database_runtime_summary
-    p1->>p12: _resident_set_size_bytes
-    p2->>p13: Settings
-    p4->>p14: utc_now
-    p3->>p15: UpgradeError
-    p4->>p16: as_utc
-    p6->>p17: migrations_dir
-    p6->>p18: alembic_safe_url
-    p9->>p19: _settings_value
-    p9->>p20: DatabaseConfigurationError
-    p9->>p21: DatabaseConfiguration
-    p9->>p22: redact_database_url
-    p9->>p23: _certificate_path
-    p0-->>p24: JSONResponse(status_code=..., content=payload)
-    p1-->>p25: async_session_maker
-    p1-->>p26: asyncio.timeout(settings.database_readiness_timeout_seconds)
-    p1-->>p27: db.execute (backend/app/observability.py:readiness_snapshot)(text(...))
-    p1-->>p28: text (backend/app/observability.py:readiness_snapshot)('SELECT 1')
-    p1-->>p29: list (backend/app/observability.py:readiness_snapshot)(...)
-    p1-->>p30: (…).scalars
+    p0->>p3: _readiness_detail_authorized
+    p1->>p4: head_revision
+    p1->>p5: _queue_snapshot
+    p1->>p6: maintenance_state
+    p4->>p7: alembic_config
+    p6->>p8: maintenance_configuration_fingerprint
+    p7->>p9: database_configuration
+    p9->>p10: parse_database_configuration
+    p1->>p11: _postgresql_snapshot
+    p1->>p12: database_runtime_summary
+    p1->>p13: _resident_set_size_bytes
+    p2->>p14: Settings
+    p5->>p15: utc_now
+    p4->>p16: UpgradeError
+    p5->>p17: as_utc
+    p7->>p18: migrations_dir
+    p7->>p19: alembic_safe_url
+    p10->>p20: _settings_value
+    p10->>p21: DatabaseConfigurationError
+    p10->>p22: DatabaseConfiguration
+    p10->>p23: redact_database_url
+    p10->>p24: _certificate_path
+    p0-->>p25: JSONResponse(status_code=..., content=payload)
+    p3-->>p26: request.headers.get('x-readiness-detail-token', '')
+    p3-->>p27: hmac.compare_digest(presented.encode(...), expected.encode(...))
+    p1-->>p28: asyncio.timeout(settings.database_readiness_timeout_seconds)
+    p3-->>p29: presented.encode('utf-8')
+    p1-->>p30: async_session_maker
 ```
 
-> Call sequence diagram shows 30 of 205 interactions; 175 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 210 interactions; 180 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 4 of 74 (70 omitted); unresolved 3 of 62 (59 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 3 of 75 (72 omitted); unresolved 3 of 65 (62 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -101,7 +101,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/upgrade_service.py:alembic_config` | 7 | - | unresolved | 2 |
 | `backend/app/database_config.py:alembic_safe_url` | 16 | - | external | 2 |
 | `backend/app/database_config.py:alembic_safe_url` | 16 | - | unresolved | 2 |
-> Omission summary shows 8 of 31 groups; 23 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 32 groups; 24 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -114,9 +114,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 70; effect analysis evaluated: 46, partial: 0, unavailable: 24. Counts include steps omitted from the displayed trace.
+Source steps: 71; effect analysis evaluated: 47, partial: 0, unavailable: 24. Counts include steps omitted from the displayed trace.
 
-Collector observations for 46 source steps with known totals: observed: 129, emitted: 129, omitted: 0. Unavailable totals are excluded.
+Collector observations for 47 source steps with known totals: observed: 133, emitted: 133, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -191,9 +191,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| readiness_check | readiness_snapshot | 265 | `readiness_snapshot(data not statically known)` |
+| readiness_check | readiness_snapshot | 276 | `readiness_snapshot(data not statically known)` |
 | readiness_snapshot | get_settings | 252 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | readiness_snapshot | head_revision | 253 | `head_revision(data not statically known)` |
 | head_revision | ScriptDirectory.from_config | 90 | `ScriptDirectory.from_config(alembic_config(...))` |
 | head_revision | alembic_config | 90 | `alembic_config(data not statically known)` |

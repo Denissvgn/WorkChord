@@ -1,6 +1,6 @@
 # AgentRoutingExclusion
 
-**Location:** `backend/app/schemas/agent_routing.py:1030`
+**Location:** `backend/app/schemas/agent_routing.py:1115`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -17,6 +17,7 @@ Bounded reason evidence for one ineligible actor/binding pair.
 | `validate_matched_skills` | field | matched_skill_levels | before | — |
 | `validate_skill_keys` | field | missing_skill_keys, insufficient_skill_keys, blocking_weakness_keys | before | — |
 | `validate_missing_tags` | field | missing_modality_tags, missing_tool_tags, missing_data_policy_tags | after | — |
+| `validate_missing_qualification_keys` | field | missing_qualification_keys | before | — |
 | `strip_optional_exclusion_text` | field | profile_revision, configured_model_alias, rationale | after | — |
 
 ## Attributes
@@ -43,12 +44,15 @@ Bounded reason evidence for one ineligible actor/binding pair.
 | `insufficient_skill_keys` | `list[RoutingKey]` | `insufficient_skill_keys` | No | No | factory: `list` | — | — | — |
 | `blocking_weakness_keys` | `list[RoutingKey]` | `blocking_weakness_keys` | No | No | factory: `list` | — | — | — |
 | `reasoning_tier` | `ReasoningTier \| None` | `reasoning_tier` | No | Yes | `None` | — | — | — |
+| `effort` | `ModelEffortSetting \| None` | `effort` | No | Yes | `None` | — | — | — |
 | `context_tier` | `ModelContextTier \| None` | `context_tier` | No | Yes | `None` | — | — | — |
 | `cost_tier` | `ModelCostTier \| None` | `cost_tier` | No | Yes | `None` | — | — | — |
+| `local_first` | `bool \| None` | `local_first` | No | Yes | `None` | — | — | — |
 | `latency_tier` | `ModelLatencyTier \| None` | `latency_tier` | No | Yes | `None` | — | — | — |
 | `missing_modality_tags` | `list[str]` | `missing_modality_tags` | No | No | factory: `list` | — | — | — |
 | `missing_tool_tags` | `list[str]` | `missing_tool_tags` | No | No | factory: `list` | — | — | — |
 | `missing_data_policy_tags` | `list[str]` | `missing_data_policy_tags` | No | No | factory: `list` | — | — | — |
+| `missing_qualification_keys` | `list[str]` | `missing_qualification_keys` | No | No | factory: `list` | — | — | Required qualification keys this candidate's catalog entry does not hold. |
 | `available_capacity_days` | `float \| None` | `available_capacity_days` | No | Yes | `None` | — | — | — |
 | `committed_effort_days` | `float \| None` | `committed_effort_days` | No | Yes | `None` | ge=0 | — | — |
 | `workload_ratio` | `float \| None` | `workload_ratio` | No | Yes | `None` | ge=0 | — | — |
@@ -68,6 +72,7 @@ Bounded reason evidence for one ineligible actor/binding pair.
 | `validate_matched_skills` | `(value: Any) -> Any` | `@field_validator('matched_skill_levels', mode='before')`, `@classmethod` | — |
 | `validate_skill_keys` | `(value: Any, info: Any) -> Any` | `@field_validator('missing_skill_keys', 'insufficient_skill_keys', 'blocking_weakness_keys', mode='before')`, `@classmethod` | — |
 | `validate_missing_tags` | `(value: list[str], info: Any) -> list[str]` | `@field_validator('missing_modality_tags', 'missing_tool_tags', 'missing_data_policy_tags')`, `@classmethod` | — |
+| `validate_missing_qualification_keys` | `(value: Any) -> Any` | `@field_validator('missing_qualification_keys', mode='before')`, `@classmethod` | — |
 | `strip_optional_exclusion_text` | `(value: str \| None) -> str \| None` | `@field_validator('profile_revision', 'configured_model_alias', 'rationale')`, `@classmethod` | — |
 
 ## Relationships
@@ -92,7 +97,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing](../modules/agent_routing.md) | 5 | `accepted_assignments`, `actor_id`, `actor_queue_revision`, `actor_revision`, `available_capacity_days`, `blocking_weakness_keys`, `capacity_owner_id`, `capacity_owner_profile_id`, `committed_effort_days`, `configured_model_alias`, `context_tier`, `cost_tier` |
+| [agent_routing](../modules/agent_routing.md) | 6 | `accepted_assignments`, `actor_id`, `actor_queue_revision`, `actor_revision`, `available_capacity_days`, `blocking_weakness_keys`, `capacity_owner_id`, `capacity_owner_profile_id`, `committed_effort_days`, `configured_model_alias`, `context_tier`, `cost_tier` |
 
 ### Structure
 

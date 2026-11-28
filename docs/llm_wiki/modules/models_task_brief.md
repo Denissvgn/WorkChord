@@ -39,7 +39,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (10) |
+| Inbound | `backend` (12) |
 | Outbound | `backend` (2) |
 
 ### External packages
@@ -48,7 +48,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -56,7 +56,7 @@ flowchart LR
 |-------|------|-------|-------------|
 | [TaskBriefRevision](../entities/TaskBriefRevision.md) | 16 | `Base` | — |
 | [TaskProgressRecord](../entities/TaskProgressRecord.md) | 30 | `Base` | — |
-| [TaskReviewRecord](../entities/TaskReviewRecord.md) | 44 | `Base` | — |
+| [TaskReviewRecord](../entities/models_task_brief_TaskReviewRecord.md) | 44 | `Base` | — |
 
 ## Functions
 

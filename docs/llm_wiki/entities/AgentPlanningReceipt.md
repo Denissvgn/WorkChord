@@ -50,7 +50,7 @@ flowchart LR
     n10["delete_project_milestone (backend/app/routers/agent_planning.py)"]
     n11["patch_planning_task (backend/app/routers/agent_planning.py)"]
     n12["preview_schedule (backend/app/routers/agent_planning.py)"]
-    n13["record_task_replacement (backend/app/routers/agent_planning.py)"]
+    n13["record_manual_provenance (backend/app/routers/agent_planning.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -106,6 +106,6 @@ flowchart LR
 | `delete_project_milestone` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 | `patch_planning_task` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 | `preview_schedule` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
-| `record_task_replacement` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
+| `record_manual_provenance` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
 
-> References: showing 12 of 44 logical references; 32 omitted by the 12-row generated summary limit.
+> References: showing 12 of 51 logical references; 39 omitted by the 12-row generated summary limit.

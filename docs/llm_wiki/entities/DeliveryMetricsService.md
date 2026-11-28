@@ -1,6 +1,6 @@
 # DeliveryMetricsService
 
-**Location:** `backend/app/services/delivery_metrics_service.py:111`
+**Location:** `backend/app/services/delivery_metrics_service.py:120`
 **Kind:** Class
 **Bases:** —
 **Module:** [delivery_metrics_service](../modules/delivery_metrics_service.md)
@@ -89,4 +89,4 @@ flowchart LR
 | `test_scope_at_event_and_permission_isolation_are_preserved` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 3 |
 | `test_window_report_ignores_large_completed_history_and_seeds_episodes` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 2 |
 
-> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
+> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.

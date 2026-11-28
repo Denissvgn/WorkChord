@@ -22,7 +22,9 @@ class BacklogSnapshotService:
 
     @atomic_command
     async def capture(self, project_id, reason="manual"):
-        require_project(self.db, project_id, "read")
+        # Skipping the check is safe only because no internal_authority block passes a caller-chosen project.
+        if not self.db.info.get("authority_internal"):
+            require_project(self.db, project_id, "read")
         state = current_command(self.db)
         key = ("project", project_id)
         if state.mode == "preview" or key in state.snapshots:
@@ -89,9 +91,13 @@ class BacklogSnapshotService:
         removed = set(current) - ids
         from app.services.task_replacement_service import require_restore_compatible
         await require_restore_compatible(self.db, [row for row, _ in rows], list(current.values()))
+        from app.services.task_postponement_service import require_restore_compatible as require_postponement_compatible
+        await require_postponement_compatible(self.db, [row for row, _ in rows], list(current.values()))
         from app.services.delivery_dependency_service import DeliveryDependencyService
         from app.models.delivery_dependency import DeliveryDependency
         await DeliveryDependencyService(self.db).require_unreferenced(removed)
+        from app.services.task_postponement_service import require_unreferenced as require_unawaited
+        await require_unawaited(self.db, task_ids=removed)
         await self.db.execute(delete(DeliveryDependency).where(DeliveryDependency.task_id.in_(removed)))
         self.db.info.setdefault("delivery_changed_nodes", set()).update(("task", task_id) for task_id in ids)
         outside = await self.db.scalar(select(TaskDependency.id).where(TaskDependency.depends_on_id.in_(removed), TaskDependency.task_id.notin_(removed)).limit(1))

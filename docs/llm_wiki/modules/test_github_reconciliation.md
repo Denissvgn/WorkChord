@@ -31,85 +31,29 @@ A task's submitted commit is reconciled with its linked pull request as GitHub s
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/authority.py"]
-    n1["backend/app/config.py"]
-    n2["backend/app/models/agent.py"]
-    n3["backend/app/models/external_link.py"]
-    n4["backend/app/models/iteration.py"]
-    n5["backend/app/models/project.py"]
-    n6["backend/app/models/task_replacement.py"]
-    n7["backend/app/services/external_link_service.py"]
-    n8["backend/app/services/github_reconciliation_service.py"]
-    n9["backend/app/services/github_status_service.py"]
-    n10["backend/app/services/github_webhook_service.py"]
-    n11["backend/tests/test_github_reconciliation.py"]
+    n0["backend"]
+    n1["backend/tests/test_github_reconciliation.py"]
     n0 --> n1
-    n0 --> n2
-    n0 --> n5
-    n2 --> n5
-    n4 --> n5
-    n5 --> n2
-    n5 --> n4
-    n7 --> n0
-    n7 --> n3
-    n8 --> n0
-    n8 --> n2
-    n8 --> n3
-    n8 --> n9
-    n9 --> n1
-    n9 --> n2
-    n9 --> n3
-    n9 --> n7
-    n10 --> n1
-    n10 --> n2
-    n10 --> n3
-    n10 --> n9
-    n11 --> n0
-    n11 --> n1
-    n11 --> n2
-    n11 --> n3
-    n11 --> n4
-    n11 --> n5
-    n11 --> n6
-    n11 --> n7
-    n11 --> n8
-    n11 --> n9
-    n11 --> n10
-    click n0 "../modules/authority.md"
-    click n1 "../modules/config.md"
-    click n2 "../modules/models_agent.md"
-    click n3 "../modules/models_external_link.md"
-    click n4 "../modules/models_iteration.md"
-    click n5 "../modules/models_project.md"
-    click n6 "../modules/models_task_replacement.md"
-    click n7 "../modules/external_link_service.md"
-    click n8 "../modules/github_reconciliation_service.md"
-    click n9 "../modules/github_status_service.md"
-    click n10 "../modules/github_webhook_service.md"
-    click n11 "../modules/test_github_reconciliation.md"
+    n1 --> n0
+    click n1 "../modules/test_github_reconciliation.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Outbound | [authority](../modules/authority.md) |
-| Outbound | [config](../modules/config.md) |
-| Outbound | [models_agent](../modules/models_agent.md) |
-| Outbound | [models_external_link](../modules/models_external_link.md) |
-| Outbound | [models_iteration](../modules/models_iteration.md) |
-| Outbound | [models_project](../modules/models_project.md) |
-| Outbound | [models_task_replacement](../modules/models_task_replacement.md) |
-| Outbound | [external_link_service](../modules/external_link_service.md) |
-| Outbound | [github_reconciliation_service](../modules/github_reconciliation_service.md) |
-| Outbound | [github_status_service](../modules/github_status_service.md) |
-| Outbound | [github_webhook_service](../modules/github_webhook_service.md) |
+| Inbound | `backend` (2) |
+| Outbound | `backend` (11) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 3 | 1 |
+
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -135,6 +79,7 @@ flowchart LR
 | `_delivery_payload` | `(action, pull)` | — | — |
 | `test_duplicate_and_out_of_order_deliveries_leave_the_newest_state` | *(async)* `(db_session, task_factory, actor_factory, github)` | — | — |
 | `test_catch_up_recovers_a_merge_whose_event_was_missed_and_keeps_older_review_on_its_commit` | *(async)* `(db_session, task_factory, actor_factory, github)` | — | — |
+| `test_a_closure_seen_by_catch_up_and_then_delivered_stays_one_entry` | *(async)* `(db_session, task_factory, actor_factory, github, merged)` | `@pytest.mark.parametrize('merged', [True, False], ids=['merge', 'unmerged-closure'])` | — |
 | `test_catch_up_never_reads_a_link_outside_the_callers_teams` | *(async)* `(db_session, task_factory, actor_factory, github)` | — | — |
 | `test_a_viewer_reads_the_reconciliation_but_cannot_trigger_catch_up` | *(async)* `(db_session, task_factory, actor_factory, github)` | — | — |
 | `test_a_replaced_task_points_at_its_successor_and_its_own_pull_request` | *(async)* `(db_session, task_factory, actor_factory, github)` | — | — |

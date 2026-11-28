@@ -1,6 +1,6 @@
 # AssessmentDraft
 
-**Location:** `frontend/src/components/agent/TaskRoutingPanel.tsx:61`
+**Location:** `frontend/src/components/agent/TaskRoutingPanel.tsx:63`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskRoutingPanel](../modules/TaskRoutingPanel.md)
@@ -17,6 +17,7 @@ _Auto-generated from `AssessmentDraft` in `frontend/src/components/agent/TaskRou
 | `requiredSkillLevels` | `Record<string, TaskSkillLevel>` | Yes | — | — |
 | `minimumReasoningTier` | `ModelReasoningTier` | Yes | — | — |
 | `minimumContextTier` | `ModelContextTier` | Yes | — | — |
+| `minimumEffort` | `RequiredModelEffort \| ''` | Yes | — | — |
 | `modalityTags` | `string` | Yes | — | — |
 | `toolTags` | `string` | Yes | — | — |
 | `dataPolicyTags` | `string` | Yes | — | — |
@@ -38,4 +39,4 @@ _Auto-generated from `AssessmentDraft` in `frontend/src/components/agent/TaskRou
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TaskRoutingPanel](../modules/TaskRoutingPanel.md) | 0 | `axes`, `confidence`, `dataPolicyTags`, `minimumContextTier`, `minimumReasoningTier`, `modalityTags`, `rationale`, `reasonCodes`, `requiredSkillLevels`, `reviewMode`, `toolTags` |
+| [TaskRoutingPanel](../modules/TaskRoutingPanel.md) | 0 | `axes`, `confidence`, `dataPolicyTags`, `minimumContextTier`, `minimumEffort`, `minimumReasoningTier`, `modalityTags`, `rationale`, `reasonCodes`, `requiredSkillLevels`, `reviewMode`, `toolTags` |

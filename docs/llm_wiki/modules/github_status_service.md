@@ -12,15 +12,17 @@ Candidate verification reads a pull request’s current head or compares an immu
 
 | Source | Symbols |
 |--------|---------|
-| `app.commands` | `commit_or_flush` |
+| `app.commands` | `commit_or_flush`, `command_transaction` |
 | `app.config` | `get_settings` |
 | `app.models.agent` | `TaskEvent` |
 | `app.models.external_link` | `ExternalLink`, `ExternalLinkEntityType` |
 | `app.services.external_link_service` | `ExternalLinkService`, `ExternalLinkValidationError` |
+| `app.services.github_reconciliation_service` | `observed_head_keeps_acceptance`, `observed_head_keeps_acceptance` |
 | `app.services.system_settings_service` | `RuntimeSettingsService` |
 | `app.services.task_context_revision_service` | `reserve_task_context_revision` |
 | `app.services.task_service` | `TaskService` |
 | `app.utils.url_policy` | `normalize_provider_api_url` |
+| `dataclasses` | `dataclass` |
 | `datetime` | `datetime`, `timezone` |
 | `httpx` | `httpx` |
 | `logging` | `logging` |
@@ -47,8 +49,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (10) |
-| Outbound | `backend` (9) |
+| Inbound | `backend` (14) |
+| Outbound | `backend` (10) |
 
 ### External packages
 
@@ -56,13 +58,14 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [GitHubStatusService](../entities/GitHubStatusService.md) | 45 | — | Refresh cached GitHub pull request metadata for external links. |
+| [FetchedPullRequest](../entities/FetchedPullRequest.md) | 29 | — | One pull request link as read from GitHub, before anything is locked or saved. |
+| [GitHubStatusService](../entities/GitHubStatusService.md) | 61 | — | Refresh cached GitHub pull request metadata for external links. |
 
 ## Functions
 

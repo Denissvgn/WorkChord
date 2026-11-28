@@ -2,7 +2,7 @@
 
 **Entry point:** `attest_review_evidence` (`http`)
 **Source:** [agent_catalog](../modules/agent_catalog.md)
-**Modules touched:** [agent_catalog](../modules/agent_catalog.md), [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), and 22 more
+**Modules touched:** [agent_catalog](../modules/agent_catalog.md), [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_service](../modules/agent_routing_service.md), and 25 more
 
 **Complete modules touched:**
 
@@ -17,16 +17,19 @@
 - [discussion_service](../modules/discussion_service.md)
 - [github_links](../modules/github_links.md)
 - [identity_service](../modules/identity_service.md)
+- [manual_provenance_service](../modules/manual_provenance_service.md)
 - [models_agent](../modules/models_agent.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
 - [mutation_versions](../modules/mutation_versions.md)
 - [query_limits](../modules/query_limits.md)
+- [refusal_next_steps](../modules/refusal_next_steps.md)
 - [retained_planning_output](../modules/retained_planning_output.md)
 - [review_provenance](../modules/review_provenance.md)
 - [routers_agent_planning](../modules/routers_agent_planning.md)
 - [schemas_agent_planning](../modules/schemas_agent_planning.md)
 - [services_review_evidence](../modules/services_review_evidence.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_replacement_service](../modules/task_replacement_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
@@ -49,25 +52,25 @@ sequenceDiagram
     participant p7 as AgentRoutingService._lock_task
     participant p8 as _conflict (backend/app/services/review_evidence.py)
     participant p9 as select_reviewer
-    participant p10 as different_publisher_required
+    participant p10 as _conflict (backend/app/services/review_provenance.py)
     participant p11 as AgentRoutingService.lock_selection_inputs
-    participant p12 as _conflict (backend/app/services/review_provenance.py)
+    participant p12 as different_publisher_required
     participant p13 as canonical_routing_json_bytes
     participant p14 as review_history
-    participant p15 as DeliveryDependencyService.reconcile
+    participant p15 as process_reactivation_checks
     participant p16 as actor_provenance
-    participant p17 as DiscussionService.enqueue
-    participant p18 as resolve
-    participant p19 as _attempt_history
-    participant p20 as _event
-    participant p21 as _validate_json_native
-    participant p22 as carried_contributors
-    participant p23 as history_digest
-    participant p24 as require_project
-    participant p25 as _issuer_identity
-    participant p26 as DeliveryDependencyService.validate_cycles
-    participant p27 as DiscussionService.recipient_authorized
-    participant p28 as AgentRoutingService._profile_revision
+    participant p17 as DeliveryDependencyService.reconcile
+    participant p18 as _carries_unattributed_run
+    participant p19 as DiscussionService.enqueue
+    participant p20 as _publisher_step
+    participant p21 as resolve
+    participant p22 as next_step_for
+    participant p23 as _attempt_history
+    participant p24 as _event
+    participant p25 as _validate_json_native
+    participant p26 as carried_contributors
+    participant p27 as ReactivationService.evaluate_waiting
+    participant p28 as history_digest
     participant p29 as isinstance (backend/app/routers/agent…ng.py:_handle_agent_error)
     participant p30 as TypeAdapter(…).validate_python
     p0->>p1: record_review_evidence
@@ -79,32 +82,32 @@ sequenceDiagram
     p1->>p7: AgentRoutingService._lock_task
     p1->>p8: _conflict (backend/app/services/review_evidence.py)
     p1->>p9: select_reviewer
-    p9->>p10: different_publisher_required
+    p9->>p10: _conflict (backend/app/services/review_provenance.py)
     p7->>p11: AgentRoutingService.lock_selection_inputs
-    p9->>p12: _conflict (backend/app/services/review_provenance.py)
+    p9->>p12: different_publisher_required
     p5->>p13: canonical_routing_json_bytes
     p9->>p14: review_history
-    p6->>p15: DeliveryDependencyService.reconcile
+    p6->>p15: process_reactivation_checks
     p9->>p16: actor_provenance
-    p6->>p17: DiscussionService.enqueue
-    p9->>p18: resolve
-    p14->>p19: _attempt_history
-    p18->>p20: _event
-    p13->>p21: _validate_json_native
-    p14->>p22: carried_contributors
-    p18->>p23: history_digest
-    p11->>p24: require_project
-    p18->>p25: _issuer_identity
-    p15->>p26: DeliveryDependencyService.validate_cycles
-    p17->>p27: DiscussionService.recipient_authorized
-    p16->>p28: AgentRoutingService._profile_revision
+    p6->>p17: DeliveryDependencyService.reconcile
+    p9->>p18: _carries_unattributed_run
+    p6->>p19: DiscussionService.enqueue
+    p9->>p20: _publisher_step
+    p9->>p21: resolve
+    p10->>p22: next_step_for
+    p14->>p23: _attempt_history
+    p21->>p24: _event
+    p13->>p25: _validate_json_native
+    p14->>p26: carried_contributors
+    p15->>p27: ReactivationService.evaluate_waiting
+    p21->>p28: history_digest
     p2-->>p29: isinstance (backend/app/routers/agent…ng.py:_handle_agent_error)(exc, AgentPermissionError)
     p1-->>p30: TypeAdapter(…).validate_python(payload)
 ```
 
-> Call sequence diagram shows 30 of 750 interactions; 720 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 811 interactions; 781 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 202 (201 omitted); unresolved 1 of 352 (351 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 210 (209 omitted); unresolved 1 of 370 (369 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -118,7 +121,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/review_evidence.py:record_review_evidence` | 2 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
 | `backend/app/services/review_evidence.py:record_review_evidence` | 2 | - | external | 12 |
 | `backend/app/services/review_evidence.py:record_review_evidence` | 2 | [backend/app/schemas/agent_planning.py](../modules/schemas_agent_planning.md) | internal | 1 |
-> Omission summary shows 8 of 153 groups; 145 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 178 groups; 170 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -131,9 +134,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 197; effect analysis evaluated: 146, partial: 5, unavailable: 46. Counts include steps omitted from the displayed trace.
+Source steps: 232; effect analysis evaluated: 178, partial: 6, unavailable: 48. Counts include steps omitted from the displayed trace.
 
-Collector observations for 151 source steps with known totals: observed: 789, emitted: 767, omitted: 22. Unavailable totals are excluded.
+Collector observations for 184 source steps with known totals: observed: 1027, emitted: 994, omitted: 33. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -214,32 +217,32 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| attest_review_evidence | record_review_evidence | 84 | `record_review_evidence(db, actor, task_id, data, idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| record_review_evidence | require_operator | 323 | `require_operator(db)` |
-| require_operator | db.info.get (backend/app/authority.py:require_operator) | 84 | `db.info.get('authority')` |
-| require_operator | AuthorityError | 86 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
-| record_review_evidence | is_admin_key_principal | 326 | `is_admin_key_principal(actor)` |
-| record_review_evidence | actor_has_scope | 330 | `actor_has_scope(actor, 'admin')` |
+| attest_review_evidence | record_review_evidence | 100 | `record_review_evidence(db, actor, task_id, data, idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
+| record_review_evidence | require_operator | 325 | `require_operator(db)` |
+| require_operator | db.info.get (backend/app/authority.py:require_operator) | 92 | `db.info.get('authority')` |
+| require_operator | AuthorityError | 94 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
+| record_review_evidence | is_admin_key_principal | 328 | `is_admin_key_principal(actor)` |
+| record_review_evidence | actor_has_scope | 332 | `actor_has_scope(actor, 'admin')` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
-| record_review_evidence | AuthorityError | 332 | `AuthorityError('operator_required', 'The authenticated workspace operator must attest review evidence.')` |
-| record_review_evidence | TypeAdapter(…).validate_python | 336 | `TypeAdapter(ReviewEvidenceCommand).validate_python(payload)` |
+| record_review_evidence | AuthorityError | 334 | `AuthorityError('operator_required', 'The authenticated workspace operator must attest review evidence.')` |
+| record_review_evidence | TypeAdapter(…).validate_python | 338 | `TypeAdapter(ReviewEvidenceCommand).validate_python(payload)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.add` | `record_review_evidence` | 455 |
+| mutation | `db.add` | `record_review_evidence` | 457 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_operator` | `db.info.get` | 84 |
+| unresolved_call | `require_operator` | `db.info.get` | 92 |
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | external_call | `actor_scopes` | `isinstance` | 90 |
-| unresolved_call | `record_review_evidence` | `TypeAdapter(ReviewEvidenceCommand).validate_python` | 336 |
+| unresolved_call | `record_review_evidence` | `TypeAdapter(ReviewEvidenceCommand).validate_python` | 338 |
 | step_limit | `attest_review_evidence` | `first 12 steps` | 0 |
 | truncated_flow | `attest_review_evidence` | `depth limit` | 0 |
 

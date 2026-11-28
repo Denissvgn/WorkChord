@@ -1,3 +1,4 @@
+import type { TaskDisplayedState } from './task';
 import type { WorkMetrics } from './workMetrics';
 export interface IterationProject {
     id: number;
@@ -76,7 +77,7 @@ export interface IterationSummary extends WorkMetrics {
     team_capacity_days: number;
     overdue_tasks_count: number;
     /** Leaf counts by status, from the same aggregate as the other counts. */
-    status_counts?: Partial<Record<'planned' | 'active' | 'resolved' | 'closed', number>>;
+    status_counts?: Partial<Record<TaskDisplayedState, number>>;
     blocked_tasks?: number;
     remaining_effort_days?: number;
     unknown_estimate_tasks?: number;

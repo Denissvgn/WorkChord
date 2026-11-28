@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import { stateOf } from '../../utils/taskState';
 import type { ReactNode } from 'react';
 import { TaskEditorDrawer } from '../tasks/TaskEditorDrawer';
 import i18n from '../../i18n/i18n';
@@ -102,6 +103,8 @@ export const ProjectTaskTree = ({ sections, dependencyTasks }: ProjectTaskTreePr
                                         id={task.id}
                                         title={task.title}
                                         status={task.status}
+                                        state={stateOf(task)}
+                                        successor={task.successor_task_id ? { id: task.successor_task_id, onOpen: () => setSelectedTask(task.successor_task_id as number) } : null}
                                         statusLocked={task.is_composite || (task.children?.length ?? 0) > 0}
                                         priority={task.priority}
                                         chip={taskStateChip(task, dependencyMap)}

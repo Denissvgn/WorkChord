@@ -1,6 +1,6 @@
 # TaskResponse
 
-**Location:** `backend/app/schemas/task.py:191`
+**Location:** `backend/app/schemas/task.py:195`
 **Kind:** Pydantic model
 **Bases:** `TaskMetricSignals`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -58,6 +58,9 @@ Schema for task response.
 | `milestone` | `Optional[TaskMilestone]` | `milestone` | No | Yes | `None` | — | — | — |
 | `assignee` | `Optional[TaskAssignee]` | `assignee` | No | Yes | `None` | — | — | — |
 | `status` | `str` | `status` | Yes | No | — | — | — | — |
+| `displayed_state` | `Optional[str]` | `displayed_state` | No | Yes | `None` | — | — | The state to show: the stored status, or canceled / superseded for withdrawn work. Canceled work keeps the status it had when it was canceled; read this instead of status to count or show it. |
+| `successor_task_id` | `Optional[int]` | `successor_task_id` | No | Yes | `None` | — | — | The task that delivers this task's work instead, for superseded work. |
+| `successor_kind` | `Optional[Literal['replacement', 'supersession']]` | `successor_kind` | No | Yes | `None` | — | — | How the successor delivers it: a clean replacement or an earlier supersession. |
 | `start_date` | `Optional[date]` | `start_date` | Yes | Yes | — | — | — | — |
 | `end_date` | `Optional[date]` | `end_date` | Yes | Yes | — | — | — | — |
 | `actual_start_date` | `Optional[date]` | `actual_start_date` | No | Yes | `None` | — | — | — |
@@ -85,6 +88,7 @@ Schema for task response.
 | `updated_at` | `Optional[datetime]` | `updated_at` | No | Yes | `None` | — | — | — |
 | `children` | `list['TaskResponse']` | `children` | No | No | `[]` | — | — | — |
 | `dependencies` | `list[int]` | `dependencies` | No | No | `[]` | — | — | — |
+| `routing_check` | `Optional[RoutingCheck]` | `routing_check` | No | Yes | `None` | — | — | Present on a write that changed the assignee or routing: whether the routing is consistent, its issues and a consistent replacement with a suggested reviewer. |
 
 ## Methods
 
@@ -103,12 +107,12 @@ flowchart LR
     n5["release_task_claim (backend/app/routers/agent.py)"]
     n6["get_project_tasks (backend/app/routers/projects.py)"]
     n7["create_backlog_task (backend/app/routers/task_domain.py)"]
-    n8["record_task_progress (backend/app/routers/task_domain.py)"]
-    n9["restore_backlog (backend/app/routers/task_domain.py)"]
-    n10["review_task (backend/app/routers/task_domain.py)"]
-    n11["task_command (backend/app/routers/task_domain.py)"]
-    n12["write_task_brief (backend/app/routers/task_domain.py)"]
-    n13["apply_batch_update_items (backend/app/routers/tasks.py)"]
+    n8["owner_accept_task (backend/app/routers/task_domain.py)"]
+    n9["record_task_progress (backend/app/routers/task_domain.py)"]
+    n10["restore_backlog (backend/app/routers/task_domain.py)"]
+    n11["review_task (backend/app/routers/task_domain.py)"]
+    n12["task_command (backend/app/routers/task_domain.py)"]
+    n13["write_task_brief (backend/app/routers/task_domain.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -135,7 +139,7 @@ flowchart LR
     click n10 "../modules/routers_task_domain.md"
     click n11 "../modules/routers_task_domain.md"
     click n12 "../modules/routers_task_domain.md"
-    click n13 "../modules/tasks.md"
+    click n13 "../modules/routers_task_domain.md"
 ```
 
 ### Summary
@@ -160,11 +164,11 @@ flowchart LR
 | `release_task_claim` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `get_project_tasks` | type_reference | [projects](../modules/projects.md) | — |
 | `create_backlog_task` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
+| `owner_accept_task` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `record_task_progress` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `restore_backlog` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `review_task` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `task_command` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `write_task_brief` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
-| `apply_batch_update_items` | type_reference | [tasks](../modules/tasks.md) | — |
 
-> References: showing 12 of 35 logical references; 23 omitted by the 12-row generated summary limit.
+> References: showing 12 of 37 logical references; 25 omitted by the 12-row generated summary limit.

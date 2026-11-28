@@ -1,3 +1,6 @@
+import i18n from '../i18n/i18n';
+import type { RefusalNextStep } from '../types/task';
+
 export type ApiErrorKind = 'response' | 'network' | 'unknown';
 
 export interface ApiFieldError {
@@ -130,12 +133,23 @@ const responsePayload = (
     return null;
 };
 
+
+const routingInconsistentMessage = (details: unknown) => {
+    const check = isRecord(details) && isRecord(details.routing_check) ? details.routing_check : null;
+    const issues = Array.isArray(check?.issues) ? check.issues.filter(isRecord) : [];
+    const conflicts = issues.filter(issue => issue.severity === 'conflict' && typeof issue.code === 'string')
+        .map(issue => i18n.t(`taskReassign.issues.${issue.code}`, { defaultValue: typeof issue.message === 'string' ? issue.message : String(issue.code) }));
+    return i18n.t('taskReassign.routingInconsistent', { conflicts: conflicts.join(' ') }).trim();
+};
+
 export const normalizeApiError = (error: unknown, fallback: string): NormalizedApiError => {
     const apiError = asApiError(error);
     const status = normalizedStatus(apiError.response?.status);
     const payload = responsePayload(apiError.response?.data);
 
     if (payload) {
+        // The server's refusal of a reviewer conflict is English; say it in the app's language and say where to resolve it.
+        if (payload.code === 'routing_inconsistent') return { kind: 'response', status, ...payload, message: routingInconsistentMessage(payload.details) };
         return { kind: 'response', status, ...payload };
     }
 
@@ -153,6 +167,22 @@ export const normalizeApiError = (error: unknown, fallback: string): NormalizedA
 export const getApiErrorMessage = (error: unknown, fallback: string) => (
     normalizeApiError(error, fallback).message
 );
+
+/** The next step a refusal names, from its structured envelope; null when it names none. */
+export const getApiNextStep = (error: unknown): RefusalNextStep | null => {
+    const data = asApiError(error).response?.data;
+    const detail = isRecord(data) && isRecord(data.detail) ? data.detail : data;
+    const step = isRecord(detail) ? detail.next_step : null;
+    if (!isRecord(step) || typeof step.kind !== 'string' || typeof step.message !== 'string' || !step.message.trim()) return null;
+    const commands = isRecord(step.commands)
+        ? Object.fromEntries(Object.entries(step.commands).filter((entry): entry is [string, string] => typeof entry[1] === 'string'))
+        : {};
+    return {
+        kind: step.kind, message: step.message, commands,
+        authority: typeof step.authority === 'string' ? step.authority : '',
+        ui_action: step.ui_action === 'record_provenance' || step.ui_action === 'accept_as_owner' ? step.ui_action : null,
+    };
+};
 
 export const getApiErrorStatus = (error: unknown) => (
     normalizedStatus(asApiError(error).response?.status)

@@ -29,38 +29,43 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/tasks/MetricCount.test.tsx"]
-    n1["frontend/src/components/tasks/MetricCount.tsx"]
-    n2["frontend/src/components/tasks/WorkMetricsLine.tsx"]
-    n3["frontend/src/pages/AnalyticsPage.tsx"]
-    n4["frontend/src/pages/ProjectReleaseDetailPage.tsx"]
-    n5["frontend/src/services/taskService.ts"]
-    n6["frontend/src/types/workMetrics.ts"]
-    n7["frontend/src/utils/workNumbers.ts"]
-    n0 --> n1
-    n0 --> n2
+    n0["frontend/src/components/analytics/StoppedWorkCounts.test.tsx"]
+    n1["frontend/src/components/tasks/MetricCount.test.tsx"]
+    n2["frontend/src/components/tasks/MetricCount.tsx"]
+    n3["frontend/src/components/tasks/WorkMetricsLine.tsx"]
+    n4["frontend/src/pages/AnalyticsPage.tsx"]
+    n5["frontend/src/pages/ProjectReleaseDetailPage.tsx"]
+    n6["frontend/src/services/taskService.ts"]
+    n7["frontend/src/types/workMetrics.ts"]
+    n8["frontend/src/utils/workNumbers.ts"]
+    n0 --> n3
     n0 --> n6
-    n1 --> n5
-    n2 --> n1
-    n2 --> n5
+    n1 --> n2
+    n1 --> n3
+    n1 --> n7
     n2 --> n6
-    n2 --> n7
     n3 --> n2
-    n4 --> n2
-    click n0 "../modules/MetricCount.test.md"
-    click n1 "../modules/MetricCount.md"
-    click n2 "../modules/WorkMetricsLine.md"
-    click n3 "../modules/AnalyticsPage.md"
-    click n4 "../modules/ProjectReleaseDetailPage.md"
-    click n5 "../modules/taskService.md"
-    click n6 "../modules/workMetrics.md"
-    click n7 "../modules/workNumbers.md"
+    n3 --> n6
+    n3 --> n7
+    n3 --> n8
+    n4 --> n3
+    n5 --> n3
+    click n0 "../modules/StoppedWorkCounts.test.md"
+    click n1 "../modules/MetricCount.test.md"
+    click n2 "../modules/MetricCount.md"
+    click n3 "../modules/WorkMetricsLine.md"
+    click n4 "../modules/AnalyticsPage.md"
+    click n5 "../modules/ProjectReleaseDetailPage.md"
+    click n6 "../modules/taskService.md"
+    click n7 "../modules/workMetrics.md"
+    click n8 "../modules/workNumbers.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [StoppedWorkCounts.test](../modules/StoppedWorkCounts.test.md) |
 | Inbound | [MetricCount.test](../modules/MetricCount.test.md) |
 | Inbound | [AnalyticsPage](../modules/AnalyticsPage.md) |
 | Inbound | [ProjectReleaseDetailPage](../modules/ProjectReleaseDetailPage.md) |

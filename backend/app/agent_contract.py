@@ -13,6 +13,8 @@ AGENT_TEAM_MASTER_FEATURE = "agent-team-master-v1"
 WORK_DELIVERY_LINKS_FEATURE = "work-delivery-links-v1"
 GITHUB_RECONCILIATION_FEATURE = "github-reconciliation-v1"
 DELIVERY_PREREQUISITE_BRANCHES_FEATURE = "delivery-prerequisite-branches-v1"
+RUNTIME_INSTANCE_IDENTITY_FEATURE = "runtime-instance-identity-v1"
+TASK_POSTPONEMENT_FEATURE = "agent-task-postponement-v1"
 
 # Add a feature only after every REST/MCP read, mutation, validation, and
 # compatibility boundary behind it is live. In particular, the Wave 1 routing
@@ -51,6 +53,13 @@ AGENT_CONTRACT_FEATURES: tuple[str, ...] = (
     # agent_list_delivery_dependencies, agent_add_delivery_dependency and
     # agent_retarget_delivery_dependency record or change a prerequisite's target branch.
     DELIVERY_PREREQUISITE_BRANCHES_FEATURE,
+    # The onboarding handoff carries runtime_instance_id and the acknowledgement returns it;
+    # team status shows the acknowledging identity. A runtime that lists this feature must send it.
+    RUNTIME_INSTANCE_IDENTITY_FEATURE,
+    # agent_postpone_task and agent_reactivate_task stop and resume work with the REST
+    # commands' authority (the project's PM agent only); agent_get_task_postponement
+    # reads the reason and each requirement's state. The owner decision is not an agent tool.
+    TASK_POSTPONEMENT_FEATURE,
     SKILL_BUNDLES_FEATURE,
 )
 

@@ -1,6 +1,6 @@
 # IterationProject
 
-**Location:** `frontend/src/types/iteration.ts:2`
+**Location:** `frontend/src/types/iteration.ts:3`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_iteration](../modules/types_iteration.md)

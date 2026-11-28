@@ -161,11 +161,11 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | workspace_member | require_operator | 271 | `require_operator(db)` |
-| require_operator | db.info.get (backend/app/authority.py:require_operator) | 84 | `db.info.get('authority')` |
-| require_operator | AuthorityError | 86 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
+| require_operator | db.info.get (backend/app/authority.py:require_operator) | 92 | `db.info.get('authority')` |
+| require_operator | AuthorityError | 94 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
 | workspace_member | require_identity_writes | 272 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
 | workspace_member | AuthorityError | 275 | `AuthorityError('invalid_workspace_role', 'Choose a workspace role.', 422)` |
@@ -183,7 +183,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_operator` | `db.info.get` | 84 |
+| unresolved_call | `require_operator` | `db.info.get` | 92 |
 | step_limit | `workspace_member` | `first 12 steps` | 0 |
 
 ## Behavior

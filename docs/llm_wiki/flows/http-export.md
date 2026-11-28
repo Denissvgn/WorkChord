@@ -192,13 +192,13 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | export | domain_result | 60 | `domain_result(...)` |
-| domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 55 | `str(exc)` |
-| domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | export | TimeReportService.export | 60 | `TimeReportService(db).export(project_id, start, end, scope=scope, kind=kind)` |
 | TimeReportService.export | ValueError (backend/app/services/time…y:TimeReportService.export) | 99 | `ValueError('Choose totals or your personal entries')` |
 | TimeReportService.export | TimeReportService.statement | 100 | `self.statement(project_id, start, end, scope)` |
@@ -216,11 +216,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 53 |
-| unresolved_call | `domain_result` | `exc.detail` | 53 |
-| external_call | `domain_result` | `HTTPException` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
 | external_call | `TimeReportService.export` | `ValueError` | 99 |
 | step_limit | `export` | `first 12 steps` | 0 |
 

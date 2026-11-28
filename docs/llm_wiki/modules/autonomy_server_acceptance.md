@@ -105,9 +105,9 @@ flowchart LR
 | [ServerAcceptanceReceipt](../entities/ServerAcceptanceReceipt.md) | 192 | `StrictContractModel` | — |
 | [BlockedServerAcceptance](../entities/BlockedServerAcceptance.md) | 261 | `StrictContractModel` | — |
 | [ServerAcceptanceConfig](../entities/ServerAcceptanceConfig.md) | 290 | — | Runtime inputs, including credentials that never enter a receipt. |
-| [OpenBaoTransitClient](../entities/OpenBaoTransitClient.md) | 310 | — | Small HTTP adapter for the OpenBao/Vault-compatible Transit API. |
-| [S3ObjectLockClient](../entities/S3ObjectLockClient.md) | 460 | — | Path-style S3 client with only the operations required by acceptance. |
-| [ValkeyCasClient](../entities/ValkeyCasClient.md) | 667 | — | Minimal RESP2 client for the bounded persistent CAS acceptance check. |
+| [OpenBaoTransitClient](../entities/OpenBaoTransitClient.md) | 311 | — | Small HTTP adapter for the OpenBao/Vault-compatible Transit API. |
+| [S3ObjectLockClient](../entities/S3ObjectLockClient.md) | 461 | — | Path-style S3 client with only the operations required by acceptance. |
+| [ValkeyCasClient](../entities/ValkeyCasClient.md) | 674 | — | Minimal RESP2 client for the bounded persistent CAS acceptance check. |
 
 ## Functions
 
@@ -115,7 +115,7 @@ flowchart LR
 |----------|-----------|------------|-------------|
 | `run_server_acceptance` | `(config: ServerAcceptanceConfig, *, evaluated_at: datetime \| None = None) -> ServerAcceptanceReceipt` | — | Run the bounded self-hosted acceptance predicates and seal the report. |
 | `build_blocked_result` | `(*, source_revision: str, error: ServerAcceptanceError, evaluated_at: datetime \| None = None) -> BlockedServerAcceptance` | — | — |
-| `_probe_application` | `(backend_url: str, *, gateway_url: str, expected_source_revision: str, timeout_seconds: float) -> ApplicationAcceptance` | — | — |
+| `_probe_application` | `(backend_url: str, *, gateway_url: str, expected_source_revision: str, timeout_seconds: float, readiness_detail_token: str = '') -> ApplicationAcceptance` | — | — |
 | `_signed_report_payload` | `(candidate: ServerAcceptanceCandidate, signature: str) -> bytes` | — | — |
 | `_verify_transit_signature` | `(signer: TransitSignerAcceptance, payload: bytes, signature: str) -> None` | — | — |
 | `verify_receipt_trusted_signer` | `(receipt: ServerAcceptanceReceipt, trusted_public_key_base64: str) -> None` | — | Bind a self-contained receipt to a public key supplied out of band. |

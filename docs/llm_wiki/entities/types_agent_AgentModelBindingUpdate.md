@@ -1,6 +1,6 @@
 # AgentModelBindingUpdate
 
-**Location:** `frontend/src/types/agent.ts:268`
+**Location:** `frontend/src/types/agent.ts:283`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

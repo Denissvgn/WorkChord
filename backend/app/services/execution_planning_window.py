@@ -1,4 +1,8 @@
-"""Preserve a proved assignment context across an iteration end-date extension."""
+"""Preserve a proved assignment context across a planning change that leaves execution inputs alone.
+
+Two changes qualify: an explicit iteration end-date extension, and a task edit
+confined to ``PLANNING_ONLY_FIELDS``.
+"""
 
 from __future__ import annotations
 
@@ -28,6 +32,24 @@ from app.models.team_member import TeamMember
 LIVE_ASSIGNMENT_STATES = ("queued", "accepted")
 LIVE_RUN_STATE = "running"
 
+ITERATION_END_EXTENSION = "iteration_end_extension"
+PLANNING_ONLY_EDIT = "planning_only_edit"
+WINDOW_KINDS = (ITERATION_END_EXTENSION, PLANNING_ONLY_EDIT)
+
+# The only task fields whose change never alters what an issued executor or
+# reviewer must do. A task edit confined to these fields still reserves a new
+# task version, but a sealed queued or accepted assignment stays valid across
+# it. Every other field (brief, title, description, assignee, dependencies,
+# project, dates, effort, priority, labels, policy flags, source) remains an
+# execution input and stales the assignment. Keep this set conservative and in
+# step with docs/task-domain.md.
+PLANNING_ONLY_FIELDS = frozenset({"milestone_id"})
+
+
+def is_planning_only_change(changed_fields) -> bool:
+    """True when a non-empty set of changed task fields lies inside ``PLANNING_ONLY_FIELDS``."""
+    return bool(changed_fields) and set(changed_fields) <= PLANNING_ONLY_FIELDS
+
 
 def digest(value):
     return hashlib.sha256(
@@ -35,41 +57,52 @@ def digest(value):
     ).hexdigest()
 
 
+# Revisions, assignment scope and actual work state are included. The
+# secret claim is independently checked by the normal worker command.
+TASK_CONTEXT_FIELDS = (
+    "id",
+    "iteration_id",
+    "project_id",
+    "parent_id",
+    "assignee_id",
+    "owner_profile_id",
+    "status",
+    "execution_mode",
+    "brief_revision",
+    "artifact_revision",
+    "brief",
+    "progress",
+    "description",
+    "title",
+    "priority",
+    "source",
+    "source_url",
+    "milestone_id",
+    "external_key",
+    "effort_hours",
+    "start_date",
+    "end_date",
+    "min_start_date",
+    "max_end_date",
+    "claimed_by",
+    "claim_generation",
+    "blocked_reason",
+    "canceled_at",
+    "is_deferred",
+)
+
+
 def task_context(task):
-    # Revisions, assignment scope and actual work state are included. The
-    # secret claim is independently checked by the normal worker command.
-    fields = (
-        "id",
-        "iteration_id",
-        "project_id",
-        "parent_id",
-        "assignee_id",
-        "owner_profile_id",
-        "status",
-        "execution_mode",
-        "brief_revision",
-        "artifact_revision",
-        "brief",
-        "progress",
-        "description",
-        "title",
-        "priority",
-        "source",
-        "source_url",
-        "milestone_id",
-        "external_key",
-        "effort_hours",
-        "start_date",
-        "end_date",
-        "min_start_date",
-        "max_end_date",
-        "claimed_by",
-        "claim_generation",
-        "blocked_reason",
-        "canceled_at",
-        "is_deferred",
-    )
-    return digest({name: getattr(task, name) for name in fields})
+    return digest({name: getattr(task, name) for name in TASK_CONTEXT_FIELDS})
+
+
+def execution_context(task):
+    """The sealed task context without planning-only fields, plus labels and the optional flag.
+
+    A planning-only edit must leave this digest unchanged.
+    """
+    names = [name for name in TASK_CONTEXT_FIELDS if name not in PLANNING_ONLY_FIELDS]
+    return digest({name: getattr(task, name) for name in (*names, "tags", "is_optional")})
 
 
 def assignment_context(assignment):
@@ -97,7 +130,7 @@ def current_window(task):
     window = getattr(task, "execution_planning_window", None)
     if (
         isinstance(window, dict)
-        and window.get("kind") == "iteration_end_extension"
+        and window.get("kind") in WINDOW_KINDS
         and window.get("through") == task.version
         and type(window.get("from")) is int
         and 0 < window["from"] < task.version
@@ -124,15 +157,18 @@ def candidate_version(task):
     return window["from"] if window else task.version
 
 
-async def feature_free_acknowledgement(db, member):
-    """Return a member's acknowledgement digest as if it lacked only the planning-window feature.
+async def earlier_acknowledgements(db, member):
+    """Return digests of the acknowledgement as it was before a runtime adopted newer fields.
 
     A runtime can re-acknowledge after an upgrade solely to adopt
-    ``EXECUTION_PLANNING_WINDOW_FEATURE``. The stored bytes must reproduce the
-    current digest, and they must list that feature exactly once. Removing it
-    reproduces the previous acknowledgement only when every other field is
-    identical. Any other result is ``None``.
+    ``EXECUTION_PLANNING_WINDOW_FEATURE`` or the runtime instance identity (the
+    identity feature and ``runtime_instance_id``). The stored bytes must
+    reproduce the current digest. Removing what was adopted reproduces the
+    previous acknowledgement only when every other field is identical, so every
+    combination of removals is returned and the caller compares against it.
+    Any other result is an empty tuple.
     """
+    from app.agent_contract import RUNTIME_INSTANCE_IDENTITY_FEATURE
     from app.services.agent_team_setup_service import _digest
 
     encoded = await db.scalar(
@@ -144,17 +180,35 @@ async def feature_free_acknowledgement(db, member):
     try:
         current = json.loads(encoded)
         features = current["server_features"]
-        if (
-            not isinstance(features, list)
-            or features.count(EXECUTION_PLANNING_WINDOW_FEATURE) != 1
-            or _digest(current) != member.runtime_acknowledgement_digest
-        ):
-            return None
-        return _digest(
-            {**current, "server_features": [v for v in features if v != EXECUTION_PLANNING_WINDOW_FEATURE]}
-        )
+        if not isinstance(features, list) or _digest(current) != member.runtime_acknowledgement_digest:
+            return ()
+        window = features.count(EXECUTION_PLANNING_WINDOW_FEATURE)
+        identity = features.count(RUNTIME_INSTANCE_IDENTITY_FEATURE)
+        if window > 1 or identity > 1:
+            return ()
+        adoptable = []
+        if window:
+            adoptable.append("window")
+        if identity or "runtime_instance_id" in current:
+            adoptable.append("identity")
+        digests = []
+        for size in range(1, len(adoptable) + 1):
+            for removed in itertools.combinations(adoptable, size):
+                earlier = dict(current)
+                earlier["server_features"] = [
+                    value
+                    for value in features
+                    if not (
+                        ("window" in removed and value == EXECUTION_PLANNING_WINDOW_FEATURE)
+                        or ("identity" in removed and value == RUNTIME_INSTANCE_IDENTITY_FEATURE)
+                    )
+                ]
+                if "identity" in removed:
+                    earlier.pop("runtime_instance_id", None)
+                digests.append(_digest(earlier))
+        return tuple(digests)
     except (ValueError, TypeError, KeyError):
-        return None
+        return ()
 
 
 async def authority_stamp(db, task, assignment, *, lock=False, as_of=None):
@@ -167,7 +221,7 @@ async def authority_matches(db, task, assignment, expected, *, lock=False):
     """Compare a sealed stamp with current authority.
 
     The only tolerated difference is a member that has since re-acknowledged
-    solely to add the planning-window feature. Every other roster, topology
+    solely to add the planning-window feature or its runtime instance identity. Every other roster, topology
     revision, permission, binding, link or policy change still mismatches.
     """
     if not expected:
@@ -181,8 +235,7 @@ async def authority_matches(db, task, assignment, expected, *, lock=False):
     slot = members[0]._fields.index("runtime_acknowledgement_digest")
     choices = []
     for member in members:
-        earlier = await feature_free_acknowledgement(db, member)
-        choices.append((member[slot],) if earlier is None else (member[slot], earlier))
+        choices.append((member[slot], *await earlier_acknowledgements(db, member)))
     for combination in itertools.product(*choices):
         rows = [
             (*tuple(member)[:slot], value, *tuple(member)[slot + 1 :])
@@ -332,7 +385,7 @@ async def _authority_basis(db, task, assignment, *, lock=False, as_of=None):
                 return None
             historical_digest = ack.get("acknowledgement_digest")
             if historical_digest != member.runtime_acknowledgement_digest and (
-                historical_digest != await feature_free_acknowledgement(db, member)
+                historical_digest not in await earlier_acknowledgements(db, member)
             ):
                 return None
     bindings = (
@@ -403,7 +456,7 @@ async def require_window_authority(db, task, assignment):
         )
 
 
-def make_window(task, old_version, assignments, *, prior=None, evidence):
+def make_window(task, old_version, assignments, *, prior=None, evidence, kind=ITERATION_END_EXTENSION):
     eligible = {
         str(row.id): assignment_context(row)
         for row in assignments
@@ -418,7 +471,7 @@ def make_window(task, old_version, assignments, *, prior=None, evidence):
     if not eligible or task.version != old_version + 1:
         return None
     return {
-        "kind": "iteration_end_extension",
+        "kind": kind,
         "from": prior["from"] if prior else old_version,
         "through": task.version,
         "task_context": task_context(task),
@@ -634,6 +687,40 @@ async def seal_authority(db, task, window, assignments, *, prior=None, lock=Fals
     window["assignments"] = {key: value for key, value in window["assignments"].items() if key in stamps}
     window["authority"] = stamps
     return window if stamps else None
+
+
+async def fence_planning_only_edit(db, basis, issued, *, edited_task_id, fields):
+    """Seal a window for each task whose version a planning-only edit reserved.
+
+    ``basis`` lists ``(task, version_before, window_before, execution_context_before)``
+    captured before the edit, and ``issued`` maps task IDs to their locked live
+    assignments. A task's window is sealed only when its execution context is
+    unchanged apart from planning-only fields, its version moved by exactly one, each
+    assignment it keeps was bound to the prior version (or to a still-current
+    window), its original authenticated receipt still verifies, and the
+    ownership, team, policy and model bindings stamp. Anything else leaves the
+    task without a window, so its assignment stales as before and recovery
+    requeue remains the way forward. Returns ``[(task, window)]``.
+    """
+    if not is_planning_only_change(fields):
+        return []
+    evidence = {"fields": sorted(fields), "edited_task_id": edited_task_id}
+    fenced = []
+    for task, previous_version, prior, context_before in basis:
+        rows = issued.get(task.id)
+        if not rows or execution_context(task) != context_before:
+            continue
+        if prior and task.version == previous_version == prior["through"]:
+            # An earlier step of this command already reserved the version and
+            # sealed the window in force; reseal it over the changed context.
+            previous_version = task.version - 1
+        window = make_window(task, previous_version, rows, prior=prior, evidence=evidence, kind=PLANNING_ONLY_EDIT)
+        if window:
+            window = await seal_authority(db, task, window, rows, prior=prior, lock=True)
+        if window:
+            task.execution_planning_window = window
+            fenced.append((task, window))
+    return fenced
 
 
 async def extension_input(db, values, iterations):

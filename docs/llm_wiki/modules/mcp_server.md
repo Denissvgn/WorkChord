@@ -16,7 +16,7 @@ A planning command rejected by the domain returns its scoped conflict code and p
 |--------|---------|
 | `app` | `mcp_agent_tools` |
 | `app.agent_key_file` | `AgentKeyFileError`, `read_agent_key_file` |
-| `app.authority` | `AuthorityError` |
+| `app.authority` | `AGENT_TASK_READ_SCOPES`, `AGENT_TASK_WRITE_SCOPES`, `AuthorityError` |
 | `app.commands` | `command_transaction`, `AggregateVersionConflict`, `HierarchyScopeError`, `PlanningConflict`, `AggregateVersionConflict`, `HierarchyScopeError` |
 | `app.config` | `get_settings` |
 | `app.database` | `async_session_maker`, `close_database`, `init_db` |
@@ -36,6 +36,7 @@ A planning command rejected by the domain returns its scoped conflict code and p
 | `app.services.review_evidence` | `record_review_evidence` |
 | `app.services.task_service` | `TaskVersionConflictError` |
 | `app.services.triage_service` | `TriageConflictError` |
+| `app.utils.source_link_policy` | `SourceLinkRefused` |
 | `argparse` | `argparse` |
 | `asyncio` | `asyncio` |
 | `contextlib` | `asynccontextmanager`, `redirect_stdout` |
@@ -52,7 +53,7 @@ A planning command rejected by the domain returns its scoped conflict code and p
 | `starlette.routing` | `Route` |
 | `starlette.types` | `ASGIApp`, `Receive`, `Scope`, `Send` |
 | `sys` | `sys` |
-| `typing` | `Any`, `AsyncIterator`, `Callable`, `Optional` |
+| `typing` | `Any`, `AsyncIterator`, `Callable`, `Literal`, `Optional` |
 
 ## Local dependency map
 
@@ -72,8 +73,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (22) |
-| Outbound | `backend` (22) |
+| Inbound | `backend` (32) |
+| Outbound | `backend` (23) |
 
 ### External packages
 
@@ -81,17 +82,17 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 44 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 55 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [MCPAuthError](../entities/MCPAuthError.md) | Class | 52 | `PermissionError` | Raised when MCP agent authentication fails. |
-| [MCPHostValidationMiddleware](../entities/MCPHostValidationMiddleware.md) | Class | 75 | — | Reject untrusted MCP Host/Origin values before database authentication. |
-| [MCPAgentKeyMiddleware](../entities/MCPAgentKeyMiddleware.md) | Class | 110 | — | Extract and validate MCP HTTP agent credentials before protocol handling. |
-| [MCPExactPathAlias](../entities/MCPExactPathAlias.md) | Class | 156 | — | Route exact MCP mount path requests into the Streamable HTTP root app. |
-| [ScopeRequirement](../entities/ScopeRequirement.md) | Type alias | 238 | `Optional[str \| tuple[str, ...]]` | — |
+| [MCPAuthError](../entities/MCPAuthError.md) | Class | 53 | `PermissionError` | Raised when MCP agent authentication fails. |
+| [MCPHostValidationMiddleware](../entities/MCPHostValidationMiddleware.md) | Class | 76 | — | Reject untrusted MCP Host/Origin values before database authentication. |
+| [MCPAgentKeyMiddleware](../entities/MCPAgentKeyMiddleware.md) | Class | 111 | — | Extract and validate MCP HTTP agent credentials before protocol handling. |
+| [MCPExactPathAlias](../entities/MCPExactPathAlias.md) | Class | 157 | — | Route exact MCP mount path requests into the Streamable HTTP root app. |
+| [ScopeRequirement](../entities/ScopeRequirement.md) | Type alias | 239 | `Optional[str \| tuple[str, ...]]` | — |
 
 ## Functions
 

@@ -15,13 +15,14 @@ from typing import Any
 
 from sqlalchemy import func, or_, select, text
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.agent_contract import (
     AGENT_CONTRACT_FEATURES,
     AGENT_TEAM_MASTER_FEATURE,
     MODEL_AWARE_ROUTING_FEATURE,
+    RUNTIME_INSTANCE_IDENTITY_FEATURE,
 )
 from app.config import get_settings
 from app.models.agent import (
@@ -36,6 +37,7 @@ from app.models.agent import (
     AgentTeamTopologyMember,
     AgentTaskAssignment,
     TaskEvent,
+    new_runtime_instance_id,
 )
 from app.models.team_member import TeamMemberProfile
 from app.schemas.agent_skill_bundle import SkillBundleCatalogResponse
@@ -66,6 +68,7 @@ from app.schemas.agent_team_setup import (
     AgentTeamRuntimeAcknowledgement,
     AgentTeamRuntimeAcknowledgementResponse,
     AgentTeamRuntimeHandoff,
+    AgentTeamRuntimeIdentityStatus,
     AgentTeamDispatchAvailability,
     AgentTeamSetupReport,
     AgentTeamSetupReportCounts,
@@ -114,7 +117,9 @@ class AgentTeamSetupConflictError(AgentConflictError):
         super().__init__(message)
 
     def detail(self) -> dict[str, Any]:
-        return {"code": self.code, "message": self.message, **self.context}
+        from app.refusal_next_steps import with_next_step
+
+        return with_next_step({"code": self.code, "message": self.message, **self.context})
 
 
 CALLER_NOT_BOUND_BLOCKER = "caller_not_bound_to_topology"
@@ -134,6 +139,49 @@ class AgentTeamMembershipBoundary:
     primary_actor_id: int | None
     member_actor_ids: frozenset[int]
     runtime_ready_actor_ids: frozenset[int]
+    # Declared members that are not runtime-ready now, for refusals that must say who is missing.
+    non_ready_actors: tuple[dict[str, Any], ...] = ()
+    maximum_runtime_staleness_seconds: int | None = None
+    topology_runtime_ready: bool = False
+    topology_blocker_codes: tuple[str, ...] = ()
+
+
+RUNTIME_READINESS_RULE = (
+    "An actor is runtime-ready when it matches its declared role, scopes, profile and model bindings, its runtime "
+    "handoff is issued, its current runtime acknowledgement (package, profile and model-binding revisions, runtime "
+    "instance identity) is recorded, its credential is delivered, it is enabled and active, and it polled its queue "
+    "within the last {seconds} seconds. blocker_codes name what is missing."
+)
+# A caller that is acting right now needs no recent poll, but must hold every other readiness condition.
+CALLER_PRESENCE_BLOCKERS = frozenset({"runtime_stale", "runtime_unobserved"})
+
+
+def _iso_or_none(value: Any) -> str | None:
+    return as_utc(value).isoformat() if value is not None else None
+
+
+def readiness_refusal_context(
+    boundary: AgentTeamMembershipBoundary,
+    *,
+    required_actor_ids: frozenset[int] | None = None,
+) -> dict[str, Any]:
+    """Name the non-ready actors and the readiness rule for a refusal.
+
+    ``required_actor_ids`` marks the actors whose presence the refused request needs; without it every
+    non-ready actor blocks the request.
+    """
+
+    seconds = boundary.maximum_runtime_staleness_seconds
+    return {
+        "topology_key": boundary.topology_key,
+        "topology_revision": boundary.topology_revision,
+        "readiness_rule": RUNTIME_READINESS_RULE.format(seconds=seconds if seconds is not None else "the configured number of"),
+        "maximum_runtime_staleness_seconds": seconds,
+        "non_ready_actors": [
+            {**row, "blocks_this_request": required_actor_ids is None or row["actor_id"] in required_actor_ids}
+            for row in boundary.non_ready_actors
+        ],
+    }
 
 
 def _json_loads(value: str | None, fallback: Any) -> Any:
@@ -1380,6 +1428,7 @@ class AgentTeamSetupService:
             assert record is not None
             record.credential_delivery_state = "delivered"
             record.credential_delivery_receipt_digest = delivery_digest
+            record.issued_runtime_instance_id = new_runtime_instance_id()
             record.lifecycle_state = "onboarding"
             record.object_revision += 1
             topology = await self._topology(
@@ -1769,6 +1818,7 @@ class AgentTeamSetupService:
         assert record is not None
         record.credential_delivery_state = "delivered"
         record.credential_delivery_receipt_digest = receipt_digest
+        record.issued_runtime_instance_id = new_runtime_instance_id()
         record.lifecycle_state = "onboarding"
         record.object_revision += 1
         await self._stage_event(
@@ -1946,6 +1996,7 @@ class AgentTeamSetupService:
         assert record is not None
         record.credential_delivery_state = "delivered"
         record.credential_delivery_receipt_digest = receipt_digest
+        record.issued_runtime_instance_id = new_runtime_instance_id()
         record.lifecycle_state = "onboarding"
         record.object_revision += 1
         await self._stage_event(
@@ -2312,6 +2363,44 @@ class AgentTeamSetupService:
             "runtime re-acknowledge the new binding revision."
         )
 
+    @staticmethod
+    def _runtime_identity_status(
+        record: AgentTeamTopologyMember,
+        *,
+        expected_instance_id: str,
+        acknowledgement: dict[str, Any],
+    ) -> AgentTeamRuntimeIdentityStatus:
+        """Read the acknowledging identity from the acknowledgement, and any change or refusal from stored state.
+
+        The state follows the acknowledgement alone: ``current`` is an
+        acknowledgement that returned the identity the handoff now carries
+        (``changed`` when it replaced another identity), ``stale`` one that
+        returned an earlier one, and ``unknown`` none or one without an
+        identity. A refusal is not a state: it is shown beside it while it is
+        recorded, and the matching acknowledgement clears it.
+        """
+
+        stored = acknowledgement.get("runtime_instance_id")
+        acknowledged = stored if isinstance(stored, str) else None
+        changed = record.runtime_identity_changed_at is not None
+        if not acknowledgement:
+            state = "unknown"
+        elif acknowledged is None:
+            state = "changed" if changed else "unknown"
+        elif acknowledged != expected_instance_id:
+            state = "stale"
+        else:
+            state = "changed" if changed else "current"
+        return AgentTeamRuntimeIdentityStatus(
+            state=state,
+            expected_instance_id=expected_instance_id,
+            acknowledged_instance_id=acknowledged,
+            previous_instance_id=record.previous_runtime_instance_id,
+            changed_at=record.runtime_identity_changed_at,
+            refused_instance_id=record.rejected_runtime_instance_id,
+            refused_at=record.rejected_runtime_instance_at,
+        )
+
     async def _handoff(
         self,
         *,
@@ -2322,6 +2411,12 @@ class AgentTeamSetupService:
     ) -> AgentTeamRuntimeHandoff | None:
         actor = member_record.actor
         if actor is None:
+            return None
+        if member_record.issued_runtime_instance_id is None:
+            # The migration and the model default issue one for every member, so this is a damaged row. It
+            # leaves this member without a handoff (the status names the blocker) instead of failing the read
+            # for the whole team. Issuing one here would write from a read path that may not hold write
+            # authority, and without the member lock.
             return None
         tool_action = self._tool_capability_action(
             await self._unverified_tool_tags(actor, member)
@@ -2340,10 +2435,12 @@ class AgentTeamSetupService:
             profile_revision=await self._profile_revision(actor),
             model_binding_revisions=await self._binding_revisions(actor),
             supported_assignment_modes=member.assignment_modes,
+            runtime_instance_id=member_record.issued_runtime_instance_id,
             startup_instructions=(
                 "Load the exact immutable role package and verify its checksum.",
                 "Resolve credential_ref through the runtime secret store.",
-                "Send one restricted onboarding acknowledgement before normal work.",
+                "Send one restricted onboarding acknowledgement before normal work, "
+                "returning runtime_instance_id unchanged.",
                 "Re-read capabilities and topology status after acknowledgement.",
                 *((tool_action,) if tool_action else ()),
             ),
@@ -3029,6 +3126,7 @@ class AgentTeamSetupService:
             connection_state = "unobserved"
             package_acknowledged = False
             acknowledgement_state = "missing"
+            runtime_identity = AgentTeamRuntimeIdentityStatus()
             handoff = None
             lifecycle = (
                 AgentTeamMemberLifecycle(record.lifecycle_state)
@@ -3051,6 +3149,8 @@ class AgentTeamSetupService:
                     member_record=record,
                     member=desired,
                 )
+                if handoff is None:
+                    blockers.add("runtime_instance_not_issued")
                 if actor.role != desired.role:
                     blockers.add("actor_role_mismatch")
                 if set(actor_scopes(actor)) != set(
@@ -3090,7 +3190,7 @@ class AgentTeamSetupService:
                     and ack_payload.get("skill_package")
                     == desired.skill_package.model_dump(mode="json")
                 )
-                if ack_payload:
+                if ack_payload and handoff is not None:
                     try:
                         valid_ack = AgentTeamRuntimeAcknowledgement.model_validate(ack_payload)
                     except ValueError:
@@ -3104,12 +3204,21 @@ class AgentTeamSetupService:
                         and ack_payload.get("role") == desired.role
                         and ack_payload.get("profile_revision") == profile_revision
                         and ack_payload.get("model_binding_revisions") == binding_revisions
+                        # An acknowledgement without an identity is a legacy one and stays current.
+                        and ack_payload.get("runtime_instance_id", handoff.runtime_instance_id)
+                        == handoff.runtime_instance_id
                         and set(handoff.required_server_features).issubset(valid_ack.server_features)
                         and set(handoff.supported_assignment_modes).issubset(valid_ack.supported_assignment_modes)
                     )
                     acknowledgement_state = "current" if acknowledgement_current else "stale"
                     if not acknowledgement_current:
                         blockers.add("runtime_acknowledgement_stale")
+                if handoff is not None:
+                    runtime_identity = self._runtime_identity_status(
+                        record,
+                        expected_instance_id=handoff.runtime_instance_id,
+                        acknowledgement=ack_payload if isinstance(ack_payload, dict) else {},
+                    )
                 if not package_acknowledged:
                     blockers.add("role_package_not_acknowledged")
                 if credential_state not in {"delivered", "not_required"}:
@@ -3174,6 +3283,7 @@ class AgentTeamSetupService:
                     skill_package=desired.skill_package,
                     package_acknowledged=package_acknowledged,
                     acknowledgement_state=acknowledgement_state,
+                    runtime_identity=runtime_identity,
                     credential_delivery_state=credential_state,
                     connection_state=connection_state,
                     last_seen_at=actor.last_seen_at if actor else None,
@@ -3422,10 +3532,8 @@ class AgentTeamSetupService:
             )
         return response
 
-    async def _increment_ack_attempt(
-        self,
-        member: AgentTeamTopologyMember,
-    ) -> None:
+    @staticmethod
+    def _count_ack_attempt(member: AgentTeamTopologyMember) -> None:
         now = utc_now()
         if (
             member.ack_window_started_at is None
@@ -3441,7 +3549,69 @@ class AgentTeamSetupService:
                 retry_after_seconds=ACK_WINDOW_SECONDS,
             )
         member.ack_attempt_count += 1
+
+    async def _increment_ack_attempt(
+        self,
+        member: AgentTeamTopologyMember,
+    ) -> None:
+        self._count_ack_attempt(member)
         await commit_or_flush(self.db)
+
+    async def _refuse_foreign_runtime_instance(
+        self,
+        actor: AgentActor,
+        supplied_instance_id: str | None,
+    ) -> None:
+        """Turn away an acknowledgement that returns an identity other than the issued one, and record it.
+
+        The request fails, and so does the transaction it runs in, which would
+        roll the record back. It is therefore written in its own short
+        session: the member row is locked, the refusal is counted against the
+        attempt limit and recorded, and that session commits. Nothing of the
+        request's own transaction is committed. This runs before the request
+        has written or locked anything, so the two sessions cannot wait on each
+        other.
+        """
+
+        if supplied_instance_id is None:
+            return
+        from app.services.identity_service import bind_verified_system
+
+        issued = await self.db.scalar(
+            select(AgentTeamTopologyMember.issued_runtime_instance_id).where(
+                AgentTeamTopologyMember.actor_id == actor.id
+            )
+        )
+        if issued is None or issued == supplied_instance_id:
+            return
+        bind = self.db.bind
+        engine = bind.engine if isinstance(bind, AsyncConnection) else bind
+        actor_key = None
+        async with AsyncSession(engine, expire_on_commit=False) as refusal:
+            # The same verified system authority the request uses, so the write is audited like it.
+            await bind_verified_system(
+                refusal,
+                source="agent_onboarding",
+                reason=f"Refused a runtime instance identity for actor {actor.id}",
+            )
+            member = await refusal.scalar(
+                select(AgentTeamTopologyMember)
+                .where(AgentTeamTopologyMember.actor_id == actor.id)
+                .with_for_update()
+            )
+            if member is None or member.issued_runtime_instance_id == supplied_instance_id:
+                # The identity was reissued meanwhile and this is the current one.
+                return
+            self._count_ack_attempt(member)
+            member.rejected_runtime_instance_id = supplied_instance_id
+            member.rejected_runtime_instance_at = utc_now()
+            actor_key = member.actor_key
+            await refusal.commit()
+        raise AgentTeamSetupConflictError(
+            "agent_team_ack_runtime_instance_mismatch",
+            "Runtime instance identity does not match the handoff",
+            actor_key=actor_key,
+        )
 
     async def acknowledge_runtime(
         self,
@@ -3450,6 +3620,15 @@ class AgentTeamSetupService:
     ) -> AgentTeamRuntimeAcknowledgementResponse:
         """Accept only the exact restricted onboarding handoff acknowledgement."""
 
+        if acknowledgement.runtime_instance_id is not None and (
+            self.db.new or self.db.dirty or self.db.deleted
+        ):
+            # A refused identity is recorded in its own session (see _refuse_foreign_runtime_instance),
+            # which needs the member row. A request session that had written or locked anything first would
+            # hold that row's database lock while the refusal session waited for it, or on SQLite hold the
+            # only write lock. Every query below flushes pending changes, so this is the last point where
+            # they are visible: fail loudly if a caller changes that order.
+            raise RuntimeError("Acknowledge a runtime before the request writes anything")
         actor_service = AgentService(self.db)
         actor = await actor_service.authenticate_onboarding(api_key)
         if actor is None:
@@ -3465,6 +3644,7 @@ class AgentTeamSetupService:
             principal = await self.db.scalar(select(Principal).where(Principal.agent_actor_id == actor.id))
             if principal is not None and not principal.enabled:
                 raise AgentPermissionError("The onboarding principal is disabled")
+            await self._refuse_foreign_runtime_instance(actor, acknowledgement.runtime_instance_id)
             if principal is None:
                 self.db.add(Principal(kind="agent", display_name=actor.display_name, agent_actor_id=actor.id))
                 await self.db.flush()
@@ -3521,13 +3701,29 @@ class AgentTeamSetupService:
                 "agent_team_ack_identity_mismatch",
                 "Acknowledgement does not match the exact current handoff",
             )
-        ack_content = acknowledgement.model_dump(mode="json", exclude={"expected_previous_acknowledgement_digest"})
+        supplied_instance_id = acknowledgement.runtime_instance_id
+        if supplied_instance_id is not None and supplied_instance_id != member.issued_runtime_instance_id:
+            # Reissued after the early check, under the lock taken above: the same refusal, now in the open transaction.
+            raise AgentTeamSetupConflictError(
+                "agent_team_ack_runtime_instance_mismatch",
+                "Runtime instance identity does not match the handoff",
+                actor_key=member.actor_key,
+            )
+        ack_content = acknowledgement.stored_content()
         ack_digest = _digest(ack_content)
         if member.runtime_acknowledgement_digest is not None:
             if secrets.compare_digest(
                 member.runtime_acknowledgement_digest,
                 ack_digest,
             ):
+                if (
+                    supplied_instance_id is not None
+                    and member.rejected_runtime_instance_id is not None
+                ):
+                    # The genuine runtime acknowledges again: the refusal of another one is no longer current.
+                    member.rejected_runtime_instance_id = None
+                    member.rejected_runtime_instance_at = None
+                    await commit_or_flush(self.db)
                 status = await self._status_for_topology(
                     topology,
                     can_mutate=False,
@@ -3558,6 +3754,15 @@ class AgentTeamSetupService:
             raise AgentTeamSetupConflictError(
                 "agent_team_ack_package_mismatch",
                 "Runtime package identity does not match the handoff",
+            )
+        if (
+            supplied_instance_id is None
+            and RUNTIME_INSTANCE_IDENTITY_FEATURE in acknowledgement.server_features
+        ):
+            raise AgentTeamSetupConflictError(
+                "agent_team_ack_runtime_instance_missing",
+                "A runtime that lists the runtime instance identity feature must return it",
+                actor_key=member.actor_key,
             )
         if not set(desired.assignment_modes).issubset(
             acknowledgement.supported_assignment_modes
@@ -3596,6 +3801,14 @@ class AgentTeamSetupService:
         member.runtime_acknowledgement_digest = ack_digest
         member.runtime_acknowledgement_payload = _canonical_json(ack_content)
         member.runtime_acknowledged_at = utc_now()
+        previous_instance_id = member.acknowledged_runtime_instance_id
+        if previous_instance_id is not None and previous_instance_id != supplied_instance_id:
+            # A runtime that had an identity now acknowledges under another, or none.
+            member.previous_runtime_instance_id = previous_instance_id
+            member.runtime_identity_changed_at = member.runtime_acknowledged_at
+        member.acknowledged_runtime_instance_id = supplied_instance_id
+        member.rejected_runtime_instance_id = None
+        member.rejected_runtime_instance_at = None
         member.lifecycle_state = "runtime_ready"
         member.object_revision += 1
         actor.enabled = True
@@ -3620,6 +3833,7 @@ class AgentTeamSetupService:
                 "role": member.role,
                 "acknowledgement_digest": ack_digest,
                 "runtime_ready": True,
+                **({"runtime_instance_id": supplied_instance_id} if supplied_instance_id else {}),
             },
         )
         await commit_or_flush(self.db)
@@ -3668,6 +3882,28 @@ class AgentTeamSetupService:
             for member in status.members
             if member.actor_id is not None and member.runtime_ready
         )
+        non_ready_actors = tuple(
+            {
+                "actor_id": member.actor_id,
+                "actor_key": member.actor_key,
+                "role": member.role,
+                "connection_state": member.connection_state,
+                "lifecycle_state": member.lifecycle_state.value if hasattr(member.lifecycle_state, "value") else member.lifecycle_state,
+                "last_seen_at": _iso_or_none(member.last_seen_at),
+                # The last poll while otherwise ready, known only when nothing but a recent poll is missing.
+                "last_ready_at": (
+                    _iso_or_none(member.last_seen_at)
+                    if member.last_seen_at is not None
+                    and member.acknowledgement_state == "current"
+                    and set(member.blocker_codes) == {"runtime_stale"}
+                    else None
+                ),
+                "blocker_codes": list(member.blocker_codes),
+            }
+            for member in status.members
+            if not member.runtime_ready
+        )
+        staleness = load_stored_agent_team_master(topology.manifest_payload).readiness_policy.maximum_runtime_staleness_seconds
         return AgentTeamMembershipBoundary(
             topology_id=topology.id,
             topology_key=topology.topology_key,
@@ -3680,6 +3916,10 @@ class AgentTeamSetupService:
                 and member.lifecycle_state != "disabled"
             ),
             runtime_ready_actor_ids=runtime_ready_actor_ids,
+            non_ready_actors=non_ready_actors,
+            maximum_runtime_staleness_seconds=staleness,
+            topology_runtime_ready=status.runtime_ready,
+            topology_blocker_codes=tuple(status.blocker_codes),
         )
 
     async def require_dispatch_member(
@@ -3696,11 +3936,106 @@ class AgentTeamSetupService:
             raise AgentTeamSetupConflictError(
                 "agent_team_actor_outside_topology",
                 "Exact actor is not runtime-ready in the caller's current topology",
-                topology_key=boundary.topology_key,
-                topology_revision=boundary.topology_revision,
                 target_actor_id=target_actor_id,
+                **readiness_refusal_context(boundary, required_actor_ids=frozenset({target_actor_id})),
             )
         return boundary
+
+    def _project_allows(self, project_id: int | None, action: str) -> bool:
+        """Whether the caller's authority covers the project, without raising.
+
+        With no authority set, this is true only in trusted_local mode, the single-user local mode where
+        every caller is the workspace owner; any other mode needs an authority.
+        """
+
+        authority = self.db.info.get("authority")
+        if authority is None:
+            return get_settings().workchord_auth_mode == "trusted_local"
+        return authority.allows(project_id, action)
+
+    @staticmethod
+    def _whole_team_readiness(boundary: AgentTeamMembershipBoundary) -> AgentRoutingTopologyReadiness:
+        if boundary.topology_runtime_ready:
+            return AgentRoutingTopologyReadiness.ready(
+                topology_id=boundary.topology_key,
+                topology_revision=boundary.topology_revision,
+            )
+        return AgentRoutingTopologyReadiness.not_ready(
+            topology_id=boundary.topology_key,
+            topology_revision=boundary.topology_revision,
+            blocker_codes=boundary.topology_blocker_codes or ("topology_not_runtime_ready",),
+        )
+
+    async def readiness_gate(
+        self,
+        principal: AgentActor,
+        *,
+        verifier_actor_id: int | None = None,
+        project_id: int | None = None,
+        action: str = "manage",
+        observed_boundaries: dict[int, AgentTeamMembershipBoundary | None] | None = None,
+    ) -> tuple[AgentRoutingTopologyReadiness, dict[str, Any]]:
+        """Judge routing readiness and say who is missing when it is not met.
+
+        Without ``verifier_actor_id`` the whole topology must be ready. With one, a ready topology still
+        passes, and otherwise verification needs only the selected verifier, as a runtime-ready member of
+        the caller's team, and a caller whose own readiness is intact apart from a recent poll. A caller
+        bound to no team may do this only with authority over the task's project, and is then judged by the
+        verifier's team. The refusal detail names only the caller's own team, or the verifier's team for a
+        caller with that authority.
+        """
+
+        boundary = await self.membership_boundary(principal.id)
+        if observed_boundaries is not None:
+            observed_boundaries[principal.id] = boundary
+        if boundary is not None:
+            whole = self._whole_team_readiness(boundary)
+            if verifier_actor_id is None or boundary.topology_runtime_ready:
+                return whole, ({} if boundary.topology_runtime_ready else readiness_refusal_context(boundary))
+            required = frozenset({verifier_actor_id})
+            codes: tuple[str, ...]
+            if verifier_actor_id not in boundary.member_actor_ids:
+                codes = ("verifier_outside_topology",)
+            else:
+                caller = next((row for row in boundary.non_ready_actors if row["actor_id"] == principal.id), None)
+                if caller is not None and (
+                    not set(caller["blocker_codes"]) <= CALLER_PRESENCE_BLOCKERS
+                    or caller["lifecycle_state"] != AgentTeamMemberLifecycle.RUNTIME_READY.value
+                ):
+                    codes, required = ("caller_not_runtime_ready",), required | {principal.id}
+                elif verifier_actor_id in boundary.runtime_ready_actor_ids:
+                    return AgentRoutingTopologyReadiness.ready(
+                        topology_id=boundary.topology_key,
+                        topology_revision=boundary.topology_revision,
+                    ), {}
+                else:
+                    codes = ("verifier_not_runtime_ready",)
+            return (
+                AgentRoutingTopologyReadiness.not_ready(
+                    topology_id=boundary.topology_key,
+                    topology_revision=boundary.topology_revision,
+                    blocker_codes=codes,
+                ),
+                readiness_refusal_context(boundary, required_actor_ids=required),
+            )
+        if verifier_actor_id is None or not self._project_allows(project_id, action):
+            return AgentRoutingTopologyReadiness.unavailable(), {}
+        boundary = await self.membership_boundary(verifier_actor_id)
+        if boundary is None:
+            return AgentRoutingTopologyReadiness.unavailable(), {}
+        if verifier_actor_id in boundary.runtime_ready_actor_ids:
+            return AgentRoutingTopologyReadiness.ready(
+                topology_id=boundary.topology_key,
+                topology_revision=boundary.topology_revision,
+            ), {}
+        return (
+            AgentRoutingTopologyReadiness.not_ready(
+                topology_id=boundary.topology_key,
+                topology_revision=boundary.topology_revision,
+                blocker_codes=("verifier_not_runtime_ready",),
+            ),
+            readiness_refusal_context(boundary, required_actor_ids=frozenset({verifier_actor_id})),
+        )
 
     async def routing_readiness(
         self,
@@ -3710,29 +4045,5 @@ class AgentTeamSetupService:
     ) -> AgentRoutingTopologyReadiness:
         """Project authoritative setup state into the rollout readiness hook."""
 
-        boundary = await self.membership_boundary(actor.id)
-        if observed_boundaries is not None:
-            observed_boundaries[actor.id] = boundary
-        if boundary is None:
-            return AgentRoutingTopologyReadiness.unavailable()
-        topology = await self._topology(
-            boundary.topology_key,
-            load_members=True,
-        )
-        assert topology is not None
-        status = await self._status_for_topology(
-            topology,
-            can_mutate=False,
-            persist_state=False,
-        )
-        if status.runtime_ready:
-            return AgentRoutingTopologyReadiness.ready(
-                topology_id=boundary.topology_key,
-                topology_revision=boundary.topology_revision,
-            )
-        return AgentRoutingTopologyReadiness.not_ready(
-            topology_id=boundary.topology_key,
-            topology_revision=boundary.topology_revision,
-            blocker_codes=status.blocker_codes
-            or ("topology_not_runtime_ready",),
-        )
+        readiness, _ = await self.readiness_gate(actor, observed_boundaries=observed_boundaries)
+        return readiness

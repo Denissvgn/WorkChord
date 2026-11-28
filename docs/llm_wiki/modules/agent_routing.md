@@ -16,7 +16,7 @@ REST, MCP, and deterministic policy tests.
 |--------|---------|
 | `__future__` | `annotations` |
 | `app.schemas.review_evidence` | `ScopedReviewEvidence` |
-| `app.services.agent_routing_policy` | `ASSESSMENT_REASON_CODES`, `MAX_ROUTING_CANDIDATES`, `MAX_ROUTING_EXCLUSIONS`, `MAX_ROUTING_PACKET_BYTES`, `MIN_ROUTING_ASSESSMENT_CONFIDENCE`, `ROUTING_PREVIEW_TTL_SECONDS`, `AssessmentReasonCode`, `ContextTier`, `CostTier`, `DifficultyBand`, `LatencyTier`, `ROUTING_POLICY_VERSION`, `ROUTING_SKILL_KEYS`, `ReasoningTier`, `ReviewMode`, `RoutingBlockerCode`, `assessment_confidence_meets_minimum`, `canonical_routing_json_bytes`, `derive_difficulty_band`, `minimum_review_mode`, `review_mode_meets`, `validate_routing_packet_size` |
+| `app.services.agent_routing_policy` | `ASSESSMENT_REASON_CODES`, `MAX_ROUTING_CANDIDATES`, `MAX_ROUTING_EXCLUSIONS`, `MAX_ROUTING_PACKET_BYTES`, `MIN_ROUTING_ASSESSMENT_CONFIDENCE`, `ROUTING_PREVIEW_TTL_SECONDS`, `AssessmentReasonCode`, `ContextTier`, `CostTier`, `DifficultyBand`, `LatencyTier`, `ROUTING_POLICY_VERSION`, `ROUTING_SKILL_KEYS`, `ModelEffort`, `ReasoningTier`, `ReviewMode`, `RoutingBlockerCode`, `assessment_confidence_meets_minimum`, `canonical_routing_json_bytes`, `derive_difficulty_band`, `minimum_review_mode`, `review_mode_meets`, `validate_routing_packet_size` |
 | `collections.abc` | `Mapping` |
 | `datetime` | `datetime` |
 | `math` | `math` |
@@ -42,7 +42,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (24) |
+| Inbound | `backend` (30) |
 | Outbound | `backend` (2) |
 
 ### External packages
@@ -51,47 +51,47 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [RoutingKey](../entities/RoutingKey.md) | Type alias | 59 | `Annotated[str, StringConstraints(strip_whitespace=True, to_lower=True, min_length=1, max_length=120, pattern='^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$')]` | — |
-| [DifficultyScore](../entities/DifficultyScore.md) | Type alias | 69 | `Annotated[int, Field(strict=True, ge=1, le=3)]` | — |
-| [SkillLevel](../entities/SkillLevel.md) | Type alias | 70 | `Annotated[int, Field(strict=True, ge=1, le=5)]` | — |
-| [PositiveRevision](../entities/PositiveRevision.md) | Type alias | 71 | `Annotated[int, Field(strict=True, ge=1)]` | — |
-| [RoutingDigest](../entities/RoutingDigest.md) | Type alias | 72 | `Annotated[str, StringConstraints(strip_whitespace=True, to_lower=True, min_length=64, max_length=64, pattern='^[0-9a-f]{64}$')]` | — |
-| [RoutingContractModel](../entities/RoutingContractModel.md) | Pydantic model | 205 | `BaseModel` | Strict deterministic base for data crossing a routing boundary. |
-| [AgentModelCatalogFields](../entities/AgentModelCatalogFields.md) | Pydantic model | 229 | `RoutingContractModel` | Secret-free provider-neutral model catalog fields. |
-| [AgentModelCatalogCreate](../entities/agent_routing_AgentModelCatalogCreate.md) | Pydantic model | 274 | `AgentModelCatalogFields` | Create payload for a catalog entry. |
-| [AgentModelCatalogUpdate](../entities/agent_routing_AgentModelCatalogUpdate.md) | Pydantic model | 280 | `RoutingContractModel` | Optimistic partial update for one catalog entry. |
-| [AgentModelCatalogDisable](../entities/agent_routing_AgentModelCatalogDisable.md) | Pydantic model | 361 | `RoutingContractModel` | Optimistic soft-disable command for a catalog entry. |
-| [AgentModelCatalogResponse](../entities/AgentModelCatalogResponse.md) | Pydantic model | 368 | `AgentModelCatalogFields` | Persisted catalog projection. |
-| [AgentModelBindingFields](../entities/AgentModelBindingFields.md) | Pydantic model | 376 | `RoutingContractModel` | Versioned runtime binding owned by one exact actor. |
-| [AgentModelBindingCreate](../entities/agent_routing_AgentModelBindingCreate.md) | Pydantic model | 404 | `AgentModelBindingFields` | Create payload for an actor-model binding. |
-| [AgentModelBindingUpdate](../entities/agent_routing_AgentModelBindingUpdate.md) | Pydantic model | 410 | `RoutingContractModel` | Optimistic partial update for one actor-model binding. |
-| [AgentModelBindingDisable](../entities/agent_routing_AgentModelBindingDisable.md) | Pydantic model | 469 | `RoutingContractModel` | Optimistic soft-disable command for an actor-model binding. |
-| [AgentModelBindingResponse](../entities/AgentModelBindingResponse.md) | Pydantic model | 476 | `AgentModelBindingFields` | Persisted binding projection. |
-| [AgentModelMutationReceipt](../entities/agent_routing_AgentModelMutationReceipt.md) | Pydantic model | 490 | `RoutingContractModel` | Durable, replay-safe receipt for an operator model mutation. |
-| [TaskDifficultyAxes](../entities/agent_routing_TaskDifficultyAxes.md) | Pydantic model | 510 | `RoutingContractModel` | Five governed task-difficulty axes on a closed 1..3 scale. |
-| [RequiredModelEnvelope](../entities/agent_routing_RequiredModelEnvelope.md) | Pydantic model | 529 | `RoutingContractModel` | Minimum provider-neutral runtime capabilities required by a task. |
-| [TaskRoutingAssessmentFields](../entities/TaskRoutingAssessmentFields.md) | Pydantic model | 555 | `RoutingContractModel` | Immutable assessment bound to one concrete task version. |
-| [TaskRoutingAssessmentCreate](../entities/TaskRoutingAssessmentCreate.md) | Pydantic model | 614 | `TaskRoutingAssessmentFields` | Create payload for one append-only assessment. |
-| [TaskRoutingAssessmentCommand](../entities/agent_routing_TaskRoutingAssessmentCommand.md) | Pydantic model | 618 | `RoutingContractModel` | Authorized client input; identity and policy fields are server-owned. |
-| [PersistedTaskRoutingAssessmentFields](../entities/PersistedTaskRoutingAssessmentFields.md) | Pydantic model | 666 | `BaseModel` | Backward-compatible decoder for rows written under the original v1 schema. |
-| [TaskRoutingAssessmentResponse](../entities/TaskRoutingAssessmentResponse.md) | Pydantic model | 761 | `PersistedTaskRoutingAssessmentFields` | Audit-readable assessment projection with fail-closed routeability. |
-| [TaskRoutingAssessmentState](../entities/agent_routing_TaskRoutingAssessmentState.md) | Pydantic model | 809 | `RoutingContractModel` | Explicit current, stale, or absent assessment state for one task. |
-| [TaskRoutingAssessmentListResponse](../entities/TaskRoutingAssessmentListResponse.md) | Pydantic model | 841 | `RoutingContractModel` | Bounded newest-first assessment history for one task. |
-| [TaskRoutingAssessmentMutationReceipt](../entities/agent_routing_TaskRoutingAssessmentMutationReceipt.md) | Pydantic model | 877 | `RoutingContractModel` | Durable replay-safe receipt for an authoritative assessment write. |
-| [AgentRoutingPreviewCreate](../entities/agent_routing_AgentRoutingPreviewCreate.md) | Pydantic model | 925 | `RoutingContractModel` | Non-dispatching exact-actor preview bound to current task state. |
-| [AgentRoutingCandidate](../entities/agent_routing_AgentRoutingCandidate.md) | Pydantic model | 951 | `RoutingContractModel` | One eligible actor plus exact model-binding candidate. |
-| [AgentRoutingExclusion](../entities/agent_routing_AgentRoutingExclusion.md) | Pydantic model | 1030 | `RoutingContractModel` | Bounded reason evidence for one ineligible actor/binding pair. |
-| [AgentRoutingPreviewResponse](../entities/agent_routing_AgentRoutingPreviewResponse.md) | Pydantic model | 1148 | `RoutingContractModel` | Expiring non-dispatch result over a digest-bound routing input snapshot. |
-| [RoutingCandidateSummary](../entities/RoutingCandidateSummary.md) | Pydantic model | 1266 | `RoutingContractModel` | Compact ordered eligible-candidate evidence retained on assignment. |
-| [RoutingExclusionSummary](../entities/RoutingExclusionSummary.md) | Pydantic model | 1280 | `RoutingContractModel` | Compact actionable exclusion evidence retained on assignment. |
-| [RoutingTrustLineage](../entities/RoutingTrustLineage.md) | Pydantic model | 1311 | `RoutingContractModel` | Secret-free identities responsible for each routing evidence boundary. |
-| [RoutingDecisionSnapshot](../entities/RoutingDecisionSnapshot.md) | Pydantic model | 1346 | `RoutingContractModel` | Immutable server-generated evidence for one exact routing selection. |
+| [RoutingKey](../entities/RoutingKey.md) | Type alias | 60 | `Annotated[str, StringConstraints(strip_whitespace=True, to_lower=True, min_length=1, max_length=120, pattern='^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$')]` | — |
+| [DifficultyScore](../entities/DifficultyScore.md) | Type alias | 70 | `Annotated[int, Field(strict=True, ge=1, le=3)]` | — |
+| [SkillLevel](../entities/SkillLevel.md) | Type alias | 71 | `Annotated[int, Field(strict=True, ge=1, le=5)]` | — |
+| [PositiveRevision](../entities/PositiveRevision.md) | Type alias | 72 | `Annotated[int, Field(strict=True, ge=1)]` | — |
+| [RoutingDigest](../entities/RoutingDigest.md) | Type alias | 73 | `Annotated[str, StringConstraints(strip_whitespace=True, to_lower=True, min_length=64, max_length=64, pattern='^[0-9a-f]{64}$')]` | — |
+| [RoutingContractModel](../entities/RoutingContractModel.md) | Pydantic model | 223 | `BaseModel` | Strict deterministic base for data crossing a routing boundary. |
+| [AgentModelCatalogFields](../entities/AgentModelCatalogFields.md) | Pydantic model | 247 | `RoutingContractModel` | Secret-free provider-neutral model catalog fields. |
+| [AgentModelCatalogCreate](../entities/agent_routing_AgentModelCatalogCreate.md) | Pydantic model | 309 | `AgentModelCatalogFields` | Create payload for a catalog entry. |
+| [AgentModelCatalogUpdate](../entities/agent_routing_AgentModelCatalogUpdate.md) | Pydantic model | 315 | `RoutingContractModel` | Optimistic partial update for one catalog entry. |
+| [AgentModelCatalogDisable](../entities/agent_routing_AgentModelCatalogDisable.md) | Pydantic model | 410 | `RoutingContractModel` | Optimistic soft-disable command for a catalog entry. |
+| [AgentModelCatalogResponse](../entities/AgentModelCatalogResponse.md) | Pydantic model | 417 | `AgentModelCatalogFields` | Persisted catalog projection. |
+| [AgentModelBindingFields](../entities/AgentModelBindingFields.md) | Pydantic model | 425 | `RoutingContractModel` | Versioned runtime binding owned by one exact actor. |
+| [AgentModelBindingCreate](../entities/agent_routing_AgentModelBindingCreate.md) | Pydantic model | 453 | `AgentModelBindingFields` | Create payload for an actor-model binding. |
+| [AgentModelBindingUpdate](../entities/agent_routing_AgentModelBindingUpdate.md) | Pydantic model | 459 | `RoutingContractModel` | Optimistic partial update for one actor-model binding. |
+| [AgentModelBindingDisable](../entities/agent_routing_AgentModelBindingDisable.md) | Pydantic model | 518 | `RoutingContractModel` | Optimistic soft-disable command for an actor-model binding. |
+| [AgentModelBindingResponse](../entities/AgentModelBindingResponse.md) | Pydantic model | 525 | `AgentModelBindingFields` | Persisted binding projection. |
+| [AgentModelMutationReceipt](../entities/agent_routing_AgentModelMutationReceipt.md) | Pydantic model | 539 | `RoutingContractModel` | Durable, replay-safe receipt for an operator model mutation. |
+| [TaskDifficultyAxes](../entities/agent_routing_TaskDifficultyAxes.md) | Pydantic model | 561 | `RoutingContractModel` | Five governed task-difficulty axes on a closed 1..3 scale. |
+| [RequiredModelEnvelope](../entities/agent_routing_RequiredModelEnvelope.md) | Pydantic model | 580 | `RoutingContractModel` | Minimum provider-neutral runtime capabilities required by a task. |
+| [TaskRoutingAssessmentFields](../entities/TaskRoutingAssessmentFields.md) | Pydantic model | 628 | `RoutingContractModel` | Immutable assessment bound to one concrete task version. |
+| [TaskRoutingAssessmentCreate](../entities/TaskRoutingAssessmentCreate.md) | Pydantic model | 687 | `TaskRoutingAssessmentFields` | Create payload for one append-only assessment. |
+| [TaskRoutingAssessmentCommand](../entities/agent_routing_TaskRoutingAssessmentCommand.md) | Pydantic model | 691 | `RoutingContractModel` | Authorized client input; identity and policy fields are server-owned. |
+| [PersistedTaskRoutingAssessmentFields](../entities/PersistedTaskRoutingAssessmentFields.md) | Pydantic model | 739 | `BaseModel` | Backward-compatible decoder for rows written under the original v1 schema. |
+| [TaskRoutingAssessmentResponse](../entities/TaskRoutingAssessmentResponse.md) | Pydantic model | 834 | `PersistedTaskRoutingAssessmentFields` | Audit-readable assessment projection with fail-closed routeability. |
+| [TaskRoutingAssessmentState](../entities/agent_routing_TaskRoutingAssessmentState.md) | Pydantic model | 882 | `RoutingContractModel` | Explicit current, stale, or absent assessment state for one task. |
+| [TaskRoutingAssessmentListResponse](../entities/TaskRoutingAssessmentListResponse.md) | Pydantic model | 914 | `RoutingContractModel` | Bounded newest-first assessment history for one task. |
+| [TaskRoutingAssessmentMutationReceipt](../entities/agent_routing_TaskRoutingAssessmentMutationReceipt.md) | Pydantic model | 950 | `RoutingContractModel` | Durable replay-safe receipt for an authoritative assessment write. |
+| [AgentRoutingPreviewCreate](../entities/agent_routing_AgentRoutingPreviewCreate.md) | Pydantic model | 998 | `RoutingContractModel` | Non-dispatching exact-actor preview bound to current task state. |
+| [AgentRoutingCandidate](../entities/agent_routing_AgentRoutingCandidate.md) | Pydantic model | 1024 | `RoutingContractModel` | One eligible actor plus exact model-binding candidate. |
+| [AgentRoutingExclusion](../entities/agent_routing_AgentRoutingExclusion.md) | Pydantic model | 1115 | `RoutingContractModel` | Bounded reason evidence for one ineligible actor/binding pair. |
+| [AgentRoutingPreviewResponse](../entities/agent_routing_AgentRoutingPreviewResponse.md) | Pydantic model | 1248 | `RoutingContractModel` | Expiring non-dispatch result over a digest-bound routing input snapshot. |
+| [RoutingCandidateSummary](../entities/RoutingCandidateSummary.md) | Pydantic model | 1385 | `RoutingContractModel` | Compact ordered eligible-candidate evidence retained on assignment. |
+| [RoutingExclusionSummary](../entities/RoutingExclusionSummary.md) | Pydantic model | 1399 | `RoutingContractModel` | Compact actionable exclusion evidence retained on assignment. |
+| [RoutingTrustLineage](../entities/RoutingTrustLineage.md) | Pydantic model | 1430 | `RoutingContractModel` | Secret-free identities responsible for each routing evidence boundary. |
+| [RoutingDecisionSnapshot](../entities/RoutingDecisionSnapshot.md) | Pydantic model | 1465 | `RoutingContractModel` | Immutable server-generated evidence for one exact routing selection. |
 
 ## Functions
 
@@ -99,6 +99,7 @@ flowchart LR
 |----------|-----------|------------|-------------|
 | `_normalize_tags` | `(values: list[Any], *, label: str) -> list[str]` | — | — |
 | `_normalize_routing_keys` | `(values: list[Any], *, label: str, maximum_entries: int = MAX_REQUIRED_SKILLS) -> list[str]` | — | — |
+| `_normalize_qualification_keys` | `(value: Any, *, label: str) -> Any` | — | Normalize qualification key names; whether each is known is checked later. |
 | `_normalize_required_skill_levels` | `(value: Any) -> Any` | — | — |
 | `_normalize_assessment_reason_codes` | `(value: Any) -> Any` | — | — |
 | `_strip_nonempty_assessment_text` | `(value: str) -> str` | — | — |

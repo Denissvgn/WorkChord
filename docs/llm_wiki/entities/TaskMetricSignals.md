@@ -1,6 +1,6 @@
 # TaskMetricSignals
 
-**Location:** `backend/app/schemas/work_metrics.py:24`
+**Location:** `backend/app/schemas/work_metrics.py:30`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_work_metrics](../modules/schemas_work_metrics.md)

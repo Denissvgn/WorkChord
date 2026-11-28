@@ -6,6 +6,7 @@ import { Button } from '../common/Button';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { useSearchParams } from 'react-router-dom';
 import { taskService } from '../../services/taskService';
+import { stateOf } from '../../utils/taskState';
 
 import { Select } from '../../components/common/Select';
 export const PagedTaskBrowser = ({ iterationId }: { iterationId: number }) => {
@@ -32,7 +33,7 @@ export const PagedTaskBrowser = ({ iterationId }: { iterationId: number }) => {
             <label><span className="field-lbl">{t('pagination.status')}</span>
                 <Select className="input" value={status} onChange={event => setStatus(event.target.value)}>
                     <option value="">{t('pagination.allStatuses')}</option>
-                    {['planned', 'active', 'resolved', 'closed'].map(value => <option key={value} value={value}>{t(`statuses.${value}`)}</option>)}
+                    {['planned', 'active', 'resolved', 'closed', 'postponed', 'canceled', 'superseded'].map(value => <option key={value} value={value}>{t(`statuses.${value}`)}</option>)}
                 </Select></label>
             <Button variant="secondary" disabled={tasks.isFetching} onClick={() => void tasks.refetch()}>{t('actions.refresh')}</Button>
         </div>
@@ -42,7 +43,7 @@ export const PagedTaskBrowser = ({ iterationId }: { iterationId: number }) => {
         {tasks.isError && <QueryErrorState error={tasks.error} onRetry={() => void tasks.refetch()} />}
         <ul className="divide-y divide-border">{items.map(task => <li key={task.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
             <Button variant="ghost" className="min-w-0 whitespace-normal text-left" aria-current={params.get('task') === String(task.id) ? 'true' : undefined} onClick={() => { const next = new URLSearchParams(params); next.set('task', String(task.id)); setParams(next); }}>#{task.id} · {task.title}</Button>
-            <span className="text-sm text-content-secondary">{t(`statuses.${task.status}`)}</span>
+            <span className="text-sm text-content-secondary">{t(`statuses.${stateOf(task)}`)}</span>
         </li>)}</ul>
         {tasks.isSuccess && items.length === 0 && <p>{t('pagination.empty')}</p>}
         {tasks.hasNextPage && <Button variant="secondary" disabled={tasks.isFetchingNextPage} onClick={() => void tasks.fetchNextPage()}>{t('teamwork.loadMore')}</Button>}

@@ -1,13 +1,13 @@
 # ReplacementTask
 
-**Location:** `backend/app/schemas/task_replacement.py:91`
+**Location:** `backend/app/schemas/task_replacement.py:111`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task_replacement](../modules/schemas_task_replacement.md)
 
 ## Description
 
-_Auto-generated from `ReplacementTask` in `backend/app/schemas/task_replacement.py`._
+The replacement or successor task of a disposition: its status, whether it is accepted, the base commit recorded for it, its candidate, and every contributor, including contributions carried over from the original.
 
 ## Attributes
 
@@ -16,7 +16,7 @@ _Auto-generated from `ReplacementTask` in `backend/app/schemas/task_replacement.
 | `task_id` | `int` | `task_id` | Yes | No | — | — | — | — |
 | `status` | `str` | `status` | Yes | No | — | — | — | — |
 | `accepted` | `bool` | `accepted` | Yes | No | — | — | — | — |
-| `recorded_base_commit_url` | `str` | `recorded_base_commit_url` | Yes | No | — | — | — | — |
+| `recorded_base_commit_url` | `str \| None` | `recorded_base_commit_url` | No | Yes | `None` | — | — | — |
 | `candidate` | `ReplacementCandidate \| None` | `candidate` | No | Yes | `None` | — | — | — |
 | `contributors` | `list[ReplacementContributor]` | `contributors` | Yes | No | — | — | — | — |
 

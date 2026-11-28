@@ -1,6 +1,6 @@
 # AgentRoutingCandidate
 
-**Location:** `frontend/src/types/agent.ts:394`
+**Location:** `frontend/src/types/agent.ts:472`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -32,11 +32,14 @@ _Auto-generated from `AgentRoutingCandidate` in `frontend/src/types/agent.ts`._
 | `missing_skill_keys` | `string[]` | Yes | — | — |
 | `blocking_weakness_keys` | `string[]` | Yes | — | — |
 | `reasoning_tier` | `ModelReasoningTier` | Yes | — | — |
+| `effort` | `ModelEffort` | Yes | — | — |
 | `context_tier` | `ModelContextTier` | Yes | — | — |
 | `modality_tags` | `string[]` | Yes | — | — |
 | `tool_tags` | `string[]` | Yes | — | — |
 | `data_policy_tags` | `string[]` | Yes | — | — |
+| `qualification_keys` | `string[]` | No | — | — |
 | `cost_tier` | `ModelCostTier` | Yes | — | — |
+| `local_first` | `boolean` | Yes | — | — |
 | `latency_tier` | `ModelLatencyTier` | Yes | — | — |
 | `available_capacity_days` | `number` | Yes | — | — |
 | `committed_effort_days` | `number` | Yes | — | — |

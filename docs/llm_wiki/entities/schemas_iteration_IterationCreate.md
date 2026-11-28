@@ -34,7 +34,7 @@ flowchart LR
     n1["BaseModel"]
     n2["backend/app/mcp_agent_tools.py"]
     n3["create_iteration (backend/app/routers/agent_planning.py)"]
-    n4["import_new_iteration (backend/app/routers/export.py)"]
+    n4["write_new_iteration_import (backend/app/routers/export.py)"]
     n5["create_iteration (backend/app/routers/iterations.py)"]
     n6["backend/app/schemas/__init__.py"]
     n7["AgentPlanningService.create_iteration (backend/app/services/agent_planning_service.py)"]
@@ -78,7 +78,7 @@ flowchart LR
 |---|---|---|---:|
 | `mcp_agent_tools` | import | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `create_iteration` | type_reference | [routers_agent_planning](../modules/routers_agent_planning.md) | — |
-| `import_new_iteration` | call | [export](../modules/export.md) | 1 |
+| `write_new_iteration_import` | call | [export](../modules/export.md) | 1 |
 | `create_iteration` | type_reference | [iterations](../modules/iterations.md) | — |
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `AgentPlanningService.create_iteration` | type_reference | [agent_planning_service](../modules/agent_planning_service.md) | — |

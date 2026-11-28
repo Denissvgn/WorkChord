@@ -46,7 +46,8 @@ build/
 .agents/
 .claude/
 .codex/
-.llm-wiki/
+.llm-wiki/*
+!.llm-wiki/team.json
 *.swp
 *.swo
 

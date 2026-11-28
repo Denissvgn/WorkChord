@@ -2,7 +2,7 @@
 
 **Entry point:** `iteration_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), and 13 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), and 14 more
 
 **Complete modules touched:**
 
@@ -21,6 +21,7 @@
 - [models_identity](../modules/models_identity.md)
 - [models_outbound_webhook](../modules/models_outbound_webhook.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -46,20 +47,20 @@ sequenceDiagram
     participant p12 as require_scope
     participant p13 as AgentService.authenticate
     participant p14 as require_identity_writes
-    participant p15 as DeliveryDependencyService.reconcile
+    participant p15 as process_reactivation_checks
     participant p16 as IdentityService.context
-    participant p17 as DiscussionService.enqueue
-    participant p18 as IterationService.get_by_id
-    participant p19 as IterationService
-    participant p20 as _iteration_project_payload
-    participant p21 as AnnualCalendars
-    participant p22 as _structured_tool_error
-    participant p23 as _current_agent_key
-    participant p24 as scope_requirement_is_mutating
-    participant p25 as MCPAuthError
-    participant p26 as MaintenanceModeError
-    participant p27 as _open_db_session
-    participant p28 as IdentityService
+    participant p17 as DeliveryDependencyService.reconcile
+    participant p18 as DiscussionService.enqueue
+    participant p19 as IterationService.get_by_id
+    participant p20 as IterationService
+    participant p21 as _iteration_project_payload
+    participant p22 as AnnualCalendars
+    participant p23 as _structured_tool_error
+    participant p24 as _current_agent_key
+    participant p25 as scope_requirement_is_mutating
+    participant p26 as MCPAuthError
+    participant p27 as MaintenanceModeError
+    participant p28 as _open_db_session
     participant p29 as int
     participant p30 as AnnualCalendars.for_iteration(…).missing_years
     p0->>p1: _json_resource
@@ -76,27 +77,27 @@ sequenceDiagram
     p10->>p12: require_scope
     p9->>p13: AgentService.authenticate
     p11->>p14: require_identity_writes
-    p8->>p15: DeliveryDependencyService.reconcile
+    p8->>p15: process_reactivation_checks
     p11->>p16: IdentityService.context
-    p8->>p17: DiscussionService.enqueue
-    p2->>p18: IterationService.get_by_id
-    p2->>p19: IterationService
-    p2->>p20: _iteration_project_payload
-    p4->>p21: AnnualCalendars
-    p3->>p22: _structured_tool_error
-    p6->>p23: _current_agent_key
-    p5->>p24: scope_requirement_is_mutating
-    p6->>p25: MCPAuthError
-    p5->>p26: MaintenanceModeError
-    p6->>p27: _open_db_session
-    p6->>p28: IdentityService
+    p8->>p17: DeliveryDependencyService.reconcile
+    p8->>p18: DiscussionService.enqueue
+    p2->>p19: IterationService.get_by_id
+    p2->>p20: IterationService
+    p2->>p21: _iteration_project_payload
+    p4->>p22: AnnualCalendars
+    p3->>p23: _structured_tool_error
+    p6->>p24: _current_agent_key
+    p5->>p25: scope_requirement_is_mutating
+    p6->>p26: MCPAuthError
+    p5->>p27: MaintenanceModeError
+    p6->>p28: _open_db_session
     p0-->>p29: int(iteration_id)
     p2-->>p30: AnnualCalendars.for_iteration(…).missing_years(iteration.start_date, iteration.end_date)
 ```
 
-> Call sequence diagram shows 30 of 221 interactions; 191 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 240 interactions; 210 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 67 (66 omitted); unresolved 1 of 86 (85 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 73 (72 omitted); unresolved 1 of 96 (95 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -110,7 +111,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | external | 1 |
 | `backend/app/commands.py:command_transaction` | 24 | [backend/app/commands.py](../modules/commands.md) | internal | 2 |
-> Omission summary shows 8 of 57 groups; 49 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 61 groups; 53 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -123,9 +124,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 69; effect analysis evaluated: 44, partial: 2, unavailable: 23. Counts include steps omitted from the displayed trace.
+Source steps: 72; effect analysis evaluated: 46, partial: 2, unavailable: 24. Counts include steps omitted from the displayed trace.
 
-Collector observations for 46 source steps with known totals: observed: 190, emitted: 178, omitted: 12. Unavailable totals are excluded.
+Collector observations for 48 source steps with known totals: observed: 210, emitted: 197, omitted: 13. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -201,11 +202,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| iteration_resource | _json_resource | 2443 | `_json_resource('tasks:read', ...)` |
-| _json_resource | _tool_call | 364 | `_tool_call(required_scope, func)` |
-| _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
+| iteration_resource | _json_resource | 2623 | `_json_resource('tasks:read', ...)` |
+| _json_resource | _tool_call | 367 | `_tool_call(required_scope, func)` |
+| _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple | 100 | `tuple(required_scope)` |

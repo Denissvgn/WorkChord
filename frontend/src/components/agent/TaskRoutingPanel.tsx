@@ -19,6 +19,7 @@ import type {
     AssessmentReasonCode,
     ModelContextTier,
     ModelReasoningTier,
+    RequiredModelEffort,
     TaskDifficultyAxes,
     TaskDifficultyScore,
     TaskReviewMode,
@@ -26,8 +27,9 @@ import type {
     TaskRoutingAssessmentCommand,
     TaskSkillLevel,
 } from '../../types/agent';
-import type { Task } from '../../types/task';
-import { normalizeApiError } from '../../utils/apiError';
+import type { RefusalNextStep, Task } from '../../types/task';
+import { RefusalNextStepNote } from '../tasks/RefusalNextStepNote';
+import { getApiNextStep, normalizeApiError } from '../../utils/apiError';
 import { formatDateTime } from '../../utils/formatDate';
 import {
     ASSESSMENT_REASON_CODES,
@@ -63,6 +65,7 @@ interface AssessmentDraft {
     requiredSkillLevels: Record<string, TaskSkillLevel>;
     minimumReasoningTier: ModelReasoningTier;
     minimumContextTier: ModelContextTier;
+    minimumEffort: RequiredModelEffort | '';
     modalityTags: string;
     toolTags: string;
     dataPolicyTags: string;
@@ -83,6 +86,7 @@ const DEFAULT_DRAFT: AssessmentDraft = {
     requiredSkillLevels: {},
     minimumReasoningTier: 2,
     minimumContextTier: 'medium',
+    minimumEffort: '',
     modalityTags: 'text',
     toolTags: '',
     dataPolicyTags: '',
@@ -91,6 +95,8 @@ const DEFAULT_DRAFT: AssessmentDraft = {
     reasonCodes: [],
     rationale: '',
 };
+
+const REQUIRED_EFFORT_LEVELS: RequiredModelEffort[] = ['low', 'medium', 'high', 'xhigh', 'max'];
 
 const AXIS_KEYS = [
     'reasoning',
@@ -160,6 +166,7 @@ const assessmentToDraft = (assessment: TaskRoutingAssessment): AssessmentDraft =
     ),
     minimumReasoningTier: assessment.required_model.minimum_reasoning_tier,
     minimumContextTier: assessment.required_model.minimum_context_tier,
+    minimumEffort: assessment.required_model.minimum_effort ?? '',
     modalityTags: assessment.required_model.modality_tags.join(', '),
     toolTags: assessment.required_model.tool_tags.join(', '),
     dataPolicyTags: assessment.required_model.data_policy_tags.join(', '),
@@ -190,7 +197,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
     const [selectedCandidate, setSelectedCandidate] = useState<AgentRoutingCandidate | null>(null);
     const [dispatchReason, setDispatchReason] = useState('');
     const [selectionConfirmed, setSelectionConfirmed] = useState(false);
-    const [conflictMessage, setConflictMessage] = useState<string | null>(null);
+    const [conflict, setConflict] = useState<{ message: string; step: RefusalNextStep | null } | null>(null);
     const [clock, setClock] = useState(() => Date.now());
 
     // feedback-policy: query loading,error,retry,empty
@@ -293,7 +300,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
     const handleConflict = (error: unknown, fallback: string) => {
         const normalized = normalizeApiError(error, fallback);
         if (normalized.status === 409) {
-            setConflictMessage(normalized.message);
+            setConflict({ message: normalized.message, step: getApiNextStep(error) });
             clearPreview();
             invalidateRoutingEvidence();
             return;
@@ -312,7 +319,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
         ),
         onSuccess: receipt => {
             clearPreview();
-            setConflictMessage(null);
+            setConflict(null);
             void queryClient.invalidateQueries({ queryKey: ['routing-assessment', task.id] });
             toast.success(t('taskRouting.assessmentSaved'));
             setHydratedAssessmentKey(`assessment:${receipt.assessment.id}`);
@@ -342,7 +349,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
             setSelectedCandidate(null);
             setSelectionConfirmed(false);
             setDispatchReason('');
-            setConflictMessage(null);
+            setConflict(null);
             setClock(Date.now());
         },
         onError: error => handleConflict(error, t('taskRouting.previewFailed')),
@@ -551,6 +558,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
             required_model: {
                 minimum_reasoning_tier: draft.minimumReasoningTier,
                 minimum_context_tier: draft.minimumContextTier,
+                ...(draft.minimumEffort ? { minimum_effort: draft.minimumEffort } : {}),
                 modality_tags: parseRoutingTags(draft.modalityTags),
                 tool_tags: parseRoutingTags(draft.toolTags),
                 data_policy_tags: parseRoutingTags(draft.dataPolicyTags),
@@ -766,10 +774,11 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                     {t('taskRouting.staleTaskEvidence')}
                 </div>
             )}
-            {conflictMessage && (
+            {conflict && (
                 <div className="rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground" role="alert">
                     <p className="font-semibold">{t('taskRouting.conflictTitle')}</p>
-                    <p>{conflictMessage}</p>
+                    <p>{conflict.message}</p>
+                    {conflict.step && <RefusalNextStepNote step={conflict.step} className="mt-1 space-y-1" />}
                     <p className="mt-1">{t('taskRouting.conflictDescription')}</p>
                 </div>
             )}
@@ -918,6 +927,13 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                                 <span className="field-lbl">{t('taskRouting.minimumContextTier')}</span>
                                 <Select className="input" value={draft.minimumContextTier} onChange={event => { setDraft({ ...draft, minimumContextTier: event.target.value as ModelContextTier }); clearPreview(); }}>
                                     <option value="small">small</option><option value="medium">medium</option><option value="large">large</option>
+                                </Select>
+                            </label>
+                            <label className="field">
+                                <span className="field-lbl">{t('taskRouting.minimumEffort')}</span>
+                                <Select className="input" value={draft.minimumEffort} onChange={event => { setDraft({ ...draft, minimumEffort: event.target.value as RequiredModelEffort | '' }); clearPreview(); }}>
+                                    <option value="">{t('taskRouting.noEffortRequirement')}</option>
+                                    {REQUIRED_EFFORT_LEVELS.map(level => <option key={level} value={level}>{t(`modelAdministration.effort_${level}`)}</option>)}
                                 </Select>
                             </label>
                         </div>

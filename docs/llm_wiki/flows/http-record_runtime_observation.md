@@ -198,7 +198,7 @@ flowchart LR
 | RuntimeObservationService._writer | AuthorityError | 33 | `AuthorityError('observer_required', 'Only a paired observer or an operator records runtime observations.')` |
 | RuntimeObservationService.record | RuntimeObservationService._references | 67 | `self._references(authority, data)` |
 | RuntimeObservationService._references | internal_authority | 39 | `internal_authority(self.db)` |
-| internal_authority | db.info.get | 92 | `db.info.get('authority_internal', False)` |
+| internal_authority | db.info.get | 114 | `db.info.get('authority_internal', False)` |
 | RuntimeObservationService._references | self.db.get (backend/app/services/runt…rvationService._references) | 40 | `self.db.get(Task, data.task_id)` |
 
 ### Boundary effects
@@ -214,7 +214,7 @@ flowchart LR
 | unresolved_call | `_refuse_agents` | `service_db.info.get` | 1595 |
 | external_call | `_refuse_agents` | `HTTPException` | 1597 |
 | unresolved_call | `RuntimeObservationService._writer` | `self.db.info.get` | 31 |
-| unresolved_call | `internal_authority` | `db.info.get` | 92 |
+| unresolved_call | `internal_authority` | `db.info.get` | 114 |
 | unresolved_call | `RuntimeObservationService._references` | `self.db.get` | 40 |
 | step_limit | `record_runtime_observation` | `first 12 steps` | 0 |
 

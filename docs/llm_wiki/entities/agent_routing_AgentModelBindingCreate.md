@@ -1,6 +1,6 @@
 # AgentModelBindingCreate
 
-**Location:** `backend/app/schemas/agent_routing.py:404`
+**Location:** `backend/app/schemas/agent_routing.py:453`
 **Kind:** Pydantic model
 **Bases:** `AgentModelBindingFields`
 **Module:** [agent_routing](../modules/agent_routing.md)

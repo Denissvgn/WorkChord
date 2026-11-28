@@ -1,6 +1,6 @@
 # RoutingDecisionSnapshot
 
-**Location:** `backend/app/schemas/agent_routing.py:1346`
+**Location:** `backend/app/schemas/agent_routing.py:1465`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -62,6 +62,7 @@ Immutable server-generated evidence for one exact routing selection.
 | `configured_model_alias` | `str` | `configured_model_alias` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `selected_reasoning_tier` | `ReasoningTier` | `selected_reasoning_tier` | Yes | No | — | — | — | — |
 | `selected_context_tier` | `ModelContextTier` | `selected_context_tier` | Yes | No | — | — | — | — |
+| `selected_effort` | `ModelEffortSetting \| None` | `selected_effort` | No | Yes | `None` | — | — | Effort setting of the selected catalog entry; absent on selections recorded before effort was tracked. |
 | `resolved_model` | `str \| None` | `resolved_model` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `review_mode` | `TaskReviewMode` | `review_mode` | Yes | No | — | — | — | — |
 | `reviewer_profile_id` | `int \| None` | `reviewer_profile_id` | No | Yes | `None` | ge=1; strict=True | — | — |

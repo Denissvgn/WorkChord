@@ -5,6 +5,11 @@
 
 > Reserve the shared task version and append context evidence under its command owner.
 
+``preserve_acceptance`` is only for revisions that record an observation of
+already linked provider state (GitHub catch-up, refresh and webhooks): an
+acceptance current before the revision stays current after it, and the
+timeline records that. Every other context change leaves acceptance stale.
+
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
@@ -13,6 +18,7 @@
 3. `task_service.TaskService.reserve_task_version`
 4. `task_service.TaskService`
 5. `models_agent.TaskEvent`
+6. `models_agent.TaskEvent`
 
 ## Touches
 

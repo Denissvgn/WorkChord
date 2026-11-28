@@ -30,6 +30,7 @@ Runtime inputs, including credentials that never enter a receipt.
 | `valkey_host` | `str` | *required* | — |
 | `valkey_port` | `int` | *required* | — |
 | `timeout_seconds` | `float` | `10.0` | — |
+| `readiness_detail_token` | `str` | `''` | — |
 
 ## Methods
 
@@ -60,7 +61,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md) | 0 | `backend_url`, `deployment_environment`, `gateway_url`, `object_store_access_key`, `object_store_bucket`, `object_store_region`, `object_store_secret_key`, `object_store_url`, `signer_key`, `signer_token`, `signer_url`, `timeout_seconds` |
+| [autonomy_server_acceptance](../modules/autonomy_server_acceptance.md) | 0 | `backend_url`, `deployment_environment`, `gateway_url`, `object_store_access_key`, `object_store_bucket`, `object_store_region`, `object_store_secret_key`, `object_store_url`, `readiness_detail_token`, `signer_key`, `signer_token`, `signer_url` |
 
 ### References
 

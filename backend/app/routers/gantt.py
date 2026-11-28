@@ -368,6 +368,9 @@ def _task_to_gantt(
     progress = 0.0
     if is_composite and children:
         progress = sum(c.progress for c in children) / len(children)
+    elif task.canceled_at is not None:
+        # Withdrawn work shows no progress: its stored status is not how far along it is.
+        progress = 0.0
     elif task.status == "closed":
         progress = 100.0
     elif task.status == "resolved":
@@ -390,6 +393,7 @@ def _task_to_gantt(
         min_start_date=task.min_start_date,
         max_end_date=task.max_end_date,
         status=task.status,
+        displayed_state=task.displayed_state,
         milestone=milestone,
         assignee=assignee,
         assignees=assignees,

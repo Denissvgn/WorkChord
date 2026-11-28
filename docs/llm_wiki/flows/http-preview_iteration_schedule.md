@@ -2,7 +2,7 @@
 
 **Entry point:** `preview_iteration_schedule` (`http`)
 **Source:** [routers_gantt](../modules/routers_gantt.md)
-**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 15 more
+**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 16 more
 
 **Complete modules touched:**
 
@@ -22,6 +22,7 @@
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_hierarchy_service](../modules/task_hierarchy_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [tasks](../modules/tasks.md)
 - [time](../modules/time.md)
@@ -45,23 +46,23 @@ sequenceDiagram
     participant p9 as _overdue_task_ids
     participant p10 as SchedulePreviewResponse
     participant p11 as TaskService._task_graph_query
-    participant p12 as task_signals
-    participant p13 as DeliveryDependencyService.reconcile
-    participant p14 as TaskService._load_iteration_tree
-    participant p15 as DiscussionService.enqueue
-    participant p16 as TaskHierarchyService._load_iteration_tree
-    participant p17 as working_today
-    participant p18 as DeliveryDependencyService.validate_cycles
-    participant p19 as DiscussionService.recipient_authorized
-    participant p20 as TaskService.reserve_task_version
-    participant p21 as clear_execution_evidence
-    participant p22 as DeliveryDependencyService.graph
-    participant p23 as IdentityService.context
-    participant p24 as lock_planning
-    participant p25 as require_mutation_revision
-    participant p26 as current_command
-    participant p27 as CommandState
-    participant p28 as DeliveryDependencyService
+    participant p12 as process_reactivation_checks
+    participant p13 as task_signals
+    participant p14 as DeliveryDependencyService.reconcile
+    participant p15 as TaskService._load_iteration_tree
+    participant p16 as DiscussionService.enqueue
+    participant p17 as TaskHierarchyService._load_iteration_tree
+    participant p18 as working_today
+    participant p19 as ReactivationService.evaluate_waiting
+    participant p20 as DeliveryDependencyService.validate_cycles
+    participant p21 as DiscussionService.recipient_authorized
+    participant p22 as TaskService.reserve_task_version
+    participant p23 as clear_execution_evidence
+    participant p24 as DeliveryDependencyService.graph
+    participant p25 as IdentityService.context
+    participant p26 as ReactivationService._evaluate_isolated
+    participant p27 as ReactivationService._due
+    participant p28 as lock_planning
     participant p29 as HTTPException
     participant p30 as service.schedule_iteration
     p0->>p1: command_transaction
@@ -75,30 +76,30 @@ sequenceDiagram
     p0->>p9: _overdue_task_ids
     p0->>p10: SchedulePreviewResponse
     p3->>p11: TaskService._task_graph_query
-    p4->>p12: task_signals
-    p1->>p13: DeliveryDependencyService.reconcile
-    p3->>p14: TaskService._load_iteration_tree
-    p1->>p15: DiscussionService.enqueue
-    p14->>p16: TaskHierarchyService._load_iteration_tree
-    p12->>p17: working_today
-    p13->>p18: DeliveryDependencyService.validate_cycles
-    p15->>p19: DiscussionService.recipient_authorized
-    p13->>p20: TaskService.reserve_task_version
-    p13->>p21: clear_execution_evidence
-    p18->>p22: DeliveryDependencyService.graph
-    p19->>p23: IdentityService.context
-    p8->>p24: lock_planning
-    p8->>p25: require_mutation_revision
-    p1->>p26: current_command
-    p1->>p27: CommandState
-    p1->>p28: DeliveryDependencyService
+    p1->>p12: process_reactivation_checks
+    p4->>p13: task_signals
+    p1->>p14: DeliveryDependencyService.reconcile
+    p3->>p15: TaskService._load_iteration_tree
+    p1->>p16: DiscussionService.enqueue
+    p15->>p17: TaskHierarchyService._load_iteration_tree
+    p13->>p18: working_today
+    p12->>p19: ReactivationService.evaluate_waiting
+    p14->>p20: DeliveryDependencyService.validate_cycles
+    p16->>p21: DiscussionService.recipient_authorized
+    p14->>p22: TaskService.reserve_task_version
+    p14->>p23: clear_execution_evidence
+    p20->>p24: DeliveryDependencyService.graph
+    p21->>p25: IdentityService.context
+    p19->>p26: ReactivationService._evaluate_isolated
+    p26->>p27: ReactivationService._due
+    p26->>p28: lock_planning
     p0-->>p29: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
     p0-->>p30: service.schedule_iteration(iteration_id, commit=False, expected_planning_revision=data.expected_planning_revision)
 ```
 
-> Call sequence diagram shows 30 of 400 interactions; 370 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 484 interactions; 454 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 121 (120 omitted); unresolved 1 of 197 (196 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 140 (139 omitted); unresolved 1 of 241 (240 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -106,13 +107,13 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | --- | --- | --- | --- | --- |
 | `backend/app/services/iteration_service.py:IterationService.get_by_id` | 4 | - | unresolved | 4 |
 | `backend/app/services/iteration_service.py:IterationService.get_by_id` | 4 | - | external | 3 |
+| `backend/app/commands.py:command_transaction` | 13 | [backend/app/commands.py](../modules/commands.md) | internal | 2 |
 | `backend/app/commands.py:current_command` | 14 | - | external | 2 |
 | `backend/app/commands.py:current_command` | 14 | - | unresolved | 1 |
 | `backend/app/commands.py:command_transaction` | 13 | - | external | 4 |
-| `backend/app/commands.py:command_transaction` | 13 | - | unresolved | 12 |
-| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 25 | - | unresolved | 23 |
-| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 25 | - | external | 10 |
-> Omission summary shows 8 of 82 groups; 74 further groups are not expanded here. Counts above include all omitted interactions.
+| `backend/app/commands.py:command_transaction` | 13 | - | unresolved | 13 |
+| `backend/app/services/task_reactivation_service.py:process_reactivation_checks` | 23 | [backend/app/services/task_reactivation_service.py](../modules/task_reactivation_service.md) | internal | 1 |
+> Omission summary shows 8 of 109 groups; 101 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -125,9 +126,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 83; effect analysis evaluated: 49, partial: 0, unavailable: 34. Counts include steps omitted from the displayed trace.
+Source steps: 104; effect analysis evaluated: 69, partial: 0, unavailable: 35. Counts include steps omitted from the displayed trace.
 
-Collector observations for 49 source steps with known totals: observed: 247, emitted: 247, omitted: 0. Unavailable totals are excluded.
+Collector observations for 69 source steps with known totals: observed: 338, emitted: 338, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.

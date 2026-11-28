@@ -1,6 +1,6 @@
 # DB
 
-**Location:** `backend/app/routers/task_domain.py:25`
+**Location:** `backend/app/routers/task_domain.py:28`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [routers_task_domain](../modules/routers_task_domain.md)
@@ -25,17 +25,17 @@ _Auto-generated from `DB` in `backend/app/routers/task_domain.py`._
 flowchart LR
     n0["DB (backend/app/routers/task_domain.py)"]
     n1["backlog_snapshots (backend/app/routers/task_domain.py)"]
-    n2["convert_task_brief (backend/app/routers/task_domain.py)"]
-    n3["create_backlog_task (backend/app/routers/task_domain.py)"]
-    n4["current_task_review (backend/app/routers/task_domain.py)"]
-    n5["delivery_metrics (backend/app/routers/task_domain.py)"]
-    n6["execution_usage_summary (backend/app/routers/task_domain.py)"]
-    n7["human_my_work (backend/app/routers/task_domain.py)"]
-    n8["lookup_tasks (backend/app/routers/task_domain.py)"]
-    n9["member_planning_context (backend/app/routers/task_domain.py)"]
-    n10["metric_matches (backend/app/routers/task_domain.py)"]
-    n11["planning_input_context (backend/app/routers/task_domain.py)"]
-    n12["record_task_progress (backend/app/routers/task_domain.py)"]
+    n2["check_task_routing (backend/app/routers/task_domain.py)"]
+    n3["convert_task_brief (backend/app/routers/task_domain.py)"]
+    n4["convert_task_routing (backend/app/routers/task_domain.py)"]
+    n5["create_backlog_task (backend/app/routers/task_domain.py)"]
+    n6["current_task_review (backend/app/routers/task_domain.py)"]
+    n7["delivery_metrics (backend/app/routers/task_domain.py)"]
+    n8["execution_usage_summary (backend/app/routers/task_domain.py)"]
+    n9["human_my_work (backend/app/routers/task_domain.py)"]
+    n10["lookup_tasks (backend/app/routers/task_domain.py)"]
+    n11["member_planning_context (backend/app/routers/task_domain.py)"]
+    n12["metric_matches (backend/app/routers/task_domain.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -74,7 +74,9 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `backlog_snapshots` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
+| `check_task_routing` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `convert_task_brief` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
+| `convert_task_routing` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `create_backlog_task` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `current_task_review` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `delivery_metrics` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
@@ -83,7 +85,5 @@ flowchart LR
 | `lookup_tasks` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `member_planning_context` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `metric_matches` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
-| `planning_input_context` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
-| `record_task_progress` | type_reference | [routers_task_domain](../modules/routers_task_domain.md) | — |
 
-> References: showing 12 of 29 logical references; 17 omitted by the 12-row generated summary limit.
+> References: showing 12 of 38 logical references; 26 omitted by the 12-row generated summary limit.

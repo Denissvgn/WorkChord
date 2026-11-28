@@ -8,19 +8,31 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { taskService } from '../../services/taskService';
 import { iterationService } from '../../services/iterationService';
-import type { CriterionProgress, Task } from '../../types/task';
-import { getApiErrorMessage } from '../../utils/apiError';
+import type { CriterionProgress, RefusalNextStep, Task } from '../../types/task';
+import { getApiErrorMessage, getApiNextStep } from '../../utils/apiError';
+import { RefusalNextStepNote } from './RefusalNextStepNote';
+import { TaskRecordProvenance } from './TaskRecordProvenance';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { TaskReviewer } from './TaskReviewer';
+import { TaskReviewHistory } from './TaskReviewHistory';
+import { TaskOwnerAcceptance, VERIFIED_PUBLISHER_CODE } from './TaskOwnerAcceptance';
+import { TaskPostponeForm } from './TaskPostponeForm';
+import { TaskPostponementPanel } from './TaskPostponementPanel';
+import { TaskSupersedeForm } from './TaskSupersedeForm';
+import { useProjectManageAccess } from '../../features/identity/useProjectEditAccess';
+import { stateOf } from '../../utils/taskState';
 import { useTaskReviewer } from './useTaskReviewer';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 import { useAdminAccess } from '../../hooks/useAdminAccess';
+import { useIdentity } from '../../features/identity/identityContext';
 import { Select } from '../../components/common/Select';
 
 const DRAFT_TTL_MS = 86400000;
+// One note per kind of step, so the same step is never shown twice.
+const uniqueSteps = (steps: RefusalNextStep[]) => steps.filter((step, index) => steps.findIndex(other => other.kind === step.kind) === index);
 // Ends a message with one full stop: trailing sentence marks from the server are replaced, not doubled.
 const asSentence = (message: string): string => {
     const text = message.trim().replace(/[\s.!?;:,…]+$/u, '');
@@ -183,6 +195,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
     const run = (operation: 'progress' | 'command' | 'accept' | 'reject') => { onPending(true); command.mutate(operation); };
     const pending = command.isPending;
     const { actingAsOperator } = useAdminAccess();
+    const pairedObserver = useIdentity()?.identity?.access === 'observe';
     const canReview = actions.data?.actions.find(item => item.action === 'review')?.allowed;
     const canAccept = actions.data?.actions.find(item => item.action === 'accept_review')?.allowed;
     const acceptAction = actions.data?.actions.find(item => item.action === 'accept_review');
@@ -200,6 +213,24 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         !allCriteriaPass && t('domain.acceptNeedsResults'),
         reviewEvidenceTooLong && t('domain.reviewEvidenceTooLong'),
     ].filter(Boolean);
+    const canPostpone = Boolean(actions.data?.actions.find(item => item.action === 'postpone')?.allowed);
+    // Supersede is offered to a project manager or operator when the task can still be superseded; the server decides.
+    const supersedeAction = actions.data?.actions.find(item => item.action === 'supersede');
+    const hasManageAccess = useProjectManageAccess(task.project_id);
+    const canSupersede = actions.isSuccess && (supersedeAction ? supersedeAction.allowed : hasManageAccess) && task.project_id != null
+        && stateOf(task) !== 'superseded' && !task.accepted_at && !task.is_composite;
+    const canReactivate = Boolean(actions.data?.actions.find(item => item.action === 'reactivate')?.allowed);
+    // The next step of every refusal on this page, from the action blockers and from a refused command.
+    const reviewAction = actions.data?.actions.find(item => item.action === 'review');
+    const blockerSteps = [...(acceptAction?.blockers ?? []), ...(reviewAction?.blockers ?? [])].flatMap(blocker => blocker.next_step ? [blocker.next_step] : []);
+    const refusedStep = command.isError ? getApiNextStep(command.error) : null;
+    const shownSteps = uniqueSteps([...blockerSteps, ...(refusedStep ? [refusedStep] : [])]);
+    const offers = (uiAction: string) => shownSteps.some(step => step.ui_action === uiAction);
+    const needsOwnerAcceptance = task.status === 'resolved' && (Boolean(acceptAction?.blockers.some(blocker => blocker.code === VERIFIED_PUBLISHER_CODE)) || offers('accept_as_owner'));
+    // The server says whether a record would be accepted; a person who may not record still sees why, when a refusal points at it.
+    const provenanceAction = actions.data?.actions.find(item => item.action === 'record_provenance');
+    const needsProvenance = task.status === 'resolved' && (needsOwnerAcceptance || offers('record_provenance'))
+        && (Boolean(provenanceAction?.allowed) || (offers('record_provenance') && Boolean(provenanceAction?.blockers.some(blocker => blocker.code === 'provenance_recorder_required'))));
     const manualActions = ['start_manual', 'resolve_manual', 'block', 'unblock', 'cancel', 'reopen', 'commit', 'uncommit']
         .filter(item => !(offerDispatch && item === 'start_manual'))
         .filter(item => !(actingAsOperator && (item === 'start_manual' || item === 'resolve_manual')));
@@ -209,6 +240,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         {task.canceled_at && <p className="text-sm text-content-secondary">{t('domain.canceled')}: {task.canceled_reason}</p>}
         {task.blocked_reason && <p className="text-sm text-feedback-warning-foreground">{t('domain.blocked')}: {task.blocked_reason}</p>}
         <TaskReviewer task={task} />
+        <TaskReviewHistory task={task} />
         {submitBlocked && <div role="alert" className="space-y-2 text-sm text-feedback-warning-foreground">
             <p>{t('domain.submitNeedsCriterion')}</p>
             {onEditBrief && <Button type="button" size="sm" variant="secondary" disabled={disabled} onClick={onEditBrief}>{t('taskView.editBrief')}</Button>}
@@ -218,6 +250,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         {Boolean(contextError) && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(contextError, t('domain.reloadReview'))}</p>}
         {command.isError && <div role="alert" className="space-y-2 text-sm text-feedback-danger-foreground">
             <p>{getApiErrorMessage(command.error, t('domain.saveFailed'))}</p>
+            {refusedStep && task.status !== 'resolved' && <RefusalNextStepNote step={refusedStep} />}
             {['commit', 'uncommit'].includes(action) && <Button type="button" size="sm" variant="secondary" onClick={() => { void compareCommandContext().catch(setContextError); }}>{t('planningInput.reviewAgain')}</Button>}
             <Button type="button" variant="secondary" size="sm" onClick={onReload}>{t('domain.reloadReview')}</Button>
         </div>}
@@ -296,11 +329,34 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
                 <Button type="button" variant="secondary" disabled={!canReview || !reason.trim() || (reviewCriteria.length > 0 && !someCriterionFails) || reviewEvidenceTooLong} onClick={() => run('reject')}>{t('domain.requestRework')}</Button>
                 {acceptMissing.length > 0 && <p id={`${id}-accept-missing`} role="status" className="w-full text-sm text-content-secondary">{acceptMissing.join(' ')}</p>}
             </div>}
+            {task.status === 'resolved' && shownSteps.map(step => <RefusalNextStepNote key={step.kind} step={step} />)}
         </fieldset>
+        {task.status === 'resolved' && pairedObserver && <p role="status" className="text-sm text-content-secondary">{t('domain.ownerAcceptObserver')}</p>}
+        {needsOwnerAcceptance && <TaskOwnerAcceptance task={task} disabled={disabled || pending || criteriaDirty || staleDraft}
+            disabledReasons={[disabled && t('domain.acceptFinishEditing'), pending && t('domain.acceptSaving'), staleDraft && t('domain.staleProgress'), criteriaDirty && t('domain.acceptSaveProgress')].filter((item): item is string => Boolean(item))} onPending={onPending}
+            onUpdated={latest => { if (!isActive()) return; if (key) { try { sessionStorage.removeItem(key); } catch { /* Storage may be unavailable. */ } } onDirty(false); onUpdated(latest); }} />}
+        {needsProvenance && <TaskRecordProvenance task={task} disabled={disabled || pending || criteriaDirty || staleDraft}
+            disabledReasons={[disabled && t('domain.acceptFinishEditing'), pending && t('domain.acceptSaving'), staleDraft && t('domain.staleProgress'), criteriaDirty && t('domain.acceptSaveProgress')].filter((item): item is string => Boolean(item))} onPending={onPending}
+            onUpdated={latest => { if (!isActive()) return; onUpdated(latest); }} />}
+        {(canPostpone || task.status === 'postponed') && (() => {
+            const outside = [disabled && t('domain.acceptFinishEditing'), pending && t('domain.acceptSaving'), staleDraft && t('domain.staleProgress'), criteriaDirty && t('domain.acceptSaveProgress')]
+                .filter((item): item is string => Boolean(item));
+            const finished = (latest: Task) => { if (!isActive()) return; if (key) { try { sessionStorage.removeItem(key); } catch { /* Storage may be unavailable. */ } } onDirty(false); onUpdated(latest); };
+            return task.status === 'postponed'
+                ? <TaskPostponementPanel task={task} canReactivate={canReactivate} disabled={outside.length > 0} disabledReasons={outside} onPending={onPending} onUpdated={finished} />
+                : <TaskPostponeForm task={task} actions={actions.data} disabled={outside.length > 0} disabledReasons={outside} onPending={onPending} onUpdated={finished} />;
+        })()}
+        {canSupersede && (() => {
+            const outside = [disabled && t('domain.acceptFinishEditing'), pending && t('domain.acceptSaving'), staleDraft && t('domain.staleProgress'), criteriaDirty && t('domain.acceptSaveProgress')]
+                .filter((item): item is string => Boolean(item));
+            const finished = (latest: Task) => { if (!isActive()) return; if (key) { try { sessionStorage.removeItem(key); } catch { /* Storage may be unavailable. */ } } onDirty(false); onUpdated(latest); };
+            return <TaskSupersedeForm task={task} disabled={outside.length > 0} disabledReasons={outside} onPending={onPending} onUpdated={finished} />;
+        })()}
         <details className="text-sm text-content-secondary">
             <summary className="cursor-pointer">{t('domain.unavailableActions')}</summary>
-            <ul className="mt-2 space-y-2">{actions.data?.actions.filter(item => !item.allowed).map(item => <li key={item.action}>
+            <ul className="mt-2 space-y-2">{actions.data?.actions.filter(item => !item.allowed && item.action !== 'record_provenance').map(item => <li key={item.action}>
                 <span className="font-medium">{t(`domain.action_${item.action}`)}</span>: {item.blockers.map(blocker => blocker.message).join(' ')}
+                {uniqueSteps(item.blockers.flatMap(blocker => blocker.next_step ? [blocker.next_step] : [])).filter(step => !(task.status === 'resolved' && shownSteps.some(shown => shown.kind === step.kind))).map(step => <RefusalNextStepNote key={step.kind} step={step} className="mt-1 space-y-1" />)}
             </li>)}</ul>
         </details>
     </section>;

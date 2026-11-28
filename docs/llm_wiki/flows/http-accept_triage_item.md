@@ -186,10 +186,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| accept_triage_item | service.accept | 281 | `service.accept(triage_item_id, data)` |
-| accept_triage_item | HTTPException | 283 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| accept_triage_item | _not_found_detail | 285 | `_not_found_detail(service, triage_item_id)` |
-| _not_found_detail | resolve_runtime_ui_language | 73 | `resolve_runtime_ui_language(service.db)` |
+| accept_triage_item | service.accept | 285 | `service.accept(triage_item_id, data)` |
+| accept_triage_item | HTTPException | 287 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| accept_triage_item | _not_found_detail | 289 | `_not_found_detail(service, triage_item_id)` |
+| _not_found_detail | resolve_runtime_ui_language | 77 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip (backend/app/services/lang…vice.py:normalize_language) | 35 | `str(value or '').strip(data not statically known)` |
@@ -206,8 +206,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `accept_triage_item` | `service.accept` | 281 |
-| external_call | `accept_triage_item` | `HTTPException` | 283 |
+| unresolved_call | `accept_triage_item` | `service.accept` | 285 |
+| external_call | `accept_triage_item` | `HTTPException` | 287 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | step_limit | `accept_triage_item` | `first 12 steps` | 0 |

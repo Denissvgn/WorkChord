@@ -8,8 +8,13 @@ Use this reference to route resolved work to an independent reviewer, follow its
 - [Handle model evidence and escalation](#handle-model-evidence-and-escalation)
 - [Read the verdict](#read-the-verdict)
 - [Close work with its delivery trace](#close-work-with-its-delivery-trace)
+- [Move tasks through their statuses](#move-tasks-through-their-statuses)
+- [Merge pull requests that share regenerated files](#merge-pull-requests-that-share-regenerated-files)
 - [Return work for rework](#return-work-for-rework)
 - [Reconcile the pull request and replace unattributable work](#reconcile-the-pull-request-and-replace-unattributable-work)
+- [Supersede work another task already delivered](#supersede-work-another-task-already-delivered)
+- [Record who executed work delivered outside recorded runs](#record-who-executed-work-delivered-outside-recorded-runs)
+- [Follow a verification refusal's next step](#follow-a-verification-refusals-next-step)
 - [Recover stale or inconsistent execution](#recover-stale-or-inconsistent-execution)
 - [Triage discoveries](#triage-discoveries)
 - [Publish project updates](#publish-project-updates)
@@ -81,7 +86,15 @@ server allows this route only when it can establish the human executor and
 finds no agent execution assignments, runs or conflicting execution evidence.
 The independent assigned agent still supplies its own observed model and a
 known publisher. The human owner and workspace operator cannot give a formal
-verdict on the strict project. An unverified owner name, a planned assignment
+verdict on the strict project. When a resolved task cannot get a verified
+agent verifier, do not ask anyone to switch `require_different_review_publisher`
+off to close it: ask a signed-in workspace owner or operator to accept it as
+owner (`POST /api/tasks/{task_id}/owner-acceptance` with a reason; in the web
+interface, Work and review > Accept as owner). It is recorded as an owner
+override in Review history, not as an independent review, and the policy stays
+on. A person's ordinary Accept is refused with `verified_publisher_review_required`,
+a `trusted_local` browser with no signed-in person cannot use the owner
+acceptance, and an agent never does. An unverified owner name, a planned assignment
 or an empty run list is insufficient. The administrative return command
 requires a previous agent submission and cannot reopen human-only work.
 Refresh existing verification previews after an upgrade.
@@ -102,10 +115,15 @@ original model trust state.
 
 For interrupted work, take the exact version, claim generation, live assignment
 IDs and running run IDs from the recovery queue. The primary controller can
-requeue an eligible worker on its own team. A supervised recovery in shadow
-mode can immediately offer `start_assigned`. For `routing_selection_pending`,
-complete the governed selection on the existing assignment. Preserve any
-independent verification ownership.
+requeue an eligible worker on its own team. Outside enforced routing the
+requeue issues a supervised recovery that can immediately offer
+`start_assigned`. In shadow mode it may instead be refused with
+`recovery_supervision_unavailable`; its `condition` says why
+(`primary_pm_required`, `model_aware_history`, `reviewer_profile_ambiguous`,
+`reviewer_profile_not_independent`) and nothing changed. Resolve that condition
+or recover once routing is enforced. Under enforced routing, complete the
+governed selection on the existing assignment when it reports
+`routing_selection_pending`. Preserve any independent verification ownership.
 
 Use `agent_get_execution_usage_summary` or `/api/tasks/execution-usage` for an
 authorized project/iteration and stated observation window. Compare reports
@@ -184,6 +202,41 @@ request or its release tag
 the release's project update. A release without either link is not reported as
 shipped.
 
+## Move Tasks Through Their Statuses
+
+A task moves `planned`, `active`, `resolved`, `closed`, and an agent never
+writes those statuses through the REST status route: it is refused with
+`agent_protocol_required`, and an agent that is not the verifier is refused a
+close with `independent_review_required`. The worker's submit resolves the task.
+A person starts and resolves manual work with the manual-execution commands.
+Review and close are one step: a pass verdict moves `resolved` to `closed`, and
+owner acceptance closes it too. A direct close through the status route is an
+acceptance, so it needs review authority and writes an accept record; the
+operator key also needs the review override header and a reason, and a project
+that requires a different publisher refuses it with
+`verified_publisher_review_required`.
+
+A task whose prerequisites are still open cannot start, so work begun early on
+an unmerged branch stays `planned` until they are resolved or, for delivery prerequisites,
+accepted. After each merge,
+re-read the task and confirm it closed. A task that is not `closed` after its
+pull request merged is status drift: find the missing verdict or acceptance, or
+the open prerequisite, and resolve that instead of forcing the status.
+
+## Merge Pull Requests That Share Regenerated Files
+
+Pull requests that regenerate shared files (generated documentation, contract
+fixtures) conflict with each other: every merge makes the remaining ones
+conflict, and a conflicting pull request gets no CI on GitHub. Merge them one at a time,
+or stacked so each one is prepared on top of the one below it and merges bottom
+first. Ask the worker to regenerate the shared files before opening the pull
+request, so CI runs once instead of after every rebase. The stacked merge queue example in the WorkChord repository,
+`examples/integrations/stacked-merge-queue`, does this and reports tasks that
+did not close; it never writes task statuses.
+
+Put a small follow-up change into the next queued pull request instead of
+opening a new one; a new one joins the queue and conflicts again.
+
 ## Return Work for Rework
 
 In assigned-work v1:
@@ -236,6 +289,39 @@ When a task's runs lack the model attribution the review policy needs, the task 
 
 The original must be unaccepted leaf work with no live execution. The command keeps the original with its attempts, withdraws it from delivery counts, and moves schedule and delivery dependents and open release membership to the replacement. Only the replacement can be accepted, and it is reviewed on its own runs plus every carried run. Carrying a run with no attribution keeps the replacement held (`replacement_contribution_unattributed`). Never reopen or review the original.
 
+## Supersede Work Another Task Already Delivered
+
+When another task already delivered the work and is closed or accepted, do not reopen and close the original. Record `POST /api/tasks/{original_id}/supersession` with `{successor_task_id, expected_original_version, expected_successor_version, reason}`; only a project owner or manager, an operator or the project's PM agent decides, and there is no MCP tool for it. The original is withdrawn with its history, a postponed original's postponement is closed, and its dependents, delivery prerequisites, open reactivation requirements and release membership move to the successor, so the deliverable counts once. The successor cannot then be canceled. Task responses show the outcome as `displayed_state: superseded` with `successor_task_id`. Use a replacement (above) instead when the original's work is being redone.
+
+## Record Who Executed Work Delivered Outside Recorded Runs
+
+When resolved work was delivered outside recorded runs, the verifier cannot be selected until its executor is on record. Call `agent_record_manual_provenance` (`POST /api/agent/planning/tasks/{task_id}/manual-provenance`, `planning:write`, planning command headers) with `{expected_version, artifact_revision, executor: {kind: agent, actor_id, model_binding_id?}, head_commit_url, commit_urls, pr_url | base_commit_url, reason}`. Link the pull request to the task first, and list every commit of the pull request in `commit_urls`. You count as a contributor of the work, so the verifier must use a different publisher from yours. A human executor can only be recorded by a signed-in person; ask the owner. The task stays resolved and its version advances, so create the verification assignment again with the new task version. Never cancel and recreate assignments in a loop.
+
+## Follow a Verification Refusal's Next Step
+
+A verification refusal carries `next_step` (`kind`, `authority`, `message`, `commands`, `ui_action`). Follow it instead of retrying.
+
+| Refusal | What to do |
+| --- | --- |
+| `verification_publisher_unverifiable` | At assignment time with no recorded runs: an owner, operator, project manager or the PM agent records manual provenance. With no recorded model publisher on a run: an owner or operator accepts as owner, or the work is redone. At verdict time: refresh the review assignment; the verifier submits with its own observed model, which must match the selected binding. |
+| `verification_candidate_unverifiable` | `manual_provenance` in `missing[].facts`: the work was resolved outside recorded runs; ask the owner who executed it and which pull request and commits carry it, record manual provenance, then create the verification assignment again. `current_human_artifact` in `missing[].facts` only: ask the executor to link exactly one pull request to the task or resubmit the artifact with a pull request or compare URL. `submitted_candidate` in `missing[].facts` only: the task's runs have no exact submitted candidate; the executing agent resubmits its work with its pull request and commits through `agent_submit_my_work` (a provenance record cannot replace a run), or route it to rework or a clean replacement. At verdict time: retry when GitHub is reachable. |
+| `verification_independence_unverifiable` | The assigned reviewer submits its own verdict with its own observed model. A replacement history that is too long or cyclic, or a run with no recorded profile, is for an owner decision or a replacement, not a provenance record. |
+| `verification_contributors_unverifiable` | Every candidate commit must be attributed to the executor and carry no Co-authored-by trailer; resubmit with a pull request that holds only such commits, or retry when GitHub is reachable. |
+| `verified_publisher_review_required` | Assign an agent verifier (record provenance first for work with no recorded runs), or ask a signed-in owner or operator to accept as owner with a reason. |
+| `accountable_review_required` | Repeat with `X-Review-Override: true` and a written reason in `X-Command-Reason`, or have a person review. |
+| `independent_review_required` | Another reviewer, one who did not execute or submit the work, reviews it; an agent reviewer needs the verifier role. |
+| `manual_provenance_candidate_unverifiable` | Read `attribution_gap`. For `commit_attribution`, add `offending_sha` to `commit_urls`. For `coauthor_trailer`, the work cannot be attested; tell the owner. For `head_mismatch`, use the pull request's current head. |
+| `manual_provenance_pr_not_task_evidence` | Link the pull request to the task first. |
+| `manual_provenance_execution_recorded` | The task's runs or executing person already supply provenance; use execution reconciliation or a clean replacement. |
+| `manual_provenance_executor_conflict` | The record can only name the person who executed the work (manual execution), and a signed-in person records it; ask the owner. |
+| `manual_provenance_human_recorder_required` | Ask a signed-in owner or project manager. |
+| `manual_provenance_recorder_unattributable`, `manual_provenance_executor_unattributable` | The binding needs a catalog entry with a publisher; ask the operator. |
+| `verification_actor_not_independent`, `verification_profile_not_independent`, `verification_publisher_not_independent`, `verification_specialist_skill_missing`, `reviewer_profile_*` | Assign a verifier that did not contribute and whose profile, publisher and skills fit. |
+
+### Team presence
+
+`agent_team_actor_outside_topology`, `verifier_outside_topology`, `verifier_not_runtime_ready`, `caller_not_runtime_ready`, `caller_not_bound_to_topology` and `model_aware_routing_preview_unavailable` are readiness refusals. Read `non_ready_actors`, `readiness_rule` and `topology_readiness` in the refusal, and `agent_get_team_setup_status`. Have each listed actor with `blocks_this_request: true` fix what its `blocker_codes` name (acknowledge its current handoff, restore its binding) and poll its queue, because an actor is present only within `maximum_runtime_staleness_seconds` of its last poll; then retry. For a verification assignment only the verifier, and a caller that is itself not ready, need to be ready. When model-aware routing is switched off for the deployment, the operator must set `MODEL_AWARE_ROUTING_MODE` to `shadow` or `enforced` and restart.
+
 ## Recover Stale or Inconsistent Execution
 
 Prefer the server's idempotent reconciler and typed recovery actions when available. Otherwise stop automated dispatch and assign a human recovery owner.
@@ -250,7 +336,7 @@ state tuple to the accountable recovery owner.
 | Observed state | Required response |
 | --- | --- |
 | Planned task with expired claim and no run | Re-read readiness; release or let expiry clear under the supported contract, then explicitly redispatch. |
-| Active task with no live claim and no running run | Mark recovery-required; choose resume/reassign/cancel through an audited action. Do not silently edit it to planned. |
+| Active task with no live claim and no running run | Mark recovery-required; choose resume or reassign through an audited action, or postpone it when it must stop but may resume (`agent_postpone_task`); cancel only work that will never be done. Do not silently edit it to planned. |
 | Running run with expired or missing claim | Stop worker writes, preserve trace, terminate or reconcile the run, then create recovery work. |
 | Resolved task with a running run | Do not verify or close; reconcile the run and task evidence first. |
 | Disabled actor holding work | Stop dispatch, request operator identity action, and recover assignments/claims explicitly. |

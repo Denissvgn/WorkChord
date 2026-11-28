@@ -16,10 +16,13 @@ import { useToast } from '../feedback/toast';
 import { getApiErrorMessage, normalizeApiError } from '../../utils/apiError';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 import { formatDate } from '../../utils/formatDate';
-import { pillToneClassName, STATUS_TONE } from '../ui/tone';
+import { pillToneClassName, STATE_TONE } from '../ui/tone';
+import { isEndedState, stateOf } from '../../utils/taskState';
 import { emptyTaskBrief } from './taskEditorContract';
 import { TaskBriefEditor } from './TaskBriefEditor';
 import { TaskWorkPanel } from './TaskWorkPanel';
+import { TaskRoutingSummary } from './TaskRoutingSummary';
+import { TaskReassign } from './TaskReassign';
 import { useAdminAccess } from '../../hooks/useAdminAccess';
 import { clearAdminApiKey } from '../../utils/adminAccess';
 import { DeliveryDependencies } from './DeliveryDependencies';
@@ -67,13 +70,15 @@ const BriefField = ({ label, value }: { label: string; value: string }) => (
  * Read-first task view: Brief, Work & review, Activity. Nothing is an input
  * until a section is edited; the part is kept in the URL beside ?task=<id>.
  */
-export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: onHeldSession, onTaskUpdated, onEditAll, onDirty, onPending, onReload }: {
+export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: onHeldSession, onTaskUpdated, onOpenTask, onEditAll, onDirty, onPending, onReload }: {
     /** Panel state held by the drawer across version remounts; the view keeps its own when none is given. */
     session?: TaskViewSession;
     onSession?: TaskViewSessionUpdate;
     task: Task;
     draftKey: string | null;
     onTaskUpdated: (task: Task) => void;
+    /** Opens another task from a link in this view, such as a superseded task's successor; the drawer closes and navigates. */
+    onOpenTask?: (taskId: number) => void;
     onEditAll: () => void;
     onDirty: (dirty: boolean) => void;
     onPending: (pending: boolean) => void;
@@ -89,6 +94,8 @@ export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: 
     const [briefDraft, setBriefDraft] = useState<TaskBrief | null>(null);
     const [reasonDraft, setReasonDraft] = useState<string | null>(null);
     const [sectionDirty, setSectionDirty] = useState(false);
+    // A saved reassignment replaces the control (it is keyed by version), so the new one takes focus back.
+    const [refocusVersion, setRefocusVersion] = useState<number | null>(null);
     const [ownSession, ownUpdate] = useTaskViewSession(draftKey);
     const session = heldSession ?? ownSession;
     const updateSession = onHeldSession ?? ownUpdate;
@@ -121,7 +128,8 @@ export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: 
         onSettled: () => onPending(false),
     });
 
-    const next = NEXT_TRANSITION[task.status];
+    // Canceled and superseded work keeps the status it had, but it is not work to start, submit or review.
+    const next = isEndedState(stateOf(task)) ? undefined : NEXT_TRANSITION[task.status];
     // Shared with Work & review, so the header and the panel read one availability snapshot.
     // feedback-policy: query loading,error,retry,empty
     const actions = useQuery({ queryKey: ['taskActions', task.id, task.version], queryFn: () => taskService.actions(task.id), enabled: Boolean(next?.reasonKey) });
@@ -161,7 +169,7 @@ export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: 
     // taken as a person, so those two are not offered until editing is locked again.
     const { actingAsOperator } = useAdminAccess();
     const operatorKeyBlocksNext = actingAsOperator && (next?.action === 'start_manual' || next?.action === 'resolve_manual');
-    const offerDispatch = task.status === 'planned' && assigneeDisplay.dispatch === 'notSentYet';
+    const offerDispatch = task.status === 'planned' && !isEndedState(stateOf(task)) && assigneeDisplay.dispatch === 'notSentYet';
     const dispatchShown = params.get('layout') === 'pipeline';
     // Owner is shown only when it is known to differ from the assignee's profile: with no assignee,
     // or once that profile has been read. While it loads, fails or has no team row, Owner stays hidden.
@@ -187,9 +195,17 @@ export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: 
         <div className="task-read-view flex flex-col gap-5">
             <header className="sticky top-0 z-10 -mx-4 flex flex-col gap-3 border-b border-border bg-surface-card px-4 pb-0 pt-1 sm:-mx-6 sm:px-6">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
-                    <span className={clsx('rounded-full px-2.5 py-0.5 text-xs font-semibold', pillToneClassName[STATUS_TONE[task.status]])}>
-                        {t(`statuses.${task.status}`)}
+                    <span data-task-state={stateOf(task)} className={clsx('rounded-full px-2.5 py-0.5 text-xs font-semibold', pillToneClassName[STATE_TONE[stateOf(task)]])}>
+                        {t(`statuses.${stateOf(task)}`)}
                     </span>
+                    {stateOf(task) === 'superseded' && task.successor_task_id && (
+                        <Button type="button" variant="ghost" size="sm" onClick={() => {
+                            if (onOpenTask) { onOpenTask(task.successor_task_id as number); return; }
+                            const next = new URLSearchParams(params); next.set('task', String(task.successor_task_id)); next.delete(TASK_PART_PARAM); setParams(next);
+                        }}>
+                            {t('stoppedWork.supersededBy', { id: task.successor_task_id })}
+                        </Button>
+                    )}
                     <TaskAssigneeDisplay task={task} iterationId={task.iteration_id} />
                     {task.owner && ownerDiffers && <span className="text-content-secondary">{t('taskView.owner')} <b className="font-semibold text-content-primary">{task.owner.name}</b></span>}
                     {task.end_date && <span className="text-content-secondary">{t('taskView.due')} <b className="font-semibold text-content-primary">{formatDate(task.end_date, i18n.language)}</b></span>}
@@ -284,6 +300,14 @@ export const TaskReadView = ({ task, draftKey, session: heldSession, onSession: 
                             </div>
                         </>
                     )}
+                    <section aria-label={t('taskReassign.title')} className="flex flex-col gap-3 border-t border-border-subtle pt-4">
+                        <h3 className="text-xs font-semibold uppercase tracking-wide text-content-secondary">{t('taskReassign.title')}</h3>
+                        <TaskRoutingSummary routing={task.brief?.routing} />
+                        {task.iteration_id !== null && (
+                            <TaskReassign key={`${task.id}:${task.version}`} task={task} disabled={locked} focusOnMount={refocusVersion === task.version}
+                                onSaved={updated => setRefocusVersion(updated.version)} onTaskUpdated={onTaskUpdated} onPending={onPending} />
+                        )}
+                    </section>
                     <div className="flex flex-col gap-3 border-t border-border-subtle pt-4">
                         <div className="flex items-baseline justify-between">
                             <h3 className="text-xs font-semibold uppercase tracking-wide text-content-secondary">{t('taskView.planning')}</h3>

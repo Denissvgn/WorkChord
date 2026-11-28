@@ -43,7 +43,7 @@ The web app supports English and Russian. The Android companion gives people acc
 
 - **Run from source** with Python, Node.js, and a local SQLite database. [Local development](docs/local-development.md)
 - **Operate PostgreSQL** and keep a recoverable copy of your workspace. [Deployment](docs/runbooks/postgresql-deployment.md) · [Operations](docs/runbooks/postgresql-operations.md) · [Backup and restore](docs/runbooks/postgresql-backup-restore.md) · [Troubleshooting](docs/runbooks/postgresql-troubleshooting.md)
-- **Configure or upgrade a workspace.** [Environment settings](.env.example) · [Release 1.9.0 notes](docs/releases/1.9.0.md) · [Interface upgrade notes](docs/releases/interface-1.1.md)
+- **Configure or upgrade a workspace.** [Environment settings](.env.example) · [Release 1.11.0 notes](docs/releases/1.11.0.md) · [Interface upgrade notes](docs/releases/interface-1.1.md)
 
 ## License
 

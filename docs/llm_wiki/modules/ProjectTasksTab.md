@@ -11,12 +11,13 @@ _Auto-generated from `frontend/src/components/projects/ProjectTasksTab.tsx`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../features/scope/useScopeLink` | `useScopeLink` | — | compiler-dependent |
-| `../../types/task` | `Task` | Declaration | erased |
+| `../../types/task` | `Task`, `TaskDisplayedState` | Declaration | erased |
+| `../../utils/taskState` | `stateOf` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/ButtonLink` | `ButtonLink` | — | compiler-dependent |
 | `../tasks/GuardedTaskDrawer` | `GuardedTaskDrawer` | — | compiler-dependent |
 | `../ui` | `InlineEmptyState`, `SectionCard`, `StatusSegmentStrip` | — | compiler-dependent |
-| `../ui/tone` | `STATUS_TONE` | — | compiler-dependent |
+| `../ui/tone` | `STATE_TONE`, `STATUS_TONE` | — | compiler-dependent |
 | `./ProjectTaskTree` | `ProjectTaskTree` | — | compiler-dependent |
 | `lucide-react` | `CheckCircle2`, `Plus` | — | compiler-dependent |
 | `react` | `useState` | — | compiler-dependent |
@@ -47,6 +48,7 @@ flowchart LR
     n8["frontend/src/features/scope/useScopeLink.ts"]
     n9["frontend/src/pages/ProjectDetailPage.tsx"]
     n10["frontend/src/types/task.ts"]
+    n11["frontend/src/utils/taskState.ts"]
     n2 --> n0
     n2 --> n1
     n2 --> n4
@@ -55,15 +57,18 @@ flowchart LR
     n2 --> n7
     n2 --> n8
     n2 --> n10
+    n2 --> n11
     n3 --> n2
     n3 --> n4
     n3 --> n10
     n4 --> n10
+    n4 --> n11
     n5 --> n10
     n7 --> n10
     n9 --> n0
     n9 --> n2
     n9 --> n6
+    n11 --> n10
     click n0 "../modules/Button.md"
     click n1 "../modules/ButtonLink.md"
     click n2 "../modules/ProjectTasksTab.md"
@@ -75,6 +80,7 @@ flowchart LR
     click n8 "../modules/useScopeLink.md"
     click n9 "../modules/ProjectDetailPage.md"
     click n10 "../modules/types_task.md"
+    click n11 "../modules/taskState.md"
 ```
 
 ### Internal neighbors
@@ -91,6 +97,7 @@ flowchart LR
 | Outbound | [tone](../modules/tone.md) |
 | Outbound | [useScopeLink](../modules/useScopeLink.md) |
 | Outbound | [types_task](../modules/types_task.md) |
+| Outbound | [taskState](../modules/taskState.md) |
 
 ### External packages
 

@@ -8,19 +8,20 @@
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `agent_team_setup.load_stored_agent_team_master`
 2. `time.utc_now`
-3. `agent_team_setup.AgentTeamMemberLifecycle`
-4. `agent_service.actor_scopes`
-5. `time.as_utc`
+3. `agent_team_setup.AgentTeamRuntimeIdentityStatus`
+4. `agent_team_setup.AgentTeamMemberLifecycle`
+5. `agent_service.actor_scopes`
 6. `time.as_utc`
-7. `agent_team_setup.AgentTeamMemberStatus`
-8. `agent_team_setup.AgentTeamSetupStep`
+7. `time.as_utc`
+8. `agent_team_setup.AgentTeamMemberStatus`
 9. `agent_team_setup.AgentTeamSetupStep`
 10. `agent_team_setup.AgentTeamSetupStep`
 11. `agent_team_setup.AgentTeamSetupStep`
 12. `agent_team_setup.AgentTeamSetupStep`
 13. `agent_team_setup.AgentTeamSetupStep`
 14. `agent_team_setup.AgentTeamSetupStep`
-15. `agent_team_setup.AgentTeamStatusResponse`
+15. `agent_team_setup.AgentTeamSetupStep`
+16. `agent_team_setup.AgentTeamStatusResponse`
 
 ## Touches
 

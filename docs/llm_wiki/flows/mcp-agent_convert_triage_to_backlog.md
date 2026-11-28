@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_convert_triage_to_backlog` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_readiness](../modules/agent_readiness.md), [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), and 25 more
+**Modules touched:** [agent_readiness](../modules/agent_readiness.md), [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), and 28 more
 
 **Complete modules touched:**
 
@@ -30,11 +30,14 @@
 - [schemas_triage](../modules/schemas_triage.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [snapshot_service](../modules/snapshot_service.md)
+- [source_link_policy](../modules/source_link_policy.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_context_revision_service](../modules/task_context_revision_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 - [triage_service](../modules/triage_service.md)
+- [url_policy](../modules/url_policy.md)
 
 ## Call sequence
 
@@ -50,28 +53,28 @@ sequenceDiagram
     participant p4 as TriageService.convert_to_task
     participant p5 as _agent_context
     participant p6 as TaskService.task_to_response
-    participant p7 as get_settings
-    participant p8 as TriageService.get_by_id
-    participant p9 as command_transaction
-    participant p10 as _authenticate_agent_key
-    participant p11 as _require_scope_requirement
-    participant p12 as TriageService._require_project_exists
-    participant p13 as task_signals
-    participant p14 as IdentityService.actor_context
-    participant p15 as current_triage_brief
-    participant p16 as brief_from_draft
-    participant p17 as evaluate_agent_readiness
-    participant p18 as ExternalLinkService.task_links_to_response
-    participant p19 as RequestSourceService.copy_triage_links_to_task
-    participant p20 as TriageService._record_triage_event
-    participant p21 as emit_outbound_webhook_event
-    participant p22 as OutboundWebhookService.safe_emit_event
-    participant p23 as working_today
-    participant p24 as ExternalLinkService.link_to_response
-    participant p25 as require_scope
-    participant p26 as ExternalLinkService.legacy_task_link_response
-    participant p27 as AgentService.authenticate
-    participant p28 as require_identity_writes
+    participant p7 as TriageSourceLinkOutcome.for_link
+    participant p8 as get_settings
+    participant p9 as TriageService.get_by_id
+    participant p10 as command_transaction
+    participant p11 as _authenticate_agent_key
+    participant p12 as _require_scope_requirement
+    participant p13 as TriageService._require_project_exists
+    participant p14 as task_signals
+    participant p15 as IdentityService.actor_context
+    participant p16 as evaluate_source_link
+    participant p17 as current_triage_brief
+    participant p18 as brief_from_draft
+    participant p19 as evaluate_agent_readiness
+    participant p20 as ExternalLinkService.task_links_to_response
+    participant p21 as RequestSourceService.copy_triage_links_to_task
+    participant p22 as TriageService._record_triage_event
+    participant p23 as emit_outbound_webhook_event
+    participant p24 as TriageService._request_reactivation_check
+    participant p25 as OutboundWebhookService.safe_emit_event
+    participant p26 as working_today
+    participant p27 as ExternalLinkService.link_to_response
+    participant p28 as require_scope
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -80,35 +83,35 @@ sequenceDiagram
     p2->>p4: TriageService.convert_to_task
     p1->>p5: _agent_context
     p2->>p6: TaskService.task_to_response
-    p3->>p7: get_settings
-    p4->>p8: TriageService.get_by_id
-    p5->>p9: command_transaction
-    p5->>p10: _authenticate_agent_key
-    p5->>p11: _require_scope_requirement
-    p4->>p12: TriageService._require_project_exists
-    p6->>p13: task_signals
-    p5->>p14: IdentityService.actor_context
-    p4->>p15: current_triage_brief
-    p4->>p16: brief_from_draft
-    p6->>p17: evaluate_agent_readiness
-    p6->>p18: ExternalLinkService.task_links_to_response
-    p4->>p19: RequestSourceService.copy_triage_links_to_task
-    p4->>p20: TriageService._record_triage_event
-    p4->>p21: emit_outbound_webhook_event
-    p21->>p22: OutboundWebhookService.safe_emit_event
-    p13->>p23: working_today
-    p18->>p24: ExternalLinkService.link_to_response
-    p11->>p25: require_scope
-    p18->>p26: ExternalLinkService.legacy_task_link_response
-    p10->>p27: AgentService.authenticate
-    p14->>p28: require_identity_writes
+    p2->>p7: TriageSourceLinkOutcome.for_link
+    p3->>p8: get_settings
+    p4->>p9: TriageService.get_by_id
+    p5->>p10: command_transaction
+    p5->>p11: _authenticate_agent_key
+    p5->>p12: _require_scope_requirement
+    p4->>p13: TriageService._require_project_exists
+    p6->>p14: task_signals
+    p5->>p15: IdentityService.actor_context
+    p4->>p16: evaluate_source_link
+    p4->>p17: current_triage_brief
+    p4->>p18: brief_from_draft
+    p6->>p19: evaluate_agent_readiness
+    p6->>p20: ExternalLinkService.task_links_to_response
+    p4->>p21: RequestSourceService.copy_triage_links_to_task
+    p4->>p22: TriageService._record_triage_event
+    p4->>p23: emit_outbound_webhook_event
+    p4->>p24: TriageService._request_reactivation_check
+    p23->>p25: OutboundWebhookService.safe_emit_event
+    p14->>p26: working_today
+    p20->>p27: ExternalLinkService.link_to_response
+    p12->>p28: require_scope
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 507 interactions; 477 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 666 interactions; 636 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 124 (123 omitted); unresolved 1 of 231 (230 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 153 (152 omitted); unresolved 1 of 313 (312 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -122,7 +125,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 153 groups; 145 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 192 groups; 184 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -135,9 +138,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 153; effect analysis evaluated: 100, partial: 3, unavailable: 50. Counts include steps omitted from the displayed trace.
+Source steps: 201; effect analysis evaluated: 133, partial: 3, unavailable: 65. Counts include steps omitted from the displayed trace.
 
-Collector observations for 103 source steps with known totals: observed: 537, emitted: 519, omitted: 18. Unavailable totals are excluded.
+Collector observations for 136 source steps with known totals: observed: 688, emitted: 669, omitted: 19. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -212,10 +215,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_convert_triage_to_backlog | _tool_call | 1099 | `_tool_call('triage:write', ...)` |
-| _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
+| agent_convert_triage_to_backlog | _tool_call | 1102 | `_tool_call('triage:write', ...)` |
+| _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple | 100 | `tuple(required_scope)` |

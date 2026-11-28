@@ -18,7 +18,9 @@
 8. `language_service.localized`
 9. `schemas_task.TaskBulkOperationResult`
 10. `language_service.backend_error_message`
-11. `schemas_task.TaskBulkOperationResponse`
+11. `schemas_task.TaskBulkOperationResult`
+12. `language_service.backend_error_message`
+13. `schemas_task.TaskBulkOperationResponse`
 
 ## Touches
 

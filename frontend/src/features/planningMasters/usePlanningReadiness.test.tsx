@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { GanttResponse, GanttTask } from '../../types/gantt';
 import type { Iteration } from '../../types/iteration';
-import type { Task } from '../../types/task';
+import type { Task, TaskStatus } from '../../types/task';
 import type { TeamMember } from '../../types/team';
 import { useIterationStore } from '../../store/iterationStore';
 import {
@@ -120,7 +120,7 @@ const ganttTaskFixture = (task: Task): GanttTask => ({
     calculated_effort_days: task.effort_days,
     progress: 0,
     priority: task.priority,
-    status: task.status,
+    status: task.status as Exclude<TaskStatus, 'postponed'>,
     is_composite: task.is_composite,
     is_overdue: task.is_overdue,
     is_delayed: task.is_delayed,

@@ -1,6 +1,6 @@
 # AgentRoutingCandidate
 
-**Location:** `backend/app/schemas/agent_routing.py:951`
+**Location:** `backend/app/schemas/agent_routing.py:1024`
 **Kind:** Pydantic model
 **Bases:** `RoutingContractModel`
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -15,6 +15,7 @@ One eligible actor plus exact model-binding candidate.
 |--------|-------|--------|------|---------|
 | `validate_matched_skills` | field | matched_skill_levels | before | — |
 | `validate_capability_tags` | field | modality_tags, tool_tags, data_policy_tags | after | — |
+| `validate_qualification_keys` | field | qualification_keys | before | — |
 | `strip_candidate_text` | field | profile_revision, configured_model_alias, rationale | after | — |
 
 ## Attributes
@@ -40,11 +41,14 @@ One eligible actor plus exact model-binding candidate.
 | `missing_skill_keys` | `list[RoutingKey]` | `missing_skill_keys` | No | No | factory: `list` | max_length=0 | — | — |
 | `blocking_weakness_keys` | `list[RoutingKey]` | `blocking_weakness_keys` | No | No | factory: `list` | max_length=0 | — | — |
 | `reasoning_tier` | `ReasoningTier` | `reasoning_tier` | Yes | No | — | — | — | — |
+| `effort` | `ModelEffortSetting` | `effort` | No | No | `ModelEffort.UNKNOWN` | — | — | — |
 | `context_tier` | `ModelContextTier` | `context_tier` | Yes | No | — | — | — | — |
 | `modality_tags` | `list[str]` | `modality_tags` | No | No | factory: `list` | — | — | — |
 | `tool_tags` | `list[str]` | `tool_tags` | No | No | factory: `list` | — | — | — |
 | `data_policy_tags` | `list[str]` | `data_policy_tags` | No | No | factory: `list` | — | — | — |
+| `qualification_keys` | `list[str]` | `qualification_keys` | No | No | factory: `list` | — | — | Required qualification keys this candidate's catalog entry holds. |
 | `cost_tier` | `ModelCostTier` | `cost_tier` | Yes | No | — | — | — | — |
+| `local_first` | `bool` | `local_first` | No | No | `False` | — | — | — |
 | `latency_tier` | `ModelLatencyTier` | `latency_tier` | Yes | No | — | — | — | — |
 | `available_capacity_days` | `float` | `available_capacity_days` | Yes | No | — | ge=0 | — | — |
 | `committed_effort_days` | `float` | `committed_effort_days` | Yes | No | — | ge=0 | — | — |
@@ -66,6 +70,7 @@ One eligible actor plus exact model-binding candidate.
 |--------|-----------|------------|-------------|
 | `validate_matched_skills` | `(value: Any) -> Any` | `@field_validator('matched_skill_levels', mode='before')`, `@classmethod` | — |
 | `validate_capability_tags` | `(value: list[str], info: Any) -> list[str]` | `@field_validator('modality_tags', 'tool_tags', 'data_policy_tags')`, `@classmethod` | — |
+| `validate_qualification_keys` | `(value: Any) -> Any` | `@field_validator('qualification_keys', mode='before')`, `@classmethod` | — |
 | `strip_candidate_text` | `(value: str) -> str` | `@field_validator('profile_revision', 'configured_model_alias', 'rationale')`, `@classmethod` | — |
 
 ## Relationships
@@ -90,7 +95,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_routing](../modules/agent_routing.md) | 3 | `accepted_assignments`, `actor_id`, `actor_queue_revision`, `actor_revision`, `adequacy_class`, `available_capacity_days`, `blocking_weakness_keys`, `capacity_owner_id`, `capacity_owner_profile_id`, `committed_effort_days`, `confidence`, `configured_model_alias` |
+| [agent_routing](../modules/agent_routing.md) | 4 | `accepted_assignments`, `actor_id`, `actor_queue_revision`, `actor_revision`, `adequacy_class`, `available_capacity_days`, `blocking_weakness_keys`, `capacity_owner_id`, `capacity_owner_profile_id`, `committed_effort_days`, `confidence`, `configured_model_alias` |
 
 ### Structure
 

@@ -1,6 +1,6 @@
 # ProjectSummary
 
-**Location:** `backend/app/schemas/project.py:317`
+**Location:** `backend/app/schemas/project.py:324`
 **Kind:** Pydantic model
 **Bases:** `WorkMetricSummary`
 **Module:** [schemas_project](../modules/schemas_project.md)
@@ -35,7 +35,7 @@ Summary statistics for a project.
 | `target_date_risk_reason` | `Optional[str]` | `target_date_risk_reason` | No | Yes | `None` | — | — | — |
 | `target_date_slip_days` | `int` | `target_date_slip_days` | No | No | `0` | — | — | — |
 | `days_until_target` | `Optional[int]` | `days_until_target` | No | Yes | `None` | — | — | — |
-| `status_counts` | `dict[str, int]` | `status_counts` | No | No | factory: `lambda: {'planned': 0, 'active': 0, 'resolved': 0, 'closed': 0}` | — | — | — |
+| `status_counts` | `dict[str, int]` | `status_counts` | No | No | factory: `lambda: {'planned': 0, 'active': 0, 'resolved': 0, 'closed': 0, 'postponed': 0, 'canceled': 0, 'superseded': 0}` | — | — | — |
 | `total_effort_days` | `float` | `total_effort_days` | No | No | `0.0` | — | — | — |
 | `remaining_effort_days` | `float` | `remaining_effort_days` | No | No | `0.0` | — | — | — |
 | `milestone_groups` | `list[ProjectMilestoneTaskGroup]` | `milestone_groups` | No | No | factory: `list` | — | — | — |

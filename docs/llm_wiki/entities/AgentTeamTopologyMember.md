@@ -1,6 +1,6 @@
 # AgentTeamTopologyMember
 
-**Location:** `backend/app/models/agent.py:371`
+**Location:** `backend/app/models/agent.py:392`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)
@@ -39,6 +39,12 @@ Installation-local mapping from a portable actor key to one actor.
 | `runtime_acknowledgement_digest` | `Mapped[Optional[str]]` | `mapped_column(String(64), nullable=True)` | — |
 | `runtime_acknowledgement_payload` | `Mapped[Optional[str]]` | `mapped_column(Text, nullable=True)` | — |
 | `runtime_acknowledged_at` | `Mapped[Optional[datetime]]` | `mapped_column(UTCDateTime(), nullable=True)` | — |
+| `issued_runtime_instance_id` | `Mapped[Optional[str]]` | `mapped_column(String(64), default=new_runtime_instance_id, nullable=True)` | — |
+| `acknowledged_runtime_instance_id` | `Mapped[Optional[str]]` | `mapped_column(String(64), nullable=True)` | — |
+| `previous_runtime_instance_id` | `Mapped[Optional[str]]` | `mapped_column(String(64), nullable=True)` | — |
+| `runtime_identity_changed_at` | `Mapped[Optional[datetime]]` | `mapped_column(UTCDateTime(), nullable=True)` | — |
+| `rejected_runtime_instance_id` | `Mapped[Optional[str]]` | `mapped_column(String(64), nullable=True)` | — |
+| `rejected_runtime_instance_at` | `Mapped[Optional[datetime]]` | `mapped_column(UTCDateTime(), nullable=True)` | — |
 | `ack_attempt_count` | `Mapped[int]` | `mapped_column(Integer, default=0, nullable=False)` | — |
 | `ack_window_started_at` | `Mapped[Optional[datetime]]` | `mapped_column(UTCDateTime(), nullable=True)` | — |
 | `created_at` | `Mapped[datetime]` | `mapped_column(UTCDateTime(), default=utc_now, nullable=False)` | — |
@@ -60,15 +66,15 @@ flowchart LR
     n2["backend/app/models/__init__.py"]
     n3["_member_contract_outdated (backend/app/services/agent_team_setup_service.py)"]
     n4["AgentTeamSetupService._apply_create_or_update (backend/app/services/agent_team_setup_service.py)"]
-    n5["AgentTeamSetupService._handoff (backend/app/services/agent_team_setup_service.py)"]
-    n6["AgentTeamSetupService._increment_ack_attempt (backend/app/services/agent_team_setup_service.py)"]
-    n7["AgentTeamSetupService._member_record (backend/app/services/agent_team_setup_service.py)"]
-    n8["AgentTeamSetupService._set_member_contract (backend/app/services/agent_team_setup_service.py)"]
-    n9["backend/app/services/execution_planning_window.py"]
-    n10["backend/app/services/execution_reconciliation.py"]
-    n11["backend/app/services/review_provenance.py"]
-    n12["backend/tests/test_agent_team_setup.py"]
-    n13["identity_evidence (backend/tests/test_agent_team_setup_stored_contract.py)"]
+    n5["AgentTeamSetupService._count_ack_attempt (backend/app/services/agent_team_setup_service.py)"]
+    n6["AgentTeamSetupService._handoff (backend/app/services/agent_team_setup_service.py)"]
+    n7["AgentTeamSetupService._increment_ack_attempt (backend/app/services/agent_team_setup_service.py)"]
+    n8["AgentTeamSetupService._member_record (backend/app/services/agent_team_setup_service.py)"]
+    n9["AgentTeamSetupService._runtime_identity_status (backend/app/services/agent_team_setup_service.py)"]
+    n10["AgentTeamSetupService._set_member_contract (backend/app/services/agent_team_setup_service.py)"]
+    n11["backend/app/services/execution_planning_window.py"]
+    n12["backend/app/services/execution_reconciliation.py"]
+    n13["backend/app/services/review_provenance.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -91,18 +97,18 @@ flowchart LR
     click n6 "../modules/agent_team_setup_service.md"
     click n7 "../modules/agent_team_setup_service.md"
     click n8 "../modules/agent_team_setup_service.md"
-    click n9 "../modules/execution_planning_window.md"
-    click n10 "../modules/execution_reconciliation.md"
-    click n11 "../modules/review_provenance.md"
-    click n12 "../modules/test_agent_team_setup.md"
-    click n13 "../modules/test_agent_team_setup_stored_contract.md"
+    click n9 "../modules/agent_team_setup_service.md"
+    click n10 "../modules/agent_team_setup_service.md"
+    click n11 "../modules/execution_planning_window.md"
+    click n12 "../modules/execution_reconciliation.md"
+    click n13 "../modules/review_provenance.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_agent](../modules/models_agent.md) | 0 | `ack_attempt_count`, `ack_window_started_at`, `actor`, `actor_id`, `actor_key`, `actor_name`, `assignment_modes`, `created_at`, `credential_delivery_receipt_digest`, `credential_delivery_state`, `credential_ref`, `default_model_binding_key` |
+| [models_agent](../modules/models_agent.md) | 0 | `ack_attempt_count`, `ack_window_started_at`, `acknowledged_runtime_instance_id`, `actor`, `actor_id`, `actor_key`, `actor_name`, `assignment_modes`, `created_at`, `credential_delivery_receipt_digest`, `credential_delivery_state`, `credential_ref` |
 
 ### Structure
 
@@ -117,14 +123,14 @@ flowchart LR
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `_member_contract_outdated` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._apply_create_or_update` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 2 |
+| `AgentTeamSetupService._count_ack_attempt` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._handoff` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._increment_ack_attempt` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._member_record` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
+| `AgentTeamSetupService._runtime_identity_status` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._set_member_contract` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `execution_planning_window` | import | [execution_planning_window](../modules/execution_planning_window.md) | — |
 | `execution_reconciliation` | import | [execution_reconciliation](../modules/execution_reconciliation.md) | — |
 | `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |
-| `test_agent_team_setup` | import | [test_agent_team_setup](../modules/test_agent_team_setup.md) | — |
-| `identity_evidence` | type_reference | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | — |
 
-> References: showing 12 of 16 logical references; 4 omitted by the 12-row generated summary limit.
+> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.

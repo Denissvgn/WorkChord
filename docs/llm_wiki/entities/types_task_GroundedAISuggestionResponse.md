@@ -1,6 +1,6 @@
 # GroundedAISuggestionResponse
 
-**Location:** `frontend/src/types/task.ts:267`
+**Location:** `frontend/src/types/task.ts:281`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

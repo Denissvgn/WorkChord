@@ -21,6 +21,7 @@ Preview and apply use the observed iteration revision in the forecast digest. A 
 
 | Source | Symbols |
 |--------|---------|
+| `app.authority` | `AGENT_TASK_WRITE_SCOPES` |
 | `app.commands` | `commit_or_flush`, `atomic_command`, `current_command`, `lock_planning`, `preview_command`, `PlanningConflict` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord` |
 | `app.models.calendar` | `Calendar` |
@@ -30,23 +31,29 @@ Preview and apply use the observed iteration revision in the forecast digest. A 
 | `app.schemas.agent` | `AgentTaskCreate`, `AgentTaskPatch` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext`, `AgentPlanningReceipt`, `AgentScheduleCommand`, `AgentScheduleResult`, `AgentScheduleTaskState` |
 | `app.schemas.iteration` | `IterationCreate`, `IterationUpdate` |
+| `app.schemas.manual_provenance` | `ManualProvenanceResponse` |
 | `app.schemas.project` | `ProjectCreate`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneResponse`, `ProjectMilestoneUpdate`, `ProjectResponse`, `ProjectUpdate` |
 | `app.schemas.task` | `TaskCreate`, `TaskResponse`, `TaskUpdate` |
+| `app.schemas.task_postponement` | `TaskPostponementResponse` |
 | `app.schemas.task_replacement` | `TaskReplacementResponse` |
 | `app.schemas.team` | `CapacityAdjustmentCommand`, `CapacityAdjustmentResult`, `CapacityTransferCommand`, `CapacityTransferResult`, `CapacityTransferWithdrawal`, `TeamMemberCreate`, `TeamMemberProfileCreate`, `TeamMemberProfileResponse`, `TeamMemberProfileUpdate`, `TeamMemberResponse`, `TeamMemberUpdate`, `VacationCreate`, `VacationResponse`, `VacationUpdate` |
 | `app.services.agent_profile_catalog_service` | `AgentProfileCatalogService` |
-| `app.services.agent_service` | `AgentConflictError`, `require_scope`, `validate_idempotency_key` |
+| `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope`, `require_scope`, `validate_idempotency_key` |
 | `app.services.calendar_rules` | `AnnualCalendars` |
 | `app.services.capacity_adjustments` | `CapacityAdjustmentService`, `load_dated_availability` |
 | `app.services.capacity_service` | `CapacityService` |
 | `app.services.capacity_transfers` | `CapacityTransferService`, `CapacityTransferService` |
+| `app.services.delivery_dependency_service` | `DeliveryDependencyService`, `DeliveryDependencyService` |
 | `app.services.iteration_service` | `IterationService` |
+| `app.services.manual_provenance_service` | `ManualProvenanceService` |
 | `app.services.project_service` | `ProjectService` |
 | `app.services.scheduler_service` | `SchedulerService` |
+| `app.services.task_postponement_service` | `TaskPostponementService` |
 | `app.services.task_replacement_service` | `TaskReplacementService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.team_service` | `TeamService` |
 | `collections.abc` | `Awaitable`, `Callable`, `Mapping` |
+| `dataclasses` | `replace` |
 | `hashlib` | `hashlib` |
 | `json` | `json` |
 | `secrets` | `secrets` |
@@ -74,7 +81,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (10) |
-| Outbound | `backend` (25) |
+| Outbound | `backend` (31) |
 
 ### External packages
 
@@ -82,11 +89,11 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 41 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [_SchedulePreviewComplete](../entities/SchedulePreviewComplete.md) | 75 | `Exception` | Internal signal used to roll back a schedule preview savepoint. |
-| [AgentPlanningService](../entities/AgentPlanningService.md) | 83 | — | Expose bounded PM setup commands without bypassing domain services. |
+| [_SchedulePreviewComplete](../entities/SchedulePreviewComplete.md) | 78 | `Exception` | Internal signal used to roll back a schedule preview savepoint. |
+| [AgentPlanningService](../entities/AgentPlanningService.md) | 86 | — | Expose bounded PM setup commands without bypassing domain services. |

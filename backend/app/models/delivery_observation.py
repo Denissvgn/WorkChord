@@ -72,10 +72,15 @@ def observe_task_event(_mapper, connection, item):
     row = _task_row(connection, item.task_id)
     if row is None:
         return
+    # A superseded original is withdrawn like a replaced one: its successor carries the delivery fact.
     kind = {"task_cancel": "canceled", "execution_canceled": "canceled", "task_replaced": "replaced",
+            "task_superseded": "replaced",
             "task_reopen": "reopened", "backlog_snapshot_restored": "restored", "snapshot_task_restored": "restored"}.get(item.event_type)
     if item.event_type == "task_reopen" and row["status"] == "planned":
         kind = "reopened_planned"
+    elif item.event_type == "task_reopen" and row["status"] == "postponed":
+        # Reopened postponed work stays stopped, so no delivery fact begins.
+        kind = None
     if item.event_type == "status_changed":
         payload = json.loads(item.payload)
         transition = (payload.get("from_status"), payload.get("to_status"))
@@ -104,6 +109,10 @@ def observe_review(_mapper, connection, review):
     else:
         kind = "rejected"
     _record(connection, row, kind, review.created_at, "review_record", version=review.task_version)
+    if kind == "accepted" and review.kind == "owner_override":
+        # The same confirmed acceptance, also counted apart as an owner override of publisher
+        # independence, so the override count stays a subset of acceptance events.
+        _record(connection, row, "owner_override_accepted", review.created_at, "review_record", version=review.task_version)
 
 
 event.listen(Task, "after_insert", observe_task_insert)

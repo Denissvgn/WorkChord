@@ -1,6 +1,6 @@
 # RequiredModelEnvelope
 
-**Location:** `frontend/src/types/agent.ts:318`
+**Location:** `frontend/src/types/agent.ts:393`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -15,9 +15,11 @@ _Auto-generated from `RequiredModelEnvelope` in `frontend/src/types/agent.ts`._
 |------|------|----------|---------|-------------|
 | `minimum_reasoning_tier` | `ModelReasoningTier` | Yes | — | — |
 | `minimum_context_tier` | `ModelContextTier` | Yes | — | — |
+| `minimum_effort` | `RequiredModelEffort \| null` | No | — | — |
 | `modality_tags` | `string[]` | Yes | — | — |
 | `tool_tags` | `string[]` | Yes | — | — |
 | `data_policy_tags` | `string[]` | Yes | — | — |
+| `qualification_keys` | `string[]` | No | — | — |
 
 ## Methods
 
@@ -32,4 +34,4 @@ _Auto-generated from `RequiredModelEnvelope` in `frontend/src/types/agent.ts`._
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_agent](../modules/types_agent.md) | 0 | `data_policy_tags`, `minimum_context_tier`, `minimum_reasoning_tier`, `modality_tags`, `tool_tags` |
+| [types_agent](../modules/types_agent.md) | 0 | `data_policy_tags`, `minimum_context_tier`, `minimum_effort`, `minimum_reasoning_tier`, `modality_tags`, `qualification_keys`, `tool_tags` |

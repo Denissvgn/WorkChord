@@ -4,6 +4,10 @@ on:
   workflow_call:
   workflow_dispatch:
     inputs:
+      android_checks:
+        description: Run the Android unit results and debug APK checks (deferred from automatic CI)
+        type: boolean
+        default: false
       android_release_qualification:
         description: Run the owned ARM64 emulator release qualification
         type: boolean
@@ -18,7 +22,7 @@ permissions:
 
 concurrency:
   group: client-baseline-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   delivery:
@@ -113,6 +117,8 @@ jobs:
 
   android:
     name: Android unit results and debug APK
+    # Android support is deferred: the job runs only when started by hand with android_checks.
+    if: github.event_name == 'workflow_dispatch' && inputs.android_checks
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:

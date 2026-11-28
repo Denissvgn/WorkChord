@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_actor_roster_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_routing](../modules/agent_routing.md), [agent_service](../modules/agent_service.md), and 19 more
+**Modules touched:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_routing](../modules/agent_routing.md), [agent_service](../modules/agent_service.md), and 20 more
 
 **Complete modules touched:**
 
@@ -26,6 +26,7 @@
 - [query_limits](../modules/query_limits.md)
 - [schemas_agent](../modules/schemas_agent.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -55,16 +56,16 @@ sequenceDiagram
     participant p16 as _require_scope_requirement
     participant p17 as IdentityService.actor_context
     participant p18 as AgentTeamSetupService._status_for_topology
-    participant p19 as require_scope
-    participant p20 as AgentService.authenticate
-    participant p21 as require_identity_writes
-    participant p22 as DeliveryDependencyService.reconcile
-    participant p23 as IdentityService.context
-    participant p24 as DiscussionService.enqueue
-    participant p25 as _member_contract_outdated
-    participant p26 as AgentTeamSetupService._handoff
-    participant p27 as _canonical_json
-    participant p28 as AgentWorkService
+    participant p19 as _iso_or_none
+    participant p20 as require_scope
+    participant p21 as AgentService.authenticate
+    participant p22 as require_identity_writes
+    participant p23 as process_reactivation_checks
+    participant p24 as IdentityService.context
+    participant p25 as DeliveryDependencyService.reconcile
+    participant p26 as DiscussionService.enqueue
+    participant p27 as _member_contract_outdated
+    participant p28 as AgentTeamSetupService._handoff
     participant p29 as json.dumps (backend/app/mcp_server.py:_json_resource)
     participant p30 as value.model_dump
     p0->>p1: _json_resource
@@ -85,23 +86,23 @@ sequenceDiagram
     p8->>p16: _require_scope_requirement
     p8->>p17: IdentityService.actor_context
     p9->>p18: AgentTeamSetupService._status_for_topology
-    p16->>p19: require_scope
-    p15->>p20: AgentService.authenticate
-    p17->>p21: require_identity_writes
-    p14->>p22: DeliveryDependencyService.reconcile
-    p17->>p23: IdentityService.context
-    p14->>p24: DiscussionService.enqueue
-    p18->>p25: _member_contract_outdated
-    p18->>p26: AgentTeamSetupService._handoff
-    p18->>p27: _canonical_json
-    p2->>p28: AgentWorkService
+    p9->>p19: _iso_or_none
+    p16->>p20: require_scope
+    p15->>p21: AgentService.authenticate
+    p17->>p22: require_identity_writes
+    p14->>p23: process_reactivation_checks
+    p17->>p24: IdentityService.context
+    p14->>p25: DeliveryDependencyService.reconcile
+    p14->>p26: DiscussionService.enqueue
+    p18->>p27: _member_contract_outdated
+    p18->>p28: AgentTeamSetupService._handoff
     p1-->>p29: json.dumps (backend/app/mcp_server.py:_json_resource)(value, ensure_ascii=False, default=str)
     p4-->>p30: value.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 463 interactions; 433 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 500 interactions; 470 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 145 (144 omitted); unresolved 1 of 199 (198 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 158 (157 omitted); unresolved 1 of 213 (212 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -115,7 +116,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 101 groups; 93 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 111 groups; 103 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -128,9 +129,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 120; effect analysis evaluated: 73, partial: 3, unavailable: 44. Counts include steps omitted from the displayed trace.
+Source steps: 130; effect analysis evaluated: 80, partial: 3, unavailable: 47. Counts include steps omitted from the displayed trace.
 
-Collector observations for 76 source steps with known totals: observed: 349, emitted: 324, omitted: 25. Unavailable totals are excluded.
+Collector observations for 83 source steps with known totals: observed: 387, emitted: 360, omitted: 27. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -206,11 +207,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_actor_roster_resource | _json_resource | 2467 | `_json_resource((...), ...)` |
-| _json_resource | _tool_call | 364 | `_tool_call(required_scope, func)` |
-| _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
+| agent_actor_roster_resource | _json_resource | 2647 | `_json_resource((...), ...)` |
+| _json_resource | _tool_call | 367 | `_tool_call(required_scope, func)` |
+| _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `tuple(required_scope)` |

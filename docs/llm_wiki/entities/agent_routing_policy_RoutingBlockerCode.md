@@ -1,6 +1,6 @@
 # RoutingBlockerCode
 
-**Location:** `backend/app/services/agent_routing_policy.py:186`
+**Location:** `backend/app/services/agent_routing_policy.py:202`
 **Kind:** Enum
 **Bases:** `StrEnum`
 **Module:** [agent_routing_policy](../modules/agent_routing_policy.md)
@@ -49,6 +49,8 @@ Stable hard blockers shared by preview and assignment enforcement.
 | `MODEL_CATALOG_DISABLED` | `'model_catalog_disabled'` | — |
 | `MODEL_REASONING_TIER_INSUFFICIENT` | `'model_reasoning_tier_insufficient'` | — |
 | `MODEL_CONTEXT_TIER_INSUFFICIENT` | `'model_context_tier_insufficient'` | — |
+| `MODEL_EFFORT_INSUFFICIENT` | `'model_effort_insufficient'` | — |
+| `MODEL_QUALIFICATION_MISSING` | `'model_qualification_missing'` | — |
 | `MODEL_MODALITY_MISSING` | `'model_modality_missing'` | — |
 | `MODEL_TOOL_MISSING` | `'model_tool_missing'` | — |
 | `MODEL_DATA_POLICY_MISSING` | `'model_data_policy_missing'` | — |

@@ -2,14 +2,14 @@
 
 **Entry point:** `task_replacement` (`http`)
 **Source:** [routers_task_domain](../modules/routers_task_domain.md)
-**Modules touched:** [authority](../modules/authority.md), [config](../modules/config.md), [query_limits](../modules/query_limits.md), [retained_planning_output](../modules/retained_planning_output.md), and 3 more
+**Modules touched:** [authority](../modules/authority.md), [config](../modules/config.md), [manual_provenance_service](../modules/manual_provenance_service.md), [query_limits](../modules/query_limits.md), and 3 more
 
 **Complete modules touched:**
 
 - [authority](../modules/authority.md)
 - [config](../modules/config.md)
+- [manual_provenance_service](../modules/manual_provenance_service.md)
 - [query_limits](../modules/query_limits.md)
-- [retained_planning_output](../modules/retained_planning_output.md)
 - [review_provenance](../modules/review_provenance.md)
 - [routers_task_domain](../modules/routers_task_domain.md)
 - [task_replacement_service](../modules/task_replacement_service.md)
@@ -43,13 +43,13 @@ sequenceDiagram
     participant p19 as attributed
     participant p20 as CollectionLimitExceededError
     participant p21 as _carried_bound_row
-    participant p22 as _manual_history
-    participant p23 as retained_attestations
-    participant p24 as no_output_corroborated
-    participant p25 as historical_profile
-    participant p26 as ReviewHistory
-    participant p27 as _submitted_review_floor
-    participant p28 as _submission_candidate
+    participant p22 as _run_history
+    participant p23 as _recorded_contributions
+    participant p24 as digest
+    participant p25 as _submission_candidate
+    participant p26 as submitted_candidate
+    participant p27 as ReviewHistory
+    participant p28 as _add_recorded
     participant p29 as HTTPException
     participant p30 as self.db.scalar (backend/app/services/task…askReplacementService.get)
     p0->>p1: TaskReplacementService.get
@@ -73,20 +73,20 @@ sequenceDiagram
     p11->>p19: attributed
     p13->>p20: CollectionLimitExceededError
     p15->>p21: _carried_bound_row
-    p14->>p22: _manual_history
-    p14->>p23: retained_attestations
-    p14->>p24: no_output_corroborated
-    p14->>p25: historical_profile
-    p14->>p26: ReviewHistory
-    p14->>p27: _submitted_review_floor
-    p14->>p28: _submission_candidate
+    p14->>p22: _run_history
+    p14->>p23: _recorded_contributions
+    p14->>p24: digest
+    p14->>p25: _submission_candidate
+    p14->>p26: submitted_candidate
+    p14->>p27: ReviewHistory
+    p14->>p28: _add_recorded
     p2-->>p29: HTTPException(409, detail=exc.detail(...))
     p1-->>p30: self.db.scalar (backend/app/services/task…askReplacementService.get)(...)
 ```
 
-> Call sequence diagram shows 30 of 160 interactions; 130 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 123 interactions; 93 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 38 (37 omitted); unresolved 1 of 74 (73 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 31 (30 omitted); unresolved 1 of 46 (45 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -113,9 +113,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 49; effect analysis evaluated: 37, partial: 2, unavailable: 10. Counts include steps omitted from the displayed trace.
+Source steps: 47; effect analysis evaluated: 36, partial: 4, unavailable: 7. Counts include steps omitted from the displayed trace.
 
-Collector observations for 39 source steps with known totals: observed: 231, emitted: 225, omitted: 6. Unavailable totals are excluded.
+Collector observations for 40 source steps with known totals: observed: 237, emitted: 229, omitted: 8. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -187,17 +187,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_replacement | domain_result | 323 | `domain_result(...)` |
-| domain_result | HTTPException | 53 | `HTTPException(409, detail=exc.detail(...))` |
-| domain_result | exc.detail | 53 | `exc.detail(data not statically known)` |
-| domain_result | HTTPException | 55 | `HTTPException(404, detail=str(...))` |
-| domain_result | str | 55 | `str(exc)` |
-| domain_result | HTTPException | 57 | `HTTPException(422, detail=[...])` |
-| domain_result | str | 57 | `str(exc)` |
-| domain_result | HTTPException | 59 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_replacement | TaskReplacementService.get | 323 | `TaskReplacementService(db).get(task_id)` |
-| TaskReplacementService.get | self.db.scalar (backend/app/services/task…askReplacementService.get) | 184 | `self.db.scalar(...)` |
-| TaskReplacementService.get | select(…).where (backend/app/services/task…askReplacementService.get) | 184 | `select(Task).where(...)` |
+| task_replacement | domain_result | 351 | `domain_result(...)` |
+| domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
+| domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
+| domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
+| domain_result | str | 58 | `str(exc)` |
+| domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
+| domain_result | str | 60 | `str(exc)` |
+| domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
+| task_replacement | TaskReplacementService.get | 351 | `TaskReplacementService(db).get(task_id)` |
+| TaskReplacementService.get | self.db.scalar (backend/app/services/task…askReplacementService.get) | 239 | `self.db.scalar(...)` |
+| TaskReplacementService.get | select(…).where (backend/app/services/task…askReplacementService.get) | 239 | `select(Task).where(...)` |
 
 ### Boundary effects
 
@@ -207,13 +207,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `domain_result` | `HTTPException` | 53 |
-| unresolved_call | `domain_result` | `exc.detail` | 53 |
-| external_call | `domain_result` | `HTTPException` | 55 |
-| external_call | `domain_result` | `HTTPException` | 57 |
-| external_call | `domain_result` | `HTTPException` | 59 |
-| unresolved_call | `TaskReplacementService.get` | `self.db.scalar` | 184 |
-| unresolved_call | `TaskReplacementService.get` | `select(Task).where` | 184 |
+| external_call | `domain_result` | `HTTPException` | 56 |
+| unresolved_call | `domain_result` | `exc.detail` | 56 |
+| external_call | `domain_result` | `HTTPException` | 58 |
+| external_call | `domain_result` | `HTTPException` | 60 |
+| external_call | `domain_result` | `HTTPException` | 62 |
+| unresolved_call | `TaskReplacementService.get` | `self.db.scalar` | 239 |
+| unresolved_call | `TaskReplacementService.get` | `select(Task).where` | 239 |
 | step_limit | `task_replacement` | `first 12 steps` | 0 |
 | truncated_flow | `task_replacement` | `depth limit` | 0 |
 

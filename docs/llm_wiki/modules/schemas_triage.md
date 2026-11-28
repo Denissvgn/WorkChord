@@ -13,6 +13,7 @@ Triage item schemas.
 | `app.schemas.task` | `TaskResponse` |
 | `app.schemas.task_brief` | `TaskBrief` |
 | `app.services.task_brief_service` | `render_brief` |
+| `app.utils.source_link_policy` | `evaluate_source_link` |
 | `datetime` | `datetime` |
 | `enum` | `Enum` |
 | `pydantic` | `BaseModel`, `ConfigDict`, `Field`, `computed_field`, `field_validator`, `model_validator` |
@@ -36,8 +37,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (13) |
-| Outbound | `backend` (3) |
+| Inbound | `backend` (14) |
+| Outbound | `backend` (4) |
 
 ### External packages
 
@@ -45,7 +46,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -66,7 +67,8 @@ flowchart LR
 | [TriageTaskDraftResponse](../entities/schemas_triage_TriageTaskDraftResponse.md) | Pydantic model | 244 | `BaseModel` | — |
 | [TriageConvertToTaskRequest](../entities/schemas_triage_TriageConvertToTaskRequest.md) | Pydantic model | 269 | `BaseModel` | — |
 | [TriageConvertToBacklogRequest](../entities/TriageConvertToBacklogRequest.md) | Pydantic model | 294 | `TriageConvertToTaskRequest` | Explicit project backlog destination; the legacy iteration contract stays required. |
-| [TriageConvertToTaskResponse](../entities/schemas_triage_TriageConvertToTaskResponse.md) | Pydantic model | 301 | `BaseModel` | Response for triage item conversion. |
+| [TriageSourceLinkOutcome](../entities/TriageSourceLinkOutcome.md) | Pydantic model | 301 | `BaseModel` | What conversion did with the intake's source link when it was not carried over unchanged. |
+| [TriageConvertToTaskResponse](../entities/schemas_triage_TriageConvertToTaskResponse.md) | Pydantic model | 322 | `BaseModel` | Response for triage item conversion. |
 
 ## Functions
 

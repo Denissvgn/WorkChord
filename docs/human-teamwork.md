@@ -186,6 +186,36 @@ schedule commitment. Allocations must have durable profiles, and forecast dates
 must fit within their allocated iteration before commitment. Existing commitments remain visible for reconciliation;
 the scheduler does not silently redistribute another project's allocations.
 
+### How the schedule places work
+
+The scheduler places each planned task once its prerequisites have dates,
+taking the best-ranked ready task first (the scheduling passes, then priority).
+An assignee works on one task at a time, and each task normally starts after
+the last task already placed for that assignee.
+
+A higher-ranked task that waits for a prerequisite on another assignee can
+leave its own assignee with free days before it. A ready lower-ranked task uses
+those days when it fits there completely: start to end, without an absence in
+between and without touching work already placed. Work already placed never
+moves, so no task starts later than it would if every task followed the
+assignee's last task. A task that does not fit follows the assignee's last task
+as before. The same inputs always give the same dates.
+
+The schedule result and the preview list, for each assignee, the working days
+still left idle before that assignee's last task (`idle_days`), with the task
+that starts after them and why it starts no earlier: it waits for a
+prerequisite, it cannot start before its earliest start date, its dates are
+fixed because it is already in progress or done, or it needs an uninterrupted
+run of working days. When both a prerequisite and an earliest start date apply,
+the later of the two is named. Days after an assignee's last task are not
+listed. On the Plan screen the list appears with a calculated schedule.
+
+Deferred and postponed tasks stay outside scheduling and occupy no days. A task
+that keeps its saved dates because the run could not place it does not occupy
+its assignee's days for placement: other work may be placed on those days. The
+days its saved dates cover are not listed as idle, because the assignee has
+saved work there.
+
 ## Read the delivery signals
 
 A task committed to start Monday but actually started Wednesday is **late to
@@ -202,6 +232,51 @@ requested reason. Humans can start urgent backlog work manually. Record
 criterion progress and evidence, then resolve the task for review. Another
 authorized reviewer accepts it or requests rework. A resolved task is awaiting
 review; **closed** means accepted work and uses the violet status color.
+When a project requires a different review publisher, a person's review does not
+accept work: **Accept** stays unavailable and says it needs an assigned agent
+verifier. A signed-in workspace owner or operator can still close one resolved task
+with **Accept as owner** under **Work and review**. Give a reason, which is
+required, and choose the action; it also works from the keyboard, and the result is
+announced. The project's policy stays on and covers only that task. **Review
+history** shows the acceptance with an **Owner override** label and your reason, so
+it is never read as an independent review, and the task's Activity records it too.
+If you executed the work yourself, the action is not offered to you: ask another
+owner or operator to accept it, or use the API with `X-Review-Override: true`. If you
+only wrote the task's current evidence, the server refuses the acceptance and the
+page shows its message; the web interface does not send that override.
+
+**Accept as owner** needs a person who is signed in. A trusted-local workspace
+browser with no signed-in person is not an owner or operator, even though it can
+otherwise edit: the page says so instead of offering the action. Sign in as a
+workspace owner or operator, reload the task, and accept it. A person who may review
+but is not an owner or operator is told to ask one of them, or to assign an agent
+verifier. The page can only explain this where the server reports that the project
+needs a verified agent publisher. A person without review permission, and a paired
+read-only observer, instead see the ordinary reason Accept is unavailable; a paired
+observer is also told to sign in as a person with review permission.
+
+Work that was resolved outside recorded runs has no executor on record, so no
+verifier can be selected for it. The PM agent records who executed it with
+`agent_record_manual_provenance` once the pull request is linked to the task and
+every commit of it is listed; a human executor can only be recorded by a
+signed-in person, so the PM asks the owner. When a refusal names a next step, the
+PM agent or the page follows it instead of asking anyone to switch the review
+policy off.
+
+**Postpone** stops planned, active or resolved work without canceling it. Give a
+reason and one or more requirements (a task is accepted or resolved, a triage item
+is resolved, a date arrives, or the owner decides); the form lists what the
+postponement releases before you confirm. A PM agent does the same with
+`agent_postpone_task`, `agent_reactivate_task` and `agent_get_task_postponement`.
+Postponed work is not scheduled, holds no capacity, is not offered to agents or
+verifiers, and returns to Planned (or Resolved) by itself when every requirement is
+met, or when someone chooses **Reactivate**. Only the workspace owner records an
+owner-decision requirement. Cancel work only when it will never be done. When
+another task already delivered the work and is closed or accepted, use
+**Supersede** instead of reopening anything: the original is withdrawn with its
+history, and its dependents and release membership move to the successor.
+Canceled and superseded work is shown as ended in Tasks, Board and Analytics.
+
 Explicit blocks and cancellation are separate from lifecycle status. A block
 comes from **Report blocker**, used by a person or an agent; either way the task
 shows the reason, appears in the **Blocked** view, and its Activity names who
@@ -229,3 +304,13 @@ Agents that do or check work are members of the team. Open **Team → Connect**,
 or choose **Connect an agent** from the command menu, to connect one. The
 [agent team setup](agent-team-setup.md) guide describes the five questions, the
 runtime steps, and the advanced manifest path.
+Each handoff names a runtime instance (`runtime_instance_id`). The agent returns it
+unchanged in its acknowledgement, and team status shows whether the identity is
+current, stale, changed or unknown for each member. After a credential is
+recovered or a member is replaced, give the runtime the new handoff and have it
+acknowledge again; do not copy a handoff to another runtime.
+
+Before an operator imports an iteration plan file, the PM agent can run a dry run
+(`agent_preview_iteration_import`) that shows every created, changed and removed
+row and returns a `review_digest`. The operator imports the unchanged file with
+that digest, and the import applies exactly the reviewed changes or is refused.

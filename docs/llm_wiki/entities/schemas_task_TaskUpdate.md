@@ -1,6 +1,6 @@
 # TaskUpdate
 
-**Location:** `backend/app/schemas/task.py:70`
+**Location:** `backend/app/schemas/task.py:71`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)
@@ -42,6 +42,7 @@ Schema for updating a task.
 | `external_key` | `Optional[str]` | `external_key` | No | Yes | `None` | max_length=255 | — | — |
 | `source` | `Optional[str]` | `source` | No | Yes | `None` | max_length=100 | — | — |
 | `source_url` | `Optional[str]` | `source_url` | No | Yes | `None` | max_length=1000 | — | — |
+| `routing_resolution` | `RoutingResolution` | `routing_resolution` | No | No | `'check'` | — | — | How an assignee or routing change treats the brief's structured routing: check it against the assignee and the project's review policy (refused or warned as the project is configured), or save the suggested consistent routing. |
 
 ## Methods
 
@@ -126,4 +127,4 @@ flowchart LR
 | `TaskImportService.bulk_update_tasks_from_text` | call | [task_import_service](../modules/task_import_service.md) | 1 |
 | `TaskService.update` | type_reference | [task_service](../modules/task_service.md) | — |
 
-> References: showing 12 of 32 logical references; 20 omitted by the 12-row generated summary limit.
+> References: showing 12 of 36 logical references; 24 omitted by the 12-row generated summary limit.

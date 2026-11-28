@@ -117,6 +117,7 @@ from app.schemas.triage import (
     TriageItemStatus,
     TriageItemUpdate,
     TriageSnoozeRequest,
+    TriageSourceLinkOutcome,
     TriageTaskDraftRequest,
 )
 from app.services.agent_profile_catalog_service import AgentProfileCatalogService
@@ -1126,6 +1127,21 @@ async def preview_iteration_date_move(
     return IterationDateMovePreview.model_validate(result).model_dump(mode="json")
 
 
+async def preview_iteration_import(
+    db: AsyncSession,
+    actor: AgentActor,
+    iteration_id: int | None,
+    import_data: Any,
+) -> dict[str, Any]:
+    """MCP handler: the exact changes a JSON plan import would make, without writing them."""
+    from app.services.agent_service import require_scope
+    from app.services.import_review_service import dry_run_import, validate_import_payload
+
+    require_scope(actor, "planning:write")
+    validate_import_payload(import_data)
+    return await dry_run_import(db, iteration_id, import_data)
+
+
 async def apply_capacity_adjustment(
     db: AsyncSession,
     actor: AgentActor,
@@ -1240,7 +1256,7 @@ async def get_task_replacement(
     actor: AgentActor,
     task_id: int,
 ) -> dict[str, Any]:
-    """MCP handler: read the clean-replacement disposition a task takes part in."""
+    """MCP handler: read the replacement or supersession disposition a task takes part in."""
     from app.schemas.task_replacement import TaskReplacementResponse
     from app.services.agent_service import require_scope
     from app.services.task_replacement_service import TaskReplacementService
@@ -1267,6 +1283,97 @@ async def record_task_replacement(
         task_id,
         actor,
         TaskReplacementCreate.model_validate(payload),
+        command=_planning_command_context(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def record_manual_provenance(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: record who executed resolved work delivered outside recorded runs."""
+    from app.schemas.manual_provenance import ManualProvenanceWrite
+
+    receipt = await AgentPlanningService(db).record_manual_provenance(
+        task_id,
+        actor,
+        ManualProvenanceWrite.model_validate(payload),
+        command=_planning_command_context(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def get_task_postponement(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+) -> dict[str, Any]:
+    """MCP handler: GET /api/tasks/{task_id}/postponement, with each requirement and whether it is met."""
+    from app.schemas.task_postponement import TaskPostponementResponse
+    from app.services.task_postponement_service import TaskPostponementService
+
+    result = await TaskPostponementService(db).get(task_id)
+    return TaskPostponementResponse.model_validate(result).model_dump(mode="json")
+
+
+async def postpone_task(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: POST /api/tasks/{task_id}/postpone as an audited planning command."""
+    from app.schemas.task_postponement import TaskPostponeRequest
+
+    receipt = await AgentPlanningService(db).postpone_task(
+        task_id,
+        actor,
+        TaskPostponeRequest.model_validate(payload),
+        command=_planning_command_context(
+            idempotency_key=idempotency_key,
+            rationale=rationale,
+            correlation_id=correlation_id,
+        ),
+    )
+    return receipt.model_dump(mode="json")
+
+
+async def reactivate_task(
+    db: AsyncSession,
+    actor: AgentActor,
+    task_id: int,
+    payload: dict[str, Any],
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any]:
+    """MCP handler: POST /api/tasks/{task_id}/reactivate as an audited planning command."""
+    from app.schemas.task_postponement import TaskReactivateRequest
+
+    receipt = await AgentPlanningService(db).reactivate_task(
+        task_id,
+        actor,
+        TaskReactivateRequest.model_validate(payload),
         command=_planning_command_context(
             idempotency_key=idempotency_key,
             rationale=rationale,
@@ -2531,9 +2638,16 @@ async def create_agent_project_update(
     return response.model_dump(mode="json")
 
 
-async def list_project_tasks(db: AsyncSession, project_id: int) -> list[dict[str, Any]] | None:
-    """MCP handler: list tasks linked to a project."""
-    tasks = await ProjectService(db).get_tasks(project_id)
+async def list_project_tasks(db: AsyncSession, project_id: int, status: Optional[str] = None) -> list[dict[str, Any]] | None:
+    """MCP handler: list tasks linked to a project, or those shown in one state.
+
+    ``status`` is a displayed state: planned, active, resolved, closed, postponed, canceled or
+    superseded. With it the result is a flat list of the tasks at any depth shown in that state.
+    """
+    if status is not None:
+        from app.services.task_display_state import validate_state_filter
+        validate_state_filter(status)
+    tasks = await ProjectService(db).get_tasks(project_id, status)
     if tasks is None:
         return None
     task_service = TaskService(db)
@@ -2924,6 +3038,7 @@ async def convert_triage_to_task(
         response = TriageConvertToTaskResponse(
             triage_item=TriageItemResponse.model_validate(item),
             task=TaskService(db).task_to_response(task),
+            source_link=TriageSourceLinkOutcome.for_link(item.source_url),
         ).model_dump(mode="json")
         await _stage_triage_command_audit_event(
             db,
@@ -3577,6 +3692,20 @@ async def write_task_brief(db, actor, task_id, payload):
     return TaskService(db).task_to_response(task).model_dump(mode="json")
 
 
+async def check_task_routing(db, actor, task_id, assignee_id=None):
+    """Check a brief's structured routing against the current or a proposed assignee."""
+    from app.services.task_brief_service import TaskBriefService
+    return (await TaskBriefService(db).routing_check(task_id, assignee_id)).model_dump(mode="json")
+
+
+async def convert_task_routing(db, actor, task_id, payload):
+    """Preview or apply moving a brief's free-text routing into structured routing."""
+    from app.schemas.task_routing import RoutingConvert
+    from app.services.task_brief_service import TaskBriefService
+    result = await TaskBriefService(db).routing_conversion(task_id, RoutingConvert.model_validate(payload))
+    return result.model_dump(mode="json")
+
+
 async def convert_triage_to_backlog(db, actor, triage_item_id, payload):
     """Use an explicit project backlog destination while preserving legacy conversion."""
     from app.schemas.triage import TriageConvertToBacklogRequest
@@ -3584,4 +3713,8 @@ async def convert_triage_to_backlog(db, actor, triage_item_id, payload):
     if result is None:
         return None
     item, task = result
-    return {"triage_item": TriageItemResponse.model_validate(item).model_dump(mode="json"), "task": TaskService(db).task_to_response(task).model_dump(mode="json")}
+    return TriageConvertToTaskResponse(
+        triage_item=TriageItemResponse.model_validate(item),
+        task=TaskService(db).task_to_response(task),
+        source_link=TriageSourceLinkOutcome.for_link(item.source_url),
+    ).model_dump(mode="json")

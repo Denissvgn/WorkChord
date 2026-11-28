@@ -19,7 +19,7 @@ For scheduled work, the forecast follows what happened: a start moves the task t
 | Source | Symbols |
 |--------|---------|
 | `app.authority` | `AuthorityError`, `require_project`, `internal_authority` |
-| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `PlanningConflict`, `current_command` |
+| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `PlanningConflict`, `current_command`, `current_command` |
 | `app.models.calendar` | `Calendar` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project` |
@@ -34,6 +34,7 @@ For scheduled work, the forecast follows what happened: a start moves the task t
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_brief_service` | `TaskBriefService`, `TaskBriefService` |
 | `app.services.task_hierarchy_service` | `TaskTreeIntegrityError` |
+| `app.services.task_reactivation_service` | `request_reactivation_check` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.work_metrics` | `effective_work_flags`, `working_today`, `task_signals` |
 | `app.utils.time` | `utc_now` |
@@ -63,8 +64,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (2) |
-| Outbound | `backend` (19) |
+| Inbound | `backend` (3) |
+| Outbound | `backend` (20) |
 
 ### External packages
 
@@ -72,7 +73,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

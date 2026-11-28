@@ -469,6 +469,8 @@ class IterationService:
         if not iteration:
             return False
 
+        from app.services.task_postponement_service import require_unreferenced as require_unawaited
+        await require_unawaited(self.db, task_ids=(await self.db.scalars(select(Task.id).where(Task.iteration_id == iteration_id))).all())
         await self.db.delete(iteration)
         await commit_or_flush(self.db)
         return True
@@ -559,10 +561,13 @@ class IterationService:
             AgentTaskAssignment.purpose == "execution",
             AgentTaskAssignment.state.in_(LIVE_EXECUTION_ASSIGNMENT_STATES),
         ))
+        # Postponed work keeps its last dates as history: it is no date risk and plans no hours.
+        holds_schedule = Task.status != TaskStatusModel.POSTPONED.value
         task_row = (
             await self.db.execute(
                 select(
-                    func.count(Task.id),
+                    # Only work that holds a schedule makes "the schedule is built" true.
+                    func.coalesce(func.sum(case((holds_schedule, 1), else_=0)), 0),
                     func.coalesce(
                         func.sum(case((and_(is_gap_candidate, Task.assignee_id.is_(None), ~agent_working), 1), else_=0)),
                         0,
@@ -595,7 +600,7 @@ class IterationService:
                         func.sum(
                             case(
                                 (
-                                    or_(
+                                    and_(holds_schedule, or_(
                                         Task.start_date < iteration.start_date,
                                         Task.end_date > iteration.end_date,
                                         and_(
@@ -604,7 +609,7 @@ class IterationService:
                                         ),
                                         Task.start_date < Task.min_start_date,
                                         Task.end_date > Task.max_end_date,
-                                    ),
+                                    )),
                                     1,
                                 ),
                                 else_=0,
@@ -616,7 +621,7 @@ class IterationService:
                         func.sum(case((and_(is_gap_candidate, Task.assignee_id.is_(None), agent_working), 1), else_=0)),
                         0,
                     ),
-                    func.coalesce(func.sum(Task.effort_hours), 0),
+                    func.coalesce(func.sum(case((holds_schedule, Task.effort_hours), else_=0)), 0),
                 ).where(is_planning_leaf)
             )
         ).one()
@@ -627,7 +632,7 @@ class IterationService:
         members = await TeamService(self.db).get_by_iteration(iteration_id)
         capacities = {member.id: await TeamService(self.db).calculate_capacity(member.id) for member in members}
         planned_hours = dict((await self.db.execute(select(Task.assignee_id, func.sum(Task.effort_hours))
-            .where(is_planning_leaf, Task.assignee_id.is_not(None)).group_by(Task.assignee_id))).all())
+            .where(is_planning_leaf, holds_schedule, Task.assignee_id.is_not(None)).group_by(Task.assignee_id))).all())
         total_hours = sum(value.hours for value in capacities.values() if value is not None)
         no_capacity = sum(value is None or value.hours <= 0 for value in capacities.values())
         overloaded_count = sum(planned_hours.get(member.id, 0) > capacities[member.id].hours

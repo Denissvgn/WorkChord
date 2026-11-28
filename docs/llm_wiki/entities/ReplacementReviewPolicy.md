@@ -1,13 +1,13 @@
 # ReplacementReviewPolicy
 
-**Location:** `backend/app/schemas/task_replacement.py:62`
+**Location:** `backend/app/schemas/task_replacement.py:82`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task_replacement](../modules/schemas_task_replacement.md)
 
 ## Description
 
-_Auto-generated from `ReplacementReviewPolicy` in `backend/app/schemas/task_replacement.py`._
+The project's different-review-publisher policy as it applied when the disposition was recorded and as it applies now, so a held replacement can be judged against the policy that was in force.
 
 ## Attributes
 

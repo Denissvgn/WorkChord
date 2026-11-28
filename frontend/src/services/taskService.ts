@@ -26,13 +26,14 @@ import type {
     TaskBatchUpdateRequest,
     TaskBatchUpdateResponse,
 } from '../types/task';
-import type { TaskActions, TaskCommand, TaskDetail, TaskBrief, CriterionProgress, TaskReferencePage } from '../types/task';
+import type { RoutingCheck } from '../types/task';
+import type { TaskActions, TaskCommand, TaskDetail, TaskBrief, CriterionProgress, TaskReferencePage, TaskReviewRecord, ManualProvenanceWrite, TaskPostponementResponse, ReactivationRequirementInput } from '../types/task';
 import type { AssigneeRecommendation } from '../types/team';
 
 export const taskService = {
     ownerOptions: async (projectId?: number) => (await api.get<{ items: { id: number; name: string }[]; has_more: boolean }>("/tasks/owner-options", { params: { project_id: projectId } })).data,
     getDetail: async (taskId: number, params: { limit?: number; children_after_id?: number; dependencies_after_id?: number } = {}, signal?: AbortSignal) => (await api.get<TaskDetail>(`/tasks/${taskId}/detail`, { params, signal })).data,
-    lookup: async (params: { project_id?: number; iteration_id?: number; q?: string; backlog_only?: boolean; after_id?: number; limit?: number; task_status?: string; parent_id?: number; roots_only?: boolean }, signal?: AbortSignal) => {
+    lookup: async (params: { project_id?: number; iteration_id?: number; q?: string; backlog_only?: boolean; after_id?: number; limit?: number; task_status?: string; parent_id?: number; roots_only?: boolean; leaf_only?: boolean }, signal?: AbortSignal) => {
         const page = (await api.get<TaskReferencePage>('/tasks/lookup', { params, signal })).data;
         if (!Array.isArray(page.items) || typeof page.has_more !== 'boolean'
             || page.items.some(item => !Number.isSafeInteger(item.id) || item.id <= (params.after_id ?? 0))
@@ -41,12 +42,23 @@ export const taskService = {
         }
         return page;
     },
+    routingCheck: async (taskId: number, assigneeId?: number | null) => (await api.get<RoutingCheck>(`/tasks/${taskId}/routing/check`, { params: assigneeId ? { assignee_id: assigneeId } : {} })).data,
     actions: async (taskId: number) => (await api.get<TaskActions>(`/tasks/${taskId}/actions`)).data,
+    postpone: async (taskId: number, data: { expected_version: number; reason: string; requirements: ReactivationRequirementInput[];
+        expected_claim_generation?: number; expected_running_run_ids?: number[]; expected_live_assignment_ids?: number[] }) => (await api.post<TaskPostponementResponse>(`/tasks/${taskId}/postpone`, data)).data,
+    /** Records that a closed or accepted successor already delivered this task's work. */
+    supersede: async (taskId: number, data: { successor_task_id: number; expected_original_version: number; expected_successor_version: number; reason: string }) =>
+        (await api.post<{ id: number; disposition: 'replacement' | 'supersession'; original_task_id: number; replacement_task_id: number }>(`/tasks/${taskId}/supersession`, data)).data,
+    reactivate: async (taskId: number, data: { expected_version: number; reason: string }) => (await api.post<TaskPostponementResponse>(`/tasks/${taskId}/reactivate`, data)).data,
+    recordOwnerDecision: async (taskId: number, requirementId: number, data: { expected_version: number; decision: string }) => (await api.post<TaskPostponementResponse>(`/tasks/${taskId}/postponement/requirements/${requirementId}/decision`, data)).data,
     command: async (taskId: number, data: TaskCommand) => (await api.post<Task>(`/tasks/${taskId}/commands`, data)).data,
     writeBrief: async (taskId: number, expected_version: number, brief: TaskBrief) => (await api.put<Task>(`/tasks/${taskId}/brief`, { expected_version, brief })).data,
     convertBrief: async (taskId: number, expected_version: number, apply: boolean) => (await api.post<{ brief: TaskBrief; notes: string[]; already_converted: boolean }>(`/tasks/${taskId}/brief/convert`, { expected_version, apply })).data,
     progress: async (taskId: number, data: { expected_version: number; criteria: CriterionProgress[]; artifacts: string[] }) => (await api.post<Task>(`/tasks/${taskId}/progress`, data)).data,
     review: async (taskId: number, data: { expected_version: number; brief_revision: number; artifact_revision: number; verdict: 'accept' | 'reject'; reason: string; evidence?: string }) => (await api.post<Task>(`/tasks/${taskId}/review`, data)).data,
+    ownerAccept: async (taskId: number, data: { expected_version: number; brief_revision: number; artifact_revision: number; reason: string; evidence?: string }) => (await api.post<Task>(`/tasks/${taskId}/owner-acceptance`, data)).data,
+    recordProvenance: async (taskId: number, data: ManualProvenanceWrite) => (await api.post<{ event_id: number; task_version: number }>(`/tasks/${taskId}/manual-provenance`, data)).data,
+    reviews: async (taskId: number, params: { limit?: number; after_id?: number } = {}) => (await api.get<TaskReviewRecord[]>(`/tasks/${taskId}/reviews`, { params })).data,
 
     getByIteration: async (iterationId: number) => {
         const response = await api.get<Task[]>(`/iterations/${iterationId}/tasks`);
@@ -271,12 +283,12 @@ export const taskService = {
     },
 };
 
-export type WorkMetricName = 'total' | 'planned' | 'active' | 'resolved' | 'closed' | 'implemented' | 'accepted' | 'blocked'
+export type WorkMetricName = 'total' | 'planned' | 'active' | 'resolved' | 'closed' | 'postponed' | 'canceled' | 'superseded' | 'implemented' | 'accepted' | 'blocked'
     | 'overdue' | 'late_start' | 'iteration_overflow' | 'acceptance_unknown' | 'unknown_estimate';
 export type MetricScope = { project_id: number } | { iteration_id: number } | { release_id: number };
 export interface MetricMatchPage {
     metric: WorkMetricName;
-    items: Array<{ id: number; title: string; status: string; project_name: string | null; iteration_name: string | null }>;
+    items: Array<{ id: number; title: string; status: string; displayed_state?: string; project_name: string | null; iteration_name: string | null }>;
     has_more: boolean;
     next_after_id?: number | null;
 }

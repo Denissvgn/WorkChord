@@ -1,13 +1,13 @@
 # ReplacementCandidate
 
-**Location:** `backend/app/schemas/task_replacement.py:84`
+**Location:** `backend/app/schemas/task_replacement.py:104`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task_replacement](../modules/schemas_task_replacement.md)
 
 ## Description
 
-_Auto-generated from `ReplacementCandidate` in `backend/app/schemas/task_replacement.py`._
+The delivered candidate of a replacement task: its base commit, head commit, pull request and digest, as recorded for review.
 
 ## Attributes
 

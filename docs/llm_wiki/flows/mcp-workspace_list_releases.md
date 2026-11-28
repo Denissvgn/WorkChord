@@ -2,7 +2,7 @@
 
 **Entry point:** `workspace_list_releases` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 14 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [commands](../modules/commands.md), and 16 more
 
 **Complete modules touched:**
 
@@ -22,6 +22,8 @@
 - [release_service](../modules/release_service.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_display_state](../modules/task_display_state.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -51,16 +53,16 @@ sequenceDiagram
     participant p16 as aggregate_metrics
     participant p17 as AgentService.authenticate
     participant p18 as require_identity_writes
-    participant p19 as DeliveryDependencyService.reconcile
-    participant p20 as DiscussionService.enqueue
-    participant p21 as actor_has_scope
-    participant p22 as commit_or_flush
-    participant p23 as DeliveryDependencyService.validate_cycles
-    participant p24 as DiscussionService.recipient_authorized
-    participant p25 as TaskService.reserve_task_version
-    participant p26 as clear_execution_evidence
-    participant p27 as working_today
-    participant p28 as ReleaseService
+    participant p19 as process_reactivation_checks
+    participant p20 as DeliveryDependencyService.reconcile
+    participant p21 as DiscussionService.enqueue
+    participant p22 as actor_has_scope
+    participant p23 as ReactivationService.evaluate_waiting
+    participant p24 as commit_or_flush
+    participant p25 as DeliveryDependencyService.validate_cycles
+    participant p26 as DiscussionService.recipient_authorized
+    participant p27 as TaskService.reserve_task_version
+    participant p28 as clear_execution_evidence
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -81,23 +83,23 @@ sequenceDiagram
     p13->>p16: aggregate_metrics
     p9->>p17: AgentService.authenticate
     p11->>p18: require_identity_writes
-    p8->>p19: DeliveryDependencyService.reconcile
-    p8->>p20: DiscussionService.enqueue
-    p15->>p21: actor_has_scope
-    p17->>p22: commit_or_flush
-    p19->>p23: DeliveryDependencyService.validate_cycles
-    p20->>p24: DiscussionService.recipient_authorized
-    p19->>p25: TaskService.reserve_task_version
-    p19->>p26: clear_execution_evidence
-    p16->>p27: working_today
-    p2->>p28: ReleaseService
+    p8->>p19: process_reactivation_checks
+    p8->>p20: DeliveryDependencyService.reconcile
+    p8->>p21: DiscussionService.enqueue
+    p15->>p22: actor_has_scope
+    p19->>p23: ReactivationService.evaluate_waiting
+    p17->>p24: commit_or_flush
+    p20->>p25: DeliveryDependencyService.validate_cycles
+    p21->>p26: DiscussionService.recipient_authorized
+    p20->>p27: TaskService.reserve_task_version
+    p20->>p28: clear_execution_evidence
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 562 interactions; 532 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 620 interactions; 590 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 188 (187 omitted); unresolved 1 of 277 (276 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 203 (202 omitted); unresolved 1 of 309 (308 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -111,7 +113,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 97 groups; 89 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 111 groups; 103 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -124,9 +126,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 98; effect analysis evaluated: 67, partial: 3, unavailable: 28. Counts include steps omitted from the displayed trace.
+Source steps: 109; effect analysis evaluated: 77, partial: 3, unavailable: 29. Counts include steps omitted from the displayed trace.
 
-Collector observations for 70 source steps with known totals: observed: 302, emitted: 287, omitted: 15. Unavailable totals are excluded.
+Collector observations for 80 source steps with known totals: observed: 362, emitted: 346, omitted: 16. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -201,10 +203,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_list_releases | _tool_call | 2210 | `_tool_call('tasks:read', ...)` |
-| _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
+| workspace_list_releases | _tool_call | 2390 | `_tool_call('tasks:read', ...)` |
+| _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `tuple(required_scope)` |

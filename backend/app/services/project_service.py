@@ -466,13 +466,14 @@ class ProjectService:
             data.owner_profile_id,
         )
         await self._require_initiative_exists(data.initiative_id)
-        if data.require_different_review_publisher:
+        if data.require_different_review_publisher or data.routing_conflict_mode != "refuse":
             from app.authority import require_operator
             require_operator(self.db)
         project = Project(
             name=data.name,
             timezone=data.timezone,
             require_different_review_publisher=data.require_different_review_publisher,
+            routing_conflict_mode=data.routing_conflict_mode,
             description=data.description,
             status=self._enum_value(data.status),
             health=self._enum_value(data.health),
@@ -534,6 +535,12 @@ class ProjectService:
             from app.authority import require_operator
             require_operator(self.db)
             update_data["require_different_review_publisher"] = policy
+        mode = update_data.pop("routing_conflict_mode", None)
+        if mode is not None and mode != project.routing_conflict_mode:
+            # Relaxing or restoring the routing refusal is a policy change like the publisher policy.
+            from app.authority import require_operator
+            require_operator(self.db)
+            update_data["routing_conflict_mode"] = mode
         await self._normalize_owner_update_data(update_data)
         if "initiative_id" in update_data:
             await self._require_initiative_exists(update_data["initiative_id"])
@@ -954,10 +961,16 @@ class ProjectService:
             raise
         return "deleted"
 
-    async def get_tasks(self, project_id: int) -> Optional[Sequence[Task]]:
-        """Get linked root tasks for a project with response relationships loaded."""
+    async def get_tasks(self, project_id: int, state: Optional[str] = None) -> Optional[Sequence[Task]]:
+        """Get linked root tasks for a project with response relationships loaded.
+
+        With ``state`` (a displayed state, canceled and superseded included), return instead a flat
+        list of the project's tasks at any depth that are shown in that state.
+        """
         if not await self.get_by_id(project_id):
             return None
+        if state is not None:
+            return await self._get_tasks_in_state(project_id, state)
 
         bounded_ids = list(
             (
@@ -1019,6 +1032,31 @@ class ProjectService:
         from app.services.task_service import TaskService
         await TaskService(self.db).load_owner_names(loaded)
         return roots
+
+    async def _get_tasks_in_state(self, project_id: int, state: str) -> list[Task]:
+        from app.services.task_display_state import task_state_clause, validate_state_filter
+        query = (
+            select(Task)
+            .where(Task.project_id == project_id, task_state_clause(validate_state_filter(state)))
+            .options(
+                selectinload(Task.project),
+                selectinload(Task.owner_profile),
+                selectinload(Task.milestone),
+                selectinload(Task.assignee),
+                selectinload(Task.claimed_agent),
+                selectinload(Task.external_links),
+                selectinload(Task.request_source_links),
+                selectinload(Task.dependencies).selectinload(TaskDependency.depends_on),
+            )
+            .order_by(Task.sort_order, Task.id)
+            .limit(MAX_PROJECT_TREE_TASKS + 1)
+        )
+        tasks = list((await self.db.execute(query)).scalars().all())
+        if len(tasks) > MAX_PROJECT_TREE_TASKS:
+            raise CollectionLimitExceededError("project task list", MAX_PROJECT_TREE_TASKS)
+        from app.services.task_service import TaskService
+        await TaskService(self.db).load_owner_names(tasks)
+        return tasks
 
     async def _get_all_linked_tasks(self, project_id: int) -> Sequence[Task]:
         """Get every task linked to a project for aggregate calculations."""
@@ -1214,6 +1252,9 @@ class ProjectService:
             TaskStatus.ACTIVE.value: 0,
             TaskStatus.RESOLVED.value: 0,
             TaskStatus.CLOSED.value: 0,
+            TaskStatus.POSTPONED.value: 0,
+            "canceled": 0,
+            "superseded": 0,
         }
 
     def _build_milestone_task_group(
@@ -1229,12 +1270,13 @@ class ProjectService:
         remaining_effort_days = 0.0
 
         for task in tasks:
-            if task.status in status_counts:
-                status_counts[task.status] += 1
+            # Withdrawn work is counted under its terminal state, not the status it had when canceled.
+            if task.displayed_state in status_counts:
+                status_counts[task.displayed_state] += 1
 
             task_effort = float(task.effort_days or 0)
             total_effort_days += task_effort
-            if task.status in remaining_statuses:
+            if task.displayed_state in remaining_statuses:
                 remaining_effort_days += task_effort
 
         task_count = len(tasks)

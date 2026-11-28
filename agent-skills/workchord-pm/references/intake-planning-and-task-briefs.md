@@ -146,11 +146,15 @@ model-aware selection.
 
 ### Dependencies and inputs
 External inputs and the state that satisfies each one. Record predecessor
-tasks as real dependency links, not only as prose.
+tasks as real dependency links, not only as prose. When parallel branches will
+add database migrations, assign each branch its revision number when you plan
+it, so the chain has one order.
 
 ### Handoff and escalation
 The reviewer and the conditions requiring PM or human input.
 ```
+
+Record the first model rung, the escalation ladder and the reviewer in `brief.routing`, not only in this section's text; the server renders the brief's Routing section from it. See [Choose the assignee of each task](plan-mapping-and-roadmap.md#choose-the-assignee-of-each-task).
 
 Let the server assign criterion `id` and `revision`; keep them when you patch
 an existing criterion so recorded evidence stays bound to it. Changing a

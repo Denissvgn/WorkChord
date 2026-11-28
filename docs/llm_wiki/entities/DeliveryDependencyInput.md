@@ -1,13 +1,13 @@
 # DeliveryDependencyInput
 
-**Location:** `backend/app/routers/delivery_dependencies.py:17`
+**Location:** `backend/app/schemas/delivery_dependency.py:8`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
-**Module:** [delivery_dependencies](../modules/delivery_dependencies.md)
+**Module:** [schemas_delivery_dependency](../modules/schemas_delivery_dependency.md)
 
 ## Description
 
-_Auto-generated from `DeliveryDependencyInput` in `backend/app/routers/delivery_dependencies.py`._
+Record a task or milestone prerequisite, optionally on a target branch.
 
 ## Attributes
 
@@ -27,20 +27,23 @@ _Auto-generated from `DeliveryDependencyInput` in `backend/app/routers/delivery_
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["DeliveryDependencyInput (backend/app/routers/delivery_dependencies.py)"]
+    n0["DeliveryDependencyInput (backend/app/schemas/delivery_dependency.py)"]
     n1["BaseModel"]
-    n2["add_delivery_dependency (backend/app/routers/delivery_dependencies.py)"]
+    n2["backend/app/mcp_agent_tools.py"]
+    n3["add_delivery_dependency (backend/app/routers/delivery_dependencies.py)"]
     n0 --> n1
     n2 --> n0
-    click n0 "../modules/delivery_dependencies.md"
-    click n2 "../modules/delivery_dependencies.md"
+    n3 --> n0
+    click n0 "../modules/schemas_delivery_dependency.md"
+    click n2 "../modules/mcp_agent_tools.md"
+    click n3 "../modules/delivery_dependencies.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [delivery_dependencies](../modules/delivery_dependencies.md) | 0 | `expected_version`, `kind`, `target_branch`, `target_id` |
+| [schemas_delivery_dependency](../modules/schemas_delivery_dependency.md) | 0 | `expected_version`, `kind`, `target_branch`, `target_id` |
 
 ### Structure
 
@@ -52,4 +55,5 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `mcp_agent_tools` | import | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `add_delivery_dependency` | type_reference | [delivery_dependencies](../modules/delivery_dependencies.md) | — |

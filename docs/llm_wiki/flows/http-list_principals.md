@@ -105,8 +105,8 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | list_principals | require_operator | 264 | `require_operator(db)` |
-| require_operator | db.info.get | 84 | `db.info.get('authority')` |
-| require_operator | AuthorityError | 86 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
+| require_operator | db.info.get | 92 | `db.info.get('authority')` |
+| require_operator | AuthorityError | 94 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
 | list_principals | (…).all | 265 | `(await db.scalars(select(Principal).order_by(Principal.id).limit(limit))).all(data not statically known)` |
 | list_principals | db.scalars | 265 | `db.scalars(...)` |
 | list_principals | select(…).order_by(…).limit | 265 | `select(Principal).order_by(Principal.id).limit(limit)` |
@@ -121,7 +121,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_operator` | `db.info.get` | 84 |
+| unresolved_call | `require_operator` | `db.info.get` | 92 |
 | unresolved_call | `list_principals` | `(await db.scalars(select(Principal).order_by(Principal.id).limit(limit))).all` | 265 |
 | unresolved_call | `list_principals` | `db.scalars` | 265 |
 | unresolved_call | `list_principals` | `select(Principal).order_by(Principal.id).limit` | 265 |

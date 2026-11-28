@@ -80,9 +80,9 @@ sequenceDiagram
     p1-->>p25: getattr (backend/app/services/hier…erarchyRepairService.audit)(task, key)
 ```
 
-> Call sequence diagram shows 30 of 74 interactions; 44 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 75 interactions; 45 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 7 of 36 (29 omitted); unresolved 11 of 25 (14 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 7 of 37 (30 omitted); unresolved 11 of 25 (14 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -91,11 +91,11 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/authority.py:require_operator` | 4 | - | unresolved | 1 |
 | `backend/app/services/work_metrics.py:scoped_metric_tasks` | 8 | - | external | 3 |
 | `backend/app/services/work_metrics.py:scoped_metric_tasks` | 8 | - | unresolved | 6 |
-| `backend/app/services/task_status_service.py:TaskStatusService.derive_parent_status` | 27 | - | external | 5 |
-| `backend/app/services/work_metrics.py:working_today` | 36 | - | unresolved | 2 |
-| `backend/app/utils/time.py:as_utc` | 39 | - | unresolved | 2 |
-| `backend/app/utils/time.py:utc_now` | 42 | - | external | 1 |
-| `backend/app/services/work_metrics.py:working_today` | 36 | - | external | 1 |
+| `backend/app/services/task_status_service.py:TaskStatusService.derive_parent_status` | 27 | - | external | 6 |
+| `backend/app/services/work_metrics.py:working_today` | 37 | - | unresolved | 2 |
+| `backend/app/utils/time.py:as_utc` | 40 | - | unresolved | 2 |
+| `backend/app/utils/time.py:utc_now` | 43 | - | external | 1 |
+| `backend/app/services/work_metrics.py:working_today` | 37 | - | external | 1 |
 > Omission summary shows 8 of 13 groups; 5 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
@@ -107,11 +107,12 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 14; effect analysis evaluated: 11, partial: 0, unavailable: 3. Counts include steps omitted from the displayed trace.
+Source steps: 14; effect analysis evaluated: 10, partial: 1, unavailable: 3. Counts include steps omitted from the displayed trace.
 
-Collector observations for 11 source steps with known totals: observed: 62, emitted: 62, omitted: 0. Unavailable totals are excluded.
+Collector observations for 11 source steps with known totals: observed: 66, emitted: 64, omitted: 2. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
 - Effect collector totals unavailable; observed counts cover captured records only.
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
@@ -199,17 +200,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| repair_hierarchy | HierarchyRepairService | 262 | `HierarchyRepairService(db)` |
-| repair_hierarchy | HierarchyRepairService.audit | 264 | `service.audit(iteration_id, after_id=data.after_id, limit=data.limit)` |
+| repair_hierarchy | HierarchyRepairService | 264 | `HierarchyRepairService(db)` |
+| repair_hierarchy | HierarchyRepairService.audit | 266 | `service.audit(iteration_id, after_id=data.after_id, limit=data.limit)` |
 | HierarchyRepairService.audit | require_operator | 19 | `require_operator(self.db)` |
-| require_operator | db.info.get | 84 | `db.info.get('authority')` |
-| require_operator | AuthorityError | 86 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
+| require_operator | db.info.get | 92 | `db.info.get('authority')` |
+| require_operator | AuthorityError | 94 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
 | HierarchyRepairService.audit | ValueError (backend/app/services/hier…erarchyRepairService.audit) | 21 | `ValueError('Repair limit must be between 1 and 500')` |
 | HierarchyRepairService.audit | scoped_metric_tasks | 22 | `scoped_metric_tasks(self.db, iteration_id=iteration_id)` |
-| scoped_metric_tasks | select | 141 | `select(Task)` |
-| scoped_metric_tasks | statement.where | 143 | `statement.where(...)` |
-| scoped_metric_tasks | statement.where | 145 | `statement.where(...)` |
-| scoped_metric_tasks | list (backend/app/services/work…ics.py:scoped_metric_tasks) | 146 | `list(...)` |
+| scoped_metric_tasks | select | 187 | `select(Task)` |
+| scoped_metric_tasks | statement.where | 189 | `statement.where(...)` |
+| scoped_metric_tasks | statement.where | 191 | `statement.where(...)` |
+| scoped_metric_tasks | list (backend/app/services/work…ics.py:scoped_metric_tasks) | 192 | `list(...)` |
 
 ### Boundary effects
 
@@ -225,11 +226,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_operator` | `db.info.get` | 84 |
+| unresolved_call | `require_operator` | `db.info.get` | 92 |
 | external_call | `HierarchyRepairService.audit` | `ValueError` | 21 |
-| external_call | `scoped_metric_tasks` | `select` | 141 |
-| unresolved_call | `scoped_metric_tasks` | `statement.where` | 143 |
-| unresolved_call | `scoped_metric_tasks` | `statement.where` | 145 |
+| external_call | `scoped_metric_tasks` | `select` | 187 |
+| unresolved_call | `scoped_metric_tasks` | `statement.where` | 189 |
+| unresolved_call | `scoped_metric_tasks` | `statement.where` | 191 |
 | step_limit | `repair_hierarchy` | `first 12 steps` | 0 |
 
 ## Behavior

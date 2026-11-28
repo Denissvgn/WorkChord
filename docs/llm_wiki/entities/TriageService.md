@@ -1,6 +1,6 @@
 # TriageService
 
-**Location:** `backend/app/services/triage_service.py:54`
+**Location:** `backend/app/services/triage_service.py:55`
 **Kind:** Class
 **Bases:** —
 **Module:** [triage_service](../modules/triage_service.md)
@@ -29,6 +29,7 @@ Service for triage CRUD, inbox filtering, lifecycle actions, and conversion.
 | `_require_task_exists` | *(async)* `(task_id: Optional[int]) -> None` | — | — |
 | `_require_duplicate_item_exists` | *(async)* `(triage_item_id: int, duplicate_of_id: Optional[int]) -> None` | — | — |
 | `_validate_common_references` | *(async)* `(project_hint_id: Optional[int] = None, iteration_hint_id: Optional[int] = None, duplicate_of_id: Optional[int] = None, duplicate_task_id: Optional[int] = None, converted_task_id: Optional[int] = None, triage_item_id: Optional[int] = None) -> None` | — | — |
+| `_request_reactivation_check` | *(async)* `(triage_item_id: int) -> None` | — | Postponed work may wait for this item to leave the inbox; evaluate it with this change. |
 | `_record_triage_event` | *(async)* `(event_type: str, triage_item_id: int, payload: Optional[dict[str, Any]] = None) -> None` | — | — |
 | `_filtered_list_query` | `(active: Optional[bool] = True, statuses: Optional[Sequence[TriageItemStatus \| str]] = None, q: Optional[str] = None, source: Optional[str] = None) -> Select` | — | Build a triage list query without ordering or pagination. |
 | `count_items` | *(async)* `(active: Optional[bool] = True, statuses: Optional[Sequence[TriageItemStatus \| str]] = None, q: Optional[str] = None, source: Optional[str] = None) -> int` | — | Count triage items using the same filters as the list endpoint. |
@@ -117,7 +118,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [triage_service](../modules/triage_service.md) | 50 | — |
+| [triage_service](../modules/triage_service.md) | 51 | — |
 
 ### References
 
@@ -136,4 +137,4 @@ flowchart LR
 | `convert_triage_item_to_backlog` | type_reference | [routers_triage](../modules/routers_triage.md) | — |
 | `convert_triage_item_to_task` | type_reference | [routers_triage](../modules/routers_triage.md) | — |
 
-> References: showing 12 of 30 logical references; 18 omitted by the 12-row generated summary limit.
+> References: showing 12 of 33 logical references; 21 omitted by the 12-row generated summary limit.

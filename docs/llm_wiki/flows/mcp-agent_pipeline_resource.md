@@ -2,7 +2,7 @@
 
 **Entry point:** `agent_pipeline_resource` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 25 more
+**Modules touched:** [agent_routing_policy](../modules/agent_routing_policy.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 27 more
 
 **Complete modules touched:**
 
@@ -32,6 +32,8 @@
 - [review_provenance](../modules/review_provenance.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)
+- [task_reactivation_service](../modules/task_reactivation_service.md)
+- [task_replacement_service](../modules/task_replacement_service.md)
 - [task_service](../modules/task_service.md)
 - [time](../modules/time.md)
 
@@ -105,9 +107,9 @@ sequenceDiagram
     p2-->>p30: task.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 779 interactions; 749 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 793 interactions; 763 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 205 (204 omitted); unresolved 1 of 379 (378 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 212 (211 omitted); unresolved 1 of 388 (387 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -121,7 +123,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 160 groups; 152 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 164 groups; 156 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -134,9 +136,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 196; effect analysis evaluated: 142, partial: 9, unavailable: 45. Counts include steps omitted from the displayed trace.
+Source steps: 194; effect analysis evaluated: 140, partial: 8, unavailable: 46. Counts include steps omitted from the displayed trace.
 
-Collector observations for 151 source steps with known totals: observed: 906, emitted: 837, omitted: 69. Unavailable totals are excluded.
+Collector observations for 148 source steps with known totals: observed: 892, emitted: 833, omitted: 59. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -212,11 +214,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_pipeline_resource | _json_resource | 2526 | `_json_resource('planning:read', ...)` |
-| _json_resource | _tool_call | 364 | `_tool_call(required_scope, func)` |
-| _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
+| agent_pipeline_resource | _json_resource | 2706 | `_json_resource('planning:read', ...)` |
+| _json_resource | _tool_call | 367 | `_tool_call(required_scope, func)` |
+| _tool_call | enforce_mcp_access | 337 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
-| get_settings | Settings | 524 | `Settings(data not statically known)` |
+| get_settings | Settings | 528 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
 | scope_requirement_is_mutating | tuple (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `tuple(required_scope)` |

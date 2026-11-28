@@ -1,15 +1,16 @@
 """Canonical brief rendering, conservative legacy conversion and evidence commands."""
 
 import re
+from dataclasses import replace
 from uuid import NAMESPACE_URL, uuid5
 
 from sqlalchemy import func, select
 
-from app.authority import AuthorityError, require_project
+from app.authority import AuthorityError, require_owner_override, require_project
 from app.commands import atomic_command
 from app.models.task import Task
 from app.models.task_brief import TaskBriefRevision, TaskProgressRecord, TaskReviewRecord
-from app.schemas.task_brief import TaskBrief, ProgressWrite, TaskReviewWrite
+from app.schemas.task_brief import TaskBrief, OwnerAcceptanceWrite, ProgressWrite, TaskReviewWrite
 
 
 HEADINGS = {
@@ -29,16 +30,78 @@ LABELS = {
 }
 
 
+def _render_rung(rung: dict) -> str:
+    text = rung["catalog_key"]
+    if rung.get("effort") and rung["effort"] != "unknown":
+        text += f" at {rung['effort']} effort"
+    if rung.get("harness"):
+        text += f" in {rung['harness']}"
+    return text
+
+
+def render_routing(routing: dict | None) -> str:
+    """Render the structured routing as the brief's Routing section body."""
+    if not routing:
+        return ""
+    lines = []
+    if routing.get("first_rung"):
+        lines.append(f"First rung: {_render_rung(routing['first_rung'])}.")
+    after = (routing.get("after_last_rung") or "").strip().rstrip(".")
+    runs = routing.get("escalate_after_failed_runs", 2)
+    ladder = " -> ".join(_render_rung(rung) for rung in routing.get("escalation") or [])
+    if ladder:
+        lines.append(f"Escalation after {runs} failed acceptance runs: {ladder}" + (f"; then {after}." if after else "."))
+    elif after:
+        lines.append(f"Escalation: none; after {runs} failed acceptance runs {after}.")
+    reviewer = routing.get("reviewer")
+    if reviewer:
+        line = f"Reviewer: {_render_rung(reviewer)}"
+        if reviewer.get("publisher_key"):
+            line += f", publisher {reviewer['publisher_key']}"
+        if reviewer.get("profile_id"):
+            line += f", reviewer profile {reviewer['profile_id']}"
+        lines.append(line + ".")
+        instructions = (reviewer.get("instructions") or "").strip()
+        if instructions and instructions[-1] not in ".!?":
+            instructions += "."
+        lines.append(f"Independent review by {reviewer['catalog_key']}" + (f": {instructions}" if instructions else "."))
+    if (routing.get("notes") or "").strip():
+        lines.append(routing["notes"].strip())
+    return "\n".join(lines)
+
+
+def evidence_brief(brief: dict | None) -> dict | None:
+    """The part of a stored brief that the brief revision and criterion evidence bind to.
+
+    Routing says who executes and reviews, not what is accepted, so it is left out.
+    """
+    if brief is None:
+        return None
+    return {key: value for key, value in brief.items() if key != "routing"}
+
+
+def brief_payload(brief: TaskBrief) -> dict:
+    """The stored JSON form; a brief without routing keeps the shape it had before routing existed."""
+    payload = brief.model_dump(mode="json")
+    if payload.get("routing") is None:
+        payload.pop("routing", None)
+    return payload
+
+
 def render_brief(brief: TaskBrief | dict) -> str:
     """Derive Markdown from canonical fields without projecting progress as acceptance."""
     data = brief.model_dump() if isinstance(brief, TaskBrief) else brief
     sections = []
-    for field in ("goal", "context", "scope", "exclusions", "acceptance_criteria", "verification", "artifact_expectations"):
+    for field in ("goal", "context", "scope", "exclusions", "acceptance_criteria", "verification", "routing", "artifact_expectations"):
         if field == "acceptance_criteria":
             criteria = data.get(field, [])
             if criteria:
                 lines = [f"- [ ] {item['text']}" + (f"\n  Verification: {item['verification']}" if item.get("verification") else "") for item in criteria]
                 sections.append("## Acceptance criteria\n" + "\n".join(lines))
+        elif field == "routing":
+            body = render_routing(data.get("routing"))
+            if body:
+                sections.append(f"## Routing\n{body}")
         elif data.get(field):
             sections.append(f"## {LABELS[field]}\n{data[field]}")
     return "\n\n".join(sections)
@@ -146,12 +209,29 @@ class TaskBriefService:
         from app.services.task_service import TaskService
         return TaskService(self.db)
 
-    async def apply_brief(self, task: Task, brief: TaskBrief, *, provenance="structured") -> bool:
-        """Apply one canonical representation under the task command's existing fence."""
+    async def apply_brief(self, task: Task, brief: TaskBrief, *, provenance="structured", enforce=True, resolve_routing=True) -> bool:
+        """Apply one canonical representation under the task command's existing fence.
+
+        A changed routing is filled from the model catalog and, unless the caller checks it
+        after its own changes (enforce=False), checked against the task's assignee.
+        """
         require_project(self.db, task.project_id, "edit")
         previous = task.brief or {}
         old = {item["id"]: item for item in previous.get("acceptance_criteria", [])}
-        payload = brief.model_dump(mode="json")
+        if "routing" not in brief.model_fields_set and previous.get("routing") is not None:
+            # A writer that does not send routing keeps it; an explicit null clears it.
+            from app.schemas.task_routing import TaskRouting
+            brief = brief.model_copy(update={"routing": TaskRouting.model_validate(previous["routing"])})
+        if brief.routing is not None and brief.routing.first_rung is None and not brief.routing.escalation and brief.routing.reviewer is None:
+            # A routing that names no rung and no reviewer is stored as no routing.
+            brief = brief.model_copy(update={"routing": None})
+        routing_changed = brief.routing is not None and brief.routing.model_dump(mode="json") != previous.get("routing")
+        if routing_changed and resolve_routing:
+            from app.services.task_routing_service import resolve_routing as fill_routing
+            brief = brief.model_copy(update={"routing": await fill_routing(self.db, brief.routing)})
+            routing_changed = brief.routing.model_dump(mode="json") != previous.get("routing")
+        routing_changed = routing_changed or (brief.routing is None and previous.get("routing") is not None)
+        payload = brief_payload(brief)
         for criterion in payload["acceptance_criteria"]:
             prior = old.get(criterion["id"])
             if prior:
@@ -163,6 +243,23 @@ class TaskBriefService:
                 raise ValueError("A new criterion starts at revision 1")
         if payload == task.brief:
             return False
+        if task.brief is not None and evidence_brief(payload) == evidence_brief(task.brief):
+            # Only the routing changed. It names who executes and reviews, not what is accepted, so the
+            # brief revision, criterion progress and every record bound to them stay valid. Acceptance
+            # is cleared, as for an assignee change, because the version it was given at moves on.
+            # The description is rendered again and the timeline keeps both routings.
+            previous_routing = task.brief.get("routing")
+            await self.tasks.reserve_task_version(task, task.version)
+            task.brief = payload
+            task.description = render_brief(payload)
+            clear_acceptance(task)
+            await self.tasks.record_task_event(task.id, "brief_routing_changed", {
+                "version": task.version, "brief_revision": task.brief_revision, "provenance": provenance,
+                "previous_routing": previous_routing, "routing": payload.get("routing")})
+            if routing_changed and enforce:
+                from app.services.task_routing_service import enforce_routing
+                await enforce_routing(self.db, task, changed=True)
+            return True
         if task.brief is None:
             task.legacy_description = task.description
             if task.description:
@@ -180,6 +277,9 @@ class TaskBriefService:
         self.db.add(TaskBriefRevision(task_id=task.id, original_task_id=task.id, revision=task.brief_revision, task_version=task.version,
             principal_id=getattr(self.db.info.get("authority"), "principal_id", None), payload=payload, provenance=provenance))
         await self.tasks.record_task_event(task.id, "brief_changed", {"brief_revision": task.brief_revision, "version": task.version, "provenance": provenance})
+        if routing_changed and enforce:
+            from app.services.task_routing_service import enforce_routing
+            await enforce_routing(self.db, task, changed=True)
         return True
 
     async def restore_brief(self, task, snapshot):
@@ -195,7 +295,9 @@ class TaskBriefService:
         current_criteria = {criterion["id"]: criterion["revision"] for criterion in (task.brief or {}).get("acceptance_criteria", [])}
         for criterion in payload.get("acceptance_criteria", []):
             criterion["revision"] = current_criteria.get(criterion["id"], 1)
-        await self.apply_brief(task, TaskBrief.model_validate(payload), provenance="restored")
+        # A restored image restores its routing exactly, including having none.
+        payload.setdefault("routing", None)
+        await self.apply_brief(task, TaskBrief.model_validate(payload), provenance="restored", enforce=False, resolve_routing=False)
         task.description = render_brief(task.brief)
         if "legacy_description" in snapshot:
             task.legacy_description = snapshot["legacy_description"]
@@ -224,6 +326,34 @@ class TaskBriefService:
                 task.brief_migration_notes = notes
         return {"brief": brief.model_dump(mode="json"), "notes": notes, "already_converted": False}
 
+    async def routing_check(self, task_id, assignee_id=None, *, use_current_assignee=True):
+        """Check the task's routing for its current or a proposed assignee without changing anything."""
+        from app.services.task_routing_service import check_routing
+        task = await self.tasks.get_by_id(task_id)
+        if task is None:
+            raise LookupError("Task not found or inaccessible")
+        if assignee_id is not None:
+            await self.tasks.require_iteration_assignee(assignee_id, task.iteration_id)
+        return await check_routing(self.db, task=task, project_id=task.project_id,
+                                   assignee_id=task.assignee_id if use_current_assignee and assignee_id is None else assignee_id,
+                                   routing=(task.brief or {}).get("routing"), brief_text=task.description)
+
+    async def routing_conversion(self, task_id, data):
+        """Preview or apply moving routing that a brief carries as text into its structured routing."""
+        from app.services.task_routing_service import convert_text_routing
+        task = await self.tasks.get_by_id(task_id)
+        if task is None:
+            raise LookupError("Task not found or inaccessible")
+        self.tasks.ensure_expected_version(task, data.expected_version)
+        if not data.apply:
+            return await convert_text_routing(self.db, task, override=data.routing)
+        from app.commands import command_transaction
+        async with command_transaction(self.db):
+            task = await self._locked(task_id, data.expected_version)
+            result = await convert_text_routing(self.db, task, override=data.routing, apply=True)
+            await self.db.flush()
+        return result
+
     async def _locked(self, task_id, version):
         await self.tasks._lock_task_scope(task_id)
         task = await self.tasks.get_by_id(task_id)
@@ -241,7 +371,7 @@ class TaskBriefService:
         authority = self.db.info.get("authority")
         if authority and authority.kind == "agent" and not fenced_submission:
             raise AuthorityError("agent_protocol_required", "Submit criterion evidence through assigned work with its current claim fence.")
-        if task.canceled_at or task.status == "closed" or task.is_summary:
+        if task.canceled_at or task.status in {"closed", "postponed"} or task.is_summary:
             raise ValueError("Progress requires open leaf work")
         criteria = {item["id"]: item for item in (task.brief or {}).get("acceptance_criteria", [])}
         for item in data.criteria:
@@ -270,16 +400,24 @@ class TaskBriefService:
         if await different_publisher_required(self.db, task.project_id):
             command = current_command(self.db)
             key = (task.id, task.version, task.brief_revision, task.artifact_revision)
-            if command is None or key not in command.verified_publishers:
+            # An owner override grants acceptance of exactly this task state in this command;
+            # it never satisfies a rejection and never changes the project's policy.
+            owner_override = accepting and command is not None and key in command.owner_acceptance_overrides
+            if command is None or key not in command.verified_publishers and not owner_override:
                 raise AuthorityError("verified_publisher_review_required", "Use an assigned agent verifier for formal review. Work requires attributable agent execution or an authenticated manual executor and current artifact evidence.")
         authority = self.db.info.get("authority")
         principal = getattr(authority, "principal_id", None)
-        override = bool(authority and authority.operator and authority.review_override and authority.reason)
+        self_review_override = override = bool(authority and authority.operator and authority.review_override and authority.reason)
+        command = current_command(self.db)
+        if command is not None and task.id in command.owner_acceptance_tasks:
+            # On an owner override the header waives only self-review independence;
+            # criterion evidence and every other acceptance check still apply.
+            override = False
         if authority and authority.kind == "agent" and authority.actor_role != "verifier":
             raise AuthorityError("independent_review_required", "Execution cannot accept its own work.")
         progress_author = await self.db.scalar(select(TaskProgressRecord.principal_id).where(TaskProgressRecord.original_task_id == task.id,
             TaskProgressRecord.artifact_revision == task.artifact_revision)) if task.artifact_revision else None
-        if principal is not None and principal in {task.executed_by_principal_id, progress_author} and not override:
+        if principal is not None and principal in {task.executed_by_principal_id, progress_author} and not self_review_override:
             raise AuthorityError("independent_review_required", "Another reviewer must review this work.")
         if task.canceled_at or task.is_summary or task.status != "resolved":
             raise ValueError("Review requires resolved, uncanceled leaf work")
@@ -308,13 +446,58 @@ class TaskBriefService:
                     raise ValueError("Every current criterion requires completed progress and evidence")
 
     async def record_review(self, task, *, verdict, reason, evidence=""):
+        from app.commands import current_command
         from app.services.identity_service import acting_principal_id
         principal_id = await acting_principal_id(self.db)
+        command = current_command(self.db)
+        overridden = command is not None and any(key[0] == task.id for key in command.owner_acceptance_overrides)
         record = TaskReviewRecord(task_id=task.id, original_task_id=task.id, task_version=task.version, brief_revision=task.brief_revision,
             artifact_revision=task.artifact_revision, principal_id=principal_id,
-            verdict=verdict, reason=reason, evidence=evidence)
+            verdict=verdict, kind="owner_override" if overridden and verdict == "accept" else "review", reason=reason, evidence=evidence)
         self.db.add(record)
         return record
+
+    async def owner_accept(self, task_id: int, data: OwnerAcceptanceWrite):
+        """Accept one resolved task as an owner override of publisher independence.
+
+        The project's policy stays on. The grant covers this task at the supplied
+        revisions for this command only; every other review check still applies.
+        """
+        authority = require_owner_override(self.db)
+        reason = data.reason.strip()
+        if not reason:
+            raise AuthorityError("override_reason_required", "An owner override needs a reason.", 422)
+        # The command audit records the override's own reason, whatever the request headers said.
+        # The command flushes its writes before the caller's authority is restored.
+        self.db.info["authority"] = replace(authority, reason=reason[:2000])
+        try:
+            return await self._owner_accept(task_id, data, reason)
+        finally:
+            self.db.info["authority"] = authority
+
+    @atomic_command
+    async def _owner_accept(self, task_id, data, reason):
+        from app.commands import PlanningConflict, current_command
+        command = current_command(self.db)
+        command.owner_acceptance_tasks.add(task_id)
+        task = await self._locked(task_id, data.expected_version)
+        if (task.brief_revision, task.artifact_revision) != (data.brief_revision, data.artifact_revision):
+            raise ValueError("Brief or artifact revision is stale")
+        from app.services.review_provenance import different_publisher_required
+        if not await different_publisher_required(self.db, task.project_id):
+            raise PlanningConflict("owner_override_not_required",
+                "This project does not require a different review publisher. Use an ordinary review.")
+        command.owner_acceptance_overrides.add((task.id, task.version, task.brief_revision, task.artifact_revision))
+        task, _, _ = await self.tasks.change_status(task.id, "closed", reason=reason, expected_version=task.version,
+            review_evidence=data.evidence, commit=False)
+        if task is None or task.status != "closed":
+            raise ValueError("Review requires resolved, uncanceled leaf work")
+        await self.tasks.record_task_event(task.id, "owner_acceptance_override",
+            {"version": task.version, "brief_revision": task.brief_revision, "artifact_revision": task.artifact_revision,
+             "reason": reason})
+        # Audit every write under the override's reason, also inside an enclosing request command.
+        await self.db.flush()
+        return task
 
     @atomic_command
     async def review(self, task_id: int, data: TaskReviewWrite):

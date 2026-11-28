@@ -20,22 +20,28 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.schemas.delivery_metrics` | `DeliveryMetricsResponse` |
 | `app.schemas.execution_usage` | `ExecutionUsageSummary` |
 | `app.schemas.github` | `GitHubReconciliationResponse` |
+| `app.schemas.manual_provenance` | `ManualProvenanceResponse`, `ManualProvenanceWrite` |
 | `app.schemas.planning_inputs` | `PlanningInputContext`, `MemberPlanningIntent` |
 | `app.schemas.task` | `TaskCreate`, `TaskResponse` |
-| `app.schemas.task_brief` | `BriefWrite`, `BriefConvert`, `ProgressWrite`, `TaskReviewWrite`, `TaskReviewResponse`, `CurrentTaskReviewResponse` |
+| `app.schemas.task_brief` | `BriefWrite`, `BriefConvert`, `OwnerAcceptanceWrite`, `ProgressWrite`, `TaskReviewWrite`, `TaskReviewResponse`, `CurrentTaskReviewResponse` |
 | `app.schemas.task_detail` | `TaskDetailResponse`, `TaskReferencePage`, `HumanWorkResponse` |
 | `app.schemas.task_domain` | `BacklogRestoreRequest`, `TaskActionRequest`, `TaskActionsResponse` |
-| `app.schemas.task_replacement` | `TaskReplacementCreate`, `TaskReplacementResponse` |
+| `app.schemas.task_postponement` | `OwnerDecisionRequest`, `TaskPostponeRequest`, `TaskPostponementResponse`, `TaskReactivateRequest` |
+| `app.schemas.task_replacement` | `TaskReplacementCreate`, `TaskReplacementResponse`, `TaskSupersessionCreate` |
+| `app.schemas.task_routing` | `RoutingCheck`, `RoutingConvert`, `RoutingConvertResponse` |
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService`, `BacklogSnapshotService` |
 | `app.services.delivery_metrics_service` | `DeliveryMetricsService` |
 | `app.services.execution_usage_service` | `ExecutionUsageService` |
 | `app.services.github_reconciliation_service` | `GitHubReconciliationService`, `GitHubReconciliationService` |
+| `app.services.manual_provenance_service` | `ManualProvenanceService` |
 | `app.services.planning_input_context` | `observe_planning_input`, `observe_planning_input` |
 | `app.services.release_service` | `ReleaseService` |
 | `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.task_detail_service` | `TaskDetailService` |
 | `app.services.task_domain_service` | `TaskDomainService`, `domain_capabilities` |
-| `app.services.task_replacement_service` | `TaskReplacementService`, `TaskReplacementService` |
+| `app.services.task_postponement_service` | `TaskPostponementService`, `TaskPostponementService`, `TaskPostponementService` |
+| `app.services.task_reactivation_service` | `ReactivationService` |
+| `app.services.task_replacement_service` | `TaskReplacementService`, `TaskReplacementService`, `TaskReplacementService` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.services.work_metrics` | `METRIC_MATCHES`, `aggregate_metrics` |
 | `decimal` | `Decimal` |
@@ -64,7 +70,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (6) |
-| Outbound | `backend` (28) |
+| Outbound | `backend` (34) |
 
 ### External packages
 
@@ -72,15 +78,15 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DB](../entities/routers_task_domain_DB.md) | Type alias | 25 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
-| [MetricMatchItem](../entities/MetricMatchItem.md) | Pydantic model | 93 | `BaseModel` | — |
-| [MetricMatchPage](../entities/routers_task_domain_MetricMatchPage.md) | Pydantic model | 101 | `BaseModel` | — |
+| [DB](../entities/routers_task_domain_DB.md) | Type alias | 28 | `Annotated[AsyncSession, Depends(get_db, scope='function')]` | — |
+| [MetricMatchItem](../entities/MetricMatchItem.md) | Pydantic model | 96 | `BaseModel` | — |
+| [MetricMatchPage](../entities/routers_task_domain_MetricMatchPage.md) | Pydantic model | 105 | `BaseModel` | — |
 
 ## Functions
 
@@ -92,7 +98,7 @@ flowchart LR
 | `delivery_metrics` | *(async)* `(db: DB, project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366), backlog: bool = Query(default=False, description="Only this project's work with no iteration, using scope at observation for history."), all_projects: bool = Query(default=False, description='Aggregate all accessible projects; omit project_id, iteration_id and backlog filters.'), all_projects_backlog: bool = Query(default=False, description='With all_projects, include only work with no iteration; history uses recorded scope.'))` | `@router.get('/tasks/delivery-metrics', response_model=DeliveryMetricsResponse)` | — |
 | `execution_usage_summary` | *(async)* `(db: DB, project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366), budget_amount: Decimal \| None = Query(default=None, ge=0, max_digits=18, decimal_places=6), budget_currency: str \| None = Query(default=None, pattern='^[A-Z]{3}$'), backlog: bool = Query(default=False, description="Only this project's work with no iteration, using recorded scope for history."), all_projects: bool = Query(default=False, description='Aggregate all accessible projects; omit project_id, iteration_id and backlog filters.'), all_projects_backlog: bool = Query(default=False, description='With all_projects, include only work with no iteration; history uses recorded scope.'))` | `@router.get('/tasks/execution-usage', response_model=ExecutionUsageSummary)` | — |
 | `metric_matches` | *(async)* `(db: DB, metric: str = Query(max_length=40), project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), release_id: int \| None = Query(default=None, ge=1), limit: int = Query(default=200, ge=1, le=500), after_id: int \| None = Query(default=None, ge=0))` | `@router.get('/tasks/metric-matches', response_model=MetricMatchPage, response_model_exclude_unset=True)` | The tasks behind one work-metric count, chosen by the predicate that counts them. |
-| `lookup_tasks` | *(async)* `(db: DB, project_id: int \| None = None, iteration_id: int \| None = None, q: str \| None = Query(default=None, max_length=200), backlog_only: bool = False, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0), task_status: str \| None = None, parent_id: int \| None = Query(default=None, ge=1), roots_only: bool = False)` | `@router.get('/tasks/lookup', response_model=TaskReferencePage)` | — |
+| `lookup_tasks` | *(async)* `(db: DB, project_id: int \| None = None, iteration_id: int \| None = None, q: str \| None = Query(default=None, max_length=200), backlog_only: bool = False, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0), task_status: str \| None = None, parent_id: int \| None = Query(default=None, ge=1), roots_only: bool = False, leaf_only: bool = Query(default=False, description='Only tasks that are not a parent or summary of other tasks.'))` | `@router.get('/tasks/lookup', response_model=TaskReferencePage)` | — |
 | `task_capabilities` | *(async)* `(db: DB)` | `@router.get('/tasks/capabilities')` | — |
 | `human_my_work` | *(async)* `(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0), project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), backlog_only: bool = False)` | `@router.get('/tasks/my-work', response_model=HumanWorkResponse)` | — |
 | `task_owner_options` | *(async)* `(db: DB, project_id: int \| None = None, after_id: int = Query(default=0, ge=0), limit: int = Query(default=100, ge=1, le=100))` | `@router.get('/tasks/owner-options')` | — |
@@ -104,8 +110,11 @@ flowchart LR
 | `task_command` | *(async)* `(task_id: int, data: TaskActionRequest, db: DB)` | `@router.post('/tasks/{task_id}/commands', response_model=TaskResponse)` | — |
 | `write_task_brief` | *(async)* `(task_id: int, data: BriefWrite, db: DB)` | `@router.put('/tasks/{task_id}/brief', response_model=TaskResponse)` | — |
 | `convert_task_brief` | *(async)* `(task_id: int, data: BriefConvert, db: DB)` | `@router.post('/tasks/{task_id}/brief/convert')` | — |
+| `check_task_routing` | *(async)* `(task_id: int, db: DB, assignee_id: int \| None = Query(default=None, ge=1, description='A proposed assignee row; the current assignee when omitted.'))` | `@router.get('/tasks/{task_id}/routing/check', response_model=RoutingCheck)` | Check the brief's structured routing against an assignee and the project's review policy. |
+| `convert_task_routing` | *(async)* `(task_id: int, data: RoutingConvert, db: DB)` | `@router.post('/tasks/{task_id}/routing/convert', response_model=RoutingConvertResponse)` | Preview or apply moving routing named in the brief's text into its structured routing. |
 | `record_task_progress` | *(async)* `(task_id: int, data: ProgressWrite, db: DB)` | `@router.post('/tasks/{task_id}/progress', response_model=TaskResponse)` | — |
 | `review_task` | *(async)* `(task_id: int, data: TaskReviewWrite, db: DB)` | `@router.post('/tasks/{task_id}/review', response_model=TaskResponse)` | — |
+| `owner_accept_task` | *(async)* `(task_id: int, data: OwnerAcceptanceWrite, db: DB)` | `@router.post('/tasks/{task_id}/owner-acceptance', response_model=TaskResponse)` | Accept resolved work as a signed-in owner while the different-publisher policy stays on. |
 | `task_reviews` | *(async)* `(task_id: int, db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/{task_id}/reviews', response_model=list[TaskReviewResponse])` | — |
 | `current_task_review` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/reviews/current', response_model=CurrentTaskReviewResponse)` | — |
 | `brief_history_page` | *(async)* `(db, task_id, model, after_id, limit)` | — | — |
@@ -113,7 +122,13 @@ flowchart LR
 | `task_progress_history` | *(async)* `(task_id: int, db: DB, limit: int = Query(default=10, ge=1, le=20), after_id: int = Query(default=0, ge=0))` | `@router.get('/tasks/{task_id}/progress/history')` | — |
 | `backlog_snapshots` | *(async)* `(project_id: int, db: DB)` | `@router.get('/projects/{project_id}/backlog/snapshots')` | — |
 | `restore_backlog` | *(async)* `(project_id: int, snapshot_id: int, data: BacklogRestoreRequest, db: DB)` | `@router.post('/projects/{project_id}/backlog/snapshots/{snapshot_id}/restore', response_model=list[TaskResponse])` | — |
-| `task_replacement` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/replacement', response_model=TaskReplacementResponse)` | Read the clean-replacement disposition this task takes part in, as original or replacement. |
+| `task_replacement` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/replacement', response_model=TaskReplacementResponse)` | Read the replacement or supersession disposition this task takes part in, as original, replacement or successor. |
 | `task_github_reconciliation` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/github-reconciliation', response_model=GitHubReconciliationResponse)` | Compare the commits a task submitted with its linked pull requests as last observed. |
 | `task_github_catch_up` | *(async)* `(task_id: int, db: DB)` | `@router.post('/tasks/{task_id}/github-reconciliation/catch-up', response_model=GitHubReconciliationResponse)` | Read this task's own pull requests from GitHub for events a webhook never delivered. |
+| `record_manual_provenance` | *(async)* `(task_id: int, data: ManualProvenanceWrite, db: DB)` | `@router.post('/tasks/{task_id}/manual-provenance', response_model=ManualProvenanceResponse, status_code=201)` | Record who executed resolved work delivered outside recorded runs, and its exact candidate. |
 | `record_task_replacement` | *(async)* `(task_id: int, data: TaskReplacementCreate, db: DB)` | `@router.post('/tasks/{task_id}/replacement', response_model=TaskReplacementResponse, status_code=201)` | Replace this unaccepted task with a fresh one; only the project's PM or an operator may decide. |
+| `record_task_supersession` | *(async)* `(task_id: int, data: TaskSupersessionCreate, db: DB)` | `@router.post('/tasks/{task_id}/supersession', response_model=TaskReplacementResponse, status_code=201)` | Record that a closed or accepted task already delivered this task's work; neither task is reopened. |
+| `task_postponement` | *(async)* `(task_id: int, db: DB)` | `@router.get('/tasks/{task_id}/postponement', response_model=TaskPostponementResponse)` | Read the task's open postponement, or its most recent one, with its reactivation requirements. |
+| `postpone_task` | *(async)* `(task_id: int, data: TaskPostponeRequest, db: DB)` | `@router.post('/tasks/{task_id}/postpone', response_model=TaskPostponementResponse)` | Stop planned, active or resolved work without canceling it, with a reason and reactivation requirements. |
+| `reactivate_task` | *(async)* `(task_id: int, data: TaskReactivateRequest, db: DB)` | `@router.post('/tasks/{task_id}/reactivate', response_model=TaskPostponementResponse)` | Return postponed work to planned, or to resolved if it was postponed after resolution. |
+| `record_owner_decision` | *(async)* `(task_id: int, requirement_id: int, data: OwnerDecisionRequest, db: DB)` | `@router.post('/tasks/{task_id}/postponement/requirements/{requirement_id}/decision', response_model=TaskPostponementResponse)` | Record the owner's decision for an owner_decision requirement of the task's open postponement. |

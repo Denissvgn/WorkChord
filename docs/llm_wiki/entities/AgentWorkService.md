@@ -21,7 +21,8 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `_resolve_rollout` | *(async)* `(actor: AgentActor, *, observed_boundaries: dict \| None = None) -> AgentRoutingRolloutService` | — | — |
 | `_require_enforced_rollout` | `(rollout_service: AgentRoutingRolloutService)` | `@staticmethod` | Require effective enforcement and return its bounded status. |
 | `_require_enforced_routing` | `()` | — | Preserve the explicit/static rollout guard for compatibility. |
-| `_require_enforced_routing_for_actor` | *(async)* `(actor: AgentActor)` | — | Require enforcement using the actor's authoritative topology. |
+| `_verification_rollout` | *(async)* `(actor: AgentActor, verifier_actor_id: int, project_id: int \| None) -> tuple[AgentRoutingRolloutService, dict]` | — | Rollout for verification work, judged by the verifier's presence (not cached) with refusal detail. |
+| `_require_enforced_routing_for_actor` | *(async)* `(actor: AgentActor, *, verifier_actor_id: int \| None = None, project_id: int \| None = None)` | — | Require enforcement using the actor's authoritative topology. |
 | `_require_supervised_rollout` | `(rollout_service: AgentRoutingRolloutService)` | `@staticmethod` | Permit legacy/supervised dispatch only while enforcement is inactive. |
 | `_require_supervised_routing` | `()` | — | Preserve the explicit/static rollout guard for compatibility. |
 | `_require_supervised_routing_for_actor` | *(async)* `(actor: AgentActor)` | — | Require supervised mode using the actor's authoritative topology. |
@@ -38,9 +39,11 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `_record_routing_stale_conflict` | *(async)* `(*, task: Task, principal: AgentActor, data: Any, conflict: Any, assignment_id: int \| None = None, correlation_id: str \| None = None) -> None` | — | Durably record a failed selection attempt without mutating work state. |
 | `_selection_pending` | `(assignment: AgentTaskAssignment) -> bool` | `@classmethod` | — |
 | `_supervised_recovery` | `(assignment: AgentTaskAssignment) -> bool` | `@classmethod` | — |
+| `_supervised_rework_ids` | *(async)* `(task_id, task_assignments) -> set[int]` | — | Rework assignments whose own run began as an authenticated supervised handback. |
+| `_shadow_recovery_refusal` | `(principal, boundary, target, task_assignments, reviewer_ids, supervised_reworks)` | `@classmethod` | Name the first condition that keeps a shadow recovery from being supervised. |
 | `_show_rework` | `(assignment_view, actor_id, evidence)` | `@staticmethod` | Project the effective handback without rewriting the issued assignment. |
 | `_execution_assignment_view` | `(assignment, run, **binding_options)` | `@classmethod` | — |
-| `_shadow_handoff` | *(async)* `(task, assignment, worker, mode, cache, *, lock = False)` | — | — |
+| `_shadow_handoff` | *(async)* `(task, assignment, worker, mode, cache, *, lock = False)` | — | Decide whether pending lineage may begin as supervised legacy work. |
 | `_is_model_aware_assignment` | `(assignment: AgentTaskAssignment) -> bool` | `@classmethod` | — |
 | `_failure_category` | `(evidence: Any) -> str` | `@staticmethod` | Recognize only explicit governed model-failure evidence. |
 | `_routing_lineage_snapshot` | `(*, task: Task, source_assignments: Iterable[AgentTaskAssignment], transition: str, provisional_actor_id: int, reason: str, evidence: Any = None) -> dict[str, Any]` | `@classmethod` | Build bounded pending-selection evidence without copying opaque payloads. |
@@ -156,7 +159,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_work_service](../modules/agent_work_service.md) | 89 | — |
+| [agent_work_service](../modules/agent_work_service.md) | 92 | — |
 
 ### References
 
@@ -175,4 +178,4 @@ flowchart LR
 | `list_agent_assignments_page` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `list_agent_recovery_tasks` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 82 logical references; 70 omitted by the 12-row generated summary limit.
+> References: showing 12 of 90 logical references; 78 omitted by the 12-row generated summary limit.

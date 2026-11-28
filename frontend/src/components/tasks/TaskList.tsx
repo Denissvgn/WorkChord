@@ -1,7 +1,8 @@
 import { isGraphLimitError } from '../../utils/graphLimitError';
 import { atRiskReasons } from '../../features/planningMasters/atRiskReasons';
 import { PagedTaskBrowser } from './PagedTaskBrowser';
-import { statusTextClassName } from '../ui/tone';
+import { stateTextClassName } from '../ui/tone';
+import { stateOf } from '../../utils/taskState';
 import { LabelChip } from '../labels/LabelChip';
 import { Fragment, useCallback, useEffect, useId, useLayoutEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
@@ -34,7 +35,7 @@ import type { TaskRowAssigneeOption } from './TaskRow';
 import { useAssigneeOptions, useTaskRowEdits } from './useTaskRowEdits';
 import { agentRowValues, useAgentRowFacts } from './useAgentRowFacts';
 import type { AgentRowFacts } from './useAgentRowFacts';
-import type { Task, TaskStatus } from '../../types/task';
+import type { Task, TaskDisplayedState, TaskStatus } from '../../types/task';
 import type { Label } from '../../types/label';
 import type { TaskFilters } from './TaskFiltersBar';
 import clsx from 'clsx';
@@ -64,7 +65,7 @@ import { useToast } from '../feedback/toast';
 export type SortKey = 'priority' | 'sort_order' | 'status' | 'title';
 export type TaskMode = 'bulk' | 'merge';
 /** Lifecycle order for status groups: the work in hand first, finished work last. */
-const STATUS_GROUP_ORDER = ['active', 'planned', 'resolved', 'closed'];
+const STATUS_GROUP_ORDER = ['active', 'planned', 'resolved', 'closed', 'postponed', 'canceled', 'superseded'];
 /** Longer lists render only the rows near the viewport. */
 const VIRTUALIZE_AFTER_ROWS = 80;
 /** Every row is 44 px tall, its bottom line included. */
@@ -126,7 +127,7 @@ export const TaskList = ({
     const scopeLink = useScopeLink();
     const toast = useToast();
     const [editingTask, setEditingTask] = useState<Task | null>(null);
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const searchText = searchParams.get('q')?.slice(0, 200) ?? '';
     const [addingChildTo, setAddingChildTo] = useState<number | null>(null);
     const [deletingTask, setDeletingTask] = useState<Task | null>(null);
@@ -227,8 +228,8 @@ export const TaskList = ({
             if (sortKey === 'priority') return a.priority - b.priority;
             if (sortKey === 'sort_order') return a.sort_order - b.sort_order;
             if (sortKey === 'status') {
-                const order: Record<string, number> = { 'planned': 0, 'active': 1, 'resolved': 2, 'closed': 3 };
-                return (order[a.status] ?? 0) - (order[b.status] ?? 0);
+                const order: Record<string, number> = { 'planned': 0, 'active': 1, 'resolved': 2, 'closed': 3, 'postponed': 4, 'canceled': 5, 'superseded': 6 };
+                return (order[stateOf(a)] ?? 0) - (order[stateOf(b)] ?? 0);
             }
             if (sortKey === 'title') return a.title.localeCompare(b.title);
             return 0;
@@ -341,9 +342,9 @@ export const TaskList = ({
     const rowItems = useMemo<RowItem[]>(() => {
         if (!grouped) return filteredAndSortedTasks.map(task => ({ kind: 'task' as const, task }));
         const groupStatus = (status: string) => status === 'in_progress' ? 'active' : status;
-        const order = [...STATUS_GROUP_ORDER, ...new Set(filteredAndSortedTasks.map(task => groupStatus(task.status)).filter(status => !STATUS_GROUP_ORDER.includes(status)))];
+        const order = [...STATUS_GROUP_ORDER, ...new Set(filteredAndSortedTasks.map(task => groupStatus(stateOf(task))).filter(status => !STATUS_GROUP_ORDER.includes(status)))];
         return order.flatMap(status => {
-            const inGroup = filteredAndSortedTasks.filter(task => groupStatus(task.status) === status);
+            const inGroup = filteredAndSortedTasks.filter(task => groupStatus(stateOf(task)) === status);
             if (inGroup.length === 0) return [];
             const collapsed = collapsedGroups.has(status);
             return [{ kind: 'group' as const, status, count: inGroup.length, collapsed },
@@ -392,6 +393,7 @@ export const TaskList = ({
     }
     const rowContext: RowContext = {
         onOpen: onOpenTask ?? setEditingTask,
+        onOpenSuccessor: (id: number) => { const next = new URLSearchParams(searchParams); next.set('task', String(id)); setSearchParams(next); },
         onAddSubtask: setAddingChildTo,
         onDelete: setDeletingTask,
         onUnmerge: id => unmergeMutation.mutate(id),
@@ -418,7 +420,7 @@ export const TaskList = ({
             <Button data-page-chrome-control="button" type="button" aria-expanded={!item.collapsed} onClick={() => toggleGroup(item.status)}
                 className="flex min-h-7 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus" variant="plain">
                 {item.collapsed ? <ChevronRight aria-hidden="true" className="h-4 w-4" /> : <ChevronDown aria-hidden="true" className="h-4 w-4" />}
-                <span className={statusTextClassName[item.status as Task['status']]}>
+                <span className={stateTextClassName[item.status as TaskDisplayedState]}>
                     {t(`statuses.${item.status}`, { defaultValue: item.status })}
                 </span>
                 <span className="tabular-nums font-normal text-content-secondary">{t('taskList.groupCount', { count: item.count })}</span>
@@ -606,6 +608,8 @@ const VirtualTaskRows = ({ items, rowsNode, scrollElement, renderItem }: {
 /** What every row of the list shares: selection, hierarchy state and inline edits. */
 interface RowContext {
     onOpen: (task: Task) => void;
+    /** Opens the task that delivers a superseded task's work. */
+    onOpenSuccessor: (taskId: number) => void;
     onAddSubtask: (id: number) => void;
     onDelete: (task: Task) => void;
     onUnmerge: (taskId: number) => void;
@@ -723,6 +727,8 @@ const TaskItemContent = ({ task, level, ctx, dragHandleProps, dragging = false }
                 id={task.id}
                 title={task.title}
                 status={task.status}
+                state={stateOf(task)}
+                successor={task.successor_task_id ? { id: task.successor_task_id, onOpen: () => ctx.onOpenSuccessor(task.successor_task_id as number) } : null}
                 statusLocked={task.is_composite || Boolean(hasChildren)}
                 priority={task.priority}
                 chip={taskStateChip(task, ctx.taskMap)}

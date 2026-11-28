@@ -3,7 +3,7 @@
 **Location:** `backend/app/models/delivery_dependency.py:9`
 **Kind:** Class
 **Bases:** `Base`
-**Module:** [delivery_dependency](../modules/delivery_dependency.md)
+**Module:** [models_delivery_dependency](../modules/models_delivery_dependency.md)
 
 ## Description
 
@@ -36,12 +36,12 @@ flowchart LR
     n5["DeliveryDependencyService.add (backend/app/services/delivery_dependency_service.py)"]
     n6["backend/app/services/project_service.py"]
     n7["backend/app/services/snapshot_service.py"]
-    n8["backend/app/services/task_replacement_service.py"]
+    n8["TaskReplacementService._move_dependents (backend/app/services/task_replacement_service.py)"]
     n9["backend/app/services/task_service.py"]
     n10["_source_artifacts (backend/tests/database_migration/test_postgresql_transfer.py)"]
     n11["backend/tests/migrations/test_delivery_target_branch_migration.py"]
     n12["backend/tests/test_delivery_dependencies.py"]
-    n13["_scenario (backend/tests/test_task_replacement.py)"]
+    n13["backend/tests/test_delivery_prerequisite_tools.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -55,7 +55,7 @@ flowchart LR
     n11 --> n0
     n12 --> n0
     n13 --> n0
-    click n0 "../modules/delivery_dependency.md"
+    click n0 "../modules/models_delivery_dependency.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/agent_service.md"
@@ -68,14 +68,14 @@ flowchart LR
     click n10 "../modules/test_postgresql_transfer.md"
     click n11 "../modules/test_delivery_target_branch_migration.md"
     click n12 "../modules/test_delivery_dependencies.md"
-    click n13 "../modules/test_task_replacement.md"
+    click n13 "../modules/test_delivery_prerequisite_tools.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [delivery_dependency](../modules/delivery_dependency.md) | 0 | `id`, `prerequisite_milestone_id`, `prerequisite_task_id`, `target_branch`, `task_id` |
+| [models_delivery_dependency](../modules/models_delivery_dependency.md) | 0 | `id`, `prerequisite_milestone_id`, `prerequisite_task_id`, `target_branch`, `task_id` |
 
 ### Structure
 
@@ -93,9 +93,11 @@ flowchart LR
 | `DeliveryDependencyService.add` | call | [delivery_dependency_service](../modules/delivery_dependency_service.md) | 1 |
 | `project_service` | import | [project_service](../modules/project_service.md) | — |
 | `snapshot_service` | import | [snapshot_service](../modules/snapshot_service.md) | — |
-| `task_replacement_service` | import | [task_replacement_service](../modules/task_replacement_service.md) | — |
+| `TaskReplacementService._move_dependents` | call | [task_replacement_service](../modules/task_replacement_service.md) | 1 |
 | `task_service` | import | [task_service](../modules/task_service.md) | — |
 | `_source_artifacts` | call | [test_postgresql_transfer](../modules/test_postgresql_transfer.md) | 2 |
 | `test_delivery_target_branch_migration` | import | [test_delivery_target_branch_migration](../modules/test_delivery_target_branch_migration.md) | — |
 | `test_delivery_dependencies` | import | [test_delivery_dependencies](../modules/test_delivery_dependencies.md) | — |
-| `_scenario` | call | [test_task_replacement](../modules/test_task_replacement.md) | 1 |
+| `test_delivery_prerequisite_tools` | import | [test_delivery_prerequisite_tools](../modules/test_delivery_prerequisite_tools.md) | — |
+
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

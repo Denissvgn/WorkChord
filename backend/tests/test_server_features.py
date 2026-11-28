@@ -1,6 +1,9 @@
 """The public feature list names only features this server has."""
 
+import asyncio
+
 from app.main import app
+from app.mcp_server import mcp
 from app.routers.identity import NativeConnectionStart
 from app.schemas.external_link import ExternalLinkProvider
 from app.server_features import SERVER_FEATURES
@@ -22,6 +25,8 @@ EVIDENCE = {
     "runtime-observations-v1": lambda: {("GET", "/api/agent/observations"), ("POST", "/api/agent/observations")} <= routes(),
     "person-run-reads-v1": lambda: ("GET", "/api/agent/runs") in routes(),
     "delivery-prerequisite-retarget-v1": lambda: ("PATCH", "/api/tasks/{task_id}/delivery-dependencies/{edge_id}") in routes(),
+    "postponement-agent-tools-v1": lambda: {"agent_get_task_postponement", "agent_postpone_task", "agent_reactivate_task"}
+    <= {tool.name for tool in asyncio.run(mcp.list_tools())},
 }
 
 

@@ -2,7 +2,7 @@
 
 **Entry point:** `convert_triage_item_to_task` (`http`)
 **Source:** [routers_triage](../modules/routers_triage.md)
-**Modules touched:** [config](../modules/config.md), [language_service](../modules/language_service.md), [routers_triage](../modules/routers_triage.md), [schemas_triage](../modules/schemas_triage.md), and 2 more
+**Modules touched:** [config](../modules/config.md), [language_service](../modules/language_service.md), [routers_triage](../modules/routers_triage.md), [schemas_triage](../modules/schemas_triage.md), and 3 more
 
 **Complete modules touched:**
 
@@ -10,6 +10,7 @@
 - [language_service](../modules/language_service.md)
 - [routers_triage](../modules/routers_triage.md)
 - [schemas_triage](../modules/schemas_triage.md)
+- [source_link_policy](../modules/source_link_policy.md)
 - [system_settings_service](../modules/system_settings_service.md)
 - [url_policy](../modules/url_policy.md)
 
@@ -25,66 +26,67 @@ sequenceDiagram
     participant p2 as backend_error_message
     participant p3 as _bad_request
     participant p4 as _not_found_detail
-    participant p5 as TriageConvertToTaskResponse
-    participant p6 as RuntimeSettingsService.get_app_settings
-    participant p7 as entity_not_found_message
-    participant p8 as scoped_entity_not_found_message
-    participant p9 as entity_deleted_message
-    participant p10 as RuntimeSettingsService.resolve
-    participant p11 as localized
-    participant p12 as RuntimeSettingsService._definition
-    participant p13 as RuntimeSettingsService._decrypt_secret
-    participant p14 as RuntimeSettingsService._coerce
-    participant p15 as RuntimeSettingsService._fernet
-    participant p16 as normalize_provider_api_url
-    participant p17 as normalize_language
-    participant p18 as RuntimeSettingsService
-    participant p19 as get_settings
-    participant p20 as RuntimeSettingsService._row
-    participant p21 as RuntimeSettingsService._env_value
-    participant p22 as RuntimeSettingsError
-    participant p23 as RuntimeSettingsEncryptionError
-    participant p24 as normalize_external_http_url
-    participant p25 as HTTPException (backend/app/routers/triag…nvert_triage_item_to_task)
-    participant p26 as service.convert_to_task
-    participant p27 as str (backend/app/routers/triag…nvert_triage_item_to_task)
-    participant p28 as TriageItemResponse.model_validate
-    participant p29 as service.task_service.task_to_response
+    participant p5 as TriageSourceLinkOutcome.for_link
+    participant p6 as TriageConvertToTaskResponse
+    participant p7 as evaluate_source_link
+    participant p8 as RuntimeSettingsService.get_app_settings
+    participant p9 as entity_not_found_message
+    participant p10 as scoped_entity_not_found_message
+    participant p11 as entity_deleted_message
+    participant p12 as RuntimeSettingsService.resolve
+    participant p13 as localized
+    participant p14 as _instance_authorities
+    participant p15 as normalize_stored_display_url
+    participant p16 as RuntimeSettingsService._definition
+    participant p17 as RuntimeSettingsService._decrypt_secret
+    participant p18 as RuntimeSettingsService._coerce
+    participant p19 as RuntimeSettingsService._fernet
+    participant p20 as normalize_provider_api_url
+    participant p21 as normalize_language
+    participant p22 as TriageSourceLinkOutcome
+    participant p23 as RuntimeSettingsService
+    participant p24 as get_settings
+    participant p25 as SourceLinkDecision
+    participant p26 as _is_instance_path
+    participant p27 as _is_loopback_host
+    participant p28 as _default_port
+    participant p29 as HTTPException (backend/app/routers/triag…nvert_triage_item_to_task)
+    participant p30 as service.convert_to_task
     p0->>p1: resolve_runtime_ui_language
     p0->>p2: backend_error_message
     p0->>p3: _bad_request
     p0->>p4: _not_found_detail
-    p0->>p5: TriageConvertToTaskResponse
-    p1->>p6: RuntimeSettingsService.get_app_settings
-    p2->>p7: entity_not_found_message
-    p2->>p8: scoped_entity_not_found_message
-    p2->>p9: entity_deleted_message
-    p6->>p10: RuntimeSettingsService.resolve
-    p7->>p11: localized
-    p10->>p12: RuntimeSettingsService._definition
-    p10->>p13: RuntimeSettingsService._decrypt_secret
-    p10->>p14: RuntimeSettingsService._coerce
-    p13->>p15: RuntimeSettingsService._fernet
-    p14->>p16: normalize_provider_api_url
-    p1->>p17: normalize_language
-    p1->>p18: RuntimeSettingsService
-    p1->>p19: get_settings
-    p10->>p20: RuntimeSettingsService._row
-    p10->>p21: RuntimeSettingsService._env_value
-    p12->>p22: RuntimeSettingsError
-    p13->>p23: RuntimeSettingsEncryptionError
-    p16->>p24: normalize_external_http_url
-    p0-->>p25: HTTPException (backend/app/routers/triag…nvert_triage_item_to_task)(status_code=status.HTTP_409_CONFLICT, detail=backend_error_message(...))
-    p0-->>p26: service.convert_to_task(triage_item_id, data)
-    p0-->>p27: str (backend/app/routers/triag…nvert_triage_item_to_task)(e)
-    p0-->>p25: HTTPException (backend/app/routers/triag…nvert_triage_item_to_task)(status_code=status.HTTP_404_NOT_FOUND, detail=...)
-    p0-->>p28: TriageItemResponse.model_validate(item)
-    p0-->>p29: service.task_service.task_to_response(task)
+    p0->>p5: TriageSourceLinkOutcome.for_link
+    p0->>p6: TriageConvertToTaskResponse
+    p5->>p7: evaluate_source_link
+    p1->>p8: RuntimeSettingsService.get_app_settings
+    p2->>p9: entity_not_found_message
+    p2->>p10: scoped_entity_not_found_message
+    p2->>p11: entity_deleted_message
+    p8->>p12: RuntimeSettingsService.resolve
+    p9->>p13: localized
+    p7->>p14: _instance_authorities
+    p7->>p15: normalize_stored_display_url
+    p12->>p16: RuntimeSettingsService._definition
+    p12->>p17: RuntimeSettingsService._decrypt_secret
+    p12->>p18: RuntimeSettingsService._coerce
+    p17->>p19: RuntimeSettingsService._fernet
+    p18->>p20: normalize_provider_api_url
+    p1->>p21: normalize_language
+    p5->>p22: TriageSourceLinkOutcome
+    p1->>p23: RuntimeSettingsService
+    p1->>p24: get_settings
+    p7->>p25: SourceLinkDecision
+    p7->>p26: _is_instance_path
+    p7->>p27: _is_loopback_host
+    p7->>p28: _default_port
+    p0-->>p29: HTTPException (backend/app/routers/triag…nvert_triage_item_to_task)(status_code=status.HTTP_409_CONFLICT, detail=backend_error_message(...))
+    p0-->>p30: service.convert_to_task(triage_item_id, data)
 ```
 
-> Call sequence diagram shows 30 of 177 interactions; 147 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 224 interactions; 194 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 3 of 51 (48 omitted); unresolved 3 of 72 (69 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 63 (62 omitted); unresolved 1 of 88 (87 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -93,12 +95,12 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/language_service.py:normalize_language` | 4 | - | unresolved | 2 |
 | `backend/app/services/language_service.py:normalize_language` | 4 | - | external | 1 |
 | `backend/app/services/system_settings_service.py:RuntimeSettingsService._definition` | 10 | - | unresolved | 1 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._definition` | 10 | [backend/app/services/system_settings_service.py](../modules/system_settings_service.md) | internal | 1 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService.resolve` | 9 | [backend/app/services/system_settings_service.py](../modules/system_settings_service.md) | internal | 3 |
 | `backend/app/services/system_settings_service.py:RuntimeSettingsService._row` | 13 | - | unresolved | 3 |
 | `backend/app/services/system_settings_service.py:RuntimeSettingsService._row` | 13 | - | external | 1 |
 | `backend/app/services/system_settings_service.py:RuntimeSettingsService._decrypt_secret` | 18 | - | unresolved | 3 |
-| `backend/app/services/system_settings_service.py:RuntimeSettingsService._fernet` | 21 | - | external | 2 |
-| `backend/app/services/system_settings_service.py:RuntimeSettingsService._fernet` | 21 | [backend/app/services/system_settings_service.py](../modules/system_settings_service.md) | internal | 2 |
-> Omission summary shows 8 of 32 groups; 24 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 52 groups; 44 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -111,9 +113,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 55; effect analysis evaluated: 33, partial: 2, unavailable: 20. Counts include steps omitted from the displayed trace.
+Source steps: 74; effect analysis evaluated: 44, partial: 2, unavailable: 28. Counts include steps omitted from the displayed trace.
 
-Collector observations for 35 source steps with known totals: observed: 213, emitted: 161, omitted: 52. Unavailable totals are excluded.
+Collector observations for 46 source steps with known totals: observed: 252, emitted: 200, omitted: 52. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -189,8 +191,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| convert_triage_item_to_task | service.convert_to_task | 357 | `service.convert_to_task(triage_item_id, data)` |
-| convert_triage_item_to_task | resolve_runtime_ui_language | 359 | `resolve_runtime_ui_language(service.db)` |
+| convert_triage_item_to_task | service.convert_to_task | 361 | `service.convert_to_task(triage_item_id, data)` |
+| convert_triage_item_to_task | resolve_runtime_ui_language | 363 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip (backend/app/services/lang…ice.py:normalize_language) | 35 | `str(value or '').strip(data not statically known)` |
@@ -209,7 +211,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `convert_triage_item_to_task` | `service.convert_to_task` | 357 |
+| unresolved_call | `convert_triage_item_to_task` | `service.convert_to_task` | 361 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `RuntimeSettingsService._definition` | `SETTING_DEFINITIONS.get` | 154 |

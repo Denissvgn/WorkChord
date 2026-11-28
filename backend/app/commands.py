@@ -3,7 +3,7 @@
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from functools import wraps
-from typing import Literal
+from typing import Any, Literal
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -24,7 +24,16 @@ class CommandState:
     worker_blockers: set[tuple[int, int, int, str]] = field(default_factory=set)
     failed: bool = False
     verified_publishers: set[tuple[int, int, int, int]] = field(default_factory=set)
+    # A workspace owner's recorded decision to accept exactly this task state without
+    # a verified publisher; it never applies to another task, revision or command.
+    owner_acceptance_overrides: set[tuple[int, int, int, int]] = field(default_factory=set)
+    # Tasks whose owner-override command is running; every audit row of the command names them.
+    owner_acceptance_tasks: set[int] = field(default_factory=set)
     evidence_returns: set[tuple[int, int]] = field(default_factory=set)
+    # Tasks whose status this command moves into or out of postponed under manage authority.
+    postponement_transitions: set[int] = field(default_factory=set)
+    # The routing check each task's assignee or routing change met in this command, for its response.
+    routing_checks: dict[int, Any] = field(default_factory=dict)
     planning_revision: int | None = None
 
 
@@ -50,7 +59,8 @@ class PlanningConflict(RuntimeError):
         super().__init__(message)
 
     def detail(self):
-        return {"code": self.code, "message": str(self)}
+        from app.refusal_next_steps import with_next_step
+        return with_next_step({"code": self.code, "message": str(self)})
 
 
 async def lock_planning(db, *, expected=None):
@@ -107,6 +117,10 @@ async def command_transaction(db: AsyncSession, *, mode="apply", commit=True):
         if state.failed:
             raise RuntimeError("A failed nested command cannot commit")
         await db.flush()
+        if mode == "apply" and db.info.get("reactivation_checks"):
+            # Work postponed tasks wait for may have changed; evaluate them, before delivery is reconciled, inside this transaction.
+            from app.services.task_reactivation_service import process_reactivation_checks
+            await process_reactivation_checks(db)
         if db.info.get("delivery_changed_nodes") or db.info.get("delivery_graph_changed") or db.info.get("delivery_scope_changed"):
             from app.services.delivery_dependency_service import DeliveryDependencyService
             await DeliveryDependencyService(db).reconcile()
@@ -125,7 +139,7 @@ async def command_transaction(db: AsyncSession, *, mode="apply", commit=True):
     finally:
         db.info.pop("command", None)
         db.info.pop("time_entry_commands", None)
-        for key in ["request_expected_revisions", "command_triage_projects", "review_rework_tasks", "domain_queue_actors", "command_task_projects", "derived_rollups", "claim_bound_discovery", "authority_audited", "authority_audit_pending", "delivery_changed_nodes", "delivery_graph_changed", "delivery_reconciling", "delivery_scope_changed", "discussion_events", "observation_acceptance_preservations"]:
+        for key in ["request_expected_revisions", "command_triage_projects", "review_rework_tasks", "domain_queue_actors", "command_task_projects", "derived_rollups", "claim_bound_discovery", "authority_audited", "authority_audit_pending", "delivery_changed_nodes", "delivery_graph_changed", "delivery_reconciling", "delivery_scope_changed", "discussion_events", "observation_acceptance_preservations", "reactivation_checks"]:
             db.info.pop(key, None)
 
 
@@ -152,7 +166,9 @@ async def lock_backlog_project(db, project_id):
     """Serialize unscheduled hierarchy writes without manufacturing an iteration."""
     from app.authority import internal_authority, require_project
     from app.models.project import Project
-    require_project(db, project_id, "read")
+    # Skipping the check is safe only because no internal_authority block passes a caller-chosen project.
+    if not db.info.get("authority_internal"):
+        require_project(db, project_id, "read")
     await lock_planning(db)
     state = current_command(db)
     if state is None:
@@ -312,7 +328,7 @@ async def planning_input_reservation(db, kind, values):
                     if window:
                         task.execution_planning_window = window
                         await service.record_task_event(task.id, "task.execution_planning_window",
-                            {"source": "iteration_end_extension", "from": window["from"], "through": window["through"],
+                            {"source": "iteration_end_extension", "window_kind": window["kind"], "from": window["from"], "through": window["through"],
                              "assignment_ids": sorted(map(int, window["assignments"])), **extension}, actor_type="system")
     finally:
         if parent is None:

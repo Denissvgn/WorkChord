@@ -14,6 +14,11 @@ the self-hosted layout adds. It never prints a value and never overwrites an
 existing file. `accept_self_hosted.sh` then reads the file like any other
 `server.env`.
 
+`--migrate-env FILE` instead upgrades an existing `server.env` in place: it
+replaces the settings of the earlier MinIO evidence store with freshly generated
+evidence-store credentials, adds a readiness-detail token when the file has
+none, and keeps every other line as it is.
+
 ## Imports
 
 | Source | Symbols |
@@ -36,6 +41,8 @@ existing file. `accept_self_hosted.sh` then reads the file like any other
 |----------|-----------|------------|-------------|
 | `read_env` | `(path)` | — | — |
 | `quote` | `(value)` | — | — |
+| `generated_service_values` | `()` | — | Values of the acceptance services that no stored data depends on. |
 | `build` | `(old, settings, http_port, postgres_port, bind, session_cookie_secure)` | — | — |
 | `write` | `(path, values)` | — | — |
+| `migrate` | `(path)` | — | Replace earlier MinIO settings and add missing service values, in place. |
 | `main` | `(argv = None)` | — | — |

@@ -1,6 +1,6 @@
 # IterationPlanningReadinessSummary
 
-**Location:** `frontend/src/types/iteration.ts:88`
+**Location:** `frontend/src/types/iteration.ts:89`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_iteration](../modules/types_iteration.md)

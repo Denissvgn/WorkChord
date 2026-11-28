@@ -28,6 +28,7 @@ A validated controller command grants one queue-revision update for a named acto
 | `app.models.identity` | `CommandAudit`, `CommandAudit` |
 | `app.models.project` | `Project` |
 | `app.models.task` | `Task` |
+| `app.refusal_next_steps` | `with_next_step` |
 | `contextlib` | `contextmanager` |
 | `dataclasses` | `dataclass`, `field` |
 | `json` | `json` |
@@ -56,9 +57,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (89) |
+| Inbound | `backend` (111) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (6) |
+| Outbound | `backend` (7) |
 
 ### External packages
 
@@ -66,14 +67,14 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 96 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 119 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AuthorityError](../entities/AuthorityError.md) | 14 | `RuntimeError` | — |
-| [Authority](../entities/Authority.md) | 24 | — | — |
+| [AuthorityError](../entities/AuthorityError.md) | 21 | `RuntimeError` | — |
+| [Authority](../entities/Authority.md) | 32 | — | — |
 
 ## Functions
 
@@ -81,6 +82,7 @@ flowchart LR
 |----------|-----------|------------|-------------|
 | `require_project` | `(db, project_id, action = 'read')` | — | — |
 | `require_operator` | `(db)` | — | — |
+| `require_owner_override` | `(db)` | — | Only a signed-in workspace owner or operator may set aside publisher independence. |
 | `internal_authority` | `(db)` | `@contextmanager` | Allow identity resolution or verified automation inside a trusted server boundary. |
 | `_scope_conditions` | `(authority)` | — | — |
 | `scope_orm_operation` | `(state)` | `@event.listens_for(Session, 'do_orm_execute')` | — |

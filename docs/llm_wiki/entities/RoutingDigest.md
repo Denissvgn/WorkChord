@@ -1,6 +1,6 @@
 # RoutingDigest
 
-**Location:** `backend/app/schemas/agent_routing.py:72`
+**Location:** `backend/app/schemas/agent_routing.py:73`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [agent_routing](../modules/agent_routing.md)
@@ -21,10 +21,23 @@ _Auto-generated from `RoutingDigest` in `backend/app/schemas/agent_routing.py`._
 ## Relationships
 
 <!-- Auto-generated relationship summary. Do not edit by hand. -->
-*No generated relationships detected.*
+```mermaid
+flowchart LR
+    n0["RoutingDigest (backend/app/schemas/agent_routing.py)"]
+    n1["backend/app/schemas/routing_calibration.py"]
+    n1 --> n0
+    click n0 "../modules/agent_routing.md"
+    click n1 "../modules/schemas_routing_calibration.md"
+```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
 | [agent_routing](../modules/agent_routing.md) | 0 | — |
+
+### References
+
+| Reference | Kind | Source | Call sites |
+|---|---|---|---:|
+| `routing_calibration` | import | [schemas_routing_calibration](../modules/schemas_routing_calibration.md) | — |
