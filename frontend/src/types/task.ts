@@ -565,9 +565,9 @@ export interface TaskPostponementRecord {
     reactivated_at: string | null; reactivated_to_status: 'planned' | 'resolved' | null; reactivation_reason: string | null;
 }
 export interface TaskPostponementResponse { task: Task; postponement: TaskPostponementRecord | null }
-/** One recorded review. `owner_override` is an owner's acceptance that set aside publisher independence. */
+/** One recorded review. `owner_override` marks an explicit owner or operator override. */
 export interface TaskReviewRecord {
-    id: number; task_version: number; brief_revision: number; artifact_revision: number; principal_id: number | null;
+    id: number; task_version: number; reviewed_task_version?: number | null; brief_revision: number; artifact_revision: number; principal_id: number | null;
     verdict: 'accept' | 'reject' | string; kind: 'review' | 'owner_override'; reason: string; evidence: string; created_at: string;
 }
 /** What a person or agent may do about a refusal, from the server's one refusal catalogue. */

@@ -3161,7 +3161,7 @@ class AgentWorkService:
         hint = await self._assignment_lock_hint(data.assignment_id)
         if hint is None:
             raise ValueError("Review assignment or task not found")
-        if hint[1] != actor.id and not actor_has_scope(actor, "admin"):
+        if hint[1] != actor.id:
             raise AgentPermissionError("Review belongs to another actor")
         from app.services.review_provenance import observe_review_candidate
         observed_candidate = await observe_review_candidate(self.db, data.assignment_id, actor.id) if data.verdict == "pass" else None
@@ -3226,7 +3226,7 @@ class AgentWorkService:
                 "while enforcement is inactive",
                 assignment_id=assignment.id,
             )
-        if assignment.actor_id != actor.id and not actor_has_scope(actor, "admin"):
+        if assignment.actor_id != actor.id:
             raise AgentPermissionError("Review belongs to another actor")
         assignment_actor = locked_actors.get(assignment.actor_id)
         if assignment_actor is None:
@@ -3274,10 +3274,11 @@ class AgentWorkService:
                 or await different_publisher_required(self.db, task.project_id)):
             from app.services.review_provenance import verify_verdict
             await verify_verdict(self.db, task, task_assignments, assignment, actor, data, observed_candidate)
+        else:
+            await require_independent_profile(self.db, task_assignments, actor, assignment.reviewer_profile_id,
+                                              task_id=task.id)
         from app.services.task_brief_service import TaskBriefService
         await TaskBriefService(self.db).require_review(task, accepting=data.verdict == "pass")
-        if data.verdict == "reject":
-            await TaskBriefService(self.db).record_review(task, verdict="reject", reason=data.reason, evidence=json.dumps(data.evidence, ensure_ascii=False))
         new_status = TaskStatus.CLOSED if data.verdict == "pass" else TaskStatus.ACTIVE
         task, _, _ = await self.task_service.change_status(
             task.id,
@@ -3343,6 +3344,10 @@ class AgentWorkService:
                 "review_selection": assignment.review_selection,
                 "observed_model": data.observed_model,
                 "reviewed_candidate_digest": data.reviewed_candidate_digest,
+                "reviewed_packet_sha256": data.reviewed_packet_sha256,
+                "reviewed_task_version": data.expected_task_version,
+                "brief_revision": task.brief_revision,
+                "artifact_revision": task.artifact_revision,
                 "rework_assignment_id": rework.id if rework else None,
                 "routing_selection_pending": (
                     rework_snapshot is not None

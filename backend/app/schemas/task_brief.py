@@ -112,12 +112,13 @@ class TaskReviewResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
     task_version: int
+    reviewed_task_version: int | None = None
     brief_revision: int
     artifact_revision: int
     principal_id: int | None
     verdict: str
     kind: Literal["review", "owner_override"] = Field(default="review",
-        description="owner_override marks an owner's acceptance that set aside publisher independence; it is not an independent review.")
+        description="owner_override marks acceptance under an explicit owner or operator override.")
     reason: str
     evidence: str
     created_at: datetime

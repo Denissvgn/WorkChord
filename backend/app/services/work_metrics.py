@@ -200,8 +200,46 @@ METRIC_MATCHES = ("total", "planned", "active", "resolved", "closed", "postponed
                   "overdue", "late_start", "iteration_overflow", "acceptance_unknown", "unknown_estimate")
 
 
+def _release_review_exists(db, task):
+    """Require an ordinary verdict for the current acceptance episode of this leaf."""
+    from sqlalchemy import or_, select
+    from app.models.agent import AgentTaskAssignment, AgentIdempotencyRecord, TaskEvent
+    from app.models.identity import Principal
+    from app.models.task_brief import TaskReviewRecord
+    from app.sql_semantics import json_text_field
+
+    review = TaskReviewRecord.__table__
+    assignment = AgentTaskAssignment.__table__
+    receipt = AgentIdempotencyRecord.__table__
+    principal = Principal.__table__
+    event = TaskEvent.__table__
+    # Older status commands could also write "review" rows. Only an actual assigned
+    # verdict receipt can establish verification when the reviewed revision is absent.
+    legacy_verdict = select(receipt.c.id).select_from(receipt.join(
+        assignment, assignment.c.id == receipt.c.target_id
+    ).join(event, (event.c.task_id == assignment.c.task_id) & (event.c.actor_id == receipt.c.actor_id)
+                 & (event.c.idempotency_key == receipt.c.idempotency_key))).where(
+        event.c.actor_type == "agent", event.c.event_type == "agent.verification_verdict",
+        json_text_field(db, event.c.payload, "verdict") == "pass",
+        json_text_field(db, event.c.payload, "assignment_id", integer=True) == assignment.c.id,
+        json_text_field(db, event.c.payload, "task_version", integer=True) == review.c.task_version,
+        receipt.c.operation == "verification.verdict", receipt.c.target_type == "assignment",
+        receipt.c.actor_id == principal.c.agent_actor_id, assignment.c.actor_id == receipt.c.actor_id,
+        assignment.c.task_id == review.c.task_id, assignment.c.purpose == "verification",
+        assignment.c.state == "fulfilled", assignment.c.task_version == review.c.task_version,
+    ).correlate(review, principal).exists()
+    return select(review.c.id).select_from(review.join(principal, principal.c.id == review.c.principal_id)).where(
+        review.c.task_id == task.c.id, review.c.kind == "review", review.c.verdict == "accept",
+        principal.c.kind.in_(("agent", "human")), review.c.principal_id == task.c.accepted_by_principal_id,
+        review.c.principal_id.is_distinct_from(task.c.executed_by_principal_id),
+        review.c.brief_revision == task.c.brief_revision, review.c.artifact_revision == task.c.artifact_revision,
+        review.c.task_version <= task.c.accepted_version, review.c.created_at >= task.c.accepted_at,
+        or_(review.c.reviewed_task_version.is_not(None), legacy_verdict),
+    ).correlate(task).exists()
+
+
 async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_ids=None, group_by=None, task_ids=None, zone_map=None, now=None,
-                            matching=None, limit=200, after_id=None):
+                            matching=None, limit=200, after_id=None, release_scope=False):
     """Aggregate all authorized leaves in SQL, including inherited scheduling facets.
 
     With ``matching``, return the tasks behind one count instead, chosen by the
@@ -268,6 +306,8 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     # nor remaining, and it is counted only under its own status.
     scheduled = and_(included, t.c.status != "postponed")
     accepted = and_(t.c.status == "closed", t.c.accepted_at.is_not(None), t.c.accepted_by_principal_id.is_not(None), t.c.accepted_version == t.c.version)
+    if release_scope:
+        accepted = and_(accepted, _release_review_exists(db, t))
     accepted = func.coalesce(accepted, false())
     overdue = and_(~implemented, t.c.end_date < today)
     start = func.coalesce(t.c.baseline_start_date, t.c.start_date)

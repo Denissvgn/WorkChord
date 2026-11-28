@@ -10,6 +10,7 @@ from app.commands import command_transaction
 from app.models.agent import TaskEvent
 from app.models.identity import CommandAudit, ProjectMembership, WorkspaceMembership
 from app.models.project import Project
+from app.models.release import Release
 from app.models.task import Task
 from app.models.task_brief import TaskReviewRecord
 from app.schemas.task_brief import BriefCriterion, OwnerAcceptanceWrite, TaskBrief
@@ -56,6 +57,11 @@ async def test_owner_override_accepts_one_task_and_keeps_the_policy_for_the_rest
     factory, scenario, _, principal_ids = managed_store
     task_id, other_id, _ = await policy_scope(managed_store, role)
     body = await acceptance_body(factory, task_id)
+    async with factory() as setup:
+        release = Release(name="Owner-reviewed delivery", project_id=scenario.projects[0],
+                          tasks=[await setup.get(Task, task_id)])
+        setup.add(release)
+        await setup.commit()
     async with owner_client(managed_store, **{"X-Correlation-ID": "owner-override"}) as owner:
         ordinary = await owner.post(f"/api/tasks/{task_id}/review", json={**body, "verdict": "accept"})
         assert ordinary.status_code == 403, ordinary.text
@@ -70,6 +76,8 @@ async def test_owner_override_accepts_one_task_and_keeps_the_policy_for_the_rest
             ("accept", "owner_override", principal_ids[0], REASON)]
         current = (await owner.get(f"/api/tasks/{task_id}/reviews/current")).json()
         assert current["review"]["kind"] == "owner_override"
+        counts = (await owner.get(f"/api/releases/{release.id}")).json()
+        assert (counts["implemented_tasks"], counts["accepted_tasks"]) == (1, 0)
 
         # The project policy is unchanged, so other work still needs a verified publisher.
         other_body = await acceptance_body(factory, other_id)
@@ -126,6 +134,25 @@ async def test_override_refuses_non_owners_missing_reasons_and_unpoliced_project
         for refused_id in (task_id, unpoliced_id):
             assert (await db.get(Task, refused_id)).status == "resolved"
         assert await db.scalar(select(TaskReviewRecord.id).where(TaskReviewRecord.original_task_id.in_([task_id, unpoliced_id]))) is None
+
+
+@pytest.mark.parametrize("override", [False, True])
+async def test_release_distinguishes_human_review_from_accountable_override(managed_store, override):
+    factory, scenario, _, _ = managed_store
+    _, _, task_id = await policy_scope(managed_store)
+    async with factory() as db:
+        release = Release(name="Reviewed work", project_id=scenario.projects[1], tasks=[await db.get(Task, task_id)])
+        db.add(release)
+        await db.commit()
+    headers = {"X-Review-Override": "true", "X-Command-Reason": REASON} if override else {}
+    async with owner_client(managed_store, **headers) as owner:
+        body = await acceptance_body(factory, task_id)
+        accepted = await owner.post(f"/api/tasks/{task_id}/review", json={**body, "verdict": "accept"})
+        assert accepted.is_success, accepted.text
+        current = (await owner.get(f"/api/tasks/{task_id}/reviews/current")).json()["review"]
+        assert current["kind"] == ("owner_override" if override else "review")
+        counts = (await owner.get(f"/api/releases/{release.id}")).json()
+        assert counts["accepted_tasks"] == (0 if override else 1)
 
 
 async def test_review_override_header_waives_only_self_review_on_an_owner_override(managed_store):

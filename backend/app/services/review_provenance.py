@@ -1156,6 +1156,9 @@ async def verify_verdict(db, task, assignments, assignment, actor, data, observe
                                     reviewer_profile_id=assignment.reviewer_profile_id, review_evidence_id=evidence["id"] if evidence else None)
     if current["reviewer"] != stored["reviewer"]:
         _conflict("verification_publisher_unverifiable", "Refresh the assignment after a change to the reviewer's binding or profile.")
+    if data.verdict == "reject" and data.reviewed_candidate_digest is not None:
+        if data.reviewed_candidate_digest != (stored.get("candidate") or {}).get("digest"):
+            _conflict("verification_candidate_stale", "The acknowledged candidate differs from the assigned review candidate.")
     if data.verdict == "pass" and not current["candidate"]:
         _conflict("verification_candidate_unverifiable", "An exact submitted candidate is required for acceptance.")
     if data.verdict == "pass" and (current != stored or data.reviewed_candidate_digest != current["candidate"]["digest"]):

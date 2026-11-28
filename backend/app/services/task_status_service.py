@@ -95,7 +95,7 @@ class TaskStatusService:
         commit: bool = True,
         reserve_version: bool = True,
         manual_execution: bool = False,
-        review_evidence: str = "",
+        review_evidence: str | None = None,
         review_rework: bool = False,
     ) -> tuple[Optional[Task], list[dict], bool]:
         """Apply one valid direct transition and reconcile its ancestor chain."""
@@ -174,6 +174,8 @@ class TaskStatusService:
 
         from app.services.snapshot_service import SnapshotService
         await SnapshotService(self.db).create_snapshot(task.iteration_id, "before_status_change")
+        reviewed_version = task.version
+        accepting = new_status_value == "closed" and review_evidence is not None
         updated, cascade_updates, notification_sent = await self._apply_transition(
             task,
             new_status_value,
@@ -187,10 +189,14 @@ class TaskStatusService:
             expected_version=expected_version,
             automatic=False,
             reserve_version=reserve_version,
+            accepting=accepting,
         )
-        if new_status_value == "closed":
+        if accepting or review_rework:
             from app.services.task_brief_service import TaskBriefService
-            await TaskBriefService(self.db).record_review(updated, verdict="accept", reason=reason or "Independent status review", evidence=review_evidence)
+            await TaskBriefService(self.db).record_review(
+                updated, reviewed_task_version=reviewed_version, verdict="accept" if accepting else "reject",
+                reason=reason, evidence=review_evidence,
+            )
         if updated.parent_id is not None:
             await self.reconcile_parent_chain(
                 updated.parent_id,
@@ -220,6 +226,7 @@ class TaskStatusService:
         automatic: bool,
         reserve_version: bool = True,
         postponement: bool = False,
+        accepting: bool = False,
     ) -> tuple[Task, list[dict], bool]:
         """Run the shared mutation, audit, delivery, and notification semantics."""
         old_status = task.status
@@ -268,15 +275,15 @@ class TaskStatusService:
             task.accepted_at = task.accepted_by_principal_id = task.accepted_version = None
         elif new_status == TaskStatus.CLOSED.value:
             from app.services.identity_service import acting_principal_id
-            acceptor = await acting_principal_id(self.db)
             task.actual_end_date = today
-            task.accepted_at = now
-            task.accepted_by_principal_id = acceptor
+            task.accepted_at = now if accepting else None
+            task.accepted_by_principal_id = await acting_principal_id(self.db) if accepting else None
+            task.accepted_version = None
 
         task.status = new_status
         if reserve_version:
             await self.task_service.reserve_task_version(task, expected_version)
-        if new_status == "closed" and not automatic:
+        if accepting:
             task.accepted_version = task.version
 
         cascade_updates: list[dict] = []

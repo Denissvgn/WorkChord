@@ -131,7 +131,7 @@ async def metric_matches(db: DB, metric: str = Query(max_length=40), project_id:
         project_id = release.project_id
         task_ids, _ = await releases.metric_task_ids(release)
         require_project(db, project_id)
-        return await aggregate_metrics(db, project_id=project_id, task_ids=task_ids, matching=metric, limit=limit, after_id=after_id)
+        return await aggregate_metrics(db, project_id=project_id, task_ids=task_ids, release_scope=True, matching=metric, limit=limit, after_id=after_id)
     if project_id is not None:
         require_project(db, project_id)
         project = await db.get(Project, project_id)
@@ -305,8 +305,15 @@ async def task_reviews(task_id: int, db: DB, limit: int = Query(default=50, ge=1
 async def current_task_review(task_id: int, db: DB):
     detail = await domain_result(TaskDetailService(db).detail(task_id, limit=1))
     task = detail.task
-    review = await db.scalar(select(TaskReviewRecord).where(TaskReviewRecord.original_task_id == task_id,
-        TaskReviewRecord.task_version == task.version, TaskReviewRecord.brief_revision == task.brief_revision,
+    version_matches = TaskReviewRecord.task_version == task.version
+    if task.is_accepted:
+        # Provider observations and hierarchy changes can preserve a verdict across versions.
+        version_matches |= ((TaskReviewRecord.verdict == "accept") & (TaskReviewRecord.task_version < task.version)
+                            & (TaskReviewRecord.principal_id == Task.accepted_by_principal_id)
+                            & (TaskReviewRecord.created_at >= task.accepted_at))
+    review = await db.scalar(select(TaskReviewRecord).join(Task, Task.id == TaskReviewRecord.task_id)
+        .where(Task.id == task_id, Task.version == task.version,
+        version_matches, TaskReviewRecord.brief_revision == task.brief_revision,
         TaskReviewRecord.artifact_revision == task.artifact_revision).order_by(TaskReviewRecord.id.desc()).limit(1))
     return {"task_version": task.version, "review": review}
 

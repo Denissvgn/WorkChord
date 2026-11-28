@@ -690,7 +690,8 @@ async def test_one_command_that_accepts_a_dependency_chain_keeps_acceptance(
     from app.commands import command_transaction
     from app.models.delivery_dependency import DeliveryDependency
     from app.models.task import TaskDependency
-    from app.services.task_service import TaskService
+    from app.schemas.task_brief import TaskReviewWrite
+    from app.services.task_brief_service import TaskBriefService
 
     monkeypatch.setenv("WORKCHORD_AUTH_MODE", "managed")
     monkeypatch.setenv("MODEL_AWARE_ROUTING_MODE", "shadow")
@@ -715,10 +716,13 @@ async def test_one_command_that_accepts_a_dependency_chain_keeps_acceptance(
         session.info["authority"] = Authority(
             s.system, "system", workspace_role="operator", review_override=True, reason="Accept the reviewed notes"
         )
-        service = TaskService(session)
+        service = TaskBriefService(session)
         for task_id in ids:
-            closed, _, _ = await service.change_status(task_id, "closed", commit=False)
-            assert closed is not None
+            task = await session.get(Task, task_id)
+            await service.review(task_id, TaskReviewWrite(
+                expected_version=task.version, brief_revision=task.brief_revision,
+                artifact_revision=task.artifact_revision, verdict="accept", reason="Checked the dependency",
+            ))
     async with db_session_factory() as read:
         for task_id in ids:
             task = await read.get(Task, task_id)
